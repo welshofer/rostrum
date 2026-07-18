@@ -147,6 +147,51 @@ public final class Paragraph {
         part.markDirty()
     }
 
+    // MARK: - Bullets & indentation
+
+    /// Outline/indent level, 0…8 (`a:pPr@lvl`).
+    public var indentLevel: Int {
+        get { p.firstChild(named: "a:pPr")?[attribute: "lvl"].flatMap { Int($0) } ?? 0 }
+        set {
+            pPr[attribute: "lvl"] = newValue == 0 ? nil : String(newValue)
+            part.markDirty()
+        }
+    }
+
+    /// The bullet/numbering choice group and everything that follows it.
+    private static let bulletSuccessors = ["a:tabLst", "a:defRPr", "a:extLst"]
+
+    private func clearBulletChildren() {
+        for name in ["a:buNone", "a:buAutoNum", "a:buChar", "a:buFont"] {
+            pPr.removeChildren(named: name)
+        }
+    }
+
+    /// A character bullet (default a round bullet in Arial).
+    public func setBullet(_ char: String = "\u{2022}", font: String = "Arial") {
+        clearBulletChildren()
+        pPr.insertChild(XML.Element("a:buFont", attributes: [("typeface", font)]),
+                        beforeAnyOf: ["a:buNone", "a:buAutoNum", "a:buChar"] + Self.bulletSuccessors)
+        pPr.insertChild(XML.Element("a:buChar", attributes: [("char", char)]),
+                        beforeAnyOf: Self.bulletSuccessors)
+        part.markDirty()
+    }
+
+    /// An auto-numbered bullet, e.g. "arabicPeriod" (1.), "alphaLcParenR" (a)).
+    public func setNumbered(_ type: String = "arabicPeriod") {
+        clearBulletChildren()
+        pPr.insertChild(XML.Element("a:buAutoNum", attributes: [("type", type)]),
+                        beforeAnyOf: Self.bulletSuccessors)
+        part.markDirty()
+    }
+
+    /// Explicitly suppress a bullet (overrides an inherited list style).
+    public func setNoBullet() {
+        clearBulletChildren()
+        pPr.insertChild(XML.Element("a:buNone"), beforeAnyOf: Self.bulletSuccessors)
+        part.markDirty()
+    }
+
     public var runs: [Run] {
         p.children(named: "a:r").map { Run(r: $0, part: part) }
     }
@@ -251,5 +296,53 @@ public final class Run {
             }
             part.markDirty()
         }
+    }
+
+    /// Underline (`a:rPr@u`; sng/dbl/none/…).
+    public var underline: Bool {
+        get { let u = rPr[attribute: "u"]; return u != nil && u != "none" }
+        set {
+            rPr[attribute: "u"] = newValue ? "sng" : nil
+            part.markDirty()
+        }
+    }
+
+    /// Strikethrough (`a:rPr@strike`).
+    public var strikethrough: Bool {
+        get { let s = rPr[attribute: "strike"]; return s != nil && s != "noStrike" }
+        set {
+            rPr[attribute: "strike"] = newValue ? "sngStrike" : nil
+            part.markDirty()
+        }
+    }
+
+    /// Baseline shift as a percent of font size (`a:rPr@baseline`): positive
+    /// raises (superscript), negative lowers (subscript), nil is normal.
+    public var baselinePercent: Double? {
+        get { rPr[attribute: "baseline"].flatMap { Int($0) }.map { Double($0) / 1000 } }
+        set {
+            rPr[attribute: "baseline"] = newValue.map { String(Int(($0 * 1000).rounded())) }
+            part.markDirty()
+        }
+    }
+
+    public func setSuperscript() { baselinePercent = 30 }
+    public func setSubscript() { baselinePercent = -25 }
+
+    /// Turn this run into a hyperlink to `url` (an external target). Adds the
+    /// relationship on the owning part and an `a:hlinkClick` to the run.
+    public func setHyperlink(_ url: String) {
+        let rId = part.rels.add(type: RelType.hyperlink, target: url, isExternal: true)
+        rPr.removeChildren(named: "a:hlinkClick")
+        rPr.insertChild(XML.Element("a:hlinkClick", attributes: [("r:id", rId)]),
+                        beforeAnyOf: ["a:hlinkMouseOver", "a:rtl", "a:extLst"])
+        part.markDirty()
+    }
+
+    /// The hyperlink target if this run is a link, resolved through the part's
+    /// relationships.
+    public var hyperlink: String? {
+        guard let rId = rPr.firstChild(named: "a:hlinkClick")?[attribute: "r:id"] else { return nil }
+        return part.rels.relationship(withId: rId)?.target
     }
 }
