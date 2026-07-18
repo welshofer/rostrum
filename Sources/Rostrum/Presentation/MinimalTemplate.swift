@@ -125,6 +125,6 @@ enum MinimalTemplate {
 
     static let appPropertiesXML = """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>Rostrum</Application><PresentationFormat>Widescreen</PresentationFormat><Slides>1</Slides></Properties>
+        <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>Rostrum</Application><PresentationFormat>Widescreen</PresentationFormat></Properties>
         """
 }

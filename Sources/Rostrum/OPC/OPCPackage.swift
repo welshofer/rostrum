@@ -1,13 +1,23 @@
 import Foundation
 
 /// One part in the package: a name, a content type, bytes, and its outgoing
-/// relationships. XML parts are parsed lazily by the layers above; the OPC
-/// layer deals only in blobs.
+/// relationships.
+///
+/// Pristine-until-mutated (the architecture's core mechanism): `blob` holds
+/// the original bytes and stays authoritative until a facade mutates the DOM
+/// and calls `markDirty()`. From then on the DOM is authoritative (one-way
+/// flip) and `blob` is refreshed on flush. Parts never touched re-emit their
+/// original bytes exactly — lossless round-trip by construction.
 public final class Part {
     public let uri: PackURI
     public let contentType: String
-    public var blob: Data
     public let rels: Relationships
+
+    /// The part's serialized bytes. Authoritative while `isDirty` is false.
+    public internal(set) var blob: Data
+
+    private var cachedDOM: XML.Element?
+    public private(set) var isDirty = false
 
     public init(uri: PackURI, contentType: String, blob: Data, rels: Relationships = Relationships()) {
         self.uri = uri
@@ -16,9 +26,33 @@ public final class Part {
         self.rels = rels
     }
 
-    /// Parse this part's blob as XML.
-    public func xml() throws -> XML.Element {
-        try XML.parse(blob)
+    /// The part's DOM, parsed once and cached. Reading it does NOT flip
+    /// authority — call `markDirty()` after any mutation.
+    public func dom() throws -> XML.Element {
+        if let cachedDOM { return cachedDOM }
+        let dom = try XML.parse(blob)
+        cachedDOM = dom
+        return dom
+    }
+
+    /// Flip authority to the DOM. Every facade setter must call this; it is
+    /// the single funnel that keeps blob/DOM coherence a checkable invariant.
+    public func markDirty() {
+        isDirty = true
+    }
+
+    /// Replace the part's bytes wholesale, discarding any cached DOM.
+    public func replaceBlob(_ data: Data) {
+        blob = data
+        cachedDOM = nil
+        isDirty = false
+    }
+
+    /// Re-serialize the DOM into `blob` if (and only if) it was mutated.
+    func flushIfDirty() {
+        guard isDirty, let cachedDOM else { return }
+        blob = XML.document(cachedDOM)
+        isDirty = false
     }
 
     /// The part a relationship of `type` points at, resolved through `package`.
@@ -115,7 +149,11 @@ public final class OPCPackage {
 
     /// Serialize to zip bytes. Deterministic: [Content_Types].xml first, then
     /// package rels, then parts sorted by URI, each followed by its rels part.
+    /// Only dirty parts are re-serialized; pristine parts emit original bytes.
     public func serialize() throws -> Data {
+        for part in parts.values {
+            part.flushIfDirty()
+        }
         var zip = ZipWriter()
         zip.addFile(name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
         if !rels.isEmpty {

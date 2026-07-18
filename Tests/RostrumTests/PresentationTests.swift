@@ -38,13 +38,13 @@ import Testing
         let bytes = try deck.serializedData()
         let package = try OPCPackage.read(data: bytes)
         for (uri, part) in package.parts where uri.ext == "xml" {
-            _ = try part.xml()
+            _ = try part.dom()
         }
     }
 
     @Test func requiredPresentationChildrenPresent() throws {
         let deck = try Presentation()
-        let root = try deck.presentationPart.xml()
+        let root = try deck.presentationPart.dom()
         #expect(root.name == "p:presentation")
         #expect(root.firstChild(named: "p:sldMasterIdLst") != nil)
         #expect(root.firstChild(named: "p:sldIdLst") != nil)

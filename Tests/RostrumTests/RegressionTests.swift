@@ -154,7 +154,7 @@ import Testing
     @Test func slideSizeSetterCreatesMissingSldSz() throws {
         let deck = try Presentation()
         // Simulate a valid deck whose presentation.xml lacks p:sldSz.
-        deck.presentationXML.children.removeAll {
+        try deck.presentationPart.dom().children.removeAll {
             if case .element(let e) = $0 { return e.name == "p:sldSz" }
             return false
         }
@@ -163,7 +163,7 @@ import Testing
         let reopened = try Presentation(data: try deck.serializedData())
         #expect(reopened.slideSize.width == .inches(10))
         // And it landed at the schema-correct position: before p:notesSz.
-        let names = reopened.presentationXML.childElements.map(\.name)
+        let names = try reopened.presentationPart.dom().childElements.map(\.name)
         let sldSzIndex = names.firstIndex(of: "p:sldSz")
         let notesSzIndex = names.firstIndex(of: "p:notesSz")
         #expect(sldSzIndex != nil && notesSzIndex != nil && sldSzIndex! < notesSzIndex!)
