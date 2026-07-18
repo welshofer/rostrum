@@ -145,24 +145,20 @@ while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
     return s
 }
 
-// A section divider: full-bleed image, big number, two-line title over a
-// deep bottom scrim, with an accent rule and subtitle beneath it.
+// A section divider: full-bleed image with ONE tight bottom scrim sized to
+// the text block. The top ~60% of each photograph is left untouched; the
+// section number, title, and subtitle stack in the darkened lower band.
 @MainActor func divider(_ index: String, _ title: String, _ subtitle: String,
                         image name: String) throws {
     let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
     try bleed(s, name, aspect: 1.5, fallback: C.yellowDeep)
-    // Layered scrims: broad bottom darkening + a focused band behind the
-    // title so white type stays legible even over bright imagery.
-    try scrim(s, r(0, 2.0, W, 5.5), from: C.charcoal, topAlpha: 0.1, bottomAlpha: 0.95)
-    try scrim(s, r(0, 3.7, W, 3.8), from: C.charcoal, topAlpha: 0, bottomAlpha: 0.6)
-    try scrim(s, r(0, 0, W, 2.2), from: C.charcoal, topAlpha: 0.5, bottomAlpha: 0, angle: 90)
-    try text(s, r(0.95, 0.7, 6, 1.2),
-             [Line(s: index, size: 15, weight: true, color: C.yellow, tracking: 3)])
-    try text(s, r(0.95, 4.15, 11.4, 1.6),
-             [Line(s: title, size: 52, weight: true, color: C.white, tracking: -1)], lineSpacing: 1.04)
-    try s.shapes.addShape(.rectangle, frame: r(0.97, 5.98, 1.1, 0.06), fill: .solid(C.yellow))
-    try text(s, r(0.98, 6.24, 11.0, 0.7),
-             [Line(s: subtitle, size: 16, color: C.yellowLight)], lineSpacing: 1.25)
+    try scrim(s, r(0, 4.4, W, 3.1), from: C.charcoal, topAlpha: 0.05, bottomAlpha: 0.95)
+    try text(s, r(0.95, 5.02, 9, 0.4),
+             [Line(s: index, size: 13, weight: true, color: C.yellow, tracking: 3)])
+    try text(s, r(0.95, 5.42, 11.7, 1.1),
+             [Line(s: title, size: 46, weight: true, color: C.white, tracking: -1)])
+    try text(s, r(0.97, 6.55, 11.0, 0.6),
+             [Line(s: subtitle, size: 15, color: C.yellowLight)], lineSpacing: 1.25)
 }
 
 // A stat card (big number + label), rounded, with optional colored top rule.
@@ -241,7 +237,7 @@ while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
 do {
     let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
     try bleed(s, "title-hero", aspect: 1.5, fallback: C.yellow)
-    try scrim(s, r(0, 3.0, W, 4.5), bottomAlpha: 0.85)
+    try scrim(s, r(0, 3.7, W, 3.8), bottomAlpha: 0.86)
     try tag(s, "A field guide", x: 0.95, y: 0.9)
     try text(s, r(0.9, 3.9, 11.5, 2.0),
              [Line(s: "Sunflower", size: 92, weight: true, color: C.white, tracking: -2)])
@@ -281,7 +277,7 @@ do {
 }
 
 // ---- 3 · Divider: Botany
-try divider("01 · BOTANY", "The architecture\nof a bloom", "One flower that is really a thousand flowers.", image: "div-botany")
+try divider("01 · BOTANY", "The architecture of a bloom", "One flower that is really a thousand flowers.", image: "div-botany")
 
 // ---- 4 · Anatomy
 do {
@@ -385,7 +381,7 @@ do {
 }
 
 // ---- 8 · Divider: The Numbers
-try divider("02 · THE NUMBERS", "A global\ncommodity", "From a prairie wildflower to 55 million tonnes a year.", image: "div-numbers")
+try divider("02 · THE NUMBERS", "A global commodity", "From a prairie wildflower to 55 million tonnes a year.", image: "div-numbers")
 
 // ---- 9 · Production bar chart
 do {
@@ -487,7 +483,7 @@ do {
 }
 
 // ---- 15 · Divider: Ecology
-try divider("03 · ECOLOGY", "A working\nflower", "Feeding pollinators, cleaning soil, sheltering wildlife.", image: "div-ecology")
+try divider("03 · ECOLOGY", "A working flower", "Feeding pollinators, cleaning soil, sheltering wildlife.", image: "div-ecology")
 
 // ---- 16 · Pollinators
 do {
@@ -549,7 +545,7 @@ do {
 }
 
 // ---- 19 · Divider: Culture & Art
-try divider("04 · CULTURE & ART", "A muse\nin yellow", "From Van Gogh's studio to the record books.", image: "div-culture")
+try divider("04 · CULTURE & ART", "A muse in yellow", "From Van Gogh's studio to the record books.", image: "div-culture")
 
 // ---- 20 · Van Gogh
 do {
@@ -610,7 +606,7 @@ do {
 }
 
 // ---- 23 · Divider: Grow Your Own
-try divider("05 · GROW YOUR OWN", "From your\nown soil", "A flower generous enough for a first-time gardener.", image: "div-grow")
+try divider("05 · GROW YOUR OWN", "From your own soil", "A flower generous enough for a first-time gardener.", image: "div-grow")
 
 // ---- 24 · Varieties
 do {
@@ -763,7 +759,9 @@ do {
 do {
     let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
     try bleed(s, "closing", aspect: 1.5, fallback: C.yellowDeep)
-    try scrim(s, r(0, 0, W, H), from: C.charcoal, topAlpha: 0.15, bottomAlpha: 0.55, angle: 90)
+    // One bottom gradient — carries the sources line and the base of the
+    // title, fading to clean photo above centre. No full-slide veil.
+    try scrim(s, r(0, 3.7, W, 3.8), from: C.charcoal, topAlpha: 0, bottomAlpha: 0.72, angle: 90)
     try text(s, r(0.9, 2.7, 11.5, 1.5),
              [Line(s: "Turn toward the light.", size: 56, weight: true, color: C.white, tracking: -1)], align: .center)
     try s.shapes.addShape(.rectangle, frame: r(W/2 - 0.7, 4.25, 1.4, 0.06), fill: .solid(C.yellow))
