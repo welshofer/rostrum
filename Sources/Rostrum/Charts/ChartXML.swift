@@ -40,12 +40,15 @@ enum ChartXML {
         }
         chart.appendElement(plotArea)
 
-        if kind == .line {
+        // A legend only earns its space when there is more than one series.
+        if kind == .line, data.series.count > 1 {
             let legend = XML.Element("c:legend")
             legend.appendElement(V("c:legendPos", "r"))
             legend.appendElement(XML.Element("c:layout"))
             legend.appendElement(V("c:overlay", "0"))
             chart.appendElement(legend)
+        }
+        if kind == .line {
             chart.appendElement(V("c:plotVisOnly", "1"))
         }
         chart.appendElement(V("c:dispBlanksAs", "gap"))

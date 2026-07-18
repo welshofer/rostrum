@@ -117,16 +117,33 @@ public enum SmartArt {
         <dgm:styleDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="urn:microsoft.com/office/officeart/2005/8/quickstyle/simple1"><dgm:title val=""/><dgm:desc val=""/><dgm:catLst><dgm:cat type="simple" pri="10100"/></dgm:catLst><dgm:scene3d><a:camera prst="orthographicFront"/><a:lightRig rig="threePt" dir="t"/></dgm:scene3d><dgm:styleLbl name="node0"><dgm:scene3d><a:camera prst="orthographicFront"/><a:lightRig rig="threePt" dir="t"/></dgm:scene3d><dgm:sp3d/><dgm:txPr/><dgm:style><a:lnRef idx="2"><a:scrgbClr r="0" g="0" b="0"/></a:lnRef><a:fillRef idx="1"><a:scrgbClr r="0" g="0" b="0"/></a:fillRef><a:effectRef idx="0"><a:scrgbClr r="0" g="0" b="0"/></a:effectRef><a:fontRef idx="minor"><a:schemeClr val="lt1"/></a:fontRef></dgm:style></dgm:styleLbl><dgm:styleLbl name="node1"><dgm:scene3d><a:camera prst="orthographicFront"/><a:lightRig rig="threePt" dir="t"/></dgm:scene3d><dgm:sp3d/><dgm:txPr/><dgm:style><a:lnRef idx="2"><a:scrgbClr r="0" g="0" b="0"/></a:lnRef><a:fillRef idx="1"><a:scrgbClr r="0" g="0" b="0"/></a:fillRef><a:effectRef idx="0"><a:scrgbClr r="0" g="0" b="0"/></a:effectRef><a:fontRef idx="minor"><a:schemeClr val="lt1"/></a:fontRef></dgm:style></dgm:styleLbl><dgm:styleLbl name="sibTrans2D1"><dgm:scene3d><a:camera prst="orthographicFront"/><a:lightRig rig="threePt" dir="t"/></dgm:scene3d><dgm:sp3d/><dgm:txPr/><dgm:style><a:lnRef idx="0"><a:scrgbClr r="0" g="0" b="0"/></a:lnRef><a:fillRef idx="1"><a:scrgbClr r="0" g="0" b="0"/></a:fillRef><a:effectRef idx="0"><a:scrgbClr r="0" g="0" b="0"/></a:effectRef><a:fontRef idx="minor"><a:schemeClr val="tx1"/></a:fontRef></dgm:style></dgm:styleLbl></dgm:styleDef>
         """
 
-    static let colorsXML = """
-        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <dgm:colorsDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="urn:microsoft.com/office/officeart/2005/8/colors/accent1_2"><dgm:title val=""/><dgm:desc val=""/><dgm:catLst><dgm:cat type="accent1" pri="11200"/></dgm:catLst><dgm:styleLbl name="node0"><dgm:fillClrLst meth="repeat"><a:schemeClr val="accent1"/></dgm:fillClrLst><dgm:linClrLst meth="repeat"><a:schemeClr val="lt1"/></dgm:linClrLst><dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl><dgm:styleLbl name="node1"><dgm:fillClrLst meth="repeat"><a:schemeClr val="accent1"/></dgm:fillClrLst><dgm:linClrLst meth="repeat"><a:schemeClr val="lt1"/></dgm:linClrLst><dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl><dgm:styleLbl name="sibTrans2D1"><dgm:fillClrLst meth="repeat"><a:schemeClr val="accent1"><a:tint val="60000"/></a:schemeClr></dgm:fillClrLst><dgm:linClrLst meth="repeat"><a:schemeClr val="accent1"><a:tint val="60000"/></a:schemeClr></dgm:linClrLst><dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl></dgm:colorsDef>
-        """
+    /// Colors part. With `nodeColors`, node fills CYCLE through the given
+    /// brand colors (and outlines match the fills, so no hairline borders);
+    /// without, theme accent1 with a light outline — PowerPoint's default look.
+    static func colorsXML(nodeColors: [Color]?) -> String {
+        let fill: String
+        let line: String
+        if let nodeColors, !nodeColors.isEmpty {
+            let swatches = nodeColors.map { "<a:srgbClr val=\"\($0.hex)\"/>" }.joined()
+            fill = "<dgm:fillClrLst meth=\"cycle\">\(swatches)</dgm:fillClrLst>"
+            line = "<dgm:linClrLst meth=\"cycle\">\(swatches)</dgm:linClrLst>"
+        } else {
+            fill = "<dgm:fillClrLst meth=\"repeat\"><a:schemeClr val=\"accent1\"/></dgm:fillClrLst>"
+            line = "<dgm:linClrLst meth=\"repeat\"><a:schemeClr val=\"lt1\"/></dgm:linClrLst>"
+        }
+        return """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <dgm:colorsDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="urn:microsoft.com/office/officeart/2005/8/colors/accent1_2"><dgm:title val=""/><dgm:desc val=""/><dgm:catLst><dgm:cat type="accent1" pri="11200"/></dgm:catLst><dgm:styleLbl name="node0">\(fill)\(line)<dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl><dgm:styleLbl name="node1">\(fill)\(line)<dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl><dgm:styleLbl name="sibTrans2D1"><dgm:fillClrLst meth="repeat"><a:schemeClr val="accent1"><a:tint val="60000"/></a:schemeClr></dgm:fillClrLst><dgm:linClrLst meth="repeat"><a:schemeClr val="accent1"><a:tint val="60000"/></a:schemeClr></dgm:linClrLst><dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl></dgm:colorsDef>
+            """
+    }
 }
 
 extension ShapeCollection {
     /// Add a SmartArt Basic Block List (vertical) with one block per item.
+    /// `colors` (optional) brand-colors the blocks, cycling through the list;
+    /// omitted, blocks use the theme accent (PowerPoint's default look).
     @discardableResult
-    public func addSmartArt(items: [String], frame: Rect) throws -> Shape {
+    public func addSmartArt(items: [String], frame: Rect, colors: [Color]? = nil) throws -> Shape {
         precondition(!items.isEmpty, "SmartArt needs at least one item")
         guard let package else {
             throw RostrumError.packageInvalid("this shape collection has no package attached")
@@ -145,14 +162,14 @@ extension ShapeCollection {
                                     xml: SmartArt.layoutXML)
         let quickStyle = addDiagramPart("quickStyle", contentType: SmartArt.quickStyleContentType,
                                         xml: SmartArt.quickStyleXML)
-        let colors = addDiagramPart("colors", contentType: SmartArt.colorsContentType,
-                                    xml: SmartArt.colorsXML)
+        let colorsPart = addDiagramPart("colors", contentType: SmartArt.colorsContentType,
+                                        xml: SmartArt.colorsXML(nodeColors: colors))
 
         // All four relationships hang off the SLIDE part.
         let dmId = part.rels.add(type: SmartArt.dataRelType, target: part.uri.relativeReference(to: data.uri))
         let loId = part.rels.add(type: SmartArt.layoutRelType, target: part.uri.relativeReference(to: layout.uri))
         let qsId = part.rels.add(type: SmartArt.quickStyleRelType, target: part.uri.relativeReference(to: quickStyle.uri))
-        let csId = part.rels.add(type: SmartArt.colorsRelType, target: part.uri.relativeReference(to: colors.uri))
+        let csId = part.rels.add(type: SmartArt.colorsRelType, target: part.uri.relativeReference(to: colorsPart.uri))
 
         let id = try Slide.nextShapeID(of: part)
         let graphicFrame = XML.Element("p:graphicFrame")

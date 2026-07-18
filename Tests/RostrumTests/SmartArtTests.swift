@@ -73,6 +73,22 @@ import Testing
         #expect(reopened.slides[0].smartArtTexts == [["Reduce & Reuse", "Recycle"]])
     }
 
+    @Test func brandColorsCycleThroughNodes() throws {
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addSmartArt(
+            items: ["A", "B", "C"],
+            frame: Rect(x: .zero, y: .zero, width: .inches(6), height: .inches(4)),
+            colors: [Color("F05138"), Color("FFB454"), Color("18A999")])
+        let colors = try deck.package.part(at: PackURI("/ppt/diagrams/colors1.xml")).dom()
+        let node1 = colors.children(named: "dgm:styleLbl").first { $0[attribute: "name"] == "node1" }!
+        let fills = node1.firstChild(named: "dgm:fillClrLst")!
+        #expect(fills[attribute: "meth"] == "cycle")
+        #expect(fills.children(named: "a:srgbClr").compactMap { $0[attribute: "val"] }
+                == ["F05138", "FFB454", "18A999"])
+        // Outlines match fills — no hairline borders.
+        #expect(node1.firstChild(named: "dgm:linClrLst")?[attribute: "meth"] == "cycle")
+    }
+
     @Test func multipleDiagramsNumberIndependently() throws {
         let deck = try Presentation()
         try deck.slides.add()
