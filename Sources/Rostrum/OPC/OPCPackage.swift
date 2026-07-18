@@ -160,7 +160,10 @@ public final class OPCPackage {
             zip.addFile(name: PackURI.packageRels.memberName, data: rels.serialized())
         }
         for (uri, part) in parts.sorted(by: { $0.key.value < $1.key.value }) {
-            zip.addFile(name: uri.memberName, data: part.blob)
+            // Media and embedded workbooks are already compressed — don't
+            // waste CPU re-DEFLATEing them; XML parts compress well.
+            let alreadyCompressed = ["png", "jpg", "jpeg", "gif", "xlsx", "zip"].contains(uri.ext)
+            zip.addFile(name: uri.memberName, data: part.blob, compress: !alreadyCompressed)
             if !part.rels.isEmpty {
                 zip.addFile(name: uri.relsURI.memberName, data: part.rels.serialized())
             }

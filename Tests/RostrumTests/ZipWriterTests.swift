@@ -32,6 +32,16 @@ struct ZipWriterTests {
     /// - "[Content_Types].xml": ASCII name that is not shell/glob-safe, small text
     /// - "ppt/slides/slide1.xml": nested path, empty file
     /// - "ppt/media/image1.bin": nested path, ~100KB seeded pseudorandom bytes
+    /// STORED-only archive, for deterministically testing header layout
+    /// independent of whether a payload happens to compress.
+    private static func makeStoredArchive() -> Data {
+        var writer = ZipWriter()
+        writer.addFile(name: "[Content_Types].xml", data: smallText, compress: false)
+        writer.addFile(name: "ppt/slides/slide1.xml", data: Data(), compress: false)
+        writer.addFile(name: "ppt/media/image1.bin", data: blob, compress: false)
+        return writer.finalize()
+    }
+
     private static func makeArchive() -> Data {
         var writer = ZipWriter()
         writer.addFile(name: "[Content_Types].xml", data: smallText)
@@ -86,7 +96,7 @@ struct ZipWriterTests {
 
     @Test("Archive layout: local header signature, EOCD fields, central directory")
     func structuralFields() {
-        let archive = Self.makeArchive()
+        let archive = Self.makeStoredArchive()
 
         // Starts with a local file header signature PK\x03\x04.
         #expect(Array(archive.prefix(4)) == [0x50, 0x4B, 0x03, 0x04])

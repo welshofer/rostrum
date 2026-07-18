@@ -29,7 +29,12 @@ public struct ZipWriter {
     /// One recorded entry, with everything precomputed at `addFile` time.
     private struct Entry {
         let nameBytes: Data
-        let data: Data
+        /// The bytes written into the archive: the original for STORED, or the
+        /// DEFLATE stream for method 8.
+        let payload: Data
+        let method: UInt16
+        /// Uncompressed size (payload size equals this only for STORED).
+        let uncompressedSize: UInt32
         let crc: UInt32
         let localHeaderOffset: UInt32
     }
@@ -47,30 +52,46 @@ public struct ZipWriter {
     private static let versionMadeBy: UInt16 = 20
     /// Bit 11: UTF-8 file names. Bit 3 (data descriptors) is never set.
     private static let generalPurposeFlag: UInt16 = 0x0800
-    /// Compression method 0: STORED.
+    /// Compression method 0: STORED. Method 8: DEFLATE.
     private static let methodStored: UInt16 = 0
+    private static let methodDeflate: UInt16 = 8
 
     public init() {}
 
     /// Append one entry. `name` must use forward slashes and no leading slash
-    /// (e.g. "ppt/slides/slide1.xml"). Order of calls is the order in the archive.
-    public mutating func addFile(name: String, data: Data) {
+    /// (e.g. "ppt/slides/slide1.xml"). Order of calls is the order in the
+    /// archive. When `compress` is true (the default) the entry is DEFLATEd if
+    /// that yields a smaller payload, otherwise stored; pass false to skip the
+    /// attempt for already-compressed data (PNG/JPEG/nested zips).
+    public mutating func addFile(name: String, data: Data, compress: Bool = true) {
         precondition(entries.count < 0xFFFF, "ZipWriter: more than 0xFFFF entries")
         let nameBytes = Data(name.utf8)
         precondition(nameBytes.count <= 0xFFFF, "ZipWriter: entry name longer than 0xFFFF bytes")
         precondition(UInt64(data.count) <= 0xFFFF_FFFF, "ZipWriter: entry data exceeds 32-bit size field")
         precondition(nextOffset <= 0xFFFF_FFFF, "ZipWriter: local header offset exceeds 32-bit field")
 
+        var method = Self.methodStored
+        var payload = data
+        if compress, !data.isEmpty {
+            let deflated = Deflate.deflate(data)
+            if deflated.count < data.count {
+                method = Self.methodDeflate
+                payload = deflated
+            }
+        }
+
         let entry = Entry(
             nameBytes: nameBytes,
-            data: data,
+            payload: payload,
+            method: method,
+            uncompressedSize: UInt32(data.count),
             crc: CRC32.checksum(data),
             localHeaderOffset: UInt32(nextOffset)
         )
         entries.append(entry)
 
-        // 30-byte fixed local header + name + data.
-        nextOffset += 30 + UInt64(nameBytes.count) + UInt64(data.count)
+        // 30-byte fixed local header + name + payload.
+        nextOffset += 30 + UInt64(nameBytes.count) + UInt64(payload.count)
         precondition(nextOffset <= 0xFFFF_FFFF, "ZipWriter: archive size exceeds 32-bit offset fields")
     }
 
@@ -84,16 +105,16 @@ public struct ZipWriter {
             out.appendLE(Self.localHeaderSignature)
             out.appendLE(Self.versionNeeded)
             out.appendLE(Self.generalPurposeFlag)
-            out.appendLE(Self.methodStored)
+            out.appendLE(entry.method)
             out.appendLE(Self.dosEpochTime)
             out.appendLE(Self.dosEpochDate)
             out.appendLE(entry.crc)
-            out.appendLE(UInt32(entry.data.count))  // compressed size (STORED: same)
-            out.appendLE(UInt32(entry.data.count))  // uncompressed size
+            out.appendLE(UInt32(entry.payload.count))  // compressed size
+            out.appendLE(entry.uncompressedSize)
             out.appendLE(UInt16(entry.nameBytes.count))
             out.appendLE(UInt16(0))  // extra field length
             out.append(entry.nameBytes)
-            out.append(entry.data)
+            out.append(entry.payload)
         }
 
         // Central directory.
@@ -103,12 +124,12 @@ public struct ZipWriter {
             out.appendLE(Self.versionMadeBy)
             out.appendLE(Self.versionNeeded)
             out.appendLE(Self.generalPurposeFlag)
-            out.appendLE(Self.methodStored)
+            out.appendLE(entry.method)
             out.appendLE(Self.dosEpochTime)
             out.appendLE(Self.dosEpochDate)
             out.appendLE(entry.crc)
-            out.appendLE(UInt32(entry.data.count))  // compressed size
-            out.appendLE(UInt32(entry.data.count))  // uncompressed size
+            out.appendLE(UInt32(entry.payload.count))  // compressed size
+            out.appendLE(entry.uncompressedSize)
             out.appendLE(UInt16(entry.nameBytes.count))
             out.appendLE(UInt16(0))  // extra field length
             out.appendLE(UInt16(0))  // file comment length
