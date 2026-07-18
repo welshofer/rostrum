@@ -177,6 +177,26 @@ import Testing
         #expect(shape.frame.width == .inches(1))
     }
 
+    @Test func roundedRectCornerRadiusClampsToPill() throws {
+        let (deck, slide) = try newSlide()
+        // Radius far exceeding half the short side → clamped to 50% (pill).
+        let pill = try slide.shapes.addRoundedRectangle(
+            Rect(x: .zero, y: .zero, width: .inches(3), height: .inches(0.4)),
+            cornerRadius: .inches(5), fill: .solid(.black))
+        // Modest radius → proportional adj.
+        let card = try slide.shapes.addRoundedRectangle(
+            Rect(x: .zero, y: .inches(1), width: .inches(4), height: .inches(2)),
+            cornerRadius: .inches(0.2), fill: .solid(.white))
+        _ = deck
+        func adj(_ s: Shape) -> String? {
+            s.element.firstChild(named: "p:spPr")?.firstChild(named: "a:prstGeom")?
+                .firstChild(named: "a:avLst")?.firstChild(named: "a:gd")?[attribute: "fmla"]
+        }
+        #expect(adj(pill) == "val 50000")
+        // 0.2" of a 2" short side = 10%.
+        #expect(adj(card) == "val 10000")
+    }
+
     @Test func shapeIDsUniquePerSlide() throws {
         let (deck, slide) = try newSlide()
         for _ in 0..<5 {

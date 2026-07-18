@@ -56,6 +56,30 @@ public final class ShapeCollection: Sequence {
         return Shape(element: sp, part: part)
     }
 
+    /// Add a rounded rectangle with an explicit corner radius (the DrawingML
+    /// `roundRect` adjust value). A radius ≥ half the short side yields a full
+    /// pill; the value is clamped to that maximum.
+    @discardableResult
+    public func addRoundedRectangle(
+        _ frame: Rect, cornerRadius: EMU, fill: Fill, line: Line? = nil
+    ) throws -> Shape {
+        let sp = try makeSp(name: "roundRect", frame: frame, textBox: false, geometry: .roundedRectangle)
+        let spPr = sp.firstChild(named: "p:spPr")!
+        let minSide = Swift.min(frame.width.rawValue, frame.height.rawValue)
+        if minSide > 0, let avLst = spPr.firstChild(named: "a:prstGeom")?.firstChild(named: "a:avLst") {
+            // roundRect adj is the corner radius as a fraction (×100000) of the
+            // shorter side, capped at 50% (a pill).
+            let adj = Swift.max(0, Swift.min(50_000,
+                Int((Double(cornerRadius.rawValue) / Double(minSide) * 100_000).rounded())))
+            avLst.appendElement(XML.Element("a:gd", attributes: [("name", "adj"), ("fmla", "val \(adj)")]))
+        }
+        spPr.appendElement(fill.makeElement())
+        spPr.appendElement(Line.makeElement(line))
+        try Slide.spTree(of: part).appendElement(sp)
+        part.markDirty()
+        return Shape(element: sp, part: part)
+    }
+
     /// The shared `p:sp` skeleton: non-visual properties, transform, geometry,
     /// and an empty text body (PowerPoint expects one on every sp).
     private func makeSp(
