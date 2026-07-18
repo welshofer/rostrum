@@ -60,7 +60,15 @@ extension Slide {
         let master = package.addPart(
             uri: uri, contentType: ContentType.notesMaster,
             blob: Data(Self.notesMasterXML.utf8))
-        master.rels.add(type: RelType.theme, target: "../theme/theme1.xml")
+        // Office invariant: every master owns a DISTINCT theme part — sharing
+        // the slide master's theme1 trips PowerPoint's repair dialog.
+        var themeN = 1
+        while package.parts[PackURI("/ppt/theme/theme\(themeN).xml")] != nil { themeN += 1 }
+        let notesTheme = package.addPart(
+            uri: PackURI("/ppt/theme/theme\(themeN).xml"),
+            contentType: ContentType.theme,
+            blob: Data(MinimalTemplate.themeXML.utf8))
+        master.rels.add(type: RelType.theme, target: master.uri.relativeReference(to: notesTheme.uri))
 
         let presentation = try package.mainDocumentPart()
         let rId = presentation.rels.add(

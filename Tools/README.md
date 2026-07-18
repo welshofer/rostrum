@@ -47,3 +47,13 @@ choice-group membership — input for future rostrum-gen output (typed facades).
 Class declarations are inheritance-flattened (what the class effectively
 carries at runtime); successor lists preserve declared order because that
 order is the insertion semantic.
+
+## ppt-check.sh — PowerPoint acceptance oracle (macOS)
+
+`Tools/ppt-check.sh <file.pptx>` opens the deck in Microsoft PowerPoint via
+LaunchServices (the double-click code path — scripted AppleScript opens skip
+the integrity check and give false negatives), watches for the repair dialog
+via Accessibility, auto-dismisses it, and prints OK / REPAIR / STUCK. This is
+the only oracle that catches what PowerPoint's strictest validation catches;
+python-pptx and LibreOffice both tolerated the shared-theme bug this tool
+found.

@@ -32,6 +32,26 @@ import Testing
         #expect(reopened.slides[1].notesText == "second")
     }
 
+    @Test func notesMasterOwnsDistinctThemePart() throws {
+        // Sharing theme1.xml between slide master and notes master trips
+        // PowerPoint's repair dialog (found by scripted-PowerPoint bisect,
+        // 2026-07-18). Every master must own its theme.
+        let deck = try Presentation()
+        try deck.slides[0].setNotes("x")
+        let package = try Presentation(data: try deck.serializedData()).package
+        let slideMaster = try package.part(at: PackURI("/ppt/slideMasters/slideMaster1.xml"))
+        let notesMaster = try package.part(at: PackURI("/ppt/notesMasters/notesMaster1.xml"))
+        func themeTarget(_ part: Part) -> String? {
+            part.rels.first(ofType: RelType.theme).map {
+                PackURI.resolve(target: $0.target, relativeTo: part.uri.baseURI).value
+            }
+        }
+        let slideTheme = try #require(themeTarget(slideMaster))
+        let notesTheme = try #require(themeTarget(notesMaster))
+        #expect(slideTheme != notesTheme)
+        _ = try package.part(at: PackURI(notesTheme))  // and it exists
+    }
+
     @Test func notesMasterIdLstPositionedBeforeSldIdLst() throws {
         let deck = try Presentation()
         try deck.slides[0].setNotes("x")
