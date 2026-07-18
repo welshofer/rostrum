@@ -34,19 +34,21 @@ from phase 0 onward.
   line/paragraph spacing, letter tracking, anchors, margins
 - [x] Proof-of-capability: `Examples/ClimateDeck` — 15-slide designed deck,
   rendered and visually verified via LibreOffice
-- [ ] Pictures (needs image parts), group shapes, connectors, freeform
+- [x] Pictures: PNG/JPEG/GIF sniffers, content-dedup image parts, natural
+  sizing by dpi (2026-07-18)
+- [x] Tables: grid, cell text/fills/anchors, merge, style flags (2026-07-18)
+- [ ] Group shapes, connectors, freeform
 - [ ] Bullets/hyperlinks/autofit with real font metrics
-- [ ] Tables
 
 ## Phase 3 — Parity completion
 
-- Charts: the classic `c:` namespace set (bar/line/pie/scatter/area/radar…)
-  via extracted chart-template XML; embedded xlsx workbook part (needs our
-  zip writer — already done)
-- Notes slides, core/extended/custom document properties, media parts
-- Write-side DEFLATE (fixed-Huffman first) — file-size parity with python-pptx
-- Linux CI; performance pass on large decks (python-pptx: 1.7 GB RAM for a
-  323-slide deck — pristine blobs mean we only pay for parts actually touched)
+- [x] Charts: clustered bar, line, pie via extracted chart templates, with
+  embedded Edit-Data xlsx workbooks written by our own zip engine (2026-07-18)
+- [x] Speaker notes: notesMaster/notesSlide, `slide.setNotes` (2026-07-18)
+- [ ] More chart types (scatter/area/radar/doughnut), chart titles/data labels
+- [ ] Core/extended/custom document properties API, media parts
+- [ ] Write-side DEFLATE (fixed-Huffman first) — file-size parity
+- [ ] Linux CI; performance pass on large decks
 
 ## Phase 4 — Beyond parity (the reason Rostrum exists)
 
@@ -57,10 +59,13 @@ Ranked by demand evidence from python-pptx's issue tracker:
 2. **Theme & brand kit editing** — a real `Theme` object: palette
    (accent1–6, dk/lt), major/minor fonts, apply-a-brand-to-a-deck; resolve
    `schemeClr` → RGB through the clrMap chain.
-3. **SmartArt** — read text out of existing diagrams first (data1.xml), then
-   authoring via layout templates. python-pptx returns literally nothing.
-4. **Sections** (`p14:sectionLst`), **modern threaded comments**, embedded
-   fonts.
+3. ~~SmartArt~~ ✅ **Shipped 2026-07-18**: `addSmartArt(items:frame:)` creates
+   Basic Block List diagrams (verified in PowerPoint + LibreOffice);
+   `slide.smartArtTexts` extracts text from any diagram. Next: more layouts
+   (process, cycle, hierarchy), multi-level data.
+4. ~~Modern threaded comments~~ ✅ **Shipped 2026-07-18**: `addComment`/
+   `addReply`/`resolve` with authors part and slide anchoring. Next:
+   **sections** (`p14:sectionLst`), embedded fonts.
 5. **Animations & transitions** — the `p:timing` tree, entrance/exit/emphasis
    presets, slide transitions.
 6. **ChartEx** (`cx:`) — waterfall, sunburst, treemap, histogram, funnel.
