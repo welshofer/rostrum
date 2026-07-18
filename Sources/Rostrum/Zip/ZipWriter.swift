@@ -1,0 +1,149 @@
+import Foundation
+
+/// A minimal, deterministic zip archive writer.
+///
+/// Produces a fully valid zip file using STORED (uncompressed) entries.
+/// STORED entries are legal in .pptx packages — Office opens them fine; DEFLATE
+/// support is a later size optimization, not a correctness requirement.
+///
+/// Implementation notes for the implementer:
+/// - Layout: [local file header + data] per entry, then the central directory,
+///   then the end-of-central-directory (EOCD) record. All integers little-endian.
+/// - Local file header signature 0x04034b50; central dir header 0x02014b50;
+///   EOCD 0x06054b50. "version needed to extract" = 20, "version made by" = 20.
+/// - General-purpose bit flag: set bit 11 (0x0800, UTF-8 names); never set bit 3
+///   (no data descriptors — sizes are known up front).
+/// - Determinism is a feature: identical input bytes must produce identical
+///   archives. All entries carry the fixed DOS date/time below (the zip epoch),
+///   no extra fields, no comments.
+/// - Entry names are stored as provided (forward slashes, no leading slash).
+/// - No zip64: adding an entry that would push any 32-bit field past 0xFFFF_FFFF,
+///   or more than 0xFFFF entries, is a programmer error (precondition failure) —
+///   pptx files never approach these limits.
+public struct ZipWriter {
+    /// Fixed DOS date/time stamped on every entry: 1980-01-01 00:00:00 (the DOS epoch).
+    /// DOS format: date = ((year-1980)<<9 | month<<5 | day), time = (hour<<11 | minute<<5 | second/2).
+    public static let dosEpochDate: UInt16 = 0x0021
+    public static let dosEpochTime: UInt16 = 0x0000
+
+    /// One recorded entry, with everything precomputed at `addFile` time.
+    private struct Entry {
+        let nameBytes: Data
+        let data: Data
+        let crc: UInt32
+        let localHeaderOffset: UInt32
+    }
+
+    private var entries: [Entry] = []
+
+    /// Byte offset where the next local file header will land
+    /// (i.e. total size of all [local header + data] blocks written so far).
+    private var nextOffset: UInt64 = 0
+
+    private static let localHeaderSignature: UInt32 = 0x0403_4B50
+    private static let centralHeaderSignature: UInt32 = 0x0201_4B50
+    private static let eocdSignature: UInt32 = 0x0605_4B50
+    private static let versionNeeded: UInt16 = 20
+    private static let versionMadeBy: UInt16 = 20
+    /// Bit 11: UTF-8 file names. Bit 3 (data descriptors) is never set.
+    private static let generalPurposeFlag: UInt16 = 0x0800
+    /// Compression method 0: STORED.
+    private static let methodStored: UInt16 = 0
+
+    public init() {}
+
+    /// Append one entry. `name` must use forward slashes and no leading slash
+    /// (e.g. "ppt/slides/slide1.xml"). Order of calls is the order in the archive.
+    public mutating func addFile(name: String, data: Data) {
+        precondition(entries.count < 0xFFFF, "ZipWriter: more than 0xFFFF entries")
+        let nameBytes = Data(name.utf8)
+        precondition(nameBytes.count <= 0xFFFF, "ZipWriter: entry name longer than 0xFFFF bytes")
+        precondition(UInt64(data.count) <= 0xFFFF_FFFF, "ZipWriter: entry data exceeds 32-bit size field")
+        precondition(nextOffset <= 0xFFFF_FFFF, "ZipWriter: local header offset exceeds 32-bit field")
+
+        let entry = Entry(
+            nameBytes: nameBytes,
+            data: data,
+            crc: CRC32.checksum(data),
+            localHeaderOffset: UInt32(nextOffset)
+        )
+        entries.append(entry)
+
+        // 30-byte fixed local header + name + data.
+        nextOffset += 30 + UInt64(nameBytes.count) + UInt64(data.count)
+        precondition(nextOffset <= 0xFFFF_FFFF, "ZipWriter: archive size exceeds 32-bit offset fields")
+    }
+
+    /// Produce the complete archive bytes (entries + central directory + EOCD).
+    public func finalize() -> Data {
+        var out = Data()
+        out.reserveCapacity(Int(nextOffset) + entries.count * 46 + 22)
+
+        // Local file headers + data, in insertion order.
+        for entry in entries {
+            out.appendLE(Self.localHeaderSignature)
+            out.appendLE(Self.versionNeeded)
+            out.appendLE(Self.generalPurposeFlag)
+            out.appendLE(Self.methodStored)
+            out.appendLE(Self.dosEpochTime)
+            out.appendLE(Self.dosEpochDate)
+            out.appendLE(entry.crc)
+            out.appendLE(UInt32(entry.data.count))  // compressed size (STORED: same)
+            out.appendLE(UInt32(entry.data.count))  // uncompressed size
+            out.appendLE(UInt16(entry.nameBytes.count))
+            out.appendLE(UInt16(0))  // extra field length
+            out.append(entry.nameBytes)
+            out.append(entry.data)
+        }
+
+        // Central directory.
+        let centralDirectoryOffset = UInt32(out.count)
+        for entry in entries {
+            out.appendLE(Self.centralHeaderSignature)
+            out.appendLE(Self.versionMadeBy)
+            out.appendLE(Self.versionNeeded)
+            out.appendLE(Self.generalPurposeFlag)
+            out.appendLE(Self.methodStored)
+            out.appendLE(Self.dosEpochTime)
+            out.appendLE(Self.dosEpochDate)
+            out.appendLE(entry.crc)
+            out.appendLE(UInt32(entry.data.count))  // compressed size
+            out.appendLE(UInt32(entry.data.count))  // uncompressed size
+            out.appendLE(UInt16(entry.nameBytes.count))
+            out.appendLE(UInt16(0))  // extra field length
+            out.appendLE(UInt16(0))  // file comment length
+            out.appendLE(UInt16(0))  // disk number start
+            out.appendLE(UInt16(0))  // internal file attributes
+            out.appendLE(UInt32(0))  // external file attributes
+            out.appendLE(entry.localHeaderOffset)
+            out.append(entry.nameBytes)
+        }
+        let centralDirectorySize = UInt32(out.count) - centralDirectoryOffset
+
+        // End of central directory record.
+        out.appendLE(Self.eocdSignature)
+        out.appendLE(UInt16(0))  // number of this disk
+        out.appendLE(UInt16(0))  // disk where central directory starts
+        out.appendLE(UInt16(entries.count))  // entries on this disk
+        out.appendLE(UInt16(entries.count))  // total entries
+        out.appendLE(centralDirectorySize)
+        out.appendLE(centralDirectoryOffset)
+        out.appendLE(UInt16(0))  // comment length
+
+        return out
+    }
+}
+
+extension Data {
+    fileprivate mutating func appendLE(_ value: UInt16) {
+        append(UInt8(truncatingIfNeeded: value))
+        append(UInt8(truncatingIfNeeded: value >> 8))
+    }
+
+    fileprivate mutating func appendLE(_ value: UInt32) {
+        append(UInt8(truncatingIfNeeded: value))
+        append(UInt8(truncatingIfNeeded: value >> 8))
+        append(UInt8(truncatingIfNeeded: value >> 16))
+        append(UInt8(truncatingIfNeeded: value >> 24))
+    }
+}
