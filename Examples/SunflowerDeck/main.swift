@@ -258,19 +258,23 @@ do {
 do {
     let s = try creamSlide()
     try header(s, "What's inside", "Five ways to look at a flower")
-    let sections: [(String, String, String, Color)] = [
-        ("01", "Botany", "Anatomy, heliotropism, and the Fibonacci spiral", C.yellowDeep),
-        ("02", "The numbers", "Production, oil, yield, and price", C.blue),
-        ("03", "Ecology", "Pollinators, soil healing, and wildlife", C.coral),
-        ("04", "Culture & art", "Van Gogh, symbolism, and world records", C.rose),
-        ("05", "Grow your own", "Varieties, planting, care, and harvest", C.yellow),
+    // Each row: (index, title, desc, barColor, numeralColor). The bar keeps
+    // the bright tint (a fill); the numeral uses a readable variant so no
+    // number drops out on the white card.
+    let plum = Color("B0468F")
+    let sections: [(String, String, String, Color, Color)] = [
+        ("01", "Botany", "Anatomy, heliotropism, and the Fibonacci spiral", C.yellowDeep, C.yellowDark),
+        ("02", "The numbers", "Production, oil, yield, and price", C.blue, C.blue),
+        ("03", "Ecology", "Pollinators, soil healing, and wildlife", C.coral, C.coral),
+        ("04", "Culture & art", "Van Gogh, symbolism, and world records", C.rose, plum),
+        ("05", "Grow your own", "Varieties, planting, care, and harvest", C.yellow, C.yellowDark),
     ]
-    let cardH = 0.92, top = 2.2, gap = 0.14
+    let cardH = 0.9, top = 2.05, gap = 0.13
     for (i, sec) in sections.enumerated() {
         let y = top + Double(i) * (cardH + gap)
         try s.shapes.addRoundedRectangle(r(0.9, y, 11.5, cardH), cornerRadius: .inches(0.16), fill: .solid(C.white)).enableSoftShadow()
         try s.shapes.addRoundedRectangle(r(0.9, y, 0.12, cardH), cornerRadius: .inches(0.06), fill: .solid(sec.3))
-        try text(s, r(1.25, y, 1.2, cardH), [Line(s: sec.0, size: 30, weight: true, color: sec.3, tracking: -1)], anchor: .middle)
+        try text(s, r(1.25, y, 1.2, cardH), [Line(s: sec.0, size: 30, weight: true, color: sec.4, tracking: -1)], anchor: .middle)
         try text(s, r(2.5, y + 0.16, 4.0, 0.6), [Line(s: sec.1, size: 21, weight: true, color: C.charcoal)])
         try text(s, r(2.5, y + 0.5, 8.6, 0.4), [Line(s: sec.2, size: 13.5, color: C.inkSoft)])
     }
@@ -444,7 +448,7 @@ do {
             ["Africa", "2.0", "1.0", "2.0"],
             ["North America", "0.9", "2.0", "1.8"],
         ],
-        colWidths: [4.4, 2.37, 2.37, 2.36], accentCol: 3, accentColor: C.yellowDeep)
+        colWidths: [4.4, 2.37, 2.37, 2.36], accentCol: 3, accentColor: C.yellowDark)
     try footnote(s, "Illustrative regional aggregates. Yield gaps track rainfall, hybrids, and mechanization.")
 }
 
@@ -476,7 +480,7 @@ do {
             ["Magnesium", "325 mg", "81%"],
             ["Selenium", "53 µg", "96%"],
         ],
-        colWidths: [4.0, 1.9, 1.5], accentCol: 2, accentColor: C.yellowDeep)
+        colWidths: [4.0, 1.9, 1.5], accentCol: 2, accentColor: C.yellowDark)
     try statCard(s, x: 8.7, y: 2.05, w: 3.7, h: 2.15, number: "234%", label: "of daily vitamin E in one 100 g handful", accent: C.yellowDeep, bg: C.cream)
     try statCard(s, x: 8.7, y: 4.4, w: 3.7, h: 2.15, number: "21 g", label: "plant protein — more than two eggs", accent: C.blue, bg: C.cream)
     try footnote(s, "USDA-style values for dried, unsalted kernels; %DV on a 2,000 kcal reference.")
@@ -642,7 +646,7 @@ do {
         try s.shapes.addRoundedRectangle(r(x, 2.2, cw, ch), cornerRadius: .inches(0.28), fill: .solid(C.cream)).enableSoftShadow()
         try s.shapes.addRoundedRectangle(r(x + 0.3, 2.55, 0.9, 0.9), cornerRadius: .inches(0.45), fill: .solid(step.3))
         try text(s, r(x + 0.3, 3.65, cw - 0.6, 0.5), [Line(s: step.0, size: 21, weight: true, color: C.charcoal)])
-        try text(s, r(x + 0.3, 4.15, cw - 0.6, 0.4), [Line(s: step.1, size: 15, weight: true, color: step.3)])
+        try text(s, r(x + 0.3, 4.15, cw - 0.6, 0.4), [Line(s: step.1, size: 15, weight: true, color: C.charcoal)])
         try text(s, r(x + 0.3, 4.7, cw - 0.6, 1.6), [Line(s: step.2, size: 12.5, color: C.inkSoft)], lineSpacing: 1.25)
     }
 }
@@ -712,16 +716,18 @@ do {
         ("Pole beans near roots", "Allelopathic seed hulls can stunt some seedlings underneath."),
     ]
     try s.shapes.addRoundedRectangle(r(0.9, 2.15, 5.65, 4.6), cornerRadius: .inches(0.24), fill: .solid(C.white)).enableSoftShadow()
-    try text(s, r(1.25, 2.45, 5.0, 0.5), [Line(s: "Plant together", size: 18, weight: true, color: C.yellowDeep)])
+    try s.shapes.addRoundedRectangle(r(1.25, 2.5, 0.55, 0.12), cornerRadius: .inches(0.06), fill: .solid(C.yellowDeep))
+    try text(s, r(1.25, 2.74, 5.0, 0.5), [Line(s: "Plant together", size: 18, weight: true, color: C.charcoal)])
     for (i, g) in good.enumerated() {
-        let y = 3.1 + Double(i) * 1.1
+        let y = 3.45 + Double(i) * 1.05
         try text(s, r(1.25, y, 5.0, 0.4), [Line(s: g.0, size: 15, weight: true, color: C.charcoal)])
         try text(s, r(1.25, y + 0.36, 5.0, 0.6), [Line(s: g.1, size: 12.5, color: C.inkSoft)], lineSpacing: 1.2)
     }
     try s.shapes.addRoundedRectangle(r(6.75, 2.15, 5.65, 4.6), cornerRadius: .inches(0.24), fill: .solid(C.white)).enableSoftShadow()
-    try text(s, r(7.1, 2.45, 5.0, 0.5), [Line(s: "Keep apart", size: 18, weight: true, color: C.coral)])
+    try s.shapes.addRoundedRectangle(r(7.1, 2.5, 0.55, 0.12), cornerRadius: .inches(0.06), fill: .solid(C.coral))
+    try text(s, r(7.1, 2.74, 5.0, 0.5), [Line(s: "Keep apart", size: 18, weight: true, color: C.charcoal)])
     for (i, b) in bad.enumerated() {
-        let y = 3.1 + Double(i) * 1.1
+        let y = 3.45 + Double(i) * 1.05
         try text(s, r(7.1, y, 5.0, 0.4), [Line(s: b.0, size: 15, weight: true, color: C.charcoal)])
         try text(s, r(7.1, y + 0.36, 5.0, 0.6), [Line(s: b.1, size: 12.5, color: C.inkSoft)], lineSpacing: 1.2)
     }
