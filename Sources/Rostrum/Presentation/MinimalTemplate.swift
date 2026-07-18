@@ -34,6 +34,14 @@ enum MinimalTemplate {
             uri: PackURI("/ppt/slideLayouts/slideLayout1.xml"),
             contentType: ContentType.slideLayout,
             blob: Data(slideLayoutXML.utf8))
+        let layoutXMLs = [titleSlideLayoutXML, titleAndContentLayoutXML, sectionHeaderLayoutXML]
+        var extraLayouts: [Part] = []
+        for (i, xml) in layoutXMLs.enumerated() {
+            extraLayouts.append(package.addPart(
+                uri: PackURI("/ppt/slideLayouts/slideLayout\(i + 2).xml"),
+                contentType: ContentType.slideLayout,
+                blob: Data(xml.utf8)))
+        }
         let slide = package.addPart(
             uri: PackURI("/ppt/slides/slide1.xml"),
             contentType: ContentType.slide,
@@ -62,10 +70,17 @@ enum MinimalTemplate {
         presentation.rels.add(type: RelType.slide, target: "slides/slide1.xml")
         presentation.rels.add(type: RelType.theme, target: "theme/theme1.xml")
 
+        // rId1–4 must line up with sldLayoutIdLst in slideMasterXML.
         master.rels.add(type: RelType.slideLayout, target: "../slideLayouts/slideLayout1.xml")
+        for (i, _) in extraLayouts.enumerated() {
+            master.rels.add(type: RelType.slideLayout, target: "../slideLayouts/slideLayout\(i + 2).xml")
+        }
         master.rels.add(type: RelType.theme, target: "../theme/theme1.xml")
 
         layout.rels.add(type: RelType.slideMaster, target: "../slideMasters/slideMaster1.xml")
+        for extra in extraLayouts {
+            extra.rels.add(type: RelType.slideMaster, target: "../slideMasters/slideMaster1.xml")
+        }
 
         slide.rels.add(type: RelType.slideLayout, target: "../slideLayouts/slideLayout1.xml")
 
@@ -87,17 +102,36 @@ enum MinimalTemplate {
         <p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree>
         """
 
-    /// Master: cSld (with a theme-background reference), the color map binding
-    /// scheme slots to master roles, and the layout list. r:id values refer to
-    /// this part's own rels.
+    /// Master: cSld with title/body placeholder termini (the inheritance
+    /// chain's end — they carry the real geometry every layout falls back to),
+    /// the color map, and the layout list. r:id values refer to this part's
+    /// own rels (rId1–4 = layouts, in makePackage order).
     static let slideMasterXML = """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <p:sldMaster xmlns:a="\(nsA)" xmlns:r="\(nsR)" xmlns:p="\(nsP)"><p:cSld><p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>\(emptySpTree)</p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/><p:sldLayoutIdLst><p:sldLayoutId id="2147483649" r:id="rId1"/></p:sldLayoutIdLst></p:sldMaster>
+        <p:sldMaster xmlns:a="\(nsA)" xmlns:r="\(nsR)" xmlns:p="\(nsP)"><p:cSld><p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Title Placeholder 1"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="title"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="609600" y="365760"/><a:ext cx="10972800" cy="1143000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="ctr"><a:normAutofit/></a:bodyPr><a:lstStyle/><a:p/></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Text Placeholder 2"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="609600" y="1600200"/><a:ext cx="10972800" cy="4800600"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0"><a:normAutofit/></a:bodyPr><a:lstStyle/><a:p/></p:txBody></p:sp></p:spTree></p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/><p:sldLayoutIdLst><p:sldLayoutId id="2147483649" r:id="rId1"/><p:sldLayoutId id="2147483650" r:id="rId2"/><p:sldLayoutId id="2147483651" r:id="rId3"/><p:sldLayoutId id="2147483652" r:id="rId4"/></p:sldLayoutIdLst></p:sldMaster>
         """
 
     static let slideLayoutXML = """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <p:sldLayout xmlns:a="\(nsA)" xmlns:r="\(nsR)" xmlns:p="\(nsP)" type="blank" preserve="1"><p:cSld name="Blank">\(emptySpTree)</p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>
+        """
+
+    /// Title Slide: centered title + subtitle, both with explicit geometry.
+    static let titleSlideLayoutXML = """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <p:sldLayout xmlns:a="\(nsA)" xmlns:r="\(nsR)" xmlns:p="\(nsP)" type="title" preserve="1"><p:cSld name="Title Slide"><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Title 1"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="ctrTitle"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="1524000" y="2130425"/><a:ext cx="9144000" cy="1470025"/></a:xfrm></p:spPr><p:txBody><a:bodyPr anchor="b"/><a:lstStyle/><a:p/></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Subtitle 2"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="subTitle" idx="1"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="1524000" y="3722370"/><a:ext cx="9144000" cy="1752600"/></a:xfrm></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp></p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>
+        """
+
+    /// Title and Content: no explicit geometry — inherits the master termini.
+    static let titleAndContentLayoutXML = """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <p:sldLayout xmlns:a="\(nsA)" xmlns:r="\(nsR)" xmlns:p="\(nsP)" type="obj" preserve="1"><p:cSld name="Title and Content"><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Title 1"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="title"/></p:nvPr></p:nvSpPr><p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Content Placeholder 2"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph idx="1"/></p:nvPr></p:nvSpPr><p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp></p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>
+        """
+
+    /// Section Header: left-aligned title low on the slide, body beneath.
+    static let sectionHeaderLayoutXML = """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <p:sldLayout xmlns:a="\(nsA)" xmlns:r="\(nsR)" xmlns:p="\(nsP)" type="secHead" preserve="1"><p:cSld name="Section Header"><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Title 1"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="title"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="831850" y="2743200"/><a:ext cx="10515600" cy="1143000"/></a:xfrm></p:spPr><p:txBody><a:bodyPr anchor="b"/><a:lstStyle/><a:p/></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Text Placeholder 2"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="831850" y="3962400"/><a:ext cx="10515600" cy="914400"/></a:xfrm></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp></p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>
         """
 
     static let slideXML = """
