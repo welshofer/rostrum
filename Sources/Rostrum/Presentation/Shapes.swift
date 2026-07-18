@@ -4,9 +4,13 @@ import Foundation
 /// `Part` strongly (never a back-reference to the transient `Slide` facade).
 public final class ShapeCollection: Sequence {
     let part: Part
+    /// Present when the collection can create package-level resources
+    /// (image parts for pictures); nil for detached usage.
+    let package: OPCPackage?
 
-    init(part: Part) {
+    init(part: Part, package: OPCPackage? = nil) {
         self.part = part
+        self.package = package
     }
 
     /// Existing `p:sp` shapes, in z-order (document order).

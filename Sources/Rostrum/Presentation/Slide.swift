@@ -8,14 +8,19 @@ import Foundation
 /// though the intermediate `Slide` dies mid-expression.
 public final class Slide {
     public let part: Part
+    /// The owning package — needed to create related parts (notes, comments,
+    /// images) on demand. Strong reference; the package never points back.
+    let package: OPCPackage
 
-    init(part: Part) {
+    init(part: Part, package: OPCPackage) {
         self.part = part
+        self.package = package
     }
 
-    /// The shape tree: iterate existing shapes, add text boxes and autoshapes.
+    /// The shape tree: iterate existing shapes, add text boxes, autoshapes
+    /// and pictures.
     public var shapes: ShapeCollection {
-        ShapeCollection(part: part)
+        ShapeCollection(part: part, package: package)
     }
 
     func cSld() throws -> XML.Element {

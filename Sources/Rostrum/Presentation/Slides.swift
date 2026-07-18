@@ -45,7 +45,7 @@ public final class Slides: Sequence {
             throw RostrumError.packageInvalid("sldId at index \(index) has no resolvable r:id")
         }
         let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
-        return Slide(part: try package.part(at: uri))
+        return Slide(part: try package.part(at: uri), package: package)
     }
 
     public func makeIterator() -> AnyIterator<Slide> {
@@ -79,7 +79,7 @@ public final class Slides: Sequence {
         ])
         try sldIdLst().appendElement(entry)
         presentationPart.markDirty()
-        return Slide(part: part)
+        return Slide(part: part, package: package)
     }
 
     /// Remove the slide at `index`: drops its `sldId` entry, its relationship,
@@ -140,7 +140,7 @@ public final class Slides: Sequence {
         entries.insert(entry, at: index + 1)
         list.replaceChildElements(with: entries)
         presentationPart.markDirty()
-        return Slide(part: copy)
+        return Slide(part: copy, package: package)
     }
 
     // MARK: - Allocation

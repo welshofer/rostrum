@@ -71,7 +71,7 @@ public final class OPCPackage {
     public private(set) var parts: [PackURI: Part]
     /// Package-level relationships (`/_rels/.rels`).
     public let rels: Relationships
-    public private(set) var contentTypes: ContentTypesMap
+    public internal(set) var contentTypes: ContentTypesMap
 
     public init() {
         parts = [:]
