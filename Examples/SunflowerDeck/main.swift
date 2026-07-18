@@ -32,31 +32,19 @@ func r(_ x: Double, _ y: Double, _ w: Double, _ h: Double) -> Rect {
     Rect(x: .inches(x), y: .inches(y), width: .inches(w), height: .inches(h))
 }
 
-// MARK: - Images (cover-crop that bleeds off-slide; PowerPoint clips to the slide)
+// MARK: - Images (covered in-frame via fit: .fill — no off-slide bleed)
 
 let imagesDir = CommandLine.arguments.count > 2 ? CommandLine.arguments[2] : "images"
 func image(_ name: String) -> Data? {
     try? Data(contentsOf: URL(filePath: "\(imagesDir)/\(name).png"))
 }
 
-/// A frame that covers the whole slide with a source image of `aspect`
-/// (w/h), centered, no distortion — the overflow bleeds past the slide edges
-/// and gets clipped on render.
-func coverFrame(aspect: Double) -> Rect {
-    let slideAspect = W / H
-    if aspect < slideAspect {   // image relatively taller: match width, bleed top/bottom
-        let w = W, h = W / aspect
-        return r(0, (H - h) / 2, w, h)
-    } else {                    // match height, bleed left/right
-        let h = H, w = H * aspect
-        return r((W - w) / 2, 0, w, h)
-    }
-}
-
 /// Full-bleed background image (or a palette fallback if the file is absent).
-@MainActor func bleed(_ slide: Slide, _ name: String, aspect: Double, fallback: Color = C.yellowLight) throws {
+/// The picture sits exactly on the slide and covers it via an in-fill crop
+/// (`fit: .fill`) — no oversized shape bleeding off-canvas.
+@MainActor func bleed(_ slide: Slide, _ name: String, aspect: Double = 1.5, fallback: Color = C.yellowLight) throws {
     if let data = image(name) {
-        try slide.shapes.addPicture(data, frame: coverFrame(aspect: aspect))
+        try slide.shapes.addPicture(data, frame: r(0, 0, W, H), fit: .fill)
     } else {
         try slide.setBackground(.solid(fallback))
     }
@@ -288,7 +276,7 @@ do {
     let s = try whiteSlide()
     try header(s, "Anatomy", "Not one flower, but thousands")
     if let img = image("anatomy") {
-        try s.shapes.addPicture(img, frame: r(0.7, 2.05, 4.9, 4.9))
+        try s.shapes.addPicture(img, frame: r(0.7, 2.05, 4.9, 4.9), fit: .fill)
     } else {
         try s.shapes.addRoundedRectangle(r(0.7, 2.05, 4.9, 4.9), cornerRadius: .inches(0.2), fill: .solid(C.yellowLight))
     }
@@ -331,7 +319,7 @@ do {
     try header(s, "Phyllotaxis", "The 137.5° golden angle")
     if let img = image("fibonacci") {
         try s.shapes.addRoundedRectangle(r(7.2, 1.95, 5.4, 5.05), cornerRadius: .inches(0.24), fill: .solid(C.yellowLight))
-        try s.shapes.addPicture(img, frame: r(7.35, 2.1, 5.1, 4.75))
+        try s.shapes.addPicture(img, frame: r(7.35, 2.1, 5.1, 4.75), fit: .fill)
     }
     try text(s, r(0.9, 2.05, 5.8, 1.6), [
         Line(s: "Each seed sits 137.5° around from the last — the golden angle.", size: 20, weight: true, color: C.charcoal),
@@ -495,7 +483,7 @@ do {
     try header(s, "Pollinators", "Who visits the disc")
     if let img = image("pollinator") {
         try s.shapes.addRoundedRectangle(r(8.6, 2.15, 4.0, 4.6), cornerRadius: .inches(0.24), fill: .solid(C.yellowLight))
-        try s.shapes.addPicture(img, frame: r(8.75, 2.3, 3.7, 4.3))
+        try s.shapes.addPicture(img, frame: r(8.75, 2.3, 3.7, 4.3), fit: .fill)
     }
     try barRows(s, x: 0.9, y: 2.35, labelW: 2.6, barMaxW: 2.9, rowH: 0.6, gap: 0.34, maxValue: 100, items: [
         ("Honeybees", 100, "most visits", C.yellowDeep),
@@ -513,7 +501,7 @@ do {
     try header(s, "Soil healing", "The flower that pulls poison")
     if let img = image("phytoremediation") {
         try s.shapes.addRoundedRectangle(r(7.6, 2.0, 5.0, 4.4), cornerRadius: .inches(0.24), fill: .solid(C.yellowLight))
-        try s.shapes.addPicture(img, frame: r(7.75, 2.15, 4.7, 4.1))
+        try s.shapes.addPicture(img, frame: r(7.75, 2.15, 4.7, 4.1), fit: .fill)
     }
     try text(s, r(0.9, 2.1, 6.2, 1.4), [
         Line(s: "Sunflowers are hyperaccumulators — their roots draw heavy metals and radionuclides up out of contaminated ground.", size: 17, color: C.charcoal),
@@ -557,7 +545,7 @@ do {
     try header(s, "Van Gogh", "The sunflowers that made a name")
     if let img = image("div-culture") {
         try s.shapes.addRoundedRectangle(r(7.5, 2.0, 5.1, 4.5), cornerRadius: .inches(0.24), fill: .solid(C.yellowLight))
-        try s.shapes.addPicture(img, frame: r(7.65, 2.15, 4.8, 4.2))
+        try s.shapes.addPicture(img, frame: r(7.65, 2.15, 4.8, 4.2), fit: .fill)
     }
     try text(s, r(0.9, 2.05, 6.2, 1.3), [
         Line(s: "In Arles in 1888, Van Gogh painted sunflowers to decorate a room for his friend Gauguin.", size: 16, color: C.charcoal),
@@ -600,7 +588,7 @@ do {
     let s = try whiteSlide()
     try header(s, "Records", "Sunflowers at the extremes")
     if let img = image("records") {
-        try s.shapes.addPicture(img, frame: r(9.0, 2.05, 3.6, 4.9))
+        try s.shapes.addPicture(img, frame: r(9.0, 2.05, 3.6, 4.9), fit: .fill)
     }
     try statCard(s, x: 0.9, y: 2.05, w: 3.7, h: 2.35, number: "9.17 m", label: "world's tallest sunflower (Germany, 2014)", accent: C.yellowDeep, bg: C.cream)
     try statCard(s, x: 4.85, y: 2.05, w: 3.7, h: 2.35, number: "82 cm", label: "widest flower head on record (Canada, 1983)", accent: C.blue, bg: C.cream)
@@ -686,7 +674,7 @@ do {
     try header(s, "Harvest", "Knowing when to cut")
     if let img = image("harvest") {
         try s.shapes.addRoundedRectangle(r(7.6, 2.0, 5.0, 4.5), cornerRadius: .inches(0.24), fill: .solid(C.yellowLight))
-        try s.shapes.addPicture(img, frame: r(7.75, 2.15, 4.7, 4.2))
+        try s.shapes.addPicture(img, frame: r(7.75, 2.15, 4.7, 4.2), fit: .fill)
     }
     let steps: [(String, String, Color)] = [
         ("1 · Watch the back", "The head's reverse turns from green to yellow, then papery brown.", C.yellowDeep),

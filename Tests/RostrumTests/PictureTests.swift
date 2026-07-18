@@ -97,6 +97,31 @@ private enum Fixture {
         #expect(abs(pic.frame.height.inches - 30.0 / 144.0) < 0.01)
     }
 
+    @Test func fillModeCropsToCoverWithoutBleed() throws {
+        let deck = try Presentation()
+        // 40×30 PNG (aspect 1.333) into a 16:9 frame (1.778): image is
+        // relatively taller, so it crops top & bottom, none left/right.
+        let frame = Rect(x: .zero, y: .zero, width: .inches(13.333), height: .inches(7.5))
+        let shape = try deck.slides[0].shapes.addPicture(Fixture.png, frame: frame, fit: .fill)
+        // Shape stays exactly on the frame — no off-slide bleed.
+        #expect(shape.frame.width == frame.width && shape.frame.height == frame.height)
+        #expect(shape.frame.x == .zero && shape.frame.y == .zero)
+
+        let srcRect = shape.element.firstChild(named: "p:blipFill")!.firstChild(named: "a:srcRect")!
+        #expect(srcRect[attribute: "l"] == "0" && srcRect[attribute: "r"] == "0")
+        // vertical crop each side = (1 - (40/30)/(13.333/7.5))/2 ≈ 0.125 → 12500.
+        let t = Int(srcRect[attribute: "t"]!)!
+        #expect(abs(t - 12500) <= 50)
+        #expect(srcRect[attribute: "b"] == srcRect[attribute: "t"])
+    }
+
+    @Test func stretchModeWritesNoSrcRect() throws {
+        let deck = try Presentation()
+        let shape = try deck.slides[0].shapes.addPicture(
+            Fixture.jpeg, frame: Rect(x: .zero, y: .zero, width: .inches(4), height: .inches(3)))
+        #expect(shape.element.firstChild(named: "p:blipFill")?.firstChild(named: "a:srcRect") == nil)
+    }
+
     @Test func contentTypesUseExtensionDefault() throws {
         let deck = try Presentation()
         try deck.slides[0].shapes.addPicture(Fixture.png, x: .zero, y: .zero)
