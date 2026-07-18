@@ -1,0 +1,5232 @@
+{
+  "classes": {
+    "CT_AdjPoint2D": {
+      "attributes": {
+        "x": {
+          "property": "x",
+          "required": true,
+          "simple_type": "ST_Coordinate"
+        },
+        "y": {
+          "property": "y",
+          "required": true,
+          "simple_type": "ST_Coordinate"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_ApplicationNonVisualDrawingProps": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:ph": {
+          "cardinality": "ZeroOrOne",
+          "property": "ph",
+          "successors": [
+            "a:audioCd",
+            "a:wavAudioFile",
+            "a:audioFile",
+            "a:videoFile",
+            "a:quickTimeFile",
+            "p:custDataLst",
+            "p:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.shared"
+    },
+    "CT_Area3DChart": {
+      "attributes": {},
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {
+        "c:grouping": {
+          "cardinality": "ZeroOrOne",
+          "property": "grouping",
+          "successors": [
+            "c:varyColors",
+            "c:ser",
+            "c:dLbls",
+            "c:dropLines",
+            "c:gapDepth",
+            "c:axId"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_AreaChart": {
+      "attributes": {},
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {
+        "c:dLbls": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLbls",
+          "successors": [
+            "c:dropLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:grouping": {
+          "cardinality": "ZeroOrOne",
+          "property": "grouping",
+          "successors": [
+            "c:varyColors",
+            "c:ser",
+            "c:dLbls",
+            "c:dropLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:ser": {
+          "cardinality": "ZeroOrMore",
+          "property": "ser",
+          "successors": [
+            "c:dLbls",
+            "c:dropLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:varyColors": {
+          "cardinality": "ZeroOrOne",
+          "property": "varyColors",
+          "successors": [
+            "c:ser",
+            "c:dLbls",
+            "c:dropLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_AxDataSource": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:multiLvlStrRef": {
+          "cardinality": "ZeroOrOne",
+          "property": "multiLvlStrRef",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.series"
+    },
+    "CT_AxisUnit": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "ST_AxisUnit"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_Background": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:bgPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "bgPr",
+          "successors": []
+        },
+        "p:bgRef": {
+          "cardinality": "ZeroOrOne",
+          "property": "bgRef",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_BackgroundProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {
+        "eg_fillProperties": {
+          "cardinality": "ZeroOrOneChoice",
+          "choices": [
+            "a:noFill",
+            "a:solidFill",
+            "a:gradFill",
+            "a:blipFill",
+            "a:pattFill",
+            "a:grpFill"
+          ],
+          "successors": [
+            "a:effectLst",
+            "a:effectDag",
+            "a:extLst"
+          ]
+        }
+      },
+      "module": "pptx.oxml.slide"
+    },
+    "CT_BarChart": {
+      "attributes": {},
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {
+        "c:barDir": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "barDir",
+          "successors": []
+        },
+        "c:dLbls": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLbls",
+          "successors": [
+            "c:gapWidth",
+            "c:overlap",
+            "c:serLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:gapWidth": {
+          "cardinality": "ZeroOrOne",
+          "property": "gapWidth",
+          "successors": [
+            "c:overlap",
+            "c:serLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:grouping": {
+          "cardinality": "ZeroOrOne",
+          "property": "grouping",
+          "successors": [
+            "c:varyColors",
+            "c:ser",
+            "c:dLbls",
+            "c:gapWidth",
+            "c:overlap",
+            "c:serLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:overlap": {
+          "cardinality": "ZeroOrOne",
+          "property": "overlap",
+          "successors": [
+            "c:serLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:ser": {
+          "cardinality": "ZeroOrMore",
+          "property": "ser",
+          "successors": [
+            "c:dLbls",
+            "c:gapWidth",
+            "c:overlap",
+            "c:serLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:varyColors": {
+          "cardinality": "ZeroOrOne",
+          "property": "varyColors",
+          "successors": [
+            "c:ser",
+            "c:dLbls",
+            "c:gapWidth",
+            "c:overlap",
+            "c:serLines",
+            "c:axId",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_BarDir": {
+      "attributes": {
+        "val": {
+          "default": "col",
+          "property": "val",
+          "required": false,
+          "simple_type": "ST_BarDir"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_Blip": {
+      "attributes": {
+        "r:embed": {
+          "property": "rEmbed",
+          "required": false,
+          "simple_type": "ST_RelationshipId"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_BlipFillProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:blip": {
+          "cardinality": "ZeroOrOne",
+          "property": "blip",
+          "successors": [
+            "a:srcRect",
+            "a:tile",
+            "a:stretch"
+          ]
+        },
+        "a:srcRect": {
+          "cardinality": "ZeroOrOne",
+          "property": "srcRect",
+          "successors": [
+            "a:tile",
+            "a:stretch"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_Boolean": {
+      "attributes": {
+        "val": {
+          "default": "1",
+          "property": "val",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_Boolean_Explicit": {
+      "attributes": {
+        "val": {
+          "default": "1",
+          "property": "_val",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_BubbleChart": {
+      "attributes": {},
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {
+        "c:bubble3D": {
+          "cardinality": "ZeroOrOne",
+          "property": "bubble3D",
+          "successors": [
+            "c:bubbleScale",
+            "c:showNegBubbles",
+            "c:sizeRepresents",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:bubbleScale": {
+          "cardinality": "ZeroOrOne",
+          "property": "bubbleScale",
+          "successors": [
+            "c:showNegBubbles",
+            "c:sizeRepresents",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:dLbls": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLbls",
+          "successors": [
+            "c:axId",
+            "c:bubble3D",
+            "c:bubbleScale",
+            "c:showNegBubbles",
+            "c:sizeRepresents",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:ser": {
+          "cardinality": "ZeroOrMore",
+          "property": "ser",
+          "successors": [
+            "c:dLbls",
+            "c:axId",
+            "c:bubble3D",
+            "c:bubbleScale",
+            "c:showNegBubbles",
+            "c:sizeRepresents",
+            "c:axId",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_BubbleScale": {
+      "attributes": {
+        "val": {
+          "default": "100",
+          "property": "val",
+          "required": false,
+          "simple_type": "ST_BubbleScale"
+        }
+      },
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_CatAx": {
+      "attributes": {},
+      "bases": [
+        "BaseAxisElement"
+      ],
+      "children": {
+        "c:crosses": {
+          "cardinality": "ZeroOrOne",
+          "property": "crosses",
+          "successors": [
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:crossesAt": {
+          "cardinality": "ZeroOrOne",
+          "property": "crossesAt",
+          "successors": [
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:delete": {
+          "cardinality": "ZeroOrOne",
+          "property": "delete_",
+          "successors": [
+            "c:axPos",
+            "c:majorGridlines",
+            "c:minorGridlines",
+            "c:title",
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:lblOffset": {
+          "cardinality": "ZeroOrOne",
+          "property": "lblOffset",
+          "successors": [
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:majorGridlines": {
+          "cardinality": "ZeroOrOne",
+          "property": "majorGridlines",
+          "successors": [
+            "c:minorGridlines",
+            "c:title",
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:majorTickMark": {
+          "cardinality": "ZeroOrOne",
+          "property": "majorTickMark",
+          "successors": [
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:minorGridlines": {
+          "cardinality": "ZeroOrOne",
+          "property": "minorGridlines",
+          "successors": [
+            "c:title",
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:minorTickMark": {
+          "cardinality": "ZeroOrOne",
+          "property": "minorTickMark",
+          "successors": [
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:numFmt": {
+          "cardinality": "ZeroOrOne",
+          "property": "numFmt",
+          "successors": [
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:scaling": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "scaling",
+          "successors": []
+        },
+        "c:spPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "spPr",
+          "successors": [
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:tickLblPos": {
+          "cardinality": "ZeroOrOne",
+          "property": "tickLblPos",
+          "successors": [
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:title": {
+          "cardinality": "ZeroOrOne",
+          "property": "title",
+          "successors": [
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        },
+        "c:txPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "txPr",
+          "successors": [
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblAlgn",
+            "c:lblOffset",
+            "c:tickLblSkip",
+            "c:tickMarkSkip",
+            "c:noMultiLvlLbl",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_Chart": {
+      "attributes": {
+        "r:id": {
+          "property": "rId",
+          "required": true,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:autoTitleDeleted": {
+          "cardinality": "ZeroOrOne",
+          "property": "autoTitleDeleted",
+          "successors": [
+            "c:pivotFmts",
+            "c:view3D",
+            "c:floor",
+            "c:sideWall",
+            "c:backWall",
+            "c:plotArea",
+            "c:legend",
+            "c:plotVisOnly",
+            "c:dispBlanksAs",
+            "c:showDLblsOverMax",
+            "c:extLst"
+          ]
+        },
+        "c:legend": {
+          "cardinality": "ZeroOrOne",
+          "property": "legend",
+          "successors": [
+            "c:plotVisOnly",
+            "c:dispBlanksAs",
+            "c:showDLblsOverMax",
+            "c:extLst"
+          ]
+        },
+        "c:plotArea": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "plotArea",
+          "successors": []
+        },
+        "c:title": {
+          "cardinality": "ZeroOrOne",
+          "property": "title",
+          "successors": [
+            "c:autoTitleDeleted",
+            "c:pivotFmts",
+            "c:view3D",
+            "c:floor",
+            "c:sideWall",
+            "c:backWall",
+            "c:plotArea",
+            "c:legend",
+            "c:plotVisOnly",
+            "c:dispBlanksAs",
+            "c:showDLblsOverMax",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.chart"
+    },
+    "CT_ChartLines": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:spPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "spPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_ChartSpace": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:chart": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "chart",
+          "successors": []
+        },
+        "c:date1904": {
+          "cardinality": "ZeroOrOne",
+          "property": "date1904",
+          "successors": [
+            "c:lang",
+            "c:roundedCorners",
+            "c:style",
+            "c:clrMapOvr",
+            "c:pivotSource",
+            "c:protection",
+            "c:chart",
+            "c:spPr",
+            "c:txPr",
+            "c:externalData",
+            "c:printSettings",
+            "c:userShapes",
+            "c:extLst"
+          ]
+        },
+        "c:externalData": {
+          "cardinality": "ZeroOrOne",
+          "property": "externalData",
+          "successors": [
+            "c:printSettings",
+            "c:userShapes",
+            "c:extLst"
+          ]
+        },
+        "c:style": {
+          "cardinality": "ZeroOrOne",
+          "property": "style",
+          "successors": [
+            "c:clrMapOvr",
+            "c:pivotSource",
+            "c:protection",
+            "c:chart",
+            "c:spPr",
+            "c:txPr",
+            "c:externalData",
+            "c:printSettings",
+            "c:userShapes",
+            "c:extLst"
+          ]
+        },
+        "c:txPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "txPr",
+          "successors": [
+            "c:externalData",
+            "c:printSettings",
+            "c:userShapes",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.chart"
+    },
+    "CT_Color": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {
+        "eg_colorChoice": {
+          "cardinality": "ZeroOrOneChoice",
+          "choices": [
+            "a:scrgbClr",
+            "a:srgbClr",
+            "a:hslClr",
+            "a:sysClr",
+            "a:schemeClr",
+            "a:prstClr"
+          ],
+          "successors": []
+        }
+      },
+      "module": "pptx.oxml.dml.color"
+    },
+    "CT_CommonSlideData": {
+      "attributes": {
+        "name": {
+          "default": "",
+          "property": "name",
+          "required": false,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:bg": {
+          "cardinality": "ZeroOrOne",
+          "property": "bg",
+          "successors": [
+            "p:spTree",
+            "p:custDataLst",
+            "p:controls",
+            "p:extLst"
+          ]
+        },
+        "p:spTree": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "spTree",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_Connection": {
+      "attributes": {
+        "id": {
+          "property": "id",
+          "required": true,
+          "simple_type": "ST_DrawingElementId"
+        },
+        "idx": {
+          "property": "idx",
+          "required": true,
+          "simple_type": "XsdUnsignedInt"
+        }
+      },
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.connector"
+    },
+    "CT_Connector": {
+      "attributes": {},
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {
+        "p:nvCxnSpPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "nvCxnSpPr",
+          "successors": []
+        },
+        "p:spPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "spPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.connector"
+    },
+    "CT_ConnectorNonVisual": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:cNvCxnSpPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cNvCxnSpPr",
+          "successors": []
+        },
+        "p:cNvPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cNvPr",
+          "successors": []
+        },
+        "p:nvPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "nvPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.connector"
+    },
+    "CT_CoreProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "cp:category": {
+          "cardinality": "ZeroOrOne",
+          "property": "category",
+          "successors": []
+        },
+        "cp:contentStatus": {
+          "cardinality": "ZeroOrOne",
+          "property": "contentStatus",
+          "successors": []
+        },
+        "cp:keywords": {
+          "cardinality": "ZeroOrOne",
+          "property": "keywords",
+          "successors": []
+        },
+        "cp:lastModifiedBy": {
+          "cardinality": "ZeroOrOne",
+          "property": "lastModifiedBy",
+          "successors": []
+        },
+        "cp:lastPrinted": {
+          "cardinality": "ZeroOrOne",
+          "property": "lastPrinted",
+          "successors": []
+        },
+        "cp:revision": {
+          "cardinality": "ZeroOrOne",
+          "property": "revision",
+          "successors": []
+        },
+        "cp:version": {
+          "cardinality": "ZeroOrOne",
+          "property": "version",
+          "successors": []
+        },
+        "dc:creator": {
+          "cardinality": "ZeroOrOne",
+          "property": "creator",
+          "successors": []
+        },
+        "dc:description": {
+          "cardinality": "ZeroOrOne",
+          "property": "description",
+          "successors": []
+        },
+        "dc:identifier": {
+          "cardinality": "ZeroOrOne",
+          "property": "identifier",
+          "successors": []
+        },
+        "dc:language": {
+          "cardinality": "ZeroOrOne",
+          "property": "language",
+          "successors": []
+        },
+        "dc:subject": {
+          "cardinality": "ZeroOrOne",
+          "property": "subject",
+          "successors": []
+        },
+        "dc:title": {
+          "cardinality": "ZeroOrOne",
+          "property": "title",
+          "successors": []
+        },
+        "dcterms:created": {
+          "cardinality": "ZeroOrOne",
+          "property": "created",
+          "successors": []
+        },
+        "dcterms:modified": {
+          "cardinality": "ZeroOrOne",
+          "property": "modified",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.coreprops"
+    },
+    "CT_Crosses": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "XL_AXIS_CROSSES"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_CustomGeometry2D": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:pathLst": {
+          "cardinality": "ZeroOrOne",
+          "property": "pathLst",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_DLbl": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:dLblPos": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLblPos",
+          "successors": [
+            "c:showLegendKey",
+            "c:showVal",
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:extLst"
+          ]
+        },
+        "c:idx": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "idx",
+          "successors": []
+        },
+        "c:spPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "spPr",
+          "successors": [
+            "c:txPr",
+            "c:dLblPos",
+            "c:showLegendKey",
+            "c:showVal",
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:extLst"
+          ]
+        },
+        "c:tx": {
+          "cardinality": "ZeroOrOne",
+          "property": "tx",
+          "successors": [
+            "c:numFmt",
+            "c:spPr",
+            "c:txPr",
+            "c:dLblPos",
+            "c:showLegendKey",
+            "c:showVal",
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:extLst"
+          ]
+        },
+        "c:txPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "txPr",
+          "successors": [
+            "c:dLblPos",
+            "c:showLegendKey",
+            "c:showVal",
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.datalabel"
+    },
+    "CT_DLblPos": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "XL_DATA_LABEL_POSITION"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.datalabel"
+    },
+    "CT_DLbls": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:dLbl": {
+          "cardinality": "ZeroOrMore",
+          "property": "dLbl",
+          "successors": [
+            "c:numFmt",
+            "c:spPr",
+            "c:txPr",
+            "c:dLblPos",
+            "c:showLegendKey",
+            "c:showVal",
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:showLeaderLines",
+            "c:leaderLines",
+            "c:extLst"
+          ]
+        },
+        "c:dLblPos": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLblPos",
+          "successors": [
+            "c:showLegendKey",
+            "c:showVal",
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:showLeaderLines",
+            "c:leaderLines",
+            "c:extLst"
+          ]
+        },
+        "c:numFmt": {
+          "cardinality": "ZeroOrOne",
+          "property": "numFmt",
+          "successors": [
+            "c:spPr",
+            "c:txPr",
+            "c:dLblPos",
+            "c:showLegendKey",
+            "c:showVal",
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:showLeaderLines",
+            "c:leaderLines",
+            "c:extLst"
+          ]
+        },
+        "c:showCatName": {
+          "cardinality": "ZeroOrOne",
+          "property": "showCatName",
+          "successors": [
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:showLeaderLines",
+            "c:leaderLines",
+            "c:extLst"
+          ]
+        },
+        "c:showLegendKey": {
+          "cardinality": "ZeroOrOne",
+          "property": "showLegendKey",
+          "successors": [
+            "c:showVal",
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:showLeaderLines",
+            "c:leaderLines",
+            "c:extLst"
+          ]
+        },
+        "c:showPercent": {
+          "cardinality": "ZeroOrOne",
+          "property": "showPercent",
+          "successors": [
+            "c:showBubbleSize",
+            "c:separator",
+            "c:showLeaderLines",
+            "c:leaderLines",
+            "c:extLst"
+          ]
+        },
+        "c:showSerName": {
+          "cardinality": "ZeroOrOne",
+          "property": "showSerName",
+          "successors": [
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:showLeaderLines",
+            "c:leaderLines",
+            "c:extLst"
+          ]
+        },
+        "c:showVal": {
+          "cardinality": "ZeroOrOne",
+          "property": "showVal",
+          "successors": [
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:showLeaderLines",
+            "c:leaderLines",
+            "c:extLst"
+          ]
+        },
+        "c:txPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "txPr",
+          "successors": [
+            "c:dLblPos",
+            "c:showLegendKey",
+            "c:showVal",
+            "c:showCatName",
+            "c:showSerName",
+            "c:showPercent",
+            "c:showBubbleSize",
+            "c:separator",
+            "c:showLeaderLines",
+            "c:leaderLines",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.datalabel"
+    },
+    "CT_DPt": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:idx": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "idx",
+          "successors": []
+        },
+        "c:marker": {
+          "cardinality": "ZeroOrOne",
+          "property": "marker",
+          "successors": [
+            "c:bubble3D",
+            "c:explosion",
+            "c:spPr",
+            "c:pictureOptions",
+            "c:extLst"
+          ]
+        },
+        "c:spPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "spPr",
+          "successors": [
+            "c:pictureOptions",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.series"
+    },
+    "CT_DateAx": {
+      "attributes": {},
+      "bases": [
+        "BaseAxisElement"
+      ],
+      "children": {
+        "c:crosses": {
+          "cardinality": "ZeroOrOne",
+          "property": "crosses",
+          "successors": [
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:crossesAt": {
+          "cardinality": "ZeroOrOne",
+          "property": "crossesAt",
+          "successors": [
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:delete": {
+          "cardinality": "ZeroOrOne",
+          "property": "delete_",
+          "successors": [
+            "c:axPos",
+            "c:majorGridlines",
+            "c:minorGridlines",
+            "c:title",
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:lblOffset": {
+          "cardinality": "ZeroOrOne",
+          "property": "lblOffset",
+          "successors": [
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:majorGridlines": {
+          "cardinality": "ZeroOrOne",
+          "property": "majorGridlines",
+          "successors": [
+            "c:minorGridlines",
+            "c:title",
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:majorTickMark": {
+          "cardinality": "ZeroOrOne",
+          "property": "majorTickMark",
+          "successors": [
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:minorGridlines": {
+          "cardinality": "ZeroOrOne",
+          "property": "minorGridlines",
+          "successors": [
+            "c:title",
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:minorTickMark": {
+          "cardinality": "ZeroOrOne",
+          "property": "minorTickMark",
+          "successors": [
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:numFmt": {
+          "cardinality": "ZeroOrOne",
+          "property": "numFmt",
+          "successors": [
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:scaling": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "scaling",
+          "successors": []
+        },
+        "c:spPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "spPr",
+          "successors": [
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:tickLblPos": {
+          "cardinality": "ZeroOrOne",
+          "property": "tickLblPos",
+          "successors": [
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:title": {
+          "cardinality": "ZeroOrOne",
+          "property": "title",
+          "successors": [
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        },
+        "c:txPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "txPr",
+          "successors": [
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:auto",
+            "c:lblOffset",
+            "c:baseTimeUnit",
+            "c:majorUnit",
+            "c:majorTimeUnit",
+            "c:minorUnit",
+            "c:minorTimeUnit",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_Double": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "XsdDouble"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_DoughnutChart": {
+      "attributes": {},
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {
+        "c:dLbls": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLbls",
+          "successors": [
+            "c:firstSliceAng",
+            "c:holeSize",
+            "c:extLst"
+          ]
+        },
+        "c:ser": {
+          "cardinality": "ZeroOrMore",
+          "property": "ser",
+          "successors": [
+            "c:dLbls",
+            "c:firstSliceAng",
+            "c:holeSize",
+            "c:extLst"
+          ]
+        },
+        "c:varyColors": {
+          "cardinality": "ZeroOrOne",
+          "property": "varyColors",
+          "successors": [
+            "c:ser",
+            "c:dLbls",
+            "c:firstSliceAng",
+            "c:holeSize",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_ExternalData": {
+      "attributes": {
+        "r:id": {
+          "property": "rId",
+          "required": true,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:autoUpdate": {
+          "cardinality": "ZeroOrOne",
+          "property": "autoUpdate",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.chart"
+    },
+    "CT_GapAmount": {
+      "attributes": {
+        "val": {
+          "default": "150",
+          "property": "val",
+          "required": false,
+          "simple_type": "ST_GapAmount"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_GeomGuide": {
+      "attributes": {
+        "fmla": {
+          "property": "fmla",
+          "required": true,
+          "simple_type": "XsdString"
+        },
+        "name": {
+          "property": "name",
+          "required": true,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_GeomGuideList": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:gd": {
+          "cardinality": "ZeroOrMore",
+          "property": "gd",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_GradientFillProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:gsLst": {
+          "cardinality": "ZeroOrOne",
+          "property": "gsLst",
+          "successors": [
+            "a:lin",
+            "a:path",
+            "a:tileRect"
+          ]
+        },
+        "a:lin": {
+          "cardinality": "ZeroOrOne",
+          "property": "lin",
+          "successors": [
+            "a:path",
+            "a:tileRect"
+          ]
+        },
+        "a:path": {
+          "cardinality": "ZeroOrOne",
+          "property": "path",
+          "successors": [
+            "a:tileRect"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_GradientStop": {
+      "attributes": {
+        "pos": {
+          "property": "pos",
+          "required": true,
+          "simple_type": "ST_PositiveFixedPercentage"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {
+        "eg_colorChoice": {
+          "cardinality": "ZeroOrOneChoice",
+          "choices": [
+            "a:scrgbClr",
+            "a:srgbClr",
+            "a:hslClr",
+            "a:sysClr",
+            "a:schemeClr",
+            "a:prstClr"
+          ],
+          "successors": []
+        }
+      },
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_GradientStopList": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:gs": {
+          "cardinality": "OneOrMore",
+          "property": "gs",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_GraphicalObject": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:graphicData": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "graphicData",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.graphfrm"
+    },
+    "CT_GraphicalObjectData": {
+      "attributes": {
+        "uri": {
+          "property": "uri",
+          "required": true,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {
+        "a:tbl": {
+          "cardinality": "ZeroOrOne",
+          "property": "tbl",
+          "successors": []
+        },
+        "c:chart": {
+          "cardinality": "ZeroOrOne",
+          "property": "chart",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.graphfrm"
+    },
+    "CT_GraphicalObjectFrame": {
+      "attributes": {},
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {
+        "a:graphic": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "graphic",
+          "successors": []
+        },
+        "p:nvGraphicFramePr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "nvGraphicFramePr",
+          "successors": []
+        },
+        "p:xfrm": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "xfrm",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.graphfrm"
+    },
+    "CT_GraphicalObjectFrameNonVisual": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:cNvPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cNvPr",
+          "successors": []
+        },
+        "p:nvPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "nvPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.graphfrm"
+    },
+    "CT_GroupFillProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_GroupShape": {
+      "attributes": {},
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {
+        "p:grpSpPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "grpSpPr",
+          "successors": []
+        },
+        "p:nvGrpSpPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "nvGrpSpPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.groupshape"
+    },
+    "CT_GroupShapeNonVisual": {
+      "attributes": {},
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {
+        "p:cNvPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cNvPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.groupshape"
+    },
+    "CT_GroupShapeProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:effectLst": {
+          "cardinality": "ZeroOrOne",
+          "property": "effectLst",
+          "successors": [
+            "a:effectDag",
+            "a:scene3d",
+            "a:extLst"
+          ]
+        },
+        "a:xfrm": {
+          "cardinality": "ZeroOrOne",
+          "property": "xfrm",
+          "successors": [
+            "a:noFill",
+            "a:solidFill",
+            "a:gradFill",
+            "a:blipFill",
+            "a:pattFill",
+            "a:grpFill",
+            "a:effectLst",
+            "a:effectDag",
+            "a:scene3d",
+            "a:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.groupshape"
+    },
+    "CT_Grouping": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": false,
+          "simple_type": "ST_Grouping"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_HslColor": {
+      "attributes": {},
+      "bases": [
+        "_BaseColorElement"
+      ],
+      "children": {
+        "a:lumMod": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumMod",
+          "successors": []
+        },
+        "a:lumOff": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumOff",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.color"
+    },
+    "CT_Hyperlink": {
+      "attributes": {
+        "action": {
+          "property": "action",
+          "required": false,
+          "simple_type": "XsdString"
+        },
+        "r:id": {
+          "property": "rId",
+          "required": false,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.action"
+    },
+    "CT_Layout": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:manualLayout": {
+          "cardinality": "ZeroOrOne",
+          "property": "manualLayout",
+          "successors": [
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_LayoutMode": {
+      "attributes": {
+        "val": {
+          "default": "factor",
+          "property": "val",
+          "required": false,
+          "simple_type": "ST_LayoutMode"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_LblOffset": {
+      "attributes": {
+        "val": {
+          "default": "100",
+          "property": "val",
+          "required": false,
+          "simple_type": "ST_LblOffset"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_Legend": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:layout": {
+          "cardinality": "ZeroOrOne",
+          "property": "layout",
+          "successors": [
+            "c:overlay",
+            "c:spPr",
+            "c:txPr",
+            "c:extLst"
+          ]
+        },
+        "c:legendPos": {
+          "cardinality": "ZeroOrOne",
+          "property": "legendPos",
+          "successors": [
+            "c:legendEntry",
+            "c:layout",
+            "c:overlay",
+            "c:spPr",
+            "c:txPr",
+            "c:extLst"
+          ]
+        },
+        "c:overlay": {
+          "cardinality": "ZeroOrOne",
+          "property": "overlay",
+          "successors": [
+            "c:spPr",
+            "c:txPr",
+            "c:extLst"
+          ]
+        },
+        "c:txPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "txPr",
+          "successors": [
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.legend"
+    },
+    "CT_LegendPos": {
+      "attributes": {
+        "val": {
+          "default": "r",
+          "property": "val",
+          "required": false,
+          "simple_type": "XL_LEGEND_POSITION"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.legend"
+    },
+    "CT_LineChart": {
+      "attributes": {},
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {
+        "c:dLbls": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLbls",
+          "successors": [
+            "c:dropLines",
+            "c:hiLowLines",
+            "c:upDownBars",
+            "c:marker",
+            "c:smooth",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:grouping": {
+          "cardinality": "ZeroOrOne",
+          "property": "grouping",
+          "successors": [
+            "c:varyColors",
+            "c:ser",
+            "c:dLbls",
+            "c:dropLines",
+            "c:hiLowLines",
+            "c:upDownBars",
+            "c:marker",
+            "c:smooth",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:ser": {
+          "cardinality": "ZeroOrMore",
+          "property": "ser",
+          "successors": [
+            "c:dLbls",
+            "c:dropLines",
+            "c:hiLowLines",
+            "c:upDownBars",
+            "c:marker",
+            "c:smooth",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:varyColors": {
+          "cardinality": "ZeroOrOne",
+          "property": "varyColors",
+          "successors": [
+            "c:ser",
+            "c:dLbls",
+            "c:dropLines",
+            "c:hiLowLines",
+            "c:upDownBars",
+            "c:marker",
+            "c:smooth",
+            "c:axId",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_LineProperties": {
+      "attributes": {
+        "w": {
+          "default": "0",
+          "property": "w",
+          "required": false,
+          "simple_type": "ST_LineWidth"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:custDash": {
+          "cardinality": "ZeroOrOne",
+          "property": "custDash",
+          "successors": [
+            "a:round",
+            "a:bevel",
+            "a:miter",
+            "a:headEnd",
+            "a:tailEnd",
+            "a:extLst"
+          ]
+        },
+        "a:prstDash": {
+          "cardinality": "ZeroOrOne",
+          "property": "prstDash",
+          "successors": [
+            "a:custDash",
+            "a:round",
+            "a:bevel",
+            "a:miter",
+            "a:headEnd",
+            "a:tailEnd",
+            "a:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {
+        "eg_lineFillProperties": {
+          "cardinality": "ZeroOrOneChoice",
+          "choices": [
+            "a:noFill",
+            "a:solidFill",
+            "a:gradFill",
+            "a:pattFill"
+          ],
+          "successors": [
+            "a:prstDash",
+            "a:custDash",
+            "a:round",
+            "a:bevel",
+            "a:miter",
+            "a:headEnd",
+            "a:tailEnd",
+            "a:extLst"
+          ]
+        }
+      },
+      "module": "pptx.oxml.shapes.shared"
+    },
+    "CT_LinearShadeProperties": {
+      "attributes": {
+        "ang": {
+          "property": "ang",
+          "required": false,
+          "simple_type": "ST_PositiveFixedAngle"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_Lvl": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:pt": {
+          "cardinality": "ZeroOrMore",
+          "property": "pt",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.series"
+    },
+    "CT_ManualLayout": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:x": {
+          "cardinality": "ZeroOrOne",
+          "property": "x",
+          "successors": [
+            "c:y",
+            "c:w",
+            "c:h",
+            "c:extLst"
+          ]
+        },
+        "c:xMode": {
+          "cardinality": "ZeroOrOne",
+          "property": "xMode",
+          "successors": [
+            "c:yMode",
+            "c:wMode",
+            "c:hMode",
+            "c:x",
+            "c:y",
+            "c:w",
+            "c:h",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_Marker": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:size": {
+          "cardinality": "ZeroOrOne",
+          "property": "size",
+          "successors": [
+            "c:spPr",
+            "c:extLst"
+          ]
+        },
+        "c:spPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "spPr",
+          "successors": [
+            "c:extLst"
+          ]
+        },
+        "c:symbol": {
+          "cardinality": "ZeroOrOne",
+          "property": "symbol",
+          "successors": [
+            "c:size",
+            "c:spPr",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.marker"
+    },
+    "CT_MarkerSize": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "ST_MarkerSize"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.marker"
+    },
+    "CT_MarkerStyle": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "XL_MARKER_STYLE"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.marker"
+    },
+    "CT_NoFillProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_NonVisualConnectorProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:endCxn": {
+          "cardinality": "ZeroOrOne",
+          "property": "endCxn",
+          "successors": [
+            "a:extLst"
+          ]
+        },
+        "a:stCxn": {
+          "cardinality": "ZeroOrOne",
+          "property": "stCxn",
+          "successors": [
+            "a:endCxn",
+            "a:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.connector"
+    },
+    "CT_NonVisualDrawingProps": {
+      "attributes": {
+        "id": {
+          "property": "id",
+          "required": true,
+          "simple_type": "ST_DrawingElementId"
+        },
+        "name": {
+          "property": "name",
+          "required": true,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:hlinkClick": {
+          "cardinality": "ZeroOrOne",
+          "property": "hlinkClick",
+          "successors": [
+            "a:hlinkHover",
+            "a:extLst"
+          ]
+        },
+        "a:hlinkHover": {
+          "cardinality": "ZeroOrOne",
+          "property": "hlinkHover",
+          "successors": [
+            "a:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.shared"
+    },
+    "CT_NonVisualDrawingShapeProps": {
+      "attributes": {
+        "txBox": {
+          "property": "txBox",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        }
+      },
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {
+        "a:spLocks": {
+          "cardinality": "ZeroOrOne",
+          "property": "spLocks",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_NotesMaster": {
+      "attributes": {},
+      "bases": [
+        "_BaseSlideElement"
+      ],
+      "children": {
+        "p:cSld": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cSld",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_NotesSlide": {
+      "attributes": {},
+      "bases": [
+        "_BaseSlideElement"
+      ],
+      "children": {
+        "p:cSld": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cSld",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_NumDataSource": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:numRef": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "numRef",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.series"
+    },
+    "CT_NumFmt": {
+      "attributes": {
+        "formatCode": {
+          "property": "formatCode",
+          "required": true,
+          "simple_type": "XsdString"
+        },
+        "sourceLinked": {
+          "property": "sourceLinked",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_OfficeStyleSheet": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.theme"
+    },
+    "CT_OleObject": {
+      "attributes": {
+        "progId": {
+          "property": "progId",
+          "required": false,
+          "simple_type": "XsdString"
+        },
+        "r:id": {
+          "property": "rId",
+          "required": false,
+          "simple_type": "XsdString"
+        },
+        "showAsIcon": {
+          "default": "0",
+          "property": "showAsIcon",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.graphfrm"
+    },
+    "CT_Orientation": {
+      "attributes": {
+        "val": {
+          "default": "minMax",
+          "property": "val",
+          "required": false,
+          "simple_type": "ST_Orientation"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_Overlap": {
+      "attributes": {
+        "val": {
+          "default": "0",
+          "property": "val",
+          "required": false,
+          "simple_type": "ST_Overlap"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_Path2D": {
+      "attributes": {
+        "h": {
+          "property": "h",
+          "required": false,
+          "simple_type": "ST_PositiveCoordinate"
+        },
+        "w": {
+          "property": "w",
+          "required": false,
+          "simple_type": "ST_PositiveCoordinate"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:close": {
+          "cardinality": "ZeroOrMore",
+          "property": "close",
+          "successors": []
+        },
+        "a:lnTo": {
+          "cardinality": "ZeroOrMore",
+          "property": "lnTo",
+          "successors": []
+        },
+        "a:moveTo": {
+          "cardinality": "ZeroOrMore",
+          "property": "moveTo",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_Path2DClose": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_Path2DLineTo": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:pt": {
+          "cardinality": "ZeroOrOne",
+          "property": "pt",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_Path2DList": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:path": {
+          "cardinality": "ZeroOrMore",
+          "property": "path",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_Path2DMoveTo": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:pt": {
+          "cardinality": "ZeroOrOne",
+          "property": "pt",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_PatternFillProperties": {
+      "attributes": {
+        "prst": {
+          "property": "prst",
+          "required": false,
+          "simple_type": "MSO_PATTERN_TYPE"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:bgClr": {
+          "cardinality": "ZeroOrOne",
+          "property": "bgClr",
+          "successors": []
+        },
+        "a:fgClr": {
+          "cardinality": "ZeroOrOne",
+          "property": "fgClr",
+          "successors": [
+            "a:bgClr"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_Percentage": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "ST_Percentage"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.color"
+    },
+    "CT_Picture": {
+      "attributes": {},
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {
+        "p:blipFill": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "blipFill",
+          "successors": []
+        },
+        "p:nvPicPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "nvPicPr",
+          "successors": []
+        },
+        "p:spPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "spPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.picture"
+    },
+    "CT_PictureNonVisual": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:cNvPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cNvPr",
+          "successors": []
+        },
+        "p:nvPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "nvPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.picture"
+    },
+    "CT_PieChart": {
+      "attributes": {},
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {
+        "c:dLbls": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLbls",
+          "successors": [
+            "c:firstSliceAng",
+            "c:extLst"
+          ]
+        },
+        "c:ser": {
+          "cardinality": "ZeroOrMore",
+          "property": "ser",
+          "successors": [
+            "c:dLbls",
+            "c:firstSliceAng",
+            "c:extLst"
+          ]
+        },
+        "c:varyColors": {
+          "cardinality": "ZeroOrOne",
+          "property": "varyColors",
+          "successors": [
+            "c:ser",
+            "c:dLbls",
+            "c:firstSliceAng",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_Placeholder": {
+      "attributes": {
+        "idx": {
+          "default": "0",
+          "property": "idx",
+          "required": false,
+          "simple_type": "XsdUnsignedInt"
+        },
+        "orient": {
+          "default": "horz",
+          "property": "orient",
+          "required": false,
+          "simple_type": "ST_Direction"
+        },
+        "sz": {
+          "default": "full",
+          "property": "sz",
+          "required": false,
+          "simple_type": "ST_PlaceholderSize"
+        },
+        "type": {
+          "default": "obj",
+          "property": "type",
+          "required": false,
+          "simple_type": "PP_PLACEHOLDER"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.shared"
+    },
+    "CT_PlotArea": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:catAx": {
+          "cardinality": "ZeroOrMore",
+          "property": "catAx",
+          "successors": []
+        },
+        "c:valAx": {
+          "cardinality": "ZeroOrMore",
+          "property": "valAx",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.chart"
+    },
+    "CT_Point2D": {
+      "attributes": {
+        "x": {
+          "property": "x",
+          "required": true,
+          "simple_type": "ST_Coordinate"
+        },
+        "y": {
+          "property": "y",
+          "required": true,
+          "simple_type": "ST_Coordinate"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.shared"
+    },
+    "CT_PositiveSize2D": {
+      "attributes": {
+        "cx": {
+          "property": "cx",
+          "required": true,
+          "simple_type": "ST_PositiveCoordinate"
+        },
+        "cy": {
+          "property": "cy",
+          "required": true,
+          "simple_type": "ST_PositiveCoordinate"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.shared"
+    },
+    "CT_Presentation": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:sldIdLst": {
+          "cardinality": "ZeroOrOne",
+          "property": "sldIdLst",
+          "successors": [
+            "p:sldSz",
+            "p:notesSz"
+          ]
+        },
+        "p:sldMasterIdLst": {
+          "cardinality": "ZeroOrOne",
+          "property": "sldMasterIdLst",
+          "successors": [
+            "p:notesMasterIdLst",
+            "p:handoutMasterIdLst",
+            "p:sldIdLst",
+            "p:sldSz",
+            "p:notesSz"
+          ]
+        },
+        "p:sldSz": {
+          "cardinality": "ZeroOrOne",
+          "property": "sldSz",
+          "successors": [
+            "p:notesSz"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.presentation"
+    },
+    "CT_PresetColor": {
+      "attributes": {},
+      "bases": [
+        "_BaseColorElement"
+      ],
+      "children": {
+        "a:lumMod": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumMod",
+          "successors": []
+        },
+        "a:lumOff": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumOff",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.color"
+    },
+    "CT_PresetGeometry2D": {
+      "attributes": {
+        "prst": {
+          "property": "prst",
+          "required": true,
+          "simple_type": "MSO_AUTO_SHAPE_TYPE"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:avLst": {
+          "cardinality": "ZeroOrOne",
+          "property": "avLst",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_PresetLineDashProperties": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": false,
+          "simple_type": "MSO_LINE_DASH_STYLE"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.line"
+    },
+    "CT_RadarChart": {
+      "attributes": {},
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {
+        "c:dLbls": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLbls",
+          "successors": [
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:ser": {
+          "cardinality": "ZeroOrMore",
+          "property": "ser",
+          "successors": [
+            "c:dLbls",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:varyColors": {
+          "cardinality": "ZeroOrOne",
+          "property": "varyColors",
+          "successors": [
+            "c:ser",
+            "c:dLbls",
+            "c:axId",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_RegularTextRun": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:rPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "rPr",
+          "successors": [
+            "a:t"
+          ]
+        },
+        "a:t": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "t",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_RelativeRect": {
+      "attributes": {
+        "b": {
+          "default": "0",
+          "property": "b",
+          "required": false,
+          "simple_type": "ST_Percentage"
+        },
+        "l": {
+          "default": "0",
+          "property": "l",
+          "required": false,
+          "simple_type": "ST_Percentage"
+        },
+        "r": {
+          "default": "0",
+          "property": "r",
+          "required": false,
+          "simple_type": "ST_Percentage"
+        },
+        "t": {
+          "default": "0",
+          "property": "t",
+          "required": false,
+          "simple_type": "ST_Percentage"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_SRgbColor": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "ST_HexColorRGB"
+        }
+      },
+      "bases": [
+        "_BaseColorElement"
+      ],
+      "children": {
+        "a:lumMod": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumMod",
+          "successors": []
+        },
+        "a:lumOff": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumOff",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.color"
+    },
+    "CT_ScRgbColor": {
+      "attributes": {},
+      "bases": [
+        "_BaseColorElement"
+      ],
+      "children": {
+        "a:lumMod": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumMod",
+          "successors": []
+        },
+        "a:lumOff": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumOff",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.color"
+    },
+    "CT_Scaling": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:max": {
+          "cardinality": "ZeroOrOne",
+          "property": "max",
+          "successors": [
+            "c:min",
+            "c:extLst"
+          ]
+        },
+        "c:min": {
+          "cardinality": "ZeroOrOne",
+          "property": "min",
+          "successors": [
+            "c:extLst"
+          ]
+        },
+        "c:orientation": {
+          "cardinality": "ZeroOrOne",
+          "property": "orientation",
+          "successors": [
+            "c:max",
+            "c:min",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_ScatterChart": {
+      "attributes": {},
+      "bases": [
+        "BaseChartElement"
+      ],
+      "children": {
+        "c:ser": {
+          "cardinality": "ZeroOrMore",
+          "property": "ser",
+          "successors": [
+            "c:dLbls",
+            "c:axId",
+            "c:extLst"
+          ]
+        },
+        "c:varyColors": {
+          "cardinality": "ZeroOrOne",
+          "property": "varyColors",
+          "successors": [
+            "c:ser",
+            "c:dLbls",
+            "c:axId",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.plot"
+    },
+    "CT_SchemeColor": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "MSO_THEME_COLOR"
+        }
+      },
+      "bases": [
+        "_BaseColorElement"
+      ],
+      "children": {
+        "a:lumMod": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumMod",
+          "successors": []
+        },
+        "a:lumOff": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumOff",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.color"
+    },
+    "CT_SeriesComposite": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:bubbleSize": {
+          "cardinality": "ZeroOrOne",
+          "property": "bubbleSize",
+          "successors": [
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:cat": {
+          "cardinality": "ZeroOrOne",
+          "property": "cat",
+          "successors": [
+            "c:val",
+            "c:xVal",
+            "c:yVal",
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:dLbls": {
+          "cardinality": "ZeroOrOne",
+          "property": "dLbls",
+          "successors": [
+            "c:trendline",
+            "c:errBars",
+            "c:cat",
+            "c:val",
+            "c:xVal",
+            "c:yVal",
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:dPt": {
+          "cardinality": "ZeroOrMore",
+          "property": "dPt",
+          "successors": [
+            "c:dLbls",
+            "c:trendline",
+            "c:errBars",
+            "c:cat",
+            "c:val",
+            "c:xVal",
+            "c:yVal",
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:idx": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "idx",
+          "successors": []
+        },
+        "c:invertIfNegative": {
+          "cardinality": "ZeroOrOne",
+          "property": "invertIfNegative",
+          "successors": [
+            "c:pictureOptions",
+            "c:marker",
+            "c:explosion",
+            "c:dPt",
+            "c:dLbls",
+            "c:trendline",
+            "c:errBars",
+            "c:cat",
+            "c:val",
+            "c:xVal",
+            "c:yVal",
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:marker": {
+          "cardinality": "ZeroOrOne",
+          "property": "marker",
+          "successors": [
+            "c:explosion",
+            "c:dPt",
+            "c:dLbls",
+            "c:trendline",
+            "c:errBars",
+            "c:cat",
+            "c:val",
+            "c:xVal",
+            "c:yVal",
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:order": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "order",
+          "successors": []
+        },
+        "c:smooth": {
+          "cardinality": "ZeroOrOne",
+          "property": "smooth",
+          "successors": [
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:spPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "spPr",
+          "successors": [
+            "c:invertIfNegative",
+            "c:pictureOptions",
+            "c:marker",
+            "c:explosion",
+            "c:dPt",
+            "c:dLbls",
+            "c:trendline",
+            "c:errBars",
+            "c:cat",
+            "c:val",
+            "c:xVal",
+            "c:yVal",
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:tx": {
+          "cardinality": "ZeroOrOne",
+          "property": "tx",
+          "successors": [
+            "c:spPr",
+            "c:invertIfNegative",
+            "c:pictureOptions",
+            "c:marker",
+            "c:explosion",
+            "c:dPt",
+            "c:dLbls",
+            "c:trendline",
+            "c:errBars",
+            "c:cat",
+            "c:val",
+            "c:xVal",
+            "c:yVal",
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:val": {
+          "cardinality": "ZeroOrOne",
+          "property": "val",
+          "successors": [
+            "c:xVal",
+            "c:yVal",
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:xVal": {
+          "cardinality": "ZeroOrOne",
+          "property": "xVal",
+          "successors": [
+            "c:yVal",
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        },
+        "c:yVal": {
+          "cardinality": "ZeroOrOne",
+          "property": "yVal",
+          "successors": [
+            "c:shape",
+            "c:smooth",
+            "c:bubbleSize",
+            "c:bubble3D",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.series"
+    },
+    "CT_Shape": {
+      "attributes": {},
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {
+        "p:nvSpPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "nvSpPr",
+          "successors": []
+        },
+        "p:spPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "spPr",
+          "successors": []
+        },
+        "p:txBody": {
+          "cardinality": "ZeroOrOne",
+          "property": "txBody",
+          "successors": [
+            "p:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_ShapeNonVisual": {
+      "attributes": {},
+      "bases": [
+        "BaseShapeElement"
+      ],
+      "children": {
+        "p:cNvPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cNvPr",
+          "successors": []
+        },
+        "p:cNvSpPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cNvSpPr",
+          "successors": []
+        },
+        "p:nvPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "nvPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.autoshape"
+    },
+    "CT_ShapeProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:custGeom": {
+          "cardinality": "ZeroOrOne",
+          "property": "custGeom",
+          "successors": [
+            "a:prstGeom",
+            "a:noFill",
+            "a:solidFill",
+            "a:gradFill",
+            "a:blipFill",
+            "a:pattFill",
+            "a:grpFill",
+            "a:ln",
+            "a:effectLst",
+            "a:effectDag",
+            "a:scene3d",
+            "a:sp3d",
+            "a:extLst"
+          ]
+        },
+        "a:effectLst": {
+          "cardinality": "ZeroOrOne",
+          "property": "effectLst",
+          "successors": [
+            "a:effectDag",
+            "a:scene3d",
+            "a:sp3d",
+            "a:extLst"
+          ]
+        },
+        "a:ln": {
+          "cardinality": "ZeroOrOne",
+          "property": "ln",
+          "successors": [
+            "a:effectLst",
+            "a:effectDag",
+            "a:scene3d",
+            "a:sp3d",
+            "a:extLst"
+          ]
+        },
+        "a:prstGeom": {
+          "cardinality": "ZeroOrOne",
+          "property": "prstGeom",
+          "successors": [
+            "a:noFill",
+            "a:solidFill",
+            "a:gradFill",
+            "a:blipFill",
+            "a:pattFill",
+            "a:grpFill",
+            "a:ln",
+            "a:effectLst",
+            "a:effectDag",
+            "a:scene3d",
+            "a:sp3d",
+            "a:extLst"
+          ]
+        },
+        "a:xfrm": {
+          "cardinality": "ZeroOrOne",
+          "property": "xfrm",
+          "successors": [
+            "a:custGeom",
+            "a:prstGeom",
+            "a:noFill",
+            "a:solidFill",
+            "a:gradFill",
+            "a:blipFill",
+            "a:pattFill",
+            "a:grpFill",
+            "a:ln",
+            "a:effectLst",
+            "a:effectDag",
+            "a:scene3d",
+            "a:sp3d",
+            "a:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {
+        "eg_fillProperties": {
+          "cardinality": "ZeroOrOneChoice",
+          "choices": [
+            "a:noFill",
+            "a:solidFill",
+            "a:gradFill",
+            "a:blipFill",
+            "a:pattFill",
+            "a:grpFill"
+          ],
+          "successors": [
+            "a:ln",
+            "a:effectLst",
+            "a:effectDag",
+            "a:scene3d",
+            "a:sp3d",
+            "a:extLst"
+          ]
+        }
+      },
+      "module": "pptx.oxml.shapes.shared"
+    },
+    "CT_Slide": {
+      "attributes": {},
+      "bases": [
+        "_BaseSlideElement"
+      ],
+      "children": {
+        "p:cSld": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cSld",
+          "successors": []
+        },
+        "p:clrMapOvr": {
+          "cardinality": "ZeroOrOne",
+          "property": "clrMapOvr",
+          "successors": [
+            "p:transition",
+            "p:timing",
+            "p:extLst"
+          ]
+        },
+        "p:timing": {
+          "cardinality": "ZeroOrOne",
+          "property": "timing",
+          "successors": [
+            "p:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_SlideId": {
+      "attributes": {
+        "id": {
+          "property": "id",
+          "required": true,
+          "simple_type": "ST_SlideId"
+        },
+        "r:id": {
+          "property": "rId",
+          "required": true,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.presentation"
+    },
+    "CT_SlideIdList": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:sldId": {
+          "cardinality": "ZeroOrMore",
+          "property": "sldId",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.presentation"
+    },
+    "CT_SlideLayout": {
+      "attributes": {},
+      "bases": [
+        "_BaseSlideElement"
+      ],
+      "children": {
+        "p:cSld": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cSld",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_SlideLayoutIdList": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:sldLayoutId": {
+          "cardinality": "ZeroOrMore",
+          "property": "sldLayoutId",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_SlideLayoutIdListEntry": {
+      "attributes": {
+        "r:id": {
+          "property": "rId",
+          "required": true,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_SlideMaster": {
+      "attributes": {},
+      "bases": [
+        "_BaseSlideElement"
+      ],
+      "children": {
+        "p:cSld": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cSld",
+          "successors": []
+        },
+        "p:sldLayoutIdLst": {
+          "cardinality": "ZeroOrOne",
+          "property": "sldLayoutIdLst",
+          "successors": [
+            "p:transition",
+            "p:timing",
+            "p:hf",
+            "p:txStyles",
+            "p:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_SlideMasterIdList": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:sldMasterId": {
+          "cardinality": "ZeroOrMore",
+          "property": "sldMasterId",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.presentation"
+    },
+    "CT_SlideMasterIdListEntry": {
+      "attributes": {
+        "r:id": {
+          "property": "rId",
+          "required": true,
+          "simple_type": "XsdString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.presentation"
+    },
+    "CT_SlideSize": {
+      "attributes": {
+        "cx": {
+          "property": "cx",
+          "required": true,
+          "simple_type": "ST_SlideSizeCoordinate"
+        },
+        "cy": {
+          "property": "cy",
+          "required": true,
+          "simple_type": "ST_SlideSizeCoordinate"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.presentation"
+    },
+    "CT_SlideTiming": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:tnLst": {
+          "cardinality": "ZeroOrOne",
+          "property": "tnLst",
+          "successors": [
+            "p:bldLst",
+            "p:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_SolidColorFillProperties": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {
+        "eg_colorChoice": {
+          "cardinality": "ZeroOrOneChoice",
+          "choices": [
+            "a:scrgbClr",
+            "a:srgbClr",
+            "a:hslClr",
+            "a:sysClr",
+            "a:schemeClr",
+            "a:prstClr"
+          ],
+          "successors": []
+        }
+      },
+      "module": "pptx.oxml.dml.fill"
+    },
+    "CT_StrVal_NumVal_Composite": {
+      "attributes": {
+        "idx": {
+          "property": "idx",
+          "required": true,
+          "simple_type": "XsdUnsignedInt"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:v": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "v",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.series"
+    },
+    "CT_Style": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "ST_Style"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.chart"
+    },
+    "CT_SystemColor": {
+      "attributes": {},
+      "bases": [
+        "_BaseColorElement"
+      ],
+      "children": {
+        "a:lumMod": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumMod",
+          "successors": []
+        },
+        "a:lumOff": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumOff",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.color"
+    },
+    "CT_TLMediaNodeVideo": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "p:cMediaNode": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "cMediaNode",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_Table": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:tblGrid": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "tblGrid",
+          "successors": []
+        },
+        "a:tblPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "tblPr",
+          "successors": [
+            "a:tblGrid",
+            "a:tr"
+          ]
+        },
+        "a:tr": {
+          "cardinality": "ZeroOrMore",
+          "property": "tr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.table"
+    },
+    "CT_TableCell": {
+      "attributes": {
+        "gridSpan": {
+          "default": "1",
+          "property": "gridSpan",
+          "required": false,
+          "simple_type": "XsdInt"
+        },
+        "hMerge": {
+          "default": "0",
+          "property": "hMerge",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "rowSpan": {
+          "default": "1",
+          "property": "rowSpan",
+          "required": false,
+          "simple_type": "XsdInt"
+        },
+        "vMerge": {
+          "default": "0",
+          "property": "vMerge",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:tcPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "tcPr",
+          "successors": [
+            "a:extLst"
+          ]
+        },
+        "a:txBody": {
+          "cardinality": "ZeroOrOne",
+          "property": "txBody",
+          "successors": [
+            "a:tcPr",
+            "a:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.table"
+    },
+    "CT_TableCellProperties": {
+      "attributes": {
+        "anchor": {
+          "property": "anchor",
+          "required": false,
+          "simple_type": "MSO_VERTICAL_ANCHOR"
+        },
+        "marB": {
+          "property": "marB",
+          "required": false,
+          "simple_type": "ST_Coordinate32"
+        },
+        "marL": {
+          "property": "marL",
+          "required": false,
+          "simple_type": "ST_Coordinate32"
+        },
+        "marR": {
+          "property": "marR",
+          "required": false,
+          "simple_type": "ST_Coordinate32"
+        },
+        "marT": {
+          "property": "marT",
+          "required": false,
+          "simple_type": "ST_Coordinate32"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {
+        "eg_fillProperties": {
+          "cardinality": "ZeroOrOneChoice",
+          "choices": [
+            "a:noFill",
+            "a:solidFill",
+            "a:gradFill",
+            "a:blipFill",
+            "a:pattFill",
+            "a:grpFill"
+          ],
+          "successors": [
+            "a:headers",
+            "a:extLst"
+          ]
+        }
+      },
+      "module": "pptx.oxml.table"
+    },
+    "CT_TableCol": {
+      "attributes": {
+        "w": {
+          "property": "w",
+          "required": true,
+          "simple_type": "ST_Coordinate"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.table"
+    },
+    "CT_TableGrid": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:gridCol": {
+          "cardinality": "ZeroOrMore",
+          "property": "gridCol",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.table"
+    },
+    "CT_TableProperties": {
+      "attributes": {
+        "bandCol": {
+          "default": "0",
+          "property": "bandCol",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "bandRow": {
+          "default": "0",
+          "property": "bandRow",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "firstCol": {
+          "default": "0",
+          "property": "firstCol",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "firstRow": {
+          "default": "0",
+          "property": "firstRow",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "lastCol": {
+          "default": "0",
+          "property": "lastCol",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "lastRow": {
+          "default": "0",
+          "property": "lastRow",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.table"
+    },
+    "CT_TableRow": {
+      "attributes": {
+        "h": {
+          "property": "h",
+          "required": true,
+          "simple_type": "ST_Coordinate"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:tc": {
+          "cardinality": "ZeroOrMore",
+          "property": "tc",
+          "successors": [
+            "a:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.table"
+    },
+    "CT_TextBody": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:bodyPr": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "bodyPr",
+          "successors": []
+        },
+        "a:p": {
+          "cardinality": "OneOrMore",
+          "property": "p",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextBodyProperties": {
+      "attributes": {
+        "anchor": {
+          "property": "anchor",
+          "required": false,
+          "simple_type": "MSO_VERTICAL_ANCHOR"
+        },
+        "bIns": {
+          "default": "45720",
+          "property": "bIns",
+          "required": false,
+          "simple_type": "ST_Coordinate32"
+        },
+        "lIns": {
+          "default": "91440",
+          "property": "lIns",
+          "required": false,
+          "simple_type": "ST_Coordinate32"
+        },
+        "rIns": {
+          "default": "91440",
+          "property": "rIns",
+          "required": false,
+          "simple_type": "ST_Coordinate32"
+        },
+        "tIns": {
+          "default": "45720",
+          "property": "tIns",
+          "required": false,
+          "simple_type": "ST_Coordinate32"
+        },
+        "wrap": {
+          "property": "wrap",
+          "required": false,
+          "simple_type": "ST_TextWrappingType"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {
+        "eg_textAutoFit": {
+          "cardinality": "ZeroOrOneChoice",
+          "choices": [
+            "a:noAutofit",
+            "a:normAutofit",
+            "a:spAutoFit"
+          ],
+          "successors": [
+            "a:scene3d",
+            "a:sp3d",
+            "a:flatTx",
+            "a:extLst"
+          ]
+        }
+      },
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextCharacterProperties": {
+      "attributes": {
+        "b": {
+          "property": "b",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "i": {
+          "property": "i",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "lang": {
+          "property": "lang",
+          "required": false,
+          "simple_type": "MSO_LANGUAGE_ID"
+        },
+        "sz": {
+          "property": "sz",
+          "required": false,
+          "simple_type": "ST_TextFontSize"
+        },
+        "u": {
+          "property": "u",
+          "required": false,
+          "simple_type": "MSO_TEXT_UNDERLINE_TYPE"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:hlinkClick": {
+          "cardinality": "ZeroOrOne",
+          "property": "hlinkClick",
+          "successors": [
+            "a:hlinkMouseOver",
+            "a:rtl",
+            "a:extLst"
+          ]
+        },
+        "a:latin": {
+          "cardinality": "ZeroOrOne",
+          "property": "latin",
+          "successors": [
+            "a:ea",
+            "a:cs",
+            "a:sym",
+            "a:hlinkClick",
+            "a:hlinkMouseOver",
+            "a:rtl",
+            "a:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {
+        "eg_fillProperties": {
+          "cardinality": "ZeroOrOneChoice",
+          "choices": [
+            "a:noFill",
+            "a:solidFill",
+            "a:gradFill",
+            "a:blipFill",
+            "a:pattFill",
+            "a:grpFill"
+          ],
+          "successors": [
+            "a:effectLst",
+            "a:effectDag",
+            "a:highlight",
+            "a:uLnTx",
+            "a:uLn",
+            "a:uFillTx",
+            "a:uFill",
+            "a:latin",
+            "a:ea",
+            "a:cs",
+            "a:sym",
+            "a:hlinkClick",
+            "a:hlinkMouseOver",
+            "a:rtl",
+            "a:extLst"
+          ]
+        }
+      },
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextField": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:rPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "rPr",
+          "successors": [
+            "a:pPr",
+            "a:t"
+          ]
+        },
+        "a:t": {
+          "cardinality": "ZeroOrOne",
+          "property": "t",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextFont": {
+      "attributes": {
+        "typeface": {
+          "property": "typeface",
+          "required": true,
+          "simple_type": "ST_TextTypeface"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextLineBreak": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:rPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "rPr",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextNormalAutofit": {
+      "attributes": {
+        "fontScale": {
+          "default": "100000",
+          "property": "fontScale",
+          "required": false,
+          "simple_type": "ST_TextFontScalePercentOrPercentString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextParagraph": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:br": {
+          "cardinality": "ZeroOrMore",
+          "property": "br",
+          "successors": [
+            "a:endParaRPr"
+          ]
+        },
+        "a:endParaRPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "endParaRPr",
+          "successors": []
+        },
+        "a:pPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "pPr",
+          "successors": [
+            "a:r",
+            "a:br",
+            "a:fld",
+            "a:endParaRPr"
+          ]
+        },
+        "a:r": {
+          "cardinality": "ZeroOrMore",
+          "property": "r",
+          "successors": [
+            "a:endParaRPr"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextParagraphProperties": {
+      "attributes": {
+        "algn": {
+          "property": "algn",
+          "required": false,
+          "simple_type": "PP_PARAGRAPH_ALIGNMENT"
+        },
+        "lvl": {
+          "default": "0",
+          "property": "lvl",
+          "required": false,
+          "simple_type": "ST_TextIndentLevelType"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:defRPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "defRPr",
+          "successors": [
+            "a:extLst"
+          ]
+        },
+        "a:lnSpc": {
+          "cardinality": "ZeroOrOne",
+          "property": "lnSpc",
+          "successors": [
+            "a:spcBef",
+            "a:spcAft",
+            "a:buClrTx",
+            "a:buClr",
+            "a:buSzTx",
+            "a:buSzPct",
+            "a:buSzPts",
+            "a:buFontTx",
+            "a:buFont",
+            "a:buNone",
+            "a:buAutoNum",
+            "a:buChar",
+            "a:buBlip",
+            "a:tabLst",
+            "a:defRPr",
+            "a:extLst"
+          ]
+        },
+        "a:spcAft": {
+          "cardinality": "ZeroOrOne",
+          "property": "spcAft",
+          "successors": [
+            "a:buClrTx",
+            "a:buClr",
+            "a:buSzTx",
+            "a:buSzPct",
+            "a:buSzPts",
+            "a:buFontTx",
+            "a:buFont",
+            "a:buNone",
+            "a:buAutoNum",
+            "a:buChar",
+            "a:buBlip",
+            "a:tabLst",
+            "a:defRPr",
+            "a:extLst"
+          ]
+        },
+        "a:spcBef": {
+          "cardinality": "ZeroOrOne",
+          "property": "spcBef",
+          "successors": [
+            "a:spcAft",
+            "a:buClrTx",
+            "a:buClr",
+            "a:buSzTx",
+            "a:buSzPct",
+            "a:buSzPts",
+            "a:buFontTx",
+            "a:buFont",
+            "a:buNone",
+            "a:buAutoNum",
+            "a:buChar",
+            "a:buBlip",
+            "a:tabLst",
+            "a:defRPr",
+            "a:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextSpacing": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:spcPct": {
+          "cardinality": "ZeroOrOne",
+          "property": "spcPct",
+          "successors": []
+        },
+        "a:spcPts": {
+          "cardinality": "ZeroOrOne",
+          "property": "spcPts",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextSpacingPercent": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "ST_TextSpacingPercentOrPercentString"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TextSpacingPoint": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "ST_TextSpacingPoint"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.text"
+    },
+    "CT_TickLblPos": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": false,
+          "simple_type": "XL_TICK_LABEL_POSITION"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_TickMark": {
+      "attributes": {
+        "val": {
+          "default": "cross",
+          "property": "val",
+          "required": false,
+          "simple_type": "XL_TICK_MARK"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "CT_TimeNodeList": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.slide"
+    },
+    "CT_Title": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:spPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "spPr",
+          "successors": [
+            "c:txPr",
+            "c:extLst"
+          ]
+        },
+        "c:tx": {
+          "cardinality": "ZeroOrOne",
+          "property": "tx",
+          "successors": [
+            "c:layout",
+            "c:overlay",
+            "c:spPr",
+            "c:txPr",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_Transform2D": {
+      "attributes": {
+        "flipH": {
+          "default": "0",
+          "property": "flipH",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "flipV": {
+          "default": "0",
+          "property": "flipV",
+          "required": false,
+          "simple_type": "XsdBoolean"
+        },
+        "rot": {
+          "default": "0",
+          "property": "rot",
+          "required": false,
+          "simple_type": "ST_Angle"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:chExt": {
+          "cardinality": "ZeroOrOne",
+          "property": "chExt",
+          "successors": []
+        },
+        "a:chOff": {
+          "cardinality": "ZeroOrOne",
+          "property": "chOff",
+          "successors": [
+            "a:chExt"
+          ]
+        },
+        "a:ext": {
+          "cardinality": "ZeroOrOne",
+          "property": "ext",
+          "successors": [
+            "a:chOff",
+            "a:chExt"
+          ]
+        },
+        "a:off": {
+          "cardinality": "ZeroOrOne",
+          "property": "off",
+          "successors": [
+            "a:ext",
+            "a:chOff",
+            "a:chExt"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.shapes.shared"
+    },
+    "CT_Tx": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "c:rich": {
+          "cardinality": "ZeroOrOne",
+          "property": "rich",
+          "successors": []
+        },
+        "c:strRef": {
+          "cardinality": "ZeroOrOne",
+          "property": "strRef",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_UnsignedInt": {
+      "attributes": {
+        "val": {
+          "property": "val",
+          "required": true,
+          "simple_type": "XsdUnsignedInt"
+        }
+      },
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {},
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.shared"
+    },
+    "CT_ValAx": {
+      "attributes": {},
+      "bases": [
+        "BaseAxisElement"
+      ],
+      "children": {
+        "c:crossAx": {
+          "cardinality": "ZeroOrOne",
+          "property": "crossAx",
+          "successors": [
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:crosses": {
+          "cardinality": "ZeroOrOne",
+          "property": "crosses",
+          "successors": [
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:crossesAt": {
+          "cardinality": "ZeroOrOne",
+          "property": "crossesAt",
+          "successors": [
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:delete": {
+          "cardinality": "ZeroOrOne",
+          "property": "delete_",
+          "successors": [
+            "c:axPos",
+            "c:majorGridlines",
+            "c:minorGridlines",
+            "c:title",
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:majorGridlines": {
+          "cardinality": "ZeroOrOne",
+          "property": "majorGridlines",
+          "successors": [
+            "c:minorGridlines",
+            "c:title",
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:majorTickMark": {
+          "cardinality": "ZeroOrOne",
+          "property": "majorTickMark",
+          "successors": [
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:majorUnit": {
+          "cardinality": "ZeroOrOne",
+          "property": "majorUnit",
+          "successors": [
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:minorGridlines": {
+          "cardinality": "ZeroOrOne",
+          "property": "minorGridlines",
+          "successors": [
+            "c:title",
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:minorTickMark": {
+          "cardinality": "ZeroOrOne",
+          "property": "minorTickMark",
+          "successors": [
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:minorUnit": {
+          "cardinality": "ZeroOrOne",
+          "property": "minorUnit",
+          "successors": [
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:numFmt": {
+          "cardinality": "ZeroOrOne",
+          "property": "numFmt",
+          "successors": [
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:scaling": {
+          "cardinality": "OneAndOnlyOne",
+          "property": "scaling",
+          "successors": []
+        },
+        "c:spPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "spPr",
+          "successors": [
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:tickLblPos": {
+          "cardinality": "ZeroOrOne",
+          "property": "tickLblPos",
+          "successors": [
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:title": {
+          "cardinality": "ZeroOrOne",
+          "property": "title",
+          "successors": [
+            "c:numFmt",
+            "c:majorTickMark",
+            "c:minorTickMark",
+            "c:tickLblPos",
+            "c:spPr",
+            "c:txPr",
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        },
+        "c:txPr": {
+          "cardinality": "ZeroOrOne",
+          "property": "txPr",
+          "successors": [
+            "c:crossAx",
+            "c:crosses",
+            "c:crossesAt",
+            "c:crossBetween",
+            "c:majorUnit",
+            "c:minorUnit",
+            "c:dispUnits",
+            "c:extLst"
+          ]
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.chart.axis"
+    },
+    "_BaseColorElement": {
+      "attributes": {},
+      "bases": [
+        "BaseOxmlElement"
+      ],
+      "children": {
+        "a:lumMod": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumMod",
+          "successors": []
+        },
+        "a:lumOff": {
+          "cardinality": "ZeroOrOne",
+          "property": "lumOff",
+          "successors": []
+        }
+      },
+      "choiceGroups": {},
+      "module": "pptx.oxml.dml.color"
+    }
+  },
+  "meta": {
+    "counts": {
+      "classes": 152,
+      "known_tags": 325,
+      "registered_tags": 191
+    },
+    "extractor": "Tools/extract-schema.py",
+    "note": "Mechanically extracted; do not edit. Class declarations are inheritance-flattened (effective at runtime). Successor lists preserve declared order; all mappings are sorted by key.",
+    "source": "python-pptx src/pptx/oxml xmlchemy descriptor declarations"
+  },
+  "tags": {
+    "a:avLst": "CT_GeomGuideList",
+    "a:bgClr": "CT_Color",
+    "a:blip": "CT_Blip",
+    "a:blipFill": "CT_BlipFillProperties",
+    "a:bodyPr": "CT_TextBodyProperties",
+    "a:br": "CT_TextLineBreak",
+    "a:chExt": "CT_PositiveSize2D",
+    "a:chOff": "CT_Point2D",
+    "a:close": "CT_Path2DClose",
+    "a:custGeom": "CT_CustomGeometry2D",
+    "a:defRPr": "CT_TextCharacterProperties",
+    "a:endCxn": "CT_Connection",
+    "a:endParaRPr": "CT_TextCharacterProperties",
+    "a:ext": "CT_PositiveSize2D",
+    "a:fgClr": "CT_Color",
+    "a:fld": "CT_TextField",
+    "a:gd": "CT_GeomGuide",
+    "a:gradFill": "CT_GradientFillProperties",
+    "a:graphic": "CT_GraphicalObject",
+    "a:graphicData": "CT_GraphicalObjectData",
+    "a:gridCol": "CT_TableCol",
+    "a:grpFill": "CT_GroupFillProperties",
+    "a:gs": "CT_GradientStop",
+    "a:gsLst": "CT_GradientStopList",
+    "a:hlinkClick": "CT_Hyperlink",
+    "a:hlinkHover": "CT_Hyperlink",
+    "a:hslClr": "CT_HslColor",
+    "a:latin": "CT_TextFont",
+    "a:lin": "CT_LinearShadeProperties",
+    "a:ln": "CT_LineProperties",
+    "a:lnSpc": "CT_TextSpacing",
+    "a:lnTo": "CT_Path2DLineTo",
+    "a:lumMod": "CT_Percentage",
+    "a:lumOff": "CT_Percentage",
+    "a:moveTo": "CT_Path2DMoveTo",
+    "a:noFill": "CT_NoFillProperties",
+    "a:normAutofit": "CT_TextNormalAutofit",
+    "a:off": "CT_Point2D",
+    "a:p": "CT_TextParagraph",
+    "a:pPr": "CT_TextParagraphProperties",
+    "a:path": "CT_Path2D",
+    "a:pathLst": "CT_Path2DList",
+    "a:pattFill": "CT_PatternFillProperties",
+    "a:prstClr": "CT_PresetColor",
+    "a:prstDash": "CT_PresetLineDashProperties",
+    "a:prstGeom": "CT_PresetGeometry2D",
+    "a:pt": "CT_AdjPoint2D",
+    "a:r": "CT_RegularTextRun",
+    "a:rPr": "CT_TextCharacterProperties",
+    "a:schemeClr": "CT_SchemeColor",
+    "a:scrgbClr": "CT_ScRgbColor",
+    "a:solidFill": "CT_SolidColorFillProperties",
+    "a:spcAft": "CT_TextSpacing",
+    "a:spcBef": "CT_TextSpacing",
+    "a:spcPct": "CT_TextSpacingPercent",
+    "a:spcPts": "CT_TextSpacingPoint",
+    "a:srcRect": "CT_RelativeRect",
+    "a:srgbClr": "CT_SRgbColor",
+    "a:stCxn": "CT_Connection",
+    "a:sysClr": "CT_SystemColor",
+    "a:tbl": "CT_Table",
+    "a:tblGrid": "CT_TableGrid",
+    "a:tblPr": "CT_TableProperties",
+    "a:tc": "CT_TableCell",
+    "a:tcPr": "CT_TableCellProperties",
+    "a:theme": "CT_OfficeStyleSheet",
+    "a:tr": "CT_TableRow",
+    "a:txBody": "CT_TextBody",
+    "a:xfrm": "CT_Transform2D",
+    "c:area3DChart": "CT_Area3DChart",
+    "c:areaChart": "CT_AreaChart",
+    "c:autoTitleDeleted": "CT_Boolean_Explicit",
+    "c:autoUpdate": "CT_Boolean",
+    "c:barChart": "CT_BarChart",
+    "c:barDir": "CT_BarDir",
+    "c:bubble3D": "CT_Boolean",
+    "c:bubbleChart": "CT_BubbleChart",
+    "c:bubbleScale": "CT_BubbleScale",
+    "c:bubbleSize": "CT_NumDataSource",
+    "c:cat": "CT_AxDataSource",
+    "c:catAx": "CT_CatAx",
+    "c:chart": "CT_Chart",
+    "c:chartSpace": "CT_ChartSpace",
+    "c:crossAx": "CT_UnsignedInt",
+    "c:crosses": "CT_Crosses",
+    "c:crossesAt": "CT_Double",
+    "c:dLbl": "CT_DLbl",
+    "c:dLblPos": "CT_DLblPos",
+    "c:dLbls": "CT_DLbls",
+    "c:dPt": "CT_DPt",
+    "c:date1904": "CT_Boolean",
+    "c:dateAx": "CT_DateAx",
+    "c:delete": "CT_Boolean",
+    "c:doughnutChart": "CT_DoughnutChart",
+    "c:externalData": "CT_ExternalData",
+    "c:gapWidth": "CT_GapAmount",
+    "c:grouping": "CT_Grouping",
+    "c:idx": "CT_UnsignedInt",
+    "c:invertIfNegative": "CT_Boolean_Explicit",
+    "c:layout": "CT_Layout",
+    "c:lblOffset": "CT_LblOffset",
+    "c:legend": "CT_Legend",
+    "c:legendPos": "CT_LegendPos",
+    "c:lineChart": "CT_LineChart",
+    "c:lvl": "CT_Lvl",
+    "c:majorGridlines": "CT_ChartLines",
+    "c:majorTickMark": "CT_TickMark",
+    "c:majorUnit": "CT_AxisUnit",
+    "c:manualLayout": "CT_ManualLayout",
+    "c:marker": "CT_Marker",
+    "c:max": "CT_Double",
+    "c:min": "CT_Double",
+    "c:minorTickMark": "CT_TickMark",
+    "c:minorUnit": "CT_AxisUnit",
+    "c:numFmt": "CT_NumFmt",
+    "c:order": "CT_UnsignedInt",
+    "c:orientation": "CT_Orientation",
+    "c:overlap": "CT_Overlap",
+    "c:overlay": "CT_Boolean_Explicit",
+    "c:pieChart": "CT_PieChart",
+    "c:plotArea": "CT_PlotArea",
+    "c:pt": "CT_StrVal_NumVal_Composite",
+    "c:ptCount": "CT_UnsignedInt",
+    "c:radarChart": "CT_RadarChart",
+    "c:rich": "CT_TextBody",
+    "c:scaling": "CT_Scaling",
+    "c:scatterChart": "CT_ScatterChart",
+    "c:ser": "CT_SeriesComposite",
+    "c:showCatName": "CT_Boolean_Explicit",
+    "c:showLegendKey": "CT_Boolean_Explicit",
+    "c:showPercent": "CT_Boolean_Explicit",
+    "c:showSerName": "CT_Boolean_Explicit",
+    "c:showVal": "CT_Boolean_Explicit",
+    "c:size": "CT_MarkerSize",
+    "c:smooth": "CT_Boolean",
+    "c:spPr": "CT_ShapeProperties",
+    "c:style": "CT_Style",
+    "c:symbol": "CT_MarkerStyle",
+    "c:tickLblPos": "CT_TickLblPos",
+    "c:title": "CT_Title",
+    "c:tx": "CT_Tx",
+    "c:txPr": "CT_TextBody",
+    "c:val": "CT_NumDataSource",
+    "c:valAx": "CT_ValAx",
+    "c:varyColors": "CT_Boolean",
+    "c:x": "CT_Double",
+    "c:xMode": "CT_LayoutMode",
+    "c:xVal": "CT_NumDataSource",
+    "c:yVal": "CT_NumDataSource",
+    "cp:coreProperties": "CT_CoreProperties",
+    "p:bg": "CT_Background",
+    "p:bgPr": "CT_BackgroundProperties",
+    "p:blipFill": "CT_BlipFillProperties",
+    "p:cNvCxnSpPr": "CT_NonVisualConnectorProperties",
+    "p:cNvPr": "CT_NonVisualDrawingProps",
+    "p:cNvSpPr": "CT_NonVisualDrawingShapeProps",
+    "p:cSld": "CT_CommonSlideData",
+    "p:childTnLst": "CT_TimeNodeList",
+    "p:cxnSp": "CT_Connector",
+    "p:graphicFrame": "CT_GraphicalObjectFrame",
+    "p:grpSp": "CT_GroupShape",
+    "p:grpSpPr": "CT_GroupShapeProperties",
+    "p:notes": "CT_NotesSlide",
+    "p:notesMaster": "CT_NotesMaster",
+    "p:nvCxnSpPr": "CT_ConnectorNonVisual",
+    "p:nvGraphicFramePr": "CT_GraphicalObjectFrameNonVisual",
+    "p:nvGrpSpPr": "CT_GroupShapeNonVisual",
+    "p:nvPicPr": "CT_PictureNonVisual",
+    "p:nvPr": "CT_ApplicationNonVisualDrawingProps",
+    "p:nvSpPr": "CT_ShapeNonVisual",
+    "p:oleObj": "CT_OleObject",
+    "p:ph": "CT_Placeholder",
+    "p:pic": "CT_Picture",
+    "p:presentation": "CT_Presentation",
+    "p:sld": "CT_Slide",
+    "p:sldId": "CT_SlideId",
+    "p:sldIdLst": "CT_SlideIdList",
+    "p:sldLayout": "CT_SlideLayout",
+    "p:sldLayoutId": "CT_SlideLayoutIdListEntry",
+    "p:sldLayoutIdLst": "CT_SlideLayoutIdList",
+    "p:sldMaster": "CT_SlideMaster",
+    "p:sldMasterId": "CT_SlideMasterIdListEntry",
+    "p:sldMasterIdLst": "CT_SlideMasterIdList",
+    "p:sldSz": "CT_SlideSize",
+    "p:sp": "CT_Shape",
+    "p:spPr": "CT_ShapeProperties",
+    "p:spTree": "CT_GroupShape",
+    "p:timing": "CT_SlideTiming",
+    "p:txBody": "CT_TextBody",
+    "p:video": "CT_TLMediaNodeVideo",
+    "p:xfrm": "CT_Transform2D"
+  }
+}
