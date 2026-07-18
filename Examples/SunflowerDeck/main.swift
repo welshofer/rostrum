@@ -62,14 +62,17 @@ func coverFrame(aspect: Double) -> Rect {
     }
 }
 
-/// A dark scrim gradient for legible text over imagery.
-@MainActor func scrim(_ slide: Slide, _ frame: Rect, from: Color = C.charcoal,
-                      topAlpha: Double = 0, bottomAlpha: Double = 0.82, angle: Double = 90) throws {
-    try slide.shapes.addShape(.rectangle, frame: frame,
+/// A scrim anchored to the bottom edge: transparent at `top`, ramping to full
+/// darkness by ~45% of the way down and HOLDING that darkness solid through
+/// the bottom of the slide. The rect bleeds 0.3" past the bottom so the dark
+/// reaches the very edge — never a floating band that fades out early.
+@MainActor func bottomScrim(_ slide: Slide, top: Double, dark: Double) throws {
+    try slide.shapes.addShape(.rectangle, frame: r(0, top, W, H - top + 0.3),
         fill: .gradient(GradientFill(stops: [
-            GradientStop(position: 0, color: from, alpha: topAlpha),
-            GradientStop(position: 1, color: from, alpha: bottomAlpha),
-        ], angleDegrees: angle)))
+            GradientStop(position: 0, color: C.charcoal, alpha: 0),
+            GradientStop(position: 0.45, color: C.charcoal, alpha: dark),
+            GradientStop(position: 1, color: C.charcoal, alpha: dark),
+        ], angleDegrees: 90)))
 }
 
 // MARK: - Typography
@@ -132,6 +135,7 @@ func kicker(_ s: String, color: Color = C.yellowDark) -> Line {
 // MARK: - Deck scaffold
 
 let deck = try Presentation()
+deck.slideSize = (width: .inches(13.333333), height: .inches(7.5))   // 16:9, explicit
 while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
 
 @MainActor func creamSlide() throws -> Slide {
@@ -152,7 +156,7 @@ while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
                         image name: String) throws {
     let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
     try bleed(s, name, aspect: 1.5, fallback: C.yellowDeep)
-    try scrim(s, r(0, 4.4, W, 3.1), from: C.charcoal, topAlpha: 0.05, bottomAlpha: 0.95)
+    try bottomScrim(s, top: 4.3, dark: 0.92)
     try text(s, r(0.95, 5.02, 9, 0.4),
              [Line(s: index, size: 13, weight: true, color: C.yellow, tracking: 3)])
     try text(s, r(0.95, 5.42, 11.7, 1.1),
@@ -237,7 +241,7 @@ while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
 do {
     let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
     try bleed(s, "title-hero", aspect: 1.5, fallback: C.yellow)
-    try scrim(s, r(0, 3.7, W, 3.8), bottomAlpha: 0.86)
+    try bottomScrim(s, top: 3.55, dark: 0.86)
     try tag(s, "A field guide", x: 0.95, y: 0.9)
     try text(s, r(0.9, 3.9, 11.5, 2.0),
              [Line(s: "Sunflower", size: 92, weight: true, color: C.white, tracking: -2)])
@@ -759,9 +763,7 @@ do {
 do {
     let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
     try bleed(s, "closing", aspect: 1.5, fallback: C.yellowDeep)
-    // One bottom gradient — carries the sources line and the base of the
-    // title, fading to clean photo above centre. No full-slide veil.
-    try scrim(s, r(0, 3.7, W, 3.8), from: C.charcoal, topAlpha: 0, bottomAlpha: 0.72, angle: 90)
+    try bottomScrim(s, top: 3.55, dark: 0.74)
     try text(s, r(0.9, 2.7, 11.5, 1.5),
              [Line(s: "Turn toward the light.", size: 56, weight: true, color: C.white, tracking: -1)], align: .center)
     try s.shapes.addShape(.rectangle, frame: r(W/2 - 0.7, 4.25, 1.4, 0.06), fill: .solid(C.yellow))
