@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    name: macOS (Swift 6)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift version
+        run: swift --version
+      - name: Build
+        run: swift build -v
+      - name: Test
+        run: swift test
+
+  linux:
+    name: Linux (Swift ${{ matrix.swift }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        swift: ["6.0", "6.1"]
+    container:
+      image: swift:${{ matrix.swift }}
+    steps:
+      - uses: actions/checkout@v4
+      # Oracle tests shell out to these; the pure-Swift suite passes without them.
+      - name: Install oracle tools
+        run: apt-get update && apt-get install -y --no-install-recommends zip unzip python3
+      - name: Swift version
+        run: swift --version
+      - name: Build
+        run: swift build -v
+      - name: Test
+        run: swift test

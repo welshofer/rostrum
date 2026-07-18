@@ -1,4 +1,10 @@
 import Foundation
+// On Linux, XMLParser (and XMLParserDelegate) live in FoundationXML, not the
+// core Foundation module. On Apple platforms this import is unavailable and
+// unneeded, so it is guarded by canImport.
+#if canImport(FoundationXML)
+import FoundationXML
+#endif
 
 /// Rostrum's lightweight XML DOM.
 ///
