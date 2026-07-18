@@ -26,28 +26,31 @@ public struct EMU: RawRepresentable, Hashable, Sendable, Comparable, AdditiveAri
     public var millimeters: Double { Double(rawValue) / Double(EMU.perMillimeter) }
     public var points: Double { Double(rawValue) / Double(EMU.perPoint) }
 
+    /// Alias for `EMU(_:)` so raw values read like the other factories in
+    /// static-member-inference position: `.emu(914_400)`.
+    public static func emu(_ rawValue: Int) -> EMU { EMU(rawValue) }
+
     public static func < (lhs: EMU, rhs: EMU) -> Bool { lhs.rawValue < rhs.rawValue }
     public static func + (lhs: EMU, rhs: EMU) -> EMU { EMU(lhs.rawValue + rhs.rawValue) }
     public static func - (lhs: EMU, rhs: EMU) -> EMU { EMU(lhs.rawValue - rhs.rawValue) }
     public static var zero: EMU { EMU(0) }
 
+    public static prefix func - (value: EMU) -> EMU { EMU(-value.rawValue) }
+
+    // Scalar arithmetic for layout math ("a third of the slide width").
+    public static func * (lhs: EMU, rhs: Double) -> EMU { EMU(Int((Double(lhs.rawValue) * rhs).rounded())) }
+    public static func * (lhs: Double, rhs: EMU) -> EMU { rhs * lhs }
+    public static func / (lhs: EMU, rhs: Double) -> EMU { EMU(Int((Double(lhs.rawValue) / rhs).rounded())) }
+    /// The dimensionless ratio of two lengths (aspect ratios, proportions).
+    public static func / (lhs: EMU, rhs: EMU) -> Double { Double(lhs.rawValue) / Double(rhs.rawValue) }
+
     public var description: String { "\(rawValue) EMU" }
 }
 
-// TODO(user contribution): the ergonomic layer.
-//
-// python-pptx makes callers write `Inches(1)`, `Pt(18)`, `Emu(914400)`. Swift
-// can do better, and the choice here shapes how every line of user code reads
-// for the life of the library. Candidate designs:
-//
-//   1. Numeric-literal extensions:      shape.width = 1.5.inches
-//      (Sweet to read; pollutes Double/Int globally for any importer.)
-//   2. Static-member inference:         shape.width = .inches(1.5)
-//      (Already works today via the factories above; zero pollution; a bit
-//       more punctuation.)
-//   3. Measurement bridging:            shape.width = EMU(Measurement(value: 1.5, unit: UnitLength.inches))
-//      (Interops with Foundation/HealthKit-style code; verbose; UnitLength
-//       has no "points".)
-//
-// Implement your pick below (5–10 lines). If you choose (1), consider gating it
-// behind an explicit `import RostrumSugar`-style opt-in later.
+// Ergonomics decision (2026-07-18): static-member inference — `.points(24)`,
+// `.inches(1.5)` — is the API, matching the stdlib's `Duration` pattern
+// (`.seconds(5)`). No unit is privileged: points and inches are equally
+// first-class on both write (`.points(540)`) and read (`width.points`).
+// Numeric-literal extensions (`1.5.inches`) were rejected because they
+// pollute Double for every importer; `Measurement` bridging because
+// `UnitLength` has no points unit.
