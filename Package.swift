@@ -12,6 +12,10 @@ let package = Package(
     ],
     targets: [
         .target(name: "Rostrum"),
+        .executableTarget(
+            name: "ClimateDeck",
+            dependencies: ["Rostrum"],
+            path: "Examples/ClimateDeck"),
         .testTarget(name: "RostrumTests", dependencies: ["Rostrum"]),
     ]
 )

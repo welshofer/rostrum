@@ -15,30 +15,28 @@ from phase 0 onward.
 - [x] Minimal 16:9 deck from XML constants; `Presentation` new/open/save
 - [x] Oracle: python-pptx opens Rostrum output
 
-## Phase 1 — The object model skeleton
+## Phase 1 — The object model skeleton (✅ core, 2026-07-18)
 
-- Pristine-blob dirty-flag machinery on `Part` (the hybrid's core mechanism)
-- `rostrum-gen` v0: extract descriptor tables from python-pptx source
-  (`xmlchemy` declarations, `spec.py`, enum tables); emit typed wrappers for
-  the presentation/slide/master/layout element families
-- Slides collection: iterate, `addSlide(layout:)`, **and the three things
-  python-pptx never shipped: `remove`, `move`, `duplicate`** (top-3 requested
-  feature, 15 years open)
-- Layouts/masters collections; placeholder resolution (slide → layout → master)
-- Byte-identity corpus gate wired into CI at the OPC layer
+- [x] Pristine-blob dirty-flag machinery on `Part` (byte-identity test live)
+- [x] Slides collection: iterate, `add()`, **and the three things python-pptx
+  never shipped: `remove`, `move`, `duplicate`**
+- [x] ShapeGeometry enum (178 presets) extracted from python-pptx tables
+- [ ] `rostrum-gen` v0 proper (declarative tables → generated accessors)
+- [ ] Layouts/masters collections; placeholder resolution
+- [ ] Byte-identity corpus gate in CI (test exists; corpus + CI pending)
 
-## Phase 2 — Shapes and text
+## Phase 2 — Shapes and text (✅ core, 2026-07-18)
 
-- Shape tree: autoshapes (184 preset geometries from the extracted tables),
-  pictures, group shapes, connectors, freeform builder
-- Transforms (position/size/rotation/flip), fills (solid/gradient/picture/
-  pattern), line format, shadow — full effect properties, not python-pptx's
-  inherit-flag-only `ShadowFormat`
-- Text frames: paragraphs, runs, fonts, colors, alignment, bullets,
-  hyperlinks, autofit **with real font-metric computation** (python-pptx
-  writes the attribute but can't compute `fontScale` — we can)
-- Images: dedup by SHA-1 (as python-pptx does), PNG/JPEG dimension sniffing
-- Tables: full parity (merge, banding, styles)
+- [x] Autoshapes with preset geometry, transforms (position/size/rotation)
+- [x] Fills: solid, solid+alpha, linear gradient; explicit line format;
+  soft shadows; per-slide backgrounds
+- [x] Text: paragraphs, runs, fonts, sizes, bold/italic, colors, alignment,
+  line/paragraph spacing, letter tracking, anchors, margins
+- [x] Proof-of-capability: `Examples/ClimateDeck` — 15-slide designed deck,
+  rendered and visually verified via LibreOffice
+- [ ] Pictures (needs image parts), group shapes, connectors, freeform
+- [ ] Bullets/hyperlinks/autofit with real font metrics
+- [ ] Tables
 
 ## Phase 3 — Parity completion
 

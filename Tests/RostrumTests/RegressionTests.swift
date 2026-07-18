@@ -149,6 +149,29 @@ import Testing
         #expect(reader.entryNames == ["ppt/media/naïve.png"])
     }
 
+    // MARK: Shapes: txBody children must be DrawingML-namespaced
+
+    @Test func txBodyChildrenUseDrawingMLNamespace() throws {
+        // p:bodyPr instead of a:bodyPr makes renderers (LibreOffice,
+        // QuickLook) silently drop the entire shape.
+        let deck = try Presentation()
+        let box = try deck.slides[0].shapes.addTextBox(
+            Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
+        box.textFrame!.verticalAnchor = .middle
+        let shape = try deck.slides[0].shapes.addShape(
+            .rectangle, frame: Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1)),
+            fill: .solid(.black))
+        _ = shape
+        let reopened = try Presentation(data: try deck.serializedData())
+        for sp in try reopened.slides[0].spTree().children(named: "p:sp") {
+            let txBody = sp.firstChild(named: "p:txBody")!
+            for child in txBody.childElements {
+                #expect(child.name.hasPrefix("a:"),
+                        "txBody child \(child.name) must be in the a: namespace")
+            }
+        }
+    }
+
     // MARK: Presentation: slideSize setter must create a missing p:sldSz
 
     @Test func slideSizeSetterCreatesMissingSldSz() throws {

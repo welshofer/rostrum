@@ -24,7 +24,7 @@ public final class TextFrame {
     }
 
     private var bodyPr: XML.Element {
-        txBody.getOrAddChild("p:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
+        txBody.getOrAddChild("a:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
     }
 
     public var wordWrap: Bool {

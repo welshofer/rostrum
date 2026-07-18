@@ -85,7 +85,9 @@ public final class ShapeCollection: Sequence {
         sp.appendElement(spPr)
 
         let txBody = XML.Element("p:txBody")
-        let bodyPr = XML.Element("p:bodyPr")
+        // txBody's children live in the DRAWINGML namespace: a:bodyPr, not
+        // p:bodyPr — renderers silently drop the whole shape otherwise.
+        let bodyPr = XML.Element("a:bodyPr")
         if textBox {
             bodyPr[attribute: "wrap"] = "square"
         }
