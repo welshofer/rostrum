@@ -26,6 +26,25 @@ slide.title?.textFrame?.text = "Hello, Rostrum"
 try deck.save(to: URL(filePath: "hello.pptx"))
 ```
 
+### …or the design-authoring layer
+
+Open a brand template, apply a `design.md`, and build a whole deck from one-call,
+auto-laid-out builders — on-brand, no placeholder plumbing:
+
+```swift
+let deck = try Presentation(contentsOf: URL(filePath: "brand.potx"))   // native .potx support
+deck.applyDesign(try Design(contentsOf: URL(filePath: "sunflower.md")))
+
+try deck.titleSlide("Q3 Business Review", subtitle: "Northwind", kicker: "FY26")
+try deck.bulletSlide("Highlights", ["ARR $18.4M", "Retention 91%", "NPS 47"], kicker: "Results")
+try deck.chartSlide("Revenue", .line, arr, options: ChartOptions(legend: .bottom))
+try deck.setSections([("Cover", 0), ("The Quarter", 1)])
+try deck.footer("Confidential").showSlideNumbers()
+try deck.save(to: URL(filePath: "review.pptx"))
+```
+
+More recipes in the [cookbook](docs/COOKBOOK.md).
+
 ## Install
 
 Swift Package Manager:
@@ -53,6 +72,10 @@ then add `"Rostrum"` to your target's dependencies.
 | **Fonts** | **embed TTF/OTF** so a deck renders identically everywhere |
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import a slide from another deck with its images, charts and layout intact |
+| **Design layer** | `DeckStyle` (type scale, WCAG auto-contrast, tokens); one-call slide builders; cards/buttons/kickers/stat tiles; a Grid DSL |
+| **Templates** | open a `.potx`/`.ppsx` directly; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
+| **Sections** | native PowerPoint sections; footers, slide numbers, dates via live fields |
+| **Tooling** | `pptx-tool inspect`/`validate` — machine-checkable "PowerPoint will accept this" gate |
 
 ## Design
 
