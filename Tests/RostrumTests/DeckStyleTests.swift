@@ -179,4 +179,41 @@ import Testing
         }
         #expect(try build() == build())
     }
+
+    @Test func mutedInkClearsAAOnLightThemes() throws {
+        // A naive ink.mixed(bg, 0.45) washes to ~3.9 on a white background; the
+        // contrast floor must keep secondary text (subtitles, captions) ≥ 4.5.
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse("""
+        ## Color palette
+        - #0373e9
+        - #111b21
+        - #ffffff
+        - #f0f4f9
+        """))
+        let s = deck.style
+        #expect(!s.isDark)
+        #expect(s.mutedInk.contrastRatio(with: s.background) >= 4.5)
+    }
+
+    @Test func accentsExcludeNearBackgroundSurfaceColors() throws {
+        // Near-white surface/hairline tokens must not become accents — they'd
+        // render as invisible fills/series; saturated brand colors stay.
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse("""
+        ## Color palette
+        - #25d366
+        - #0373e9
+        - #ffffff
+        - #111b21
+        - #fcf5eb
+        - #d9fdd3
+        - #f0f4f9
+        """))
+        let s = deck.style
+        for n in 1...6 {
+            #expect(s.accent(n).contrastRatio(with: s.background) >= 1.3)   // visible on bg
+        }
+        #expect(s.accent(1).hex == "25D366")   // the brand green still leads
+    }
 }

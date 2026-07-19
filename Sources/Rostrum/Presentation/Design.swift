@@ -464,8 +464,21 @@ extension Presentation {
             var used = Set([background?.hex, text?.hex].compactMap { $0 })
             var accents: [Color] = []
             for color in source {
-                let lum = Design.luminance(color)
-                if lum > 0.92 || lum < 0.06 || used.contains(color.hex) { continue }
+                if used.contains(color.hex) { continue }
+                // Skip colors too close in tone to the background to read as a
+                // distinct accent — the surface/canvas/hairline tokens that vanish
+                // on it (invisible bands, blank chart series). Contrast with the
+                // real background is the right test; fall back to absolute
+                // luminance only when no background was resolved.
+                if let bg = effectiveBg {
+                    // Surface/canvas/hairline tokens sit ~1.1 against their own bg;
+                    // a genuine brand accent (even a light yellow, ~1.4) sits above.
+                    // Split between them so surfaces drop but brand colors stay.
+                    if Design.contrastRatio(color, bg) < 1.3 { continue }
+                } else {
+                    let lum = Design.luminance(color)
+                    if lum > 0.92 || lum < 0.06 { continue }
+                }
                 used.insert(color.hex)
                 accents.append(color)
                 if accents.count == accentSlots.count { break }

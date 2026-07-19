@@ -124,7 +124,7 @@ public struct DeckStyle: Sendable, Equatable {
             background: bg,
             surface: design?.colors["surface"] ?? (dark ? bg.lighten(0.08) : bg),
             ink: inkColor,
-            mutedInk: inkColor.mixed(with: bg, amount: 0.45),
+            mutedInk: DeckStyle.legibleMuted(inkColor, on: bg),
             link: theme.color(.hlink) ?? Color("0563C1"),
             accents: acc, isDark: dark,
             headingFont: design?.headingFont ?? theme.majorFont ?? DeckStyle.fallbackHeadingFont,
@@ -132,7 +132,7 @@ public struct DeckStyle: Sendable, Equatable {
             type: DeckStyle.makeTypeScale(
                 headingFont: design?.headingFont ?? theme.majorFont ?? DeckStyle.fallbackHeadingFont,
                 bodyFont: design?.bodyFont ?? theme.minorFont ?? DeckStyle.fallbackBodyFont,
-                ink: inkColor, mutedInk: inkColor.mixed(with: bg, amount: 0.45),
+                ink: inkColor, mutedInk: DeckStyle.legibleMuted(inkColor, on: bg),
                 accent1: acc[0], background: bg, design: design),
             spacing: TokenScale(DeckStyle.merge(DeckStyle.defaultSpacing, design?.spacing)),
             radius: TokenScale(DeckStyle.merge(DeckStyle.defaultRadius, design?.radius)),
@@ -146,6 +146,21 @@ public struct DeckStyle: Sendable, Equatable {
         guard !accents.isEmpty else { return ink }
         let i = ((n - 1) % accents.count + accents.count) % accents.count
         return accents[i]
+    }
+
+    /// A muted variant of `ink` that still clears WCAG AA (4.5:1) against `bg`.
+    /// Blending ink toward the background reads as "secondary" text, but a fixed
+    /// 45% blend washes out on light themes (dark ink → mid-gray on white); step
+    /// the blend back toward ink until it's legible. Ink itself always clears, so
+    /// this converges.
+    static func legibleMuted(_ ink: Color, on bg: Color, minRatio: Double = 4.5) -> Color {
+        var amount = 0.45
+        while amount > 0.0 {
+            let muted = ink.mixed(with: bg, amount: amount)
+            if muted.contrastRatio(with: bg) >= minRatio { return muted }
+            amount -= 0.05
+        }
+        return ink
     }
 
     /// The primary brand color (accent 1).
