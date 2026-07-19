@@ -79,6 +79,31 @@ Ranked by demand evidence from python-pptx's issue tracker:
 - Streaming/partial loading for production-scale decks
 - OMML math, connector routing to attachment sites, placeholders in groups
 
+## Program: v0.1 release — hardening & design layer (2026-07-18 →)
+
+A forward program past parity, run as a sequence of PR-sized phases. Each phase
+is a branch → PR → merge, PowerPoint-oracle-verified and CI-green before it
+lands. The invariants below are non-negotiable in every phase.
+
+- **P0 — Foundations.** Shared primitives: image + gradient fills and slide/
+  shape backgrounds; public color math (luminance, WCAG contrast, auto-contrast,
+  mix/tint/shade); a Grid/geometry DSL over `Rect`; a `TypeScale` type. Capture
+  the `design.md` spacing/radius/typography tokens we currently drop.
+- **P1 — Design-authoring layer.** Fluent, design-aware API: convenience slide
+  builders (title/section/bullets/two-column/comparison/chart/callout), cards/
+  buttons/chips driven by `design.md` radius/spacing/color tokens, and the type
+  scale + auto-contrast baked in. On-brand decks in a few lines.
+- **P2 — Fidelity & polish.** Table styling (banded/brand header, column
+  widths); ergonomic notes; footers + slide numbers + dates; native PPTX
+  sections; per-slide/per-layout backgrounds.
+- **P3 — Robustness & trust (release gate).** Property-based byte-identical
+  round-trip over a real corpus; reader fuzzing; verify animations/transitions
+  survive round-trip; bubble/radar/stock/combo charts; deeper `validate()`;
+  DocC + cookbook. → tag **v0.1.0** and publish.
+- **P4 — Headless rendering.** Slide → SVG (zero-dep) for thumbnails and
+  visual-diff regression tests, using the TTF metrics we already parse. PNG
+  rasterization is a pure-Swift stretch goal.
+
 ## Standing quality gates
 
 - `swift test` green on macOS + Linux
