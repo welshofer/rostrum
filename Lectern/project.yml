@@ -28,6 +28,7 @@ targets:
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
         GENERATE_INFOPLIST_FILE: "YES"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
