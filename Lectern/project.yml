@@ -1,0 +1,36 @@
+name: Lectern
+options:
+  bundleIdPrefix: com.lectern
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+packages:
+  LecternCore:
+    path: .
+targets:
+  Lectern:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: App
+        excludes:
+          - "Resources/Styles"
+      - path: App/Resources/Styles
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: LecternCore
+        product: LecternCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.lectern.app
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        GENERATE_INFOPLIST_FILE: "YES"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        CODE_SIGNING_ALLOWED: "NO"
+        CODE_SIGN_IDENTITY: ""

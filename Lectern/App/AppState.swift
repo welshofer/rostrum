@@ -29,7 +29,19 @@ final class AppState {
     var goal = "inform"
     var slideCount = 12
     var includeNotes = true
-    var styleSlug = "default"
+
+    // Style catalog (bundled design.md files).
+    var styles: [Style] = []
+    var selectedStyleSlug: String?
+    var selectedStyle: Style? { styles.first { $0.slug == selectedStyleSlug } }
+
+    /// Load the bundled style catalog off the main thread (invariant I6).
+    func loadStyles() async {
+        guard styles.isEmpty, let dir = Bundle.main.resourceURL?.appendingPathComponent("Styles") else { return }
+        let loaded = await Task.detached { (try? StyleCatalog().load(from: dir)) ?? [] }.value
+        styles = loaded
+        if selectedStyleSlug == nil { selectedStyleSlug = loaded.first?.slug }
+    }
 
     // Generating progress.
     var stage = ""
@@ -47,16 +59,18 @@ final class AppState {
         phase = .generating; stage = "Starting"; drafted = 0; total = slideCount
 
         let request = DeckRequest(prompt: prompt, audience: audience, goal: goal,
-                                  slideCount: slideCount, notes: includeNotes, styleSlug: styleSlug)
+                                  slideCount: slideCount, notes: includeNotes,
+                                  styleSlug: selectedStyleSlug ?? "default")
         // Mock-first: a valid deck the requested size, no network. Replace with a
         // live provider once a key is validated in Settings.
         let provider = MockProvider(validJSON: Self.sampleDeckJSON(title: prompt, count: slideCount))
         let directory = Self.decksDirectory()
+        let designURL = selectedStyle?.designURL           // renders with the chosen brand
 
         task = Task {
             do {
                 let result = try await DeckGenerator(provider: provider)
-                    .generate(request, designURL: nil, into: directory) { [weak self] event in
+                    .generate(request, designURL: designURL, into: directory) { [weak self] event in
                         Task { @MainActor in self?.apply(event) }
                     }
                 self.phase = .result(result)
