@@ -69,6 +69,14 @@ final class AppState {
         hasKeyForSelectedProvider = false
     }
 
+    /// A ballpark pre-flight cost for the current live provider/model, formatted
+    /// for display — `nil` on the Mock (which is free) or an unpriced model.
+    var costEstimate: String? {
+        guard hasKeyForSelectedProvider,
+              let estimate = PriceTable.estimate(model: model, slideCount: slideCount) else { return nil }
+        return PriceTable.formatted(estimate)
+    }
+
     // Style catalog (bundled design.md files).
     var styles: [Style] = []
     var selectedStyleSlug: String?

@@ -174,6 +174,35 @@ import Rostrum
         }
     }
 
+    // MARK: - Pricing (§10.3)
+
+    @Test func costMatchesTheRateCard() {
+        // 1M input @ $3 + 1M output @ $15 = $18.00 on sonnet.
+        let usage = Usage(inputTokens: 1_000_000, outputTokens: 1_000_000)
+        #expect(PriceTable.cost(model: "claude-sonnet-5", usage: usage) == Decimal(18))
+        // 200k in @ $15 + 50k out @ $75 = $3.00 + $3.75 = $6.75 on opus.
+        let opus = Usage(inputTokens: 200_000, outputTokens: 50_000)
+        #expect(PriceTable.cost(model: "claude-opus-4-8", usage: opus) == Decimal(675) / 100)
+    }
+
+    @Test func unpricedModelYieldsNoNumber() {
+        #expect(PriceTable.cost(model: "some-unknown-model", usage: Usage(inputTokens: 999, outputTokens: 999)) == nil)
+        #expect(PriceTable.estimate(model: "some-unknown-model", slideCount: 10) == nil)
+    }
+
+    @Test func preflightEstimateScalesWithDeckSize() throws {
+        let small = try #require(PriceTable.estimate(model: "claude-sonnet-5", slideCount: 5))
+        let large = try #require(PriceTable.estimate(model: "claude-sonnet-5", slideCount: 30))
+        #expect(large > small)                                    // more slides → more output → dearer
+        #expect(small > 0)
+    }
+
+    @Test func costFormattingNeverReadsAsFree() {
+        #expect(PriceTable.formatted(Decimal(0)) == "$0.00")
+        #expect(PriceTable.formatted(Decimal(1) / 1000) == "<$0.01")   // tiny but non-zero
+        #expect(PriceTable.formatted(Decimal(42) / 100) == "$0.42")
+    }
+
 }
 
 /// Thread-safe event recorder for the async pipeline.
