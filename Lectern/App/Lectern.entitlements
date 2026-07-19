@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Keychain access group keyed to team + bundle id, NOT the code signature.
+	     This lets API keys in the data-protection keychain survive every rebuild
+	     (the signature-bound login-keychain ACL was the cause of the endless
+	     re-entry). -->
+	<key>keychain-access-groups</key>
+	<array>
+		<string>QGNJVQUKK7.com.lectern.app</string>
+	</array>
+</dict>
+</plist>

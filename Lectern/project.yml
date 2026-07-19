@@ -41,3 +41,6 @@ targets:
         CODE_SIGN_IDENTITY: "Apple Development: Jay Welshofer (XP6YTXD955)"
         PROVISIONING_PROFILE_SPECIFIER: ""
         CODE_SIGNING_ALLOWED: "YES"
+        # Keychain-access-groups entitlement: lets keys live in the data-protection
+        # keychain (keyed to team+bundle, not the signature) so they survive rebuilds.
+        CODE_SIGN_ENTITLEMENTS: App/Lectern.entitlements
