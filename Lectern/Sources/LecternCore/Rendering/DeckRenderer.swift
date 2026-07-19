@@ -130,8 +130,11 @@ public actor DeckRenderer {
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .bands:
+            // The "five layers" look — now a native Basic Block List SmartArt
+            // (editable, PowerPoint-verified), not drawn bands. Same stacked,
+            // brand-colored blocks as flex slide 3.
             let items = body?.items ?? flatten(body?.bullets ?? [])
-            if !items.isEmpty { return try deck.bandsSlide(title, bands: items) }
+            if !items.isEmpty { return try deck.smartArtSlide(title, kind: .blockList, items: items) }
             return try deck.bulletSlide(title, [])
         case .diagram:
             if let d = body?.diagram, !d.items.isEmpty {

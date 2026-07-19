@@ -43,7 +43,11 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let result = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
         #expect(result.slideCount == 2)
-        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)
+        let reopened = try Presentation(contentsOf: result.url)
+        #expect(try reopened.validate().isEmpty)
+        // bands now renders as a native Basic Block List SmartArt (the flex "five
+        // layers" look), so its items read back through the diagram model.
+        #expect(reopened.slides[reopened.slides.count - 1].smartArtTexts.first?.count == 3)
     }
 
     @Test func rendersChartAndMetricsSlides() async throws {
