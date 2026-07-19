@@ -71,7 +71,15 @@ public enum Fill: Hashable, Sendable {
     /// Solid color with opacity 0…1 — overlays, scrims, subtle accents.
     case solidAlpha(Color, Double)
     case gradient(GradientFill)
+    /// A theme color reference (with optional transforms). Shapes filled this
+    /// way recolor automatically when the theme palette is edited.
+    case themeScheme(SchemeColor, [ColorTransform])
     case none
+
+    /// A theme color fill, e.g. `.themeColor(.accent1)` or with transforms.
+    public static func themeColor(_ scheme: SchemeColor, _ transforms: [ColorTransform] = []) -> Fill {
+        .themeScheme(scheme, transforms)
+    }
 
     /// The DrawingML fill element (`a:solidFill`/`a:gradFill`/`a:noFill`).
     func makeElement() -> XML.Element {
@@ -79,6 +87,12 @@ public enum Fill: Hashable, Sendable {
         case .solid(let color):
             let fill = XML.Element("a:solidFill")
             fill.appendElement(color.srgbElement())
+            return fill
+        case .themeScheme(let scheme, let transforms):
+            let fill = XML.Element("a:solidFill")
+            let clr = XML.Element("a:schemeClr", attributes: [("val", scheme.rawValue)])
+            for t in transforms { clr.appendElement(t.element) }
+            fill.appendElement(clr)
             return fill
         case .solidAlpha(let color, let alpha):
             let fill = XML.Element("a:solidFill")
