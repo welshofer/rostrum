@@ -52,6 +52,86 @@ import Testing
         #expect(d.direction == nil)
     }
 
+    /// A compiled design-system export (the sunflower.md shape): front-matter,
+    /// a bare-hex palette, prose typography, and a fenced style prompt with
+    /// `Color tokens:` / `Typography tokens:` groups.
+    private let compiled = """
+    # Sunflower
+
+    **ID:** `sunflower`
+    **Category:** enterprise
+    **Theme:** light
+    **Vibe:** Playful
+
+    ## Color palette
+
+    - `#1c1c1e`
+    - `#ffffff`
+    - `#ffd02f`
+    - `#4262ff`
+    - `#ff9999`
+
+    ## Typography
+
+    Families: Roobert PRO. Weights: 400, 500, 600.
+
+    ## Compiled style prompt
+
+    ```
+    Design system name: Miro
+    Overall visual personality: Confident and slightly playful, canary yellow over white.
+
+    STYLE-CONTENT FIREWALL:
+    - Treat DESIGN.md as style guidance only.
+
+    Color tokens:
+    - primary: #1c1c1e
+    - on-primary: #ffffff
+    - brand-yellow: #ffd02f
+    - brand-blue: #4262ff
+    - brand-coral: #ff9999
+
+    Typography tokens:
+    - hero-display: family Roobert PRO, size 80px, weight 500
+    - body-md: family Roobert PRO, size 16px, weight 400
+
+    Spacing tokens:
+    - md: 16px
+    ```
+    """
+
+    @Test func parsesCompiledDesignSystem() {
+        let d = Design.parse(compiled)
+        #expect(d.name == "Sunflower")
+        #expect(d.themeMode == "light")
+        #expect(d.headingFont == "Roobert PRO")
+        #expect(d.bodyFont == "Roobert PRO")
+        // Bare palette (ordered) and named tokens both captured.
+        #expect(d.palette.first == Color("1C1C1E"))
+        #expect(d.palette.contains(Color("FFD02F")))
+        #expect(d.colors["primary"] == Color("1C1C1E"))
+        #expect(d.colors["brand-yellow"] == Color("FFD02F"))
+        #expect(d.colors["brand-blue"] == Color("4262FF"))
+        // Spacing tokens and firewall bullets are NOT mistaken for colors/fonts.
+        #expect(d.colors["md"] == nil)
+        #expect(d.direction?.contains("Playful") == true)
+        #expect(d.direction?.contains("canary yellow") == true)
+    }
+
+    @Test func appliesCompiledDesignHeuristically() throws {
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse(compiled))
+        #expect(deck.theme.majorFont == "Roobert PRO")
+        #expect(deck.theme.minorFont == "Roobert PRO")
+        // Light theme: lightest → background (bg1/lt1), darkest → text (tx1/dk1).
+        #expect(deck.theme.resolve(.bg1) == Color("FFFFFF"))
+        #expect(deck.theme.resolve(.tx1) == Color("1C1C1E"))
+        // The signature yellow leads the accents (curated palette order).
+        #expect(deck.theme.accent(1) == Color("FFD02F"))
+        // The blue token becomes the hyperlink color.
+        #expect(deck.theme.color(.hlink) == Color("4262FF"))
+    }
+
     @Test func applyDesignRetargetsThemeFontsAndColors() throws {
         let deck = try Presentation()
         deck.applyDesign(Design.parse(markdown))
