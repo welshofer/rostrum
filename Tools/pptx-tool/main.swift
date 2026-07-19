@@ -60,7 +60,7 @@ field("layouts:", String(deck.layouts.count))
 field("masters:", String(partCount(deck, "/ppt/slideMasters/")))
 field("media:", String(partCount(deck, "/ppt/media/")))
 field("charts:", String(partCount(deck, "/ppt/charts/")))
-field("tables:", String(partCount(deck, "/ppt/embeddings/")))     // chart workbooks / embeds
+field("embeds:", String(partCount(deck, "/ppt/embeddings/")))     // chart workbooks / embedded objects
 field("notes:", String(partCount(deck, "/ppt/notesSlides/")))
 field("sections:", String(deck.sections.count))
 field("size:", String(format: "%.2fin × %.2fin", size.width.inches, size.height.inches))
