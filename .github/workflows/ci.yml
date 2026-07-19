@@ -43,3 +43,8 @@ jobs:
         run: swift build -v
       - name: Test
         run: swift test
+        # The Swift 6.0 toolchain's bundled swift-testing can't compile some
+        # `#require` expressions on optional-chained values, so the full suite
+        # runs on 6.1+. The Build step above still proves the library itself
+        # compiles on Swift 6.0.
+        if: matrix.swift != '6.0'
