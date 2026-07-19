@@ -35,6 +35,21 @@ import Testing
         #expect(s.spacing.md == EMU.pixels(16))       // untouched default remains
     }
 
+    @Test func displayTokenDoesNotBalloonTitle() throws {
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse("""
+        ## Typography tokens
+        - hero-display: family Poppins, size 96px, weight 700
+        """))
+        let s = deck.style
+        // .display absorbs the hero token; .title keeps its default SIZE (so a
+        // content-slide title doesn't overflow its cell) but still adopts the
+        // brand heading font.
+        #expect(s.type(.display).sizePt == 72)    // 96px → 72pt
+        #expect(s.type(.title).sizePt == 34)      // default, NOT the display size
+        #expect(s.type(.title).font == "Poppins")
+    }
+
     @Test func perFacetFallbackKeepsDefaults() throws {
         let deck = try Presentation()
         deck.applyDesign(Design.parse("""

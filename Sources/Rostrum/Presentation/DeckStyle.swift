@@ -229,7 +229,10 @@ public struct DeckStyle: Sendable, Equatable {
         let aliases: [TypeRole: [String]] = [
             .kicker:  ["kicker", "eyebrow", "overline", "label"],
             .display: ["display", "hero-display", "hero"],
-            .title:   ["title", "display", "hero-display", "hero", "h1", "headline"],
+            // Title-tier names only — display/hero tokens belong to `.display`.
+            // Ranking them here made a content-slide title inherit the display
+            // SIZE and overflow its grid cell.
+            .title:   ["title", "h1", "headline"],
             .heading: ["heading", "h2", "section-title"],
             .subhead: ["subhead", "subtitle", "h3"],
             .body:    ["body", "body-md", "paragraph", "base", "p"],
