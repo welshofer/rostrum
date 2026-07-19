@@ -16,6 +16,24 @@ import Testing
         run.firstChild(named: "a:rPr")?.firstChild(named: "a:solidFill")?.firstChild(named: "a:srgbClr")?[attribute: "val"]
     }
 
+    @Test func bandsSlideNeverEmitsNegativeExtent() throws {
+        // Six thin bands used to produce a negative-height label box (addCard's
+        // 0.5" padding exceeds a 0.64" band) — which PowerPoint rejects with a
+        // "repair". Extents must all be non-negative (ST_PositiveCoordinate).
+        let deck = try Presentation()
+        let slide = try deck.bandsSlide("Six layers", bands: (1...6).map { "Layer \($0) — detail text here" })
+        func exts(_ el: XML.Element) -> [(Int, Int)] {
+            var out: [(Int, Int)] = []
+            if el.name == "a:ext", let cx = el[attribute: "cx"].flatMap({ Int($0) }),
+               let cy = el[attribute: "cy"].flatMap({ Int($0) }) { out.append((cx, cy)) }
+            for c in el.childElements { out += exts(c) }
+            return out
+        }
+        let all = exts(try slide.part.dom())
+        #expect(!all.isEmpty)
+        #expect(all.allSatisfy { $0.0 >= 0 && $0.1 >= 0 })
+    }
+
     @Test func cardIsRoundedSurfaceWithShadowAndPaddedContent() throws {
         let deck = try Presentation()
         let card = try deck.slides[0].addCard(in: r, style: deck.style)

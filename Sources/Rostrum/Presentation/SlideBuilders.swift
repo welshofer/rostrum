@@ -118,8 +118,11 @@ public extension Presentation {
             let y = content.minY.rawValue + i * (bandH + gap)
             let rect = Rect(x: content.minX, y: EMU(y), width: content.width, height: EMU(bandH))
             let fill = s.accent(i + 1)
-            let card = try slide.addCard(in: rect, style: s, fill: .solid(fill), radiusToken: "sm", shadow: false)
-            try slide.addText(text, in: card.content, role: .heading, style: bandStyle,
+            // Label goes in the band rect itself (always positive height). Using
+            // the card's padded content would go negative on a thin band — a
+            // negative extent PowerPoint rejects with a repair.
+            _ = try slide.addCard(in: rect, style: s, fill: .solid(fill), radiusToken: "sm", shadow: false)
+            try slide.addText(text, in: rect, role: .heading, style: bandStyle,
                               color: s.textColor(on: fill), align: .center, anchor: .middle)
         }
         return slide
