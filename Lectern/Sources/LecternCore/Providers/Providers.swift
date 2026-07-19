@@ -64,6 +64,8 @@ public enum GenerationEvent: Sendable {
     case drafting(completed: Int, total: Int)
     case validating
     case repairing              // at most once per run
+    case auditing               // the QA editor pass
+    case illustrating(completed: Int, total: Int)   // optional image generation
     case rendering
     case finished(DeckResult)
 }
@@ -75,6 +77,19 @@ public protocol LLMProvider: Sendable {
     /// events. When `repairing` is set, this is the single repair attempt.
     func draft(_ request: DeckRequest, repairing: RepairContext?,
                emit: @Sendable (GenerationEvent) -> Void) async throws -> RawDraft
+
+    /// The QA pass: take a valid draft deck and return a stronger revision in the
+    /// same schema (§quality). Default is a no-op so providers can opt in.
+    func revise(_ request: DeckRequest, deckJSON: String,
+                emit: @Sendable (GenerationEvent) -> Void) async throws -> RawDraft
+}
+
+public extension LLMProvider {
+    /// Default: no QA pass — return the draft unchanged.
+    func revise(_ request: DeckRequest, deckJSON: String,
+                emit: @Sendable (GenerationEvent) -> Void) async throws -> RawDraft {
+        RawDraft(json: deckJSON, usage: Usage())
+    }
 }
 
 /// The user-facing error taxonomy (§12).

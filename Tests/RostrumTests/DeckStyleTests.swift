@@ -9,8 +9,8 @@ import Testing
         #expect(s.ink == .black)
         #expect(s.isDark == false)
         #expect(s.accents.count == 6)
-        #expect(s.type(.title).sizePt == 34 && s.type(.title).bold)
-        #expect(s.type(.body).sizePt == 18 && !s.type(.body).bold)
+        #expect(s.type(.title).sizePt == 40 && s.type(.title).bold)
+        #expect(s.type(.body).sizePt == 26 && !s.type(.body).bold)
         #expect(s.type(.kicker).uppercase && s.type(.kicker).trackingPt == 2.0)
         #expect(s.spacing.md == EMU.pixels(16))
         #expect(s.spacing.md == EMU(152_400))
@@ -45,8 +45,8 @@ import Testing
         // .display absorbs the hero token; .title keeps its default SIZE (so a
         // content-slide title doesn't overflow its cell) but still adopts the
         // brand heading font.
-        #expect(s.type(.display).sizePt == 72)    // 96px → 72pt
-        #expect(s.type(.title).sizePt == 34)      // default, NOT the display size
+        #expect(s.type(.display).sizePt == 96)    // presentation display floor (token 72pt can only grow it)
+        #expect(s.type(.title).sizePt == 40)      // default, NOT the display size
         #expect(s.type(.title).font == "Poppins")
     }
 
@@ -58,7 +58,7 @@ import Testing
         """))
         // Only the family is known → size/weight/tracking stay at role defaults.
         #expect(deck.style.type(.heading).font == "Georgia")
-        #expect(deck.style.type(.heading).sizePt == 22)
+        #expect(deck.style.type(.heading).sizePt == 30)
         #expect(deck.style.type(.heading).weight == 700)
     }
 
@@ -77,6 +77,47 @@ import Testing
         #expect(s.isDark == true)   // derived from resolved bg luminance, not themeMode
     }
 
+    @Test func darkThemeInkTokenStaysReadable() throws {
+        // Reproduces the "Blaze" bug: a dark theme whose "ink" token is near-black
+        // (meant for light surfaces). Text must NOT land dark-on-dark.
+        let deck = try Presentation()
+        var design = Design()
+        design.themeMode = "dark"
+        design.palette = ["ff4100", "ffc700", "292a2c", "000000", "fee3c1"].map { Color($0) }
+        design.colors = ["ink": Color("292a2c"), "primary": Color("ff4100")]   // "ink" → dk1 (text)
+        deck.applyDesign(design)
+        let s = deck.style
+        #expect(s.isDark)
+        #expect(s.ink.contrastRatio(with: s.background) >= 4.5)   // guarded, not #292a2c on #000000
+    }
+
+    @Test func webSizeTokensCannotShrinkSlideText() throws {
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse("""
+        ## Typography tokens
+        - body: family Inter, size 13px
+        """))
+        // 13px → ~10pt on a slide is unreadable; the presentation floor holds.
+        #expect(deck.style.type(.body).sizePt >= 24)
+        #expect(deck.style.type(.body).font == "Inter")     // brand font still adopted
+    }
+
+    @Test func darkAccentStatAndKickerStayLegible() throws {
+        // Reproduces the "Aurora on black" bug: a dark accent used for the big
+        // number/kicker rendered near-invisible. Emphasis color must clear AA.
+        let deck = try Presentation()
+        var design = Design()
+        design.themeMode = "dark"
+        design.palette = ["000000", "533afd", "ffffff"].map { Color($0) }
+        design.colors = ["accent 1": Color("533afd")]           // dark indigo accent
+        deck.applyDesign(design)
+        let s = deck.style
+        #expect(s.isDark)
+        #expect(s.type(.stat).color.contrastRatio(with: s.background) >= 4.5)
+        #expect(s.type(.kicker).color.contrastRatio(with: s.background) >= 4.5)
+    }
+
+
     @Test func autoContrastAndAccentWrap() throws {
         let s = try Presentation().style
         // Text on any accent clears AA, and wrap is cyclic + non-trapping.
@@ -89,7 +130,7 @@ import Testing
         let deck = try Presentation()
         let big = deck.style.with(.title) { $0.sizePt = 54 }
         #expect(big.type(.title).sizePt == 54)
-        #expect(deck.style.type(.title).sizePt == 34)   // original untouched
+        #expect(deck.style.type(.title).sizePt == 40)   // original untouched
     }
 
     @Test func spacingRadiusFallbackAndValue() throws {
@@ -125,7 +166,7 @@ import Testing
         // were never in the file). appliedDesign is not serialized.
         #expect(reopened.appliedDesign == nil)
         #expect(reopened.style.headingFont == "Georgia")
-        #expect(reopened.style.type(.title).sizePt == 34)   // reverted to default
+        #expect(reopened.style.type(.title).sizePt == 40)   // reverted to default
     }
 
     @Test func styledRunsAreDeterministic() throws {
@@ -137,5 +178,42 @@ import Testing
             return try deck.serializedData()
         }
         #expect(try build() == build())
+    }
+
+    @Test func mutedInkClearsAAOnLightThemes() throws {
+        // A naive ink.mixed(bg, 0.45) washes to ~3.9 on a white background; the
+        // contrast floor must keep secondary text (subtitles, captions) ≥ 4.5.
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse("""
+        ## Color palette
+        - #0373e9
+        - #111b21
+        - #ffffff
+        - #f0f4f9
+        """))
+        let s = deck.style
+        #expect(!s.isDark)
+        #expect(s.mutedInk.contrastRatio(with: s.background) >= 4.5)
+    }
+
+    @Test func accentsExcludeNearBackgroundSurfaceColors() throws {
+        // Near-white surface/hairline tokens must not become accents — they'd
+        // render as invisible fills/series; saturated brand colors stay.
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse("""
+        ## Color palette
+        - #25d366
+        - #0373e9
+        - #ffffff
+        - #111b21
+        - #fcf5eb
+        - #d9fdd3
+        - #f0f4f9
+        """))
+        let s = deck.style
+        for n in 1...6 {
+            #expect(s.accent(n).contrastRatio(with: s.background) >= 1.3)   // visible on bg
+        }
+        #expect(s.accent(1).hex == "25D366")   // the brand green still leads
     }
 }

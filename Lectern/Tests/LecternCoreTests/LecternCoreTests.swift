@@ -18,6 +18,125 @@ import Rostrum
 
     // MARK: - IR + validation
 
+    @Test func rendersDiagramSlides() async throws {
+        let deck = DeckIR(meta: Meta(title: "Diagrams"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "diagram", title: "Process",
+                    body: Body(diagram: IRDiagram(kind: "process", items: ["One", "Two", "Three"]))),
+            IRSlide(id: "s3", layout: "diagram", title: "Pyramid",
+                    body: Body(diagram: IRDiagram(kind: "pyramid", items: ["Base", "Middle", "Peak"]))),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
+        #expect(result.slideCount == 3)
+        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)   // opens clean
+    }
+
+    @Test func rendersBandsSlide() async throws {
+        let deck = DeckIR(meta: Meta(title: "Bands"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "bands", title: "Three waves",
+                    body: Body(items: ["The Signal — repricing", "The Strain — food", "The Rupture — migration"])),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+
+        // Default: styled shapes, no SmartArt (SmartArt is opt-in).
+        let drawn = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
+        #expect(drawn.slideCount == 2)
+        let reopenedDrawn = try Presentation(contentsOf: drawn.url)
+        #expect(try reopenedDrawn.validate().isEmpty)
+        #expect(reopenedDrawn.slides[reopenedDrawn.slides.count - 1].smartArtTexts.isEmpty)
+
+        // Opt-in: native Basic Block List SmartArt (the flex "five layers" look).
+        let smart = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false,
+                                                    into: dir, useSmartArt: true)
+        let reopenedSmart = try Presentation(contentsOf: smart.url)
+        #expect(reopenedSmart.slides[reopenedSmart.slides.count - 1].smartArtTexts.first?.count == 3)
+    }
+
+    @Test func rendersChartAndMetricsSlides() async throws {
+        let deck = DeckIR(meta: Meta(title: "Data"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener", body: Body(subtitle: "s")),
+            IRSlide(id: "s2", layout: "metrics", title: "Three numbers",
+                    body: Body(stats: [IRStat(value: "$300B", label: "losses"), IRStat(value: "1.2°C", label: "warming")])),
+            IRSlide(id: "s3", layout: "chart", title: "Rising losses",
+                    body: Body(chart: IRChart(kind: "bar", categories: ["2020", "2021", "2022"],
+                                              series: [IRSeries(name: "US$B", values: [210, 280, 313])]))),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
+        #expect(result.slideCount == 3)
+        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)   // opens clean, with a chart part
+    }
+
+    @Test func malformedChartFallsBackInsteadOfCrashing() async throws {
+        // series length ≠ categories would trip ChartData's precondition — the
+        // renderer must fall back to bullets, not crash.
+        let deck = DeckIR(meta: Meta(title: "Data"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "chart", title: "Broken chart",
+                    body: Body(bullets: [Bullet(text: "shown instead")],
+                               chart: IRChart(kind: "bar", categories: ["a", "b", "c"],
+                                              series: [IRSeries(name: "s", values: [1, 2])]))),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
+        #expect(result.slideCount == 2)
+    }
+
+    @Test func imagePlacementPolicyAvoidsTextDenseLayouts() {
+        #expect(SlideLayoutKind.title.imagePlacement == .fullBleed)
+        #expect(SlideLayoutKind.bigNumber.imagePlacement == .fullBleed)
+        #expect(SlideLayoutKind.sectionHeader.imagePlacement == .sidePanel)
+        #expect(SlideLayoutKind.bullets.imagePlacement == .none)     // never over text
+        #expect(SlideLayoutKind.comparison.imagePlacement == .none)
+    }
+
+    @Test func qaPassAdoptsAValidRevision() async throws {
+        // Draft is the 5-slide fixture; the QA pass returns a tighter 3-slide deck.
+        let revised = DeckIR(meta: Meta(title: "Tighter"), slides: [
+            IRSlide(id: "a", layout: "title", title: "A sharper opener", body: Body(subtitle: "s")),
+            IRSlide(id: "b", layout: "bullets", title: "One clear idea", body: Body(bullets: [Bullet(text: "point")])),
+            IRSlide(id: "c", layout: "closing", title: "Do this next", body: Body(callToAction: "Act")),
+        ])
+        let revisedJSON = String(decoding: try JSONEncoder().encode(revised), as: UTF8.self)
+        let provider = FixtureProvider(validJSON: try fixtureJSON(), revisedJSON: revisedJSON)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let events = EventBox()
+        let result = try await DeckGenerator(provider: provider)
+            .generate(DeckRequest(prompt: "x", slideCount: 3), designURL: nil, into: dir) { events.record($0) }
+        #expect(result.slideCount == 3)                     // adopted the revision, not the 5-slide draft
+        #expect(events.stages.contains("auditing"))         // the QA pass ran
+    }
+
+    @Test func qaPassCanBeDisabled() async throws {
+        let provider = FixtureProvider(validJSON: try fixtureJSON(), revisedJSON: "{ garbage")
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        // Even with a broken revision, quality:false skips it and the draft ships.
+        let result = try await DeckGenerator(provider: provider, quality: false)
+            .generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir) { _ in }
+        #expect(result.slideCount == 5)
+    }
+
+    @Test func decodesDeckMissingIrVersion() throws {
+        // A real model often omits irVersion — it must default, not fail (the
+        // deterministic cause of "couldn't parse").
+        let json = """
+        { "meta": { "title": "Q3" },
+          "slides": [ { "id": "s1", "layout": "title", "title": "Q3", "body": { "subtitle": "Review" } } ] }
+        """
+        let deck = try JSONDecoder().decode(DeckIR.self, from: Data(json.utf8))
+        #expect(deck.irVersion == DeckIR.currentVersion)
+        #expect(deck.slides.count == 1)
+        // …and it validates (the renderer would accept it).
+        let result = try DeckValidator().validate(deck, requestedSlideCount: 1, notesRequired: false)
+        #expect(result.deck.slides.first?.kind == .title)
+    }
+
     @Test func decodesTheExampleIR() throws {
         let deck = try fixtureDeck()
         #expect(deck.irVersion == DeckIR.currentVersion)
@@ -85,7 +204,7 @@ import Rostrum
     // MARK: - Pipeline (Mock provider end-to-end)
 
     @Test func mockPipelineHappyPath() async throws {
-        let provider = MockProvider(validJSON: try fixtureJSON())
+        let provider = FixtureProvider(validJSON: try fixtureJSON())
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let events = EventBox()
         let request = DeckRequest(prompt: "why native rendering", slideCount: 5, notes: true)
@@ -99,14 +218,14 @@ import Rostrum
     @Test func repairLoopRecoversOnceThenFails() async throws {
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         // invalidJSONOnce → exactly one repair → success (AT-14).
-        let once = MockProvider(validJSON: try fixtureJSON(), failure: .invalidJSONOnce)
+        let once = FixtureProvider(validJSON: try fixtureJSON(), failure: .invalidJSONOnce)
         let events = EventBox()
         let result = try await DeckGenerator(provider: once).generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir) { events.record($0) }
         #expect(result.slideCount == 5)
         #expect(events.stages.contains("repairing"))
 
         // invalidJSONAlways → .schemaInvalid.
-        let always = MockProvider(validJSON: try fixtureJSON(), failure: .invalidJSONAlways)
+        let always = FixtureProvider(validJSON: try fixtureJSON(), failure: .invalidJSONAlways)
         await #expect(throws: LecternError.self) {
             _ = try await DeckGenerator(provider: always).generate(DeckRequest(prompt: "x"), designURL: nil, into: dir) { _ in }
         }
@@ -146,32 +265,98 @@ import Rostrum
         }
     }
 
-    // MARK: - Provider selection (no keychain, no network)
+    // MARK: - Provider selection (live-only, no keychain, no network)
 
-    @Test func factoryFallsBackToMockWithoutAKey() throws {
-        let mockJSON = try fixtureJSON()
+    @Test func factoryThrowsWithoutAKey() throws {
         for key in [nil, "", "   ", "\n"] as [String?] {
-            let provider = ProviderFactory.make(id: .anthropic, apiKey: key, model: "claude-sonnet-5", mockJSON: mockJSON)
-            #expect(provider.id == .custom)                       // MockProvider.id
-            #expect(provider.displayName == "Mock")
-            #expect(!ProviderFactory.isLive(id: .anthropic, apiKey: key))
+            #expect(throws: LecternError.noKey) {
+                _ = try ProviderFactory.make(id: .anthropic, apiKey: key, model: "claude-sonnet-5")
+            }
         }
     }
 
-    @Test func factoryPicksAnthropicWithAKey() throws {
-        let provider = ProviderFactory.make(id: .anthropic, apiKey: "sk-ant-xyz", model: "claude-opus-4-8", mockJSON: try fixtureJSON())
+    @Test func factoryBuildsAnthropicWithAKey() throws {
+        let provider = try ProviderFactory.make(id: .anthropic, apiKey: "sk-ant-xyz", model: "claude-opus-4-8")
         #expect(provider.id == .anthropic)
         #expect(provider.displayName == "Anthropic")
-        #expect(ProviderFactory.isLive(id: .anthropic, apiKey: "sk-ant-xyz"))
+        #expect(ProviderFactory.isWired(.anthropic))
     }
 
-    @Test func factoryStaysOnMockForUnwiredProvidersEvenWithAKey() throws {
-        // OpenAI/Gemini/Custom aren't wired live yet — don't pretend they are.
+    @Test func factoryThrowsForUnwiredProviders() throws {
+        // OpenAI/Gemini/Custom aren't wired yet — throw rather than fake a deck.
         for id in [ProviderID.openAI, .gemini, .custom] {
-            let provider = ProviderFactory.make(id: id, apiKey: "some-key", model: "m", mockJSON: try fixtureJSON())
-            #expect(provider.displayName == "Mock")
-            #expect(!ProviderFactory.isLive(id: id, apiKey: "some-key"))
+            #expect(!ProviderFactory.isWired(id))
+            #expect(throws: LecternError.self) {
+                _ = try ProviderFactory.make(id: id, apiKey: "some-key", model: "m")
+            }
         }
+    }
+
+    // MARK: - Style catalog parsing (kairos design.md header)
+
+    @Test func parsesRichStyleMetadata() throws {
+        let root = tempDir(); defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let md = """
+        # Apricot
+
+        **Category:** developer
+        **Theme:** light
+        **Vibe:** Editorial
+
+        ## Color palette
+
+        - `#f7f7f4`
+        - `#26251e`
+        - `#f54e00`
+
+        ## Typography
+
+        Families: "'CursorGothic', sans-serif", "'JetBrains Mono', monospace". Weights: 400, 500.
+        """
+        try md.write(to: root.appendingPathComponent("apricot.md"), atomically: true, encoding: .utf8)
+        let style = try #require(try StyleCatalog().load(from: root).first)
+        #expect(style.name == "Apricot")
+        #expect(style.vibe == "Editorial")
+        #expect(style.category == "developer")
+        #expect(style.theme == .light)
+        #expect(style.badge == "Editorial · Light")
+        #expect(style.swatches == ["#f7f7f4", "#26251e", "#f54e00"])
+        #expect(style.displayFont == "CursorGothic")           // quoted CSS stack unwrapped
+        #expect(style.tags.contains("developer") && style.tags.contains("editorial"))
+    }
+
+    // MARK: - Optional image generation
+
+    @Test func imageFactoryRequiresAKey() {
+        #expect(throws: LecternError.noKey) { _ = try ImageProviderFactory.make(id: .gemini, apiKey: nil) }
+        #expect(throws: LecternError.noKey) { _ = try ImageProviderFactory.make(id: .openAI, apiKey: "  ") }
+    }
+
+    @Test func imageFactoryBuildsEachProvider() throws {
+        #expect(try ImageProviderFactory.make(id: .gemini, apiKey: "k").id == .gemini)
+        #expect(try ImageProviderFactory.make(id: .openAI, apiKey: "k").id == .openAI)
+    }
+
+    @Test func styleDirectiveIsOnBrandAndTextFree() {
+        let style = Style(slug: "aurora", name: "Aurora", vibe: "Technical", theme: .light,
+                          swatches: ["#533afd", "#4434d4"], designURL: URL(fileURLWithPath: "/x"))
+        let directive = ImageStyleDirective.from(
+            style: style, designText: "Overall visual personality: crisp fintech gradients throughout.")
+        #expect(directive.contains("#533afd"))
+        #expect(directive.lowercased().contains("technical"))
+        #expect(directive.lowercased().contains("no text"))          // guards against baked-in words
+        #expect(directive.contains("crisp fintech"))
+    }
+
+    @Test func slideDecodesOptionalImageBrief() throws {
+        let withImage = #"{"id":"s1","layout":"title","image":{"prompt":"a lighthouse at dawn","aspect":"16:9"}}"#
+        let slide = try JSONDecoder().decode(IRSlide.self, from: Data(withImage.utf8))
+        #expect(slide.image?.prompt == "a lighthouse at dawn")
+        #expect(slide.image?.aspect == "16:9")
+        // A slide with no image still decodes (image is optional).
+        let bare = try JSONDecoder().decode(IRSlide.self, from: Data(#"{"id":"s2","layout":"bullets"}"#.utf8))
+        #expect(bare.image == nil)
     }
 
     // MARK: - Pricing (§10.3)
@@ -218,6 +403,8 @@ private final class EventBox: @unchecked Sendable {
         case .drafting: events.append("drafting")
         case .validating: events.append("validating")
         case .repairing: events.append("repairing")
+        case .auditing: events.append("auditing")
+        case .illustrating: events.append("illustrating")
         case .rendering: events.append("rendering")
         case .finished: events.append("finished")
         }

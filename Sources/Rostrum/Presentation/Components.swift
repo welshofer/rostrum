@@ -53,12 +53,13 @@ public extension ShapeCollection {
     /// A bulleted list; the body size auto-shrinks as the item count grows.
     @discardableResult
     func addBulletList(_ items: [String], in rect: Rect, style: DeckStyle,
-                       size: Double? = nil, color: Color? = nil, gapPt: Double? = nil) throws -> Shape {
-        let box = try styledBox(rect, anchor: .top)
+                       size: Double? = nil, color: Color? = nil, gapPt: Double? = nil,
+                       anchor: VerticalAnchor = .top) throws -> Shape {
+        let box = try styledBox(rect, anchor: anchor)
         var ts = style.type(.body)
         ts.sizePt = size ?? bulletSize(count: items.count, base: ts.sizePt)
         if let color { ts.color = color }
-        let gap = gapPt ?? style.spacing.sm.points
+        let gap = gapPt ?? style.spacing.md.points          // breathing room between items
         let tf = box.textFrame!
         for (i, item) in items.enumerated() {
             let p = tf.addParagraph()
@@ -175,7 +176,7 @@ public extension ShapeCollection {
         if count <= 4 { return base }
         if count <= 6 { return base - 2 }
         if count <= 8 { return base - 4 }
-        return Swift.max(12, base - 6)
+        return Swift.max(20, base - 6)   // never below a legible projection floor
     }
 }
 
@@ -189,8 +190,9 @@ public extension Slide {
     }
     @discardableResult
     func addBulletList(_ items: [String], in rect: Rect, style: DeckStyle,
-                       size: Double? = nil, color: Color? = nil, gapPt: Double? = nil) throws -> Shape {
-        try shapes.addBulletList(items, in: rect, style: style, size: size, color: color, gapPt: gapPt)
+                       size: Double? = nil, color: Color? = nil, gapPt: Double? = nil,
+                       anchor: VerticalAnchor = .top) throws -> Shape {
+        try shapes.addBulletList(items, in: rect, style: style, size: size, color: color, gapPt: gapPt, anchor: anchor)
     }
     @discardableResult
     func addKicker(_ text: String, in rect: Rect, style: DeckStyle, color: Color? = nil,

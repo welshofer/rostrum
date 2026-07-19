@@ -13,6 +13,23 @@ public enum PromptTemplates {
 
         Audience: \(request.audience).
 
+        Craft (non-negotiable):
+        - The deck argues, it doesn't list. Give it a spine: hook → tension → \
+        evidence → implication → action.
+        - Every title is an assertion the audience remembers, not a topic label \
+        ("Insurers are quietly repricing the coast", not "Economic Impact").
+        - Be concrete: real magnitudes, named examples, sharp contrasts. No filler \
+        ("Section One", "various factors"). Don't fabricate precise statistics — \
+        prefer rounded, defensible ones.
+        - One idea per slide. Bullets: TARGET 3–5, never more than 6 (an agenda may
+        list up to 7); parallel grammar, ≤10 words each, never redundant.
+        - SHOW data, don't list it. A slide comparing quantities → a "chart" (bar for
+        comparison, line for a trend, pie for shares). Two-to-four headline figures →
+        a "metrics" slide. A single dramatic figure → "bigNumber". Never bury numbers
+        in bullet text when a chart or metrics slide would land harder. Use only
+        defensible, well-known figures.
+        - The closer lands a specific call to action, never a bare "Thank you".
+
         Layout vocabulary (each slide has an "id", "layout", optional "title", "body", and "notes"):
         - title            body: { subtitle? }               (exactly one, first)
         - agenda           body: { items: [string] }         (at most one)
@@ -22,10 +39,28 @@ public enum PromptTemplates {
         - comparison       same shape as twoColumn
         - quote            body: { quote, attribution? }
         - bigNumber        body: { value, label }
+        - metrics          body: { stats: [{ value, label }] }   (2–4 headline numbers)
+        - chart            body: { chart: { kind: bar|line|pie, categories: [string], series: [{ name, values: [number] }] } }
+        - bands            body: { items: [string] }   (3–6 parallel concepts/phases/layers as colored bands; each item "Label — short detail")
+        - diagram          body: { diagram: { kind: process|pyramid|cycle, items: [string] } }
+                             process = sequential steps; pyramid = hierarchy/ladder (base→peak); each item short "Label — detail"
         - closing          body: { callToAction?, contact? }  (at most one, last)
 
+        VARY THE LAYOUTS. A deck of near-identical bullet slides is a failure. Reach \
+        for the richest fitting layout — bands for parallel concepts, chart for \
+        quantities, metrics for figures, comparison for two sides. Use "bullets" \
+        sparingly and NEVER twice in a row.
+
         Group slides into "sections" (id, title, slideIds) when the deck has natural acts. \
-        Keep bullets to at most 6 per slide, at most 12 words each, at most 2 levels deep.
+        Keep bullets to 3–5 per slide (6 max; an agenda may list up to 7), at most 12
+        words each, at most 2 levels deep. Do NOT lean on "bands": no more than about
+        one slide in four should be bands — reach for a "diagram" (process/pyramid),
+        "chart", "comparison", or "metrics" instead so the deck stays visually varied.
+
+        A slide MAY include an optional "image" brief ({ prompt, aspect? }) ONLY when a \
+        photographic or illustrative visual materially strengthens it (openers, section \
+        headers, evocative single-idea slides) — never on dense bullet, comparison, or \
+        agenda slides. Describe the subject only; the palette and finish are applied later.
         """
     }
 
@@ -44,6 +79,81 @@ public enum PromptTemplates {
                 + "--- SOURCE MATERIAL ---\n\(grounding)")
         }
         return parts.joined(separator: "\n\n")
+    }
+
+    // MARK: - QA editor pass
+
+    /// The audit rubric — the craft a strong deck reviewer applies. Returned deck
+    /// must stay in the same schema and layout vocabulary.
+    public static func editorSystem(for request: DeckRequest) -> String {
+        """
+        You are a ruthless presentation editor. You receive a draft deck as JSON and \
+        must return a materially stronger version in the SAME "\(DeckIR.currentVersion)" \
+        schema and layout vocabulary, via the emit_deck tool — nothing else.
+
+        Fix every weakness:
+
+        NARRATIVE — the deck must argue, not just list. Enforce a spine: hook → \
+        tension → evidence → implication → action. Cut or merge any slide that \
+        doesn't earn its place.
+
+        TITLES — every slide title is an assertion the audience should remember, not \
+        a topic label. "Insurers are quietly repricing the coast" beats "Economic \
+        Impact". No slide titled with a bare noun phrase.
+
+        SUBSTANCE — replace vague claims with concrete detail: real magnitudes, named \
+        examples, sharp contrasts. Delete filler ("Section One", "various factors", \
+        "key considerations"). A bigNumber must carry a specific, defensible statistic \
+        with a crisp caption. Never invent precise figures you can't defend — prefer \
+        rounded, well-known ones.
+
+        BULLETS — parallel grammar, one idea each, ≤10 words. TARGET 3–5 per slide,
+        never more than 6 (an agenda may list up to 7); split or cut any slide that
+        exceeds it. No two bullets that say the same thing.
+
+        SHOW DATA — wherever a slide lists numbers or compares quantities, convert it to \
+        a "chart" (bar/line/pie with real categories + series) or a "metrics" slide \
+        (2–4 headline figures). Numbers buried in bullets are a wasted slide.
+
+        VARY THE LAYOUTS — this is the difference between a template and a designed \
+        deck. Audit the layout mix and rewrite for variety: sequential steps/stages → \
+        a "diagram" (kind process); a hierarchy, maturity ladder, or foundation → a \
+        "diagram" (kind pyramid); parallel concepts → "bands"; two sides → \
+        "comparison"; quantities → "chart"; figures → "metrics"; a single number → \
+        "bigNumber". HARD CAP on bands: no more than about one slide in four may be a \
+        bands slide — count them, and convert the excess into diagrams, charts, \
+        comparisons, or metrics. Allow at most TWO plain "bullets" slides in the whole \
+        deck, and NEVER two bullet slides back to back. The finished deck should feel \
+        visually different slide to slide, like a deck a designer built, not a list \
+        with headings.
+
+        OPEN & CLOSE — the opener earns attention in one line; the closer lands a \
+        specific call to action, never "Thank you".
+
+        NOTES — speaker notes are what the presenter SAYS aloud (2–4 conversational \
+        sentences), not a re-reading of the slide.
+
+        IMAGES — keep an "image" brief only where a visual genuinely adds meaning \
+        (openers, section headers, one evocative idea); make its prompt vivid and \
+        specific. Remove decorative or redundant image briefs.
+
+        Preserve the deck's language, its section structure, and roughly \
+        \(request.slideCount) slides. Return the COMPLETE revised deck.
+        """
+    }
+
+    /// The draft to hand the editor.
+    public static func editorUser(deckJSON: String, request: DeckRequest) -> String {
+        """
+        Topic: \(request.prompt)
+        Audience: \(request.audience). Goal: \(request.goal).
+
+        Here is the current draft deck to strengthen:
+
+        \(deckJSON)
+
+        Return the improved deck via emit_deck.
+        """
     }
 
     /// Goal → rhetorical stance (Appendix A).

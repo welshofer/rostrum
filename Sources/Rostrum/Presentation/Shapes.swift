@@ -103,8 +103,11 @@ public final class ShapeCollection: Sequence {
         xfrm.appendElement(XML.Element("a:off", attributes: [
             ("x", String(frame.x.rawValue)), ("y", String(frame.y.rawValue)),
         ]))
+        // a:ext is ST_PositiveCoordinate — a negative extent from an over-inset
+        // layout is schema-invalid and makes PowerPoint offer to "repair". Clamp
+        // it away at the one point every shape's size is written.
         xfrm.appendElement(XML.Element("a:ext", attributes: [
-            ("cx", String(frame.width.rawValue)), ("cy", String(frame.height.rawValue)),
+            ("cx", String(Swift.max(0, frame.width.rawValue))), ("cy", String(Swift.max(0, frame.height.rawValue))),
         ]))
         spPr.appendElement(xfrm)
         let prstGeom = XML.Element("a:prstGeom", attributes: [("prst", geometry.rawValue)])
@@ -120,6 +123,10 @@ public final class ShapeCollection: Sequence {
             bodyPr[attribute: "wrap"] = "square"
         }
         bodyPr[attribute: "rtlCol"] = "0"
+        // Shrink text to fit its box rather than spill past the edges. This is the
+        // single guard against overflow across every builder (long bullets, step
+        // captions, headers); PowerPoint and LibreOffice both honor it.
+        bodyPr.appendElement(XML.Element("a:normAutofit"))
         txBody.appendElement(bodyPr)
         txBody.appendElement(XML.Element("a:lstStyle"))
         txBody.appendElement(XML.Element("a:p"))

@@ -2,55 +2,123 @@ import Foundation
 import Observation
 import LecternCore
 
-// The app's single source of truth (@Observable, no ViewModel types — views
-// observe this directly). Wired to the tested LecternCore pipeline; the default
-// provider is MockProvider so the app runs end-to-end with no key (M2). Swap in
-// AnthropicProvider (+ Keychain) for live runs.
-//
-// NOTE: this App/ tree is the Xcode app target — it is NOT built by `swift test`
-// (which builds LecternCore only). Liquid Glass styling (§3), Settings/Keychain,
-// History (SwiftData), and the PDF ladder are the remaining M3–M5 work.
-
+// The app's single source of truth (@Observable — views observe it directly, no
+// ViewModels). Wired to the tested LecternCore pipeline. There is NO mock
+// provider: generation requires a real key (invariant I1: key lives only in the
+// Keychain). Runs off-main for catalog, PDF, network, and rendering (I6).
 @MainActor
 @Observable
 final class AppState {
     enum Phase: Equatable {
-        case compose
-        case generating
+        case compose, generating
         case result(DeckResult)
         case failed(String)
     }
-
     var phase: Phase = .compose
 
-    // Compose form.
+    // MARK: Compose form
     var prompt = ""
     var audience = "General"
     var goal = "inform"
     var slideCount = 12
     var includeNotes = true
 
-    // Provider selection (§7.2 / §10). The key itself lives ONLY in the Keychain
-    // (invariant I1); here we persist just the non-secret choice + presence.
-    private(set) var providerID: ProviderID = .anthropic
-    private(set) var model = "claude-sonnet-5"
-    private(set) var hasKeyForSelectedProvider = false
+    /// Render diagrams (process/cycle/layers) as native PowerPoint SmartArt when
+    /// on; as styled shapes when off. Default off — SmartArt is opt-in.
+    private(set) var useSmartArt = false
 
-    init() {
-        let defaults = UserDefaults.standard
-        if let raw = defaults.string(forKey: Keys.providerID), let id = ProviderID(rawValue: raw) {
-            providerID = id
+    // MARK: Provider + model (non-secret prefs persisted; key stays in Keychain)
+    private(set) var providerID: ProviderID = .anthropic
+    var model = "claude-sonnet-5"
+    private(set) var hasKey = false
+
+    enum KeyStatus: Equatable { case unknown, validating, valid(Int), invalid(String) }
+    private(set) var keyStatus: KeyStatus = .unknown
+
+    /// A curated, clean model list — NOT the provider's raw /v1/models dump
+    /// (which is full of point-releases and internal EAP builds). Validate only
+    /// confirms the key; it never rewrites this list.
+    static func defaultModels(for id: ProviderID) -> [String] {
+        switch id {
+        case .anthropic: return ["claude-opus-4-8", "claude-sonnet-5", "claude-fable-5", "claude-haiku-4-5-20251001"]
+        default: return []
         }
-        if let saved = defaults.string(forKey: Keys.model), !saved.isEmpty { model = saved }
-        hasKeyForSelectedProvider = KeychainStore.hasKey(for: providerID)   // read-only, no prompt
+    }
+    var modelOptions: [String] { Self.defaultModels(for: providerID) }
+
+    // MARK: Optional image provider (§image grounding)
+    private(set) var imageProviderID: ImageProviderID = .gemini
+    private(set) var hasImageKey = false
+
+    // MARK: Style catalog
+    var styles: [Style] = []
+    var selectedStyleSlug: String?
+    var favorites: Set<String> = []
+    private(set) var recents: [String] = []
+    var selectedStyle: Style? { styles.first { $0.slug == selectedStyleSlug } }
+
+    // MARK: PDF grounding (§7.4)
+    private(set) var grounding: PDFGrounding.Source?
+    private(set) var groundingLoading = false
+    private(set) var groundingError: String?
+
+    // MARK: Generating progress
+    var stage = ""
+    var drafted = 0
+    var total = 0
+    var progressNoun = "slides"          // "slides" while drafting, "images" while illustrating
+    private var task: Task<Void, Never>?
+
+    private enum Keys {
+        static let provider = "providerID", model = "model", favorites = "favoriteStyles"
+        static let recents = "recentStyles", imageProvider = "imageProviderID"
+        static let useSmartArt = "useSmartArt"
     }
 
-    private enum Keys { static let providerID = "providerID"; static let model = "model" }
+    init() {
+        let d = UserDefaults.standard
+        if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
+        if let m = d.string(forKey: Keys.model), Self.defaultModels(for: providerID).contains(m) { model = m }
+        if let raw = d.string(forKey: Keys.imageProvider), let id = ImageProviderID(rawValue: raw) { imageProviderID = id }
+        favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])
+        recents = d.stringArray(forKey: Keys.recents) ?? []
+        useSmartArt = d.bool(forKey: Keys.useSmartArt)
+        hasKey = KeychainStore.hasKey(for: providerID)
+        hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
+    }
+
+    // MARK: - Styles
+
+    func loadStyles() async {
+        guard styles.isEmpty, let dir = Bundle.main.resourceURL?.appendingPathComponent("Styles") else { return }
+        let loaded = await Task.detached { (try? StyleCatalog().load(from: dir)) ?? [] }.value
+        styles = loaded
+        if selectedStyleSlug == nil { selectedStyleSlug = recents.first ?? loaded.first?.slug }
+    }
+
+    func selectStyle(_ slug: String) {
+        selectedStyleSlug = slug
+        recents.removeAll { $0 == slug }
+        recents.insert(slug, at: 0)
+        recents = Array(recents.prefix(8))
+        UserDefaults.standard.set(recents, forKey: Keys.recents)
+    }
+
+    func isFavorite(_ slug: String) -> Bool { favorites.contains(slug) }
+
+    func toggleFavorite(_ slug: String) {
+        if favorites.contains(slug) { favorites.remove(slug) } else { favorites.insert(slug) }
+        UserDefaults.standard.set(Array(favorites), forKey: Keys.favorites)
+    }
+
+    // MARK: - Provider / key
 
     func selectProvider(_ id: ProviderID) {
         providerID = id
-        UserDefaults.standard.set(id.rawValue, forKey: Keys.providerID)
-        hasKeyForSelectedProvider = KeychainStore.hasKey(for: id)
+        keyStatus = .unknown
+        if !Self.defaultModels(for: id).contains(model) { model = Self.defaultModels(for: id).first ?? model }
+        UserDefaults.standard.set(id.rawValue, forKey: Keys.provider)
+        hasKey = KeychainStore.hasKey(for: id)
     }
 
     func setModel(_ value: String) {
@@ -58,70 +126,109 @@ final class AppState {
         UserDefaults.standard.set(value, forKey: Keys.model)
     }
 
-    /// Persist the key to the Keychain only (never UserDefaults, never logged).
+    func setUseSmartArt(_ value: Bool) {
+        useSmartArt = value
+        UserDefaults.standard.set(value, forKey: Keys.useSmartArt)
+    }
+
     func saveKey(_ key: String) {
-        KeychainStore.save(key, for: providerID)
-        hasKeyForSelectedProvider = KeychainStore.hasKey(for: providerID)
+        let ok = KeychainStore.save(key, for: providerID)
+        hasKey = KeychainStore.hasKey(for: providerID)
+        keyStatus = ok && hasKey ? .unknown : .invalid("Couldn't write to the Keychain.")
     }
 
     func clearKey() {
         KeychainStore.delete(for: providerID)
-        hasKeyForSelectedProvider = false
+        hasKey = false; keyStatus = .unknown
     }
 
-    /// A ballpark pre-flight cost for the current live provider/model, formatted
-    /// for display — `nil` on the Mock (which is free) or an unpriced model.
-    var costEstimate: String? {
-        guard hasKeyForSelectedProvider,
-              let estimate = PriceTable.estimate(model: model, slideCount: slideCount) else { return nil }
-        return PriceTable.formatted(estimate)
+    // MARK: - Image provider (optional)
+
+    func selectImageProvider(_ id: ImageProviderID) {
+        imageProviderID = id
+        UserDefaults.standard.set(id.rawValue, forKey: Keys.imageProvider)
+        hasImageKey = KeychainStore.hasKey(forImage: id)
     }
 
-    // Style catalog (bundled design.md files).
-    var styles: [Style] = []
-    var selectedStyleSlug: String?
-    var selectedStyle: Style? { styles.first { $0.slug == selectedStyleSlug } }
-
-    /// Load the bundled style catalog off the main thread (invariant I6).
-    func loadStyles() async {
-        guard styles.isEmpty, let dir = Bundle.main.resourceURL?.appendingPathComponent("Styles") else { return }
-        let loaded = await Task.detached { (try? StyleCatalog().load(from: dir)) ?? [] }.value
-        styles = loaded
-        if selectedStyleSlug == nil { selectedStyleSlug = loaded.first?.slug }
+    func saveImageKey(_ key: String) {
+        KeychainStore.save(key, forImage: imageProviderID)
+        hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
     }
 
-    // Generating progress.
-    var stage = ""
-    var drafted = 0
-    var total = 0
+    func clearImageKey() {
+        KeychainStore.delete(forImage: imageProviderID)
+        hasImageKey = false
+    }
 
-    private var task: Task<Void, Never>?
+    /// Validate the stored key by pinging the provider's models endpoint (§294).
+    /// This ONLY confirms the key works — it never touches the curated model list
+    /// or the current selection.
+    func validateKey() async {
+        guard let key = KeychainStore.read(for: providerID) else { keyStatus = .invalid("No key stored."); return }
+        keyStatus = .validating
+        do {
+            let models = try await AnthropicModels.list(apiKey: key)
+            keyStatus = .valid(models.count)
+        } catch {
+            keyStatus = .invalid(Self.describe(error))
+        }
+    }
+
+    // MARK: - PDF grounding
+
+    func attachPDF(_ url: URL) async {
+        groundingLoading = true; groundingError = nil
+        let needsScope = url.startAccessingSecurityScopedResource()
+        defer { if needsScope { url.stopAccessingSecurityScopedResource() } }
+        if let source = await PDFGrounding.extract(from: url) {
+            grounding = source
+        } else {
+            groundingError = "No selectable text in that PDF (scans need OCR)."
+        }
+        groundingLoading = false
+    }
+
+    func clearPDF() { grounding = nil; groundingError = nil }
+
+    // MARK: - Generate
 
     var canGenerate: Bool {
-        phase != .generating && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        phase != .generating && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     func generate() {
-        guard canGenerate else { return }
-        phase = .generating; stage = "Starting"; drafted = 0; total = slideCount
+        guard phase != .generating else { return }
+        guard hasKey else { phase = .failed("Add your \(providerID.label) API key in Settings (⌘,) to generate."); return }
 
+        phase = .generating; stage = "Starting"; drafted = 0; total = slideCount
         let request = DeckRequest(prompt: prompt, audience: audience, goal: goal,
                                   slideCount: slideCount, notes: includeNotes,
+                                  groundingText: grounding?.text,
                                   styleSlug: selectedStyleSlug ?? "default")
-        // Pick the provider from the stored key: live when one exists for a wired
-        // provider, else the Mock so this always runs offline (§13). The key is
-        // read from the Keychain here and handed straight to the provider (I1).
-        let provider = ProviderFactory.make(
-            id: providerID,
-            apiKey: KeychainStore.read(for: providerID),
-            model: model,
-            mockJSON: Self.sampleDeckJSON(title: prompt, count: slideCount))
+        let designURL = selectedStyle?.designURL
         let directory = Self.decksDirectory()
-        let designURL = selectedStyle?.designURL           // renders with the chosen brand
+        let key = KeychainStore.read(for: providerID)
+        let id = providerID, chosenModel = model
+        let style = selectedStyle
+        let smartArt = useSmartArt
+        let imageID = imageProviderID
+        let imageKey = KeychainStore.read(forImage: imageProviderID)
 
         task = Task {
             do {
-                let result = try await DeckGenerator(provider: provider)
+                let provider = try ProviderFactory.make(id: id, apiKey: key, model: chosenModel)
+                // Optional imagery: only when an image key exists. Art direction
+                // comes from the chosen style's design.md so images stay on-brand.
+                var imageProvider: (any ImageProvider)?
+                var imageStyle: String?
+                if let imageKey, let provider = try? ImageProviderFactory.make(id: imageID, apiKey: imageKey) {
+                    imageProvider = provider
+                    if let style {
+                        let text = try? String(contentsOf: style.designURL, encoding: .utf8)
+                        imageStyle = ImageStyleDirective.from(style: style, designText: text)
+                    }
+                }
+                let result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
                     .generate(request, designURL: designURL, into: directory) { [weak self] event in
                         Task { @MainActor in self?.apply(event) }
                     }
@@ -134,40 +241,42 @@ final class AppState {
         }
     }
 
-    func cancel() {
-        task?.cancel()
-        task = nil
-        phase = .compose
-    }
-
-    func reset() {
-        prompt = ""; stage = ""; drafted = 0; total = 0; phase = .compose
-    }
+    func cancel() { task?.cancel(); task = nil; phase = .compose }
+    func reset() { stage = ""; drafted = 0; total = 0; phase = .compose }
 
     private func apply(_ event: GenerationEvent) {
         switch event {
         case .preparingSource: stage = "Reading source"
         case .outlining: stage = "Outlining"
         case .outlineReady: stage = "Outline ready"
-        case .drafting(let completed, let total): stage = "Writing slides"; drafted = completed; self.total = total
+        case .drafting(let c, let t): stage = "Writing slides"; drafted = c; total = t; progressNoun = "slides"
         case .validating: stage = "Validating"
         case .repairing: stage = "Repairing"
+        case .auditing: stage = "Polishing (QA pass)"
+        case .illustrating(let c, let t): stage = "Generating images"; drafted = c; total = t; progressNoun = "images"
         case .rendering: stage = "Rendering .pptx"
         case .finished: stage = "Done"
         }
     }
 
-    private static func describe(_ error: Error) -> String {
-        guard let lectern = error as? LecternError else { return "\(error)" }
+    /// Pre-flight cost ballpark for the current model (nil if unpriced).
+    var costEstimate: String? {
+        guard let est = PriceTable.estimate(model: model, slideCount: slideCount,
+                                            groundingChars: grounding?.text.count ?? 0) else { return nil }
+        return PriceTable.formatted(est)
+    }
+
+    static func describe(_ error: Error) -> String {
+        guard let lectern = error as? LecternError else { return "\(error.localizedDescription)" }
         switch lectern {
-        case .noKey: return "Add an API key to begin."
-        case .authFailed(let provider): return "That key was rejected by \(provider)."
-        case .rateLimited(let s): return "Rate-limited. Try again in \(s)s."
+        case .noKey: return "Add an API key in Settings to begin."
+        case .authFailed(let p): return "That key was rejected by \(p)."
+        case .rateLimited(let s): return "Rate-limited — try again in \(s)s."
         case .requestTooLarge: return "That PDF is too large for this model."
         case .networkOffline: return "No connection."
         case .schemaInvalid: return "The model returned a deck Lectern couldn't parse."
-        case .providerError(_, let message): return message
-        case .renderFailed(let message): return "Couldn't write the deck: \(message)"
+        case .providerError(_, let m): return m
+        case .renderFailed(let m): return "Couldn't write the deck: \(m)"
         case .cancelled: return "Cancelled."
         }
     }
@@ -176,25 +285,5 @@ final class AppState {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? URL(fileURLWithPath: NSTemporaryDirectory())
         return base.appendingPathComponent("Lectern/Decks", isDirectory: true)
-    }
-
-    /// A valid `lectern.deck/1` of `count` slides — the Mock's fixture.
-    static func sampleDeckJSON(title: String, count: Int) -> String {
-        let cleanTitle = title.isEmpty ? "Untitled Deck" : String(title.prefix(80))
-        var slides: [IRSlide] = [
-            IRSlide(id: "sl1", layout: "title", title: cleanTitle,
-                    body: Body(subtitle: "Generated by Lectern"), notes: "Open with the framing."),
-        ]
-        let contentCount = max(1, count - 2)
-        for i in 0..<contentCount {
-            slides.append(IRSlide(id: "sl\(i + 2)", layout: "bullets", title: "Point \(i + 1)",
-                                  body: Body(bullets: [Bullet(text: "First idea"), Bullet(text: "Second idea")]),
-                                  notes: "Talk to point \(i + 1)."))
-        }
-        slides.append(IRSlide(id: "sl\(count)", layout: "closing", title: "Thank you",
-                              body: Body(callToAction: "Questions?"), notes: "Invite discussion."))
-        let deck = DeckIR(meta: Meta(title: cleanTitle), slides: slides)
-        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
-        return (try? encoder.encode(deck)).flatMap { String(data: $0, encoding: .utf8) } ?? "{}"
     }
 }

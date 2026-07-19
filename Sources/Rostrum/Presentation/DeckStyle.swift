@@ -109,15 +109,22 @@ public struct DeckStyle: Sendable, Equatable {
     /// value fields immediately.
     public init(theme: Theme, design: Design? = nil) {
         let bg = design?.colors["background"] ?? theme.resolve(.bg1) ?? theme.color(.lt1) ?? .white
-        let inkColor = design?.colors["ink"] ?? design?.colors["text"]
+        let rawInk = design?.colors["ink"] ?? design?.colors["text"]
             ?? theme.resolve(.tx1) ?? theme.color(.dk1) ?? .black
+        // Contrast guard. A token named "ink"/"text" can be dark by intent (meant
+        // for light surfaces); on a dark theme it lands dark-on-dark and the deck
+        // is unreadable. If the raw text color doesn't clear AA on the background,
+        // swap in the most legible option (an on-brand palette light, else white).
+        let inkColor: Color = rawInk.contrastRatio(with: bg) >= 4.5
+            ? rawInk
+            : Color.bestTextColor(on: bg, options: [rawInk, .white, .black] + (design?.palette ?? []))
         let dark = bg.relativeLuminance < 0.5
         let acc = (1...6).map { theme.accent($0) ?? design?.colors["accent \($0)"] ?? inkColor }
         self.init(
             background: bg,
             surface: design?.colors["surface"] ?? (dark ? bg.lighten(0.08) : bg),
             ink: inkColor,
-            mutedInk: inkColor.mixed(with: bg, amount: 0.45),
+            mutedInk: DeckStyle.legibleMuted(inkColor, on: bg),
             link: theme.color(.hlink) ?? Color("0563C1"),
             accents: acc, isDark: dark,
             headingFont: design?.headingFont ?? theme.majorFont ?? DeckStyle.fallbackHeadingFont,
@@ -125,8 +132,8 @@ public struct DeckStyle: Sendable, Equatable {
             type: DeckStyle.makeTypeScale(
                 headingFont: design?.headingFont ?? theme.majorFont ?? DeckStyle.fallbackHeadingFont,
                 bodyFont: design?.bodyFont ?? theme.minorFont ?? DeckStyle.fallbackBodyFont,
-                ink: inkColor, mutedInk: inkColor.mixed(with: bg, amount: 0.45),
-                accent1: acc[0], design: design),
+                ink: inkColor, mutedInk: DeckStyle.legibleMuted(inkColor, on: bg),
+                accent1: acc[0], background: bg, design: design),
             spacing: TokenScale(DeckStyle.merge(DeckStyle.defaultSpacing, design?.spacing)),
             radius: TokenScale(DeckStyle.merge(DeckStyle.defaultRadius, design?.radius)),
             margin: .inches(0.9), gutter: .inches(0.2))
@@ -141,6 +148,21 @@ public struct DeckStyle: Sendable, Equatable {
         return accents[i]
     }
 
+    /// A muted variant of `ink` that still clears WCAG AA (4.5:1) against `bg`.
+    /// Blending ink toward the background reads as "secondary" text, but a fixed
+    /// 45% blend washes out on light themes (dark ink → mid-gray on white); step
+    /// the blend back toward ink until it's legible. Ink itself always clears, so
+    /// this converges.
+    static func legibleMuted(_ ink: Color, on bg: Color, minRatio: Double = 4.5) -> Color {
+        var amount = 0.45
+        while amount > 0.0 {
+            let muted = ink.mixed(with: bg, amount: amount)
+            if muted.contrastRatio(with: bg) >= minRatio { return muted }
+            amount -= 0.05
+        }
+        return ink
+    }
+
     /// The primary brand color (accent 1).
     public var primary: Color { accent(1) }
 
@@ -148,6 +170,19 @@ public struct DeckStyle: Sendable, Equatable {
     /// ink/paper when equally legible.
     public func textColor(on fill: Color) -> Color {
         Color.bestTextColor(on: fill, options: [ink, background, .black, .white])
+    }
+
+    /// An accent nudged toward the background's opposite until it clears WCAG AA
+    /// (4.5:1) — keeping the brand hue where possible — else the ink color.
+    static func legibleEmphasis(_ color: Color, on bg: Color, ink: Color) -> Color {
+        if color.contrastRatio(with: bg) >= 4.5 { return color }
+        let toward: Color = bg.relativeLuminance < 0.5 ? .white : .black
+        var out = color
+        for _ in 0..<7 {
+            out = out.mixed(with: toward, amount: 0.16)
+            if out.contrastRatio(with: bg) >= 4.5 { return out }
+        }
+        return ink
     }
 
     /// Accent `n` if it clears WCAG AA (4.5:1) on `bg`, else legible text.
@@ -200,7 +235,8 @@ public struct DeckStyle: Sendable, Equatable {
         accents: ["4472C4", "ED7D31", "A5A5A5", "FFC000", "5B9BD5", "70AD47"].map(Color.init),
         isDark: false, headingFont: fallbackHeadingFont, bodyFont: fallbackBodyFont,
         type: makeTypeScale(headingFont: fallbackHeadingFont, bodyFont: fallbackBodyFont,
-                            ink: Color("1A1A1A"), mutedInk: Color("5A6B7A"), accent1: Color("4472C4"), design: nil),
+                            ink: Color("1A1A1A"), mutedInk: Color("5A6B7A"), accent1: Color("4472C4"),
+                            background: .white, design: nil),
         spacing: TokenScale(defaultSpacing), radius: TokenScale(defaultRadius),
         margin: .inches(0.9), gutter: .inches(0.2))
 
@@ -213,18 +249,25 @@ public struct DeckStyle: Sendable, Equatable {
     /// Build the type scale, overlaying `design.md` typography tokens (by alias,
     /// per-facet) onto the built-in defaults.
     static func makeTypeScale(headingFont: String, bodyFont: String, ink: Color,
-                              mutedInk: Color, accent1: Color, design: Design?) -> TypeScale {
+                              mutedInk: Color, accent1: Color, background: Color, design: Design?) -> TypeScale {
+        // Emphasis color for kicker/stat: accent1, nudged until it clears AA on
+        // the background. An accent can be dark on a dark theme (Aurora's indigo
+        // on black) and render as an invisible number.
+        let emphasis = legibleEmphasis(accent1, on: background, ink: ink)
+        // Presentation-grade sizes (pt) for a 13.3"×7.5" canvas — projected type,
+        // not web reading type. design.md tokens may only grow these, never shrink
+        // them below a legible floor (see the clamp below).
         // role, size, weight, tracking, lineHeight, usesHeadingFont, color, uppercase
         let defs: [(TypeRole, Double, Int, Double, Double, Bool, Color, Bool)] = [
-            (.kicker,  14, 700,  2.0,  1.0,  false, accent1,  true),
-            (.display, 84, 700, -1.0,  1.02, true,  ink,      false),
-            (.title,   34, 700, -0.5,  1.05, true,  ink,      false),
-            (.heading, 22, 700, -0.25, 1.1,  true,  ink,      false),
-            (.subhead, 22, 400,  0,    1.2,  false, mutedInk, false),
-            (.body,    18, 400,  0,    1.25, false, ink,      false),
-            (.stat,    96, 700, -1.0,  1.0,  true,  accent1,  false),
-            (.quote,   36, 500, -0.25, 1.2,  true,  ink,      false),
-            (.caption, 14, 400,  0,    1.2,  false, mutedInk, false),
+            (.kicker,  16, 700,  2.0,  1.0,  false, emphasis, true),
+            (.display, 96, 700, -1.5,  1.02, true,  ink,      false),
+            (.title,   40, 700, -0.5,  1.06, true,  ink,      false),
+            (.heading, 30, 700, -0.25, 1.1,  true,  ink,      false),
+            (.subhead, 26, 400,  0,    1.2,  false, mutedInk, false),
+            (.body,    26, 400,  0,    1.3,  false, ink,      false),
+            (.stat,   130, 700, -2.0,  1.0,  true,  emphasis, false),
+            (.quote,   40, 500, -0.25, 1.25, true,  ink,      false),
+            (.caption, 18, 400,  0,    1.2,  false, mutedInk, false),
         ]
         let aliases: [TypeRole: [String]] = [
             .kicker:  ["kicker", "eyebrow", "overline", "label"],
@@ -247,7 +290,10 @@ public struct DeckStyle: Sendable, Equatable {
                                color: color, uppercase: upper)
             if let design, let token = firstToken(aliases[role] ?? [], in: design) {
                 if let f = token.family { ts.font = f }
-                if let s = token.sizePt { ts.sizePt = s }
+                // A design.md token may ENLARGE type (a bold hero display) but may
+                // never shrink a slide role below its legible presentation size —
+                // web px tokens (13–16px body) would otherwise render as ~10pt.
+                if let s = token.sizePt { ts.sizePt = Swift.max(ts.sizePt, s) }
                 if let w = token.weight { ts.weight = w }
                 if let t = token.trackingPt { ts.trackingPt = t }
                 if let l = token.lineHeight { ts.lineHeight = l }

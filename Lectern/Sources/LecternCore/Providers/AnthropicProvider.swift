@@ -31,18 +31,49 @@ public struct AnthropicProvider: LLMProvider {
         let user = repairing.map { RepairPrompt.make(invalidJSON: $0.invalidJSON, errors: $0.errors) }
             ?? PromptTemplates.deck(for: request)
 
+        // Force tool-use so the response is a deck object matching the schema —
+        // eliminates prose/fence/shape drift and the "couldn't parse" failure.
+        let tool: [String: Any] = [
+            "name": "emit_deck",
+            "description": "Return the finished slide deck as a \(DeckIR.currentVersion) object.",
+            "input_schema": DeckSchema.inputSchema(),
+        ]
         let payload: [String: Any] = [
             "model": model,
             "max_tokens": 8192,
             "system": system,
             "messages": [["role": "user", "content": user]],
+            "tools": [tool],
+            "tool_choice": ["type": "tool", "name": "emit_deck"],
         ]
 
         emit(.drafting(completed: 0, total: request.slideCount))
         let (data, usage) = try await send(payload)
-        let json = try extractJSONObject(from: data)
+        let json = try extractDeckJSON(from: data)
         emit(.drafting(completed: request.slideCount, total: request.slideCount))
         return RawDraft(json: json, usage: usage)
+    }
+
+    /// QA pass: hand the draft to a ruthless-editor system prompt and get a
+    /// stronger deck back through the same forced-schema tool.
+    public func revise(_ request: DeckRequest, deckJSON: String,
+                       emit: @Sendable (GenerationEvent) -> Void) async throws -> RawDraft {
+        guard !apiKey.isEmpty else { throw LecternError.noKey }
+        let tool: [String: Any] = [
+            "name": "emit_deck",
+            "description": "Return the improved slide deck as a \(DeckIR.currentVersion) object.",
+            "input_schema": DeckSchema.inputSchema(),
+        ]
+        let payload: [String: Any] = [
+            "model": model,
+            "max_tokens": 8192,
+            "system": PromptTemplates.editorSystem(for: request),
+            "messages": [["role": "user", "content": PromptTemplates.editorUser(deckJSON: deckJSON, request: request)]],
+            "tools": [tool],
+            "tool_choice": ["type": "tool", "name": "emit_deck"],
+        ]
+        let (data, usage) = try await send(payload)
+        return RawDraft(json: try extractDeckJSON(from: data), usage: usage)
     }
 
     /// POST with exactly one retry on 429/5xx (honoring Retry-After); no retry on
@@ -91,16 +122,22 @@ public struct AnthropicProvider: LLMProvider {
         return m
     }
 
-    /// Pull the deck JSON object out of the response's text content.
-    private func extractJSONObject(from data: Data) throws -> String {
+    /// Pull the deck JSON out of the forced `tool_use` block (with a text-JSON
+    /// fallback in case the model ever answers in prose).
+    private func extractDeckJSON(from data: Data) throws -> String {
         guard let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let content = obj["content"] as? [[String: Any]] else {
             throw LecternError.providerError(status: 200, message: "unexpected response shape")
         }
-        let text = content.compactMap { $0["text"] as? String }.joined()
-        guard let start = text.firstIndex(of: "{"), let end = text.lastIndex(of: "}"), start < end else {
-            throw LecternError.schemaInvalid(errors: ["no JSON object in the model response"])
+        if let toolUse = content.first(where: { ($0["type"] as? String) == "tool_use" }),
+           let input = toolUse["input"], JSONSerialization.isValidJSONObject(input),
+           let jsonData = try? JSONSerialization.data(withJSONObject: input) {
+            return String(decoding: jsonData, as: UTF8.self)
         }
-        return String(text[start...end])
+        let text = content.compactMap { $0["text"] as? String }.joined()
+        if let start = text.firstIndex(of: "{"), let end = text.lastIndex(of: "}"), start < end {
+            return String(text[start...end])
+        }
+        throw LecternError.schemaInvalid(errors: ["model returned no deck object"])
     }
 }

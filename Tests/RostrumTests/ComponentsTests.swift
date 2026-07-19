@@ -16,6 +16,34 @@ import Testing
         run.firstChild(named: "a:rPr")?.firstChild(named: "a:solidFill")?.firstChild(named: "a:srgbClr")?[attribute: "val"]
     }
 
+    @Test func textBoxesCarryNormAutofit() throws {
+        // Every text box must request shrink-to-fit, or long text overflows its
+        // box (the pervasive overflow bug).
+        let deck = try Presentation()
+        let box = try deck.slides[0].shapes.addTextBox(r)
+        _ = box.textFrame!.addParagraph().addRun("hello")
+        let bodyPr = try lastSp(deck.slides[0]).firstChild(named: "p:txBody")!.firstChild(named: "a:bodyPr")!
+        #expect(bodyPr.firstChild(named: "a:normAutofit") != nil)
+    }
+
+    @Test func bandsSlideNeverEmitsNegativeExtent() throws {
+        // Six thin bands used to produce a negative-height label box (addCard's
+        // 0.5" padding exceeds a 0.64" band) — which PowerPoint rejects with a
+        // "repair". Extents must all be non-negative (ST_PositiveCoordinate).
+        let deck = try Presentation()
+        let slide = try deck.bandsSlide("Six layers", bands: (1...6).map { "Layer \($0) — detail text here" })
+        func exts(_ el: XML.Element) -> [(Int, Int)] {
+            var out: [(Int, Int)] = []
+            if el.name == "a:ext", let cx = el[attribute: "cx"].flatMap({ Int($0) }),
+               let cy = el[attribute: "cy"].flatMap({ Int($0) }) { out.append((cx, cy)) }
+            for c in el.childElements { out += exts(c) }
+            return out
+        }
+        let all = exts(try slide.part.dom())
+        #expect(!all.isEmpty)
+        #expect(all.allSatisfy { $0.0 >= 0 && $0.1 >= 0 })
+    }
+
     @Test func cardIsRoundedSurfaceWithShadowAndPaddedContent() throws {
         let deck = try Presentation()
         let card = try deck.slides[0].addCard(in: r, style: deck.style)
@@ -64,9 +92,9 @@ import Testing
         try deck.slides[0].addStatTile("47", caption: "NPS, up from 31", in: r, style: deck.style)
         let paras = try lastSp(deck.slides[0]).firstChild(named: "p:txBody")!.children(named: "a:p")
         #expect(paras.count == 2)
-        // sz is hundredths of a point: stat 96pt, caption 14pt.
-        #expect(paras[0].firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"] == "9600")
-        #expect(paras[1].firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"] == "1400")
+        // sz is hundredths of a point: stat 130pt, caption 18pt (presentation scale).
+        #expect(paras[0].firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"] == "13000")
+        #expect(paras[1].firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"] == "1800")
     }
 
     @Test func bulletListAutoShrinksAndBullets() throws {
@@ -74,8 +102,8 @@ import Testing
         try deck.slides[0].addBulletList(Array(repeating: "item", count: 12), in: r, style: deck.style)
         let paras = try lastSp(deck.slides[0]).firstChild(named: "p:txBody")!.children(named: "a:p")
         #expect(paras.count == 12)
-        // 12 items → body 18pt − 6 = 12pt (floor), each bulleted.
-        #expect(paras[0].firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"] == "1200")
+        // 12 items → body 26pt − 6 = 20pt (legible projection floor), each bulleted.
+        #expect(paras[0].firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"] == "2000")
         #expect(paras[0].firstChild(named: "a:pPr")?.firstChild(named: "a:buChar") != nil)
     }
 
