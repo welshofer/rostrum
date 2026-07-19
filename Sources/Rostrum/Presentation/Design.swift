@@ -383,11 +383,9 @@ public struct Design: Sendable, Equatable {
         return Color(hex)
     }
 
-    static func luminance(_ color: Color) -> Double {
-        let v = Int(color.hex, radix: 16) ?? 0
-        let r = Double((v >> 16) & 0xFF), g = Double((v >> 8) & 0xFF), b = Double(v & 0xFF)
-        return (0.299 * r + 0.587 * g + 0.114 * b) / 255
-    }
+    /// De-forked onto the shared WCAG luminance so background/text/accent
+    /// ranking uses one perceptual model (see `Color.relativeLuminance`).
+    static func luminance(_ color: Color) -> Double { color.relativeLuminance }
 }
 
 extension Presentation {
