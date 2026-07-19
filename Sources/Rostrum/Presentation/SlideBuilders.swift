@@ -49,10 +49,12 @@ public extension Presentation {
                               in: grid.cell(column: 0, row: 3, columnSpan: 4, rowSpan: 2),
                               role: .display, style: s, color: onBg)
         }
-        try slide.addText(title, in: grid.cell(column: 0, row: 5, columnSpan: 11, rowSpan: 3),
+        // Keep the section title/subtitle in the left half so a right-hand image
+        // panel (added by the renderer) never overlaps the text.
+        try slide.addText(title, in: grid.cell(column: 0, row: 5, columnSpan: 6, rowSpan: 4),
                           role: .title, style: s, color: onBg)
         if let subtitle {
-            try slide.addText(subtitle, in: grid.cell(column: 0, row: 8, columnSpan: 10, rowSpan: 2),
+            try slide.addText(subtitle, in: grid.cell(column: 0, row: 9, columnSpan: 6, rowSpan: 2),
                               role: .subhead, style: s, color: onBg)
         }
         return slide
