@@ -66,6 +66,41 @@ public extension Presentation {
         return slide
     }
 
+    /// A closing slide: a near-full-width punchline title, an optional call to
+    /// action, and an optional contact line pinned to its own bottom band. Unlike
+    /// reusing `sectionSlide` (whose title is narrowed to leave room for a side
+    /// image, and whose single subtitle box overflows when a CTA and a contact
+    /// line share it), each element here owns a separate band, so a cramped title
+    /// or a CTA/contact collision is structurally impossible.
+    @discardableResult
+    func closingSlide(_ title: String, callToAction: String? = nil,
+                      contact: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try blankCanvas()
+        let bg = s.accent(1)
+        try slide.setBackground(.solid(bg))
+        let onBg = s.textColor(on: bg)
+        let grid = deckGrid(s)
+
+        // Title uses (nearly) the full width so a real closing line — "Ship one
+        // narrow agent this quarter" — never cramps to half-width and breaks badly.
+        let fitted = title.count > 48 ? 34.0 : (title.count > 30 ? 40.0 : 46.0)
+        let titleStyle = s.with(.title) { $0.sizePt = fitted }
+        try slide.addText(title, in: grid.cell(column: 0, row: 3, columnSpan: 11, rowSpan: 3),
+                          role: .title, style: titleStyle, color: onBg, anchor: .bottom)
+        if let callToAction, !callToAction.isEmpty {
+            try slide.addText(callToAction, in: grid.cell(column: 0, row: 7, columnSpan: 10, rowSpan: 3),
+                              role: .subhead, style: s, color: onBg, anchor: .top)
+        }
+        if let contact, !contact.isEmpty {
+            // A distinct bottom band (row 11), a clear row below the CTA — the
+            // overlap the shared-with-section layout produced can't happen here.
+            try slide.addText(contact, in: grid.cell(column: 0, row: 11, columnSpan: 12, rowSpan: 1),
+                              role: .caption, style: s, color: onBg, anchor: .bottom)
+        }
+        return slide
+    }
+
     /// A title + bulleted body.
     @discardableResult
     func bulletSlide(_ title: String, _ bullets: [String],

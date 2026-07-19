@@ -93,8 +93,8 @@ public actor DeckRenderer {
         case .bigNumber:
             return try deck.calloutSlide(stat: body?.value ?? "", caption: body?.label ?? "", kicker: title.isEmpty ? nil : title)
         case .closing:
-            let subtitle = [body?.callToAction, body?.contact].compactMap { $0 }.joined(separator: "\n")
-            return try deck.sectionSlide(title.isEmpty ? "Thank you" : title, subtitle: subtitle.isEmpty ? nil : subtitle)
+            return try deck.closingSlide(title.isEmpty ? "Thank you" : title,
+                                         callToAction: body?.callToAction, contact: body?.contact)
         case .chart:
             // Only build a chart when the data is well-formed (matching series
             // lengths) — otherwise fall back to bullets rather than crash.
