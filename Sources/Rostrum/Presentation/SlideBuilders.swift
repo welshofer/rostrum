@@ -99,6 +99,30 @@ public extension Presentation {
         return slide
     }
 
+    /// A vertical stack of full-width colored bands, one per item, each labeled —
+    /// the "five layers" diagram. Ideal for 3–6 parallel concepts, phases, or
+    /// layers instead of a plain bullet list.
+    @discardableResult
+    func bandsSlide(_ title: String, bands: [String], kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        let items = Array(bands.prefix(6))
+        guard !items.isEmpty else { return slide }
+        let gap = s.spacing.sm.rawValue
+        let bandH = (content.height.rawValue - gap * (items.count - 1)) / items.count
+        let bandStyle = s.with(.heading) { $0.sizePt = items.count >= 5 ? 22 : 26 }
+        for (i, text) in items.enumerated() {
+            let y = content.minY.rawValue + i * (bandH + gap)
+            let rect = Rect(x: content.minX, y: EMU(y), width: content.width, height: EMU(bandH))
+            let fill = s.accent(i + 1)
+            let card = try slide.addCard(in: rect, style: s, fill: .solid(fill), radiusToken: "sm", shadow: false)
+            try slide.addText(text, in: card.content, role: .heading, style: bandStyle,
+                              color: s.textColor(on: fill), align: .center, anchor: .middle)
+        }
+        return slide
+    }
+
     /// A row of 2–4 headline metrics — each a colored rule, a big number, and a
     /// caption (the "180 / 0 / 11" layout).
     @discardableResult

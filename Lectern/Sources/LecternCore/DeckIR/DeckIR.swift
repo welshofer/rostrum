@@ -161,7 +161,7 @@ public struct Column: Codable, Sendable, Equatable {
 /// The known layout vocabulary (§8.2), plus `.unknown` for forward-compat.
 public enum SlideLayoutKind: Sendable, Equatable {
     case title, agenda, sectionHeader, bullets, twoColumn, comparison, quote, bigNumber, closing
-    case chart, metrics
+    case chart, metrics, bands
     case unknown(String)
 
     public init(_ raw: String) {
@@ -177,6 +177,7 @@ public enum SlideLayoutKind: Sendable, Equatable {
         case "closing": self = .closing
         case "chart": self = .chart
         case "metrics": self = .metrics
+        case "bands": self = .bands
         default: self = .unknown(raw)
         }
     }
@@ -187,7 +188,7 @@ public enum SlideLayoutKind: Sendable, Equatable {
         switch self {
         case .title, .bigNumber, .quote, .closing: return .fullBleed   // sparse, centered/large text
         case .sectionHeader: return .sidePanel                          // title left, image right
-        case .agenda, .bullets, .twoColumn, .comparison, .chart, .metrics, .unknown: return .none
+        case .agenda, .bullets, .twoColumn, .comparison, .chart, .metrics, .bands, .unknown: return .none
         }
     }
 }

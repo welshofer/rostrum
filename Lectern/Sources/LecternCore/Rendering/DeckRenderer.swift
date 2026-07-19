@@ -117,6 +117,10 @@ public actor DeckRenderer {
                 return try deck.metricsSlide(title, metrics: stats.map { (value: $0.value, label: $0.label) })
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .bands:
+            let items = body?.items ?? flatten(body?.bullets ?? [])
+            if !items.isEmpty { return try deck.bandsSlide(title, bands: items) }
+            return try deck.bulletSlide(title, [])
         case .unknown:
             // Validation downgrades unknown → bullets, so this is unreachable for
             // a validated deck; render an empty bulleted slide defensively.

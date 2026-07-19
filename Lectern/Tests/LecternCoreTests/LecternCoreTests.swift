@@ -18,6 +18,19 @@ import Rostrum
 
     // MARK: - IR + validation
 
+    @Test func rendersBandsSlide() async throws {
+        let deck = DeckIR(meta: Meta(title: "Bands"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "bands", title: "Three waves",
+                    body: Body(items: ["The Signal — repricing", "The Strain — food", "The Rupture — migration"])),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
+        #expect(result.slideCount == 2)
+        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)
+    }
+
     @Test func rendersChartAndMetricsSlides() async throws {
         let deck = DeckIR(meta: Meta(title: "Data"), slides: [
             IRSlide(id: "s1", layout: "title", title: "Opener", body: Body(subtitle: "s")),

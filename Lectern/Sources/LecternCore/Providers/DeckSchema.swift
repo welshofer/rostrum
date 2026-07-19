@@ -78,7 +78,7 @@ enum DeckSchema {
                     "type": "string",
                     "enum": ["title", "agenda", "sectionHeader", "bullets",
                              "twoColumn", "comparison", "quote", "bigNumber", "closing",
-                             "chart", "metrics"],
+                             "chart", "metrics", "bands"],
                 ],
                 "title": str(),
                 "body": body,
