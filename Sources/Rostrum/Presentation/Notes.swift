@@ -19,6 +19,29 @@ extension Slide {
         try notesTextFrame().text = text
     }
 
+    /// The speaker notes as separate paragraphs (empty when none).
+    public var notesParagraphs: [String] {
+        guard hasNotes, let frame = try? notesTextFrame() else { return [] }
+        return frame.paragraphs.map { $0.runs.map(\.text).joined() }
+    }
+
+    /// Replace the speaker notes with one paragraph per string. An empty array
+    /// leaves a single empty paragraph (a text body needs >= 1 a:p).
+    public func setNotes(_ paragraphs: [String]) throws {
+        let frame = try notesTextFrame()
+        frame.clear()
+        if paragraphs.isEmpty {
+            frame.addParagraph()
+        } else {
+            for text in paragraphs { frame.addParagraph().addRun(text) }
+        }
+    }
+
+    /// Append a paragraph to the speaker notes (creating them if needed).
+    public func appendNote(_ text: String) throws {
+        try notesTextFrame().addParagraph().addRun(text)
+    }
+
     /// The notes body text frame, creating the notes slide (and the deck's
     /// notes master, first time) on demand.
     public func notesTextFrame() throws -> TextFrame {
