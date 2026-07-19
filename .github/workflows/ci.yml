@@ -22,6 +22,9 @@ jobs:
         run: swift build -v
       - name: Test
         run: swift test
+      - name: Test LecternCore (sample app core)
+        run: swift test
+        working-directory: Lectern
 
   linux:
     name: Linux (Swift ${{ matrix.swift }})
@@ -47,4 +50,8 @@ jobs:
         # `#require` expressions on optional-chained values, so the full suite
         # runs on 6.1+. The Build step above still proves the library itself
         # compiles on Swift 6.0.
+        if: matrix.swift != '6.0'
+      - name: Test LecternCore (sample app core)
+        run: swift test
+        working-directory: Lectern
         if: matrix.swift != '6.0'
