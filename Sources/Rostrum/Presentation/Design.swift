@@ -444,6 +444,8 @@ extension Presentation {
         if !set.contains(.hlink), let link = Design.linkColor(design) {
             theme.setColor(.hlink, link)
         }
+        // Record the token source for `deck.style` (in-memory only; not serialized).
+        appliedDesign = design
     }
 
     /// Convenience: parse a `design.md` from disk and apply it, returning the

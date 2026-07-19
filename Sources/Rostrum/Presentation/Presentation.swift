@@ -9,6 +9,11 @@ public final class Presentation {
 
     let presentationPart: Part
 
+    /// The `Design` most recently applied via `applyDesign` this session, if any.
+    /// In-memory ONLY — never serialized — so `style` can read the type/spacing/
+    /// radius tokens that `applyDesign` doesn't persist into the theme DOM.
+    public internal(set) var appliedDesign: Design?
+
     /// The slide collection: iterate, index, `add()`, `remove(at:)`,
     /// `move(from:to:)`, `duplicate(at:)`.
     public var slides: Slides {
