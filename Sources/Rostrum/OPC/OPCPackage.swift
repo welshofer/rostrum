@@ -10,7 +10,9 @@ import Foundation
 /// original bytes exactly — lossless round-trip by construction.
 public final class Part {
     public let uri: PackURI
-    public let contentType: String
+    /// The OPC content type. Settable within the library so a template's main
+    /// part can be normalized to a presentation on open; read-only to callers.
+    public internal(set) var contentType: String
     public let rels: Relationships
 
     /// The part's serialized bytes. Authoritative while `isDirty` is false.

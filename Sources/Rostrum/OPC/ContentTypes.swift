@@ -85,6 +85,11 @@ public enum ContentType {
     public static let theme = "application/vnd.openxmlformats-officedocument.theme+xml"
 
     public static let presentationMain = "application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"
+    /// A PowerPoint template (`.potx`). Structurally identical to a
+    /// presentation; only the main part's content type differs.
+    public static let presentationTemplateMain = "application/vnd.openxmlformats-officedocument.presentationml.template.main+xml"
+    /// A PowerPoint slide show (`.ppsx`); also normalizes to a presentation.
+    public static let slideShowMain = "application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml"
     public static let slideMaster = "application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"
     public static let slideLayout = "application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"
     public static let slide = "application/vnd.openxmlformats-officedocument.presentationml.slide+xml"

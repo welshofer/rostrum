@@ -22,11 +22,24 @@ public final class Presentation {
         presentationPart = try package.mainDocumentPart()
     }
 
-    /// Open a presentation from .pptx bytes.
+    /// Open a presentation from `.pptx` bytes — or a `.potx` template / `.ppsx`
+    /// show, which are normalized in place to an ordinary presentation so you
+    /// can add slides and save the result as a `.pptx` PowerPoint opens
+    /// directly. The template's masters, layouts, theme, and fonts are carried
+    /// through untouched.
     public init(data: Data) throws {
         package = try OPCPackage.read(data: data)
         let main = try package.mainDocumentPart()
-        guard main.contentType == ContentType.presentationMain else {
+        switch main.contentType {
+        case ContentType.presentationMain:
+            break
+        case ContentType.presentationTemplateMain, ContentType.slideShowMain:
+            // Retype the main part (both the part and the package's content-type
+            // override) so serialization emits a plain presentation.
+            main.contentType = ContentType.presentationMain
+            package.contentTypes.setOverride(
+                partName: main.uri, contentType: ContentType.presentationMain)
+        default:
             throw RostrumError.notAPresentation(
                 "main document part is \(main.contentType)")
         }
