@@ -131,11 +131,13 @@ public extension Presentation {
                          rightHeader: String, right: [String], style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
-        _ = try header(on: slide, kicker: nil, title: title, style: s)   // draws the title
-        // Comparison cards run a row taller than the shared content rect (start at
-        // row 2, not 3) so their bullets get real headroom — a bullet that wraps
-        // (wider fonts in PowerPoint than in preview) then never runs off the card.
-        let content = deckGrid(s).cell(column: 0, row: 2, columnSpan: 12, rowSpan: 10)
+        let headerInfo = try placeHeader(on: slide, kicker: nil, title: title, style: s)
+        // Comparison cards run a row taller than the shared content rect (one row
+        // above the standard content top) so their bullets get real headroom — a
+        // bullet that wraps (wider fonts in PowerPoint than in preview) then
+        // never runs off the card. A wrapped title shifts the cards down with it.
+        let cardRow = headerInfo.contentRow - 1
+        let content = deckGrid(s).cell(column: 0, row: cardRow, columnSpan: 12, rowSpan: 12 - cardRow)
         let cols = content.split(.horizontal, count: 2, gutter: s.gutter)
         // Header gets its own top band (room for two lines) and the bullets fill
         // the rest, top-anchored — so a two-line header never overlaps them.
@@ -144,9 +146,15 @@ public extension Presentation {
             let card = try slide.addCard(in: col, style: s)
             let (head, body) = card.content.split(.vertical, ratio: 0.16, gutter: s.spacing.sm)
             try slide.addText(headerText, in: head, role: .heading, style: headStyle, anchor: .top)
-            // Cards are narrower than a full slide; a smaller body and tighter gaps
-            // keep four bullets inside the card (auto-fit shrinks any that don't).
-            try slide.addBulletList(items, in: body, style: s, size: items.count >= 4 ? 20 : 24,
+            // Cards are narrower than a full slide; a smaller body, tighter gaps,
+            // AND tighter leading keep the bullets inside the card. At the body's
+            // airy 150% line height, three two-line bullets need ~275pt in a
+            // 245pt card — the last bullet rides off the card edge.
+            let cardBody = s.with(.body) { $0.lineHeight = Swift.min($0.lineHeight, 1.25) }
+            // A wrapped title costs the cards a row, so their bullets step down a
+            // size to keep the same worst case inside the shorter card.
+            try slide.addBulletList(items, in: body, style: cardBody,
+                                    size: items.count >= 4 || headerInfo.titleWraps ? 20 : 24,
                                     gapPt: s.spacing.sm.points)
         }
         return slide
@@ -164,6 +172,16 @@ public extension Presentation {
         let cols = content.split(.horizontal, count: items.count, gutter: s.gutter)
         let badge = EMU.inches(1.1)
         let numberStyle = s.with(.stat) { $0.sizePt = 44 }
+        // Step captions live in narrow columns (~200pt at 4 steps), where the
+        // body's airy line height and full size wrap a long step to five lines
+        // and off the bottom of the slide. Fit the size to the longest step and
+        // tighten the leading — every caption then stays inside its column.
+        let longest = items.map(\.count).max() ?? 0
+        let capSize: Double = longest > 44 ? 20 : (longest > 30 ? 22 : s.type(.body).sizePt)
+        let captionStyle = s.with(.body) {
+            $0.sizePt = Swift.min($0.sizePt, capSize)
+            $0.lineHeight = Swift.min($0.lineHeight, 1.2)
+        }
         for (i, step) in items.enumerated() {
             let col = cols[i]
             let accent = s.legibleAccent(i + 1, on: s.background)
@@ -173,7 +191,7 @@ public extension Presentation {
                               color: s.textColor(on: accent), align: .center, anchor: .middle)
             let top = badgeRect.maxY + EMU.points(16)
             try slide.addText(step, in: Rect(x: col.minX, y: top, width: col.width, height: content.maxY - top),
-                              role: .body, style: s, align: .center, anchor: .top)
+                              role: .body, style: captionStyle, align: .center, anchor: .top)
             if i < items.count - 1 {                       // arrow into the gutter
                 let a = badge / 3.5
                 try slide.shapes.addShape(.rightArrow,
@@ -318,10 +336,14 @@ public extension Presentation {
                                 style: s, alignment: .center, anchor: .bottom)
         }
         // One stacked tile (number + caption) centered — so the caption always
-        // sits below the number instead of colliding with the 130pt stat.
+        // sits below the number instead of colliding with the 130pt stat. The
+        // tile gets six rows, and a caption long enough to wrap steps the stat
+        // down: a 130pt number line plus a two-line caption needs ~208pt, more
+        // than the five-row band the tile used to get.
+        let statStyle = caption.count > 55 ? s.with(.stat) { $0.sizePt = Swift.min($0.sizePt, 112) } : s
         try slide.addStatTile(stat, caption: caption,
-                              in: grid.cell(column: 1, row: 4, columnSpan: 10, rowSpan: 5),
-                              style: s, align: .center, anchor: .middle)
+                              in: grid.cell(column: 1, row: 4, columnSpan: 10, rowSpan: 6),
+                              style: statStyle, align: .center, anchor: .middle)
         return slide
     }
 
@@ -332,9 +354,13 @@ public extension Presentation {
         let slide = try blankCanvas()
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
+        // Fit the quote to its length: at the full 40pt a four-line quote runs
+        // ~240pt in a ~163pt band and its overflow lands on the attribution row.
+        let fitted = quote.count > 220 ? 28.0 : (quote.count > 120 ? 34.0 : s.type(.quote).sizePt)
+        let quoteStyle = s.with(.quote) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText("\u{201C}\(quote)\u{201D}",
                           in: grid.cell(column: 1, row: 3, columnSpan: 10, rowSpan: 5),
-                          role: .quote, style: s, align: .center, anchor: .middle)
+                          role: .quote, style: quoteStyle, align: .center, anchor: .middle)
         if let attribution {
             try slide.addText("— \(attribution)",
                               in: grid.cell(column: 1, row: 9, columnSpan: 10, rowSpan: 1),
@@ -363,18 +389,42 @@ public extension Presentation {
     /// Place an optional kicker + a title across the top rows; return the content
     /// rect below them.
     private func header(on slide: Slide, kicker: String?, title: String, style: DeckStyle) throws -> Rect {
+        let head = try placeHeader(on: slide, kicker: kicker, title: title, style: style)
+        let grid = deckGrid(style)
+        return grid.cell(column: 0, row: head.contentRow, columnSpan: 12, rowSpan: 12 - head.contentRow)
+    }
+
+    /// Draw the kicker + title and report where content may start. The title sits
+    /// at the top of a two-row band and the body starts a row below it, so
+    /// there's a consistent breathing gap between title and content (never
+    /// jammed against it, never floating far below).
+    ///
+    /// A long title is fitted down AND, when it still wraps, `contentRow` moves
+    /// one row lower: the title band is sized for one line, so a wrapped title
+    /// otherwise prints straight over the cards/bullets below (PowerPoint
+    /// renders bare `normAutofit` text at full size until the box is edited).
+    private func placeHeader(on slide: Slide, kicker: String?, title: String,
+                             style: DeckStyle) throws -> (contentRow: Int, titleWraps: Bool) {
         let grid = deckGrid(style)
         var titleRow = 0
         if let kicker {
             try slide.addKicker(kicker, in: grid.cell(column: 0, row: 0, columnSpan: 12), style: style)
             titleRow = 1
         }
-        // Title at the top of a two-row band; the body starts a row below it, so
-        // there's a consistent breathing gap between title and content (never
-        // jammed against it, never floating far below).
-        try slide.addText(title, in: grid.cell(column: 0, row: titleRow, columnSpan: 11, rowSpan: 2),
-                          role: .title, style: style, anchor: .top)
-        let top = titleRow + 3
-        return grid.cell(column: 0, row: top, columnSpan: 12, rowSpan: 12 - top)
+        let fitted = title.count > 60 ? 30.0 : (title.count > 36 ? 34.0 : style.type(.title).sizePt)
+        let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
+        let band = grid.cell(column: 0, row: titleRow, columnSpan: 11, rowSpan: 2)
+        try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top)
+        let wraps = estimatedLines(title, style: titleStyle.type(.title), width: band.width) >= 2
+        return (titleRow + (wraps ? 4 : 3), wraps)
+    }
+
+    /// Deterministic wrap estimate: average glyph width ≈ 0.52 × point size (a
+    /// touch wider than most text faces, so the estimate errs toward reserving
+    /// space rather than colliding).
+    private func estimatedLines(_ text: String, style: TextStyle, width: EMU) -> Int {
+        let widthPt = Double(width.rawValue) / 12700.0
+        let charsPerLine = Swift.max(1.0, widthPt / (0.52 * style.sizePt))
+        return Int((Double(text.count) / charsPerLine).rounded(.up))
     }
 }

@@ -174,8 +174,10 @@ public actor DeckRenderer {
                     width: EMU(Int(w * 0.40)), height: EMU(Int(h * 0.58)))
     }
 
-    /// Darken (dark theme) or lighten (light theme) an image ~55% so the slide's
-    /// ink stays legible over a full-bleed background. No-op without CoreGraphics.
+    /// Darken (dark theme) or lighten (light theme) an image ~70% so the slide's
+    /// ink stays legible over a full-bleed background. 55% left busy artwork
+    /// fighting the stat caption on bigNumber slides; 70% keeps the image as
+    /// texture while every text role clears it. No-op without CoreGraphics.
     private static func scrimmed(_ data: Data, dark: Bool) -> Data {
         #if canImport(CoreGraphics)
         guard let src = CGImageSourceCreateWithData(data as CFData, nil),
@@ -187,8 +189,8 @@ public actor DeckRenderer {
                                   bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return data }
         let rect = CGRect(x: 0, y: 0, width: img.width, height: img.height)
         ctx.draw(img, in: rect)
-        ctx.setFillColor(dark ? CGColor(red: 0, green: 0, blue: 0, alpha: 0.55)
-                              : CGColor(red: 1, green: 1, blue: 1, alpha: 0.55))
+        ctx.setFillColor(dark ? CGColor(red: 0, green: 0, blue: 0, alpha: 0.70)
+                              : CGColor(red: 1, green: 1, blue: 1, alpha: 0.70))
         ctx.fill(rect)
         guard let out = ctx.makeImage() else { return data }
         let buffer = NSMutableData()

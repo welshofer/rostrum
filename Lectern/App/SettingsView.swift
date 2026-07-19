@@ -32,7 +32,13 @@ struct SettingsView: View {
             }
 
             Section("API key") {
-                SecureField("Paste your \(app.providerID.label) key", text: $keyInput)
+                // The field is write-only (I1: a stored key never round-trips
+                // through the UI), so after a relaunch it is always empty. The
+                // prompt must carry the stored-state truth — a bare "Paste your
+                // key" placeholder reads as "no key saved" even when one is.
+                SecureField(text: $keyInput, prompt: Text(
+                    app.hasKey ? "••••••••••••••••••••  saved — paste to replace"
+                               : "Paste your \(app.providerID.label) key")) { EmptyView() }
                     .disabled(!ProviderFactory.isWired(app.providerID))
                     .onSubmit(save)
                 HStack(spacing: 10) {
@@ -51,7 +57,9 @@ struct SettingsView: View {
                 )) {
                     ForEach(ImageProviderID.allCases, id: \.self) { Text($0.label).tag($0) }
                 }
-                SecureField("Paste your \(app.imageProviderID.label) key", text: $imageKeyInput)
+                SecureField(text: $imageKeyInput, prompt: Text(
+                    app.hasImageKey ? "••••••••••••••••••••  saved — paste to replace"
+                                    : "Paste your \(app.imageProviderID.label) key")) { EmptyView() }
                     .onSubmit(saveImageKey)
                 HStack(spacing: 10) {
                     Button("Save", action: saveImageKey).disabled(imageTrimmed.isEmpty)
@@ -105,7 +113,7 @@ struct SettingsView: View {
             Label(message, systemImage: "xmark.seal.fill").foregroundStyle(.red).lineLimit(1).help(message)
         case .unknown:
             if app.hasKey {
-                Label("Key stored", systemImage: "key.fill").foregroundStyle(.secondary)
+                Label("Key saved in Keychain", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
             } else {
                 Label("No key", systemImage: "key").foregroundStyle(.tertiary)
             }
