@@ -41,6 +41,8 @@ public enum PromptTemplates {
         - metrics          body: { stats: [{ value, label }] }   (2–4 headline numbers)
         - chart            body: { chart: { kind: bar|line|pie, categories: [string], series: [{ name, values: [number] }] } }
         - bands            body: { items: [string] }   (3–6 parallel concepts/phases/layers as colored bands; each item "Label — short detail")
+        - diagram          body: { diagram: { kind: process|pyramid|cycle, items: [string] } }
+                             process = sequential steps; pyramid = hierarchy/ladder (base→peak); each item short "Label — detail"
         - closing          body: { callToAction?, contact? }  (at most one, last)
 
         VARY THE LAYOUTS. A deck of near-identical bullet slides is a failure. Reach \
@@ -109,12 +111,15 @@ public enum PromptTemplates {
         (2–4 headline figures). Numbers buried in bullets are a wasted slide.
 
         VARY THE LAYOUTS — this is the difference between a template and a designed \
-        deck. Audit the layout mix and rewrite for variety: parallel concepts/phases/ \
-        layers → a "bands" slide; two sides → "comparison"; quantities → "chart"; \
-        figures → "metrics"; a single number → "bigNumber". Allow at most TWO plain \
-        "bullets" slides in the whole deck, and NEVER two bullet slides back to back — \
-        convert the weaker one. The finished deck should feel visually different \
-        slide to slide, like a deck a designer built, not a list with headings.
+        deck. Audit the layout mix and rewrite for variety: sequential steps/stages → \
+        a "diagram" (kind process); a hierarchy, maturity ladder, or foundation → a \
+        "diagram" (kind pyramid); parallel concepts → "bands"; two sides → \
+        "comparison"; quantities → "chart"; figures → "metrics"; a single number → \
+        "bigNumber". Don't lean on any one layout — if several slides in a row are \
+        bands, convert some to diagrams or charts. Allow at most TWO plain "bullets" \
+        slides in the whole deck, and NEVER two bullet slides back to back. The \
+        finished deck should feel visually different slide to slide, like a deck a \
+        designer built, not a list with headings.
 
         OPEN & CLOSE — the opener earns attention in one line; the closer lands a \
         specific call to action, never "Thank you".

@@ -116,6 +116,8 @@ public struct DeckValidator: Sendable {
             if (body?.stats ?? []).isEmpty { return "metrics requires body.stats" }
         case .bands:
             if (body?.items ?? []).isEmpty && (body?.bullets ?? []).isEmpty { return "bands requires body.items" }
+        case .diagram:
+            if (body?.diagram?.items ?? []).isEmpty { return "diagram requires body.diagram with items" }
         case .title, .sectionHeader, .closing:
             break                                   // all payload fields optional
         case .unknown:

@@ -121,6 +121,14 @@ public actor DeckRenderer {
             let items = body?.items ?? flatten(body?.bullets ?? [])
             if !items.isEmpty { return try deck.bandsSlide(title, bands: items) }
             return try deck.bulletSlide(title, [])
+        case .diagram:
+            if let d = body?.diagram, !d.items.isEmpty {
+                switch d.kind.lowercased() {
+                case "pyramid": return try deck.pyramidSlide(title, levels: d.items)
+                default: return try deck.processSlide(title, steps: d.items)   // process (also cycle for now)
+                }
+            }
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .unknown:
             // Validation downgrades unknown → bullets, so this is unreachable for
             // a validated deck; render an empty bulleted slide defensively.

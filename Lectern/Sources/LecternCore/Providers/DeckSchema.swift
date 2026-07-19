@@ -42,6 +42,15 @@ enum DeckSchema {
             "properties": ["value": str("the number, e.g. 218% or $1.5B"), "label": str("what it measures")],
             "required": ["value", "label"],
         ]
+        let diagram: [String: Any] = [
+            "type": "object",
+            "description": "diagram layout — a process (sequential steps), pyramid (hierarchy/ladder, base→peak), or cycle",
+            "properties": [
+                "kind": ["type": "string", "enum": ["process", "pyramid", "cycle"]],
+                "items": ["type": "array", "items": str("a step/level, short 'Label — detail'")],
+            ],
+            "required": ["kind", "items"],
+        ]
         let body: [String: Any] = [
             "type": "object",
             "description": "Only include the fields the slide's layout uses.",
@@ -58,6 +67,7 @@ enum DeckSchema {
                 "chart": chart,                                     // chart
                 "stats": ["type": "array", "items": stat,           // metrics (2–4 numbers)
                           "description": "metrics layout — 2 to 4 headline numbers"],
+                "diagram": diagram,                                 // diagram
             ],
         ]
         let image: [String: Any] = [
@@ -78,7 +88,7 @@ enum DeckSchema {
                     "type": "string",
                     "enum": ["title", "agenda", "sectionHeader", "bullets",
                              "twoColumn", "comparison", "quote", "bigNumber", "closing",
-                             "chart", "metrics", "bands"],
+                             "chart", "metrics", "bands", "diagram"],
                 ],
                 "title": str(),
                 "body": body,

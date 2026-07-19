@@ -18,6 +18,21 @@ import Rostrum
 
     // MARK: - IR + validation
 
+    @Test func rendersDiagramSlides() async throws {
+        let deck = DeckIR(meta: Meta(title: "Diagrams"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "diagram", title: "Process",
+                    body: Body(diagram: IRDiagram(kind: "process", items: ["One", "Two", "Three"]))),
+            IRSlide(id: "s3", layout: "diagram", title: "Pyramid",
+                    body: Body(diagram: IRDiagram(kind: "pyramid", items: ["Base", "Middle", "Peak"]))),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
+        #expect(result.slideCount == 3)
+        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)   // opens clean
+    }
+
     @Test func rendersBandsSlide() async throws {
         let deck = DeckIR(meta: Meta(title: "Bands"), slides: [
             IRSlide(id: "s1", layout: "title", title: "Opener"),

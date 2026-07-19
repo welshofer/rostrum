@@ -112,6 +112,65 @@ public extension Presentation {
         return slide
     }
 
+    /// A horizontal numbered process: 2–5 steps, each a colored number badge and a
+    /// caption, joined by arrows. For sequences, stages, and step-by-step plans.
+    @discardableResult
+    func processSlide(_ title: String, steps: [String], kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        let items = Array(steps.prefix(5))
+        guard !items.isEmpty else { return slide }
+        let cols = content.split(.horizontal, count: items.count, gutter: s.gutter)
+        let badge = EMU.inches(1.1)
+        let numberStyle = s.with(.stat) { $0.sizePt = 44 }
+        for (i, step) in items.enumerated() {
+            let col = cols[i]
+            let accent = s.legibleAccent(i + 1, on: s.background)
+            let badgeRect = Rect(x: col.midX - badge / 2.0, y: col.minY, width: badge, height: badge)
+            try slide.shapes.addShape(.ellipse, frame: badgeRect, fill: .solid(accent))
+            try slide.addText("\(i + 1)", in: badgeRect, role: .stat, style: numberStyle,
+                              color: s.textColor(on: accent), align: .center, anchor: .middle)
+            let top = badgeRect.maxY + EMU.points(16)
+            try slide.addText(step, in: Rect(x: col.minX, y: top, width: col.width, height: content.maxY - top),
+                              role: .body, style: s, align: .center, anchor: .top)
+            if i < items.count - 1 {                       // arrow into the gutter
+                let a = badge / 3.5
+                try slide.shapes.addShape(.rightArrow,
+                                          frame: Rect(x: col.maxX, y: badgeRect.y + a, width: s.gutter, height: a),
+                                          fill: .solid(s.mutedInk))
+            }
+        }
+        return slide
+    }
+
+    /// A stacked pyramid: 2–5 graduated levels, widest at the base. For
+    /// hierarchies, maturity ladders, and foundations that build to a peak.
+    @discardableResult
+    func pyramidSlide(_ title: String, levels: [String], kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        let items = Array(levels.prefix(5))
+        guard !items.isEmpty else { return slide }
+        let n = items.count
+        let gap = s.spacing.sm.rawValue
+        let bandH = (content.height.rawValue - gap * (n - 1)) / n
+        let levelStyle = s.with(.heading) { $0.sizePt = n >= 5 ? 20 : 24 }
+        for (i, text) in items.enumerated() {
+            let accent = s.legibleAccent(i + 1, on: s.background)
+            let frac = 0.5 + 0.5 * (Double(i) / Double(max(1, n - 1)))   // narrow top → wide base
+            let w = content.width * frac
+            let rect = Rect(x: content.midX - w / 2.0,
+                            y: EMU(content.minY.rawValue + i * (bandH + gap)),
+                            width: w, height: EMU(bandH))
+            try slide.shapes.addShape(.trapezoid, frame: rect, fill: .solid(accent))
+            try slide.addText(text, in: rect, role: .heading, style: levelStyle,
+                              color: s.textColor(on: accent), align: .center, anchor: .middle)
+        }
+        return slide
+    }
+
     /// A vertical stack of full-width colored bands, one per item, each labeled —
     /// the "five layers" diagram. Ideal for 3–6 parallel concepts, phases, or
     /// layers instead of a plain bullet list.

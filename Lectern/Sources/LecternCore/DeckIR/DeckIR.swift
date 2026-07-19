@@ -108,18 +108,27 @@ public struct Body: Codable, Sendable, Equatable {
     public var contact: String?
     public var chart: IRChart?                // chart
     public var stats: [IRStat]?               // metrics (2–4 headline numbers)
+    public var diagram: IRDiagram?            // diagram (process | pyramid | cycle)
 
     public init(subtitle: String? = nil, items: [String]? = nil, kicker: String? = nil,
                 bullets: [Bullet]? = nil, left: Column? = nil, right: Column? = nil,
                 quote: String? = nil, attribution: String? = nil, value: String? = nil,
                 label: String? = nil, callToAction: String? = nil, contact: String? = nil,
-                chart: IRChart? = nil, stats: [IRStat]? = nil) {
+                chart: IRChart? = nil, stats: [IRStat]? = nil, diagram: IRDiagram? = nil) {
         self.subtitle = subtitle; self.items = items; self.kicker = kicker
         self.bullets = bullets; self.left = left; self.right = right
         self.quote = quote; self.attribution = attribution; self.value = value
         self.label = label; self.callToAction = callToAction; self.contact = contact
-        self.chart = chart; self.stats = stats
+        self.chart = chart; self.stats = stats; self.diagram = diagram
     }
+}
+
+/// A diagram on a `diagram` slide. `kind` is process | pyramid | cycle; `items`
+/// are the steps/levels (each a short "Label — detail").
+public struct IRDiagram: Codable, Sendable, Equatable {
+    public var kind: String
+    public var items: [String]
+    public init(kind: String, items: [String]) { self.kind = kind; self.items = items }
 }
 
 /// A chart on a `chart` slide. `kind` is bar | line | pie; `series[i].values`
@@ -161,7 +170,7 @@ public struct Column: Codable, Sendable, Equatable {
 /// The known layout vocabulary (§8.2), plus `.unknown` for forward-compat.
 public enum SlideLayoutKind: Sendable, Equatable {
     case title, agenda, sectionHeader, bullets, twoColumn, comparison, quote, bigNumber, closing
-    case chart, metrics, bands
+    case chart, metrics, bands, diagram
     case unknown(String)
 
     public init(_ raw: String) {
@@ -178,6 +187,7 @@ public enum SlideLayoutKind: Sendable, Equatable {
         case "chart": self = .chart
         case "metrics": self = .metrics
         case "bands": self = .bands
+        case "diagram": self = .diagram
         default: self = .unknown(raw)
         }
     }
@@ -188,7 +198,7 @@ public enum SlideLayoutKind: Sendable, Equatable {
         switch self {
         case .title, .bigNumber, .quote, .closing: return .fullBleed   // sparse, centered/large text
         case .sectionHeader: return .sidePanel                          // title left, image right
-        case .agenda, .bullets, .twoColumn, .comparison, .chart, .metrics, .bands, .unknown: return .none
+        case .agenda, .bullets, .twoColumn, .comparison, .chart, .metrics, .bands, .diagram, .unknown: return .none
         }
     }
 }
