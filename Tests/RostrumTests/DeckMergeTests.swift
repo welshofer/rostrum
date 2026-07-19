@@ -82,6 +82,41 @@ import Testing
         }
     }
 
+    /// The `sldMasterId`/`sldLayoutId` values share one global id namespace;
+    /// a copied master must be renumbered off the source's ids, or PowerPoint
+    /// silently "repairs" the deck. Assert uniqueness after import.
+    private func allGlobalIds(_ p: Presentation) throws -> [Int] {
+        var ids: [Int] = []
+        if let list = try p.presentationPart.dom().firstChild(named: "p:sldMasterIdLst") {
+            ids += list.childElements.compactMap { $0[attribute: "id"].flatMap(Int.init) }
+        }
+        for (uri, part) in p.package.parts where uri.value.hasPrefix("/ppt/slideMasters/") {
+            if let list = try part.dom().firstChild(named: "p:sldLayoutIdLst") {
+                ids += list.childElements.compactMap { $0[attribute: "id"].flatMap(Int.init) }
+            }
+        }
+        return ids
+    }
+
+    @Test func importAllKeepsGlobalIdsUnique() throws {
+        let source = try makeSource()
+        let dest = try Presentation()
+        try dest.slides.importAll(from: source)
+        let ids = try allGlobalIds(try Presentation(data: try dest.serializedData()))
+        #expect(Set(ids).count == ids.count, "duplicate global ids: \(ids.sorted())")
+    }
+
+    @Test func repeatedImportOfSameSourceKeepsGlobalIdsUnique() throws {
+        // Two imports of the same source with independent copiers must not
+        // collide on the source's original master/layout ids.
+        let source = try makeSource()
+        let dest = try Presentation()
+        try dest.slides.import(from: source, at: 0)
+        try dest.slides.import(from: source, at: 0)
+        let ids = try allGlobalIds(try Presentation(data: try dest.serializedData()))
+        #expect(Set(ids).count == ids.count, "duplicate global ids: \(ids.sorted())")
+    }
+
     @Test func importPreservesCopiedBlobsVerbatim() throws {
         // The copied slide's blob must equal the source's (rIds preserved).
         let source = try makeSource()

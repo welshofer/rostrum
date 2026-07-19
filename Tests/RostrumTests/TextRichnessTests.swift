@@ -70,4 +70,33 @@ import Testing
         #expect(reopened.slides[0].shapes[0].textFrame!.paragraphs[0].runs[0].hyperlink
                 == "https://github.com/welshofer/rostrum")
     }
+
+    /// a:rPr children must follow CT_TextCharacterProperties order regardless of
+    /// which setter is called first: a:solidFill … a:latin … a:hlinkClick.
+    /// Applying hyperlink/color BEFORE the font used to append a:latin (and a
+    /// partial successor list mis-placed a:solidFill) after a:hlinkClick —
+    /// invalid OOXML that triggers a PowerPoint repair.
+    @Test func runPropertyChildrenStayInSchemaOrderRegardlessOfCallOrder() throws {
+        func indices(applying setters: (Run) -> Void) throws -> [String] {
+            let (_, tf) = try newBox()
+            tf.clear()
+            let run = tf.addParagraph().addRun("link")
+            setters(run)
+            return run.r.firstChild(named: "a:rPr")!.childElements.map(\.name)
+        }
+        // Every permutation of {hyperlink, color, font} must yield the same order.
+        let orderings: [(String, (Run) -> Void)] = [
+            ("hyperlink→color→font", { $0.setHyperlink("https://example.com"); $0.color = Color("FF0000"); $0.fontName = "Arial" }),
+            ("font→color→hyperlink", { $0.fontName = "Arial"; $0.color = Color("FF0000"); $0.setHyperlink("https://example.com") }),
+            ("color→hyperlink→font", { $0.color = Color("FF0000"); $0.setHyperlink("https://example.com"); $0.fontName = "Arial" }),
+        ]
+        for (label, setters) in orderings {
+            let names = try indices(applying: setters)
+            let fill = names.firstIndex(of: "a:solidFill")!
+            let latin = names.firstIndex(of: "a:latin")!
+            let hlink = names.firstIndex(of: "a:hlinkClick")!
+            #expect(fill < latin, "\(label): a:solidFill must precede a:latin — got \(names)")
+            #expect(latin < hlink, "\(label): a:latin must precede a:hlinkClick — got \(names)")
+        }
+    }
 }

@@ -275,7 +275,11 @@ public final class Run {
         set {
             rPr.removeChildren(named: "a:latin")
             if let newValue {
-                rPr.appendElement(XML.Element("a:latin", attributes: [("typeface", newValue)]))
+                // insertChild (no explicit successors) consults the generated
+                // schema, so a:latin lands before a:ea/a:cs/a:sym/a:hlinkClick…
+                // even when the hyperlink or color was set first. Appending
+                // here would emit a:latin after a:hlinkClick — invalid order.
+                rPr.insertChild(XML.Element("a:latin", attributes: [("typeface", newValue)]))
             }
             part.markDirty()
         }
@@ -291,8 +295,10 @@ public final class Run {
             if let newValue {
                 let fill = XML.Element("a:solidFill")
                 fill.appendElement(newValue.srgbElement())
-                // a:solidFill must precede a:latin in rPr's schema order.
-                rPr.insertChild(fill, beforeAnyOf: ["a:latin", "a:ea", "a:cs"])
+                // The generated schema places a:solidFill ahead of a:latin AND
+                // a:hlinkClick; a hand-written list omitting hlinkClick would
+                // mis-order a color set after a hyperlink.
+                rPr.insertChild(fill)
             }
             part.markDirty()
         }
