@@ -73,7 +73,7 @@ public extension Presentation {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s)
-        try slide.addBulletList(bullets, in: content, style: s, anchor: .middle)   // balance the block
+        try slide.addBulletList(bullets, in: content, style: s, anchor: .top)   // start just below the title
         return slide
     }
 
@@ -103,7 +103,7 @@ public extension Presentation {
         let headStyle = s.with(.heading) { $0.sizePt = 24 }
         for (col, headerText, items) in [(cols[0], leftHeader, left), (cols[1], rightHeader, right)] {
             let card = try slide.addCard(in: col, style: s)
-            let (head, body) = card.content.split(.vertical, ratio: 0.26, gutter: s.spacing.md)
+            let (head, body) = card.content.split(.vertical, ratio: 0.16, gutter: s.spacing.sm)
             try slide.addText(headerText, in: head, role: .heading, style: headStyle, anchor: .top)
             // Cards are narrower than a full slide; a smaller body and tighter gaps
             // keep four bullets inside the card (auto-fit shrinks any that don't).
@@ -305,11 +305,11 @@ public extension Presentation {
             try slide.addKicker(kicker, in: grid.cell(column: 0, row: 0, columnSpan: 12), style: style)
             titleRow = 1
         }
-        // Give the title three rows so a two-line title never collides with the
-        // content below it, and bottom-anchor it so a one-line title still hugs
-        // the content instead of floating.
-        try slide.addText(title, in: grid.cell(column: 0, row: titleRow, columnSpan: 11, rowSpan: 3),
-                          role: .title, style: style, anchor: .bottom)
+        // Title at the top of a two-row band; the body starts a row below it, so
+        // there's a consistent breathing gap between title and content (never
+        // jammed against it, never floating far below).
+        try slide.addText(title, in: grid.cell(column: 0, row: titleRow, columnSpan: 11, rowSpan: 2),
+                          role: .title, style: style, anchor: .top)
         let top = titleRow + 3
         return grid.cell(column: 0, row: top, columnSpan: 12, rowSpan: 12 - top)
     }

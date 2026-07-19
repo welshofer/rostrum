@@ -21,7 +21,8 @@ public enum PromptTemplates {
         - Be concrete: real magnitudes, named examples, sharp contrasts. No filler \
         ("Section One", "various factors"). Don't fabricate precise statistics — \
         prefer rounded, defensible ones.
-        - One idea per slide; bullets parallel, ≤10 words, ≤5 per slide, never redundant.
+        - One idea per slide. Bullets: TARGET 3–5, never more than 6 (an agenda may
+        list up to 7); parallel grammar, ≤10 words each, never redundant.
         - SHOW data, don't list it. A slide comparing quantities → a "chart" (bar for
         comparison, line for a trend, pie for shares). Two-to-four headline figures →
         a "metrics" slide. A single dramatic figure → "bigNumber". Never bury numbers
@@ -51,7 +52,10 @@ public enum PromptTemplates {
         sparingly and NEVER twice in a row.
 
         Group slides into "sections" (id, title, slideIds) when the deck has natural acts. \
-        Keep bullets to at most 6 per slide, at most 12 words each, at most 2 levels deep.
+        Keep bullets to 3–5 per slide (6 max; an agenda may list up to 7), at most 12
+        words each, at most 2 levels deep. Do NOT lean on "bands": no more than about
+        one slide in four should be bands — reach for a "diagram" (process/pyramid),
+        "chart", "comparison", or "metrics" instead so the deck stays visually varied.
 
         A slide MAY include an optional "image" brief ({ prompt, aspect? }) ONLY when a \
         photographic or illustrative visual materially strengthens it (openers, section \
@@ -103,8 +107,9 @@ public enum PromptTemplates {
         with a crisp caption. Never invent precise figures you can't defend — prefer \
         rounded, well-known ones.
 
-        BULLETS — parallel grammar, one idea each, ≤10 words, ≤5 per slide, and no two \
-        bullets that say the same thing.
+        BULLETS — parallel grammar, one idea each, ≤10 words. TARGET 3–5 per slide,
+        never more than 6 (an agenda may list up to 7); split or cut any slide that
+        exceeds it. No two bullets that say the same thing.
 
         SHOW DATA — wherever a slide lists numbers or compares quantities, convert it to \
         a "chart" (bar/line/pie with real categories + series) or a "metrics" slide \
@@ -115,11 +120,12 @@ public enum PromptTemplates {
         a "diagram" (kind process); a hierarchy, maturity ladder, or foundation → a \
         "diagram" (kind pyramid); parallel concepts → "bands"; two sides → \
         "comparison"; quantities → "chart"; figures → "metrics"; a single number → \
-        "bigNumber". Don't lean on any one layout — if several slides in a row are \
-        bands, convert some to diagrams or charts. Allow at most TWO plain "bullets" \
-        slides in the whole deck, and NEVER two bullet slides back to back. The \
-        finished deck should feel visually different slide to slide, like a deck a \
-        designer built, not a list with headings.
+        "bigNumber". HARD CAP on bands: no more than about one slide in four may be a \
+        bands slide — count them, and convert the excess into diagrams, charts, \
+        comparisons, or metrics. Allow at most TWO plain "bullets" slides in the whole \
+        deck, and NEVER two bullet slides back to back. The finished deck should feel \
+        visually different slide to slide, like a deck a designer built, not a list \
+        with headings.
 
         OPEN & CLOSE — the opener earns attention in one line; the closer lands a \
         specific call to action, never "Thank you".
