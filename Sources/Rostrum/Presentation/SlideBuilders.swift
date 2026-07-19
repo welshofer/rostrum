@@ -131,7 +131,11 @@ public extension Presentation {
                          rightHeader: String, right: [String], style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
-        let content = try header(on: slide, kicker: nil, title: title, style: s)
+        _ = try header(on: slide, kicker: nil, title: title, style: s)   // draws the title
+        // Comparison cards run a row taller than the shared content rect (start at
+        // row 2, not 3) so their bullets get real headroom — a bullet that wraps
+        // (wider fonts in PowerPoint than in preview) then never runs off the card.
+        let content = deckGrid(s).cell(column: 0, row: 2, columnSpan: 12, rowSpan: 10)
         let cols = content.split(.horizontal, count: 2, gutter: s.gutter)
         // Header gets its own top band (room for two lines) and the bullets fill
         // the rest, top-anchored — so a two-line header never overlaps them.
