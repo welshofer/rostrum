@@ -16,6 +16,16 @@ import Testing
         run.firstChild(named: "a:rPr")?.firstChild(named: "a:solidFill")?.firstChild(named: "a:srgbClr")?[attribute: "val"]
     }
 
+    @Test func textBoxesCarryNormAutofit() throws {
+        // Every text box must request shrink-to-fit, or long text overflows its
+        // box (the pervasive overflow bug).
+        let deck = try Presentation()
+        let box = try deck.slides[0].shapes.addTextBox(r)
+        _ = box.textFrame!.addParagraph().addRun("hello")
+        let bodyPr = try lastSp(deck.slides[0]).firstChild(named: "p:txBody")!.firstChild(named: "a:bodyPr")!
+        #expect(bodyPr.firstChild(named: "a:normAutofit") != nil)
+    }
+
     @Test func bandsSlideNeverEmitsNegativeExtent() throws {
         // Six thin bands used to produce a negative-height label box (addCard's
         // 0.5" padding exceeds a 0.64" band) — which PowerPoint rejects with a

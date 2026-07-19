@@ -105,9 +105,10 @@ public extension Presentation {
             let card = try slide.addCard(in: col, style: s)
             let (head, body) = card.content.split(.vertical, ratio: 0.26, gutter: s.spacing.md)
             try slide.addText(headerText, in: head, role: .heading, style: headStyle, anchor: .top)
-            // Cards are narrower than a full slide; a smaller body keeps four
-            // bullets inside the card instead of spilling past the bottom.
-            try slide.addBulletList(items, in: body, style: s, size: items.count >= 4 ? 20 : 24)
+            // Cards are narrower than a full slide; a smaller body and tighter gaps
+            // keep four bullets inside the card (auto-fit shrinks any that don't).
+            try slide.addBulletList(items, in: body, style: s, size: items.count >= 4 ? 20 : 24,
+                                    gapPt: s.spacing.sm.points)
         }
         return slide
     }

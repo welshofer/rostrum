@@ -109,7 +109,19 @@ public actor DeckRenderer {
                 }()
                 let data = ChartData(categories: c.categories,
                                      series: c.series.map { ChartData.Series(name: $0.name, values: $0.values) })
-                return try deck.chartSlide(title, kind, data)
+                // Make the chart carry its own values (positions kept valid per
+                // kind so PowerPoint never repairs): bars/lines show values, pies
+                // show a percentage with a legend.
+                let options: ChartOptions
+                switch kind {
+                case .pie:
+                    options = ChartOptions(legend: .right, dataLabels: DataLabelOptions(showPercent: true))
+                case .line:
+                    options = ChartOptions(dataLabels: DataLabelOptions(showValue: true, position: "t"))
+                default:
+                    options = ChartOptions(dataLabels: DataLabelOptions(showValue: true, position: "outEnd"))
+                }
+                return try deck.chartSlide(title, kind, data, options: options)
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .metrics:

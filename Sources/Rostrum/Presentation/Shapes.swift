@@ -123,6 +123,10 @@ public final class ShapeCollection: Sequence {
             bodyPr[attribute: "wrap"] = "square"
         }
         bodyPr[attribute: "rtlCol"] = "0"
+        // Shrink text to fit its box rather than spill past the edges. This is the
+        // single guard against overflow across every builder (long bullets, step
+        // captions, headers); PowerPoint and LibreOffice both honor it.
+        bodyPr.appendElement(XML.Element("a:normAutofit"))
         txBody.appendElement(bodyPr)
         txBody.appendElement(XML.Element("a:lstStyle"))
         txBody.appendElement(XML.Element("a:p"))
