@@ -15,16 +15,22 @@ public struct EMU: RawRepresentable, Hashable, Sendable, Comparable, AdditiveAri
     public static let perCentimeter = 360_000
     public static let perMillimeter = 36_000
     public static let perPoint = 12_700
+    /// CSS reference pixel at 96 DPI: 914,400 / 96. Divides the inch exactly, so
+    /// px→EMU stays an integer with no rounding drift (the same 96-DPI basis
+    /// Office uses when it materializes CSS/HTML pixel lengths).
+    public static let perPixel = 9_525
 
     public static func inches(_ v: Double) -> EMU { EMU(Int((v * Double(perInch)).rounded())) }
     public static func centimeters(_ v: Double) -> EMU { EMU(Int((v * Double(perCentimeter)).rounded())) }
     public static func millimeters(_ v: Double) -> EMU { EMU(Int((v * Double(perMillimeter)).rounded())) }
     public static func points(_ v: Double) -> EMU { EMU(Int((v * Double(perPoint)).rounded())) }
+    public static func pixels(_ v: Double) -> EMU { EMU(Int((v * Double(perPixel)).rounded())) }
 
     public var inches: Double { Double(rawValue) / Double(EMU.perInch) }
     public var centimeters: Double { Double(rawValue) / Double(EMU.perCentimeter) }
     public var millimeters: Double { Double(rawValue) / Double(EMU.perMillimeter) }
     public var points: Double { Double(rawValue) / Double(EMU.perPoint) }
+    public var pixels: Double { Double(rawValue) / Double(EMU.perPixel) }
 
     /// Alias for `EMU(_:)` so raw values read like the other factories in
     /// static-member-inference position: `.emu(914_400)`.
