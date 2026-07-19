@@ -1,0 +1,42 @@
+{
+  "irVersion": "lectern.deck/1",
+  "meta": {
+    "title": "Why Native Rendering Wins",
+    "subtitle": "A case for on-device deck generation",
+    "audience": "Engineering leadership",
+    "goal": "persuade",
+    "language": "en"
+  },
+  "sections": [
+    { "id": "s1", "title": "The Problem", "slideIds": ["sl1", "sl2"] },
+    { "id": "s2", "title": "The Approach", "slideIds": ["sl3", "sl4", "sl5"] }
+  ],
+  "slides": [
+    { "id": "sl1", "sectionId": "s1", "layout": "title",
+      "title": "Why Native Rendering Wins",
+      "body": { "subtitle": "A case for on-device deck generation" },
+      "notes": "Welcome; one-line framing of the argument." },
+    { "id": "sl2", "sectionId": "s1", "layout": "bullets",
+      "title": "Server round-trips are the tax",
+      "body": { "bullets": [
+        { "text": "Every render is a network dependency" },
+        { "text": "Latency compounds per iteration", "subBullets": ["Outline, draft, fix, export — four trips"] }
+      ]},
+      "notes": "Anchor on the iteration loop, not raw speed." },
+    { "id": "sl3", "sectionId": "s2", "layout": "twoColumn",
+      "title": "Before and after",
+      "body": {
+        "left": { "heading": "Server-rendered", "bullets": ["Network on every render", "Latency compounds"] },
+        "right": { "heading": "Native", "bullets": ["Renders on device", "No server at render time"] }
+      },
+      "notes": "Contrast the two paths." },
+    { "id": "sl4", "sectionId": "s2", "layout": "bigNumber",
+      "title": "The whole engine, on device",
+      "body": { "value": "0", "label": "server dependencies at render time" },
+      "notes": "Pause here." },
+    { "id": "sl5", "sectionId": "s2", "layout": "closing",
+      "title": "Ship native",
+      "body": { "callToAction": "Adopt Rostrum for your deck pipeline", "contact": "team@example.com" },
+      "notes": "Close on the call to action." }
+  ]
+}
