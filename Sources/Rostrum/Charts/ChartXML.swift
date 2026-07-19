@@ -236,7 +236,12 @@ enum ChartXML {
                 }
             }
         })
-        if let d = options.dataLabels { el.appendElement(dLbls(d)) }
+        if var d = options.dataLabels {
+            // Doughnut data labels reject dLblPos (only "best fit" applies) —
+            // emitting one triggers PowerPoint's repair dialog.
+            if kind == .doughnut { d.position = nil }
+            el.appendElement(dLbls(d))
+        }
         if kind == .doughnut {
             el.appendElement(V("c:firstSliceAng", "0"))
             el.appendElement(V("c:holeSize", "50"))

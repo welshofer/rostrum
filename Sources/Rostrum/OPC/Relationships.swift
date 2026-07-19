@@ -49,6 +49,12 @@ public final class Relationships {
         return rId
     }
 
+    /// Append a relationship with an explicit rId. Used by deck merge to
+    /// preserve a copied part's rId tokens so its XML body never changes.
+    func add(rId: String, type: String, target: String, isExternal: Bool = false) {
+        items.append(Relationship(rId: rId, type: type, target: target, isExternal: isExternal))
+    }
+
     public func remove(rId: String) {
         items.removeAll { $0.rId == rId }
     }

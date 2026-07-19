@@ -79,6 +79,20 @@ import Testing
         #expect(plot.firstChild(named: "c:valAx") == nil)
     }
 
+    @Test func doughnutDropsDataLabelPosition() throws {
+        // doughnut + dLblPos triggers PowerPoint repair; the position is
+        // stripped for doughnut even when requested.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addChart(.doughnut, data: sample,
+            frame: Rect(x: .zero, y: .zero, width: .inches(5), height: .inches(5)),
+            options: ChartOptions(dataLabels: DataLabelOptions(showPercent: true, position: "ctr")))
+        let d = try deck.package.part(at: PackURI("/ppt/charts/chart1.xml")).dom()
+            .firstChild(named: "c:chart")!.firstChild(named: "c:plotArea")!
+            .firstChild(named: "c:doughnutChart")!.firstChild(named: "c:dLbls")!
+        #expect(d.firstChild(named: "c:dLblPos") == nil)
+        #expect(d.firstChild(named: "c:showPercent")?[attribute: "val"] == "1")
+    }
+
     @Test func scatterUsesXYValNoCat() throws {
         let deck = try Presentation()
         try deck.slides[0].shapes.addScatterChart(

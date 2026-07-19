@@ -6,8 +6,8 @@ import Foundation
 /// Includes the three operations python-pptx never shipped: `remove(at:)`,
 /// `move(from:to:)`, and `duplicate(at:)`.
 public final class Slides: Sequence {
-    private let package: OPCPackage
-    private let presentationPart: Part
+    let package: OPCPackage
+    let presentationPart: Part
 
     init(package: OPCPackage, presentationPart: Part) {
         self.package = package
