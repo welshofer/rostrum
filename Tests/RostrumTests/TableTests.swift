@@ -61,7 +61,7 @@ import Testing
         let (deck, table) = try makeTable()
         table.bandedRows = false
         #expect(!table.bandedRows && table.firstRowHeader)
-        table.cell(0, 0).setFill(.solid(Color("18A999")))
+        try table.cell(0, 0).setFill(.solid(Color("18A999")))
         table.cell(0, 0).verticalAnchor = .middle
 
         let reopened = try Presentation(data: try deck.serializedData())
