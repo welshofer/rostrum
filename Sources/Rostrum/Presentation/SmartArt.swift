@@ -165,17 +165,24 @@ public enum SmartArt {
     static func colorsXML(nodeColors: [Color]?) -> String {
         let fill: String
         let line: String
+        let txFill: String
         if let nodeColors, !nodeColors.isEmpty {
             let swatches = nodeColors.map { "<a:srgbClr val=\"\($0.hex)\"/>" }.joined()
             fill = "<dgm:fillClrLst meth=\"cycle\">\(swatches)</dgm:fillClrLst>"
             line = "<dgm:linClrLst meth=\"cycle\">\(swatches)</dgm:linClrLst>"
+            // Text color follows each node's fill — black on a light block, white on
+            // a dark one — so a pale brand accent never leaves white-on-pale text.
+            let textSwatches = nodeColors
+                .map { "<a:srgbClr val=\"\(Color.bestTextColor(on: $0).hex)\"/>" }.joined()
+            txFill = "<dgm:txFillClrLst meth=\"cycle\">\(textSwatches)</dgm:txFillClrLst>"
         } else {
             fill = "<dgm:fillClrLst meth=\"repeat\"><a:schemeClr val=\"accent1\"/></dgm:fillClrLst>"
             line = "<dgm:linClrLst meth=\"repeat\"><a:schemeClr val=\"lt1\"/></dgm:linClrLst>"
+            txFill = "<dgm:txFillClrLst/>"
         }
         return """
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-            <dgm:colorsDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="urn:microsoft.com/office/officeart/2005/8/colors/accent1_2"><dgm:title val=""/><dgm:desc val=""/><dgm:catLst><dgm:cat type="accent1" pri="11200"/></dgm:catLst><dgm:styleLbl name="node0">\(fill)\(line)<dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl><dgm:styleLbl name="node1">\(fill)\(line)<dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl><dgm:styleLbl name="sibTrans2D1"><dgm:fillClrLst meth="repeat"><a:schemeClr val="accent1"><a:tint val="60000"/></a:schemeClr></dgm:fillClrLst><dgm:linClrLst meth="repeat"><a:schemeClr val="accent1"><a:tint val="60000"/></a:schemeClr></dgm:linClrLst><dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl></dgm:colorsDef>
+            <dgm:colorsDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="urn:microsoft.com/office/officeart/2005/8/colors/accent1_2"><dgm:title val=""/><dgm:desc val=""/><dgm:catLst><dgm:cat type="accent1" pri="11200"/></dgm:catLst><dgm:styleLbl name="node0">\(fill)\(line)<dgm:effectClrLst/><dgm:txLinClrLst/>\(txFill)<dgm:txEffectClrLst/></dgm:styleLbl><dgm:styleLbl name="node1">\(fill)\(line)<dgm:effectClrLst/><dgm:txLinClrLst/>\(txFill)<dgm:txEffectClrLst/></dgm:styleLbl><dgm:styleLbl name="sibTrans2D1"><dgm:fillClrLst meth="repeat"><a:schemeClr val="accent1"><a:tint val="60000"/></a:schemeClr></dgm:fillClrLst><dgm:linClrLst meth="repeat"><a:schemeClr val="accent1"><a:tint val="60000"/></a:schemeClr></dgm:linClrLst><dgm:effectClrLst/><dgm:txLinClrLst/><dgm:txFillClrLst/><dgm:txEffectClrLst/></dgm:styleLbl></dgm:colorsDef>
             """
     }
 }

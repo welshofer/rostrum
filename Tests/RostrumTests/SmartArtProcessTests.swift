@@ -38,6 +38,21 @@ import Testing
         #expect(layout[attribute: "uniqueId"] == SmartArt.Layout.blockList.urn)
     }
 
+    @Test func nodeTextColorContrastsWithItsFill() throws {
+        // A pale block must get dark text, a dark block light text — so a light
+        // brand accent never yields the white-on-pale we saw in QA.
+        let xml = try XML.parse(Data(SmartArt.colorsXML(
+            nodeColors: [Color("FFEB3B"), Color("102A43")]).utf8))
+        let node1 = try #require(xml.children(named: "dgm:styleLbl")
+            .first { $0[attribute: "name"] == "node1" })
+        let tx = try #require(node1.firstChild(named: "dgm:txFillClrLst"))
+        #expect(tx[attribute: "meth"] == "cycle")
+        let vals = tx.children(named: "a:srgbClr").compactMap { $0[attribute: "val"] }
+        #expect(vals.count == 2)
+        #expect(Color(vals[0]).relativeLuminance < 0.5)   // dark text on the light yellow
+        #expect(Color(vals[1]).relativeLuminance > 0.5)   // light text on the dark navy
+    }
+
     @Test func everyLayoutXMLIsWellFormedAndSelfIdentifies() throws {
         for layout in SmartArt.Layout.allCases {
             let root = try XML.parse(Data(layout.layoutXML.utf8))
