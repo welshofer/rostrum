@@ -301,9 +301,16 @@ public struct Design: Sendable, Equatable {
     private static func extractFamily(_ spec: String) -> String {
         var s = Substring(spec)
         if let r = s.range(of: "family ", options: .caseInsensitive) { s = s[r.upperBound...] }
-        if let i = s.firstIndex(where: { $0 == "," || $0 == "." || $0 == ";" }) { s = s[..<i] }
-        if let r = s.range(of: "Weight", options: .caseInsensitive) { s = s[..<r.lowerBound] }
-        return String(s).trimmingCharacters(in: .whitespaces)
+        var body = Substring(String(s).trimmingCharacters(in: .whitespaces))
+        // A quoted CSS font stack — `"GT Pressura, ui-sans-serif, …"` — use the
+        // first quoted group, then its primary family.
+        if let quote = body.first, quote == "\"" || quote == "'" {
+            body = body.dropFirst()
+            if let close = body.firstIndex(of: quote) { body = body[..<close] }
+        }
+        if let i = body.firstIndex(where: { $0 == "," || $0 == "." || $0 == ";" }) { body = body[..<i] }
+        if let r = body.range(of: "Weight", options: .caseInsensitive) { body = body[..<r.lowerBound] }
+        return String(body).trimmingCharacters(in: CharacterSet(charactersIn: " \"'"))
     }
 
     /// Split a leading signed decimal from a trailing unit: `-2px` → (-2, "px"),
