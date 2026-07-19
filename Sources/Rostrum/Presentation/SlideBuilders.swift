@@ -54,10 +54,13 @@ public extension Presentation {
         // its length so a long one stays ≤2 lines and clears the subtitle below.
         let fitted = title.count > 40 ? 30.0 : (title.count > 24 ? 34.0 : s.type(.title).sizePt)
         let titleStyle = s.with(.title) { $0.sizePt = fitted }
-        try slide.addText(title, in: grid.cell(column: 0, row: 4, columnSpan: 6, rowSpan: 4),
+        try slide.addText(title, in: grid.cell(column: 0, row: 4, columnSpan: 6, rowSpan: 3),
                           role: .title, style: titleStyle, color: onBg, anchor: .bottom)
         if let subtitle {
-            try slide.addText(subtitle, in: grid.cell(column: 0, row: 9, columnSpan: 7, rowSpan: 3),
+            // Start higher (row 8) and run wider (9 cols) so a long closing CTA
+            // wraps to a few lines well clear of the bottom edge, not off it. A
+            // section header's subtitle is short, so the extra width is harmless.
+            try slide.addText(subtitle, in: grid.cell(column: 0, row: 8, columnSpan: 9, rowSpan: 4),
                               role: .subhead, style: s, color: onBg)
         }
         return slide
