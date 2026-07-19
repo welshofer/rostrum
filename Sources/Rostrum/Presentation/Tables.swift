@@ -62,7 +62,7 @@ extension ShapeCollection {
 
         try Slide.spTree(of: part).appendElement(graphicFrame)
         part.markDirty()
-        return Table(tbl: tbl, part: part)
+        return Table(tbl: tbl, part: part, graphicFrame: graphicFrame)
     }
 }
 
@@ -70,13 +70,72 @@ extension ShapeCollection {
 public final class Table {
     /// PowerPoint's built-in "Medium Style 2 - Accent 1".
     static let defaultStyleGUID = "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"
+    /// The built-in "No Style, No Grid" — needs no tableStyles.xml part, so
+    /// explicit per-cell fills are the single source of truth.
+    static let noStyleGUID = "{5940675A-B579-460E-94D1-54222C63F5DA}"
 
     let tbl: XML.Element
     let part: Part
+    /// The owning graphic frame, when known — so width/height helpers can keep
+    /// its extent in sync. `nil` when reconstructed from a parsed table.
+    let graphicFrame: XML.Element?
 
-    init(tbl: XML.Element, part: Part) {
+    init(tbl: XML.Element, part: Part, graphicFrame: XML.Element? = nil) {
         self.tbl = tbl
         self.part = part
+        self.graphicFrame = graphicFrame
+    }
+
+    /// Set column widths (left to right) and resize the frame to match.
+    @discardableResult
+    public func columnWidths(_ widths: [EMU]) -> Table {
+        let cols = tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol") ?? []
+        for (i, w) in widths.enumerated() where i < cols.count { cols[i][attribute: "w"] = String(w.rawValue) }
+        syncFrameExtent()
+        part.markDirty()
+        return self
+    }
+
+    /// Set row heights (top to bottom) and resize the frame to match.
+    @discardableResult
+    public func rowHeights(_ heights: [EMU]) -> Table {
+        for (i, h) in heights.enumerated() where i < rows.count { rows[i][attribute: "h"] = String(h.rawValue) }
+        syncFrameExtent()
+        part.markDirty()
+        return self
+    }
+
+    /// Fill cell text row-major; tolerant of size mismatch.
+    @discardableResult
+    public func setContents(_ grid: [[String]]) -> Table {
+        for (r, rowValues) in grid.enumerated() where r < rowCount {
+            for (c, value) in rowValues.enumerated() where c < columnCount { cell(r, c).text = value }
+        }
+        return self
+    }
+
+    /// Switch to the built-in "No Style, No Grid" and clear the header/band
+    /// flags, so explicit per-cell fills fully control the look.
+    @discardableResult
+    public func clearBuiltInStyle() -> Table {
+        let tblPr = tbl.getOrAddChild("a:tblPr", beforeAnyOf: ["a:tblGrid"])
+        for flag in ["firstRow", "lastRow", "firstCol", "lastCol", "bandRow", "bandCol"] {
+            tblPr[attribute: flag] = nil
+        }
+        tblPr.getOrAddChild("a:tableStyleId").children = [.text(Table.noStyleGUID)]
+        part.markDirty()
+        return self
+    }
+
+    /// Resize the graphic frame's extent to the sum of column widths / row
+    /// heights, so the table never over/under-flows its frame.
+    private func syncFrameExtent() {
+        guard let ext = graphicFrame?.firstChild(named: "p:xfrm")?.firstChild(named: "a:ext") else { return }
+        let cx = (tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol") ?? [])
+            .reduce(0) { $0 + (Int($1[attribute: "w"] ?? "0") ?? 0) }
+        let cy = rows.reduce(0) { $0 + (Int($1[attribute: "h"] ?? "0") ?? 0) }
+        if cx > 0 { ext[attribute: "cx"] = String(cx) }
+        if cy > 0 { ext[attribute: "cy"] = String(cy) }
     }
 
     static func makeCell() -> XML.Element {
@@ -182,7 +241,7 @@ public final class TableCell {
     }
 
     /// tcPr children follow schema order: border lines first, then fill.
-    private var tcPr: XML.Element {
+    var tcPr: XML.Element {
         tc.getOrAddChild("a:tcPr")
     }
 

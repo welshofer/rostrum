@@ -79,6 +79,16 @@ import Testing
         #expect(paras[0].firstChild(named: "a:pPr")?.firstChild(named: "a:buChar") != nil)
     }
 
+    @Test func emptyBulletListStillHasAParagraph() throws {
+        // A txBody with zero a:p is invalid OOXML (PowerPoint repairs it).
+        let deck = try Presentation()
+        try deck.slides[0].addBulletList([], in: r, style: deck.style)
+        let paras = try lastSp(deck.slides[0]).firstChild(named: "p:txBody")!.children(named: "a:p")
+        #expect(paras.count == 1)
+        #expect(try deck.validate().isEmpty)
+        _ = try Presentation(data: try deck.serializedData())
+    }
+
     @Test func componentsValidateAndAreDeterministic() throws {
         func build() throws -> Data {
             let deck = try Presentation(); let s = deck.style

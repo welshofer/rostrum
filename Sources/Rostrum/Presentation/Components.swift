@@ -46,6 +46,7 @@ public extension ShapeCollection {
             p.addRun(ts.uppercase ? line.uppercased() : line)
             p.apply(ts)
         }
+        if lines.isEmpty { tf.addParagraph() }   // a txBody must have >= 1 a:p
         return box
     }
 
@@ -67,6 +68,7 @@ public extension ShapeCollection {
             p.addRun(item)
             p.apply(ts)
         }
+        if items.isEmpty { tf.addParagraph() }   // a txBody must have >= 1 a:p
         return box
     }
 
