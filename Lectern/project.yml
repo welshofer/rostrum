@@ -41,6 +41,8 @@ targets:
         CODE_SIGN_IDENTITY: "Apple Development: Jay Welshofer (XP6YTXD955)"
         PROVISIONING_PROFILE_SPECIFIER: ""
         CODE_SIGNING_ALLOWED: "YES"
-        # Keychain-access-groups entitlement: lets keys live in the data-protection
-        # keychain (keyed to team+bundle, not the signature) so they survive rebuilds.
-        CODE_SIGN_ENTITLEMENTS: App/Lectern.entitlements
+        # NOTE: keychain-access-groups (for the data-protection keychain, which
+        # survives rebuilds) is NOT set here — as a profile-gated entitlement it
+        # would make Xcode demand a provisioning profile we don't have. Instead the
+        # finished bundle is re-signed with App/Lectern.entitlements after the build
+        # (the dev cert authorizes it locally). See scripts/build.sh.
