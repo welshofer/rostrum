@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking   // URLSession/URLRequest/HTTPURLResponse live here on Linux
+#endif
 
 // A live provider on the Anthropic Messages API, hand-rolled on URLSession (no
 // vendor SDK, per the house rules). Compiles and is structured to the spec; the
