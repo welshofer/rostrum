@@ -77,6 +77,21 @@ import Testing
         #expect(s.isDark == true)   // derived from resolved bg luminance, not themeMode
     }
 
+    @Test func darkThemeInkTokenStaysReadable() throws {
+        // Reproduces the "Blaze" bug: a dark theme whose "ink" token is near-black
+        // (meant for light surfaces). Text must NOT land dark-on-dark.
+        let deck = try Presentation()
+        var design = Design()
+        design.themeMode = "dark"
+        design.palette = ["ff4100", "ffc700", "292a2c", "000000", "fee3c1"].map { Color($0) }
+        design.colors = ["ink": Color("292a2c"), "primary": Color("ff4100")]   // "ink" → dk1 (text)
+        deck.applyDesign(design)
+        let s = deck.style
+        #expect(s.isDark)
+        #expect(s.ink.contrastRatio(with: s.background) >= 4.5)   // guarded, not #292a2c on #000000
+    }
+
+
     @Test func autoContrastAndAccentWrap() throws {
         let s = try Presentation().style
         // Text on any accent clears AA, and wrap is cyclic + non-trapping.

@@ -393,6 +393,12 @@ public struct Design: Sendable, Equatable {
     /// De-forked onto the shared WCAG luminance so background/text/accent
     /// ranking uses one perceptual model (see `Color.relativeLuminance`).
     static func luminance(_ color: Color) -> Double { color.relativeLuminance }
+
+    /// WCAG contrast ratio (1…21) between two colors.
+    static func contrastRatio(_ a: Color, _ b: Color) -> Double {
+        let hi = max(luminance(a), luminance(b)), lo = min(luminance(a), luminance(b))
+        return (hi + 0.05) / (lo + 0.05)
+    }
 }
 
 extension Presentation {
@@ -408,10 +414,11 @@ extension Presentation {
         if let body = design.bodyFont { theme.minorFont = body }
 
         var set = Set<ThemeSlot>()
+        var slotColor: [ThemeSlot: Color] = [:]
         for key in design.colors.keys.sorted() {
             if let slot = Design.themeSlot(forRole: key) {
                 theme.setColor(slot, design.colors[key]!)
-                set.insert(slot)
+                set.insert(slot); slotColor[slot] = design.colors[key]!
             }
         }
 
@@ -430,6 +437,24 @@ extension Presentation {
         }
         if !set.contains(.lt1), let background { theme.setColor(.lt1, background); set.insert(.lt1) }
         if !set.contains(.dk1), let text { theme.setColor(.dk1, text); set.insert(.dk1) }
+
+        // Contrast guard. A design token named "ink"/"text" can be dark by
+        // intent (meant for light surfaces); on a dark theme that lands dark-on-
+        // dark and the deck is unreadable. Whatever the tokens said, force the
+        // text color to actually contrast with the background — picking the most
+        // readable available color, with white/black as the ultimate fallback.
+        let effectiveBg = slotColor[.lt1] ?? background
+        let effectiveText = slotColor[.dk1] ?? text
+        if let bg = effectiveBg {
+            let unreadable = effectiveText.map { Design.contrastRatio($0, bg) < 4.5 } ?? true
+            if unreadable {
+                let fallbacks = [Design.parseColor("#FFFFFF"), Design.parseColor("#000000")].compactMap { $0 }
+                let candidates = pool + fallbacks
+                if let readable = candidates.max(by: { Design.contrastRatio($0, bg) < Design.contrastRatio($1, bg) }) {
+                    theme.setColor(.dk1, readable); set.insert(.dk1)
+                }
+            }
+        }
 
         // Accents from the curated palette order, skipping near-neutrals and
         // the chosen background/text — only if no explicit accents were given.

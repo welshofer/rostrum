@@ -109,8 +109,15 @@ public struct DeckStyle: Sendable, Equatable {
     /// value fields immediately.
     public init(theme: Theme, design: Design? = nil) {
         let bg = design?.colors["background"] ?? theme.resolve(.bg1) ?? theme.color(.lt1) ?? .white
-        let inkColor = design?.colors["ink"] ?? design?.colors["text"]
+        let rawInk = design?.colors["ink"] ?? design?.colors["text"]
             ?? theme.resolve(.tx1) ?? theme.color(.dk1) ?? .black
+        // Contrast guard. A token named "ink"/"text" can be dark by intent (meant
+        // for light surfaces); on a dark theme it lands dark-on-dark and the deck
+        // is unreadable. If the raw text color doesn't clear AA on the background,
+        // swap in the most legible option (an on-brand palette light, else white).
+        let inkColor: Color = rawInk.contrastRatio(with: bg) >= 4.5
+            ? rawInk
+            : Color.bestTextColor(on: bg, options: [rawInk, .white, .black] + (design?.palette ?? []))
         let dark = bg.relativeLuminance < 0.5
         let acc = (1...6).map { theme.accent($0) ?? design?.colors["accent \($0)"] ?? inkColor }
         self.init(

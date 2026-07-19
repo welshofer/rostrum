@@ -42,32 +42,57 @@ public actor DeckGenerator {
     }
 
     /// Generate an image for each slide that carries an `ImageBrief`, concurrently.
-    /// Images are an enhancement: a failed one is skipped, not fatal.
+    /// Images are an enhancement: a failed one is skipped (not fatal), but the
+    /// failure is reported as a warning so "0 images" is never silent.
     private func illustrate(_ deck: DeckIR,
-                            emit: @Sendable @escaping (GenerationEvent) -> Void) async -> [String: Data] {
-        guard let imageProvider else { return [:] }
+                            emit: @Sendable @escaping (GenerationEvent) -> Void) async -> (images: [String: Data], warnings: [String]) {
+        guard let imageProvider else { return ([:], []) }
         let briefed = deck.slides.compactMap { slide in slide.image.map { (slide.id, $0) } }
-        guard !briefed.isEmpty else { return [:] }
+        guard !briefed.isEmpty else { return ([:], []) }
 
         emit(.illustrating(completed: 0, total: briefed.count))
         let style = imageStyle
         var images: [String: Data] = [:]
+        var failures: [String] = []
         var done = 0
-        await withTaskGroup(of: (String, Data?).self) { group in
+        await withTaskGroup(of: (String, Result<Data, Error>).self) { group in
             for (id, brief) in briefed {
                 group.addTask {
-                    let data = try? await imageProvider.image(
-                        prompt: brief.prompt, style: style, aspect: ImageAspect(brief: brief.aspect))
-                    return (id, data)
+                    do {
+                        let data = try await imageProvider.image(
+                            prompt: brief.prompt, style: style, aspect: ImageAspect(brief: brief.aspect))
+                        return (id, .success(data))
+                    } catch {
+                        return (id, .failure(error))
+                    }
                 }
             }
-            for await (id, data) in group {
+            for await (id, result) in group {
                 done += 1
                 emit(.illustrating(completed: done, total: briefed.count))
-                if let data { images[id] = data }
+                switch result {
+                case .success(let data): images[id] = data
+                case .failure(let error): failures.append(DeckGenerator.imageFailure(error))
+                }
             }
         }
-        return images
+        var warnings: [String] = []
+        if !failures.isEmpty {
+            let reason = failures.first ?? "unknown error"
+            warnings.append("\(failures.count) of \(briefed.count) image(s) couldn't be generated: \(reason)")
+        }
+        return (images, warnings)
+    }
+
+    private static func imageFailure(_ error: Error) -> String {
+        guard let lectern = error as? LecternError else { return "\(error.localizedDescription)" }
+        switch lectern {
+        case .authFailed(let p): return "\(p) rejected the image key"
+        case .rateLimited: return "image provider rate-limited"
+        case .networkOffline: return "no connection"
+        case .providerError(_, let m): return m
+        default: return "\(lectern)"
+        }
     }
 
     private func decodeAndValidate(_ json: String, _ request: DeckRequest) throws -> ValidationResult {
@@ -87,13 +112,13 @@ public actor DeckGenerator {
     private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?,
                         _ directory: URL, usage: Usage,
                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
-        let images = await illustrate(result.deck, emit: emit)   // no-op without an image provider
+        let (images, imageWarnings) = await illustrate(result.deck, emit: emit)   // no-op without an image provider
         emit(.rendering)
         let deckResult: DeckResult
         do {
             deckResult = try await renderer.render(
                 result.deck, designURL: designURL, notesEnabled: request.notes,
-                into: directory, warnings: result.warnings, images: images)
+                into: directory, warnings: result.warnings + imageWarnings, images: images)
         } catch let RenderError.renderFailed(underlying) {
             throw LecternError.renderFailed(message: underlying)
         }
