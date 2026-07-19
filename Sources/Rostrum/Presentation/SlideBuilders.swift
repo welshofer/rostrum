@@ -207,6 +207,23 @@ public extension Presentation {
         return slide
     }
 
+    /// A title over a native SmartArt diagram — a real, editable PowerPoint
+    /// SmartArt object (not drawn shapes), which python-pptx cannot produce.
+    /// `kind` selects the layout family (e.g. `.process` for a chevron sequence);
+    /// nodes are brand-colored by cycling the deck accents.
+    @discardableResult
+    func smartArtSlide(_ title: String, kind: SmartArt.Layout, items: [String],
+                       kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        let nodes = Array(items.prefix(6))
+        guard !nodes.isEmpty else { return slide }
+        let colors = (0..<nodes.count).map { s.accent($0 + 1) }
+        try slide.shapes.addSmartArt(items: nodes, frame: content, colors: colors, layout: kind)
+        return slide
+    }
+
     /// A vertical stack of full-width colored bands, one per item, each labeled —
     /// the "five layers" diagram. Ideal for 3–6 parallel concepts, phases, or
     /// layers instead of a plain bullet list.

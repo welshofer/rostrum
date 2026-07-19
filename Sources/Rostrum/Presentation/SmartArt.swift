@@ -25,19 +25,50 @@ public enum SmartArt {
     static let quickStyleRelType = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramQuickStyle"
     static let colorsRelType = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramColors"
 
+    /// A SmartArt layout family. Each supplies its own `layoutDef` — the algorithm
+    /// PowerPoint runs — and its gallery category; the data model, quick style, and
+    /// colors are shared across all of them. Every layout is minimal, hand-authored,
+    /// and verified to open without repair in PowerPoint + LibreOffice.
+    public enum Layout: String, Sendable, CaseIterable {
+        case blockList   // a vertical list of blocks (the original)
+        case process     // a horizontal chevron sequence (left → right)
+
+        /// Layout uniqueId (`loTypeId`), also the `presId` in the data model.
+        public var urn: String {
+            switch self {
+            case .blockList: return SmartArt.layoutURN
+            case .process:   return "urn:rostrum/basicProcess"
+            }
+        }
+        /// Gallery category, and the document point's `loCatId`.
+        var category: String {
+            switch self {
+            case .blockList: return "list"
+            case .process:   return "process"
+            }
+        }
+        var layoutXML: String {
+            switch self {
+            case .blockList: return SmartArt.blockListLayoutXML
+            case .process:   return SmartArt.processLayoutXML
+            }
+        }
+    }
+
     // MARK: - Data model generation
 
     /// The complete data1.xml for one level of `items` under the document
     /// root: item points, parTrans/sibTrans pairs, parent-of connections,
     /// and the presentation cache mirroring the layout instantiation.
-    static func dataModelXML(items: [String]) -> String {
+    static func dataModelXML(items: [String], layout: Layout = .blockList) -> String {
+        let layoutURN = layout.urn   // drives loTypeId + every presId below
         let n = items.count
         var pts = ""
         var cxns = ""
 
         // Document root with gallery bookkeeping (loTypeId = layout uniqueId).
         pts += """
-            <dgm:pt modelId="1" type="doc"><dgm:prSet loTypeId="\(layoutURN)" loCatId="list" qsTypeId="urn:microsoft.com/office/officeart/2005/8/quickstyle/simple1" qsCatId="simple" csTypeId="urn:microsoft.com/office/officeart/2005/8/colors/accent1_2" csCatId="accent1" phldr="1"/><dgm:spPr/>\(emptyT)</dgm:pt>
+            <dgm:pt modelId="1" type="doc"><dgm:prSet loTypeId="\(layoutURN)" loCatId="\(layout.category)" qsTypeId="urn:microsoft.com/office/officeart/2005/8/quickstyle/simple1" qsCatId="simple" csTypeId="urn:microsoft.com/office/officeart/2005/8/colors/accent1_2" csCatId="accent1" phldr="1"/><dgm:spPr/>\(emptyT)</dgm:pt>
             """
 
         for (i, item) in items.enumerated() {
@@ -107,9 +138,20 @@ public enum SmartArt {
 
     // MARK: - Static parts (verified in PowerPoint 16.111 + LibreOffice 26.2)
 
-    static let layoutXML = """
+    static let blockListLayoutXML = """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <dgm:layoutDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="\(layoutURN)"><dgm:title val="Basic Block List"/><dgm:desc val=""/><dgm:catLst><dgm:cat type="list" pri="1000"/></dgm:catLst><dgm:sampData useDef="1"><dgm:dataModel><dgm:ptLst/><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:sampData><dgm:styleData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="3" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="4" srcId="0" destId="2" srcOrd="1" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:styleData><dgm:clrData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/><dgm:pt modelId="3"/><dgm:pt modelId="4"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="5" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="6" srcId="0" destId="2" srcOrd="1" destOrd="0"/><dgm:cxn modelId="7" srcId="0" destId="3" srcOrd="2" destOrd="0"/><dgm:cxn modelId="8" srcId="0" destId="4" srcOrd="3" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:clrData><dgm:layoutNode name="diagram"><dgm:varLst><dgm:dir/><dgm:resizeHandles val="exact"/></dgm:varLst><dgm:alg type="lin"><dgm:param type="linDir" val="fromT"/></dgm:alg><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst><dgm:constr type="w" for="ch" ptType="node" refType="w"/><dgm:constr type="h" for="ch" ptType="node" refType="h" fact="0.3"/><dgm:constr type="h" for="ch" forName="sibTrans" refType="h" fact="0.05"/><dgm:constr type="primFontSz" for="ch" ptType="node" op="equ" val="65"/></dgm:constrLst><dgm:ruleLst/><dgm:forEach name="nodesForEach" axis="ch" ptType="node"><dgm:layoutNode name="node" styleLbl="node1"><dgm:varLst><dgm:bulletEnabled val="1"/></dgm:varLst><dgm:alg type="tx"/><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" type="rect" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf axis="desOrSelf" ptType="node"/><dgm:constrLst><dgm:constr type="lMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="rMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="tMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="bMarg" refType="primFontSz" fact="0.3"/></dgm:constrLst><dgm:ruleLst><dgm:rule type="primFontSz" val="5" fact="NaN" max="NaN"/></dgm:ruleLst></dgm:layoutNode><dgm:forEach name="sibTransForEach" axis="followSib" ptType="sibTrans" cnt="1"><dgm:layoutNode name="sibTrans"><dgm:alg type="sp"/><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst/><dgm:ruleLst/></dgm:layoutNode></dgm:forEach></dgm:forEach></dgm:layoutNode></dgm:layoutDef>
+        """
+
+    /// Basic Process: a horizontal (left→right) linear sequence of chevron nodes.
+    /// Same data model, quick style, and colors as the block list — only the
+    /// algorithm differs: `linDir=fromL` lays the nodes out in a row, each drawn
+    /// as a `chevron` so the sequence reads directionally, with a thin spacer
+    /// between them. Mirrors the block list's structure so its presentation cache
+    /// (and LibreOffice rendering) stays valid.
+    static let processLayoutXML = """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <dgm:layoutDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="\(Layout.process.urn)"><dgm:title val="Basic Process"/><dgm:desc val=""/><dgm:catLst><dgm:cat type="process" pri="2000"/></dgm:catLst><dgm:sampData useDef="1"><dgm:dataModel><dgm:ptLst/><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:sampData><dgm:styleData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="3" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="4" srcId="0" destId="2" srcOrd="1" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:styleData><dgm:clrData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/><dgm:pt modelId="3"/><dgm:pt modelId="4"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="5" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="6" srcId="0" destId="2" srcOrd="1" destOrd="0"/><dgm:cxn modelId="7" srcId="0" destId="3" srcOrd="2" destOrd="0"/><dgm:cxn modelId="8" srcId="0" destId="4" srcOrd="3" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:clrData><dgm:layoutNode name="diagram"><dgm:varLst><dgm:dir/><dgm:resizeHandles val="exact"/></dgm:varLst><dgm:alg type="lin"><dgm:param type="linDir" val="fromL"/></dgm:alg><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst><dgm:constr type="h" for="ch" ptType="node" refType="h" fact="0.62"/><dgm:constr type="w" for="ch" forName="sibTrans" refType="w" fact="0.04"/><dgm:constr type="primFontSz" for="ch" ptType="node" op="equ" val="65"/></dgm:constrLst><dgm:ruleLst/><dgm:forEach name="nodesForEach" axis="ch" ptType="node"><dgm:layoutNode name="node" styleLbl="node1"><dgm:varLst><dgm:bulletEnabled val="1"/></dgm:varLst><dgm:alg type="tx"/><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" type="homePlate" r:blip=""><dgm:adjLst><dgm:adj idx="1" val="0.2"/></dgm:adjLst></dgm:shape><dgm:presOf axis="desOrSelf" ptType="node"/><dgm:constrLst><dgm:constr type="lMarg" refType="primFontSz" fact="0.4"/><dgm:constr type="rMarg" refType="primFontSz" fact="0.4"/><dgm:constr type="tMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="bMarg" refType="primFontSz" fact="0.3"/></dgm:constrLst><dgm:ruleLst><dgm:rule type="primFontSz" val="5" fact="NaN" max="NaN"/></dgm:ruleLst></dgm:layoutNode><dgm:forEach name="sibTransForEach" axis="followSib" ptType="sibTrans" cnt="1"><dgm:layoutNode name="sibTrans"><dgm:alg type="sp"/><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst/><dgm:ruleLst/></dgm:layoutNode></dgm:forEach></dgm:forEach></dgm:layoutNode></dgm:layoutDef>
         """
 
     static let quickStyleXML = """
@@ -143,7 +185,8 @@ extension ShapeCollection {
     /// `colors` (optional) brand-colors the blocks, cycling through the list;
     /// omitted, blocks use the theme accent (PowerPoint's default look).
     @discardableResult
-    public func addSmartArt(items: [String], frame: Rect, colors: [Color]? = nil) throws -> Shape {
+    public func addSmartArt(items: [String], frame: Rect, colors: [Color]? = nil,
+                            layout: SmartArt.Layout = .blockList) throws -> Shape {
         precondition(!items.isEmpty, "SmartArt needs at least one item")
         guard let package else {
             throw RostrumError.packageInvalid("this shape collection has no package attached")
@@ -157,9 +200,9 @@ extension ShapeCollection {
                 contentType: contentType, blob: Data(xml.utf8))
         }
         let data = addDiagramPart("data", contentType: SmartArt.dataContentType,
-                                  xml: SmartArt.dataModelXML(items: items))
-        let layout = addDiagramPart("layout", contentType: SmartArt.layoutContentType,
-                                    xml: SmartArt.layoutXML)
+                                  xml: SmartArt.dataModelXML(items: items, layout: layout))
+        let layoutPart = addDiagramPart("layout", contentType: SmartArt.layoutContentType,
+                                        xml: layout.layoutXML)
         let quickStyle = addDiagramPart("quickStyle", contentType: SmartArt.quickStyleContentType,
                                         xml: SmartArt.quickStyleXML)
         let colorsPart = addDiagramPart("colors", contentType: SmartArt.colorsContentType,
@@ -167,7 +210,7 @@ extension ShapeCollection {
 
         // All four relationships hang off the SLIDE part.
         let dmId = part.rels.add(type: SmartArt.dataRelType, target: part.uri.relativeReference(to: data.uri))
-        let loId = part.rels.add(type: SmartArt.layoutRelType, target: part.uri.relativeReference(to: layout.uri))
+        let loId = part.rels.add(type: SmartArt.layoutRelType, target: part.uri.relativeReference(to: layoutPart.uri))
         let qsId = part.rels.add(type: SmartArt.quickStyleRelType, target: part.uri.relativeReference(to: quickStyle.uri))
         let csId = part.rels.add(type: SmartArt.colorsRelType, target: part.uri.relativeReference(to: colorsPart.uri))
 
