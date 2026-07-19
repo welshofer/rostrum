@@ -62,6 +62,7 @@ final class AppState {
     var stage = ""
     var drafted = 0
     var total = 0
+    var progressNoun = "slides"          // "slides" while drafting, "images" while illustrating
     private var task: Task<Void, Never>?
 
     private enum Keys {
@@ -236,11 +237,11 @@ final class AppState {
         case .preparingSource: stage = "Reading source"
         case .outlining: stage = "Outlining"
         case .outlineReady: stage = "Outline ready"
-        case .drafting(let c, let t): stage = "Writing slides"; drafted = c; total = t
+        case .drafting(let c, let t): stage = "Writing slides"; drafted = c; total = t; progressNoun = "slides"
         case .validating: stage = "Validating"
         case .repairing: stage = "Repairing"
         case .auditing: stage = "Polishing (QA pass)"
-        case .illustrating(let c, let t): stage = "Generating images"; drafted = c; total = t
+        case .illustrating(let c, let t): stage = "Generating images"; drafted = c; total = t; progressNoun = "images"
         case .rendering: stage = "Rendering .pptx"
         case .finished: stage = "Done"
         }

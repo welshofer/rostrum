@@ -186,7 +186,7 @@ struct GeneratingView: View {
             if app.total > 0 {
                 ProgressView(value: Double(app.drafted), total: Double(app.total))
                     .frame(maxWidth: 280)
-                Text("\(app.drafted) of \(app.total) slides").font(.callout).foregroundStyle(.secondary)
+                Text("\(app.drafted) of \(app.total) \(app.progressNoun)").font(.callout).foregroundStyle(.secondary)
             }
             Button("Cancel", role: .cancel) { app.cancel() }.buttonStyle(.glass)
         }
