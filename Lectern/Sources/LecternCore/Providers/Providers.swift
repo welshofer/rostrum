@@ -64,6 +64,7 @@ public enum GenerationEvent: Sendable {
     case drafting(completed: Int, total: Int)
     case validating
     case repairing              // at most once per run
+    case illustrating(completed: Int, total: Int)   // optional image generation
     case rendering
     case finished(DeckResult)
 }

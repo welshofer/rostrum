@@ -2,7 +2,7 @@ name: Lectern
 options:
   bundleIdPrefix: com.lectern
   deploymentTarget:
-    macOS: "14.0"
+    macOS: "26.0"
   createIntermediateGroups: true
 packages:
   LecternCore:
@@ -11,7 +11,7 @@ targets:
   Lectern:
     type: application
     platform: macOS
-    deploymentTarget: "14.0"
+    deploymentTarget: "26.0"
     sources:
       - path: App
         excludes:
@@ -32,5 +32,9 @@ targets:
         SWIFT_STRICT_CONCURRENCY: complete
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
         INFOPLIST_KEY_NSHumanReadableCopyright: ""
-        CODE_SIGNING_ALLOWED: "NO"
-        CODE_SIGN_IDENTITY: ""
+        # Ad-hoc sign so the app has a stable identity — required for the login
+        # keychain to persist provider keys (an unsigned binary can't).
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGNING_ALLOWED: "YES"

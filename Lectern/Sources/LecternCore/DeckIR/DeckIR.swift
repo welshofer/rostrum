@@ -20,6 +20,18 @@ public struct DeckIR: Codable, Sendable, Equatable {
         self.sections = sections
         self.slides = slides
     }
+
+    enum CodingKeys: String, CodingKey { case irVersion, meta, sections, slides }
+
+    /// Tolerant decode: a real model often omits `irVersion` (or names the whole
+    /// thing differently) — default it rather than reject an otherwise-valid deck.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.irVersion = (try? c.decodeIfPresent(String.self, forKey: .irVersion)) ?? DeckIR.currentVersion
+        self.meta = try c.decode(Meta.self, forKey: .meta)
+        self.sections = (try? c.decodeIfPresent([IRSection].self, forKey: .sections)) ?? nil
+        self.slides = try c.decode([IRSlide].self, forKey: .slides)
+    }
 }
 
 public struct Meta: Codable, Sendable, Equatable {
@@ -53,15 +65,30 @@ public struct IRSlide: Codable, Sendable, Equatable, Identifiable {
     public var title: String?
     public var body: Body?
     public var notes: String?
+    public var image: ImageBrief?          // populated by the model only when a visual helps
 
     public init(id: String, sectionId: String? = nil, layout: String,
-                title: String? = nil, body: Body? = nil, notes: String? = nil) {
+                title: String? = nil, body: Body? = nil, notes: String? = nil,
+                image: ImageBrief? = nil) {
         self.id = id; self.sectionId = sectionId; self.layout = layout
-        self.title = title; self.body = body; self.notes = notes
+        self.title = title; self.body = body; self.notes = notes; self.image = image
     }
 
     /// The parsed layout, or `.unknown(raw)`.
     public var kind: SlideLayoutKind { SlideLayoutKind(layout) }
+}
+
+/// A request for a generated illustration on a slide (§image grounding). Only
+/// present when the deck model decided a visual materially helps. `prompt` is the
+/// subject to depict; art direction (palette/vibe) is added from `design.md` at
+/// generation time so imagery stays on-brand.
+public struct ImageBrief: Codable, Sendable, Equatable {
+    public var prompt: String
+    public var aspect: String?             // "16:9" | "4:3" | "1:1" | "3:4" | "9:16"
+
+    public init(prompt: String, aspect: String? = nil) {
+        self.prompt = prompt; self.aspect = aspect
+    }
 }
 
 /// The `body` payload — a superset covering every layout's shape (§8.2). Which

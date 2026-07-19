@@ -8,7 +8,14 @@ public actor DeckGenerator {
     private let validator = DeckValidator()
     private let renderer = DeckRenderer()
 
-    public init(provider: LLMProvider) { self.provider = provider }
+    private let imageProvider: (any ImageProvider)?
+    private let imageStyle: String?
+
+    public init(provider: LLMProvider, imageProvider: (any ImageProvider)? = nil, imageStyle: String? = nil) {
+        self.provider = provider
+        self.imageProvider = imageProvider
+        self.imageStyle = imageStyle
+    }
 
     private struct DraftErrors: Error { var errors: [String] }
 
@@ -34,6 +41,35 @@ public actor DeckGenerator {
         }
     }
 
+    /// Generate an image for each slide that carries an `ImageBrief`, concurrently.
+    /// Images are an enhancement: a failed one is skipped, not fatal.
+    private func illustrate(_ deck: DeckIR,
+                            emit: @Sendable @escaping (GenerationEvent) -> Void) async -> [String: Data] {
+        guard let imageProvider else { return [:] }
+        let briefed = deck.slides.compactMap { slide in slide.image.map { (slide.id, $0) } }
+        guard !briefed.isEmpty else { return [:] }
+
+        emit(.illustrating(completed: 0, total: briefed.count))
+        let style = imageStyle
+        var images: [String: Data] = [:]
+        var done = 0
+        await withTaskGroup(of: (String, Data?).self) { group in
+            for (id, brief) in briefed {
+                group.addTask {
+                    let data = try? await imageProvider.image(
+                        prompt: brief.prompt, style: style, aspect: ImageAspect(brief: brief.aspect))
+                    return (id, data)
+                }
+            }
+            for await (id, data) in group {
+                done += 1
+                emit(.illustrating(completed: done, total: briefed.count))
+                if let data { images[id] = data }
+            }
+        }
+        return images
+    }
+
     private func decodeAndValidate(_ json: String, _ request: DeckRequest) throws -> ValidationResult {
         let deck: DeckIR
         do {
@@ -51,12 +87,13 @@ public actor DeckGenerator {
     private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?,
                         _ directory: URL, usage: Usage,
                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
+        let images = await illustrate(result.deck, emit: emit)   // no-op without an image provider
         emit(.rendering)
         let deckResult: DeckResult
         do {
             deckResult = try await renderer.render(
                 result.deck, designURL: designURL, notesEnabled: request.notes,
-                into: directory, warnings: result.warnings)
+                into: directory, warnings: result.warnings, images: images)
         } catch let RenderError.renderFailed(underlying) {
             throw LecternError.renderFailed(message: underlying)
         }

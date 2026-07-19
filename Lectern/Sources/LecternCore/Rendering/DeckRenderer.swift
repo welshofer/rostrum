@@ -21,13 +21,19 @@ public actor DeckRenderer {
     /// Render `deck` (styled by the `design.md` at `designURL`, if any) into
     /// `directory`. `warnings` from validation are passed through to the result.
     public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool,
-                       into directory: URL, warnings: [String] = []) throws -> DeckResult {
+                       into directory: URL, warnings: [String] = [],
+                       images: [String: Data] = [:]) throws -> DeckResult {
         do {
             let presentation = try Presentation()
             if let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
 
             for slide in deck.slides {
                 let built = try build(slide, in: presentation)
+                if let data = images[slide.id] {
+                    // A generated illustration sits in a tidy right-hand panel,
+                    // cover-cropped so it never distorts or bleeds off-slide.
+                    try? built.shapes.addPicture(data, frame: Self.imageFrame(in: presentation), fit: .fill)
+                }
                 if notesEnabled, let notes = slide.notes, !notes.isEmpty {
                     try built.setNotes(notes)
                 }
@@ -85,6 +91,15 @@ public actor DeckRenderer {
     /// Flatten a bullet tree to strings, sub-bullets prefixed with an en dash.
     private func flatten(_ bullets: [Bullet]) -> [String] {
         bullets.flatMap { [$0.text] + ($0.subBullets ?? []).map { "– \($0)" } }
+    }
+
+    /// Right-hand image panel: ~40% width, vertically centered, with a margin —
+    /// mirrors the reference hero cards and clears left-aligned title/bullets.
+    private static func imageFrame(in presentation: Presentation) -> Rect {
+        let size = presentation.slideSize
+        let w = Double(size.width.rawValue), h = Double(size.height.rawValue)
+        return Rect(x: EMU(Int(w * 0.555)), y: EMU(Int(h * 0.21)),
+                    width: EMU(Int(w * 0.40)), height: EMU(Int(h * 0.58)))
     }
 
     // MARK: - Sections

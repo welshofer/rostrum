@@ -4,22 +4,24 @@ import LecternCore
 import Security
 #endif
 
-/// The *only* home for provider API keys (invariant I1): a generic-password item
-/// per provider in the user's login keychain. Keys are never written to
-/// UserDefaults and never logged — this type exposes presence and a one-shot read
-/// used at generation time, nothing that would surface a secret to the UI.
+/// The *only* home for API keys (invariant I1): a generic-password item per
+/// account in the user's login keychain. Keys are never written to UserDefaults
+/// and never logged — this type exposes presence and a one-shot read used at
+/// generation time, nothing that would surface a secret to the UI. Text (LLM) and
+/// image keys live under separate account namespaces.
 enum KeychainStore {
     private static let service = "com.lectern.app.apikeys"
 
-    /// Upsert the key for `provider` (delete-then-add keeps it idempotent).
+    // MARK: Account-based core
+
     @discardableResult
-    static func save(_ key: String, for provider: ProviderID) -> Bool {
+    static func save(_ key: String, account: String) -> Bool {
         #if canImport(Security)
-        delete(for: provider)
+        delete(account: account)
         let attributes: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: provider.rawValue,
+            kSecAttrAccount as String: account,
             kSecValueData as String: Data(key.utf8),
             kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlocked,
         ]
@@ -29,13 +31,12 @@ enum KeychainStore {
         #endif
     }
 
-    /// The stored key for `provider`, or `nil`. Called at generation time only.
-    static func read(for provider: ProviderID) -> String? {
+    static func read(account: String) -> String? {
         #if canImport(Security)
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: provider.rawValue,
+            kSecAttrAccount as String: account,
             kSecReturnData as String: true,
             kSecMatchLimit as String: kSecMatchLimitOne,
         ]
@@ -49,12 +50,12 @@ enum KeychainStore {
     }
 
     @discardableResult
-    static func delete(for provider: ProviderID) -> Bool {
+    static func delete(account: String) -> Bool {
         #if canImport(Security)
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: provider.rawValue,
+            kSecAttrAccount as String: account,
         ]
         let status = SecItemDelete(query as CFDictionary)
         return status == errSecSuccess || status == errSecItemNotFound
@@ -63,7 +64,21 @@ enum KeychainStore {
         #endif
     }
 
-    /// Presence check — a keychain read returning nothing is the only thing the UI
-    /// ever learns about a stored key.
+    // MARK: LLM providers
+
+    @discardableResult
+    static func save(_ key: String, for provider: ProviderID) -> Bool { save(key, account: provider.rawValue) }
+    static func read(for provider: ProviderID) -> String? { read(account: provider.rawValue) }
+    @discardableResult
+    static func delete(for provider: ProviderID) -> Bool { delete(account: provider.rawValue) }
     static func hasKey(for provider: ProviderID) -> Bool { read(for: provider) != nil }
+
+    // MARK: Image providers (separate namespace)
+
+    @discardableResult
+    static func save(_ key: String, forImage provider: ImageProviderID) -> Bool { save(key, account: "image:\(provider.rawValue)") }
+    static func read(forImage provider: ImageProviderID) -> String? { read(account: "image:\(provider.rawValue)") }
+    @discardableResult
+    static func delete(forImage provider: ImageProviderID) -> Bool { delete(account: "image:\(provider.rawValue)") }
+    static func hasKey(forImage provider: ImageProviderID) -> Bool { read(forImage: provider) != nil }
 }

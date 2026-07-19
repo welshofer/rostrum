@@ -26,6 +26,11 @@ public enum PromptTemplates {
 
         Group slides into "sections" (id, title, slideIds) when the deck has natural acts. \
         Keep bullets to at most 6 per slide, at most 12 words each, at most 2 levels deep.
+
+        A slide MAY include an optional "image" brief ({ prompt, aspect? }) ONLY when a \
+        photographic or illustrative visual materially strengthens it (openers, section \
+        headers, evocative single-idea slides) — never on dense bullet, comparison, or \
+        agenda slides. Describe the subject only; the palette and finish are applied later.
         """
     }
 

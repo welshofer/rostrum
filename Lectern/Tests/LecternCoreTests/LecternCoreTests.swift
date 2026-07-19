@@ -18,6 +18,21 @@ import Rostrum
 
     // MARK: - IR + validation
 
+    @Test func decodesDeckMissingIrVersion() throws {
+        // A real model often omits irVersion — it must default, not fail (the
+        // deterministic cause of "couldn't parse").
+        let json = """
+        { "meta": { "title": "Q3" },
+          "slides": [ { "id": "s1", "layout": "title", "title": "Q3", "body": { "subtitle": "Review" } } ] }
+        """
+        let deck = try JSONDecoder().decode(DeckIR.self, from: Data(json.utf8))
+        #expect(deck.irVersion == DeckIR.currentVersion)
+        #expect(deck.slides.count == 1)
+        // …and it validates (the renderer would accept it).
+        let result = try DeckValidator().validate(deck, requestedSlideCount: 1, notesRequired: false)
+        #expect(result.deck.slides.first?.kind == .title)
+    }
+
     @Test func decodesTheExampleIR() throws {
         let deck = try fixtureDeck()
         #expect(deck.irVersion == DeckIR.currentVersion)
@@ -85,7 +100,7 @@ import Rostrum
     // MARK: - Pipeline (Mock provider end-to-end)
 
     @Test func mockPipelineHappyPath() async throws {
-        let provider = MockProvider(validJSON: try fixtureJSON())
+        let provider = FixtureProvider(validJSON: try fixtureJSON())
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let events = EventBox()
         let request = DeckRequest(prompt: "why native rendering", slideCount: 5, notes: true)
@@ -99,14 +114,14 @@ import Rostrum
     @Test func repairLoopRecoversOnceThenFails() async throws {
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         // invalidJSONOnce → exactly one repair → success (AT-14).
-        let once = MockProvider(validJSON: try fixtureJSON(), failure: .invalidJSONOnce)
+        let once = FixtureProvider(validJSON: try fixtureJSON(), failure: .invalidJSONOnce)
         let events = EventBox()
         let result = try await DeckGenerator(provider: once).generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir) { events.record($0) }
         #expect(result.slideCount == 5)
         #expect(events.stages.contains("repairing"))
 
         // invalidJSONAlways → .schemaInvalid.
-        let always = MockProvider(validJSON: try fixtureJSON(), failure: .invalidJSONAlways)
+        let always = FixtureProvider(validJSON: try fixtureJSON(), failure: .invalidJSONAlways)
         await #expect(throws: LecternError.self) {
             _ = try await DeckGenerator(provider: always).generate(DeckRequest(prompt: "x"), designURL: nil, into: dir) { _ in }
         }
@@ -146,32 +161,98 @@ import Rostrum
         }
     }
 
-    // MARK: - Provider selection (no keychain, no network)
+    // MARK: - Provider selection (live-only, no keychain, no network)
 
-    @Test func factoryFallsBackToMockWithoutAKey() throws {
-        let mockJSON = try fixtureJSON()
+    @Test func factoryThrowsWithoutAKey() throws {
         for key in [nil, "", "   ", "\n"] as [String?] {
-            let provider = ProviderFactory.make(id: .anthropic, apiKey: key, model: "claude-sonnet-5", mockJSON: mockJSON)
-            #expect(provider.id == .custom)                       // MockProvider.id
-            #expect(provider.displayName == "Mock")
-            #expect(!ProviderFactory.isLive(id: .anthropic, apiKey: key))
+            #expect(throws: LecternError.noKey) {
+                _ = try ProviderFactory.make(id: .anthropic, apiKey: key, model: "claude-sonnet-5")
+            }
         }
     }
 
-    @Test func factoryPicksAnthropicWithAKey() throws {
-        let provider = ProviderFactory.make(id: .anthropic, apiKey: "sk-ant-xyz", model: "claude-opus-4-8", mockJSON: try fixtureJSON())
+    @Test func factoryBuildsAnthropicWithAKey() throws {
+        let provider = try ProviderFactory.make(id: .anthropic, apiKey: "sk-ant-xyz", model: "claude-opus-4-8")
         #expect(provider.id == .anthropic)
         #expect(provider.displayName == "Anthropic")
-        #expect(ProviderFactory.isLive(id: .anthropic, apiKey: "sk-ant-xyz"))
+        #expect(ProviderFactory.isWired(.anthropic))
     }
 
-    @Test func factoryStaysOnMockForUnwiredProvidersEvenWithAKey() throws {
-        // OpenAI/Gemini/Custom aren't wired live yet — don't pretend they are.
+    @Test func factoryThrowsForUnwiredProviders() throws {
+        // OpenAI/Gemini/Custom aren't wired yet — throw rather than fake a deck.
         for id in [ProviderID.openAI, .gemini, .custom] {
-            let provider = ProviderFactory.make(id: id, apiKey: "some-key", model: "m", mockJSON: try fixtureJSON())
-            #expect(provider.displayName == "Mock")
-            #expect(!ProviderFactory.isLive(id: id, apiKey: "some-key"))
+            #expect(!ProviderFactory.isWired(id))
+            #expect(throws: LecternError.self) {
+                _ = try ProviderFactory.make(id: id, apiKey: "some-key", model: "m")
+            }
         }
+    }
+
+    // MARK: - Style catalog parsing (kairos design.md header)
+
+    @Test func parsesRichStyleMetadata() throws {
+        let root = tempDir(); defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let md = """
+        # Apricot
+
+        **Category:** developer
+        **Theme:** light
+        **Vibe:** Editorial
+
+        ## Color palette
+
+        - `#f7f7f4`
+        - `#26251e`
+        - `#f54e00`
+
+        ## Typography
+
+        Families: "'CursorGothic', sans-serif", "'JetBrains Mono', monospace". Weights: 400, 500.
+        """
+        try md.write(to: root.appendingPathComponent("apricot.md"), atomically: true, encoding: .utf8)
+        let style = try #require(try StyleCatalog().load(from: root).first)
+        #expect(style.name == "Apricot")
+        #expect(style.vibe == "Editorial")
+        #expect(style.category == "developer")
+        #expect(style.theme == .light)
+        #expect(style.badge == "Editorial · Light")
+        #expect(style.swatches == ["#f7f7f4", "#26251e", "#f54e00"])
+        #expect(style.displayFont == "CursorGothic")           // quoted CSS stack unwrapped
+        #expect(style.tags.contains("developer") && style.tags.contains("editorial"))
+    }
+
+    // MARK: - Optional image generation
+
+    @Test func imageFactoryRequiresAKey() {
+        #expect(throws: LecternError.noKey) { _ = try ImageProviderFactory.make(id: .gemini, apiKey: nil) }
+        #expect(throws: LecternError.noKey) { _ = try ImageProviderFactory.make(id: .openAI, apiKey: "  ") }
+    }
+
+    @Test func imageFactoryBuildsEachProvider() throws {
+        #expect(try ImageProviderFactory.make(id: .gemini, apiKey: "k").id == .gemini)
+        #expect(try ImageProviderFactory.make(id: .openAI, apiKey: "k").id == .openAI)
+    }
+
+    @Test func styleDirectiveIsOnBrandAndTextFree() {
+        let style = Style(slug: "aurora", name: "Aurora", vibe: "Technical", theme: .light,
+                          swatches: ["#533afd", "#4434d4"], designURL: URL(fileURLWithPath: "/x"))
+        let directive = ImageStyleDirective.from(
+            style: style, designText: "Overall visual personality: crisp fintech gradients throughout.")
+        #expect(directive.contains("#533afd"))
+        #expect(directive.lowercased().contains("technical"))
+        #expect(directive.lowercased().contains("no text"))          // guards against baked-in words
+        #expect(directive.contains("crisp fintech"))
+    }
+
+    @Test func slideDecodesOptionalImageBrief() throws {
+        let withImage = #"{"id":"s1","layout":"title","image":{"prompt":"a lighthouse at dawn","aspect":"16:9"}}"#
+        let slide = try JSONDecoder().decode(IRSlide.self, from: Data(withImage.utf8))
+        #expect(slide.image?.prompt == "a lighthouse at dawn")
+        #expect(slide.image?.aspect == "16:9")
+        // A slide with no image still decodes (image is optional).
+        let bare = try JSONDecoder().decode(IRSlide.self, from: Data(#"{"id":"s2","layout":"bullets"}"#.utf8))
+        #expect(bare.image == nil)
     }
 
     // MARK: - Pricing (§10.3)
@@ -218,6 +299,7 @@ private final class EventBox: @unchecked Sendable {
         case .drafting: events.append("drafting")
         case .validating: events.append("validating")
         case .repairing: events.append("repairing")
+        case .illustrating: events.append("illustrating")
         case .rendering: events.append("rendering")
         case .finished: events.append("finished")
         }
