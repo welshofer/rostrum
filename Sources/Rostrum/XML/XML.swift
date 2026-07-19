@@ -172,11 +172,10 @@ public enum XML {
         let builder = TreeBuilder()
         parser.delegate = builder
         let ok = parser.parse()
-        guard ok, builder.delegateError == nil, !builder.extraTopLevelContent,
-              let root = builder.root, builder.stack.isEmpty else {
+        guard ok, !builder.extraTopLevelContent, let root = builder.root, builder.stack.isEmpty else {
             let line = parser.lineNumber
             let message: String
-            if let error = parser.parserError as NSError? ?? builder.delegateError {
+            if let error = parser.parserError as NSError? {
                 message = error.localizedDescription
             } else if builder.extraTopLevelContent {
                 message = "content after the root element"
@@ -345,15 +344,12 @@ public enum XML {
             appendText(whitespaceString)
         }
 
-        /// The first parse error the delegate is told about. On Linux,
-        /// swift-corelibs-foundation's `XMLParser.parse()` returns `true` and
-        /// leaves `parserError` nil for malformed input, yet still reports the
-        /// error through this callback — so capturing it here is the reliable
-        /// cross-platform signal that parsing failed.
-        var delegateError: NSError?
-        func parser(_ parser: XMLParser, parseErrorOccurred parseError: any Error) {
-            if delegateError == nil { delegateError = parseError as NSError }
-        }
+        // NOTE: `parseErrorOccurred` is intentionally NOT implemented. On Linux,
+        // swift-corelibs-foundation invokes it for *valid* documents containing
+        // entity references, CR characters, or multi-chunk text, so treating it
+        // as fatal would reject good XML. Malformedness is detected structurally
+        // instead: `parse()`'s return value, an unclosed `stack`, a missing
+        // `root`, and `extraTopLevelContent` (a second root / trailing text).
 
         // Comments and processing instructions are intentionally dropped:
         // no `foundComment` / `foundProcessingInstruction` handling.
