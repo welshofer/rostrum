@@ -6,6 +6,7 @@ import Foundation
 public actor DeckGenerator {
     private let provider: LLMProvider
     private let validator = DeckValidator()
+    private let normalizer = DeckNormalizer()
     private let renderer = DeckRenderer()
 
     private let imageProvider: (any ImageProvider)?
@@ -123,6 +124,21 @@ public actor DeckGenerator {
         }
     }
 
+    /// Layer-1 deterministic shaping (see `DeckNormalizer`). Applied to the final,
+    /// already-valid deck. The result is re-fed through the unchanged validator: if
+    /// any transform ever produced an invalid deck we discard it and render the
+    /// un-normalized one, so the quality floor can never corrupt a valid deck.
+    private func normalizeIfValid(_ result: ValidationResult, _ request: DeckRequest) -> ValidationResult {
+        let (deck, report) = normalizer.normalize(result.deck)
+        guard report.changed else { return result }
+        guard let revalidated = try? validator.validate(
+            deck, requestedSlideCount: request.slideCount, notesRequired: request.notes)
+        else { return result }
+        // Keep the original soft warnings; the normalizer's notes are improvements,
+        // not problems, so they aren't surfaced to the user.
+        return ValidationResult(deck: revalidated.deck, warnings: result.warnings)
+    }
+
     private func decodeAndValidate(_ json: String, _ request: DeckRequest) throws -> ValidationResult {
         let deck: DeckIR
         do {
@@ -140,13 +156,14 @@ public actor DeckGenerator {
     private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?,
                         _ directory: URL, usage: Usage,
                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
-        let (images, imageWarnings) = await illustrate(result.deck, emit: emit)   // no-op without an image provider
+        let shaped = normalizeIfValid(result, request)
+        let (images, imageWarnings) = await illustrate(shaped.deck, emit: emit)   // no-op without an image provider
         emit(.rendering)
         let deckResult: DeckResult
         do {
             deckResult = try await renderer.render(
-                result.deck, designURL: designURL, notesEnabled: request.notes,
-                into: directory, warnings: result.warnings + imageWarnings, images: images)
+                shaped.deck, designURL: designURL, notesEnabled: request.notes,
+                into: directory, warnings: shaped.warnings + imageWarnings, images: images)
         } catch let RenderError.renderFailed(underlying) {
             throw LecternError.renderFailed(message: underlying)
         }
