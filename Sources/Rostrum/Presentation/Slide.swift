@@ -46,7 +46,7 @@ public final class Slide {
         cSld.removeChildren(named: "p:bg")
         let bg = XML.Element("p:bg")
         let bgPr = XML.Element("p:bgPr")
-        bgPr.appendElement(fill.makeElement())
+        bgPr.appendElement(try fill.fillElement(embeddingInto: part, package: package))
         bgPr.appendElement(XML.Element("a:effectLst"))
         bg.appendElement(bgPr)
         cSld.children.insert(.element(bg), at: 0)

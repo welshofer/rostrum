@@ -279,7 +279,7 @@ do {
             run.fontSize = ri == 0 ? 17 : 16
             run.bold = ri == 0 || ci == 1
             run.color = ri == 0 ? .white : (ci == 1 ? Ink.teal : Ink.inkSoft)
-            if ri == 0 { cell.setFill(.solid(Ink.navy)) }
+            if ri == 0 { try cell.setFill(.solid(Ink.navy)) }
         }
     }
     try s.setNotes("The dashes are python-pptx's 15-year-old open feature requests.")

@@ -129,6 +129,6 @@ extension ShapeCollection {
 
         try Slide.spTree(of: part).appendElement(pic)
         part.markDirty()
-        return Shape(element: pic, part: part)
+        return Shape(element: pic, part: part, package: package)
     }
 }

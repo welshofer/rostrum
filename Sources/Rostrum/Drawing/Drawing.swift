@@ -44,16 +44,20 @@ public struct GradientStop: Hashable, Sendable {
     }
 }
 
-/// A linear gradient. `angleDegrees` is clockwise from "pointing right":
-/// 0 = left→right, 90 = top→bottom (the wire unit is 1/60000 degree).
+/// A gradient. Linear by default: `angleDegrees` is clockwise from "pointing
+/// right" (0 = left→right, 90 = top→bottom; wire unit 1/60000 degree). Radial
+/// gradients (`isRadial`) run from the center outward and ignore the angle.
 public struct GradientFill: Hashable, Sendable {
     public var stops: [GradientStop]
     public var angleDegrees: Double
+    /// Radial (center → edge) instead of linear. Ignores `angleDegrees`.
+    public var isRadial: Bool
 
-    public init(stops: [GradientStop], angleDegrees: Double = 90) {
+    public init(stops: [GradientStop], angleDegrees: Double = 90, isRadial: Bool = false) {
         precondition(stops.count >= 2, "a gradient needs at least 2 stops")
         self.stops = stops
         self.angleDegrees = angleDegrees
+        self.isRadial = isRadial
     }
 
     /// Two-color convenience, top→bottom by default.
@@ -63,6 +67,29 @@ public struct GradientFill: Hashable, Sendable {
             GradientStop(position: 1, color: to),
         ], angleDegrees: angleDegrees)
     }
+
+    /// A radial gradient from the center outward.
+    public static func radial(stops: [GradientStop]) -> GradientFill {
+        GradientFill(stops: stops, isRadial: true)
+    }
+
+    /// A two-color radial gradient, `from` at the center to `to` at the edge.
+    public static func radial(from: Color, to: Color) -> GradientFill {
+        GradientFill(stops: [
+            GradientStop(position: 0, color: from),
+            GradientStop(position: 1, color: to),
+        ], isRadial: true)
+    }
+}
+
+/// How an image fill maps onto the shape (or background) it fills. Distinct
+/// from `PictureFit`, which is for `p:pic` picture shapes — tiling is a
+/// fill-only capability.
+public enum ImageFillMode: Hashable, Sendable {
+    /// Scale the image to fill the region (`a:stretch`/`a:fillRect`).
+    case stretch
+    /// Tile the image at `scale` (1.0 = native), repeating to fill (`a:tile`).
+    case tile(scale: Double = 1.0)
 }
 
 /// A shape or background fill.
@@ -71,6 +98,11 @@ public enum Fill: Hashable, Sendable {
     /// Solid color with opacity 0…1 — overlays, scrims, subtle accents.
     case solidAlpha(Color, Double)
     case gradient(GradientFill)
+    /// An image fill (`a:blipFill`). The image is embedded (deduplicated) and a
+    /// relationship added when the fill is written — so this case must be
+    /// realized through `fillElement(embeddingInto:package:)`, never the pure
+    /// `makeElement()`.
+    case image(Data, ImageFillMode)
     /// A theme color reference (with optional transforms). Shapes filled this
     /// way recolor automatically when the theme palette is edited.
     case themeScheme(SchemeColor, [ColorTransform])
@@ -79,6 +111,11 @@ public enum Fill: Hashable, Sendable {
     /// A theme color fill, e.g. `.themeColor(.accent1)` or with transforms.
     public static func themeColor(_ scheme: SchemeColor, _ transforms: [ColorTransform] = []) -> Fill {
         .themeScheme(scheme, transforms)
+    }
+
+    /// An image fill from raw image bytes (PNG/JPEG/GIF).
+    public static func image(_ data: Data, fit: ImageFillMode = .stretch) -> Fill {
+        .image(data, fit)
     }
 
     /// The DrawingML fill element (`a:solidFill`/`a:gradFill`/`a:noFill`).
@@ -109,11 +146,24 @@ public enum Fill: Hashable, Sendable {
                 stopList.appendElement(gs)
             }
             fill.appendElement(stopList)
-            fill.appendElement(XML.Element("a:lin", attributes: [
-                ("ang", String(Int((gradient.angleDegrees * 60_000).rounded()))),
-                ("scaled", "1"),
-            ]))
+            if gradient.isRadial {
+                // Radial: a:gsLst then a:path (never a:lin). fillToRect at the
+                // center makes the last stop the outer edge.
+                let path = XML.Element("a:path", attributes: [("path", "circle")])
+                path.appendElement(XML.Element("a:fillToRect", attributes: [
+                    ("l", "50000"), ("t", "50000"), ("r", "50000"), ("b", "50000"),
+                ]))
+                fill.appendElement(path)
+            } else {
+                fill.appendElement(XML.Element("a:lin", attributes: [
+                    ("ang", String(Int((gradient.angleDegrees * 60_000).rounded()))),
+                    ("scaled", "1"),
+                ]))
+            }
             return fill
+        case .image:
+            preconditionFailure(
+                "image fills must be written via Fill.fillElement(embeddingInto:package:)")
         case .none:
             return XML.Element("a:noFill")
         }

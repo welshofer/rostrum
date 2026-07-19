@@ -182,9 +182,9 @@ while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
         for (ci, value) in row.enumerated() {
             let cell = t.cell(ri, ci)
             cell.verticalAnchor = .middle
-            if ri == 0 { cell.setFill(.solid(headerBg)) }
-            else if ri % 2 == 0 { cell.setFill(.solid(C.cream)) }
-            else { cell.setFill(.solid(C.white)) }
+            if ri == 0 { try cell.setFill(.solid(headerBg)) }
+            else if ri % 2 == 0 { try cell.setFill(.solid(C.cream)) }
+            else { try cell.setFill(.solid(C.white)) }
             let tf = cell.textFrame
             tf.setMargins(left: .inches(0.14), top: .zero, right: .inches(0.1), bottom: .zero)
             tf.clear()

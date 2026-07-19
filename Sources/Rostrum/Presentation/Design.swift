@@ -46,11 +46,51 @@ public struct Design: Sendable, Equatable {
     public var direction: String?
     /// Any `**Key:** value` front-matter (id, category, theme, vibe, …).
     public var metadata: [String: String]
+    /// Spacing-scale tokens keyed by lowercased name (`"md"` → 16px), each
+    /// resolved to EMU. Lengths default to CSS px (96 DPI); `pt`/`in`/`cm`/`mm`
+    /// units are honored when written explicitly.
+    public var spacing: [String: EMU]
+    /// Corner-radius / shape tokens keyed by lowercased name (`"lg"` → 12px,
+    /// `"full"` → 9999px), each resolved to EMU. Same length rules as `spacing`.
+    public var radius: [String: EMU]
+    /// The typography scale keyed by lowercased name (`"hero-display"`,
+    /// `"body-md"`, or a plain role like `"heading"`). Sizes and tracking are
+    /// normalized to points (the DrawingML text unit); see `TypeToken`.
+    public var typeScale: [String: TypeToken]
+
+    /// One named entry of a typography scale. Sizes/tracking are stored in
+    /// points (px inputs are converted at 96 DPI, so `80px` → `60` pt);
+    /// `lineHeight` is the unitless CSS multiple (`1.05`), `weight` the numeric
+    /// CSS weight (`500`). Every field is optional — a plain `## Fonts` role
+    /// (`Heading: Avenir Next`) yields a token carrying only `family`.
+    public struct TypeToken: Sendable, Equatable {
+        /// Font family (e.g. "Roobert PRO"), parsed like the heading/body fonts.
+        public var family: String?
+        /// Font size in points (`size 80px` → 60).
+        public var sizePt: Double?
+        /// Numeric font weight (`weight 500` → 500).
+        public var weight: Int?
+        /// Unitless line-height multiple (`line 1.05` → 1.05).
+        public var lineHeight: Double?
+        /// Letter spacing / tracking in points (`tracking -2px` → -1.5).
+        public var trackingPt: Double?
+
+        public init(family: String? = nil, sizePt: Double? = nil, weight: Int? = nil,
+                    lineHeight: Double? = nil, trackingPt: Double? = nil) {
+            self.family = family
+            self.sizePt = sizePt
+            self.weight = weight
+            self.lineHeight = lineHeight
+            self.trackingPt = trackingPt
+        }
+    }
 
     public init(name: String? = nil, themeMode: String? = nil,
                 headingFont: String? = nil, bodyFont: String? = nil,
                 palette: [Color] = [], colors: [String: Color] = [:],
-                direction: String? = nil, metadata: [String: String] = [:]) {
+                direction: String? = nil, metadata: [String: String] = [:],
+                spacing: [String: EMU] = [:], radius: [String: EMU] = [:],
+                typeScale: [String: TypeToken] = [:]) {
         self.name = name
         self.themeMode = themeMode
         self.headingFont = headingFont
@@ -59,7 +99,21 @@ public struct Design: Sendable, Equatable {
         self.colors = colors
         self.direction = direction
         self.metadata = metadata
+        self.spacing = spacing
+        self.radius = radius
+        self.typeScale = typeScale
     }
+
+    // MARK: - Token accessors
+
+    /// Case-insensitive lookup of a spacing token (`design.space("md")`).
+    /// Named to avoid colliding with the `spacing` storage.
+    public func space(_ name: String) -> EMU? { spacing[name.lowercased()] }
+    /// Case-insensitive lookup of a corner-radius token (`design.cornerRadius("lg")`).
+    public func cornerRadius(_ name: String) -> EMU? { radius[name.lowercased()] }
+    /// Case-insensitive lookup of a typography-scale entry
+    /// (`design.typeToken("hero-display")`).
+    public func typeToken(_ name: String) -> TypeToken? { typeScale[name.lowercased()] }
 
     /// Load and parse a `design.md` from disk.
     public init(contentsOf url: URL) throws {
@@ -68,7 +122,7 @@ public struct Design: Sendable, Equatable {
 
     // MARK: - Parsing
 
-    private enum Mode { case none, fonts, colors, direction, ignore }
+    private enum Mode { case none, fonts, colors, direction, ignore, spacing, radius }
 
     /// Parse a `design.md` document. See the type doc for the accepted shapes.
     public static func parse(_ markdown: String) -> Design {
@@ -126,7 +180,11 @@ public struct Design: Sendable, Equatable {
                 mode = .fonts; anyFamily = anyFamily ?? emptyToNil(extractFamily(value)); continue
             case "direction", "notes", "design token description", "overall visual personality":
                 mode = .direction; note(value); continue
-            case "spacing tokens", "radius and shape tokens", "component tokens", "color rationale",
+            case "spacing tokens":
+                mode = .spacing; continue
+            case "radius and shape tokens", "radius tokens", "shape tokens":
+                mode = .radius; continue
+            case "component tokens", "color rationale",
                  "typography rationale", "layout system", "depth and hierarchy", "shape language",
                  "component language", "style source", "style-content firewall",
                  "detected source-domain vocabulary":
@@ -149,6 +207,16 @@ public struct Design: Sendable, Equatable {
                 if let color = parseColor(value) { design.colors[label] = color }
             case .fonts:
                 ingestFont(label: label, spec: value)
+                // Capture the full scale entry too (family + size/weight/…). The
+                // family still feeds heading/body via ingestFont above; this is
+                // additive and lossless. First definition wins, like the fonts.
+                if design.typeScale[label] == nil {
+                    design.typeScale[label] = parseTypeToken(value)
+                }
+            case .spacing:
+                if let emu = parseLengthEMU(value) { design.spacing[label] = emu }
+            case .radius:
+                if let emu = parseLengthEMU(value) { design.radius[label] = emu }
             case .direction:
                 note(line)
             default:
@@ -206,9 +274,11 @@ public struct Design: Sendable, Equatable {
 
     private static func sectionMode(_ heading: String) -> Mode {
         switch heading {
-        case "fonts", "typography": return .fonts
+        case "fonts", "typography", "type scale", "typography tokens": return .fonts
         case "palette", "colors", "colours", "color palette", "colour palette", "swatches": return .colors
         case "direction", "notes", "vibe": return .direction
+        case "spacing", "spacing tokens": return .spacing
+        case "radius", "radii", "shape", "shapes", "radius and shape", "radius and shape tokens": return .radius
         default: return .none
         }
     }
@@ -236,6 +306,71 @@ public struct Design: Sendable, Equatable {
         return String(s).trimmingCharacters(in: .whitespaces)
     }
 
+    /// Split a leading signed decimal from a trailing unit: `-2px` → (-2, "px"),
+    /// `16` → (16, ""). Returns nil when there is no leading number.
+    static func parseLength(_ text: String) -> (value: Double, unit: String)? {
+        let s = Substring(text.trimmingCharacters(in: .whitespaces))
+        var i = s.startIndex
+        if i < s.endIndex, s[i] == "-" || s[i] == "+" { i = s.index(after: i) }
+        var sawDigit = false
+        while i < s.endIndex, s[i].isNumber || s[i] == "." {
+            if s[i].isNumber { sawDigit = true }
+            i = s.index(after: i)
+        }
+        guard sawDigit, let value = Double(s[..<i]) else { return nil }
+        let unit = s[i...].trimmingCharacters(in: .whitespaces).lowercased()
+        return (value, unit)
+    }
+
+    /// Parse a CSS length (`16px`, `12pt`, `1in`, bare `16`) to EMU. A bare or
+    /// `px` number uses the 96-DPI reference pixel; unknown units fall back to px.
+    static func parseLengthEMU(_ text: String) -> EMU? {
+        guard let (v, unit) = parseLength(text) else { return nil }
+        switch unit {
+        case "pt": return EMU.points(v)
+        case "in": return EMU.inches(v)
+        case "cm": return EMU.centimeters(v)
+        case "mm": return EMU.millimeters(v)
+        default:   return EMU.pixels(v)   // "px", "", or anything unrecognized
+        }
+    }
+
+    /// Parse a CSS length to points (the DrawingML text unit). `pt` passes
+    /// through; everything else is treated as px and routed through EMU so the
+    /// 96→72 conversion stays integer-exact (`80px` → 60.0, `-2px` → -1.5).
+    static func parseLengthPoints(_ text: String) -> Double? {
+        guard let (v, unit) = parseLength(text) else { return nil }
+        return unit == "pt" ? v : EMU.pixels(v).points
+    }
+
+    /// Parse a typography spec — `family Roobert PRO, size 80px, weight 500,
+    /// line 1.05, tracking -2px` — into a `TypeToken`. Comma-separated segments
+    /// are read as `keyword value`; the family reuses `extractFamily`. Missing
+    /// facets stay nil, so a bare `Avenir Next` yields only `family`.
+    static func parseTypeToken(_ spec: String) -> TypeToken {
+        var token = TypeToken()
+        let family = extractFamily(spec)
+        if !family.isEmpty { token.family = family }
+        for segment in spec.split(separator: ",") {
+            let words = segment.split(separator: " ").map(String.init)
+            guard words.count >= 2 else { continue }
+            let value = words[1...].joined(separator: " ")
+            switch words[0].lowercased() {
+            case "size", "font-size", "fontsize":
+                token.sizePt = parseLengthPoints(value)
+            case "weight", "wght", "wt":
+                token.weight = Int(value.prefix { $0.isNumber })
+            case "line", "line-height", "leading", "lh":
+                token.lineHeight = Double(value.prefix { $0.isNumber || $0 == "." })
+            case "tracking", "letter-spacing", "letterspacing", "track":
+                token.trackingPt = parseLengthPoints(value)
+            default:
+                break   // "family …" (already handled) or an unknown facet.
+            }
+        }
+        return token
+    }
+
     /// Every 6-digit hex color token on a line (bare swatch lists).
     static func colorTokens(_ line: String) -> [Color] {
         line.split { !($0.isHexDigit || $0 == "#") }.compactMap { parseColor(String($0)) }
@@ -248,11 +383,9 @@ public struct Design: Sendable, Equatable {
         return Color(hex)
     }
 
-    static func luminance(_ color: Color) -> Double {
-        let v = Int(color.hex, radix: 16) ?? 0
-        let r = Double((v >> 16) & 0xFF), g = Double((v >> 8) & 0xFF), b = Double(v & 0xFF)
-        return (0.299 * r + 0.587 * g + 0.114 * b) / 255
-    }
+    /// De-forked onto the shared WCAG luminance so background/text/accent
+    /// ranking uses one perceptual model (see `Color.relativeLuminance`).
+    static func luminance(_ color: Color) -> Double { color.relativeLuminance }
 }
 
 extension Presentation {

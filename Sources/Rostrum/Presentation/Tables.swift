@@ -186,9 +186,10 @@ public final class TableCell {
         tc.getOrAddChild("a:tcPr")
     }
 
-    public func setFill(_ fill: Fill) {
+    public func setFill(_ fill: Fill) throws {
         for name in Fill.choiceNames { tcPr.removeChildren(named: name) }
-        tcPr.appendElement(fill.makeElement())
+        // Table cells have no package handle; pure fills work, image fills throw.
+        tcPr.appendElement(try fill.fillElement(embeddingInto: part, package: nil))
         part.markDirty()
     }
 

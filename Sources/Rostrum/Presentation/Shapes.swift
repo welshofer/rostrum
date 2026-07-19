@@ -16,7 +16,7 @@ public final class ShapeCollection: Sequence {
     /// Existing `p:sp` shapes, in z-order (document order).
     public var all: [Shape] {
         ((try? Slide.spTree(of: part))?.children(named: "p:sp") ?? [])
-            .map { Shape(element: $0, part: part) }
+            .map { Shape(element: $0, part: part, package: package) }
     }
 
     public var count: Int { all.count }
@@ -38,7 +38,7 @@ public final class ShapeCollection: Sequence {
         spPr.appendElement(Line.makeElement(nil))
         try Slide.spTree(of: part).appendElement(sp)
         part.markDirty()
-        return Shape(element: sp, part: part)
+        return Shape(element: sp, part: part, package: package)
     }
 
     /// Add an autoshape with a preset geometry.
@@ -49,11 +49,11 @@ public final class ShapeCollection: Sequence {
     ) throws -> Shape {
         let sp = try makeSp(name: geometry.rawValue, frame: frame, textBox: false, geometry: geometry)
         let spPr = sp.firstChild(named: "p:spPr")!
-        spPr.appendElement(fill.makeElement())
+        spPr.appendElement(try fill.fillElement(embeddingInto: part, package: package))
         spPr.appendElement(Line.makeElement(line))
         try Slide.spTree(of: part).appendElement(sp)
         part.markDirty()
-        return Shape(element: sp, part: part)
+        return Shape(element: sp, part: part, package: package)
     }
 
     /// Add a rounded rectangle with an explicit corner radius (the DrawingML
@@ -73,11 +73,11 @@ public final class ShapeCollection: Sequence {
                 Int((Double(cornerRadius.rawValue) / Double(minSide) * 100_000).rounded())))
             avLst.appendElement(XML.Element("a:gd", attributes: [("name", "adj"), ("fmla", "val \(adj)")]))
         }
-        spPr.appendElement(fill.makeElement())
+        spPr.appendElement(try fill.fillElement(embeddingInto: part, package: package))
         spPr.appendElement(Line.makeElement(line))
         try Slide.spTree(of: part).appendElement(sp)
         part.markDirty()
-        return Shape(element: sp, part: part)
+        return Shape(element: sp, part: part, package: package)
     }
 
     /// The shared `p:sp` skeleton: non-visual properties, transform, geometry,
@@ -133,10 +133,14 @@ public final class ShapeCollection: Sequence {
 public final class Shape {
     let element: XML.Element
     let part: Part
+    /// The owning package, when known — required to embed image fills. `nil` for
+    /// shapes built without package context (chart/SmartArt graphic frames).
+    let package: OPCPackage?
 
-    init(element: XML.Element, part: Part) {
+    init(element: XML.Element, part: Part, package: OPCPackage? = nil) {
         self.element = element
         self.part = part
+        self.package = package
     }
 
     private var spPr: XML.Element {
@@ -193,9 +197,10 @@ public final class Shape {
         }
     }
 
-    public func setFill(_ fill: Fill) {
+    public func setFill(_ fill: Fill) throws {
         for name in Fill.choiceNames { spPr.removeChildren(named: name) }
-        spPr.insertChild(fill.makeElement(), beforeAnyOf: ["a:ln", "a:effectLst", "a:sp3d", "a:extLst"])
+        spPr.insertChild(try fill.fillElement(embeddingInto: part, package: package),
+                         beforeAnyOf: ["a:ln", "a:effectLst", "a:sp3d", "a:extLst"])
         part.markDirty()
     }
 

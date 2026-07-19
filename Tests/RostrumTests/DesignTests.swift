@@ -118,6 +118,54 @@ import Testing
         #expect(d.direction?.contains("canary yellow") == true)
     }
 
+    @Test func capturesSpacingRadiusAndTypeScaleTokens() {
+        let d = Design.parse("""
+        ## Spacing tokens
+        - sm: 8px
+        - md: 16px
+
+        ## Radius and shape tokens
+        - lg: 12px
+        - full: 9999px
+
+        ## Typography tokens
+        - hero-display: family Roobert PRO, size 80px, weight 500, line 1.05, tracking -2px
+        - body-md: family Inter, size 16px, weight 400
+        """)
+
+        // Spacing: px → EMU at 96 DPI (9525 EMU/px), keyed lowercase.
+        #expect(d.spacing["md"] == EMU.pixels(16))
+        #expect(d.spacing["md"] == EMU(152_400))
+        #expect(d.space("SM") == EMU.pixels(8))          // accessor is case-insensitive
+        // Radius: same conversion; the 9999px "full" sentinel round-trips as EMU.
+        #expect(d.radius["lg"] == EMU.pixels(12))
+        #expect(d.cornerRadius("full") == EMU.pixels(9999))
+
+        // Type scale: the full entry, sizes/tracking normalized to points.
+        let hero = d.typeToken("hero-display")
+        #expect(hero?.family == "Roobert PRO")
+        #expect(hero?.sizePt == 60)                       // 80px × 72/96
+        #expect(hero?.weight == 500)
+        #expect(hero?.lineHeight == 1.05)
+        #expect(hero?.trackingPt == -1.5)                 // -2px × 72/96
+        #expect(d.typeScale["body-md"]?.sizePt == 12)     // 16px → 12pt
+
+        // Heading/body fonts still derive from the same typography lines.
+        #expect(d.headingFont == "Roobert PRO")
+        #expect(d.bodyFont == "Inter")
+    }
+
+    @Test func compiledExportCapturesDroppedTokens() {
+        let d = Design.parse(compiled)
+        // Previously routed to .ignore / family-only — now retained losslessly.
+        #expect(d.spacing["md"] == EMU.pixels(16))
+        #expect(d.typeScale["hero-display"]?.sizePt == 60)
+        #expect(d.typeScale["hero-display"]?.weight == 500)
+        #expect(d.typeScale["body-md"]?.family == "Roobert PRO")
+        // Existing invariants unchanged: md is not a color.
+        #expect(d.colors["md"] == nil)
+    }
+
     @Test func appliesCompiledDesignHeuristically() throws {
         let deck = try Presentation()
         deck.applyDesign(Design.parse(compiled))
