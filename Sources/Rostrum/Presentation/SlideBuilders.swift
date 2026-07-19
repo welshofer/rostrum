@@ -196,16 +196,24 @@ public extension Presentation {
         let n = items.count
         let gap = s.spacing.sm.rawValue
         let bandH = (content.height.rawValue - gap * (n - 1)) / n
-        let levelStyle = s.with(.heading) { $0.sizePt = n >= 5 ? 20 : 24 }
+        // Pyramid labels carry a "Label — detail" line, so keep the type modest and
+        // let autofit shrink it; combined with a gentle taper, the text fits.
+        let levelStyle = s.with(.heading) { $0.sizePt = n >= 4 ? 17 : 21 }
         for (i, text) in items.enumerated() {
             let accent = s.legibleAccent(i + 1, on: s.background)
-            let frac = 0.5 + 0.5 * (Double(i) / Double(max(1, n - 1)))   // narrow top → wide base
+            // Gentle taper — the top slice is 0.7 of the width (not 0.5), so even the
+            // narrow apex is wide enough for its label instead of clipping it.
+            let frac = 0.7 + 0.3 * (Double(i) / Double(max(1, n - 1)))
             let w = content.width * frac
             let rect = Rect(x: content.midX - w / 2.0,
                             y: EMU(content.minY.rawValue + i * (bandH + gap)),
                             width: w, height: EMU(bandH))
             try slide.shapes.addShape(.trapezoid, frame: rect, fill: .solid(accent))
-            try slide.addText(text, in: rect, role: .heading, style: levelStyle,
+            // Text box inset from the slice's tapered edges so a label never runs
+            // into (or past) the sloping sides.
+            let tw = w * 0.86
+            let textRect = Rect(x: content.midX - tw / 2.0, y: rect.y, width: tw, height: EMU(bandH))
+            try slide.addText(text, in: textRect, role: .heading, style: levelStyle,
                               color: s.textColor(on: accent), align: .center, anchor: .middle)
         }
         return slide
