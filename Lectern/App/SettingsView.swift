@@ -69,6 +69,16 @@ struct SettingsView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
 
+            Section("Diagrams") {
+                Toggle("Use SmartArt", isOn: Binding(
+                    get: { app.useSmartArt },
+                    set: { app.setUseSmartArt($0) }))
+                Text(app.useSmartArt
+                     ? "Process, cycle, and layer diagrams render as native, editable PowerPoint SmartArt."
+                     : "Diagrams render as styled shapes (default). Turn on for native, editable SmartArt.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
             Section {
                 Label(footerText, systemImage: app.hasKey ? "bolt.fill" : "exclamationmark.circle")
                     .font(.callout)
@@ -76,7 +86,7 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 520, height: 560)
+        .frame(width: 520, height: 620)
     }
 
     private func saveImageKey() {

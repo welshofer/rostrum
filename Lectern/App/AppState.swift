@@ -23,6 +23,10 @@ final class AppState {
     var slideCount = 12
     var includeNotes = true
 
+    /// Render diagrams (process/cycle/layers) as native PowerPoint SmartArt when
+    /// on; as styled shapes when off. Default off — SmartArt is opt-in.
+    private(set) var useSmartArt = false
+
     // MARK: Provider + model (non-secret prefs persisted; key stays in Keychain)
     private(set) var providerID: ProviderID = .anthropic
     var model = "claude-sonnet-5"
@@ -68,6 +72,7 @@ final class AppState {
     private enum Keys {
         static let provider = "providerID", model = "model", favorites = "favoriteStyles"
         static let recents = "recentStyles", imageProvider = "imageProviderID"
+        static let useSmartArt = "useSmartArt"
     }
 
     init() {
@@ -77,6 +82,7 @@ final class AppState {
         if let raw = d.string(forKey: Keys.imageProvider), let id = ImageProviderID(rawValue: raw) { imageProviderID = id }
         favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])
         recents = d.stringArray(forKey: Keys.recents) ?? []
+        useSmartArt = d.bool(forKey: Keys.useSmartArt)
         hasKey = KeychainStore.hasKey(for: providerID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
     }
@@ -118,6 +124,11 @@ final class AppState {
     func setModel(_ value: String) {
         model = value
         UserDefaults.standard.set(value, forKey: Keys.model)
+    }
+
+    func setUseSmartArt(_ value: Bool) {
+        useSmartArt = value
+        UserDefaults.standard.set(value, forKey: Keys.useSmartArt)
     }
 
     func saveKey(_ key: String) {
@@ -199,6 +210,7 @@ final class AppState {
         let key = KeychainStore.read(for: providerID)
         let id = providerID, chosenModel = model
         let style = selectedStyle
+        let smartArt = useSmartArt
         let imageID = imageProviderID
         let imageKey = KeychainStore.read(forImage: imageProviderID)
 
@@ -216,7 +228,7 @@ final class AppState {
                         imageStyle = ImageStyleDirective.from(style: style, designText: text)
                     }
                 }
-                let result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle)
+                let result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
                     .generate(request, designURL: designURL, into: directory) { [weak self] event in
                         Task { @MainActor in self?.apply(event) }
                     }

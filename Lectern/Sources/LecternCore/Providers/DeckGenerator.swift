@@ -12,13 +12,15 @@ public actor DeckGenerator {
     private let imageProvider: (any ImageProvider)?
     private let imageStyle: String?
     private let quality: Bool
+    private let useSmartArt: Bool
 
     public init(provider: LLMProvider, imageProvider: (any ImageProvider)? = nil,
-                imageStyle: String? = nil, quality: Bool = true) {
+                imageStyle: String? = nil, quality: Bool = true, useSmartArt: Bool = false) {
         self.provider = provider
         self.imageProvider = imageProvider
         self.imageStyle = imageStyle
         self.quality = quality
+        self.useSmartArt = useSmartArt
     }
 
     private struct DraftErrors: Error { var errors: [String] }
@@ -163,7 +165,8 @@ public actor DeckGenerator {
         do {
             deckResult = try await renderer.render(
                 shaped.deck, designURL: designURL, notesEnabled: request.notes,
-                into: directory, warnings: shaped.warnings + imageWarnings, images: images)
+                into: directory, warnings: shaped.warnings + imageWarnings, images: images,
+                useSmartArt: useSmartArt)
         } catch let RenderError.renderFailed(underlying) {
             throw LecternError.renderFailed(message: underlying)
         }

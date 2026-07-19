@@ -41,13 +41,19 @@ import Rostrum
         ])
         let validated = try DeckValidator().validate(deck, notesRequired: false)
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
-        let result = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
-        #expect(result.slideCount == 2)
-        let reopened = try Presentation(contentsOf: result.url)
-        #expect(try reopened.validate().isEmpty)
-        // bands now renders as a native Basic Block List SmartArt (the flex "five
-        // layers" look), so its items read back through the diagram model.
-        #expect(reopened.slides[reopened.slides.count - 1].smartArtTexts.first?.count == 3)
+
+        // Default: styled shapes, no SmartArt (SmartArt is opt-in).
+        let drawn = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
+        #expect(drawn.slideCount == 2)
+        let reopenedDrawn = try Presentation(contentsOf: drawn.url)
+        #expect(try reopenedDrawn.validate().isEmpty)
+        #expect(reopenedDrawn.slides[reopenedDrawn.slides.count - 1].smartArtTexts.isEmpty)
+
+        // Opt-in: native Basic Block List SmartArt (the flex "five layers" look).
+        let smart = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false,
+                                                    into: dir, useSmartArt: true)
+        let reopenedSmart = try Presentation(contentsOf: smart.url)
+        #expect(reopenedSmart.slides[reopenedSmart.slides.count - 1].smartArtTexts.first?.count == 3)
     }
 
     @Test func rendersChartAndMetricsSlides() async throws {

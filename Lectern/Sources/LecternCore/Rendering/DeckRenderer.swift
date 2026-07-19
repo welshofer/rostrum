@@ -27,13 +27,13 @@ public actor DeckRenderer {
     /// `directory`. `warnings` from validation are passed through to the result.
     public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool,
                        into directory: URL, warnings: [String] = [],
-                       images: [String: Data] = [:]) throws -> DeckResult {
+                       images: [String: Data] = [:], useSmartArt: Bool = false) throws -> DeckResult {
         do {
             let presentation = try Presentation()
             if let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
 
             for slide in deck.slides {
-                let built = try build(slide, in: presentation)
+                let built = try build(slide, in: presentation, useSmartArt: useSmartArt)
                 if let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
                     case .fullBleed:
@@ -71,7 +71,7 @@ public actor DeckRenderer {
 
     // MARK: - IR layout → Rostrum builder
 
-    private func build(_ slide: IRSlide, in deck: Presentation) throws -> Slide {
+    private func build(_ slide: IRSlide, in deck: Presentation, useSmartArt: Bool) throws -> Slide {
         let title = slide.title ?? ""
         let body = slide.body
         switch slide.kind {
@@ -130,21 +130,26 @@ public actor DeckRenderer {
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .bands:
-            // The "five layers" look — now a native Basic Block List SmartArt
-            // (editable, PowerPoint-verified), not drawn bands. Same stacked,
-            // brand-colored blocks as flex slide 3.
             let items = body?.items ?? flatten(body?.bullets ?? [])
-            if !items.isEmpty { return try deck.smartArtSlide(title, kind: .blockList, items: items) }
-            return try deck.bulletSlide(title, [])
+            guard !items.isEmpty else { return try deck.bulletSlide(title, []) }
+            // Native Basic Block List SmartArt when opted in; styled shapes otherwise.
+            return useSmartArt
+                ? try deck.smartArtSlide(title, kind: .blockList, items: items)
+                : try deck.bandsSlide(title, bands: items)
         case .diagram:
             if let d = body?.diagram, !d.items.isEmpty {
                 switch d.kind.lowercased() {
-                // process + cycle are native SmartArt (PowerPoint-verified). pyramid's
-                // native pyra algorithm isn't PowerPoint-faithful yet, so it uses the
-                // proven drawn builder until a correct pyra layoutDef lands.
-                case "pyramid": return try deck.pyramidSlide(title, levels: d.items)
-                case "cycle":   return try deck.smartArtSlide(title, kind: .cycle, items: d.items)
-                default:        return try deck.smartArtSlide(title, kind: .process, items: d.items)
+                // pyramid is always drawn (native pyra isn't PowerPoint-faithful).
+                case "pyramid":
+                    return try deck.pyramidSlide(title, levels: d.items)
+                case "cycle":
+                    return useSmartArt
+                        ? try deck.smartArtSlide(title, kind: .cycle, items: d.items)
+                        : try deck.processSlide(title, steps: d.items)
+                default:
+                    return useSmartArt
+                        ? try deck.smartArtSlide(title, kind: .process, items: d.items)
+                        : try deck.processSlide(title, steps: d.items)
                 }
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
