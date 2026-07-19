@@ -405,4 +405,17 @@ struct XMLTests {
         #expect(root.textContent == "onetwo")
         #expect(root.serialized() == "<a>one<b/>two</a>")
     }
+
+    @Test func rejectsXMLForbiddenCharactersInsteadOfCrashing() throws {
+        // These crash swift-corelibs-foundation's parser on Linux; we reject
+        // them (invalid UTF-8, NUL, control chars, non-characters) as throws.
+        expectMalformed("<a>\u{0}</a>")
+        expectMalformed("<a>\u{1}</a>")
+        expectMalformed("<a>\u{FFFF}</a>")
+        expectMalformed("<a x=\"\u{0}\"/>")
+        #expect(throws: RostrumError.self) { try XML.parse(Data([0xFF, 0xFE, 0x00])) }
+        // Tab/LF/CR remain valid.
+        #expect((try? XML.parse(Data("<a>ok\ttab\nline</a>".utf8))) != nil)
+    }
+
 }

@@ -27,6 +27,10 @@ let package = Package(
         .executableTarget(
             name: "rostrum-gen",
             path: "Tools/rostrum-gen"),
+        .executableTarget(
+            name: "pptx-tool",
+            dependencies: ["Rostrum"],
+            path: "Tools/pptx-tool"),
         .testTarget(name: "RostrumTests", dependencies: ["Rostrum"]),
     ]
 )
