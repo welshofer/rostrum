@@ -172,11 +172,14 @@ public enum XML {
         let builder = TreeBuilder()
         parser.delegate = builder
         let ok = parser.parse()
-        guard ok, let root = builder.root, builder.stack.isEmpty else {
+        guard ok, builder.delegateError == nil, !builder.extraTopLevelContent,
+              let root = builder.root, builder.stack.isEmpty else {
             let line = parser.lineNumber
             let message: String
-            if let error = parser.parserError as NSError? {
+            if let error = parser.parserError as NSError? ?? builder.delegateError {
                 message = error.localizedDescription
+            } else if builder.extraTopLevelContent {
+                message = "content after the root element"
             } else {
                 message = "unknown parse error"
             }
@@ -269,6 +272,12 @@ public enum XML {
     private final class TreeBuilder: NSObject, XMLParserDelegate {
         var root: XML.Element?
         var stack: [XML.Element] = []
+        /// Set when content appears after the single root element has closed —
+        /// a second root element, or non-whitespace top-level text. libxml
+        /// (macOS) reports this as a parse error, but swift-corelibs-foundation
+        /// (Linux) silently ignores the trailing content, so we detect it here
+        /// for cross-platform parity. See `parse(_:)`.
+        var extraTopLevelContent = false
 
         func parser(
             _ parser: XMLParser,
@@ -304,6 +313,8 @@ public enum XML {
                 parent.appendElement(element)
             } else if root == nil {
                 root = element
+            } else {
+                extraTopLevelContent = true  // a second root element is malformed
             }
             stack.append(element)
         }
@@ -334,6 +345,16 @@ public enum XML {
             appendText(whitespaceString)
         }
 
+        /// The first parse error the delegate is told about. On Linux,
+        /// swift-corelibs-foundation's `XMLParser.parse()` returns `true` and
+        /// leaves `parserError` nil for malformed input, yet still reports the
+        /// error through this callback — so capturing it here is the reliable
+        /// cross-platform signal that parsing failed.
+        var delegateError: NSError?
+        func parser(_ parser: XMLParser, parseErrorOccurred parseError: any Error) {
+            if delegateError == nil { delegateError = parseError as NSError }
+        }
+
         // Comments and processing instructions are intentionally dropped:
         // no `foundComment` / `foundProcessingInstruction` handling.
 
@@ -343,7 +364,15 @@ public enum XML {
         /// entity references split runs), so ADJACENT text nodes must merge
         /// into one.
         private func appendText(_ string: String) {
-            guard let current = stack.last else { return }  // ignore text outside the root
+            guard let current = stack.last else {
+                // Text outside any element. Whitespace around the root (or a
+                // leading BOM/newline) is legal and ignored; non-whitespace
+                // text after the root has closed is malformed content.
+                if root != nil, string.contains(where: { !$0.isWhitespace }) {
+                    extraTopLevelContent = true
+                }
+                return
+            }
             if let lastIndex = current.children.indices.last,
                case .text(let existing) = current.children[lastIndex] {
                 current.children[lastIndex] = .text(existing + string)
