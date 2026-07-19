@@ -1,5 +1,10 @@
 import Foundation
 import Rostrum
+#if canImport(CoreGraphics)
+import CoreGraphics
+import ImageIO
+import UniformTypeIdentifiers
+#endif
 
 public struct DeckResult: Sendable, Equatable {
     public let url: URL
@@ -30,9 +35,18 @@ public actor DeckRenderer {
             for slide in deck.slides {
                 let built = try build(slide, in: presentation)
                 if let data = images[slide.id] {
-                    // A generated illustration sits in a tidy right-hand panel,
-                    // cover-cropped so it never distorts or bleeds off-slide.
-                    try? built.shapes.addPicture(data, frame: Self.imageFrame(in: presentation), fit: .fill)
+                    switch slide.kind.imagePlacement {
+                    case .fullBleed:
+                        // Edge-to-edge background behind the text, dimmed so the
+                        // slide's ink stays readable over any image.
+                        let scrimmed = Self.scrimmed(data, dark: presentation.style.isDark)
+                        try? built.setBackground(.image(scrimmed, .stretch))
+                    case .sidePanel:
+                        // A framed panel on the right (title/content sit left).
+                        try? built.shapes.addPicture(data, frame: Self.imageFrame(in: presentation), fit: .fill)
+                    case .none:
+                        break
+                    }
                 }
                 if notesEnabled, let notes = slide.notes, !notes.isEmpty {
                     try built.setNotes(notes)
@@ -100,6 +114,34 @@ public actor DeckRenderer {
         let w = Double(size.width.rawValue), h = Double(size.height.rawValue)
         return Rect(x: EMU(Int(w * 0.555)), y: EMU(Int(h * 0.21)),
                     width: EMU(Int(w * 0.40)), height: EMU(Int(h * 0.58)))
+    }
+
+    /// Darken (dark theme) or lighten (light theme) an image ~55% so the slide's
+    /// ink stays legible over a full-bleed background. No-op without CoreGraphics.
+    private static func scrimmed(_ data: Data, dark: Bool) -> Data {
+        #if canImport(CoreGraphics)
+        guard let src = CGImageSourceCreateWithData(data as CFData, nil),
+              let img = CGImageSourceCreateImageAtIndex(src, 0, nil),
+              img.width > 0, img.height > 0,
+              let ctx = CGContext(data: nil, width: img.width, height: img.height,
+                                  bitsPerComponent: 8, bytesPerRow: 0,
+                                  space: CGColorSpaceCreateDeviceRGB(),
+                                  bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return data }
+        let rect = CGRect(x: 0, y: 0, width: img.width, height: img.height)
+        ctx.draw(img, in: rect)
+        ctx.setFillColor(dark ? CGColor(red: 0, green: 0, blue: 0, alpha: 0.55)
+                              : CGColor(red: 1, green: 1, blue: 1, alpha: 0.55))
+        ctx.fill(rect)
+        guard let out = ctx.makeImage() else { return data }
+        let buffer = NSMutableData()
+        guard let dest = CGImageDestinationCreateWithData(buffer as CFMutableData,
+                                                          UTType.png.identifier as CFString, 1, nil) else { return data }
+        CGImageDestinationAddImage(dest, out, nil)
+        guard CGImageDestinationFinalize(dest) else { return data }
+        return buffer as Data
+        #else
+        return data
+        #endif
     }
 
     // MARK: - Sections

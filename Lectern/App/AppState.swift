@@ -239,6 +239,7 @@ final class AppState {
         case .drafting(let c, let t): stage = "Writing slides"; drafted = c; total = t
         case .validating: stage = "Validating"
         case .repairing: stage = "Repairing"
+        case .auditing: stage = "Polishing (QA pass)"
         case .illustrating(let c, let t): stage = "Generating images"; drafted = c; total = t
         case .rendering: stage = "Rendering .pptx"
         case .finished: stage = "Done"

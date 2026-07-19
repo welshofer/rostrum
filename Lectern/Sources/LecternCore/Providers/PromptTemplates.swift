@@ -13,6 +13,17 @@ public enum PromptTemplates {
 
         Audience: \(request.audience).
 
+        Craft (non-negotiable):
+        - The deck argues, it doesn't list. Give it a spine: hook → tension → \
+        evidence → implication → action.
+        - Every title is an assertion the audience remembers, not a topic label \
+        ("Insurers are quietly repricing the coast", not "Economic Impact").
+        - Be concrete: real magnitudes, named examples, sharp contrasts. No filler \
+        ("Section One", "various factors"). Don't fabricate precise statistics — \
+        prefer rounded, defensible ones.
+        - One idea per slide; bullets parallel, ≤10 words, ≤5 per slide, never redundant.
+        - The closer lands a specific call to action, never a bare "Thank you".
+
         Layout vocabulary (each slide has an "id", "layout", optional "title", "body", and "notes"):
         - title            body: { subtitle? }               (exactly one, first)
         - agenda           body: { items: [string] }         (at most one)
@@ -49,6 +60,64 @@ public enum PromptTemplates {
                 + "--- SOURCE MATERIAL ---\n\(grounding)")
         }
         return parts.joined(separator: "\n\n")
+    }
+
+    // MARK: - QA editor pass
+
+    /// The audit rubric — the craft a strong deck reviewer applies. Returned deck
+    /// must stay in the same schema and layout vocabulary.
+    public static func editorSystem(for request: DeckRequest) -> String {
+        """
+        You are a ruthless presentation editor. You receive a draft deck as JSON and \
+        must return a materially stronger version in the SAME "\(DeckIR.currentVersion)" \
+        schema and layout vocabulary, via the emit_deck tool — nothing else.
+
+        Fix every weakness:
+
+        NARRATIVE — the deck must argue, not just list. Enforce a spine: hook → \
+        tension → evidence → implication → action. Cut or merge any slide that \
+        doesn't earn its place.
+
+        TITLES — every slide title is an assertion the audience should remember, not \
+        a topic label. "Insurers are quietly repricing the coast" beats "Economic \
+        Impact". No slide titled with a bare noun phrase.
+
+        SUBSTANCE — replace vague claims with concrete detail: real magnitudes, named \
+        examples, sharp contrasts. Delete filler ("Section One", "various factors", \
+        "key considerations"). A bigNumber must carry a specific, defensible statistic \
+        with a crisp caption. Never invent precise figures you can't defend — prefer \
+        rounded, well-known ones.
+
+        BULLETS — parallel grammar, one idea each, ≤10 words, ≤5 per slide, and no two \
+        bullets that say the same thing.
+
+        OPEN & CLOSE — the opener earns attention in one line; the closer lands a \
+        specific call to action, never "Thank you".
+
+        NOTES — speaker notes are what the presenter SAYS aloud (2–4 conversational \
+        sentences), not a re-reading of the slide.
+
+        IMAGES — keep an "image" brief only where a visual genuinely adds meaning \
+        (openers, section headers, one evocative idea); make its prompt vivid and \
+        specific. Remove decorative or redundant image briefs.
+
+        Preserve the deck's language, its section structure, and roughly \
+        \(request.slideCount) slides. Return the COMPLETE revised deck.
+        """
+    }
+
+    /// The draft to hand the editor.
+    public static func editorUser(deckJSON: String, request: DeckRequest) -> String {
+        """
+        Topic: \(request.prompt)
+        Audience: \(request.audience). Goal: \(request.goal).
+
+        Here is the current draft deck to strengthen:
+
+        \(deckJSON)
+
+        Return the improved deck via emit_deck.
+        """
     }
 
     /// Goal → rhetorical stance (Appendix A).

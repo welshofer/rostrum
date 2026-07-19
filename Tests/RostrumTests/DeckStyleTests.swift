@@ -91,6 +91,21 @@ import Testing
         #expect(s.ink.contrastRatio(with: s.background) >= 4.5)   // guarded, not #292a2c on #000000
     }
 
+    @Test func darkAccentStatAndKickerStayLegible() throws {
+        // Reproduces the "Aurora on black" bug: a dark accent used for the big
+        // number/kicker rendered near-invisible. Emphasis color must clear AA.
+        let deck = try Presentation()
+        var design = Design()
+        design.themeMode = "dark"
+        design.palette = ["000000", "533afd", "ffffff"].map { Color($0) }
+        design.colors = ["accent 1": Color("533afd")]           // dark indigo accent
+        deck.applyDesign(design)
+        let s = deck.style
+        #expect(s.isDark)
+        #expect(s.type(.stat).color.contrastRatio(with: s.background) >= 4.5)
+        #expect(s.type(.kicker).color.contrastRatio(with: s.background) >= 4.5)
+    }
+
 
     @Test func autoContrastAndAccentWrap() throws {
         let s = try Presentation().style

@@ -133,7 +133,7 @@ public struct DeckStyle: Sendable, Equatable {
                 headingFont: design?.headingFont ?? theme.majorFont ?? DeckStyle.fallbackHeadingFont,
                 bodyFont: design?.bodyFont ?? theme.minorFont ?? DeckStyle.fallbackBodyFont,
                 ink: inkColor, mutedInk: inkColor.mixed(with: bg, amount: 0.45),
-                accent1: acc[0], design: design),
+                accent1: acc[0], background: bg, design: design),
             spacing: TokenScale(DeckStyle.merge(DeckStyle.defaultSpacing, design?.spacing)),
             radius: TokenScale(DeckStyle.merge(DeckStyle.defaultRadius, design?.radius)),
             margin: .inches(0.9), gutter: .inches(0.2))
@@ -155,6 +155,19 @@ public struct DeckStyle: Sendable, Equatable {
     /// ink/paper when equally legible.
     public func textColor(on fill: Color) -> Color {
         Color.bestTextColor(on: fill, options: [ink, background, .black, .white])
+    }
+
+    /// An accent nudged toward the background's opposite until it clears WCAG AA
+    /// (4.5:1) — keeping the brand hue where possible — else the ink color.
+    static func legibleEmphasis(_ color: Color, on bg: Color, ink: Color) -> Color {
+        if color.contrastRatio(with: bg) >= 4.5 { return color }
+        let toward: Color = bg.relativeLuminance < 0.5 ? .white : .black
+        var out = color
+        for _ in 0..<7 {
+            out = out.mixed(with: toward, amount: 0.16)
+            if out.contrastRatio(with: bg) >= 4.5 { return out }
+        }
+        return ink
     }
 
     /// Accent `n` if it clears WCAG AA (4.5:1) on `bg`, else legible text.
@@ -207,7 +220,8 @@ public struct DeckStyle: Sendable, Equatable {
         accents: ["4472C4", "ED7D31", "A5A5A5", "FFC000", "5B9BD5", "70AD47"].map(Color.init),
         isDark: false, headingFont: fallbackHeadingFont, bodyFont: fallbackBodyFont,
         type: makeTypeScale(headingFont: fallbackHeadingFont, bodyFont: fallbackBodyFont,
-                            ink: Color("1A1A1A"), mutedInk: Color("5A6B7A"), accent1: Color("4472C4"), design: nil),
+                            ink: Color("1A1A1A"), mutedInk: Color("5A6B7A"), accent1: Color("4472C4"),
+                            background: .white, design: nil),
         spacing: TokenScale(defaultSpacing), radius: TokenScale(defaultRadius),
         margin: .inches(0.9), gutter: .inches(0.2))
 
@@ -220,16 +234,20 @@ public struct DeckStyle: Sendable, Equatable {
     /// Build the type scale, overlaying `design.md` typography tokens (by alias,
     /// per-facet) onto the built-in defaults.
     static func makeTypeScale(headingFont: String, bodyFont: String, ink: Color,
-                              mutedInk: Color, accent1: Color, design: Design?) -> TypeScale {
+                              mutedInk: Color, accent1: Color, background: Color, design: Design?) -> TypeScale {
+        // Emphasis color for kicker/stat: accent1, nudged until it clears AA on
+        // the background. An accent can be dark on a dark theme (Aurora's indigo
+        // on black) and render as an invisible number.
+        let emphasis = legibleEmphasis(accent1, on: background, ink: ink)
         // role, size, weight, tracking, lineHeight, usesHeadingFont, color, uppercase
         let defs: [(TypeRole, Double, Int, Double, Double, Bool, Color, Bool)] = [
-            (.kicker,  14, 700,  2.0,  1.0,  false, accent1,  true),
+            (.kicker,  14, 700,  2.0,  1.0,  false, emphasis, true),
             (.display, 84, 700, -1.0,  1.02, true,  ink,      false),
             (.title,   34, 700, -0.5,  1.05, true,  ink,      false),
             (.heading, 22, 700, -0.25, 1.1,  true,  ink,      false),
             (.subhead, 22, 400,  0,    1.2,  false, mutedInk, false),
             (.body,    18, 400,  0,    1.25, false, ink,      false),
-            (.stat,    96, 700, -1.0,  1.0,  true,  accent1,  false),
+            (.stat,    96, 700, -1.0,  1.0,  true,  emphasis, false),
             (.quote,   36, 500, -0.25, 1.2,  true,  ink,      false),
             (.caption, 14, 400,  0,    1.2,  false, mutedInk, false),
         ]

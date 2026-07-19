@@ -16,9 +16,19 @@ struct FixtureProvider: LLMProvider {
     let id: ProviderID = .custom
     let displayName = "Fixture"
     var validJSON: String
+    var revisedJSON: String?          // what the QA pass returns, if set
     var outline: DeckOutline = DeckOutline(title: "Fixture deck")
     var failure: Failure = .none
     var usage: Usage = Usage(inputTokens: 1200, outputTokens: 800)
+
+    init(validJSON: String, revisedJSON: String? = nil, failure: Failure = .none) {
+        self.validJSON = validJSON; self.revisedJSON = revisedJSON; self.failure = failure
+    }
+
+    func revise(_ request: DeckRequest, deckJSON: String,
+                emit: @Sendable (GenerationEvent) -> Void) async throws -> RawDraft {
+        RawDraft(json: revisedJSON ?? deckJSON, usage: usage)
+    }
 
     func draft(_ request: DeckRequest, repairing: RepairContext?,
                emit: @Sendable (GenerationEvent) -> Void) async throws -> RawDraft {

@@ -149,4 +149,21 @@ public enum SlideLayoutKind: Sendable, Equatable {
         default: self = .unknown(raw)
         }
     }
+
+    /// How a generated image is placed on this layout — chosen so imagery never
+    /// clips or crowds text.
+    public var imagePlacement: ImagePlacement {
+        switch self {
+        case .title, .bigNumber, .quote, .closing: return .fullBleed   // sparse, centered/large text
+        case .sectionHeader: return .sidePanel                          // title left, image right
+        case .agenda, .bullets, .twoColumn, .comparison, .unknown: return .none   // text-dense
+        }
+    }
+}
+
+/// Where a slide's generated image goes.
+public enum ImagePlacement: Sendable, Equatable {
+    case none        // don't place an image (text-dense layout)
+    case sidePanel   // a framed panel on the right
+    case fullBleed   // a scrimmed, edge-to-edge background behind the text
 }

@@ -10,11 +10,14 @@ public actor DeckGenerator {
 
     private let imageProvider: (any ImageProvider)?
     private let imageStyle: String?
+    private let quality: Bool
 
-    public init(provider: LLMProvider, imageProvider: (any ImageProvider)? = nil, imageStyle: String? = nil) {
+    public init(provider: LLMProvider, imageProvider: (any ImageProvider)? = nil,
+                imageStyle: String? = nil, quality: Bool = true) {
         self.provider = provider
         self.imageProvider = imageProvider
         self.imageStyle = imageStyle
+        self.quality = quality
     }
 
     private struct DraftErrors: Error { var errors: [String] }
@@ -25,7 +28,7 @@ public actor DeckGenerator {
         emit(.validating)
         do {
             let result = try decodeAndValidate(first.json, request)
-            return try await finish(result, request, designURL, directory, usage: first.usage, emit: emit)
+            return try await qaThenFinish(result, draftJSON: first.json, request, designURL, directory, usage: first.usage, emit: emit)
         } catch let failure as DraftErrors {
             // §8.7 — exactly one repair attempt.
             emit(.repairing)
@@ -34,11 +37,29 @@ public actor DeckGenerator {
             emit(.validating)
             do {
                 let result = try decodeAndValidate(repaired.json, request)
-                return try await finish(result, request, designURL, directory, usage: repaired.usage, emit: emit)
+                return try await qaThenFinish(result, draftJSON: repaired.json, request, designURL, directory, usage: repaired.usage, emit: emit)
             } catch let second as DraftErrors {
                 throw LecternError.schemaInvalid(errors: second.errors)
             }
         }
+    }
+
+    /// The QA editor pass: hand the valid draft to the reviewer and use its
+    /// revision when it also validates. A failed or invalid revision is ignored
+    /// (never worse than the draft).
+    private func qaThenFinish(_ result: ValidationResult, draftJSON: String, _ request: DeckRequest,
+                              _ designURL: URL?, _ directory: URL, usage: Usage,
+                              emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
+        var final = result
+        if quality {
+            emit(.auditing)
+            if let revised = try? await provider.revise(request, deckJSON: draftJSON, emit: emit),
+               revised.json != draftJSON,
+               let improved = try? decodeAndValidate(revised.json, request) {
+                final = improved
+            }
+        }
+        return try await finish(final, request, designURL, directory, usage: usage, emit: emit)
     }
 
     /// Generate an image for each slide that carries an `ImageBrief`, concurrently.
@@ -47,7 +68,15 @@ public actor DeckGenerator {
     private func illustrate(_ deck: DeckIR,
                             emit: @Sendable @escaping (GenerationEvent) -> Void) async -> (images: [String: Data], warnings: [String]) {
         guard let imageProvider else { return ([:], []) }
-        let briefed = deck.slides.compactMap { slide in slide.image.map { (slide.id, $0) } }
+        // Only slides whose layout can actually show an image (skip text-dense ones,
+        // so we never waste an API call or clip text). Full-bleed layouts get a wide
+        // image so the background barely stretches.
+        let briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect)? in
+            let placement = slide.kind.imagePlacement
+            guard placement != .none, let brief = slide.image else { return nil }
+            let aspect = placement == .fullBleed ? ImageAspect.wide : ImageAspect(brief: brief.aspect)
+            return (slide.id, brief, aspect)
+        }
         guard !briefed.isEmpty else { return ([:], []) }
 
         emit(.illustrating(completed: 0, total: briefed.count))
@@ -56,11 +85,10 @@ public actor DeckGenerator {
         var failures: [String] = []
         var done = 0
         await withTaskGroup(of: (String, Result<Data, Error>).self) { group in
-            for (id, brief) in briefed {
+            for (id, brief, aspect) in briefed {
                 group.addTask {
                     do {
-                        let data = try await imageProvider.image(
-                            prompt: brief.prompt, style: style, aspect: ImageAspect(brief: brief.aspect))
+                        let data = try await imageProvider.image(prompt: brief.prompt, style: style, aspect: aspect)
                         return (id, .success(data))
                     } catch {
                         return (id, .failure(error))

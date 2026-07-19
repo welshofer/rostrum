@@ -18,6 +18,40 @@ import Rostrum
 
     // MARK: - IR + validation
 
+    @Test func imagePlacementPolicyAvoidsTextDenseLayouts() {
+        #expect(SlideLayoutKind.title.imagePlacement == .fullBleed)
+        #expect(SlideLayoutKind.bigNumber.imagePlacement == .fullBleed)
+        #expect(SlideLayoutKind.sectionHeader.imagePlacement == .sidePanel)
+        #expect(SlideLayoutKind.bullets.imagePlacement == .none)     // never over text
+        #expect(SlideLayoutKind.comparison.imagePlacement == .none)
+    }
+
+    @Test func qaPassAdoptsAValidRevision() async throws {
+        // Draft is the 5-slide fixture; the QA pass returns a tighter 3-slide deck.
+        let revised = DeckIR(meta: Meta(title: "Tighter"), slides: [
+            IRSlide(id: "a", layout: "title", title: "A sharper opener", body: Body(subtitle: "s")),
+            IRSlide(id: "b", layout: "bullets", title: "One clear idea", body: Body(bullets: [Bullet(text: "point")])),
+            IRSlide(id: "c", layout: "closing", title: "Do this next", body: Body(callToAction: "Act")),
+        ])
+        let revisedJSON = String(decoding: try JSONEncoder().encode(revised), as: UTF8.self)
+        let provider = FixtureProvider(validJSON: try fixtureJSON(), revisedJSON: revisedJSON)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let events = EventBox()
+        let result = try await DeckGenerator(provider: provider)
+            .generate(DeckRequest(prompt: "x", slideCount: 3), designURL: nil, into: dir) { events.record($0) }
+        #expect(result.slideCount == 3)                     // adopted the revision, not the 5-slide draft
+        #expect(events.stages.contains("auditing"))         // the QA pass ran
+    }
+
+    @Test func qaPassCanBeDisabled() async throws {
+        let provider = FixtureProvider(validJSON: try fixtureJSON(), revisedJSON: "{ garbage")
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        // Even with a broken revision, quality:false skips it and the draft ships.
+        let result = try await DeckGenerator(provider: provider, quality: false)
+            .generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir) { _ in }
+        #expect(result.slideCount == 5)
+    }
+
     @Test func decodesDeckMissingIrVersion() throws {
         // A real model often omits irVersion — it must default, not fail (the
         // deterministic cause of "couldn't parse").
@@ -299,6 +333,7 @@ private final class EventBox: @unchecked Sendable {
         case .drafting: events.append("drafting")
         case .validating: events.append("validating")
         case .repairing: events.append("repairing")
+        case .auditing: events.append("auditing")
         case .illustrating: events.append("illustrating")
         case .rendering: events.append("rendering")
         case .finished: events.append("finished")

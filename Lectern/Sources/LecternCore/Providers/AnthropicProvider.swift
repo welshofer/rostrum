@@ -54,6 +54,28 @@ public struct AnthropicProvider: LLMProvider {
         return RawDraft(json: json, usage: usage)
     }
 
+    /// QA pass: hand the draft to a ruthless-editor system prompt and get a
+    /// stronger deck back through the same forced-schema tool.
+    public func revise(_ request: DeckRequest, deckJSON: String,
+                       emit: @Sendable (GenerationEvent) -> Void) async throws -> RawDraft {
+        guard !apiKey.isEmpty else { throw LecternError.noKey }
+        let tool: [String: Any] = [
+            "name": "emit_deck",
+            "description": "Return the improved slide deck as a \(DeckIR.currentVersion) object.",
+            "input_schema": DeckSchema.inputSchema(),
+        ]
+        let payload: [String: Any] = [
+            "model": model,
+            "max_tokens": 8192,
+            "system": PromptTemplates.editorSystem(for: request),
+            "messages": [["role": "user", "content": PromptTemplates.editorUser(deckJSON: deckJSON, request: request)]],
+            "tools": [tool],
+            "tool_choice": ["type": "tool", "name": "emit_deck"],
+        ]
+        let (data, usage) = try await send(payload)
+        return RawDraft(json: try extractDeckJSON(from: data), usage: usage)
+    }
+
     /// POST with exactly one retry on 429/5xx (honoring Retry-After); no retry on
     /// 4xx auth errors (§7.6).
     private func send(_ payload: [String: Any]) async throws -> (Data, Usage) {
