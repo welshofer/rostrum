@@ -15,16 +15,20 @@ public extension Presentation {
         let slide = try blankCanvas()
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
+        // Fit the display size to the title length so a long headline stays on the
+        // slide (a 96pt eight-word title would run off the top).
+        let fitted = title.count > 44 ? 60.0 : (title.count > 28 ? 74.0 : s.type(.display).sizePt)
+        let titleStyle = s.with(.display) { $0.sizePt = fitted }
         try slide.addAccentRule(
-            in: Rect(x: grid.content.minX, y: grid.cell(column: 0, row: 4).minY,
+            in: Rect(x: grid.content.minX, y: grid.cell(column: 0, row: 3).minY,
                      width: .inches(1.4), height: .points(4)), style: s)
         if let kicker {
-            try slide.addKicker(kicker, in: grid.cell(column: 0, row: 4, columnSpan: 12), style: s)
+            try slide.addKicker(kicker, in: grid.cell(column: 0, row: 3, columnSpan: 12), style: s)
         }
-        try slide.addText(title, in: grid.cell(column: 0, row: 5, columnSpan: 11, rowSpan: 3),
-                          role: .display, style: s, anchor: .bottom)
+        try slide.addText(title, in: grid.cell(column: 0, row: 4, columnSpan: 11, rowSpan: 4),
+                          role: .display, style: titleStyle, anchor: .bottom)
         if let subtitle {
-            try slide.addText(subtitle, in: grid.cell(column: 0, row: 8, columnSpan: 9, rowSpan: 2),
+            try slide.addText(subtitle, in: grid.cell(column: 0, row: 9, columnSpan: 10, rowSpan: 2),
                               role: .subhead, style: s)
         }
         return slide
@@ -118,12 +122,13 @@ public extension Presentation {
         let grid = deckGrid(s)
         if let kicker {
             try slide.addKicker(kicker, in: grid.cell(column: 0, row: 3, columnSpan: 12),
-                                style: s, alignment: .center)
+                                style: s, alignment: .center, anchor: .bottom)
         }
-        try slide.addText(stat, in: grid.cell(column: 0, row: 4, columnSpan: 12, rowSpan: 3),
-                          role: .stat, style: s, align: .center)
-        try slide.addText(caption, in: grid.cell(column: 2, row: 7, columnSpan: 8, rowSpan: 2),
-                          role: .subhead, style: s, align: .center)
+        // One stacked tile (number + caption) centered — so the caption always
+        // sits below the number instead of colliding with the 130pt stat.
+        try slide.addStatTile(stat, caption: caption,
+                              in: grid.cell(column: 1, row: 4, columnSpan: 10, rowSpan: 5),
+                              style: s, align: .center, anchor: .middle)
         return slide
     }
 
@@ -171,9 +176,12 @@ public extension Presentation {
             try slide.addKicker(kicker, in: grid.cell(column: 0, row: 0, columnSpan: 12), style: style)
             titleRow = 1
         }
-        try slide.addText(title, in: grid.cell(column: 0, row: titleRow, columnSpan: 12, rowSpan: 2),
-                          role: .title, style: style)
-        let top = titleRow + 2
+        // Give the title three rows so a two-line title never collides with the
+        // content below it, and bottom-anchor it so a one-line title still hugs
+        // the content instead of floating.
+        try slide.addText(title, in: grid.cell(column: 0, row: titleRow, columnSpan: 11, rowSpan: 3),
+                          role: .title, style: style, anchor: .bottom)
+        let top = titleRow + 3
         return grid.cell(column: 0, row: top, columnSpan: 12, rowSpan: 12 - top)
     }
 }

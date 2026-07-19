@@ -9,8 +9,8 @@ import Testing
         #expect(s.ink == .black)
         #expect(s.isDark == false)
         #expect(s.accents.count == 6)
-        #expect(s.type(.title).sizePt == 34 && s.type(.title).bold)
-        #expect(s.type(.body).sizePt == 18 && !s.type(.body).bold)
+        #expect(s.type(.title).sizePt == 40 && s.type(.title).bold)
+        #expect(s.type(.body).sizePt == 26 && !s.type(.body).bold)
         #expect(s.type(.kicker).uppercase && s.type(.kicker).trackingPt == 2.0)
         #expect(s.spacing.md == EMU.pixels(16))
         #expect(s.spacing.md == EMU(152_400))
@@ -45,8 +45,8 @@ import Testing
         // .display absorbs the hero token; .title keeps its default SIZE (so a
         // content-slide title doesn't overflow its cell) but still adopts the
         // brand heading font.
-        #expect(s.type(.display).sizePt == 72)    // 96px → 72pt
-        #expect(s.type(.title).sizePt == 34)      // default, NOT the display size
+        #expect(s.type(.display).sizePt == 96)    // presentation display floor (token 72pt can only grow it)
+        #expect(s.type(.title).sizePt == 40)      // default, NOT the display size
         #expect(s.type(.title).font == "Poppins")
     }
 
@@ -58,7 +58,7 @@ import Testing
         """))
         // Only the family is known → size/weight/tracking stay at role defaults.
         #expect(deck.style.type(.heading).font == "Georgia")
-        #expect(deck.style.type(.heading).sizePt == 22)
+        #expect(deck.style.type(.heading).sizePt == 30)
         #expect(deck.style.type(.heading).weight == 700)
     }
 
@@ -91,6 +91,17 @@ import Testing
         #expect(s.ink.contrastRatio(with: s.background) >= 4.5)   // guarded, not #292a2c on #000000
     }
 
+    @Test func webSizeTokensCannotShrinkSlideText() throws {
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse("""
+        ## Typography tokens
+        - body: family Inter, size 13px
+        """))
+        // 13px → ~10pt on a slide is unreadable; the presentation floor holds.
+        #expect(deck.style.type(.body).sizePt >= 24)
+        #expect(deck.style.type(.body).font == "Inter")     // brand font still adopted
+    }
+
     @Test func darkAccentStatAndKickerStayLegible() throws {
         // Reproduces the "Aurora on black" bug: a dark accent used for the big
         // number/kicker rendered near-invisible. Emphasis color must clear AA.
@@ -119,7 +130,7 @@ import Testing
         let deck = try Presentation()
         let big = deck.style.with(.title) { $0.sizePt = 54 }
         #expect(big.type(.title).sizePt == 54)
-        #expect(deck.style.type(.title).sizePt == 34)   // original untouched
+        #expect(deck.style.type(.title).sizePt == 40)   // original untouched
     }
 
     @Test func spacingRadiusFallbackAndValue() throws {
@@ -155,7 +166,7 @@ import Testing
         // were never in the file). appliedDesign is not serialized.
         #expect(reopened.appliedDesign == nil)
         #expect(reopened.style.headingFont == "Georgia")
-        #expect(reopened.style.type(.title).sizePt == 34)   // reverted to default
+        #expect(reopened.style.type(.title).sizePt == 40)   // reverted to default
     }
 
     @Test func styledRunsAreDeterministic() throws {

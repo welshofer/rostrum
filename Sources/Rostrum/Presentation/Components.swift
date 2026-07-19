@@ -54,11 +54,11 @@ public extension ShapeCollection {
     @discardableResult
     func addBulletList(_ items: [String], in rect: Rect, style: DeckStyle,
                        size: Double? = nil, color: Color? = nil, gapPt: Double? = nil) throws -> Shape {
-        let box = try styledBox(rect, anchor: .top)
+        let box = try styledBox(rect, anchor: .middle)      // center the list block in its cell
         var ts = style.type(.body)
         ts.sizePt = size ?? bulletSize(count: items.count, base: ts.sizePt)
         if let color { ts.color = color }
-        let gap = gapPt ?? style.spacing.sm.points
+        let gap = gapPt ?? style.spacing.md.points          // breathing room between items
         let tf = box.textFrame!
         for (i, item) in items.enumerated() {
             let p = tf.addParagraph()
@@ -175,7 +175,7 @@ public extension ShapeCollection {
         if count <= 4 { return base }
         if count <= 6 { return base - 2 }
         if count <= 8 { return base - 4 }
-        return Swift.max(12, base - 6)
+        return Swift.max(20, base - 6)   // never below a legible projection floor
     }
 }
 

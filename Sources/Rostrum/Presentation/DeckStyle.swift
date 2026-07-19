@@ -239,17 +239,20 @@ public struct DeckStyle: Sendable, Equatable {
         // the background. An accent can be dark on a dark theme (Aurora's indigo
         // on black) and render as an invisible number.
         let emphasis = legibleEmphasis(accent1, on: background, ink: ink)
+        // Presentation-grade sizes (pt) for a 13.3"×7.5" canvas — projected type,
+        // not web reading type. design.md tokens may only grow these, never shrink
+        // them below a legible floor (see the clamp below).
         // role, size, weight, tracking, lineHeight, usesHeadingFont, color, uppercase
         let defs: [(TypeRole, Double, Int, Double, Double, Bool, Color, Bool)] = [
-            (.kicker,  14, 700,  2.0,  1.0,  false, emphasis, true),
-            (.display, 84, 700, -1.0,  1.02, true,  ink,      false),
-            (.title,   34, 700, -0.5,  1.05, true,  ink,      false),
-            (.heading, 22, 700, -0.25, 1.1,  true,  ink,      false),
-            (.subhead, 22, 400,  0,    1.2,  false, mutedInk, false),
-            (.body,    18, 400,  0,    1.25, false, ink,      false),
-            (.stat,    96, 700, -1.0,  1.0,  true,  emphasis, false),
-            (.quote,   36, 500, -0.25, 1.2,  true,  ink,      false),
-            (.caption, 14, 400,  0,    1.2,  false, mutedInk, false),
+            (.kicker,  16, 700,  2.0,  1.0,  false, emphasis, true),
+            (.display, 96, 700, -1.5,  1.02, true,  ink,      false),
+            (.title,   40, 700, -0.5,  1.06, true,  ink,      false),
+            (.heading, 30, 700, -0.25, 1.1,  true,  ink,      false),
+            (.subhead, 26, 400,  0,    1.2,  false, mutedInk, false),
+            (.body,    26, 400,  0,    1.3,  false, ink,      false),
+            (.stat,   130, 700, -2.0,  1.0,  true,  emphasis, false),
+            (.quote,   40, 500, -0.25, 1.25, true,  ink,      false),
+            (.caption, 18, 400,  0,    1.2,  false, mutedInk, false),
         ]
         let aliases: [TypeRole: [String]] = [
             .kicker:  ["kicker", "eyebrow", "overline", "label"],
@@ -272,7 +275,10 @@ public struct DeckStyle: Sendable, Equatable {
                                color: color, uppercase: upper)
             if let design, let token = firstToken(aliases[role] ?? [], in: design) {
                 if let f = token.family { ts.font = f }
-                if let s = token.sizePt { ts.sizePt = s }
+                // A design.md token may ENLARGE type (a bold hero display) but may
+                // never shrink a slide role below its legible presentation size —
+                // web px tokens (13–16px body) would otherwise render as ~10pt.
+                if let s = token.sizePt { ts.sizePt = Swift.max(ts.sizePt, s) }
                 if let w = token.weight { ts.weight = w }
                 if let t = token.trackingPt { ts.trackingPt = t }
                 if let l = token.lineHeight { ts.lineHeight = l }
