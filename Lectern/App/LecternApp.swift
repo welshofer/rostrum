@@ -17,6 +17,7 @@ struct LecternApp: App {
         }
         Settings {
             SettingsView()
+                .environment(app)
         }
     }
 }
