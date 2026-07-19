@@ -32,9 +32,11 @@ targets:
         SWIFT_STRICT_CONCURRENCY: complete
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
         INFOPLIST_KEY_NSHumanReadableCopyright: ""
-        # Ad-hoc sign so the app has a stable identity — required for the login
-        # keychain to persist provider keys (an unsigned binary can't).
-        CODE_SIGN_IDENTITY: "-"
+        # Sign with a real development identity (not ad-hoc): its designated
+        # requirement is stable across rebuilds, so login-keychain items — the
+        # provider API keys — survive every rebuild. Ad-hoc's cdhash changes each
+        # build, which orphaned the keys and forced re-entry.
         CODE_SIGN_STYLE: Manual
-        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_IDENTITY: "Apple Development: Jay Welshofer (XP6YTXD955)"
+        PROVISIONING_PROFILE_SPECIFIER: ""
         CODE_SIGNING_ALLOWED: "YES"

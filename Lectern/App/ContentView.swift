@@ -100,7 +100,6 @@ struct ComposeView: View {
             .frame(maxWidth: .infinity)
         }
         .safeAreaInset(edge: .bottom) { generateBar }
-        .navigationTitle("Compose")
         .sheet(isPresented: $showStyles) { StylePickerSheet().environment(app) }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.pdf]) { result in
             if let url = try? result.get() { Task { await app.attachPDF(url) } }

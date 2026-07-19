@@ -10,11 +10,11 @@ struct LecternApp: App {
     @State private var app = AppState()
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup("Lectern") {
             ContentView()
                 .environment(app)
-                .frame(minWidth: 720, minHeight: 520)
         }
+        .defaultSize(width: 760, height: 940)
         Settings {
             SettingsView()
                 .environment(app)
