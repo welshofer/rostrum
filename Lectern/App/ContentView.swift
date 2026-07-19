@@ -78,7 +78,7 @@ struct ComposeView: View {
                     .buttonStyle(.borderedProminent)          // .glass on macOS 26
                     .disabled(!app.canGenerate)
                 Label(app.hasKeyForSelectedProvider
-                      ? "Using \(app.providerID.label)"
+                      ? "Using \(app.providerID.label)" + (app.costEstimate.map { " · ~\($0) est." } ?? "")
                       : "Using the Mock provider — add a key in Settings for live generation.",
                       systemImage: app.hasKeyForSelectedProvider ? "bolt.fill" : "cpu")
                     .font(.caption).foregroundStyle(.secondary)

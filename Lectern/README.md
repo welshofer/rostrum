@@ -80,20 +80,34 @@ UI, with no API key.
 
 [xcodegen]: https://github.com/yonaskolb/XcodeGen
 
+## Settings, keys, and provider selection — done
+
+Keys and provider choice are wired end-to-end (§10 / invariant I1):
+
+- **`KeychainStore`** — API keys live *only* in the login keychain (a
+  generic-password item per provider). Never UserDefaults, never logged; the
+  `SecureField` is write-only, so a stored key never round-trips through the UI.
+- **`SettingsView`** — provider picker + model + key entry. Un-wired providers
+  are labeled "(soon)" and stay on the Mock.
+- **`ProviderFactory`** (LecternCore, unit-tested) — the one UI-free place the
+  "which provider" decision lives: a stored key for a wired provider → live;
+  otherwise `MockProvider`, so the app **always runs offline**. `AppState`
+  persists only the non-secret choice (provider/model) and reads key *presence*
+  from the Keychain.
+
 ## What remains (M3–M5)
 
-Network / persistence concerns still to land:
-
-- **Live providers** (§7.2): Anthropic / OpenAI / Gemini / Custom, hand-rolled on
-  `URLSession` (no vendor SDKs), each conforming to `LLMProvider` — build the
-  request with the IR JSON Schema (generated from `DeckIR`), stream Stage-B
-  progress, and return `RawDraft`. The two-stage outline→deck pipeline and the
-  PDF grounding ladder (§7.4) live here.
-- **Keychain** (invariant I1), **History** (SwiftData, §11), **Settings**
-  (§10), and the **PriceTable** cost estimate (§10.3).
+- **Live providers** (§7.2): `AnthropicProvider` is written (URLSession, no vendor
+  SDK) and selected automatically once a key is stored; OpenAI / Gemini / Custom
+  follow the same `LLMProvider` shape. The two-stage outline→deck pipeline and the
+  PDF grounding ladder (§7.4) live here. *(The live round-trip needs a real key to
+  smoke-test — not exercisable in headless CI.)*
+- **History** (SwiftData, §11): persist past decks in the sidebar (currently a
+  stub).
+- **PriceTable** cost estimate (§10.3) and **Liquid Glass** polish (§3).
 
 The `LLMProvider` protocol, `GenerationEvent` stream, and `LecternError` taxonomy
-(§12) are already defined, so a live provider is a drop-in conformance.
+(§12) are defined, so a new live provider is a drop-in conformance.
 
 ## Open items
 
