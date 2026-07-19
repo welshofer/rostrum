@@ -50,11 +50,14 @@ public extension Presentation {
                               role: .display, style: s, color: onBg)
         }
         // Keep the section title/subtitle in the left half so a right-hand image
-        // panel (added by the renderer) never overlaps the text.
-        try slide.addText(title, in: grid.cell(column: 0, row: 5, columnSpan: 6, rowSpan: 4),
-                          role: .title, style: s, color: onBg)
+        // panel (added by the renderer) never overlaps the text; fit the title to
+        // its length so a long one stays ≤2 lines and clears the subtitle below.
+        let fitted = title.count > 40 ? 30.0 : (title.count > 24 ? 34.0 : s.type(.title).sizePt)
+        let titleStyle = s.with(.title) { $0.sizePt = fitted }
+        try slide.addText(title, in: grid.cell(column: 0, row: 4, columnSpan: 6, rowSpan: 4),
+                          role: .title, style: titleStyle, color: onBg, anchor: .bottom)
         if let subtitle {
-            try slide.addText(subtitle, in: grid.cell(column: 0, row: 9, columnSpan: 6, rowSpan: 2),
+            try slide.addText(subtitle, in: grid.cell(column: 0, row: 9, columnSpan: 7, rowSpan: 3),
                               role: .subhead, style: s, color: onBg)
         }
         return slide
@@ -67,7 +70,7 @@ public extension Presentation {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s)
-        try slide.addBulletList(bullets, in: content, style: s)
+        try slide.addBulletList(bullets, in: content, style: s, anchor: .middle)   // balance the block
         return slide
     }
 
@@ -92,11 +95,16 @@ public extension Presentation {
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: nil, title: title, style: s)
         let cols = content.split(.horizontal, count: 2, gutter: s.gutter)
+        // Header gets its own top band (room for two lines) and the bullets fill
+        // the rest, top-anchored — so a two-line header never overlaps them.
+        let headStyle = s.with(.heading) { $0.sizePt = 24 }
         for (col, headerText, items) in [(cols[0], leftHeader, left), (cols[1], rightHeader, right)] {
             let card = try slide.addCard(in: col, style: s)
-            let (head, body) = card.content.split(.vertical, ratio: 0.16, gutter: s.spacing.sm)
-            try slide.addText(headerText, in: head, role: .heading, style: s)
-            try slide.addBulletList(items, in: body, style: s)
+            let (head, body) = card.content.split(.vertical, ratio: 0.26, gutter: s.spacing.md)
+            try slide.addText(headerText, in: head, role: .heading, style: headStyle, anchor: .top)
+            // Cards are narrower than a full slide; a smaller body keeps four
+            // bullets inside the card instead of spilling past the bottom.
+            try slide.addBulletList(items, in: body, style: s, size: items.count >= 4 ? 20 : 24)
         }
         return slide
     }

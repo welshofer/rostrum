@@ -53,8 +53,9 @@ public extension ShapeCollection {
     /// A bulleted list; the body size auto-shrinks as the item count grows.
     @discardableResult
     func addBulletList(_ items: [String], in rect: Rect, style: DeckStyle,
-                       size: Double? = nil, color: Color? = nil, gapPt: Double? = nil) throws -> Shape {
-        let box = try styledBox(rect, anchor: .middle)      // center the list block in its cell
+                       size: Double? = nil, color: Color? = nil, gapPt: Double? = nil,
+                       anchor: VerticalAnchor = .top) throws -> Shape {
+        let box = try styledBox(rect, anchor: anchor)
         var ts = style.type(.body)
         ts.sizePt = size ?? bulletSize(count: items.count, base: ts.sizePt)
         if let color { ts.color = color }
@@ -189,8 +190,9 @@ public extension Slide {
     }
     @discardableResult
     func addBulletList(_ items: [String], in rect: Rect, style: DeckStyle,
-                       size: Double? = nil, color: Color? = nil, gapPt: Double? = nil) throws -> Shape {
-        try shapes.addBulletList(items, in: rect, style: style, size: size, color: color, gapPt: gapPt)
+                       size: Double? = nil, color: Color? = nil, gapPt: Double? = nil,
+                       anchor: VerticalAnchor = .top) throws -> Shape {
+        try shapes.addBulletList(items, in: rect, style: style, size: size, color: color, gapPt: gapPt, anchor: anchor)
     }
     @discardableResult
     func addKicker(_ text: String, in rect: Rect, style: DeckStyle, color: Color? = nil,
