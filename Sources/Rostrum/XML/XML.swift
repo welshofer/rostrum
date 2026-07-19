@@ -164,7 +164,29 @@ public enum XML {
     }
 
     /// Parse a complete XML document; returns the root element.
+    /// The XML 1.0 `Char` production: tab/LF/CR, then the legal scalar ranges.
+    /// Control characters (except tab/LF/CR), surrogates, and the U+FFFE/FFFF
+    /// non-characters are excluded — feeding them to the Linux parser can crash it.
+    private static func isXMLChar(_ v: UInt32) -> Bool {
+        v == 0x9 || v == 0xA || v == 0xD
+            || (v >= 0x20 && v <= 0xD7FF)
+            || (v >= 0xE000 && v <= 0xFFFD)
+            || (v >= 0x10000 && v <= 0x10FFFF)
+    }
+
     public static func parse(_ data: Data) throws -> Element {
+        // Reject input that XML forbids BEFORE handing it to XMLParser: on Linux,
+        // swift-corelibs-foundation's parser can TRAP (SIGILL, not throw) on
+        // invalid UTF-8 or characters outside the XML 1.0 Char production. Real
+        // .pptx parts are always clean UTF-8, so this only fails malformed input
+        // that had to error anyway — but as a throw, on every platform.
+        guard let text = String(data: data, encoding: .utf8) else {
+            throw RostrumError.xmlMalformed("input is not valid UTF-8")
+        }
+        if let bad = text.unicodeScalars.first(where: { !Self.isXMLChar($0.value) }) {
+            throw RostrumError.xmlMalformed(
+                "input contains U+\(String(format: "%04X", bad.value)), not permitted in XML")
+        }
         let parser = XMLParser(data: data)
         parser.shouldProcessNamespaces = false
         parser.shouldReportNamespacePrefixes = false
