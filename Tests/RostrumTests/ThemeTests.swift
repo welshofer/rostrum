@@ -48,6 +48,25 @@ import Testing
         #expect(deck.theme.resolve(.accent1, transforms: [.shade(0.5)]) == Color("404040"))
     }
 
+    @Test func satModScalesSaturation() throws {
+        let deck = try Presentation()
+        func spread(_ c: Color) -> Int {
+            let v = Int(c.hex, radix: 16)!
+            let (r, g, b) = ((v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF)
+            return max(r, g, b) - min(r, g, b)
+        }
+        // satMod 0 fully desaturates to gray at the same luminance.
+        deck.theme.setAccent(1, Color("C04060"))
+        #expect(deck.theme.resolve(.accent1, transforms: [.satMod(0)]) == Color("808080"))
+        // satMod > 1 increases saturation (widens the channel spread).
+        deck.theme.setAccent(2, Color("A08060"))
+        let more = try #require(deck.theme.resolve(.accent2, transforms: [.satMod(1.8)]))
+        #expect(spread(more) > spread(Color("A08060")))
+        // A gray has no saturation to scale.
+        deck.theme.setAccent(3, Color("777777"))
+        #expect(deck.theme.resolve(.accent3, transforms: [.satMod(2.0)]) == Color("777777"))
+    }
+
     @Test func themeColorFillTracksTheme() throws {
         let deck = try Presentation()
         deck.theme.setAccent(3, Color("4262FF"))

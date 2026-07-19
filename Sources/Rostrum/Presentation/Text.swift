@@ -123,14 +123,17 @@ public final class Paragraph {
 
     /// Space before/after the paragraph, in points.
     public func setSpacing(beforePoints: Double? = nil, afterPoints: Double? = nil) {
+        // No explicit beforeAnyOf: the generated schema places a:spcBef/a:spcAft
+        // ahead of ALL the bullet elements (buFont/buAutoNum/buChar/…). A
+        // hand-written list omitting those mis-orders spacing after a bullet.
         if let beforePoints {
-            let spcBef = pPr.getOrAddChild("a:spcBef", beforeAnyOf: ["a:spcAft", "a:buNone", "a:buChar"])
+            let spcBef = pPr.getOrAddChild("a:spcBef")
             spcBef.removeChildren(named: "a:spcPts")
             spcBef.appendElement(XML.Element(
                 "a:spcPts", attributes: [("val", String(Int((beforePoints * 100).rounded())))]))
         }
         if let afterPoints {
-            let spcAft = pPr.getOrAddChild("a:spcAft", beforeAnyOf: ["a:buNone", "a:buChar"])
+            let spcAft = pPr.getOrAddChild("a:spcAft")
             spcAft.removeChildren(named: "a:spcPts")
             spcAft.appendElement(XML.Element(
                 "a:spcPts", attributes: [("val", String(Int((afterPoints * 100).rounded())))]))
@@ -140,7 +143,10 @@ public final class Paragraph {
 
     /// Line spacing as a multiple of single spacing (1.0 = single).
     public func setLineSpacing(_ multiple: Double) {
-        let lnSpc = pPr.getOrAddChild("a:lnSpc", beforeAnyOf: ["a:spcBef", "a:spcAft"])
+        // a:lnSpc is the first child of a:pPr; the generated schema's full
+        // successor list keeps it ahead of spacing AND bullet elements even
+        // when those were added first (an explicit [spcBef, spcAft] would not).
+        let lnSpc = pPr.getOrAddChild("a:lnSpc")
         lnSpc.removeChildren(named: "a:spcPct")
         lnSpc.appendElement(XML.Element(
             "a:spcPct", attributes: [("val", String(Int((multiple * 100_000).rounded())))]))

@@ -112,6 +112,39 @@ import Testing
         _ = try ZipReader(data: wb.blob)
     }
 
+    @Test func scatterBeyondTwelveSeriesUsesValidColumns() throws {
+        // Scatter packs two columns per series, so the 13th series crosses
+        // column Z. A single-letter column would emit invalid refs like "$[$2";
+        // seriesColumn must roll over to multi-letter Excel columns (…Z, AA, …).
+        let deck = try Presentation()
+        let series = (0..<15).map { i in
+            XYChartData.Series(name: "s\(i)", points: [(Double(i), 1.0), (Double(i) + 1, 2.0)])
+        }
+        try deck.slides[0].shapes.addScatterChart(XYChartData(series: series),
+            frame: Rect(x: .zero, y: .zero, width: .inches(6), height: .inches(5)))
+
+        func formulas(_ e: XML.Element) -> [String] {
+            (e.name == "c:f" ? [e.textContent] : []) + e.childElements.flatMap(formulas)
+        }
+        let chart = try deck.package.part(at: PackURI("/ppt/charts/chart1.xml")).dom()
+        let all = formulas(chart)
+        #expect(!all.isEmpty)
+        // Every column token (the letters between '$' and the row digits) must be
+        // uppercase A–Z only — no '[', '\', etc. from overflowing past 'Z'.
+        for f in all {
+            // Tokens after each '$' are the column/row refs (the first token is
+            // the "Sheet1!" prefix). A column token's leading letters must be
+            // uppercase A–Z; a row token starts with digits (no letters).
+            for token in f.split(separator: "$").dropFirst() {
+                let letters = token.prefix { $0.isLetter }
+                #expect(letters.allSatisfy { $0.isUppercase && $0.isASCII },
+                        "invalid column in formula \(f)")
+            }
+        }
+        // Round-trips through a reopen (embedded workbook stays a valid zip).
+        _ = try Presentation(data: try deck.serializedData())
+    }
+
     @Test func everyKindProducesWellFormedChartAndOpens() throws {
         // A quick structural smoke test: each kind serializes, reparses, and
         // its externalData is the last child of chartSpace (schema order).

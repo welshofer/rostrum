@@ -49,9 +49,15 @@ final class SlideCopier {
         }
 
         // Media dedups by content: reuse an identical image already in dest.
+        // Iterate in sorted URI order — dest.parts is a Dictionary with
+        // per-process-random iteration, so an unsorted scan could pick a
+        // different duplicate each run and break byte-identical output when the
+        // destination already holds two same-content images.
         if sourceURI.value.hasPrefix("/ppt/media/") {
-            for (uri, part) in dest.parts
-            where uri.value.hasPrefix("/ppt/media/") && part.blob == sourcePart.blob {
+            let mediaURIs = dest.parts.keys
+                .filter { $0.value.hasPrefix("/ppt/media/") }
+                .sorted { $0.value < $1.value }
+            for uri in mediaURIs where dest.parts[uri]!.blob == sourcePart.blob {
                 map[sourceURI] = uri
                 return uri
             }

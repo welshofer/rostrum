@@ -27,6 +27,29 @@ import Testing
         #expect(ps[3].p.firstChild(named: "a:pPr")?.firstChild(named: "a:buNone") != nil)
     }
 
+    /// a:pPr order must hold when spacing/line-spacing are set AFTER a bullet:
+    /// a:lnSpc, a:spcBef, a:spcAft all precede the bullet elements. Setting them
+    /// after a bullet used to append them past a:buFont/a:buChar/a:buAutoNum,
+    /// an invalid CT_TextParagraphProperties sequence that repairs in PowerPoint.
+    @Test func spacingStaysBeforeBulletsRegardlessOfCallOrder() throws {
+        func order(_ build: (Paragraph) -> Void) throws -> [String] {
+            let (_, tf) = try newBox()
+            let p = tf.addParagraph()
+            build(p)
+            return p.p.firstChild(named: "a:pPr")!.childElements.map(\.name)
+        }
+        // bullet first, then before-spacing: spcBef must precede buFont & buChar.
+        let a = try order { $0.setBullet(); $0.setSpacing(beforePoints: 6) }
+        #expect(a.firstIndex(of: "a:spcBef")! < a.firstIndex(of: "a:buFont")!, "got \(a)")
+        #expect(a.firstIndex(of: "a:spcBef")! < a.firstIndex(of: "a:buChar")!, "got \(a)")
+        // number first, then after-spacing: spcAft must precede buAutoNum.
+        let b = try order { $0.setNumbered(); $0.setSpacing(afterPoints: 6) }
+        #expect(b.firstIndex(of: "a:spcAft")! < b.firstIndex(of: "a:buAutoNum")!, "got \(b)")
+        // bullet first, then line spacing: lnSpc must be the very first child.
+        let c = try order { $0.setBullet(); $0.setLineSpacing(1.5) }
+        #expect(c.first == "a:lnSpc", "got \(c)")
+    }
+
     @Test func bulletChildrenAreInSchemaOrder() throws {
         let (_, tf) = try newBox()
         let p = tf.addParagraph()

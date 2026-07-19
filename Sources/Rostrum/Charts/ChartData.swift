@@ -24,7 +24,7 @@ public struct ChartData: Sendable {
     public init(categories: [String], series: [Series]) {
         precondition(!categories.isEmpty, "chart needs at least one category")
         precondition(!series.isEmpty, "chart needs at least one series")
-        precondition(series.count <= 24, "series beyond column Z are not supported yet")
+        precondition(series.count <= 255, "too many series")
         for s in series {
             precondition(s.values.count == categories.count,
                          "series \"\(s.name)\" has \(s.values.count) values for \(categories.count) categories")
@@ -139,7 +139,9 @@ public struct XYChartData: Sendable {
     public var series: [Series]
     public init(series: [Series]) {
         precondition(!series.isEmpty, "scatter chart needs at least one series")
-        precondition(series.count <= 24, "series beyond column Z are not supported yet")
+        // Scatter uses two columns per series; seriesColumn now spans multi-
+        // letter Excel columns, so the practical bound is just sanity.
+        precondition(series.count <= 255, "too many scatter series")
         self.series = series
     }
     public init(name: String = "Series 1", points: [(x: Double, y: Double)]) {
@@ -155,7 +157,17 @@ func chartNumber(_ value: Double) -> String {
     return String(format: "%.10g", value)
 }
 
-/// Spreadsheet column letter for series index 0 → "B", 1 → "C", …
+/// Spreadsheet column letter for series index 0 → "B", 1 → "C", … 24 → "Z",
+/// 25 → "AA", … — proper multi-letter Excel columns (column A holds the
+/// categories/x-values). A single-letter `65 + index` would overflow past "Z"
+/// into invalid columns like "[" for scatter charts, which pack two columns
+/// per series and so reach index 25+ well before 24 series.
 func seriesColumn(_ index: Int) -> String {
-    String(UnicodeScalar(UInt8(66 + index)))
+    var column = index + 1  // 0-based spreadsheet column: A=0, B=1, …
+    var letters = ""
+    repeat {
+        letters = String(UnicodeScalar(UInt8(65 + column % 26))) + letters
+        column = column / 26 - 1
+    } while column >= 0
+    return letters
 }

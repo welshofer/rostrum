@@ -173,11 +173,40 @@ private struct RGB {
         case .shade:  return map { $0 * f }                       // mix toward black
         case .lumMod: return map { $0 * f }
         case .lumOff: return map { $0 + 255 * f }
-        case .satMod, .alpha: return self                         // no RGB effect here
+        case .satMod: return scalingSaturation(by: f)            // HSL saturation × f
+        case .alpha:  return self                                // opacity: no RGB effect
         }
     }
     private func map(_ fn: (Double) -> Double) -> RGB {
         RGB(r: fn(r), g: fn(g), b: fn(b))
     }
     init(r: Double, g: Double, b: Double) { self.r = r; self.g = g; self.b = b }
+
+    /// Multiply HSL saturation by `factor` (DrawingML `a:satMod`), clamping the
+    /// result to [0, 1]. Grayscale colors (saturation 0) are unaffected.
+    private func scalingSaturation(by factor: Double) -> RGB {
+        let rn = r / 255, gn = g / 255, bn = b / 255
+        let maxc = Swift.max(rn, gn, bn), minc = Swift.min(rn, gn, bn)
+        let lum = (maxc + minc) / 2
+        let delta = maxc - minc
+        guard delta != 0 else { return self }
+        var hue: Double
+        if maxc == rn { hue = (gn - bn) / delta + (gn < bn ? 6 : 0) }
+        else if maxc == gn { hue = (bn - rn) / delta + 2 }
+        else { hue = (rn - gn) / delta + 4 }
+        hue /= 6
+        let sat0 = lum > 0.5 ? delta / (2 - maxc - minc) : delta / (maxc + minc)
+        let sat = Swift.max(0, Swift.min(1, sat0 * factor))
+        let q = lum < 0.5 ? lum * (1 + sat) : lum + sat - lum * sat
+        let p = 2 * lum - q
+        func channel(_ offset: Double) -> Double {
+            var t = hue + offset
+            if t < 0 { t += 1 } else if t > 1 { t -= 1 }
+            if t < 1.0 / 6 { return p + (q - p) * 6 * t }
+            if t < 1.0 / 2 { return q }
+            if t < 2.0 / 3 { return p + (q - p) * (2.0 / 3 - t) * 6 }
+            return p
+        }
+        return RGB(r: channel(1.0 / 3) * 255, g: channel(0) * 255, b: channel(-1.0 / 3) * 255)
+    }
 }
