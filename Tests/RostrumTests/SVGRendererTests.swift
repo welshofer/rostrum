@@ -46,6 +46,24 @@ import Testing
         #expect(svg == (try deck.renderSVG(slideAt: 0)))
     }
 
+    @Test func rendersEveryFeatureDeckWithoutCrashingIntoValidSVG() throws {
+        // Every slide of a feature-diverse deck renders to valid, deterministic SVG.
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse("## Palette\n- Background: #0B1D33\n- Accent 1: #18A999"))
+        try deck.titleSlide("T", subtitle: "S", kicker: "K")
+        try deck.sectionSlide("Sec", number: 1)
+        try deck.comparisonSlide("C", leftHeader: "L", left: ["a"], rightHeader: "R", right: ["b"])
+        try deck.chartSlide("Ch", .barClustered, ChartData(categories: ["A", "B"], name: "s", values: [1, 2]))
+        try deck.calloutSlide(stat: "47", caption: "NPS")
+        try deck.quoteSlide("Quote", attribution: "someone")
+        try deck.slides[0].shapes.addPicture(png, x: .inches(1), y: .inches(1))
+        for i in 0..<deck.slides.count {
+            let svg = try deck.renderSVG(slideAt: i)
+            _ = try XML.parse(Data(svg.utf8))                     // valid XML
+            #expect(svg == (try deck.renderSVG(slideAt: i)))      // deterministic
+        }
+    }
+
     @Test func exportsOneSVGPerSlide() throws {
         let deck = try Presentation()
         try deck.titleSlide("One")
