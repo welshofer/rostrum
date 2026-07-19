@@ -59,10 +59,12 @@ enum EOTLite {
             out.append(0); out.append(0)   // trailing u16 padding
             return out
         }
+        // Four name records; each nameBlock already appends its own trailing
+        // u16 padding, so the FullName block's padding IS the v2 Padding5. Only
+        // the RootStringSize (u16, 0) + empty RootString remain for the tail.
         let names = nameBlock(typeface) + nameBlock(style) + nameBlock("Version 1.0")
             + nameBlock("\(typeface) \(style)")
-        // v2 tail: Padding5 (u16) + RootStringSize (u16, 0) + empty RootString.
-        let tailSize = 4
+        let tailSize = 2
         let eotSize = UInt32(82 + names.count + tailSize + font.count)
 
         u32(eotSize)                 // EOTSize
@@ -83,9 +85,8 @@ enum EOTLite {
         // header is now 82 bytes.
 
         var out = Data(header)
-        out.append(contentsOf: names)
-        out.append(0); out.append(0)  // Padding5
-        out.append(0); out.append(0)  // RootStringSize = 0
+        out.append(contentsOf: names)   // includes Padding5 (FullName's trailing pad)
+        out.append(0); out.append(0)    // RootStringSize = 0 (empty RootString)
         out.append(font)
         return out
     }
