@@ -110,6 +110,10 @@ public struct DeckValidator: Sendable {
             if (body?.quote ?? "").isEmpty { return "quote requires body.quote" }
         case .bigNumber:
             if (body?.value ?? "").isEmpty || (body?.label ?? "").isEmpty { return "bigNumber requires body.value and body.label" }
+        case .chart:
+            if (body?.chart?.series ?? []).isEmpty { return "chart requires body.chart with at least one series" }
+        case .metrics:
+            if (body?.stats ?? []).isEmpty { return "metrics requires body.stats" }
         case .title, .sectionHeader, .closing:
             break                                   // all payload fields optional
         case .unknown:

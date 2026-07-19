@@ -95,6 +95,28 @@ public actor DeckRenderer {
         case .closing:
             let subtitle = [body?.callToAction, body?.contact].compactMap { $0 }.joined(separator: "\n")
             return try deck.sectionSlide(title.isEmpty ? "Thank you" : title, subtitle: subtitle.isEmpty ? nil : subtitle)
+        case .chart:
+            // Only build a chart when the data is well-formed (matching series
+            // lengths) — otherwise fall back to bullets rather than crash.
+            if let c = body?.chart, !c.categories.isEmpty, !c.series.isEmpty,
+               c.series.allSatisfy({ $0.values.count == c.categories.count }) {
+                let kind: ChartKind = {
+                    switch c.kind.lowercased() {
+                    case "line": return .line
+                    case "pie", "doughnut": return .pie
+                    default: return .barClustered
+                    }
+                }()
+                let data = ChartData(categories: c.categories,
+                                     series: c.series.map { ChartData.Series(name: $0.name, values: $0.values) })
+                return try deck.chartSlide(title, kind, data)
+            }
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .metrics:
+            if let stats = body?.stats, !stats.isEmpty {
+                return try deck.metricsSlide(title, metrics: stats.map { (value: $0.value, label: $0.label) })
+            }
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .unknown:
             // Validation downgrades unknown → bullets, so this is unreachable for
             // a validated deck; render an empty bulleted slide defensively.

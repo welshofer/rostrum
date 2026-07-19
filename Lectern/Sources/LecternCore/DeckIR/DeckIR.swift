@@ -106,16 +106,44 @@ public struct Body: Codable, Sendable, Equatable {
     public var label: String?
     public var callToAction: String?          // closing
     public var contact: String?
+    public var chart: IRChart?                // chart
+    public var stats: [IRStat]?               // metrics (2–4 headline numbers)
 
     public init(subtitle: String? = nil, items: [String]? = nil, kicker: String? = nil,
                 bullets: [Bullet]? = nil, left: Column? = nil, right: Column? = nil,
                 quote: String? = nil, attribution: String? = nil, value: String? = nil,
-                label: String? = nil, callToAction: String? = nil, contact: String? = nil) {
+                label: String? = nil, callToAction: String? = nil, contact: String? = nil,
+                chart: IRChart? = nil, stats: [IRStat]? = nil) {
         self.subtitle = subtitle; self.items = items; self.kicker = kicker
         self.bullets = bullets; self.left = left; self.right = right
         self.quote = quote; self.attribution = attribution; self.value = value
         self.label = label; self.callToAction = callToAction; self.contact = contact
+        self.chart = chart; self.stats = stats
     }
+}
+
+/// A chart on a `chart` slide. `kind` is bar | line | pie; `series[i].values`
+/// align to `categories`.
+public struct IRChart: Codable, Sendable, Equatable {
+    public var kind: String
+    public var categories: [String]
+    public var series: [IRSeries]
+    public init(kind: String, categories: [String], series: [IRSeries]) {
+        self.kind = kind; self.categories = categories; self.series = series
+    }
+}
+
+public struct IRSeries: Codable, Sendable, Equatable {
+    public var name: String
+    public var values: [Double]
+    public init(name: String, values: [Double]) { self.name = name; self.values = values }
+}
+
+/// One headline metric on a `metrics` slide.
+public struct IRStat: Codable, Sendable, Equatable {
+    public var value: String
+    public var label: String
+    public init(value: String, label: String) { self.value = value; self.label = label }
 }
 
 public struct Bullet: Codable, Sendable, Equatable {
@@ -133,6 +161,7 @@ public struct Column: Codable, Sendable, Equatable {
 /// The known layout vocabulary (§8.2), plus `.unknown` for forward-compat.
 public enum SlideLayoutKind: Sendable, Equatable {
     case title, agenda, sectionHeader, bullets, twoColumn, comparison, quote, bigNumber, closing
+    case chart, metrics
     case unknown(String)
 
     public init(_ raw: String) {
@@ -146,6 +175,8 @@ public enum SlideLayoutKind: Sendable, Equatable {
         case "quote": self = .quote
         case "bigNumber": self = .bigNumber
         case "closing": self = .closing
+        case "chart": self = .chart
+        case "metrics": self = .metrics
         default: self = .unknown(raw)
         }
     }
@@ -156,7 +187,7 @@ public enum SlideLayoutKind: Sendable, Equatable {
         switch self {
         case .title, .bigNumber, .quote, .closing: return .fullBleed   // sparse, centered/large text
         case .sectionHeader: return .sidePanel                          // title left, image right
-        case .agenda, .bullets, .twoColumn, .comparison, .unknown: return .none   // text-dense
+        case .agenda, .bullets, .twoColumn, .comparison, .chart, .metrics, .unknown: return .none
         }
     }
 }

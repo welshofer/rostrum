@@ -22,6 +22,11 @@ public enum PromptTemplates {
         ("Section One", "various factors"). Don't fabricate precise statistics — \
         prefer rounded, defensible ones.
         - One idea per slide; bullets parallel, ≤10 words, ≤5 per slide, never redundant.
+        - SHOW data, don't list it. A slide comparing quantities → a "chart" (bar for
+        comparison, line for a trend, pie for shares). Two-to-four headline figures →
+        a "metrics" slide. A single dramatic figure → "bigNumber". Never bury numbers
+        in bullet text when a chart or metrics slide would land harder. Use only
+        defensible, well-known figures.
         - The closer lands a specific call to action, never a bare "Thank you".
 
         Layout vocabulary (each slide has an "id", "layout", optional "title", "body", and "notes"):
@@ -33,6 +38,8 @@ public enum PromptTemplates {
         - comparison       same shape as twoColumn
         - quote            body: { quote, attribution? }
         - bigNumber        body: { value, label }
+        - metrics          body: { stats: [{ value, label }] }   (2–4 headline numbers)
+        - chart            body: { chart: { kind: bar|line|pie, categories: [string], series: [{ name, values: [number] }] } }
         - closing          body: { callToAction?, contact? }  (at most one, last)
 
         Group slides into "sections" (id, title, slideIds) when the deck has natural acts. \
@@ -90,6 +97,10 @@ public enum PromptTemplates {
 
         BULLETS — parallel grammar, one idea each, ≤10 words, ≤5 per slide, and no two \
         bullets that say the same thing.
+
+        SHOW DATA — wherever a slide lists numbers or compares quantities, convert it to \
+        a "chart" (bar/line/pie with real categories + series) or a "metrics" slide \
+        (2–4 headline figures). Numbers buried in bullets are a wasted slide.
 
         OPEN & CLOSE — the opener earns attention in one line; the closer lands a \
         specific call to action, never "Thank you".

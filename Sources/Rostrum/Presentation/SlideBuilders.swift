@@ -99,6 +99,35 @@ public extension Presentation {
         return slide
     }
 
+    /// A row of 2–4 headline metrics — each a colored rule, a big number, and a
+    /// caption (the "180 / 0 / 11" layout).
+    @discardableResult
+    func metricsSlide(_ title: String, metrics: [(value: String, label: String)],
+                      kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        let items = Array(metrics.prefix(4))
+        guard !items.isEmpty else { return slide }
+        let cols = content.split(.horizontal, count: items.count, gutter: s.gutter)
+        // Fit the number to the column so a wide value ("$300B") stays on one line.
+        let maxLen = items.map { $0.value.count }.max() ?? 2
+        let base: Double = items.count >= 4 ? 54 : (items.count == 3 ? 68 : 104)
+        let numberStyle = s.with(.stat) { $0.sizePt = maxLen >= 6 ? base * 0.8 : base }
+        for (i, m) in items.enumerated() {
+            let col = cols[i]
+            let accent = s.legibleAccent(i + 1, on: s.background)
+            let ruleH = EMU(Int(Double(col.height.rawValue) * 0.66))
+            try slide.addAccentRule(in: Rect(x: col.minX, y: col.minY, width: .points(5), height: ruleH),
+                                    style: s, color: accent)
+            let textRect = Rect(x: col.minX + .points(22), y: col.minY,
+                                width: col.width - .points(22), height: col.height)
+            try slide.addStatTile(m.value, caption: m.label, in: textRect, style: numberStyle,
+                                  valueColor: accent, anchor: .top)
+        }
+        return slide
+    }
+
     /// A title + a full-width chart, colored from the brand accents by default.
     @discardableResult
     func chartSlide(_ title: String, _ kind: ChartKind, _ data: ChartData,

@@ -21,6 +21,27 @@ enum DeckSchema {
             "properties": ["heading": str(), "bullets": strings],
             "required": ["heading", "bullets"],
         ]
+        let series: [String: Any] = [
+            "type": "object",
+            "properties": ["name": str(), "values": ["type": "array", "items": ["type": "number"]]],
+            "required": ["name", "values"],
+        ]
+        let chart: [String: Any] = [
+            "type": "object",
+            "description": "chart layout — real quantitative data, not decoration",
+            "properties": [
+                "kind": ["type": "string", "enum": ["bar", "line", "pie"]],
+                "categories": strings,
+                "series": ["type": "array", "items": series,
+                           "description": "each series' values align 1:1 with categories"],
+            ],
+            "required": ["kind", "categories", "series"],
+        ]
+        let stat: [String: Any] = [
+            "type": "object",
+            "properties": ["value": str("the number, e.g. 218% or $1.5B"), "label": str("what it measures")],
+            "required": ["value", "label"],
+        ]
         let body: [String: Any] = [
             "type": "object",
             "description": "Only include the fields the slide's layout uses.",
@@ -34,6 +55,9 @@ enum DeckSchema {
                 "value": str("bigNumber — the number itself, e.g. 218%"),
                 "label": str("bigNumber caption"),
                 "callToAction": str(), "contact": str(),            // closing
+                "chart": chart,                                     // chart
+                "stats": ["type": "array", "items": stat,           // metrics (2–4 numbers)
+                          "description": "metrics layout — 2 to 4 headline numbers"],
             ],
         ]
         let image: [String: Any] = [
@@ -53,7 +77,8 @@ enum DeckSchema {
                 "layout": [
                     "type": "string",
                     "enum": ["title", "agenda", "sectionHeader", "bullets",
-                             "twoColumn", "comparison", "quote", "bigNumber", "closing"],
+                             "twoColumn", "comparison", "quote", "bigNumber", "closing",
+                             "chart", "metrics"],
                 ],
                 "title": str(),
                 "body": body,

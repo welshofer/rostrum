@@ -18,6 +18,38 @@ import Rostrum
 
     // MARK: - IR + validation
 
+    @Test func rendersChartAndMetricsSlides() async throws {
+        let deck = DeckIR(meta: Meta(title: "Data"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener", body: Body(subtitle: "s")),
+            IRSlide(id: "s2", layout: "metrics", title: "Three numbers",
+                    body: Body(stats: [IRStat(value: "$300B", label: "losses"), IRStat(value: "1.2°C", label: "warming")])),
+            IRSlide(id: "s3", layout: "chart", title: "Rising losses",
+                    body: Body(chart: IRChart(kind: "bar", categories: ["2020", "2021", "2022"],
+                                              series: [IRSeries(name: "US$B", values: [210, 280, 313])]))),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
+        #expect(result.slideCount == 3)
+        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)   // opens clean, with a chart part
+    }
+
+    @Test func malformedChartFallsBackInsteadOfCrashing() async throws {
+        // series length ≠ categories would trip ChartData's precondition — the
+        // renderer must fall back to bullets, not crash.
+        let deck = DeckIR(meta: Meta(title: "Data"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "chart", title: "Broken chart",
+                    body: Body(bullets: [Bullet(text: "shown instead")],
+                               chart: IRChart(kind: "bar", categories: ["a", "b", "c"],
+                                              series: [IRSeries(name: "s", values: [1, 2])]))),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false, into: dir)
+        #expect(result.slideCount == 2)
+    }
+
     @Test func imagePlacementPolicyAvoidsTextDenseLayouts() {
         #expect(SlideLayoutKind.title.imagePlacement == .fullBleed)
         #expect(SlideLayoutKind.bigNumber.imagePlacement == .fullBleed)
