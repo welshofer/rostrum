@@ -1,16 +1,22 @@
 import Foundation
 
-/// Schema-ordering helpers for building OOXML element trees — the hand-written
-/// seed of what `rostrum-gen` will eventually generate from python-pptx's
-/// successor tables.
+/// Schema-ordering helpers for building OOXML element trees. When no explicit
+/// successor list is given, the ordering is driven by `OOXMLSchema`, whose
+/// tables `rostrum-gen` extracts mechanically from python-pptx's descriptor
+/// declarations — so insertion is schema-correct without hand-maintained lists.
 extension XML.Element {
     /// Insert `child` before the first existing child whose name appears in
     /// `successors` (the XSD-sequence elements that must follow it), else
-    /// append. This is how python-pptx's `insert_element_before` keeps
-    /// optional children at their schema-mandated position.
-    func insertChild(_ child: XML.Element, beforeAnyOf successors: [String]) {
-        if let index = children.firstIndex(where: {
-            if case .element(let e) = $0 { return successors.contains(e.name) }
+    /// append. If `successors` is empty, the authoritative successor list for
+    /// (this element, `child`) is looked up in the generated `OOXMLSchema`.
+    /// This is how python-pptx's `insert_element_before` keeps optional
+    /// children at their schema-mandated position.
+    func insertChild(_ child: XML.Element, beforeAnyOf successors: [String] = []) {
+        let succ = successors.isEmpty
+            ? (OOXMLSchema.childSuccessors[name]?[child.name] ?? [])
+            : successors
+        if !succ.isEmpty, let index = children.firstIndex(where: {
+            if case .element(let e) = $0 { return succ.contains(e.name) }
             return false
         }) {
             children.insert(.element(child), at: index)
