@@ -14,6 +14,8 @@ public enum RostrumError: Error, Equatable, CustomStringConvertible {
     case partMissing(String)
     /// The file is a valid OPC package but not a PresentationML document.
     case notAPresentation(String)
+    /// A font's embedding permission (OS/2 fsType) forbids embedding it.
+    case fontEmbeddingRestricted(String)
 
     public var description: String {
         switch self {
@@ -24,6 +26,7 @@ public enum RostrumError: Error, Equatable, CustomStringConvertible {
         case .packageInvalid(let m): return "invalid OPC package: \(m)"
         case .partMissing(let m): return "missing package part: \(m)"
         case .notAPresentation(let m): return "not a PresentationML package: \(m)"
+        case .fontEmbeddingRestricted(let m): return "font embedding is license-restricted: \(m)"
         }
     }
 }
