@@ -25,6 +25,7 @@ struct ContentView: View {
             case .failed(let message): FailedView(message: message)
             }
         }
+        .task { await app.loadStyles() }
     }
 }
 
@@ -61,6 +62,15 @@ struct ComposeView: View {
             }
             Section {
                 Toggle("Speaker notes", isOn: $app.includeNotes)
+            }
+            if !app.styles.isEmpty {
+                Section("Style") {
+                    Picker("Style", selection: $app.selectedStyleSlug) {
+                        ForEach(app.styles) { style in
+                            Text(style.name).tag(style.slug as String?)
+                        }
+                    }
+                }
             }
             Section {
                 Button("Generate") { app.generate() }

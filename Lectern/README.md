@@ -57,14 +57,33 @@ layouts downgrading (AT-15). Run it:
 cd Lectern && swift test
 ```
 
-## What remains (needs Xcode — M3–M5)
+## The macOS app
 
-These are macOS-app / network concerns that can't be built or verified headlessly:
+The SwiftUI shell (`App/`) is a real macOS app. Its Xcode project is **generated
+from `project.yml`** with [xcodegen] — `project.yml` is the checked-in source of
+truth; the `.xcodeproj` is a build artifact (gitignored, like `.build/`). No
+manual project bookkeeping, no merge conflicts in a pbxproj.
 
-- **The SwiftUI app** (Liquid Glass, §5): `NavigationSplitView` with a
-  History sidebar and a Compose → Generating → Result state machine; Settings
-  scene. Drives `DeckGenerator` (default `MockProvider`; Debug menu switches
-  failure modes).
+```sh
+cd Lectern
+xcodegen generate                                              # project.yml → Lectern.xcodeproj
+xcodebuild -project Lectern.xcodeproj -scheme Lectern build     # or just open it in Xcode
+```
+
+**Verified:** the app compiles under **Swift 6 complete strict-concurrency**,
+bundles all 150 `design.md` styles as an app resource, and launches clean. The
+Compose → Generating → Result → Failed state machine (`ContentView`), the
+`@Observable` `AppState` driving `DeckGenerator` (default `MockProvider`), the
+bundled **Style picker**, and the Settings scene are all in and building — so a
+generated deck can be written, revealed in Finder, and opened, entirely from the
+UI, with no API key.
+
+[xcodegen]: https://github.com/yonaskolb/XcodeGen
+
+## What remains (M3–M5)
+
+Network / persistence concerns still to land:
+
 - **Live providers** (§7.2): Anthropic / OpenAI / Gemini / Custom, hand-rolled on
   `URLSession` (no vendor SDKs), each conforming to `LLMProvider` — build the
   request with the IR JSON Schema (generated from `DeckIR`), stream Stage-B
@@ -78,9 +97,9 @@ The `LLMProvider` protocol, `GenerationEvent` stream, and `LecternError` taxonom
 
 ## Open items
 
-- **Style catalog source.** The vzestup repo ships ~150 style **thumbnails**
-  (`style-samples/`, `public/style-thumbs/`) but the `design.md` **source files**
-  weren't in the tree — they need locating (or generating) for `StyleCatalog` to
-  load real styles. The `sunflower.md` format is confirmed working, so the
-  binding is sound.
-- OQ-3 (final app name), OQ-5 (bundle id/signing) — owner decisions.
+- **Style catalog source — resolved.** All 150 real `design.md` files ship in
+  `App/Resources/Styles/` and are bundled into the app. Every one loads, parses,
+  and renders to a PowerPoint-clean deck; the picker selects among them.
+- OQ-3 (final app name), OQ-5 (bundle id/signing) — owner decisions. The project
+  currently builds unsigned (`CODE_SIGNING_ALLOWED=NO`) under bundle id
+  `com.lectern.app`.

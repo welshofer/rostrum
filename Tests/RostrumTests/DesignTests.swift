@@ -199,4 +199,15 @@ import Testing
         #expect(reopened.theme.accent(1) == Color("18A999"))
         #expect(reopened.theme.resolve(.bg1) == Color("F7F4EE"))
     }
+
+    @Test func extractsPrimaryFamilyFromQuotedCSSStack() {
+        // Real catalog styles use quoted CSS font stacks.
+        let d = Design.parse("""
+        ## Typography
+        Families: "GT Pressura, ui-sans-serif, system-ui, sans-serif", "Monument Grotesk, ui-sans-serif". Weights: 400.
+        """)
+        #expect(d.headingFont == "GT Pressura")   // primary family, no stray quote
+        #expect(!(d.headingFont ?? "").contains("\""))
+    }
+
 }
