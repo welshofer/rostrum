@@ -31,13 +31,20 @@ public enum SmartArt {
     /// and verified to open without repair in PowerPoint + LibreOffice.
     public enum Layout: String, Sendable, CaseIterable {
         case blockList   // a vertical list of blocks (the original)
-        case process     // a horizontal chevron sequence (left → right)
+        case process     // a horizontal sequence of arrows (left → right) — PowerPoint-verified
+        case cycle       // nodes on a ring with connectors (a loop) — PowerPoint-verified
+        /// EXPERIMENTAL: PowerPoint's `pyra` engine renders this as a block grid, not a
+        /// pyramid, with this minimal layoutDef (LibreOffice renders it correctly). Needs a
+        /// faithful pyra definition; the demo uses the drawn `pyramidSlide` meanwhile.
+        case pyramid
 
         /// Layout uniqueId (`loTypeId`), also the `presId` in the data model.
         public var urn: String {
             switch self {
             case .blockList: return SmartArt.layoutURN
             case .process:   return "urn:rostrum/basicProcess"
+            case .pyramid:   return "urn:rostrum/basicPyramid"
+            case .cycle:     return "urn:rostrum/basicCycle"
             }
         }
         /// Gallery category, and the document point's `loCatId`.
@@ -45,12 +52,16 @@ public enum SmartArt {
             switch self {
             case .blockList: return "list"
             case .process:   return "process"
+            case .pyramid:   return "pyramid"
+            case .cycle:     return "cycle"
             }
         }
         var layoutXML: String {
             switch self {
             case .blockList: return SmartArt.blockListLayoutXML
             case .process:   return SmartArt.processLayoutXML
+            case .pyramid:   return SmartArt.pyramidLayoutXML
+            case .cycle:     return SmartArt.cycleLayoutXML
             }
         }
     }
@@ -152,6 +163,23 @@ public enum SmartArt {
     static let processLayoutXML = """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <dgm:layoutDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="\(Layout.process.urn)"><dgm:title val="Basic Process"/><dgm:desc val=""/><dgm:catLst><dgm:cat type="process" pri="2000"/></dgm:catLst><dgm:sampData useDef="1"><dgm:dataModel><dgm:ptLst/><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:sampData><dgm:styleData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="3" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="4" srcId="0" destId="2" srcOrd="1" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:styleData><dgm:clrData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/><dgm:pt modelId="3"/><dgm:pt modelId="4"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="5" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="6" srcId="0" destId="2" srcOrd="1" destOrd="0"/><dgm:cxn modelId="7" srcId="0" destId="3" srcOrd="2" destOrd="0"/><dgm:cxn modelId="8" srcId="0" destId="4" srcOrd="3" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:clrData><dgm:layoutNode name="diagram"><dgm:varLst><dgm:dir/><dgm:resizeHandles val="exact"/></dgm:varLst><dgm:alg type="lin"><dgm:param type="linDir" val="fromL"/></dgm:alg><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst><dgm:constr type="h" for="ch" ptType="node" refType="h" fact="0.62"/><dgm:constr type="w" for="ch" forName="sibTrans" refType="w" fact="0.04"/><dgm:constr type="primFontSz" for="ch" ptType="node" op="equ" val="65"/></dgm:constrLst><dgm:ruleLst/><dgm:forEach name="nodesForEach" axis="ch" ptType="node"><dgm:layoutNode name="node" styleLbl="node1"><dgm:varLst><dgm:bulletEnabled val="1"/></dgm:varLst><dgm:alg type="tx"/><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" type="homePlate" r:blip=""><dgm:adjLst><dgm:adj idx="1" val="0.2"/></dgm:adjLst></dgm:shape><dgm:presOf axis="desOrSelf" ptType="node"/><dgm:constrLst><dgm:constr type="lMarg" refType="primFontSz" fact="0.4"/><dgm:constr type="rMarg" refType="primFontSz" fact="0.4"/><dgm:constr type="tMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="bMarg" refType="primFontSz" fact="0.3"/></dgm:constrLst><dgm:ruleLst><dgm:rule type="primFontSz" val="5" fact="NaN" max="NaN"/></dgm:ruleLst></dgm:layoutNode><dgm:forEach name="sibTransForEach" axis="followSib" ptType="sibTrans" cnt="1"><dgm:layoutNode name="sibTrans"><dgm:alg type="sp"/><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst/><dgm:ruleLst/></dgm:layoutNode></dgm:forEach></dgm:forEach></dgm:layoutNode></dgm:layoutDef>
+        """
+
+    /// Basic Pyramid: stacked trapezoid levels, widest at the base (`pyraLvlDir`
+    /// fromB). The `pyra` algorithm graduates each slice's width into a triangle;
+    /// nodes share the model with a `sibTrans` spacer so the presentation cache
+    /// stays consistent with the block list / process.
+    static let pyramidLayoutXML = """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <dgm:layoutDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="\(Layout.pyramid.urn)"><dgm:title val="Basic Pyramid"/><dgm:desc val=""/><dgm:catLst><dgm:cat type="pyramid" pri="3000"/></dgm:catLst><dgm:sampData useDef="1"><dgm:dataModel><dgm:ptLst/><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:sampData><dgm:styleData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="3" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="4" srcId="0" destId="2" srcOrd="1" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:styleData><dgm:clrData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/><dgm:pt modelId="3"/><dgm:pt modelId="4"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="5" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="6" srcId="0" destId="2" srcOrd="1" destOrd="0"/><dgm:cxn modelId="7" srcId="0" destId="3" srcOrd="2" destOrd="0"/><dgm:cxn modelId="8" srcId="0" destId="4" srcOrd="3" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:clrData><dgm:layoutNode name="diagram"><dgm:varLst><dgm:dir/><dgm:resizeHandles val="exact"/></dgm:varLst><dgm:alg type="pyra"><dgm:param type="pyraLvlDir" val="fromB"/></dgm:alg><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst><dgm:constr type="primFontSz" for="ch" ptType="node" op="equ" val="65"/></dgm:constrLst><dgm:ruleLst/><dgm:forEach name="nodesForEach" axis="ch" ptType="node"><dgm:layoutNode name="node" styleLbl="node1"><dgm:varLst><dgm:bulletEnabled val="1"/></dgm:varLst><dgm:alg type="tx"/><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" type="trapezoid" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf axis="desOrSelf" ptType="node"/><dgm:constrLst><dgm:constr type="lMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="rMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="tMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="bMarg" refType="primFontSz" fact="0.3"/></dgm:constrLst><dgm:ruleLst><dgm:rule type="primFontSz" val="5" fact="NaN" max="NaN"/></dgm:ruleLst></dgm:layoutNode><dgm:forEach name="sibTransForEach" axis="followSib" ptType="sibTrans" cnt="1"><dgm:layoutNode name="sibTrans"><dgm:alg type="sp"/><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst/><dgm:ruleLst/></dgm:layoutNode></dgm:forEach></dgm:forEach></dgm:layoutNode></dgm:layoutDef>
+        """
+
+    /// Basic Cycle: nodes evenly spaced on a ring (`cycle` algorithm, 360°) as
+    /// ellipses, with curved arrow connectors between them. Same model + cache
+    /// shape; the `sibTrans` becomes a `conn` connector instead of a spacer.
+    static let cycleLayoutXML = """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <dgm:layoutDef xmlns:dgm="\(nsDGM)" xmlns:a="\(MinimalTemplate.nsA)" uniqueId="\(Layout.cycle.urn)"><dgm:title val="Basic Cycle"/><dgm:desc val=""/><dgm:catLst><dgm:cat type="cycle" pri="4000"/></dgm:catLst><dgm:sampData useDef="1"><dgm:dataModel><dgm:ptLst/><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:sampData><dgm:styleData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="3" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="4" srcId="0" destId="2" srcOrd="1" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:styleData><dgm:clrData><dgm:dataModel><dgm:ptLst><dgm:pt modelId="0" type="doc"/><dgm:pt modelId="1"/><dgm:pt modelId="2"/><dgm:pt modelId="3"/><dgm:pt modelId="4"/></dgm:ptLst><dgm:cxnLst><dgm:cxn modelId="5" srcId="0" destId="1" srcOrd="0" destOrd="0"/><dgm:cxn modelId="6" srcId="0" destId="2" srcOrd="1" destOrd="0"/><dgm:cxn modelId="7" srcId="0" destId="3" srcOrd="2" destOrd="0"/><dgm:cxn modelId="8" srcId="0" destId="4" srcOrd="3" destOrd="0"/></dgm:cxnLst><dgm:bg/><dgm:whole/></dgm:dataModel></dgm:clrData><dgm:layoutNode name="diagram"><dgm:varLst><dgm:dir/><dgm:resizeHandles val="exact"/></dgm:varLst><dgm:alg type="cycle"><dgm:param type="stAng" val="0"/><dgm:param type="spanAng" val="360"/></dgm:alg><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst><dgm:constr type="w" for="ch" ptType="node" refType="w" fact="0.26"/><dgm:constr type="h" for="ch" ptType="node" refType="h" fact="0.26"/><dgm:constr type="primFontSz" for="ch" ptType="node" op="equ" val="65"/></dgm:constrLst><dgm:ruleLst/><dgm:forEach name="nodesForEach" axis="ch" ptType="node"><dgm:layoutNode name="node" styleLbl="node1"><dgm:varLst><dgm:bulletEnabled val="1"/></dgm:varLst><dgm:alg type="tx"/><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" type="ellipse" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf axis="desOrSelf" ptType="node"/><dgm:constrLst><dgm:constr type="lMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="rMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="tMarg" refType="primFontSz" fact="0.3"/><dgm:constr type="bMarg" refType="primFontSz" fact="0.3"/></dgm:constrLst><dgm:ruleLst><dgm:rule type="primFontSz" val="5" fact="NaN" max="NaN"/></dgm:ruleLst></dgm:layoutNode><dgm:forEach name="sibTransForEach" axis="followSib" ptType="sibTrans" cnt="1"><dgm:layoutNode name="sibTrans"><dgm:alg type="conn"><dgm:param type="connRout" val="curve"/><dgm:param type="begPts" val="radial"/><dgm:param type="endPts" val="radial"/><dgm:param type="srcNode" val="node"/><dgm:param type="dstNode" val="node"/><dgm:param type="endSty" val="arr"/></dgm:alg><dgm:shape xmlns:r="\(MinimalTemplate.nsR)" type="conn" r:blip=""><dgm:adjLst/></dgm:shape><dgm:presOf/><dgm:constrLst><dgm:constr type="begPad"/><dgm:constr type="endPad"/></dgm:constrLst><dgm:ruleLst/></dgm:layoutNode></dgm:forEach></dgm:forEach></dgm:layoutNode></dgm:layoutDef>
         """
 
     static let quickStyleXML = """

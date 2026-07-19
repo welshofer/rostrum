@@ -28,6 +28,20 @@ import Testing
         #expect(reopened.slides[reopened.slides.count - 1].smartArtTexts == [["Perceive", "Plan", "Act"]])
     }
 
+    @Test func cycleSlideEmitsNativeCycleSmartArt() throws {
+        let deck = try Presentation()
+        _ = try deck.smartArtSlide("Loop", kind: .cycle, items: ["Build", "Measure", "Learn"])
+
+        let reopened = try Presentation(data: try deck.serializedData())
+        let layoutPart = try reopened.package.part(at: PackURI("/ppt/diagrams/layout1.xml"))
+        #expect(try layoutPart.dom()[attribute: "uniqueId"] == SmartArt.Layout.cycle.urn)
+        let layoutText = String(decoding: layoutPart.blob, as: UTF8.self)
+        #expect(layoutText.contains("type=\"cycle\""))     // ring algorithm
+        #expect(layoutText.contains("type=\"ellipse\""))   // circular nodes
+        #expect(layoutText.contains("type=\"conn\""))      // connectors between nodes
+        #expect(reopened.slides[reopened.slides.count - 1].smartArtTexts == [["Build", "Measure", "Learn"]])
+    }
+
     @Test func defaultLayoutStaysBlockList() throws {
         // addSmartArt without a layout must remain the original Basic Block List
         // (back-compat for existing callers and flex.pptx).
