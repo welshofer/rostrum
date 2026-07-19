@@ -19,7 +19,13 @@ enum MinimalTemplate {
     static let defaultSlideWidth = EMU.inches(13.333333)
     static let defaultSlideHeight = EMU.inches(7.5)
 
-    static func makePackage(created: Date = Date()) throws -> OPCPackage {
+    /// A fixed reference timestamp for core properties. Deck bytes must not
+    /// depend on the wall clock (the determinism invariant) — two `Presentation()`
+    /// builds straddling a one-second boundary would otherwise differ in
+    /// `docProps/core.xml`. Callers who want a real created date pass one.
+    static let fixedTimestamp = Date(timeIntervalSince1970: 1_577_836_800)  // 2020-01-01T00:00:00Z
+
+    static func makePackage(created: Date = MinimalTemplate.fixedTimestamp) throws -> OPCPackage {
         let package = OPCPackage()
 
         let presentation = package.addPart(

@@ -191,4 +191,13 @@ import Testing
         let notesSzIndex = names.firstIndex(of: "p:notesSz")
         #expect(sldSzIndex != nil && notesSzIndex != nil && sldSzIndex! < notesSzIndex!)
     }
+
+    /// Deck bytes must not depend on the wall clock. core.xml carries a FIXED
+    /// created/modified stamp, not `Date()` — otherwise two builds seconds apart
+    /// differ (and the byte-identity gate is impossible).
+    @Test func corePropertiesUseAFixedTimestamp() throws {
+        let core = try Presentation().package.part(at: PackURI("/docProps/core.xml")).blob
+        let xml = String(decoding: core, as: UTF8.self)
+        #expect(xml.contains("2020-01-01T00:00:00Z"))
+    }
 }
