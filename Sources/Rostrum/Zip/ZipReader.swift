@@ -154,6 +154,12 @@ public struct ZipReader {
         entries.map(\.name)
     }
 
+    /// All central-directory entries, in order — exposes each entry's
+    /// compression `method`, sizes, and CRC for callers inspecting an archive.
+    public var allEntries: [Entry] {
+        entries
+    }
+
     public func contains(_ name: String) -> Bool {
         indexByName[name] != nil
     }

@@ -74,8 +74,9 @@ import Testing
         let deck = try Presentation()
         let bytes = try deck.serializedData()
         let zip = try ZipReader(data: bytes)
-        // A presentation is XML-heavy; at least one entry must be DEFLATEd,
-        // and every entry must still decode to the original.
+        // A presentation is XML-heavy; at least one entry must be DEFLATEd
+        // (method 8), and every entry must still decode to the original.
+        #expect(zip.allEntries.contains { $0.method == 8 })
         let reread = try OPCPackage.read(data: bytes)
         #expect(reread.parts.count == deck.package.parts.count)
         // Round-trip an XML part's bytes through the reader (which inflates).

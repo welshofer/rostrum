@@ -7,20 +7,22 @@ import Testing
 private enum Fixture {
     /// Minimal PNG: signature + IHDR(40×30) + pHYs(144 dpi) + IEND-ish tail.
     static var png: Data {
+        // Built with one append per field: long `[UInt8] + … + …` chains make
+        // Swift's type-checker time out on some toolchains (overloaded `+`).
         var b: [UInt8] = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
-        b += be32(13) + Array("IHDR".utf8) + be32(40) + be32(30)
-        b += [8, 6, 0, 0, 0] + be32(0)
+        b += be32(13); b += Array("IHDR".utf8); b += be32(40); b += be32(30)
+        b += [8, 6, 0, 0, 0]; b += be32(0)
         let ppm = Int((144.0 / 0.0254).rounded())  // 144 dpi in px/meter
-        b += be32(9) + Array("pHYs".utf8) + be32(ppm) + be32(ppm) + [1] + be32(0)
-        b += be32(0) + Array("IEND".utf8) + be32(0)
+        b += be32(9); b += Array("pHYs".utf8); b += be32(ppm); b += be32(ppm); b += [1]; b += be32(0)
+        b += be32(0); b += Array("IEND".utf8); b += be32(0)
         return Data(b)
     }
 
     /// Minimal JPEG: SOI + JFIF APP0 (96 dpi) + SOF0 (64×48) + EOI.
     static var jpeg: Data {
         var b: [UInt8] = [0xFF, 0xD8]
-        b += [0xFF, 0xE0, 0x00, 0x10] + Array("JFIF\0".utf8) + [1, 1, 1, 0, 96, 0, 96, 0, 0]
-        b += [0xFF, 0xC0, 0x00, 0x0B, 8] + be16(48) + be16(64) + [1]
+        b += [0xFF, 0xE0, 0x00, 0x10]; b += Array("JFIF\0".utf8); b += [1, 1, 1, 0, 96, 0, 96, 0, 0]
+        b += [0xFF, 0xC0, 0x00, 0x0B, 8]; b += be16(48); b += be16(64); b += [1]
         b += [0xFF, 0xD9]
         return Data(b)
     }

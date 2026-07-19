@@ -6,8 +6,10 @@ import Testing
     private var pngFixture: Data {
         var b: [UInt8] = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
         func be32(_ v: Int) -> [UInt8] { [UInt8(v >> 24 & 0xFF), UInt8(v >> 16 & 0xFF), UInt8(v >> 8 & 0xFF), UInt8(v & 0xFF)] }
-        b += be32(13) + Array("IHDR".utf8) + be32(40) + be32(30) + [8, 6, 0, 0, 0] + be32(0)
-        b += be32(0) + Array("IEND".utf8) + be32(0)
+        // One append per field: long `[UInt8] + … + …` chains can time out the
+        // Swift type-checker on some toolchains.
+        b += be32(13); b += Array("IHDR".utf8); b += be32(40); b += be32(30); b += [8, 6, 0, 0, 0]; b += be32(0)
+        b += be32(0); b += Array("IEND".utf8); b += be32(0)
         return Data(b)
     }
 
