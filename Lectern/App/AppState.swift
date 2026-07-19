@@ -30,6 +30,45 @@ final class AppState {
     var slideCount = 12
     var includeNotes = true
 
+    // Provider selection (§7.2 / §10). The key itself lives ONLY in the Keychain
+    // (invariant I1); here we persist just the non-secret choice + presence.
+    private(set) var providerID: ProviderID = .anthropic
+    private(set) var model = "claude-sonnet-5"
+    private(set) var hasKeyForSelectedProvider = false
+
+    init() {
+        let defaults = UserDefaults.standard
+        if let raw = defaults.string(forKey: Keys.providerID), let id = ProviderID(rawValue: raw) {
+            providerID = id
+        }
+        if let saved = defaults.string(forKey: Keys.model), !saved.isEmpty { model = saved }
+        hasKeyForSelectedProvider = KeychainStore.hasKey(for: providerID)   // read-only, no prompt
+    }
+
+    private enum Keys { static let providerID = "providerID"; static let model = "model" }
+
+    func selectProvider(_ id: ProviderID) {
+        providerID = id
+        UserDefaults.standard.set(id.rawValue, forKey: Keys.providerID)
+        hasKeyForSelectedProvider = KeychainStore.hasKey(for: id)
+    }
+
+    func setModel(_ value: String) {
+        model = value
+        UserDefaults.standard.set(value, forKey: Keys.model)
+    }
+
+    /// Persist the key to the Keychain only (never UserDefaults, never logged).
+    func saveKey(_ key: String) {
+        KeychainStore.save(key, for: providerID)
+        hasKeyForSelectedProvider = KeychainStore.hasKey(for: providerID)
+    }
+
+    func clearKey() {
+        KeychainStore.delete(for: providerID)
+        hasKeyForSelectedProvider = false
+    }
+
     // Style catalog (bundled design.md files).
     var styles: [Style] = []
     var selectedStyleSlug: String?
@@ -61,9 +100,14 @@ final class AppState {
         let request = DeckRequest(prompt: prompt, audience: audience, goal: goal,
                                   slideCount: slideCount, notes: includeNotes,
                                   styleSlug: selectedStyleSlug ?? "default")
-        // Mock-first: a valid deck the requested size, no network. Replace with a
-        // live provider once a key is validated in Settings.
-        let provider = MockProvider(validJSON: Self.sampleDeckJSON(title: prompt, count: slideCount))
+        // Pick the provider from the stored key: live when one exists for a wired
+        // provider, else the Mock so this always runs offline (§13). The key is
+        // read from the Keychain here and handed straight to the provider (I1).
+        let provider = ProviderFactory.make(
+            id: providerID,
+            apiKey: KeychainStore.read(for: providerID),
+            model: model,
+            mockJSON: Self.sampleDeckJSON(title: prompt, count: slideCount))
         let directory = Self.decksDirectory()
         let designURL = selectedStyle?.designURL           // renders with the chosen brand
 

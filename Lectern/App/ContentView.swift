@@ -77,6 +77,11 @@ struct ComposeView: View {
                     .keyboardShortcut(.return, modifiers: .command)
                     .buttonStyle(.borderedProminent)          // .glass on macOS 26
                     .disabled(!app.canGenerate)
+                Label(app.hasKeyForSelectedProvider
+                      ? "Using \(app.providerID.label)"
+                      : "Using the Mock provider — add a key in Settings for live generation.",
+                      systemImage: app.hasKeyForSelectedProvider ? "bolt.fill" : "cpu")
+                    .font(.caption).foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
@@ -139,15 +144,3 @@ struct FailedView: View {
     }
 }
 
-struct SettingsView: View {
-    var body: some View {
-        Form {
-            Text("Providers (keys → Keychain), generation defaults, pricing, and about "
-                 + "live here — the M3/M5 finish.")
-            .foregroundStyle(.secondary)
-        }
-        .formStyle(.grouped)
-        .padding()
-        .frame(width: 440, height: 220)
-    }
-}

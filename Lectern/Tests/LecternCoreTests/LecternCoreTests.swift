@@ -146,6 +146,34 @@ import Rostrum
         }
     }
 
+    // MARK: - Provider selection (no keychain, no network)
+
+    @Test func factoryFallsBackToMockWithoutAKey() throws {
+        let mockJSON = try fixtureJSON()
+        for key in [nil, "", "   ", "\n"] as [String?] {
+            let provider = ProviderFactory.make(id: .anthropic, apiKey: key, model: "claude-sonnet-5", mockJSON: mockJSON)
+            #expect(provider.id == .custom)                       // MockProvider.id
+            #expect(provider.displayName == "Mock")
+            #expect(!ProviderFactory.isLive(id: .anthropic, apiKey: key))
+        }
+    }
+
+    @Test func factoryPicksAnthropicWithAKey() throws {
+        let provider = ProviderFactory.make(id: .anthropic, apiKey: "sk-ant-xyz", model: "claude-opus-4-8", mockJSON: try fixtureJSON())
+        #expect(provider.id == .anthropic)
+        #expect(provider.displayName == "Anthropic")
+        #expect(ProviderFactory.isLive(id: .anthropic, apiKey: "sk-ant-xyz"))
+    }
+
+    @Test func factoryStaysOnMockForUnwiredProvidersEvenWithAKey() throws {
+        // OpenAI/Gemini/Custom aren't wired live yet — don't pretend they are.
+        for id in [ProviderID.openAI, .gemini, .custom] {
+            let provider = ProviderFactory.make(id: id, apiKey: "some-key", model: "m", mockJSON: try fixtureJSON())
+            #expect(provider.displayName == "Mock")
+            #expect(!ProviderFactory.isLive(id: id, apiKey: "some-key"))
+        }
+    }
+
 }
 
 /// Thread-safe event recorder for the async pipeline.
