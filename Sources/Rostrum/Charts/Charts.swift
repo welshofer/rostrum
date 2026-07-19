@@ -12,13 +12,33 @@ extension RelType {
 }
 
 extension ShapeCollection {
-    /// Add a native chart. `colors` (optional) styles series — for pie, the
-    /// slices — with explicit brand colors; otherwise theme accents apply.
+    /// Add a native chart. `colors` (optional) styles series — for pie/doughnut,
+    /// the slices — with explicit brand colors; otherwise theme accents apply.
+    /// `options` control the title, legend, data labels, and value axis.
     @discardableResult
     public func addChart(
         _ kind: ChartKind, data: ChartData, frame: Rect,
-        colors: [Color]? = nil
+        colors: [Color]? = nil, options: ChartOptions = ChartOptions()
     ) throws -> Shape {
+        try embedChart(
+            chart: ChartXML.chartSpace(kind: kind, data: data, colors: colors, options: options),
+            workbook: ChartWorkbook.make(data: data), frame: frame)
+    }
+
+    /// Add an XY scatter chart.
+    @discardableResult
+    public func addScatterChart(
+        _ data: XYChartData, frame: Rect,
+        colors: [Color]? = nil, options: ChartOptions = ChartOptions()
+    ) throws -> Shape {
+        try embedChart(
+            chart: ChartXML.scatterChartSpace(data: data, colors: colors, options: options),
+            workbook: ChartWorkbook.makeXY(data: data), frame: frame)
+    }
+
+    /// Shared plumbing: register the chart part + embedded workbook and drop a
+    /// graphic frame referencing them.
+    private func embedChart(chart: Data, workbook: Data, frame: Rect) throws -> Shape {
         guard let package else {
             throw RostrumError.packageInvalid("this shape collection has no package attached")
         }
@@ -30,14 +50,12 @@ extension ShapeCollection {
         let workbookURI = PackURI("/ppt/embeddings/Microsoft_Excel_Sheet\(n).xlsx")
 
         let chartPart = package.addPart(
-            uri: chartURI, contentType: ContentType.chart,
-            blob: ChartXML.chartSpace(kind: kind, data: data, colors: colors))
+            uri: chartURI, contentType: ContentType.chart, blob: chart)
 
         // The workbook rides on an xlsx extension Default, and its rId1 is
         // what c:externalData references (chart-part rel scope).
         package.contentTypes.setDefault(extension: "xlsx", contentType: ContentType.xlsx)
-        package.addPart(uri: workbookURI, contentType: ContentType.xlsx,
-                        blob: ChartWorkbook.make(data: data))
+        package.addPart(uri: workbookURI, contentType: ContentType.xlsx, blob: workbook)
         package.contentTypes.removeOverride(partName: workbookURI)
         chartPart.rels.add(
             type: RelType.package,

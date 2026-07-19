@@ -24,6 +24,56 @@ enum ChartWorkbook {
         return zip.finalize()
     }
 
+    /// The Edit-Data workbook for a scatter chart: per series i, x-values in
+    /// column `seriesColumn(2i)`, y-values (with the series name in row 1) in
+    /// column `seriesColumn(2i+1)` — matching the c:f formulas in ChartXML.
+    static func makeXY(data: XYChartData) -> Data {
+        var zip = ZipWriter()
+        zip.addFile(name: "[Content_Types].xml", data: Data(contentTypesXML.utf8))
+        zip.addFile(name: "_rels/.rels", data: Data(relsXML.utf8))
+        zip.addFile(name: "xl/workbook.xml", data: Data(workbookXML.utf8))
+        zip.addFile(name: "xl/_rels/workbook.xml.rels", data: Data(workbookRelsXML.utf8))
+        zip.addFile(name: "xl/worksheets/sheet1.xml", data: Data(sheetXMLXY(data).utf8))
+        zip.addFile(name: "xl/sharedStrings.xml", data: Data(sharedStringsXMLXY(data).utf8))
+        zip.addFile(name: "xl/styles.xml", data: Data(stylesXML.utf8))
+        zip.addFile(name: "xl/theme/theme1.xml", data: Data(themeXML.utf8))
+        zip.addFile(name: "docProps/core.xml", data: Data(coreXML.utf8))
+        zip.addFile(name: "docProps/app.xml", data: Data(appXML.utf8))
+        return zip.finalize()
+    }
+
+    private static func sharedStringsXMLXY(_ data: XYChartData) -> String {
+        let items = data.series.map { "<si><t>\(escape($0.name))</t></si>" }.joined()
+        return """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="\(data.series.count)" uniqueCount="\(data.series.count)">\(items)</sst>
+            """
+    }
+
+    private static func sheetXMLXY(_ data: XYChartData) -> String {
+        let maxN = data.series.map(\.points.count).max() ?? 0
+        let lastCol = seriesColumn(data.series.count * 2 - 1)
+        var rows = ""
+        // Row 1: each series name in its y column (shared-string index = series index).
+        var row1 = "<row r=\"1\">"
+        for (k, _) in data.series.enumerated() {
+            row1 += "<c r=\"\(seriesColumn(2 * k + 1))1\" t=\"s\"><v>\(k)</v></c>"
+        }
+        rows += row1 + "</row>"
+        for i in 0..<maxN {
+            var row = "<row r=\"\(i + 2)\">"
+            for (k, series) in data.series.enumerated() where i < series.points.count {
+                row += "<c r=\"\(seriesColumn(2 * k))\(i + 2)\"><v>\(chartNumber(series.points[i].x))</v></c>"
+                row += "<c r=\"\(seriesColumn(2 * k + 1))\(i + 2)\"><v>\(chartNumber(series.points[i].y))</v></c>"
+            }
+            rows += row + "</row>"
+        }
+        return """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><dimension ref="A1:\(lastCol)\(maxN + 1)"/><sheetViews><sheetView tabSelected="1" workbookViewId="0"/></sheetViews><sheetFormatPr defaultRowHeight="15"/><sheetData>\(rows)</sheetData><pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>
+            """
+    }
+
     /// Shared-string order: categories first (row order), then series names.
     private static func sharedStringsXML(_ data: ChartData) -> String {
         let strings = data.categories + data.series.map(\.name)
