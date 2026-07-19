@@ -127,6 +127,25 @@ import Rostrum
         #expect(styles.map(\.slug).sorted() == ["midnight", "sunflower"])
         #expect(styles.first(where: { $0.slug == "sunflower" })?.name == "Sunflower")   // title-cased slug
     }
+
+    @Test func promptTemplatesReflectGoalNotesAndLength() {
+        let persuade = PromptTemplates.system(for: DeckRequest(prompt: "x", goal: "persuade"))
+        #expect(persuade.contains("call to action"))
+        #expect(persuade.contains(DeckIR.currentVersion))
+        let noNotes = PromptTemplates.deck(for: DeckRequest(prompt: "x", slideCount: 8, notes: false))
+        #expect(noNotes.contains("exactly 8 slides"))
+        #expect(noNotes.contains("Omit the"))
+        let grounded = PromptTemplates.deck(for: DeckRequest(prompt: "x", groundingText: "FACTS HERE"))
+        #expect(grounded.contains("SOURCE MATERIAL") && grounded.contains("FACTS HERE"))
+    }
+
+    @Test func anthropicProviderWithoutKeyThrowsNoKey() async throws {
+        let provider = AnthropicProvider(apiKey: "")
+        await #expect(throws: LecternError.self) {
+            _ = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
+        }
+    }
+
 }
 
 /// Thread-safe event recorder for the async pipeline.
