@@ -7,26 +7,16 @@ struct ContentView: View {
     @Environment(AppState.self) private var app
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                Section("History") {
-                    Label("Past decks appear here", systemImage: "clock.arrow.circlepath")
-                        .font(.callout).foregroundStyle(.secondary)
-                }
+        // No sidebar — there's no deck History to show, so a single pane is honest.
+        Group {
+            switch app.phase {
+            case .compose: ComposeView()
+            case .generating: GeneratingView()
+            case .result(let r): ResultView(result: r)
+            case .failed(let m): FailedView(message: m)
             }
-            .navigationTitle("Lectern")
-            .frame(minWidth: 200)
-        } detail: {
-            Group {
-                switch app.phase {
-                case .compose: ComposeView()
-                case .generating: GeneratingView()
-                case .result(let r): ResultView(result: r)
-                case .failed(let m): FailedView(message: m)
-                }
-            }
-            .frame(minWidth: 560)
         }
+        .frame(minWidth: 640, minHeight: 560)
         .task { await app.loadStyles() }
     }
 }
