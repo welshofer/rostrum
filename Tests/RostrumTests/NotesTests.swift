@@ -83,4 +83,20 @@ import Testing
         let reopened = try Presentation(data: try deck.serializedData())
         #expect(reopened.slides[1].notesText == "shared")
     }
+
+    @Test func multiParagraphNotesRoundTrip() throws {
+        let deck = try Presentation()
+        try deck.slides[0].setNotes(["First line of the talk track.", "Second beat.", "Land the point."])
+        try deck.slides[0].appendNote("And a closing aside.")
+        let reopened = try Presentation(data: try deck.serializedData())
+        #expect(reopened.slides[0].notesParagraphs == ["First line of the talk track.", "Second beat.", "Land the point.", "And a closing aside."])
+    }
+
+    @Test func emptyNotesArrayIsValid() throws {
+        let deck = try Presentation()
+        try deck.slides[0].setNotes([String]())
+        #expect(try deck.validate().isEmpty)
+        _ = try Presentation(data: try deck.serializedData())
+    }
+
 }
