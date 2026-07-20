@@ -35,6 +35,14 @@ func r(_ x: Double, _ y: Double, _ w: Double, _ h: Double) -> Rect {
 // MARK: - Images (covered in-frame via fit: .fill — no off-slide bleed)
 
 let imagesDir = CommandLine.arguments.count > 2 ? CommandLine.arguments[2] : "images"
+if !FileManager.default.fileExists(atPath: imagesDir) {
+    // The deck is designed around photography; without it every image panel
+    // becomes a flat palette block. Say so instead of silently degrading.
+    FileHandle.standardError.write(Data("""
+    note: images directory '\(imagesDir)' not found — rendering palette \
+    fallbacks. Pass one:  swift run SunflowerDeck out.pptx <images-dir>\n
+    """.utf8))
+}
 func image(_ name: String) -> Data? {
     try? Data(contentsOf: URL(filePath: "\(imagesDir)/\(name).png"))
 }

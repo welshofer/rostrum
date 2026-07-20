@@ -25,6 +25,10 @@ let package = Package(
             dependencies: ["Rostrum"],
             path: "Examples/SunflowerDeck"),
         .executableTarget(
+            name: "ReadmeSnippets",
+            dependencies: ["Rostrum"],
+            path: "Examples/ReadmeSnippets"),
+        .executableTarget(
             name: "rostrum-gen",
             path: "Tools/rostrum-gen"),
         .executableTarget(

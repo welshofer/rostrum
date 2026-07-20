@@ -160,12 +160,20 @@ sequenceDiagram
 
 ## Examples
 
-Runnable sample decks live in `Examples/` — a 15-slide climate briefing, a
-30-slide illustrated field guide, and a self-referential showcase — each
-emitted entirely in Swift:
+Runnable sample decks live in `Examples/`, each emitted entirely in Swift and
+each with a job:
+
+| Example | Slides | What it shows |
+|---|---|---|
+| `ClimateDeck` | 15 | The showpiece — a data-driven briefing: stat callouts, charts, a full visual system |
+| `FlexDeck` | 13 | The API tour — one capability per slide (charts, process, cards, comments, SmartArt…) |
+| `SunflowerDeck` | 30 | A production-scale illustrated deck; pass an images directory for full-bleed photography |
+| `ReadmeSnippets` | — | This README's two code snippets, compiled and run by CI so the docs can't rot |
 
 ```sh
 swift run ClimateDeck out.pptx
+swift run SunflowerDeck out.pptx path/to/images
+swift run ReadmeSnippets            # writes hello.pptx + review.pptx
 ```
 
 ## Verification

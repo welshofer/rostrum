@@ -25,6 +25,8 @@ jobs:
       - name: Test LecternCore (sample app core)
         run: swift test
         working-directory: Lectern
+      - name: Run README snippets (docs can't rot)
+        run: swift run ReadmeSnippets "$RUNNER_TEMP"
 
   apps:
     # The SwiftUI app targets (macOS + iOS) never compile under `swift test`,

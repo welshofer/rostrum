@@ -4,6 +4,15 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow
 [SemVer](https://semver.org/) with the 0.x caveat above.
 
+## [0.3.1] — 2026-07-19
+
+- README code snippets fixed to compile and run exactly as printed (missing
+  `import Foundation`, undefined chart data, stray blank starter slide) and
+  added as a CI-run example target (`swift run ReadmeSnippets`), so the
+  documented code is built on every push.
+- `SunflowerDeck` now says so on stderr when its images directory is missing
+  instead of silently rendering palette fallbacks.
+
 ## [0.3.0] — 2026-07-19
 
 First public release. (v0.1.0 and v0.2.0 were internal phase milestones —
