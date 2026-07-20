@@ -82,6 +82,13 @@ struct ComposeView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
 
+    /// The Arcus audience personas (vzestup `audiencePersonas.simplified.ts`),
+    /// after the neutral default. The generator receives the label verbatim.
+    private static let audiences = [
+        "General", "Executives", "Investors", "Government", "Customers",
+        "Colleagues", "Students & Educators", "Conference / Public",
+    ]
+
     /// iPhone-width layouts stack the Audience/Goal cards; everything wider
     /// keeps them side by side.
     private var isCompact: Bool {
@@ -113,7 +120,10 @@ struct ComposeView: View {
                     : AnyLayout(HStackLayout(spacing: 16))
                 audienceGoalLayout {
                     Card(title: "AUDIENCE", systemImage: "person.2") {
-                        TextField("Executives, engineers…", text: $app.audience).textFieldStyle(.plain)
+                        Picker("", selection: $app.audience) {
+                            ForEach(Self.audiences, id: \.self) { Text($0).tag($0) }
+                        }
+                        .pickerStyle(.menu).labelsHidden()
                     }
                     Card(title: "GOAL", systemImage: "target") {
                         Picker("", selection: $app.goal) {
@@ -124,10 +134,13 @@ struct ComposeView: View {
                 }
 
                 Card(title: "LENGTH", systemImage: "rectangle.stack") {
-                    HStack {
+                    // At iPhone widths the single row squeezes both labels into
+                    // four-line wraps; stack the stepper and toggle instead.
+                    (isCompact ? AnyLayout(VStackLayout(spacing: 14))
+                               : AnyLayout(HStackLayout(spacing: 16))) {
                         Stepper("\(app.slideCount) slides  ·  ≈ \(Int(Double(app.slideCount) * 1.5)) min",
                                 value: $app.slideCount, in: 3...40)
-                        Spacer()
+                        if !isCompact { Spacer() }
                         Toggle("Speaker notes", isOn: $app.includeNotes).toggleStyle(.switch)
                     }
                 }
