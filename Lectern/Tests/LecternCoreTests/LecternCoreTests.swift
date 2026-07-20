@@ -292,7 +292,7 @@ import Rostrum
         }
     }
 
-    // MARK: - Style catalog parsing (kairos design.md header)
+    // MARK: - Style catalog parsing (design.md header)
 
     @Test func parsesRichStyleMetadata() throws {
         let root = tempDir(); defer { try? FileManager.default.removeItem(at: root) }

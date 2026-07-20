@@ -82,8 +82,8 @@ struct ComposeView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
 
-    /// The Arcus audience personas (vzestup `audiencePersonas.simplified.ts`),
-    /// after the neutral default. The generator receives the label verbatim.
+    /// The Arcus audience personas, after the neutral default. The generator
+    /// receives the selected label verbatim.
     private static let audiences = [
         "General", "Executives", "Investors", "Government", "Customers",
         "Colleagues", "Students & Educators", "Conference / Public",

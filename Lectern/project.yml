@@ -34,12 +34,16 @@ targets:
         SWIFT_STRICT_CONCURRENCY: complete
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
         INFOPLIST_KEY_NSHumanReadableCopyright: ""
-        # Sign with a real development identity (not ad-hoc): its designated
-        # requirement is stable across rebuilds, so login-keychain items — the
-        # provider API keys — survive every rebuild. Ad-hoc's cdhash changes each
-        # build, which orphaned the keys and forced re-entry.
+        # Default: ad-hoc signing, so a fresh clone builds with no Apple ID or
+        # cert. Trade-off: ad-hoc's cdhash changes every build, so macOS
+        # re-prompts for (or orphans) login-keychain API keys after a rebuild.
+        # For day-to-day development, sign with a real development identity
+        # instead — its designated requirement is stable across rebuilds and
+        # saved keys survive. Put yours in the gitignored Lectern/.signing.local
+        # (LECTERN_SIGN_IDENTITY="Apple Development: Your Name (TEAMID)");
+        # scripts/build.sh picks it up automatically.
         CODE_SIGN_STYLE: Manual
-        CODE_SIGN_IDENTITY: "Apple Development: Jay Welshofer (XP6YTXD955)"
+        CODE_SIGN_IDENTITY: "-"
         PROVISIONING_PROFILE_SPECIFIER: ""
         CODE_SIGNING_ALLOWED: "YES"
         # NOTE: the data-protection keychain (signature-independent, rebuild-stable)
