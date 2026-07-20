@@ -93,8 +93,17 @@ public extension ShapeCollection {
         let v = tf.addParagraph(); v.alignment = align; v.addRun(value); v.apply(vs)
         let c = tf.addParagraph(); c.alignment = align
         c.setSpacing(beforePoints: style.spacing.sm.points)
-        c.addRun(caption); c.apply(cs)
+        c.addRun(widowProofed(caption)); c.apply(cs)
         return box
+    }
+
+    /// Glue the last two words with a no-break space so a wrapped caption never
+    /// strands a lone word ("…caught\nup") as a centered widow line.
+    private func widowProofed(_ text: String) -> String {
+        let words = text.split(separator: " ")
+        guard words.count >= 3 else { return String(text) }
+        return (words.dropLast(2).map(String.init) + [words.suffix(2).joined(separator: "\u{00A0}")])
+            .joined(separator: " ")
     }
 
     /// A rectangular accent rule / band.
