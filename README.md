@@ -52,7 +52,7 @@ More recipes in the [cookbook](docs/COOKBOOK.md).
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/welshofer/rostrum", from: "0.1.0")
+.package(url: "https://github.com/welshofer/rostrum", from: "0.3.0")
 ```
 
 then add `"Rostrum"` to your target's dependencies.

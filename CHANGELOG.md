@@ -4,9 +4,11 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow
 [SemVer](https://semver.org/) with the 0.x caveat above.
 
-## [0.1.0] — 2026-07-19
+## [0.3.0] — 2026-07-19
 
-First public release.
+First public release. (v0.1.0 and v0.2.0 were internal phase milestones —
+foundations, then the phase-3 robustness pass — tagged before the repo
+opened.)
 
 ### Rostrum (the library)
 
