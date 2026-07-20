@@ -1,4 +1,5 @@
 import SwiftUI
+#if os(macOS)
 import AppKit
 
 // Blocks quit while a deck is generating: an in-flight generation is a paid
@@ -58,18 +59,23 @@ private struct LaunchFrame: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView { LaunchFrameView() }
     func updateNSView(_ nsView: NSView, context: Context) {}
 }
+#endif
 
-// Xcode app target entry point. (Not built by `swift test`, which builds
-// LecternCore only.) Liquid Glass styling per §3 — use system components:
-// .buttonStyle(.glass) for the primary action, glassEffect, standard toolbar/
-// sidebar/inspector. Kept standard here so the scaffold compiles on the current
-// toolchain; swap to the glass modifiers when targeting macOS 26.
+// Xcode app target entry point, shared by the macOS and iOS/iPadOS targets.
+// (Not built by `swift test`, which builds LecternCore only.) Liquid Glass
+// styling per §3 — system components: .buttonStyle(.glass)/.glassProminent for
+// actions, standard toolbar/sheets. On iOS there is no Settings scene or window
+// frame to manage — ContentView presents Settings as a sheet, and the quit
+// guard has no equivalent (iOS apps aren't quit through an event we can veto).
 @main
 struct LecternApp: App {
+    #if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
+    #endif
     @State private var app = AppState()
 
     init() {
+        #if os(macOS)
         // .defaultSize only applies to windows AppKit has never seen; after
         // that, launch restores the last saved frame from user defaults.
         // Scrub the main window's saved frame (but not Settings') so every
@@ -79,19 +85,27 @@ struct LecternApp: App {
         where key.hasPrefix("NSWindow Frame") && key.contains("AppWindow") {
             defaults.removeObject(forKey: key)
         }
+        #endif
     }
 
     var body: some Scene {
         WindowGroup("Lectern") {
             ContentView()
                 .environment(app)
+                #if os(macOS)
                 .background(LaunchFrame())
                 .onAppear { delegate.app = app }
+                #endif
         }
+        #if os(macOS)
         .defaultSize(width: 780, height: 1060)
+        #endif
+
+        #if os(macOS)
         Settings {
             SettingsView()
                 .environment(app)
         }
+        #endif
     }
 }

@@ -3,11 +3,12 @@ import PackageDescription
 
 // LecternCore — the UI-free, fully-testable core of the Lectern demo app.
 // Depends on Rostrum (the sibling package one directory up). The SwiftUI app
-// target (Lectern/, Liquid Glass UI + live providers) is built in Xcode and
-// consumes this package; everything provable headlessly lives here.
+// targets (Lectern/, Liquid Glass UI + live providers, macOS + iOS/iPadOS) are
+// built in Xcode and consume this package; everything provable headlessly lives
+// here. Platform floors match Rostrum's; the apps themselves deploy at 26.0.
 let package = Package(
     name: "LecternCore",
-    platforms: [.macOS(.v13)],
+    platforms: [.macOS(.v13), .iOS(.v16)],
     products: [
         .library(name: "LecternCore", targets: ["LecternCore"]),
     ],

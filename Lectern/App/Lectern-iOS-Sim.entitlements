@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Simulator-only (injected by scripts/build-ios.sh, never by project.yml):
+	     gives the ad-hoc signed app an identity so the data-protection keychain
+	     accepts it. Device builds get their real identifier from the
+	     provisioning profile via Xcode's automatic signing instead. -->
+	<key>application-identifier</key>
+	<string>com.lectern.app</string>
+</dict>
+</plist>

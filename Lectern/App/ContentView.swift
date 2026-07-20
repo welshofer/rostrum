@@ -1,23 +1,50 @@
 import SwiftUI
+#if os(macOS)
 import AppKit
+#else
+import QuickLook
+#endif
 import UniformTypeIdentifiers
 import LecternCore
 
 struct ContentView: View {
     @Environment(AppState.self) private var app
+    #if os(iOS)
+    @State private var showSettings = false
+    #endif
 
     var body: some View {
-        // No sidebar — there's no deck History to show, so a single pane is honest.
-        Group {
-            switch app.phase {
-            case .compose: ComposeView()
-            case .generating: GeneratingView()
-            case .result(let r): ResultView(result: r)
-            case .failed(let m): FailedView(message: m)
-            }
+        #if os(iOS)
+        // iOS/iPadOS: no Settings scene exists, so a NavigationStack hosts the
+        // toolbar gear that presents Settings as a sheet.
+        NavigationStack {
+            phaseView
+                .navigationTitle("Lectern")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { showSettings = true } label: {
+                            Label("Settings", systemImage: "gearshape")
+                        }
+                    }
+                }
+                .sheet(isPresented: $showSettings) { SettingsView().environment(app) }
         }
-        .frame(minWidth: 640, minHeight: 560)
         .task { await app.loadStyles() }
+        #else
+        // No sidebar — there's no deck History to show, so a single pane is honest.
+        phaseView
+            .frame(minWidth: 640, minHeight: 560)
+            .task { await app.loadStyles() }
+        #endif
+    }
+
+    @ViewBuilder private var phaseView: some View {
+        switch app.phase {
+        case .compose: ComposeView()
+        case .generating: GeneratingView()
+        case .result(let r): ResultView(result: r)
+        case .failed(let m): FailedView(message: m)
+        }
     }
 }
 
@@ -51,6 +78,19 @@ struct ComposeView: View {
     @State private var showStyles = false
     @State private var importing = false
     @State private var dropTargeted = false
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
+
+    /// iPhone-width layouts stack the Audience/Goal cards; everything wider
+    /// keeps them side by side.
+    private var isCompact: Bool {
+        #if os(iOS)
+        return horizontalSizeClass == .compact
+        #else
+        return false
+        #endif
+    }
 
     var body: some View {
         @Bindable var app = app
@@ -68,7 +108,10 @@ struct ComposeView: View {
                         }
                 }
 
-                HStack(spacing: 16) {
+                let audienceGoalLayout = isCompact
+                    ? AnyLayout(VStackLayout(spacing: 16))
+                    : AnyLayout(HStackLayout(spacing: 16))
+                audienceGoalLayout {
                     Card(title: "AUDIENCE", systemImage: "person.2") {
                         TextField("Executives, engineers…", text: $app.audience).textFieldStyle(.plain)
                     }
@@ -153,7 +196,7 @@ struct ComposeView: View {
         HStack(spacing: 14) {
             VStack(alignment: .leading, spacing: 2) {
                 if !app.hasKey {
-                    Label("Add an API key in Settings (⌘,) to generate", systemImage: "key")
+                    Label("Add an API key in \(AppState.settingsHint) to generate", systemImage: "key")
                         .font(.callout).foregroundStyle(.secondary)
                 } else {
                     Text("\(app.slideCount) slides · \(app.providerID.label)"
@@ -200,11 +243,28 @@ struct GeneratingView: View {
 struct ResultView: View {
     @Environment(AppState.self) private var app
     let result: DeckResult
+    #if os(iOS)
+    @State private var previewURL: URL?
+    #endif
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "checkmark.seal.fill").font(.system(size: 52)).foregroundStyle(.green)
             Text(result.url.lastPathComponent).font(.title3.weight(.semibold))
             Text("\(result.slideCount) slides · written by Rostrum").foregroundStyle(.secondary)
+            #if os(iOS)
+            // No Finder to reveal in: Quick Look renders the deck in place, and
+            // the share sheet exports it (Save to Files, AirDrop, Keynote…).
+            // The deck also lives in Documents/Decks, visible in the Files app.
+            HStack(spacing: 12) {
+                Button { previewURL = result.url } label: { Label("Preview", systemImage: "eye") }
+                    .buttonStyle(.glassProminent)
+                ShareLink(item: result.url) { Label("Share", systemImage: "square.and.arrow.up") }
+                    .buttonStyle(.glass)
+                Button("New") { app.reset() }.buttonStyle(.glass)
+            }
+            .controlSize(.large)
+            .quickLookPreview($previewURL)
+            #else
             HStack(spacing: 12) {
                 Button { NSWorkspace.shared.open(result.url) } label: { Label("Open", systemImage: "arrow.up.forward.app") }
                     .buttonStyle(.glassProminent)
@@ -213,6 +273,7 @@ struct ResultView: View {
                 Button("New") { app.reset() }.buttonStyle(.glass)
             }
             .controlSize(.large)
+            #endif
             if !result.warnings.isEmpty {
                 DisclosureGroup("\(result.warnings.count) validation warning(s)") {
                     ForEach(result.warnings, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }

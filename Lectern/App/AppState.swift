@@ -196,9 +196,16 @@ final class AppState {
         phase != .generating && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    /// Where Settings lives on this platform, for user-facing hints.
+    #if os(macOS)
+    static let settingsHint = "Settings (⌘,)"
+    #else
+    static let settingsHint = "Settings"
+    #endif
+
     func generate() {
         guard phase != .generating else { return }
-        guard hasKey else { phase = .failed("Add your \(providerID.label) API key in Settings (⌘,) to generate."); return }
+        guard hasKey else { phase = .failed("Add your \(providerID.label) API key in \(Self.settingsHint) to generate."); return }
 
         phase = .generating; stage = "Starting"; drafted = 0; total = slideCount
         let request = DeckRequest(prompt: prompt, audience: audience, goal: goal,
@@ -282,8 +289,17 @@ final class AppState {
     }
 
     static func decksDirectory() -> URL {
+        #if os(iOS)
+        // Documents, not Application Support: with UIFileSharingEnabled +
+        // LSSupportsOpeningDocumentsInPlace the decks show up in the Files app,
+        // which is the iOS equivalent of "Reveal in Finder".
+        let base = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+            ?? URL(fileURLWithPath: NSTemporaryDirectory())
+        return base.appendingPathComponent("Decks", isDirectory: true)
+        #else
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? URL(fileURLWithPath: NSTemporaryDirectory())
         return base.appendingPathComponent("Lectern/Decks", isDirectory: true)
+        #endif
     }
 }

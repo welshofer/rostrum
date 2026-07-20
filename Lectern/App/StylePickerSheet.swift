@@ -11,7 +11,18 @@ struct StylePickerSheet: View {
 
     private let columns = [GridItem(.adaptive(minimum: 236, maximum: 320), spacing: 16)]
 
-    private var allTags: [String] { Array(Set(app.styles.flatMap(\.tags))).sorted() }
+    /// Curated chip row: theme (light/dark) then the vibes by descending count —
+    /// every chip selects a meaningful slice of the catalog. The raw tag union
+    /// surfaced the category long-tail first (20 categories, half covering 1–3
+    /// styles), which read as broken metadata. Categories stay reachable
+    /// through text search, which matches all tags.
+    private var pillTags: [String] {
+        let themes = ["light", "dark"].filter { t in app.styles.contains { $0.tags.contains(t) } }
+        let vibeCounts = Dictionary(app.styles.compactMap { $0.vibe.map { ($0.lowercased(), 1) } },
+                                    uniquingKeysWith: +)
+        let vibes = vibeCounts.sorted { ($1.value, $0.key) < ($0.value, $1.key) }.map(\.key)
+        return themes + vibes
+    }
 
     private func matches(_ s: Style) -> Bool {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
@@ -32,14 +43,24 @@ struct StylePickerSheet: View {
             Divider().padding(.top, 12)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 26) {
-                    if !favorites.isEmpty { section("Favorites", favorites) }
-                    if !recents.isEmpty { section("Recents", recents) }
-                    section(activeTag == nil && query.isEmpty ? "All \(app.styles.count)" : "\(filtered.count) results", filtered)
+                    if filtered.isEmpty {
+                        ContentUnavailableView(
+                            "No styles match",
+                            systemImage: "paintpalette",
+                            description: Text("Try a different search or clear the filter."))
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        if !favorites.isEmpty { section("Favorites", favorites) }
+                        if !recents.isEmpty { section("Recents", recents) }
+                        section(activeTag == nil && query.isEmpty ? "All \(app.styles.count)" : "\(filtered.count) results", filtered)
+                    }
                 }
                 .padding(20)
             }
         }
+        #if os(macOS)
         .frame(minWidth: 860, minHeight: 640)
+        #endif
         .background(.background)
     }
 
@@ -74,7 +95,7 @@ struct StylePickerSheet: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     TagChip("All", selected: activeTag == nil) { activeTag = nil }
-                    ForEach(allTags, id: \.self) { tag in
+                    ForEach(pillTags, id: \.self) { tag in
                         TagChip(tag.capitalized, selected: activeTag == tag) {
                             activeTag = activeTag == tag ? nil : tag
                         }

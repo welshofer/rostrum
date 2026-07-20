@@ -5,10 +5,12 @@ import Security
 #endif
 
 /// The *only* home for API keys (invariant I1): a generic-password item per
-/// account in the user's login keychain. Keys are never written to UserDefaults
-/// and never logged.
+/// account in the user's login keychain (macOS) or the app's data-protection
+/// keychain (iOS/iPadOS, automatic — sandboxed per app, encrypted at rest,
+/// readable only while the device is unlocked per kSecAttrAccessibleWhenUnlocked).
+/// Keys are never written to UserDefaults and never logged.
 ///
-/// NOTE ON PERSISTENCE ACROSS REBUILDS: the login keychain gates access by the
+/// NOTE ON PERSISTENCE ACROSS REBUILDS (macOS): the login keychain gates access by the
 /// app's code signature (designated requirement). With the stable Development
 /// signing this project uses, a key saved once persists across rebuilds. The
 /// signature-independent alternative — the data-protection keychain with a
