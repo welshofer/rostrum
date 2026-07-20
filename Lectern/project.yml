@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: com.lectern
   deploymentTarget:
     macOS: "26.0"
+    iOS: "26.0"
   createIntermediateGroups: true
 packages:
   LecternCore:
@@ -46,3 +47,46 @@ targets:
         # rejected at launch without a provisioning profile — which this CLI/dev
         # setup can't mint. So keys stay in the login keychain; the stable dev-cert
         # designated requirement is what keeps them readable across rebuilds.
+
+  # The same app for iPhone + iPad (iOS/iPadOS 26, Liquid Glass throughout).
+  # Identical sources — platform differences live behind #if os(...) in App/.
+  Lectern-iOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: App
+        excludes:
+          - "Resources/Styles"
+      - path: App/Resources/Styles
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: LecternCore
+        product: LecternCore
+    settings:
+      base:
+        PRODUCT_NAME: Lectern
+        PRODUCT_BUNDLE_IDENTIFIER: com.lectern.app
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        GENERATE_INFOPLIST_FILE: "YES"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES"
+        INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        # Generated decks land in Documents/Decks; these two make them visible
+        # in the Files app (and to Finder file sharing) rather than trapped in
+        # the sandbox.
+        INFOPLIST_KEY_UIFileSharingEnabled: "YES"
+        INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace: "YES"
+        # Simulator builds need no signing (scripts/build-ios.sh passes
+        # CODE_SIGNING_ALLOWED=NO). To run on a real iPhone/iPad, set your team
+        # here or in Xcode's Signing & Capabilities tab.
+        CODE_SIGN_STYLE: Automatic

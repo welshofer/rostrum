@@ -43,7 +43,11 @@ struct StyleCard: View {
                 }
                 .buttonStyle(.plain)
                 .padding(8)
+                #if os(macOS)
+                // Hover-reveal is a pointer affordance; on touch the heart must
+                // always be visible or favoriting is unreachable.
                 .opacity(isFavorite || hovering ? 1 : 0)
+                #endif
             }
 
             VStack(alignment: .leading, spacing: 8) {

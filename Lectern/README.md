@@ -70,6 +70,34 @@ xcodegen generate                                              # project.yml →
 xcodebuild -project Lectern.xcodeproj -scheme Lectern build     # or just open it in Xcode
 ```
 
+## The iOS/iPadOS app
+
+The same SwiftUI shell builds as a second target, **`Lectern-iOS`** (iPhone +
+iPad, iOS/iPadOS 26+, Liquid Glass system components throughout — the same
+`.glass`/`.glassProminent` styling as the Mac app). One source tree; the
+platform seams live behind `#if os(...)`:
+
+- **Settings** is a sheet behind a toolbar gear (no Settings scene on iOS);
+  the macOS quit-guard and window-frame plumbing compile out.
+- **Result actions**: Quick Look **Preview** and a **Share** sheet replace
+  Open/Reveal-in-Finder. Decks are written to `Documents/Decks` and, via
+  `UIFileSharingEnabled` + `LSSupportsOpeningDocumentsInPlace`, appear in the
+  **Files** app.
+- **Keys** live in the iOS data-protection keychain (same `KeychainStore`,
+  no code change needed).
+- PDF grounding works via the document picker *and* drag-and-drop from Files
+  (iPad); compact widths stack the Compose cards; the style-card favorite
+  heart is always visible (no hover on touch).
+
+```sh
+cd Lectern
+xcodegen generate
+scripts/build-ios.sh        # simulator build, no signing needed
+```
+
+To run on a device, open the project in Xcode and pick your team under
+Signing & Capabilities for the `Lectern-iOS` target (simulator needs none).
+
 **Verified:** the app compiles under **Swift 6 complete strict-concurrency**,
 bundles all 150 `design.md` styles as an app resource, and launches clean. The
 Compose → Generating → Result → Failed state machine (`ContentView`), the

@@ -39,7 +39,9 @@ struct StylePickerSheet: View {
                 .padding(20)
             }
         }
+        #if os(macOS)
         .frame(minWidth: 860, minHeight: 640)
+        #endif
         .background(.background)
     }
 

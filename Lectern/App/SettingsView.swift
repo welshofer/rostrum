@@ -7,6 +7,7 @@ import LecternCore
 /// live model list.
 struct SettingsView: View {
     @Environment(AppState.self) private var app
+    @Environment(\.dismiss) private var dismiss
     @State private var keyInput = ""
     @State private var imageKeyInput = ""
 
@@ -14,7 +15,26 @@ struct SettingsView: View {
     private var imageTrimmed: String { imageKeyInput.trimmingCharacters(in: .whitespacesAndNewlines) }
 
     var body: some View {
-        @Bindable var app = app
+        #if os(iOS)
+        // Presented as a sheet (no Settings scene on iOS) — needs its own
+        // navigation bar for the title and an explicit way out.
+        NavigationStack {
+            form
+                .navigationTitle("Settings")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { dismiss() }
+                    }
+                }
+        }
+        #else
+        form
+            .frame(width: 520, height: 620)
+        #endif
+    }
+
+    private var form: some View {
         Form {
             Section("Provider") {
                 Picker("Provider", selection: Binding(
@@ -86,7 +106,6 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 520, height: 620)
     }
 
     private func saveImageKey() {
