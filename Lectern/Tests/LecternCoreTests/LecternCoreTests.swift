@@ -324,6 +324,9 @@ import Rostrum
         #expect(style.swatches == ["#f7f7f4", "#26251e", "#f54e00"])
         #expect(style.displayFont == "CursorGothic")           // quoted CSS stack unwrapped
         #expect(style.tags.contains("developer") && style.tags.contains("editorial"))
+        // Theme rides along in tags so the picker's Light/Dark chips (and text
+        // search for "light"/"dark") actually select styles.
+        #expect(style.tags.contains("light"))
     }
 
     // MARK: - Optional image generation

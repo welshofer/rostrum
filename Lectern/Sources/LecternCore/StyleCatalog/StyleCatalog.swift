@@ -84,7 +84,10 @@ public struct StyleCatalog: Sendable {
         let vibe = field("Vibe", in: text)
         let category = field("Category", in: text)
         let theme = StyleTheme(rawValue: (field("Theme", in: text) ?? "").lowercased()) ?? .unknown
-        let tags = [category, vibe].compactMap { $0?.lowercased() }
+        // Theme rides along in tags so light/dark are one chip-tap (or text
+        // search) away, same as category and vibe.
+        let tags = [category, vibe, theme == .unknown ? nil : theme.rawValue]
+            .compactMap { $0?.lowercased() }
         return Style(slug: slug, name: name, vibe: vibe, category: category, theme: theme,
                      tags: tags, swatches: palette(text), displayFont: displayFont(text),
                      thumbnailURL: thumbnail, designURL: designURL)
