@@ -238,7 +238,8 @@ public extension Presentation {
     }
 
     /// A title over a native SmartArt diagram — a real, editable PowerPoint
-    /// SmartArt object (not drawn shapes), which python-pptx cannot produce.
+    /// SmartArt object (not drawn shapes), a capability outside python-pptx's
+    /// current scope.
     /// `kind` selects the layout family (e.g. `.process` for a chevron sequence);
     /// nodes are brand-colored by cycling the deck accents.
     @discardableResult

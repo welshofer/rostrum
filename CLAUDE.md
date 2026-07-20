@@ -1,10 +1,13 @@
 # Rostrum — project conventions
 
 Rostrum is a zero-dependency pure-Swift library for reading and writing
-PowerPoint `.pptx` files: a ground-up port of python-pptx with the explicit
-goal of surpassing it (see ROADMAP.md). Reference python-pptx source lives in
-scratch clones only — never vendor Python code or translate it line-by-line;
-port semantics, not syntax.
+PowerPoint `.pptx` files: a ground-up port of python-pptx (whose design we
+follow with gratitude), aiming for feature parity plus Swift-native additions
+beyond its current scope (see ROADMAP.md). Reference python-pptx source lives
+in scratch clones only — never vendor Python code or translate it
+line-by-line; port semantics, not syntax. The generated schema tables ARE
+mechanically derived from python-pptx and carry its MIT attribution (see
+THIRD_PARTY_LICENSES.md) — keep that notice intact.
 
 ## Hard rules
 

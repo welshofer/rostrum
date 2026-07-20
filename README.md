@@ -10,12 +10,14 @@ A **pure-Swift, zero-dependency** library for creating and editing PowerPoint
 hand-written DEFLATE codec, up through OPC packaging and the PresentationML
 object model. It runs anywhere Swift runs: **macOS, iOS, Linux**.
 
-It began as a ground-up port of
-[python-pptx](https://github.com/scanny/python-pptx) and now does things
-python-pptx never could: slide **remove / move / duplicate**, **modern
-threaded comments**, **SmartArt** creation and text extraction, **deck merge**,
-**theme / brand-kit editing**, and lossless byte-identical round-trips of the
-parts you don't touch.
+Rostrum is a ground-up Swift port of
+[python-pptx](https://github.com/scanny/python-pptx), whose design it follows
+closely and gratefully — the layered architecture, the API shape, and the
+encoded schema knowledge all trace back to that project. On that foundation
+Rostrum adds capabilities outside python-pptx's current scope: slide
+**remove / move / duplicate**, **modern threaded comments**, **SmartArt**
+creation and text extraction, **deck merge**, **theme / brand-kit editing**,
+and lossless byte-identical round-trips of the parts you don't touch.
 
 ```swift
 import Rostrum
@@ -55,6 +57,10 @@ Swift Package Manager:
 
 then add `"Rostrum"` to your target's dependencies.
 
+> **Pre-1.0**: Rostrum follows SemVer, but until 1.0 minor versions may
+> change API. Pin a version if you need stability; see
+> [`CHANGELOG.md`](CHANGELOG.md) for what moved.
+
 ## What it can do
 
 | Area | Highlights |
@@ -88,15 +94,57 @@ mechanically extracted from python-pptx's own declarations
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); roadmap in
 [`ROADMAP.md`](ROADMAP.md).
 
-Layers, bottom to top:
+Layers, bottom to top (dependencies point strictly downward — Zip knows
+bytes, XML knows trees, OPC knows parts and never slides):
 
-| Layer | Location | Counterpart |
+```mermaid
+flowchart TB
+    subgraph API["Public API"]
+        P["Presentation · Slides · Shapes · Charts<br/><i>Sources/Rostrum/Presentation, Charts</i>"]
+        D["Design-authoring layer<br/>DeckStyle · Grid · slide builders · SmartArt<br/><i>Sources/Rostrum/Presentation</i>"]
+    end
+    S["Generated schema tables<br/>child ordering · attributes · preset geometry<br/><i>Sources/Rostrum/Schema</i> — derived from python-pptx"]
+    O["OPC packaging<br/>parts · content types · relationships<br/><i>Sources/Rostrum/OPC</i>"]
+    X["XML DOM<br/>prefix-preserving parse · deterministic serialize<br/><i>Sources/Rostrum/XML</i>"]
+    Z["Zip container<br/>own inflate + deflate · CRC-32 · fixed timestamps<br/><i>Sources/Rostrum/Zip</i>"]
+
+    D --> P
+    P --> S
+    P --> O
+    S --> X
+    O --> X
+    X --> Z
+```
+
+| Layer | Location | python-pptx counterpart |
 |---|---|---|
 | Zip container (read/write, own inflate + deflate) | `Sources/Rostrum/Zip` | Python's `zipfile` |
 | XML DOM (parse/serialize, prefix-preserving) | `Sources/Rostrum/XML` | `lxml` |
 | OPC packaging (parts, content types, relationships) | `Sources/Rostrum/OPC` | `pptx.opc` |
 | Generated schema tables | `Sources/Rostrum/Schema` | `pptx.oxml` descriptors |
 | PresentationML object model | `Sources/Rostrum/Presentation`, `Charts` | `pptx.parts` + API |
+
+And the life of a document — the pristine-DOM hybrid at work:
+
+```mermaid
+sequenceDiagram
+    participant U as Your code
+    participant P as Presentation
+    participant Part as Part (pristine blob)
+    participant DOM as XML DOM
+    participant Zip as Zip writer
+
+    U->>P: Presentation(contentsOf: deck.pptx)
+    P->>Part: load every part as raw bytes
+    Note over Part: untouched parts keep<br/>their original bytes
+    U->>P: slides[2].title = "New title"
+    P->>Part: first mutation → parse to DOM
+    Part->>DOM: edit through schema tables
+    U->>P: save(to: out.pptx)
+    P->>Zip: pristine parts → original bytes, verbatim
+    P->>Zip: dirty parts → deterministic re-serialize
+    Note over Zip: fixed timestamps, sorted parts:<br/>same input → byte-identical output
+```
 
 ## Examples
 
@@ -115,6 +163,20 @@ Rostrum is checked three ways: unit tests against external oracles
 scripted **PowerPoint double-click open** (`Tools/ppt-check.sh`) that catches
 integrity errors other tools tolerate.
 
+## Acknowledgments
+
+Rostrum exists because [python-pptx](https://github.com/scanny/python-pptx)
+exists. Steve Canny's library is the canonical map of the PresentationML
+territory — a decade of careful schema archaeology that this project ports
+rather than rediscovers. Rostrum's schema tables are mechanically derived
+from python-pptx's declarations (see
+[`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md)), and python-pptx
+remains one of Rostrum's release oracles: a deck isn't considered valid until
+python-pptx opens it cleanly. If you work in Python, use python-pptx — it is
+mature, battle-tested, and excellent.
+
 ## License
 
-[MIT](LICENSE). Contributions welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md).
+[MIT](LICENSE). Portions derived from python-pptx (MIT, © Steve Canny) — see
+[`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md). Contributions welcome —
+see [`CONTRIBUTING.md`](CONTRIBUTING.md).

@@ -3,7 +3,8 @@
 The demo application for **Rostrum** — prove the full loop in one window: a
 prompt, optional PDF grounding, a few intent parameters, and one of many bundled
 `design.md` styles go in; a native `.pptx` written entirely by Rostrum comes out.
-Everything runs on-device except the LLM call. (Spec: `lectern-spec-v1.0.md`.)
+Everything runs on-device except the LLM call. (Section references like §8.3
+below cite the internal Lectern spec, which is not part of this repository.)
 
 ## Layout
 
@@ -12,18 +13,55 @@ Lectern/
 ├── Package.swift            # LecternCore SPM package (depends on Rostrum via ../)
 ├── Sources/LecternCore/     # UI-free, fully testable
 │   ├── DeckIR/              # lectern.deck/1 IR + validation + repair prompt
-│   ├── Providers/           # LLMProvider protocol, MockProvider, DeckGenerator, errors
+│   ├── Providers/           # LLMProvider protocol, DeckGenerator, image providers, errors
 │   ├── Rendering/           # DeckRenderer actor → Rostrum builders
 │   └── StyleCatalog/        # design.md catalog loader
-└── Tests/LecternCoreTests/  # the acceptance core, Mock-backed
+└── Tests/LecternCoreTests/  # the acceptance core, fixture-backed
 ```
 
 Rostrum is a **local path dependency** (`../`), resolving OQ-4.
 
+## How a deck gets made
+
+```mermaid
+flowchart LR
+    subgraph Shell["App shell (SwiftUI, per-platform seams behind #if os)"]
+        UI["Compose<br/>prompt · audience · goal<br/>length · style · PDF"]
+        SET["Settings<br/>provider · model · keys"]
+        KC["KeychainStore<br/>keys live only here"]
+    end
+    subgraph Core["LecternCore (UI-free, tested headless)"]
+        GEN["DeckGenerator<br/>draft → decode → validate<br/>→ one repair → render"]
+        IR["DeckIR lectern.deck/1<br/>structural + soft validation<br/>unknown layouts downgrade"]
+        REN["DeckRenderer (actor)<br/>IR layout → Rostrum builder"]
+        CAT["StyleCatalog<br/>150 bundled design.md"]
+        PROV["LLMProvider<br/>Anthropic · image providers"]
+    end
+    R["Rostrum<br/>design-authoring builders<br/>→ native .pptx"]
+    OUT[("deck.pptx<br/>opens clean in PowerPoint,<br/>Keynote, python-pptx")]
+
+    UI --> GEN
+    SET --> KC
+    KC --> PROV
+    GEN --> PROV
+    PROV --> GEN
+    GEN --> IR
+    IR --> REN
+    CAT --> REN
+    REN --> R
+    R --> OUT
+```
+
+Two invariants anchor the pipeline: **I1** — API keys exist only in the
+Keychain (never UserDefaults, never logs, write-only UI); **I3** — nothing
+reaches the renderer unvalidated (the IR is checked, repaired at most once,
+and unknown layouts downgrade to bullets rather than crash).
+
 ## What's built and proven (headless)
 
-`LecternCore` is complete and tested end-to-end against `MockProvider` — the
-spec's Mock-first M1–M2: *the whole app works before a single real network call*.
+`LecternCore` is complete and tested end-to-end against a fixture provider —
+the spec's fixture-first M1–M2: *the whole pipeline is proven before a single
+real network call*.
 
 - **DeckIR** (`lectern.deck/1`): `Codable` models, structural + soft validation
   (§8.3–8.4), unknown-layout downgrade (§8.5), and the one-shot repair prompt
@@ -40,15 +78,21 @@ spec's Mock-first M1–M2: *the whole app works before a single real network cal
   | `twoColumn` / `comparison` | `comparisonSlide` |
   | `bigNumber` | `calloutSlide` |
   | `quote` | `quoteSlide` |
-  | `closing` | `sectionSlide` |
+  | `closing` | `closingSlide` |
+  | `chart` (well-formed data) | `chartSlide` — else bullets fallback |
+  | `metrics` | `metricsSlide` |
+  | `bands` | `bandsSlide`, or native SmartArt when opted in |
+  | `diagram` (process / cycle / pyramid) | `processSlide` / `pyramidSlide`, or SmartArt |
+  | `unknown` | downgraded to bullets by validation |
 
   Styling is `Presentation.applyDesign(contentsOf: design.md)` — **this resolves
   OQ-1**. Sections and speaker notes flow through.
-- **MockProvider**: replays a fixture with injectable failures
-  (`invalidJSONOnce/Always`, `rateLimited`, `slowDrafting`).
+- **FixtureProvider** (tests only): replays a fixture with injectable
+  failures, so the whole pipeline is exercised headlessly. The shipping app
+  has **no mock path** — generation requires a real key.
 - **StyleCatalog**: scans a `design.md` directory into `[Style]`.
 
-**Verified:** the Mock pipeline renders a deck that opens in PowerPoint without
+**Verified:** the fixture-driven pipeline renders a deck that opens in PowerPoint without
 repair (AT-10), with the exact slide count (AT-11), the notes toggle honored
 (AT-12), the repair loop recovering once then failing (AT-14), and unknown
 layouts downgrading (AT-15). Run it:
@@ -92,19 +136,30 @@ platform seams live behind `#if os(...)`:
 ```sh
 cd Lectern
 xcodegen generate
-scripts/build-ios.sh        # simulator build, no signing needed
+scripts/build-ios.sh        # simulator build — ad-hoc signed, no team needed
 ```
 
-To run on a device, open the project in Xcode and pick your team under
-Signing & Capabilities for the `Lectern-iOS` target (simulator needs none).
+Simulator builds are **ad hoc signed with a minimal entitlements file**
+(`App/Lectern-iOS-Sim.entitlements`), not unsigned: a fully unsigned app has
+no `application-identifier`, and every Keychain call then fails with
+`errSecMissingEntitlement (-34018)` — keys silently refuse to save. To run on
+hardware, open the project in Xcode and pick your team under Signing &
+Capabilities for `Lectern-iOS`, or from the CLI:
+
+```sh
+xcodebuild -scheme Lectern-iOS -destination 'platform=iOS,id=<device-udid>' \
+  -allowProvisioningUpdates -allowProvisioningDeviceRegistration \
+  DEVELOPMENT_TEAM=<your-team-id> CODE_SIGN_STYLE=Automatic build
+xcrun devicectl device install app --device <device-udid> <path>/Lectern.app
+```
 
 **Verified:** the app compiles under **Swift 6 complete strict-concurrency**,
-bundles all 150 `design.md` styles as an app resource, and launches clean. The
-Compose → Generating → Result → Failed state machine (`ContentView`), the
-`@Observable` `AppState` driving `DeckGenerator` (default `MockProvider`), the
-bundled **Style picker**, and the Settings scene are all in and building — so a
-generated deck can be written, revealed in Finder, and opened, entirely from the
-UI, with no API key.
+bundles all 150 `design.md` styles as an app resource, and launches clean on
+macOS, iPadOS, and iOS (simulator and hardware). The Compose → Generating →
+Result → Failed state machine (`ContentView`), the `@Observable` `AppState`
+driving `DeckGenerator`, the bundled **Style picker** (curated Light/Dark +
+vibe filter chips), and Settings are all live — the full prompt-to-PowerPoint
+round-trip has been exercised on Mac and iPad with a real key.
 
 [xcodegen]: https://github.com/yonaskolb/XcodeGen
 
@@ -115,13 +170,16 @@ Keys and provider choice are wired end-to-end (§10 / invariant I1):
 - **`KeychainStore`** — API keys live *only* in the login keychain (a
   generic-password item per provider). Never UserDefaults, never logged; the
   `SecureField` is write-only, so a stored key never round-trips through the UI.
-- **`SettingsView`** — provider picker + model + key entry. Un-wired providers
-  are labeled "(soon)" and stay on the Mock.
+- **`SettingsView`** — provider picker + model + key entry, plus optional
+  image-provider keys (OpenAI Images / Gemini) for on-brand slide art. The
+  field is write-only; a saved key shows a masked "saved" prompt and a green
+  Keychain badge instead of ever echoing the secret.
 - **`ProviderFactory`** (LecternCore, unit-tested) — the one UI-free place the
   "which provider" decision lives: a stored key for a wired provider → live;
-  otherwise `MockProvider`, so the app **always runs offline**. `AppState`
-  persists only the non-secret choice (provider/model) and reads key *presence*
-  from the Keychain.
+  no key → generation is blocked with a clear message. There is **no mock
+  fallback** — Lectern never fabricates a deck. `AppState` persists only the
+  non-secret choice (provider/model) and reads key *presence* from the
+  Keychain.
 
 ## What remains (M3–M5)
 
@@ -142,6 +200,13 @@ The `LLMProvider` protocol, `GenerationEvent` stream, and `LecternError` taxonom
 - **Style catalog source — resolved.** All 150 real `design.md` files ship in
   `App/Resources/Styles/` and are bundled into the app. Every one loads, parses,
   and renders to a PowerPoint-clean deck; the picker selects among them.
-- OQ-3 (final app name), OQ-5 (bundle id/signing) — owner decisions. The project
-  currently builds unsigned (`CODE_SIGNING_ALLOWED=NO`) under bundle id
-  `com.lectern.app`.
+  *Provenance:* each style is an original distillation of design *principles*
+  (palette, type scale, spacing, mood) observed across real-world sites — no
+  copied assets, markup, or imagery. Styles may *name* commercial typefaces;
+  no font files are bundled, and PowerPoint substitutes normally when a named
+  face isn't installed.
+- OQ-3 (final app name), OQ-5 (bundle id/signing) — owner decisions. The
+  macOS target builds with a stable Development signing identity (which is
+  what lets login-keychain API keys survive rebuilds — see the note in
+  `project.yml`); the iOS simulator target signs ad hoc; device builds use
+  Xcode automatic signing. Bundle id `com.lectern.app` on both platforms.

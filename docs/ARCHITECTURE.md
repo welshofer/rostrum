@@ -19,7 +19,8 @@ that read and write through to the DOM via a generated schema stratum.
   zero judgment calls.
 - **The serializer's blast radius is only what the user edited.** "PowerPoint
   wants to repair this file" bugs come from re-serializing parts you didn't
-  need to touch. python-pptx re-serializes everything on every save; we don't.
+  need to touch. (python-pptx re-serializes every part on save — a perfectly
+reasonable design; byte-identity is simply a different goal.)
 - **Typed facades give Swift-native ergonomics** without betting losslessness
   on typed structs modeling 100% of a gigantic schema (the fully-typed
   proposal's fatal flaw: every unmodeled sibling is a distributed data-loss
@@ -77,7 +78,8 @@ the token. An untouched `rot="0"` re-emits exactly as read, even in a dirty
 part.
 
 **Orphan preservation.** Zip members unreachable from the relationship graph
-are preserved on save (python-pptx silently drops them). An audit API reports
+are preserved on save (a stricter posture than python-pptx, which
+re-packages only reachable parts). An audit API reports
 them; `prune()` is an explicit opt-in.
 
 **Stable identity handles.** `deck.slides[slideID]` subscripts keyed on the

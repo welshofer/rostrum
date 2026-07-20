@@ -1,0 +1,48 @@
+name: Docs
+
+# Builds the Rostrum DocC catalog with xcodebuild (no package-level plugin
+# dependency — the zero-dependency rule survives) and publishes it to GitHub
+# Pages. Requires Pages to be enabled for the repo with "GitHub Actions" as
+# the source (Settings → Pages).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build DocC archive
+        run: |
+          xcodebuild docbuild -scheme Rostrum \
+            -destination 'platform=macOS' \
+            -derivedDataPath .docc-build
+      - name: Transform for static hosting
+        run: |
+          ARCHIVE=$(find .docc-build -name 'Rostrum.doccarchive' -print -quit)
+          "$(xcrun --find docc)" process-archive transform-for-static-hosting \
+            "$ARCHIVE" --output-path site --hosting-base-path rostrum
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

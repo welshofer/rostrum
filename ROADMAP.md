@@ -1,6 +1,7 @@
 # Rostrum roadmap
 
-Goal: full python-pptx parity in pure Swift, then past it. Architecture:
+Goal: full python-pptx feature parity in pure Swift, then Swift-native
+additions beyond its current scope. Architecture:
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Every phase ships something a
 user can run; the byte-identity corpus gate and the python-pptx oracle run
 from phase 0 onward.
@@ -18,8 +19,8 @@ from phase 0 onward.
 ## Phase 1 — The object model skeleton (✅ core, 2026-07-18)
 
 - [x] Pristine-blob dirty-flag machinery on `Part` (byte-identity test live)
-- [x] Slides collection: iterate, `add()`, **and the three things python-pptx
-  never shipped: `remove`, `move`, `duplicate`**
+- [x] Slides collection: iterate, `add()`, **plus three long-requested
+  operations on python-pptx's wishlist: `remove`, `move`, `duplicate`**
 - [x] ShapeGeometry enum (178 presets) extracted from python-pptx tables
 - [ ] `rostrum-gen` v0 proper (declarative tables → generated accessors)
 - [ ] Layouts/masters collections; placeholder resolution

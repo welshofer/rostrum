@@ -26,6 +26,29 @@ jobs:
         run: swift test
         working-directory: Lectern
 
+  apps:
+    # The SwiftUI app targets (macOS + iOS) never compile under `swift test`,
+    # so CI must build them explicitly or the shell can rot unverified. Both
+    # targets deploy at 26.0 (Liquid Glass), hence the macos-26 image.
+    name: Lectern apps (xcodebuild)
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install xcodegen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+        working-directory: Lectern
+      - name: Build macOS app
+        run: |
+          xcodebuild -project Lectern.xcodeproj -scheme Lectern \
+            -configuration Debug -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO build
+        working-directory: Lectern
+      - name: Build iOS app (simulator)
+        run: scripts/build-ios.sh
+        working-directory: Lectern
+
   linux:
     name: Linux (Swift ${{ matrix.swift }})
     runs-on: ubuntu-latest
