@@ -20,11 +20,13 @@ creation and text extraction, **deck merge**, **theme / brand-kit editing**,
 and lossless byte-identical round-trips of the parts you don't touch.
 
 ```swift
+import Foundation
 import Rostrum
 
-let deck = try Presentation()                       // one blank 16:9 slide
+let deck = try Presentation()                       // starts with one blank 16:9 slide
 let slide = try deck.slides.add(layout: deck.layout(type: "title")!)
 slide.title?.textFrame?.text = "Hello, Rostrum"
+try deck.slides.remove(at: 0)                       // drop the blank starter slide
 try deck.save(to: URL(filePath: "hello.pptx"))
 ```
 
@@ -34,16 +36,26 @@ Open a brand template, apply a `design.md`, and build a whole deck from one-call
 auto-laid-out builders — on-brand, no placeholder plumbing:
 
 ```swift
-let deck = try Presentation(contentsOf: URL(filePath: "brand.potx"))   // native .potx support
+import Foundation
+import Rostrum
+
+let deck = try Presentation()   // or open your brand template: Presentation(contentsOf: URL(filePath: "brand.potx"))
 deck.applyDesign(try Design(contentsOf: URL(filePath: "sunflower.md")))
+
+let arr = ChartData(categories: ["Q1", "Q2", "Q3", "Q4"],
+                    series: [ChartData.Series(name: "ARR", values: [12.1, 14.6, 16.8, 18.4])])
 
 try deck.titleSlide("Q3 Business Review", subtitle: "Northwind", kicker: "FY26")
 try deck.bulletSlide("Highlights", ["ARR $18.4M", "Retention 91%", "NPS 47"], kicker: "Results")
 try deck.chartSlide("Revenue", .line, arr, options: ChartOptions(legend: .bottom))
 try deck.setSections([("Cover", 0), ("The Quarter", 1)])
 try deck.footer("Confidential").showSlideNumbers()
+try deck.slides.remove(at: 0)   // drop the blank starter slide
 try deck.save(to: URL(filePath: "review.pptx"))
 ```
+
+(A ready-made `sunflower.md` ships in `Lectern/App/Resources/Styles/`, along
+with 149 more.)
 
 More recipes in the [cookbook](docs/COOKBOOK.md).
 
