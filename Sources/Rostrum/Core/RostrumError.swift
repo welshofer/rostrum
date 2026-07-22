@@ -16,6 +16,8 @@ public enum RostrumError: Error, Equatable, CustomStringConvertible {
     case notAPresentation(String)
     /// A font's embedding permission (OS/2 fsType) forbids embedding it.
     case fontEmbeddingRestricted(String)
+    /// A font file could not be parsed (truncated table, bad offset, unsupported cmap, …).
+    case fontCorrupt(String)
 
     public var description: String {
         switch self {
@@ -27,6 +29,7 @@ public enum RostrumError: Error, Equatable, CustomStringConvertible {
         case .partMissing(let m): return "missing package part: \(m)"
         case .notAPresentation(let m): return "not a PresentationML package: \(m)"
         case .fontEmbeddingRestricted(let m): return "font embedding is license-restricted: \(m)"
+        case .fontCorrupt(let m): return "corrupt font file: \(m)"
         }
     }
 }
