@@ -20,7 +20,10 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   character-count guess.
 - Real-deck corpus gate: foreign-authored `.pptx` fixtures dropped into
   `Tests/RostrumTests/Fixtures/RealDecks/` automatically enroll in
-  byte-identity, determinism, and no-trap tests (`RealDeckCorpusTests`).
+  byte-identity (zip-entry level, content parts; `.rels` and
+  `[Content_Types].xml` are deterministically re-serialized and exempt —
+  see ARCHITECTURE.md), determinism, and no-trap tests
+  (`RealDeckCorpusTests`).
 - The python-pptx oracle now runs in CI on macOS and Linux
   (`PythonPptxOracleTests`): representative Rostrum-written decks must open
   in python-pptx on every push.

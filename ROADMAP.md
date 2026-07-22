@@ -152,16 +152,21 @@ box; this program makes Rostrum the first.
   `slideMasters`. The keystone that unblocks editing existing decks.
 - **M4 — Chart read-back + `replaceData` that never corrupts.** Requires M3.
 
-Hardening backlog (schedule opportunistically): Zip64 (today >4 GB archives
-and >65k entries are `precondition` traps on the write path), `PackURI`
-precondition on malformed rel targets, quadratic hot spots on very large
-decks, `prune()`/orphan audit promised in ARCHITECTURE.md.
+Hardening backlog (schedule opportunistically): pristine round-trip for
+`.rels` parts and `[Content_Types].xml` (today both are parsed and
+deterministically re-serialized on save, so foreign byte layout normalizes —
+the one documented exception to the byte-identity rule); Zip64 (today >4 GB
+archives and >65k entries are `precondition` traps on the write path);
+`PackURI` precondition on malformed rel targets; quadratic hot spots on very
+large decks; `prune()`/orphan audit promised in ARCHITECTURE.md.
 
 ## Standing quality gates
 
 - `swift test` green on macOS + Linux
-- Corpus decks round-trip byte-identical on untouched parts — including the
-  real-deck fixtures in `Tests/RostrumTests/Fixtures/RealDecks/`
+- Corpus decks round-trip byte-identical on untouched content parts —
+  including the real-deck fixtures in `Tests/RostrumTests/Fixtures/RealDecks/`
+  (`.rels`/`[Content_Types].xml` are deterministically re-serialized; making
+  them pristine too is on the hardening backlog)
 - Every Rostrum-written deck opens in python-pptx without exception — now
   automated in CI (`PythonPptxOracleTests`) — and in PowerPoint without
   repair prompt

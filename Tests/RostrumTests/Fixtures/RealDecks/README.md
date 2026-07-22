@@ -4,7 +4,10 @@ Drop **foreign-authored** `.pptx` files here — created by real PowerPoint,
 Keynote, or Google Slides, *not* by Rostrum — and the suite automatically
 enrolls them in the release-gate invariants (`RealDeckCorpusTests`):
 
-1. open → save with no edits keeps every part byte-identical,
+1. open → save with no edits keeps every **content part** byte-identical at
+   the zip-entry level (`.rels` parts and `[Content_Types].xml` are the
+   documented exception: parsed and deterministically re-serialized —
+   semantics preserved, foreign byte layout normalized),
 2. resaving the resave is a fixed point (determinism on foreign input),
 3. slides and shapes enumerate without trapping.
 
