@@ -18,6 +18,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Swift version
         run: swift --version
+      - name: Install python-pptx (oracle gate)
+        run: python3 -m pip install --user --break-system-packages python-pptx || python3 -m pip install --user python-pptx
       - name: Build
         run: swift build -v
       - name: Test
@@ -63,8 +65,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # Oracle tests shell out to these; the pure-Swift suite passes without them.
+      # fonts-dejavu-core feeds the real-font sanity oracle in FontMetricsTests.
       - name: Install oracle tools
-        run: apt-get update && apt-get install -y --no-install-recommends zip unzip python3
+        run: apt-get update && apt-get install -y --no-install-recommends zip unzip python3 python3-pip fonts-dejavu-core
+      - name: Install python-pptx (oracle gate)
+        run: python3 -m pip install --break-system-packages python-pptx || python3 -m pip install python-pptx
       - name: Swift version
         run: swift --version
       - name: Build
