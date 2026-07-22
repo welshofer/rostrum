@@ -47,13 +47,13 @@ import Rostrum
         #expect(drawn.slideCount == 2)
         let reopenedDrawn = try Presentation(contentsOf: drawn.url)
         #expect(try reopenedDrawn.validate().isEmpty)
-        #expect(reopenedDrawn.slides[reopenedDrawn.slides.count - 1].smartArtTexts.isEmpty)
+        #expect(try reopenedDrawn.slides[reopenedDrawn.slides.count - 1].smartArtTexts.isEmpty)
 
         // Opt-in: native Basic Block List SmartArt (the flex "five layers" look).
         let smart = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false,
                                                     into: dir, useSmartArt: true)
         let reopenedSmart = try Presentation(contentsOf: smart.url)
-        #expect(reopenedSmart.slides[reopenedSmart.slides.count - 1].smartArtTexts.first?.count == 3)
+        #expect(try reopenedSmart.slides[reopenedSmart.slides.count - 1].smartArtTexts.first?.count == 3)
     }
 
     @Test func rendersChartAndMetricsSlides() async throws {
