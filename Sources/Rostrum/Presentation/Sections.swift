@@ -189,9 +189,11 @@ public final class Section {
         element.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId").count ?? 0
     }
 
+    /// The section's slides, skipping any entry whose part cannot be resolved
+    /// (matching `Slides` iteration semantics on malformed decks).
     public var slides: [Slide] {
         let all = Slides(package: package, presentationPart: presentationPart)
-        return slideIndices.map { all[$0] }
+        return slideIndices.compactMap { try? all.slide(at: $0) }
     }
 }
 
