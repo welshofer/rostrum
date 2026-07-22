@@ -4,6 +4,43 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow
 [SemVer](https://semver.org/) with the 0.x caveat above.
 
+## [Unreleased]
+
+### Added
+
+- **FontMetrics engine** — pure-Swift TrueType/OpenType metrics parsing
+  (`head`/`hhea`/`maxp`/`hmtx`/`cmap` formats 4 + 12, `OS/2` typographic
+  metrics, `.ttc` collections) with no platform text stack. `FontMetrics`
+  measures string widths and line heights; `TextMeasurer` wraps text and
+  computes block heights.
+- **Computed autofit** — `textFrame.fitText(in:using:)` and
+  `shape.fitText(using:)` measure the frame's text with real font metrics
+  and write `a:normAutofit` `fontScale`/`lnSpcReduction`, stepping the
+  ladder PowerPoint uses. Text that fits is now a guarantee, not a
+  character-count guess.
+- Real-deck corpus gate: foreign-authored `.pptx` fixtures dropped into
+  `Tests/RostrumTests/Fixtures/RealDecks/` automatically enroll in
+  byte-identity, determinism, and no-trap tests (`RealDeckCorpusTests`).
+- The python-pptx oracle now runs in CI on macOS and Linux
+  (`PythonPptxOracleTests`): representative Rostrum-written decks must open
+  in python-pptx on every push.
+- `RostrumError.fontCorrupt` for unparseable font files.
+
+### Changed
+
+- `Slides` subscript is now throwing (`try deck.slides[0]`): a malformed
+  deck — a `sldId` whose relationship or part is missing — used to abort
+  the host process via `preconditionFailure`; opening untrusted files must
+  never do that. `for`-`in` iteration now skips unresolvable entries
+  instead of trapping.
+- `Inflate` caps its up-front output reservation (1 MiB) instead of
+  trusting the archive's declared size: a few-hundred-byte crafted zip can
+  no longer force a multi-gigabyte allocation.
+- ROADMAP.md corrected against the code (bubble/radar/stock/combo charts
+  and the animations round-trip test had been marked shipped but were not;
+  the SVG renderer's claimed TTF metrics did not exist until now) and
+  extended with the v0.4 "Measure & trust" program.
+
 ## [0.3.1] — 2026-07-19
 
 - README code snippets fixed to compile and run exactly as printed (missing

@@ -6,6 +6,14 @@ additions beyond its current scope. Architecture:
 user can run; the byte-identity corpus gate and the python-pptx oracle run
 from phase 0 onward.
 
+> **Truth pass (2026-07-22).** This file is the parity scoreboard newcomers
+> trust, so it was audited line-by-line against the code. Three earlier
+> claims were overstated and are corrected below rather than silently
+> edited: bubble/radar/stock/combo charts **did not ship** in the v0.1 P3
+> phase; the animations/transitions round-trip **has no dedicated test**;
+> and the SVG renderer **did not** use "the TTF metrics we already parse" —
+> no metrics parsing existed until the v0.4 program below built it.
+
 ## Phase 0 — Foundations ✅ (broke ground 2026-07-18)
 
 - [x] Zero-dependency SwiftPM package (macOS/iOS/Linux)
@@ -22,9 +30,16 @@ from phase 0 onward.
 - [x] Slides collection: iterate, `add()`, **plus three long-requested
   operations on python-pptx's wishlist: `remove`, `move`, `duplicate`**
 - [x] ShapeGeometry enum (178 presets) extracted from python-pptx tables
-- [ ] `rostrum-gen` v0 proper (declarative tables → generated accessors)
-- [ ] Layouts/masters collections; placeholder resolution
-- [ ] Byte-identity corpus gate in CI (test exists; corpus + CI pending)
+- [x] `rostrum-gen` v0: declarative schema tables (child ordering, attribute
+  defaults) generated from python-pptx's, consumed by generic DOM helpers.
+  *Still open:* per-element typed accessors on top of the tables.
+- [ ] Layouts/masters collections — *partial:* `layouts`/`layout(type:)` and
+  placeholder-inheriting frames shipped, but only the **first** master's
+  layouts are visible; multi-master decks (which `DeckMerge` can already
+  import!) need a real `slideMasters` collection
+- [x] Byte-identity corpus gate in CI — Rostrum-generated corpus (2026-07-19);
+  **real-deck fixtures** enroll automatically via
+  `Tests/RostrumTests/Fixtures/RealDecks/` (scaffold 2026-07-22, decks landing)
 
 ## Phase 2 — Shapes and text (✅ core, 2026-07-18)
 
@@ -38,37 +53,43 @@ from phase 0 onward.
 - [x] Pictures: PNG/JPEG/GIF sniffers, content-dedup image parts, natural
   sizing by dpi (2026-07-18)
 - [x] Tables: grid, cell text/fills/anchors, merge, style flags (2026-07-18)
+- [x] Bullets, numbered lists, hyperlinks (2026-07-18)
+- [x] **Autofit with real font metrics** — shipped 2026-07-22 by the v0.4
+  program below (`FontMetrics` + `TextMeasurer` + computed `a:normAutofit`)
 - [ ] Group shapes, connectors, freeform
-- [ ] Bullets/hyperlinks/autofit with real font metrics
 
 ## Phase 3 — Parity completion
 
-- [x] Charts: clustered bar, line, pie via extracted chart templates, with
-  embedded Edit-Data xlsx workbooks written by our own zip engine (2026-07-18)
+- [x] Charts: clustered/stacked bar, line, pie, area, doughnut, scatter via
+  extracted chart templates, with titles, data labels, axis control and
+  embedded Edit-Data xlsx workbooks written by our own zip engine
 - [x] Speaker notes: notesMaster/notesSlide, `slide.setNotes` (2026-07-18)
-- [ ] More chart types (scatter/area/radar/doughnut), chart titles/data labels
-- [ ] Core/extended/custom document properties API, media parts
-- [ ] Write-side DEFLATE (fixed-Huffman first) — file-size parity
-- [ ] Linux CI; performance pass on large decks
+- [x] Write-side DEFLATE (fixed-Huffman + LZ77, deterministic) — file-size
+  parity (2026-07-19)
+- [x] Linux CI (Swift 6.0/6.1 containers, oracle tools installed)
+- [ ] More chart types: radar, bubble, stock, combo — **not shipped**
+  (correcting the earlier ✅; nothing beyond the six kinds above exists)
+- [ ] Core/extended/custom document properties API, media parts (video/audio)
+- [ ] Performance pass on large decks (no benchmarks exist yet)
 
 ## Phase 4 — Beyond parity (the reason Rostrum exists)
 
 Ranked by demand evidence from python-pptx's issue tracker:
 
-1. **Deck merge / slide import across presentations** — copy a slide with its
-   images, charts, layout and rels intact. The #1 unsolved workflow.
-2. **Theme & brand kit editing** — a real `Theme` object: palette
-   (accent1–6, dk/lt), major/minor fonts, apply-a-brand-to-a-deck; resolve
-   `schemeClr` → RGB through the clrMap chain.
-3. ~~SmartArt~~ ✅ **Shipped 2026-07-18**: `addSmartArt(items:frame:)` creates
-   Basic Block List diagrams (verified in PowerPoint + LibreOffice);
-   `slide.smartArtTexts` extracts text from any diagram. Next: more layouts
-   (process, cycle, hierarchy), multi-level data.
-4. ~~Modern threaded comments~~ ✅ **Shipped 2026-07-18**: `addComment`/
-   `addReply`/`resolve` with authors part and slide anchoring. Next:
-   **sections** (`p14:sectionLst`), embedded fonts.
+1. ~~Deck merge / slide import~~ ✅ **Shipped 2026-07-19**: copy slides with
+   images, charts, layouts and rels intact (`slides.importAll(from:)`).
+2. ~~Theme & brand kit editing~~ ✅ **Shipped 2026-07-19**: `Theme` object,
+   palette + fonts, `schemeClr` → RGB resolution through the clrMap chain.
+3. ~~SmartArt~~ ✅ **Shipped 2026-07-18/19**: Basic Block List, process and
+   cycle layouts; `slide.smartArtTexts` extraction. Next: hierarchy layout,
+   multi-level data, PowerPoint-QA across the layout set (Lectern still
+   ships SmartArt behind an opt-in toggle — production trust is the gap).
+4. ~~Modern threaded comments~~ ✅ **Shipped 2026-07-18**; native sections
+   and font embedding followed (2026-07-19).
 5. **Animations & transitions** — the `p:timing` tree, entrance/exit/emphasis
-   presets, slide transitions.
+   presets, slide transitions. (Existing decks' animations survive via
+   pristine parts, but there is **no dedicated round-trip test** — the v0.1
+   P3 bullet claiming one was wrong.)
 6. **ChartEx** (`cx:`) — waterfall, sunburst, treemap, histogram, funnel.
 7. **Reading chart data back out** and robust `replaceData` (python-pptx
    corrupts on structure mismatch).
@@ -76,45 +97,73 @@ Ranked by demand evidence from python-pptx's issue tracker:
 ## Phase 5 — Moonshots
 
 - Rendering: slide → image/PDF without LibreOffice (SwiftUI/CoreGraphics
-  renderer on Darwin; cross-platform raster backend later)
+  renderer on Darwin; cross-platform raster backend later). The v0.4 metrics
+  engine is the foundation: faithful text is most of a faithful slide.
 - Streaming/partial loading for production-scale decks
 - OMML math, connector routing to attachment sites, placeholders in groups
 
-## Program: v0.1 release — hardening & design layer (2026-07-18 →)
+## Program: v0.1 release — hardening & design layer ✅ (2026-07-18 → 19)
 
-A forward program past parity, run as a sequence of PR-sized phases. Each phase
-is a branch → PR → merge, PowerPoint-oracle-verified and CI-green before it
-lands. The invariants below are non-negotiable in every phase.
+Shipped as PRs #1–#5, adversarially reviewed, CI-green on macOS + Linux,
+tagged `v0.1.0`. P0 foundations (color math, Grid DSL, TypeScale), P1 design-
+authoring layer (slide builders, cards/chips, auto-contrast), P2 fidelity
+(table styling, footers, sections, backgrounds), P3 robustness (round-trip
+property tests, reader fuzzing, deeper `validate()`, DocC + cookbook), P4
+headless slide → SVG.
 
-**✅ Program complete (2026-07-19).** All five phases shipped as PRs #1–#5, each
-adversarially reviewed and CI-green on macOS + Linux (Swift 6.0/6.1). Tagged
-`v0.1.0` at the P3 release gate. Along the way the process caught and fixed real
-bugs — a wall-clock determinism leak, an invalid empty text body, and a
-Linux-only fuzz crash — none of which shipped.
+**Corrections (2026-07-22):** the P3 bullet listed "bubble/radar/stock/combo
+charts" and "verify animations/transitions survive round-trip" — neither
+shipped; both are re-opened above (Phase 3 / Phase 4 item 5). P4's "using
+the TTF metrics we already parse" was wrong: nothing parsed TTF metrics
+until v0.4 M1 below; the SVG renderer's text is still approximate until M2.
 
-- **✅ P0 — Foundations.** Shared primitives: image + gradient fills and slide/
-  shape backgrounds; public color math (luminance, WCAG contrast, auto-contrast,
-  mix/tint/shade); a Grid/geometry DSL over `Rect`; a `TypeScale` type. Capture
-  the `design.md` spacing/radius/typography tokens we currently drop.
-- **✅ P1 — Design-authoring layer.** Fluent, design-aware API: convenience slide
-  builders (title/section/bullets/two-column/comparison/chart/callout), cards/
-  buttons/chips driven by `design.md` radius/spacing/color tokens, and the type
-  scale + auto-contrast baked in. On-brand decks in a few lines.
-- **✅ P2 — Fidelity & polish.** Table styling (banded/brand header, column
-  widths); ergonomic notes; footers + slide numbers + dates; native PPTX
-  sections; per-slide/per-layout backgrounds.
-- **✅ P3 — Robustness & trust (release gate).** Property-based byte-identical
-  round-trip over a real corpus; reader fuzzing; verify animations/transitions
-  survive round-trip; bubble/radar/stock/combo charts; deeper `validate()`;
-  DocC + cookbook. → tag **v0.1.0** and publish.
-- **✅ P4 — Headless rendering.** Slide → SVG (zero-dep) for thumbnails and
-  visual-diff regression tests, using the TTF metrics we already parse. PNG
-  rasterization is a pure-Swift stretch goal.
+## Program: v0.4 — Measure & trust (2026-07-22 →)
+
+The theme: convert the library's two biggest asserted qualities into
+*measured* ones. Text layout stops guessing (the #1 pain in Lectern, the
+in-repo consumer: six overflow-workaround commits in one weekend, an entire
+`DeckNormalizer` layer, prompt-level content caps). And the sacred lossless
+round-trip stops being unproven against foreign files. python-pptx's
+`fit_text` is notoriously broken — no pptx library guarantees text fits its
+box; this program makes Rostrum the first.
+
+- **M0 — Trust riders (this branch).** Truth pass on this file. Untrusted-
+  input hardening: `Slides` subscript/iterator no longer abort the process on
+  malformed decks; `Inflate` caps its attacker-declared allocation. The
+  python-pptx oracle runs in CI on macOS + Linux (`PythonPptxOracleTests`).
+  Real-deck corpus scaffold: PowerPoint-authored fixtures auto-enroll in
+  byte-identity, determinism and no-trap gates (`RealDeckCorpusTests`).
+- **M1 — FontMetrics engine (this branch).** Pure-Swift sfnt parser — no
+  platform text stack, same posture as our zip/XML layers: `head`/`hhea`/
+  `maxp`/`hmtx`/`cmap` (formats 4 + 12), `OS/2` typo metrics, `.ttc`
+  collections; every read bounds-checked and throwing (fonts are untrusted
+  input). `TextMeasurer`: greedy word wrap with mid-word fallback, block
+  height. Computed `a:normAutofit`: PowerPoint's fontScale/lnSpcReduction
+  ladder, applied via `textFrame.fitText(in:using:)` / `shape.fitText(using:)`.
+  Deterministic synthetic-font tests plus a real-font oracle (DejaVu/Arial).
+- **M2 — Retire the heuristics.** Thread metrics through `SlideBuilders`
+  (today: character-count guesses), give builders honest capacity contracts
+  instead of silent truncation, and teach `SVGRenderer` real line breaking
+  and baselines. Font sourcing strategy: embedded fonts first, caller-
+  provided files, platform font directories last.
+- **M3 — Read-side object model.** Polymorphic shape enumeration (`p:pic`,
+  `p:graphicFrame`, `p:grpSp`, `p:cxnSp` visible on opened decks), fill/line
+  read-back, core/extended/custom document properties, multi-master
+  `slideMasters`. The keystone that unblocks editing existing decks.
+- **M4 — Chart read-back + `replaceData` that never corrupts.** Requires M3.
+
+Hardening backlog (schedule opportunistically): Zip64 (today >4 GB archives
+and >65k entries are `precondition` traps on the write path), `PackURI`
+precondition on malformed rel targets, quadratic hot spots on very large
+decks, `prune()`/orphan audit promised in ARCHITECTURE.md.
 
 ## Standing quality gates
 
 - `swift test` green on macOS + Linux
-- Corpus decks round-trip byte-identical on untouched parts
-- Every Rostrum-written deck opens in python-pptx without exception and in
-  PowerPoint without repair prompt
+- Corpus decks round-trip byte-identical on untouched parts — including the
+  real-deck fixtures in `Tests/RostrumTests/Fixtures/RealDecks/`
+- Every Rostrum-written deck opens in python-pptx without exception — now
+  automated in CI (`PythonPptxOracleTests`) — and in PowerPoint without
+  repair prompt
+- Malformed input throws; it never traps the host process
 - Zero SwiftPM dependencies, forever

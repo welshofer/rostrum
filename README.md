@@ -87,7 +87,8 @@ then add `"Rostrum"` to your target's dependencies.
 | **SmartArt** | Basic Block List creation; **text extraction from any diagram** |
 | **Comments** | modern threaded comments, replies, resolve |
 | **Notes** | per-slide speaker notes |
-| **Fonts** | **embed TTF/OTF** so a deck renders identically everywhere |
+| **Fonts** | **embed TTF/OTF** so a deck renders identically everywhere; **parse font metrics** (pure Swift, zero deps) to measure text |
+| **Text fitting** | `shape.fitText(using:)` — measure with real font metrics and write a **computed `normAutofit`**, so text provably fits its box (python-pptx's `fit_text` can't) |
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import a slide from another deck with its images, charts and layout intact |
 | **Design layer** | `DeckStyle` (type scale, WCAG auto-contrast, tokens); one-call slide builders; cards/buttons/kickers/stat tiles; a Grid DSL |
