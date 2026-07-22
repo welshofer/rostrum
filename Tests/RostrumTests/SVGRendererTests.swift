@@ -28,7 +28,7 @@ import Testing
 
     @Test func rendersShapesTextImageAndTable() throws {
         let deck = try Presentation()
-        let slide = deck.slides[0]
+        let slide = try deck.slides[0]
         try slide.setBackground(.solid(Color("0B1D33")))
         try slide.shapes.addShape(.ellipse, frame: Rect(x: .inches(1), y: .inches(1), width: .inches(2), height: .inches(2)), fill: .solid(Color("18A999")))
         try slide.shapes.addShape(.roundedRectangle, frame: Rect(x: .inches(4), y: .inches(1), width: .inches(3), height: .inches(1.5)), fill: .gradient(GradientFill(from: Color("FF6B5B"), to: Color("0B1D33"))))

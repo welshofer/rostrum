@@ -26,7 +26,7 @@ import Testing
             .firstChild(named: "p:graphicFrame")!
             .firstChild(named: "a:graphic")!.firstChild(named: "a:graphicData")!
             .firstChild(named: "dgm:relIds")!
-        let rels = reopened.slides[0].part.rels
+        let rels = try reopened.slides[0].part.rels
         #expect(rels.relationship(withId: relIds[attribute: "r:dm"]!)?.type == SmartArt.dataRelType)
         #expect(rels.relationship(withId: relIds[attribute: "r:lo"]!)?.type == SmartArt.layoutRelType)
         #expect(rels.relationship(withId: relIds[attribute: "r:qs"]!)?.type == SmartArt.quickStyleRelType)
@@ -70,7 +70,7 @@ import Testing
             items: ["Reduce & Reuse", "Recycle"],
             frame: Rect(x: .zero, y: .zero, width: .inches(6), height: .inches(4)))
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].smartArtTexts == [["Reduce & Reuse", "Recycle"]])
+        #expect(try reopened.slides[0].smartArtTexts == [["Reduce & Reuse", "Recycle"]])
     }
 
     @Test func brandColorsCycleThroughNodes() throws {
@@ -95,6 +95,6 @@ import Testing
         try deck.slides[0].shapes.addSmartArt(items: ["A"], frame: Rect(x: .zero, y: .zero, width: .inches(4), height: .inches(3)))
         try deck.slides[1].shapes.addSmartArt(items: ["B"], frame: Rect(x: .zero, y: .zero, width: .inches(4), height: .inches(3)))
         #expect(deck.package.parts[PackURI("/ppt/diagrams/data2.xml")] != nil)
-        #expect(deck.slides[1].smartArtTexts == [["B"]])
+        #expect(try deck.slides[1].smartArtTexts == [["B"]])
     }
 }

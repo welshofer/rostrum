@@ -32,8 +32,8 @@ import Testing
         slide.title?.textFrame?.text = "Hello from the placeholder"
 
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[1].title?.textFrame?.text == "Hello from the placeholder")
-        #expect(reopened.slides[1].title?.placeholder?.type == "ctrTitle")
+        #expect(try reopened.slides[1].title?.textFrame?.text == "Hello from the placeholder")
+        #expect(try reopened.slides[1].title?.placeholder?.type == "ctrTitle")
     }
 
     @Test func effectiveFrameResolvesThroughLayoutToMaster() throws {

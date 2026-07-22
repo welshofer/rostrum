@@ -27,7 +27,7 @@ import Testing
         try deck.footer("Confidential — Northwind")
         try deck.showDate()
         let reopened = try Presentation(data: try deck.serializedData())
-        let slide0 = reopened.slides[0]
+        let slide0 = try reopened.slides[0]
         let text = slide0.shapes.compactMap { $0.textFrame?.text }.joined(separator: " ")
         #expect(text.contains("Confidential"))
         let hasDate = descendants(try slide0.part.dom())

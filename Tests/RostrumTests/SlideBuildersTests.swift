@@ -50,7 +50,7 @@ import Testing
         let deck = try Presentation()
         let slide = try deck.bulletSlide("Highlights", ["Alpha", "Beta", "Gamma"])
         let reopened = try Presentation(data: try deck.serializedData())
-        let back = reopened.slides[reopened.slides.count - 1]
+        let back = try reopened.slides[reopened.slides.count - 1]
         let text = back.shapes.compactMap { $0.textFrame?.text }.joined(separator: " ")
         #expect(text.contains("Alpha") && text.contains("Gamma"))
         // The bullet list carries real bullet chars.
@@ -67,7 +67,7 @@ import Testing
         try deck.titleSlide("Hello", subtitle: "World")
         let s = deck.style
         let reopened = try Presentation(data: try deck.serializedData())
-        let slide = reopened.slides[reopened.slides.count - 1]
+        let slide = try reopened.slides[reopened.slides.count - 1]
         let dom = try slide.part.dom()
         let runs = allRuns(dom)
         // Some run is at the display size, and its color is legible on the bg.
@@ -85,7 +85,7 @@ import Testing
         deck.applyDesign(Design.parse("## Palette\n- Accent 1: #FFD02F"))   // light accent
         try deck.sectionSlide("Looking Ahead")
         let reopened = try Presentation(data: try deck.serializedData())
-        let slide = reopened.slides[reopened.slides.count - 1]
+        let slide = try reopened.slides[reopened.slides.count - 1]
         let dom = try slide.part.dom()
         let bg = dom.firstChild(named: "p:cSld")!.firstChild(named: "p:bg")!
             .firstChild(named: "p:bgPr")!.firstChild(named: "a:solidFill")!
@@ -113,7 +113,7 @@ import Testing
         """))
         try deck.bulletSlide("On brand", ["one", "two"])
         let reopened = try Presentation(data: try deck.serializedData())
-        let slide = reopened.slides[reopened.slides.count - 1]
+        let slide = try reopened.slides[reopened.slides.count - 1]
         let dom = try slide.part.dom()
         let bg = dom.firstChild(named: "p:cSld")!.firstChild(named: "p:bg")!
             .firstChild(named: "p:bgPr")!.firstChild(named: "a:solidFill")!

@@ -24,7 +24,7 @@ import Testing
             .firstChild(named: "a:graphic")?
             .firstChild(named: "a:graphicData")?
             .firstChild(named: "a:tbl"))
-        let rtable = Table(tbl: tbl, part: reopened.slides[0].part)
+        let rtable = Table(tbl: tbl, part: try reopened.slides[0].part)
         #expect(rtable.rowCount == 3 && rtable.columnCount == 3)
         #expect(rtable.cell(0, 0).text == "Region")
         #expect(rtable.cell(2, 2).text == "−12.2%")

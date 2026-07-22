@@ -19,7 +19,7 @@ import Testing
         let none = tf.addParagraph(); none.setNoBullet(); none.addRun("plain")
 
         let reopened = try Presentation(data: try deck.serializedData())
-        let ps = reopened.slides[0].shapes[0].textFrame!.paragraphs
+        let ps = try reopened.slides[0].shapes[0].textFrame!.paragraphs
         #expect(ps[0].p.firstChild(named: "a:pPr")?.firstChild(named: "a:buChar")?[attribute: "char"] == "\u{2022}")
         #expect(ps[1].p.firstChild(named: "a:pPr")?.firstChild(named: "a:buAutoNum")?[attribute: "type"] == "arabicPeriod")
         #expect(ps[2].indentLevel == 1)
@@ -71,7 +71,7 @@ import Testing
         r.setSuperscript()
 
         let reopened = try Presentation(data: try deck.serializedData())
-        let rr = reopened.slides[0].shapes[0].textFrame!.paragraphs[0].runs[0]
+        let rr = try reopened.slides[0].shapes[0].textFrame!.paragraphs[0].runs[0]
         #expect(rr.underline)
         #expect(rr.strikethrough)
         #expect(rr.baselinePercent == 30)
@@ -86,11 +86,11 @@ import Testing
 
         // The run references a hyperlink rel that exists on the slide part.
         let rId = link.r.firstChild(named: "a:rPr")!.firstChild(named: "a:hlinkClick")![attribute: "r:id"]!
-        #expect(deck.slides[0].part.rels.relationship(withId: rId)?.type == RelType.hyperlink)
-        #expect(deck.slides[0].part.rels.relationship(withId: rId)?.isExternal == true)
+        #expect(try deck.slides[0].part.rels.relationship(withId: rId)?.type == RelType.hyperlink)
+        #expect(try deck.slides[0].part.rels.relationship(withId: rId)?.isExternal == true)
 
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].shapes[0].textFrame!.paragraphs[0].runs[0].hyperlink
+        #expect(try reopened.slides[0].shapes[0].textFrame!.paragraphs[0].runs[0].hyperlink
                 == "https://github.com/welshofer/rostrum")
     }
 

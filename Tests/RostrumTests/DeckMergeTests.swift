@@ -37,7 +37,7 @@ import Testing
         let reopened = try Presentation(data: try dest.serializedData())
         #expect(reopened.slides.count == before + 1)
         // The imported slide's text and picture came along.
-        let imported = reopened.slides[reopened.slides.count - 1]
+        let imported = try reopened.slides[reopened.slides.count - 1]
         #expect(imported.shapes.contains { $0.textFrame?.text == "Imported slide one" })
         let media = reopened.package.parts.keys.filter { $0.value.hasPrefix("/ppt/media/") }
         #expect(media.count == 1)
@@ -122,7 +122,7 @@ import Testing
         let source = try makeSource()
         _ = try source.serializedData()   // flush the source's dirty parts
         let dest = try Presentation()
-        let sourceBlob = source.slides[0].part.blob
+        let sourceBlob = try source.slides[0].part.blob
         try dest.slides.import(from: source, at: 0)
         let importedURI = dest.package.parts.keys
             .filter { $0.value.hasPrefix("/ppt/slides/") }

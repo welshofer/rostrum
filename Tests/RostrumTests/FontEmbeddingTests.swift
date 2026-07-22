@@ -64,6 +64,6 @@ import Testing
             Rect(x: .zero, y: .zero, width: .inches(3), height: .inches(1)))
         box.altText = "A friendly greeting"
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].shapes[0].altText == "A friendly greeting")
+        #expect(try reopened.slides[0].shapes[0].altText == "A friendly greeting")
     }
 }

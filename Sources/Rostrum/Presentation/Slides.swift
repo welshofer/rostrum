@@ -25,13 +25,12 @@ public final class Slides: Sequence {
         (try? sldIdLst())?.childElements.count ?? 0
     }
 
-    /// The slide at `index`. Traps on out-of-range (like Array); use
-    /// `slide(at:)` for a throwing variant.
+    /// The slide at `index`. Throws on out-of-range and on malformed decks
+    /// (a `sldId` whose relationship or part cannot be resolved) — opening
+    /// untrusted files must never abort the host process.
     public subscript(index: Int) -> Slide {
-        do {
-            return try slide(at: index)
-        } catch {
-            preconditionFailure("Slides[\(index)]: \(error)")
+        get throws {
+            try slide(at: index)
         }
     }
 
@@ -48,12 +47,18 @@ public final class Slides: Sequence {
         return Slide(part: try package.part(at: uri), package: package)
     }
 
+    /// Iterates the resolvable slides. Entries whose relationship or part is
+    /// missing are skipped — `for`-`in` cannot throw, and a malformed deck
+    /// must never abort the host process. Use `slide(at:)` to surface the
+    /// underlying error for a specific index.
     public func makeIterator() -> AnyIterator<Slide> {
         var index = 0
         return AnyIterator {
-            guard index < self.count else { return nil }
-            defer { index += 1 }
-            return self[index]
+            while index < self.count {
+                defer { index += 1 }
+                if let slide = try? self.slide(at: index) { return slide }
+            }
+            return nil
         }
     }
 

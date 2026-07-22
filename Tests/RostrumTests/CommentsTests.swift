@@ -10,7 +10,7 @@ import Testing
         try comment.addReply("Agreed, will fix.", author: "Sam Editor")
 
         let reopened = try Presentation(data: try deck.serializedData())
-        let comments = reopened.slides[0].comments
+        let comments = try reopened.slides[0].comments
         #expect(comments.count == 1)
         #expect(comments[0].text == "Needs more cowbell.")
         #expect(comments[0].authorName == "Jane Reviewer")
@@ -47,14 +47,14 @@ import Testing
         let reopened = try Presentation(data: bytes)
         // 2018/10 rel types; authors implicit from presentation, comments from slide.
         #expect(reopened.presentationPart.rels.first(ofType: ModernComments.authorsRelType)?.target == "authors.xml")
-        #expect(reopened.slides[0].part.rels.first(ofType: ModernComments.commentsRelType) != nil)
+        #expect(try reopened.slides[0].part.rels.first(ofType: ModernComments.commentsRelType) != nil)
 
         // The in-slide commentRel ext is the LAST child of p:sld.
         let sld = try reopened.slides[0].part.dom()
         #expect(sld.childElements.last?.name == "p:extLst")
         let rId = sld.childElements.last?.firstChild(named: "p:ext")?
             .firstChild(named: "p188:commentRel")?[attribute: "r:id"]
-        #expect(reopened.slides[0].part.rels.relationship(withId: rId ?? "")?.type == ModernComments.commentsRelType)
+        #expect(try reopened.slides[0].part.rels.relationship(withId: rId ?? "")?.type == ModernComments.commentsRelType)
     }
 
     @Test func oneAuthorsPartManyAuthorsGuidsWellFormed() throws {
@@ -82,6 +82,6 @@ import Testing
         let comment = try deck.slides[0].addComment("open item", author: "A")
         comment.resolve()
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].comments[0].isResolved)
+        #expect(try reopened.slides[0].comments[0].isResolved)
     }
 }

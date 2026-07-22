@@ -23,7 +23,7 @@ import Testing
         let rId = frame.firstChild(named: "a:graphic")!
             .firstChild(named: "a:graphicData")!
             .firstChild(named: "c:chart")![attribute: "r:id"]!
-        #expect(reopened.slides[0].part.rels.relationship(withId: rId)?.type == RelType.chart)
+        #expect(try reopened.slides[0].part.rels.relationship(withId: rId)?.type == RelType.chart)
 
         // Chart-part rel scope: rId1 → the workbook.
         #expect(chartPart.rels.relationship(withId: "rId1")?.type == RelType.package)

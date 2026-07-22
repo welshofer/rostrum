@@ -81,7 +81,12 @@ private struct InflateDecoder {
         self.input = input
         self.expectedOutputSize = expectedOutputSize
         if let size = expectedOutputSize, size > 0 {
-            output.reserveCapacity(size)
+            // The declared size comes straight from the archive being read —
+            // attacker-controlled for untrusted files — so cap the up-front
+            // reservation: a few-hundred-byte crafted zip must not force a
+            // multi-gigabyte allocation. Larger honest outputs grow amortized,
+            // and `checkOutputBound` still rejects overruns of the declared size.
+            output.reserveCapacity(Swift.min(size, 1 << 20))
         }
     }
 

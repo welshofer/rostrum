@@ -148,7 +148,7 @@ func cardRow(_ slide: Slide, cards: [Card], top: Double, cardH: Double,
 // MARK: - Build the deck
 
 let deck = try Presentation()
-var slides: [Slide] = [deck.slides[0]]
+var slides: [Slide] = [try deck.slides[0]]
 while slides.count < 15 { slides.append(try deck.slides.add()) }
 
 // ---- 1 · Title
