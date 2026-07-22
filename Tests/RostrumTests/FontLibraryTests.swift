@@ -28,6 +28,27 @@ import Testing
         #expect(metrics.familyNames == ["Test Sans"])
         #expect(try FontMetrics(data: TestFont.standard()).familyNames.isEmpty)
     }
+
+    @Test func familyNamesPreferUnicodeRecordsAndSkipNonASCIIMacRecords() throws {
+        let advances = [600] + (0x20...0x7E).map(TestFont.advance(forChar:))
+        let font = Data(TestFont.assemble(tables: [
+            ("head", TestFont.head(upem: 1000)),
+            ("hhea", TestFont.hhea(ascender: 800, descender: -200, lineGap: 0,
+                                   numberOfHMetrics: advances.count)),
+            ("maxp", TestFont.maxp(numGlyphs: advances.count)),
+            ("hmtx", TestFont.hmtx(advances: advances)),
+            ("cmap", TestFont.cmapFormat4()),
+            ("name", TestFont.nameTable(records: [
+                (nameID: 1, platform: 1, value: "Grüßen"),       // non-ASCII Mac: skipped
+                (nameID: 1, platform: 1, value: "Test Sans"),     // ASCII Mac: deduped below
+                (nameID: 1, platform: 3, value: "Test Sans"),     // Windows family
+                (nameID: 16, platform: 3, value: "Test Family"),  // typographic family
+                (nameID: 2, platform: 3, value: "Bold"),          // subfamily: ignored
+            ])),
+        ]))
+        let metrics = try FontMetrics(data: font)
+        #expect(metrics.familyNames == ["Test Sans", "Test Family"])
+    }
 }
 
 @Suite struct MeasuredBuildersTests {
@@ -67,14 +88,15 @@ import Testing
     }
 
     @Test func wideTitleShrinksWhenMeasured() throws {
-        // 40 'W's: under every character threshold (so the heuristic keeps the
-        // full display size), but at 900/1000 units per glyph genuinely wide —
-        // measurement steps down where the character count would not.
-        let wideTitle = String(repeating: "W", count: 40)
+        // 28 'W's: at/under every character threshold (so the heuristic keeps
+        // the full display size), but at 900/1000 units per glyph genuinely
+        // wide — measurement steps down where the character count would not.
+        let wideTitle = String(repeating: "W", count: 28)
 
         let estimated = try Presentation()
         try estimated.titleSlide(wideTitle)
         let heuristicSize = try #require(try runSize(estimated, text: wideTitle))
+        #expect(heuristicSize == estimated.style.type(.display).sizePt)
 
         let measured = try Presentation()
         try registerTestFont(in: measured)
@@ -83,9 +105,11 @@ import Testing
         #expect(measuredSize < heuristicSize)
     }
 
-    @Test func unregisteredDecksAreByteIdenticalToTheHeuristicPath() throws {
-        // The fallback contract: no registered fonts → exactly the pre-metrics
-        // output, provable by determinism across two separately built decks.
+    @Test func unregisteredFallbackPathIsDeterministic() throws {
+        // Proves the heuristic path is deterministic across separate builds.
+        // (Byte-identity with PRE-metrics output cannot be proven by this —
+        // that contract is pinned value-by-value in fallbackLaddersArePinned
+        // and was established by diff review at the M2 commit.)
         func build() throws -> Data {
             let deck = try Presentation()
             try deck.titleSlide("A title long enough to cross the fitting thresholds easily")
@@ -94,6 +118,22 @@ import Testing
             return try deck.serializedData()
         }
         #expect(try build() == build())
+    }
+
+    @Test func fallbackLaddersArePinned() throws {
+        // Pins the character-count ladder an empty library falls back to —
+        // the concrete values that keep no-fonts output identical to the
+        // pre-metrics builders. If a refactor moves a rung, this fails.
+        func titleSize(characters: Int) throws -> Double? {
+            let deck = try Presentation()
+            let title = String(repeating: "x", count: characters)
+            try deck.titleSlide(title)
+            return try runSize(deck, text: title)
+        }
+        let display = try Presentation().style.type(.display).sizePt
+        #expect(try titleSize(characters: 20) == display)   // ≤28 chars: full display
+        #expect(try titleSize(characters: 40) == 74)        // >28: first rung
+        #expect(try titleSize(characters: 46) == 60)        // >44: second rung
     }
 
     @Test func measuredDecksAreDeterministic() throws {

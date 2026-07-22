@@ -19,8 +19,10 @@ public extension Presentation {
         // slide — measured with real metrics when the deck's fonts are
         // registered, estimated by length otherwise.
         let titleBand = grid.cell(column: 0, row: 4, columnSpan: 11, rowSpan: 4)
+        // Candidates are capped at the configured role size: a custom style
+        // with a small display face must never be UPsized to a ladder value.
         let fitted = fitSize([title], font: s.type(.display).font,
-                             candidates: [s.type(.display).sizePt, 74, 60],
+                             candidates: [s.type(.display).sizePt, 74, 60].filter { $0 <= s.type(.display).sizePt },
                              maxLines: 2, lineWidth: titleBand.width,
                              fallback: title.count > 44 ? 60.0 : (title.count > 28 ? 74.0 : s.type(.display).sizePt))
         let titleStyle = s.with(.display) { $0.sizePt = fitted }
@@ -59,7 +61,7 @@ public extension Presentation {
         // a long one stays ≤2 lines and clears the subtitle below.
         let titleBand = grid.cell(column: 0, row: 4, columnSpan: 6, rowSpan: 3)
         let fitted = fitSize([title], font: s.type(.title).font,
-                             candidates: [s.type(.title).sizePt, 34, 30],
+                             candidates: [s.type(.title).sizePt, 34, 30].filter { $0 <= s.type(.title).sizePt },
                              maxLines: 2, lineWidth: titleBand.width,
                              fallback: title.count > 40 ? 30.0 : (title.count > 24 ? 34.0 : s.type(.title).sizePt))
         let titleStyle = s.with(.title) { $0.sizePt = fitted }

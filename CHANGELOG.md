@@ -32,14 +32,16 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   their `name`-table family names (parsed from the sfnt, IDs 1/16) for text
   measurement. Explicit registration only: platform font lookup would break
   cross-machine determinism.
-- **Measured slide builders** — with the style's fonts registered, every
-  builder that fitted text by character count (title, section, closing,
-  process, quote, metrics, header wrap detection) now measures with real
-  advance widths. With no fonts registered, output is byte-identical to the
-  previous character-count behavior.
-- **Measured SVG rendering** — paragraphs whose typeface is registered render
-  with real word wrap and baseline placement in `renderSVG`; unregistered
-  text keeps the one-line approximation, byte-identical to before.
+- **Measured slide builders** — with the style's fonts registered, the
+  builders that fitted text by character count (title, section, closing,
+  process, quote, metrics, header wrap detection) now measure with real
+  advance widths, never exceeding the configured role size. With no fonts
+  registered, output is byte-identical to the previous character-count
+  behavior (the ladder values are pinned by test).
+- **Measured SVG rendering** — single-run paragraphs whose typeface is
+  registered render with real word wrap and baseline placement in
+  `renderSVG` (mixed-run paragraphs keep the approximation); unregistered
+  text is byte-identical to before.
 
 ### Changed
 

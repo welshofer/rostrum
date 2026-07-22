@@ -102,8 +102,11 @@ struct SVGRenderer {
                 : align == "r" ? (x + w, "end") : (x, "start")
 
             let typeface = rPr?.firstChild(named: "a:latin")?[attribute: "typeface"]
-            if let typeface, let metrics = fonts.metrics(for: typeface) {
-                // Measured path: real word wrap and baseline placement.
+            if runs.count == 1, let typeface, let metrics = fonts.metrics(for: typeface) {
+                // Measured path: real word wrap and baseline placement —
+                // single-run paragraphs only, since a mixed-size/font
+                // paragraph measured at the first run's metrics would wrap
+                // wrong; those keep the one-line approximation below.
                 // (Left-aligned text starts at the body inset; the unmeasured
                 // branch below keeps its historical `x` so existing output is
                 // byte-identical for decks without registered fonts.)

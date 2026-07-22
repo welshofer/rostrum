@@ -143,7 +143,12 @@ public struct FontMetrics: Sendable {
 
         // Family names — lenient: a malformed name record is skipped, never
         // fatal, because names are a convenience while metrics are the point.
-        var names: [String] = []
+        // Unicode/Windows (UTF-16BE) names come first, and Macintosh records
+        // (MacRoman) are decoded only when pure ASCII — where the encodings
+        // agree — so `familyNames.first` is always a faithful name, never a
+        // mojibake decode of a non-ASCII Mac record.
+        var unicodeNames: [String] = []
+        var macNames: [String] = []
         if let name = tables["name"], name.length >= 6 {
             let count = (try? reader.u16(name.offset + 2)) ?? 0
             let storage = name.offset + ((try? reader.u16(name.offset + 4)) ?? 0)
@@ -156,18 +161,23 @@ public struct FontMetrics: Sendable {
                       nameID == 1 || nameID == 16,
                       storage + offset + length <= reader.count else { continue }
                 let bytes = Array(reader.bytes[(storage + offset)..<(storage + offset + length)])
-                let decoded: String?
                 switch platform {
-                case 0, 3: decoded = String(bytes: bytes, encoding: .utf16BigEndian)
-                case 1: decoded = String(bytes: bytes, encoding: .isoLatin1)
-                default: decoded = nil
-                }
-                if let decoded, !decoded.isEmpty, !names.contains(decoded) {
-                    names.append(decoded)
+                case 0, 3:
+                    if let decoded = String(bytes: bytes, encoding: .utf16BigEndian),
+                       !decoded.isEmpty, !unicodeNames.contains(decoded) {
+                        unicodeNames.append(decoded)
+                    }
+                case 1 where bytes.allSatisfy({ $0 <= 0x7F }):
+                    if let decoded = String(bytes: bytes, encoding: .ascii),
+                       !decoded.isEmpty, !macNames.contains(decoded) {
+                        macNames.append(decoded)
+                    }
+                default:
+                    break
                 }
             }
         }
-        familyNames = names
+        familyNames = unicodeNames + macNames.filter { !unicodeNames.contains($0) }
 
         if let os2 = tables["OS/2"], os2.length >= 74 {
             let fsSelection = try reader.u16(os2.offset + 62)
@@ -214,14 +224,22 @@ public struct FontMetrics: Sendable {
         return Double(asc - desc + gap) / Double(unitsPerEm) * pointSize
     }
 
-    /// Ascent above the baseline at `pointSize`, in points (positive).
+    /// Ascent above the baseline at `pointSize`, in points (positive). Uses
+    /// the same metric source as `lineHeight` (OS/2 typographic metrics when
+    /// the font selects them, else `hhea`), so baseline placement and line
+    /// advance always agree.
     public func ascent(pointSize: Double) -> Double {
-        Double(ascender) / Double(unitsPerEm) * pointSize
+        let units: Int
+        if let typo = typoMetrics, typo.useTypo { units = typo.ascender } else { units = ascender }
+        return Double(units) / Double(unitsPerEm) * pointSize
     }
 
-    /// Descent below the baseline at `pointSize`, in points (positive).
+    /// Descent below the baseline at `pointSize`, in points (positive). Same
+    /// metric-source rule as `ascent`/`lineHeight`.
     public func descent(pointSize: Double) -> Double {
-        Double(-descender) / Double(unitsPerEm) * pointSize
+        let units: Int
+        if let typo = typoMetrics, typo.useTypo { units = typo.descender } else { units = descender }
+        return Double(-units) / Double(unitsPerEm) * pointSize
     }
 }
 

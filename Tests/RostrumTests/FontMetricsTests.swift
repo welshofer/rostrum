@@ -111,14 +111,34 @@ enum TestFont {
         return t
     }
 
-    /// A `name` table (format 0) with a single Windows/Unicode family-name
-    /// record (nameID 1). BMP-only fixture strings.
+    /// A `name` table (format 0) from arbitrary records. Platform 3 records
+    /// are encoded UTF-16BE (encoding 1, language 0x409); platform 1 records
+    /// are raw UTF-8 bytes (ASCII values match MacRoman; non-ASCII values
+    /// deliberately produce the >0x7F bytes the parser must skip). BMP-only
+    /// fixture strings.
+    static func nameTable(records: [(nameID: Int, platform: Int, value: String)]) -> [UInt8] {
+        var storage: [UInt8] = []
+        var recs: [UInt8] = []
+        for r in records {
+            let bytes: [UInt8]
+            if r.platform == 1 {
+                bytes = Array(r.value.utf8)
+            } else {
+                var b: [UInt8] = []
+                for scalar in r.value.unicodeScalars { b += be16(Int(scalar.value)) }
+                bytes = b
+            }
+            recs += be16(r.platform) + be16(r.platform == 1 ? 0 : 1)
+                + be16(r.platform == 1 ? 0 : 0x409) + be16(r.nameID)
+                + be16(bytes.count) + be16(storage.count)
+            storage += bytes
+        }
+        return be16(0) + be16(records.count) + be16(6 + 12 * records.count) + recs + storage
+    }
+
+    /// A `name` table with a single Windows family-name record (nameID 1).
     static func nameTable(family: String) -> [UInt8] {
-        var utf16be: [UInt8] = []
-        for scalar in family.unicodeScalars { utf16be += be16(Int(scalar.value)) }
-        return be16(0) + be16(1) + be16(18)
-            + be16(3) + be16(1) + be16(0x409) + be16(1) + be16(utf16be.count) + be16(0)
-            + utf16be
+        nameTable(records: [(nameID: 1, platform: 3, value: family)])
     }
 
     /// The standard 96-glyph ASCII test font.
@@ -181,8 +201,13 @@ enum TestFont {
     @Test func os2TypoMetricsApplyOnlyWhenSelected() throws {
         let selected = try FontMetrics(data: TestFont.standard(os2: TestFont.os2(useTypoMetrics: true)))
         #expect(selected.lineHeight(pointSize: 10) == 11.0)  // (750 + 250 + 100) / 1000 × 10
+        // ascent/descent follow the same selection rule as lineHeight, so
+        // baseline placement and line advance can never disagree.
+        #expect(selected.ascent(pointSize: 10) == 7.5)
+        #expect(selected.descent(pointSize: 10) == 2.5)
         let unselected = try FontMetrics(data: TestFont.standard(os2: TestFont.os2(useTypoMetrics: false)))
         #expect(unselected.lineHeight(pointSize: 10) == 10.0)
+        #expect(unselected.ascent(pointSize: 10) == 8.0)
     }
 
     @Test func format12MatchesFormat4() throws {

@@ -18,6 +18,11 @@ public final class FontLibrary {
     /// table IDs 1 and 16) plus any `aliases`. Returns the primary name it
     /// registered under. Throws when the font is unparseable, or when it has
     /// no name table and no aliases were given.
+    ///
+    /// Names already registered are replaced — last registration wins. IDs
+    /// 1/16 are *family* names, not face names: two styles of one family
+    /// (regular and bold) share them, so registering both overwrites; pass
+    /// distinct `aliases` (e.g. "Arial Bold") to keep both reachable.
     @discardableResult
     public func register(_ data: Data, aliases: [String] = [], fontIndex: Int = 0) throws -> String {
         let metrics = try FontMetrics(data: data, fontIndex: fontIndex)
