@@ -10,7 +10,7 @@ import Testing
 /// The standard test font: 1000 units/em, ascender 800, descender −200,
 /// glyphs for ASCII 0x20…0x7E. Advances: space 250, 'i' 200, 'W' 900,
 /// everything else 500; `.notdef` 600.
-private enum TestFont {
+enum TestFont {
     static func be16(_ v: Int) -> [UInt8] { [UInt8((v >> 8) & 0xFF), UInt8(v & 0xFF)] }
     static func be32(_ v: Int) -> [UInt8] {
         [UInt8((v >> 24) & 0xFF), UInt8((v >> 16) & 0xFF), UInt8((v >> 8) & 0xFF), UInt8(v & 0xFF)]
@@ -111,8 +111,19 @@ private enum TestFont {
         return t
     }
 
+    /// A `name` table (format 0) with a single Windows/Unicode family-name
+    /// record (nameID 1). BMP-only fixture strings.
+    static func nameTable(family: String) -> [UInt8] {
+        var utf16be: [UInt8] = []
+        for scalar in family.unicodeScalars { utf16be += be16(Int(scalar.value)) }
+        return be16(0) + be16(1) + be16(18)
+            + be16(3) + be16(1) + be16(0x409) + be16(1) + be16(utf16be.count) + be16(0)
+            + utf16be
+    }
+
     /// The standard 96-glyph ASCII test font.
-    static func standard(cmap: [UInt8] = cmapFormat4(), os2: [UInt8]? = nil) -> Data {
+    static func standard(cmap: [UInt8] = cmapFormat4(), os2: [UInt8]? = nil,
+                         familyName: String? = nil) -> Data {
         let advances = [600] + (0x20...0x7E).map(advance(forChar:))
         var tables: [(String, [UInt8])] = [
             ("head", head(upem: 1000)),
@@ -122,6 +133,7 @@ private enum TestFont {
             ("cmap", cmap),
         ]
         if let os2 { tables.append(("OS/2", os2)) }
+        if let familyName { tables.append(("name", nameTable(family: familyName))) }
         return Data(assemble(tables: tables))
     }
 

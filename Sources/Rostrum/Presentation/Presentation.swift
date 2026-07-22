@@ -14,6 +14,12 @@ public final class Presentation {
     /// radius tokens that `applyDesign` doesn't persist into the theme DOM.
     public internal(set) var appliedDesign: Design?
 
+    /// Fonts registered for text measurement — the slide builders and the SVG
+    /// renderer consult these to measure instead of estimate. Explicit
+    /// registration only (see `FontLibrary`); an empty library reproduces the
+    /// pre-metrics behavior byte-for-byte.
+    public let fonts = FontLibrary()
+
     /// The slide collection: iterate, index, `add()`, `remove(at:)`,
     /// `move(from:to:)`, `duplicate(at:)`.
     public var slides: Slides {

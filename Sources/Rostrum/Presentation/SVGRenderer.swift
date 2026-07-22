@@ -11,6 +11,9 @@ struct SVGRenderer {
     let slideSize: (width: EMU, height: EMU)
     let theme: Theme
     let package: OPCPackage
+    /// Registered fonts: paragraphs whose typeface resolves here get real
+    /// word wrap and baseline placement instead of the one-line approximation.
+    let fonts: FontLibrary
 
     private let emuPerPoint = 12700
 
@@ -71,10 +74,17 @@ struct SVGRenderer {
         }
     }
 
-    // MARK: - Text (approximate: one line per paragraph)
+    // MARK: - Text (measured when the typeface is registered; else
+    // approximate: one line per paragraph)
 
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int)) -> String {
         let (x, y, w, h) = f
+        let bodyPr = txBody.firstChild(named: "a:bodyPr")
+        func inset(_ name: String, _ fallback: Int) -> Int {
+            bodyPr?[attribute: name].flatMap { Int($0) } ?? fallback
+        }
+        let contentX = x + inset("lIns", 91_440)
+        let contentW = Swift.max(0, w - inset("lIns", 91_440) - inset("rIns", 91_440))
         let paragraphs = txBody.children(named: "a:p")
         // Stack paragraphs from the top with a line height per font size.
         var out = ""
@@ -90,11 +100,32 @@ struct SVGRenderer {
             let align = p.firstChild(named: "a:pPr")?[attribute: "algn"] ?? "l"
             let (anchorX, textAnchor) = align == "ctr" ? (x + w / 2, "middle")
                 : align == "r" ? (x + w, "end") : (x, "start")
-            cursorY += sizeEMU
-            out += "<text x=\"\(anchorX)\" y=\"\(cursorY)\" font-size=\"\(sizeEMU)\" "
-                + "fill=\"\(color)\" text-anchor=\"\(textAnchor)\"\(bold ? " font-weight=\"bold\"" : "")>"
-                + escape(clip(text, width: w, sizeEMU: sizeEMU)) + "</text>"
-            cursorY += sizeEMU / 3
+
+            let typeface = rPr?.firstChild(named: "a:latin")?[attribute: "typeface"]
+            if let typeface, let metrics = fonts.metrics(for: typeface) {
+                // Measured path: real word wrap and baseline placement.
+                // (Left-aligned text starts at the body inset; the unmeasured
+                // branch below keeps its historical `x` so existing output is
+                // byte-identical for decks without registered fonts.)
+                let lineX = textAnchor == "start" ? contentX : anchorX
+                let sizePt = Double(sizeEMU) / Double(emuPerPoint)
+                let lines = TextMeasurer(metrics).wrap(
+                    text, pointSize: sizePt, width: Double(contentW) / Double(emuPerPoint))
+                let lineH = Int((metrics.lineHeight(pointSize: sizePt) * Double(emuPerPoint)).rounded())
+                let ascent = Int((metrics.ascent(pointSize: sizePt) * Double(emuPerPoint)).rounded())
+                for line in lines {
+                    out += "<text x=\"\(lineX)\" y=\"\(cursorY + ascent)\" font-size=\"\(sizeEMU)\" "
+                        + "fill=\"\(color)\" text-anchor=\"\(textAnchor)\"\(bold ? " font-weight=\"bold\"" : "")>"
+                        + escape(line) + "</text>"
+                    cursorY += lineH
+                }
+            } else {
+                cursorY += sizeEMU
+                out += "<text x=\"\(anchorX)\" y=\"\(cursorY)\" font-size=\"\(sizeEMU)\" "
+                    + "fill=\"\(color)\" text-anchor=\"\(textAnchor)\"\(bold ? " font-weight=\"bold\"" : "")>"
+                    + escape(clip(text, width: w, sizeEMU: sizeEMU)) + "</text>"
+                cursorY += sizeEMU / 3
+            }
             _ = h
         }
         return out
@@ -239,7 +270,7 @@ public extension Presentation {
     /// Render one slide to a self-contained SVG string (thumbnails / visual diff).
     func renderSVG(slideAt index: Int, pixelWidth: Int = 1280) throws -> String {
         try SVGRenderer(slidePart: slides[index].part, slideSize: slideSize,
-                        theme: theme, package: package).render(pixelWidth: pixelWidth)
+                        theme: theme, package: package, fonts: fonts).render(pixelWidth: pixelWidth)
     }
 
     /// Write one `slide-N.svg` per slide into `directory`; returns the URLs.

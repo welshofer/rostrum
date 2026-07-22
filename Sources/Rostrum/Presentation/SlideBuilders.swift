@@ -15,9 +15,14 @@ public extension Presentation {
         let slide = try blankCanvas()
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
-        // Fit the display size to the title length so a long headline stays on the
-        // slide (a 96pt eight-word title would run off the top).
-        let fitted = title.count > 44 ? 60.0 : (title.count > 28 ? 74.0 : s.type(.display).sizePt)
+        // Fit the display size to the title so a long headline stays on the
+        // slide — measured with real metrics when the deck's fonts are
+        // registered, estimated by length otherwise.
+        let titleBand = grid.cell(column: 0, row: 4, columnSpan: 11, rowSpan: 4)
+        let fitted = fitSize([title], font: s.type(.display).font,
+                             candidates: [s.type(.display).sizePt, 74, 60],
+                             maxLines: 2, lineWidth: titleBand.width,
+                             fallback: title.count > 44 ? 60.0 : (title.count > 28 ? 74.0 : s.type(.display).sizePt))
         let titleStyle = s.with(.display) { $0.sizePt = fitted }
         try slide.addAccentRule(
             in: Rect(x: grid.content.minX, y: grid.cell(column: 0, row: 3).minY,
@@ -25,7 +30,7 @@ public extension Presentation {
         if let kicker {
             try slide.addKicker(kicker, in: grid.cell(column: 0, row: 3, columnSpan: 12), style: s)
         }
-        try slide.addText(title, in: grid.cell(column: 0, row: 4, columnSpan: 11, rowSpan: 4),
+        try slide.addText(title, in: titleBand,
                           role: .display, style: titleStyle, anchor: .bottom)
         if let subtitle {
             try slide.addText(subtitle, in: grid.cell(column: 0, row: 9, columnSpan: 10, rowSpan: 2),
@@ -50,11 +55,15 @@ public extension Presentation {
                               role: .display, style: s, color: onBg)
         }
         // Keep the section title/subtitle in the left half so a right-hand image
-        // panel (added by the renderer) never overlaps the text; fit the title to
-        // its length so a long one stays ≤2 lines and clears the subtitle below.
-        let fitted = title.count > 40 ? 30.0 : (title.count > 24 ? 34.0 : s.type(.title).sizePt)
+        // panel (added by the renderer) never overlaps the text; fit the title so
+        // a long one stays ≤2 lines and clears the subtitle below.
+        let titleBand = grid.cell(column: 0, row: 4, columnSpan: 6, rowSpan: 3)
+        let fitted = fitSize([title], font: s.type(.title).font,
+                             candidates: [s.type(.title).sizePt, 34, 30],
+                             maxLines: 2, lineWidth: titleBand.width,
+                             fallback: title.count > 40 ? 30.0 : (title.count > 24 ? 34.0 : s.type(.title).sizePt))
         let titleStyle = s.with(.title) { $0.sizePt = fitted }
-        try slide.addText(title, in: grid.cell(column: 0, row: 4, columnSpan: 6, rowSpan: 3),
+        try slide.addText(title, in: titleBand,
                           role: .title, style: titleStyle, color: onBg, anchor: .bottom)
         if let subtitle {
             // Start higher (row 8) and run wider (9 cols) so a long closing CTA
@@ -84,9 +93,13 @@ public extension Presentation {
 
         // Title uses (nearly) the full width so a real closing line — "Ship one
         // narrow agent this quarter" — never cramps to half-width and breaks badly.
-        let fitted = title.count > 48 ? 34.0 : (title.count > 30 ? 40.0 : 46.0)
+        let titleBand = grid.cell(column: 0, row: 3, columnSpan: 11, rowSpan: 3)
+        let fitted = fitSize([title], font: s.type(.title).font,
+                             candidates: [46, 40, 34],
+                             maxLines: 2, lineWidth: titleBand.width,
+                             fallback: title.count > 48 ? 34.0 : (title.count > 30 ? 40.0 : 46.0))
         let titleStyle = s.with(.title) { $0.sizePt = fitted }
-        try slide.addText(title, in: grid.cell(column: 0, row: 3, columnSpan: 11, rowSpan: 3),
+        try slide.addText(title, in: titleBand,
                           role: .title, style: titleStyle, color: onBg, anchor: .bottom)
         if let callToAction, !callToAction.isEmpty {
             try slide.addText(callToAction, in: grid.cell(column: 0, row: 7, columnSpan: 10, rowSpan: 3),
@@ -174,10 +187,13 @@ public extension Presentation {
         let numberStyle = s.with(.stat) { $0.sizePt = 44 }
         // Step captions live in narrow columns (~200pt at 4 steps), where the
         // body's airy line height and full size wrap a long step to five lines
-        // and off the bottom of the slide. Fit the size to the longest step and
-        // tighten the leading — every caption then stays inside its column.
+        // and off the bottom of the slide. Fit the size so every caption stays
+        // inside its column, and tighten the leading.
         let longest = items.map(\.count).max() ?? 0
-        let capSize: Double = longest > 44 ? 20 : (longest > 30 ? 22 : s.type(.body).sizePt)
+        let capSize = fitSize(items, font: s.type(.body).font,
+                              candidates: [s.type(.body).sizePt, 22, 20],
+                              maxLines: 4, lineWidth: cols[0].width,
+                              fallback: longest > 44 ? 20 : (longest > 30 ? 22 : s.type(.body).sizePt))
         let captionStyle = s.with(.body) {
             $0.sizePt = Swift.min($0.sizePt, capSize)
             $0.lineHeight = Swift.min($0.lineHeight, 1.2)
@@ -296,7 +312,14 @@ public extension Presentation {
         // Fit the number to the column so a wide value ("$300B") stays on one line.
         let maxLen = items.map { $0.value.count }.max() ?? 2
         let base: Double = items.count >= 4 ? 54 : (items.count == 3 ? 68 : 104)
-        let numberStyle = s.with(.stat) { $0.sizePt = maxLen >= 6 ? base * 0.8 : base }
+        let shrink: Bool
+        if let metrics = fonts.metrics(for: s.type(.stat).font) {
+            let columnPt = Double((cols[0].width - .points(22)).rawValue) / Double(EMU.perPoint)
+            shrink = items.contains { metrics.width(of: $0.value, pointSize: base) > columnPt }
+        } else {
+            shrink = maxLen >= 6
+        }
+        let numberStyle = s.with(.stat) { $0.sizePt = shrink ? base * 0.8 : base }
         for (i, m) in items.enumerated() {
             let col = cols[i]
             let accent = s.legibleAccent(i + 1, on: s.background)
@@ -355,12 +378,16 @@ public extension Presentation {
         let slide = try blankCanvas()
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
-        // Fit the quote to its length: at the full 40pt a four-line quote runs
-        // ~240pt in a ~163pt band and its overflow lands on the attribution row.
-        let fitted = quote.count > 220 ? 28.0 : (quote.count > 120 ? 34.0 : s.type(.quote).sizePt)
+        // Fit the quote: at the full 40pt a four-line quote runs ~240pt in a
+        // ~163pt band and its overflow lands on the attribution row.
+        let quoteBand = grid.cell(column: 1, row: 3, columnSpan: 10, rowSpan: 5)
+        let fitted = fitSize(["\u{201C}\(quote)\u{201D}"], font: s.type(.quote).font,
+                             candidates: [s.type(.quote).sizePt, 34, 28],
+                             maxLines: 4, lineWidth: quoteBand.width,
+                             fallback: quote.count > 220 ? 28.0 : (quote.count > 120 ? 34.0 : s.type(.quote).sizePt))
         let quoteStyle = s.with(.quote) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText("\u{201C}\(quote)\u{201D}",
-                          in: grid.cell(column: 1, row: 3, columnSpan: 10, rowSpan: 5),
+                          in: quoteBand,
                           role: .quote, style: quoteStyle, align: .center, anchor: .middle)
         if let attribution {
             try slide.addText("— \(attribution)",
@@ -412,20 +439,51 @@ public extension Presentation {
             try slide.addKicker(kicker, in: grid.cell(column: 0, row: 0, columnSpan: 12), style: style)
             titleRow = 1
         }
-        let fitted = title.count > 60 ? 30.0 : (title.count > 36 ? 34.0 : style.type(.title).sizePt)
-        let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         let band = grid.cell(column: 0, row: titleRow, columnSpan: 11, rowSpan: 2)
+        // maxLines 1: the band is sized for a single line, so with metrics we
+        // prefer the largest size that avoids wrapping at all.
+        let fitted = fitSize([title], font: style.type(.title).font,
+                             candidates: [style.type(.title).sizePt, 34, 30],
+                             maxLines: 1, lineWidth: band.width,
+                             fallback: title.count > 60 ? 30.0 : (title.count > 36 ? 34.0 : style.type(.title).sizePt))
+        let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top)
         let wraps = estimatedLines(title, style: titleStyle.type(.title), width: band.width) >= 2
         return (titleRow + (wraps ? 4 : 3), wraps)
     }
 
-    /// Deterministic wrap estimate: average glyph width ≈ 0.52 × point size (a
-    /// touch wider than most text faces, so the estimate errs toward reserving
-    /// space rather than colliding).
+    /// Deterministic wrap estimate. With the style's font registered in
+    /// `fonts`, the count is measured (real advance widths); otherwise it's
+    /// estimated at an average glyph width of 0.52 × point size (a touch wider
+    /// than most text faces, so the estimate errs toward reserving space
+    /// rather than colliding).
     private func estimatedLines(_ text: String, style: TextStyle, width: EMU) -> Int {
-        let widthPt = Double(width.rawValue) / 12700.0
+        let widthPt = Double(width.rawValue) / Double(EMU.perPoint)
+        if let metrics = fonts.metrics(for: style.font) {
+            return TextMeasurer(metrics).wrap(text, pointSize: style.sizePt, width: widthPt).count
+        }
         let charsPerLine = Swift.max(1.0, widthPt / (0.52 * style.sizePt))
         return Int((Double(text.count) / charsPerLine).rounded(.up))
+    }
+
+    /// The largest of `candidates` at which every string in `texts` wraps to
+    /// at most `maxLines` lines in `lineWidth` — measured with real metrics
+    /// when `font` is registered in the deck's `fonts`. Unregistered fonts use
+    /// `fallback` (each call site's calibrated character-count ladder), so a
+    /// deck built without registered fonts is byte-identical to before the
+    /// metrics engine existed.
+    private func fitSize(_ texts: [String], font: String, candidates: [Double],
+                         maxLines: Int, lineWidth: EMU,
+                         fallback: @autoclosure () -> Double) -> Double {
+        guard let metrics = fonts.metrics(for: font) else { return fallback() }
+        let widthPt = Double(lineWidth.rawValue) / Double(EMU.perPoint)
+        let measurer = TextMeasurer(metrics)
+        for size in candidates.sorted(by: >) {
+            let fits = texts.allSatisfy {
+                measurer.wrap($0, pointSize: size, width: widthPt).count <= maxLines
+            }
+            if fits { return size }
+        }
+        return candidates.min() ?? fallback()
     }
 }

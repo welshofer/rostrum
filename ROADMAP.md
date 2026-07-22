@@ -141,11 +141,14 @@ box; this program makes Rostrum the first.
   height. Computed `a:normAutofit`: PowerPoint's fontScale/lnSpcReduction
   ladder, applied via `textFrame.fitText(in:using:)` / `shape.fitText(using:)`.
   Deterministic synthetic-font tests plus a real-font oracle (DejaVu/Arial).
-- **M2 — Retire the heuristics.** Thread metrics through `SlideBuilders`
-  (today: character-count guesses), give builders honest capacity contracts
-  instead of silent truncation, and teach `SVGRenderer` real line breaking
-  and baselines. Font sourcing strategy: embedded fonts first, caller-
-  provided files, platform font directories last.
+- **M2 — Retire the heuristics (core shipped 2026-07-22, this branch).**
+  `FontLibrary` (explicit, deterministic registration; family names parsed
+  from the sfnt `name` table); builders measure with real metrics when the
+  style's fonts are registered and keep the calibrated character-count ladder
+  as the byte-identical fallback; `SVGRenderer` renders measured word wrap
+  and baselines for registered typefaces. *Still open:* honest builder
+  capacity contracts (no silent truncation), auto-registering fonts embedded
+  in an opened deck.
 - **M3 — Read-side object model.** Polymorphic shape enumeration (`p:pic`,
   `p:graphicFrame`, `p:grpSp`, `p:cxnSp` visible on opened decks), fill/line
   read-back, core/extended/custom document properties, multi-master

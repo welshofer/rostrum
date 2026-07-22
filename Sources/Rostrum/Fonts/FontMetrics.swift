@@ -29,6 +29,11 @@ public struct FontMetrics: Sendable {
     /// bit 7), matching modern rasterizers.
     let typoMetrics: (ascender: Int, descender: Int, lineGap: Int, useTypo: Bool)?
 
+    /// Family names from the `name` table (IDs 1 and 16), in table order —
+    /// the names a deck's `a:latin@typeface` refers to this font by. Empty
+    /// when the font has no parseable name table.
+    public let familyNames: [String]
+
     /// Advance width per glyph id, in font units, resolved to `numGlyphs`
     /// entries (the trailing `hmtx` run repeats the last explicit advance).
     private let advances: [Int]
@@ -135,6 +140,34 @@ public struct FontMetrics: Sendable {
 
         let cmap = try require("cmap", atLeast: 4)
         characterMap = try CharacterMap(reader: reader, cmapOffset: cmap)
+
+        // Family names — lenient: a malformed name record is skipped, never
+        // fatal, because names are a convenience while metrics are the point.
+        var names: [String] = []
+        if let name = tables["name"], name.length >= 6 {
+            let count = (try? reader.u16(name.offset + 2)) ?? 0
+            let storage = name.offset + ((try? reader.u16(name.offset + 4)) ?? 0)
+            for i in 0..<count {
+                let record = name.offset + 6 + 12 * i
+                guard let platform = try? reader.u16(record),
+                      let nameID = try? reader.u16(record + 6),
+                      let length = try? reader.u16(record + 8),
+                      let offset = try? reader.u16(record + 10),
+                      nameID == 1 || nameID == 16,
+                      storage + offset + length <= reader.count else { continue }
+                let bytes = Array(reader.bytes[(storage + offset)..<(storage + offset + length)])
+                let decoded: String?
+                switch platform {
+                case 0, 3: decoded = String(bytes: bytes, encoding: .utf16BigEndian)
+                case 1: decoded = String(bytes: bytes, encoding: .isoLatin1)
+                default: decoded = nil
+                }
+                if let decoded, !decoded.isEmpty, !names.contains(decoded) {
+                    names.append(decoded)
+                }
+            }
+        }
+        familyNames = names
 
         if let os2 = tables["OS/2"], os2.length >= 74 {
             let fsSelection = try reader.u16(os2.offset + 62)
