@@ -55,7 +55,7 @@ import Testing
         let reopened = try Presentation(data: try deck.serializedData())
         #expect(try reopened.slides[0].shapes[0].textFrame?.text == "original")
         #expect(try reopened.slides[1].shapes[0].textFrame?.text == "original")
-        #expect(try reopened.slides[1].part.uri != try reopened.slides[0].part.uri)
+        #expect(try reopened.slides[1].part.uri != reopened.slides[0].part.uri)
         // Unique sldIds across the deck.
         let ids = try reopened.presentationPart.dom()
             .firstChild(named: "p:sldIdLst")!.childElements
