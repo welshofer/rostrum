@@ -93,8 +93,10 @@ Ranked by demand evidence from python-pptx's issue tracker:
    pristine parts, but there is **no dedicated round-trip test** — the v0.1
    P3 bullet claiming one was wrong.)
 6. **ChartEx** (`cx:`) — waterfall, sunburst, treemap, histogram, funnel.
-7. **Reading chart data back out** and robust `replaceData` (python-pptx
-   corrupts on structure mismatch).
+7. ~~Reading chart data back out and robust `replaceData`~~ ✅ **Shipped
+   2026-07-26** (v0.4 M4): `deck.charts`, and a `replaceData` that validates
+   the replacement against the chart's own structure and refuses rather than
+   corrupting — the failure mode python-pptx is known for.
 
 ## Phase 5 — Moonshots
 
@@ -161,7 +163,13 @@ box; this program makes Rostrum the first.
   properties shipped alongside, then fill/line/background/cell appearance
   read-back and a multi-master `slideMasters` collection with
   `layout.master` / `slide.layout` / `slide.master`. **M3 complete.**
-- **M4 — Chart read-back + `replaceData` that never corrupts.** Requires M3.
+- **M4 — Chart read-back + `replaceData` that never corrupts (shipped
+  2026-07-26).** `deck.charts`/`chartFrame.chart` expose kind, title,
+  categories and series from the chart XML caches; `replaceData(_:)` edits
+  values, series names and categories in place (formulas, colors, axes and
+  unmodeled elements untouched) and rewrites the embedded workbook, refusing
+  any structural change before writing a byte. *Still open:* reading scatter/
+  bubble XY data, and adding or removing series.
 
 Hardening backlog (schedule opportunistically): pristine round-trip for
 `.rels` parts and `[Content_Types].xml` (today both are parsed and

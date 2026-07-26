@@ -50,6 +50,19 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   (`process` 5, `smartArt` 6, `bands` 6, `pyramid` 5, `metrics` 4), which
   previously truncated silently with no way to know the cap.
 
+- **Chart read-back and a `replaceData` that refuses to corrupt (v0.4 M4).**
+  `deck.charts` (and `chartFrame.chart`) read a chart's kind, title,
+  categories and series straight from the chart XML's caches — gaps keep
+  their index — so you can open a deck and ask what it plots.
+  `chart.replaceData(_:)` swaps the numbers and labels **in place**: `c:f`
+  formulas, series colors, axes, data labels and every element Rostrum does
+  not model survive untouched, and the embedded Edit-Data workbook is
+  rewritten to match. A replacement that would change the chart's structure
+  (different series or category count) is refused *before anything is
+  written* — `chart.replacementProblem(for:)` reports it without throwing.
+  python-pptx's `replace_data` rewrites from a fresh model and is known to
+  produce decks PowerPoint offers to repair on structure mismatch; this is
+  the deliberate opposite.
 - **Appearance read-back** — `shape.fill`, `shape.line`, `shape.hasShadow`,
   `slide.background` and `cell.fill` report what a shape actually carries
   (`ReadFill`/`ReadLine`, covering solid + alpha, theme colors, gradients,
