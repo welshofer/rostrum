@@ -33,10 +33,10 @@ from phase 0 onward.
 - [x] `rostrum-gen` v0: declarative schema tables (child ordering, attribute
   defaults) generated from python-pptx's, consumed by generic DOM helpers.
   *Still open:* per-element typed accessors on top of the tables.
-- [ ] Layouts/masters collections — *partial:* `layouts`/`layout(type:)` and
-  placeholder-inheriting frames shipped, but only the **first** master's
-  layouts are visible; multi-master decks (which `DeckMerge` can already
-  import!) need a real `slideMasters` collection
+- [x] Layouts/masters collections — `layouts`/`layout(type:)`, placeholder-
+  inheriting frames, and (2026-07-26) `slideMasters` with per-master
+  `layouts`/`theme`, `allLayouts`, and `layout.master`/`slide.layout`/
+  `slide.master`
 - [x] Byte-identity corpus gate in CI — Rostrum-generated corpus (2026-07-19);
   **real-deck fixtures** enroll automatically via
   `Tests/RostrumTests/Fixtures/RealDecks/` (scaffold 2026-07-22, decks landing)
@@ -158,8 +158,9 @@ box; this program makes Rostrum the first.
   read-back and group child-space mapping. Reads are provably non-mutating
   (this pass fixed a getter that corrupted graphic frames). Placeholder
   binding and `effectiveFrame` now cover every shape kind, and document
-  properties shipped alongside. *Still open:* fill/line read-back and a
-  multi-master `slideMasters` collection.
+  properties shipped alongside, then fill/line/background/cell appearance
+  read-back and a multi-master `slideMasters` collection with
+  `layout.master` / `slide.layout` / `slide.master`. **M3 complete.**
 - **M4 — Chart read-back + `replaceData` that never corrupts.** Requires M3.
 
 Hardening backlog (schedule opportunistically): pristine round-trip for

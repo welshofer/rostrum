@@ -50,6 +50,18 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   (`process` 5, `smartArt` 6, `bands` 6, `pyramid` 5, `metrics` 4), which
   previously truncated silently with no way to know the cap.
 
+- **Appearance read-back** — `shape.fill`, `shape.line`, `shape.hasShadow`,
+  `slide.background` and `cell.fill` report what a shape actually carries
+  (`ReadFill`/`ReadLine`, covering solid + alpha, theme colors, gradients,
+  picture fills, patterns and explicit `noFill`). Fills and lines were
+  write-only, so "open a deck and restyle only the untouched shapes" was
+  impossible. A shape that inherits its appearance reads as `nil` rather
+  than a guess, and every accessor is a pure read.
+- **Multi-master decks** — `deck.slideMasters` exposes every master with its
+  own `layouts` and `theme`, `deck.allLayouts` spans all of them, and
+  `layout.master` / `slide.layout` / `slide.master` walk the chain. Until now
+  only the first master's layouts were reachable, even though
+  `slides.importAll(from:)` could already bring multi-master decks in.
 - **Document properties** — `deck.documentProperties` reads and writes the
   OPC core set (title, author, subject, keywords, comments, category,
   contentStatus, lastModifiedBy, revision, created, modified), the Office
