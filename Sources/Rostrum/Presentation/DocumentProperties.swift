@@ -258,13 +258,14 @@ public final class DocumentProperties {
     private func customPart(creatingIfNeeded create: Bool) -> Part? {
         if let existing = package.parts[Self.customURI] { return existing }
         guard create else { return nil }
+        let namespaces = "xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/custom-properties\""
+            + " xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\""
         let part = package.addPart(
             uri: Self.customURI,
             contentType: ContentType.officeCustomProperties,
             blob: Data("""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties"\
- xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"></Properties>
+                <Properties \(namespaces)></Properties>
                 """.utf8))
         package.rels.add(type: RelType.customProperties, target: "docProps/custom.xml")
         return part
