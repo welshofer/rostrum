@@ -50,6 +50,14 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   (`process` 5, `smartArt` 6, `bands` 6, `pyramid` 5, `metrics` 4), which
   previously truncated silently with no way to know the cap.
 
+- **Document properties** — `deck.documentProperties` reads and writes the
+  OPC core set (title, author, subject, keywords, comments, category,
+  contentStatus, lastModifiedBy, revision, created, modified), the Office
+  extended set (application, company, manager), and user-defined custom
+  properties (`docProps/custom.xml`, typed string/int/double/bool/date,
+  created on first write with its content type and relationship wired up).
+  Timestamps are never stamped from the wall clock — you pass the `Date` —
+  so building the same deck twice still yields identical bytes.
 - **Read-side shape model (v0.4 M3).** `slide.shapes` now enumerates every
   child of the shape tree — pictures, tables, charts, SmartArt, groups and
   connectors, not just `p:sp` — so opening a deck someone else authored

@@ -82,6 +82,7 @@ public enum ContentType {
     public static let opcRelationships = "application/vnd.openxmlformats-package.relationships+xml"
     public static let opcCoreProperties = "application/vnd.openxmlformats-package.core-properties+xml"
     public static let officeExtendedProperties = "application/vnd.openxmlformats-officedocument.extended-properties+xml"
+    public static let officeCustomProperties = "application/vnd.openxmlformats-officedocument.custom-properties+xml"
     public static let theme = "application/vnd.openxmlformats-officedocument.theme+xml"
 
     public static let presentationMain = "application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"
@@ -110,6 +111,7 @@ public enum RelType {
     public static let officeDocument = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"
     public static let coreProperties = "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties"
     public static let extendedProperties = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties"
+    public static let customProperties = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties"
     public static let slideMaster = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
     public static let slideLayout = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
     public static let slide = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"

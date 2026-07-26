@@ -69,7 +69,9 @@ from phase 0 onward.
 - [x] Linux CI (Swift 6.0/6.1 containers, oracle tools installed)
 - [ ] More chart types: radar, bubble, stock, combo — **not shipped**
   (correcting the earlier ✅; nothing beyond the six kinds above exists)
-- [ ] Core/extended/custom document properties API, media parts (video/audio)
+- [x] Core/extended/custom document properties API (`deck.documentProperties`,
+  2026-07-26)
+- [ ] Media parts (video/audio)
 - [ ] Performance pass on large decks (no benchmarks exist yet)
 
 ## Phase 4 — Beyond parity (the reason Rostrum exists)
@@ -154,9 +156,10 @@ box; this program makes Rostrum the first.
   diagram/unmodeled), `p:grpSp` and `p:cxnSp` are visible on opened decks as
   typed `Shape` subclasses, with image/table/chart/diagram/connector/group
   read-back and group child-space mapping. Reads are provably non-mutating
-  (this pass fixed a getter that corrupted graphic frames). *Still open:*
-  fill/line read-back, core/extended/custom document properties, multi-master
-  `slideMasters`, placeholder resolution for non-`p:sp` placeholders.
+  (this pass fixed a getter that corrupted graphic frames). Placeholder
+  binding and `effectiveFrame` now cover every shape kind, and document
+  properties shipped alongside. *Still open:* fill/line read-back and a
+  multi-master `slideMasters` collection.
 - **M4 — Chart read-back + `replaceData` that never corrupts.** Requires M3.
 
 Hardening backlog (schedule opportunistically): pristine round-trip for
