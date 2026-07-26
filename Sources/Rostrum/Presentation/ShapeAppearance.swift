@@ -72,7 +72,7 @@ public struct ReadLine: Equatable, Sendable {
     public var isNone: Bool
 
     init(element: XML.Element) {
-        width = element[attribute: "w"].flatMap { Int($0) }.map(EMU.init)
+        width = element[attribute: "w"].flatMap { Int($0) }.map { EMU($0) }
         dashStyle = element.firstChild(named: "a:prstDash")?[attribute: "val"]
         isNone = element.firstChild(named: "a:noFill") != nil
         let solid = element.firstChild(named: "a:solidFill")
