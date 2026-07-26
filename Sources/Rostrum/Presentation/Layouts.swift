@@ -127,8 +127,12 @@ enum Placeholders {
         slidePart.markDirty()
     }
 
+    /// The `p:ph` binding, read through whichever non-visual container this
+    /// element kind uses — `p:nvSpPr`, `p:nvPicPr`, `p:nvGraphicFramePr`,
+    /// `p:nvCxnSpPr` or `p:nvGrpSpPr`, always the first child. A picture or a
+    /// table dropped into a content placeholder is a placeholder too.
     static func phElement(of sp: XML.Element) -> XML.Element? {
-        sp.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:nvPr")?.firstChild(named: "p:ph")
+        sp.childElements.first?.firstChild(named: "p:nvPr")?.firstChild(named: "p:ph")
     }
 }
 
@@ -197,23 +201,28 @@ extension Slide {
         "dt": "dt", "ftr": "ftr", "sldNum": "sldNum",
     ]
 
+    /// Scans every shape-tree child, not just `p:sp`: layouts and masters put
+    /// placeholders on pictures and graphic frames too.
     private func placeholderSp(
         in phPart: Part, matching predicate: (XML.Element) -> Bool
     ) throws -> XML.Element? {
-        for sp in try Slide.spTree(of: phPart).children(named: "p:sp") {
-            if let ph = Placeholders.phElement(of: sp), predicate(ph) { return sp }
+        guard let tree = Slide.existingSpTree(of: phPart) else { return nil }
+        for element in tree.childElements {
+            // The tree's own properties are not shapes.
+            switch element.name {
+            case "p:nvGrpSpPr", "p:grpSpPr", "p:extLst": continue
+            default: break
+            }
+            guard let ph = Placeholders.phElement(of: element), predicate(ph) else { continue }
+            return element
         }
         return nil
     }
 
+    /// The transform written on an element, through the same per-kind
+    /// dispatch `Shape.explicitFrame` uses — so a chart, table or group
+    /// reports the geometry it actually carries instead of nil.
     private func explicitFrame(of sp: XML.Element) -> Rect? {
-        guard let xfrm = sp.firstChild(named: "p:spPr")?.firstChild(named: "a:xfrm"),
-              let off = xfrm.firstChild(named: "a:off"),
-              let ext = xfrm.firstChild(named: "a:ext"),
-              let x = off[attribute: "x"].flatMap({ Int($0) }),
-              let y = off[attribute: "y"].flatMap({ Int($0) }),
-              let cx = ext[attribute: "cx"].flatMap({ Int($0) }),
-              let cy = ext[attribute: "cy"].flatMap({ Int($0) }) else { return nil }
-        return Rect(x: EMU(x), y: EMU(y), width: EMU(cx), height: EMU(cy))
+        ShapeTransform.rect(ShapeTransform.element(of: sp))
     }
 }

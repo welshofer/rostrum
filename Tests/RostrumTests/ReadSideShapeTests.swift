@@ -160,6 +160,67 @@ private func deckWithForeignSlide() throws -> Presentation {
                 == Rect(x: EMU(2000), y: EMU(2000), width: EMU(200), height: EMU(200)))
     }
 
+    @Test func effectiveFrameReadsGraphicFramesAndGroups() throws {
+        // effectiveFrame resolved geometry through a p:spPr-only path, so it
+        // reported "no geometry" for exactly the kinds M3 made visible — and
+        // disagreed with shape.explicitFrame on the same shape.
+        let slide = try deckWithForeignSlide().slides[0]
+        for shape in slide.shapes.all {
+            #expect(slide.effectiveFrame(of: shape) == shape.explicitFrame,
+                    "effectiveFrame disagrees with explicitFrame for \(shape.kind)")
+        }
+        let table = try #require(slide.shapes.all.first { $0.kind == .table })
+        #expect(slide.effectiveFrame(of: table)
+                == Rect(x: EMU(1000), y: EMU(2000), width: EMU(3000), height: EMU(4000)))
+        let group = try #require(slide.shapes.all.first { $0.kind == .group })
+        #expect(slide.effectiveFrame(of: group)?.width == EMU(2000))
+    }
+
+    @Test func placeholdersBindOnPicturesAndGraphicFrames() throws {
+        // A table or picture dropped into a content placeholder carries p:ph
+        // under p:nvGraphicFramePr / p:nvPicPr, not p:nvSpPr.
+        let deck = try Presentation()
+        let part = try deck.slides[0].part
+        for (container, element) in [("p:nvGraphicFramePr", "p:graphicFrame"),
+                                     ("p:nvPicPr", "p:pic")] {
+            let shapeElement = XML.Element(element)
+            let nv = XML.Element(container)
+            nv.appendElement(XML.Element("p:cNvPr", attributes: [("id", "9"), ("name", "PH")]))
+            let nvPr = XML.Element("p:nvPr")
+            nvPr.appendElement(XML.Element("p:ph", attributes: [("type", "tbl"), ("idx", "4")]))
+            nv.appendElement(nvPr)
+            shapeElement.appendElement(nv)
+            let shape = Shape(element: shapeElement, part: part, package: deck.package)
+            #expect(shape.placeholder?.type == "tbl", "\(element) placeholder not resolved")
+            #expect(shape.placeholder?.idx == 4)
+        }
+    }
+
+    @Test func groupFlipMirrorsChildCoordinates() throws {
+        let deck = try Presentation()
+        let part = try deck.slides[0].part
+        func group(flipH: Bool, flipV: Bool) -> GroupShape {
+            let grpSp = XML.Element("p:grpSp")
+            let grpSpPr = XML.Element("p:grpSpPr")
+            var attributes: [(String, String)] = []
+            if flipH { attributes.append(("flipH", "1")) }
+            if flipV { attributes.append(("flipV", "1")) }
+            let xfrm = XML.Element("a:xfrm", attributes: attributes)
+            xfrm.appendElement(XML.Element("a:off", attributes: [("x", "0"), ("y", "0")]))
+            xfrm.appendElement(XML.Element("a:ext", attributes: [("cx", "1000"), ("cy", "1000")]))
+            xfrm.appendElement(XML.Element("a:chOff", attributes: [("x", "0"), ("y", "0")]))
+            xfrm.appendElement(XML.Element("a:chExt", attributes: [("cx", "1000"), ("cy", "1000")]))
+            grpSpPr.appendElement(xfrm)
+            grpSp.appendElement(grpSpPr)
+            return GroupShape(element: grpSp, part: part, package: deck.package)
+        }
+        // A 100-wide child at x=0 in a 1000-wide space mirrors to x=900.
+        let child = Rect(x: EMU(0), y: EMU(0), width: EMU(100), height: EMU(200))
+        #expect(group(flipH: false, flipV: false).convertToParentSpace(child) == child)
+        #expect(group(flipH: true, flipV: false).convertToParentSpace(child).x == EMU(900))
+        #expect(group(flipH: false, flipV: true).convertToParentSpace(child).y == EMU(800))
+    }
+
     @Test func degenerateChildSpaceReturnsCoordinatesUnchanged() throws {
         // A group declaring a 0×0 child space (PowerPoint writes exactly this
         // on an empty tree): the mapping is undefined, so coordinates must
@@ -182,26 +243,60 @@ private func deckWithForeignSlide() throws -> Presentation {
         #expect(group.shapes.isEmpty)
     }
 
-    @Test func enumerationNeverMutatesThePart() throws {
+    /// Walk every read accessor the M3 API exposes.
+    private func readEverything(in slide: Slide) {
+        for shape in slide.shapes.all {
+            _ = shape.kind
+            _ = shape.shapeID
+            _ = shape.frame
+            _ = shape.explicitFrame
+            _ = shape.rotation
+            _ = shape.name
+            _ = shape.altText
+            _ = shape.placeholder
+            _ = shape.textFrame?.text
+            _ = slide.effectiveFrame(of: shape)
+            if let group = shape as? GroupShape {
+                _ = group.childSpace
+                for child in group.shapes { _ = group.convertToParentSpace(child.frame) }
+            }
+            if let table = (shape as? TableFrame)?.table {
+                for row in 0..<table.rowCount {
+                    for column in 0..<table.columnCount { _ = table.cell(row, column).text }
+                }
+            }
+            if let picture = shape as? Picture { _ = picture.imageData }
+            if let chart = shape as? ChartFrame { _ = chart.chartPart }
+            if let diagram = shape as? DiagramFrame { _ = diagram.dataPart }
+            if let connector = shape as? Connector { _ = connector.startConnection }
+        }
+    }
+
+    @Test func enumerationNeverMutatesTheDOM() throws {
+        // Compares the parsed DOM, not the package bytes. A getter that calls
+        // getOrAddChild — the 0.3 bug this milestone fixes — mutates the
+        // cached DOM without setting the dirty flag, so `serializedData()`
+        // still re-emits the pristine blob and a byte comparison sees nothing.
+        // Only a structural before/after can observe it.
+        let deck = try deckWithForeignSlide()
+        let reopened = try Presentation(data: try deck.serializedData())
+        let slide = try reopened.slides[0]
+
+        let before = XML.document(try slide.part.dom())
+        readEverything(in: slide)
+        let after = XML.document(try slide.part.dom())
+
+        #expect(before == after, "a read accessor mutated the slide's DOM")
+        #expect(!slide.part.isDirty, "a read accessor marked the part dirty")
+    }
+
+    @Test func enumerationLeavesThePackageByteIdentical() throws {
+        // The weaker, still-worth-having half: nothing marks a part dirty, so
+        // an untouched deck re-emits its original bytes after a full read.
         let deck = try deckWithForeignSlide()
         let original = try deck.serializedData()
-
         let reopened = try Presentation(data: original)
-        for slide in reopened.slides {
-            for shape in slide.shapes.all {
-                _ = shape.kind
-                _ = shape.frame
-                _ = shape.explicitFrame
-                _ = shape.rotation
-                _ = shape.name
-                _ = shape.altText
-                _ = shape.textFrame?.text
-                if let group = shape as? GroupShape { _ = group.shapes.map(\.frame) }
-                if let table = (shape as? TableFrame)?.table { _ = table.rowCount }
-                if let picture = shape as? Picture { _ = picture.imageData }
-            }
-        }
-        // Reading the whole tree must leave every part pristine.
+        for slide in reopened.slides { readEverything(in: slide) }
         #expect(try reopened.serializedData() == original)
     }
 

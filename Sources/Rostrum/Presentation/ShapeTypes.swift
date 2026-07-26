@@ -134,17 +134,33 @@ public final class GroupShape: Shape {
     /// Map a child's rectangle from this group's child space into the space
     /// the group itself lives in (the slide, or an enclosing group).
     ///
+    /// Applies the group's `flipH`/`flipV`, which mirror children within the
+    /// child extent. The group's `@rot` is **not** composed — rotation turns
+    /// an axis-aligned rectangle into a quadrilateral, which `Rect` cannot
+    /// express; read `rotation` and compose it yourself if you need it.
+    ///
     /// Returns `rect` unchanged when the group declares no child space or a
     /// degenerate one — the transform is undefined then, and inventing a
     /// scale factor would be worse than reporting raw coordinates.
     public func convertToParentSpace(_ rect: Rect) -> Rect {
         guard let child = childSpace, let outer = explicitFrame,
               child.width.rawValue != 0, child.height.rawValue != 0 else { return rect }
+
+        let xfrm = ShapeTransform.element(of: element)
+        var localX = rect.x.rawValue
+        var localY = rect.y.rawValue
+        if xfrm?[attribute: "flipH"] == "1" {
+            localX = 2 * child.x.rawValue + child.width.rawValue - (localX + rect.width.rawValue)
+        }
+        if xfrm?[attribute: "flipV"] == "1" {
+            localY = 2 * child.y.rawValue + child.height.rawValue - (localY + rect.height.rawValue)
+        }
+
         let scaleX = Double(outer.width.rawValue) / Double(child.width.rawValue)
         let scaleY = Double(outer.height.rawValue) / Double(child.height.rawValue)
         return Rect(
-            x: EMU(outer.x.rawValue + Int((Double(rect.x.rawValue - child.x.rawValue) * scaleX).rounded())),
-            y: EMU(outer.y.rawValue + Int((Double(rect.y.rawValue - child.y.rawValue) * scaleY).rounded())),
+            x: EMU(outer.x.rawValue + Int((Double(localX - child.x.rawValue) * scaleX).rounded())),
+            y: EMU(outer.y.rawValue + Int((Double(localY - child.y.rawValue) * scaleY).rounded())),
             width: EMU(Int((Double(rect.width.rawValue) * scaleX).rounded())),
             height: EMU(Int((Double(rect.height.rawValue) * scaleY).rounded())))
     }

@@ -228,12 +228,21 @@ public final class TableCell {
         self.part = part
     }
 
+    /// The cell's text body, created if absent. Writing accessor: use
+    /// `existingTextFrame` (or `text`) to read without touching the DOM.
     public var textFrame: TextFrame {
         TextFrame(txBody: tc.getOrAddChild("a:txBody", beforeAnyOf: ["a:tcPr"]), part: part)
     }
 
+    /// The cell's text body if it has one — a pure read. `a:txBody` is
+    /// optional in `CT_TableCell`, and reading a foreign deck's table must
+    /// not invent one.
+    public var existingTextFrame: TextFrame? {
+        tc.firstChild(named: "a:txBody").map { TextFrame(txBody: $0, part: part) }
+    }
+
     public var text: String {
-        get { textFrame.text }
+        get { existingTextFrame?.text ?? "" }
         set {
             textFrame.text = newValue
             part.markDirty()

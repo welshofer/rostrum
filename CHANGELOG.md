@@ -92,7 +92,18 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   `setFill` throws rather than corrupting a frame that has no `p:spPr`
   (`setLine`/`enableSoftShadow` are no-ops there). Slide rendering and shape
   enumeration likewise no longer inject `p:cSld`/`p:spTree` into a part they
-  only read.
+  only read, and reading a table cell no longer creates an `a:txBody` in it
+  (new `TableCell.existingTextFrame` is the pure-read accessor).
+- **Placeholder and geometry resolution cover every shape kind.**
+  `slide.effectiveFrame(of:)` resolved geometry through a `p:spPr`-only path,
+  so it reported "no geometry" for charts, tables, SmartArt and groups — the
+  exact kinds now enumerated — while `shape.explicitFrame` returned the real
+  rectangle for the same shape. Placeholder binding (`shape.placeholder`,
+  `slide.placeholders`, `slide.title`) read `p:ph` only under `p:nvSpPr`, so a
+  picture or table sitting in a content placeholder was not recognized as one.
+  Both now use the same per-kind dispatch as the rest of M3.
+- `GroupShape.convertToParentSpace(_:)` applies the group's `flipH`/`flipV`
+  (documented as not composing `@rot`, which a `Rect` cannot express).
 
 ## [0.3.1] — 2026-07-19
 
