@@ -146,9 +146,9 @@ box; this program makes Rostrum the first.
   from the sfnt `name` table); builders measure with real metrics when the
   style's fonts are registered and keep the calibrated character-count ladder
   as the byte-identical fallback; `SVGRenderer` renders measured word wrap
-  and baselines for registered typefaces. *Still open:* honest builder
-  capacity contracts (no silent truncation), auto-registering fonts embedded
-  in an opened deck.
+  and baselines for registered typefaces. Builder capacity is documented
+  rather than silent (`SlideCapacity`), and `registerEmbeddedFonts()` feeds
+  a deck's own embedded typefaces to the measurer.
 - **M3 — Read-side object model.** Polymorphic shape enumeration (`p:pic`,
   `p:graphicFrame`, `p:grpSp`, `p:cxnSp` visible on opened decks), fill/line
   read-back, core/extended/custom document properties, multi-master

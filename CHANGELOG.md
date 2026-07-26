@@ -42,6 +42,13 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   registered render with real word wrap and baseline placement in
   `renderSVG` (mixed-run paragraphs keep the approximation); unregistered
   text is byte-identical to before.
+- `deck.registerEmbeddedFonts()` unwraps the deck's own EOT-Lite font parts
+  back to sfnt and registers them for measurement, so a deck that carries
+  its typefaces can measure its own text. Explicit call — nothing registers
+  implicitly, and registration never dirties a part.
+- `SlideCapacity` documents the item limits of the capped builders
+  (`process` 5, `smartArt` 6, `bands` 6, `pyramid` 5, `metrics` 4), which
+  previously truncated silently with no way to know the cap.
 
 ### Changed
 

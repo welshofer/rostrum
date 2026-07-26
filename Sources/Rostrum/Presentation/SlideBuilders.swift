@@ -6,6 +6,23 @@ import Foundation
 // and inherits brand from a .potx + applyDesign alike — because everything reads
 // from `deck.style`.
 
+/// How many items each capped builder can lay out legibly. Items beyond the
+/// cap are dropped — these constants exist so that is a decision you make
+/// rather than a surprise: check `SlideCapacity.process` before calling, or
+/// split the content across slides.
+public enum SlideCapacity {
+    /// `processSlide(_:steps:)` — steps share one row of columns.
+    public static let process = 5
+    /// `smartArtSlide(_:kind:items:)` — nodes in one diagram.
+    public static let smartArt = 6
+    /// `bandsSlide(_:bands:)` — stacked full-width bands.
+    public static let bands = 6
+    /// `pyramidSlide(_:levels:)` — graduated stacked levels.
+    public static let pyramid = 5
+    /// `metricsSlide(_:metrics:)` — side-by-side headline numbers.
+    public static let metrics = 4
+}
+
 public extension Presentation {
     /// A cover: kicker, oversized display title, subtitle, and an accent rule.
     @discardableResult
@@ -177,12 +194,14 @@ public extension Presentation {
 
     /// A horizontal numbered process: 2–5 steps, each a colored number badge and a
     /// caption, joined by arrows. For sequences, stages, and step-by-step plans.
+    ///
+    /// Lays out at most `SlideCapacity.process` steps; extras are dropped.
     @discardableResult
     func processSlide(_ title: String, steps: [String], kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s)
-        let items = Array(steps.prefix(5))
+        let items = Array(steps.prefix(SlideCapacity.process))
         guard !items.isEmpty else { return slide }
         let cols = content.split(.horizontal, count: items.count, gutter: s.gutter)
         let badge = EMU.inches(1.1)
@@ -222,12 +241,14 @@ public extension Presentation {
 
     /// A stacked pyramid: 2–5 graduated levels, widest at the base. For
     /// hierarchies, maturity ladders, and foundations that build to a peak.
+    ///
+    /// Lays out at most `SlideCapacity.pyramid` levels; extras are dropped.
     @discardableResult
     func pyramidSlide(_ title: String, levels: [String], kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s)
-        let items = Array(levels.prefix(5))
+        let items = Array(levels.prefix(SlideCapacity.pyramid))
         guard !items.isEmpty else { return slide }
         let n = items.count
         let gap = s.spacing.sm.rawValue
@@ -260,13 +281,15 @@ public extension Presentation {
     /// current scope.
     /// `kind` selects the layout family (e.g. `.process` for a chevron sequence);
     /// nodes are brand-colored by cycling the deck accents.
+    ///
+    /// Lays out at most `SlideCapacity.smartArt` nodes; extras are dropped.
     @discardableResult
     func smartArtSlide(_ title: String, kind: SmartArt.Layout, items: [String],
                        kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s)
-        let nodes = Array(items.prefix(6))
+        let nodes = Array(items.prefix(SlideCapacity.smartArt))
         guard !nodes.isEmpty else { return slide }
         let colors = (0..<nodes.count).map { s.accent($0 + 1) }
         try slide.shapes.addSmartArt(items: nodes, frame: content, colors: colors, layout: kind)
@@ -276,12 +299,14 @@ public extension Presentation {
     /// A vertical stack of full-width colored bands, one per item, each labeled —
     /// the "five layers" diagram. Ideal for 3–6 parallel concepts, phases, or
     /// layers instead of a plain bullet list.
+    ///
+    /// Lays out at most `SlideCapacity.bands` bands; extras are dropped.
     @discardableResult
     func bandsSlide(_ title: String, bands: [String], kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s)
-        let items = Array(bands.prefix(6))
+        let items = Array(bands.prefix(SlideCapacity.bands))
         guard !items.isEmpty else { return slide }
         let gap = s.spacing.sm.rawValue
         let bandH = (content.height.rawValue - gap * (items.count - 1)) / items.count
@@ -302,13 +327,15 @@ public extension Presentation {
 
     /// A row of 2–4 headline metrics — each a colored rule, a big number, and a
     /// caption (the "180 / 0 / 11" layout).
+    ///
+    /// Lays out at most `SlideCapacity.metrics` metrics; extras are dropped.
     @discardableResult
     func metricsSlide(_ title: String, metrics: [(value: String, label: String)],
                       kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s)
-        let items = Array(metrics.prefix(4))
+        let items = Array(metrics.prefix(SlideCapacity.metrics))
         guard !items.isEmpty else { return slide }
         let cols = content.split(.horizontal, count: items.count, gutter: s.gutter)
         // Fit the number to the column so a wide value ("$300B") stays on one line.

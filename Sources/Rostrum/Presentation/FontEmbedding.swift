@@ -44,6 +44,28 @@ enum EOTLite {
         return nil
     }
 
+    /// EOT-Lite `MagicNumber`, at offset 34 of the header.
+    static let magicNumber = 0x504C
+
+    /// Recover the raw sfnt bytes from an EOT-Lite part. Returns nil when the
+    /// container is malformed, or when `Flags` is non-zero — set flags mean
+    /// XOR-obfuscated or MTX-compressed font data, which is not plain sfnt.
+    /// Untrusted input: every read is bounds-checked, nothing traps.
+    static func unwrap(_ eot: Data) -> Data? {
+        let b = [UInt8](eot)
+        guard b.count >= 82 else { return nil }
+        func u16(_ o: Int) -> Int { Int(b[o]) | Int(b[o + 1]) << 8 }
+        func u32(_ o: Int) -> Int {
+            Int(b[o]) | Int(b[o + 1]) << 8 | Int(b[o + 2]) << 16 | Int(b[o + 3]) << 24
+        }
+        guard u16(34) == magicNumber, u32(12) == 0 else { return nil }
+        let fontDataSize = u32(4)
+        guard fontDataSize > 0, fontDataSize <= b.count - 82 else { return nil }
+        // The font is appended last, so it is the trailing FontDataSize bytes —
+        // no need to re-derive the variable-length name block.
+        return Data(eot.suffix(fontDataSize))
+    }
+
     static func wrap(_ font: Data, typeface: String, style: String,
                      weight: UInt32, italic: Bool) -> Data {
         var header = [UInt8]()
@@ -143,6 +165,44 @@ extension Presentation {
         ])
         list.appendElement(embeddedFont)
         presentationPart.markDirty()
+    }
+}
+
+extension Presentation {
+    /// Register the deck's own embedded fonts into `fonts`, so text
+    /// measurement works on a deck that carries its typefaces with it.
+    ///
+    /// Reads `p:embeddedFontLst`, unwraps each EOT-Lite part back to raw sfnt
+    /// bytes, and registers it under the deck's declared typeface name (plus
+    /// whatever family names the font itself carries). One face per family —
+    /// the regular weight when present — because metrics are keyed by family
+    /// (see `FontLibrary.register`). Returns the typefaces registered.
+    ///
+    /// Explicit by design: nothing registers fonts behind your back, so
+    /// output stays deterministic unless you ask for this.
+    @discardableResult
+    public func registerEmbeddedFonts() -> [String] {
+        guard let dom = try? presentationPart.dom() else { return [] }
+        let embeddedFonts = dom.firstChild(named: "p:embeddedFontLst")?
+            .children(named: "p:embeddedFont") ?? []
+        var registered: [String] = []
+        for embedded in embeddedFonts {
+            guard let typeface = embedded.firstChild(named: "p:font")?[attribute: "typeface"] else {
+                continue
+            }
+            // Regular first: it is the face measurement should use.
+            for tag in ["p:regular", "p:bold", "p:italic", "p:boldItalic"] {
+                guard let rId = embedded.firstChild(named: tag)?[attribute: "r:id"],
+                      let rel = presentationPart.rels.relationship(withId: rId) else { continue }
+                let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
+                guard let part = try? package.part(at: uri),
+                      let sfnt = EOTLite.unwrap(part.blob),
+                      (try? fonts.register(sfnt, aliases: [typeface])) != nil else { continue }
+                registered.append(typeface)
+                break
+            }
+        }
+        return registered
     }
 }
 
