@@ -50,6 +50,21 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   (`process` 5, `smartArt` 6, `bands` 6, `pyramid` 5, `metrics` 4), which
   previously truncated silently with no way to know the cap.
 
+- **Read-side shape model (v0.4 M3).** `slide.shapes` now enumerates every
+  child of the shape tree — pictures, tables, charts, SmartArt, groups and
+  connectors, not just `p:sp` — so opening a deck someone else authored
+  finally shows you what is on the slide. Each arrives as the most specific
+  `Shape` subclass (`Picture`, `TableFrame`, `ChartFrame`, `DiagramFrame`,
+  `GroupShape`, `Connector`); narrow with `as?`, or filter on the cheap
+  `shape.kind` (`ShapeKind`, whose catch-all cases keep it stable as Rostrum
+  models more). Shape types Rostrum does not model still appear, so nothing
+  is invisible. New read-back: `picture.imageData`/`imageFormat`,
+  `tableFrame.table` (the full `Table` API over a parsed `a:tbl`),
+  `chartFrame.chartPart`, `diagramFrame.dataPart`, `connector.startConnection`/
+  `endConnection`, `group.shapes` with `convertToParentSpace(_:)` for child
+  coordinates, plus `shape.shapeID` and `shape.explicitFrame`.
+  `shapes.autoShapes` keeps the old `p:sp`-only view.
+
 ### Changed
 
 - `Slides` subscript is now throwing (`try deck.slides[0]`): a malformed
@@ -64,6 +79,20 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   and the animations round-trip test had been marked shipped but were not;
   the SVG renderer's claimed TTF metrics did not exist until now) and
   extended with the v0.4 "Measure & trust" program.
+
+### Fixed
+
+- **Reading a shape no longer mutates the document.** `Shape.frame` and
+  `rotation` reached for `p:spPr` through a get-or-create accessor — in a
+  *getter* — so merely reading the frame of a chart, table or SmartArt shape
+  appended a schema-invalid `<p:spPr/>` to its `p:graphicFrame`, which
+  PowerPoint offers to repair. Transforms now dispatch per element kind
+  (`p:spPr/a:xfrm` for shapes, pictures and connectors; `p:xfrm` for graphic
+  frames; `p:grpSpPr/a:xfrm` for groups) through a read-only path, and
+  `setFill` throws rather than corrupting a frame that has no `p:spPr`
+  (`setLine`/`enableSoftShadow` are no-ops there). Slide rendering and shape
+  enumeration likewise no longer inject `p:cSld`/`p:spTree` into a part they
+  only read.
 
 ## [0.3.1] — 2026-07-19
 

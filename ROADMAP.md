@@ -149,10 +149,14 @@ box; this program makes Rostrum the first.
   and baselines for registered typefaces. Builder capacity is documented
   rather than silent (`SlideCapacity`), and `registerEmbeddedFonts()` feeds
   a deck's own embedded typefaces to the measurer.
-- **M3 — Read-side object model.** Polymorphic shape enumeration (`p:pic`,
-  `p:graphicFrame`, `p:grpSp`, `p:cxnSp` visible on opened decks), fill/line
-  read-back, core/extended/custom document properties, multi-master
-  `slideMasters`. The keystone that unblocks editing existing decks.
+- **M3 — Read-side object model (core shipped 2026-07-26, this branch).**
+  Polymorphic shape enumeration: `p:pic`, `p:graphicFrame` (table/chart/
+  diagram/unmodeled), `p:grpSp` and `p:cxnSp` are visible on opened decks as
+  typed `Shape` subclasses, with image/table/chart/diagram/connector/group
+  read-back and group child-space mapping. Reads are provably non-mutating
+  (this pass fixed a getter that corrupted graphic frames). *Still open:*
+  fill/line read-back, core/extended/custom document properties, multi-master
+  `slideMasters`, placeholder resolution for non-`p:sp` placeholders.
 - **M4 — Chart read-back + `replaceData` that never corrupts.** Requires M3.
 
 Hardening backlog (schedule opportunistically): pristine round-trip for

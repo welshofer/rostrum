@@ -39,6 +39,14 @@ public final class Slide {
         try cSld(of: part).getOrAddChild("p:spTree")
     }
 
+    /// The shape tree if the part has one. Unlike `spTree(of:)`, which is
+    /// `getOrAddChild`-based and would inject `p:cSld`/`p:spTree` into the DOM
+    /// on a pure read, this creates nothing — every read path uses it, so
+    /// enumerating an untouched part leaves it byte-identical.
+    static func existingSpTree(of part: Part) -> XML.Element? {
+        (try? part.dom())?.firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")
+    }
+
     /// Set the slide's background fill (`p:bg`, always the first child of
     /// `p:cSld`).
     public func setBackground(_ fill: Fill) throws {

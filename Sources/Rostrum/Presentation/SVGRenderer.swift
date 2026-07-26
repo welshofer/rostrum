@@ -31,7 +31,7 @@ struct SVGRenderer {
             body += box(0, 0, w, h, fill: "#FFFFFF")
         }
 
-        if let spTree = try? Slide.spTree(of: slidePart) {
+        if let spTree = Slide.existingSpTree(of: slidePart) {
             for child in spTree.childElements {
                 switch child.name {
                 case "p:sp": body += renderShape(child, defs: &defs)
