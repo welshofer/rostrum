@@ -356,3 +356,99 @@ import Testing
         descendants(of: dom, named: "a:srgbClr").compactMap { $0[attribute: "val"] }
     }
 }
+
+/// Depth-first descendants by name — file-scope so both suites share it.
+private func chartDescendants(_ element: XML.Element, named name: String) -> [XML.Element] {
+    var found: [XML.Element] = []
+    if element.name == name { found.append(element) }
+    for child in element.childElements { found += chartDescendants(child, named: name) }
+    return found
+}
+
+@Suite struct RadarAndBubbleChartTests {
+    private let frame = Rect(x: .inches(1), y: .inches(1), width: .inches(8), height: .inches(4))
+    private let data = ChartData(categories: ["Speed", "Power", "Range"],
+                                 series: [.init(name: "A", values: [3, 4, 5]),
+                                          .init(name: "B", values: [5, 3, 4])])
+
+    @Test func radarChartsWriteAndReadBack() throws {
+        for (kind, style) in [(ChartKind.radar, "marker"), (.radarFilled, "filled")] {
+            let deck = try Presentation()
+            try deck.slides[0].shapes.addChart(kind, data: data, frame: frame,
+                                               colors: [Color("18A999"), Color("FF6B5E")])
+            let reopened = try Presentation(data: try deck.serializedData())
+            let chart = try #require(reopened.charts.first)
+            #expect(chart.plotType == "radarChart")
+            #expect(chart.categories == ["Speed", "Power", "Range"])
+            #expect(chart.series.map(\.name) == ["A", "B"])
+            #expect(chart.series[1].values == [5, 3, 4])
+
+            let dom = try #require(try chart.part.dom())
+            let radar = try #require(chartDescendants(dom, named: "c:radarChart").first)
+            #expect(radar.firstChild(named: "c:radarStyle")?[attribute: "val"] == style)
+            #expect(try reopened.validate().isEmpty)
+        }
+    }
+
+    @Test func radarDataCanBeReplaced() throws {
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addChart(.radar, data: data, frame: frame)
+        let reopened = try Presentation(data: try deck.serializedData())
+        let chart = try #require(reopened.charts.first)
+        try chart.replaceData(ChartData(categories: ["X", "Y", "Z"],
+                                        series: [.init(name: "One", values: [1, 2, 3]),
+                                                 .init(name: "Two", values: [4, 5, 6])]))
+        #expect(chart.categories == ["X", "Y", "Z"])
+        #expect(chart.series.map(\.name) == ["One", "Two"])
+    }
+
+    @Test func bubbleChartsCarryXYAndSize() throws {
+        let deck = try Presentation()
+        let bubbles = BubbleChartData(series: [
+            .init(name: "Markets", points: [.init(x: 1, y: 2, size: 10),
+                                            .init(x: 3, y: 4, size: 20)]),
+            .init(name: "Segments", points: [.init(x: 5, y: 6, size: 30)]),
+        ])
+        try deck.slides[0].shapes.addBubbleChart(bubbles, frame: frame,
+                                                 colors: [Color("18A999"), Color("FF6B5E")])
+        let reopened = try Presentation(data: try deck.serializedData())
+        let chart = try #require(reopened.charts.first)
+        #expect(chart.plotType == "bubbleChart")
+        #expect(chart.series.map(\.name) == ["Markets", "Segments"])
+        // No category axis, so the category-shaped view is honestly nil.
+        #expect(chart.categories.isEmpty)
+        #expect(chart.data == nil)
+
+        let dom = try #require(try chart.part.dom())
+        let sizes = chartDescendants(dom, named: "c:bubbleSize")
+        #expect(sizes.count == 2)
+        let firstSizes = try #require(sizes.first)
+        let values = chartDescendants(firstSizes, named: "c:v").map(\.textContent)
+        #expect(values == ["10", "20"])
+        #expect(try reopened.validate().isEmpty)
+    }
+
+    @Test func bubbleChartsRefuseCategoryReplacement() throws {
+        // A bubble series has no c:val, so replaceData must refuse rather
+        // than silently doing nothing.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addBubbleChart(
+            BubbleChartData(name: "S", points: [.init(x: 1, y: 2, size: 3)]), frame: frame)
+        let reopened = try Presentation(data: try deck.serializedData())
+        let chart = try #require(reopened.charts.first)
+        let replacement = ChartData(categories: ["A"], series: [.init(name: "S", values: [1])])
+        #expect(chart.replacementProblem(for: replacement) != nil)
+        #expect(throws: Chart.ReplacementProblem.self) { try chart.replaceData(replacement) }
+    }
+
+    @Test func newChartKindsAreDeterministic() throws {
+        func build() throws -> Data {
+            let deck = try Presentation()
+            try deck.slides[0].shapes.addChart(.radarFilled, data: data, frame: frame)
+            try deck.slides[0].shapes.addBubbleChart(
+                BubbleChartData(name: "S", points: [.init(x: 1, y: 2, size: 3)]), frame: frame)
+            return try deck.serializedData()
+        }
+        #expect(try build() == build())
+    }
+}

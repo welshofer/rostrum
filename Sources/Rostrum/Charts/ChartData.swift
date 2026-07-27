@@ -54,6 +54,48 @@ public enum ChartKind: Sendable {
     case pie
     /// Doughnut chart (first series only).
     case doughnut
+    /// Radar (spider) chart with a line per series and a marker per point.
+    case radar
+    /// Radar chart with each series' area filled.
+    case radarFilled
+}
+
+/// Categories × series data for a bubble chart: each point carries an x, a y
+/// and a size. The size axis is what distinguishes it from scatter.
+public struct BubbleChartData: Sendable {
+    public struct Point: Sendable {
+        public var x: Double
+        public var y: Double
+        public var size: Double
+
+        public init(x: Double, y: Double, size: Double) {
+            self.x = x
+            self.y = y
+            self.size = size
+        }
+    }
+
+    public struct Series: Sendable {
+        public var name: String
+        public var points: [Point]
+
+        public init(name: String, points: [Point]) {
+            self.name = name
+            self.points = points
+        }
+    }
+
+    public var series: [Series]
+
+    public init(series: [Series]) {
+        precondition(!series.isEmpty, "bubble chart needs at least one series")
+        precondition(series.count <= 255, "too many bubble series")
+        self.series = series
+    }
+
+    public init(name: String = "Series 1", points: [Point]) {
+        self.init(series: [Series(name: name, points: points)])
+    }
 }
 
 /// Legend placement (`c:legendPos`). Absence of a legend is `nil`.

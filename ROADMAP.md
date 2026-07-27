@@ -67,8 +67,10 @@ from phase 0 onward.
 - [x] Write-side DEFLATE (fixed-Huffman + LZ77, deterministic) — file-size
   parity (2026-07-19)
 - [x] Linux CI (Swift 6.0/6.1 containers, oracle tools installed)
-- [ ] More chart types: radar, bubble, stock, combo — **not shipped**
-  (correcting the earlier ✅; nothing beyond the six kinds above exists)
+- [x] Radar (`.radar`, `.radarFilled`) and bubble (`addBubbleChart`) —
+  shipped 2026-07-27, closing two of the four types the earlier ✅ overclaimed
+- [ ] Stock and combo chart types — still not shipped (combo charts *read*
+  correctly since M4, but there is no authoring API for them)
 - [x] Core/extended/custom document properties API (`deck.documentProperties`,
   2026-07-26)
 - [ ] Media parts (video/audio)

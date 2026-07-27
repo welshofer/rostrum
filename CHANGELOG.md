@@ -48,6 +48,12 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   (`process` 5, `smartArt` 6, `bands` 6, `pyramid` 5, `metrics` 4), which
   previously truncated silently with no way to know the cap.
 
+- **Radar and bubble charts.** `ChartKind.radar` / `.radarFilled` plot a
+  category axis wrapped into a circle; `addBubbleChart(_:frame:)` takes
+  `BubbleChartData`, whose points carry x, y **and** size, with a three-column
+  embedded workbook to match. These are two of the four types the v0.1
+  changelog wrongly claimed had shipped (stock and combo remain open — combo
+  charts read correctly, but there is no authoring API yet).
 - **Chart read-back and a `replaceData` that refuses to corrupt (v0.4 M4).**
   `deck.charts` (and `chartFrame.chart`) read a chart's kind, title,
   categories and series straight from the chart XML's caches — gaps keep

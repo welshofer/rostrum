@@ -34,6 +34,8 @@ enum ChartXML {
             plotArea.appendElement(pieChart(kind: kind, data: data, colors: colors, options: options))
         case .doughnut:
             plotArea.appendElement(pieChart(kind: kind, data: data, colors: colors, options: options))
+        case .radar, .radarFilled:
+            plotArea.appendElement(radarChart(kind: kind, data: data, colors: colors, options: options))
         }
         if axed {
             plotArea.appendElement(catAx(id: catAxID, crossing: valAxID, title: options.categoryAxisTitle))
@@ -86,6 +88,74 @@ enum ChartXML {
 
         appendDefaultTextAndData(to: root)
         return XML.document(root)
+    }
+
+    // MARK: - Bubble
+
+    static func bubbleChartSpace(data: BubbleChartData, colors: [Color]?,
+                                 options: ChartOptions) -> Data {
+        let root = chartRoot()
+        root.appendElement(V("c:date1904", "0"))
+        let chart = XML.Element("c:chart")
+        appendTitle(options.title, to: chart)
+
+        let plotArea = XML.Element("c:plotArea")
+        let bubble = XML.Element("c:bubbleChart")
+        bubble.appendElement(V("c:varyColors", "0"))
+        for (i, series) in data.series.enumerated() {
+            bubble.appendElement(bubbleSeries(index: i, series: series, color: colors?[safe: i]))
+        }
+        if let d = options.dataLabels { bubble.appendElement(dLbls(d)) }
+        // Sizes are areas, not radii — PowerPoint's own default.
+        bubble.appendElement(V("c:bubbleScale", "100"))
+        bubble.appendElement(V("c:showNegBubbles", "0"))
+        bubble.appendElement(V("c:axId", xValAxID))
+        bubble.appendElement(V("c:axId", yValAxID))
+        plotArea.appendElement(bubble)
+        plotArea.appendElement(valAx(id: xValAxID, crossing: yValAxID, axPos: "b",
+                                     options: AxisOptions(), gridlines: false))
+        plotArea.appendElement(valAx(id: yValAxID, crossing: xValAxID, axPos: "l",
+                                     options: options.valueAxis))
+        chart.appendElement(plotArea)
+
+        appendLegend(options.legend ?? (data.series.count > 1 ? .right : nil), to: chart)
+        chart.appendElement(V("c:plotVisOnly", "1"))
+        chart.appendElement(V("c:dispBlanksAs", "gap"))
+        root.appendElement(chart)
+
+        appendDefaultTextAndData(to: root)
+        return XML.document(root)
+    }
+
+    /// One bubble `c:ser`: idx, order, tx, spPr, xVal, yVal, bubbleSize.
+    /// Three workbook columns per series, so the name sits above the y column.
+    private static func bubbleSeries(index: Int, series: BubbleChartData.Series,
+                                     color: Color?) -> XML.Element {
+        let serEl = XML.Element("c:ser")
+        serEl.appendElement(V("c:idx", String(index)))
+        serEl.appendElement(V("c:order", String(index)))
+        let xCol = seriesColumn(index * 3)
+        let yCol = seriesColumn(index * 3 + 1)
+        let sizeCol = seriesColumn(index * 3 + 2)
+        let tx = XML.Element("c:tx")
+        tx.appendElement(strRef(formula: "Sheet1!$\(yCol)$1", strings: [series.name]))
+        serEl.appendElement(tx)
+        if let color { serEl.appendElement(solidSpPr(color)) }
+        let n = series.points.count
+        let xVal = XML.Element("c:xVal")
+        xVal.appendElement(numRef(formula: "Sheet1!$\(xCol)$2:$\(xCol)$\(n + 1)",
+                                  values: series.points.map(\.x)))
+        serEl.appendElement(xVal)
+        let yVal = XML.Element("c:yVal")
+        yVal.appendElement(numRef(formula: "Sheet1!$\(yCol)$2:$\(yCol)$\(n + 1)",
+                                  values: series.points.map(\.y)))
+        serEl.appendElement(yVal)
+        let sizes = XML.Element("c:bubbleSize")
+        sizes.appendElement(numRef(formula: "Sheet1!$\(sizeCol)$2:$\(sizeCol)$\(n + 1)",
+                                   values: series.points.map(\.size)))
+        serEl.appendElement(sizes)
+        serEl.appendElement(V("c:bubble3D", "0"))
+        return serEl
     }
 
     // MARK: - Shared root / title / legend / trailing
@@ -203,6 +273,35 @@ enum ChartXML {
         line.appendElement(V("c:axId", catAxID))
         line.appendElement(V("c:axId", valAxID))
         return line
+    }
+
+    /// `c:radarChart`: a category axis wrapped into a circle. `c:radarStyle`
+    /// selects line-with-markers or a filled area per series.
+    private static func radarChart(kind: ChartKind, data: ChartData, colors: [Color]?,
+                                   options: ChartOptions) -> XML.Element {
+        let radar = XML.Element("c:radarChart")
+        radar.appendElement(V("c:radarStyle", kind == .radarFilled ? "filled" : "marker"))
+        radar.appendElement(V("c:varyColors", "0"))
+        for (i, series) in data.series.enumerated() {
+            radar.appendElement(ser(index: i, series: series, data: data) { serEl in
+                guard let color = colors?[safe: i] else { return }
+                if kind == .radarFilled {
+                    serEl.appendElement(solidSpPr(color))
+                } else {
+                    let spPr = XML.Element("c:spPr")
+                    let ln = XML.Element("a:ln", attributes: [("w", "28575")])
+                    let fill = XML.Element("a:solidFill")
+                    fill.appendElement(color.srgbElement())
+                    ln.appendElement(fill)
+                    spPr.appendElement(ln)
+                    serEl.appendElement(spPr)
+                }
+            })
+        }
+        if let d = options.dataLabels { radar.appendElement(dLbls(d)) }
+        radar.appendElement(V("c:axId", catAxID))
+        radar.appendElement(V("c:axId", valAxID))
+        return radar
     }
 
     private static func areaChart(data: ChartData, colors: [Color]?,

@@ -36,6 +36,18 @@ extension ShapeCollection {
             workbook: ChartWorkbook.makeXY(data: data), frame: frame)
     }
 
+    /// Add a bubble chart: an XY chart whose third dimension is the bubble
+    /// area.
+    @discardableResult
+    public func addBubbleChart(
+        _ data: BubbleChartData, frame: Rect,
+        colors: [Color]? = nil, options: ChartOptions = ChartOptions()
+    ) throws -> Shape {
+        try embedChart(
+            chart: ChartXML.bubbleChartSpace(data: data, colors: colors, options: options),
+            workbook: ChartWorkbook.makeBubble(data: data), frame: frame)
+    }
+
     /// Shared plumbing: register the chart part + embedded workbook and drop a
     /// graphic frame referencing them.
     private func embedChart(chart: Data, workbook: Data, frame: Rect) throws -> Shape {
