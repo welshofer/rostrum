@@ -102,6 +102,12 @@ public extension Chart {
         /// This chart type plots only its first series, so an added one would
         /// be invisible.
         case chartTypePlotsOneSeries(plotType: String)
+        /// This chart type's schema fixes how many series it may hold, and the
+        /// edit would take it outside that range.
+        case seriesCountFixedByChartType(plotType: String, allowed: ClosedRange<Int>)
+        /// The plot hides a filtered-out series in its `c:extLst`, which shares
+        /// the visible series' index and column space.
+        case filteredSeriesNotSupported
         /// The new series has a different number of values than the chart has
         /// categories.
         case valueCountMismatch(categories: Int, values: Int)
@@ -132,6 +138,13 @@ public extension Chart {
             case .chartTypePlotsOneSeries(let plotType):
                 return "a \(plotType) plots only its first series, so an added one would "
                     + "never be drawn"
+            case .seriesCountFixedByChartType(let plotType, let allowed):
+                return "a \(plotType) must hold between \(allowed.lowerBound) and "
+                    + "\(allowed.upperBound) series; this edit would take it outside that range"
+            case .filteredSeriesNotSupported:
+                return "this chart hides a filtered-out series in its extension list, which "
+                    + "still owns an index and a workbook column; editing the series list "
+                    + "would overwrite it"
             case .valueCountMismatch(let categories, let values):
                 return "the chart has \(categories) categories but the new series has "
                     + "\(values) values"
@@ -177,11 +190,16 @@ public extension Chart {
     /// `c:invertIfNegative`, and any series-level `c:dLbls` settings), then
     /// four things are replaced: its index, its name, its values, and the
     /// workbook columns its formulas name. Identity-carrying formatting is
-    /// *not* inherited — `c:spPr` (the sibling's explicit color), `c:dPt`
-    /// (per-point overrides), the per-point `c:dLbl` entries inside `c:dLbls`,
-    /// and `c:extLst` (which carries a unique series id that must not be
-    /// duplicated) are dropped, so PowerPoint colors the new series from the
+    /// *not* inherited: `c:spPr` (the sibling's explicit color) — including
+    /// the nested one inside `c:marker` and `c:dLbls`, where PowerPoint also
+    /// stores it — `c:dPt` and the per-point `c:dLbl` entries (point
+    /// overrides), `c:trendline` and `c:errBars` (per-series analysis, not
+    /// series structure), and `c:extLst` (which carries a unique series id
+    /// that must not be duplicated). PowerPoint colors the new series from the
     /// theme the way it does when you add one by hand.
+    ///
+    /// A template with no `c:tx` at all — a chart built over a range with no
+    /// header row — gets one synthesized, so `name` is never silently dropped.
     ///
     /// The embedded workbook is rewritten so Edit Data shows the new column.
     ///
@@ -205,16 +223,23 @@ public extension Chart {
         // additionProblem proved the chart has at least one series to clone.
         guard let template = existing.last else { throw SeriesEditProblem.notACategoryChart }
         let element = template.deepCopy()
-        for identityBearing in ["c:spPr", "c:dPt", "c:extLst"] {
-            element.removeChildren(named: identityBearing)
-        }
-        element.firstChild(named: "c:dLbls")?.removeChildren(named: "c:dLbl")
+        Self.stripIdentity(from: element)
 
         let index = existing.count
+        let column = seriesColumn(index)
         element.firstChild(named: "c:idx")?[attribute: "val"] = String(index)
         element.firstChild(named: "c:order")?[attribute: "val"] = String(index)
         Self.retarget(element, at: index, lastRow: current.categories.count + 1)
-        if let tx = element.firstChild(named: "c:tx") { Self.setStrings([name], in: tx) }
+        if let tx = element.firstChild(named: "c:tx") {
+            Self.setStrings([name], in: tx)
+        } else {
+            // c:tx is optional, and a chart built over a headerless range has
+            // none. Writing the name into the workbook while the chart never
+            // gains it would label the series "Series N" in PowerPoint and
+            // disagree with Edit Data.
+            element.insertChild(Self.seriesName(name, column: column),
+                                beforeAnyOf: Self.childrenAfterSeriesName)
+        }
         if let val = element.firstChild(named: "c:val") { Self.setNumbers(values, in: val) }
 
         // A c:ser run is contiguous and precedes the plot's own children
@@ -244,10 +269,10 @@ public extension Chart {
     /// Remove the series at `index`, renumbering the survivors.
     ///
     /// Each surviving series keeps its own formatting but has its `c:idx`,
-    /// `c:order` and workbook formulas rewritten to its new position, any
-    /// `c:legendEntry` referring to the removed series is dropped and the
-    /// later entries shifted down, and the embedded workbook is rewritten
-    /// without the removed column.
+    /// `c:order` and workbook formulas rewritten to its new position, and the
+    /// embedded workbook is rewritten without the removed column. On the chart
+    /// types whose legend lists series, any `c:legendEntry` referring to the
+    /// removed series is dropped and the later entries shifted down.
     ///
     /// - Throws: `SeriesEditProblem`, including when this is the chart's last
     ///   series — an empty chart is a shape to delete, not a chart to write.
@@ -270,7 +295,7 @@ public extension Chart {
             element.firstChild(named: "c:order")?[attribute: "val"] = String(position)
             Self.retarget(element, at: position, lastRow: lastRow)
         }
-        shiftLegendEntries(removing: index)
+        shiftLegendEntries(removing: index, in: plot)
         part.markDirty()
 
         var series = current.series
@@ -294,6 +319,23 @@ extension Chart {
         "c:pieChart", "c:pie3DChart", "c:ofPieChart",
     ]
 
+    /// Chart types whose legend enumerates *data points* rather than series,
+    /// so a `c:legendEntry` index there names a category and must not be
+    /// shifted when a series goes away. Doughnut belongs here even though it
+    /// draws one ring per series — its legend still lists the categories.
+    private static let pointLegendPlots: Set<String> = [
+        "c:pieChart", "c:pie3DChart", "c:ofPieChart", "c:doughnutChart",
+    ]
+
+    /// Chart types whose schema fixes how many series they may hold. Stock is
+    /// the only one: CT_StockChart declares `ser` with `minOccurs="3"
+    /// maxOccurs="4"` (high-low-close and open-high-low-close), where every
+    /// other plot type allows any number. Pushing one outside that range
+    /// produces a part PowerPoint offers to repair.
+    private static let seriesCountBounds: [String: ClosedRange<Int>] = [
+        "c:stockChart": 3...4,
+    ]
+
     /// Everything a structural edit needs to be safe, checked once.
     ///
     /// The core test is deliberately the strictest one available: a chart is
@@ -314,6 +356,7 @@ extension Chart {
             return .blocked(.structureNotEditable(problem))
         }
         guard workbookPart != nil else { return .blocked(.noEmbeddedWorkbook) }
+        if Self.hasFilteredSeries(plot) { return .blocked(.filteredSeriesNotSupported) }
 
         for (index, element) in plot.children(named: "c:ser").enumerated() {
             // Renumbering writes c:idx/c:order; a series without them is not
@@ -343,6 +386,10 @@ extension Chart {
         let count = plot.children(named: "c:ser").count
         guard count > 0 else { return .notACategoryChart }
         guard count < 255 else { return .tooManySeries(limit: 255) }
+        if let bounds = seriesCountBounds[plot.name], !bounds.contains(count + 1) {
+            return .seriesCountFixedByChartType(
+                plotType: String(plot.name.dropFirst(2)), allowed: bounds)
+        }
         guard values.count == data.categories.count else {
             return .valueCountMismatch(categories: data.categories.count, values: values.count)
         }
@@ -357,7 +404,75 @@ extension Chart {
             return .seriesIndexOutOfRange(index: index, count: count)
         }
         guard count > 1 else { return .wouldLeaveNoSeries }
+        if let bounds = seriesCountBounds[plot.name], !bounds.contains(count - 1) {
+            return .seriesCountFixedByChartType(
+                plotType: String(plot.name.dropFirst(2)), allowed: bounds)
+        }
         return nil
+    }
+
+    /// True when the plot hides a series in its `c:extLst`. PowerPoint 2013+
+    /// does not delete a filtered-out series: it moves it into a
+    /// `c15:filteredBarSeries`-style wrapper whose `c15:ser` keeps its original
+    /// index and workbook column, ready to come back when the filter clears.
+    /// Rostrum does not model that index space, and an added series that
+    /// happened to claim a hidden one's column would rewrite its numbers — so
+    /// the edit is refused instead.
+    private static func hasFilteredSeries(_ plot: XML.Element) -> Bool {
+        guard let extensions = plot.firstChild(named: "c:extLst") else { return false }
+        func search(_ element: XML.Element) -> Bool {
+            if element.name == "c15:ser" { return true }
+            if element.name.hasPrefix("c15:filtered"), element.name.hasSuffix("Series") {
+                return true
+            }
+            return element.childElements.contains(where: search)
+        }
+        return extensions.childElements.contains(where: search)
+    }
+
+    /// Everything on a cloned `c:ser` that belongs to the series it was copied
+    /// from rather than to the *kind* of series it is. `removeChildren` is
+    /// shallow by design, and explicit color hides one level down: both
+    /// `CT_Marker` and `CT_DLbls` carry their own `c:spPr`, which is where
+    /// PowerPoint stores a marker's color on line and radar charts.
+    private static func stripIdentity(from element: XML.Element) {
+        for name in ["c:spPr", "c:dPt", "c:trendline", "c:errBars", "c:extLst"] {
+            element.removeChildren(named: name)
+        }
+        element.firstChild(named: "c:marker")?.removeChildren(named: "c:spPr")
+        if let labels = element.firstChild(named: "c:dLbls") {
+            labels.removeChildren(named: "c:dLbl")
+            labels.removeChildren(named: "c:spPr")
+        }
+    }
+
+    /// Everything `CT_*Ser` allows after `c:tx`, so a synthesized name lands in
+    /// its schema position (right after `c:idx`/`c:order`) whatever kind of
+    /// series it is being added to.
+    private static let childrenAfterSeriesName = [
+        "c:spPr", "c:invertIfNegative", "c:pictureOptions", "c:marker", "c:explosion",
+        "c:dPt", "c:dLbls", "c:trendline", "c:errBars", "c:cat", "c:xVal", "c:val",
+        "c:yVal", "c:smooth", "c:shape", "c:bubbleSize", "c:bubble3D", "c:extLst",
+    ]
+
+    /// A `c:tx` naming the series and pointing at row 1 of its column, in the
+    /// reference form every other series in a Rostrum-layout chart uses.
+    private static func seriesName(_ name: String, column: String) -> XML.Element {
+        let tx = XML.Element("c:tx")
+        let ref = XML.Element("c:strRef")
+        let formula = XML.Element("c:f")
+        formula.children = [.text("Sheet1!$\(column)$1")]
+        ref.appendElement(formula)
+        let cache = XML.Element("c:strCache")
+        cache.appendElement(XML.Element("c:ptCount", attributes: [("val", "1")]))
+        let point = XML.Element("c:pt", attributes: [("idx", "0")])
+        let value = XML.Element("c:v")
+        value.children = [.text(name)]
+        point.appendElement(value)
+        cache.appendElement(point)
+        ref.appendElement(cache)
+        tx.appendElement(ref)
+        return tx
     }
 
     /// Point a series' formulas at the workbook columns for `index`. The
@@ -372,10 +487,15 @@ extension Chart {
         }
     }
 
-    /// `c:legendEntry` addresses a series by index, so a removal that does not
-    /// shift them leaves formatting attached to the wrong series — or to one
-    /// that no longer exists.
-    private func shiftLegendEntries(removing index: Int) {
+    /// On most chart types a `c:legendEntry` addresses a series by index, so a
+    /// removal that does not shift them leaves formatting attached to the wrong
+    /// series — or to one that no longer exists.
+    ///
+    /// On the pie family (including doughnut) the legend enumerates the
+    /// *categories* instead, and removing a series changes none of them; there
+    /// the entries are left exactly as they are.
+    private func shiftLegendEntries(removing index: Int, in plot: XML.Element) {
+        guard !Self.pointLegendPlots.contains(plot.name) else { return }
         guard let legend = root?.firstChild(named: "c:chart")?
             .firstChild(named: "c:legend") else { return }
         for entry in legend.children(named: "c:legendEntry") {

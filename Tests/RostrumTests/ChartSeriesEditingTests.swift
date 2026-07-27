@@ -344,13 +344,163 @@ import Testing
     }
 
     @Test func doughnutChartsDoTakeASecondSeries() throws {
-        // Unlike pie, a doughnut draws each series as its own ring.
-        let deck = try deckWithChart(.doughnut, data: ChartData(categories: ["A", "B"], values: [1, 2]))
+        // Unlike pie, a doughnut draws each series as its own ring. Colors are
+        // passed so the template carries the c:dPt run a colored pie/doughnut
+        // series gets: the added ring must not inherit ring 1's slice colors.
+        let deck = try deckWithChart(.doughnut,
+                                     data: ChartData(categories: ["A", "B"], values: [1, 2]),
+                                     colors: [Color("18A999"), Color("FF6B5E")])
         let chart = try #require(deck.charts.first)
+        let template = try #require(chart.seriesElements.first)
+        #expect(!template.children(named: "c:dPt").isEmpty, "the fixture must have per-point fills")
+
         #expect(chart.addSeriesProblem(name: "Outer", values: [3, 4]) == nil)
         try chart.addSeries(name: "Outer", values: [3, 4])
+        let added = try #require(chart.seriesElements.last)
+        #expect(added.children(named: "c:dPt").isEmpty,
+                "inherited per-slice colors would make the second ring a copy of the first")
         #expect(try Presentation(data: try deck.serializedData())
             .charts.first?.series.map(\.name) == ["Series 1", "Outer"])
+    }
+
+    @Test func nestedColorAndPerSeriesAnalysisAreStrippedFromTheClone() throws {
+        // The identity strip has to reach one level down: PowerPoint stores a
+        // line series' marker color in c:marker/c:spPr, and a c:ser can carry a
+        // trendline and error bars that belong to that series alone.
+        let deck = try deckWithChart(.line)
+        let chart = try #require(deck.charts.first)
+        let template = try #require(chart.seriesElements.last)
+        let marker = try #require(template.firstChild(named: "c:marker"))
+        marker.appendElement(XML.Element("c:spPr"))
+        let labels = XML.Element("c:dLbls")
+        labels.appendElement(XML.Element("c:dLbl"))
+        labels.appendElement(XML.Element("c:spPr"))
+        labels.appendElement(XML.Element("c:showVal", attributes: [("val", "1")]))
+        template.insertChild(labels, beforeAnyOf: ["c:cat", "c:val"])
+        template.insertChild(XML.Element("c:trendline"), beforeAnyOf: ["c:cat", "c:val"])
+        template.insertChild(XML.Element("c:errBars"), beforeAnyOf: ["c:cat", "c:val"])
+        chart.part.markDirty()
+
+        try chart.addSeries(name: "Margin", values: [5, 12, 19])
+        let added = try #require(chart.seriesElements.last)
+        #expect(added.firstChild(named: "c:marker")?.firstChild(named: "c:spPr") == nil,
+                "markers in the sibling's color are worse than plain inheritance")
+        #expect(added.firstChild(named: "c:trendline") == nil)
+        #expect(added.firstChild(named: "c:errBars") == nil)
+        // The label *settings* are per-kind and stay; the per-point overrides
+        // and the sibling's label styling do not.
+        let addedLabels = try #require(added.firstChild(named: "c:dLbls"))
+        #expect(addedLabels.firstChild(named: "c:showVal") != nil)
+        #expect(addedLabels.firstChild(named: "c:dLbl") == nil)
+        #expect(addedLabels.firstChild(named: "c:spPr") == nil)
+        // The template itself must be untouched — deepCopy shares nothing.
+        #expect(template.firstChild(named: "c:trendline") != nil)
+        #expect(marker.firstChild(named: "c:spPr") != nil)
+    }
+
+    @Test func aSeriesWithoutACTxGetsOneRatherThanLosingItsName() throws {
+        // c:tx is optional. Writing the name into the workbook while the chart
+        // never gains it labels the series "Series N" and disagrees with Edit
+        // Data — so the name element is synthesized instead.
+        let deck = try deckWithChart()
+        let chart = try #require(deck.charts.first)
+        for series in chart.seriesElements { series.removeChildren(named: "c:tx") }
+        chart.part.markDirty()
+
+        try chart.addSeries(name: "Margin", values: [5, 12, 19])
+        let reopened = try Presentation(data: try deck.serializedData())
+        let saved = try #require(reopened.charts.first)
+        #expect(saved.series.map(\.name) == ["", "", "Margin"])
+        let added = try #require(saved.seriesElements.last)
+        let tx = try #require(added.firstChild(named: "c:tx"))
+        #expect(Chart.formula(in: tx) == "Sheet1!$D$1")
+        // And it must land in its schema position, right after c:idx/c:order.
+        let leading = Array(added.childElements.map(\.name).prefix(3))
+        #expect(leading == ["c:idx", "c:order", "c:tx"])
+        #expect(try reopened.validate().isEmpty)
+    }
+
+    @Test func stockChartsRefuseEditsThatBreakTheirFixedSeriesCount() throws {
+        // CT_StockChart is the one plot type whose schema pins the series
+        // count: minOccurs="3" maxOccurs="4" (high-low-close and
+        // open-high-low-close). Rostrum cannot author one, so the fixture is a
+        // renamed bar plot — eligibility keys on the plot element's name.
+        func stockChart(seriesCount: Int) throws -> Chart {
+            let series = (0..<seriesCount).map {
+                ChartData.Series(name: "S\($0)", values: [Double($0), Double($0) + 1])
+            }
+            let deck = try deckWithChart(
+                data: ChartData(categories: ["Mon", "Tue"], series: series))
+            let chart = try #require(deck.charts.first)
+            let plot = try #require(chart.plots.first)
+            plot.name = "c:stockChart"
+            chart.part.markDirty()
+            return chart
+        }
+
+        let openHighLowClose = try stockChart(seriesCount: 4)
+        #expect(openHighLowClose.addSeriesProblem(name: "Fifth", values: [1, 2])
+                == .seriesCountFixedByChartType(plotType: "stockChart", allowed: 3...4))
+        #expect(openHighLowClose.removeSeriesProblem(at: 0) == nil, "4 → 3 stays legal")
+
+        let highLowClose = try stockChart(seriesCount: 3)
+        #expect(highLowClose.removeSeriesProblem(at: 0)
+                == .seriesCountFixedByChartType(plotType: "stockChart", allowed: 3...4))
+        #expect(highLowClose.addSeriesProblem(name: "Fourth", values: [1, 2]) == nil,
+                "3 → 4 stays legal")
+    }
+
+    @Test func aPlotHidingAFilteredSeriesIsRefused() throws {
+        // PowerPoint 2013+ does not delete a series you filter out — it parks
+        // it in the plot's c:extLst, still owning an index and a workbook
+        // column that a new series would silently claim.
+        let deck = try deckWithChart()
+        let chart = try #require(deck.charts.first)
+        let plot = try #require(chart.plots.first)
+        let extensions = XML.Element("c:extLst")
+        let ext = XML.Element("c:ext", attributes: [
+            ("uri", "{02D57815-91ED-43cb-92C2-25804820EDAC}"),
+        ])
+        let filtered = XML.Element("c15:filteredBarSeries")
+        filtered.appendElement(XML.Element("c15:ser"))
+        ext.appendElement(filtered)
+        extensions.appendElement(ext)
+        plot.appendElement(extensions)
+        chart.part.markDirty()
+
+        #expect(chart.addSeriesProblem(name: "X", values: [1, 2, 3])
+                == .filteredSeriesNotSupported)
+        #expect(chart.removeSeriesProblem(at: 0) == .filteredSeriesNotSupported)
+    }
+
+    @Test func aDoughnutLegendIsLeftAloneBecauseItListsCategories() throws {
+        // Pie-family legends enumerate data points, not series. Shifting their
+        // entries when a ring goes away moves one category's formatting onto
+        // its neighbour and strands the last one.
+        let deck = try deckWithChart(.doughnut,
+                                     data: ChartData(categories: ["A", "B", "C"],
+                                                     values: [1, 2, 3]),
+                                     legend: .bottom)
+        let chart = try #require(deck.charts.first)
+        try chart.addSeries(name: "Outer", values: [4, 5, 6])
+        let legend = try #require(chart.root?.firstChild(named: "c:chart")?
+            .firstChild(named: "c:legend"))
+        for index in 0...2 {
+            let entry = XML.Element("c:legendEntry")
+            entry.appendElement(XML.Element("c:idx", attributes: [("val", String(index))]))
+            entry.appendElement(
+                XML.Element("c:delete", attributes: [("val", index == 1 ? "1" : "0")]))
+            legend.insertChild(entry, beforeAnyOf: ["c:layout", "c:overlay", "c:spPr", "c:txPr"])
+        }
+
+        try chart.removeSeries(at: 0)
+        let entries = legend.children(named: "c:legendEntry")
+        let indices = entries.compactMap { $0.firstChild(named: "c:idx")?[attribute: "val"] }
+        #expect(indices == ["0", "1", "2"],
+                "removing a ring changes no category, so no entry may move")
+        #expect(entries.count == 3)
+        #expect(entries[1].firstChild(named: "c:delete")?[attribute: "val"] == "1",
+                "the hidden category must stay the hidden category")
     }
 
     @Test func comboChartsAreRefused() throws {

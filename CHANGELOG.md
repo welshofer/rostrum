@@ -96,20 +96,28 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 - **Adding and removing chart series** — `chart.addSeries(name:values:)` and
   `chart.removeSeries(at:)` change a chart's series list in place. A new
   series is cloned from the last existing one, so it keeps the per-kind
-  children its siblings have (`c:marker`, `c:smooth`, series-level `c:dLbls`)
-  but not their identity (`c:spPr`, `c:dPt`, per-point `c:dLbl`, and the
-  `c:extLst` carrying a series id that must stay unique) — PowerPoint colors
-  it from the theme, as it does when you add one by hand. Removal renumbers
-  every survivor's `c:idx`/`c:order` and workbook formulas and shifts
-  `c:legendEntry` indices so formatting cannot end up attached to the wrong
-  series; both operations rewrite the embedded workbook. The same
-  refuse-before-writing stance as `replaceData` applies, reported by
+  children its siblings have (`c:marker`, `c:smooth`, series-level `c:dLbls`
+  settings) but not their identity: `c:spPr` — including the nested one inside
+  `c:marker` and `c:dLbls`, where PowerPoint stores a line or radar series'
+  marker color — `c:dPt` and per-point `c:dLbl` overrides, `c:trendline` and
+  `c:errBars` (per-series analysis, not series structure), and the `c:extLst`
+  carrying a series id that must stay unique. PowerPoint colors the new series
+  from the theme, as it does when you add one by hand. A template with no
+  `c:tx` (a chart built over a headerless range) gets one synthesized, so the
+  name is never silently dropped. Removal renumbers every survivor's
+  `c:idx`/`c:order` and workbook formulas, and on the chart types whose legend
+  lists series it shifts `c:legendEntry` indices so formatting cannot end up
+  attached to the wrong series — pie-family legends enumerate categories
+  instead, and are left alone. Both operations rewrite the embedded workbook.
+  The same refuse-before-writing stance as `replaceData` applies, reported by
   `addSeriesProblem(name:values:)` / `removeSeriesProblem(at:)`: combo charts,
   XY charts, charts with no embedded workbook or with literal (`c:numLit`)
-  data, foreign workbook layouts, a pie chart asked for a second series it
-  would never draw (a doughnut, which draws one ring per series, is allowed),
-  a value count that does not match the categories, and removing a chart's
-  last series.
+  data, foreign workbook layouts, a plot hiding a filtered-out series in its
+  `c:extLst` (which still owns an index and a workbook column), a pie chart
+  asked for a second series it would never draw (a doughnut, which draws one
+  ring per series, is allowed), a stock chart pushed outside the 3–4 series
+  its schema pins it to, a value count that does not match the categories, and
+  removing a chart's last series.
 - **Appearance read-back** — `shape.fill`, `shape.line`, `shape.hasShadow`,
   `slide.background` and `cell.fill` report what a shape actually carries
   (`ReadFill`/`ReadLine`, covering solid + alpha, theme colors, gradients,
