@@ -169,13 +169,21 @@ public final class Chart {
         guard elements.count == data.series.count else {
             return .seriesCountMismatch(chart: elements.count, replacement: data.series.count)
         }
+        // Structural shape first: a chart with no c:val at all (scatter,
+        // bubble) is not a category chart, and saying so is more useful than
+        // reporting a category-count mismatch against zero.
+        for (index, element) in elements.enumerated()
+        where element.firstChild(named: "c:val") == nil {
+            return .seriesNotWritable(index: index, missing: "c:val")
+        }
+
         let existing = categories.count
         guard existing == data.categories.count else {
             return .categoryCountMismatch(chart: existing, replacement: data.categories.count)
         }
 
         for (index, element) in elements.enumerated() {
-            // Values must exist and be writable, and must not be resized.
+            // Values must be writable, and must not be resized.
             guard let val = element.firstChild(named: "c:val") else {
                 return .seriesNotWritable(index: index, missing: "c:val")
             }

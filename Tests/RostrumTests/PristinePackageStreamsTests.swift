@@ -77,6 +77,106 @@ import Testing
         #expect(untouched.serialized() == foreignContentTypes)
     }
 
+    /// Rewrite a deck's `.rels` and `[Content_Types].xml` entries the way
+    /// another producer formats them — indented, different attribute order,
+    /// Overrides before Defaults — so the round trip is exercised on bytes
+    /// Rostrum would never write itself. Without this, every "foreign deck"
+    /// test is really a Rostrum-deck test, and rebuild-of-a-rebuild is
+    /// trivially stable.
+    private func reformattedLikeAnotherProducer(_ deck: Data) throws -> Data {
+        let reader = try ZipReader(data: deck)
+        var zip = ZipWriter()
+        for name in reader.entryNames {
+            var bytes = try reader.data(forEntry: name)
+            if name.hasSuffix(".rels") {
+                let rels = try Relationships.parse(bytes)
+                var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+                xml += "<Relationships xmlns=\"\(Relationships.namespace)\">\n"
+                for rel in rels.items {
+                    xml += "    <Relationship Type=\"\(rel.type)\" Target=\"\(rel.target)\""
+                    if rel.isExternal { xml += " TargetMode=\"External\"" }
+                    xml += " Id=\"\(rel.rId)\"/>\n"
+                }
+                xml += "</Relationships>\n"
+                bytes = Data(xml.utf8)
+            } else if name == "[Content_Types].xml" {
+                let types = try ContentTypesMap.parse(bytes)
+                var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+                xml += "<Types xmlns=\"\(ContentTypesMap.namespace)\">\n"
+                // Overrides first, reverse-sorted: the rebuild would emit
+                // Defaults first, sorted.
+                for (part, ct) in types.overrides.sorted(by: { $0.key.value > $1.key.value }) {
+                    xml += "  <Override ContentType=\"\(ct)\" PartName=\"\(part.value)\"/>\n"
+                }
+                for (ext, ct) in types.defaults.sorted(by: { $0.key > $1.key }) {
+                    xml += "  <Default ContentType=\"\(ct)\" Extension=\"\(ext)\"/>\n"
+                }
+                xml += "</Types>\n"
+                bytes = Data(xml.utf8)
+            }
+            zip.addFile(name: name, data: bytes)
+        }
+        return zip.finalize()
+    }
+
+    @Test func aForeignDeckKeepsItsOwnRelsAndContentTypesBytes() throws {
+        // The test that would have caught the reader discarding pristine
+        // bytes: it goes through OPCPackage.read, not Relationships.parse.
+        let built = try Presentation()
+        try built.bulletSlide("Title", ["one"])
+        let foreign = try reformattedLikeAnotherProducer(try built.serializedData())
+
+        let resaved = try Presentation(data: foreign).serializedData()
+        let before = try ZipReader(data: foreign)
+        let after = try ZipReader(data: resaved)
+        for name in before.entryNames {
+            #expect(try after.data(forEntry: name) == before.data(forEntry: name),
+                    "\(name) was normalized on a read-only round trip")
+        }
+        // And the reformatting really was different from what we would write,
+        // so the assertion above is not vacuous.
+        let rostrumFormatted = try ZipReader(data: try built.serializedData())
+        #expect(try before.data(forEntry: "_rels/.rels")
+                != rostrumFormatted.data(forEntry: "_rels/.rels"))
+        #expect(try before.data(forEntry: "[Content_Types].xml")
+                != rostrumFormatted.data(forEntry: "[Content_Types].xml"))
+    }
+
+    @Test func editingAForeignDeckRebuildsOnlyWhatChanged() throws {
+        let built = try Presentation()
+        try built.bulletSlide("Title", ["one"])
+        let foreign = try reformattedLikeAnotherProducer(try built.serializedData())
+
+        let deck = try Presentation(data: foreign)
+        // Adding a slide changes the presentation's rels, the package content
+        // types (a new Override) — but no other .rels part.
+        try deck.slides.add()
+        let resaved = try deck.serializedData()
+
+        let before = try ZipReader(data: foreign)
+        let after = try ZipReader(data: resaved)
+        #expect(try after.data(forEntry: "ppt/slideMasters/_rels/slideMaster1.xml.rels")
+                == before.data(forEntry: "ppt/slideMasters/_rels/slideMaster1.xml.rels"),
+                "an untouched .rels part must keep its foreign formatting")
+        #expect(try after.data(forEntry: "ppt/_rels/presentation.xml.rels")
+                != before.data(forEntry: "ppt/_rels/presentation.xml.rels"),
+                "the part whose relationships changed must be rebuilt")
+    }
+
+    @Test func aChangeThatNetsOutStillReEmitsTheOriginal() throws {
+        // Dirty-latch tracking would rebuild here; comparing against the
+        // parsed state does not.
+        let rels = try Relationships.parse(foreignRels)
+        let rId = rels.add(type: RelType.slide, target: "slides/slide9.xml")
+        rels.remove(rId: rId)
+        #expect(rels.serialized() == foreignRels)
+
+        var types = try ContentTypesMap.parse(foreignContentTypes)
+        types.setOverride(partName: PackURI("/ppt/slides/slide9.xml"), contentType: ContentType.slide)
+        types.removeOverride(partName: PackURI("/ppt/slides/slide9.xml"))
+        #expect(types.serialized() == foreignContentTypes)
+    }
+
     @Test func aDeckThatOnlyReadsKeepsEveryStreamByteIdentical() throws {
         // The end-to-end promise: open, read everything, save — identical
         // bytes for every zip entry including .rels and [Content_Types].xml.

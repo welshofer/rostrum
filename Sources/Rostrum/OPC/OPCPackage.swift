@@ -105,15 +105,17 @@ public final class OPCPackage {
 
         // Second pass: attach relationships to the package and to each part,
         // preserving parsed rIds verbatim — part XML references them by value.
+        // `adopt`, not `setItems`: the parsed collection carries the bytes it
+        // came from, and an untouched `.rels` part must re-emit them verbatim.
         if zip.contains(PackURI.packageRels.memberName) {
             let parsed = try Relationships.parse(zip.data(forEntry: PackURI.packageRels.memberName))
-            package.rels.setItems(parsed.items)
+            package.rels.adopt(parsed)
         }
         for (uri, part) in package.parts {
             let relsName = uri.relsURI.memberName
             guard zip.contains(relsName) else { continue }
             let parsed = try Relationships.parse(zip.data(forEntry: relsName))
-            part.rels.setItems(parsed.items)
+            part.rels.adopt(parsed)
         }
         return package
     }

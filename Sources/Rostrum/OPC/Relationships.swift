@@ -17,23 +17,34 @@ public struct Relationship: Sendable, Equatable {
 /// Reference semantics on purpose: a part and the package hold onto the same
 /// live collection while the object model mutates it.
 public final class Relationships {
-    public private(set) var items: [Relationship] {
-        didSet { isDirty = true }
-    }
+    public private(set) var items: [Relationship]
 
-    /// The bytes this collection was parsed from, kept so an untouched
-    /// `.rels` part re-emits verbatim — the same pristine-blob guarantee
-    /// `Part` gives content parts. Relationship parts are parts too, and a
-    /// foreign package writes them with its own attribute order, spacing and
-    /// declaration.
+    /// The bytes this collection was parsed from, and the items they encoded.
+    /// An untouched `.rels` part re-emits verbatim — the same pristine-blob
+    /// guarantee `Part` gives content parts, since relationship parts are
+    /// parts too and a foreign package writes them with its own attribute
+    /// order, spacing and declaration.
+    ///
+    /// Comparing items rather than latching a dirty flag means a change that
+    /// is later undone (add a relationship, remove it again) still re-emits
+    /// the original bytes.
     private var pristine: Data?
-    private var isDirty = false
+    private var pristineItems: [Relationship]?
 
     static let namespace = "http://schemas.openxmlformats.org/package/2006/relationships"
 
     public init() {
         items = []
-        isDirty = false
+    }
+
+    /// Take on a parsed collection wholesale — its items **and** the bytes
+    /// they came from. The package reader uses this; `setItems` deliberately
+    /// does not, because its caller (slide duplication) copies items onto a
+    /// different part, whose `.rels` must be written fresh.
+    func adopt(_ parsed: Relationships) {
+        items = parsed.items
+        pristine = parsed.pristine
+        pristineItems = parsed.pristineItems
     }
 
     public var isEmpty: Bool { items.isEmpty }
@@ -93,15 +104,15 @@ public final class Relationships {
             rels.items.append(Relationship(rId: rId, type: type, target: target, isExternal: external))
         }
         rels.pristine = data
-        rels.isDirty = false
+        rels.pristineItems = rels.items
         return rels
     }
 
-    /// The original bytes when nothing was added or removed; otherwise
-    /// serialized in insertion order (stable, and matches how Office writes
-    /// them).
+    /// The original bytes when the relationships still match what was parsed;
+    /// otherwise serialized in insertion order (stable, and matches how
+    /// Office writes them).
     public func serialized() -> Data {
-        if !isDirty, let pristine { return pristine }
+        if let pristine, let pristineItems, items == pristineItems { return pristine }
         return rebuilt()
     }
 

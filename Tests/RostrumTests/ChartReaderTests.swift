@@ -32,8 +32,8 @@ import Testing
     }
 
     @Test func readsEveryChartKindItCanWrite() throws {
-        for kind in [ChartKind.barClustered, .barStacked, .barPercentStacked,
-                     .line, .area, .pie, .doughnut] {
+        // allCases, so a newly added kind cannot silently skip read-back.
+        for kind in ChartKind.allCases {
             let chart = try #require(deckWithChart(kind).charts.first)
             #expect(chart.plotType != nil, "\(kind) has no readable plot type")
             #expect(chart.categories == ["Q1", "Q2", "Q3"], "\(kind) categories")
@@ -430,14 +430,16 @@ private func chartDescendants(_ element: XML.Element, named name: String) -> [XM
 
     @Test func bubbleChartsRefuseCategoryReplacement() throws {
         // A bubble series has no c:val, so replaceData must refuse rather
-        // than silently doing nothing.
+        // than silently doing nothing — and must say THAT, not report a
+        // category-count mismatch against a chart with no category axis.
         let deck = try Presentation()
         try deck.slides[0].shapes.addBubbleChart(
             BubbleChartData(name: "S", points: [.init(x: 1, y: 2, size: 3)]), frame: frame)
         let reopened = try Presentation(data: try deck.serializedData())
         let chart = try #require(reopened.charts.first)
         let replacement = ChartData(categories: ["A"], series: [.init(name: "S", values: [1])])
-        #expect(chart.replacementProblem(for: replacement) != nil)
+        #expect(chart.replacementProblem(for: replacement)
+                == .seriesNotWritable(index: 0, missing: "c:val"))
         #expect(throws: Chart.ReplacementProblem.self) { try chart.replaceData(replacement) }
     }
 

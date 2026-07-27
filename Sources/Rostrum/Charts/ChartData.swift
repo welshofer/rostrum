@@ -39,7 +39,7 @@ public struct ChartData: Sendable {
     }
 }
 
-public enum ChartKind: Sendable {
+public enum ChartKind: Sendable, CaseIterable {
     /// Clustered column chart.
     case barClustered
     /// Stacked column chart.

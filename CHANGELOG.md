@@ -126,6 +126,9 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Fixed
 
+- **`ChartKind` is `CaseIterable`**, and the tests that walk every kind now
+  use `allCases` — a newly added kind can no longer silently skip the
+  schema-order and read-back gates.
 - **The round-trip rule has no exceptions any more.** `.rels` parts and
   `[Content_Types].xml` were parsed into models and rebuilt on every save, so
   a deck authored elsewhere had those streams normalized — different

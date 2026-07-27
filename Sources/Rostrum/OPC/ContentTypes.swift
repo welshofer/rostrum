@@ -4,20 +4,22 @@ import Foundation
 /// via extension-based `Default` rules and part-specific `Override` rules.
 public struct ContentTypesMap {
     /// Extension (lowercased, no dot) → content type.
-    public private(set) var defaults: [String: String] {
-        didSet { isDirty = true }
-    }
+    public private(set) var defaults: [String: String]
     /// Part URI → content type. Wins over any Default.
-    public private(set) var overrides: [PackURI: String] {
-        didSet { isDirty = true }
-    }
+    public private(set) var overrides: [PackURI: String]
 
-    /// The bytes this map was parsed from, kept so an untouched package
-    /// re-emits its content-types stream verbatim. Rebuilding sorts Defaults
-    /// and Overrides, while Office writes Overrides in document order — so a
-    /// foreign package's stream would otherwise change on every save.
+    /// The bytes this map was parsed from and the maps they encoded, so an
+    /// untouched package re-emits its content-types stream verbatim.
+    /// Rebuilding sorts Defaults and Overrides, while Office writes Overrides
+    /// in document order — a foreign package's stream would otherwise change
+    /// on every save.
+    ///
+    /// Comparing the maps rather than latching a dirty flag means a change
+    /// that nets out — adding a part's override and removing it again, which
+    /// the image-dedup path does on every save — still re-emits the original.
     private var pristine: Data?
-    private var isDirty = false
+    private var pristineDefaults: [String: String]?
+    private var pristineOverrides: [PackURI: String]?
 
     static let namespace = "http://schemas.openxmlformats.org/package/2006/content-types"
 
@@ -28,21 +30,17 @@ public struct ContentTypesMap {
             "xml": "application/xml",
         ]
         overrides = [:]
-        isDirty = false
     }
 
     public mutating func setDefault(extension ext: String, contentType: String) {
-        guard defaults[ext.lowercased()] != contentType else { return }
         defaults[ext.lowercased()] = contentType
     }
 
     public mutating func setOverride(partName: PackURI, contentType: String) {
-        guard overrides[partName] != contentType else { return }
         overrides[partName] = contentType
     }
 
     public mutating func removeOverride(partName: PackURI) {
-        guard overrides[partName] != nil else { return }
         overrides[partName] = nil
     }
 
@@ -76,15 +74,18 @@ public struct ContentTypesMap {
             }
         }
         map.pristine = data
-        map.isDirty = false
+        map.pristineDefaults = map.defaults
+        map.pristineOverrides = map.overrides
         return map
     }
 
-    /// The original bytes when nothing was added, changed or removed;
+    /// The original bytes when the map still matches what was parsed;
     /// otherwise a deterministic rebuild (Defaults sorted by extension, then
     /// Overrides sorted by part name).
     public func serialized() -> Data {
-        if !isDirty, let pristine { return pristine }
+        if let pristine, defaults == pristineDefaults, overrides == pristineOverrides {
+            return pristine
+        }
         return rebuilt()
     }
 
