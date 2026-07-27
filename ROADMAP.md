@@ -69,8 +69,26 @@ from phase 0 onward.
 - [x] Linux CI (Swift 6.0/6.1 containers, oracle tools installed)
 - [x] Radar (`.radar`, `.radarFilled`) and bubble (`addBubbleChart`) —
   shipped 2026-07-27, closing two of the four types the earlier ✅ overclaimed
-- [ ] Stock and combo chart types — still not shipped (combo charts *read*
-  correctly since M4, but there is no authoring API for them)
+- [x] **Combo charts** — `addComboChart(_:frame:options:)` writes several plot
+  groups into one plot area, with an optional secondary value axis; series are
+  numbered globally so the workbook columns, the read side and `replaceData`
+  all agree (2026-07-27)
+- [ ] **Stock charts** — designed but deliberately not shipped. `CT_StockChart`
+  itself is straightforward (`ser{3,4}`, `c:hiLowLines`, `c:upDownBars` for the
+  open-high-low-close variant), and Rostrum already refuses series edits that
+  would break the 3–4 bound. The blocker is the category axis: every
+  Office-generated stock part we could find pairs `c:stockChart` with a
+  `c:dateAx` over numeric serial dates, while `ChartData.categories` is
+  `[String]` and so forces `c:catAx`. That is schema-legal and no source says
+  PowerPoint rejects it, but nobody has a sample proving it doesn't — and this
+  project's bar is "PowerPoint opens it without a repair prompt", which cannot
+  be checked from CI (python-pptx can't help: its `PlotFactory` raises on
+  `c:stockChart`). Shipping it would be a guess. **To unblock:** author one
+  stock deck, open it in PowerPoint; if it opens clean, implement as designed.
+  If it repairs, the fix is a date-typed category model plus a workbook
+  variant — a separate feature, not a patch. Do *not* write string categories
+  under a `c:dateAx`; that is exactly the corruption `replaceData` already
+  refuses as `.categoryAxisIsNotText`.
 - [x] Core/extended/custom document properties API (`deck.documentProperties`,
   2026-07-26)
 - [x] Media parts — `shapes.addMedia(_:format:frame:poster:)` embeds video and

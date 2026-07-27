@@ -72,6 +72,18 @@ private let pythonWithPptx: String? = {
                              ChartData(categories: ["A", "B"], name: "S", values: [1, 2]))
         try assertOpens(chart, "chart")
 
+        // A combo is the most structurally unusual chart Rostrum writes — two
+        // plot groups and four axes in one plot area.
+        let combo = try Presentation()
+        try combo.slides[0].shapes.addComboChart(
+            ComboChartData(categories: ["A", "B"], groups: [
+                .init(kind: .barClustered, series: [.init(name: "Bars", values: [1, 2])]),
+                .init(kind: .line, series: [.init(name: "Line", values: [3, 4])],
+                      axis: .secondary),
+            ]),
+            frame: Rect(x: .inches(1), y: .inches(1), width: .inches(6), height: .inches(4)))
+        try assertOpens(combo, "combo")
+
         let merged = try Presentation()
         let source = try Presentation()
         try source.bulletSlide("Imported", ["slide"])

@@ -87,6 +87,26 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   refreshing the workbook would leave Edit Data pointing at cells that no
   longer exist. Combo charts (several plot groups in one plot area) are read
   and updated as a whole, and charts nested inside groups are found.
+- **Combo charts** — `shapes.addComboChart(_:frame:options:)` takes a
+  `ComboChartData` of plot groups sharing one category axis, each group with its
+  own kind, colors and data labels, and each drawn against the primary or a
+  secondary value axis. A secondary group gets a right-hand value axis *and* the
+  deleted category axis its `c:axId` pair must name — a `c:axId` pointing at an
+  axis the plot area does not contain is a repair trigger no schema check
+  catches. Series are numbered globally across groups, so `c:idx`/`c:order`, the
+  embedded workbook's columns, the read side and `replaceData` all describe the
+  same order. Refused before anything is written, via `ChartAuthoringProblem`:
+  a group kind with no shared category axis (pie, doughnut, radar), no primary
+  group, or two bar groups on one axis pair — PowerPoint merges those into a
+  single cluster, so it would draw something other than what was asked for.
+- **Data-label positions are checked per chart type.** `c:dLblPos` carries
+  per-type restrictions and an illegal one makes PowerPoint offer to repair the
+  file. The one-line doughnut guard became a table: pie and of-pie accept four
+  tokens, doughnut/area/radar accept none, and a stacked bar has no "outside
+  end". Types where no corroborated table exists (line, scatter, bubble) are
+  left unrestricted rather than having a caller's intent dropped on a guess.
+  *Behavior change:* a position previously emitted on an area, radar or stacked
+  bar chart is now dropped — those were latent repair prompts.
 - **XY chart read-back** — `chart.xySeries` reads scatter and bubble points
   (`chart.isXY` says when to reach for it): x, y and — on bubble — size, with
   cache gaps preserved as nil and each series read independently, so series of

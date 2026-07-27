@@ -9,6 +9,23 @@ enum ChartXML {
     // Axis ids need only be unique within one chart part.
     static let catAxID = "111111111", valAxID = "222222222"
     static let xValAxID = "333333333", yValAxID = "444444444"
+    /// A combo chart's secondary axis pair. Fixed constants rather than a
+    /// counter: there are at most two pairs, and a counter would make the
+    /// output depend on construction order.
+    static let secondaryCatAxID = "555555555", secondaryValAxID = "666666666"
+
+    /// What a plot group needs to know beyond its own series: where those
+    /// series sit in the chart's global numbering (which is also their workbook
+    /// column), which axis pair it is drawn against, and its own data labels.
+    ///
+    /// The defaults reproduce the single-plot case exactly, so the existing
+    /// builders are unchanged by the combo work.
+    struct PlotContext {
+        var firstSeriesIndex = 0
+        var categoryAxisID = ChartXML.catAxID
+        var valueAxisID = ChartXML.valAxID
+        var dataLabels: DataLabelOptions?
+    }
 
     // MARK: - Category charts (bar / line / area / pie / doughnut)
 
@@ -54,6 +71,87 @@ enum ChartXML {
         return XML.document(root)
     }
 
+    // MARK: - Combo (several plot groups in one plot area)
+
+    /// Build a combo chart. `CT_PlotArea` is `layout?, (plot group)+, (axis)*,
+    /// dTable?, spPr?`, so every group is emitted before any axis — which is
+    /// also what the single-plot path already does.
+    ///
+    /// Series are numbered globally across groups, because `c:idx`/`c:order`
+    /// and the workbook column are the same fact: the flattened series order is
+    /// exactly the layout `ChartWorkbook.make` writes.
+    static func comboChartSpace(data: ComboChartData, options: ChartOptions) -> Data {
+        let root = chartRoot()
+        root.appendElement(V("c:date1904", "0"))
+        let chart = XML.Element("c:chart")
+        appendTitle(options.title, to: chart)
+
+        let flattened = data.flattened
+        let plotArea = XML.Element("c:plotArea")
+        for (index, group) in data.groups.enumerated() {
+            let secondary = group.axis == .secondary
+            let context = PlotContext(
+                firstSeriesIndex: data.firstSeriesIndex(ofGroup: index),
+                categoryAxisID: secondary ? secondaryCatAxID : catAxID,
+                valueAxisID: secondary ? secondaryValAxID : valAxID,
+                dataLabels: group.dataLabels)
+            plotArea.appendElement(plot(for: group, data: flattened,
+                                        options: options, context: context))
+        }
+
+        // Primary pair, then — when anything is drawn against it — the
+        // secondary value axis and the deleted category axis its plot groups
+        // name. A c:axId naming an axis that is not in the plot area is a
+        // repair trigger no schema check would catch.
+        plotArea.appendElement(catAx(id: catAxID, crossing: valAxID,
+                                     title: options.categoryAxisTitle))
+        plotArea.appendElement(valAx(id: valAxID, crossing: catAxID,
+                                     options: options.valueAxis,
+                                     crossBetween: crossBetween(of: data, on: .primary)))
+        if data.groups.contains(where: { $0.axis == .secondary }) {
+            plotArea.appendElement(valAx(id: secondaryValAxID, crossing: secondaryCatAxID,
+                                         axPos: "r", options: options.secondaryValueAxis,
+                                         crossBetween: crossBetween(of: data, on: .secondary),
+                                         gridlines: false, crosses: "max"))
+            plotArea.appendElement(catAx(id: secondaryCatAxID, crossing: secondaryValAxID,
+                                         title: nil, deleted: true, crosses: nil))
+        }
+        chart.appendElement(plotArea)
+
+        appendLegend(options.legend ?? (flattened.series.count > 1 ? .right : nil), to: chart)
+        chart.appendElement(V("c:plotVisOnly", "1"))
+        chart.appendElement(V("c:dispBlanksAs", "gap"))
+        root.appendElement(chart)
+
+        appendDefaultTextAndData(to: root)
+        return XML.document(root)
+    }
+
+    /// An area group puts its category ticks mid-category; everything else
+    /// inherits the consumer default, which Rostrum expresses by omitting the
+    /// element exactly as the single-plot path does.
+    private static func crossBetween(of data: ComboChartData,
+                                     on axis: ChartAxisGroup) -> String? {
+        data.groups.contains { $0.axis == axis && $0.kind == .area } ? "midCat" : nil
+    }
+
+    private static func plot(for group: ComboChartData.Group, data: ChartData,
+                             options: ChartOptions, context: PlotContext) -> XML.Element {
+        switch group.kind {
+        case .barClustered, .barStacked, .barPercentStacked:
+            return barChart(kind: group.kind, data: data, colors: group.colors,
+                            options: options, series: group.series, context: context)
+        case .line:
+            return lineChart(data: data, colors: group.colors, options: options,
+                             series: group.series, context: context)
+        default:
+            // ComboChartData.authoringProblem() refuses every other kind before
+            // this is reached; area is the only remaining case.
+            return areaChart(data: data, colors: group.colors, options: options,
+                             series: group.series, context: context)
+        }
+    }
+
     // MARK: - Scatter
 
     static func scatterChartSpace(data: XYChartData, colors: [Color]?,
@@ -70,7 +168,7 @@ enum ChartXML {
         for (i, series) in data.series.enumerated() {
             scatter.appendElement(scatterSeries(index: i, series: series, color: colors?[safe: i]))
         }
-        if let d = options.dataLabels { scatter.appendElement(dLbls(d)) }
+        if let d = options.dataLabels { scatter.appendElement(dLbls(d, plot: "c:scatterChart")) }
         scatter.appendElement(V("c:axId", xValAxID))
         scatter.appendElement(V("c:axId", yValAxID))
         plotArea.appendElement(scatter)
@@ -105,7 +203,7 @@ enum ChartXML {
         for (i, series) in data.series.enumerated() {
             bubble.appendElement(bubbleSeries(index: i, series: series, color: colors?[safe: i]))
         }
-        if let d = options.dataLabels { bubble.appendElement(dLbls(d)) }
+        if let d = options.dataLabels { bubble.appendElement(dLbls(d, plot: "c:bubbleChart")) }
         // Sizes are areas, not radii — PowerPoint's own default.
         bubble.appendElement(V("c:bubbleScale", "100"))
         bubble.appendElement(V("c:showNegBubbles", "0"))
@@ -206,13 +304,41 @@ enum ChartXML {
         root.appendElement(external)
     }
 
-    private static func dLbls(_ o: DataLabelOptions) -> XML.Element {
+    /// The `c:dLblPos` tokens a plot type accepts, or nil where Rostrum has no
+    /// evidence of a restriction and so imposes none.
+    ///
+    /// An illegal position is a classic repair trigger — this table started as
+    /// a one-line doughnut guard after PowerPoint refused a deck. Only rows
+    /// corroborated by another implementation's exporter are listed; the rest
+    /// return nil rather than silently dropping a position a caller may be
+    /// relying on. An empty set means the element permits no position at all.
+    static func legalDataLabelPositions(plot: String, grouping: String?) -> Set<String>? {
+        switch plot {
+        case "c:pieChart", "c:ofPieChart":
+            return ["bestFit", "ctr", "inEnd", "outEnd"]
+        case "c:doughnutChart", "c:areaChart", "c:radarChart":
+            return []
+        case "c:barChart", "c:bar3DChart":
+            // A stacked bar has no "outside end" — the next segment is there.
+            return grouping == "stacked" || grouping == "percentStacked"
+                ? ["ctr", "inBase", "inEnd"]
+                : ["ctr", "inBase", "inEnd", "outEnd"]
+        default:
+            return nil
+        }
+    }
+
+    private static func dLbls(_ o: DataLabelOptions, plot: String,
+                              grouping: String? = nil) -> XML.Element {
         // Order: numFmt, spPr, txPr, dLblPos, then the show* flags in sequence.
         let d = XML.Element("c:dLbls")
         if let fmt = o.numberFormat {
             d.appendElement(XML.Element("c:numFmt", attributes: [("formatCode", fmt), ("sourceLinked", "0")]))
         }
-        if let pos = o.position { d.appendElement(V("c:dLblPos", pos)) }
+        let legal = legalDataLabelPositions(plot: plot, grouping: grouping)
+        if let pos = o.position, legal?.contains(pos) ?? true {
+            d.appendElement(V("c:dLblPos", pos))
+        }
         d.appendElement(V("c:showLegendKey", "0"))
         d.appendElement(V("c:showVal", o.showValue ? "1" : "0"))
         d.appendElement(V("c:showCatName", o.showCategory ? "1" : "0"))
@@ -225,7 +351,9 @@ enum ChartXML {
     // MARK: - Plot builders
 
     private static func barChart(kind: ChartKind, data: ChartData, colors: [Color]?,
-                                 options: ChartOptions) -> XML.Element {
+                                 options: ChartOptions,
+                                 series seriesList: [ChartData.Series]? = nil,
+                                 context: PlotContext = PlotContext()) -> XML.Element {
         let grouping: String
         switch kind {
         case .barStacked: grouping = "stacked"
@@ -235,25 +363,31 @@ enum ChartXML {
         let bar = XML.Element("c:barChart")
         bar.appendElement(V("c:barDir", "col"))
         bar.appendElement(V("c:grouping", grouping))
-        for (i, series) in data.series.enumerated() {
-            bar.appendElement(ser(index: i, series: series, data: data) { serEl in
+        for (i, series) in (seriesList ?? data.series).enumerated() {
+            bar.appendElement(ser(index: context.firstSeriesIndex + i, series: series,
+                                  data: data) { serEl in
                 if let color = colors?[safe: i] { serEl.appendElement(solidSpPr(color)) }
             })
         }
-        if let d = options.dataLabels { bar.appendElement(dLbls(d)) }
+        if let d = context.dataLabels ?? options.dataLabels {
+            bar.appendElement(dLbls(d, plot: "c:barChart", grouping: grouping))
+        }
         if grouping != "clustered" { bar.appendElement(V("c:overlap", "100")) }
-        bar.appendElement(V("c:axId", catAxID))
-        bar.appendElement(V("c:axId", valAxID))
+        bar.appendElement(V("c:axId", context.categoryAxisID))
+        bar.appendElement(V("c:axId", context.valueAxisID))
         return bar
     }
 
     private static func lineChart(data: ChartData, colors: [Color]?,
-                                  options: ChartOptions) -> XML.Element {
+                                  options: ChartOptions,
+                                  series seriesList: [ChartData.Series]? = nil,
+                                  context: PlotContext = PlotContext()) -> XML.Element {
         let line = XML.Element("c:lineChart")
         line.appendElement(V("c:grouping", "standard"))
         line.appendElement(V("c:varyColors", "0"))
-        for (i, series) in data.series.enumerated() {
-            line.appendElement(ser(index: i, series: series, data: data, trailing: [V("c:smooth", "0")]) { serEl in
+        for (i, series) in (seriesList ?? data.series).enumerated() {
+            line.appendElement(ser(index: context.firstSeriesIndex + i, series: series,
+                                   data: data, trailing: [V("c:smooth", "0")]) { serEl in
                 if let color = colors?[safe: i] {
                     let spPr = XML.Element("c:spPr")
                     let ln = XML.Element("a:ln", attributes: [("w", "28575")])
@@ -268,10 +402,12 @@ enum ChartXML {
                 serEl.appendElement(marker)
             })
         }
-        if let d = options.dataLabels { line.appendElement(dLbls(d)) }
+        if let d = context.dataLabels ?? options.dataLabels {
+            line.appendElement(dLbls(d, plot: "c:lineChart"))
+        }
         line.appendElement(V("c:marker", "1"))
-        line.appendElement(V("c:axId", catAxID))
-        line.appendElement(V("c:axId", valAxID))
+        line.appendElement(V("c:axId", context.categoryAxisID))
+        line.appendElement(V("c:axId", context.valueAxisID))
         return line
     }
 
@@ -298,25 +434,30 @@ enum ChartXML {
                 }
             })
         }
-        if let d = options.dataLabels { radar.appendElement(dLbls(d)) }
+        if let d = options.dataLabels { radar.appendElement(dLbls(d, plot: "c:radarChart")) }
         radar.appendElement(V("c:axId", catAxID))
         radar.appendElement(V("c:axId", valAxID))
         return radar
     }
 
     private static func areaChart(data: ChartData, colors: [Color]?,
-                                  options: ChartOptions) -> XML.Element {
+                                  options: ChartOptions,
+                                  series seriesList: [ChartData.Series]? = nil,
+                                  context: PlotContext = PlotContext()) -> XML.Element {
         let area = XML.Element("c:areaChart")
         area.appendElement(V("c:grouping", "standard"))
         area.appendElement(V("c:varyColors", "0"))
-        for (i, series) in data.series.enumerated() {
-            area.appendElement(ser(index: i, series: series, data: data) { serEl in
+        for (i, series) in (seriesList ?? data.series).enumerated() {
+            area.appendElement(ser(index: context.firstSeriesIndex + i, series: series,
+                                   data: data) { serEl in
                 if let color = colors?[safe: i] { serEl.appendElement(solidSpPr(color)) }
             })
         }
-        if let d = options.dataLabels { area.appendElement(dLbls(d)) }
-        area.appendElement(V("c:axId", catAxID))
-        area.appendElement(V("c:axId", valAxID))
+        if let d = context.dataLabels ?? options.dataLabels {
+            area.appendElement(dLbls(d, plot: "c:areaChart"))
+        }
+        area.appendElement(V("c:axId", context.categoryAxisID))
+        area.appendElement(V("c:axId", context.valueAxisID))
         return area
     }
 
@@ -335,11 +476,11 @@ enum ChartXML {
                 }
             }
         })
-        if var d = options.dataLabels {
-            // Doughnut data labels reject dLblPos (only "best fit" applies) —
-            // emitting one triggers PowerPoint's repair dialog.
-            if kind == .doughnut { d.position = nil }
-            el.appendElement(dLbls(d))
+        if let d = options.dataLabels {
+            // Doughnut rejects dLblPos entirely (only "best fit" applies) and
+            // pie accepts only four of the tokens — both handled by the
+            // legality table, which grew out of this very repair prompt.
+            el.appendElement(dLbls(d, plot: el.name))
         }
         if kind == .doughnut {
             el.appendElement(V("c:firstSliceAng", "0"))
@@ -451,20 +592,26 @@ enum ChartXML {
 
     // MARK: - Axes
 
-    private static func catAx(id: String, crossing: String, title: String?) -> XML.Element {
+    /// A category axis. `deleted` marks the invisible partner axis a secondary
+    /// plot group's `c:axId` pair has to name — `c:delete` is what suppresses
+    /// it, and Excel writes no `c:crosses` on that one, which is why `crosses`
+    /// is optional rather than a fixed string.
+    private static func catAx(id: String, crossing: String, title: String?,
+                              deleted: Bool = false,
+                              crosses: String? = "autoZero") -> XML.Element {
         let ax = XML.Element("c:catAx")
         ax.appendElement(V("c:axId", id))
         let scaling = XML.Element("c:scaling")
         scaling.appendElement(V("c:orientation", "minMax"))
         ax.appendElement(scaling)
-        ax.appendElement(V("c:delete", "0"))
+        ax.appendElement(V("c:delete", deleted ? "1" : "0"))
         ax.appendElement(V("c:axPos", "b"))
         if let title { ax.appendElement(axisTitle(title)) }
         ax.appendElement(V("c:majorTickMark", "out"))
         ax.appendElement(V("c:minorTickMark", "none"))
         ax.appendElement(V("c:tickLblPos", "nextTo"))
         ax.appendElement(V("c:crossAx", crossing))
-        ax.appendElement(V("c:crosses", "autoZero"))
+        if let crosses { ax.appendElement(V("c:crosses", crosses)) }
         ax.appendElement(V("c:auto", "1"))
         ax.appendElement(V("c:lblAlgn", "ctr"))
         ax.appendElement(V("c:lblOffset", "100"))
@@ -474,7 +621,8 @@ enum ChartXML {
 
     private static func valAx(id: String, crossing: String, axPos: String = "l",
                               options: AxisOptions, crossBetween: String? = nil,
-                              gridlines: Bool = true) -> XML.Element {
+                              gridlines: Bool = true,
+                              crosses: String = "autoZero") -> XML.Element {
         let ax = XML.Element("c:valAx")
         ax.appendElement(V("c:axId", id))
         // scaling: orientation, then max BEFORE min.
@@ -494,7 +642,7 @@ enum ChartXML {
         ax.appendElement(V("c:minorTickMark", "none"))
         ax.appendElement(V("c:tickLblPos", "nextTo"))
         ax.appendElement(V("c:crossAx", crossing))
-        ax.appendElement(V("c:crosses", "autoZero"))
+        ax.appendElement(V("c:crosses", crosses))
         if let crossBetween { ax.appendElement(V("c:crossBetween", crossBetween)) }
         if let unit = options.majorUnit { ax.appendElement(V("c:majorUnit", chartNumber(unit))) }
         return ax

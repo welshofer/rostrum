@@ -155,15 +155,20 @@ public struct ChartOptions: Sendable {
     public var dataLabels: DataLabelOptions?
     public var valueAxis: AxisOptions
     public var categoryAxisTitle: String?
+    /// The right-hand value axis of a combo chart. Ignored by every other
+    /// chart kind, and by a combo with no `.secondary` group.
+    public var secondaryValueAxis: AxisOptions
 
     public init(title: String? = nil, legend: LegendPosition? = nil,
                 dataLabels: DataLabelOptions? = nil, valueAxis: AxisOptions = AxisOptions(),
-                categoryAxisTitle: String? = nil) {
+                categoryAxisTitle: String? = nil,
+                secondaryValueAxis: AxisOptions = AxisOptions()) {
         self.title = title
         self.legend = legend
         self.dataLabels = dataLabels
         self.valueAxis = valueAxis
         self.categoryAxisTitle = categoryAxisTitle
+        self.secondaryValueAxis = secondaryValueAxis
     }
 }
 
