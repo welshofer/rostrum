@@ -341,6 +341,17 @@ import Testing
         _ = try? deck.sections.add("Two", startingAtSlide: 1)
     }
 
+    @Test func tooManyPartsIsReportedNotTrapped() throws {
+        // ZipWriter's 0xFFFF entry ceiling is a precondition. A deck can carry
+        // that many parts, and saving one you just opened must not abort.
+        let deck = try Presentation()
+        for n in 0..<0xFFFF {
+            deck.package.addPart(uri: PackURI("/ppt/media/pad\(n).png"),
+                                 contentType: ContentType.png, blob: Data())
+        }
+        #expect(throws: RostrumError.self) { _ = try deck.serializedData() }
+    }
+
     @Test func anAbsurdlyLongPartNameIsReportedNotTrapped() throws {
         // ZipWriter's 0xFFFF name field is a precondition; the name can come
         // from a file somebody else wrote.
