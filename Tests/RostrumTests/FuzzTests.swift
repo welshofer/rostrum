@@ -80,7 +80,7 @@ import Testing
         let box = Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1))
         for value in ["red", "", "FFF", "80FF0000", "ff0000 ", "GGGGGG"] {
             let deck = try Presentation()
-            try deck.slides[0].shapes.addShape(.rect, frame: box, fill: .solid(Color("FF0000")))
+            try deck.slides[0].shapes.addShape(.rectangle, frame: box, fill: .solid(Color("FF0000")))
             let dom = try deck.slides[0].part.dom()
             for srgb in Self.descendants(of: dom, named: "a:srgbClr") {
                 srgb[attribute: "val"] = value
@@ -153,7 +153,7 @@ import Testing
 
         #expect(throws: RostrumError.self) {
             _ = try deck.slides[0].shapes.addShape(
-                .rect, frame: Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1)),
+                .rectangle, frame: Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1)),
                 fill: .solid(Color("FF0000")))
         }
     }
