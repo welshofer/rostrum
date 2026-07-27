@@ -85,7 +85,7 @@ import Testing
             for srgb in Self.descendants(of: dom, named: "a:srgbClr") {
                 srgb[attribute: "val"] = value
             }
-            deck.slides[0].part.markDirty()
+            try deck.slides[0].part.markDirty()
             // The theme is read the same way and traps on the same values.
             let theme = try deck.theme.part.dom()
             for srgb in Self.descendants(of: theme, named: "a:srgbClr") {
@@ -101,7 +101,7 @@ import Testing
             // claim the shape inherits, which it does not.
             #expect(read.fill == .unmodeled(elementName: "a:srgbClr"))
             _ = read.line
-            _ = reopened.slides[0].background
+            _ = try reopened.slides[0].background
             #expect(reopened.theme.color(.accent1) == nil)
         }
     }
@@ -149,7 +149,7 @@ import Testing
         ]))
         sp.appendElement(nv)
         spTree.appendElement(sp)
-        deck.slides[0].part.markDirty()
+        try deck.slides[0].part.markDirty()
 
         #expect(throws: RostrumError.self) {
             _ = try deck.slides[0].shapes.addShape(
@@ -180,7 +180,7 @@ import Testing
             </p:grpSp></p:spTree></p:cSld></p:sld>
             """
         let deck = try Presentation()
-        deck.slides[0].part.replaceBlob(Data(slide.utf8))
+        try deck.slides[0].part.replaceBlob(Data(slide.utf8))
         let group = try #require(deck.slides[0].shapes.all.first as? GroupShape)
         // Every one of these used to be an overflow or an out-of-range
         // Int(Double) conversion.
