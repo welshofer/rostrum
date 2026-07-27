@@ -219,22 +219,29 @@ Hardening backlog (schedule opportunistically):
   indices, shape ids, group child-space coordinates and SVG font sizes all
   reached a `precondition` or an overflow on the read path. A trap is a crash
   the caller cannot catch, and a `.pptx` is untrusted input.
-- **Still open from that audit**, each deliberately deferred rather than
-  half-fixed:
-  - `Table.cell(_:_:)` preconditions on the index, so the natural idiom
-    (`for c in 0..<table.columnCount`) aborts on a **ragged** foreign table —
-    one whose `a:tblGrid` declares more columns than a row has `a:tc`.
-    Fixing it properly means deciding whether `cell` returns an optional
-    (source-breaking) or whether `columnCount` should report what is actually
-    indexable; that is an API decision, not a patch.
-  - `deck.addSection` preconditions when a foreign deck's existing sections
-    resolve to duplicate start slides — an authoring call reached through
-    file content.
-  - `ZipWriter.addFile` preconditions when a re-encoded entry name exceeds the
-    0xFFFF name field. `addFile` is non-throwing, so this needs a signature
-    change or a documented drop.
-  - `Inflate` bounds each entry by the archive's own declared size, so a zip
-    bomb still amplifies across many entries; an aggregate cap is the fix.
+- A second adversarial pass over those fixes returned **19 confirmed findings
+  against 4 refutations** — almost all of one shape: a defect fixed at one
+  site and left at its twins (`nextSlideID` beside `nextShapeID`, a second
+  inset parser beside the bounded one). Fixed 2026-07-27 by moving the bound
+  to the parse boundary — `XML.Element.boundedInt(_:in:)` and `OOXMLBounds` —
+  so a missed call site is no longer possible. `deck.addSection` on a foreign
+  deck with duplicate section starts, and the 0xFFFF zip entry-name field
+  (now reported by `OPCPackage.serialize` rather than trapping in
+  `ZipWriter.addFile`), went with it.
+- **Still open**, deliberately, because each is a decision rather than a patch:
+  - `Table.cell(_:_:)` preconditions on the index, so the natural reading
+    idiom (`for c in 0..<table.columnCount`) aborts on a **ragged** foreign
+    table — one whose `a:tblGrid` declares more columns than a row has
+    `a:tc`. *Recommendation:* make it `throws`, matching the precedent
+    `Slides.subscript` set in M0 — a reader accessor over file-derived
+    indices reports rather than traps. Deferred only because it touches ~54
+    call sites and deserves to be its own reviewed change.
+  - `Inflate` bounds each entry by that entry's own declared size, so a zip
+    bomb still amplifies across many entries. This one is resource
+    exhaustion, **not** a trap — nothing crashes — and any fixed aggregate
+    ceiling would reject legitimately large decks. The fix is a
+    caller-supplied budget on the read path, which is an API addition worth
+    designing rather than guessing.
 - Zip64: today >4 GB archives and >65k entries are `precondition` traps on the
   write path.
 - Quadratic hot spots on very large decks; `prune()`/orphan audit promised in

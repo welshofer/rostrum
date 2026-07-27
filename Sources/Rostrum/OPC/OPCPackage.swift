@@ -158,6 +158,19 @@ public final class OPCPackage {
         "mp4", "m4v", "mov", "avi", "wmv", "mp3", "m4a",
     ]
 
+    /// Reject what the zip format cannot represent, before `ZipWriter` traps
+    /// on it. Entry counts and the 4 GB size ceiling are Zip64 territory and
+    /// tracked separately; this covers what an opened file can smuggle in.
+    private func checkArchiveLimits() throws {
+        for uri in parts.keys {
+            let length = uri.memberName.utf8.count
+            guard length <= 0xFFFF else {
+                throw RostrumError.packageInvalid(
+                    "part name is \(length) bytes; a zip entry name cannot exceed 65535")
+            }
+        }
+    }
+
     // MARK: - Writing
 
     /// Serialize to zip bytes. Deterministic: [Content_Types].xml first, then
@@ -167,6 +180,10 @@ public final class OPCPackage {
         for part in parts.values {
             part.flushIfDirty()
         }
+        // ZipWriter's format limits are preconditions — right for a caller
+        // building an archive by hand, wrong here, where the part names came
+        // out of a file somebody else wrote. Report them instead.
+        try checkArchiveLimits()
         var zip = ZipWriter()
         zip.addFile(name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
         if !rels.isEmpty {

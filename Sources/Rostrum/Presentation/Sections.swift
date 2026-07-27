@@ -100,7 +100,11 @@ public final class Sections: Sequence {
         let ids = try slideIds()
         precondition(!boundaries.isEmpty, "need at least one section")
         precondition(boundaries.first!.startSlide == 0, "the first section must start at slide 0")
-        precondition(!ids.isEmpty, "the deck has no slides to partition")
+        // The slide list comes from the file, not the caller, so an empty one
+        // is a malformed deck to report — not a programmer error to trap on.
+        guard !ids.isEmpty else {
+            throw RostrumError.packageInvalid("the deck has no slides to partition into sections")
+        }
         for i in boundaries.indices {
             precondition(boundaries[i].startSlide >= 0 && boundaries[i].startSlide < ids.count,
                          "section startSlide \(boundaries[i].startSlide) out of range")
@@ -148,6 +152,12 @@ public final class Sections: Sequence {
         bounds.removeAll { $0.startSlide == startIndex }
         bounds.append((name, startIndex))
         bounds.sort { $0.startSlide < $1.startSlide }
+        // `boundaries()` is derived from the FILE's sections, and two of them
+        // can resolve to the same start slide — an unresolvable sldId falls
+        // back to 0. `set(_:)` requires strictly increasing starts, so without
+        // this a foreign deck would trip its precondition and abort the host.
+        var seen = Set<Int>()
+        bounds = bounds.filter { seen.insert($0.startSlide).inserted }
         if bounds.first?.startSlide != 0 { bounds.insert(("Default", 0), at: 0) }
         try set(bounds)
         let idx = try boundaries().firstIndex { $0.startSlide == startIndex } ?? 0

@@ -323,6 +323,33 @@ import Testing
         }
     }
 
+    @Test func duplicateSectionStartsDoNotTripTheStrictlyIncreasingCheck() throws {
+        // boundaries() is derived from the file, and two p14:section entries
+        // can resolve to the same start slide — an unresolvable sldId falls
+        // back to 0. set(_:) requires strictly increasing starts.
+        let deck = try Presentation()
+        try deck.slides.add()
+        _ = try deck.sections.add("One", startingAtSlide: 1)
+        let list = try #require(try deck.presentationPart.dom()
+            .firstChild(named: "p:extLst"))
+        for sldId in Self.descendants(of: list, named: "p14:sldId") {
+            sldId[attribute: "id"] = "999999"   // resolves nowhere → index 0
+        }
+        deck.presentationPart.markDirty()
+
+        // Adding another section must not abort the process.
+        _ = try? deck.sections.add("Two", startingAtSlide: 1)
+    }
+
+    @Test func anAbsurdlyLongPartNameIsReportedNotTrapped() throws {
+        // ZipWriter's 0xFFFF name field is a precondition; the name can come
+        // from a file somebody else wrote.
+        let deck = try Presentation()
+        let long = "/ppt/media/" + String(repeating: "a", count: 70_000) + ".png"
+        deck.package.addPart(uri: PackURI(long), contentType: ContentType.png, blob: Data([1, 2, 3]))
+        #expect(throws: RostrumError.self) { _ = try deck.serializedData() }
+    }
+
     @Test func truncatedValidDeckThrowsNotCrash() throws {
         let valid = try validDeckBytes()
         // Truncating a real deck at many lengths must throw a Rostrum error, not trap.
