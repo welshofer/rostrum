@@ -137,7 +137,8 @@ public struct ZipReader {
     ///   for a malformed archive — no end-of-central-directory record, a
     ///   truncated or mis-signed central directory, or entries claiming more
     ///   compressed bytes in total than the archive contains; and
-    ///   `RostrumError.zipUnsupported` for zip64 and multi-disk archives.
+    ///   `RostrumError.zipUnsupported` for multi-disk archives and for zip64
+    ///   SIZES/OFFSETS. A zip64 entry COUNT reads normally.
     ///   All of them fire before anything is inflated.
     public init(data: Data, limits: Limits = .unlimited) throws {
         let bytes = [UInt8](data)
@@ -150,6 +151,16 @@ public struct ZipReader {
         // it up to 65535 bytes from the end. Validate each candidate so that a
         // spurious signature inside the comment is not mistaken for the record.
         var eocd = -1
+        /// Where the zip64 EOCD record starts, or -1 if this is not a zip64
+        /// archive. Decided ONCE, by the scan that validated it, and used by
+        /// the count read below. The first cut decided it twice — the scan
+        /// checked a signature at `cdEnd`, and the count read separately probed
+        /// 20 bytes before the EOCD and then trusted the offset the locator
+        /// claimed. Two determinations that can disagree: a legal
+        /// 65535-entry archive whose directory bytes happen to look like a
+        /// locator took the zip64 path and was rejected, and a hostile locator
+        /// could aim the count read anywhere in the file.
+        var zip64EOCD = -1
         let lowestCandidate = max(0, size - 22 - 65535)
         var candidate = size - 22
         scan: while candidate >= lowestCandidate {
@@ -190,12 +201,25 @@ public struct ZipReader {
                     // for the real record.
                     let cdEnd = Int(cdOffset) + Int(cdSize)
                     let adjacent = cdEnd == candidate
-                    let zip64Gap = cdEnd >= 0 && candidate - cdEnd == 76
-                        && cdEnd + 60 <= size
-                        && Self.u32(bytes, cdEnd) == 0x0606_4B50
-                        && Self.u32(bytes, cdEnd + 56) == 0x0706_4B50
-                    if adjacent || zip64Gap {
+                    var record = -1
+                    // The gap must be filled exactly by the zip64 EOCD record
+                    // followed by its 20-byte locator. The record's LENGTH comes
+                    // from its own size field (12 + value) rather than the
+                    // 56-byte minimum, so a record carrying an extensible data
+                    // sector — legal, and larger — is read rather than refused.
+                    if cdEnd >= 0, candidate - cdEnd >= 76, cdEnd + 56 <= size,
+                       Self.u32(bytes, cdEnd) == 0x0606_4B50,
+                       Self.u32(bytes, candidate - 20) == 0x0706_4B50 {
+                        let declared = Self.u64(bytes, cdEnd + 4)
+                        let room = UInt64(candidate - 20 - cdEnd - 12)
+                        if declared >= 44, declared <= room,
+                           cdEnd + 12 + Int(declared) == candidate - 20 {
+                            record = cdEnd
+                        }
+                    }
+                    if adjacent || record >= 0 {
                         eocd = candidate
+                        zip64EOCD = record
                         break scan
                     }
                 }
@@ -215,24 +239,22 @@ public struct ZipReader {
             throw RostrumError.zipUnsupported("multi-disk archive")
         }
 
-        // A 0xFFFF count with a zip64 locator in front of the EOCD means the
-        // real count lives in the zip64 EOCD record. 0xFFFF on its own is a
-        // legal literal (APPNOTE 4.4.1.4) and must NOT send us looking.
+        // A 0xFFFF count means the real count lives in the zip64 EOCD record —
+        // but ONLY when the scan above actually validated one. 0xFFFF on its
+        // own is a legal literal (APPNOTE 4.4.1.4), and an archive with exactly
+        // 65535 entries carries it with no zip64 structures at all.
         var realTotalEntries = Int(totalEntries)
-        if totalEntries == 0xFFFF, eocd >= 20, Self.u32(bytes, eocd - 20) == 0x0706_4B50 {
-            // Every number below comes from the file. Bound each one BEFORE
-            // narrowing it: `Int(someUInt64)` is a trapping conversion, and the
-            // whole point of this reader is that hostile bytes cannot abort the
-            // host process.
-            let recordOffset = Self.u64(bytes, eocd - 20 + 8)
-            guard recordOffset <= UInt64(eocd), Int(recordOffset) + 56 <= eocd - 20 else {
-                throw RostrumError.zipCorrupt("zip64 end-of-central-directory record out of range")
-            }
-            let zip64EOCD = Int(recordOffset)
-            guard Self.u32(bytes, zip64EOCD) == 0x0606_4B50 else {
-                throw RostrumError.zipCorrupt("zip64 end-of-central-directory record not found")
-            }
+        if totalEntries == 0xFFFF, zip64EOCD >= 0 {
+            // The record's position came from the scan, which proved its
+            // signature and that it ends exactly where the locator begins. What
+            // is still file-derived is the count, and `Int(someUInt64)` is a
+            // trapping conversion — bound it before narrowing.
+            let onDisk = Self.u64(bytes, zip64EOCD + 24)
             let count = Self.u64(bytes, zip64EOCD + 32)
+            // The classic EOCD's own consistency check, which had no twin here.
+            guard onDisk == count else {
+                throw RostrumError.zipUnsupported("multi-disk archive")
+            }
             // The count bounds an allocation and a loop, and it came from the
             // file. One central-directory record is at least 46 bytes, so a
             // count that cannot fit between the directory's start and the EOCD

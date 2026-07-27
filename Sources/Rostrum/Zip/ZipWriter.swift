@@ -132,13 +132,19 @@ public struct ZipWriter {
     /// two 2.5 GB entries both pass that check and end at 5 GB. The central
     /// directory has its own 32-bit size field, reachable with many long names.
     static func archiveOverflow(entriesEnd: UInt64, centralDirectorySize: UInt64) -> String? {
-        if entriesEnd > 0xFFFF_FFFF {
-            return "the archive's entries end at \(entriesEnd) bytes, "
-                + "over the 4294967295 central-directory offset field"
+        // `>=`, not `>`: 0xFFFFFFFF is not merely the largest value these
+        // fields hold, it is the zip64 SENTINEL for them (APPNOTE 4.4.1.4).
+        // Writing it literally, with no zip64 record behind it, hands every
+        // conformant reader a pointer to a record that was never emitted. The
+        // count is different — 0xFFFF there IS a legal literal, which is why
+        // the boundary is inclusive here and exclusive for entries.
+        if entriesEnd >= 0xFFFF_FFFF {
+            return "the archive's entries end at \(entriesEnd) bytes, at or over "
+                + "the 4294967295 central-directory offset field"
         }
-        if centralDirectorySize > 0xFFFF_FFFF {
-            return "the central directory is \(centralDirectorySize) bytes, "
-                + "over the 4294967295 size field"
+        if centralDirectorySize >= 0xFFFF_FFFF {
+            return "the central directory is \(centralDirectorySize) bytes, at or over "
+                + "the 4294967295 size field"
         }
         return nil
     }
@@ -146,11 +152,12 @@ public struct ZipWriter {
     /// Produce the complete archive bytes (entries + central directory + EOCD).
     ///
     /// - Throws: `RostrumError.packageInvalid` when an entry, or the finished
-    ///   archive, exceeded one of the zip format's fixed-width fields: the
-    ///   16-bit entry count and entry-name length, or the 32-bit entry size,
-    ///   local-header offset and central-directory size. Writing archives that
-    ///   genuinely need Zip64 is a separate, unimplemented feature; this is the
-    ///   difference between reporting that and aborting the process.
+    ///   archive, reached one of the fixed-width fields zip64 is NOT implemented
+    ///   for: the 16-bit entry-NAME length, and the 32-bit entry size,
+    ///   local-header offset and central-directory size. The entry COUNT is not
+    ///   among them — past 65535 entries a zip64 EOCD record is emitted and the
+    ///   archive is written. This is the difference between reporting an
+    ///   unimplemented case and aborting the process.
     public func finalize() throws -> Data {
         if let violation {
             throw RostrumError.packageInvalid("cannot write this archive: \(violation)")

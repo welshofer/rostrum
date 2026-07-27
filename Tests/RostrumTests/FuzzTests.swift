@@ -373,8 +373,58 @@ import Testing
 
         let saved = try deck.serializedData()
         let reader = try ZipReader(data: saved)
-        #expect(reader.entryNames.count > 0xFFFF)
+        #expect(reader.entryNames.count > 0xFFFF, "the zip64 path must be what ran")
         #expect(reader.contains("ppt/media/pad100.png"))
+
+        // Reopen as a DECK, not just as an archive. The rename claims it "saves
+        // and reopens", and reading the zip back proves only the container —
+        // OPCPackage.read is the layer that has to survive this many parts.
+        let reopened = try Presentation(data: saved)
+        #expect(reopened.package.parts.count == deck.package.parts.count)
+        #expect(reopened.slides.count == deck.slides.count)
+    }
+
+    @Test func aForgedZip64RecordCannotDictateTheEntryCount() throws {
+        // Every guard on the zip64 count path was unreachable from any test.
+        // Build a real zip64 archive, then corrupt each thing the reader is
+        // supposed to check and require it to refuse rather than trust the file.
+        var writer = ZipWriter()
+        for i in 0..<65_536 { writer.addFile(name: "f\(i)", data: Data(), compress: false) }
+        let good = [UInt8](try writer.finalize())
+        #expect(try ZipReader(data: Data(good)).entryNames.count == 65_536)
+
+        func u32(_ b: [UInt8], _ at: Int) -> Int {
+            (0..<4).reduce(0) { $0 | (Int(b[at + $1]) << (8 * $1)) }
+        }
+        let eocd = good.count - 22
+        let cdOffset = u32(good, eocd + 16)
+        let cdSize = u32(good, eocd + 12)
+        let record = cdOffset + cdSize                    // where the scan expects it
+
+        // (a) A count larger than the directory can physically hold.
+        var inflatedCount = good
+        for b in 0..<8 { inflatedCount[record + 32 + b] = 0xFF }
+        expectError("an impossible zip64 count", isContentFailure) {
+            _ = try ZipReader(data: Data(inflatedCount))
+        }
+
+        // (b) entries-on-disk disagreeing with the total.
+        var split = good
+        split[record + 24] = 0x01
+        #expect(throws: RostrumError.self) { _ = try ZipReader(data: Data(split)) }
+
+        // (c) A record whose size field does not reach the locator: the scan
+        // must not accept it, so the EOCD is not found at all.
+        var badSize = good
+        badSize[record + 4] = 0x2C + 1
+        #expect(throws: RostrumError.self) { _ = try ZipReader(data: Data(badSize)) }
+
+        // (d) The locator's own claimed offset is NOT what the reader follows —
+        // the record's position comes from the central directory's end. Point
+        // the locator at nonsense and the archive must still read.
+        var lyingLocator = good
+        for b in 0..<8 { lyingLocator[eocd - 20 + 8 + b] = 0xEE }
+        #expect(try ZipReader(data: Data(lyingLocator)).entryNames.count == 65_536)
     }
 
     @Test func anAbsurdlyLongPartNameIsReportedNotTrapped() throws {

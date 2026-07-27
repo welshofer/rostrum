@@ -156,11 +156,14 @@ struct ZipWriterTests {
         // the archive ends. Two entries under the per-entry size limit can end
         // past the offset field, which is the case that used to trap in
         // `UInt32(out.count)` rather than throw.
-        #expect(ZipWriter.archiveOverflow(entriesEnd: ceiling, centralDirectorySize: 0) == nil)
-        #expect(ZipWriter.archiveOverflow(entriesEnd: ceiling + 1, centralDirectorySize: 0) != nil)
+        // Inclusive: 0xFFFFFFFF is the zip64 SENTINEL for these two fields, not
+        // a usable value. Writing it literally would point a conformant reader
+        // at a zip64 record this writer never emits.
+        #expect(ZipWriter.archiveOverflow(entriesEnd: ceiling - 1, centralDirectorySize: 0) == nil)
+        #expect(ZipWriter.archiveOverflow(entriesEnd: ceiling, centralDirectorySize: 0) != nil)
 
-        #expect(ZipWriter.archiveOverflow(entriesEnd: 0, centralDirectorySize: ceiling) == nil)
-        #expect(ZipWriter.archiveOverflow(entriesEnd: 0, centralDirectorySize: ceiling + 1) != nil)
+        #expect(ZipWriter.archiveOverflow(entriesEnd: 0, centralDirectorySize: ceiling - 1) == nil)
+        #expect(ZipWriter.archiveOverflow(entriesEnd: 0, centralDirectorySize: ceiling) != nil)
 
         // The entries-end message must be the one reported when both overflow,
         // since that is the first field the writer would have to fill.
