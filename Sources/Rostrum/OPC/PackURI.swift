@@ -8,10 +8,25 @@ import Foundation
 public struct PackURI: Hashable, Sendable, CustomStringConvertible {
     public let value: String
 
-    /// `value` must begin with "/". Constructing an invalid pack URI is a
-    /// programmer error, not a recoverable condition.
+    /// `value` must begin with "/". Constructing an invalid pack URI *in
+    /// Rostrum's own code* is a programmer error, not a recoverable condition
+    /// — every internal call site builds the string from a literal or from an
+    /// already-valid URI.
+    ///
+    /// For a name that came out of a **file**, use `init?(parsing:)`: a
+    /// precondition on untrusted input aborts the host process instead of
+    /// letting the caller reject the deck.
     public init(_ value: String) {
         precondition(value.hasPrefix("/"), "PackURI must begin with '/': \(value)")
+        self.value = value
+    }
+
+    /// A pack URI parsed from file content, or nil when the name is not an
+    /// absolute part name. `[Content_Types].xml` `PartName` attributes and
+    /// relationship targets are untrusted: a `.pptx` from anywhere can carry
+    /// `PartName="ppt/slides/slide1.xml"` with no leading slash.
+    public init?(parsing value: String) {
+        guard value.hasPrefix("/") else { return nil }
         self.value = value
     }
 

@@ -41,6 +41,37 @@ import Testing
         }
     }
 
+    /// Rebuild a deck with one entry's bytes replaced — for malformations that
+    /// are structural rather than random, and so cannot be reached by flipping
+    /// bits.
+    private func deck(_ valid: Data, replacing entry: String,
+                      _ transform: (String) -> String) throws -> Data {
+        let reader = try ZipReader(data: valid)
+        var writer = ZipWriter()
+        for name in reader.entryNames {
+            var bytes = try reader.data(forEntry: name)
+            if name == entry {
+                let text = try #require(String(data: bytes, encoding: .utf8))
+                bytes = Data(transform(text).utf8)
+            }
+            writer.addFile(name: name, data: bytes)
+        }
+        return writer.finalize()
+    }
+
+    @Test func aRelativePartNameThrowsRatherThanAbortingTheProcess() throws {
+        // OPC requires an <Override> PartName to be absolute. A file that omits
+        // the leading slash reached PackURI's precondition, which aborts the
+        // host process — a caller cannot catch that, and the bytes came from
+        // whoever sent the file.
+        let bad = try deck(try validDeckBytes(), replacing: "[Content_Types].xml") {
+            $0.replacingOccurrences(of: "PartName=\"/", with: "PartName=\"")
+        }
+        #expect(throws: RostrumError.self) { _ = try Presentation(data: bad) }
+        // And the same bytes must not trap the layer below either.
+        _ = try? OPCPackage.read(data: bad)
+    }
+
     @Test func truncatedValidDeckThrowsNotCrash() throws {
         let valid = try validDeckBytes()
         // Truncating a real deck at many lengths must throw a Rostrum error, not trap.

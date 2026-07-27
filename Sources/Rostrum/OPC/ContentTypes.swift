@@ -68,7 +68,11 @@ public struct ContentTypesMap {
                 guard let part = child[attribute: "PartName"], let ct = child[attribute: "ContentType"] else {
                     throw RostrumError.packageInvalid("<Override> missing PartName or ContentType")
                 }
-                map.overrides[PackURI(part)] = ct
+                guard let uri = PackURI(parsing: part) else {
+                    throw RostrumError.packageInvalid(
+                        "<Override PartName=\"\(part)\"> is not an absolute part name")
+                }
+                map.overrides[uri] = ct
             default:
                 continue
             }
