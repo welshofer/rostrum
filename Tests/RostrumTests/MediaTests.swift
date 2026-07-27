@@ -32,10 +32,21 @@ import Testing
 
         // PowerPoint needs both the legacy link and the modern media rel, and
         // they must point at the same part.
+        // Assert the XML's OWN references resolve to the media part — not
+        // that two rels built from the same local string are equal, which
+        // cannot fail.
         let rels = slide.part.rels
-        let video = try #require(rels.first(ofType: RelType.video))
-        let media = try #require(rels.first(ofType: RelType.media))
-        #expect(video.target == media.target)
+        let nvPr = try #require(picture.element.firstChild(named: "p:nvPicPr")?
+            .firstChild(named: "p:nvPr"))
+        let linkID = try #require(nvPr.firstChild(named: "a:videoFile")?[attribute: "r:link"])
+        let embedID = try #require(nvPr.firstChild(named: "p:extLst")?
+            .firstChild(named: "p:ext")?.firstChild(named: "p14:media")?[attribute: "r:embed"])
+        #expect(linkID != embedID, "the two references are distinct relationships")
+        let linkRel = try #require(rels.relationship(withId: linkID))
+        let embedRel = try #require(rels.relationship(withId: embedID))
+        #expect(linkRel.type == RelType.video)
+        #expect(embedRel.type == RelType.media)
+        #expect(linkRel.target == embedRel.target, "both must resolve to the same media part")
         // The poster still has to be a real image relationship.
         #expect(rels.first(ofType: RelType.image) != nil)
         #expect(try reopened.validate().isEmpty)
@@ -92,6 +103,72 @@ import Testing
         #expect(deck.package.parts[PackURI("/ppt/media/media1.mp4")] != nil)
         #expect(deck.package.parts[PackURI("/ppt/media/media2.mov")] != nil)
         #expect(deck.package.contentTypes.defaults["mov"] == "video/quicktime")
+    }
+
+    @Test func theSameClipEmbeddedTwiceIsStoredOnce() throws {
+        let deck = try Presentation()
+        let shapes = try deck.slides[0].shapes
+        try shapes.addMedia(clip, format: .mp4, frame: frame)
+        try shapes.addMedia(clip, format: .mp4, frame: frame)
+        let mediaParts = deck.package.parts.keys.filter { $0.value.hasPrefix("/ppt/media/media") }
+        #expect(mediaParts.count == 1, "an identical clip must not be stored twice")
+    }
+
+    @Test func clipsGetTimingNodesSoTheyHavePlayControls() throws {
+        // Without a p:timing node naming the shape, PowerPoint renders the
+        // clip as a still picture with no controls at all.
+        let deck = try Presentation()
+        let shapes = try deck.slides[0].shapes
+        let video = try shapes.addMedia(clip, format: .mp4, frame: frame)
+        let audio = try shapes.addMedia(Data("mp3".utf8), format: .mp3, frame: frame)
+
+        let reopened = try Presentation(data: try deck.serializedData())
+        let dom = try reopened.slides[0].part.dom()
+        let timing = try #require(dom.firstChild(named: "p:timing"))
+        let root = try #require(timing.firstChild(named: "p:tnLst")?.firstChild(named: "p:par")?
+            .firstChild(named: "p:cTn"))
+        #expect(root[attribute: "nodeType"] == "tmRoot")
+        let children = try #require(root.firstChild(named: "p:childTnLst"))
+        #expect(children.children(named: "p:video").count == 1)
+        #expect(children.children(named: "p:audio").count == 1)
+
+        // Each node must target its own shape by id, or the controls attach
+        // to the wrong picture.
+        func targetedShapeID(_ node: XML.Element) -> String? {
+            node.firstChild(named: "p:cMediaNode")?.firstChild(named: "p:tgtEl")?
+                .firstChild(named: "p:spTgt")?[attribute: "spid"]
+        }
+        let videoID = try #require(video.shapeID).description
+        let audioID = try #require(audio.shapeID).description
+        #expect(targetedShapeID(children.children(named: "p:video")[0]) == videoID)
+        #expect(targetedShapeID(children.children(named: "p:audio")[0]) == audioID)
+
+        // Timing node ids must be unique within the slide.
+        let ids = ShapeCollection.timingIDsForTesting(in: timing)
+        #expect(Set(ids).count == ids.count, "duplicate p:cTn ids: \(ids)")
+        #expect(try reopened.validate().isEmpty)
+    }
+
+    @Test func aRejectedPosterLeavesNoOrphanPart() throws {
+        // Validation must happen before the package is touched, or a caller
+        // that retries ships every failed attempt's clip.
+        let deck = try Presentation()
+        #expect(throws: RostrumError.self) {
+            try deck.slides[0].shapes.addMedia(
+                clip, format: .mp4, frame: frame, poster: Data("not an image".utf8))
+        }
+        #expect(deck.package.parts.keys.filter { $0.value.hasPrefix("/ppt/media/") }.isEmpty)
+        #expect(try deck.slides[0].part.rels.all(ofType: RelType.video).isEmpty)
+        #expect(try deck.slides[0].part.rels.all(ofType: RelType.media).isEmpty)
+    }
+
+    @Test func mediaIsStoredNotDeflated() throws {
+        // Re-DEFLATEing an already-compressed container is a full pass over
+        // the largest payload in the deck for nothing.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addMedia(clip, format: .mp4, frame: frame)
+        let reader = try ZipReader(data: try deck.serializedData())
+        #expect(try reader.data(forEntry: "ppt/media/media1.mp4") == clip)
     }
 
     @Test func mediaSurvivesRoundTripByteIdentically() throws {

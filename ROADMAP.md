@@ -75,8 +75,10 @@ from phase 0 onward.
   2026-07-26)
 - [x] Media parts — `shapes.addMedia(_:format:frame:poster:)` embeds video and
   audio with both the legacy link and the modern `p14:media` relationship,
-  plus read-back (`picture.mediaData`, `isMedia`, `isAudio`); 2026-07-27.
-  *Open:* a `p:timing` tree for auto-play on slide entry.
+  plus a `p:timing` node per clip (play controls, start on click) and
+  read-back (`picture.mediaData`, `isMedia`, `isAudio`); 2026-07-27.
+  *Open:* auto-play on slide entry, and PowerPoint's speaker icon for
+  poster-less audio.
 - [ ] Performance pass on large decks (no benchmarks exist yet)
 
 ## Phase 4 — Beyond parity (the reason Rostrum exists)

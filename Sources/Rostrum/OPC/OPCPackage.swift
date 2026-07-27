@@ -149,6 +149,15 @@ public final class OPCPackage {
         return try part(at: PackURI.resolve(target: rel.target, relativeTo: "/"))
     }
 
+    /// Extensions whose bytes are already a compressed container. Re-DEFLATEing
+    /// one costs a full pass plus several times the payload in transient
+    /// buffers and never shrinks it, so the result is thrown away. `wav` is
+    /// deliberately absent: PCM audio is uncompressed and does compress.
+    private static let storedExtensions: Set<String> = [
+        "png", "jpg", "jpeg", "gif", "xlsx", "zip",
+        "mp4", "m4v", "mov", "avi", "wmv", "mp3", "m4a",
+    ]
+
     // MARK: - Writing
 
     /// Serialize to zip bytes. Deterministic: [Content_Types].xml first, then
@@ -166,7 +175,7 @@ public final class OPCPackage {
         for (uri, part) in parts.sorted(by: { $0.key.value < $1.key.value }) {
             // Media and embedded workbooks are already compressed — don't
             // waste CPU re-DEFLATEing them; XML parts compress well.
-            let alreadyCompressed = ["png", "jpg", "jpeg", "gif", "xlsx", "zip"].contains(uri.ext)
+            let alreadyCompressed = Self.storedExtensions.contains(uri.ext)
             zip.addFile(name: uri.memberName, data: part.blob, compress: !alreadyCompressed)
             if !part.rels.isEmpty {
                 zip.addFile(name: uri.relsURI.memberName, data: part.rels.serialized())

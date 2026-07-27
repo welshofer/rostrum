@@ -54,9 +54,12 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   relationship referenced from `p14:media`), a poster frame (a 1×1
   transparent PNG when none is given, since `p:pic` requires a `blipFill`),
   and the content type as an extension Default the way PowerPoint writes it.
-  Read-back via `picture.isMedia` / `isAudio` / `mediaData`. Clips play from
-  the media controls; Rostrum writes no `p:timing` tree, so auto-play on
-  slide entry still has to be set in PowerPoint.
+  Read-back via `picture.isMedia` / `isAudio` / `mediaData`. A `p:timing`
+  node is written per clip so PowerPoint actually shows play controls and
+  starts it on click — without one the clip renders as a still picture with
+  no controls at all. Auto-play on slide entry is a different start
+  condition and is not written. Identical clips are stored once, and media
+  is stored rather than re-DEFLATEd.
 - **Radar and bubble charts.** `ChartKind.radar` / `.radarFilled` plot a
   category axis wrapped into a circle; `addBubbleChart(_:frame:)` takes
   `BubbleChartData`, whose points carry x, y **and** size, with a three-column

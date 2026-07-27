@@ -40,13 +40,15 @@ public extension ShapeCollection {
     /// referenced from the `p14:media` extension. Both point at the same part.
     ///
     /// `poster` is the still frame shown before playback — the shape is a
-    /// `p:pic`, so it must have a `blipFill`. Without one, Rostrum embeds a
-    /// 1×1 transparent PNG and PowerPoint renders the frame black, which is
-    /// what it does for a poster-less clip anyway.
+    /// `p:pic`, so it must have a `blipFill`. Without one Rostrum embeds a
+    /// transparent pixel over a dark solid fill, so the clip is a visible,
+    /// clickable rectangle rather than nothing at all. Pass a real poster
+    /// when you have one; for audio, PowerPoint's speaker icon is not
+    /// synthesized.
     ///
-    /// The clip is playable from the media controls. Rostrum does not write a
-    /// `p:timing` tree, so it does not auto-play on slide entry; set that in
-    /// PowerPoint if you need it.
+    /// A `p:timing` node is written so the clip has play controls and starts
+    /// on click — PowerPoint's own default for an inserted clip. Auto-play on
+    /// slide entry is a different start condition and is not written.
     @discardableResult
     func addMedia(_ data: Data, format: MediaFormat, frame: Rect,
                   poster: Data? = nil, name: String? = nil) throws -> Picture {
@@ -54,25 +56,43 @@ public extension ShapeCollection {
             throw RostrumError.packageInvalid("this shape collection has no package attached")
         }
 
+        // Validate the poster BEFORE touching the package. Sniffing after the
+        // clip is already embedded would leave an orphan media part and two
+        // dangling relationships behind on every rejected poster.
+        let posterData = poster ?? Self.transparentPixelPNG
+        guard let posterInfo = ImageSniffer.sniff(posterData) else {
+            throw RostrumError.packageInvalid(
+                "unrecognized poster image format (PNG, JPEG and GIF are supported)")
+        }
+
         // The media part. Numbering spans every media clip regardless of
         // extension — PowerPoint numbers them sequentially, and a per-extension
         // counter would produce a confusing media1.mp4 next to a media1.mov.
         // Content type rides on an extension Default, the way PowerPoint
         // writes media.
-        let used = package.parts.keys.compactMap { uri -> Int? in
-            let name = uri.filename
-            guard uri.value.hasPrefix("/ppt/media/media"), name.hasPrefix("media") else { return nil }
-            let stem = name.prefix(while: { $0 != "." }).dropFirst("media".count)
-            return Int(stem)
+        // Reuse an identical clip already in the package, the way image parts
+        // dedup — embedding the same video twice should not double the file.
+        let existing = package.parts.first {
+            $0.key.value.hasPrefix("/ppt/media/") && $0.value.blob == data
+        }?.key
+        let mediaURI: PackURI
+        if let existing {
+            mediaURI = existing
+        } else {
+            let used = package.parts.keys.compactMap { uri -> Int? in
+                let name = uri.filename
+                guard uri.value.hasPrefix("/ppt/media/media"), name.hasPrefix("media") else { return nil }
+                let stem = name.prefix(while: { $0 != "." }).dropFirst("media".count)
+                return Int(stem)
+            }
+            mediaURI = PackURI("/ppt/media/media\((used.max() ?? 0) + 1).\(format.fileExtension)")
+            package.addPart(uri: mediaURI, contentType: format.contentType, blob: data)
+            // A Default covers it; an Override would be redundant and is not
+            // what PowerPoint writes.
+            package.contentTypes.removeOverride(partName: mediaURI)
         }
-        let n = (used.max() ?? 0) + 1
-        let mediaURI = PackURI("/ppt/media/media\(n).\(format.fileExtension)")
         package.contentTypes.setDefault(extension: format.fileExtension,
                                         contentType: format.contentType)
-        package.addPart(uri: mediaURI, contentType: format.contentType, blob: data)
-        // A Default covers it; an Override would be redundant and is not what
-        // PowerPoint writes.
-        package.contentTypes.removeOverride(partName: mediaURI)
 
         let target = part.uri.relativeReference(to: mediaURI)
         let linkRelType = format.isAudio ? RelType.audio : RelType.video
@@ -80,11 +100,7 @@ public extension ShapeCollection {
         let mediaID = part.rels.add(type: RelType.media, target: target)
 
         // The poster frame: a real image when given, else a 1×1 transparent PNG.
-        let posterData = poster ?? Self.transparentPixelPNG
-        guard let info = ImageSniffer.sniff(posterData) else {
-            throw RostrumError.packageInvalid("unrecognized poster image format")
-        }
-        let image = package.imagePart(for: posterData, info: info)
+        let image = package.imagePart(for: posterData, info: posterInfo)
         let posterID = part.rels.add(
             type: RelType.image, target: part.uri.relativeReference(to: image.uri))
 
@@ -142,11 +158,90 @@ public extension ShapeCollection {
         let prstGeom = XML.Element("a:prstGeom", attributes: [("prst", "rect")])
         prstGeom.appendElement(XML.Element("a:avLst"))
         spPr.appendElement(prstGeom)
+        // With no poster the blip is a transparent pixel, which would render
+        // as nothing at all — an invisible shape the user cannot click. A
+        // solid fill behind it keeps the clip visible and clickable.
+        if poster == nil {
+            let fill = XML.Element("a:solidFill")
+            fill.appendElement(Color("3C3C3C").srgbElement())
+            spPr.appendElement(fill)
+        }
         pic.appendElement(spPr)
 
         try Slide.spTree(of: part).appendElement(pic)
+        try registerMediaTiming(shapeID: id, isAudio: format.isAudio)
         part.markDirty()
         return Picture(element: pic, part: part, package: package)
+    }
+
+    /// Give the clip play controls.
+    ///
+    /// PowerPoint drives media from the slide's `p:timing` tree: without a
+    /// `p:video`/`p:audio` node naming the shape, the clip renders as a still
+    /// picture with **no** controls. The node is written with an indefinite
+    /// start condition — click to play, which is PowerPoint's own default for
+    /// an inserted clip — and appended to the timing root so several clips on
+    /// one slide each get their own.
+    private func registerMediaTiming(shapeID: Int, isAudio: Bool) throws {
+        let slide = try part.dom()
+        // p:timing is the last child of p:sld.
+        let timing = slide.getOrAddChild("p:timing")
+        let tnLst = timing.getOrAddChild("p:tnLst")
+
+        // The timing root: one p:par > p:cTn[nodeType=tmRoot] per slide.
+        let par: XML.Element
+        if let existing = tnLst.firstChild(named: "p:par") {
+            par = existing
+        } else {
+            par = XML.Element("p:par")
+            let root = XML.Element("p:cTn", attributes: [
+                ("id", "1"), ("dur", "indefinite"), ("restart", "never"), ("nodeType", "tmRoot"),
+            ])
+            root.appendElement(XML.Element("p:childTnLst"))
+            par.appendElement(root)
+            tnLst.appendElement(par)
+        }
+        guard let root = par.firstChild(named: "p:cTn") else { return }
+        let childTnLst = root.getOrAddChild("p:childTnLst")
+
+        // Timing node ids must be unique within the slide; 1 is the root.
+        let usedIDs = Self.timingIDs(in: timing)
+        let nodeID = (usedIDs.max() ?? 1) + 1
+
+        let media = XML.Element(isAudio ? "p:audio" : "p:video")
+        let cMediaNode = XML.Element("p:cMediaNode", attributes: [("vol", "80000")])
+        let cTn = XML.Element("p:cTn", attributes: [
+            ("id", String(nodeID)), ("fill", "hold"), ("display", "0"),
+        ])
+        let stCondLst = XML.Element("p:stCondLst")
+        stCondLst.appendElement(XML.Element("p:cond", attributes: [("delay", "indefinite")]))
+        cTn.appendElement(stCondLst)
+        let endCondLst = XML.Element("p:endCondLst")
+        let endCond = XML.Element("p:cond", attributes: [("evt", "onStopped"), ("delay", "0")])
+        let endTgt = XML.Element("p:tgtEl")
+        endTgt.appendElement(XML.Element("p:spTgt", attributes: [("spid", String(shapeID))]))
+        endCond.appendElement(endTgt)
+        endCondLst.appendElement(endCond)
+        cTn.appendElement(endCondLst)
+        cMediaNode.appendElement(cTn)
+        let tgtEl = XML.Element("p:tgtEl")
+        tgtEl.appendElement(XML.Element("p:spTgt", attributes: [("spid", String(shapeID))]))
+        cMediaNode.appendElement(tgtEl)
+        media.appendElement(cMediaNode)
+        childTnLst.appendElement(media)
+    }
+
+    /// Test hook for the id-uniqueness invariant.
+    static func timingIDsForTesting(in element: XML.Element) -> [Int] { timingIDs(in: element) }
+
+    /// Every `p:cTn@id` already used in a timing tree.
+    private static func timingIDs(in element: XML.Element) -> [Int] {
+        var ids: [Int] = []
+        if element.name == "p:cTn", let id = element[attribute: "id"].flatMap({ Int($0) }) {
+            ids.append(id)
+        }
+        for child in element.childElements { ids += timingIDs(in: child) }
+        return ids
     }
 
     /// The `p:ext@uri` PowerPoint uses for the media extension.
