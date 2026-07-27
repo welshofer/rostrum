@@ -54,10 +54,18 @@ public extension ShapeCollection {
             throw RostrumError.packageInvalid("this shape collection has no package attached")
         }
 
-        // The media part. Content type rides on an extension Default, the way
-        // PowerPoint writes media.
-        var n = 1
-        while package.parts[PackURI("/ppt/media/media\(n).\(format.fileExtension)")] != nil { n += 1 }
+        // The media part. Numbering spans every media clip regardless of
+        // extension — PowerPoint numbers them sequentially, and a per-extension
+        // counter would produce a confusing media1.mp4 next to a media1.mov.
+        // Content type rides on an extension Default, the way PowerPoint
+        // writes media.
+        let used = package.parts.keys.compactMap { uri -> Int? in
+            let name = uri.filename
+            guard uri.value.hasPrefix("/ppt/media/media"), name.hasPrefix("media") else { return nil }
+            let stem = name.prefix(while: { $0 != "." }).dropFirst("media".count)
+            return Int(stem)
+        }
+        let n = (used.max() ?? 0) + 1
         let mediaURI = PackURI("/ppt/media/media\(n).\(format.fileExtension)")
         package.contentTypes.setDefault(extension: format.fileExtension,
                                         contentType: format.contentType)
