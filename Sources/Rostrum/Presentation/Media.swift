@@ -184,7 +184,8 @@ public extension Picture {
     /// The `a:videoFile`/`a:audioFile` relationship id.
     private var mediaRelationshipID: String? {
         let nvPr = element.firstChild(named: "p:nvPicPr")?.firstChild(named: "p:nvPr")
-        return (nvPr?.firstChild(named: "a:videoFile") ?? nvPr?.firstChild(named: "a:audioFile"))?
-            [attribute: "r:link"]
+        guard let file = nvPr?.firstChild(named: "a:videoFile")
+            ?? nvPr?.firstChild(named: "a:audioFile") else { return nil }
+        return file[attribute: "r:link"]
     }
 }
