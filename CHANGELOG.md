@@ -51,8 +51,9 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 - **Video and audio** — `shapes.addMedia(_:format:frame:poster:)` embeds a
   clip in `/ppt/media/` with the two relationships PowerPoint wants pointing
   at the same part (the legacy `video`/`audio` link and the modern `media`
-  relationship referenced from `p14:media`), a poster frame (a 1×1
-  transparent PNG when none is given, since `p:pic` requires a `blipFill`),
+  relationship referenced from `p14:media`), a poster frame (with none given,
+  a transparent pixel over a dark solid fill — `p:pic` requires a `blipFill`,
+  and a bare transparent pixel would be an invisible, unclickable shape),
   and the content type as an extension Default the way PowerPoint writes it.
   Read-back via `picture.isMedia` / `isAudio` / `mediaData`. A `p:timing`
   node is written per clip so PowerPoint actually shows play controls and
