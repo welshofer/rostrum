@@ -49,6 +49,14 @@ public final class Relationships {
 
     public var isEmpty: Bool { items.isEmpty }
 
+    /// Did this collection come from a `.rels` part that was in the file?
+    ///
+    /// Distinct from `!isEmpty`: a `<Relationships/>` with no children is legal
+    /// OPC and several producers emit it. Writing is gated on this rather than
+    /// on emptiness, so an arrived-empty stream is re-emitted while a freshly
+    /// created part with no relationships still gets no `.rels` entry.
+    var arrivedAsFile: Bool { pristine != nil }
+
     public func relationship(withId rId: String) -> Relationship? {
         items.first { $0.rId == rId }
     }

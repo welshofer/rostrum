@@ -94,64 +94,40 @@ public struct PackURI: Hashable, Sendable, CustomStringConvertible {
     ///     PackURI.resolve(target: "../slideLayouts/slideLayout1.xml",
     ///                     relativeTo: "/ppt/slideMasters")
     ///     // → /ppt/slideLayouts/slideLayout1.xml
+    /// Targets are matched VERBATIM, without percent-decoding, and that is
+    /// deliberate — an earlier commit decoded them and had to be reverted.
+    ///
+    /// A part name is a sequence of `pchar` segments (ECMA-376 Part 2 §8.1.1.1),
+    /// and the zip item name is the part name minus its leading slash. So a
+    /// part containing a space is *already* `my%20image.png` in the zip item
+    /// name, in the `Override/@PartName`, and in the `Target` — a conformant
+    /// package is internally consistent in ENCODED space. Decoding only the
+    /// Target moves one end of the comparison into a namespace no other layer
+    /// shares, so the lookup misses and the picture silently fails to load:
+    /// precisely the bug the decoding was meant to fix.
+    ///
+    /// Decoding is also many-to-one, which is worse than useless here.
+    /// `slide%31.xml` decodes onto `slide1.xml`, and invalid UTF-8 escapes all
+    /// funnel to U+FFFD, so distinct parts collapse onto one key — the aliasing
+    /// class this file spends `hasEmptySegment` preventing.
+    ///
+    /// **Open, deliberately:** a producer that writes the zip item name RAW but
+    /// the Target ENCODED is internally inconsistent, and neither spelling
+    /// alone resolves it. The fix is to try the verbatim URI first and fall
+    /// back to the decoded one only when no part matches — which needs the
+    /// package at every one of the ~20 `resolve` call sites, not a change here.
+    /// Designed rather than guessed at; see ROADMAP.
     public static func resolve(target: String, relativeTo baseURI: String) -> PackURI {
-        // A `.rels` Target is a URI reference, not a raw name, so a part called
-        // "/ppt/media/my image.png" is written "my%20image.png" by any
-        // conformant writer. Resolving without decoding yields a URI that
-        // matches no part, and the picture silently fails to load.
-        //
-        // Decode per SEGMENT, after splitting: decoding first would turn an
-        // encoded "%2F" — a literal slash inside one name — into a separator.
-        var stack: [String] = target.hasPrefix("/") ? [] : baseURI.split(separator: "/").map(String.init)
+        if target.hasPrefix("/") { return PackURI(target) }
+        var stack = baseURI.split(separator: "/").map(String.init)
         for segment in target.split(separator: "/") {
             switch segment {
             case ".": continue
             case "..": if !stack.isEmpty { stack.removeLast() }
-            default: stack.append(percentDecoded(String(segment)))
+            default: stack.append(String(segment))
             }
         }
         return PackURI("/" + stack.joined(separator: "/"))
-    }
-
-    /// Percent-decode one path segment (RFC 3986).
-    ///
-    /// An invalid escape is left as written rather than dropped or replaced:
-    /// `100%.png` is not legal encoding, but a writer emitted it and the byte
-    /// it meant is `%`. A conformant writer that means a literal `%` sends
-    /// `%25`, which decodes back to exactly that.
-    ///
-    /// A decode that would introduce a `/` is refused outright and the segment
-    /// kept as written. `%2F` inside one segment is not a legal part name — OPC
-    /// segments are `pchar`, which excludes `/` — and honouring it would let a
-    /// target manufacture a separator, producing two `PackURI`s that differ as
-    /// strings but derive one `relsURI`. That is precisely the aliasing class
-    /// `hasEmptySegment` exists to prevent; decoding must not reopen it.
-    static func percentDecoded(_ segment: String) -> String {
-        guard segment.contains("%") else { return segment }
-        func hex(_ b: UInt8) -> UInt8? {
-            switch b {
-            case 0x30...0x39: return b - 0x30            // 0-9
-            case 0x41...0x46: return b - 0x41 + 10       // A-F
-            case 0x61...0x66: return b - 0x61 + 10       // a-f
-            default: return nil
-            }
-        }
-        let bytes = Array(segment.utf8)
-        var out: [UInt8] = []
-        out.reserveCapacity(bytes.count)
-        var i = 0
-        while i < bytes.count {
-            if bytes[i] == 0x25, i + 2 < bytes.count,
-               let high = hex(bytes[i + 1]), let low = hex(bytes[i + 2]) {
-                out.append(high << 4 | low)
-                i += 3
-            } else {
-                out.append(bytes[i])
-                i += 1
-            }
-        }
-        let decoded = String(decoding: out, as: UTF8.self)
-        return decoded.contains("/") ? segment : decoded
     }
 
     /// Express `other` relative to this part's base URI, for writing

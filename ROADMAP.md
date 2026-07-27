@@ -302,12 +302,29 @@ Hardening backlog (schedule opportunistically):
   of one name silently dropped a part and served another's bytes under it.
 
   Also from that round: ~~directory-placeholder entries are dropped on read and
-  never re-emitted~~ ✅ 2026-07-27 — `OPCPackage` carries them verbatim and
-  `serialize()` re-emits them in sorted order, so an untouched deck keeps every
-  zip entry it arrived with. The corpus gate was already written to catch this
-  (it asserts every `before` name appears in `after`); no fixture had exercised
-  it. **Still open:** `PackURI` does no percent-decoding, so an OPC-conformant
-  encoded relationship target never resolves to the part it names.
+  never re-emitted~~ ✅ 2026-07-27 — `OPCPackage` carries them verbatim, and a
+  fifth round immediately found the twin: `.rels` entries that parse to zero
+  children, or that no part claims, were read and never written back either.
+  Both are carried now. Note what the corpus gate did NOT do here: it is
+  written to catch exactly this (every `before` name must appear in `after`),
+  but `Fixtures/RealDecks/` holds only a README, so it iterates zero decks and
+  passes vacuously. It has been guarding nothing this whole time — the decks
+  are the gate.
+
+  ~~`PackURI` does no percent-decoding~~ — **investigated and deliberately NOT
+  done.** Decoding was implemented, reviewed, and reverted the same day. A part
+  name is `pchar` segments and the zip item name is the part name minus its
+  leading slash, so a conformant package is internally consistent in *encoded*
+  space: item name, `Override/@PartName` and `Target` all carry the same
+  escapes. Decoding only the `Target` moves one end of the comparison into a
+  namespace no other layer shares — a regression in exactly the case it was
+  meant to fix — and decoding is many-to-one besides (`slide%31.xml` collapses
+  onto `slide1.xml`; every invalid UTF-8 escape funnels to U+FFFD), which is
+  the aliasing class `hasEmptySegment` exists to prevent. **Genuinely open:** a
+  producer that writes the item name RAW but the `Target` ENCODED is internally
+  inconsistent, and neither spelling alone resolves it. That wants a
+  try-verbatim-then-decoded fallback at every `resolve` call site with the
+  package in hand — an API change to design, not a one-line decode.
 - Zip64 **write** support. Archives over 4 GB, over 65535 entries, or with a
   central directory over 4 GB are now *reported* — `ZipWriter.finalize()`
   throws `RostrumError.packageInvalid` and `OPCPackage.serialize` propagates it

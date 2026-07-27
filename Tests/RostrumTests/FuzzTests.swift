@@ -929,8 +929,12 @@ import Testing
         let valid = try validDeckBytes()
         let reader = try ZipReader(data: valid)
         var writer = ZipWriter()
-        writer.addFile(name: "ppt/media/", data: Data(), compress: false)
-        writer.addFile(name: "docProps/", data: Data(), compress: false)
+        // Non-empty, DIFFERENT payloads: with two empty ones the test passes
+        // whether or not the bytes are carried, and whether or not they are
+        // matched to the right name. Written in reverse sorted order so the
+        // output order is the sorting's doing, not the input's.
+        writer.addFile(name: "ppt/media/", data: Data([0xAA, 0xBB]), compress: false)
+        writer.addFile(name: "docProps/", data: Data([0xCC]), compress: false)
         for name in reader.entryNames {
             writer.addFile(name: name, data: try reader.data(forEntry: name))
         }
@@ -941,6 +945,12 @@ import Testing
         let names = Set(after.entryNames)
         #expect(names.contains("ppt/media/"), "directory entry dropped on resave")
         #expect(names.contains("docProps/"), "directory entry dropped on resave")
+        // The bytes, and the name they belong to, must both survive.
+        #expect(try after.data(forEntry: "ppt/media/") == Data([0xAA, 0xBB]))
+        #expect(try after.data(forEntry: "docProps/") == Data([0xCC]))
+        // Sorted, not arrival order — the input had them the other way round.
+        let placeholders = after.entryNames.filter { $0.hasSuffix("/") }
+        #expect(placeholders == ["docProps/", "ppt/media/"])
         // Every entry that went in must come back, byte for byte — the same
         // assertion the real-deck corpus gate makes.
         let before = try ZipReader(data: withDirectories)
@@ -955,46 +965,87 @@ import Testing
         #expect(try Presentation(data: resaved).serializedData() == resaved)
     }
 
-    @Test func aPercentEncodedRelationshipTargetResolvesToItsPart() throws {
-        // A .rels Target is a URI reference. A part named "image 1.png" is
-        // referenced as "image%201.png" by any conformant writer, and resolving
-        // without decoding produced a URI matching no part — the picture
-        // silently failed to load, with no error anywhere.
+    @Test func emptyAndOrphanRelationshipStreamsSurviveARoundTrip() throws {
+        // The twin of the directory-placeholder skip, missed the first time.
+        // Two shapes of `.rels` entry were read, never modelled, never written:
+        // one that parses to zero <Relationship> children (legal OPC, and some
+        // producers emit it), and one no part claims. Both must be built
+        // EXPLICITLY — a fixture derived from Rostrum's own serialize() cannot
+        // contain either, since it emits a .rels entry only when non-empty and
+        // only at a derived name.
+        let empty = Data("""
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>
+            """.utf8)
+        let reader = try ZipReader(data: try validDeckBytes())
+        var writer = ZipWriter()
+        for name in reader.entryNames {
+            writer.addFile(name: name, data: try reader.data(forEntry: name))
+        }
+        // (a) an empty rels stream for a part that exists, and (b) an orphan.
+        writer.addFile(name: "ppt/slides/_rels/slide2.xml.rels", data: empty)
+        writer.addFile(name: "ppt/slides/_rels/slide99.xml.rels", data: empty)
+        let original = try writer.finalize()
+
+        // The fixture must really contain both, or it proves nothing.
+        let before = try ZipReader(data: original)
+        #expect(before.entryNames.contains("ppt/slides/_rels/slide2.xml.rels"))
+        #expect(before.entryNames.contains("ppt/slides/_rels/slide99.xml.rels"))
+        #expect(!before.entryNames.contains("ppt/slides/slide99.xml"),
+                "slide99's rels must be an ORPHAN for this to test what it says")
+
+        let resaved = try Presentation(data: original).serializedData()
+        let after = try ZipReader(data: resaved)
+        let names = Set(after.entryNames)
+        for name in before.entryNames {
+            #expect(names.contains(name), "\(name) missing after resave")
+            guard names.contains(name) else { continue }
+            #expect(try after.data(forEntry: name) == before.data(forEntry: name),
+                    "\(name) bytes changed on resave")
+        }
+        // No name may be written twice — carrying an orphan and deriving the
+        // real entry for the same part would give one member two entries.
+        #expect(after.centralDirectoryRecords.count == after.entryNames.count,
+                "an entry name was emitted more than once")
+        // And resaving stays a fixed point.
+        #expect(try Presentation(data: resaved).serializedData() == resaved)
+    }
+
+    @Test func relationshipTargetsAreMatchedVerbatim() throws {
+        // Deliberately NOT percent-decoded. A part name is pchar segments and
+        // the zip item name is the part name minus its leading slash, so a
+        // conformant package is internally consistent in ENCODED space: item
+        // name, Override/@PartName and Target all carry the same escapes.
+        // Decoding only the Target moves one end of the comparison into a
+        // namespace no other layer shares. An earlier commit did that and had
+        // to be reverted; this pins the behaviour so it does not come back.
         #expect(PackURI.resolve(target: "../media/my%20image.png",
                                 relativeTo: "/ppt/slides").value
-                == "/ppt/media/my image.png")
-        // Non-ASCII names are the common real case: UTF-8 bytes, each encoded.
+                == "/ppt/media/my%20image.png")
         #expect(PackURI.resolve(target: "../media/caf%C3%A9.png",
                                 relativeTo: "/ppt/slides").value
-                == "/ppt/media/caf\u{00E9}.png")
-        // An absolute target decodes too, and "." / ".." still work.
-        #expect(PackURI.resolve(target: "/ppt/media/a%20b.png", relativeTo: "/ppt/slides").value
-                == "/ppt/media/a b.png")
-        #expect(PackURI.resolve(target: "./x%2Dy.xml", relativeTo: "/ppt").value == "/ppt/x-y.xml")
+                == "/ppt/media/caf%C3%A9.png")
+        // Decoding would be many-to-one, which is the aliasing class
+        // hasEmptySegment exists to prevent: these two parts are distinct and
+        // must resolve distinctly.
+        #expect(PackURI.resolve(target: "slide%31.xml", relativeTo: "/ppt/slides").value
+                != PackURI.resolve(target: "slide1.xml", relativeTo: "/ppt/slides").value)
 
-        // An encoded slash must NOT become a separator. Decoding it would put
-        // a "/" inside one segment, giving two PackURIs that differ as strings
-        // but derive one relsURI — the aliasing class hasEmptySegment exists to
-        // prevent. The segment is kept as written instead.
-        #expect(PackURI.resolve(target: "a%2Fb.png", relativeTo: "/ppt/media").value
-                == "/ppt/media/a%2Fb.png")
-        #expect(!PackURI.hasEmptySegment("ppt/media/a%2Fb.png"))
+        // An encoded target resolves to the part a conformant package actually
+        // stores under that name — end to end, not just as a string.
+        var writer = ZipWriter()
+        let reader = try ZipReader(data: try validDeckBytes())
+        for name in reader.entryNames {
+            writer.addFile(name: name, data: try reader.data(forEntry: name))
+        }
+        writer.addFile(name: "ppt/media/my%20image.png", data: Data([0x89, 0x50, 0x4E, 0x47]))
+        let package = try OPCPackage.read(data: try writer.finalize())
+        let resolved = PackURI.resolve(target: "../media/my%20image.png",
+                                       relativeTo: "/ppt/slides")
+        #expect(package.parts[resolved] != nil,
+                "an encoded target must find the part stored under that encoded name")
 
-        // An invalid escape is left as written rather than dropped: a writer
-        // that emitted a bare "%" meant a "%".
-        #expect(PackURI.resolve(target: "100%.png", relativeTo: "/ppt/media").value
-                == "/ppt/media/100%.png")
-        #expect(PackURI.resolve(target: "a%zz.png", relativeTo: "/ppt/media").value
-                == "/ppt/media/a%zz.png")
-        #expect(PackURI.resolve(target: "trailing%.png", relativeTo: "/ppt/media").value
-                == "/ppt/media/trailing%.png")
-        // And %25 round-trips to a literal percent, which is how a conformant
-        // writer expresses one.
-        #expect(PackURI.resolve(target: "100%25.png", relativeTo: "/ppt/media").value
-                == "/ppt/media/100%.png")
-
-        // Names without a percent are untouched, so nothing that resolves today
-        // starts resolving differently.
+        // The ordinary case is unaffected.
         #expect(PackURI.resolve(target: "../slideLayouts/slideLayout1.xml",
                                 relativeTo: "/ppt/slides").value
                 == "/ppt/slideLayouts/slideLayout1.xml")

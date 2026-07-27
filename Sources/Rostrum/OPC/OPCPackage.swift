@@ -79,9 +79,16 @@ public final class OPCPackage {
     /// writers emit and which are not parts. Kept verbatim so an untouched deck
     /// still round-trips every entry — dropping them silently made a foreign
     /// deck come back with fewer entries than it went in with, which is exactly
-    /// what the corpus gate exists to catch. Sorted, so output stays
-    /// deterministic regardless of the order they arrived in.
+    /// what the corpus gate exists to catch.
+    ///
+    /// Stored in the order they arrived; `serialize()` sorts them on the way
+    /// out, which is where determinism actually has to hold.
     private(set) var directoryEntries: [(name: String, data: Data)] = []
+
+    /// `.rels` entries no part claims — an orphan, or a rels stream at a name
+    /// `PackURI.relsURI` does not derive. Same reason as `directoryEntries`:
+    /// read, not modelled, and previously not written back.
+    private(set) var orphanRelationshipStreams: [(name: String, data: Data)] = []
 
     public init() {
         parts = [:]
@@ -112,7 +119,18 @@ public final class OPCPackage {
             if name.hasSuffix("/") {
                 // A directory placeholder, not a part. Carry it rather than
                 // drop it: `serialize()` re-emits it, so the entry survives.
-                package.directoryEntries.append((name, try zip.data(forEntry: name)))
+                //
+                // `try?`, not `try`: before this branch existed the entry was
+                // never touched, so nothing about its payload could stop a deck
+                // opening. Decoding it makes every per-entry failure —
+                // encrypted, unsupported method, bad CRC, truncated stream —
+                // fatal to the whole package for something that is not even a
+                // part. Carrying it is a fidelity improvement and must not cost
+                // the ability to open the file; an undecodable placeholder is
+                // dropped exactly as it was before.
+                if let data = try? zip.data(forEntry: name) {
+                    package.directoryEntries.append((name, data))
+                }
                 continue
             }
             // OPC part names have no empty segments (M1.1). Rostrum has to
@@ -144,11 +162,29 @@ public final class OPCPackage {
             let parsed = try Relationships.parse(zip.data(forEntry: PackURI.packageRels.memberName))
             package.rels.adopt(parsed)
         }
+        var consumed: Set<String> = [PackURI.packageRels.memberName]
         for (uri, part) in package.parts {
             let relsName = uri.relsURI.memberName
             guard zip.contains(relsName) else { continue }
+            consumed.insert(relsName)
             let parsed = try Relationships.parse(zip.data(forEntry: relsName))
             part.rels.adopt(parsed)
+        }
+
+        // The twin of the directory-placeholder skip, and it was missed the
+        // first time: a `.rels` entry that no part claims is read, never
+        // modelled, and was never written back. That happens for an orphan
+        // (`_rels/slide9.xml.rels` with no `slide9.xml`) and for any rels
+        // stream at a name `relsURI` does not derive. Carry those verbatim.
+        //
+        // Decided HERE rather than at the skip in the first pass, and that
+        // ordering is load-bearing: carrying them earlier would emit both the
+        // carried entry and the one `serialize()` derives for the real part,
+        // giving two zip members with one name.
+        for name in zip.entryNames where name.hasSuffix(".rels") && !consumed.contains(name) {
+            if let data = try? zip.data(forEntry: name) {
+                package.orphanRelationshipStreams.append((name, data))
+            }
         }
         return package
     }
@@ -219,13 +255,20 @@ public final class OPCPackage {
         }
         var zip = ZipWriter()
         zip.addFile(name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
-        if !rels.isEmpty {
+        if !rels.isEmpty || rels.arrivedAsFile {
             zip.addFile(name: PackURI.packageRels.memberName, data: rels.serialized())
         }
         // Directory placeholders next, sorted — a fixed position and a fixed
         // order, so the output is deterministic and resaving is a fixed point.
+        for entry in orphanRelationshipStreams.sorted(by: { $0.name < $1.name }) {
+            zip.addFile(name: entry.name, data: entry.data)
+        }
         for entry in directoryEntries.sorted(by: { $0.name < $1.name }) {
-            zip.addFile(name: entry.name, data: entry.data, compress: false)
+            // Compress like any other entry. A placeholder is normally empty,
+            // where compression is a no-op either way; `compress: false` only
+            // mattered for a hostile non-empty one, and there it made Rostrum
+            // write out the full expansion of something it had just inflated.
+            zip.addFile(name: entry.name, data: entry.data)
         }
         for (uri, part) in parts.sorted(by: { $0.key.value < $1.key.value }) {
             // Refuse to write a name `read` would not give back. `PackURI`'s
@@ -248,7 +291,11 @@ public final class OPCPackage {
             // waste CPU re-DEFLATEing them; XML parts compress well.
             let alreadyCompressed = Self.storedExtensions.contains(uri.ext)
             zip.addFile(name: uri.memberName, data: part.blob, compress: !alreadyCompressed)
-            if !part.rels.isEmpty {
+            // `arrivedAsFile`, not just `!isEmpty`: a `<Relationships/>` with
+            // no children is legal OPC and some producers emit it, and gating
+            // on emptiness dropped it on resave. A part Rostrum created with no
+            // relationships still gets no `.rels` entry.
+            if !part.rels.isEmpty || part.rels.arrivedAsFile {
                 zip.addFile(name: uri.relsURI.memberName, data: part.rels.serialized())
             }
         }
