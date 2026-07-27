@@ -325,11 +325,21 @@ Hardening backlog (schedule opportunistically):
   inconsistent, and neither spelling alone resolves it. That wants a
   try-verbatim-then-decoded fallback at every `resolve` call site with the
   package in hand — an API change to design, not a one-line decode.
-- Zip64 **write** support. Archives over 4 GB, over 65535 entries, or with a
-  central directory over 4 GB are now *reported* — `ZipWriter.finalize()`
-  throws `RostrumError.packageInvalid` and `OPCPackage.serialize` propagates it
-  — so this is a missing feature rather than a crash risk. Reading such an
-  archive is likewise unimplemented.
+- Zip64 — **entry count done, sizes/offsets deliberately not.** Past 65535
+  entries `ZipWriter` emits a zip64 EOCD record and locator with the classic
+  count sentinel, and `ZipReader` follows the locator to read the real count;
+  the structures appear only when needed, so every archive that fit before is
+  byte-identical. Proved in CI both ways plus `/usr/bin/unzip -t`, and at the
+  65535 boundary, where a literal 0xFFFF count must NOT be read as a sentinel
+  (APPNOTE 4.4.1.4).
+
+  The 64-bit **size and offset** fields are a different feature: they need the
+  per-entry zip64 extra field, and nothing here can exercise them without
+  writing four gigabytes. They stay *reported* — `ZipWriter.finalize()` throws
+  and `ZipReader` returns `zipUnsupported` — because a half-implemented format
+  claimed as done is the overstatement this codebase keeps having to walk back.
+  The entry count is the ceiling a real `.pptx` can plausibly reach; the size
+  fields are not.
 - Quadratic hot spots on very large decks; `prune()`/orphan audit promised in
   ARCHITECTURE.md.
 

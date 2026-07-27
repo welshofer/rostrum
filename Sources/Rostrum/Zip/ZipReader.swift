@@ -14,11 +14,14 @@ import Foundation
 ///   from the central directory's).
 /// - Supported methods: 0 (STORED) and 8 (DEFLATE, via `Inflate`). Anything else
 ///   → `RostrumError.zipUnsupported`. Encrypted entries (bit 0) → unsupported.
-/// - Zip64 → `zipUnsupported`; no real pptx needs it. Detected two ways: a
-///   0xFFFFFFFF sentinel in any central-directory entry field, and 0xFFFF /
-///   0xFFFFFFFF in the EOCD *only* when a zip64 locator (0x07064b50) precedes
-///   it — those values are legal literals otherwise (APPNOTE 4.4.1.4). The
-///   zip64 EOCD signature 0x06064b50 is never tested for on its own.
+/// - Zip64, partially: the ENTRY COUNT is supported, so an archive with more
+///   than 65535 entries reads (and `ZipWriter` writes one). A 0xFFFF count in
+///   the EOCD sends us to the zip64 EOCD record only when a locator (0x07064b50)
+///   precedes the EOCD — 0xFFFF alone is a legal literal (APPNOTE 4.4.1.4).
+///   Zip64 SIZES and OFFSETS are NOT supported: a 0xFFFFFFFF sentinel in a
+///   central-directory entry, or in the EOCD's size/offset fields, throws
+///   `zipUnsupported`. Those need the per-entry zip64 extra field, and nothing
+///   in this project can exercise them without a four-gigabyte archive.
 /// - Verify the CRC-32 of every decoded entry against the central directory and
 ///   throw `zipCorrupt` on mismatch.
 /// - Duplicate entry names: last one wins (matches other tooling).
@@ -164,7 +167,15 @@ public struct ZipReader {
                         let hasZip64Locator = candidate >= 20
                             && Self.u32(bytes, candidate - 20) == 0x0706_4B50
                         if hasZip64Locator {
-                            throw RostrumError.zipUnsupported("zip64 end-of-central-directory sentinels")
+                            // Only the entry COUNT is supported, matching what
+                            // `ZipWriter` emits. A size or offset sentinel means
+                            // an archive past 4 GB, which needs the per-entry
+                            // zip64 extra field this reader does not parse —
+                            // reporting that is honest, guessing at it is not.
+                            guard cdSize != 0xFFFF_FFFF, cdOffset != 0xFFFF_FFFF else {
+                                throw RostrumError.zipUnsupported(
+                                    "zip64 sizes/offsets (only the entry count is supported)")
+                            }
                         }
                     }
                     // The central directory must end exactly where the EOCD begins.
@@ -189,17 +200,48 @@ public struct ZipReader {
             throw RostrumError.zipUnsupported("multi-disk archive")
         }
 
+        // A 0xFFFF count with a zip64 locator in front of the EOCD means the
+        // real count lives in the zip64 EOCD record. 0xFFFF on its own is a
+        // legal literal (APPNOTE 4.4.1.4) and must NOT send us looking.
+        var realTotalEntries = Int(totalEntries)
+        if totalEntries == 0xFFFF, eocd >= 20, Self.u32(bytes, eocd - 20) == 0x0706_4B50 {
+            // Every number below comes from the file. Bound each one BEFORE
+            // narrowing it: `Int(someUInt64)` is a trapping conversion, and the
+            // whole point of this reader is that hostile bytes cannot abort the
+            // host process.
+            let recordOffset = Self.u64(bytes, eocd - 20 + 8)
+            guard recordOffset <= UInt64(eocd), Int(recordOffset) + 56 <= eocd - 20 else {
+                throw RostrumError.zipCorrupt("zip64 end-of-central-directory record out of range")
+            }
+            let zip64EOCD = Int(recordOffset)
+            guard Self.u32(bytes, zip64EOCD) == 0x0606_4B50 else {
+                throw RostrumError.zipCorrupt("zip64 end-of-central-directory record not found")
+            }
+            let count = Self.u64(bytes, zip64EOCD + 32)
+            // The count bounds an allocation and a loop, and it came from the
+            // file. One central-directory record is at least 46 bytes, so a
+            // count that cannot fit between the directory's start and the EOCD
+            // is a lie; refuse before reserving anything. `max(0, ...)` because
+            // cdOffset is file-derived too and can exceed eocd, where the
+            // subtraction goes negative and the conversion would trap.
+            guard count <= UInt64(max(0, eocd - cdOffset) / 46) else {
+                throw RostrumError.zipCorrupt(
+                    "zip64 record claims \(count) entries, more than the central directory holds")
+            }
+            realTotalEntries = Int(count)
+        }
+
         var entries: [Entry] = []
         var entryFlags: [UInt16] = []
         var indexByName: [String: Int] = [:]
         /// The raw bytes each decoded name came from, so a collision between
         /// two DIFFERENT byte sequences can be told from an honest duplicate.
         var rawNameByName: [String: [UInt8]] = [:]
-        entries.reserveCapacity(totalEntries)
-        entryFlags.reserveCapacity(totalEntries)
+        entries.reserveCapacity(realTotalEntries)
+        entryFlags.reserveCapacity(realTotalEntries)
 
         var offset = cdOffset
-        for _ in 0..<totalEntries {
+        for _ in 0..<realTotalEntries {
             guard offset + 46 <= eocd else {
                 throw RostrumError.zipCorrupt("truncated central directory")
             }
@@ -447,6 +489,12 @@ public struct ZipReader {
 
     private static func u16(_ bytes: [UInt8], _ offset: Int) -> Int {
         Int(bytes[offset]) | Int(bytes[offset + 1]) << 8
+    }
+
+    private static func u64(_ bytes: [UInt8], _ offset: Int) -> UInt64 {
+        var value: UInt64 = 0
+        for i in 0..<8 { value |= UInt64(bytes[offset + i]) << UInt64(8 * i) }
+        return value
     }
 
     private static func u32(_ bytes: [UInt8], _ offset: Int) -> UInt32 {

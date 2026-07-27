@@ -18,13 +18,17 @@ import Foundation
 ///   archives. All entries carry the fixed DOS date/time below (the zip epoch),
 ///   no extra fields, no comments.
 /// - Entry names are stored as provided (forward slashes, no leading slash).
-/// - No zip64: an entry that would push any 32-bit field past 0xFFFF_FFFF, or a
-///   66th thousand entry, is *reported* — `addFile` records the violation and
-///   `finalize()` throws `RostrumError.packageInvalid`. It is not a precondition,
-///   because the parts being written can come from a file somebody else wrote,
-///   and saving what you just opened must not abort the host. pptx files never
-///   approach these limits; writing archives that genuinely need zip64 is a
-///   separate, unimplemented feature.
+/// - Zip64, for the ENTRY COUNT only: past 65535 entries a zip64 EOCD record
+///   and locator are emitted and the classic EOCD carries the 0xFFFF sentinel.
+///   Emitted only when needed, so smaller archives stay byte-identical.
+///   Zip64 SIZES and OFFSETS are NOT implemented — an entry past 0xFFFF_FFFF,
+///   or an archive whose central directory starts past it, is still *reported*:
+///   `addFile` records the violation and `finalize()` throws
+///   `RostrumError.packageInvalid`. Not a precondition, because the parts being
+///   written can come from a file somebody else wrote and saving what you just
+///   opened must not abort the host. The count is the ceiling a .pptx can
+///   plausibly reach and the one this project can prove in CI; the size fields
+///   need four gigabytes to exercise, so they stay reported rather than guessed.
 public struct ZipWriter {
     /// Fixed DOS date/time stamped on every entry: 1980-01-01 00:00:00 (the DOS epoch).
     /// DOS format: date = ((year-1980)<<9 | month<<5 | day), time = (hour<<11 | minute<<5 | second/2).
@@ -53,6 +57,8 @@ public struct ZipWriter {
     private static let localHeaderSignature: UInt32 = 0x0403_4B50
     private static let centralHeaderSignature: UInt32 = 0x0201_4B50
     private static let eocdSignature: UInt32 = 0x0605_4B50
+    private static let zip64EOCDSignature: UInt32 = 0x0606_4B50
+    private static let zip64LocatorSignature: UInt32 = 0x0706_4B50
     private static let versionNeeded: UInt16 = 20
     private static let versionMadeBy: UInt16 = 20
     /// Bit 11: UTF-8 file names. Bit 3 (data descriptors) is never set.
@@ -75,9 +81,6 @@ public struct ZipWriter {
         // arrived as a file — saving what you just opened must not abort the
         // host. `finalize()` reports it. Returning early also matters because
         // the UInt32 conversions below are themselves trapping.
-        if entries.count >= 0xFFFF {
-            return note("more than 65535 entries")
-        }
         if nameBytes.count > 0xFFFF {
             return note("an entry name is \(nameBytes.count) bytes, over the 65535 name field")
         }
@@ -208,12 +211,48 @@ public struct ZipWriter {
             out.append(entry.nameBytes)
         }
 
+        // Zip64, but ONLY for the entry count, and only when it is needed.
+        //
+        // The 16-bit EOCD count is the one 32-bit-era ceiling an ordinary .pptx
+        // can plausibly reach — 65536 tiny parts is a few megabytes — and it is
+        // the one this project can actually prove, in CI and against
+        // `/usr/bin/unzip`. The 64-bit SIZE and OFFSET fields are a different
+        // feature: they need the per-entry extra field, and nothing here can
+        // exercise them without writing four gigabytes, so those limits are
+        // still reported by `finalize()` rather than supported. Claiming
+        // "zip64" for half of it would be the overstatement this codebase keeps
+        // having to walk back.
+        //
+        // Emitted only when the count needs it, so every archive that fit
+        // before is byte-identical to what it was — the corpus gate and the
+        // determinism gate both depend on that.
+        let needsZip64 = entries.count > 0xFFFF
+        if needsZip64 {
+            let zip64EOCDOffset = UInt64(out.count)
+            out.appendLE(Self.zip64EOCDSignature)
+            out.appendLE(UInt64(44))                     // size of the rest of this record
+            out.appendLE(UInt16(45))                     // version made by
+            out.appendLE(UInt16(45))                     // version needed (4.5 = zip64)
+            out.appendLE(UInt32(0))                      // this disk
+            out.appendLE(UInt32(0))                      // disk with central directory
+            out.appendLE(UInt64(entries.count))          // entries on this disk
+            out.appendLE(UInt64(entries.count))          // total entries
+            out.appendLE(UInt64(centralDirectorySize))
+            out.appendLE(UInt64(centralDirectoryOffset))
+
+            out.appendLE(Self.zip64LocatorSignature)
+            out.appendLE(UInt32(0))                      // disk with the zip64 EOCD
+            out.appendLE(zip64EOCDOffset)
+            out.appendLE(UInt32(1))                      // total disks
+        }
+
         // End of central directory record.
+        let countField: UInt16 = needsZip64 ? 0xFFFF : UInt16(entries.count)
         out.appendLE(Self.eocdSignature)
         out.appendLE(UInt16(0))  // number of this disk
         out.appendLE(UInt16(0))  // disk where central directory starts
-        out.appendLE(UInt16(entries.count))  // entries on this disk
-        out.appendLE(UInt16(entries.count))  // total entries
+        out.appendLE(countField)  // entries on this disk
+        out.appendLE(countField)  // total entries
         out.appendLE(centralDirectorySize)
         out.appendLE(centralDirectoryOffset)
         out.appendLE(UInt16(0))  // comment length
@@ -226,6 +265,12 @@ extension Data {
     fileprivate mutating func appendLE(_ value: UInt16) {
         append(UInt8(truncatingIfNeeded: value))
         append(UInt8(truncatingIfNeeded: value >> 8))
+    }
+
+    fileprivate mutating func appendLE(_ value: UInt64) {
+        for shift in stride(from: 0, through: 56, by: 8) {
+            append(UInt8(truncatingIfNeeded: value >> UInt64(shift)))
+        }
     }
 
     fileprivate mutating func appendLE(_ value: UInt32) {
