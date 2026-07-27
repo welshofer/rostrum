@@ -20,6 +20,41 @@ import Foundation
 ///   throw `zipCorrupt` on mismatch.
 /// - Duplicate entry names: last one wins (matches other tooling).
 public struct ZipReader {
+
+    /// Ceilings a caller can put on an archive somebody else wrote.
+    ///
+    /// Every entry is already bounded by its own declared uncompressed size:
+    /// `Inflate` stops at it and `data(forEntry:)` rejects a stream that decoded
+    /// to anything else. What no per-entry bound can see is the *sum*. A few
+    /// kilobytes of archive can declare thousands of entries that each expand to
+    /// gigabytes, and opening a package decodes every one of them — amplification
+    /// across entries rather than within one.
+    ///
+    /// Because the per-entry bound does hold, the total a full read can produce
+    /// is exactly the sum of the declared sizes, and the central directory
+    /// declares all of them before a single byte is inflated. So the ceiling is
+    /// checked up front rather than accumulated as entries are decoded: an
+    /// over-budget archive costs no decompression at all, and the verdict cannot
+    /// depend on which entries a caller happens to read, or in what order.
+    ///
+    /// This bounds *declared* size, which is the conservative direction — an
+    /// archive that declares far more than it would really produce is refused.
+    /// That is what a budget means; the alternative is doing the work to find out.
+    ///
+    /// The default is `.unlimited`, so decks that are simply large keep opening.
+    /// Set a budget when reading files from somewhere you do not control.
+    public struct Limits: Sendable, Equatable {
+        /// Maximum total uncompressed bytes the archive may declare across every
+        /// entry. `nil` means no ceiling.
+        public var totalUncompressedBytes: Int?
+
+        public init(totalUncompressedBytes: Int? = nil) {
+            self.totalUncompressedBytes = totalUncompressedBytes
+        }
+
+        /// No ceiling — the default, and the behaviour before limits existed.
+        public static let unlimited = Limits()
+    }
     public struct Entry: Sendable {
         public let name: String
         /// 0 = stored, 8 = deflate.
@@ -42,8 +77,20 @@ public struct ZipReader {
     /// Entry index by name; for duplicate names the last one wins.
     private let indexByName: [String: Int]
 
+    /// Total uncompressed bytes the central directory declares across every
+    /// entry. This is the ceiling on what decoding the whole archive can
+    /// produce, since each entry is bounded by its own declared size.
+    ///
+    /// `UInt64` rather than `Int` because the value is derived from a file
+    /// somebody else wrote and can legally reach ~2.8e14 — narrowing it would
+    /// be a trapping conversion on exactly the input this guard exists for.
+    public let declaredUncompressedSize: UInt64
+
     /// Parses the EOCD + central directory eagerly; entry data is decoded lazily.
-    public init(data: Data) throws {
+    ///
+    /// - Throws: `RostrumError.zipUnsupported` when the archive declares more
+    ///   uncompressed bytes than `limits` allows — before anything is inflated.
+    public init(data: Data, limits: Limits = .unlimited) throws {
         let bytes = [UInt8](data)
         let size = bytes.count
         guard size >= 22 else {
@@ -142,6 +189,19 @@ public struct ZipReader {
             entryFlags.append(flags)
             offset += 46 + nameLength + extraLength + commentLength
         }
+
+        // Accumulate in UInt64 rather than Int: 65535 entries (the EOCD count
+        // field is 16-bit) each declaring just under 4 GB is ~2.8e14, which no
+        // 32-bit Int would hold. The declared sizes come from a file somebody
+        // else wrote, so the arithmetic that bounds them must not itself
+        // overflow.
+        let declared = entries.reduce(UInt64(0)) { $0 + UInt64($1.uncompressedSize) }
+        if let ceiling = limits.totalUncompressedBytes, declared > UInt64(max(0, ceiling)) {
+            throw RostrumError.zipUnsupported(
+                "the archive declares \(declared) uncompressed bytes across \(entries.count) "
+                    + "entries, over the \(ceiling)-byte read budget")
+        }
+        self.declaredUncompressedSize = declared
 
         self.archive = bytes
         self.entries = entries

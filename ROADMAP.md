@@ -234,12 +234,21 @@ Hardening backlog (schedule opportunistically):
   `a:tblGrid` declares more columns than a row has `a:tc`. Same rule as
   `Slides.subscript`. `merge` throws with it; `setContents` and the bulk
   styling helpers stay tolerant by contract and skip cells a row does not have.
-- **Still open**, deliberately: `Inflate` bounds each entry by that entry's own
-  declared size, so a zip bomb still amplifies across many entries. This one is
-  resource exhaustion, **not** a trap — nothing crashes — and any fixed
-  aggregate ceiling would reject legitimately large decks. The fix is a
-  caller-supplied budget on the read path, which is an API addition worth
-  designing rather than guessing at.
+- ~~`Inflate` bounds each entry by that entry's own declared size, so a zip
+  bomb amplifies across many entries~~ ✅ 2026-07-27. Resource exhaustion
+  rather than a trap, so the fix had to be an API decision, not a patch: a
+  caller-supplied `ZipReader.Limits` threaded through `OPCPackage.read` and
+  `Presentation.init`, defaulting to `.unlimited` so decks that are merely
+  large keep opening.
+
+  The budget is enforced **up front, from the central directory**, not
+  accumulated as entries decode. Since each entry is already bounded by its own
+  declared size, the sum of the declared sizes *is* the ceiling on what a full
+  read can produce — and the archive states all of them before a byte is
+  inflated. So an over-budget archive costs no decompression at all, and the
+  verdict cannot depend on which entries a caller reads or in what order. It
+  bounds *declared* size, which is the conservative direction: the alternative
+  is doing the work to find out.
 - Zip64 **write** support. Archives over 4 GB, over 65535 entries, or with a
   central directory over 4 GB are now *reported* — `ZipWriter.finalize()`
   throws `RostrumError.packageInvalid` and `OPCPackage.serialize` propagates it

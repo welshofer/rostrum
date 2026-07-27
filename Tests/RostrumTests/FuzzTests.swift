@@ -512,4 +512,120 @@ import Testing
             _ = deck.style
         }
     }
+
+    // MARK: - Aggregate decompression budget
+
+    /// An archive whose entries are individually modest but collectively large:
+    /// `count` entries of `each` zero bytes, which DEFLATE crushes to almost
+    /// nothing. This is the shape a per-entry bound cannot see.
+    private func amplifyingArchive(count: Int, each: Int) throws -> Data {
+        var writer = ZipWriter()
+        let payload = Data(repeating: 0, count: each)
+        for i in 0..<count {
+            writer.addFile(name: "ppt/media/pad\(i).bin", data: payload)
+        }
+        return try writer.finalize()
+    }
+
+    /// Rewrite every central-directory `uncompressed size` field to `value`.
+    /// Reaching the 32-bit ceiling with real data would need gigabytes; the
+    /// declared size is what the guard reads, so declare it directly.
+    private func declaringUncompressedSize(_ value: UInt32, in archive: Data) throws -> Data {
+        var bytes = [UInt8](archive)
+        // Walk the central directory from the offset the EOCD records, rather
+        // than scanning the whole file for the signature — those four bytes can
+        // occur inside a compressed payload, and patching one would corrupt it.
+        func u16(_ at: Int) -> Int { Int(bytes[at]) | (Int(bytes[at + 1]) << 8) }
+        func u32(_ at: Int) -> Int {
+            (0..<4).reduce(0) { $0 | (Int(bytes[at + $1]) << (8 * $1)) }
+        }
+        let eocd = bytes.count - 22                    // our writer emits no comment
+        try #require(u32(eocd) == 0x0605_4B50)
+        var offset = u32(eocd + 16)
+        for _ in 0..<u16(eocd + 10) {
+            try #require(u32(offset) == 0x0201_4B50)
+            for b in 0..<4 {                           // field at central header + 24
+                bytes[offset + 24 + b] = UInt8(truncatingIfNeeded: value >> (8 * UInt32(b)))
+            }
+            offset += 46 + u16(offset + 28) + u16(offset + 30) + u16(offset + 32)
+        }
+        return Data(bytes)
+    }
+
+    @Test func anArchiveOverTheReadBudgetIsRefused() throws {
+        // 16 entries x 128 KB of zeros: 2 MB declared from a few kilobytes of
+        // archive. Each entry is well within its own declared size, so nothing
+        // per-entry can object — only the sum can.
+        let bomb = try amplifyingArchive(count: 16, each: 128 * 1024)
+        #expect(bomb.count < 128 * 1024, "fixture did not amplify: \(bomb.count) bytes on disk")
+
+        let declared = 16 * 128 * 1024
+        let generous = try ZipReader(data: bomb, limits: .init(totalUncompressedBytes: declared))
+        #expect(generous.declaredUncompressedSize == UInt64(declared))
+
+        // One byte under the declared total must refuse: the ceiling is
+        // inclusive, so this pins the boundary rather than just "some big number
+        // is rejected".
+        #expect(throws: RostrumError.self) {
+            _ = try ZipReader(data: bomb, limits: .init(totalUncompressedBytes: declared - 1))
+        }
+        // And the default is still unlimited — a large deck must keep opening.
+        let unbounded = try ZipReader(data: bomb)
+        #expect(unbounded.declaredUncompressedSize == UInt64(declared))
+    }
+
+    @Test func theBudgetIsCheckedBeforeAnythingIsInflated() throws {
+        // Corrupt every entry's payload, then read it two ways. Without a budget
+        // the failure must come from DEFLATE — proving the data really is
+        // unreadable. With a budget the SAME archive must fail earlier, at the
+        // declared total, without touching the streams.
+        var bomb = [UInt8](try amplifyingArchive(count: 8, each: 64 * 1024))
+        // Damage only the first entry's payload, at a byte the layout puts there
+        // for certain: 30-byte local header + an 18-byte name. Blanket-corrupting
+        // a range could reach the central directory and make the reader fail to
+        // construct, which would test the wrong thing.
+        let firstPayload = 30 + "ppt/media/pad0.bin".utf8.count
+        for i in firstPayload..<(firstPayload + 8) { bomb[i] ^= 0xFF }
+        let corrupt = Data(bomb)
+
+        let unlimited = try ZipReader(data: corrupt)
+        var inflateFailed = false
+        for name in unlimited.entryNames {
+            if (try? unlimited.data(forEntry: name)) == nil { inflateFailed = true }
+        }
+        #expect(inflateFailed, "fixture is not corrupt, so this proves nothing")
+
+        // The budget rejects at construction, where no entry has been decoded.
+        #expect(throws: RostrumError.self) {
+            _ = try ZipReader(data: corrupt, limits: .init(totalUncompressedBytes: 1024))
+        }
+    }
+
+    @Test func theDeclaredTotalCannotOverflowTheAccumulator() throws {
+        // Sizes come from the file. 0xFFFFFFFE is the largest an entry may
+        // declare (0xFFFFFFFF is the zip64 sentinel and is rejected), and enough
+        // entries declaring it pass what a 32-bit accumulator would hold — the
+        // arithmetic that bounds hostile input must not itself overflow.
+        let small = try amplifyingArchive(count: 8, each: 64)
+        let huge = try declaringUncompressedSize(0xFFFF_FFFE, in: small)
+
+        let reader = try ZipReader(data: huge)          // must not trap
+        #expect(reader.declaredUncompressedSize == 8 * UInt64(0xFFFF_FFFE))
+        #expect(reader.declaredUncompressedSize > UInt64(UInt32.max))
+
+        #expect(throws: RostrumError.self) {
+            _ = try ZipReader(data: huge, limits: .init(totalUncompressedBytes: 1 << 30))
+        }
+    }
+
+    @Test func aBudgetedPresentationOpensAnOrdinaryDeck() throws {
+        // The budget must not get in the way of a real deck: a normal
+        // presentation opens under a modest ceiling and reads back intact.
+        let bytes = try validDeckBytes()
+        let deck = try Presentation(data: bytes, limits: .init(totalUncompressedBytes: 64 << 20))
+        #expect(deck.slides.count == 2)
+        #expect(throws: RostrumError.self) {
+            _ = try Presentation(data: bytes, limits: .init(totalUncompressedBytes: 1))
+        }
+    }
 }

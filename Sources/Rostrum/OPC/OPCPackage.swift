@@ -83,8 +83,13 @@ public final class OPCPackage {
 
     // MARK: - Reading
 
-    public static func read(data: Data) throws -> OPCPackage {
-        let zip = try ZipReader(data: data)
+    /// Open a package.
+    ///
+    /// - Parameter limits: ceilings applied to the archive before anything is
+    ///   decompressed. Defaults to `.unlimited`; pass a budget when the bytes
+    ///   came from somewhere you do not control.
+    public static func read(data: Data, limits: ZipReader.Limits = .unlimited) throws -> OPCPackage {
+        let zip = try ZipReader(data: data, limits: limits)
 
         guard zip.contains(PackURI.contentTypes.memberName) else {
             throw RostrumError.packageInvalid("missing [Content_Types].xml — not an OPC package")

@@ -38,8 +38,13 @@ public final class Presentation {
     /// can add slides and save the result as a `.pptx` PowerPoint opens
     /// directly. The template's masters, layouts, theme, and fonts are carried
     /// through untouched.
-    public init(data: Data) throws {
-        package = try OPCPackage.read(data: data)
+    ///
+    /// - Parameter limits: ceilings applied to the archive before anything is
+    ///   decompressed — see `ZipReader.Limits`. Defaults to `.unlimited`, so
+    ///   genuinely large decks keep opening; pass a budget when the bytes came
+    ///   from somewhere you do not control.
+    public init(data: Data, limits: ZipReader.Limits = .unlimited) throws {
+        package = try OPCPackage.read(data: data, limits: limits)
         let main = try package.mainDocumentPart()
         switch main.contentType {
         case ContentType.presentationMain:
@@ -57,8 +62,8 @@ public final class Presentation {
         presentationPart = main
     }
 
-    public convenience init(contentsOf url: URL) throws {
-        try self.init(data: Data(contentsOf: url))
+    public convenience init(contentsOf url: URL, limits: ZipReader.Limits = .unlimited) throws {
+        try self.init(data: Data(contentsOf: url), limits: limits)
     }
 
     // MARK: - Properties
