@@ -90,12 +90,24 @@ import Testing
     }
 
     @Test func replaceDataPreservesFormattingAndFormulas() throws {
-        let deck = try deckWithChart()
-        let chart = try #require(deck.charts.first)
+        // Pass explicit colors: a default-written chart carries no a:srgbClr
+        // at all, so asserting colors survive would otherwise be vacuous.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addChart(
+            .barClustered,
+            data: ChartData(categories: ["Q1", "Q2", "Q3"],
+                            series: [.init(name: "Revenue", values: [10, 20, 30]),
+                                     .init(name: "Cost", values: [5, 8, 11])]),
+            frame: frame, colors: [Color("18A999"), Color("FF6B5E")],
+            options: ChartOptions(title: "Results"))
+        let reopened = try Presentation(data: try deck.serializedData())
+        let chart = try #require(reopened.charts.first)
         let before = try #require(try chart.part.dom())
         let formulasBefore = Self.formulas(in: before)
         let colorsBefore = Self.colors(in: before)
         #expect(!formulasBefore.isEmpty)
+        #expect(colorsBefore.contains("18A999") && colorsBefore.contains("FF6B5E"),
+                "fixture must actually carry series colors for this test to mean anything")
 
         try chart.replaceData(ChartData(categories: ["A", "B", "C"],
                                         series: [.init(name: "One", values: [1, 2, 3]),
@@ -175,7 +187,158 @@ import Testing
         }
     }
 
+    @Test func refusesWhenTheWorkbookLayoutIsForeign() throws {
+        // The blocker case: a template chart whose formulas name another
+        // sheet or range. Rewriting the workbook from Rostrum's canonical
+        // layout would leave Edit Data pointing at cells that do not exist,
+        // so the replacement must be refused before anything is written.
+        let deck = try deckWithChart()
+        let chart = try #require(deck.charts.first)
+        let dom = try #require(try chart.part.dom())
+        for f in Self.descendants(of: dom, named: "c:f") where f.textContent.contains("$A$") {
+            f.children = [.text("Data!$C$5:$C$7")]
+        }
+        chart.part.markDirty()
+        let before = XML.document(try chart.part.dom())
+
+        let fitting = ChartData(categories: ["A", "B", "C"],
+                                series: [.init(name: "One", values: [1, 2, 3]),
+                                         .init(name: "Two", values: [4, 5, 6])])
+        #expect(chart.replacementProblem(for: fitting)
+                == .workbookLayoutNotRecognized(formula: "Data!$C$5:$C$7"))
+        #expect(throws: Chart.ReplacementProblem.self) { try chart.replaceData(fitting) }
+        #expect(XML.document(try chart.part.dom()) == before)
+    }
+
+    @Test func refusesANumericCategoryAxis() throws {
+        // Writing category strings into a date/numeric axis's numeric cache
+        // corrupts the axis; refuse instead.
+        let deck = try deckWithChart()
+        let chart = try #require(deck.charts.first)
+        let dom = try #require(try chart.part.dom())
+        for cat in Self.descendants(of: dom, named: "c:cat") {
+            guard let ref = cat.firstChild(named: "c:strRef") else { continue }
+            let numRef = XML.Element("c:numRef")
+            for child in ref.childElements {
+                numRef.appendElement(child.name == "c:strCache"
+                                     ? Self.renamed(child, to: "c:numCache") : child)
+            }
+            cat.removeChildren(named: "c:strRef")
+            cat.appendElement(numRef)
+        }
+        chart.part.markDirty()
+
+        let replacement = ChartData(categories: ["A", "B", "C"],
+                                    series: [.init(name: "One", values: [1, 2, 3]),
+                                             .init(name: "Two", values: [4, 5, 6])])
+        #expect(chart.replacementProblem(for: replacement) == .categoryAxisIsNotText(index: 0))
+        #expect(throws: Chart.ReplacementProblem.self) { try chart.replaceData(replacement) }
+    }
+
+    @Test func refusesAMultiLevelCategoryAxis() throws {
+        let deck = try deckWithChart()
+        let chart = try #require(deck.charts.first)
+        let dom = try #require(try chart.part.dom())
+        for cat in Self.descendants(of: dom, named: "c:cat") {
+            cat.children = [.element(XML.Element("c:multiLvlStrRef"))]
+        }
+        chart.part.markDirty()
+        let replacement = ChartData(categories: ["A", "B", "C"],
+                                    series: [.init(name: "One", values: [1, 2, 3]),
+                                             .init(name: "Two", values: [4, 5, 6])])
+        // Categories read as empty, but the refusal names the real reason
+        // rather than a misleading count mismatch.
+        #expect(chart.replacementProblem(for: replacement) != nil)
+    }
+
+    @Test func comboChartsSeeEveryPlotGroup() throws {
+        // A plotArea may hold several plot groups; reading only the first
+        // reports half a chart and would let replaceData half-update it.
+        let deck = try deckWithChart()
+        let chart = try #require(deck.charts.first)
+        let dom = try #require(try chart.part.dom())
+        let plotArea = try #require(dom.firstChild(named: "c:chart")?.firstChild(named: "c:plotArea"))
+        let bar = try #require(plotArea.childElements.first { $0.name == "c:barChart" })
+        // Move the second series into a new lineChart group, as a combo does.
+        let secondSeries = bar.children(named: "c:ser")[1]
+        bar.removeChild(secondSeries)
+        let line = XML.Element("c:lineChart")
+        line.appendElement(secondSeries)
+        plotArea.insertChild(line, beforeAnyOf: ["c:catAx", "c:valAx"])
+        chart.part.markDirty()
+
+        #expect(chart.plotTypes == ["barChart", "lineChart"])
+        #expect(chart.isCombo)
+        #expect(chart.seriesElements.count == 2)
+        #expect(chart.series.map(\.name) == ["Revenue", "Cost"])
+        // And a fitting replacement updates BOTH groups.
+        try chart.replaceData(ChartData(categories: ["A", "B", "C"],
+                                        series: [.init(name: "One", values: [1, 2, 3]),
+                                                 .init(name: "Two", values: [4, 5, 6])]))
+        #expect(chart.series.map(\.name) == ["One", "Two"])
+        #expect(chart.series[1].values == [4, 5, 6])
+    }
+
+    @Test func literalSeriesNameReadsBack() throws {
+        // CT_SerTx is a choice: c:strRef OR a bare c:v.
+        let deck = try deckWithChart()
+        let chart = try #require(deck.charts.first)
+        let dom = try #require(try chart.part.dom())
+        let tx = try #require(Self.descendants(of: dom, named: "c:tx").first)
+        let v = XML.Element("c:v")
+        v.children = [.text("Literal name")]
+        tx.children = [.element(v)]
+        chart.part.markDirty()
+        #expect(chart.series.first?.name == "Literal name")
+        // And it is refused rather than silently skipped on write.
+        let replacement = ChartData(categories: ["A", "B", "C"],
+                                    series: [.init(name: "One", values: [1, 2, 3]),
+                                             .init(name: "Two", values: [4, 5, 6])])
+        #expect(chart.replacementProblem(for: replacement)
+                == .seriesNotWritable(index: 0, missing: "a writable cache in c:tx"))
+    }
+
+    @Test func cachesWithoutPtCountStillRead() throws {
+        let deck = try deckWithChart()
+        let chart = try #require(deck.charts.first)
+        let dom = try #require(try chart.part.dom())
+        for cache in Self.descendants(of: dom, named: "c:numCache") {
+            cache.removeChildren(named: "c:ptCount")
+        }
+        chart.part.markDirty()
+        // c:ptCount is optional; sizing falls back to the highest c:pt index.
+        #expect(chart.series[0].values == [10, 20, 30])
+    }
+
+    @Test func chartsInsideGroupsAreFound() throws {
+        let deck = try deckWithChart()
+        let slide = try deck.slides[0]
+        let tree = try #require(Slide.existingSpTree(of: slide.part))
+        let chartFrame = try #require(tree.childElements.first { $0.name == "p:graphicFrame" })
+        // Wrap the chart in a group, as a real deck often does.
+        tree.removeChild(chartFrame)
+        let group = XML.Element("p:grpSp")
+        let nv = XML.Element("p:nvGrpSpPr")
+        nv.appendElement(XML.Element("p:cNvPr", attributes: [("id", "99"), ("name", "Group")]))
+        nv.appendElement(XML.Element("p:cNvGrpSpPr"))
+        nv.appendElement(XML.Element("p:nvPr"))
+        group.appendElement(nv)
+        group.appendElement(XML.Element("p:grpSpPr"))
+        group.appendElement(chartFrame)
+        tree.appendElement(group)
+        slide.part.markDirty()
+
+        #expect(deck.charts.count == 1, "a chart nested in a group must still be found")
+        #expect(deck.charts.first?.categories == ["Q1", "Q2", "Q3"])
+    }
+
     // MARK: - Helpers
+
+    private static func renamed(_ element: XML.Element, to name: String) -> XML.Element {
+        let copy = XML.Element(name, attributes: element.attributes.map { ($0.name, $0.value) })
+        copy.children = element.children
+        return copy
+    }
 
     private static func descendants(of element: XML.Element, named name: String) -> [XML.Element] {
         var found: [XML.Element] = []

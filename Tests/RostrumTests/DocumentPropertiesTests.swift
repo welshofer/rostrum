@@ -130,6 +130,23 @@ import Testing
         #expect(reopened.documentProperties.customValue("Something") == .text("now"))
     }
 
+    @Test func setterCreatesAMissingDocPropsPart() throws {
+        // Both parts are optional in OPC and often absent from decks other
+        // tooling wrote; a setter that silently vanished there would be worse
+        // than useless.
+        let deck = try Presentation()
+        deck.package.removePart(at: PackURI("/docProps/app.xml"))
+        #expect(deck.package.parts[PackURI("/docProps/app.xml")] == nil)
+
+        deck.documentProperties.company = "Example Ltd"
+        #expect(deck.package.parts[PackURI("/docProps/app.xml")] != nil)
+        #expect(deck.package.rels.first(ofType: RelType.extendedProperties) != nil)
+
+        let reopened = try Presentation(data: try deck.serializedData())
+        #expect(reopened.documentProperties.company == "Example Ltd")
+        #expect(try reopened.validate().isEmpty)
+    }
+
     @Test func propertiesAreDeterministicAndReadsArePristine() throws {
         func build() throws -> Data {
             let deck = try Presentation()

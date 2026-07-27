@@ -37,7 +37,9 @@ import Testing
         #expect(stops.count == 2)
         #expect(stops.first?.color == Color("000000"))
         #expect(stops.last?.position == 1)
-        #expect(all[2].fill == ReadFill.none)
+        // `.noFill` (explicit) is deliberately distinct from nil (inherits) —
+        // and is named so it cannot be confused with `Optional.none`.
+        #expect(all[2].fill == .noFill)
     }
 
     @Test func shadowAndSlideBackgroundReadBack() throws {
@@ -122,13 +124,17 @@ import Testing
         try deck.slides.importAll(from: source)
 
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slideMasters.count >= 1)
+        // The point of the test: the merge produced a SECOND master, and the
+        // API sees past the first. (`allLayouts.count == sum of per-master
+        // counts` would be a tautology — it is defined that way.)
+        #expect(reopened.slideMasters.count == 2,
+                "importAll should bring the source's master with it")
         for master in reopened.slideMasters {
             #expect(!master.layouts.isEmpty, "a master exposed no layouts")
         }
-        #expect(reopened.allLayouts.count
-                == reopened.slideMasters.reduce(0) { $0 + $1.layouts.count })
-        #expect(reopened.allLayouts.count >= reopened.layouts.count)
+        #expect(reopened.allLayouts.count > reopened.layouts.count,
+                "allLayouts must span masters that `layouts` cannot see")
+        #expect(reopened.layouts.count == reopened.slideMasters[0].layouts.count)
         // Every slide still resolves its own layout and master.
         for slide in reopened.slides {
             #expect(slide.layout != nil)

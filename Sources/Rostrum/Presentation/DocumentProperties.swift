@@ -204,7 +204,10 @@ public final class DocumentProperties {
     /// The format id Office writes for user-defined properties.
     private static let customFormatID = "{D5CDD505-2E9C-101B-9397-08002B2CF9AE}"
 
-    /// The child order `CT_CoreProperties` requires (xsd:sequence).
+    /// A stable child order for the core properties. ECMA-376 declares
+    /// `CT_CoreProperties` with `xs:all`, so order is not *required* — but
+    /// emitting a fixed one keeps output deterministic and matches what
+    /// Office writes.
     private static let coreOrder = [
         "dc:title", "dc:subject", "dc:creator", "cp:keywords", "dc:description",
         "cp:lastModifiedBy", "cp:revision", "cp:lastPrinted",
@@ -220,7 +223,7 @@ public final class DocumentProperties {
     }
 
     private func setCore(_ name: String, _ value: String?, isDate: Bool = false) {
-        guard let part = package.parts[Self.coreURI],
+        guard let part = corePart(creatingIfNeeded: value != nil),
               let root = try? part.dom() else { return }
         root.removeChildren(named: name)
         if let value {
@@ -242,7 +245,7 @@ public final class DocumentProperties {
     }
 
     private func setExtended(_ name: String, _ value: String?) {
-        guard let part = package.parts[Self.appURI],
+        guard let part = appPart(creatingIfNeeded: value != nil),
               let root = try? part.dom() else { return }
         root.removeChildren(named: name)
         if let value {
@@ -252,6 +255,49 @@ public final class DocumentProperties {
         }
         part.markDirty()
     }
+
+    /// Both docProps parts are optional in OPC and routinely missing from
+    /// decks other tooling produced. Creating them on demand is what makes
+    /// `properties.company = "X"` mean something on such a deck instead of
+    /// silently vanishing.
+    private func corePart(creatingIfNeeded create: Bool) -> Part? {
+        if let existing = package.parts[Self.coreURI] { return existing }
+        guard create else { return nil }
+        let part = package.addPart(
+            uri: Self.coreURI,
+            contentType: ContentType.opcCoreProperties,
+            blob: Data("""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <cp:coreProperties \(Self.coreNamespaces)></cp:coreProperties>
+                """.utf8))
+        package.rels.add(type: RelType.coreProperties, target: "docProps/core.xml")
+        return part
+    }
+
+    private func appPart(creatingIfNeeded create: Bool) -> Part? {
+        if let existing = package.parts[Self.appURI] { return existing }
+        guard create else { return nil }
+        let part = package.addPart(
+            uri: Self.appURI,
+            contentType: ContentType.officeExtendedProperties,
+            blob: Data("""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Properties \(Self.appNamespaces)></Properties>
+                """.utf8))
+        package.rels.add(type: RelType.extendedProperties, target: "docProps/app.xml")
+        return part
+    }
+
+    private static let coreNamespaces =
+        "xmlns:cp=\"http://schemas.openxmlformats.org/package/2006/metadata/core-properties\""
+        + " xmlns:dc=\"http://purl.org/dc/elements/1.1/\""
+        + " xmlns:dcterms=\"http://purl.org/dc/terms/\""
+        + " xmlns:dcmitype=\"http://purl.org/dc/dcmitype/\""
+        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+
+    private static let appNamespaces =
+        "xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\""
+        + " xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\""
 
     /// The custom-properties part, created (with its content-type override
     /// and package relationship) only when a value is being written.

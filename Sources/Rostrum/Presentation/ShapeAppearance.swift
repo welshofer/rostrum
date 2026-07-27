@@ -6,7 +6,8 @@ import Foundation
 // restyle only the untouched shapes" impossible.
 
 /// A shape's fill, as read from the XML. Distinguishes "no fill element at
-/// all" (inherits from the theme or placeholder) from an explicit `a:noFill`.
+/// all" (inherits from the theme or placeholder, reported as `nil` by the
+/// accessors) from an explicit `a:noFill`.
 public enum ReadFill: Equatable, Sendable {
     /// `a:solidFill` with an sRGB color, and its alpha when one is set.
     case solid(Color, alpha: Double)
@@ -18,8 +19,14 @@ public enum ReadFill: Equatable, Sendable {
     case image(relationshipID: String?)
     /// `a:pattFill`, which Rostrum does not model further.
     case pattern
-    /// An explicit `a:noFill`.
-    case none
+    /// An explicit `a:noFill`. Named to avoid colliding with `Optional.none`,
+    /// since these accessors all return `ReadFill?` — where `nil` means
+    /// "inherits", the opposite of this case.
+    case noFill
+    /// An explicit fill Rostrum does not model — a solid `a:sysClr`,
+    /// `a:prstClr`, `a:scrgbClr` or `a:hslClr`, or a `a:grpFill`. Reported
+    /// distinctly so an authored fill is never mistaken for inheritance.
+    case unmodeled(elementName: String)
 
     init?(container: XML.Element) {
         if let solid = container.firstChild(named: "a:solidFill") {
@@ -31,7 +38,9 @@ public enum ReadFill: Equatable, Sendable {
                       let value = scheme[attribute: "val"] {
                 self = .themeScheme(value)
             } else {
-                return nil
+                // An authored fill in a color model we do not parse: still a
+                // fill, so never report it as inheritance.
+                self = .unmodeled(elementName: solid.childElements.first?.name ?? "a:solidFill")
             }
         } else if let gradient = container.firstChild(named: "a:gradFill") {
             let stops = (gradient.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? [])
@@ -50,7 +59,9 @@ public enum ReadFill: Equatable, Sendable {
         } else if container.firstChild(named: "a:pattFill") != nil {
             self = .pattern
         } else if container.firstChild(named: "a:noFill") != nil {
-            self = .none
+            self = .noFill
+        } else if container.firstChild(named: "a:grpFill") != nil {
+            self = .unmodeled(elementName: "a:grpFill")
         } else {
             return nil
         }
@@ -82,24 +93,36 @@ public struct ReadLine: Equatable, Sendable {
 }
 
 public extension Shape {
+    /// The properties element that carries this kind's fill/line/effects:
+    /// `p:spPr` for shapes, pictures and connectors, `p:grpSpPr` for a group.
+    /// Graphic frames have neither. A pure read — never creates anything.
+    private var appearanceProperties: XML.Element? {
+        switch element.name {
+        case "p:grpSp": return element.firstChild(named: "p:grpSpPr")
+        case "p:sp", "p:pic", "p:cxnSp": return element.firstChild(named: "p:spPr")
+        default: return nil
+        }
+    }
+
     /// The fill written on this shape, or nil when it carries none and
-    /// inherits (from its placeholder, the layout, or the theme).
+    /// inherits (from its placeholder, the layout, or the theme). An
+    /// explicitly authored fill Rostrum does not model reads as
+    /// `.unmodeled`, never as nil.
     ///
-    /// A pure read — unlike `setFill(_:)` it never creates a `p:spPr`, so
-    /// asking a graphic frame simply yields nil.
+    /// A pure read — unlike `setFill(_:)` it never creates a properties
+    /// element, so asking a graphic frame simply yields nil.
     var fill: ReadFill? {
-        element.firstChild(named: "p:spPr").flatMap(ReadFill.init(container:))
+        appearanceProperties.flatMap(ReadFill.init(container:))
     }
 
     /// The outline written on this shape, or nil when it carries none.
     var line: ReadLine? {
-        element.firstChild(named: "p:spPr")?
-            .firstChild(named: "a:ln").map(ReadLine.init(element:))
+        appearanceProperties?.firstChild(named: "a:ln").map(ReadLine.init(element:))
     }
 
     /// True when the shape carries an outer shadow effect.
     var hasShadow: Bool {
-        element.firstChild(named: "p:spPr")?
+        appearanceProperties?
             .firstChild(named: "a:effectLst")?.firstChild(named: "a:outerShdw") != nil
     }
 }

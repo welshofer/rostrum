@@ -62,7 +62,14 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   written* — `chart.replacementProblem(for:)` reports it without throwing.
   python-pptx's `replace_data` rewrites from a fresh model and is known to
   produce decks PowerPoint offers to repair on structure mismatch; this is
-  the deliberate opposite.
+  the deliberate opposite. Refusals cover more than counts: a series whose
+  values would be resized, a cache the write cannot target, a numeric or
+  date category axis (writing text into it corrupts the axis), a multi-level
+  category axis, and — the subtle one — a chart whose surviving `c:f`
+  formulas do not describe the layout Rostrum's embedded workbook uses, where
+  refreshing the workbook would leave Edit Data pointing at cells that no
+  longer exist. Combo charts (several plot groups in one plot area) are read
+  and updated as a whole, and charts nested inside groups are found.
 - **Appearance read-back** — `shape.fill`, `shape.line`, `shape.hasShadow`,
   `slide.background` and `cell.fill` report what a shape actually carries
   (`ReadFill`/`ReadLine`, covering solid + alpha, theme colors, gradients,
