@@ -171,13 +171,16 @@ box; this program makes Rostrum the first.
   any structural change before writing a byte. *Still open:* reading scatter/
   bubble XY data, and adding or removing series.
 
-Hardening backlog (schedule opportunistically): pristine round-trip for
-`.rels` parts and `[Content_Types].xml` (today both are parsed and
-deterministically re-serialized on save, so foreign byte layout normalizes —
-the one documented exception to the byte-identity rule); Zip64 (today >4 GB
-archives and >65k entries are `precondition` traps on the write path);
-`PackURI` precondition on malformed rel targets; quadratic hot spots on very
-large decks; `prune()`/orphan audit promised in ARCHITECTURE.md.
+- **M5 — No exceptions to the round-trip rule (shipped 2026-07-27).**
+  `.rels` parts and `[Content_Types].xml` keep their parsed bytes and rebuild
+  only when a relationship or content type actually changes, so the
+  byte-identity gate now covers every zip entry. This was the last documented
+  exception to the sacred invariant.
+
+Hardening backlog (schedule opportunistically): Zip64 (today >4 GB archives
+and >65k entries are `precondition` traps on the write path); `PackURI`
+precondition on malformed rel targets; quadratic hot spots on very large
+decks; `prune()`/orphan audit promised in ARCHITECTURE.md.
 
 ## Standing quality gates
 

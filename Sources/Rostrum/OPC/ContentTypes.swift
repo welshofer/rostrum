@@ -4,9 +4,20 @@ import Foundation
 /// via extension-based `Default` rules and part-specific `Override` rules.
 public struct ContentTypesMap {
     /// Extension (lowercased, no dot) → content type.
-    public private(set) var defaults: [String: String]
+    public private(set) var defaults: [String: String] {
+        didSet { isDirty = true }
+    }
     /// Part URI → content type. Wins over any Default.
-    public private(set) var overrides: [PackURI: String]
+    public private(set) var overrides: [PackURI: String] {
+        didSet { isDirty = true }
+    }
+
+    /// The bytes this map was parsed from, kept so an untouched package
+    /// re-emits its content-types stream verbatim. Rebuilding sorts Defaults
+    /// and Overrides, while Office writes Overrides in document order — so a
+    /// foreign package's stream would otherwise change on every save.
+    private var pristine: Data?
+    private var isDirty = false
 
     static let namespace = "http://schemas.openxmlformats.org/package/2006/content-types"
 
@@ -17,17 +28,21 @@ public struct ContentTypesMap {
             "xml": "application/xml",
         ]
         overrides = [:]
+        isDirty = false
     }
 
     public mutating func setDefault(extension ext: String, contentType: String) {
+        guard defaults[ext.lowercased()] != contentType else { return }
         defaults[ext.lowercased()] = contentType
     }
 
     public mutating func setOverride(partName: PackURI, contentType: String) {
+        guard overrides[partName] != contentType else { return }
         overrides[partName] = contentType
     }
 
     public mutating func removeOverride(partName: PackURI) {
+        guard overrides[partName] != nil else { return }
         overrides[partName] = nil
     }
 
@@ -60,12 +75,20 @@ public struct ContentTypesMap {
                 continue
             }
         }
+        map.pristine = data
+        map.isDirty = false
         return map
     }
 
-    /// Deterministic serialization: Defaults sorted by extension, then
-    /// Overrides sorted by part name.
+    /// The original bytes when nothing was added, changed or removed;
+    /// otherwise a deterministic rebuild (Defaults sorted by extension, then
+    /// Overrides sorted by part name).
     public func serialized() -> Data {
+        if !isDirty, let pristine { return pristine }
+        return rebuilt()
+    }
+
+    private func rebuilt() -> Data {
         let root = XML.Element("Types", attributes: [("xmlns", Self.namespace)])
         for (ext, ct) in defaults.sorted(by: { $0.key < $1.key }) {
             root.appendElement(XML.Element("Default", attributes: [("Extension", ext), ("ContentType", ct)]))

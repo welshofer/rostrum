@@ -20,10 +20,8 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   character-count guess.
 - Real-deck corpus gate: foreign-authored `.pptx` fixtures dropped into
   `Tests/RostrumTests/Fixtures/RealDecks/` automatically enroll in
-  byte-identity (zip-entry level, content parts; `.rels` and
-  `[Content_Types].xml` are deterministically re-serialized and exempt —
-  see ARCHITECTURE.md), determinism, and no-trap tests
-  (`RealDeckCorpusTests`).
+  byte-identity (every zip entry, no exemptions), determinism, and no-trap
+  tests (`RealDeckCorpusTests`).
 - The python-pptx oracle now runs in CI on macOS and Linux
   (`PythonPptxOracleTests`): representative Rostrum-written decks must open
   in python-pptx on every push.
@@ -122,7 +120,14 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Fixed
 
-- **Reading a shape no longer mutates the document.** `Shape.frame` and
+- **The round-trip rule has no exceptions any more.** `.rels` parts and
+  `[Content_Types].xml` were parsed into models and rebuilt on every save, so
+  a deck authored elsewhere had those streams normalized — different
+  attribute order, indentation and (for content types) element order — even
+  when nothing changed. Both now keep their original bytes and rebuild only
+  when a relationship or content type actually changes, so opening and saving
+  a foreign deck is byte-identical across **every** zip entry. The real-deck
+  corpus gate no longer exempts them. `Shape.frame` and
   `rotation` reached for `p:spPr` through a get-or-create accessor — in a
   *getter* — so merely reading the frame of a chart, table or SmartArt shape
   appended a schema-invalid `<p:spPr/>` to its `p:graphicFrame`, which

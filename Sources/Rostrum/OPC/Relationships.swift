@@ -17,12 +17,23 @@ public struct Relationship: Sendable, Equatable {
 /// Reference semantics on purpose: a part and the package hold onto the same
 /// live collection while the object model mutates it.
 public final class Relationships {
-    public private(set) var items: [Relationship]
+    public private(set) var items: [Relationship] {
+        didSet { isDirty = true }
+    }
+
+    /// The bytes this collection was parsed from, kept so an untouched
+    /// `.rels` part re-emits verbatim — the same pristine-blob guarantee
+    /// `Part` gives content parts. Relationship parts are parts too, and a
+    /// foreign package writes them with its own attribute order, spacing and
+    /// declaration.
+    private var pristine: Data?
+    private var isDirty = false
 
     static let namespace = "http://schemas.openxmlformats.org/package/2006/relationships"
 
     public init() {
         items = []
+        isDirty = false
     }
 
     public var isEmpty: Bool { items.isEmpty }
@@ -81,11 +92,20 @@ public final class Relationships {
             let external = child[attribute: "TargetMode"] == "External"
             rels.items.append(Relationship(rId: rId, type: type, target: target, isExternal: external))
         }
+        rels.pristine = data
+        rels.isDirty = false
         return rels
     }
 
-    /// Serialized in insertion order (stable, and matches how Office writes them).
+    /// The original bytes when nothing was added or removed; otherwise
+    /// serialized in insertion order (stable, and matches how Office writes
+    /// them).
     public func serialized() -> Data {
+        if !isDirty, let pristine { return pristine }
+        return rebuilt()
+    }
+
+    private func rebuilt() -> Data {
         let root = XML.Element("Relationships", attributes: [("xmlns", Self.namespace)])
         for rel in items {
             var attrs = [("Id", rel.rId), ("Type", rel.type), ("Target", rel.target)]
