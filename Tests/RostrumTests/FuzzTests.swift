@@ -401,9 +401,15 @@ import Testing
         let cdSize = u32(good, eocd + 12)
         let record = cdOffset + cdSize                    // where the scan expects it
 
-        // (a) A count larger than the directory can physically hold.
+        // (a) A count larger than the directory can physically hold. BOTH
+        // count fields have to be forged: raising only the total makes it
+        // disagree with entries-on-disk, which trips that check first and
+        // never reaches the bound this case is aiming at.
         var inflatedCount = good
-        for b in 0..<8 { inflatedCount[record + 32 + b] = 0xFF }
+        for b in 0..<8 {
+            inflatedCount[record + 24 + b] = 0xFF        // entries on this disk
+            inflatedCount[record + 32 + b] = 0xFF        // total entries
+        }
         expectError("an impossible zip64 count", isContentFailure) {
             _ = try ZipReader(data: Data(inflatedCount))
         }

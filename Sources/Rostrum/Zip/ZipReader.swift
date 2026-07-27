@@ -251,9 +251,15 @@ public struct ZipReader {
             // trapping conversion — bound it before narrowing.
             let onDisk = Self.u64(bytes, zip64EOCD + 24)
             let count = Self.u64(bytes, zip64EOCD + 32)
-            // The classic EOCD's own consistency check, which had no twin here.
+            // The classic EOCD's own consistency check, which had no twin
+            // here. Its own message, not the classic one's: a zip64 record
+            // whose two counts disagree is not usefully described as
+            // "multi-disk", and a caller reading the error should be pointed at
+            // the record that actually contradicted itself.
             guard onDisk == count else {
-                throw RostrumError.zipUnsupported("multi-disk archive")
+                throw RostrumError.zipUnsupported(
+                    "zip64 record disagrees with itself: \(onDisk) entries on this disk "
+                        + "but \(count) in total")
             }
             // The count bounds an allocation and a loop, and it came from the
             // file. One central-directory record is at least 46 bytes, so a
