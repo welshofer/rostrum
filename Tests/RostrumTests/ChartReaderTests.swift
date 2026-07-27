@@ -283,8 +283,9 @@ import Testing
         // CT_SerTx is a choice: c:strRef OR a bare c:v.
         let deck = try deckWithChart()
         let chart = try #require(deck.charts.first)
-        let dom = try #require(try chart.part.dom())
-        let tx = try #require(Self.descendants(of: dom, named: "c:tx").first)
+        // The SERIES' c:tx specifically — the chart title has one too, and it
+        // comes first in document order.
+        let tx = try #require(chart.seriesElements.first?.firstChild(named: "c:tx"))
         let v = XML.Element("c:v")
         v.children = [.text("Literal name")]
         tx.children = [.element(v)]
