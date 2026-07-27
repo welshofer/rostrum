@@ -94,7 +94,11 @@ struct SVGRenderer {
             let text = runs.compactMap { $0.firstChild(named: "a:t")?.textContent }.joined()
             guard !text.isEmpty else { cursorY += emuPerPoint * 18; continue }
             let rPr = runs.first?.firstChild(named: "a:rPr")
-            let sizeEMU = (rPr?[attribute: "sz"].flatMap { Int($0) } ?? 1800) * emuPerPoint / 100
+            // ST_TextFontSize is 1pt–4000pt in hundredths. The file can say
+            // anything, and `sz * 12700` on a large Int is an overflow crash.
+            let sizeHundredths = min(max(rPr?[attribute: "sz"].flatMap { Int($0) } ?? 1800, 100),
+                                     400_000)
+            let sizeEMU = sizeHundredths * emuPerPoint / 100
             let bold = rPr?[attribute: "b"] == "1"
             let color = rPr.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) } ?? "#1A1A1A"
             let align = p.firstChild(named: "a:pPr")?[attribute: "algn"] ?? "l"

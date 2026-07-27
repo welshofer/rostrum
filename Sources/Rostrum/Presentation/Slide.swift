@@ -68,10 +68,21 @@ public final class Slide {
         var stack: [XML.Element] = [try part.dom()]
         while let element = stack.popLast() {
             if element.name == "p:cNvPr", let id = element[attribute: "id"].flatMap({ Int($0) }) {
-                maxID = Swift.max(maxID, id)
+                // ST_DrawingElementId is an unsigned 32-bit int. A foreign deck
+                // can claim any Int, and `maxID + 1` on Int.max is a crash.
+                maxID = Swift.max(maxID, min(id, Self.maxShapeID))
             }
             stack.append(contentsOf: element.childElements)
         }
+        guard maxID < Self.maxShapeID else {
+            throw RostrumError.packageInvalid(
+                "shape ids on this slide reach the format's maximum (\(Self.maxShapeID)); "
+                    + "there is no id left to assign")
+        }
         return maxID + 1
     }
+
+    /// The largest `p:cNvPr@id` the format allows (`ST_DrawingElementId` is an
+    /// `xsd:unsignedInt`).
+    static let maxShapeID = Int(UInt32.max)
 }

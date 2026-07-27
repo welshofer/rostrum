@@ -72,6 +72,124 @@ import Testing
         _ = try? OPCPackage.read(data: bad)
     }
 
+    @Test func aBadColorValueReadsAsNoColorRatherThanAborting() throws {
+        // Third-party writers really do emit 3-digit shorthand, 8-digit ARGB
+        // and bare names. Color's initializer preconditions on six hex digits,
+        // so every read-side accessor that parsed a:srgbClr@val straight from
+        // the file used to abort the process.
+        let box = Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1))
+        for value in ["red", "", "FFF", "80FF0000", "ff0000 ", "GGGGGG"] {
+            let deck = try Presentation()
+            try deck.slides[0].shapes.addShape(.rect, frame: box, fill: .solid(Color("FF0000")))
+            let dom = try deck.slides[0].part.dom()
+            for srgb in Self.descendants(of: dom, named: "a:srgbClr") {
+                srgb[attribute: "val"] = value
+            }
+            deck.slides[0].part.markDirty()
+            // The theme is read the same way and traps on the same values.
+            let theme = try deck.theme.part.dom()
+            for srgb in Self.descendants(of: theme, named: "a:srgbClr") {
+                srgb[attribute: "val"] = value
+            }
+            deck.theme.part.markDirty()
+
+            let reopened = try Presentation(data: try deck.serializedData())
+            let read = try #require(reopened.slides[0].shapes.all.first)
+            // Each of these used to abort the process; returning at all is the
+            // assertion, and a malformed value must read as "no color".
+            // An unreadable color is still a fill — reporting "no fill" would
+            // claim the shape inherits, which it does not.
+            #expect(read.fill == .unmodeled(elementName: "a:srgbClr"))
+            _ = read.line
+            _ = reopened.slides[0].background
+            #expect(reopened.theme.color(.accent1) == nil)
+        }
+    }
+
+    /// Every descendant element with the given name, in document order.
+    private static func descendants(of element: XML.Element, named name: String) -> [XML.Element] {
+        var out: [XML.Element] = []
+        if element.name == name { out.append(element) }
+        for child in element.childElements { out += descendants(of: child, named: name) }
+        return out
+    }
+
+    @Test func aHostilePointIndexDoesNotOverflow() throws {
+        // `<c:pt idx="9223372036854775807"/>` parses as a valid Int, and the
+        // cache sizing then computed idx + 1.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addChart(
+            .barClustered, data: ChartData(categories: ["A"], name: "S", values: [1]),
+            frame: Rect(x: .zero, y: .zero, width: .inches(4), height: .inches(3)))
+        let chart = try #require(deck.charts.first)
+        let dom = try chart.part.dom()
+        let caches = Self.descendants(of: dom, named: "c:numCache")
+            + Self.descendants(of: dom, named: "c:strCache")
+        for cache in caches {
+            cache.removeChildren(named: "c:ptCount")
+            for pt in cache.children(named: "c:pt") {
+                pt[attribute: "idx"] = String(Int.max)
+            }
+        }
+        chart.part.markDirty()
+        // Reading must return something (possibly empty), never trap.
+        _ = chart.series
+        _ = chart.categories
+        _ = chart.data
+    }
+
+    @Test func aShapeIDAtTheFormatsCeilingThrowsRatherThanOverflowing() throws {
+        // maxID + 1 on Int.max is a crash; a deck can claim any id.
+        let deck = try Presentation()
+        let spTree = try Slide.spTree(of: deck.slides[0].part)
+        let sp = XML.Element("p:sp")
+        let nv = XML.Element("p:nvSpPr")
+        nv.appendElement(XML.Element("p:cNvPr", attributes: [
+            ("id", String(Int.max)), ("name", "Hostile"),
+        ]))
+        sp.appendElement(nv)
+        spTree.appendElement(sp)
+        deck.slides[0].part.markDirty()
+
+        #expect(throws: RostrumError.self) {
+            _ = try deck.slides[0].shapes.addShape(
+                .rect, frame: Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1)),
+                fill: .solid(Color("FF0000")))
+        }
+    }
+
+    @Test func anAbsurdGroupChildSpaceDoesNotOverflow() throws {
+        // Group child-space mapping subtracted and scaled raw Ints from the
+        // file, then forced the result back through Int(_: Double).
+        let slide = """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" \
+            xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">\
+            <p:cSld><p:spTree>\
+            <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>\
+            <p:grpSpPr/>\
+            <p:grpSp>\
+            <p:nvGrpSpPr><p:cNvPr id="2" name="G"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>\
+            <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="9223372036854775807" cy="1"/>\
+            <a:chOff x="-9223372036854775808" y="0"/><a:chExt cx="1" cy="1"/></a:xfrm></p:grpSpPr>\
+            <p:sp><p:nvSpPr><p:cNvPr id="3" name="S"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>\
+            <p:spPr><a:xfrm flipH="1" flipV="1">\
+            <a:off x="9223372036854775807" y="9223372036854775807"/>\
+            <a:ext cx="9223372036854775807" cy="9223372036854775807"/></a:xfrm></p:spPr>\
+            <p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>\
+            </p:grpSp></p:spTree></p:cSld></p:sld>
+            """
+        let deck = try Presentation()
+        deck.slides[0].part.replaceBlob(Data(slide.utf8))
+        let group = try #require(deck.slides[0].shapes.all.first as? GroupShape)
+        // Every one of these used to be an overflow or an out-of-range
+        // Int(Double) conversion.
+        for child in group.shapes {
+            _ = group.convertToParentSpace(child.frame)
+            _ = child.explicitFrame
+        }
+    }
+
     @Test func truncatedValidDeckThrowsNotCrash() throws {
         let valid = try validDeckBytes()
         // Truncating a real deck at many lengths must throw a Rostrum error, not trap.

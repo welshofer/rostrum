@@ -94,6 +94,10 @@ public final class Chart {
         let series = self.series
         let categories = self.categories
         guard !categories.isEmpty, !series.isEmpty,
+              // ChartData's own bound is a precondition — a programmer check.
+              // A file can declare any number of c:ser, so honour the bound
+              // here rather than trapping inside the initializer.
+              series.count <= 255,
               series.allSatisfy({ $0.values.count == categories.count }) else { return nil }
         return ChartData(categories: categories, series: series)
     }
@@ -324,14 +328,20 @@ public final class Chart {
         return points(in: cache).map { $0.flatMap(Double.init) }
     }
 
+    /// The largest cache Rostrum will materialize from a file's own declared
+    /// size. A hostile deck can claim any point count in a few bytes.
+    private static let limit = 1_000_000
+
     /// `c:pt` values by index, sized to `c:ptCount` — or, when that optional
     /// element is absent, to the highest index actually present.
     private static func points(in cache: XML.Element) -> [String?] {
         let points = cache.children(named: "c:pt")
         let declared = cache.firstChild(named: "c:ptCount")?[attribute: "val"].flatMap { Int($0) }
         let highest = points.compactMap { $0[attribute: "idx"].flatMap { Int($0) } }.max()
-        let count = declared ?? highest.map { $0 + 1 } ?? 0
-        guard count > 0, count <= 1_000_000 else { return [] }
+        // Bound BEFORE the +1: `<c:pt idx="9223372036854775807"/>` parses fine
+        // and then overflows, and an overflow is a crash, not an error.
+        let count = declared ?? highest.map { $0 < limit ? $0 + 1 : 0 } ?? 0
+        guard count > 0, count <= limit else { return [] }
         var values = [String?](repeating: nil, count: count)
         for point in points {
             guard let index = point[attribute: "idx"].flatMap({ Int($0) }),

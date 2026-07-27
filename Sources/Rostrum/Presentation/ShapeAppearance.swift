@@ -30,10 +30,11 @@ public enum ReadFill: Equatable, Sendable {
 
     init?(container: XML.Element) {
         if let solid = container.firstChild(named: "a:solidFill") {
-            if let srgb = solid.firstChild(named: "a:srgbClr"), let hex = srgb[attribute: "val"] {
+            if let srgb = solid.firstChild(named: "a:srgbClr"),
+               let hex = srgb[attribute: "val"], let color = Color(validating: hex) {
                 let alpha = srgb.firstChild(named: "a:alpha")?[attribute: "val"]
                     .flatMap { Int($0) }.map { Double($0) / 100_000 } ?? 1
-                self = .solid(Color(hex), alpha: alpha)
+                self = .solid(color, alpha: alpha)
             } else if let scheme = solid.firstChild(named: "a:schemeClr"),
                       let value = scheme[attribute: "val"] {
                 self = .themeScheme(value)
@@ -46,12 +47,13 @@ public enum ReadFill: Equatable, Sendable {
             let stops = (gradient.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? [])
                 .compactMap { gs -> GradientStop? in
                     guard let srgb = gs.firstChild(named: "a:srgbClr"),
-                          let hex = srgb[attribute: "val"] else { return nil }
+                          let hex = srgb[attribute: "val"],
+                          let color = Color(validating: hex) else { return nil }
                     let position = gs[attribute: "pos"].flatMap { Int($0) }
                         .map { Double($0) / 100_000 } ?? 0
                     let alpha = srgb.firstChild(named: "a:alpha")?[attribute: "val"]
                         .flatMap { Int($0) }.map { Double($0) / 100_000 } ?? 1
-                    return GradientStop(position: position, color: Color(hex), alpha: alpha)
+                    return GradientStop(position: position, color: color, alpha: alpha)
                 }
             self = .gradient(stops)
         } else if let blip = container.firstChild(named: "a:blipFill") {

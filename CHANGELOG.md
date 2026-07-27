@@ -190,6 +190,22 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Fixed
 
+- **Reading a hostile deck no longer aborts the host process.** A Swift
+  `precondition` or an integer overflow is a crash a caller cannot catch, and a
+  `.pptx` arrives from users, email and the web. An audit of the read path
+  found and fixed six reachable traps: an `<Override>` `PartName` without a
+  leading slash (`PackURI` gains `init?(parsing:)`); an `a:srgbClr@val` that is
+  not six hex digits — three-digit shorthand, eight-digit ARGB and bare names
+  like `red` all appear in third-party files — reached through `shape.fill`,
+  `shape.line`, `slide.background`, `cell.fill`, `run.color` and
+  `theme.color(_:)` (`Color` gains `init?(validating:)`); a `c:pt@idx` of
+  `Int.max`, whose cache sizing computed `idx + 1`; a chart with more than 255
+  `c:ser`, which tripped `ChartData`'s programmer-facing bound; a `p:cNvPr@id`
+  at `Int.max`, which made `nextShapeID` overflow on every shape-adding call;
+  and group child-space coordinates, which were subtracted and scaled as `Int`
+  and then forced back through `Int(_: Double)`. Four further traps from the
+  same audit are recorded as open in ROADMAP.md rather than half-fixed — each
+  needs an API decision, not a patch.
 - **`ChartKind` is `CaseIterable`**, and the tests that walk every kind now
   use `allCases` — a newly added kind can no longer silently skip the
   schema-order and read-back gates.

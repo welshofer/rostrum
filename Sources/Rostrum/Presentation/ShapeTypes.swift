@@ -146,22 +146,36 @@ public final class GroupShape: Shape {
         guard let child = childSpace, let outer = explicitFrame,
               child.width.rawValue != 0, child.height.rawValue != 0 else { return rect }
 
+        // Every coordinate here came out of a file, where `a:off x="…"` can be
+        // any Int. The arithmetic therefore runs in Double — Int addition and
+        // subtraction TRAP on overflow, and so does Int(someDouble) when the
+        // double is out of range or not finite.
         let xfrm = ShapeTransform.element(of: element)
-        var localX = rect.x.rawValue
-        var localY = rect.y.rawValue
+        var localX = Double(rect.x.rawValue)
+        var localY = Double(rect.y.rawValue)
         if xfrm?[attribute: "flipH"] == "1" {
-            localX = 2 * child.x.rawValue + child.width.rawValue - (localX + rect.width.rawValue)
+            localX = 2 * Double(child.x.rawValue) + Double(child.width.rawValue)
+                - (localX + Double(rect.width.rawValue))
         }
         if xfrm?[attribute: "flipV"] == "1" {
-            localY = 2 * child.y.rawValue + child.height.rawValue - (localY + rect.height.rawValue)
+            localY = 2 * Double(child.y.rawValue) + Double(child.height.rawValue)
+                - (localY + Double(rect.height.rawValue))
         }
 
         let scaleX = Double(outer.width.rawValue) / Double(child.width.rawValue)
         let scaleY = Double(outer.height.rawValue) / Double(child.height.rawValue)
         return Rect(
-            x: EMU(outer.x.rawValue + Int((Double(localX - child.x.rawValue) * scaleX).rounded())),
-            y: EMU(outer.y.rawValue + Int((Double(localY - child.y.rawValue) * scaleY).rounded())),
-            width: EMU(Int((Double(rect.width.rawValue) * scaleX).rounded())),
-            height: EMU(Int((Double(rect.height.rawValue) * scaleY).rounded())))
+            x: Self.emu(Double(outer.x.rawValue) + (localX - Double(child.x.rawValue)) * scaleX),
+            y: Self.emu(Double(outer.y.rawValue) + (localY - Double(child.y.rawValue)) * scaleY),
+            width: Self.emu(Double(rect.width.rawValue) * scaleX),
+            height: Self.emu(Double(rect.height.rawValue) * scaleY))
+    }
+
+    /// Round to an EMU, clamping instead of trapping. A group whose declared
+    /// child space is absurd produces an absurd frame — which the caller can
+    /// see and reject — rather than killing the process.
+    private static func emu(_ value: Double) -> EMU {
+        guard value.isFinite else { return EMU(0) }
+        return EMU(Int(min(max(value.rounded(), -9e18), 9e18)))
     }
 }

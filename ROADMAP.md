@@ -212,10 +212,33 @@ box; this program makes Rostrum the first.
   byte-identity gate now covers every zip entry. This was the last documented
   exception to the sacred invariant.
 
-Hardening backlog (schedule opportunistically): Zip64 (today >4 GB archives
-and >65k entries are `precondition` traps on the write path); `PackURI`
-precondition on malformed rel targets; quadratic hot spots on very large
-decks; `prune()`/orphan audit promised in ARCHITECTURE.md.
+Hardening backlog (schedule opportunistically):
+
+- ~~`PackURI` precondition on a file-supplied part name~~ ✅ 2026-07-27, along
+  with a wider audit of the same class: file-supplied colors, chart point
+  indices, shape ids, group child-space coordinates and SVG font sizes all
+  reached a `precondition` or an overflow on the read path. A trap is a crash
+  the caller cannot catch, and a `.pptx` is untrusted input.
+- **Still open from that audit**, each deliberately deferred rather than
+  half-fixed:
+  - `Table.cell(_:_:)` preconditions on the index, so the natural idiom
+    (`for c in 0..<table.columnCount`) aborts on a **ragged** foreign table —
+    one whose `a:tblGrid` declares more columns than a row has `a:tc`.
+    Fixing it properly means deciding whether `cell` returns an optional
+    (source-breaking) or whether `columnCount` should report what is actually
+    indexable; that is an API decision, not a patch.
+  - `deck.addSection` preconditions when a foreign deck's existing sections
+    resolve to duplicate start slides — an authoring call reached through
+    file content.
+  - `ZipWriter.addFile` preconditions when a re-encoded entry name exceeds the
+    0xFFFF name field. `addFile` is non-throwing, so this needs a signature
+    change or a documented drop.
+  - `Inflate` bounds each entry by the archive's own declared size, so a zip
+    bomb still amplifies across many entries; an aggregate cap is the fix.
+- Zip64: today >4 GB archives and >65k entries are `precondition` traps on the
+  write path.
+- Quadratic hot spots on very large decks; `prune()`/orphan audit promised in
+  ARCHITECTURE.md.
 
 ## Standing quality gates
 
