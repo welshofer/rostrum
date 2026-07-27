@@ -242,11 +242,27 @@ Hardening backlog (schedule opportunistically):
   large keep opening.
 
   The budget is enforced **up front, from the central directory**, not
-  accumulated as entries decode. Since each entry is already bounded by its own
-  declared size, the sum of the declared sizes *is* the ceiling on what a full
-  read can produce — and the archive states all of them before a byte is
+  accumulated as entries decode. Since each entry is bounded by its own declared
+  size, the sum over the entries a name *resolves to* is the ceiling on what a
+  full read can produce — and the archive states all of them before a byte is
   inflated. So an over-budget archive costs no decompression at all, and the
-  verdict cannot depend on which entries a caller reads or in what order. It
+  verdict cannot depend on which entries a caller reads or in what order.
+
+  "Resolves to" is load-bearing, and the first cut got it wrong: an adversarial
+  review found that the sum counted central-directory *records* while the work
+  is driven by entry *names*, which are last-wins. 65535 records sharing one
+  name — shadows need no local header and no payload, so they cost a 46-byte
+  record each and declare zero — bought 65534 full inflations of the surviving
+  entry inside a budget that had charged for one. `entryNames` now yields each
+  distinct name once and the sum covers exactly that set, so the unit of
+  accounting and the unit of work are the same. The same review closed a second
+  route to the same end: `PackURI` identity is the raw string while
+  `baseURI`/`filename` split on `/` discarding empties, so `ppt//slides/s.xml`
+  and `ppt/slides/s.xml` were distinct parts sharing one `.rels` — decoded once
+  per alias. Part names with empty segments are rejected (OPC M1.1).
+
+  It bounds *decoded output*, not peak memory (a read holds the archive bytes,
+  the compressed slice, and briefly two copies of the current entry), and it
   bounds *declared* size, which is the conservative direction: the alternative
   is doing the work to find out.
 - Zip64 **write** support. Archives over 4 GB, over 65535 entries, or with a

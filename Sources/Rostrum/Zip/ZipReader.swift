@@ -44,12 +44,22 @@ public struct ZipReader {
     /// The default is `.unlimited`, so decks that are simply large keep opening.
     /// Set a budget when reading files from somewhere you do not control.
     public struct Limits: Sendable, Equatable {
-        /// Maximum total uncompressed bytes the archive may declare across every
-        /// entry. `nil` means no ceiling.
-        public var totalUncompressedBytes: Int?
+        /// Maximum total uncompressed bytes the archive may declare across the
+        /// entries a name resolves to. `nil` means no ceiling. Never negative:
+        /// a negative ceiling is clamped to zero on the way in, so the number
+        /// enforced is always the number a rejection reports.
+        ///
+        /// Zero admits only an archive that declares nothing, which is exactly
+        /// what it can produce.
+        public var totalUncompressedBytes: Int? {
+            didSet { totalUncompressedBytes = totalUncompressedBytes.map { Swift.max(0, $0) } }
+        }
 
         public init(totalUncompressedBytes: Int? = nil) {
-            self.totalUncompressedBytes = totalUncompressedBytes
+            // A budget computed as `available - alreadyUsed` can go negative;
+            // clamping here keeps the comparison and the error message from
+            // disagreeing about which number is in force.
+            self.totalUncompressedBytes = totalUncompressedBytes.map { Swift.max(0, $0) }
         }
 
         /// No ceiling — the default, and the behaviour before limits existed.
@@ -76,6 +86,10 @@ public struct ZipReader {
     private let entryFlags: [UInt16]
     /// Entry index by name; for duplicate names the last one wins.
     private let indexByName: [String: Int]
+    /// Indices of the entries a name resolves to, ascending. Every entry that
+    /// is not in here is shadowed by a later one with the same name and can
+    /// never be decoded, so it costs nothing and is charged nothing.
+    private let reachable: [Int]
 
     /// Total uncompressed bytes the central directory declares across every
     /// entry. This is the ceiling on what decoding the whole archive can
@@ -190,18 +204,29 @@ public struct ZipReader {
             offset += 46 + nameLength + extraLength + commentLength
         }
 
-        // Accumulate in UInt64 rather than Int: 65535 entries (the EOCD count
-        // field is 16-bit) each declaring just under 4 GB is ~2.8e14, which no
-        // 32-bit Int would hold. The declared sizes come from a file somebody
-        // else wrote, so the arithmetic that bounds them must not itself
-        // overflow.
-        let declared = entries.reduce(UInt64(0)) { $0 + UInt64($1.uncompressedSize) }
-        if let ceiling = limits.totalUncompressedBytes, declared > UInt64(max(0, ceiling)) {
-            throw RostrumError.zipUnsupported(
-                "the archive declares \(declared) uncompressed bytes across \(entries.count) "
-                    + "entries, over the \(ceiling)-byte read budget")
+        // Sum over the entries a name RESOLVES to, not over every record.
+        // Duplicate names are last-wins, so a shadowed record can never be
+        // decoded: charging for it would reject archives that cost nothing,
+        // and — more to the point — the sum has to describe the same set the
+        // caller will iterate, or the budget bounds the wrong thing.
+        //
+        // UInt64 because that is the natural width for a sum of 32-bit zip size
+        // fields: it cannot overflow for any archive the format can express
+        // (65535 records x just under 4 GB is ~2.8e14), so there is no width
+        // question to reason about at the call site. Rostrum's platforms are
+        // all 64-bit, where a plain Int would also hold it — this is about not
+        // having to make that argument, not about rescuing a 32-bit build.
+        let reachable = indexByName.values.sorted()
+        let declared = reachable.reduce(UInt64(0)) { $0 + UInt64(entries[$1].uncompressedSize) }
+        if let ceiling = limits.totalUncompressedBytes {
+            // `Limits.init` clamps a negative ceiling to zero, so the number
+            // compared is the number reported.
+            if declared > UInt64(ceiling) {
+                throw RostrumError.readBudgetExceeded(declared: declared, limit: ceiling)
+            }
         }
         self.declaredUncompressedSize = declared
+        self.reachable = reachable
 
         self.archive = bytes
         self.entries = entries
@@ -209,9 +234,18 @@ public struct ZipReader {
         self.indexByName = indexByName
     }
 
-    /// Entry names in central-directory order.
+    /// The names a caller can actually resolve, in central-directory order —
+    /// one per distinct name.
+    ///
+    /// Duplicate names are last-wins (see the type documentation), so a name
+    /// repeated N times still resolves to exactly one entry. Listing it N times
+    /// would invite a caller looping over these names to decode that same entry
+    /// N times: the shadowed records need no local header and no payload, only
+    /// their 46-byte central-directory record, so a few megabytes of archive
+    /// could buy tens of thousands of full decompressions. That is unbounded
+    /// work behind a bounded `Limits` budget, which accounts per entry.
     public var entryNames: [String] {
-        entries.map(\.name)
+        reachable.map { entries[$0].name }
     }
 
     /// All central-directory entries, in order — exposes each entry's

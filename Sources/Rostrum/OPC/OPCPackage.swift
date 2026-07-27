@@ -102,6 +102,18 @@ public final class OPCPackage {
             if name == PackURI.contentTypes.memberName { continue }
             if name.hasSuffix(".rels") { continue }
             if name.hasSuffix("/") { continue }  // directory placeholder entries
+            // OPC part names have no empty segments (M1.1). Rostrum has to
+            // reject them rather than tolerate them, because `PackURI`'s
+            // identity is its raw string while `baseURI`/`filename` split on
+            // "/" discarding empties: "ppt//slides/s.xml" and
+            // "ppt/slides/s.xml" would be two distinct parts sharing one
+            // `_rels/s.xml.rels`. That is a part-identity bug on its own, and
+            // it lets an archive make the reader decode a single .rels entry
+            // once per alias — work the read budget charged for once.
+            guard !name.hasPrefix("/"), !name.contains("//") else {
+                throw RostrumError.packageInvalid(
+                    "part name \"\(name)\" has an empty segment")
+            }
             let uri = PackURI("/" + name)
             let blob = try zip.data(forEntry: name)
             let ct = try package.contentTypes.contentType(for: uri)

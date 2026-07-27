@@ -5,6 +5,8 @@ import Rostrum
 // Rostrum. `inspect` prints a structured report + exit code; `validate` is a
 // terse pass/fail gate (the "PowerPoint will accept this" check for CI/tools).
 
+let defaultBudget = 1 << 30
+
 func die(_ message: String, code: Int32 = 2) -> Never {
     FileHandle.standardError.write(Data("pptx-tool: \(message)\n".utf8))
     exit(code)
@@ -12,13 +14,26 @@ func die(_ message: String, code: Int32 = 2) -> Never {
 
 let args = CommandLine.arguments
 guard args.count >= 3, args[1] == "inspect" || args[1] == "validate" else {
-    print("usage: pptx-tool <inspect|validate> <file.pptx>")
+    print("usage: pptx-tool <inspect|validate> <file.pptx> [--max-uncompressed BYTES]")
     print("  inspect   structured report of the deck's parts + schema check (exit 1 on issues)")
     print("  validate  terse pass/fail schema gate (exit 1 on issues, 1 if it won't open)")
+    print("  --max-uncompressed  read budget; default \(defaultBudget) bytes, 0 for unlimited")
     exit(2)
 }
 let command = args[1]
 let path = args[2]
+
+// This tool exists to point at files somebody else sent you, so it opts IN to a
+// read budget rather than inheriting `.unlimited`. A gigabyte is far above any
+// real deck and far below what a zip bomb wants; `--max-uncompressed 0` lifts it
+// for the rare legitimately enormous file.
+var budget: Int? = defaultBudget
+if let flag = args.firstIndex(of: "--max-uncompressed") {
+    guard flag + 1 < args.count, let value = Int(args[flag + 1]), value >= 0 else {
+        die("--max-uncompressed needs a non-negative byte count")
+    }
+    budget = value == 0 ? nil : value
+}
 
 let data: Data
 do {
@@ -29,7 +44,7 @@ do {
 
 let deck: Presentation
 do {
-    deck = try Presentation(data: data)
+    deck = try Presentation(data: data, limits: .init(totalUncompressedBytes: budget))
 } catch {
     print("INVALID: \(path) does not open — \(error)")
     exit(1)

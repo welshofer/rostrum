@@ -17,9 +17,13 @@ import Foundation
 ///   archives. All entries carry the fixed DOS date/time below (the zip epoch),
 ///   no extra fields, no comments.
 /// - Entry names are stored as provided (forward slashes, no leading slash).
-/// - No zip64: adding an entry that would push any 32-bit field past 0xFFFF_FFFF,
-///   or more than 0xFFFF entries, is a programmer error (precondition failure) —
-///   pptx files never approach these limits.
+/// - No zip64: an entry that would push any 32-bit field past 0xFFFF_FFFF, or a
+///   66th thousand entry, is *reported* — `addFile` records the violation and
+///   `finalize()` throws `RostrumError.packageInvalid`. It is not a precondition,
+///   because the parts being written can come from a file somebody else wrote,
+///   and saving what you just opened must not abort the host. pptx files never
+///   approach these limits; writing archives that genuinely need zip64 is a
+///   separate, unimplemented feature.
 public struct ZipWriter {
     /// Fixed DOS date/time stamped on every entry: 1980-01-01 00:00:00 (the DOS epoch).
     /// DOS format: date = ((year-1980)<<9 | month<<5 | day), time = (hour<<11 | minute<<5 | second/2).

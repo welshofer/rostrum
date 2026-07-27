@@ -171,14 +171,16 @@ struct ZipWriterTests {
 
     @Test("The central-directory size finalize() projects is the size it writes")
     func projectedCentralDirectorySizeMatches() throws {
-        // finalize() bounds a *projected* central-directory size (46 bytes plus
-        // the name, per entry) and then writes the real one. If the projection
-        // drifted from the layout, the guard would bound the wrong number — so
-        // read both back out of a real archive and compare.
+        // finalize() bounds a PROJECTED central-directory size (46 bytes plus
+        // the name, per entry) and hands it to bytes(), which writes it into the
+        // EOCD verbatim. So reading that field back and comparing it to the same
+        // formula proves nothing — both sides would be the projection.
+        //
+        // Measure the emitted central directory instead: it runs from the offset
+        // the EOCD records to the start of the EOCD itself. If the projection
+        // ever drifts from the layout bytes() actually emits, the guard bounds a
+        // number the archive does not have, and this is what notices.
         let archive = try Self.makeStoredArchive()
-        let names = ["[Content_Types].xml", "ppt/slides/slide1.xml", "ppt/media/image1.bin"]
-        let projected = names.reduce(0) { $0 + 46 + $1.utf8.count }
-
         let eocd = Data(archive.suffix(22))
         func le32(_ data: Data, _ offset: Int) -> UInt32 {
             let base = data.startIndex + offset
@@ -187,7 +189,19 @@ struct ZipWriterTests {
                 | (UInt32(data[base + 2]) << 16)
                 | (UInt32(data[base + 3]) << 24)
         }
-        #expect(Int(le32(eocd, 12)) == projected)
+        let recordedSize = Int(le32(eocd, 12))
+        let recordedOffset = Int(le32(eocd, 16))
+
+        // The measured size: everything between the central directory's start
+        // and the 22-byte EOCD that terminates the file.
+        let measuredSize = archive.count - 22 - recordedOffset
+        #expect(recordedSize == measuredSize)
+
+        // And the central directory really does start where the EOCD says, with
+        // a central header signature — otherwise "measured" measures nothing.
+        let start = archive.startIndex + recordedOffset
+        #expect(Array(archive[start..<(start + 4)]) == [0x50, 0x4B, 0x01, 0x02])
+        #expect(recordedOffset > 0 && measuredSize > 0)
     }
 
     // MARK: - External oracle (/usr/bin/unzip)

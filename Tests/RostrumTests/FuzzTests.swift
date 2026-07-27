@@ -515,6 +515,47 @@ import Testing
 
     // MARK: - Aggregate decompression budget
 
+    /// Assert the specific error, not merely that something was thrown. Every
+    /// budget test below distinguishes at least two errors the same fixture can
+    /// produce, so `#expect(throws: RostrumError.self)` would discard the very
+    /// thing the fixture was built to expose.
+    private func expectError(
+        _ label: String, _ isMatch: (RostrumError) -> Bool,
+        sourceLocation: SourceLocation = #_sourceLocation, _ body: () throws -> Void
+    ) {
+        do {
+            try body()
+            Issue.record("\(label): expected an error but nothing was thrown", sourceLocation: sourceLocation)
+        } catch let error as RostrumError {
+            #expect(isMatch(error), "\(label): unexpected error \(error)", sourceLocation: sourceLocation)
+        } catch {
+            Issue.record("\(label): expected RostrumError, got \(error)", sourceLocation: sourceLocation)
+        }
+    }
+
+    private func isOverBudget(_ e: RostrumError) -> Bool {
+        if case .readBudgetExceeded = e { return true }
+        return false
+    }
+
+    private func isPackageInvalid(_ e: RostrumError) -> Bool {
+        if case .packageInvalid = e { return true }
+        return false
+    }
+
+    /// The entry's *content* could not be produced — a broken DEFLATE stream, or
+    /// a decode that came out the wrong length or with the wrong CRC. Damaged
+    /// compressed bytes can surface as any of those depending on where the
+    /// damage lands, so pinning one of them would make a test flaky. What this
+    /// deliberately excludes is `readBudgetExceeded` and `partMissing`: the
+    /// point is that reading the DATA is what failed, not policy or lookup.
+    private func isContentFailure(_ e: RostrumError) -> Bool {
+        switch e {
+        case .zipCorrupt, .deflateCorrupt: return true
+        default: return false
+        }
+    }
+
     /// An archive whose entries are individually modest but collectively large:
     /// `count` entries of `each` zero bytes, which DEFLATE crushes to almost
     /// nothing. This is the shape a per-entry bound cannot see.
@@ -566,7 +607,7 @@ import Testing
         // One byte under the declared total must refuse: the ceiling is
         // inclusive, so this pins the boundary rather than just "some big number
         // is rejected".
-        #expect(throws: RostrumError.self) {
+        expectError("one byte under the declared total", isOverBudget) {
             _ = try ZipReader(data: bomb, limits: .init(totalUncompressedBytes: declared - 1))
         }
         // And the default is still unlimited — a large deck must keep opening.
@@ -588,33 +629,90 @@ import Testing
         for i in firstPayload..<(firstPayload + 8) { bomb[i] ^= 0xFF }
         let corrupt = Data(bomb)
 
+        // Unlimited: the damaged entry must fail while producing its CONTENT.
+        // A bare "some error was thrown" would also accept partMissing, and
+        // then the fixture would stop establishing what it claims — that
+        // decoding this archive is what goes wrong.
         let unlimited = try ZipReader(data: corrupt)
-        var inflateFailed = false
-        for name in unlimited.entryNames {
-            if (try? unlimited.data(forEntry: name)) == nil { inflateFailed = true }
+        expectError("the corrupted entry", isContentFailure) {
+            _ = try unlimited.data(forEntry: "ppt/media/pad0.bin")
         }
-        #expect(inflateFailed, "fixture is not corrupt, so this proves nothing")
 
-        // The budget rejects at construction, where no entry has been decoded.
-        #expect(throws: RostrumError.self) {
+        // Budgeted: the SAME archive must fail earlier and differently. If the
+        // budget were enforced by accumulating during decode, this would be the
+        // DEFLATE error instead — which is exactly the implementation this test
+        // exists to rule out.
+        expectError("the same archive under a budget", isOverBudget) {
             _ = try ZipReader(data: corrupt, limits: .init(totalUncompressedBytes: 1024))
         }
     }
 
-    @Test func theDeclaredTotalCannotOverflowTheAccumulator() throws {
-        // Sizes come from the file. 0xFFFFFFFE is the largest an entry may
-        // declare (0xFFFFFFFF is the zip64 sentinel and is rejected), and enough
-        // entries declaring it pass what a 32-bit accumulator would hold — the
-        // arithmetic that bounds hostile input must not itself overflow.
+    @Test func aDeclaredTotalAboveUInt32MaxIsCarriedExactly() throws {
+        // 0xFFFFFFFE is the largest an entry may declare (0xFFFFFFFF is the
+        // zip64 sentinel, rejected at parse). Eight of them sum past UInt32.max,
+        // so this catches a sum that was accumulated or compared in 32 bits —
+        // it does NOT test Int overflow, which is unreachable: the format caps
+        // the sum at 65535 x 0xFFFFFFFE ~ 2.8e14, five orders below Int64.max on
+        // every platform Rostrum supports.
         let small = try amplifyingArchive(count: 8, each: 64)
         let huge = try declaringUncompressedSize(0xFFFF_FFFE, in: small)
 
-        let reader = try ZipReader(data: huge)          // must not trap
+        let reader = try ZipReader(data: huge)
         #expect(reader.declaredUncompressedSize == 8 * UInt64(0xFFFF_FFFE))
         #expect(reader.declaredUncompressedSize > UInt64(UInt32.max))
 
-        #expect(throws: RostrumError.self) {
-            _ = try ZipReader(data: huge, limits: .init(totalUncompressedBytes: 1 << 30))
+        // A budget below the true total must refuse. Were the sum truncated to
+        // 32 bits it would read as 0xFFFFFFF0 and slip under this ceiling.
+        expectError("a total past UInt32.max", isOverBudget) {
+            _ = try ZipReader(data: huge, limits: .init(totalUncompressedBytes: 1 << 33))
+        }
+    }
+
+    @Test func duplicateEntryNamesCannotMultiplyTheWorkTheBudgetBought() throws {
+        // THE hole the budget's premise had: the sum counts central-directory
+        // records, but a caller's loop is driven by NAMES, and duplicate names
+        // are last-wins. N records under one name used to mean N inflations of
+        // the single surviving entry — and the shadows can declare zero bytes,
+        // so they cost the budget nothing while costing the reader everything.
+        var writer = ZipWriter()
+        let payload = Data(repeating: 0, count: 64 * 1024)
+        writer.addFile(name: "ppt/media/dup.bin", data: payload)
+        for _ in 0..<64 { writer.addFile(name: "ppt/media/dup.bin", data: Data()) }
+        writer.addFile(name: "ppt/media/other.bin", data: payload)
+        let archive = try writer.finalize()
+
+        let reader = try ZipReader(data: archive)
+        // The fixture must really contain the duplicates, or it proves nothing.
+        #expect(reader.allEntries.count == 66)
+        // One name, once — a caller looping over these decodes each entry once.
+        #expect(reader.entryNames == ["ppt/media/dup.bin", "ppt/media/other.bin"])
+        #expect(reader.entryNames.count == Set(reader.entryNames).count)
+
+        // And the charge matches the work: only the entries a name resolves to.
+        // The 64 shadows declare nothing, but the surviving "dup.bin" is the
+        // LAST one written — an empty entry — so the total is one payload.
+        #expect(reader.declaredUncompressedSize == UInt64(64 * 1024))
+    }
+
+    @Test func aPartNameWithAnEmptySegmentIsRejected() throws {
+        // "ppt//slides/s.xml" and "ppt/slides/s.xml" are distinct PackURI keys
+        // — identity is the raw string — yet baseURI/filename split on "/"
+        // discarding empties, so both resolve to ONE _rels file. That is a
+        // part-identity bug, and it also lets an archive make the reader decode
+        // one .rels entry once per alias, which no per-entry budget can see.
+        let valid = try validDeckBytes()
+        let reader = try ZipReader(data: valid)
+        var writer = ZipWriter()
+        for name in reader.entryNames {
+            let bytes = try reader.data(forEntry: name)
+            writer.addFile(name: name, data: bytes)
+            if name == "ppt/slides/slide1.xml" {
+                writer.addFile(name: "ppt//slides/slide1.xml", data: bytes)
+            }
+        }
+        let aliased = try writer.finalize()
+        expectError("an aliased part name", isPackageInvalid) {
+            _ = try Presentation(data: aliased)
         }
     }
 
@@ -636,7 +734,9 @@ import Testing
         let budgeted = try deck.serializedData()
         let plain = try reference.serializedData()
         #expect(budgeted == plain, "setting a budget changed what was read")
-        #expect(throws: RostrumError.self) {
+        // And a one-byte ceiling must refuse for the budget's reason, not
+        // because a deck happened to fail to parse for something unrelated.
+        expectError("a one-byte ceiling", isOverBudget) {
             _ = try Presentation(data: bytes, limits: .init(totalUncompressedBytes: 1))
         }
     }
