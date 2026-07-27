@@ -82,6 +82,7 @@ public extension ShapeCollection {
             let used = package.parts.keys.compactMap { uri -> Int? in
                 let name = uri.filename
                 guard uri.value.hasPrefix("/ppt/media/media"), name.hasPrefix("media") else { return nil }
+                let stem = name.prefix(while: { $0 != "." }).dropFirst("media".count)
                 // Bounded: the stem comes from a zip entry name in the opened
                 // file, and `(used.max() ?? 0) + 1` below traps on Int.max.
                 guard let n = Int(stem), n >= 0, n < 1_000_000 else { return nil }
