@@ -17,8 +17,11 @@ public extension Table {
         let bg = fill ?? style.primary
         var ts = style.type(role)
         ts.color = textColor ?? style.textColor(on: bg)
+        // Bulk styling is tolerant of a ragged foreign row: a cell the grid
+        // declares but the row does not have is skipped, not an error.
         for c in 0..<columnCount {
-            cell(0, c).setFill(bg).verticalAnchorAndStyle(ts, align: align, anchor: anchor)
+            guard let cell = try? cell(0, c) else { continue }
+            cell.setFill(bg).verticalAnchorAndStyle(ts, align: align, anchor: anchor)
         }
         return self
     }
@@ -40,7 +43,8 @@ public extension Table {
             var ts = style.type(role)
             ts.color = style.textColor(on: rowFill)
             for c in 0..<columnCount {
-                cell(r, c).setFill(rowFill).verticalAnchorAndStyle(ts, align: align, anchor: anchor)
+                guard let cell = try? cell(r, c) else { continue }
+                cell.setFill(rowFill).verticalAnchorAndStyle(ts, align: align, anchor: anchor)
             }
             band += 1
         }
@@ -58,7 +62,8 @@ public extension Table {
     func cellPadding(left: EMU, top: EMU, right: EMU, bottom: EMU) -> Table {
         for r in 0..<rowCount {
             for c in 0..<columnCount {
-                cell(r, c).setPadding(left: left, top: top, right: right, bottom: bottom)
+                guard let cell = try? cell(r, c) else { continue }
+                cell.setPadding(left: left, top: top, right: right, bottom: bottom)
             }
         }
         return self
