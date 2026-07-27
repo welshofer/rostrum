@@ -221,8 +221,16 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   computed `idx + 1`; and a chart with more than 255 `c:ser`, which tripped
   `ChartData`'s programmer-facing bound.
 
-  Four further traps are recorded as open in ROADMAP.md rather than
-  half-fixed — each needs an API decision, not a patch.
+  **API change:** `Table.cell(_:_:)` and `Table.merge(row:column:rowSpan:columnSpan:)`
+  now throw. `columnCount` reports what `a:tblGrid` declares, and a table
+  written elsewhere can have a row with fewer `a:tc`, so the natural reading
+  idiom used to abort the host — the same rule `Slides.subscript` follows.
+  `setContents` and the bulk styling helpers (`header`, `styleBanded`,
+  `cellPadding`) stay non-throwing and simply skip a cell a row does not have.
+
+  One trap is recorded as open in ROADMAP.md rather than half-fixed:
+  `Inflate`'s per-entry cap is resource amplification rather than a crash, and
+  the fix is a caller-supplied budget worth designing.
 
   *How these were found, since it bears on how much to trust the list:* an
   adversarial audit sweep, then a second adversarial pass over the fixes

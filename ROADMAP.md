@@ -228,20 +228,18 @@ Hardening backlog (schedule opportunistically):
   deck with duplicate section starts, and the 0xFFFF zip entry-name field
   (now reported by `OPCPackage.serialize` rather than trapping in
   `ZipWriter.addFile`), went with it.
-- **Still open**, deliberately, because each is a decision rather than a patch:
-  - `Table.cell(_:_:)` preconditions on the index, so the natural reading
-    idiom (`for c in 0..<table.columnCount`) aborts on a **ragged** foreign
-    table — one whose `a:tblGrid` declares more columns than a row has
-    `a:tc`. *Recommendation:* make it `throws`, matching the precedent
-    `Slides.subscript` set in M0 — a reader accessor over file-derived
-    indices reports rather than traps. Deferred only because it touches ~54
-    call sites and deserves to be its own reviewed change.
-  - `Inflate` bounds each entry by that entry's own declared size, so a zip
-    bomb still amplifies across many entries. This one is resource
-    exhaustion, **not** a trap — nothing crashes — and any fixed aggregate
-    ceiling would reject legitimately large decks. The fix is a
-    caller-supplied budget on the read path, which is an API addition worth
-    designing rather than guessing.
+- `Table.cell(_:_:)` now **throws** (2026-07-27) rather than preconditioning on
+  the index, so the natural reading idiom (`for c in 0..<table.columnCount`)
+  reports instead of aborting on a **ragged** foreign table — one whose
+  `a:tblGrid` declares more columns than a row has `a:tc`. Same rule as
+  `Slides.subscript`. `merge` throws with it; `setContents` and the bulk
+  styling helpers stay tolerant by contract and skip cells a row does not have.
+- **Still open**, deliberately: `Inflate` bounds each entry by that entry's own
+  declared size, so a zip bomb still amplifies across many entries. This one is
+  resource exhaustion, **not** a trap — nothing crashes — and any fixed
+  aggregate ceiling would reject legitimately large decks. The fix is a
+  caller-supplied budget on the read path, which is an API addition worth
+  designing rather than guessing at.
 - Zip64: today >4 GB archives and >65k entries are `precondition` traps on the
   write path.
 - Quadratic hot spots on very large decks; `prune()`/orphan audit promised in
