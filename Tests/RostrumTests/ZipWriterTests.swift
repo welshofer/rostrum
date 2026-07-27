@@ -34,7 +34,7 @@ struct ZipWriterTests {
     /// - "ppt/media/image1.bin": nested path, ~100KB seeded pseudorandom bytes
     /// STORED-only archive, for deterministically testing header layout
     /// independent of whether a payload happens to compress.
-    private static func makeStoredArchive() -> Data {
+    private static func makeStoredArchive() throws -> Data {
         var writer = ZipWriter()
         writer.addFile(name: "[Content_Types].xml", data: smallText, compress: false)
         writer.addFile(name: "ppt/slides/slide1.xml", data: Data(), compress: false)
@@ -42,7 +42,7 @@ struct ZipWriterTests {
         return try writer.finalize()
     }
 
-    private static func makeArchive() -> Data {
+    private static func makeArchive() throws -> Data {
         var writer = ZipWriter()
         writer.addFile(name: "[Content_Types].xml", data: smallText)
         writer.addFile(name: "ppt/slides/slide1.xml", data: Data())
@@ -75,15 +75,15 @@ struct ZipWriterTests {
     // MARK: - Determinism
 
     @Test("Same inputs produce byte-identical archives")
-    func deterministicOutput() {
-        let first = Self.makeArchive()
-        let second = Self.makeArchive()
+    func deterministicOutput() throws {
+        let first = try Self.makeArchive()
+        let second = try Self.makeArchive()
         #expect(!first.isEmpty)
         #expect(first == second)
     }
 
     @Test("Empty writer emits just a valid EOCD record")
-    func emptyArchive() {
+    func emptyArchive() throws {
         let writer = ZipWriter()
         let archive = try writer.finalize()
         #expect(archive.count == 22)
@@ -95,8 +95,8 @@ struct ZipWriterTests {
     // MARK: - Structure
 
     @Test("Archive layout: local header signature, EOCD fields, central directory")
-    func structuralFields() {
-        let archive = Self.makeStoredArchive()
+    func structuralFields() throws {
+        let archive = try Self.makeStoredArchive()
 
         // Starts with a local file header signature PK\x03\x04.
         #expect(Array(archive.prefix(4)) == [0x50, 0x4B, 0x03, 0x04])
