@@ -622,8 +622,20 @@ import Testing
         // The budget must not get in the way of a real deck: a normal
         // presentation opens under a modest ceiling and reads back intact.
         let bytes = try validDeckBytes()
+        // Compare against an unbudgeted open of the same bytes rather than a
+        // hardcoded count: the property under test is that setting a budget
+        // changes nothing, and a literal here would only track the fixture.
+        let reference = try Presentation(data: bytes)
         let deck = try Presentation(data: bytes, limits: .init(totalUncompressedBytes: 64 << 20))
-        #expect(deck.slides.count == 2)
+        #expect(deck.slides.count == reference.slides.count)
+        #expect(deck.slides.count > 0, "fixture has no slides, so this proves nothing")
+        // Comparing the two serializations rather than comparing to `bytes`
+        // isolates the budget: both decks came from the same input, so any
+        // normalisation on open applies to each equally and cannot make this
+        // fail for a reason that has nothing to do with limits.
+        let budgeted = try deck.serializedData()
+        let plain = try reference.serializedData()
+        #expect(budgeted == plain, "setting a budget changed what was read")
         #expect(throws: RostrumError.self) {
             _ = try Presentation(data: bytes, limits: .init(totalUncompressedBytes: 1))
         }
