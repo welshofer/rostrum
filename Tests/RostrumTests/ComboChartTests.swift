@@ -327,7 +327,11 @@ import Testing
                                    series: [.init(name: "S", values: [1, 2])])
     private let frame = Rect(x: .zero, y: .zero, width: .inches(5), height: .inches(4))
 
-    private func labels(of kind: ChartKind, position: String) throws -> XML.Element? {
+    /// The `c:dLbls` a chart of `kind` gets when `position` is requested.
+    /// Returns the element rather than an optional so callers need no
+    /// `#require` — the macro rewrites a top-level call into a non-throwing
+    /// closure, so a throwing helper cannot be called from inside one.
+    private func labels(of kind: ChartKind, position: String) throws -> XML.Element {
         let deck = try Presentation()
         try deck.slides[0].shapes.addChart(
             kind, data: sample, frame: frame,
@@ -336,27 +340,27 @@ import Testing
         let plotArea = try deck.package.part(at: PackURI("/ppt/charts/chart1.xml")).dom()
             .firstChild(named: "c:chart")?.firstChild(named: "c:plotArea")
         let plot = try #require(plotArea?.childElements.first { $0.name.hasSuffix("Chart") })
-        return plot.firstChild(named: "c:dLbls")
+        return try #require(plot.firstChild(named: "c:dLbls"))
     }
 
     @Test func aLegalPositionSurvives() throws {
-        let d = try #require(labels(of: .barClustered, position: "outEnd"))
+        let d = try labels(of: .barClustered, position: "outEnd")
         #expect(d.firstChild(named: "c:dLblPos")?[attribute: "val"] == "outEnd")
     }
 
     @Test func aStackedBarHasNoOutsideEnd() throws {
         // The next segment is there, so PowerPoint rejects outEnd on a stack.
-        let d = try #require(labels(of: .barStacked, position: "outEnd"))
+        let d = try labels(of: .barStacked, position: "outEnd")
         #expect(d.firstChild(named: "c:dLblPos") == nil)
         #expect(d.firstChild(named: "c:showVal")?[attribute: "val"] == "1",
                 "only the position is dropped, not the labels")
-        let inEnd = try #require(labels(of: .barStacked, position: "inEnd"))
+        let inEnd = try labels(of: .barStacked, position: "inEnd")
         #expect(inEnd.firstChild(named: "c:dLblPos")?[attribute: "val"] == "inEnd")
     }
 
     @Test func areaAndRadarTakeNoPositionAtAll() throws {
         for kind in [ChartKind.area, .radar, .radarFilled, .doughnut] {
-            let d = try #require(labels(of: kind, position: "ctr"))
+            let d = try labels(of: kind, position: "ctr")
             #expect(d.firstChild(named: "c:dLblPos") == nil,
                     "\(kind) rejects c:dLblPos; emitting one is a repair prompt")
             #expect(d.firstChild(named: "c:showVal") != nil)
@@ -367,7 +371,7 @@ import Testing
         // Rostrum has no corroborated table for line/scatter/bubble, so it
         // imposes no restriction rather than silently dropping a caller's
         // intent on a guess.
-        let d = try #require(labels(of: .line, position: "t"))
+        let d = try labels(of: .line, position: "t")
         #expect(d.firstChild(named: "c:dLblPos")?[attribute: "val"] == "t")
     }
 }
