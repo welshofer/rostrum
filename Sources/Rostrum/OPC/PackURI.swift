@@ -42,8 +42,15 @@ public struct PackURI: Hashable, Sendable, CustomStringConvertible {
     ///
     /// Takes the member name (no leading slash), which is the form both the
     /// reader and the writer have in hand.
+    ///
+    /// Written as "any empty component" rather than as a list of the shapes
+    /// that produce one. The first cut spelled out leading, internal and wholly
+    /// empty and missed the TRAILING slash — `ppt/slides/s.xml/` aliases onto
+    /// `ppt/slides/s.xml` exactly like `ppt//slides/s.xml` does, because
+    /// `split` drops a trailing empty subsequence the same way. OPC happens to
+    /// state that one separately (M1.4), which is presumably how it got lost.
     static func hasEmptySegment(_ memberName: String) -> Bool {
-        memberName.isEmpty || memberName.hasPrefix("/") || memberName.contains("//")
+        memberName.split(separator: "/", omittingEmptySubsequences: false).contains(where: \.isEmpty)
     }
 
     /// The special URI of the content-types stream, which is *not* a part.

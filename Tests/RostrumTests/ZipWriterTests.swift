@@ -212,6 +212,11 @@ struct ZipWriterTests {
         // catches a per-record size drift that the total could mask.
         var offset = recordedOffset
         for _ in 0..<3 {
+            // Bounds-check before indexing. A drift in the layout is exactly
+            // what this walk exists to catch, and an out-of-range subscript
+            // would trap — aborting the whole test process instead of failing
+            // this one test, which is the opposite of catching it.
+            try #require(offset + 46 <= archive.count)
             #expect(Array(archive[(archive.startIndex + offset)..<(archive.startIndex + offset + 4)])
                 == [0x50, 0x4B, 0x01, 0x02])
             let nameLength = Int(archive[archive.startIndex + offset + 28])

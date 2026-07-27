@@ -18,8 +18,9 @@ public enum RostrumError: Error, Equatable, CustomStringConvertible {
     case fontEmbeddingRestricted(String)
     /// A font file could not be parsed (truncated table, bad offset, unsupported cmap, …).
     case fontCorrupt(String)
-    /// The archive declares more uncompressed bytes than the caller's
-    /// `ZipReader.Limits` allows. Distinct from `zipUnsupported` because this is
+    /// The entries a name resolves to declare more uncompressed bytes in total
+    /// than the caller's `ZipReader.Limits` allows. Shadowed records are not
+    /// counted: they can never be fetched, so they cost nothing. Distinct from `zipUnsupported` because this is
     /// the caller's own policy firing, not a capability Rostrum lacks: it is the
     /// one error here that retrying with a higher ceiling can resolve, and both
     /// numbers are carried so that decision can be made without parsing prose.
@@ -37,7 +38,8 @@ public enum RostrumError: Error, Equatable, CustomStringConvertible {
         case .fontEmbeddingRestricted(let m): return "font embedding is license-restricted: \(m)"
         case .fontCorrupt(let m): return "corrupt font file: \(m)"
         case .readBudgetExceeded(let declared, let limit):
-            return "archive declares \(declared) uncompressed bytes, over the \(limit)-byte read budget"
+            return "the archive's readable entries declare \(declared) uncompressed bytes, "
+                + "over the \(limit)-byte read budget"
         }
     }
 }

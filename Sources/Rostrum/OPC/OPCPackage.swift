@@ -183,6 +183,23 @@ public final class OPCPackage {
     /// Serialize to zip bytes. Deterministic: [Content_Types].xml first, then
     /// package rels, then parts sorted by URI, each followed by its rels part.
     /// Only dirty parts are re-serialized; pristine parts emit original bytes.
+    /// Why `read` would not give this part name back, or nil if it would.
+    ///
+    /// Kept beside `read`'s own skips so the two stay in step: every class
+    /// `read` disposes of by `continue` is a part the writer must not emit,
+    /// because emitting it means writing bytes that quietly disappear.
+    static func unwritablePartName(_ uri: PackURI) -> String? {
+        let name = uri.memberName
+        if PackURI.hasEmptySegment(name) { return "has an empty segment" }
+        if name == PackURI.contentTypes.memberName {
+            return "collides with the content-types stream"
+        }
+        if name.hasSuffix(".rels") {
+            return "would be read back as a relationships part, not as a part"
+        }
+        return nil
+    }
+
     public func serialize() throws -> Data {
         for part in parts.values {
             part.flushIfDirty()
@@ -193,14 +210,21 @@ public final class OPCPackage {
             zip.addFile(name: PackURI.packageRels.memberName, data: rels.serialized())
         }
         for (uri, part) in parts.sorted(by: { $0.key.value < $1.key.value }) {
-            // Refuse to write a name `read` would refuse to open. `PackURI`'s
+            // Refuse to write a name `read` would not give back. `PackURI`'s
             // initializer only requires a leading slash, so a caller can build
-            // a part named "/ppt//x.xml" — and without this, Rostrum would
-            // happily produce an archive it then rejects as invalid, which is
-            // a worse failure than rejecting it here.
-            guard !PackURI.hasEmptySegment(uri.memberName) else {
+            // any of these — and without this, Rostrum produces an archive it
+            // then rejects, or worse, silently reads back as something else.
+            //
+            // `read` disposes of four name classes, and the first cut of this
+            // guard implemented one of them while its comment claimed all four.
+            // The three it missed do not throw on the way back in; they vanish.
+            // A part named "/custom.rels" is skipped as a relationships stream,
+            // one named "/[Content_Types].xml" collides with the stream written
+            // above this loop and reopens as whichever came last, and a
+            // trailing slash reads as a directory placeholder.
+            if let reason = Self.unwritablePartName(uri) {
                 throw RostrumError.packageInvalid(
-                    "part name \"\(uri.value)\" has an empty segment")
+                    "part name \"\(uri.value)\" \(reason)")
             }
             // Media and embedded workbooks are already compressed — don't
             // waste CPU re-DEFLATEing them; XML parts compress well.

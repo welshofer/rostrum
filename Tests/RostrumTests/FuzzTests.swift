@@ -738,26 +738,100 @@ import Testing
         writer.addFile(name: "a.bin", data: Data(repeating: 7, count: 4096), compress: false)
         writer.addFile(name: "b.bin", data: Data(repeating: 9, count: 4096), compress: false)
         var bytes = [UInt8](try writer.finalize())
+        let size = bytes.count
 
-        // Point every central-directory record at a compressed size far larger
-        // than the file, which is what aliased payloads add up to.
         func u16(_ at: Int) -> Int { Int(bytes[at]) | (Int(bytes[at + 1]) << 8) }
         func u32(_ at: Int) -> Int { (0..<4).reduce(0) { $0 | (Int(bytes[at + $1]) << (8 * $1)) } }
-        let eocd = bytes.count - 22
-        try #require(u32(eocd) == 0x0605_4B50)
-        var offset = u32(eocd + 16)
-        for _ in 0..<u16(eocd + 10) {
-            try #require(u32(offset) == 0x0201_4B50)
-            for b in 0..<4 {                             // compressed size at +20
-                bytes[offset + 20 + b] = UInt8(truncatingIfNeeded: (bytes.count << 2) >> (8 * b))
-            }
-            offset += 46 + u16(offset + 28) + u16(offset + 30) + u16(offset + 32)
+        func put32(_ at: Int, _ value: Int) {
+            for b in 0..<4 { bytes[at + b] = UInt8(truncatingIfNeeded: value >> (8 * b)) }
         }
 
-        // Structural, not policy: it must refuse even with no budget set.
-        expectError("entries claiming more compressed bytes than the file holds", isContentFailure) {
+        // Build the actual attack, not a caricature of it. Both records point
+        // at the SAME local header, and each claims 60% of the file — in range
+        // on its own, so a per-entry check (`dataStart + compressedSize <=
+        // count`, which already existed) still passes. Only summing catches it.
+        // Written the other way — each record claiming several times the file —
+        // the strictly weaker per-entry predicate would pass this test too, and
+        // it would prove nothing about the aggregation this commit added.
+        let eocd = size - 22
+        try #require(u32(eocd) == 0x0605_4B50)
+        let each = size * 6 / 10
+        var offset = u32(eocd + 16)
+        let firstLocalHeader = u32(offset + 42)
+        for _ in 0..<u16(eocd + 10) {
+            try #require(u32(offset) == 0x0201_4B50)
+            put32(offset + 20, each)                  // compressed size
+            put32(offset + 42, firstLocalHeader)      // ...at one shared payload
+            offset += 46 + u16(offset + 28) + u16(offset + 30) + u16(offset + 32)
+        }
+        // The fixture must have the property it is named for, or it proves
+        // nothing: individually legal, collectively impossible.
+        #expect(each < size, "each entry must be in range on its own")
+        #expect(2 * each > size, "the SUM is what has to be out of range")
+
+        // Structural, not policy: it must refuse even with no budget set, and
+        // for the aggregate reason rather than any other zipCorrupt.
+        expectError("entries claiming more compressed bytes than the file holds", {
+            if case .zipCorrupt(let m) = $0 { return m.contains("cannot all be distinct") }
+            return false
+        }) {
             _ = try ZipReader(data: Data(bytes))
         }
+    }
+
+    @Test func anEmptyEntryNameIsRejected() throws {
+        // "" passes a leading-slash test and a "//" test, but "/" + "" is "/",
+        // whose relsURI is the package relationships — the same aliasing with
+        // no visible slash at all. This was the gap in the first spelling of
+        // the empty-segment rule.
+        #expect(PackURI.hasEmptySegment(""))
+        #expect(PackURI.hasEmptySegment("ppt//x.xml"))
+        #expect(PackURI.hasEmptySegment("/ppt/x.xml"))
+        // The trailing slash aliases exactly like the internal one: split drops
+        // a trailing empty subsequence too, so both derive one relsURI.
+        #expect(PackURI.hasEmptySegment("ppt/x.xml/"))
+        #expect(PackURI("/ppt/x.xml/").relsURI == PackURI("/ppt/x.xml").relsURI)
+        #expect(!PackURI.hasEmptySegment("ppt/slides/slide1.xml"))
+
+        let valid = try validDeckBytes()
+        let reader = try ZipReader(data: valid)
+        var writer = ZipWriter()
+        for name in reader.entryNames {
+            writer.addFile(name: name, data: try reader.data(forEntry: name))
+        }
+        writer.addFile(name: "", data: Data([1, 2, 3]))
+        expectError("an empty part name", isPackageInvalid) {
+            _ = try Presentation(data: try writer.finalize())
+        }
+    }
+
+    @Test func namesThatDecodeAlikeButDifferAsBytesAreRejected() throws {
+        // Member names are BYTES; indexByName keys them by Swift String, and
+        // Swift compares strings by canonical equivalence. So two records whose
+        // names differ as bytes can be == as Strings — here via NFC/NFD — and
+        // last-wins would drop one part and serve the other's bytes under its
+        // name, with no error at any layer.
+        let precomposed = "caf\u{00E9}.bin"           // é
+        let decomposed = "cafe\u{0301}.bin"           // e + combining acute
+        #expect(precomposed == decomposed, "the premise of this test")
+        #expect(Array(precomposed.utf8) != Array(decomposed.utf8))
+
+        var writer = ZipWriter()
+        writer.addFile(name: precomposed, data: Data([1]))
+        writer.addFile(name: decomposed, data: Data([2]))
+        expectError("two names that decode alike", {
+            if case .zipCorrupt(let m) = $0 { return m.contains("decode") }
+            return false
+        }) {
+            _ = try ZipReader(data: try writer.finalize())
+        }
+
+        // An honest duplicate — the same bytes twice — stays last-wins.
+        var honest = ZipWriter()
+        honest.addFile(name: precomposed, data: Data([1]))
+        honest.addFile(name: precomposed, data: Data([2]))
+        let reader = try ZipReader(data: try honest.finalize())
+        #expect(try reader.data(forEntry: precomposed) == Data([2]))
     }
 
     @Test func aNegativeBudgetIsClampedAndReported() throws {
@@ -819,8 +893,29 @@ import Testing
         let deck = try Presentation()
         deck.package.addPart(uri: PackURI("/ppt//media/x.png"),
                              contentType: ContentType.png, blob: Data([1, 2, 3]))
-        expectError("writing an aliased part name", isPackageInvalid) {
+        expectError("writing an aliased part name", {
+            if case .packageInvalid(let m) = $0 { return m.contains("empty segment") }
+            return false
+        }) {
             _ = try deck.serializedData()
+        }
+
+        // The other three name classes `read` disposes of by skipping. Each
+        // used to be written happily and then vanish on reopen, which is worse
+        // than refusing: the Override in [Content_Types].xml survives while the
+        // part it names does not.
+        for (name, reason) in [("/custom.rels", "relationships part"),
+                               ("/[Content_Types].xml", "content-types stream"),
+                               ("/ppt/media/", "empty segment")] {
+            let d = try Presentation()
+            d.package.addPart(uri: PackURI(name), contentType: "application/xml",
+                              blob: Data("<x/>".utf8))
+            expectError("writing \(name)", {
+                if case .packageInvalid(let m) = $0 { return m.contains(reason) }
+                return false
+            }) {
+                _ = try d.serializedData()
+            }
         }
     }
 

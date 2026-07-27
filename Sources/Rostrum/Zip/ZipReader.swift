@@ -14,8 +14,11 @@ import Foundation
 ///   from the central directory's).
 /// - Supported methods: 0 (STORED) and 8 (DEFLATE, via `Inflate`). Anything else
 ///   → `RostrumError.zipUnsupported`. Encrypted entries (bit 0) → unsupported.
-/// - Zip64 (0xFFFFFFFF sentinels / signature 0x06064b50) → `zipUnsupported`;
-///   no real pptx needs it.
+/// - Zip64 → `zipUnsupported`; no real pptx needs it. Detected two ways: a
+///   0xFFFFFFFF sentinel in any central-directory entry field, and 0xFFFF /
+///   0xFFFFFFFF in the EOCD *only* when a zip64 locator (0x07064b50) precedes
+///   it — those values are legal literals otherwise (APPNOTE 4.4.1.4). The
+///   zip64 EOCD signature 0x06064b50 is never tested for on its own.
 /// - Verify the CRC-32 of every decoded entry against the central directory and
 ///   throw `zipCorrupt` on mismatch.
 /// - Duplicate entry names: last one wins (matches other tooling).
@@ -30,14 +33,15 @@ public struct ZipReader {
     /// entries that each expand to gigabytes, and opening a package decodes
     /// every one — amplification across entries rather than within one.
     ///
-    /// Because the per-entry bound holds, the bytes a full read can produce are
-    /// exactly the sum of the declared sizes of the entries a name resolves to,
-    /// and the central directory states all of them before a byte is inflated.
-    /// So the ceiling is checked up front rather than accumulated as entries
-    /// decode: an over-budget archive costs no decompression at all, and the
-    /// verdict cannot depend on which entries a caller reads, or in what order.
+    /// Because the per-entry bound holds, one decode of each resolvable name —
+    /// a single pass over `entryNames`/`allEntries`, which is what opening a
+    /// package does — produces exactly the sum of their declared sizes, and the
+    /// central directory states all of them before a byte is inflated. So the
+    /// ceiling is checked up front rather than accumulated as entries decode:
+    /// an over-budget archive costs no decompression at all, and the verdict
+    /// cannot depend on which entries a caller reads, or in what order.
     ///
-    /// Read what this bounds precisely, because two plausible readings are wrong:
+    /// Read what this bounds precisely, because three plausible readings are wrong:
     ///
     /// - It bounds bytes **produced**, not **work done**. Decoding costs
     ///   `compressedSize` per name — copied, copied again, then scanned —
@@ -45,9 +49,18 @@ public struct ZipReader {
     ///   Work is bounded instead by a structural check in `init`: the entries'
     ///   compressed sizes must sum to no more than the archive, which no
     ///   well-formed archive violates and which holds under `.unlimited` too.
-    /// - It bounds **decoded output**, not **peak memory**. A read holds the
-    ///   archive bytes, the compressed slice, and briefly two copies of the
-    ///   current entry. Expect a small constant multiple of the budget.
+    /// - Neither bound covers a caller who fetches the **same name twice**.
+    ///   Both are per resolvable name, once. `centralDirectoryRecords` will
+    ///   hand back one record per shadow, so looping *that* and fetching by
+    ///   name decodes the survivor once per shadow; loop `allEntries` instead.
+    /// - It bounds **decoded output**, not **peak memory**, and the gap is not
+    ///   small. DEFLATE expands by at most 1032:1 against this decoder (one bit
+    ///   per symbol, 258 bytes per match), so an archive passing the structural
+    ///   check can still decode to ~1032x its own size — and `OPCPackage.read`
+    ///   retains every decoded part for the package's lifetime, so the peak
+    ///   tracks the SUM of all parts, not the largest one. Within a single
+    ///   entry the decoder briefly holds its growing buffer, the buffer it is
+    ///   growing out of, and the `Data` copy of the result.
     ///
     /// And it bounds *declared* size, which is the conservative direction: an
     /// archive that declares far more than it would really produce is refused.
@@ -117,10 +130,12 @@ public struct ZipReader {
     /// Parses the EOCD + central directory eagerly; entry data is decoded lazily.
     ///
     /// - Throws: `RostrumError.readBudgetExceeded` when the archive declares
-    ///   more uncompressed bytes than `limits` allows, and
-    ///   `RostrumError.zipCorrupt` when its entries claim more compressed bytes
-    ///   in total than the archive contains. Both fire before anything is
-    ///   inflated.
+    ///   more uncompressed bytes than `limits` allows; `RostrumError.zipCorrupt`
+    ///   for a malformed archive — no end-of-central-directory record, a
+    ///   truncated or mis-signed central directory, or entries claiming more
+    ///   compressed bytes in total than the archive contains; and
+    ///   `RostrumError.zipUnsupported` for zip64 and multi-disk archives.
+    ///   All of them fire before anything is inflated.
     public init(data: Data, limits: Limits = .unlimited) throws {
         let bytes = [UInt8](data)
         let size = bytes.count
@@ -177,6 +192,9 @@ public struct ZipReader {
         var entries: [Entry] = []
         var entryFlags: [UInt16] = []
         var indexByName: [String: Int] = [:]
+        /// The raw bytes each decoded name came from, so a collision between
+        /// two DIFFERENT byte sequences can be told from an honest duplicate.
+        var rawNameByName: [String: [UInt8]] = [:]
         entries.reserveCapacity(totalEntries)
         entryFlags.reserveCapacity(totalEntries)
 
@@ -206,7 +224,24 @@ public struct ZipReader {
                 throw RostrumError.zipCorrupt("truncated central directory entry")
             }
 
-            let name = Self.decodeName([UInt8](bytes[offset + 46..<offset + 46 + nameLength]), flags: flags)
+            let rawName = [UInt8](bytes[offset + 46..<offset + 46 + nameLength])
+            let name = Self.decodeName(rawName, flags: flags)
+            // Member names are BYTES; `indexByName` keys them by Swift String,
+            // and Swift compares strings by canonical equivalence. Two records
+            // whose names differ as bytes can therefore be `==` as Strings —
+            // via Unicode normalisation (NFC vs NFD), or because `decodeName`
+            // maps both UTF-8 and CP437 onto one String namespace. Last-wins
+            // would silently drop one part and serve the other's bytes under
+            // its name, with no error at any layer.
+            //
+            // Genuine duplicates — the same bytes twice — stay last-wins, which
+            // is what other tooling does and what this type documents.
+            if let previous = indexByName[name], rawNameByName[name] != rawName {
+                throw RostrumError.zipCorrupt(
+                    "entries \(previous) and \(entries.count) have different names that decode "
+                        + "to the same text (\"\(name)\"), so one would silently replace the other")
+            }
+            rawNameByName[name] = rawName
             let entry = Entry(
                 name: name,
                 method: method,

@@ -279,11 +279,33 @@ Hardening backlog (schedule opportunistically):
   bounds a full read's work at O(archive size) — which is what a budget on
   declared output was twice assumed to give and never did.
 
-  So, precisely: the budget bounds bytes **produced**; the structural check
-  bounds **work**; neither bounds **peak memory** (a read holds the archive
-  bytes, the compressed slice, and briefly two copies of the current entry). And
-  it bounds *declared* size, the conservative direction: the alternative is
-  doing the work to find out.
+  A **fourth** round then confirmed the structural check is sound — including
+  that it cannot refuse a legitimate deck, since a file is always
+  `Σ compressedSize + Σ(76 + 2·nameLength) + 22` and extra fields, data
+  descriptors and comments only widen that gap — but found the *guarantee*
+  overstated again, in a quieter way. Precisely: the budget bounds bytes
+  **produced**; the structural check bounds **work**, at one decode per
+  resolvable name; neither covers a caller who fetches the same name twice; and
+  neither bounds **peak memory**, which is where the gap is largest. DEFLATE
+  expands at most 1032:1 against this decoder, and `OPCPackage.read` retains
+  every decoded part, so an archive that passes every check can still occupy
+  ~1032× its own size. Those numbers are now in `ZipReader.Limits`' documentation
+  instead of the phrase "a small constant multiple of the budget", which said
+  nothing at all under the default of `.unlimited`.
+
+  The same round closed the trailing-slash alias the empty-segment rule missed
+  (`ppt/x.xml/` derives the same `relsURI` as `ppt/x.xml`; the rule is now "any
+  empty component" rather than a list of shapes), extended the write guard to
+  the three name classes `read` disposes of by skipping rather than throwing,
+  and rejected byte-distinct member names that decode to an equal Swift
+  `String` — Swift compares by canonical equivalence, so NFC and NFD spellings
+  of one name silently dropped a part and served another's bytes under it.
+
+  **Still open** from that round, both pre-existing and both round-trip rather
+  than safety: directory-placeholder entries are dropped on read and never
+  re-emitted, so a deck containing them does not round-trip byte-identically;
+  and `PackURI` does no percent-decoding, so an OPC-conformant encoded
+  relationship target never resolves to the part it names.
 - Zip64 **write** support. Archives over 4 GB, over 65535 entries, or with a
   central directory over 4 GB are now *reported* — `ZipWriter.finalize()`
   throws `RostrumError.packageInvalid` and `OPCPackage.serialize` propagates it

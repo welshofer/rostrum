@@ -2,9 +2,10 @@ import Foundation
 
 /// A minimal, deterministic zip archive writer.
 ///
-/// Produces a fully valid zip file using STORED (uncompressed) entries.
-/// STORED entries are legal in .pptx packages — Office opens them fine; DEFLATE
-/// support is a later size optimization, not a correctness requirement.
+/// DEFLATEs each entry when that comes out smaller and stores it otherwise —
+/// see `addFile(name:data:compress:)`. STORED entries are legal in .pptx
+/// packages too (Office opens them fine), so compression here is a size
+/// optimization, not a correctness requirement.
 ///
 /// Implementation notes for the implementer:
 /// - Layout: [local file header + data] per entry, then the central directory,
@@ -142,10 +143,11 @@ public struct ZipWriter {
     /// Produce the complete archive bytes (entries + central directory + EOCD).
     ///
     /// - Throws: `RostrumError.packageInvalid` when an entry, or the finished
-    ///   archive, exceeded one of the zip format's 32-bit fields. Writing
-    ///   archives that genuinely need Zip64 is a separate, unimplemented
-    ///   feature; this is the difference between reporting that and aborting
-    ///   the process.
+    ///   archive, exceeded one of the zip format's fixed-width fields: the
+    ///   16-bit entry count and entry-name length, or the 32-bit entry size,
+    ///   local-header offset and central-directory size. Writing archives that
+    ///   genuinely need Zip64 is a separate, unimplemented feature; this is the
+    ///   difference between reporting that and aborting the process.
     public func finalize() throws -> Data {
         if let violation {
             throw RostrumError.packageInvalid("cannot write this archive: \(violation)")
