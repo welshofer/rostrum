@@ -30,7 +30,7 @@ import Testing
         zip.addFile(name: "ppt/slides/slide1.xml", data: Data("<p:sld xmlns:p=\"x\"/>".utf8))
         zip.addFile(name: "ppt/slideMasters/slideMaster1.xml", data: Data("<p:sldMaster xmlns:p=\"x\"/>".utf8))
 
-        let package = try OPCPackage.read(data: zip.finalize())
+        let package = try OPCPackage.read(data: try zip.finalize())
         let main = try package.part(at: PackURI("/ppt/presentation.xml"))
         #expect(main.rels.relationship(withId: "rId5")?.type == RelType.slide)
         #expect(main.rels.relationship(withId: "rId2")?.type == RelType.slideMaster)
@@ -99,7 +99,7 @@ import Testing
         for i in 0..<65535 {
             zip.addFile(name: "f\(i)", data: payload)
         }
-        let archive = zip.finalize()
+        let archive = try zip.finalize()
         let reader = try ZipReader(data: archive)
         #expect(reader.entryNames.count == 65535)
         #expect(reader.contains("f65534"))
@@ -140,7 +140,7 @@ import Testing
         var zip = ZipWriter()
         zip.addFile(name: "ppt/media/naïve.png", data: Data([1]))
         // Our writer sets bit 11; clear it in both headers to simulate.
-        var bytes = [UInt8](zip.finalize())
+        var bytes = [UInt8](try zip.finalize())
         // Local header flags at offset 6; central header flags at cd + 8.
         bytes[6] = 0; bytes[7] = 0
         let cdOffset = bytes.count - 22 - 46 - "ppt/media/naïve.png".utf8.count

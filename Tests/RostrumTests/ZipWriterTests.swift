@@ -39,7 +39,7 @@ struct ZipWriterTests {
         writer.addFile(name: "[Content_Types].xml", data: smallText, compress: false)
         writer.addFile(name: "ppt/slides/slide1.xml", data: Data(), compress: false)
         writer.addFile(name: "ppt/media/image1.bin", data: blob, compress: false)
-        return writer.finalize()
+        return try writer.finalize()
     }
 
     private static func makeArchive() -> Data {
@@ -47,7 +47,7 @@ struct ZipWriterTests {
         writer.addFile(name: "[Content_Types].xml", data: smallText)
         writer.addFile(name: "ppt/slides/slide1.xml", data: Data())
         writer.addFile(name: "ppt/media/image1.bin", data: blob)
-        return writer.finalize()
+        return try writer.finalize()
     }
 
     private static func writeTempArchive(_ archive: Data) throws -> URL {
@@ -85,7 +85,7 @@ struct ZipWriterTests {
     @Test("Empty writer emits just a valid EOCD record")
     func emptyArchive() {
         let writer = ZipWriter()
-        let archive = writer.finalize()
+        let archive = try writer.finalize()
         #expect(archive.count == 22)
         #expect(Array(archive.prefix(4)) == [0x50, 0x4B, 0x05, 0x06])
         // Every remaining field (counts, sizes, offsets, comment length) is zero.

@@ -158,47 +158,6 @@ public final class OPCPackage {
         "mp4", "m4v", "mov", "avi", "wmv", "mp3", "m4a",
     ]
 
-    /// Reject what a non-Zip64 archive cannot represent, before `ZipWriter`
-    /// traps on it.
-    ///
-    /// Those limits are `precondition`s there, which is right for a caller
-    /// assembling an archive by hand and wrong here: every one of these values
-    /// can arrive in a file somebody else wrote, and saving a deck you just
-    /// opened must not abort the host process. Reporting them is not Zip64
-    /// support — writing archives that genuinely exceed the 32-bit fields is
-    /// still a feature on the roadmap — but it turns the last write-path traps
-    /// into errors a caller can catch.
-    private func checkArchiveLimits() throws {
-        // Each part contributes its own entry plus, when it has any, a .rels
-        // entry; the content-types stream and package rels add two more.
-        let withRels = parts.values.filter { !$0.rels.isEmpty }.count
-        let entryCount = parts.count + withRels + 2
-        guard entryCount <= 0xFFFF else {
-            throw RostrumError.packageInvalid(
-                "package holds \(entryCount) zip entries; a non-Zip64 archive allows 65535")
-        }
-        var total = 0
-        for (uri, part) in parts {
-            let length = uri.memberName.utf8.count
-            guard length <= 0xFFFF else {
-                throw RostrumError.packageInvalid(
-                    "part name is \(length) bytes; a zip entry name cannot exceed 65535")
-            }
-            guard part.blob.count <= 0xFFFF_FFFF else {
-                throw RostrumError.packageInvalid(
-                    "part \(uri.value) is \(part.blob.count) bytes; a non-Zip64 entry allows "
-                        + "4294967295")
-            }
-            total += part.blob.count
-        }
-        // Local-header offsets are 32-bit too, so the archive as a whole has
-        // the same ceiling even when every individual part is under it.
-        guard total <= 0xFFFF_FFFF else {
-            throw RostrumError.packageInvalid(
-                "package payload is \(total) bytes; a non-Zip64 archive addresses 4294967295")
-        }
-    }
-
     // MARK: - Writing
 
     /// Serialize to zip bytes. Deterministic: [Content_Types].xml first, then
@@ -208,10 +167,6 @@ public final class OPCPackage {
         for part in parts.values {
             part.flushIfDirty()
         }
-        // ZipWriter's format limits are preconditions — right for a caller
-        // building an archive by hand, wrong here, where the part names came
-        // out of a file somebody else wrote. Report them instead.
-        try checkArchiveLimits()
         var zip = ZipWriter()
         zip.addFile(name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
         if !rels.isEmpty {
@@ -226,6 +181,6 @@ public final class OPCPackage {
                 zip.addFile(name: uri.relsURI.memberName, data: part.rels.serialized())
             }
         }
-        return zip.finalize()
+        return try zip.finalize()
     }
 }

@@ -56,7 +56,7 @@ import Testing
             }
             writer.addFile(name: name, data: bytes)
         }
-        return writer.finalize()
+        return try writer.finalize()
     }
 
     @Test func aRelativePartNameThrowsRatherThanAbortingTheProcess() throws {
@@ -336,19 +336,36 @@ import Testing
             sldId[attribute: "id"] = "999999"   // resolves nowhere → index 0
         }
         deck.presentationPart.markDirty()
+        // The fixture must actually produce the duplicate this test is named
+        // for, or it proves nothing: with every sldId unresolvable, both
+        // sections now report the same start slide.
+        let startsBefore = try deck.sections.boundaries().map(\.startSlide)
+        #expect(startsBefore.count > Set(startsBefore).count,
+                "fixture did not create duplicate section starts: \(startsBefore)")
 
-        // Adding another section must not abort the process.
-        _ = try? deck.sections.add("Two", startingAtSlide: 1)
+        // Adding another must not abort, and must succeed — a `try?` here
+        // would pass whether the call worked or threw.
+        let added = try deck.sections.add("Two", startingAtSlide: 1)
+        #expect(added.name == "Two")
+        // What gets written must satisfy set(_:)'s own rule.
+        let startsAfter = try deck.sections.boundaries().map(\.startSlide)
+        #expect(startsAfter == startsAfter.sorted())
+        #expect(startsAfter.count == Set(startsAfter).count)
     }
 
     @Test func tooManyPartsIsReportedNotTrapped() throws {
         // ZipWriter's 0xFFFF entry ceiling is a precondition. A deck can carry
         // that many parts, and saving one you just opened must not abort.
         let deck = try Presentation()
-        for n in 0..<0xFFFF {
+        let before = deck.package.parts.count
+        // Land exactly on the ceiling rather than far past it, so the check is
+        // exercised at its boundary — the place an off-by-one would hide.
+        while deck.package.parts.count + 2 <= 0xFFFF {
+            let n = deck.package.parts.count
             deck.package.addPart(uri: PackURI("/ppt/media/pad\(n).png"),
                                  contentType: ContentType.png, blob: Data())
         }
+        #expect(deck.package.parts.count > before)
         #expect(throws: RostrumError.self) { _ = try deck.serializedData() }
     }
 
@@ -380,6 +397,60 @@ import Testing
         #expect(throws: RostrumError.self) { _ = try table.cell(1, 2) }
         // The cells that do exist still read.
         #expect(try table.cell(1, 1).text == "")
+    }
+
+    /// A table whose grid claims three columns while its second row has two.
+    private func raggedTable(_ deck: Presentation) throws -> Table {
+        let table = try deck.slides[0].shapes.addTable(
+            rows: 2, columns: 3,
+            frame: Rect(x: .zero, y: .zero, width: .inches(6), height: .inches(2)))
+        let secondRow = table.tbl.children(named: "a:tr")[1]
+        secondRow.removeChild(secondRow.children(named: "a:tc")[2])
+        try deck.slides[0].part.markDirty()
+        return table
+    }
+
+    @Test func bulkStylingSkipsCellsARaggedRowDoesNotHave() throws {
+        // header/styleBanded/cellPadding all iterate 0..<columnCount. The
+        // tolerant branch each gained had no test that reached it.
+        let deck = try Presentation()
+        let table = try raggedTable(deck)
+        let style = deck.style
+        table.header(style: style)
+        table.styleBanded(style: style)
+        table.cellPadding(.points(4))
+        // The cells that exist are styled; the missing one is simply absent.
+        #expect(try table.cell(1, 1).tc.firstChild(named: "a:tcPr") != nil)
+        #expect(throws: RostrumError.self) { _ = try table.cell(1, 2) }
+        #expect(try deck.validate().isEmpty)
+    }
+
+    @Test func styleBandedOnAZeroRowTableDoesNotBuildABackwardsRange() throws {
+        // With a header, the loop starts at 1; a zero-row table made that
+        // 1..<0, which is a trap rather than an empty range.
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(
+            rows: 1, columns: 1,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
+        table.tbl.removeChildren(named: "a:tr")
+        try deck.slides[0].part.markDirty()
+        #expect(table.rowCount == 0)
+        table.styleBanded(style: deck.style)
+    }
+
+    @Test func aRefusedMergeLeavesTheTableExactlyAsItWas() throws {
+        // merge destroys covered cells' text as it goes. Throwing part-way
+        // through would leave a half-merged table with text already gone.
+        let deck = try Presentation()
+        let table = try raggedTable(deck)
+        try table.cell(0, 0).text = "keep me"
+        let before = table.tbl.serialized()
+
+        #expect(throws: RostrumError.self) {
+            try table.merge(row: 0, column: 0, rowSpan: 2, columnSpan: 3)
+        }
+        #expect(table.tbl.serialized() == before, "a refused merge must change nothing")
+        #expect(try table.cell(0, 0).text == "keep me")
     }
 
     @Test func truncatedValidDeckThrowsNotCrash() throws {

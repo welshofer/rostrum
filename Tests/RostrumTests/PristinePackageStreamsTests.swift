@@ -116,7 +116,7 @@ import Testing
             }
             zip.addFile(name: name, data: bytes)
         }
-        return zip.finalize()
+        return try zip.finalize()
     }
 
     @Test func aForeignDeckKeepsItsOwnRelsAndContentTypesBytes() throws {

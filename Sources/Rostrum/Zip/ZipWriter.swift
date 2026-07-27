@@ -64,11 +64,24 @@ public struct ZipWriter {
     /// that yields a smaller payload, otherwise stored; pass false to skip the
     /// attempt for already-compressed data (PNG/JPEG/nested zips).
     public mutating func addFile(name: String, data: Data, compress: Bool = true) {
-        precondition(entries.count < 0xFFFF, "ZipWriter: more than 0xFFFF entries")
         let nameBytes = Data(name.utf8)
-        precondition(nameBytes.count <= 0xFFFF, "ZipWriter: entry name longer than 0xFFFF bytes")
-        precondition(UInt64(data.count) <= 0xFFFF_FFFF, "ZipWriter: entry data exceeds 32-bit size field")
-        precondition(nextOffset <= 0xFFFF_FFFF, "ZipWriter: local header offset exceeds 32-bit field")
+        // Record and skip rather than trap. These are the 32-bit fields a
+        // non-Zip64 archive has, and every one can be exceeded by a deck that
+        // arrived as a file — saving what you just opened must not abort the
+        // host. `finalize()` reports it. Returning early also matters because
+        // the UInt32 conversions below are themselves trapping.
+        if entries.count >= 0xFFFF {
+            return note("more than 65535 entries")
+        }
+        if nameBytes.count > 0xFFFF {
+            return note("an entry name is \(nameBytes.count) bytes, over the 65535 name field")
+        }
+        if UInt64(data.count) > 0xFFFF_FFFF {
+            return note("entry \(name) is \(data.count) bytes, over the 4294967295 size field")
+        }
+        if nextOffset > 0xFFFF_FFFF {
+            return note("the archive passes the 4294967295 offset field at entry \(name)")
+        }
 
         var method = Self.methodStored
         var payload = data
@@ -92,11 +105,29 @@ public struct ZipWriter {
 
         // 30-byte fixed local header + name + payload.
         nextOffset += 30 + UInt64(nameBytes.count) + UInt64(payload.count)
-        precondition(nextOffset <= 0xFFFF_FFFF, "ZipWriter: archive size exceeds 32-bit offset fields")
+    }
+
+    /// The first limit an entry exceeded, if any. `finalize()` throws on it.
+    private var violation: String?
+
+    private mutating func note(_ message: String) {
+        if violation == nil { violation = message }
     }
 
     /// Produce the complete archive bytes (entries + central directory + EOCD).
-    public func finalize() -> Data {
+    ///
+    /// - Throws: `RostrumError.packageInvalid` when an entry exceeded one of
+    ///   the zip format's 32-bit fields. Writing archives that genuinely need
+    ///   Zip64 is a separate, unimplemented feature; this is the difference
+    ///   between reporting that and aborting the process.
+    public func finalize() throws -> Data {
+        if let violation {
+            throw RostrumError.packageInvalid("cannot write this archive: \(violation)")
+        }
+        return bytes()
+    }
+
+    private func bytes() -> Data {
         var out = Data()
         out.reserveCapacity(Int(nextOffset) + entries.count * 46 + 22)
 

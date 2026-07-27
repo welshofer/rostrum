@@ -217,21 +217,29 @@ public final class Table {
 
     /// Merge a rectangular region. The origin cell absorbs the span; covered
     /// cells become merge continuations (their text is discarded).
+    ///
+    /// - Throws: if any cell in the region is missing — which a ragged foreign
+    ///   table can be. Every cell is resolved *before* the first one is
+    ///   modified, so a region that cannot be merged leaves the table exactly
+    ///   as it was rather than half-merged with text already destroyed.
     public func merge(row: Int, column: Int, rowSpan: Int, columnSpan: Int) throws {
         precondition(rowSpan >= 1 && columnSpan >= 1)
+        var resolved: [(row: Int, column: Int, tc: XML.Element)] = []
         for r in row..<(row + rowSpan) {
             for c in column..<(column + columnSpan) {
-                let tc = try cell(r, c).tc
-                if r == row && c == column {
-                    tc[attribute: "gridSpan"] = columnSpan > 1 ? String(columnSpan) : nil
-                    tc[attribute: "rowSpan"] = rowSpan > 1 ? String(rowSpan) : nil
-                } else {
-                    if c > column { tc[attribute: "hMerge"] = "1" }
-                    if r > row { tc[attribute: "vMerge"] = "1" }
-                    if let txBody = tc.firstChild(named: "a:txBody") {
-                        txBody.removeChildren(named: "a:p")
-                        txBody.appendElement(XML.Element("a:p"))
-                    }
+                resolved.append((r, c, try cell(r, c).tc))
+            }
+        }
+        for (r, c, tc) in resolved {
+            if r == row && c == column {
+                tc[attribute: "gridSpan"] = columnSpan > 1 ? String(columnSpan) : nil
+                tc[attribute: "rowSpan"] = rowSpan > 1 ? String(rowSpan) : nil
+            } else {
+                if c > column { tc[attribute: "hMerge"] = "1" }
+                if r > row { tc[attribute: "vMerge"] = "1" }
+                if let txBody = tc.firstChild(named: "a:txBody") {
+                    txBody.removeChildren(named: "a:p")
+                    txBody.appendElement(XML.Element("a:p"))
                 }
             }
         }

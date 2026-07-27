@@ -36,9 +36,11 @@ public extension Table {
         if header { self.header(style: style, align: align, anchor: anchor) }
         let b1 = band1 ?? style.surface
         let b2 = band2 ?? style.primary.mixed(with: style.surface, amount: 0.90)
+        // A zero-row table would make this 1..<0, which is not an empty range
+        // but a trap — Range requires lowerBound <= upperBound.
         let start = header ? 1 : 0
         var band = 0
-        for r in start..<rowCount {
+        for r in start..<Swift.max(start, rowCount) {
             let rowFill = band % 2 == 0 ? b1 : b2
             var ts = style.type(role)
             ts.color = style.textColor(on: rowFill)

@@ -21,7 +21,7 @@ enum ChartWorkbook {
         zip.addFile(name: "xl/theme/theme1.xml", data: Data(themeXML.utf8))
         zip.addFile(name: "docProps/core.xml", data: Data(coreXML.utf8))
         zip.addFile(name: "docProps/app.xml", data: Data(appXML.utf8))
-        return zip.finalize()
+        return try zip.finalize()
     }
 
     /// The Edit-Data workbook for a scatter chart: per series i, x-values in
@@ -39,7 +39,7 @@ enum ChartWorkbook {
         zip.addFile(name: "xl/theme/theme1.xml", data: Data(themeXML.utf8))
         zip.addFile(name: "docProps/core.xml", data: Data(coreXML.utf8))
         zip.addFile(name: "docProps/app.xml", data: Data(appXML.utf8))
-        return zip.finalize()
+        return try zip.finalize()
     }
 
     static func makeBubble(data: BubbleChartData) -> Data {
@@ -54,7 +54,7 @@ enum ChartWorkbook {
         zip.addFile(name: "xl/theme/theme1.xml", data: Data(themeXML.utf8))
         zip.addFile(name: "docProps/core.xml", data: Data(coreXML.utf8))
         zip.addFile(name: "docProps/app.xml", data: Data(appXML.utf8))
-        return zip.finalize()
+        return try zip.finalize()
     }
 
     private static func sharedStringsXMLBubble(_ data: BubbleChartData) -> String {
