@@ -1032,11 +1032,21 @@ import Testing
                 != PackURI.resolve(target: "slide1.xml", relativeTo: "/ppt/slides").value)
 
         // An encoded target resolves to the part a conformant package actually
-        // stores under that name — end to end, not just as a string.
+        // stores under that name — end to end, not just as a string. The deck
+        // has no pictures, so its [Content_Types].xml declares no png Default
+        // and the injected entry would have no content type; declare one.
         var writer = ZipWriter()
         let reader = try ZipReader(data: try validDeckBytes())
         for name in reader.entryNames {
-            writer.addFile(name: name, data: try reader.data(forEntry: name))
+            var bytes = try reader.data(forEntry: name)
+            if name == PackURI.contentTypes.memberName {
+                let text = try #require(String(data: bytes, encoding: .utf8))
+                #expect(!text.contains("Extension=\"png\""), "fixture already types png")
+                bytes = Data(text.replacingOccurrences(
+                    of: "</Types>",
+                    with: "<Default Extension=\"png\" ContentType=\"image/png\"/></Types>").utf8)
+            }
+            writer.addFile(name: name, data: bytes)
         }
         writer.addFile(name: "ppt/media/my%20image.png", data: Data([0x89, 0x50, 0x4E, 0x47]))
         let package = try OPCPackage.read(data: try writer.finalize())
