@@ -49,6 +49,16 @@ public final class Relationships {
 
     public var isEmpty: Bool { items.isEmpty }
 
+    /// Should `serialize()` write a `.rels` entry for this collection?
+    ///
+    /// The one definition of that question. It was spelled out at four sites —
+    /// two deciding what to write and two deciding which carried entries would
+    /// collide with it — and those four had to agree exactly or a carried entry
+    /// gets wrongly kept (two members, one name) or wrongly dropped (silent
+    /// loss). Four copies of a rule is how every previous defect in this area
+    /// started; one definition cannot drift.
+    var isWritten: Bool { !isEmpty || arrivedAsFile }
+
     /// Did this collection come from a `.rels` part that was in the file?
     ///
     /// Distinct from `!isEmpty`: a `<Relationships/>` with no children is legal

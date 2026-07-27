@@ -255,7 +255,7 @@ public final class OPCPackage {
         }
         var zip = ZipWriter()
         zip.addFile(name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
-        if !rels.isEmpty || rels.arrivedAsFile {
+        if rels.isWritten {
             zip.addFile(name: PackURI.packageRels.memberName, data: rels.serialized())
         }
         // Every name this method will derive from a live part. A carried entry
@@ -275,12 +275,12 @@ public final class OPCPackage {
         // the carried orphan. An ordering argument cannot close that; only
         // checking the names can.
         var derived: Set<String> = [PackURI.contentTypes.memberName]
-        if !rels.isEmpty || rels.arrivedAsFile {
+        if rels.isWritten {
             derived.insert(PackURI.packageRels.memberName)
         }
         for (uri, part) in parts {
             derived.insert(uri.memberName)
-            if !part.rels.isEmpty || part.rels.arrivedAsFile {
+            if part.rels.isWritten {
                 derived.insert(uri.relsURI.memberName)
             }
         }
@@ -320,11 +320,13 @@ public final class OPCPackage {
             // waste CPU re-DEFLATEing them; XML parts compress well.
             let alreadyCompressed = Self.storedExtensions.contains(uri.ext)
             zip.addFile(name: uri.memberName, data: part.blob, compress: !alreadyCompressed)
-            // `arrivedAsFile`, not just `!isEmpty`: a `<Relationships/>` with
-            // no children is legal OPC and some producers emit it, and gating
-            // on emptiness dropped it on resave. A part Rostrum created with no
-            // relationships still gets no `.rels` entry.
-            if !part.rels.isEmpty || part.rels.arrivedAsFile {
+            // `isWritten`, not `!isEmpty`: a `<Relationships/>` with no
+            // children is legal OPC and some producers emit it, and gating on
+            // emptiness dropped it on resave. A part Rostrum created with no
+            // relationships still gets no `.rels` entry. The same predicate
+            // decides which carried entries would collide, which is why it is
+            // one definition rather than a condition repeated at four sites.
+            if part.rels.isWritten {
                 zip.addFile(name: uri.relsURI.memberName, data: part.rels.serialized())
             }
         }
