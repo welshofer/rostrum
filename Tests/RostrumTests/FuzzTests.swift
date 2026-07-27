@@ -955,6 +955,51 @@ import Testing
         #expect(try Presentation(data: resaved).serializedData() == resaved)
     }
 
+    @Test func aPercentEncodedRelationshipTargetResolvesToItsPart() throws {
+        // A .rels Target is a URI reference. A part named "image 1.png" is
+        // referenced as "image%201.png" by any conformant writer, and resolving
+        // without decoding produced a URI matching no part — the picture
+        // silently failed to load, with no error anywhere.
+        #expect(PackURI.resolve(target: "../media/my%20image.png",
+                                relativeTo: "/ppt/slides").value
+                == "/ppt/media/my image.png")
+        // Non-ASCII names are the common real case: UTF-8 bytes, each encoded.
+        #expect(PackURI.resolve(target: "../media/caf%C3%A9.png",
+                                relativeTo: "/ppt/slides").value
+                == "/ppt/media/caf\u{00E9}.png")
+        // An absolute target decodes too, and "." / ".." still work.
+        #expect(PackURI.resolve(target: "/ppt/media/a%20b.png", relativeTo: "/ppt/slides").value
+                == "/ppt/media/a b.png")
+        #expect(PackURI.resolve(target: "./x%2Dy.xml", relativeTo: "/ppt").value == "/ppt/x-y.xml")
+
+        // An encoded slash must NOT become a separator. Decoding it would put
+        // a "/" inside one segment, giving two PackURIs that differ as strings
+        // but derive one relsURI — the aliasing class hasEmptySegment exists to
+        // prevent. The segment is kept as written instead.
+        #expect(PackURI.resolve(target: "a%2Fb.png", relativeTo: "/ppt/media").value
+                == "/ppt/media/a%2Fb.png")
+        #expect(!PackURI.hasEmptySegment("ppt/media/a%2Fb.png"))
+
+        // An invalid escape is left as written rather than dropped: a writer
+        // that emitted a bare "%" meant a "%".
+        #expect(PackURI.resolve(target: "100%.png", relativeTo: "/ppt/media").value
+                == "/ppt/media/100%.png")
+        #expect(PackURI.resolve(target: "a%zz.png", relativeTo: "/ppt/media").value
+                == "/ppt/media/a%zz.png")
+        #expect(PackURI.resolve(target: "trailing%.png", relativeTo: "/ppt/media").value
+                == "/ppt/media/trailing%.png")
+        // And %25 round-trips to a literal percent, which is how a conformant
+        // writer expresses one.
+        #expect(PackURI.resolve(target: "100%25.png", relativeTo: "/ppt/media").value
+                == "/ppt/media/100%.png")
+
+        // Names without a percent are untouched, so nothing that resolves today
+        // starts resolving differently.
+        #expect(PackURI.resolve(target: "../slideLayouts/slideLayout1.xml",
+                                relativeTo: "/ppt/slides").value
+                == "/ppt/slideLayouts/slideLayout1.xml")
+    }
+
     @Test func aBudgetedPresentationOpensAnOrdinaryDeck() throws {
         // The budget must not get in the way of a real deck: a normal
         // presentation opens under a modest ceiling and reads back intact.

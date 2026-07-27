@@ -95,16 +95,63 @@ public struct PackURI: Hashable, Sendable, CustomStringConvertible {
     ///                     relativeTo: "/ppt/slideMasters")
     ///     // → /ppt/slideLayouts/slideLayout1.xml
     public static func resolve(target: String, relativeTo baseURI: String) -> PackURI {
-        if target.hasPrefix("/") { return PackURI(target) }
-        var stack = baseURI.split(separator: "/").map(String.init)
+        // A `.rels` Target is a URI reference, not a raw name, so a part called
+        // "/ppt/media/my image.png" is written "my%20image.png" by any
+        // conformant writer. Resolving without decoding yields a URI that
+        // matches no part, and the picture silently fails to load.
+        //
+        // Decode per SEGMENT, after splitting: decoding first would turn an
+        // encoded "%2F" — a literal slash inside one name — into a separator.
+        var stack: [String] = target.hasPrefix("/") ? [] : baseURI.split(separator: "/").map(String.init)
         for segment in target.split(separator: "/") {
             switch segment {
             case ".": continue
             case "..": if !stack.isEmpty { stack.removeLast() }
-            default: stack.append(String(segment))
+            default: stack.append(percentDecoded(String(segment)))
             }
         }
         return PackURI("/" + stack.joined(separator: "/"))
+    }
+
+    /// Percent-decode one path segment (RFC 3986).
+    ///
+    /// An invalid escape is left as written rather than dropped or replaced:
+    /// `100%.png` is not legal encoding, but a writer emitted it and the byte
+    /// it meant is `%`. A conformant writer that means a literal `%` sends
+    /// `%25`, which decodes back to exactly that.
+    ///
+    /// A decode that would introduce a `/` is refused outright and the segment
+    /// kept as written. `%2F` inside one segment is not a legal part name — OPC
+    /// segments are `pchar`, which excludes `/` — and honouring it would let a
+    /// target manufacture a separator, producing two `PackURI`s that differ as
+    /// strings but derive one `relsURI`. That is precisely the aliasing class
+    /// `hasEmptySegment` exists to prevent; decoding must not reopen it.
+    static func percentDecoded(_ segment: String) -> String {
+        guard segment.contains("%") else { return segment }
+        func hex(_ b: UInt8) -> UInt8? {
+            switch b {
+            case 0x30...0x39: return b - 0x30            // 0-9
+            case 0x41...0x46: return b - 0x41 + 10       // A-F
+            case 0x61...0x66: return b - 0x61 + 10       // a-f
+            default: return nil
+            }
+        }
+        let bytes = Array(segment.utf8)
+        var out: [UInt8] = []
+        out.reserveCapacity(bytes.count)
+        var i = 0
+        while i < bytes.count {
+            if bytes[i] == 0x25, i + 2 < bytes.count,
+               let high = hex(bytes[i + 1]), let low = hex(bytes[i + 2]) {
+                out.append(high << 4 | low)
+                i += 3
+            } else {
+                out.append(bytes[i])
+                i += 1
+            }
+        }
+        let decoded = String(decoding: out, as: UTF8.self)
+        return decoded.contains("/") ? segment : decoded
     }
 
     /// Express `other` relative to this part's base URI, for writing
