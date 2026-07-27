@@ -89,11 +89,16 @@ public struct PackURI: Hashable, Sendable, CustomStringConvertible {
     }
 
     /// Resolve a relationship target against a source part's base URI.
-    /// Handles "./", "../" and absolute ("/…") targets.
     ///
     ///     PackURI.resolve(target: "../slideLayouts/slideLayout1.xml",
     ///                     relativeTo: "/ppt/slideMasters")
     ///     // → /ppt/slideLayouts/slideLayout1.xml
+    ///
+    /// A RELATIVE target gets "./" and "../" resolved against `baseURI`. An
+    /// ABSOLUTE target is taken verbatim, dot segments and all — an asymmetry,
+    /// but the long-standing behaviour, and no producer writes absolute targets
+    /// with dot segments.
+    ///
     /// Targets are matched VERBATIM, without percent-decoding, and that is
     /// deliberate — an earlier commit decoded them and had to be reverted.
     ///
@@ -106,10 +111,13 @@ public struct PackURI: Hashable, Sendable, CustomStringConvertible {
     /// shares, so the lookup misses and the picture silently fails to load:
     /// precisely the bug the decoding was meant to fix.
     ///
-    /// Decoding is also many-to-one, which is worse than useless here.
-    /// `slide%31.xml` decodes onto `slide1.xml`, and invalid UTF-8 escapes all
-    /// funnel to U+FFFD, so distinct parts collapse onto one key — the aliasing
-    /// class this file spends `hasEmptySegment` preventing.
+    /// Decoding is also many-to-one: `slide%31.xml` decodes onto `slide1.xml`,
+    /// and invalid UTF-8 escapes all funnel to U+FFFD. Note precisely what that
+    /// does and does not do — parts are keyed by their raw zip member name, so
+    /// two parts never collapse into one; what collapses is *resolution*, and a
+    /// relationship ends up pointing at a different part than the one it names.
+    /// Wrong-part is not the same failure as `hasEmptySegment`'s two-names-one-
+    /// relsURI, and calling it that overstated the case.
     ///
     /// **Open, deliberately:** a producer that writes the zip item name RAW but
     /// the Target ENCODED is internally inconsistent, and neither spelling

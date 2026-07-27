@@ -311,8 +311,8 @@ Hardening backlog (schedule opportunistically):
   passes vacuously. It has been guarding nothing this whole time — the decks
   are the gate.
 
-  ~~`PackURI` does no percent-decoding~~ — **investigated and deliberately NOT
-  done.** Decoding was implemented, reviewed, and reverted the same day. A part
+  `PackURI` percent-decoding — **investigated, implemented, reverted, and left
+  open deliberately.** (Not struck through: the underlying gap is still there.) Decoding was implemented, reviewed, and reverted the same day. A part
   name is `pchar` segments and the zip item name is the part name minus its
   leading slash, so a conformant package is internally consistent in *encoded*
   space: item name, `Override/@PartName` and `Target` all carry the same

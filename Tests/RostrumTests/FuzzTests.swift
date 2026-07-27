@@ -978,21 +978,39 @@ import Testing
             <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>
             """.utf8)
         let reader = try ZipReader(data: try validDeckBytes())
+        let liveRels = "ppt/slides/_rels/slide2.xml.rels"
         var writer = ZipWriter()
         for name in reader.entryNames {
-            writer.addFile(name: name, data: try reader.data(forEntry: name))
+            // (a) an EMPTY rels stream for a part that exists. It must REPLACE
+            // slide2's rels, not be appended alongside it: appending would put
+            // two members under one name, which is a malformed archive testing
+            // something other than what this says — and last-wins would make
+            // the assertions pass for the wrong reason.
+            let bytes = name == liveRels ? empty : try reader.data(forEntry: name)
+            writer.addFile(name: name, data: bytes)
         }
-        // (a) an empty rels stream for a part that exists, and (b) an orphan.
-        writer.addFile(name: "ppt/slides/_rels/slide2.xml.rels", data: empty)
+        // (b) two orphans, written in REVERSE sorted order so the output order
+        // is the sorting's doing rather than the input's.
         writer.addFile(name: "ppt/slides/_rels/slide99.xml.rels", data: empty)
+        writer.addFile(name: "ppt/slides/_rels/slide98.xml.rels", data: empty)
         let original = try writer.finalize()
 
-        // The fixture must really contain both, or it proves nothing.
+        // The fixture must really contain all three shapes, or it proves
+        // nothing — and must not itself be a duplicate-name archive.
         let before = try ZipReader(data: original)
-        #expect(before.entryNames.contains("ppt/slides/_rels/slide2.xml.rels"))
-        #expect(before.entryNames.contains("ppt/slides/_rels/slide99.xml.rels"))
+        #expect(before.centralDirectoryRecords.count == before.entryNames.count,
+                "the fixture must not contain duplicate names")
+        #expect(before.entryNames.contains(liveRels))
+        #expect(before.entryNames.contains("ppt/slides/slide2.xml"),
+                "slide2 must EXIST, or arrivedAsFile is not what is under test")
+        #expect(try before.data(forEntry: liveRels) == empty,
+                "slide2's rels must be the empty one")
+        for orphan in ["ppt/slides/_rels/slide98.xml.rels", "ppt/slides/_rels/slide99.xml.rels"] {
+            #expect(before.entryNames.contains(orphan))
+        }
         #expect(!before.entryNames.contains("ppt/slides/slide99.xml"),
                 "slide99's rels must be an ORPHAN for this to test what it says")
+        #expect(!before.entryNames.contains("ppt/slides/slide98.xml"))
 
         let resaved = try Presentation(data: original).serializedData()
         let after = try ZipReader(data: resaved)
@@ -1005,8 +1023,24 @@ import Testing
         }
         // No name may be written twice — carrying an orphan and deriving the
         // real entry for the same part would give one member two entries.
+        // `centralDirectoryRecords` is the RAW record list; `entryNames` is one
+        // per distinct name, so a difference is exactly a duplicate.
         #expect(after.centralDirectoryRecords.count == after.entryNames.count,
                 "an entry name was emitted more than once")
+        // Orphans come out sorted, not in arrival order — the input had 99
+        // before 98.
+        let orphansOut = after.entryNames.filter { $0.contains("slide9") }
+        #expect(orphansOut == ["ppt/slides/_rels/slide98.xml.rels",
+                               "ppt/slides/_rels/slide99.xml.rels"])
+
+        // And the collision case the ordering argument could not close: adding
+        // a slide can claim the very name an orphan was carried under, because
+        // the allocator scans `parts` and an orphan reserves nothing.
+        let deck = try Presentation(data: original)
+        try deck.slides.add()
+        let mutated = try ZipReader(data: try deck.serializedData())
+        #expect(mutated.centralDirectoryRecords.count == mutated.entryNames.count,
+                "adding a part must not collide with a carried orphan")
         // And resaving stays a fixed point.
         #expect(try Presentation(data: resaved).serializedData() == resaved)
     }
@@ -1059,6 +1093,23 @@ import Testing
         #expect(PackURI.resolve(target: "../slideLayouts/slideLayout1.xml",
                                 relativeTo: "/ppt/slides").value
                 == "/ppt/slideLayouts/slideLayout1.xml")
+
+        // The ABSOLUTE branch is the one the revert actually changed, and the
+        // replacement test dropped every assertion about it. An absolute target
+        // is taken verbatim — no dot-segment removal, no rejoining — which is
+        // the long-standing behaviour, not a consequence of the decoding that
+        // came and went.
+        #expect(PackURI.resolve(target: "/ppt/media/img.png", relativeTo: "/ppt/slides").value
+                == "/ppt/media/img.png")
+        #expect(PackURI.resolve(target: "/ppt/./media/img.png", relativeTo: "/ppt/slides").value
+                == "/ppt/./media/img.png")
+        #expect(PackURI.resolve(target: "/ppt//media/img.png", relativeTo: "/ppt/slides").value
+                == "/ppt//media/img.png")
+        // Relative targets DO get dot-segment handling, which is the asymmetry.
+        #expect(PackURI.resolve(target: "./media/img.png", relativeTo: "/ppt").value
+                == "/ppt/media/img.png")
+        #expect(PackURI.resolve(target: "../media/img.png", relativeTo: "/ppt/slides").value
+                == "/ppt/media/img.png")
     }
 
     @Test func aBudgetedPresentationOpensAnOrdinaryDeck() throws {

@@ -258,16 +258,45 @@ public final class OPCPackage {
         if !rels.isEmpty || rels.arrivedAsFile {
             zip.addFile(name: PackURI.packageRels.memberName, data: rels.serialized())
         }
-        // Directory placeholders next, sorted — a fixed position and a fixed
-        // order, so the output is deterministic and resaving is a fixed point.
-        for entry in orphanRelationshipStreams.sorted(by: { $0.name < $1.name }) {
+        // Every name this method will derive from a live part. A carried entry
+        // is dropped when it collides with one, because two zip members under
+        // one name is a malformed package that nothing here would notice: the
+        // reader's duplicate handling is last-wins for byte-identical names, so
+        // the carried bytes would silently vanish on reopen and the resave
+        // would stop being a fixed point.
+        //
+        // This has to be computed rather than reasoned about. `read` classifies
+        // a `.rels` entry as an orphan against the parts that existed AT READ
+        // TIME, and every part-name allocator (`Slides.nextSlideURI`,
+        // `Notes.createNotesPart`, `imagePart`, `DeckMerge`) picks the lowest
+        // free slot from `parts` alone — so opening a deck whose producer left
+        // `_rels/slide2.xml.rels` behind and then calling `slides.add()` gives
+        // the new slide exactly that name, and its derived rels collides with
+        // the carried orphan. An ordering argument cannot close that; only
+        // checking the names can.
+        var derived: Set<String> = [PackURI.contentTypes.memberName]
+        if !rels.isEmpty || rels.arrivedAsFile {
+            derived.insert(PackURI.packageRels.memberName)
+        }
+        for (uri, part) in parts {
+            derived.insert(uri.memberName)
+            if !part.rels.isEmpty || part.rels.arrivedAsFile {
+                derived.insert(uri.relsURI.memberName)
+            }
+        }
+
+        // Carried entries next, each sorted — a fixed position and a fixed
+        // order, so output is deterministic and resaving is a fixed point.
+        for entry in orphanRelationshipStreams.sorted(by: { $0.name < $1.name })
+        where !derived.contains(entry.name) {
             zip.addFile(name: entry.name, data: entry.data)
         }
-        for entry in directoryEntries.sorted(by: { $0.name < $1.name }) {
+        for entry in directoryEntries.sorted(by: { $0.name < $1.name })
+        where !derived.contains(entry.name) {
             // Compress like any other entry. A placeholder is normally empty,
-            // where compression is a no-op either way; `compress: false` only
-            // mattered for a hostile non-empty one, and there it made Rostrum
-            // write out the full expansion of something it had just inflated.
+            // where compression is a no-op either way; the no-compress flag
+            // only mattered for a hostile non-empty one, and there it made
+            // Rostrum write out the full expansion of what it had inflated.
             zip.addFile(name: entry.name, data: entry.data)
         }
         for (uri, part) in parts.sorted(by: { $0.key.value < $1.key.value }) {
