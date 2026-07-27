@@ -75,6 +75,14 @@ public final class OPCPackage {
     public let rels: Relationships
     public internal(set) var contentTypes: ContentTypesMap
 
+    /// Zip entries whose name ends in "/": directory placeholders, which some
+    /// writers emit and which are not parts. Kept verbatim so an untouched deck
+    /// still round-trips every entry — dropping them silently made a foreign
+    /// deck come back with fewer entries than it went in with, which is exactly
+    /// what the corpus gate exists to catch. Sorted, so output stays
+    /// deterministic regardless of the order they arrived in.
+    private(set) var directoryEntries: [(name: String, data: Data)] = []
+
     public init() {
         parts = [:]
         rels = Relationships()
@@ -101,7 +109,12 @@ public final class OPCPackage {
         for name in zip.entryNames {
             if name == PackURI.contentTypes.memberName { continue }
             if name.hasSuffix(".rels") { continue }
-            if name.hasSuffix("/") { continue }  // directory placeholder entries
+            if name.hasSuffix("/") {
+                // A directory placeholder, not a part. Carry it rather than
+                // drop it: `serialize()` re-emits it, so the entry survives.
+                package.directoryEntries.append((name, try zip.data(forEntry: name)))
+                continue
+            }
             // OPC part names have no empty segments (M1.1). Rostrum has to
             // reject them rather than tolerate them, because `PackURI`'s
             // identity is its raw string while `baseURI`/`filename` split on
@@ -208,6 +221,11 @@ public final class OPCPackage {
         zip.addFile(name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
         if !rels.isEmpty {
             zip.addFile(name: PackURI.packageRels.memberName, data: rels.serialized())
+        }
+        // Directory placeholders next, sorted — a fixed position and a fixed
+        // order, so the output is deterministic and resaving is a fixed point.
+        for entry in directoryEntries.sorted(by: { $0.name < $1.name }) {
+            zip.addFile(name: entry.name, data: entry.data, compress: false)
         }
         for (uri, part) in parts.sorted(by: { $0.key.value < $1.key.value }) {
             // Refuse to write a name `read` would not give back. `PackURI`'s

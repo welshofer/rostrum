@@ -919,6 +919,42 @@ import Testing
         }
     }
 
+    @Test func directoryPlaceholderEntriesSurviveARoundTrip() throws {
+        // Some writers emit zero-length entries whose names end in "/" to mark
+        // folders. They are not parts, and the reader skipped them — so an
+        // untouched foreign deck came back with FEWER zip entries than it went
+        // in with. That is the sacred round-trip rule, and the corpus gate is
+        // already written to catch it (it asserts every `before` name is in
+        // `after`); no fixture has exercised it yet.
+        let valid = try validDeckBytes()
+        let reader = try ZipReader(data: valid)
+        var writer = ZipWriter()
+        writer.addFile(name: "ppt/media/", data: Data(), compress: false)
+        writer.addFile(name: "docProps/", data: Data(), compress: false)
+        for name in reader.entryNames {
+            writer.addFile(name: name, data: try reader.data(forEntry: name))
+        }
+        let withDirectories = try writer.finalize()
+
+        let resaved = try Presentation(data: withDirectories).serializedData()
+        let after = try ZipReader(data: resaved)
+        let names = Set(after.entryNames)
+        #expect(names.contains("ppt/media/"), "directory entry dropped on resave")
+        #expect(names.contains("docProps/"), "directory entry dropped on resave")
+        // Every entry that went in must come back, byte for byte — the same
+        // assertion the real-deck corpus gate makes.
+        let before = try ZipReader(data: withDirectories)
+        for name in before.entryNames {
+            #expect(names.contains(name), "\(name) missing after resave")
+            guard names.contains(name) else { continue }
+            #expect(try after.data(forEntry: name) == before.data(forEntry: name),
+                    "\(name) bytes changed on resave")
+        }
+        // And resaving must be a fixed point, or the corpus determinism gate
+        // fails even though the entries survive.
+        #expect(try Presentation(data: resaved).serializedData() == resaved)
+    }
+
     @Test func aBudgetedPresentationOpensAnOrdinaryDeck() throws {
         // The budget must not get in the way of a real deck: a normal
         // presentation opens under a modest ceiling and reads back intact.

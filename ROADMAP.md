@@ -301,11 +301,13 @@ Hardening backlog (schedule opportunistically):
   `String` — Swift compares by canonical equivalence, so NFC and NFD spellings
   of one name silently dropped a part and served another's bytes under it.
 
-  **Still open** from that round, both pre-existing and both round-trip rather
-  than safety: directory-placeholder entries are dropped on read and never
-  re-emitted, so a deck containing them does not round-trip byte-identically;
-  and `PackURI` does no percent-decoding, so an OPC-conformant encoded
-  relationship target never resolves to the part it names.
+  Also from that round: ~~directory-placeholder entries are dropped on read and
+  never re-emitted~~ ✅ 2026-07-27 — `OPCPackage` carries them verbatim and
+  `serialize()` re-emits them in sorted order, so an untouched deck keeps every
+  zip entry it arrived with. The corpus gate was already written to catch this
+  (it asserts every `before` name appears in `after`); no fixture had exercised
+  it. **Still open:** `PackURI` does no percent-decoding, so an OPC-conformant
+  encoded relationship target never resolves to the part it names.
 - Zip64 **write** support. Archives over 4 GB, over 65535 entries, or with a
   central directory over 4 GB are now *reported* — `ZipWriter.finalize()`
   throws `RostrumError.packageInvalid` and `OPCPackage.serialize` propagates it
