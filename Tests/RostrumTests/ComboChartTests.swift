@@ -374,4 +374,42 @@ import Testing
         let d = try labels(of: .line, position: "t")
         #expect(d.firstChild(named: "c:dLblPos")?[attribute: "val"] == "t")
     }
+
+    @Test func aPieKeepsItsFourPositionsAndDropsTheRest() throws {
+        // Unlike doughnut, a pie does place labels — this commit narrowed it
+        // from "anything the caller asks for" to the four tokens it accepts,
+        // so both directions need pinning: too strict silently loses labels a
+        // pie legitimately supports.
+        let outEnd = try labels(of: .pie, position: "outEnd")
+        #expect(outEnd.firstChild(named: "c:dLblPos")?[attribute: "val"] == "outEnd")
+        let bestFit = try labels(of: .pie, position: "bestFit")
+        #expect(bestFit.firstChild(named: "c:dLblPos")?[attribute: "val"] == "bestFit")
+
+        let sideways = try labels(of: .pie, position: "t")
+        #expect(sideways.firstChild(named: "c:dLblPos") == nil,
+                "a pie has no top/bottom/left/right label positions")
+        #expect(sideways.firstChild(named: "c:showVal")?[attribute: "val"] == "1")
+    }
+
+    @Test func theLegalityTableCoversRowsNoChartKindCanReach() throws {
+        // ChartKind cannot produce c:ofPieChart, c:bar3DChart or a
+        // percentStacked-only assertion, so those rows are pinned by calling
+        // the table directly. Otherwise they are unfalsifiable decoration.
+        func legal(_ plot: String, _ grouping: String? = nil) -> Set<String>? {
+            ChartXML.legalDataLabelPositions(plot: plot, grouping: grouping)
+        }
+        #expect(legal("c:ofPieChart") == ["bestFit", "ctr", "inEnd", "outEnd"])
+        #expect(legal("c:pieChart") == legal("c:ofPieChart"))
+        #expect(legal("c:bar3DChart", "clustered") == ["ctr", "inBase", "inEnd", "outEnd"])
+        #expect(legal("c:barChart", "percentStacked") == ["ctr", "inBase", "inEnd"],
+                "a percent-stacked bar has no outside end either")
+        #expect(legal("c:barChart", "stacked") == legal("c:barChart", "percentStacked"))
+        // A bar group with no grouping attribute at all is treated as clustered.
+        #expect(legal("c:barChart", nil) == ["ctr", "inBase", "inEnd", "outEnd"])
+        #expect(legal("c:doughnutChart")?.isEmpty == true)
+        #expect(legal("c:lineChart") == nil, "no corroborated table means no restriction")
+        #expect(legal("c:scatterChart") == nil)
+        #expect(legal("c:bubbleChart") == nil)
+        #expect(legal("c:stockChart") == nil)
+    }
 }
