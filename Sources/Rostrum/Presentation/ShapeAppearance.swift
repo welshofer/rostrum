@@ -89,7 +89,8 @@ public struct ReadLine: Equatable, Sendable {
         dashStyle = element.firstChild(named: "a:prstDash")?[attribute: "val"]
         isNone = element.firstChild(named: "a:noFill") != nil
         let solid = element.firstChild(named: "a:solidFill")
-        color = solid?.firstChild(named: "a:srgbClr")?[attribute: "val"].map(Color.init)
+        color = solid?.firstChild(named: "a:srgbClr")?[attribute: "val"]
+            .flatMap { Color(validating: $0) }
         themeScheme = solid?.firstChild(named: "a:schemeClr")?[attribute: "val"]
     }
 }

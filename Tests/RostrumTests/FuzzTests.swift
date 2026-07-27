@@ -80,7 +80,12 @@ import Testing
         let box = Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1))
         for value in ["red", "", "FFF", "80FF0000", "ff0000 ", "GGGGGG"] {
             let deck = try Presentation()
-            try deck.slides[0].shapes.addShape(.rectangle, frame: box, fill: .solid(Color("FF0000")))
+            // An explicit outline too, so the a:ln/a:solidFill/a:srgbClr path
+            // is actually exercised — ReadLine parses its color separately and
+            // was missed by the first sweep.
+            try deck.slides[0].shapes.addShape(.rectangle, frame: box,
+                                               fill: .solid(Color("FF0000")),
+                                               line: Line(color: Color("00FF00")))
             let dom = try deck.slides[0].part.dom()
             for srgb in Self.descendants(of: dom, named: "a:srgbClr") {
                 srgb[attribute: "val"] = value
@@ -100,7 +105,10 @@ import Testing
             // An unreadable color is still a fill — reporting "no fill" would
             // claim the shape inherits, which it does not.
             #expect(read.fill == .unmodeled(elementName: "a:srgbClr"))
-            _ = read.line
+            // The outline is still there — only its unreadable color is gone.
+            let line = try #require(read.line)
+            #expect(line.color == nil)
+            #expect(line.width != nil)
             _ = try reopened.slides[0].background
             #expect(reopened.theme.color(.accent1) == nil)
         }
