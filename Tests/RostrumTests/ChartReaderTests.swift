@@ -102,7 +102,7 @@ import Testing
             options: ChartOptions(title: "Results"))
         let reopened = try Presentation(data: try deck.serializedData())
         let chart = try #require(reopened.charts.first)
-        let before = try #require(try chart.part.dom())
+        let before = try chart.part.dom()
         let formulasBefore = Self.formulas(in: before)
         let colorsBefore = Self.colors(in: before)
         #expect(!formulasBefore.isEmpty)
@@ -113,7 +113,7 @@ import Testing
                                         series: [.init(name: "One", values: [1, 2, 3]),
                                                  .init(name: "Two", values: [4, 5, 6])]))
 
-        let after = try #require(try chart.part.dom())
+        let after = try chart.part.dom()
         #expect(Self.formulas(in: after) == formulasBefore, "c:f formulas must survive untouched")
         #expect(Self.colors(in: after) == colorsBefore, "series colors must survive untouched")
         #expect(after.firstChild(named: "c:chart")?.firstChild(named: "c:title") != nil)
@@ -180,7 +180,7 @@ import Testing
         #expect(updated.series[0].values == [1, nil, 3])
         #expect(updated.series[1].values == [nil, nil, nil])
 
-        let dom = try #require(try updated.part.dom())
+        let dom = try updated.part.dom()
         for cache in Self.descendants(of: dom, named: "c:numCache") {
             let ptCount = cache.firstChild(named: "c:ptCount")?[attribute: "val"]
             #expect(ptCount == "3", "ptCount not updated with the new data")
@@ -194,7 +194,7 @@ import Testing
         // so the replacement must be refused before anything is written.
         let deck = try deckWithChart()
         let chart = try #require(deck.charts.first)
-        let dom = try #require(try chart.part.dom())
+        let dom = try chart.part.dom()
         for f in Self.descendants(of: dom, named: "c:f") where f.textContent.contains("$A$") {
             f.children = [.text("Data!$C$5:$C$7")]
         }
@@ -215,7 +215,7 @@ import Testing
         // corrupts the axis; refuse instead.
         let deck = try deckWithChart()
         let chart = try #require(deck.charts.first)
-        let dom = try #require(try chart.part.dom())
+        let dom = try chart.part.dom()
         for cat in Self.descendants(of: dom, named: "c:cat") {
             guard let ref = cat.firstChild(named: "c:strRef") else { continue }
             let numRef = XML.Element("c:numRef")
@@ -238,7 +238,7 @@ import Testing
     @Test func refusesAMultiLevelCategoryAxis() throws {
         let deck = try deckWithChart()
         let chart = try #require(deck.charts.first)
-        let dom = try #require(try chart.part.dom())
+        let dom = try chart.part.dom()
         for cat in Self.descendants(of: dom, named: "c:cat") {
             cat.children = [.element(XML.Element("c:multiLvlStrRef"))]
         }
@@ -256,7 +256,7 @@ import Testing
         // reports half a chart and would let replaceData half-update it.
         let deck = try deckWithChart()
         let chart = try #require(deck.charts.first)
-        let dom = try #require(try chart.part.dom())
+        let dom = try chart.part.dom()
         let plotArea = try #require(dom.firstChild(named: "c:chart")?.firstChild(named: "c:plotArea"))
         let bar = try #require(plotArea.childElements.first { $0.name == "c:barChart" })
         // Move the second series into a new lineChart group, as a combo does.
@@ -302,7 +302,7 @@ import Testing
     @Test func cachesWithoutPtCountStillRead() throws {
         let deck = try deckWithChart()
         let chart = try #require(deck.charts.first)
-        let dom = try #require(try chart.part.dom())
+        let dom = try chart.part.dom()
         for cache in Self.descendants(of: dom, named: "c:numCache") {
             cache.removeChildren(named: "c:ptCount")
         }
@@ -383,7 +383,7 @@ private func chartDescendants(_ element: XML.Element, named name: String) -> [XM
             #expect(chart.series.map(\.name) == ["A", "B"])
             #expect(chart.series[1].values == [5, 3, 4])
 
-            let dom = try #require(try chart.part.dom())
+            let dom = try chart.part.dom()
             let radar = try #require(chartDescendants(dom, named: "c:radarChart").first)
             #expect(radar.firstChild(named: "c:radarStyle")?[attribute: "val"] == style)
             #expect(try reopened.validate().isEmpty)
@@ -419,7 +419,7 @@ private func chartDescendants(_ element: XML.Element, named name: String) -> [XM
         #expect(chart.categories.isEmpty)
         #expect(chart.data == nil)
 
-        let dom = try #require(try chart.part.dom())
+        let dom = try chart.part.dom()
         let sizes = chartDescendants(dom, named: "c:bubbleSize")
         #expect(sizes.count == 2)
         let firstSizes = try #require(sizes.first)

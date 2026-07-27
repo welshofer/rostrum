@@ -106,7 +106,7 @@ import Testing
         properties.setCustomValue(nil, for: "B")
         properties.setCustomValue(.text("four"), for: "D")
 
-        let root = try #require(try deck.package.parts[DocumentProperties.customURI]?.dom())
+        let root = try #require(deck.package.parts[DocumentProperties.customURI]?.dom())
         let pids = root.children(named: "property").compactMap { $0[attribute: "pid"] }
         #expect(pids == ["2", "3", "4"])
         #expect(properties.custom.map(\.name) == ["A", "C", "D"])
