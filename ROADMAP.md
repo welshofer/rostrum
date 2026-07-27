@@ -240,8 +240,11 @@ Hardening backlog (schedule opportunistically):
   aggregate ceiling would reject legitimately large decks. The fix is a
   caller-supplied budget on the read path, which is an API addition worth
   designing rather than guessing at.
-- Zip64: today >4 GB archives and >65k entries are `precondition` traps on the
-  write path.
+- Zip64 **write** support. Archives over 4 GB, over 65535 entries, or with a
+  central directory over 4 GB are now *reported* — `ZipWriter.finalize()`
+  throws `RostrumError.packageInvalid` and `OPCPackage.serialize` propagates it
+  — so this is a missing feature rather than a crash risk. Reading such an
+  archive is likewise unimplemented.
 - Quadratic hot spots on very large decks; `prune()`/orphan audit promised in
   ARCHITECTURE.md.
 

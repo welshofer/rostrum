@@ -114,20 +114,51 @@ public struct ZipWriter {
         if violation == nil { violation = message }
     }
 
+    /// The two ceilings no per-entry check can see, because both are properties
+    /// of the finished archive rather than of any one entry. Kept as a pure
+    /// function of the numbers so the boundary arithmetic is testable without
+    /// allocating four gigabytes.
+    ///
+    /// `addFile` rejects an entry that would *start* past the 32-bit offset
+    /// field, but the last entry accepted can still carry the archive past it:
+    /// two 2.5 GB entries both pass that check and end at 5 GB. The central
+    /// directory has its own 32-bit size field, reachable with many long names.
+    static func archiveOverflow(entriesEnd: UInt64, centralDirectorySize: UInt64) -> String? {
+        if entriesEnd > 0xFFFF_FFFF {
+            return "the archive's entries end at \(entriesEnd) bytes, "
+                + "over the 4294967295 central-directory offset field"
+        }
+        if centralDirectorySize > 0xFFFF_FFFF {
+            return "the central directory is \(centralDirectorySize) bytes, "
+                + "over the 4294967295 size field"
+        }
+        return nil
+    }
+
     /// Produce the complete archive bytes (entries + central directory + EOCD).
     ///
-    /// - Throws: `RostrumError.packageInvalid` when an entry exceeded one of
-    ///   the zip format's 32-bit fields. Writing archives that genuinely need
-    ///   Zip64 is a separate, unimplemented feature; this is the difference
-    ///   between reporting that and aborting the process.
+    /// - Throws: `RostrumError.packageInvalid` when an entry, or the finished
+    ///   archive, exceeded one of the zip format's 32-bit fields. Writing
+    ///   archives that genuinely need Zip64 is a separate, unimplemented
+    ///   feature; this is the difference between reporting that and aborting
+    ///   the process.
     public func finalize() throws -> Data {
         if let violation {
             throw RostrumError.packageInvalid("cannot write this archive: \(violation)")
         }
-        return bytes()
+        // 46-byte fixed central header + name, per entry.
+        let centralDirectorySize = entries.reduce(UInt64(0)) { $0 + 46 + UInt64($1.nameBytes.count) }
+        if let overflow = Self.archiveOverflow(
+            entriesEnd: nextOffset, centralDirectorySize: centralDirectorySize) {
+            throw RostrumError.packageInvalid("cannot write this archive: \(overflow)")
+        }
+        // Both conversions are the ones the check above just proved fit; they
+        // are made here, next to it, rather than left for `bytes()` to redo.
+        return bytes(centralDirectoryOffset: UInt32(nextOffset),
+                     centralDirectorySize: UInt32(centralDirectorySize))
     }
 
-    private func bytes() -> Data {
+    private func bytes(centralDirectoryOffset: UInt32, centralDirectorySize: UInt32) -> Data {
         var out = Data()
         out.reserveCapacity(Int(nextOffset) + entries.count * 46 + 22)
 
@@ -148,8 +179,8 @@ public struct ZipWriter {
             out.append(entry.payload)
         }
 
-        // Central directory.
-        let centralDirectoryOffset = UInt32(out.count)
+        // Central directory. Its offset is where the local blocks ended, which
+        // `finalize()` bounded and passed in.
         for entry in entries {
             out.appendLE(Self.centralHeaderSignature)
             out.appendLE(Self.versionMadeBy)
@@ -170,7 +201,6 @@ public struct ZipWriter {
             out.appendLE(entry.localHeaderOffset)
             out.append(entry.nameBytes)
         }
-        let centralDirectorySize = UInt32(out.count) - centralDirectoryOffset
 
         // End of central directory record.
         out.appendLE(Self.eocdSignature)

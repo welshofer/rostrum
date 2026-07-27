@@ -8,6 +8,8 @@ import Foundation
 
 public extension Table {
     /// Style row 0 as a brand header: primary fill with auto-contrast text.
+    /// Tolerant by contract: a cell `a:tblGrid` declares but the row does not
+    /// have — which a table written elsewhere can be — is skipped, not an error.
     @discardableResult
     func header(style: DeckStyle, fill: Color? = nil, textColor: Color? = nil,
                 role: TypeRole = .heading, align: TextAlignment = .left,
@@ -27,7 +29,8 @@ public extension Table {
     }
 
     /// Alternate body-row fills (banded), auto-contrasting text per row, with an
-    /// optional brand header row.
+    /// optional brand header row. Skips cells a ragged row does not have, as
+    /// `header` does.
     @discardableResult
     func styleBanded(style: DeckStyle, header: Bool = true, band1: Color? = nil, band2: Color? = nil,
                      role: TypeRole = .body, align: TextAlignment = .left,
@@ -53,13 +56,13 @@ public extension Table {
         return self
     }
 
-    /// Uniform cell padding on every cell.
+    /// Uniform cell padding on every cell a row actually has.
     @discardableResult
     func cellPadding(_ inset: EMU) -> Table {
         cellPadding(left: inset, top: inset, right: inset, bottom: inset)
     }
 
-    /// Per-edge cell padding on every cell.
+    /// Per-edge cell padding on every cell a row actually has.
     @discardableResult
     func cellPadding(left: EMU, top: EMU, right: EMU, bottom: EMU) -> Table {
         for r in 0..<rowCount {

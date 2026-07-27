@@ -146,6 +146,50 @@ struct ZipWriterTests {
         #expect(le32(cd, 42) == 0)  // first local header offset
     }
 
+    // MARK: - 32-bit ceilings
+
+    @Test("Archive-wide ceilings are reported at their boundary, not one past it")
+    func archiveOverflowBoundaries() {
+        let ceiling: UInt64 = 0xFFFF_FFFF
+
+        // `addFile` bounds where an entry *starts*; nothing there can see where
+        // the archive ends. Two entries under the per-entry size limit can end
+        // past the offset field, which is the case that used to trap in
+        // `UInt32(out.count)` rather than throw.
+        #expect(ZipWriter.archiveOverflow(entriesEnd: ceiling, centralDirectorySize: 0) == nil)
+        #expect(ZipWriter.archiveOverflow(entriesEnd: ceiling + 1, centralDirectorySize: 0) != nil)
+
+        #expect(ZipWriter.archiveOverflow(entriesEnd: 0, centralDirectorySize: ceiling) == nil)
+        #expect(ZipWriter.archiveOverflow(entriesEnd: 0, centralDirectorySize: ceiling + 1) != nil)
+
+        // The entries-end message must be the one reported when both overflow,
+        // since that is the first field the writer would have to fill.
+        let both = ZipWriter.archiveOverflow(
+            entriesEnd: ceiling + 1, centralDirectorySize: ceiling + 1)
+        #expect(both?.contains("entries end") == true)
+    }
+
+    @Test("The central-directory size finalize() projects is the size it writes")
+    func projectedCentralDirectorySizeMatches() throws {
+        // finalize() bounds a *projected* central-directory size (46 bytes plus
+        // the name, per entry) and then writes the real one. If the projection
+        // drifted from the layout, the guard would bound the wrong number — so
+        // read both back out of a real archive and compare.
+        let archive = try Self.makeStoredArchive()
+        let names = ["[Content_Types].xml", "ppt/slides/slide1.xml", "ppt/media/image1.bin"]
+        let projected = names.reduce(0) { $0 + 46 + $1.utf8.count }
+
+        let eocd = Data(archive.suffix(22))
+        func le32(_ data: Data, _ offset: Int) -> UInt32 {
+            let base = data.startIndex + offset
+            return UInt32(data[base])
+                | (UInt32(data[base + 1]) << 8)
+                | (UInt32(data[base + 2]) << 16)
+                | (UInt32(data[base + 3]) << 24)
+        }
+        #expect(Int(le32(eocd, 12)) == projected)
+    }
+
     // MARK: - External oracle (/usr/bin/unzip)
 
     @Test("unzip -t validates the archive with exit status 0")
