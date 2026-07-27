@@ -87,6 +87,29 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   refreshing the workbook would leave Edit Data pointing at cells that no
   longer exist. Combo charts (several plot groups in one plot area) are read
   and updated as a whole, and charts nested inside groups are found.
+- **XY chart read-back** — `chart.xySeries` reads scatter and bubble points
+  (`chart.isXY` says when to reach for it): x, y and — on bubble — size, with
+  cache gaps preserved as nil and each series read independently, so series of
+  different lengths survive. A `c:xVal` that is text-encoded rather than
+  numeric reports its labels in `xLabels` instead of silently reading every x
+  as nil.
+- **Adding and removing chart series** — `chart.addSeries(name:values:)` and
+  `chart.removeSeries(at:)` change a chart's series list in place. A new
+  series is cloned from the last existing one, so it keeps the per-kind
+  children its siblings have (`c:marker`, `c:smooth`, series-level `c:dLbls`)
+  but not their identity (`c:spPr`, `c:dPt`, per-point `c:dLbl`, and the
+  `c:extLst` carrying a series id that must stay unique) — PowerPoint colors
+  it from the theme, as it does when you add one by hand. Removal renumbers
+  every survivor's `c:idx`/`c:order` and workbook formulas and shifts
+  `c:legendEntry` indices so formatting cannot end up attached to the wrong
+  series; both operations rewrite the embedded workbook. The same
+  refuse-before-writing stance as `replaceData` applies, reported by
+  `addSeriesProblem(name:values:)` / `removeSeriesProblem(at:)`: combo charts,
+  XY charts, charts with no embedded workbook or with literal (`c:numLit`)
+  data, foreign workbook layouts, a pie chart asked for a second series it
+  would never draw (a doughnut, which draws one ring per series, is allowed),
+  a value count that does not match the categories, and removing a chart's
+  last series.
 - **Appearance read-back** — `shape.fill`, `shape.line`, `shape.hasShadow`,
   `slide.background` and `cell.fill` report what a shape actually carries
   (`ReadFill`/`ReadLine`, covering solid + alpha, theme colors, gradients,

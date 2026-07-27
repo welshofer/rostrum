@@ -103,7 +103,10 @@ Ranked by demand evidence from python-pptx's issue tracker:
 7. ~~Reading chart data back out and robust `replaceData`~~ ✅ **Shipped
    2026-07-26** (v0.4 M4): `deck.charts`, and a `replaceData` that validates
    the replacement against the chart's own structure and refuses rather than
-   corrupting — the failure mode python-pptx is known for.
+   corrupting — the failure mode python-pptx is known for. Completed
+   2026-07-27 with XY (scatter/bubble) read-back via `chart.xySeries` and
+   `addSeries`/`removeSeries`, which renumber indices, formulas and legend
+   entries and rewrite the embedded workbook — or refuse before writing.
 
 ## Phase 5 — Moonshots
 
@@ -175,8 +178,15 @@ box; this program makes Rostrum the first.
   categories and series from the chart XML caches; `replaceData(_:)` edits
   values, series names and categories in place (formulas, colors, axes and
   unmodeled elements untouched) and rewrites the embedded workbook, refusing
-  any structural change before writing a byte. *Still open:* reading scatter/
-  bubble XY data, and adding or removing series.
+  any structural change before writing a byte. Completed 2026-07-27:
+  `chart.xySeries` reads scatter and bubble points (x, y, size, gaps, and
+  text-encoded x values reported as labels rather than silent nils), and
+  `addSeries`/`removeSeries` edit the series list — cloning a sibling's
+  per-kind children but not its identity, renumbering `c:idx`/`c:order`,
+  workbook formulas and `c:legendEntry` indices, and rewriting the embedded
+  workbook. Structural edits refuse (before writing) what they cannot keep
+  coherent: combo and XY charts, literal caches, foreign workbook layouts, a
+  second series on a pie, and removing a chart's last series. **M4 complete.**
 
 - **M5 — No exceptions to the round-trip rule (shipped 2026-07-27).**
   `.rels` parts and `[Content_Types].xml` keep their parsed bytes and rebuild
@@ -192,10 +202,10 @@ decks; `prune()`/orphan audit promised in ARCHITECTURE.md.
 ## Standing quality gates
 
 - `swift test` green on macOS + Linux
-- Corpus decks round-trip byte-identical on untouched content parts —
-  including the real-deck fixtures in `Tests/RostrumTests/Fixtures/RealDecks/`
-  (`.rels`/`[Content_Types].xml` are deterministically re-serialized; making
-  them pristine too is on the hardening backlog)
+- Corpus decks round-trip byte-identical on **every zip entry** — including
+  the real-deck fixtures in `Tests/RostrumTests/Fixtures/RealDecks/`. M5
+  closed the last exception: `.rels` and `[Content_Types].xml` keep their
+  parsed bytes until something in them actually changes.
 - Every Rostrum-written deck opens in python-pptx without exception — now
   automated in CI (`PythonPptxOracleTests`) — and in PowerPoint without
   repair prompt

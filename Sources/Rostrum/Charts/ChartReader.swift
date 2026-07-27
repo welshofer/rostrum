@@ -20,7 +20,7 @@ public final class Chart {
     }
 
     /// The `c:chartSpace` root.
-    private var root: XML.Element? { try? part.dom() }
+    var root: XML.Element? { try? part.dom() }
 
     /// The `c:plotArea` element, where the per-kind plots live.
     private var plotArea: XML.Element? {
@@ -287,11 +287,22 @@ public final class Chart {
 
     // MARK: - Cache reading and writing
 
-    private static func formula(in wrapper: XML.Element) -> String? {
+    static func formula(in wrapper: XML.Element) -> String? {
         for child in wrapper.childElements {
             if let f = child.firstChild(named: "c:f") { return f.textContent }
         }
         return nil
+    }
+
+    /// Rewrite the `c:f` inside a `c:tx`/`c:cat`/`c:val` wrapper. A wrapper
+    /// holding literal data (`c:strLit`/`c:numLit`) has no formula and is left
+    /// alone — series editing refuses those charts up front.
+    static func setFormula(_ formula: String, in wrapper: XML.Element) {
+        for child in wrapper.childElements {
+            guard let f = child.firstChild(named: "c:f") else { continue }
+            f.children = [.text(formula)]
+            return
+        }
     }
 
     /// The strings cached in a `c:cat`/`c:tx` wrapper, in index order. Gaps
@@ -348,12 +359,12 @@ public final class Chart {
         textCache(in: wrapper)
     }
 
-    private static func setStrings(_ strings: [String], in wrapper: XML.Element) {
+    static func setStrings(_ strings: [String], in wrapper: XML.Element) {
         guard let cache = textCache(in: wrapper) else { return }
         replacePoints(in: cache, count: strings.count) { strings[$0] }
     }
 
-    private static func setNumbers(_ values: [Double?], in wrapper: XML.Element) {
+    static func setNumbers(_ values: [Double?], in wrapper: XML.Element) {
         guard let cache = numberCache(in: wrapper) else { return }
         replacePoints(in: cache, count: values.count) {
             values[$0].map { chartNumber($0) }

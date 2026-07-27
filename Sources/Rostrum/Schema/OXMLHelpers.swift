@@ -53,4 +53,16 @@ extension XML.Element {
     func replaceChildElements(with elements: [XML.Element]) {
         children = elements.map { .element($0) }
     }
+
+    /// A structural copy, new nodes all the way down. `XML.Element` is a
+    /// reference type, so cloning a subtree by hand is the only way to edit
+    /// the copy without the edits reaching back into the original.
+    func deepCopy() -> XML.Element {
+        XML.Element(name, attributes: attributes, children: children.map { node in
+            switch node {
+            case .text(let text): return .text(text)
+            case .element(let element): return .element(element.deepCopy())
+            }
+        })
+    }
 }
