@@ -143,6 +143,13 @@ public enum RelType {
     public static let notesMaster = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster"
     public static let notesSlide = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"
     public static let image = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+    /// Legacy video link, followed by readers that predate `p14:media`.
+    public static let video = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"
+    /// Legacy audio link.
+    public static let audio = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"
+    /// The modern media relationship referenced from the `p14:media`
+    /// extension. Points at the same part as the legacy link.
+    public static let media = "http://schemas.microsoft.com/office/2007/relationships/media"
     public static let hyperlink = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"
     public static let presProps = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps"
     public static let viewProps = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps"

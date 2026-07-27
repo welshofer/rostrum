@@ -48,6 +48,15 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   (`process` 5, `smartArt` 6, `bands` 6, `pyramid` 5, `metrics` 4), which
   previously truncated silently with no way to know the cap.
 
+- **Video and audio** — `shapes.addMedia(_:format:frame:poster:)` embeds a
+  clip in `/ppt/media/` with the two relationships PowerPoint wants pointing
+  at the same part (the legacy `video`/`audio` link and the modern `media`
+  relationship referenced from `p14:media`), a poster frame (a 1×1
+  transparent PNG when none is given, since `p:pic` requires a `blipFill`),
+  and the content type as an extension Default the way PowerPoint writes it.
+  Read-back via `picture.isMedia` / `isAudio` / `mediaData`. Clips play from
+  the media controls; Rostrum writes no `p:timing` tree, so auto-play on
+  slide entry still has to be set in PowerPoint.
 - **Radar and bubble charts.** `ChartKind.radar` / `.radarFilled` plot a
   category axis wrapped into a circle; `addBubbleChart(_:frame:)` takes
   `BubbleChartData`, whose points carry x, y **and** size, with a three-column
