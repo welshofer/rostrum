@@ -85,7 +85,12 @@ enum ShapeTransform {
         Double(element(of: e)?[attribute: "rot"].flatMap { Int($0) } ?? 0) / 60_000
     }
 
+    /// Every frame coordinate in the library funnels through here, so bounding
+    /// it protects `frame`, `childSpace`, `effectiveFrame`, group mapping and
+    /// the SVG renderer at once. A coordinate beyond roughly a million inches
+    /// reads as 0 rather than becoming a number that traps when something
+    /// later adds to it.
     private static func int(_ e: XML.Element, _ attribute: String) -> Int {
-        e[attribute: attribute].flatMap { Int($0) } ?? 0
+        e.coordinate(attribute) ?? 0
     }
 }

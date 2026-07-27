@@ -85,8 +85,9 @@ struct SVGRenderer {
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int)) -> String {
         let (x, y, w, h) = f
         let bodyPr = txBody.firstChild(named: "a:bodyPr")
+        // Bounded like every other coordinate here: `x + inset(…)` traps.
         func inset(_ name: String, _ fallback: Int) -> Int {
-            bodyPr?[attribute: name].flatMap { Int($0) } ?? fallback
+            bodyPr?.coordinate(name) ?? fallback
         }
         let contentX = x + inset("lIns", 91_440)
         let contentW = Swift.max(0, w - inset("lIns", 91_440) - inset("rIns", 91_440))
@@ -223,7 +224,7 @@ struct SVGRenderer {
         let isRadial = grad.firstChild(named: "a:path") != nil
         var stopSVG = ""
         for gs in stops {
-            let pos = (Double(gs[attribute: "pos"].flatMap { Int($0) } ?? 0) / 1000).rounded() / 100
+            let pos = (Double(gs.boundedInt("pos", in: 0...100_000) ?? 0) / 1000).rounded() / 100
             let color = colorHex(in: gs) ?? "#000000"
             stopSVG += "<stop offset=\"\(pos)\" stop-color=\"\(color)\"/>"
         }
@@ -250,7 +251,7 @@ struct SVGRenderer {
     private func strokeAttrs(_ spPr: XML.Element) -> String {
         guard let ln = spPr.firstChild(named: "a:ln"), ln.firstChild(named: "a:noFill") == nil,
               let color = colorHex(in: ln.firstChild(named: "a:solidFill")) else { return "" }
-        let width = ln[attribute: "w"].flatMap { Int($0) } ?? 12700
+        let width = ln.coordinate("w") ?? 12700
         return " stroke=\"\(color)\" stroke-width=\"\(width)\""
     }
 
