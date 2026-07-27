@@ -9,7 +9,7 @@ import Foundation
 enum ChartWorkbook {
     /// Layout: categories in A2:A(n+1); series k name in row 1 of column
     /// B+k; values beneath. Must agree with the c:f formulas in ChartXML.
-    static func make(data: ChartData) -> Data {
+    static func make(data: ChartData) throws -> Data {
         var zip = ZipWriter()
         zip.addFile(name: "[Content_Types].xml", data: Data(contentTypesXML.utf8))
         zip.addFile(name: "_rels/.rels", data: Data(relsXML.utf8))
@@ -27,7 +27,7 @@ enum ChartWorkbook {
     /// The Edit-Data workbook for a scatter chart: per series i, x-values in
     /// column `seriesColumn(2i)`, y-values (with the series name in row 1) in
     /// column `seriesColumn(2i+1)` — matching the c:f formulas in ChartXML.
-    static func makeXY(data: XYChartData) -> Data {
+    static func makeXY(data: XYChartData) throws -> Data {
         var zip = ZipWriter()
         zip.addFile(name: "[Content_Types].xml", data: Data(contentTypesXML.utf8))
         zip.addFile(name: "_rels/.rels", data: Data(relsXML.utf8))
@@ -42,7 +42,7 @@ enum ChartWorkbook {
         return try zip.finalize()
     }
 
-    static func makeBubble(data: BubbleChartData) -> Data {
+    static func makeBubble(data: BubbleChartData) throws -> Data {
         var zip = ZipWriter()
         zip.addFile(name: "[Content_Types].xml", data: Data(contentTypesXML.utf8))
         zip.addFile(name: "_rels/.rels", data: Data(relsXML.utf8))

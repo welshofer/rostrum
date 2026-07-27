@@ -285,7 +285,7 @@ public final class Chart {
         // Keep Edit Data honest: the workbook is what PowerPoint reopens.
         // Validation above proved the formulas describe exactly this layout.
         if let workbook = workbookPart {
-            workbook.replaceBlob(ChartWorkbook.make(data: data))
+            workbook.replaceBlob(try ChartWorkbook.make(data: data))
         }
     }
 

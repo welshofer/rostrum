@@ -258,7 +258,7 @@ public extension Chart {
         let updated = ChartData(categories: current.categories,
                                 series: current.series
                                     + [ChartData.Series(name: name, values: values)])
-        workbookPart?.replaceBlob(ChartWorkbook.make(data: updated))
+        workbookPart?.replaceBlob(try ChartWorkbook.make(data: updated))
     }
 
     /// Append a series with no gaps.
@@ -301,7 +301,7 @@ public extension Chart {
         var series = current.series
         series.remove(at: index)
         workbookPart?.replaceBlob(
-            ChartWorkbook.make(data: ChartData(categories: current.categories, series: series)))
+            try ChartWorkbook.make(data: ChartData(categories: current.categories, series: series)))
     }
 }
 

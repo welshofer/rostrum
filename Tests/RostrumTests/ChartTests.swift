@@ -70,7 +70,7 @@ import Testing
     }
 
     @Test func embeddedWorkbookIsValidZipWithExpectedCells() throws {
-        let workbook = ChartWorkbook.make(data: sample)
+        let workbook = try ChartWorkbook.make(data: sample)
         let zip = try ZipReader(data: workbook)
         #expect(zip.contains("xl/workbook.xml") && zip.contains("xl/worksheets/sheet1.xml")
                 && zip.contains("[Content_Types].xml") && zip.contains("xl/sharedStrings.xml"))

@@ -22,7 +22,7 @@ extension ShapeCollection {
     ) throws -> Shape {
         try embedChart(
             chart: ChartXML.chartSpace(kind: kind, data: data, colors: colors, options: options),
-            workbook: ChartWorkbook.make(data: data), frame: frame)
+            workbook: try ChartWorkbook.make(data: data), frame: frame)
     }
 
     /// Add a combo chart: several plot groups sharing one category axis, with
@@ -45,7 +45,7 @@ extension ShapeCollection {
         if let problem = data.authoringProblem() { throw problem }
         return try embedChart(
             chart: ChartXML.comboChartSpace(data: data, options: options),
-            workbook: ChartWorkbook.make(data: data.flattened), frame: frame)
+            workbook: try ChartWorkbook.make(data: data.flattened), frame: frame)
     }
 
     /// Add an XY scatter chart.
@@ -56,7 +56,7 @@ extension ShapeCollection {
     ) throws -> Shape {
         try embedChart(
             chart: ChartXML.scatterChartSpace(data: data, colors: colors, options: options),
-            workbook: ChartWorkbook.makeXY(data: data), frame: frame)
+            workbook: try ChartWorkbook.makeXY(data: data), frame: frame)
     }
 
     /// Add a bubble chart: an XY chart whose third dimension is the bubble
@@ -68,7 +68,7 @@ extension ShapeCollection {
     ) throws -> Shape {
         try embedChart(
             chart: ChartXML.bubbleChartSpace(data: data, colors: colors, options: options),
-            workbook: ChartWorkbook.makeBubble(data: data), frame: frame)
+            workbook: try ChartWorkbook.makeBubble(data: data), frame: frame)
     }
 
     /// Shared plumbing: register the chart part + embedded workbook and drop a
