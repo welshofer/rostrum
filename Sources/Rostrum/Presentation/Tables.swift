@@ -109,7 +109,11 @@ public final class Table {
     @discardableResult
     public func setContents(_ grid: [[String]]) -> Table {
         for (r, rowValues) in grid.enumerated() where r < rowCount {
-            for (c, value) in rowValues.enumerated() where c < columnCount { cell(r, c).text = value }
+            // Tolerant by contract, so a ragged foreign row simply has fewer
+            // cells to fill rather than being an error.
+            for (c, value) in rowValues.enumerated() where c < columnCount {
+                if let cell = try? cell(r, c) { cell.text = value }
+            }
         }
         return self
     }
@@ -159,10 +163,24 @@ public final class Table {
         tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol").count ?? 0
     }
 
-    public func cell(_ row: Int, _ column: Int) -> TableCell {
-        precondition(rows.indices.contains(row), "row \(row) out of range")
+    /// The cell at `row`, `column`.
+    ///
+    /// Throws rather than trapping, because the indices a caller iterates
+    /// (`0..<rowCount`, `0..<columnCount`) come from the file: `columnCount`
+    /// reports what `a:tblGrid` declares, and a **ragged** table written
+    /// elsewhere can have a row with fewer `a:tc` than that. Reading a foreign
+    /// deck must never abort the host process, so this follows the same rule
+    /// as `Slides.subscript`.
+    public func cell(_ row: Int, _ column: Int) throws -> TableCell {
+        guard rows.indices.contains(row) else {
+            throw RostrumError.packageInvalid("table row \(row) out of range 0..<\(rows.count)")
+        }
         let cells = rows[row].children(named: "a:tc")
-        precondition(cells.indices.contains(column), "column \(column) out of range")
+        guard cells.indices.contains(column) else {
+            throw RostrumError.packageInvalid(
+                "table row \(row) has \(cells.count) cells; column \(column) is out of range "
+                    + "(the grid declares \(columnCount))")
+        }
         return TableCell(tc: cells[column], part: part)
     }
 
@@ -199,11 +217,11 @@ public final class Table {
 
     /// Merge a rectangular region. The origin cell absorbs the span; covered
     /// cells become merge continuations (their text is discarded).
-    public func merge(row: Int, column: Int, rowSpan: Int, columnSpan: Int) {
+    public func merge(row: Int, column: Int, rowSpan: Int, columnSpan: Int) throws {
         precondition(rowSpan >= 1 && columnSpan >= 1)
         for r in row..<(row + rowSpan) {
             for c in column..<(column + columnSpan) {
-                let tc = cell(r, c).tc
+                let tc = try cell(r, c).tc
                 if r == row && c == column {
                     tc[attribute: "gridSpan"] = columnSpan > 1 ? String(columnSpan) : nil
                     tc[attribute: "rowSpan"] = rowSpan > 1 ? String(rowSpan) : nil

@@ -113,8 +113,8 @@ private func deckWithForeignSlide() throws -> Presentation {
         let table = try #require(frame.table)
         #expect(table.rowCount == 1)
         #expect(table.columnCount == 2)
-        #expect(table.cell(0, 0).text == "R1C1")
-        #expect(table.cell(0, 1).text == "R1C2")
+        #expect(try table.cell(0, 0).text == "R1C1")
+        #expect(try table.cell(0, 1).text == "R1C2")
     }
 
     @Test func chartFramesResolveTheirPart() throws {
@@ -261,8 +261,10 @@ private func deckWithForeignSlide() throws -> Presentation {
                 for child in group.shapes { _ = group.convertToParentSpace(child.frame) }
             }
             if let table = (shape as? TableFrame)?.table {
+                // A ragged foreign table has fewer cells than the grid
+                // declares; that must read as an error, never a trap.
                 for row in 0..<table.rowCount {
-                    for column in 0..<table.columnCount { _ = table.cell(row, column).text }
+                    for column in 0..<table.columnCount { _ = try? table.cell(row, column).text }
                 }
             }
             if let picture = shape as? Picture { _ = picture.imageData }

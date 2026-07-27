@@ -13,10 +13,10 @@ import Testing
 
     @Test func cellTextRoundTrips() throws {
         let (deck, table) = try makeTable()
-        table.cell(0, 0).text = "Region"
-        table.cell(0, 1).text = "2024"
-        table.cell(1, 0).text = "Arctic"
-        table.cell(2, 2).text = "−12.2%"
+        try table.cell(0, 0).text = "Region"
+        try table.cell(0, 1).text = "2024"
+        try table.cell(1, 0).text = "Arctic"
+        try table.cell(2, 2).text = "−12.2%"
 
         let reopened = try Presentation(data: try deck.serializedData())
         let tbl = try #require(reopened.slides[0].spTree()
@@ -26,9 +26,9 @@ import Testing
             .firstChild(named: "a:tbl"))
         let rtable = Table(tbl: tbl, part: try reopened.slides[0].part)
         #expect(rtable.rowCount == 3 && rtable.columnCount == 3)
-        #expect(rtable.cell(0, 0).text == "Region")
-        #expect(rtable.cell(2, 2).text == "−12.2%")
-        #expect(rtable.cell(1, 1).text == "")
+        #expect(try rtable.cell(0, 0).text == "Region")
+        #expect(try rtable.cell(2, 2).text == "−12.2%")
+        #expect(try rtable.cell(1, 1).text == "")
     }
 
     @Test func uniformGridThenAdjust() throws {
@@ -43,18 +43,18 @@ import Testing
 
     @Test func mergeSetsSpansAndContinuations() throws {
         let (_, table) = try makeTable(rows: 3, cols: 3)
-        table.cell(1, 1).text = "will vanish"
-        table.merge(row: 0, column: 0, rowSpan: 2, columnSpan: 2)
+        try table.cell(1, 1).text = "will vanish"
+        try table.merge(row: 0, column: 0, rowSpan: 2, columnSpan: 2)
 
-        let origin = table.cell(0, 0).tc
+        let origin = try table.cell(0, 0).tc
         #expect(origin[attribute: "gridSpan"] == "2" && origin[attribute: "rowSpan"] == "2")
-        #expect(table.cell(0, 1).tc[attribute: "hMerge"] == "1")
-        #expect(table.cell(1, 0).tc[attribute: "vMerge"] == "1")
-        let corner = table.cell(1, 1).tc
+        #expect(try table.cell(0, 1).tc[attribute: "hMerge"] == "1")
+        #expect(try table.cell(1, 0).tc[attribute: "vMerge"] == "1")
+        let corner = try table.cell(1, 1).tc
         #expect(corner[attribute: "hMerge"] == "1" && corner[attribute: "vMerge"] == "1")
-        #expect(table.cell(1, 1).text == "")
+        #expect(try table.cell(1, 1).text == "")
         // Untouched cell unaffected.
-        #expect(table.cell(2, 2).tc[attribute: "hMerge"] == nil)
+        #expect(try table.cell(2, 2).tc[attribute: "hMerge"] == nil)
     }
 
     @Test func styleFlagsAndFill() throws {
@@ -62,7 +62,7 @@ import Testing
         table.bandedRows = false
         #expect(!table.bandedRows && table.firstRowHeader)
         try table.cell(0, 0).setFill(.solid(Color("18A999")))
-        table.cell(0, 0).verticalAnchor = .middle
+        try table.cell(0, 0).verticalAnchor = .middle
 
         let reopened = try Presentation(data: try deck.serializedData())
         let tcPr = try #require(reopened.slides[0].spTree()

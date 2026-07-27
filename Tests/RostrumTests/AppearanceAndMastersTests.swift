@@ -89,8 +89,8 @@ import Testing
         let reopened = try Presentation(data: try deck.serializedData())
         let frameShape = try #require(reopened.slides[0].shapes.all.first { $0.kind == .table } as? TableFrame)
         let readTable = try #require(frameShape.table)
-        #expect(readTable.cell(0, 0).fill == .solid(Color("18A999"), alpha: 1))
-        #expect(readTable.cell(1, 1).fill == nil)
+        #expect(try readTable.cell(0, 0).fill == .solid(Color("18A999"), alpha: 1))
+        #expect(try readTable.cell(1, 1).fill == nil)
     }
 }
 

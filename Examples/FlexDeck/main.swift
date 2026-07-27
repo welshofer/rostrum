@@ -268,7 +268,7 @@ do {
     ]
     for (ri, row) in rows.enumerated() {
         for (ci, value) in [row.0, row.1, row.2].enumerated() {
-            let cell = t.cell(ri, ci)
+            let cell = try t.cell(ri, ci)
             cell.verticalAnchor = .middle
             let tf = cell.textFrame
             tf.clear()

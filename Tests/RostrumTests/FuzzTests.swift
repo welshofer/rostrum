@@ -350,6 +350,27 @@ import Testing
         #expect(throws: RostrumError.self) { _ = try deck.serializedData() }
     }
 
+    @Test func aRaggedForeignTableReportsRatherThanTrapping() throws {
+        // columnCount reports what a:tblGrid declares. A table written
+        // elsewhere can have a row with fewer a:tc than that, so the natural
+        // reading idiom — for c in 0..<columnCount — used to abort the host.
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(
+            rows: 2, columns: 3,
+            frame: Rect(x: .zero, y: .zero, width: .inches(6), height: .inches(2)))
+        // Strip a cell from the second row, leaving the grid claiming three.
+        let tbl = table.tbl
+        let secondRow = tbl.children(named: "a:tr")[1]
+        let doomed = secondRow.children(named: "a:tc")[2]
+        secondRow.removeChild(doomed)
+        try deck.slides[0].part.markDirty()
+
+        #expect(table.columnCount == 3)
+        #expect(throws: RostrumError.self) { _ = try table.cell(1, 2) }
+        // The cells that do exist still read.
+        #expect(try table.cell(1, 1).text == "")
+    }
+
     @Test func truncatedValidDeckThrowsNotCrash() throws {
         let valid = try validDeckBytes()
         // Truncating a real deck at many lengths must throw a Rostrum error, not trap.
