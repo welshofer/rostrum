@@ -19,7 +19,12 @@ struct SVGRenderer {
 
     func render(pixelWidth: Int) throws -> String {
         let dom = try slidePart.dom()
-        let w = slideSize.width.rawValue, h = slideSize.height.rawValue
+        // p:sldSz comes from the file too, and the aspect-ratio conversion below
+        // goes through Int(_: Double), which traps when the double is out of
+        // range — so bound the dimensions before dividing by them.
+        let bound = OOXMLBounds.coordinate
+        let w = bound.contains(slideSize.width.rawValue) ? slideSize.width.rawValue : 0
+        let h = bound.contains(slideSize.height.rawValue) ? slideSize.height.rawValue : 0
         let pxH = w > 0 ? Int((Double(pixelWidth) * Double(h) / Double(w)).rounded()) : pixelWidth
         var defs = ""
         var body = ""
@@ -232,7 +237,11 @@ struct SVGRenderer {
 
     private func colorHex(in container: XML.Element?) -> String? {
         guard let container else { return nil }
-        if let srgb = container.firstChild(named: "a:srgbClr")?[attribute: "val"] { return "#" + srgb }
+        // Validated, not interpolated raw: this string lands unescaped inside
+        // an SVG attribute, so a file-supplied `val="x&quot; onload=…"` would
+        // otherwise inject markup into the rendered output.
+        if let srgb = container.firstChild(named: "a:srgbClr")?[attribute: "val"],
+           let color = Color(validating: srgb) { return "#" + color.hex }
         if let raw = container.firstChild(named: "a:schemeClr")?[attribute: "val"],
            let scheme = SchemeColor(rawValue: raw), let color = theme.resolve(scheme) { return "#" + color.hex }
         return nil
@@ -253,7 +262,17 @@ struct SVGRenderer {
         return (intAttr(off, "x"), intAttr(off, "y"), intAttr(ext, "cx"), intAttr(ext, "cy"))
     }
 
-    private func intAttr(_ e: XML.Element, _ name: String) -> Int { e[attribute: name].flatMap { Int($0) } ?? 0 }
+    /// Every coordinate the renderer reads goes through here, bounded.
+    ///
+    /// The renderer then adds, subtracts and accumulates these values freely
+    /// (`x + inset`, `cx += cw`, `x + w / 2`), and Swift's `+` traps on
+    /// overflow. Bounding at the single point where file bytes become numbers
+    /// is what makes all of that arithmetic safe, rather than clamping each
+    /// expression. A coordinate outside the bound reads as 0 — this is a
+    /// preview renderer, and an absurd frame is not worth a crash.
+    private func intAttr(_ e: XML.Element, _ name: String) -> Int {
+        e.coordinate(name) ?? 0
+    }
 
     private func box(_ x: Int, _ y: Int, _ w: Int, _ h: Int, fill: String, stroke: String = "") -> String {
         "<rect x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\" fill=\"\(fill)\"\(stroke)/>"

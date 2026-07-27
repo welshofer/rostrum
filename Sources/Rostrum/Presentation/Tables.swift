@@ -131,9 +131,12 @@ public final class Table {
     /// heights, so the table never over/under-flows its frame.
     private func syncFrameExtent() {
         guard let ext = graphicFrame?.firstChild(named: "p:xfrm")?.firstChild(named: "a:ext") else { return }
+        // Bounded: these are file-supplied on an opened deck, and a running
+        // Int sum over unbounded widths overflows — which is a crash, not an
+        // error the caller can handle.
         let cx = (tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol") ?? [])
-            .reduce(0) { $0 + (Int($1[attribute: "w"] ?? "0") ?? 0) }
-        let cy = rows.reduce(0) { $0 + (Int($1[attribute: "h"] ?? "0") ?? 0) }
+            .reduce(0) { $0 + ($1.coordinate("w") ?? 0) }
+        let cy = rows.reduce(0) { $0 + ($1.coordinate("h") ?? 0) }
         if cx > 0 { ext[attribute: "cx"] = String(cx) }
         if cy > 0 { ext[attribute: "cy"] = String(cy) }
     }

@@ -68,8 +68,9 @@ import Testing
             $0.replacingOccurrences(of: "PartName=\"/", with: "PartName=\"")
         }
         #expect(throws: RostrumError.self) { _ = try Presentation(data: bad) }
-        // And the same bytes must not trap the layer below either.
-        _ = try? OPCPackage.read(data: bad)
+        // The layer below must throw too — Presentation delegates to it, but
+        // OPCPackage is public API a caller can reach on its own.
+        #expect(throws: RostrumError.self) { _ = try OPCPackage.read(data: bad) }
     }
 
     @Test func aBadColorValueReadsAsNoColorRatherThanAborting() throws {
@@ -80,21 +81,34 @@ import Testing
         let box = Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1))
         for value in ["red", "", "FFF", "80FF0000", "ff0000 ", "GGGGGG"] {
             let deck = try Presentation()
-            // An explicit outline too, so the a:ln/a:solidFill/a:srgbClr path
-            // is actually exercised — ReadLine parses its color separately and
-            // was missed by the first sweep.
+            // Every distinct colour-parsing path in one deck, because each
+            // reads a:srgbClr separately: a solid fill, an outline (ReadLine,
+            // which the first sweep missed), a gradient stop, a text run, and
+            // the slide background.
             try deck.slides[0].shapes.addShape(.rectangle, frame: box,
                                                fill: .solid(Color("FF0000")),
                                                line: Line(color: Color("00FF00")))
+            try deck.slides[0].shapes.addShape(
+                .ellipse, frame: box,
+                fill: .gradient(GradientFill(from: Color("112233"), to: Color("445566"))))
+            let textBox = try deck.slides[0].shapes.addTextBox(box)
+            let paragraph = try #require(textBox.textFrame?.paragraphs.first)
+            paragraph.addRun("tinted").color = Color("778899")
+            try deck.slides[0].setBackground(.solid(Color("ABCDEF")))
             let dom = try deck.slides[0].part.dom()
             for srgb in Self.descendants(of: dom, named: "a:srgbClr") {
                 srgb[attribute: "val"] = value
             }
             try deck.slides[0].part.markDirty()
-            // The theme is read the same way and traps on the same values.
+            // The theme is read the same way and traps on the same values —
+            // through a:sysClr@lastClr as well as a:srgbClr@val, which is a
+            // separate branch of Theme.color.
             let theme = try deck.theme.part.dom()
             for srgb in Self.descendants(of: theme, named: "a:srgbClr") {
                 srgb[attribute: "val"] = value
+            }
+            for sysClr in Self.descendants(of: theme, named: "a:sysClr") {
+                sysClr[attribute: "lastClr"] = value
             }
             deck.theme.part.markDirty()
 
@@ -109,8 +123,23 @@ import Testing
             let line = try #require(read.line)
             #expect(line.color == nil)
             #expect(line.width != nil)
-            _ = try reopened.slides[0].background
+
+            let shapes = try reopened.slides[0].shapes.all
+            // The gradient's stops are unreadable, so the fill reports no stops
+            // rather than trapping on the first one.
+            #expect(shapes.compactMap(\.fill).contains { fill in
+                if case .gradient(let stops) = fill { return stops.isEmpty }
+                return false
+            }, "the gradient stop colours must drop out, not abort")
+            // A run's colour, the slide background, and both theme branches.
+            for shape in shapes {
+                for paragraph in shape.textFrame?.paragraphs ?? [] {
+                    for run in paragraph.runs { #expect(run.color == nil) }
+                }
+            }
+            #expect(try reopened.slides[0].background == .unmodeled(elementName: "a:srgbClr"))
             #expect(reopened.theme.color(.accent1) == nil)
+            #expect(reopened.theme.color(.dk1) == nil)
         }
     }
 
@@ -146,24 +175,119 @@ import Testing
         _ = chart.data
     }
 
-    @Test func aShapeIDAtTheFormatsCeilingThrowsRatherThanOverflowing() throws {
-        // maxID + 1 on Int.max is a crash; a deck can claim any id.
-        let deck = try Presentation()
+    /// Plant a `p:cNvPr` carrying `id` on the deck's first slide.
+    private func plantShapeID(_ deck: Presentation, _ id: String) throws {
         let spTree = try Slide.spTree(of: deck.slides[0].part)
         let sp = XML.Element("p:sp")
         let nv = XML.Element("p:nvSpPr")
-        nv.appendElement(XML.Element("p:cNvPr", attributes: [
-            ("id", String(Int.max)), ("name", "Hostile"),
-        ]))
+        nv.appendElement(XML.Element("p:cNvPr", attributes: [("id", id), ("name", "Hostile")]))
         sp.appendElement(nv)
         spTree.appendElement(sp)
         try deck.slides[0].part.markDirty()
+    }
 
+    private var unitBox: Rect {
+        Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1))
+    }
+
+    @Test func anOutOfRangeShapeIDIsIgnoredNotClamped() throws {
+        // `maxID + 1` on Int.max is a crash. Clamping the id to the ceiling
+        // instead would be its own bug: one hostile id would pin maxID at the
+        // maximum and refuse every future shape on the slide.
+        let deck = try Presentation()
+        try plantShapeID(deck, String(Int.max))
+        let shape = try deck.slides[0].shapes.addShape(
+            .rectangle, frame: unitBox, fill: .solid(Color("FF0000")))
+        let id = try #require(shape.element.firstChild(named: "p:nvSpPr")?
+            .firstChild(named: "p:cNvPr")?[attribute: "id"])
+        #expect(Int(id) != nil && Int(id)! < Slide.maxShapeID,
+                "the out-of-range id must be ignored, leaving a small next id")
+    }
+
+    @Test func aShapeIDAtTheFormatsCeilingThrows() throws {
+        // A legitimately-valid id at the top of ST_DrawingElementId genuinely
+        // leaves nothing to allocate, and that is an error, not a crash.
+        let deck = try Presentation()
+        try plantShapeID(deck, String(Slide.maxShapeID))
         #expect(throws: RostrumError.self) {
             _ = try deck.slides[0].shapes.addShape(
-                .rectangle, frame: Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1)),
-                fill: .solid(Color("FF0000")))
+                .rectangle, frame: unitBox, fill: .solid(Color("FF0000")))
         }
+    }
+
+    @Test func aHostileSlideIDDoesNotOverflowWhenAddingASlide() throws {
+        // The exact twin of the shape-id overflow, on p:sldId@id.
+        let deck = try Presentation()
+        let list = try #require(try deck.presentationPart.dom().firstChild(named: "p:sldIdLst"))
+        list.childElements.first?[attribute: "id"] = String(Int.max)
+        deck.presentationPart.markDirty()
+        // Out of ST_SlideId's range, so ignored — adding must still work.
+        _ = try deck.slides.add()
+
+        // At the ceiling it is a real exhaustion, and must throw.
+        list.childElements.first?[attribute: "id"] = "2147483647"
+        deck.presentationPart.markDirty()
+        #expect(throws: RostrumError.self) { _ = try deck.slides.add() }
+    }
+
+    @Test func hostileGeometryDoesNotOverflowTheSVGRenderer() throws {
+        // renderSVG is a pure read API doing Int arithmetic on every a:off and
+        // a:ext it reads — x + inset, cx += cw, x + w / 2 — and Swift's + traps.
+        let slide = """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" \
+            xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">\
+            <p:cSld><p:spTree>\
+            <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>\
+            <p:grpSpPr/>\
+            <p:sp><p:nvSpPr><p:cNvPr id="2" name="S"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>\
+            <p:spPr><a:xfrm><a:off x="9223372036854775807" y="9223372036854775807"/>\
+            <a:ext cx="9223372036854775807" cy="9223372036854775807"/></a:xfrm>\
+            <a:solidFill><a:srgbClr val="FF0000"/></a:solidFill></p:spPr>\
+            <p:txBody><a:bodyPr lIns="9223372036854775807"/><a:lstStyle/>\
+            <a:p><a:pPr algn="ctr"/><a:r><a:rPr sz="9223372036854775807"/>\
+            <a:t>hi</a:t></a:r></a:p></p:txBody></p:sp>\
+            </p:spTree></p:cSld></p:sld>
+            """
+        let deck = try Presentation()
+        try deck.slides[0].part.replaceBlob(Data(slide.utf8))
+        // Also make the slide size itself absurd: the aspect-ratio conversion
+        // runs Int(_: Double) before any shape is visited.
+        deck.slideSize = (width: EMU(1), height: EMU(Int.max))
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(svg.contains("<svg"))
+    }
+
+    @Test func aHostileColourCannotInjectMarkupIntoTheSVG() throws {
+        // colorHex interpolates into an SVG attribute, unescaped.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addShape(.rectangle, frame: unitBox,
+                                           fill: .solid(Color("FF0000")))
+        let dom = try deck.slides[0].part.dom()
+        for srgb in Self.descendants(of: dom, named: "a:srgbClr") {
+            srgb[attribute: "val"] = "x\" onload=\"alert(1)"
+        }
+        try deck.slides[0].part.markDirty()
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(!svg.contains("onload"), "a file-supplied colour must not become markup")
+    }
+
+    @Test func aChartWithTooManySeriesReadsAsNilRatherThanTrapping() throws {
+        // ChartData's 255-series bound is a precondition — a programmer check.
+        // A file can declare any number of c:ser.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addChart(
+            .barClustered, data: ChartData(categories: ["A"], name: "S", values: [1]),
+            frame: Rect(x: .zero, y: .zero, width: .inches(4), height: .inches(3)))
+        let chart = try #require(deck.charts.first)
+        let plot = try #require(chart.plots.first)
+        let template = try #require(plot.children(named: "c:ser").first)
+        for _ in 0..<300 { plot.appendElement(template.deepCopy()) }
+        chart.part.markDirty()
+
+        #expect(chart.seriesElements.count > 255)
+        #expect(chart.data == nil, "over the bound, the category view is honestly nil")
+        _ = chart.series
     }
 
     @Test func anAbsurdGroupChildSpaceDoesNotOverflow() throws {
@@ -178,10 +302,11 @@ import Testing
             <p:grpSpPr/>\
             <p:grpSp>\
             <p:nvGrpSpPr><p:cNvPr id="2" name="G"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>\
-            <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="9223372036854775807" cy="1"/>\
+            <p:grpSpPr><a:xfrm flipH="1" flipV="1">\
+            <a:off x="0" y="0"/><a:ext cx="9223372036854775807" cy="1"/>\
             <a:chOff x="-9223372036854775808" y="0"/><a:chExt cx="1" cy="1"/></a:xfrm></p:grpSpPr>\
             <p:sp><p:nvSpPr><p:cNvPr id="3" name="S"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>\
-            <p:spPr><a:xfrm flipH="1" flipV="1">\
+            <p:spPr><a:xfrm>\
             <a:off x="9223372036854775807" y="9223372036854775807"/>\
             <a:ext cx="9223372036854775807" cy="9223372036854775807"/></a:xfrm></p:spPr>\
             <p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>\

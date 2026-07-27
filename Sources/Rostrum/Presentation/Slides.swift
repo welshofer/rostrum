@@ -80,7 +80,7 @@ public final class Slides: Sequence {
             target: presentationPart.uri.relativeReference(to: uri))
 
         let entry = XML.Element("p:sldId", attributes: [
-            ("id", String(nextSlideID())), ("r:id", rId),
+            ("id", String(try nextSlideID())), ("r:id", rId),
         ])
         try sldIdLst().appendElement(entry)
         presentationPart.markDirty()
@@ -138,7 +138,7 @@ public final class Slides: Sequence {
             type: RelType.slide,
             target: presentationPart.uri.relativeReference(to: uri))
         let entry = XML.Element("p:sldId", attributes: [
-            ("id", String(nextSlideID())), ("r:id", rId),
+            ("id", String(try nextSlideID())), ("r:id", rId),
         ])
         let list = try sldIdLst()
         var entries = list.childElements
@@ -157,9 +157,16 @@ public final class Slides: Sequence {
     }
 
     /// sldId values live in 256..<2147483648.
-    private func nextSlideID() -> Int {
-        let used = (try? sldIdLst())?.childElements.compactMap { $0[attribute: "id"].flatMap { Int($0) } } ?? []
-        return Swift.max(255, used.max() ?? 255) + 1
+    private func nextSlideID() throws -> Int {
+        // Bounded: an id of Int.max parses fine and then overflows the +1.
+        let used = (try? sldIdLst())?.childElements
+            .compactMap { $0.boundedInt("id", in: OOXMLBounds.slideID) } ?? []
+        let highest = Swift.max(255, used.max() ?? 255)
+        guard highest < OOXMLBounds.slideID.upperBound else {
+            throw RostrumError.packageInvalid(
+                "slide ids reach the format's maximum; there is no id left to assign")
+        }
+        return highest + 1
     }
 
     private func firstLayoutPart() throws -> Part {

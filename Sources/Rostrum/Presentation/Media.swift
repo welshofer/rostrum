@@ -82,8 +82,10 @@ public extension ShapeCollection {
             let used = package.parts.keys.compactMap { uri -> Int? in
                 let name = uri.filename
                 guard uri.value.hasPrefix("/ppt/media/media"), name.hasPrefix("media") else { return nil }
-                let stem = name.prefix(while: { $0 != "." }).dropFirst("media".count)
-                return Int(stem)
+                // Bounded: the stem comes from a zip entry name in the opened
+                // file, and `(used.max() ?? 0) + 1` below traps on Int.max.
+                guard let n = Int(stem), n >= 0, n < 1_000_000 else { return nil }
+                return n
             }
             mediaURI = PackURI("/ppt/media/media\((used.max() ?? 0) + 1).\(format.fileExtension)")
             package.addPart(uri: mediaURI, contentType: format.contentType, blob: data)
@@ -205,8 +207,9 @@ public extension ShapeCollection {
         let childTnLst = root.getOrAddChild("p:childTnLst")
 
         // Timing node ids must be unique within the slide; 1 is the root.
-        let usedIDs = Self.timingIDs(in: timing)
-        let nodeID = (usedIDs.max() ?? 1) + 1
+        // Bounded on the way in: a p:cTn@id of Int.max would overflow the +1.
+        let usedIDs = Self.timingIDs(in: timing).filter { OOXMLBounds.drawingElementID.contains($0) }
+        let nodeID = Swift.min(usedIDs.max() ?? 1, OOXMLBounds.drawingElementID.upperBound - 1) + 1
 
         let media = XML.Element(isAudio ? "p:audio" : "p:video")
         let cMediaNode = XML.Element("p:cMediaNode", attributes: [("vol", "80000")])

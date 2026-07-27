@@ -67,10 +67,12 @@ public final class Slide {
         var maxID = 1
         var stack: [XML.Element] = [try part.dom()]
         while let element = stack.popLast() {
-            if element.name == "p:cNvPr", let id = element[attribute: "id"].flatMap({ Int($0) }) {
-                // ST_DrawingElementId is an unsigned 32-bit int. A foreign deck
-                // can claim any Int, and `maxID + 1` on Int.max is a crash.
-                maxID = Swift.max(maxID, min(id, Self.maxShapeID))
+            // An id outside the format's range is IGNORED, not clamped: a
+            // clamp would let one hostile id pin maxID at the ceiling and
+            // permanently refuse every future shape on the slide.
+            if element.name == "p:cNvPr",
+               let id = element.boundedInt("id", in: OOXMLBounds.drawingElementID) {
+                maxID = Swift.max(maxID, id)
             }
             stack.append(contentsOf: element.childElements)
         }
@@ -84,5 +86,5 @@ public final class Slide {
 
     /// The largest `p:cNvPr@id` the format allows (`ST_DrawingElementId` is an
     /// `xsd:unsignedInt`).
-    static let maxShapeID = Int(UInt32.max)
+    static let maxShapeID = OOXMLBounds.drawingElementID.upperBound
 }

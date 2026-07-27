@@ -153,13 +153,20 @@ extension TextFrame {
         defaultPointSize: Double = 18, lineSpacing: Double = 1.0
     ) -> Autofit {
         let bodyPr = txBody.getOrAddChild("a:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
+        // Bounded: an inset read from an opened deck is subtracted from the
+        // frame below, and Int subtraction traps on underflow.
         func inset(_ name: String, _ fallback: Int) -> Int {
-            bodyPr[attribute: name].flatMap { Int($0) } ?? fallback
+            bodyPr.coordinate(name) ?? fallback
         }
         let insets = Self.defaultInsets
-        let contentWidth = frame.width.rawValue
+        // The frame is file-supplied too when this is reached via
+        // `shape.fitText()` on an opened deck.
+        let bound = OOXMLBounds.coordinate
+        let frameWidth = bound.contains(frame.width.rawValue) ? frame.width.rawValue : 0
+        let frameHeight = bound.contains(frame.height.rawValue) ? frame.height.rawValue : 0
+        let contentWidth = frameWidth
             - inset("lIns", insets.left) - inset("rIns", insets.right)
-        let contentHeight = frame.height.rawValue
+        let contentHeight = frameHeight
             - inset("tIns", insets.top) - inset("bIns", insets.bottom)
 
         let measured = paragraphs.map { paragraph in
