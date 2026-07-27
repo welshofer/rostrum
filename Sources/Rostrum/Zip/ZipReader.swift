@@ -178,8 +178,23 @@ public struct ZipReader {
                             }
                         }
                     }
-                    // The central directory must end exactly where the EOCD begins.
-                    if Int(cdOffset) + Int(cdSize) == candidate {
+                    // The central directory must end where the EOCD begins —
+                    // or, in a zip64 archive, exactly 76 bytes earlier, with
+                    // the zip64 EOCD record (56) and its locator (20) filling
+                    // the gap. Requiring adjacency outright rejected every
+                    // zip64 archive, including the ones `ZipWriter` now emits.
+                    //
+                    // The gap is pinned to that exact size AND both signatures,
+                    // not merely allowed to be non-zero: this test is what
+                    // stops a stray signature inside a comment from being taken
+                    // for the real record.
+                    let cdEnd = Int(cdOffset) + Int(cdSize)
+                    let adjacent = cdEnd == candidate
+                    let zip64Gap = cdEnd >= 0 && candidate - cdEnd == 76
+                        && cdEnd + 60 <= size
+                        && Self.u32(bytes, cdEnd) == 0x0606_4B50
+                        && Self.u32(bytes, cdEnd + 56) == 0x0706_4B50
+                    if adjacent || zip64Gap {
                         eocd = candidate
                         break scan
                     }

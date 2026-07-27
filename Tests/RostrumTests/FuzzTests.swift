@@ -353,20 +353,28 @@ import Testing
         #expect(startsAfter.count == Set(startsAfter).count)
     }
 
-    @Test func tooManyPartsIsReportedNotTrapped() throws {
-        // ZipWriter's 0xFFFF entry ceiling is a precondition. A deck can carry
-        // that many parts, and saving one you just opened must not abort.
+    @Test func aPackagePastTheClassicEntryCeilingSavesAndReopens() throws {
+        // This used to assert that saving threw: the 16-bit EOCD entry count
+        // was a ceiling Rostrum reported rather than a format it supported. It
+        // is supported now, via zip64 entry counts, so the honest assertion is
+        // the stronger one — the deck saves AND reads back. The original point
+        // still holds either way: a deck can carry this many parts, and saving
+        // one you just opened must not abort the host.
         let deck = try Presentation()
         let before = deck.package.parts.count
-        // Land exactly on the ceiling rather than far past it, so the check is
-        // exercised at its boundary — the place an off-by-one would hide.
-        while deck.package.parts.count + 2 <= 0xFFFF {
+        // One PAST the classic ceiling, so the zip64 path is what runs.
+        while deck.package.parts.count <= 0xFFFF {
             let n = deck.package.parts.count
             deck.package.addPart(uri: PackURI("/ppt/media/pad\(n).png"),
                                  contentType: ContentType.png, blob: Data())
         }
         #expect(deck.package.parts.count > before)
-        #expect(throws: RostrumError.self) { _ = try deck.serializedData() }
+        #expect(deck.package.parts.count > 0xFFFF)
+
+        let saved = try deck.serializedData()
+        let reader = try ZipReader(data: saved)
+        #expect(reader.entryNames.count > 0xFFFF)
+        #expect(reader.contains("ppt/media/pad100.png"))
     }
 
     @Test func anAbsurdlyLongPartNameIsReportedNotTrapped() throws {
