@@ -30,6 +30,22 @@ public struct PackURI: Hashable, Sendable, CustomStringConvertible {
         self.value = value
     }
 
+    /// Does this zip member name have an empty path segment (OPC M1.1)?
+    ///
+    /// The reason this matters is aliasing, not tidiness. `PackURI`'s identity
+    /// is its raw `value`, but `baseURI` and `filename` split on "/" and drop
+    /// empty subsequences. So `ppt//slides/s.xml` and `ppt/slides/s.xml` are two
+    /// distinct parts that derive ONE `relsURI` between them — a part-identity
+    /// bug, and a way to make a reader decode a single `.rels` entry once per
+    /// alias. The empty name is the same bug with no visible slash: `"/" + ""`
+    /// is `/`, whose `relsURI` is the package relationships.
+    ///
+    /// Takes the member name (no leading slash), which is the form both the
+    /// reader and the writer have in hand.
+    static func hasEmptySegment(_ memberName: String) -> Bool {
+        memberName.isEmpty || memberName.hasPrefix("/") || memberName.contains("//")
+    }
+
     /// The special URI of the content-types stream, which is *not* a part.
     public static let contentTypes = PackURI("/[Content_Types].xml")
     /// The package-level relationships part.

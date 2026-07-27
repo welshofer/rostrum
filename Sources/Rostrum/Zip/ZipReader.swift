@@ -24,20 +24,32 @@ public struct ZipReader {
     /// Ceilings a caller can put on an archive somebody else wrote.
     ///
     /// Every entry is already bounded by its own declared uncompressed size:
-    /// `Inflate` stops at it and `data(forEntry:)` rejects a stream that decoded
-    /// to anything else. What no per-entry bound can see is the *sum*. A few
-    /// kilobytes of archive can declare thousands of entries that each expand to
-    /// gigabytes, and opening a package decodes every one of them — amplification
-    /// across entries rather than within one.
+    /// `Inflate` refuses the write that would pass it, and `data(forEntry:)`
+    /// rejects a stream that decoded to anything else. What no per-entry bound
+    /// can see is the *sum*. A few kilobytes of archive can declare thousands of
+    /// entries that each expand to gigabytes, and opening a package decodes
+    /// every one — amplification across entries rather than within one.
     ///
-    /// Because the per-entry bound does hold, the total a full read can produce
-    /// is exactly the sum of the declared sizes, and the central directory
-    /// declares all of them before a single byte is inflated. So the ceiling is
-    /// checked up front rather than accumulated as entries are decoded: an
-    /// over-budget archive costs no decompression at all, and the verdict cannot
-    /// depend on which entries a caller happens to read, or in what order.
+    /// Because the per-entry bound holds, the bytes a full read can produce are
+    /// exactly the sum of the declared sizes of the entries a name resolves to,
+    /// and the central directory states all of them before a byte is inflated.
+    /// So the ceiling is checked up front rather than accumulated as entries
+    /// decode: an over-budget archive costs no decompression at all, and the
+    /// verdict cannot depend on which entries a caller reads, or in what order.
     ///
-    /// This bounds *declared* size, which is the conservative direction — an
+    /// Read what this bounds precisely, because two plausible readings are wrong:
+    ///
+    /// - It bounds bytes **produced**, not **work done**. Decoding costs
+    ///   `compressedSize` per name — copied, copied again, then scanned —
+    ///   and an entry can declare it produces nothing while costing megabytes.
+    ///   Work is bounded instead by a structural check in `init`: the entries'
+    ///   compressed sizes must sum to no more than the archive, which no
+    ///   well-formed archive violates and which holds under `.unlimited` too.
+    /// - It bounds **decoded output**, not **peak memory**. A read holds the
+    ///   archive bytes, the compressed slice, and briefly two copies of the
+    ///   current entry. Expect a small constant multiple of the budget.
+    ///
+    /// And it bounds *declared* size, which is the conservative direction: an
     /// archive that declares far more than it would really produce is refused.
     /// That is what a budget means; the alternative is doing the work to find out.
     ///
@@ -91,9 +103,11 @@ public struct ZipReader {
     /// never be decoded, so it costs nothing and is charged nothing.
     private let reachable: [Int]
 
-    /// Total uncompressed bytes the central directory declares across every
-    /// entry. This is the ceiling on what decoding the whole archive can
-    /// produce, since each entry is bounded by its own declared size.
+    /// Total uncompressed bytes declared across the entries a name resolves to
+    /// — the same set as `entryNames` and `allEntries`, not every
+    /// central-directory record. This is the ceiling on what decoding the whole
+    /// archive can produce, since each entry is bounded by its own declared
+    /// size and a shadowed record can never be fetched.
     ///
     /// `UInt64` rather than `Int` because the value is derived from a file
     /// somebody else wrote and can legally reach ~2.8e14 — narrowing it would
@@ -102,8 +116,11 @@ public struct ZipReader {
 
     /// Parses the EOCD + central directory eagerly; entry data is decoded lazily.
     ///
-    /// - Throws: `RostrumError.zipUnsupported` when the archive declares more
-    ///   uncompressed bytes than `limits` allows — before anything is inflated.
+    /// - Throws: `RostrumError.readBudgetExceeded` when the archive declares
+    ///   more uncompressed bytes than `limits` allows, and
+    ///   `RostrumError.zipCorrupt` when its entries claim more compressed bytes
+    ///   in total than the archive contains. Both fire before anything is
+    ///   inflated.
     public init(data: Data, limits: Limits = .unlimited) throws {
         let bytes = [UInt8](data)
         let size = bytes.count
@@ -218,6 +235,30 @@ public struct ZipReader {
         // having to make that argument, not about rescuing a 32-bit build.
         let reachable = indexByName.values.sorted()
         let declared = reachable.reduce(UInt64(0)) { $0 + UInt64(entries[$1].uncompressedSize) }
+
+        // The budget bounds bytes PRODUCED. It does not bound the work of
+        // producing them, which is O(compressedSize) per name: the payload
+        // slice is copied out of the archive, the decoder copies it again, and
+        // the DEFLATE scan walks all of it. Nothing in the central directory
+        // forces two records to describe DIFFERENT payload regions —
+        // `localHeaderOffset` is per record and never compared against another
+        // — so N records with N DISTINCT names can all point at one large
+        // payload. Every one of them resolves, so every one is decoded, and
+        // each can declare it produces nothing (a run of empty stored blocks
+        // decodes to zero bytes with CRC 0), so the budget is charged nothing.
+        //
+        // A well-formed archive cannot do that: its payloads are disjoint and
+        // inside the file, so their compressed sizes sum to less than the file
+        // itself. That makes this a structural check on the archive rather than
+        // caller policy — it holds under `.unlimited` too, and it bounds a full
+        // read's work at O(archive size), which is what the budget was wrongly
+        // assumed to give.
+        let compressed = reachable.reduce(UInt64(0)) { $0 + UInt64(entries[$1].compressedSize) }
+        if compressed > UInt64(size) {
+            throw RostrumError.zipCorrupt(
+                "entries claim \(compressed) compressed bytes in a \(size)-byte archive, so "
+                    + "their payloads cannot all be distinct")
+        }
         if let ceiling = limits.totalUncompressedBytes {
             // `Limits.init` clamps a negative ceiling to zero, so the number
             // compared is the number reported.
@@ -248,9 +289,27 @@ public struct ZipReader {
         reachable.map { entries[$0].name }
     }
 
-    /// All central-directory entries, in order — exposes each entry's
-    /// compression `method`, sizes, and CRC for callers inspecting an archive.
+    /// The entries a name resolves to, in central-directory order — exposes
+    /// each entry's compression `method`, sizes, and CRC for callers inspecting
+    /// an archive. One per distinct name, matching `entryNames` position for
+    /// position, and its `uncompressedSize`s sum to `declaredUncompressedSize`.
+    ///
+    /// Shadowed records are excluded for the same reason `entryNames` excludes
+    /// them: a caller looping over these and fetching by name would otherwise
+    /// decode one entry once per record that shares its name. Use
+    /// `centralDirectoryRecords` to see the raw list.
     public var allEntries: [Entry] {
+        reachable.map { entries[$0] }
+    }
+
+    /// Every central-directory record, in file order, including ones shadowed
+    /// by a later record with the same name.
+    ///
+    /// For inspecting an archive's structure, not for reading it: a shadowed
+    /// record cannot be fetched — `data(forEntry:)` resolves by name, and the
+    /// last record with a name wins — so fetching one by name returns a
+    /// different record's bytes. `allEntries` is what a reader wants.
+    public var centralDirectoryRecords: [Entry] {
         entries
     }
 

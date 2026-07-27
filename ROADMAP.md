@@ -254,17 +254,36 @@ Hardening backlog (schedule opportunistically):
   name — shadows need no local header and no payload, so they cost a 46-byte
   record each and declare zero — bought 65534 full inflations of the surviving
   entry inside a budget that had charged for one. `entryNames` now yields each
-  distinct name once and the sum covers exactly that set, so the unit of
-  accounting and the unit of work are the same. The same review closed a second
-  route to the same end: `PackURI` identity is the raw string while
+  distinct name once and the sum covers exactly that set. The same review closed
+  a second route to the same end: `PackURI` identity is the raw string while
   `baseURI`/`filename` split on `/` discarding empties, so `ppt//slides/s.xml`
   and `ppt/slides/s.xml` were distinct parts sharing one `.rels` — decoded once
-  per alias. Part names with empty segments are rejected (OPC M1.1).
+  per alias. Part names with empty segments are rejected (OPC M1.1), on the
+  write path as well, so Rostrum cannot produce an archive it then refuses.
 
-  It bounds *decoded output*, not peak memory (a read holds the archive bytes,
-  the compressed slice, and briefly two copies of the current entry), and it
-  bounds *declared* size, which is the conservative direction: the alternative
-  is doing the work to find out.
+  A **third** adversarial round then falsified the repaired claim too, and it is
+  worth recording why, because the same mistake was made twice in a row. Both
+  times the claim was "the unit of accounting equals the unit of work"; both
+  times the accounting unit was `uncompressedSize`. But decoding costs
+  `compressedSize` — the payload slice is copied, the decoder copies it again,
+  and the DEFLATE scan walks all of it — and nothing made two central-directory
+  records describe *different* payload regions. So N records with N **distinct**
+  names, immune to the dedup, could all point at one large payload while each
+  declared it produces nothing (a run of empty stored blocks decodes to zero
+  bytes with CRC 0). Unbounded work, charged nothing, under any budget.
+
+  The answer is not another knob. A well-formed archive's payloads are disjoint
+  and inside the file, so their compressed sizes sum to less than the file
+  itself; `ZipReader.init` now requires that. It is a structural check on the
+  archive rather than caller policy, so it holds under `.unlimited` too, and it
+  bounds a full read's work at O(archive size) — which is what a budget on
+  declared output was twice assumed to give and never did.
+
+  So, precisely: the budget bounds bytes **produced**; the structural check
+  bounds **work**; neither bounds **peak memory** (a read holds the archive
+  bytes, the compressed slice, and briefly two copies of the current entry). And
+  it bounds *declared* size, the conservative direction: the alternative is
+  doing the work to find out.
 - Zip64 **write** support. Archives over 4 GB, over 65535 entries, or with a
   central directory over 4 GB are now *reported* — `ZipWriter.finalize()`
   throws `RostrumError.packageInvalid` and `OPCPackage.serialize` propagates it

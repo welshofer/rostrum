@@ -192,16 +192,33 @@ struct ZipWriterTests {
         let recordedSize = Int(le32(eocd, 12))
         let recordedOffset = Int(le32(eocd, 16))
 
-        // The measured size: everything between the central directory's start
-        // and the 22-byte EOCD that terminates the file.
-        let measuredSize = archive.count - 22 - recordedOffset
-        #expect(recordedSize == measuredSize)
-
-        // And the central directory really does start where the EOCD says, with
-        // a central header signature — otherwise "measured" measures nothing.
+        // Establish the two anchors BEFORE doing arithmetic with them, so a
+        // drift fails the test instead of trapping on a bad slice — and so
+        // "22 bytes from the end" is a verified fact about this archive rather
+        // than a second projection subtracted from the first.
+        try #require(recordedOffset >= 0 && recordedOffset + 4 <= archive.count - 22)
+        let eocdStart = archive.startIndex + archive.count - 22
+        #expect(Array(archive[eocdStart..<(eocdStart + 4)]) == [0x50, 0x4B, 0x05, 0x06])
         let start = archive.startIndex + recordedOffset
         #expect(Array(archive[start..<(start + 4)]) == [0x50, 0x4B, 0x01, 0x02])
+
+        // The measured size: everything between the central directory's start
+        // and the EOCD that terminates the file.
+        let measuredSize = archive.count - 22 - recordedOffset
+        #expect(recordedSize == measuredSize)
         #expect(recordedOffset > 0 && measuredSize > 0)
+
+        // Walking the central headers must land exactly on the EOCD, which
+        // catches a per-record size drift that the total could mask.
+        var offset = recordedOffset
+        for _ in 0..<3 {
+            #expect(Array(archive[(archive.startIndex + offset)..<(archive.startIndex + offset + 4)])
+                == [0x50, 0x4B, 0x01, 0x02])
+            let nameLength = Int(archive[archive.startIndex + offset + 28])
+                | (Int(archive[archive.startIndex + offset + 29]) << 8)
+            offset += 46 + nameLength
+        }
+        #expect(offset == archive.count - 22)
     }
 
     // MARK: - External oracle (/usr/bin/unzip)

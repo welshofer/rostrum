@@ -135,8 +135,13 @@ private struct InflateDecoder {
     /// may not produce. The overshoot is small and one entry at a time, but the
     /// read budget's contract says an entry cannot produce more than it
     /// declared, and a bound that is only observed after the fact does not say
-    /// that. `count` is the caller's own arithmetic, never a file field, so it
-    /// cannot overflow here.
+    /// that.
+    ///
+    /// `count` is bounded, not trusted: on the stored-block path it IS a file
+    /// field, but a 16-bit one (`len` <= 65535), and on the match path it is a
+    /// table lookup <= 258. `output.count` is bounded by what has already been
+    /// appended. So the sum cannot overflow — but the reason is the widths, not
+    /// the provenance.
     mutating func reserveOutput(_ count: Int) throws {
         if let expected = expectedOutputSize, output.count + count > expected {
             throw RostrumError.deflateCorrupt(

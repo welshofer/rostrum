@@ -334,7 +334,9 @@ import Testing
         ])
         let reader = try ZipReader(data: archive)
         // Both records are still visible as raw central-directory data...
-        #expect(reader.allEntries.count == 2)
+        #expect(reader.centralDirectoryRecords.count == 2)
+        // ...and the reader-facing accessors agree with each other.
+        #expect(reader.allEntries.map(\.name) == reader.entryNames)
         // ...but the name is listed ONCE, because it resolves to one entry.
         // Listing it twice invited a caller looping over these names to decode
         // the same entry twice — 65535 records under one name is a few hundred

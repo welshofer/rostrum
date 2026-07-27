@@ -110,7 +110,10 @@ public final class OPCPackage {
             // `_rels/s.xml.rels`. That is a part-identity bug on its own, and
             // it lets an archive make the reader decode a single .rels entry
             // once per alias — work the read budget charged for once.
-            guard !name.hasPrefix("/"), !name.contains("//") else {
+            // An EMPTY name is the same bug with no visible slash at all:
+            // "/" + "" is `/`, whose relsURI is `/_rels/.rels` — the package
+            // relationships. It passes both tests above (no prefix, no "//").
+            guard !PackURI.hasEmptySegment(name) else {
                 throw RostrumError.packageInvalid(
                     "part name \"\(name)\" has an empty segment")
             }
@@ -190,6 +193,15 @@ public final class OPCPackage {
             zip.addFile(name: PackURI.packageRels.memberName, data: rels.serialized())
         }
         for (uri, part) in parts.sorted(by: { $0.key.value < $1.key.value }) {
+            // Refuse to write a name `read` would refuse to open. `PackURI`'s
+            // initializer only requires a leading slash, so a caller can build
+            // a part named "/ppt//x.xml" — and without this, Rostrum would
+            // happily produce an archive it then rejects as invalid, which is
+            // a worse failure than rejecting it here.
+            guard !PackURI.hasEmptySegment(uri.memberName) else {
+                throw RostrumError.packageInvalid(
+                    "part name \"\(uri.value)\" has an empty segment")
+            }
             // Media and embedded workbooks are already compressed — don't
             // waste CPU re-DEFLATEing them; XML parts compress well.
             let alreadyCompressed = Self.storedExtensions.contains(uri.ext)

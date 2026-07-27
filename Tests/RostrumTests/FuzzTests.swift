@@ -634,6 +634,12 @@ import Testing
         // then the fixture would stop establishing what it claims — that
         // decoding this archive is what goes wrong.
         let unlimited = try ZipReader(data: corrupt)
+        // The damage must be confined to the payload: if it had reached the
+        // central directory the reader would report a structural failure, which
+        // isContentFailure also accepts, and the test would stop meaning what
+        // it says. An intact name list is the evidence.
+        #expect(unlimited.entryNames.count == 8)
+        #expect(unlimited.entryNames.first == "ppt/media/pad0.bin")
         expectError("the corrupted entry", isContentFailure) {
             _ = try unlimited.data(forEntry: "ppt/media/pad0.bin")
         }
@@ -674,24 +680,106 @@ import Testing
         // are last-wins. N records under one name used to mean N inflations of
         // the single surviving entry — and the shadows can declare zero bytes,
         // so they cost the budget nothing while costing the reader everything.
+        // The shadows must come FIRST and the expensive entry LAST. Written the
+        // other way round the survivor is the empty one, every repeated decode
+        // is free, and the fixture cannot exhibit the attack it is named for
+        // even against the unfixed code.
         var writer = ZipWriter()
         let payload = Data(repeating: 0, count: 64 * 1024)
-        writer.addFile(name: "ppt/media/dup.bin", data: payload)
         for _ in 0..<64 { writer.addFile(name: "ppt/media/dup.bin", data: Data()) }
+        writer.addFile(name: "ppt/media/dup.bin", data: payload)
         writer.addFile(name: "ppt/media/other.bin", data: payload)
         let archive = try writer.finalize()
 
         let reader = try ZipReader(data: archive)
         // The fixture must really contain the duplicates, or it proves nothing.
-        #expect(reader.allEntries.count == 66)
+        #expect(reader.centralDirectoryRecords.count == 66)
+        #expect(reader.centralDirectoryRecords.filter { $0.name == "ppt/media/dup.bin" }.count == 65)
+        // The survivor is the expensive one — the shape the attack needs.
+        let survivor = try #require(reader.allEntries.first { $0.name == "ppt/media/dup.bin" })
+        #expect(survivor.uncompressedSize == 64 * 1024)
+
         // One name, once — a caller looping over these decodes each entry once.
         #expect(reader.entryNames == ["ppt/media/dup.bin", "ppt/media/other.bin"])
         #expect(reader.entryNames.count == Set(reader.entryNames).count)
+        // The sibling accessor must agree, or the multiplier just moves there.
+        #expect(reader.allEntries.map(\.name) == reader.entryNames)
 
-        // And the charge matches the work: only the entries a name resolves to.
-        // The 64 shadows declare nothing, but the surviving "dup.bin" is the
-        // LAST one written — an empty entry — so the total is one payload.
-        #expect(reader.declaredUncompressedSize == UInt64(64 * 1024))
+        // And the charge matches: both surviving payloads, neither shadow.
+        #expect(reader.declaredUncompressedSize == UInt64(2 * 64 * 1024))
+        #expect(reader.allEntries.reduce(UInt64(0)) { $0 + UInt64($1.uncompressedSize) }
+            == reader.declaredUncompressedSize)
+    }
+
+    @Test func entryNamesTakeThePositionOfTheRecordTheyResolveTo() throws {
+        // The documented rule is "each distinct name once, at the position of
+        // the record it resolves to". With last-wins resolution that is the LAST
+        // occurrence, which is what makes entryNames and allEntries line up.
+        var writer = ZipWriter()
+        writer.addFile(name: "a.txt", data: Data("a1".utf8))
+        writer.addFile(name: "b.txt", data: Data("b".utf8))
+        writer.addFile(name: "a.txt", data: Data("a2".utf8))
+        let reader = try ZipReader(data: try writer.finalize())
+
+        // "a.txt" resolves to the record AFTER "b.txt", so it is listed second.
+        #expect(reader.entryNames == ["b.txt", "a.txt"])
+        #expect(try reader.data(forEntry: "a.txt") == Data("a2".utf8))
+        #expect(reader.allEntries.map(\.name) == ["b.txt", "a.txt"])
+    }
+
+    @Test func anArchiveWhoseEntriesShareOnePayloadIsRefused() throws {
+        // The budget bounds bytes PRODUCED; decoding costs compressedSize per
+        // name. Nothing makes two records describe different payload regions,
+        // so N DISTINCT names — all resolvable, all decoded — can point at one
+        // large payload and each declare it produces nothing. That is the same
+        // 65535x multiplier with no duplicate names at all, so the entryNames
+        // dedup does not touch it.
+        var writer = ZipWriter()
+        writer.addFile(name: "a.bin", data: Data(repeating: 7, count: 4096), compress: false)
+        writer.addFile(name: "b.bin", data: Data(repeating: 9, count: 4096), compress: false)
+        var bytes = [UInt8](try writer.finalize())
+
+        // Point every central-directory record at a compressed size far larger
+        // than the file, which is what aliased payloads add up to.
+        func u16(_ at: Int) -> Int { Int(bytes[at]) | (Int(bytes[at + 1]) << 8) }
+        func u32(_ at: Int) -> Int { (0..<4).reduce(0) { $0 | (Int(bytes[at + $1]) << (8 * $1)) } }
+        let eocd = bytes.count - 22
+        try #require(u32(eocd) == 0x0605_4B50)
+        var offset = u32(eocd + 16)
+        for _ in 0..<u16(eocd + 10) {
+            try #require(u32(offset) == 0x0201_4B50)
+            for b in 0..<4 {                             // compressed size at +20
+                bytes[offset + 20 + b] = UInt8(truncatingIfNeeded: (bytes.count << 2) >> (8 * b))
+            }
+            offset += 46 + u16(offset + 28) + u16(offset + 30) + u16(offset + 32)
+        }
+
+        // Structural, not policy: it must refuse even with no budget set.
+        expectError("entries claiming more compressed bytes than the file holds", isContentFailure) {
+            _ = try ZipReader(data: Data(bytes))
+        }
+    }
+
+    @Test func aNegativeBudgetIsClampedAndReported() throws {
+        // Limits is caller-supplied, and a budget computed as `available -
+        // used` can go negative. Clamping at construction keeps the number
+        // enforced and the number reported from disagreeing.
+        #expect(ZipReader.Limits(totalUncompressedBytes: -1 << 20).totalUncompressedBytes == 0)
+        var mutated = ZipReader.Limits(totalUncompressedBytes: 100)
+        mutated.totalUncompressedBytes = -5
+        #expect(mutated.totalUncompressedBytes == 0)
+        #expect(ZipReader.Limits.unlimited.totalUncompressedBytes == nil)
+
+        // And the error carries both numbers as numbers, so a caller deciding
+        // whether to retry with a higher ceiling need not parse prose.
+        let bomb = try amplifyingArchive(count: 4, each: 64 * 1024)
+        do {
+            _ = try ZipReader(data: bomb, limits: .init(totalUncompressedBytes: -7))
+            Issue.record("expected the clamped budget to refuse")
+        } catch RostrumError.readBudgetExceeded(let declared, let limit) {
+            #expect(limit == 0, "the reported ceiling must be the clamped one")
+            #expect(declared == UInt64(4 * 64 * 1024))
+        }
     }
 
     @Test func aPartNameWithAnEmptySegmentIsRejected() throws {
@@ -713,6 +801,26 @@ import Testing
         let aliased = try writer.finalize()
         expectError("an aliased part name", isPackageInvalid) {
             _ = try Presentation(data: aliased)
+        }
+
+        // Control: the SAME rebuild without the alias must open. Without this,
+        // the test would pass even if the rebuild were broken for an unrelated
+        // reason — a missing content type, say — and prove nothing about the
+        // guard.
+        var clean = ZipWriter()
+        for name in reader.entryNames {
+            clean.addFile(name: name, data: try reader.data(forEntry: name))
+        }
+        let control = try Presentation(data: try clean.finalize())
+        #expect(control.slides.count > 0)
+
+        // And the writer must refuse what the reader refuses, rather than
+        // producing an archive Rostrum cannot reopen.
+        let deck = try Presentation()
+        deck.package.addPart(uri: PackURI("/ppt//media/x.png"),
+                             contentType: ContentType.png, blob: Data([1, 2, 3]))
+        expectError("writing an aliased part name", isPackageInvalid) {
+            _ = try deck.serializedData()
         }
     }
 
