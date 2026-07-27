@@ -192,20 +192,45 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 - **Reading a hostile deck no longer aborts the host process.** A Swift
   `precondition` or an integer overflow is a crash a caller cannot catch, and a
-  `.pptx` arrives from users, email and the web. An audit of the read path
-  found and fixed six reachable traps: an `<Override>` `PartName` without a
-  leading slash (`PackURI` gains `init?(parsing:)`); an `a:srgbClr@val` that is
-  not six hex digits — three-digit shorthand, eight-digit ARGB and bare names
-  like `red` all appear in third-party files — reached through `shape.fill`,
-  `shape.line`, `slide.background`, `cell.fill`, `run.color` and
-  `theme.color(_:)` (`Color` gains `init?(validating:)`); a `c:pt@idx` of
-  `Int.max`, whose cache sizing computed `idx + 1`; a chart with more than 255
-  `c:ser`, which tripped `ChartData`'s programmer-facing bound; a `p:cNvPr@id`
-  at `Int.max`, which made `nextShapeID` overflow on every shape-adding call;
-  and group child-space coordinates, which were subtracted and scaled as `Int`
-  and then forced back through `Int(_: Double)`. Four further traps from the
-  same audit are recorded as open in ROADMAP.md rather than half-fixed — each
-  needs an API decision, not a patch.
+  `.pptx` arrives from users, email and the web.
+
+  The structural fix is `XML.Element.boundedInt(_:in:)` plus `OOXMLBounds`,
+  applied where file bytes become numbers rather than at each arithmetic site —
+  `ShapeTransform`'s coordinate parser covers `frame`, `childSpace`,
+  `effectiveFrame`, group mapping and the SVG renderer from one place. Ids are
+  bounded to the ranges the format defines (`ST_SlideId`,
+  `ST_DrawingElementId`), so the `max + 1` allocators in `nextShapeID`,
+  `nextSlideID`, `nextSldId`, `allocBigId`, media part numbering and media
+  timing nodes can no longer overflow; an id outside the range is ignored
+  rather than clamped, so one hostile value cannot pin an allocator at its
+  ceiling and refuse every subsequent shape. Where a namespace is genuinely
+  exhausted, the call throws.
+
+  `SVGRenderer` is bounded throughout — it does Int arithmetic on every
+  coordinate it reads (`x + inset`, `cx += cw`, `x + w / 2`) — and its colours
+  are validated rather than interpolated raw, which also closes a markup
+  injection through `a:srgbClr@val`. `Tables.syncFrameExtent` and
+  `TextMeasurer.fitText` no longer sum or subtract unbounded file values.
+
+  Also fixed: an `<Override>` `PartName` without a leading slash (`PackURI`
+  gains `init?(parsing:)`); an `a:srgbClr@val` that is not six hex digits —
+  three-digit shorthand, eight-digit ARGB and bare names like `red` all appear
+  in third-party files — reached through `shape.fill`, `shape.line`,
+  `slide.background`, `cell.fill`, `run.color` and `theme.color(_:)` (`Color`
+  gains `init?(validating:)`); a `c:pt@idx` of `Int.max`, whose cache sizing
+  computed `idx + 1`; and a chart with more than 255 `c:ser`, which tripped
+  `ChartData`'s programmer-facing bound.
+
+  Four further traps are recorded as open in ROADMAP.md rather than
+  half-fixed — each needs an API decision, not a patch.
+
+  *How these were found, since it bears on how much to trust the list:* an
+  adversarial audit sweep, then a second adversarial pass over the fixes
+  themselves. The second pass returned 19 confirmed findings against 4
+  refutations, almost all of one shape — a defect fixed at one site and left
+  at its twins. That is why the bound now lives at the parse boundary instead
+  of at the call sites, and why the fuzz tests corrupt every colour-bearing
+  element rather than one.
 - **`ChartKind` is `CaseIterable`**, and the tests that walk every kind now
   use `allCases` — a newly added kind can no longer silently skip the
   schema-order and read-back gates.
