@@ -251,6 +251,33 @@ import Rostrum
         #expect(svg.contains("second band"))
     }
 
+    /// Two series with no legend are two indistinguishable sets of bars. One
+    /// series with a legend is a label repeating the title.
+    @Test func onlyMultiSeriesChartsGetALegend() async throws {
+        func render(seriesCount: Int) async throws -> String {
+            var deck = try fixtureDeck()
+            deck.slides[1].layout = "chart"
+            deck.slides[1].body = Body(chart: IRChart(
+                kind: "bar",
+                categories: ["Q1", "Q2"],
+                series: (1...seriesCount).map { IRSeries(name: "s\($0)", values: [1, 2]) }))
+            let validated = try DeckValidator().validate(deck)
+            let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+            let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                           notesEnabled: false, into: dir)
+            #expect(rendered.droppedContent.isEmpty)   // the chart really built
+            let deckOnDisk = try Presentation(contentsOf: rendered.url)
+            let part = try #require(
+                deckOnDisk.package.parts.first { $0.key.value.contains("charts/chart") }?.value)
+            return String(decoding: part.blob, as: UTF8.self)
+        }
+
+        let multi = try await render(seriesCount: 2)
+        let single = try await render(seriesCount: 1)
+        #expect(multi.contains("<c:legend>"))
+        #expect(!single.contains("<c:legend>"))
+    }
+
     /// Falling back is right — a series whose length disagrees with the
     /// categories makes a chart PowerPoint has to repair. Doing it silently is
     /// not: a chart slide carries no bullets, so the user gets a title and

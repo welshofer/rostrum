@@ -380,11 +380,22 @@ public actor DeckRenderer {
                 let options: ChartOptions
                 switch kind {
                 case .pie:
+                    // Pie slices are categories, not series: the legend names
+                    // them, so it is always warranted.
                     options = ChartOptions(legend: .right, dataLabels: DataLabelOptions(showPercent: true))
                 case .line:
+                    // Left to Rostrum, which already gives a multi-series line
+                    // chart a legend of its own accord (ChartXML) and none to a
+                    // single-series one. Passing a position here would override
+                    // that choice rather than fill a gap.
                     options = ChartOptions(dataLabels: DataLabelOptions(showValue: true, position: "t"))
                 default:
-                    options = ChartOptions(dataLabels: DataLabelOptions(showValue: true, position: "outEnd"))
+                    // Bars get no legend from either side, so several series
+                    // arrived as indistinguishable groups of columns. One
+                    // series still gets none: the title already says what the
+                    // bars are, and a legend repeating it only costs plot area.
+                    options = ChartOptions(legend: c.series.count > 1 ? .bottom : nil,
+                                           dataLabels: DataLabelOptions(showValue: true, position: "outEnd"))
                 }
                 return try deck.chartSlide(title, kind, data, options: options)
             }
