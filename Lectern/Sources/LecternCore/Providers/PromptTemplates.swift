@@ -57,10 +57,19 @@ public enum PromptTemplates {
         one slide in four should be bands — reach for a "diagram" (process/pyramid),
         "chart", "comparison", or "metrics" instead so the deck stays visually varied.
 
-        A slide MAY include an optional "image" brief ({ prompt, aspect? }) ONLY when a \
-        photographic or illustrative visual materially strengthens it (openers, section \
-        headers, evocative single-idea slides) — never on dense bullet, comparison, or \
-        agenda slides. Describe the subject only; the palette and finish are applied later.
+        IMAGES — an "image" brief ({ prompt, aspect? }) is only ever rendered on these \
+        five layouts: "title", "sectionHeader", "quote", "bigNumber" and "closing". A \
+        brief on any other layout is discarded, so put them where they will be seen and \
+        do not spend one elsewhere. Aim to illustrate MOST of those slides — a deck of \
+        this length should carry several images, not one. Give each a vivid, specific \
+        subject; the palette and finish are applied later.
+
+        All five carry imagery equally — a "quote" or a "bigNumber" slide is as good a \
+        home for one as a section header. Note only that "title" and "closing" occur \
+        once each, so on a longer deck the recurring opportunities are "sectionHeader", \
+        "quote" and "bigNumber"; if the deck has almost none of those and is otherwise \
+        "bullets", "chart", "metrics", "bands" and "diagram", there is nowhere for \
+        imagery to go at all.
         """
     }
 
@@ -133,9 +142,11 @@ public enum PromptTemplates {
         NOTES — speaker notes are what the presenter SAYS aloud (2–4 conversational \
         sentences), not a re-reading of the slide.
 
-        IMAGES — keep an "image" brief only where a visual genuinely adds meaning \
-        (openers, section headers, one evocative idea); make its prompt vivid and \
-        specific. Remove decorative or redundant image briefs.
+        IMAGES — sharpen the image briefs; do not strip them. Only "title", \
+        "sectionHeader", "quote", "bigNumber" and "closing" slides can render one, so \
+        move a brief from a layout that cannot show it onto one that can, and ADD briefs \
+        to those slides where they are missing. Make every prompt vivid and specific. \
+        A finished deck of this length should carry several images.
 
         Preserve the deck's language, its section structure, and roughly \
         \(request.slideCount) slides. Return the COMPLETE revised deck.

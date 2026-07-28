@@ -101,12 +101,41 @@ import Rostrum
         #expect(result.slideCount == 2)
     }
 
-    @Test func imagePlacementPolicyAvoidsTextDenseLayouts() {
+    /// The invariant is "a picture is never drawn over text". `.none` on
+    /// bullets used to be how that was achieved — there was no way to make
+    /// room, so the only safe answer was no image at all. The builders reserve
+    /// `sideImagePanel()` now, so bullets and agendas can carry one safely and
+    /// the policy changes shape while the invariant does not.
+    ///
+    /// Every case is listed. A new layout added to `SlideLayoutKind` without a
+    /// deliberate decision here is the failure this guards.
+    @Test func imagePlacementPolicyKeepsPicturesOffText() {
+        // Full-bleed: the picture IS the background, scrimmed, with sparse
+        // centred text over it by design.
         #expect(SlideLayoutKind.title.imagePlacement == .fullBleed)
         #expect(SlideLayoutKind.bigNumber.imagePlacement == .fullBleed)
+        #expect(SlideLayoutKind.quote.imagePlacement == .fullBleed)
+        #expect(SlideLayoutKind.closing.imagePlacement == .fullBleed)
+
+        // Side panel: a single column of text, which the builder narrows to
+        // the columns left of the panel. That the narrowing genuinely clears
+        // it is pinned in Rostrum by `reservedTextNeverEntersTheSideImagePanel`;
+        // this pins which layouts opt in.
         #expect(SlideLayoutKind.sectionHeader.imagePlacement == .sidePanel)
-        #expect(SlideLayoutKind.bullets.imagePlacement == .none)     // never over text
+        #expect(SlideLayoutKind.bullets.imagePlacement == .sidePanel)
+        #expect(SlideLayoutKind.agenda.imagePlacement == .sidePanel)
+
+        // None: two columns of text, a plotted chart, a row of metrics,
+        // stacked bands, a diagram. Narrowing these breaks the layout rather
+        // than reflowing it, so there is nowhere for a picture to go that is
+        // not on top of something.
+        #expect(SlideLayoutKind.twoColumn.imagePlacement == .none)
         #expect(SlideLayoutKind.comparison.imagePlacement == .none)
+        #expect(SlideLayoutKind.chart.imagePlacement == .none)
+        #expect(SlideLayoutKind.metrics.imagePlacement == .none)
+        #expect(SlideLayoutKind.bands.imagePlacement == .none)
+        #expect(SlideLayoutKind.diagram.imagePlacement == .none)
+        #expect(SlideLayoutKind.unknown("whatever").imagePlacement == .none)
     }
 
     @Test func qaPassAdoptsAValidRevision() async throws {
