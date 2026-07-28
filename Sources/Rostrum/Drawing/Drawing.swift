@@ -101,8 +101,19 @@ public struct GradientFill: Hashable, Sendable {
 /// from `PictureFit`, which is for `p:pic` picture shapes — tiling is a
 /// fill-only capability.
 public enum ImageFillMode: Hashable, Sendable {
-    /// Scale the image to fill the region (`a:stretch`/`a:fillRect`).
+    /// Scale the image to fill the region (`a:stretch`/`a:fillRect`),
+    /// distorting it when its aspect differs from the region's.
     case stretch
+    /// Cover: scale to fill the region with no distortion, cropping the
+    /// overflowing edges symmetrically (`a:srcRect` + `a:stretch`) — the fill
+    /// counterpart of `PictureFit.fill`, and what a full-bleed background
+    /// almost always wants.
+    ///
+    /// Cropping needs the region's aspect ratio, which a `Fill` does not carry:
+    /// `Slide.setBackground` supplies the slide canvas and the shape writers
+    /// supply the shape frame. Where the region is genuinely unknown this
+    /// degrades to `.stretch` rather than guessing a ratio.
+    case cover
     /// Tile the image at `scale` (1.0 = native), repeating to fill (`a:tile`).
     case tile(scale: Double = 1.0)
 }
@@ -115,8 +126,8 @@ public enum Fill: Hashable, Sendable {
     case gradient(GradientFill)
     /// An image fill (`a:blipFill`). The image is embedded (deduplicated) and a
     /// relationship added when the fill is written — so this case must be
-    /// realized through `fillElement(embeddingInto:package:)`, never the pure
-    /// `makeElement()`.
+    /// realized through `fillElement(embeddingInto:package:regionAspect:)`,
+    /// never the pure `makeElement()`.
     case image(Data, ImageFillMode)
     /// A theme color reference (with optional transforms). Shapes filled this
     /// way recolor automatically when the theme palette is edited.
@@ -178,7 +189,7 @@ public enum Fill: Hashable, Sendable {
             return fill
         case .image:
             preconditionFailure(
-                "image fills must be written via Fill.fillElement(embeddingInto:package:)")
+                "image fills must be written via Fill.fillElement(embeddingInto:package:regionAspect:)")
         case .none:
             return XML.Element("a:noFill")
         }

@@ -72,12 +72,20 @@ public actor DeckGenerator {
                             emit: @Sendable @escaping (GenerationEvent) -> Void) async -> (images: [String: Data], warnings: [String]) {
         guard let imageProvider else { return ([:], []) }
         // Only slides whose layout can actually show an image (skip text-dense ones,
-        // so we never waste an API call or clip text). Full-bleed layouts get a wide
-        // image so the background barely stretches.
+        // so we never waste an API call or clip text).
+        //
+        // The aspect follows the destination, not the brief. There are exactly
+        // two destinations and both have a fixed shape: a full-bleed image
+        // fills the 16:9 slide, and Rostrum's five-column side panel is 1.11:1
+        // — near enough to square. Both are cover-cropped on the way in, so a
+        // mismatch costs picture rather than correctness, but it costs a lot of
+        // it: the square images this deck was getting for its full-bleed slides
+        // lose 44% of their height to the crop. The model's `aspect` is
+        // therefore advisory, and the layout wins.
         let briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect)? in
             let placement = slide.kind.imagePlacement
             guard placement != .none, let brief = slide.image else { return nil }
-            let aspect = placement == .fullBleed ? ImageAspect.wide : ImageAspect(brief: brief.aspect)
+            let aspect: ImageAspect = placement == .fullBleed ? .wide : .square
             return (slide.id, brief, aspect)
         }
         // A brief the model wrote for a layout that cannot render one is thrown

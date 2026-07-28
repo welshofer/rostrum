@@ -76,6 +76,44 @@ import Testing
         #expect(sizes.allSatisfy { $0 <= 3400 })
     }
 
+    /// A comparison card must start below the title's ink, not below a grid row
+    /// that the title happens to be sitting in.
+    ///
+    /// The cards deliberately climb a row above the shared content top to buy
+    /// their bullets headroom, and that row was the title's: on a real deck the
+    /// card's top edge landed 0.01in above the bottom of the title's only line,
+    /// and a card is an opaque filled shape written after the text, so it
+    /// painted over the descenders. Both title lengths are checked because the
+    /// row arithmetic was wrong for each in a different way.
+    @Test(arguments: [
+        "Higher similarity isn't the same as better",
+        "Your move this quarter: build the habit, then show what it changed",
+    ])
+    func comparisonCardsClearTheTitle(_ title: String) throws {
+        let deck = try Presentation()
+        let slide = try deck.comparisonSlide(title, leftHeader: "A", left: ["one"],
+                                             rightHeader: "B", right: ["two"])
+        let all = try boxes(slide)
+        let titleBox = try #require(all.first { $0.text == title })
+        let card = try #require(all.first { $0.text.isEmpty })
+
+        // Where the title's ink actually ends: one line height per wrapped line
+        // at the size the builder fitted it to.
+        let sizePt = Double(try runSpecs(slide, containing: title).map(\.sz).max() ?? 0) / 100
+        let lnSpc = Double(try runSpecs(slide, containing: title).first?.lnSpc ?? 100_000) / 100_000
+        let charsPerLine = max(1.0, (Double(titleBox.cx) / 12700.0) / (0.52 * sizePt))
+        let lines = (Double(title.count) / charsPerLine).rounded(.up)
+        let inkBottom = Double(titleBox.y) + lines * sizePt * 1.2 * lnSpc * 12700.0
+
+        #expect(Double(card.y) >= inkBottom,
+                """
+                the card starts at \(Double(card.y) / 914400) in but the title's \
+                \(Int(lines)) line(s) of \(sizePt)pt run to \(inkBottom / 914400) in
+                """)
+        // And it is still a real card, not a sliver squeezed under the title.
+        #expect(card.cy > 3 * 914_400)
+    }
+
     // MARK: Process captions
 
     @Test func processCaptionsAreFittedAndTightened() throws {

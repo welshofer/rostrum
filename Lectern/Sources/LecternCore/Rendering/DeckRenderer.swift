@@ -225,7 +225,13 @@ public actor DeckRenderer {
                         // No alt text: a background fill is not a shape, and a
                         // decorative backdrop is what assistive tech should
                         // skip anyway.
-                        do { try built.setBackground(.image(scrimmed, .stretch)) }
+                        //
+                        // `.cover`, never `.stretch`: image models hand back a
+                        // square far more often than they honor a requested
+                        // aspect, and a 1:1 image stretched onto a 16:9 slide
+                        // is 78% too wide — faces flatten, circles become
+                        // ellipses. Cover crops the overflow instead.
+                        do { try built.setBackground(.image(scrimmed, .cover)) }
                         catch { Self.noteLostImage(on: slide, into: &dropped) }
                     case .sidePanel:
                         // A framed panel on the right (title/content sit left).

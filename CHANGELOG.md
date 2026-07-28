@@ -31,6 +31,35 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   — reads and sets what PowerPoint uses to tell a `.pptx` from a `.potx` from
   a `.ppsx`, which is the main part's content type rather than the file
   extension.
+- `ImageFillMode.cover` — an image fill (shape or slide background) that
+  scales to fill its region with **no distortion**, cropping the overflow
+  through `a:srcRect`. The fill counterpart of the existing
+  `PictureFit.fill`, and what a full-bleed background almost always wants:
+  `.stretch` scales each axis independently, so a square image on a 16:9
+  slide arrived 78% too wide. `Slide.setBackground` reads the crop region
+  from `p:sldSz`; the shape writers use the shape frame. Both now share one
+  `SrcCrop.cover` — pictures and fills computing their own insets is how they
+  came to disagree in the first place.
+
+### Fixed
+
+- **Comparison-slide cards no longer overlap the title.** The cards
+  deliberately start a grid row above the shared content top to buy their
+  bullets headroom, but that row belongs to the title: a grid row is 0.24in
+  and a title line is nearer 0.6in, so on a real deck the card's top edge
+  sat 0.01in above the bottom of the title's only line — and a card is an
+  opaque filled shape written after the text, so it covered the descenders.
+  Card placement now clamps to the title's measured ink, which fixes the
+  wrapped-title case the row arithmetic also got wrong.
+- **`renderSVG` draws background images instead of a grey rectangle.** Every
+  `a:blipFill` painted as flat `#DDDDDD`, so the one place a deck's imagery
+  is most visible was the one place the preview showed nothing. Backgrounds
+  now render from the embedded bytes, cropped exactly as `a:srcRect` says.
+  Pictures render with `preserveAspectRatio="none"` rather than SVG's
+  `slice`, which is *cover* and cropped on its own — a stretched file used to
+  preview undistorted, which is the one thing a preview must not do. Shape
+  image fills stay a neutral swatch (their geometry would have to become the
+  clip path).
 
 ### Changed
 

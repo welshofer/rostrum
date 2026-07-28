@@ -49,16 +49,36 @@ public final class Slide {
 
     /// Set the slide's background fill (`p:bg`, always the first child of
     /// `p:cSld`).
+    ///
+    /// A `.image(_, .cover)` background is cropped to the slide canvas, whose
+    /// aspect is read from `p:sldSz` here — the background is the one fill
+    /// whose region is not a shape frame, so it has to be looked up rather
+    /// than passed in.
     public func setBackground(_ fill: Fill) throws {
         let cSld = try cSld()
         cSld.removeChildren(named: "p:bg")
         let bg = XML.Element("p:bg")
         let bgPr = XML.Element("p:bgPr")
-        bgPr.appendElement(try fill.fillElement(embeddingInto: part, package: package))
+        bgPr.appendElement(try fill.fillElement(embeddingInto: part, package: package,
+                                                regionAspect: canvasAspect))
         bgPr.appendElement(XML.Element("a:effectLst"))
         bg.appendElement(bgPr)
         cSld.children.insert(.element(bg), at: 0)
         part.markDirty()
+    }
+
+    /// The slide canvas aspect (width ÷ height) from the presentation part's
+    /// `p:sldSz`, or nil when the deck does not say (`p:sldSz` is optional) or
+    /// the size is degenerate. Read-only: unlike `Presentation.slideSize`'s
+    /// setter this never creates the element, so asking leaves the part
+    /// byte-identical.
+    var canvasAspect: Double? {
+        guard let dom = try? package.mainDocumentPart().dom(),
+              let sldSz = dom.firstChild(named: "p:sldSz"),
+              let cx = sldSz[attribute: "cx"].flatMap({ Int($0) }),
+              let cy = sldSz[attribute: "cy"].flatMap({ Int($0) }),
+              cx > 0, cy > 0 else { return nil }
+        return Double(cx) / Double(cy)
     }
 
     /// Allocate the next free shape id on a slide (`p:cNvPr id` must be a

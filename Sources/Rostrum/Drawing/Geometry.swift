@@ -5,6 +5,53 @@ import Foundation
 // no OOXML is produced, so there is zero round-trip risk. The rects returned
 // flow into the existing `addShape(frame:)` / `addTextBox(frame:)` writers.
 
+// MARK: - Source cropping
+
+/// The `a:srcRect` edge insets that trim a source image before it is stretched
+/// onto its destination, as fractions 0…1 of the image's own width/height.
+///
+/// One type for both fill paths on purpose. Pictures (`p:pic`) and fills
+/// (`a:blipFill` on a shape or a slide background) crop through the identical
+/// element, and when each computed its own insets they drifted: pictures got
+/// aspect-preserving cover and fills silently did not, so every full-bleed
+/// background image was scaled non-uniformly to the slide — a square
+/// illustration on a 16:9 slide arrived 78% too wide.
+public struct SrcCrop: Hashable, Sendable {
+    public var left, top, right, bottom: Double
+
+    public init(left: Double = 0, top: Double = 0, right: Double = 0, bottom: Double = 0) {
+        self.left = left; self.top = top; self.right = right; self.bottom = bottom
+    }
+
+    /// The insets that let an image of `imageAspect` (width ÷ height) cover a
+    /// region of `regionAspect` with no distortion, cropping the overflowing
+    /// edges symmetrically about the center. `nil` when no crop is called for —
+    /// the aspects agree, or either is not a usable positive ratio.
+    public static func cover(imageAspect: Double, regionAspect: Double) -> SrcCrop? {
+        guard imageAspect.isFinite, regionAspect.isFinite,
+              imageAspect > 0, regionAspect > 0 else { return nil }
+        // Below srcRect's own resolution (1/100000) the inset writes as "0", so
+        // a matching pair one float ulp apart emits an all-zero element instead
+        // of none — same picture, different bytes. Determinism is a feature.
+        let c = imageAspect < regionAspect
+            ? (1 - imageAspect / regionAspect) / 2
+            : (1 - regionAspect / imageAspect) / 2
+        guard (c * 100_000).rounded() >= 1 else { return nil }
+        return imageAspect < regionAspect
+            ? SrcCrop(top: c, bottom: c)          // relatively taller: crop top & bottom
+            : SrcCrop(left: c, right: c)          // relatively wider: crop left & right
+    }
+}
+
+public extension Rect {
+    /// Width ÷ height, or nil for a degenerate rect — the ratio `SrcCrop.cover`
+    /// needs, asked of the rect rather than recomputed at each call site.
+    var aspect: Double? {
+        guard width.rawValue > 0, height.rawValue > 0 else { return nil }
+        return Double(width.rawValue) / Double(height.rawValue)
+    }
+}
+
 // MARK: - Canonical slide sizes
 
 public extension Rect {

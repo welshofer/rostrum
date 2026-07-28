@@ -31,8 +31,15 @@ struct SVGRenderer {
         var defs = ""
         var body = ""
 
-        if let bgPr = dom.firstChild(named: "p:cSld")?.firstChild(named: "p:bg")?.firstChild(named: "p:bgPr"),
-           let paint = paint(for: bgPr, box: (0, 0, w, h), defs: &defs) {
+        let bgPr = dom.firstChild(named: "p:cSld")?.firstChild(named: "p:bg")?.firstChild(named: "p:bgPr")
+        // A full-bleed background image is drawn, not approximated. It used to
+        // paint as flat #DDDDDD, so the one place a deck's imagery is most
+        // visible was the one place the preview showed nothing — which is how a
+        // background stretched to 178% of its own aspect shipped unnoticed.
+        if let bgPr, let blipFill = bgPr.firstChild(named: "a:blipFill") {
+            body += box(0, 0, w, h, fill: "#FFFFFF")   // under any transparency
+            body += renderBlipFill(blipFill, box: (0, 0, w, h), defs: &defs)
+        } else if let bgPr, let paint = paint(for: bgPr, box: (0, 0, w, h), defs: &defs) {
             body += box(0, 0, w, h, fill: paint)
         } else {
             body += box(0, 0, w, h, fill: "#FFFFFF")
@@ -42,7 +49,7 @@ struct SVGRenderer {
             for child in spTree.childElements {
                 switch child.name {
                 case "p:sp": body += renderShape(child, defs: &defs)
-                case "p:pic": body += renderPicture(child)
+                case "p:pic": body += renderPicture(child, defs: &defs)
                 case "p:graphicFrame": body += renderGraphicFrame(child, defs: &defs)
                 default: break
                 }
@@ -238,20 +245,70 @@ struct SVGRenderer {
         return lines.isEmpty ? [text] : lines
     }
 
-    // MARK: - Pictures
+    // MARK: - Pictures and image fills
 
-    private func renderPicture(_ pic: XML.Element) -> String {
-        guard let spPr = pic.firstChild(named: "p:spPr") else { return "" }
-        let (x, y, w, h) = frame(of: spPr)
-        guard let rId = pic.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip")?[attribute: "r:embed"],
-              let rel = slidePart.rels.relationship(withId: rId) else { return "" }
+    private func renderPicture(_ pic: XML.Element, defs: inout String) -> String {
+        guard let spPr = pic.firstChild(named: "p:spPr"),
+              let blipFill = pic.firstChild(named: "p:blipFill") else { return "" }
+        return renderBlipFill(blipFill, box: frame(of: spPr), defs: &defs)
+    }
+
+    /// A blip fill drawn exactly as PowerPoint composites it: crop the source
+    /// by `a:srcRect`, then stretch what is left onto the box.
+    ///
+    /// Not `preserveAspectRatio="xMidYMid slice"`, which is SVG's *cover* and
+    /// crops on its own. For a picture written with `PictureFit.fill` the
+    /// srcRect has already made the source match the box, so the two agree —
+    /// but for anything stretched, `slice` quietly showed an undistorted
+    /// preview of a file PowerPoint distorts, which is the one thing a preview
+    /// must not do.
+    private func renderBlipFill(_ blipFill: XML.Element, box f: (Int, Int, Int, Int),
+                                defs: inout String) -> String {
+        let (x, y, w, h) = f
+        guard w > 0, h > 0, let href = imageHref(of: blipFill) else { return "" }
+        let crop = sourceCrop(of: blipFill)
+        // Visible fraction of the source after the insets; the image is scaled
+        // up by its reciprocal and shifted so the visible part lands on the box.
+        let visibleW = Swift.max(0.0001, 1 - crop.left - crop.right)
+        let visibleH = Swift.max(0.0001, 1 - crop.top - crop.bottom)
+        let iw = Double(w) / visibleW, ih = Double(h) / visibleH
+        let ix = Double(x) - crop.left * iw, iy = Double(y) - crop.top * ih
+        func i(_ v: Double) -> Int { Int(v.rounded()) }
+        let image = "<image x=\"\(i(ix))\" y=\"\(i(iy))\" width=\"\(i(iw))\" height=\"\(i(ih))\" "
+            + "preserveAspectRatio=\"none\" href=\"\(href)\"/>"
+        // Uncropped: the image already lands exactly on the box, so no clip.
+        guard crop != SrcCrop() else { return image }
+        let id = "clip\(defs.count)"
+        defs += "<clipPath id=\"\(id)\">"
+            + "<rect x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\"/></clipPath>"
+        return "<g clip-path=\"url(#\(id))\">\(image)</g>"
+    }
+
+    /// `a:srcRect` as fractions, defaulting to no crop.
+    ///
+    /// Bounded at the parse, like every other file-supplied number here. These
+    /// fractions divide and multiply into `Int(_: Double)` below, which *traps*
+    /// — and `Double(_: String)` happily accepts `"1e30"`, `"inf"` and `"nan"`,
+    /// so an unbounded read turns a hostile `srcRect` into an uncatchable crash
+    /// on a pure read API. `boundedInt` parses as `Int` (rejecting all three)
+    /// and clamps to srcRect's own ±100%. An absurd inset reads as no crop.
+    private func sourceCrop(of blipFill: XML.Element) -> SrcCrop {
+        guard let src = blipFill.firstChild(named: "a:srcRect") else { return SrcCrop() }
+        func f(_ name: String) -> Double {
+            Double(src.boundedInt(name, in: -100_000...100_000) ?? 0) / 100_000
+        }
+        return SrcCrop(left: f("l"), top: f("t"), right: f("r"), bottom: f("b"))
+    }
+
+    /// The embedded image behind a blip fill, as a `data:` URI.
+    private func imageHref(of blipFill: XML.Element) -> String? {
+        guard let rId = blipFill.firstChild(named: "a:blip")?[attribute: "r:embed"],
+              let rel = slidePart.rels.relationship(withId: rId) else { return nil }
         let target = PackURI.resolve(target: rel.target, relativeTo: slidePart.uri.baseURI)
-        guard let media = package.parts[target] else { return "" }
+        guard let media = package.parts[target] else { return nil }
         let ext = target.ext.lowercased()
         let mime = ext == "jpg" || ext == "jpeg" ? "image/jpeg" : ext == "gif" ? "image/gif" : "image/png"
-        let data = media.blob.base64EncodedString()
-        return "<image x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\" "
-            + "preserveAspectRatio=\"xMidYMid slice\" href=\"data:\(mime);base64,\(data)\"/>"
+        return "data:\(mime);base64,\(media.blob.base64EncodedString())"
     }
 
     // MARK: - Tables / charts
@@ -442,7 +499,11 @@ struct SVGRenderer {
     private func paint(for pr: XML.Element, box f: (Int, Int, Int, Int), defs: inout String) -> String? {
         if let solid = pr.firstChild(named: "a:solidFill") { return colorHex(in: solid) }
         if let grad = pr.firstChild(named: "a:gradFill") { return gradientRef(grad, box: f, defs: &defs) }
-        if pr.firstChild(named: "a:blipFill") != nil { return "#DDDDDD" }   // image fill → neutral
+        // A shape image fill stays a neutral swatch: the shape's own geometry
+        // (rounded, trapezoid, ellipse) would have to become the clip path for
+        // the image to be honest, and no builder emits one. Slide backgrounds,
+        // which do, are drawn as images by `render(pixelWidth:)`.
+        if pr.firstChild(named: "a:blipFill") != nil { return "#DDDDDD" }
         if pr.firstChild(named: "a:noFill") != nil { return nil }
         return nil
     }

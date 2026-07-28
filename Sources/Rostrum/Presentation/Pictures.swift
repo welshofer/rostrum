@@ -46,18 +46,14 @@ extension ShapeCollection {
 
     /// The `a:srcRect` edge insets (fractions 0…1) that make `info` cover
     /// `frame` without distortion, or nil for `.stretch`.
+    ///
+    /// The insets themselves come from `SrcCrop.cover`, shared with the fill
+    /// path — a picture and a background covering the same region must crop
+    /// identically, and two copies of this arithmetic is how they came not to.
     private func coverCrop(info: ImageInfo, frame: Rect, fit: PictureFit) -> SrcCrop? {
-        guard fit == .fill else { return nil }
-        let imageAspect = Double(info.pixelWidth) / Double(info.pixelHeight)
-        let frameAspect = Double(frame.width.rawValue) / Double(frame.height.rawValue)
-        if imageAspect < frameAspect {          // image relatively taller: crop top & bottom
-            let c = (1 - imageAspect / frameAspect) / 2
-            return SrcCrop(left: 0, top: c, right: 0, bottom: c)
-        } else if imageAspect > frameAspect {   // relatively wider: crop left & right
-            let c = (1 - frameAspect / imageAspect) / 2
-            return SrcCrop(left: c, top: 0, right: c, bottom: 0)
-        }
-        return nil
+        guard fit == .fill, info.pixelHeight > 0, let regionAspect = frame.aspect else { return nil }
+        return SrcCrop.cover(imageAspect: Double(info.pixelWidth) / Double(info.pixelHeight),
+                             regionAspect: regionAspect)
     }
 
     /// Add a picture at its natural size (pixels ÷ dpi), top-left at (x, y).
@@ -71,9 +67,6 @@ extension ShapeCollection {
             data, info: info,
             frame: Rect(x: x, y: y, width: natural.width, height: natural.height))
     }
-
-    /// Source-rectangle crop, as edge insets expressed in fractions 0…1.
-    struct SrcCrop { var left, top, right, bottom: Double }
 
     private func insertPicture(_ data: Data, info: ImageInfo, frame: Rect, crop: SrcCrop? = nil) throws -> Picture {
         guard let package else {
@@ -99,15 +92,9 @@ extension ShapeCollection {
 
         let blipFill = XML.Element("p:blipFill")
         blipFill.appendElement(XML.Element("a:blip", attributes: [("r:embed", rId)]))
-        if let crop {
-            // srcRect trims a fraction (in 1000ths of a percent) off each edge
-            // of the source image before it is stretched to the frame.
-            func pct(_ v: Double) -> String { String(Int((v * 100_000).rounded())) }
-            blipFill.appendElement(XML.Element("a:srcRect", attributes: [
-                ("l", pct(crop.left)), ("t", pct(crop.top)),
-                ("r", pct(crop.right)), ("b", pct(crop.bottom)),
-            ]))
-        }
+        // srcRect trims a fraction (in 1000ths of a percent) off each edge of
+        // the source image before it is stretched to the frame.
+        if let crop { blipFill.appendElement(crop.makeElement()) }
         let stretch = XML.Element("a:stretch")
         stretch.appendElement(XML.Element("a:fillRect"))
         blipFill.appendElement(stretch)

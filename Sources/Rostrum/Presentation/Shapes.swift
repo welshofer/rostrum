@@ -94,7 +94,8 @@ public final class ShapeCollection: Sequence {
     ) throws -> Shape {
         let sp = try makeSp(name: geometry.rawValue, frame: frame, textBox: false, geometry: geometry)
         let spPr = sp.firstChild(named: "p:spPr")!
-        spPr.appendElement(try fill.fillElement(embeddingInto: part, package: package))
+        spPr.appendElement(try fill.fillElement(embeddingInto: part, package: package,
+                                                regionAspect: frame.aspect))
         spPr.appendElement(Line.makeElement(line))
         try Slide.spTree(of: part).appendElement(sp)
         part.markDirty()
@@ -118,7 +119,8 @@ public final class ShapeCollection: Sequence {
                 Int((Double(cornerRadius.rawValue) / Double(minSide) * 100_000).rounded())))
             avLst.appendElement(XML.Element("a:gd", attributes: [("name", "adj"), ("fmla", "val \(adj)")]))
         }
-        spPr.appendElement(try fill.fillElement(embeddingInto: part, package: package))
+        spPr.appendElement(try fill.fillElement(embeddingInto: part, package: package,
+                                                regionAspect: frame.aspect))
         spPr.appendElement(Line.makeElement(line))
         try Slide.spTree(of: part).appendElement(sp)
         part.markDirty()
@@ -276,7 +278,8 @@ public class Shape {
             throw RostrumError.packageInvalid("\(element.name) has no p:spPr to fill")
         }
         for name in Fill.choiceNames { spPr.removeChildren(named: name) }
-        spPr.insertChild(try fill.fillElement(embeddingInto: part, package: package),
+        spPr.insertChild(try fill.fillElement(embeddingInto: part, package: package,
+                                              regionAspect: frame.aspect),
                          beforeAnyOf: ["a:ln", "a:effectLst", "a:sp3d", "a:extLst"])
         part.markDirty()
     }

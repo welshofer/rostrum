@@ -250,6 +250,60 @@ import Testing
         #expect(svg == (try deck.renderSVG(slideAt: 0)))
     }
 
+    /// A full-bleed background image is drawn, not painted over with grey.
+    ///
+    /// `paint(for:)` mapped every `a:blipFill` to a flat `#DDDDDD`, so the one
+    /// place a generated deck's imagery is most visible was the one place the
+    /// preview showed nothing — and a background scaled to 178% of its own
+    /// aspect ratio shipped for weeks without anyone being able to see it.
+    @Test func backgroundImageIsDrawnAndCropped() throws {
+        let deck = try Presentation()
+        // 1:1 on a 16:9 slide: the writer crops, the renderer must honor it.
+        try deck.slides[0].setBackground(.image(png, fit: .cover))
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(svg.contains("data:image/png;base64,"))
+        #expect(!svg.contains("#DDDDDD"))
+        // Cropped, so the image is drawn larger than the slide and clipped to it —
+        // never letterboxed and never squashed (`preserveAspectRatio="none"` on a
+        // source the srcRect has already made the right shape).
+        #expect(svg.contains("<clipPath"))
+        #expect(svg.contains("preserveAspectRatio=\"none\""))
+        let image = try #require(Self.firstElement(named: "image", in: try XML.parse(Data(svg.utf8))))
+        let height = Int(image[attribute: "height"] ?? "") ?? 0
+        #expect(height > 6_858_000,
+                "a covered square must overflow the slide's height, got \(height)")
+        #expect(Int(image[attribute: "width"] ?? "") == 12_192_000,
+                "and match the slide exactly on the axis it does not overflow")
+        #expect(svg == (try deck.renderSVG(slideAt: 0)))
+    }
+
+    /// The first descendant element with this local name.
+    private static func firstElement(named name: String, in root: XML.Element) -> XML.Element? {
+        if root.name == name { return root }
+        for child in root.childElements {
+            if let hit = firstElement(named: name, in: child) { return hit }
+        }
+        return nil
+    }
+
+    /// A stretched background previews as stretched.
+    ///
+    /// The picture path hard-coded SVG's `xMidYMid slice` — cover — so a
+    /// distorted file rendered as an undistorted preview, which is the one
+    /// thing a preview must never do.
+    @Test func stretchedImagePreviewsAsStretchedNotCovered() throws {
+        let deck = try Presentation()
+        try deck.slides[0].setBackground(.image(png, fit: .stretch))
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(!svg.contains("slice"))
+        #expect(svg.contains("preserveAspectRatio=\"none\""))
+        // Uncropped: the image lands exactly on the slide, so no clip is needed.
+        #expect(!svg.contains("<clipPath"))
+        let image = try #require(Self.firstElement(named: "image", in: try XML.parse(Data(svg.utf8))))
+        #expect(Int(image[attribute: "width"] ?? "") == 12_192_000)
+        #expect(Int(image[attribute: "height"] ?? "") == 6_858_000)
+    }
+
     @Test func rendersEveryFeatureDeckWithoutCrashingIntoValidSVG() throws {
         // Every slide of a feature-diverse deck renders to valid, deterministic SVG.
         let deck = try Presentation()

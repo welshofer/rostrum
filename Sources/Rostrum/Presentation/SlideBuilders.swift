@@ -177,9 +177,22 @@ public extension Presentation {
         // Comparison cards run a row taller than the shared content rect (one row
         // above the standard content top) so their bullets get real headroom — a
         // bullet that wraps (wider fonts in PowerPoint than in preview) then
-        // never runs off the card. A wrapped title shifts the cards down with it.
+        // never runs off the card.
+        //
+        // Clamped to below the title, because that row is not free space. The
+        // title band is two rows tall and a 40pt headline paints most of it, so
+        // `contentRow - 1` landed the cards *inside* the title: on a real deck
+        // the card's top edge sat 0.01in above the bottom of the title's only
+        // line, and a card is an opaque filled shape drawn after the text — it
+        // covered the descenders. Measuring where the title actually ends fixes
+        // it for a wrapped title too, which `contentRow - 1` also overlapped.
+        let grid = deckGrid(s)
         let cardRow = headerInfo.contentRow - 1
-        let content = deckGrid(s).cell(column: 0, row: cardRow, columnSpan: 12, rowSpan: 12 - cardRow)
+        let band = grid.cell(column: 0, row: cardRow, columnSpan: 12, rowSpan: 12 - cardRow)
+        // `min` with the band bottom keeps the height non-negative — a negative
+        // a:ext is a PowerPoint repair — however tall a pathological title runs.
+        let top = Swift.min(Swift.max(band.minY, headerInfo.titleBottom + s.gutter), band.maxY)
+        let content = Rect(x: band.x, y: top, width: band.width, height: band.maxY - top)
         let cols = content.split(.horizontal, count: 2, gutter: s.gutter)
         // Header gets its own top band (room for two lines) and the bullets fill
         // the rest, top-anchored — so a two-line header never overlaps them.
@@ -498,9 +511,17 @@ public extension Presentation {
     /// one row lower: the band is sized for a single line, so a wrapped title
     /// otherwise prints straight over the cards/bullets below (PowerPoint
     /// renders bare `normAutofit` text at full size until the box is edited).
+    ///
+    /// `titleBottom` is where the title's ink actually ends — not where its box
+    /// does. A caller placing content on a row of its own choosing (as
+    /// `comparisonSlide` does, to buy its cards a taller frame) needs the real
+    /// extent: rows are 0.24in tall and a title line is nearer 0.6in, so "one
+    /// row up" is not a small nudge into spare space, it is a move into the
+    /// headline.
     private func placeHeader(on slide: Slide, kicker: String?, title: String,
                              style: DeckStyle,
-                             reservingSideImage: Bool = false) throws -> (contentRow: Int, titleWraps: Bool) {
+                             reservingSideImage: Bool = false)
+        throws -> (contentRow: Int, titleWraps: Bool, titleBottom: EMU) {
         let grid = deckGrid(style)
         // The title clears the image too — a headline running under the panel
         // is the same defect as a bullet doing it.
@@ -520,10 +541,30 @@ public extension Presentation {
                              fallback: title.count > 60 ? 30.0 : (title.count > 36 ? 34.0 : style.type(.title).sizePt))
         let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top)
-        let wraps = estimatedLines(title, style: titleStyle.type(.title), width: band.width) >= 2
+        let titleType = titleStyle.type(.title)
+        let wraps = estimatedLines(title, style: titleType, width: band.width) >= 2
+        // Top-anchored with zero insets (`styledBox`), so the ink starts at the
+        // band's top edge and runs one line height per line.
+        let titleBottom = band.minY + paintedHeight(title, style: titleType, width: band.width)
         // One row of gap after the space the title actually occupies: a
         // single-line title fills roughly one row, a wrapped one both.
-        return (titleRow + (wraps ? 3 : 2), wraps)
+        return (titleRow + (wraps ? 3 : 2), wraps, titleBottom)
+    }
+
+    /// How tall `text` paints in `width` — measured from the registered font's
+    /// own line height, estimated at 1.2em natural leading otherwise.
+    ///
+    /// Distinct from the *box* height, which is whatever rect the caller passed:
+    /// `addText` never shrinks a box to its text, so a box tells you nothing
+    /// about where the ink stops.
+    private func paintedHeight(_ text: String, style ts: TextStyle, width: EMU) -> EMU {
+        let widthPt = Double(width.rawValue) / Double(EMU.perPoint)
+        if let metrics = fonts.metrics(for: ts.font) {
+            return .points(TextMeasurer(metrics).height(of: text, pointSize: ts.sizePt,
+                                                        width: widthPt, lineSpacing: ts.lineHeight))
+        }
+        return .points(Double(estimatedLines(text, style: ts, width: width))
+                       * ts.sizePt * 1.2 * ts.lineHeight)
     }
 
     /// Deterministic wrap estimate. With the style's font registered in

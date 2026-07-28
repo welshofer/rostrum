@@ -258,6 +258,46 @@ import Testing
         #expect(svg.contains("<svg"))
     }
 
+    /// `a:srcRect` is file-supplied and reaches `Int(_: Double)`.
+    ///
+    /// The renderer divides the box by the visible source fraction and shifts
+    /// by the crop, then converts to Int — and `Double(_: String)` accepts
+    /// `"1e30"`, `"inf"` and `"nan"`, every one of which makes that conversion
+    /// trap. `nan` is the sly one: the `max(0.0001, …)` clamp on the divisor
+    /// lets it through (`nan >= 0.0001` is false, so `max` returns the clamp)
+    /// and the NaN reappears in the offset.
+    @Test(arguments: ["1e30", "nan", "inf", "-99999999999999999999", "", "٤٢"])
+    func aHostileSourceRectDoesNotTrapTheSVGRenderer(_ value: String) throws {
+        let deck = try Presentation()
+        // `.cover` on a square image writes a real srcRect for us to poison.
+        try deck.slides[0].setBackground(.image(Self.squarePNG, fit: .cover))
+        // A non-square frame, so the picture gets a real srcRect of its own —
+        // the background's and the picture's are separate code paths into the
+        // same arithmetic.
+        try deck.slides[0].shapes.addPicture(
+            Self.squarePNG,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)),
+            fit: .fill)
+        for src in Self.descendants(of: try deck.slides[0].part.dom(), named: "a:srcRect") {
+            for edge in ["l", "t", "r", "b"] { src[attribute: edge] = value }
+        }
+        deck.slides[0].part.markDirty()
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(svg.contains("<svg"))
+    }
+
+    /// A 4×4 PNG header — `ImageSniffer` reads the size, nothing decodes pixels.
+    private static let squarePNG: Data = {
+        var b: [UInt8] = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
+        func be32(_ v: Int) -> [UInt8] {
+            [UInt8(v >> 24 & 0xFF), UInt8(v >> 16 & 0xFF), UInt8(v >> 8 & 0xFF), UInt8(v & 0xFF)]
+        }
+        b += be32(13); b += Array("IHDR".utf8); b += be32(4); b += be32(4)
+        b += [8, 6, 0, 0, 0]; b += be32(0)
+        b += be32(0); b += Array("IEND".utf8); b += be32(0)
+        return Data(b)
+    }()
+
     @Test func aHostileColourCannotInjectMarkupIntoTheSVG() throws {
         // colorHex interpolates into an SVG attribute, unescaped.
         let deck = try Presentation()
