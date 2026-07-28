@@ -64,9 +64,12 @@ public enum PromptTemplates {
         this length should carry several images, not one. Give each a vivid, specific \
         subject; the palette and finish are applied later.
 
-        This interacts with layout variety: if the deck is nearly all "bullets", \
-        "chart", "metrics", "bands" and "diagram", there is nowhere for imagery to go. \
-        Use section headers to break the deck into parts and let them carry visuals.
+        All five carry imagery equally — a "quote" or a "bigNumber" slide is as good a \
+        home for one as a section header. Note only that "title" and "closing" occur \
+        once each, so on a longer deck the recurring opportunities are "sectionHeader", \
+        "quote" and "bigNumber"; if the deck has almost none of those and is otherwise \
+        "bullets", "chart", "metrics", "bands" and "diagram", there is nowhere for \
+        imagery to go at all.
         """
     }
 
