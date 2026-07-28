@@ -104,6 +104,78 @@ import Testing
         _ = try XML.parse(Data(svg.utf8))
     }
 
+    // MARK: - Charts
+
+    /// A chart slide used to preview as a grey "[chart]" box, which tells the
+    /// viewer nothing about their deck. The plot is a thumbnail — the shape of
+    /// the data, not a second chart engine — but it has to be a real plot.
+    @Test func chartsPlotTheirDataInsteadOfAPlaceholder() throws {
+        let deck = try Presentation()
+        try deck.chartSlide("Revenue", .barClustered,
+                            ChartData(categories: ["Q1", "Q2", "Q3"],
+                                      series: [ChartData.Series(name: "ARR", values: [3, 7, 5])]))
+        let svg = try deck.renderSVG(slideAt: 1)
+
+        #expect(!svg.contains("[chart]"))
+        // Three bars plus a baseline; a placeholder would have neither.
+        #expect(svg.components(separatedBy: "<rect").count - 1 >= 4)
+        #expect(svg == (try deck.renderSVG(slideAt: 1)))    // deterministic
+        _ = try XML.parse(Data(svg.utf8))
+    }
+
+    @Test func lineAndPieChartsPlotToo() throws {
+        let deck = try Presentation()
+        try deck.chartSlide("Trend", .line,
+                            ChartData(categories: ["a", "b", "c"],
+                                      series: [ChartData.Series(name: "s", values: [1, 4, 2])]))
+        try deck.chartSlide("Split", .pie,
+                            ChartData(categories: ["x", "y"],
+                                      series: [ChartData.Series(name: "s", values: [30, 70])]))
+
+        let line = try deck.renderSVG(slideAt: 1)
+        #expect(line.contains("<polyline"))
+        #expect(!line.contains("[chart]"))
+
+        let pie = try deck.renderSVG(slideAt: 2)
+        #expect(pie.contains("<path"))
+        #expect(!pie.contains("[chart]"))
+        _ = try XML.parse(Data(line.utf8))
+        _ = try XML.parse(Data(pie.utf8))
+    }
+
+    /// Chart values come out of a file, and `Int(_: Double)` traps on an
+    /// out-of-range double. The plot must survive whatever the numbers are and
+    /// stay valid XML.
+    ///
+    /// These go in through the authoring path, so they are values Rostrum will
+    /// actually write: all-zero (no scale to divide by), negative, a magnitude
+    /// past the guard, and one small enough to round to nothing. `NaN` and
+    /// infinity are excluded here because they would exercise the chart
+    /// *writer* rather than this renderer — the renderer's guards against them
+    /// are reached from foreign decks, which `FuzzTests` drives through
+    /// `renderSVG` directly.
+    @Test func chartPlottingSurvivesHostileValues() throws {
+        for values in [[1e308, 1], [-5, 5], [0, 0], [Double.leastNonzeroMagnitude, 1]] {
+            let deck = try Presentation()
+            try deck.chartSlide("Hostile", .barClustered,
+                                ChartData(categories: values.map { _ in "c" },
+                                          series: [ChartData.Series(name: "s", values: values)]))
+            let svg = try deck.renderSVG(slideAt: 1)
+            _ = try XML.parse(Data(svg.utf8))
+            #expect(svg == (try deck.renderSVG(slideAt: 1)))
+        }
+    }
+
+    /// SmartArt and OLE still get a placeholder — but one that names what it
+    /// could not draw, rather than "[object]".
+    @Test func unplottableFramesSayWhatTheyAre() throws {
+        let deck = try Presentation()
+        try deck.smartArtSlide("Diagram", kind: .blockList, items: ["one", "two"])
+        let svg = try deck.renderSVG(slideAt: 1)
+        #expect(svg.contains("[SmartArt]") || !svg.contains("[object]"))
+        _ = try XML.parse(Data(svg.utf8))
+    }
+
     @Test func rendersShapesTextImageAndTable() throws {
         let deck = try Presentation()
         let slide = try deck.slides[0]

@@ -266,10 +266,153 @@ struct SVGRenderer {
            let tbl = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?.firstChild(named: "a:tbl") {
             return renderTable(tbl, x: x, y: y, defs: &defs)
         }
-        // Charts (and anything else) render as a labeled placeholder.
+        if uri.hasSuffix("/chart"), let plot = renderChart(gf, x: x, y: y, w: w, h: h) {
+            return plot
+        }
+        // Anything still unplotted — SmartArt, OLE, a chart kind with no plot
+        // here — keeps the labeled placeholder. Named rather than "[object]"
+        // so a thumbnail says which thing it could not draw.
+        let label: String
+        if uri.hasSuffix("/chart") { label = "[chart]" }
+        else if uri == GraphicDataURI.diagram { label = "[SmartArt]" }
+        else if uri == GraphicDataURI.ole { label = "[embedded object]" }
+        else { label = "[object]" }
         return box(x, y, w, h, fill: "#F2F2F2", stroke: " stroke=\"#CCCCCC\" stroke-width=\"6350\"")
             + "<text x=\"\(x + w / 2)\" y=\"\(y + h / 2)\" font-size=\"\(18 * emuPerPoint)\" fill=\"#999999\" "
-            + "text-anchor=\"middle\">\(uri.hasSuffix("/chart") ? "[chart]" : "[object]")</text>"
+            + "text-anchor=\"middle\">\(escape(label))</text>"
+    }
+
+    // MARK: - Charts
+
+    /// Plot a chart frame, or nil when this chart is not one of the kinds
+    /// drawn here (combo, scatter, radar…) and the placeholder should stand.
+    ///
+    /// The point is a thumbnail that shows the *shape* of the data — is it
+    /// rising, is one bar dominant — not a second chart engine. PowerPoint
+    /// owns the real rendering; a preview that pretended otherwise would
+    /// invite comparisons it cannot win.
+    private func renderChart(_ gf: XML.Element, x: Int, y: Int, w: Int, h: Int) -> String? {
+        guard w > 0, h > 0,
+              let rId = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
+                  .firstChild(named: "c:chart")?[attribute: "r:id"],
+              let rel = slidePart.rels.relationship(withId: rId),
+              let part = try? package.part(
+                  at: PackURI.resolve(target: rel.target, relativeTo: slidePart.uri.baseURI))
+        else { return nil }
+
+        let chart = Chart(part: part, package: package)
+        guard let kind = chart.plotType, !chart.isCombo else { return nil }
+        let series = chart.series
+        guard !series.isEmpty else { return nil }
+
+        // Inset a margin so bars don't touch the frame edge.
+        let pad = Swift.min(w, h) / 12
+        let plotX = x + pad, plotY = y + pad
+        let plotW = Swift.max(1, w - 2 * pad), plotH = Swift.max(1, h - 2 * pad)
+
+        let palette = (1...6).map { theme.accent($0).map { "#" + $0.hex } ?? "#4472C4" }
+        func color(_ index: Int) -> String { palette[index % palette.count] }
+
+        switch kind {
+        case "barChart": return bars(series, plotX, plotY, plotW, plotH, color)
+        case "lineChart": return lines(series, plotX, plotY, plotW, plotH, color)
+        case "pieChart", "doughnutChart":
+            return pie(series[0], plotX, plotY, plotW, plotH, color)
+        default: return nil
+        }
+    }
+
+    /// The largest magnitude across every plotted value, or nil when nothing
+    /// finite was plotted. Values come out of a file, so `NaN`, infinity and
+    /// absurd magnitudes all have to survive being scaled against.
+    private func plotScale(_ series: [ChartData.Series]) -> Double? {
+        let peak = series.flatMap(\.values).compactMap { $0 }
+            .filter { $0.isFinite }
+            .map { Swift.abs($0) }
+            .max()
+        guard let peak, peak > 0, peak < 1e300 else { return nil }
+        return peak
+    }
+
+    /// A value's height in EMU, clamped into the plot. `Int(_: Double)` traps
+    /// on a non-finite or out-of-range double, and every value here came from
+    /// a file.
+    private func scaled(_ value: Double?, peak: Double, extent: Int) -> Int {
+        guard let value, value.isFinite else { return 0 }
+        let fraction = Swift.min(Swift.max(Swift.abs(value) / peak, 0), 1)
+        return Int((fraction * Double(extent)).rounded())
+    }
+
+    private func bars(_ series: [ChartData.Series], _ x: Int, _ y: Int, _ w: Int, _ h: Int,
+                      _ color: (Int) -> String) -> String? {
+        guard let peak = plotScale(series) else { return nil }
+        let categories = series.map(\.values.count).max() ?? 0
+        guard categories > 0 else { return nil }
+
+        let slot = Swift.max(1, w / categories)
+        let barW = Swift.max(1, (slot * 4 / 5) / series.count)
+        var out = ""
+        for (s, one) in series.enumerated() {
+            for (c, value) in one.values.enumerated() {
+                let height = scaled(value, peak: peak, extent: h)
+                guard height > 0 else { continue }
+                let bx = x + c * slot + slot / 10 + s * barW
+                out += box(bx, y + h - height, barW, height, fill: color(s))
+            }
+        }
+        // The baseline, so an empty-looking plot still reads as a chart.
+        return out + box(x, y + h, w, 6350, fill: "#BFBFBF")
+    }
+
+    private func lines(_ series: [ChartData.Series], _ x: Int, _ y: Int, _ w: Int, _ h: Int,
+                       _ color: (Int) -> String) -> String? {
+        guard let peak = plotScale(series) else { return nil }
+        var out = box(x, y + h, w, 6350, fill: "#BFBFBF")
+        for (s, one) in series.enumerated() {
+            let points = one.values.count
+            guard points > 1 else { continue }
+            let step = w / (points - 1)
+            let coordinates = one.values.enumerated().map { index, value in
+                "\(x + index * step),\(y + h - scaled(value, peak: peak, extent: h))"
+            }
+            out += "<polyline points=\"\(coordinates.joined(separator: " "))\" fill=\"none\" "
+                + "stroke=\"\(color(s))\" stroke-width=\"19050\"/>"
+        }
+        return out
+    }
+
+    /// Slices as SVG arcs. One series only — a pie plots categories, and a
+    /// second series would be a second pie PowerPoint does not draw either.
+    private func pie(_ series: ChartData.Series, _ x: Int, _ y: Int, _ w: Int, _ h: Int,
+                     _ color: (Int) -> String) -> String? {
+        let values = series.values.compactMap { $0 }.filter { $0.isFinite && $0 > 0 }
+        let total = values.reduce(0, +)
+        guard total > 0, total.isFinite else { return nil }
+
+        let radius = Swift.min(w, h) / 2
+        guard radius > 0 else { return nil }
+        let cx = x + w / 2, cy = y + h / 2
+        var out = ""
+        var startAngle = -Double.pi / 2      // 12 o'clock, as PowerPoint starts
+        for (index, value) in values.enumerated() {
+            let sweep = value / total * 2 * Double.pi
+            let end = startAngle + sweep
+            // A full circle cannot be expressed as one arc — its start and end
+            // points coincide, so the path degenerates to nothing.
+            if values.count == 1 {
+                out += "<circle cx=\"\(cx)\" cy=\"\(cy)\" r=\"\(radius)\" fill=\"\(color(0))\"/>"
+                break
+            }
+            let x1 = cx + Int((cos(startAngle) * Double(radius)).rounded())
+            let y1 = cy + Int((sin(startAngle) * Double(radius)).rounded())
+            let x2 = cx + Int((cos(end) * Double(radius)).rounded())
+            let y2 = cy + Int((sin(end) * Double(radius)).rounded())
+            let large = sweep > Double.pi ? 1 : 0
+            out += "<path d=\"M \(cx) \(cy) L \(x1) \(y1) A \(radius) \(radius) 0 \(large) 1 "
+                + "\(x2) \(y2) Z\" fill=\"\(color(index))\"/>"
+            startAngle = end
+        }
+        return out
     }
 
     private func renderTable(_ tbl: XML.Element, x: Int, y: Int, defs: inout String) -> String {
