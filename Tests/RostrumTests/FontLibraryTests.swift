@@ -150,9 +150,17 @@ import Testing
 }
 
 @Suite struct MeasuredSVGTests {
-    @Test func svgWrapsParagraphsWhenTheTypefaceIsRegistered() throws {
+    /// Registering a typeface changes how the renderer breaks lines.
+    ///
+    /// This used to assert the unregistered path emitted exactly one line,
+    /// which described the implementation rather than a promise: that single
+    /// line was a *truncation*, and it silently dropped the rest of the
+    /// paragraph. Both paths wrap now, so the invariant worth pinning is that
+    /// registration actually takes effect — the measured breaks differ from
+    /// the estimated ones — and that neither path loses text.
+    @Test func registeringATypefaceChangesHowSVGBreaksLines() throws {
         let longText = Array(repeating: "wide words", count: 12).joined(separator: " ")
-        func render(registered: Bool) throws -> Int {
+        func render(registered: Bool) throws -> (svg: String, lines: Int) {
             let deck = try Presentation()
             if registered {
                 try deck.fonts.register(TestFont.standard(), aliases: [deck.style.bodyFont])
@@ -166,9 +174,25 @@ import Testing
             run.fontSize = 18
             let svg = try deck.renderSVG(slideAt: 0)
             #expect(svg == (try deck.renderSVG(slideAt: 0)))   // stays deterministic
-            return svg.components(separatedBy: "<text").count - 1
+            return (svg, svg.components(separatedBy: "<text").count - 1)
         }
-        #expect(try render(registered: false) == 1)
-        #expect(try render(registered: true) > 1)
+
+        let estimated = try render(registered: false)
+        let measured = try render(registered: true)
+
+        // Text far wider than its box wraps either way.
+        #expect(estimated.lines > 1)
+        #expect(measured.lines > 1)
+
+        // Measuring is not a no-op: real advance widths put the breaks
+        // somewhere the character-width estimate did not.
+        #expect(estimated.svg != measured.svg)
+
+        // And neither path drops a word on the floor, which is what the old
+        // single-line behaviour did.
+        for word in Set(longText.split(separator: " ")) {
+            #expect(estimated.svg.contains(word), "estimated path dropped \"\(word)\"")
+            #expect(measured.svg.contains(word), "measured path dropped \"\(word)\"")
+        }
     }
 }
