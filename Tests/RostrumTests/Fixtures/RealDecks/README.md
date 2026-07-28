@@ -22,6 +22,7 @@ so out loud when it isn't.
 | `SimplePowerPoint.pptx` | PowerPoint for Mac | the plain baseline: one theme, a few text shapes |
 | `SmartArtExamples.pptx` | PowerPoint for Mac | SmartArt — `dgm:` data/layout/colors/quickStyle parts, 1308 entries |
 | `Template.potx` | PowerPoint for Mac | the template content type (`…presentationml.template.main+xml`) |
+| `MovieAndComments.pptx` | PowerPoint for Mac | modern comments (`ppt/comments/modernComment_*.xml`, `ppt/authors.xml`) and a 15.8 MB embedded `.mp4` |
 | `FromKeynote.pptx` | Keynote export | Keynote's own idea of PresentationML, photographic media, empty `docProps` |
 | `FromGoogleSlides.pptx` | Google Slides export | a third writer's conventions, no `docProps/core.xml` at all |
 
