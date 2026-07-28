@@ -451,13 +451,16 @@ public extension Presentation {
         return grid.cell(column: 0, row: head.contentRow, columnSpan: 12, rowSpan: 12 - head.contentRow)
     }
 
-    /// Draw the kicker + title and report where content may start. The title sits
-    /// at the top of a two-row band and the body starts a row below it, so
-    /// there's a consistent breathing gap between title and content (never
-    /// jammed against it, never floating far below).
+    /// Draw the kicker + title and report where content may start.
+    ///
+    /// The title band is two rows but `addText` sizes the box to its text, so a
+    /// one-line title fills about half of it. Content therefore starts one row
+    /// below the band, not two: reserving the full two rows *plus* a gap left
+    /// 1.18in of dead air under every single-line title — 16% of the slide —
+    /// while the body ran correspondingly close to the bottom edge.
     ///
     /// A long title is fitted down AND, when it still wraps, `contentRow` moves
-    /// one row lower: the title band is sized for one line, so a wrapped title
+    /// one row lower: the band is sized for a single line, so a wrapped title
     /// otherwise prints straight over the cards/bullets below (PowerPoint
     /// renders bare `normAutofit` text at full size until the box is edited).
     private func placeHeader(on slide: Slide, kicker: String?, title: String,
@@ -478,7 +481,9 @@ public extension Presentation {
         let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top)
         let wraps = estimatedLines(title, style: titleStyle.type(.title), width: band.width) >= 2
-        return (titleRow + (wraps ? 4 : 3), wraps)
+        // One row of gap after the space the title actually occupies: a
+        // single-line title fills roughly one row, a wrapped one both.
+        return (titleRow + (wraps ? 3 : 2), wraps)
     }
 
     /// Deterministic wrap estimate. With the style's font registered in

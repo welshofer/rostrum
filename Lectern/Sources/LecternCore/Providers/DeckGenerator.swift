@@ -80,7 +80,16 @@ public actor DeckGenerator {
             let aspect = placement == .fullBleed ? ImageAspect.wide : ImageAspect(brief: brief.aspect)
             return (slide.id, brief, aspect)
         }
-        guard !briefed.isEmpty else { return ([:], []) }
+        // A brief the model wrote for a layout that cannot render one is thrown
+        // away here. That used to be silent, which is why "why aren't we making
+        // images?" had no answer on the screen: the model may well have asked
+        // for several and every one landed on a chart or bullets slide.
+        let unusable = deck.slides.filter { $0.image != nil && $0.kind.imagePlacement == .none }
+        let discarded = unusable.map {
+            "slide \"\($0.title ?? $0.id)\": an image was requested but a \"\($0.layout)\" "
+                + "slide cannot show one"
+        }
+        guard !briefed.isEmpty else { return ([:], discarded) }
 
         emit(.illustrating(completed: 0, total: briefed.count))
         let style = imageStyle
@@ -107,7 +116,7 @@ public actor DeckGenerator {
                 }
             }
         }
-        var warnings: [String] = []
+        var warnings: [String] = discarded
         if !failures.isEmpty {
             let reason = failures.first ?? "unknown error"
             warnings.append("\(failures.count) of \(briefed.count) image(s) couldn't be generated: \(reason)")
