@@ -13,11 +13,25 @@ public struct DeckResult: Sendable, Equatable {
     public let url: URL
     public let slideCount: Int
     public let warnings: [String]
+    /// Schema-rule violations Rostrum's lint found in the deck we just wrote —
+    /// a missing required attribute somewhere in the XML. Distinct from
+    /// `warnings`, which are about the model's plan: these are ours, and an
+    /// empty list is the normal case.
+    public let schemaIssues: [String]
     /// Typefaces this deck's style asks for that aren't installed here, so
     /// their text was laid out from Rostrum's calibrated estimates rather than
     /// real advance widths. Kept out of `warnings` on purpose: whether a font
     /// is present is a fact about this machine, not about the deck.
     public let unmeasuredFonts: [String]
+    /// One self-contained SVG per slide, rendered by Rostrum from the deck it
+    /// just wrote — not a reconstruction from the IR. Empty if rendering
+    /// failed, which is never fatal: the `.pptx` on disk is the deliverable
+    /// and a preview is a convenience.
+    ///
+    /// `String` rather than a view or an image so it crosses the actor
+    /// boundary as a value; `Presentation` is not `Sendable` and must not
+    /// leave.
+    public let previews: [String]
 }
 
 public enum RenderError: Error {
@@ -30,6 +44,51 @@ public enum RenderError: Error {
 /// types) leaves.
 public actor DeckRenderer {
     public init() {}
+
+    // MARK: - Previews
+
+    /// Render every slide to SVG with Rostrum's own renderer.
+    ///
+    /// This shows the deck Rostrum actually produced — same theme resolution,
+    /// same placeholder inheritance, same line breaking, measured with the
+    /// same registered fonts the builders used. A preview drawn from the IR
+    /// instead would be a second implementation of layout, free to disagree
+    /// with the file the user opens.
+    ///
+    /// Best-effort per slide: one slide that fails to render costs its own
+    /// preview and nothing else, because a missing thumbnail is not a reason
+    /// to fail a deck that saved correctly.
+    private static func previews(of presentation: Presentation) -> [String] {
+        (0..<presentation.slides.count).compactMap { index in
+            try? presentation.renderSVG(slideAt: index, pixelWidth: 640)
+        }
+    }
+
+    // MARK: - Document metadata
+
+    /// Fill in `docProps` from the IR, so the deck arrives with an identity.
+    /// PowerPoint's info pane, Finder's Get Info, Spotlight, SharePoint and
+    /// every "recent documents" list read these; a deck with none of them
+    /// shows up as an untitled file that nothing wrote.
+    ///
+    /// Timestamps are deliberately not stamped. Rostrum never sets them for
+    /// you (see `DocumentProperties`) precisely so that building the same IR
+    /// twice yields the same bytes, and Lectern has no reason to give that up.
+    private static func stampProperties(of deck: DeckIR, on presentation: Presentation) {
+        // A live view onto docProps, not a value to write back — every setter
+        // goes straight to the part.
+        let properties = presentation.documentProperties
+        properties.title = deck.meta.title
+        // The subtitle is the deck's one-line pitch; `subject` is where every
+        // document inspector looks for exactly that.
+        if let subtitle = deck.meta.subtitle, !subtitle.isEmpty {
+            properties.subject = subtitle
+        }
+        if let audience = deck.meta.audience, !audience.isEmpty {
+            properties.category = audience
+        }
+        properties.application = "Lectern (Rostrum)"
+    }
 
     // MARK: - Text measurement
 
@@ -125,11 +184,20 @@ public actor DeckRenderer {
                 try presentation.slides.remove(at: 0)
             }
             applySections(deck, to: presentation)
+            Self.stampProperties(of: deck, on: presentation)
+
+            // Rostrum's schema lint, run on what we are about to write rather
+            // than on a deck someone opens later. It reads the DOM and mutates
+            // nothing, so it costs a pass and can only tell us something we
+            // would otherwise ship. Failures here are ours, not the model's.
+            let schemaIssues = ((try? presentation.validate()) ?? []).map(\.description)
 
             let url = try outputURL(title: deck.meta.title, in: directory)
             try presentation.save(to: url)
             return DeckResult(url: url, slideCount: presentation.slides.count,
-                              warnings: warnings, unmeasuredFonts: unmeasured)
+                              warnings: warnings, schemaIssues: schemaIssues,
+                              unmeasuredFonts: unmeasured,
+                              previews: Self.previews(of: presentation))
         } catch let error as RenderError {
             throw error
         } catch {

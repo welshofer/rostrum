@@ -173,6 +173,81 @@ import Rostrum
         #expect(throws: ValidationError.self) { _ = try DeckValidator().validate(deck) }
     }
 
+    // MARK: - Deck identity and self-check
+
+    /// A generated deck used to arrive anonymous: no title, no subject, nothing
+    /// naming what wrote it. PowerPoint's info pane, Finder, Spotlight and
+    /// SharePoint all read `docProps`.
+    @Test func stampsDocumentPropertiesFromTheIR() async throws {
+        let validated = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: true, into: dir)
+
+        let properties = try Presentation(contentsOf: rendered.url).documentProperties
+        #expect(properties.title == validated.deck.meta.title)
+        #expect(properties.application == "Lectern (Rostrum)")
+        if let subtitle = validated.deck.meta.subtitle, !subtitle.isEmpty {
+            #expect(properties.subject == subtitle)
+        }
+    }
+
+    /// Stamping `docProps` is exactly where a renderer is tempted to write
+    /// `Date()` and quietly lose reproducibility. Rostrum never stamps
+    /// wall-clock time of its own, and Lectern must not either: the same IR has
+    /// to keep producing the same bytes.
+    @Test func renderingTheSameIRTwiceProducesTheSameBytes() async throws {
+        let validated = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let first = tempDir(); defer { try? FileManager.default.removeItem(at: first) }
+        let second = tempDir(); defer { try? FileManager.default.removeItem(at: second) }
+
+        let a = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                notesEnabled: true, into: first)
+        let b = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                notesEnabled: true, into: second)
+        #expect(try Data(contentsOf: a.url) == Data(contentsOf: b.url))
+    }
+
+    /// Rostrum's schema lint, run by Lectern on the file it just wrote. An
+    /// entry here is a defect in Lectern or Rostrum, never in the model's plan
+    /// — which is why it is reported apart from `warnings`.
+    @Test func theWrittenDeckPassesRostrumsOwnLint() async throws {
+        let validated = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: true, into: dir)
+        #expect(rendered.schemaIssues.isEmpty, "\(rendered.schemaIssues)")
+    }
+
+    // MARK: - Previews
+
+    @Test func rendersOnePreviewPerSlideFromTheWrittenDeck() async throws {
+        let validated = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        #expect(rendered.previews.count == rendered.slideCount)
+        #expect(rendered.previews.allSatisfy { $0.hasPrefix("<svg ") && $0.hasSuffix("</svg>") })
+
+        // One render per slide, not one render repeated: distinct slides must
+        // produce distinct SVG.
+        #expect(Set(rendered.previews).count == rendered.previews.count)
+
+        // Rendered from the written deck rather than redrawn from the IR, so
+        // the first slide's title has to be in its own preview. Matched a word
+        // at a time: the renderer line-breaks and XML-escapes, so the full
+        // title may be split across `<text>` elements, but a word is never
+        // split mid-way and a plain alphanumeric one is never escaped.
+        let title = try #require(validated.deck.slides.first?.title)
+        let word = try #require(
+            title.split(separator: " ")
+                .map(String.init)
+                .filter { $0.allSatisfy(\.isLetter) }
+                .max(by: { $0.count < $1.count }))
+        #expect(rendered.previews.first?.contains(word) == true)
+    }
+
     // MARK: - Font measurement
 
     #if canImport(CoreText)

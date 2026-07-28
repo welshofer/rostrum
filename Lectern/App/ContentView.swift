@@ -264,6 +264,12 @@ struct ResultView: View {
             Image(systemName: "checkmark.seal.fill").font(.system(size: 52)).foregroundStyle(.green)
             Text(result.url.lastPathComponent).font(.title3.weight(.semibold))
             Text("\(result.slideCount) slides · written by Rostrum").foregroundStyle(.secondary)
+            if !result.previews.isEmpty {
+                // Rendered by Rostrum from the deck on disk, so what you see
+                // here is what PowerPoint will open — not a redraw of the plan.
+                SlideFilmstrip(previews: result.previews)
+                    .frame(maxWidth: 620)
+            }
             #if os(iOS)
             // No Finder to reveal in: Quick Look renders the deck in place, and
             // the share sheet exports it (Save to Files, AirDrop, Keynote…).
@@ -290,6 +296,17 @@ struct ResultView: View {
             if !result.warnings.isEmpty {
                 DisclosureGroup("\(result.warnings.count) validation warning(s)") {
                     ForEach(result.warnings, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
+                }
+                .frame(maxWidth: 420)
+            }
+            if !result.schemaIssues.isEmpty {
+                // Rostrum's own lint on the file we just wrote. If this ever
+                // has entries, the bug is Lectern's or Rostrum's — not the
+                // model's — so it reads differently from the warnings above.
+                DisclosureGroup("\(result.schemaIssues.count) schema issue(s) in the written deck") {
+                    ForEach(result.schemaIssues, id: \.self) {
+                        Text($0).font(.caption).foregroundStyle(.secondary)
+                    }
                 }
                 .frame(maxWidth: 420)
             }
