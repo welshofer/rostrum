@@ -4,8 +4,11 @@
 Google Slides, *not* by Rostrum. `RealDeckCorpusTests` enrolls every deck in
 here automatically and holds it to the release-gate invariants:
 
-1. open → save with no edits keeps **every zip entry** byte-identical,
-   `.rels` parts and `[Content_Types].xml` included, and invents no new ones,
+1. open → save with no edits keeps **every zip entry's decompressed bytes**
+   identical, `.rels` parts and `[Content_Types].xml` included, and invents
+   no new entries — the entry's *encoding* (compression method, data
+   descriptors, order) is deliberately outside the gate; see the test's own
+   doc comment for why and for what that currently costs,
 2. resaving the resave is a fixed point (determinism on foreign input),
 3. the whole shape tree — groups recursed into — enumerates without trapping.
 
@@ -26,13 +29,16 @@ so out loud when it isn't.
 | `FromKeynote.pptx` | Keynote export | Keynote's own idea of PresentationML, photographic media, empty `docProps` |
 | `FromGoogleSlides.pptx` | Google Slides export | a third writer's conventions, no `docProps/core.xml` at all |
 
-`Template.potx` is `SmartArtExamples.pptx` saved as a template: same 1308
-entries under the same names, differing in `docProps` and in the one
-`[Content_Types].xml` override that names `/ppt/presentation.xml` a template
-rather than a presentation. That override is its entire reason for being here
-— it is the only input proving a `.potx` survives the round trip as a `.potx`.
-A much smaller template would buy the same coverage for a fraction of the
-5.3 MB.
+`Template.potx` is `SmartArtExamples.pptx` saved as a template: the same 1308
+entries under the same names, 17 of them differing byte-wise —
+`[Content_Types].xml`, `docProps/{app,core}.xml`, the six `customXml/` parts
+(renumbered, same payloads), `ppt/theme/theme1.xml`, `ppt/viewProps.xml`,
+`ppt/handoutMasters/handoutMaster1.xml` and five `notesSlides` whose date
+fields moved. The one that earns its place is the `[Content_Types].xml`
+override naming `/ppt/presentation.xml` a template rather than a
+presentation: it is the only input proving a `.potx` survives the round trip
+as a `.potx`, and it caught a real defect the day it landed. A much smaller
+template would buy the same coverage for a fraction of the 5.3 MB.
 
 ## Adding one
 

@@ -96,13 +96,26 @@ private let realDecks: [URL] = {
     // MARK: - Invariant 1: byte-identical round trip
 
     /// Compares at the zip-entry level, not through `package.parts`, so nothing
-    /// the reader chooses not to model can silently escape the gate.
-    /// **Every** entry must come back byte-identical after an open → save with
-    /// no edits — including `.rels` parts and `[Content_Types].xml`.
+    /// the reader chooses not to model can silently escape the gate. Every
+    /// entry's **decompressed bytes** must come back identical after an open →
+    /// save with no edits, including `.rels` parts and `[Content_Types].xml`.
     ///
-    /// Entry *order* is deliberately not asserted. Rostrum sorts part order for
-    /// determinism, which is a different promise from preserving whatever order
-    /// the authoring application happened to emit.
+    /// Decompressed, not stored: `data(forEntry:)` inflates. The *encoding* of
+    /// an entry is outside this gate — compression method, DEFLATE level, the
+    /// data-descriptor bit, extra fields, entry order. That is not hypothetical
+    /// slack. Rostrum picks STORE or DEFLATE from the file extension alone
+    /// (`OPCPackage.storedExtensions`), so it re-emits ten entries in this
+    /// corpus STORED that Keynote and Google Slides had DEFLATEd, and Google
+    /// Slides' data descriptors on all 86 of its entries are not reproduced
+    /// either. Those files are byte-different from what their authors wrote and
+    /// this test passes them, correctly: they carry identical payloads under
+    /// identical names, which is the promise Rostrum makes. Preserving an
+    /// untouched entry's original encoding is a real improvement, tracked in
+    /// ROADMAP — it is simply not what this asserts.
+    ///
+    /// Entry *order* is deliberately not asserted either. Rostrum sorts part
+    /// order for determinism, which is a different promise from preserving
+    /// whatever order the authoring application happened to emit.
     @Test(arguments: realDecks)
     func untouchedForeignDeckSurvivesByteIdentically(_ url: URL) throws {
         let deck = url.lastPathComponent
@@ -163,7 +176,9 @@ private let realDecks: [URL] = {
         let deck = try Presentation(data: try Data(contentsOf: url))
 
         var visited = 0
+        var walked = 0
         for slide in deck.slides {
+            walked += 1
             // Iterative rather than recursive: nesting depth is the deck's
             // choice, and a test that overflows its own stack reports a crash
             // where the library is fine.
@@ -192,6 +207,16 @@ private let realDecks: [URL] = {
             }
         }
 
+        // `Slides.makeIterator()` resolves each `p:sldId` with `try?` and drops
+        // the ones that fail, so iterating is fail-open exactly the way this
+        // suite's own directory listing was. Without this, 184 of a 185-slide
+        // deck could vanish from the walk and `visited > 0` would still hold.
+        #expect(
+            walked == deck.slides.count,
+            """
+            \(name): the iterator yielded \(walked) of \(deck.slides.count) slides — \
+            \(deck.slides.count - walked) did not resolve and were skipped silently.
+            """)
         #expect(
             visited > 0,
             """

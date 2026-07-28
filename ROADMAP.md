@@ -357,6 +357,24 @@ Hardening backlog (schedule opportunistically):
 - Quadratic hot spots on very large decks; `prune()`/orphan audit promised in
   ARCHITECTURE.md.
 
+### Known gap: entry encoding is not preserved
+
+The real-deck gate compares each entry's **decompressed** bytes. An untouched
+part's *encoding* is not carried: Rostrum picks STORE or DEFLATE from the file
+extension alone (`OPCPackage.storedExtensions`), so it re-emits six JPEGs in
+`FromKeynote.pptx` and four in `FromGoogleSlides.pptx` STORED that their
+authors had DEFLATEd, and it does not reproduce the data descriptors Google
+Slides sets on all 86 of its entries. Those files are byte-different from what
+their authors wrote.
+
+Nothing is lost — identical payloads under identical names, which is what
+Rostrum promises — but "open and save changes nothing" would be a stronger and
+better promise. Carrying a pristine entry's original method and descriptor
+through the writer is the fix; it needs `ZipReader` to surface per-entry
+encoding and `OPCPackage.serialize` to honour it for parts that never went
+dirty. Found 2026-07-28 by an adversarial review of the corpus gate, which
+had been claiming full byte identity in its own doc comment.
+
 ## Standing quality gates
 
 - `swift test` green on macOS + Linux
