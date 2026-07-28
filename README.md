@@ -92,7 +92,7 @@ then add `"Rostrum"` to your target's dependencies.
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import a slide from another deck with its images, charts and layout intact |
 | **Design layer** | `DeckStyle` (type scale, WCAG auto-contrast, tokens); one-call slide builders; cards/buttons/kickers/stat tiles; a Grid DSL |
-| **Templates** | open a `.potx`/`.ppsx` directly; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
+| **Templates** | open a `.potx`/`.ppsx` directly and round-trip it as one; `documentKind` converts when you want a deck out of a template; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
 | **Sections** | native PowerPoint sections; footers, slide numbers, dates via live fields |
 | **Tooling** | `pptx-tool inspect`/`validate` — machine-checkable "PowerPoint will accept this" gate |
 

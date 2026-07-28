@@ -21,7 +21,22 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 - Real-deck corpus gate: foreign-authored `.pptx` fixtures dropped into
   `Tests/RostrumTests/Fixtures/RealDecks/` automatically enroll in
   byte-identity (every zip entry, no exemptions), determinism, and no-trap
-  tests (`RealDeckCorpusTests`).
+  tests (`RealDeckCorpusTests`). Now populated with decks from PowerPoint,
+  Keynote and Google Slides, so the lossless-round-trip rule is tested
+  against XML Rostrum did not write. `ROSTRUM_REAL_DECKS` points the gate at
+  decks that can't be published.
+- `Presentation.documentKind` (`.presentation` / `.template` / `.slideShow`)
+  — reads and sets what PowerPoint uses to tell a `.pptx` from a `.potx` from
+  a `.ppsx`, which is the main part's content type rather than the file
+  extension.
+
+### Changed
+
+- **Opening a `.potx` or `.ppsx` no longer converts it.** A template opens as
+  a template and saves as one, byte-identically; previously it was retyped to
+  a presentation on open, so a template could not survive a round trip. To
+  build an ordinary deck from a template, set
+  `deck.documentKind = .presentation`. Found by the real-deck corpus gate.
 - The python-pptx oracle now runs in CI on macOS and Linux
   (`PythonPptxOracleTests`): representative Rostrum-written decks must open
   in python-pptx on every push.

@@ -36,15 +36,25 @@ Every builder returns the created `Slide` for further tweaking.
 // Open a real PowerPoint template — masters, layouts, theme, fonts intact.
 let deck = try Presentation(contentsOf: URL(filePath: "brand.potx"))
 
+// A template opens as a template and saves as one. Say when you want a deck
+// out of it, so the conversion is yours rather than a surprise.
+deck.documentKind = .presentation
+
 // Or apply a design.md (fonts, palette, type/spacing/radius tokens).
 deck.applyDesign(try Design(contentsOf: URL(filePath: "sunflower.md")))
 
 try deck.bulletSlide("On brand", ["everything inherits the theme"])
-try deck.save(to: URL(filePath: "out.pptx"))   // saves as a normal .pptx
+try deck.save(to: URL(filePath: "out.pptx"))
 ```
 
 Both compose: open a `.potx`, `applyDesign`, then build — the whole deck comes
 out styled.
+
+`documentKind` is what PowerPoint reads to tell a `.pptx` from a `.potx` from a
+`.ppsx`; the file extension is decoration. Leave it alone and a template stays a
+template through any number of round trips. Set it and you get the other format
+— but save under the matching extension, because a file named `.pptx` whose main
+part still says `template` opens as a template and spawns a new untitled deck.
 
 ## Style and components
 
