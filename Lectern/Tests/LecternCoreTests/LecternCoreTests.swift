@@ -173,6 +173,56 @@ import Rostrum
         #expect(throws: ValidationError.self) { _ = try DeckValidator().validate(deck) }
     }
 
+    // MARK: - Sections (Rostrum enforces its contract with `precondition`)
+
+    /// Two sections sharing a first slide used to **abort the process**.
+    /// `Sections.set` requires strictly-increasing starts and enforces it with
+    /// `precondition`, which `try?` cannot catch — and a model listing one
+    /// slide under two headings is ordinary output, not misuse.
+    @Test func sectionsSharingAFirstSlideDoNotAbortTheProcess() async throws {
+        var deck = try fixtureDeck()
+        let ids = deck.slides.map(\.id)
+        // Slides carry `sectionId`, and the validator checks it resolves — so
+        // reuse the fixture's section ids rather than inventing new ones.
+        deck.sections = [
+            IRSection(id: "s1", title: "One", slideIds: [ids[0], ids[1]]),
+            // Also starts at slide 0: two sections, one equal startSlide, which
+            // is what trips the strictly-increasing precondition.
+            IRSection(id: "s2", title: "Two", slideIds: [ids[0], ids[2]]),
+        ]
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        // Survived, and the duplicate start collapsed rather than being passed
+        // on: both sections claim slide 0, so exactly one boundary remains.
+        let reopened = try Presentation(contentsOf: rendered.url)
+        #expect(reopened.sections.count == 1)
+    }
+
+    /// A model that leaves the title slide out of every section is the common
+    /// shape. Rostrum requires the first section to start at slide 0, so
+    /// Lectern used to drop *every* section rather than cover the gap.
+    @Test func sectionsStartingAfterTheTitleSlideAreKeptNotDiscarded() async throws {
+        var deck = try fixtureDeck()
+        let ids = deck.slides.map(\.id)
+        deck.sections = [
+            IRSection(id: "s1", title: "Body", slideIds: [ids[1], ids[2]]),
+            IRSection(id: "s2", title: "Close", slideIds: [ids[3], ids[4]]),
+        ]
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        let reopened = try Presentation(contentsOf: rendered.url)
+        // Both the model's sections, plus a synthesized opener for slide 0.
+        #expect(reopened.sections.count == 3)
+        #expect(reopened.sections.contains { $0.name == "Body" })
+        #expect(reopened.sections.contains { $0.name == "Close" })
+    }
+
     // MARK: - Deck identity and self-check
 
     /// A generated deck used to arrive anonymous: no title, no subject, nothing

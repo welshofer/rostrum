@@ -122,7 +122,9 @@ public actor DeckRenderer {
         var unmeasured: [String] = []
         for name in wanted.sorted() where !name.isEmpty {
             guard let url = installedFontFile(named: name),
-                  (try? presentation.fonts.register(contentsOf: url, aliases: [name])) != nil
+                  let data = try? Data(contentsOf: url),
+                  let face = faceIndex(named: name, in: data),
+                  (try? presentation.fonts.register(data, aliases: [name], fontIndex: face)) != nil
             else {
                 unmeasured.append(name)
                 continue
@@ -148,6 +150,34 @@ public actor DeckRenderer {
         guard resolved.caseInsensitiveCompare(name) == .orderedSame else { return nil }
         return CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL
     }
+
+    /// Which face inside `data` calls itself `name`.
+    ///
+    /// `kCTFontURLAttribute` gives a path, not a face — and on macOS a `.ttc`
+    /// routinely holds several *families*, not just several weights of one
+    /// (PingFang SC/TC/HK, Songti SC/TC/STSong). Registering without an index
+    /// parses face 0, so asking for a family that lives deeper in the
+    /// collection would measure a different typeface's advance widths under
+    /// the requested name — and, because parsing succeeded, leave it out of
+    /// `unmeasuredFonts`. That is exactly the confidently-wrong outcome the
+    /// family check above exists to prevent, one level further in: CoreText
+    /// vouches for the file, this vouches for the face inside it.
+    ///
+    /// Returns nil when no face claims the name, so the caller estimates
+    /// rather than measuring something else.
+    static func faceIndex(named name: String, in data: Data) -> Int? {
+        for index in 0..<Self.maxFacesPerCollection {
+            guard let metrics = try? FontMetrics(data: data, fontIndex: index) else { return nil }
+            if metrics.familyNames.contains(where: { $0.caseInsensitiveCompare(name) == .orderedSame }) {
+                return index
+            }
+        }
+        return nil
+    }
+
+    /// Enough for any collection Apple ships; a bound because the loop's exit
+    /// otherwise depends on a parse failing.
+    private static let maxFacesPerCollection = 64
     #endif
 
     /// Render `deck` (styled by the `design.md` at `designURL`, if any) into
@@ -156,6 +186,12 @@ public actor DeckRenderer {
                        into directory: URL, warnings: [String] = [],
                        images: [String: Data] = [:], useSmartArt: Bool = false) throws -> DeckResult {
         do {
+            // Rendering is now the slowest phase — font registration, package
+            // deflate, the schema lint, N SVG renders — so Cancel has to reach
+            // it. Without these the user is returned to Compose and then, a few
+            // seconds later, thrown into a Result screen for the deck they just
+            // cancelled, with the file already written.
+            try Task.checkCancellation()
             let presentation = try Presentation()
             if let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
             // After applyDesign: the style is what decides which typefaces the
@@ -163,6 +199,7 @@ public actor DeckRenderer {
             let unmeasured = Self.registerInstalledFonts(for: presentation)
 
             for slide in deck.slides {
+                try Task.checkCancellation()
                 let built = try build(slide, in: presentation, useSmartArt: useSmartArt)
                 if let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
@@ -197,12 +234,23 @@ public actor DeckRenderer {
             // would otherwise ship. Failures here are ours, not the model's.
             let schemaIssues = ((try? presentation.validate()) ?? []).map(\.description)
 
+            // Last chance before anything lands on disk: a cancel up to here
+            // leaves no file behind at all.
+            try Task.checkCancellation()
             let url = try outputURL(title: deck.meta.title, in: directory)
             try presentation.save(to: url)
             return DeckResult(url: url, slideCount: presentation.slides.count,
                               warnings: warnings, schemaIssues: schemaIssues,
                               unmeasuredFonts: unmeasured,
-                              previews: Self.previews(of: presentation))
+                              // Previews are the tail cost and pure
+                              // convenience; the deck is already saved, so a
+                              // cancel here skips them rather than undoing it.
+                              previews: Task.isCancelled ? [] : Self.previews(of: presentation))
+        } catch is CancellationError {
+            // Must precede the generic catch. Wrapped, this becomes
+            // RenderError.renderFailed("CancellationError()") and the user is
+            // shown a failure screen for something they asked to stop.
+            throw CancellationError()
         } catch let error as RenderError {
             throw error
         } catch {
@@ -349,15 +397,43 @@ public actor DeckRenderer {
 
     private func applySections(_ deck: DeckIR, to presentation: Presentation) {
         guard let sections = deck.sections, !sections.isEmpty else { return }
-        let indexOfSlideId = Dictionary(uniqueKeysWithValues: deck.slides.enumerated().map { ($1.id, $0) })
+        // `uniquingKeysWith` rather than `uniqueKeysWithValues`: the latter
+        // traps on a duplicate id, and a trap here would abort the app over a
+        // model that repeated one.
+        let indexOfSlideId = Dictionary(
+            deck.slides.enumerated().map { ($1.id, $0) }, uniquingKeysWith: { first, _ in first })
+
         var boundaries: [(name: String, startSlide: Int)] = []
         for section in sections {
             guard let first = section.slideIds.compactMap({ indexOfSlideId[$0] }).min() else { continue }
             boundaries.append((section.title ?? "Section", first))
         }
         boundaries.sort { $0.startSlide < $1.startSlide }
-        guard let firstBoundary = boundaries.first, firstBoundary.startSlide == 0 else { return }
-        try? presentation.setSections(boundaries)
+
+        // Rostrum enforces strictly-increasing starts with a `precondition`
+        // (Sections.set), which **aborts the process** — `try?` cannot catch
+        // it. Two sections whose slide sets share a first slide, which is all
+        // it takes for a model to list one slide under two headings, would
+        // otherwise take the whole app down. Keep the first of each run.
+        var distinct: [(name: String, startSlide: Int)] = []
+        for boundary in boundaries where distinct.last?.startSlide != boundary.startSlide {
+            distinct.append(boundary)
+        }
+        guard let first = distinct.first else { return }
+
+        // Rostrum also requires the first section to start at slide 0, again as
+        // a precondition. A model that leaves the title slide out of every
+        // section is ordinary output, not an error, so cover the gap rather
+        // than silently discarding every section it asked for.
+        if first.startSlide != 0 {
+            let opening = deck.slides.first?.title
+            distinct.insert((name: opening?.isEmpty == false ? opening! : "Opening", startSlide: 0),
+                            at: 0)
+        }
+
+        // Starts must be inside the deck we actually wrote; out-of-range throws
+        // rather than trapping, so `try?` is the right catch for that half.
+        try? presentation.setSections(distinct)
     }
 
     // MARK: - Output path
