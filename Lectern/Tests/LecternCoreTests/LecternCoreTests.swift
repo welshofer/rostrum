@@ -11,6 +11,19 @@ import Rostrum
     private func fixtureDeck() throws -> DeckIR {
         try JSONDecoder().decode(DeckIR.self, from: Data(fixtureJSON().utf8))
     }
+    /// A minimal valid PNG. Rostrum never decodes image bytes, it only
+    /// packages them, so a well-formed header is enough to exercise placement.
+    private func png() -> Data {
+        func be32(_ v: Int) -> [UInt8] {
+            [UInt8(v >> 24 & 0xFF), UInt8(v >> 16 & 0xFF), UInt8(v >> 8 & 0xFF), UInt8(v & 0xFF)]
+        }
+        var b: [UInt8] = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
+        b += be32(13); b += Array("IHDR".utf8)
+        b += be32(320); b += be32(180); b += [8, 6, 0, 0, 0]; b += be32(0)
+        b += be32(0); b += Array("IEND".utf8); b += be32(0)
+        return Data(b)
+    }
+
     private func tempDir() -> URL {
         URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent("lectern-test-\(ProcessInfo.processInfo.globallyUniqueString)")
@@ -212,6 +225,33 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
                                                        notesEnabled: false, into: dir)
+        #expect(rendered.droppedContent.isEmpty)
+    }
+
+    /// A generated image is the one thing on the slide a screen reader cannot
+    /// infer, and the brief that produced it is already a description of it.
+    @Test func generatedImagesCarryTheirBriefAsAltText() async throws {
+        var deck = try fixtureDeck()
+        // sectionHeader is the layout that places an image as a shape; the
+        // full-bleed layouts set a background fill, which has no shape to
+        // describe.
+        deck.slides[1].layout = "sectionHeader"
+        deck.slides[1].body = Body(kicker: "Part one")
+        deck.slides[1].image = ImageBrief(prompt: "A wind turbine at dawn")
+        let id = deck.slides[1].id
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir,
+                                                       images: [id: png()])
+
+        let reopened = try Presentation(contentsOf: rendered.url)
+        let described = reopened.slides.contains { slide in
+            slide.shapes.contains { $0.altText == "A wind turbine at dawn" }
+        }
+        #expect(described)
+        // It placed, so nothing is reported lost.
         #expect(rendered.droppedContent.isEmpty)
     }
 

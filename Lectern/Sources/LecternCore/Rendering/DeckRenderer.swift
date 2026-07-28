@@ -32,11 +32,12 @@ public struct DeckResult: Sendable, Equatable {
     /// boundary as a value; `Presentation` is not `Sendable` and must not
     /// leave.
     public let previews: [String]
-    /// Content the model asked for that a Rostrum builder could not fit — the
-    /// 5th metric, the 6th process step. A third bucket rather than a
-    /// `warnings` entry: `warnings` are about the model's plan, `schemaIssues`
-    /// are about our XML, and this is about the collision between what was
-    /// asked for and what the layout holds.
+    /// Content the model asked for that did not make it onto the slide — the
+    /// 5th metric and the 6th process step past a builder's capacity, or an
+    /// image that was generated and then failed to place. A third bucket
+    /// rather than a `warnings` entry: `warnings` are about the model's plan,
+    /// `schemaIssues` are about our XML, and this is about what the deck was
+    /// supposed to contain and doesn't.
     public let droppedContent: [String]
 }
 
@@ -217,11 +218,24 @@ public actor DeckRenderer {
                         let scrimmed = Self.scrimmed(
                             data,
                             dark: Self.paintsADarkBackground(slide.kind, presentation.style))
-                        try? built.setBackground(.image(scrimmed, .stretch))
+                        // No alt text: a background fill is not a shape, and a
+                        // decorative backdrop is what assistive tech should
+                        // skip anyway.
+                        do { try built.setBackground(.image(scrimmed, .stretch)) }
+                        catch { Self.noteLostImage(on: slide, into: &dropped) }
                     case .sidePanel:
                         // A framed panel on the right (title/content sit left).
-                        _ = try? built.shapes.addPicture(
-                            data, frame: Self.imageFrame(in: presentation), fit: .fill)
+                        if let picture = try? built.shapes.addPicture(
+                            data, frame: Self.imageFrame(in: presentation), fit: .fill) {
+                            // The brief that generated this image *is* its
+                            // description — exactly what a screen reader needs,
+                            // and the app has been holding it all along.
+                            // Without it PowerPoint's accessibility checker
+                            // flags every generated deck.
+                            picture.altText = slide.image?.prompt
+                        } else {
+                            Self.noteLostImage(on: slide, into: &dropped)
+                        }
                     case .none:
                         break
                     }
@@ -289,6 +303,17 @@ public actor DeckRenderer {
     ///
     /// Referencing the constants rather than the literals also means a future
     /// Rostrum retune cannot silently desync Lectern.
+    /// An image was generated, paid for, and then failed to land on the slide.
+    ///
+    /// Both placements used to swallow this with `try?`, so a deck could arrive
+    /// with none of its images after several round trips to an image model, and
+    /// say nothing at all.
+    private static func noteLostImage(on slide: IRSlide, into dropped: inout [String]) {
+        let name = slide.title ?? ""
+        let label = name.isEmpty ? "slide \(slide.id)" : "\"\(name)\""
+        dropped.append("\(label): the generated image could not be placed")
+    }
+
     private static func noteOverflow(_ count: Int, cap: Int, noun: String,
                                      on slide: IRSlide, into dropped: inout [String]) {
         guard count > cap else { return }
