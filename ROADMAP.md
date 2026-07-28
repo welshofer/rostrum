@@ -39,7 +39,11 @@ from phase 0 onward.
   `slide.master`
 - [x] Byte-identity corpus gate in CI — Rostrum-generated corpus (2026-07-19);
   **real-deck fixtures** enroll automatically via
-  `Tests/RostrumTests/Fixtures/RealDecks/` (scaffold 2026-07-22, decks landing)
+  `Tests/RostrumTests/Fixtures/RealDecks/` (scaffold 2026-07-22; populated
+  2026-07-28 with six decks from PowerPoint, Keynote and Google Slides —
+  SmartArt, a template, modern comments, embedded video). One test case per
+  deck; an empty corpus now fails rather than passing vacuously, and
+  `ROSTRUM_REAL_DECKS` points the gate at decks that can't be published.
 
 ## Phase 2 — Shapes and text (✅ core, 2026-07-18)
 
@@ -307,9 +311,19 @@ Hardening backlog (schedule opportunistically):
   children, or that no part claims, were read and never written back either.
   Both are carried now. Note what the corpus gate did NOT do here: it is
   written to catch exactly this (every `before` name must appear in `after`),
-  but `Fixtures/RealDecks/` holds only a README, so it iterates zero decks and
-  passes vacuously. It has been guarding nothing this whole time — the decks
-  are the gate.
+  but through 2026-07-27 `Fixtures/RealDecks/` held only a README, so it
+  iterated zero decks and passed vacuously. It guarded nothing for five days
+  while being cited as the thing that would catch precisely these bugs.
+
+  ✅ 2026-07-28 — six decks landed and the suite was rebuilt so that cannot
+  recur: one test case per deck, `corpusIsPopulated` fails outright on an
+  empty corpus, and a packaging check anchored on the checked-in README tells
+  "resources were never copied" apart from "the directory is empty" — the
+  ambiguity that hid the vacuity, since the listing failed open to `[]`.
+  It earned its keep on the first run: the `.potx` failed byte-identity
+  because opening a template retyped its main part to a presentation, so a
+  template could not survive a round trip at all. Fixed in the library, not
+  the test — see `DocumentKind`.
 
   `PackURI` percent-decoding — **investigated, implemented, reverted, and left
   open deliberately.** (Not struck through: the underlying gap is still there.) Decoding was implemented, reviewed, and reverted the same day. A part
