@@ -50,10 +50,14 @@ public actor DeckRenderer {
     /// Render every slide to SVG with Rostrum's own renderer.
     ///
     /// This shows the deck Rostrum actually produced — same theme resolution,
-    /// same placeholder inheritance, same line breaking, measured with the
-    /// same registered fonts the builders used. A preview drawn from the IR
+    /// same placeholder inheritance, same text. A preview drawn from the IR
     /// instead would be a second implementation of layout, free to disagree
     /// with the file the user opens.
+    ///
+    /// A preview, not a proof. Paragraphs whose typeface is registered break
+    /// exactly where the builders broke them; the rest break on a
+    /// character-width estimate and can land elsewhere than PowerPoint puts
+    /// them. `unmeasuredFonts` names the faces that fell back.
     ///
     /// Best-effort per slide: one slide that fails to render costs its own
     /// preview and nothing else, because a missing thumbnail is not a reason

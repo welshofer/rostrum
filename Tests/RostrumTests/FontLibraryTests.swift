@@ -186,7 +186,25 @@ import Testing
 
         // Measuring is not a no-op: real advance widths put the breaks
         // somewhere the character-width estimate did not.
-        #expect(estimated.svg != measured.svg)
+        //
+        // Compared on line *content*, not on the whole SVG. The two paths emit
+        // different markup either way — different x anchoring, baseline-aware
+        // y — so `estimated.svg != measured.svg` is true even if measurement
+        // changed nothing about the wrapping, which makes it a tautology
+        // dressed as an assertion.
+        func firstLine(_ svg: String) -> String {
+            guard let open = svg.range(of: "<text"),
+                  let gt = svg.range(of: ">", range: open.upperBound..<svg.endIndex),
+                  let close = svg.range(of: "</text>", range: gt.upperBound..<svg.endIndex)
+            else { return "" }
+            return String(svg[gt.upperBound..<close.lowerBound])
+        }
+        let estimatedFirst = firstLine(estimated.svg)
+        let measuredFirst = firstLine(measured.svg)
+        #expect(!estimatedFirst.isEmpty)
+        #expect(!measuredFirst.isEmpty)
+        #expect(estimatedFirst != measuredFirst,
+                "both paths broke line 1 at \"\(estimatedFirst)\" — measurement did nothing")
 
         // And neither path drops a word on the floor, which is what the old
         // single-line behaviour did.

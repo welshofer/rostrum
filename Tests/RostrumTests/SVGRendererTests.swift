@@ -65,6 +65,45 @@ import Testing
         _ = try XML.parse(Data(svg.utf8))
     }
 
+    /// The ellipsis marks *discarded* text. A paragraph that happens to fill
+    /// exactly the line bound with every word intact must not get one — and
+    /// must not have a real character deleted to make room for it, which is
+    /// the same silent rewriting the wrap replaced.
+    @Test func exactlyFillingTheLineBoundIsNotTreatedAsTruncation() throws {
+        let deck = try Presentation()
+        // 1.25in at 18pt: approxCharWidth 114300 EMU, so maxChars is exactly 10.
+        let box = try deck.slides[0].shapes.addTextBox(
+            Rect(x: .inches(1), y: .inches(1), width: .inches(1.25), height: .inches(6)))
+        let frame = try #require(box.textFrame)
+        // 64 ten-character words: one per line, filling the bound precisely.
+        frame.text = Array(repeating: String(repeating: "A", count: 10), count: 64)
+            .joined(separator: " ")
+        frame.paragraphs[0].runs[0].fontSize = 18
+
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(!svg.contains("…"), "claimed a truncation that did not happen")
+        #expect(svg.components(separatedBy: "<text").count - 1 == 64)
+        // Every word intact — none shortened to fit an ellipsis.
+        #expect(!svg.contains(">AAAAAAAAA<"))
+        _ = try XML.parse(Data(svg.utf8))
+    }
+
+    /// One more word than fits: the bound really does bite, and says so.
+    @Test func overflowingTheLineBoundIsMarkedWithAnEllipsis() throws {
+        let deck = try Presentation()
+        let box = try deck.slides[0].shapes.addTextBox(
+            Rect(x: .inches(1), y: .inches(1), width: .inches(1.25), height: .inches(6)))
+        let frame = try #require(box.textFrame)
+        frame.text = Array(repeating: String(repeating: "A", count: 10), count: 90)
+            .joined(separator: " ")
+        frame.paragraphs[0].runs[0].fontSize = 18
+
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(svg.contains("…"), "dropped text without saying so")
+        #expect(svg.components(separatedBy: "<text").count - 1 == 64)
+        _ = try XML.parse(Data(svg.utf8))
+    }
+
     @Test func rendersShapesTextImageAndTable() throws {
         let deck = try Presentation()
         let slide = try deck.slides[0]

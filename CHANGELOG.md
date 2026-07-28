@@ -55,8 +55,21 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   behavior (the ladder values are pinned by test).
 - **Measured SVG rendering** — single-run paragraphs whose typeface is
   registered render with real word wrap and baseline placement in
-  `renderSVG` (mixed-run paragraphs keep the approximation); unregistered
-  text is byte-identical to before.
+  `renderSVG`; the rest wrap on a character-width estimate.
+
+### Changed
+
+- **`renderSVG` wraps long text instead of truncating it.** Paragraphs
+  without registered metrics used to emit one line and drop the remainder
+  behind an ellipsis, so a preview silently rewrote the deck's own words
+  ("Why Native Rendering Wins" rendered as "Why Native Render…"). They now
+  wrap on the same estimate, bounded at 64 lines per paragraph — the
+  renderer reads files it did not write, and a one-EMU-wide shape holding a
+  megabyte of text must not become a line per character. The ellipsis
+  appears only when that bound actually discarded text. A paragraph that
+  already fit on one line emits byte-identical markup; that is per
+  *paragraph*, not per shape, since `cursorY` accumulates and a wrap moves
+  every paragraph after it in the same body.
 - `deck.registerEmbeddedFonts()` unwraps the deck's own EOT-Lite font parts
   back to sfnt and registers them for measurement, so a deck that carries
   its typefaces can measure its own text. Explicit call — nothing registers

@@ -3,16 +3,18 @@ import Foundation
 // Headless slide → SVG rendering, for thumbnails and deterministic visual-diff
 // tests. Glyphs are delegated to the SVG viewer (no rasterizer), so this stays
 // zero-dependency. Coordinates are EMU (the viewBox is in EMU); font sizes are
-// points × 12700 EMU/pt. Not pixel-perfect — text layout is approximate (one
-// line per paragraph, positioned by font size) — but recognizable and byte-
-// deterministic.
+// points × 12700 EMU/pt. Not pixel-perfect — paragraphs whose typeface has no
+// registered metrics are wrapped on a character-width estimate, so breaks land
+// near, not exactly where, PowerPoint puts them — but recognizable, complete
+// (no text is dropped short of a hostile-input bound) and byte-deterministic.
 struct SVGRenderer {
     let slidePart: Part
     let slideSize: (width: EMU, height: EMU)
     let theme: Theme
     let package: OPCPackage
-    /// Registered fonts: paragraphs whose typeface resolves here get real
-    /// word wrap and baseline placement instead of the one-line approximation.
+    /// Registered fonts: paragraphs whose typeface resolves here are wrapped
+    /// on real advance widths with baseline placement; the rest are wrapped on
+    /// a character-width estimate.
     let fonts: FontLibrary
 
     private let emuPerPoint = 12700
@@ -79,8 +81,8 @@ struct SVGRenderer {
         }
     }
 
-    // MARK: - Text (measured when the typeface is registered; else
-    // approximate: one line per paragraph)
+    // MARK: - Text (wrapped on real metrics when the typeface is registered,
+    // else on a character-width estimate)
 
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int)) -> String {
         let (x, y, w, h) = f
@@ -116,7 +118,7 @@ struct SVGRenderer {
                 // Measured path: real word wrap and baseline placement —
                 // single-run paragraphs only, since a mixed-size/font
                 // paragraph measured at the first run's metrics would wrap
-                // wrong; those keep the one-line approximation below.
+                // wrong; those take the estimated wrap below.
                 // (Left-aligned text starts at the body inset; the unmeasured
                 // branch below keeps its historical `x` so existing output is
                 // byte-identical for decks without registered fonts.)
@@ -141,8 +143,11 @@ struct SVGRenderer {
                 // rewrote a headline — "Why Native Rendering Wins" came out
                 // "Why Native Render…" — in a picture whose whole job is to
                 // show what the deck says. The estimate is the same one; only
-                // the overflow behaviour changed, so text that already fit on
-                // one line renders byte-identically to before.
+                // the overflow behaviour changed, so a paragraph that already
+                // fit on one line emits byte-identical markup. That is a
+                // per-paragraph guarantee, not per-shape: `cursorY` accumulates
+                // down the body, so once any paragraph wraps, every paragraph
+                // after it in the same shape shifts down.
                 for line in wrapEstimated(text, width: w, sizeEMU: sizeEMU) {
                     cursorY += sizeEMU
                     out += "<text x=\"\(anchorX)\" y=\"\(cursorY)\" font-size=\"\(sizeEMU)\" "
@@ -156,20 +161,25 @@ struct SVGRenderer {
         return out
     }
 
-    /// Rough character clip so a long line doesn't overflow the thumbnail.
+    /// Bound on lines emitted for one estimated paragraph. Width comes out of
+    /// the file, so a hostile deck can declare a one-EMU-wide shape holding a
+    /// megabyte of text and ask for a line per character; the renderer is a
+    /// pure read API that must survive whatever it is pointed at. The old
+    /// single-line clip gave this bound for free — it is explicit now that
+    /// more than one line can be emitted.
+    private static let maxEstimatedLines = 64
+
     /// Break `text` into lines that fit `width`, estimating character width
     /// from the font size. Used when the paragraph's typeface has no
     /// registered metrics — register the font (`deck.fonts`) and the measured
     /// path above wraps on real advance widths instead.
     ///
-    /// Bounded to `maxEstimatedLines`. Width comes out of the file, so a
-    /// hostile deck can declare a one-EMU-wide shape holding a megabyte of
-    /// text and ask for a line per character; the renderer is a pure read API
-    /// that must survive whatever it is pointed at. The bound is what the old
-    /// single-line clip gave for free, kept explicitly now that more than one
-    /// line can be emitted.
-    private static let maxEstimatedLines = 64
-
+    /// The trailing ellipsis appears only when the bound actually discarded
+    /// text. That is tracked, not inferred from the line count: a paragraph
+    /// that happens to fill exactly `maxEstimatedLines` with every word intact
+    /// would otherwise be given an ellipsis it never earned *and* have a real
+    /// character deleted to make room for it — the same silent rewriting of
+    /// the deck's own words that replacing the clip was meant to end.
     private func wrapEstimated(_ text: String, width: Int, sizeEMU: Int) -> [String] {
         let approxCharWidth = sizeEMU / 2
         guard approxCharWidth > 0, width > 0 else { return [text] }
@@ -178,7 +188,10 @@ struct SVGRenderer {
 
         var lines: [String] = []
         var current = ""
+        var truncated = false
 
+        /// Appends a line; false once the bound is reached and nothing more
+        /// may be emitted.
         func commit(_ line: String) -> Bool {
             lines.append(line)
             return lines.count < Self.maxEstimatedLines
@@ -190,24 +203,36 @@ struct SVGRenderer {
                 current = candidate
                 continue
             }
-            if !current.isEmpty, !commit(current) { current = ""; break outer }
+            // Both exits below abandon this word and everything after it.
+            if !current.isEmpty, !commit(current) {
+                current = ""
+                truncated = true
+                break outer
+            }
             // A single word wider than the line is hard-broken rather than
             // allowed to run past the shape's edge.
             var rest = Substring(word)
             while rest.count > maxChars {
-                if !commit(String(rest.prefix(maxChars))) { current = ""; break outer }
+                if !commit(String(rest.prefix(maxChars))) {
+                    current = ""
+                    truncated = true
+                    break outer
+                }
                 rest = rest.dropFirst(maxChars)
             }
             current = String(rest)
         }
-        if !current.isEmpty { lines.append(current) }
-
-        if lines.count > Self.maxEstimatedLines {
-            lines = Array(lines.prefix(Self.maxEstimatedLines))
+        if !current.isEmpty {
+            if lines.count >= Self.maxEstimatedLines {
+                truncated = true
+            } else {
+                lines.append(current)
+            }
         }
+
         // Say so when the bound bit, rather than ending mid-sentence as if the
         // deck said that.
-        if lines.count == Self.maxEstimatedLines, let last = lines.last {
+        if truncated, let last = lines.last {
             lines[lines.count - 1] = String(last.prefix(Swift.max(1, maxChars - 1))) + "…"
         }
         return lines.isEmpty ? [text] : lines
