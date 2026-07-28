@@ -308,6 +308,17 @@ public actor DeckRenderer {
     /// Both placements used to swallow this with `try?`, so a deck could arrive
     /// with none of its images after several round trips to an image model, and
     /// say nothing at all.
+    /// A slide that could not be built as asked and was rendered as something
+    /// simpler. Degrading is usually the right call — the alternative is a
+    /// deck PowerPoint offers to repair — but doing it without saying so
+    /// produces a title-only slide that looks like a clean render.
+    private static func noteDegraded(_ slide: IRSlide, to fallback: String,
+                                     because reason: String, into dropped: inout [String]) {
+        let name = slide.title ?? ""
+        let label = name.isEmpty ? "slide \(slide.id)" : "\"\(name)\""
+        dropped.append("\(label): rendered as \(fallback) because \(reason)")
+    }
+
     private static func noteLostImage(on slide: IRSlide, into dropped: inout [String]) {
         let name = slide.title ?? ""
         let label = name.isEmpty ? "slide \(slide.id)" : "\"\(name)\""
@@ -377,6 +388,14 @@ public actor DeckRenderer {
                 }
                 return try deck.chartSlide(title, kind, data, options: options)
             }
+            // Falling back is right — a series whose length disagrees with the
+            // categories makes a chart PowerPoint has to repair. Doing it in
+            // silence is not: a chart slide carries no bullets, so this lands
+            // as a title and nothing else, looking like a clean render.
+            Self.noteDegraded(slide, to: "bullets",
+                              because: "the chart data was malformed (every series must have one "
+                                  + "value per category)",
+                              into: &dropped)
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .metrics:
             if let stats = body?.stats, !stats.isEmpty {
@@ -384,9 +403,16 @@ public actor DeckRenderer {
                                   noun: "metrics", on: slide, into: &dropped)
                 return try deck.metricsSlide(title, metrics: stats.map { (value: $0.value, label: $0.label) })
             }
+            Self.noteDegraded(slide, to: "bullets", because: "it carried no stats", into: &dropped)
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .bands:
-            let items = body?.items ?? flatten(body?.bullets ?? [])
+            // `??` fires on nil, not on empty, and the validator accepts a
+            // bands slide whose `items` is `[]` so long as `bullets` isn't —
+            // which is what a model emits when it fills one field and leaves
+            // the other as an empty array. Coalescing on nil alone dropped the
+            // bullets and shipped a title-only slide.
+            let declared = body?.items ?? []
+            let items = declared.isEmpty ? flatten(body?.bullets ?? []) : declared
             guard !items.isEmpty else { return try deck.bulletSlide(title, []) }
             Self.noteOverflow(items.count,
                               cap: useSmartArt ? SlideCapacity.smartArt : SlideCapacity.bands,

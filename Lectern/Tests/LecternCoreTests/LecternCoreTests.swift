@@ -228,6 +228,51 @@ import Rostrum
         #expect(rendered.droppedContent.isEmpty)
     }
 
+    /// The validator accepts a `bands` slide whose `items` is `[]` as long as
+    /// `bullets` isn't — which is what a model emits when it fills one field
+    /// and leaves the other an empty array. The renderer coalesced on nil, not
+    /// on empty, so the bullets were never consulted and the slide shipped
+    /// with just a title.
+    @Test func bandsWithEmptyItemsFallsBackToItsBulletsRatherThanRenderingBlank() async throws {
+        var deck = try fixtureDeck()
+        deck.slides[1].layout = "bands"
+        deck.slides[1].body = Body(items: [],
+                                   bullets: [Bullet(text: "first band"), Bullet(text: "second band")])
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        // The text is on the slide, not lost between validator and renderer.
+        let reopened = try Presentation(contentsOf: rendered.url)
+        let svg = try reopened.renderSVG(slideAt: 1)
+        #expect(svg.contains("first band"))
+        #expect(svg.contains("second band"))
+    }
+
+    /// Falling back is right — a series whose length disagrees with the
+    /// categories makes a chart PowerPoint has to repair. Doing it silently is
+    /// not: a chart slide carries no bullets, so the user gets a title and
+    /// nothing else, looking like a clean render.
+    @Test func aMalformedChartSaysWhyItBecameSomethingElse() async throws {
+        var deck = try fixtureDeck()
+        deck.slides[1].layout = "chart"
+        deck.slides[1].body = Body(chart: IRChart(
+            kind: "bar",
+            categories: ["Q1", "Q2", "Q3"],
+            // Three categories, two values: exactly the mismatch the renderer
+            // refuses to build.
+            series: [IRSeries(name: "ARR", values: [1, 2])]))
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        #expect(rendered.droppedContent.contains { $0.contains("chart data was malformed") })
+    }
+
     /// A generated image is the one thing on the slide a screen reader cannot
     /// infer, and the brief that produced it is already a description of it.
     @Test func generatedImagesCarryTheirBriefAsAltText() async throws {
