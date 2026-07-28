@@ -59,7 +59,14 @@ public extension ShapeCollection {
         var ts = style.type(.body)
         ts.sizePt = size ?? bulletSize(count: items.count, base: ts.sizePt)
         if let color { ts.color = color }
-        let gap = gapPt ?? style.spacing.md.points          // breathing room between items
+        // Typographic, not layout. `spacing.md` is a *shape-gutter* token, so a
+        // design asking for generous gutters got them applied between bullets
+        // too: a real deck came back with 24pt between 24pt bullets, on top of
+        // 1.5 line spacing — a full blank line each. Deriving the gap from the
+        // text keeps it in proportion to what it separates, scales with the
+        // shrink `bulletSize` applies to a long list, and stops the layout
+        // scale and the typographic scale being the same number.
+        let gap = gapPt ?? (ts.sizePt * 0.35)
         let tf = box.textFrame!
         for (i, item) in items.enumerated() {
             let p = tf.addParagraph()

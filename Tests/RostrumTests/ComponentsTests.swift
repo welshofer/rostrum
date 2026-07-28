@@ -107,6 +107,34 @@ import Testing
         #expect(paras[0].firstChild(named: "a:pPr")?.firstChild(named: "a:buChar") != nil)
     }
 
+    /// The gap between bullets is typographic, not a layout token.
+    ///
+    /// It used to be `style.spacing.md` — the same token that spaces *shapes*
+    /// — so a design asking for generous gutters got a full blank line between
+    /// every bullet. A real deck came back at 24pt between 24pt bullets.
+    @Test func bulletGapScalesWithTheTextNotTheLayoutScale() throws {
+        func gapPoints(spacingScale: Double) throws -> Double {
+            let deck = try Presentation()
+            // Widen the *layout* scale only; the type scale is untouched.
+            deck.applyDesign(Design.parse("""
+            ## Spacing tokens
+            - md: \(Int(16 * spacingScale))px
+            """))
+            try deck.slides[0].addBulletList(["one", "two"], in: r, style: deck.style)
+            let paras = try lastSp(deck.slides[0]).firstChild(named: "p:txBody")!.children(named: "a:p")
+            let spcBef = paras[1].firstChild(named: "a:pPr")?
+                .firstChild(named: "a:spcBef")?.firstChild(named: "a:spcPts")?[attribute: "val"]
+            return Double(spcBef ?? "0") ?? 0
+        }
+
+        // Quadrupling the shape-gutter token must not touch bullet spacing.
+        let narrow = try gapPoints(spacingScale: 1)
+        let wide = try gapPoints(spacingScale: 4)
+        #expect(narrow == wide, "layout scale leaked into paragraph spacing: \(narrow) vs \(wide)")
+        // And it is a real gap, not zero — bullets still breathe.
+        #expect(narrow > 0)
+    }
+
     @Test func emptyBulletListStillHasAParagraph() throws {
         // A txBody with zero a:p is invalid OOXML (PowerPoint repairs it).
         let deck = try Presentation()

@@ -1,8 +1,12 @@
 name: CI
 
+# Every push is checked, not only pushes to main. Previously a branch with no
+# open pull request ran NO CI at all: `push` was limited to main and
+# `pull_request` needs a PR to exist, so work sat unverified until someone
+# opened one — three commits did exactly that, and the first CI run of the
+# batch was the one that caught a broken test.
 on:
   push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -13,6 +17,12 @@ concurrency:
 jobs:
   macos:
     name: macOS (Swift 6)
+    # A branch in this repo is already covered by its `push` event; without
+    # this the `pull_request` event runs everything a second time on every
+    # PR push. Forks still need it — this workflow never sees their pushes.
+    if: >-
+      github.event_name == 'push'
+      || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
@@ -35,6 +45,12 @@ jobs:
     # so CI must build them explicitly or the shell can rot unverified. Both
     # targets deploy at 26.0 (Liquid Glass), hence the macos-26 image.
     name: Lectern apps (xcodebuild)
+    # A branch in this repo is already covered by its `push` event; without
+    # this the `pull_request` event runs everything a second time on every
+    # PR push. Forks still need it — this workflow never sees their pushes.
+    if: >-
+      github.event_name == 'push'
+      || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
@@ -55,6 +71,12 @@ jobs:
 
   linux:
     name: Linux (Swift ${{ matrix.swift }})
+    # A branch in this repo is already covered by its `push` event; without
+    # this the `pull_request` event runs everything a second time on every
+    # PR push. Forks still need it — this workflow never sees their pushes.
+    if: >-
+      github.event_name == 'push'
+      || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
