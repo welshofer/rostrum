@@ -127,6 +127,26 @@ import Testing
         }
     }
 
+    /// The slide the overlap was actually reported on. `sectionSlide` always
+    /// leaves room for a side image, but its subtitle ran nine columns wide
+    /// while the picture went down at 55% of the slide — so the caption sat
+    /// under the photograph. It had no regression test; it does now.
+    @Test func aSectionSlideSubtitleStaysClearOfTheImagePanel() throws {
+        let deck = try Presentation()
+        let panel = deck.sideImagePanel()
+        try deck.sectionSlide("Part two",
+                              subtitle: "A subtitle long enough that it would once have run "
+                                  + "the full nine columns and straight under the picture",
+                              number: 2)
+
+        for shape in try deck.slides[1].shapes {
+            let frame = shape.frame
+            guard frame.width.rawValue > 0 else { continue }
+            #expect(frame.maxX.rawValue <= panel.minX.rawValue,
+                    "\"\(shape.name)\" runs to \(frame.maxX.rawValue), panel starts at \(panel.minX.rawValue)")
+        }
+    }
+
     /// Not reserving is the default, and must be unchanged — a text-only deck
     /// should not lose a fifth of its width because the feature exists.
     @Test func notReservingKeepsTheFullWidth() throws {
