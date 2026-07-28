@@ -23,22 +23,26 @@ so out loud when it isn't.
 | Deck | Authored in | Exercises |
 |---|---|---|
 | `SimplePowerPoint.pptx` | PowerPoint for Mac | the plain baseline: one theme, a few text shapes |
-| `SmartArtExamples.pptx` | PowerPoint for Mac | SmartArt — `dgm:` data/layout/colors/quickStyle parts, 1308 entries |
-| `Template.potx` | PowerPoint for Mac | the template content type (`…presentationml.template.main+xml`) |
 | `MovieAndComments.pptx` | PowerPoint for Mac | modern comments (`ppt/comments/modernComment_*.xml`, `ppt/authors.xml`) and a 15.8 MB embedded `.mp4` |
 | `FromKeynote.pptx` | Keynote export | Keynote's own idea of PresentationML, photographic media, empty `docProps` |
 | `FromGoogleSlides.pptx` | Google Slides export | a third writer's conventions, no `docProps/core.xml` at all |
 
-`Template.potx` is `SmartArtExamples.pptx` saved as a template: the same 1308
-entries under the same names, 17 of them differing byte-wise —
-`[Content_Types].xml`, `docProps/{app,core}.xml`, the six `customXml/` parts
-(renumbered, same payloads), `ppt/theme/theme1.xml`, `ppt/viewProps.xml`,
-`ppt/handoutMasters/handoutMaster1.xml` and five `notesSlides` whose date
-fields moved. The one that earns its place is the `[Content_Types].xml`
-override naming `/ppt/presentation.xml` a template rather than a
-presentation: it is the only input proving a `.potx` survives the round trip
-as a `.potx`, and it caught a real defect the day it landed. A much smaller
-template would buy the same coverage for a fraction of the 5.3 MB.
+### Wanted
+
+Two gaps, both from decks removed on 2026-07-28 for being a third party's
+brand template rather than the owner's own work — see "Check the provenance"
+below, which exists because of them:
+
+- **SmartArt.** `ppt/diagrams/` — the `dgm:` data, layout, colors and
+  quickStyle parts, four per diagram, none of which Rostrum models. Any deck
+  built from PowerPoint's stock SmartArt layouts covers this; the content is
+  irrelevant, the parts are the point.
+- **A `.potx`.** The template content type
+  (`…presentationml.template.main+xml`) on `/ppt/presentation.xml`. This one
+  earned its keep in a day: it caught Rostrum silently retyping a template to
+  a presentation on open, so a `.potx` could not survive a round trip at all.
+  `POTXTests` pins that contract synthetically now, but nothing here proves it
+  against a template PowerPoint actually wrote.
 
 ## Adding one
 
@@ -53,6 +57,19 @@ template would buy the same coverage for a fraction of the 5.3 MB.
   template name and the full slide-title list. Scrub in PowerPoint *before*
   the file lands here — editing the XML afterwards would forge a deck no
   application actually wrote, which is the one thing this corpus can't use.
+- **Check the provenance, not just the metadata.** These files ship in a
+  public MIT-licensed repository, so a deck has to be yours to give away.
+  Starting from a corporate or downloaded template carries its theme, its
+  masters and often its copyright notice into git history, and history is
+  the hard part to undo. Two decks were removed on 2026-07-28 for exactly
+  this: they were built on a vendor's internal brand template and carried
+  its `© … All rights reserved` run text in six parts each. Worth grepping
+  for before you commit:
+
+  ```sh
+  unzip -p deck.pptx '*' | grep -aiE '©|all rights reserved|confidential'
+  unzip -p deck.pptx ppt/theme/theme1.xml | grep -o 'themeFamily name="[^"]*"'
+  ```
 
 ## Decks you can't publish
 

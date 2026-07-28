@@ -23,8 +23,10 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   byte-identity (every zip entry, no exemptions), determinism, and no-trap
   tests (`RealDeckCorpusTests`). Now populated with decks from PowerPoint,
   Keynote and Google Slides, so the lossless-round-trip rule is tested
-  against XML Rostrum did not write. `ROSTRUM_REAL_DECKS` points the gate at
-  decks that can't be published.
+  against XML Rostrum did not write. Byte identity is of each entry's
+  *decompressed* payload; entry encoding (compression method, data
+  descriptors, order) is a known gap tracked in ROADMAP.
+  `ROSTRUM_REAL_DECKS` points the gate at decks that can't be published.
 - `Presentation.documentKind` (`.presentation` / `.template` / `.slideShow`)
   — reads and sets what PowerPoint uses to tell a `.pptx` from a `.potx` from
   a `.ppsx`, which is the main part's content type rather than the file

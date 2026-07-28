@@ -40,10 +40,14 @@ from phase 0 onward.
 - [x] Byte-identity corpus gate in CI — Rostrum-generated corpus (2026-07-19);
   **real-deck fixtures** enroll automatically via
   `Tests/RostrumTests/Fixtures/RealDecks/` (scaffold 2026-07-22; populated
-  2026-07-28 with six decks from PowerPoint, Keynote and Google Slides —
-  SmartArt, a template, modern comments, embedded video). One test case per
-  deck; an empty corpus now fails rather than passing vacuously, and
+  2026-07-28 with decks from PowerPoint, Keynote and Google Slides — modern
+  comments, embedded video, photographic media). One test case per deck; an
+  empty corpus now fails rather than passing vacuously, and
   `ROSTRUM_REAL_DECKS` points the gate at decks that can't be published.
+  **Still wanted: SmartArt (`ppt/diagrams/`) and a real `.potx`** — the two
+  decks covering those were removed the same day for being built on a
+  vendor's brand template rather than the owner's own work, which is a
+  provenance rule the corpus README now states explicitly.
 
 ## Phase 2 — Shapes and text (✅ core, 2026-07-18)
 
