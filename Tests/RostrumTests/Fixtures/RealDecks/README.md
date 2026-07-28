@@ -20,9 +20,18 @@ so out loud when it isn't.
 | Deck | Authored in | Exercises |
 |---|---|---|
 | `SimplePowerPoint.pptx` | PowerPoint for Mac | the plain baseline: one theme, a few text shapes |
-| `SmartArtExamples.pptx` | PowerPoint for Mac | SmartArt — `dgm:` data/layout/colors/quickStyle parts, 1300+ entries |
+| `SmartArtExamples.pptx` | PowerPoint for Mac | SmartArt — `dgm:` data/layout/colors/quickStyle parts, 1308 entries |
+| `Template.potx` | PowerPoint for Mac | the template content type (`…presentationml.template.main+xml`) |
 | `FromKeynote.pptx` | Keynote export | Keynote's own idea of PresentationML, photographic media, empty `docProps` |
 | `FromGoogleSlides.pptx` | Google Slides export | a third writer's conventions, no `docProps/core.xml` at all |
+
+`Template.potx` is `SmartArtExamples.pptx` saved as a template: same 1308
+entries under the same names, differing in `docProps` and in the one
+`[Content_Types].xml` override that names `/ppt/presentation.xml` a template
+rather than a presentation. That override is its entire reason for being here
+— it is the only input proving a `.potx` survives the round trip as a `.potx`.
+A much smaller template would buy the same coverage for a fraction of the
+5.3 MB.
 
 ## Adding one
 
