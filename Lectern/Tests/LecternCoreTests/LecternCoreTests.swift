@@ -173,6 +173,39 @@ import Rostrum
         #expect(throws: ValidationError.self) { _ = try DeckValidator().validate(deck) }
     }
 
+    // MARK: - Font measurement
+
+    #if canImport(CoreText)
+    /// The substitution guard, which is the whole subtlety of resolving a
+    /// typeface name to a file: CoreText answers *every* request, handing back
+    /// the system fallback for a face that isn't installed. Registering that
+    /// under the requested name would measure the wrong glyphs and report
+    /// confidence — strictly worse than the estimate it replaced.
+    @Test func resolvesInstalledFontsAndRefusesSubstitutes() throws {
+        // Helvetica ships with every macOS/iOS install.
+        let helvetica = try #require(DeckRenderer.installedFontFile(named: "Helvetica"))
+        #expect(FileManager.default.fileExists(atPath: helvetica.path))
+
+        // Nothing is named this, so CoreText substitutes — and we must decline.
+        #expect(DeckRenderer.installedFontFile(named: "Nonexistent Face QZX") == nil)
+    }
+    #endif
+
+    @Test func reportsWhichFontsWereEstimatedRatherThanMeasured() async throws {
+        let result = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(result.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+        // Whether a given face is installed is a fact about the machine, so the
+        // contract is the shape, not the contents: reported faces are real,
+        // named, and never silently duplicated.
+        #expect(Set(rendered.unmeasuredFonts).count == rendered.unmeasuredFonts.count)
+        #expect(!rendered.unmeasuredFonts.contains(""))
+        #expect(rendered.unmeasuredFonts == rendered.unmeasuredFonts.sorted())
+        // And it stays out of `warnings`, which is about the deck.
+        #expect(rendered.warnings.isEmpty)
+    }
+
     // MARK: - Rendering (the Rostrum loop)
 
     @Test func rendersAValidPptxFromIR() async throws {

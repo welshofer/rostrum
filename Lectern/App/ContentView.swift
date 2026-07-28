@@ -293,6 +293,17 @@ struct ResultView: View {
                 }
                 .frame(maxWidth: 420)
             }
+            if !result.unmeasuredFonts.isEmpty {
+                // Not a warning: the deck is fine, its text was just sized by
+                // estimate because these faces aren't installed on this Mac.
+                DisclosureGroup("\(result.unmeasuredFonts.count) font(s) not installed") {
+                    Text("Text in \(result.unmeasuredFonts.joined(separator: ", ")) was fitted "
+                        + "by estimate. Install the font and re-render to size it from real "
+                        + "glyph metrics.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: 420)
+            }
         }
         .padding(48)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

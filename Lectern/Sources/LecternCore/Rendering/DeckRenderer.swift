@@ -5,11 +5,19 @@ import CoreGraphics
 import ImageIO
 import UniformTypeIdentifiers
 #endif
+#if canImport(CoreText)
+import CoreText
+#endif
 
 public struct DeckResult: Sendable, Equatable {
     public let url: URL
     public let slideCount: Int
     public let warnings: [String]
+    /// Typefaces this deck's style asks for that aren't installed here, so
+    /// their text was laid out from Rostrum's calibrated estimates rather than
+    /// real advance widths. Kept out of `warnings` on purpose: whether a font
+    /// is present is a fact about this machine, not about the deck.
+    public let unmeasuredFonts: [String]
 }
 
 public enum RenderError: Error {
@@ -23,6 +31,62 @@ public enum RenderError: Error {
 public actor DeckRenderer {
     public init() {}
 
+    // MARK: - Text measurement
+
+    /// Register the typefaces this deck's style actually uses, so Rostrum's
+    /// builders measure text with real advance widths instead of falling back
+    /// to their calibrated character-count estimates. Every builder Lectern
+    /// calls — bullets, metrics, quotes, comparisons, bands, process — consults
+    /// `presentation.fonts`, so this is the difference between text that is
+    /// known to fit and text that is guessed to.
+    ///
+    /// Rostrum deliberately never looks in platform font directories: implicit
+    /// lookup would make identical code emit different bytes on different
+    /// machines, and its determinism is a library-level promise. Lectern is an
+    /// app rendering for the machine in front of it and can make the opposite
+    /// trade — measure with the fonts that are actually here, and estimate for
+    /// the ones that aren't.
+    ///
+    /// - Returns: the requested typefaces that could not be registered, in
+    ///   sorted order. Empty on platforms without CoreText, where nothing is
+    ///   registered and every builder estimates exactly as it did before.
+    private static func registerInstalledFonts(for presentation: Presentation) -> [String] {
+        #if canImport(CoreText)
+        let style = presentation.style
+        var wanted: Set<String> = [style.headingFont, style.bodyFont]
+        for role in TypeRole.allCases { wanted.insert(style.type(role).font) }
+
+        var unmeasured: [String] = []
+        for name in wanted.sorted() where !name.isEmpty {
+            guard let url = installedFontFile(named: name),
+                  (try? presentation.fonts.register(contentsOf: url, aliases: [name])) != nil
+            else {
+                unmeasured.append(name)
+                continue
+            }
+        }
+        return unmeasured
+        #else
+        return []
+        #endif
+    }
+
+    #if canImport(CoreText)
+    /// The file backing an installed font family, or nil when it isn't here.
+    ///
+    /// CoreText substitutes silently — ask for a face that isn't installed and
+    /// it hands back the system fallback. Registering *that* under the
+    /// requested name would measure the wrong glyphs and report confidence,
+    /// which is worse than estimating, so the family it resolved to has to be
+    /// the family that was asked for.
+    static func installedFontFile(named name: String) -> URL? {
+        let font = CTFontCreateWithName(name as CFString, 12, nil)
+        let resolved = CTFontCopyFamilyName(font) as String
+        guard resolved.caseInsensitiveCompare(name) == .orderedSame else { return nil }
+        return CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL
+    }
+    #endif
+
     /// Render `deck` (styled by the `design.md` at `designURL`, if any) into
     /// `directory`. `warnings` from validation are passed through to the result.
     public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool,
@@ -31,6 +95,9 @@ public actor DeckRenderer {
         do {
             let presentation = try Presentation()
             if let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
+            // After applyDesign: the style is what decides which typefaces the
+            // builders will be measuring with.
+            let unmeasured = Self.registerInstalledFonts(for: presentation)
 
             for slide in deck.slides {
                 let built = try build(slide, in: presentation, useSmartArt: useSmartArt)
@@ -61,7 +128,8 @@ public actor DeckRenderer {
 
             let url = try outputURL(title: deck.meta.title, in: directory)
             try presentation.save(to: url)
-            return DeckResult(url: url, slideCount: presentation.slides.count, warnings: warnings)
+            return DeckResult(url: url, slideCount: presentation.slides.count,
+                              warnings: warnings, unmeasuredFonts: unmeasured)
         } catch let error as RenderError {
             throw error
         } catch {
