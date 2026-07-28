@@ -101,10 +101,34 @@ from phase 0 onward.
   2026-07-26)
 - [x] Media parts — `shapes.addMedia(_:format:frame:poster:)` embeds video and
   audio with both the legacy link and the modern `p14:media` relationship,
-  plus a `p:timing` node per clip (play controls, start on click) and
-  read-back (`picture.mediaData`, `isMedia`, `isAudio`); 2026-07-27.
-  *Open:* auto-play on slide entry, and PowerPoint's speaker icon for
-  poster-less audio.
+  plus a `p:timing` node per clip and read-back (`picture.mediaData`,
+  `isMedia`, `isAudio`); 2026-07-27.
+
+  **What that timing actually is, measured 2026-07-28** against
+  `Fixtures/RealDecks/MovieAndComments.pptx` — a PowerPoint-authored deck with
+  a real video, which is the first ground truth we have had. Rostrum writes
+  `p:video > p:cMediaNode` under the `tmRoot`, which gives the clip transport
+  controls. PowerPoint writes that *and* two sequences Rostrum does not:
+
+  - a `p:seq nodeType="mainSeq"` whose innermost `p:cTn` is
+    `presetID="1" presetClass="mediacall" nodeType="clickEffect"` carrying
+    `<p:cmd type="call" cmd="playFrom(0.0)">` at the clip's `spid`, with the
+    behaviour's `p:cTn@dur` set to the clip length in ms (`31600` there);
+  - a `p:seq nodeType="interactiveSeq"` started by `evt="onClick"` on the
+    clip, whose `clickEffect` issues `cmd="togglePause"`.
+
+  It also does *not* put a `p:endCondLst` on the media node, where Rostrum
+  writes `evt="onStopped"`. `MediaTimingGroundTruthTests` pins both sides of
+  this so the gap cannot close by accident or be claimed shut.
+
+  *Open:* emitting those two sequences (the shape is now known, but the result
+  has to be opened in PowerPoint before it ships — a malformed `p:timing` is a
+  repair prompt, which is the one outcome this project will not risk on an
+  unverified guess); **auto-play on slide entry**, which in the observed tree
+  is the `mainSeq` effect's start condition — click-to-play spells it
+  `<p:cond delay="indefinite"/>`, and the auto-play spelling is exactly what a
+  second sample, of a clip set to *Start: Automatically*, would settle; and
+  PowerPoint's speaker icon for poster-less audio.
 - [ ] Performance pass on large decks (no benchmarks exist yet)
 
 ## Phase 4 — Beyond parity (the reason Rostrum exists)

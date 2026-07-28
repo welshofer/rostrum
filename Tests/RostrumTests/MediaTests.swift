@@ -186,3 +186,76 @@ import Testing
         #expect(MediaFormat.forExtension("xyz") == nil)
     }
 }
+
+/// What PowerPoint actually writes for a video, measured against what Rostrum
+/// writes — with `Fixtures/RealDecks/MovieAndComments.pptx` as the oracle.
+///
+/// Rostrum's media timing was built from the spec and never checked against a
+/// real file. Now that one is in the corpus, the difference is measurable, and
+/// pinning it is what stops "Rostrum writes PowerPoint's timing" from quietly
+/// becoming true-sounding. It is a documented subset, and this says by how much.
+@Suite struct MediaTimingGroundTruthTests {
+    private static let realDeck: URL? = {
+        guard let base = Bundle.module.resourceURL?
+            .appendingPathComponent("Fixtures/RealDecks/MovieAndComments.pptx") else { return nil }
+        return FileManager.default.fileExists(atPath: base.path) ? base : nil
+    }()
+
+    /// Every `p:timing` subtree in a deck, flattened to its XML text.
+    private func timingXML(of deck: Presentation) throws -> String {
+        var out = ""
+        for index in 0..<deck.slides.count {
+            let dom = try deck.slides[index].part.dom()
+            guard let timing = dom.firstChild(named: "p:timing") else { continue }
+            out += String(decoding: XML.document(timing), as: UTF8.self)
+        }
+        return out
+    }
+
+    @Test(.enabled(if: realDeck != nil))
+    func powerPointDrivesAVideoWithMoreThanACMediaNode() throws {
+        let deck = try Presentation(data: try Data(contentsOf: Self.realDeck!))
+        let timing = try timingXML(of: deck)
+
+        // The part Rostrum also writes.
+        #expect(timing.contains("<p:video>"))
+        #expect(timing.contains("<p:cMediaNode"))
+
+        // The parts it does not. PowerPoint drives click-to-play from a
+        // `mainSeq` effect issuing `playFrom(0.0)` at the clip, and makes a
+        // click on the clip toggle pause via a second, interactive sequence.
+        #expect(timing.contains("nodeType=\"mainSeq\""))
+        #expect(timing.contains("playFrom(0.0)"))
+        #expect(timing.contains("nodeType=\"interactiveSeq\""))
+        #expect(timing.contains("togglePause"))
+        #expect(timing.contains("presetClass=\"mediacall\""))
+
+        // And it does NOT put an end condition on the media node itself,
+        // where Rostrum writes `evt="onStopped"`.
+        #expect(!timing.contains("onStopped"))
+    }
+
+    @Test func rostrumWritesTheMediaNodeAndNotTheEffectSequences() throws {
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addMedia(
+            Data("clip".utf8), format: .mp4,
+            frame: Rect(x: .inches(1), y: .inches(1), width: .inches(6), height: .inches(3.5)))
+        let timing = try timingXML(of: deck)
+
+        // What we do write: the node that gives the clip transport controls.
+        #expect(timing.contains("<p:video>"))
+        #expect(timing.contains("<p:cMediaNode"))
+        #expect(timing.contains("nodeType=\"tmRoot\""))
+
+        // What we deliberately do not, pending a PowerPoint check. Change these
+        // to `contains` in the same commit that starts emitting them — not
+        // before, and not to make something else pass.
+        #expect(!timing.contains("mainSeq"))
+        #expect(!timing.contains("playFrom"))
+        #expect(!timing.contains("interactiveSeq"))
+        #expect(!timing.contains("togglePause"))
+
+        // Ours carries an end condition PowerPoint's does not.
+        #expect(timing.contains("onStopped"))
+    }
+}

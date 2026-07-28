@@ -182,9 +182,19 @@ public extension ShapeCollection {
     /// PowerPoint drives media from the slide's `p:timing` tree: without a
     /// `p:video`/`p:audio` node naming the shape, the clip renders as a still
     /// picture with **no** controls. The node is written with an indefinite
-    /// start condition — click to play, which is PowerPoint's own default for
-    /// an inserted clip — and appended to the timing root so several clips on
-    /// one slide each get their own.
+    /// start condition and appended to the timing root, so several clips on one
+    /// slide each get their own.
+    ///
+    /// This is a **subset** of what PowerPoint writes, and the difference is
+    /// pinned by `MediaTimingGroundTruthTests` against a real PowerPoint file
+    /// (`Fixtures/RealDecks/MovieAndComments.pptx`). PowerPoint additionally
+    /// emits a `mainSeq` sequence whose `clickEffect` issues
+    /// `<p:cmd type="call" cmd="playFrom(0.0)">` at the shape, and an
+    /// `interactiveSeq` mapping a click on the clip to `togglePause`. So the
+    /// clip Rostrum writes has transport controls, but not PowerPoint's
+    /// click-sequence play effect; that wants implementing against the observed
+    /// shape and then opening in PowerPoint, which is the part nothing here can
+    /// do. See ROADMAP.
     private func registerMediaTiming(shapeID: Int, isAudio: Bool) throws {
         let slide = try part.dom()
         // p:timing is the last child of p:sld.
