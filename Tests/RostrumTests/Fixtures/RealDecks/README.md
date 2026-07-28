@@ -22,4 +22,9 @@ Guidelines for good fixtures:
   tables, notes, comments, animations, embedded media.
 - Keep files small where possible; a handful of focused decks beats one
   giant one.
-- Only check in decks you authored yourself (they ship with the repo).
+- Decks in here are **local-only by default** — `.gitignore` keeps
+  `*.pptx`/`*.potx`/`*.ppsx` out of commits, so you can point the gate at
+  work decks without publishing them. `swift test` copies the directory
+  from disk, so an ignored deck still runs.
+- To ship one with the repo, add it deliberately (`git add -f`), and only
+  if you authored it yourself and are happy for it to be public.
