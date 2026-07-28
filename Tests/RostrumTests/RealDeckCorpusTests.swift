@@ -2,14 +2,46 @@ import Foundation
 import Testing
 @testable import Rostrum
 
-/// PowerPoint-authored fixture decks, when any are checked in. See
-/// Fixtures/RealDecks/README.md — drop `.pptx` files there to enroll them.
+/// The fixture directory as it lands in the test bundle. Kept separate from
+/// `realDeckDirectory` because the packaging check below must look here even
+/// when an override has pointed the gate somewhere else.
+private let bundledRealDeckDirectory: URL =
+    (Bundle.module.resourceURL ?? Bundle.module.bundleURL)
+    .appendingPathComponent("Fixtures/RealDecks", isDirectory: true)
+
+/// Where the corpus lives.
+///
+/// `ROSTRUM_REAL_DECKS` replaces the checked-in directory for a run, so a deck
+/// that can't go in a public repo can still gate a local build:
+///
+///     ROSTRUM_REAL_DECKS=~/private-decks swift test --filter RealDeckCorpusTests
+///
+/// Nothing is copied and nothing is staged — the invariants below are the same
+/// either way.
+private let realDeckDirectory: URL = {
+    let raw = ProcessInfo.processInfo.environment["ROSTRUM_REAL_DECKS"] ?? ""
+    let path = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+    if path.isEmpty { return bundledRealDeckDirectory }
+    return URL(fileURLWithPath: NSString(string: path).expandingTildeInPath, isDirectory: true)
+}()
+
+/// Every enrolled deck, sorted so failures name the same file run to run.
+///
+/// `~$…` are Office lock files — a few bytes of user name wearing a `.pptx`
+/// extension, left behind whenever the author has the deck open — and dotfiles
+/// are the platform's own litter. Neither is a deck, and feeding either to the
+/// gate produces a failure about Rostrum that is really about the directory.
 private let realDecks: [URL] = {
-    guard let base = Bundle.module.resourceURL?
-        .appendingPathComponent("Fixtures/RealDecks") else { return [] }
-    let files = (try? FileManager.default.contentsOfDirectory(
-        at: base, includingPropertiesForKeys: nil)) ?? []
-    return files.filter { $0.pathExtension.lowercased() == "pptx" }
+    let files =
+        (try? FileManager.default.contentsOfDirectory(
+            at: realDeckDirectory, includingPropertiesForKeys: nil)) ?? []
+    return
+        files
+        .filter { url in
+            let name = url.lastPathComponent
+            return !name.hasPrefix("~$") && !name.hasPrefix(".")
+                && ["pptx", "potx"].contains(url.pathExtension.lowercased())
+        }
         .sorted { $0.lastPathComponent < $1.lastPathComponent }
 }()
 
@@ -17,54 +49,154 @@ private let realDecks: [URL] = {
 // they were parsed into models and rebuilt on save. They are pristine now,
 // so the gate covers every zip entry with no exceptions.
 
-/// The lossless-round-trip hard rule, proven against decks Rostrum did NOT
-/// write: authored in PowerPoint/Keynote/Google Slides, checked in as
-/// fixtures. Rostrum-generated corpora can't exercise foreign XML habits
-/// (attribute order, exotic parts, vendor extensions), so this gate is only
-/// as strong as the fixture set — see the README for what to include.
+/// The lossless-round-trip hard rule, proven against decks Rostrum did **not**
+/// write: authored in PowerPoint, Keynote and Google Slides and checked in as
+/// fixtures. Rostrum-generated corpora can't exercise foreign XML habits —
+/// attribute order, exotic parts, vendor extensions, namespace prefixes nobody
+/// else picks — so this gate is only as strong as the fixture set.
+///
+/// One test case per deck: a deck that fails names itself, and the others still
+/// run rather than being cut short by the first failure.
 @Suite struct RealDeckCorpusTests {
-    /// Compares at the zip-entry level, not through `package.parts`, so
-    /// nothing the reader chooses not to model can silently escape the gate.
-    /// **Every** entry must come back byte-identical after an open → save
-    /// with no edits — including `.rels` parts and `[Content_Types].xml`.
-    @Test func untouchedForeignDecksSurviveByteIdentically() throws {
-        for url in realDecks {
-            let original = try Data(contentsOf: url)
-            let resaved = try Presentation(data: original).serializedData()
 
-            let before = try ZipReader(data: original)
-            let after = try ZipReader(data: resaved)
-            let afterNames = Set(after.entryNames)
-            for name in before.entryNames {
-                #expect(afterNames.contains(name),
-                        "\(url.lastPathComponent): \(name) missing after resave")
-                guard afterNames.contains(name) else { continue }
-                #expect(try after.data(forEntry: name) == before.data(forEntry: name),
-                        "\(url.lastPathComponent): \(name) bytes changed on resave")
-            }
-        }
+    // MARK: - The corpus itself
+
+    /// The fixture resources reached the test bundle.
+    ///
+    /// This suite spent days reporting green while iterating **zero** decks:
+    /// the directory listing failed open, so a packaging problem and a
+    /// genuinely empty directory were the same observation. `README.md` is
+    /// checked in beside the decks, so it is in the bundle whenever resources
+    /// are copied at all — which makes the two distinguishable.
+    @Test func fixtureResourcesReachTheTestBundle() {
+        let readme = bundledRealDeckDirectory.appendingPathComponent("README.md")
+        #expect(
+            FileManager.default.fileExists(atPath: readme.path),
+            """
+            \(readme.path) is missing, so the test bundle carries no fixture resources. \
+            An empty corpus would then be a packaging failure rather than a fact about \
+            the repository — check the testTarget's `resources:` rule in Package.swift.
+            """)
     }
 
-    @Test func foreignDeckResavesAreDeterministic() throws {
-        for url in realDecks {
-            let original = try Data(contentsOf: url)
-            let once = try Presentation(data: original).serializedData()
-            let twice = try Presentation(data: once).serializedData()
-            #expect(once == twice,
-                    "\(url.lastPathComponent): resave is not a fixed point")
-        }
+    /// The gate is actually gating something.
+    ///
+    /// Every test below is parameterized over `realDecks`; an empty corpus
+    /// turns all of them into zero test cases and the suite passes having
+    /// proven nothing. This is the one assertion that can't.
+    @Test func corpusIsPopulated() {
+        #expect(
+            !realDecks.isEmpty,
+            """
+            No decks found in \(realDeckDirectory.path), so the lossless-round-trip gate \
+            is not being exercised at all. See Fixtures/RealDecks/README.md.
+            """)
     }
 
-    @Test func foreignDecksEnumerateWithoutTrapping() throws {
-        for url in realDecks {
-            let deck = try Presentation(data: try Data(contentsOf: url))
-            var slides = 0
-            for slide in deck.slides {
-                _ = slide.shapes.count
-                slides += 1
-            }
-            #expect(slides == deck.slides.count,
-                    "\(url.lastPathComponent): iterator skipped unresolvable slides")
+    // MARK: - Invariant 1: byte-identical round trip
+
+    /// Compares at the zip-entry level, not through `package.parts`, so nothing
+    /// the reader chooses not to model can silently escape the gate.
+    /// **Every** entry must come back byte-identical after an open → save with
+    /// no edits — including `.rels` parts and `[Content_Types].xml`.
+    ///
+    /// Entry *order* is deliberately not asserted. Rostrum sorts part order for
+    /// determinism, which is a different promise from preserving whatever order
+    /// the authoring application happened to emit.
+    @Test(arguments: realDecks)
+    func untouchedForeignDeckSurvivesByteIdentically(_ url: URL) throws {
+        let deck = url.lastPathComponent
+        let original = try Data(contentsOf: url)
+        let resaved = try Presentation(data: original).serializedData()
+
+        let before = try ZipReader(data: original)
+        let after = try ZipReader(data: resaved)
+        let beforeNames = Set(before.entryNames)
+        let afterNames = Set(after.entryNames)
+
+        // Entries gained are as much a fidelity loss as entries dropped: a part
+        // we invented is a part the authoring application did not ask for, and
+        // it travels to every downstream consumer of the resaved file.
+        let invented = afterNames.subtracting(beforeNames).sorted()
+        let dropped = beforeNames.subtracting(afterNames).sorted()
+        #expect(invented.isEmpty, "\(deck): resave invented \(invented.count) entries: \(invented)")
+        #expect(dropped.isEmpty, "\(deck): resave dropped \(dropped.count) entries: \(dropped)")
+
+        // Collected rather than asserted per entry: a deck with 1300 parts that
+        // regresses wholesale should report one legible failure, not 1300.
+        var changed: [String] = []
+        for name in before.entryNames where afterNames.contains(name) {
+            let old = try before.data(forEntry: name)
+            let new = try after.data(forEntry: name)
+            if old != new { changed.append(name) }
         }
+        let sample = changed.prefix(10).joined(separator: ", ")
+        let ellipsis = changed.count > 10 ? ", …" : ""
+        #expect(
+            changed.isEmpty,
+            """
+            \(deck): \(changed.count) of \(beforeNames.count) entries changed on resave: \
+            \(sample)\(ellipsis)
+            """)
+    }
+
+    // MARK: - Invariant 2: determinism on foreign input
+
+    @Test(arguments: realDecks)
+    func foreignDeckResaveIsAFixedPoint(_ url: URL) throws {
+        let original = try Data(contentsOf: url)
+        let once = try Presentation(data: original).serializedData()
+        let twice = try Presentation(data: once).serializedData()
+        #expect(once == twice, "\(url.lastPathComponent): resave is not a fixed point")
+    }
+
+    // MARK: - Invariant 3: the whole shape tree enumerates without trapping
+
+    /// Walks every shape on every slide, **including shapes nested inside
+    /// groups**, touching the reads whose arithmetic runs on numbers that came
+    /// straight out of a file. Those are the sites where a trapping `Int(…)`
+    /// conversion or a force-unwrap kills the process rather than throwing, and
+    /// a foreign deck is the only thing that reaches the odd ones.
+    @Test(arguments: realDecks)
+    func foreignDeckShapeTreeEnumeratesWithoutTrapping(_ url: URL) throws {
+        let name = url.lastPathComponent
+        let deck = try Presentation(data: try Data(contentsOf: url))
+
+        var visited = 0
+        for slide in deck.slides {
+            // Iterative rather than recursive: nesting depth is the deck's
+            // choice, and a test that overflows its own stack reports a crash
+            // where the library is fine.
+            var worklist = Array(slide.shapes)
+            while let shape = worklist.popLast() {
+                visited += 1
+                guard visited <= 200_000 else {
+                    Issue.record("\(name): shape walk exceeded 200000 nodes; aborting")
+                    return
+                }
+
+                _ = shape.kind
+                _ = shape.name
+                _ = shape.shapeID
+                _ = shape.frame
+                _ = shape.rotation
+
+                if let group = shape as? GroupShape {
+                    let children = group.shapes
+                    // Child frames live in the group's own coordinate space;
+                    // mapping them out is the arithmetic that has to survive a
+                    // degenerate or absurd `a:chOff`/`a:chExt`.
+                    for child in children { _ = group.convertToParentSpace(child.frame) }
+                    worklist.append(contentsOf: children)
+                }
+            }
+        }
+
+        #expect(
+            visited > 0,
+            """
+            \(name): the walk found no shapes at all, which means the slides came back \
+            empty rather than that the deck is.
+            """)
     }
 }
