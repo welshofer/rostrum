@@ -39,6 +39,14 @@ public final class Slide {
         try cSld(of: part).getOrAddChild("p:spTree")
     }
 
+    /// The shape tree if the part has one. Unlike `spTree(of:)`, which is
+    /// `getOrAddChild`-based and would inject `p:cSld`/`p:spTree` into the DOM
+    /// on a pure read, this creates nothing — every read path uses it, so
+    /// enumerating an untouched part leaves it byte-identical.
+    static func existingSpTree(of part: Part) -> XML.Element? {
+        (try? part.dom())?.firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")
+    }
+
     /// Set the slide's background fill (`p:bg`, always the first child of
     /// `p:cSld`).
     public func setBackground(_ fill: Fill) throws {
@@ -59,11 +67,24 @@ public final class Slide {
         var maxID = 1
         var stack: [XML.Element] = [try part.dom()]
         while let element = stack.popLast() {
-            if element.name == "p:cNvPr", let id = element[attribute: "id"].flatMap({ Int($0) }) {
+            // An id outside the format's range is IGNORED, not clamped: a
+            // clamp would let one hostile id pin maxID at the ceiling and
+            // permanently refuse every future shape on the slide.
+            if element.name == "p:cNvPr",
+               let id = element.boundedInt("id", in: OOXMLBounds.drawingElementID) {
                 maxID = Swift.max(maxID, id)
             }
             stack.append(contentsOf: element.childElements)
         }
+        guard maxID < Self.maxShapeID else {
+            throw RostrumError.packageInvalid(
+                "shape ids on this slide reach the format's maximum (\(Self.maxShapeID)); "
+                    + "there is no id left to assign")
+        }
         return maxID + 1
     }
+
+    /// The largest `p:cNvPr@id` the format allows (`ST_DrawingElementId` is an
+    /// `xsd:unsignedInt`).
+    static let maxShapeID = OOXMLBounds.drawingElementID.upperBound
 }

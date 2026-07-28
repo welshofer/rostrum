@@ -294,7 +294,8 @@ public final class Run {
     public var color: Color? {
         get {
             rPr.firstChild(named: "a:solidFill")?
-                .firstChild(named: "a:srgbClr")?[attribute: "val"].map(Color.init)
+                .firstChild(named: "a:srgbClr")?[attribute: "val"]
+                .flatMap { Color(validating: $0) }
         }
         set {
             rPr.removeChildren(named: "a:solidFill")

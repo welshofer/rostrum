@@ -62,17 +62,27 @@ public final class Sections: Sequence {
 
     private func sectionListElement(creatingIfMissing create: Bool) throws -> XML.Element? {
         let dom = try presentationPart.dom()
-        if let ext = dom.firstChild(named: "p:extLst")?.children(named: "p:ext")
-            .first(where: { $0[attribute: "uri"] == SectionExt.uri }),
-           let list = ext.firstChild(named: "p14:sectionLst") {
+        // Reuse the ext carrying the section URI if there is one. A foreign
+        // deck can have that ext without a `p14:sectionLst` child — empty, or
+        // spelling the 2010 namespace with a different prefix, both legal.
+        // Appending a *second* ext with the same URI would leave the reader
+        // resolving to the first, so `elements` would stay empty and the
+        // caller-facing `add` would index an empty array.
+        let existing = dom.firstChild(named: "p:extLst")?.children(named: "p:ext")
+            .first(where: { $0[attribute: "uri"] == SectionExt.uri })
+        if let existing, let list = existing.firstChild(named: "p14:sectionLst") {
             return list
         }
         guard create else { return nil }
-        let extLst = dom.getOrAddChild("p:extLst")                 // extLst is last in p:presentation
-        let ext = XML.Element("p:ext", attributes: [("uri", SectionExt.uri)])
         let list = XML.Element("p14:sectionLst", attributes: [("xmlns:p14", SectionExt.ns)])
-        ext.appendElement(list)
-        extLst.appendElement(ext)
+        if let existing {
+            existing.appendElement(list)
+        } else {
+            let extLst = dom.getOrAddChild("p:extLst")             // extLst is last in p:presentation
+            let ext = XML.Element("p:ext", attributes: [("uri", SectionExt.uri)])
+            ext.appendElement(list)
+            extLst.appendElement(ext)
+        }
         presentationPart.markDirty()
         return list
     }
@@ -100,10 +110,21 @@ public final class Sections: Sequence {
         let ids = try slideIds()
         precondition(!boundaries.isEmpty, "need at least one section")
         precondition(boundaries.first!.startSlide == 0, "the first section must start at slide 0")
-        precondition(!ids.isEmpty, "the deck has no slides to partition")
+        // The slide list comes from the file, not the caller, so an empty one
+        // is a malformed deck to report — not a programmer error to trap on.
+        guard !ids.isEmpty else {
+            throw RostrumError.packageInvalid("the deck has no slides to partition into sections")
+        }
         for i in boundaries.indices {
-            precondition(boundaries[i].startSlide >= 0 && boundaries[i].startSlide < ids.count,
-                         "section startSlide \(boundaries[i].startSlide) out of range")
+            // The upper bound is the FILE's slide count, so a caller passing a
+            // start that was valid for a different deck must get an error, not
+            // an abort. Strictly-increasing is a pure caller contract and
+            // stays a precondition.
+            guard boundaries[i].startSlide >= 0, boundaries[i].startSlide < ids.count else {
+                throw RostrumError.packageInvalid(
+                    "section start slide \(boundaries[i].startSlide) is outside this deck's "
+                        + "\(ids.count) slides")
+            }
             if i > 0 {
                 precondition(boundaries[i].startSlide > boundaries[i - 1].startSlide,
                              "section startSlides must strictly increase")
@@ -148,9 +169,27 @@ public final class Sections: Sequence {
         bounds.removeAll { $0.startSlide == startIndex }
         bounds.append((name, startIndex))
         bounds.sort { $0.startSlide < $1.startSlide }
+        // `boundaries()` is derived from the FILE's sections, and two of them
+        // can resolve to the same start slide — an unresolvable sldId falls
+        // back to 0. `set(_:)` requires strictly increasing starts, so without
+        // this a foreign deck would trip its precondition and abort the host.
+        //
+        // The name just added wins its slot outright rather than depending on
+        // where `sort` happened to leave it: Swift's sort is not documented
+        // stable, so relying on tie order would make the output vary run to
+        // run, and determinism is a stated invariant of this library.
+        var seen: Set<Int> = [startIndex]
+        bounds = bounds.filter { $0.startSlide == startIndex || seen.insert($0.startSlide).inserted }
         if bounds.first?.startSlide != 0 { bounds.insert(("Default", 0), at: 0) }
         try set(bounds)
-        let idx = try boundaries().firstIndex { $0.startSlide == startIndex } ?? 0
+        // Resolve against what was actually written. `?? 0` on an empty list
+        // would index an empty array — a crash, not a fallback.
+        guard let idx = try boundaries().firstIndex(where: { $0.startSlide == startIndex }),
+              idx < count else {
+            throw RostrumError.packageInvalid(
+                "sections were written but cannot be read back; the presentation's extension "
+                    + "list may carry a section extension this deck does not understand")
+        }
         return self[idx]
     }
 }
@@ -189,9 +228,11 @@ public final class Section {
         element.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId").count ?? 0
     }
 
+    /// The section's slides, skipping any entry whose part cannot be resolved
+    /// (matching `Slides` iteration semantics on malformed decks).
     public var slides: [Slide] {
         let all = Slides(package: package, presentationPart: presentationPart)
-        return slideIndices.map { all[$0] }
+        return slideIndices.compactMap { try? all.slide(at: $0) }
     }
 }
 

@@ -58,9 +58,9 @@ import Testing
 
     @Test func buttonAutoContrastsLabelAndUsesOwnBody() throws {
         let deck = try Presentation()
-        let before = deck.slides[0].shapes.count
+        let before = try deck.slides[0].shapes.count
         try deck.slides[0].addButton("Get started", in: r, style: deck.style, fill: .solid(Color("0E1116")))
-        #expect(deck.slides[0].shapes.count == before + 1)   // label lives in the button, not a 2nd shape
+        #expect(try deck.slides[0].shapes.count == before + 1)   // label lives in the button, not a 2nd shape
         let dark = runColor(labelRun(try lastSp(deck.slides[0])))!
         #expect(Color(dark).relativeLuminance > 0.5)         // light label on dark button
 
@@ -120,7 +120,7 @@ import Testing
     @Test func componentsValidateAndAreDeterministic() throws {
         func build() throws -> Data {
             let deck = try Presentation(); let s = deck.style
-            let slide = deck.slides[0]
+            let slide = try deck.slides[0]
             let card = try slide.addCard(in: Rect(x: .inches(1), y: .inches(1), width: .inches(5), height: .inches(4)), style: s)
             try slide.addKicker("Q3", in: card.content, style: s)
             try slide.addButton("Details", in: Rect(x: .inches(1), y: .inches(5.5), width: .inches(2), height: .inches(0.6)), style: s)

@@ -87,11 +87,12 @@ then add `"Rostrum"` to your target's dependencies.
 | **SmartArt** | Basic Block List creation; **text extraction from any diagram** |
 | **Comments** | modern threaded comments, replies, resolve |
 | **Notes** | per-slide speaker notes |
-| **Fonts** | **embed TTF/OTF** so a deck renders identically everywhere |
+| **Fonts** | **embed TTF/OTF** so a deck renders identically everywhere; **parse font metrics** (pure Swift, zero deps) to measure text |
+| **Text fitting** | `shape.fitText(using:)` — measure with real font metrics and write a **computed `normAutofit`**, so text provably fits its box (python-pptx's `fit_text` can't) |
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import a slide from another deck with its images, charts and layout intact |
 | **Design layer** | `DeckStyle` (type scale, WCAG auto-contrast, tokens); one-call slide builders; cards/buttons/kickers/stat tiles; a Grid DSL |
-| **Templates** | open a `.potx`/`.ppsx` directly; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
+| **Templates** | open a `.potx`/`.ppsx` directly and round-trip it as one; `documentKind` converts when you want a deck out of a template; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
 | **Sections** | native PowerPoint sections; footers, slide numbers, dates via live fields |
 | **Tooling** | `pptx-tool inspect`/`validate` — machine-checkable "PowerPoint will accept this" gate |
 

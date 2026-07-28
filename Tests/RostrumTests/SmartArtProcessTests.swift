@@ -25,7 +25,7 @@ import Testing
         for name in ["data", "layout", "quickStyle", "colors"] {
             _ = try reopened.package.part(at: PackURI("/ppt/diagrams/\(name)1.xml")).dom()
         }
-        #expect(reopened.slides[reopened.slides.count - 1].smartArtTexts == [["Perceive", "Plan", "Act"]])
+        #expect(try reopened.slides[reopened.slides.count - 1].smartArtTexts == [["Perceive", "Plan", "Act"]])
     }
 
     @Test func cycleSlideEmitsNativeCycleSmartArt() throws {
@@ -39,7 +39,7 @@ import Testing
         #expect(layoutText.contains("type=\"cycle\""))     // ring algorithm
         #expect(layoutText.contains("type=\"ellipse\""))   // circular nodes
         #expect(layoutText.contains("type=\"conn\""))      // connectors between nodes
-        #expect(reopened.slides[reopened.slides.count - 1].smartArtTexts == [["Build", "Measure", "Learn"]])
+        #expect(try reopened.slides[reopened.slides.count - 1].smartArtTexts == [["Build", "Measure", "Learn"]])
     }
 
     @Test func defaultLayoutStaysBlockList() throws {

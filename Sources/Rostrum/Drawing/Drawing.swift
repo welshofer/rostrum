@@ -4,11 +4,26 @@ import Foundation
 public struct Color: Hashable, Sendable {
     public let hex: String
 
+    /// Six hex digits, with or without a leading `#`. A bad literal here is a
+    /// programmer error and traps.
+    ///
+    /// For a value that came out of a **file**, use `init?(validating:)`:
+    /// `a:srgbClr@val` is untrusted, and third-party writers really do emit
+    /// three-digit shorthand, eight-digit ARGB and bare names like "red".
     public init(_ hex: String) {
         var value = hex.hasPrefix("#") ? String(hex.dropFirst()) : hex
         value = value.uppercased()
         precondition(value.count == 6 && value.allSatisfy(\.isHexDigit),
                      "Color requires 6 hex digits, got \(hex)")
+        self.hex = value
+    }
+
+    /// Parse a wire-form color, returning nil for anything that is not six hex
+    /// digits — so reading a hostile deck reports "no color" instead of
+    /// aborting the host process.
+    public init?(validating hex: String) {
+        let value = (hex.hasPrefix("#") ? String(hex.dropFirst()) : hex).uppercased()
+        guard value.count == 6, value.allSatisfy(\.isHexDigit) else { return nil }
         self.hex = value
     }
 

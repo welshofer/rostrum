@@ -264,6 +264,12 @@ struct ResultView: View {
             Image(systemName: "checkmark.seal.fill").font(.system(size: 52)).foregroundStyle(.green)
             Text(result.url.lastPathComponent).font(.title3.weight(.semibold))
             Text("\(result.slideCount) slides · written by Rostrum").foregroundStyle(.secondary)
+            if !result.previews.isEmpty {
+                // Rendered by Rostrum from the deck on disk, so what you see
+                // here is what PowerPoint will open — not a redraw of the plan.
+                SlideFilmstrip(previews: result.previews)
+                    .frame(maxWidth: 620)
+            }
             #if os(iOS)
             // No Finder to reveal in: Quick Look renders the deck in place, and
             // the share sheet exports it (Save to Files, AirDrop, Keynote…).
@@ -290,6 +296,39 @@ struct ResultView: View {
             if !result.warnings.isEmpty {
                 DisclosureGroup("\(result.warnings.count) validation warning(s)") {
                     ForEach(result.warnings, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
+                }
+                .frame(maxWidth: 420)
+            }
+            if !result.droppedContent.isEmpty {
+                // The model asked for more than the layout holds. Not a
+                // validation warning and not our bug — a collision between the
+                // plan and the slide, which the user is the one who can resolve.
+                DisclosureGroup("\(result.droppedContent.count) slide(s) lost content to layout limits") {
+                    ForEach(result.droppedContent, id: \.self) {
+                        Text($0).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: 420)
+            }
+            if !result.schemaIssues.isEmpty {
+                // Rostrum's own lint on the file we just wrote. If this ever
+                // has entries, the bug is Lectern's or Rostrum's — not the
+                // model's — so it reads differently from the warnings above.
+                DisclosureGroup("\(result.schemaIssues.count) schema issue(s) in the written deck") {
+                    ForEach(result.schemaIssues, id: \.self) {
+                        Text($0).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: 420)
+            }
+            if !result.unmeasuredFonts.isEmpty {
+                // Not a warning: the deck is fine, its text was just sized by
+                // estimate because these faces aren't installed on this Mac.
+                DisclosureGroup("\(result.unmeasuredFonts.count) font(s) not installed") {
+                    Text("Text in \(result.unmeasuredFonts.joined(separator: ", ")) was fitted "
+                        + "by estimate. Install the font and re-render to size it from real "
+                        + "glyph metrics.")
+                        .font(.caption).foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: 420)
             }

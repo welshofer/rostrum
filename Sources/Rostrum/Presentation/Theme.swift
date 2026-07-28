@@ -70,8 +70,14 @@ public final class Theme {
     /// The concrete RGB of a theme slot (`a:srgbClr@val`, or `a:sysClr@lastClr`).
     public func color(_ slot: ThemeSlot) -> Color? {
         guard let el = clrScheme?.firstChild(named: "a:\(slot.rawValue)") else { return nil }
-        if let srgb = el.firstChild(named: "a:srgbClr")?[attribute: "val"] { return Color(srgb) }
-        if let last = el.firstChild(named: "a:sysClr")?[attribute: "lastClr"] { return Color(last) }
+        // A theme comes out of the file, so a malformed value must read as
+        // "no color", not abort the process.
+        if let srgb = el.firstChild(named: "a:srgbClr")?[attribute: "val"] {
+            return Color(validating: srgb)
+        }
+        if let last = el.firstChild(named: "a:sysClr")?[attribute: "lastClr"] {
+            return Color(validating: last)
+        }
         return nil
     }
 

@@ -27,7 +27,7 @@ import Testing
         #expect(spPr.firstChild(named: "p:blipFill") == nil)
         // r:embed resolves to a real image relationship + media part.
         let rId = try #require(blip.firstChild(named: "a:blip")?[attribute: "r:embed"])
-        #expect(deck.slides[0].part.rels.relationship(withId: rId)?.type == RelType.image)
+        #expect(try deck.slides[0].part.rels.relationship(withId: rId)?.type == RelType.image)
         #expect(deck.package.parts.keys.contains { $0.value.hasPrefix("/ppt/media/") })
         // Schema order: a:blipFill precedes a:ln.
         let names = spPr.childElements.map(\.name)
@@ -75,7 +75,7 @@ import Testing
         // Same bytes → one media part, but two distinct relationships.
         let media = deck.package.parts.keys.filter { $0.value.hasPrefix("/ppt/media/") }
         #expect(media.count == 1)
-        let imageRels = deck.slides[0].part.rels.items.filter { $0.type == RelType.image }
+        let imageRels = try deck.slides[0].part.rels.items.filter { $0.type == RelType.image }
         #expect(imageRels.count == 2)
         #expect(Set(imageRels.map(\.rId)).count == 2)
         // Content type rides on an extension Default, not a per-part Override.

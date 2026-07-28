@@ -148,8 +148,8 @@ import Testing
     @Test func everyKindProducesWellFormedChartAndOpens() throws {
         // A quick structural smoke test: each kind serializes, reparses, and
         // its externalData is the last child of chartSpace (schema order).
-        let kinds: [ChartKind] = [.barClustered, .barStacked, .barPercentStacked, .line, .area, .pie, .doughnut]
-        for kind in kinds {
+        // ChartKind.allCases, so a new kind cannot silently skip this gate.
+        for kind in ChartKind.allCases {
             let deck = try Presentation()
             try deck.slides[0].shapes.addChart(kind, data: sample,
                 frame: Rect(x: .zero, y: .zero, width: .inches(6), height: .inches(4)),

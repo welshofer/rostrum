@@ -40,8 +40,8 @@ import Testing
         try deck.slides.move(from: 1, to: 0)
 
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].shapes[0].textFrame?.text == "second")
-        #expect(reopened.slides[1].shapes[0].textFrame?.text == "first")
+        #expect(try reopened.slides[0].shapes[0].textFrame?.text == "second")
+        #expect(try reopened.slides[1].shapes[0].textFrame?.text == "first")
     }
 
     @Test func duplicateCopiesContentAfterSource() throws {
@@ -53,9 +53,9 @@ import Testing
 
         #expect(deck.slides.count == 3)
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].shapes[0].textFrame?.text == "original")
-        #expect(reopened.slides[1].shapes[0].textFrame?.text == "original")
-        #expect(reopened.slides[1].part.uri != reopened.slides[0].part.uri)
+        #expect(try reopened.slides[0].shapes[0].textFrame?.text == "original")
+        #expect(try reopened.slides[1].shapes[0].textFrame?.text == "original")
+        #expect(try reopened.slides[1].part.uri != reopened.slides[0].part.uri)
         // Unique sldIds across the deck.
         let ids = try reopened.presentationPart.dom()
             .firstChild(named: "p:sldIdLst")!.childElements
@@ -78,7 +78,7 @@ import Testing
         let original = try deck.serializedData()
 
         let reopened = try Presentation(data: original)
-        reopened.slides[1].shapes.all.first?.textFrame?.text = "touched"
+        try reopened.slides[1].shapes.all.first?.textFrame?.text = "touched"
         try reopened.slides[1].shapes.addTextBox(
             Rect(x: .zero, y: .zero, width: .inches(3), height: .inches(1)))
             .textFrame?.text = "touched"
@@ -98,7 +98,7 @@ import Testing
 @Suite struct ShapeAndTextTests {
     private func newSlide() throws -> (Presentation, Slide) {
         let deck = try Presentation()
-        return (deck, deck.slides[0])
+        return (deck, try deck.slides[0])
     }
 
     @Test func textBoxRoundTripsRichText() throws {
@@ -116,13 +116,13 @@ import Testing
         run.color = Color("FF6B5E")
 
         let reopened = try Presentation(data: try deck.serializedData())
-        let rrun = reopened.slides[0].shapes[0].textFrame!.paragraphs[0].runs[0]
+        let rrun = try reopened.slides[0].shapes[0].textFrame!.paragraphs[0].runs[0]
         #expect(rrun.text == "Big & Bold")
         #expect(rrun.fontSize == 44)
         #expect(rrun.bold)
         #expect(rrun.fontName == "Avenir Next")
         #expect(rrun.color == Color("FF6B5E"))
-        #expect(reopened.slides[0].shapes[0].textFrame!.paragraphs[0].alignment == .center)
+        #expect(try reopened.slides[0].shapes[0].textFrame!.paragraphs[0].alignment == .center)
     }
 
     @Test func autoshapeGeometryFillLine() throws {

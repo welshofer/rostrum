@@ -22,7 +22,30 @@ extension ShapeCollection {
     ) throws -> Shape {
         try embedChart(
             chart: ChartXML.chartSpace(kind: kind, data: data, colors: colors, options: options),
-            workbook: ChartWorkbook.make(data: data), frame: frame)
+            workbook: try ChartWorkbook.make(data: data), frame: frame)
+    }
+
+    /// Add a combo chart: several plot groups sharing one category axis, with
+    /// an optional secondary value axis on the right.
+    ///
+    /// Series are numbered globally in group order, which is also their column
+    /// order in the embedded workbook — so a combo Rostrum wrote reads back
+    /// through `chart.series` in the order it was described, and `replaceData`
+    /// updates every group.
+    ///
+    /// - Throws: `ChartAuthoringProblem` when the combo cannot be expressed —
+    ///   a group kind with no shared category axis, no primary group, or two
+    ///   bar groups on one axis pair (PowerPoint would merge them into a single
+    ///   cluster, drawing something other than what was asked for). Nothing is
+    ///   written in that case.
+    @discardableResult
+    public func addComboChart(
+        _ data: ComboChartData, frame: Rect, options: ChartOptions = ChartOptions()
+    ) throws -> Shape {
+        if let problem = data.authoringProblem() { throw problem }
+        return try embedChart(
+            chart: ChartXML.comboChartSpace(data: data, options: options),
+            workbook: try ChartWorkbook.make(data: data.flattened), frame: frame)
     }
 
     /// Add an XY scatter chart.
@@ -33,7 +56,19 @@ extension ShapeCollection {
     ) throws -> Shape {
         try embedChart(
             chart: ChartXML.scatterChartSpace(data: data, colors: colors, options: options),
-            workbook: ChartWorkbook.makeXY(data: data), frame: frame)
+            workbook: try ChartWorkbook.makeXY(data: data), frame: frame)
+    }
+
+    /// Add a bubble chart: an XY chart whose third dimension is the bubble
+    /// area.
+    @discardableResult
+    public func addBubbleChart(
+        _ data: BubbleChartData, frame: Rect,
+        colors: [Color]? = nil, options: ChartOptions = ChartOptions()
+    ) throws -> Shape {
+        try embedChart(
+            chart: ChartXML.bubbleChartSpace(data: data, colors: colors, options: options),
+            workbook: try ChartWorkbook.makeBubble(data: data), frame: frame)
     }
 
     /// Shared plumbing: register the chart part + embedded workbook and drop a

@@ -99,17 +99,28 @@ final class SlideCopier {
     /// across every master, layout, and the presentation's master list.
     func allocBigId() -> Int {
         if _nextBigId == nil {
-            var maxId = 2_147_483_647
+            // This namespace starts above ST_SlideId's ceiling and runs to
+            // UINT_MAX. Ids are bounded on the way in: a file-supplied
+            // 9223372036854775807 would make the `+ 1` below an overflow trap.
+            let namespace = 2_147_483_647...Int(UInt32.max)
+            var maxId = namespace.lowerBound
             if let pres = try? destPresentation.dom(),
                let list = pres.firstChild(named: "p:sldMasterIdLst") {
-                for e in list.childElements { maxId = Swift.max(maxId, Int(e[attribute: "id"] ?? "") ?? 0) }
+                for e in list.childElements {
+                    maxId = Swift.max(maxId, e.boundedInt("id", in: namespace) ?? 0)
+                }
             }
             for (uri, part) in dest.parts where uri.value.hasPrefix("/ppt/slideMasters/") {
                 if let list = try? part.dom().firstChild(named: "p:sldLayoutIdLst") {
-                    for e in list.childElements { maxId = Swift.max(maxId, Int(e[attribute: "id"] ?? "") ?? 0) }
+                    for e in list.childElements {
+                        maxId = Swift.max(maxId, e.boundedInt("id", in: namespace) ?? 0)
+                    }
                 }
             }
-            _nextBigId = maxId + 1
+            // Saturate rather than trap: this allocator has no throwing path,
+            // and a deck that has genuinely exhausted the namespace is beyond
+            // anything a merge can repair.
+            _nextBigId = Swift.min(maxId, namespace.upperBound - 1) + 1
         }
         defer { _nextBigId! += 1 }
         return _nextBigId!
@@ -201,7 +212,7 @@ extension Slides {
         let rId = destPresentationPart.rels.add(
             type: RelType.slide, target: destPresentationPart.uri.relativeReference(to: newSlideURI))
         let sldIdLst = try destSldIdLst()
-        let entry = XML.Element("p:sldId", attributes: [("id", String(nextSldId())), ("r:id", rId)])
+        let entry = XML.Element("p:sldId", attributes: [("id", String(try nextSldId())), ("r:id", rId)])
         if let insertAt, insertAt < sldIdLst.childElements.count {
             var entries = sldIdLst.childElements
             entries.insert(entry, at: insertAt)
@@ -228,7 +239,7 @@ extension Slides {
             let rId = destPresentationPart.rels.add(
                 type: RelType.slide, target: destPresentationPart.uri.relativeReference(to: newSlideURI))
             try destSldIdLst().appendElement(
-                XML.Element("p:sldId", attributes: [("id", String(nextSldId())), ("r:id", rId)]))
+                XML.Element("p:sldId", attributes: [("id", String(try nextSldId())), ("r:id", rId)]))
             result.append(Slide(part: try destPackage.part(at: newSlideURI), package: destPackage))
         }
         destPresentationPart.markDirty()
@@ -244,9 +255,15 @@ extension Slides {
         try destPresentationPart.dom().getOrAddChild("p:sldIdLst", beforeAnyOf: ["p:sldSz", "p:notesSz"])
     }
 
-    private func nextSldId() -> Int {
-        let used = ((try? destSldIdLst())?.childElements.compactMap { $0[attribute: "id"].flatMap { Int($0) } }) ?? []
-        return Swift.max(255, used.max() ?? 255) + 1
+    private func nextSldId() throws -> Int {
+        let used = ((try? destSldIdLst())?.childElements
+            .compactMap { $0.boundedInt("id", in: OOXMLBounds.slideID) }) ?? []
+        let highest = Swift.max(255, used.max() ?? 255)
+        guard highest < OOXMLBounds.slideID.upperBound else {
+            throw RostrumError.packageInvalid(
+                "slide ids reach the format's maximum; there is no id left to assign")
+        }
+        return highest + 1
     }
 
     private func wireNewMasters(_ masters: [PackURI], _ copier: SlideCopier) throws {

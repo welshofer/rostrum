@@ -47,7 +47,7 @@ import Testing
             .firstChild(named: "p:cSld")!.firstChild(named: "p:spTree")!
             .firstChild(named: "p:grpSpPr")!.firstChild(named: "a:xfrm")!.firstChild(named: "a:off")!
         off[attribute: "x"] = nil
-        deck.slides[0].part.markDirty()
+        try deck.slides[0].part.markDirty()
         let issues = try deck.validate()
         #expect(issues.contains { $0.element == "a:off" && $0.message.contains("x") })
     }

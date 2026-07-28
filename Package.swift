@@ -35,6 +35,9 @@ let package = Package(
             name: "pptx-tool",
             dependencies: ["Rostrum"],
             path: "Tools/pptx-tool"),
-        .testTarget(name: "RostrumTests", dependencies: ["Rostrum"]),
+        .testTarget(
+            name: "RostrumTests",
+            dependencies: ["Rostrum"],
+            resources: [.copy("Fixtures")]),
     ]
 )

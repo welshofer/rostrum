@@ -5,15 +5,15 @@ import Testing
 @Suite struct NotesTests {
     @Test func notesRoundTrip() throws {
         let deck = try Presentation()
-        #expect(!deck.slides[0].hasNotes)
-        #expect(deck.slides[0].notesText == "")
+        #expect(try deck.slides[0].hasNotes == false)
+        #expect(try deck.slides[0].notesText == "")
 
         try deck.slides[0].setNotes("Remember to pause here.")
-        #expect(deck.slides[0].hasNotes)
+        #expect(try deck.slides[0].hasNotes)
 
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].hasNotes)
-        #expect(reopened.slides[0].notesText == "Remember to pause here.")
+        #expect(try reopened.slides[0].hasNotes)
+        #expect(try reopened.slides[0].notesText == "Remember to pause here.")
     }
 
     @Test func oneNotesMasterSharedAcrossSlides() throws {
@@ -28,8 +28,8 @@ import Testing
         #expect(notesSlides.count == 2)
 
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].notesText == "first")
-        #expect(reopened.slides[1].notesText == "second")
+        #expect(try reopened.slides[0].notesText == "first")
+        #expect(try reopened.slides[1].notesText == "second")
     }
 
     @Test func notesMasterOwnsDistinctThemePart() throws {
@@ -68,7 +68,7 @@ import Testing
         try deck.slides[0].setNotes("v1")
         try deck.slides[0].setNotes("v2")
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].notesText == "v2")
+        #expect(try reopened.slides[0].notesText == "v2")
         // Still exactly one notes part.
         #expect(reopened.package.parts.keys.filter { $0.value.hasPrefix("/ppt/notesSlides/") }.count == 1)
     }
@@ -81,7 +81,7 @@ import Testing
         try deck.slides[0].setNotes("shared")
         try deck.slides.duplicate(at: 0)
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[1].notesText == "shared")
+        #expect(try reopened.slides[1].notesText == "shared")
     }
 
     @Test func multiParagraphNotesRoundTrip() throws {
@@ -89,7 +89,7 @@ import Testing
         try deck.slides[0].setNotes(["First line of the talk track.", "Second beat.", "Land the point."])
         try deck.slides[0].appendNote("And a closing aside.")
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(reopened.slides[0].notesParagraphs == ["First line of the talk track.", "Second beat.", "Land the point.", "And a closing aside."])
+        #expect(try reopened.slides[0].notesParagraphs == ["First line of the talk track.", "Second beat.", "Land the point.", "And a closing aside."])
     }
 
     @Test func emptyNotesArrayIsValid() throws {

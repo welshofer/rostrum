@@ -9,7 +9,7 @@ import Foundation
 enum ChartWorkbook {
     /// Layout: categories in A2:A(n+1); series k name in row 1 of column
     /// B+k; values beneath. Must agree with the c:f formulas in ChartXML.
-    static func make(data: ChartData) -> Data {
+    static func make(data: ChartData) throws -> Data {
         var zip = ZipWriter()
         zip.addFile(name: "[Content_Types].xml", data: Data(contentTypesXML.utf8))
         zip.addFile(name: "_rels/.rels", data: Data(relsXML.utf8))
@@ -21,13 +21,13 @@ enum ChartWorkbook {
         zip.addFile(name: "xl/theme/theme1.xml", data: Data(themeXML.utf8))
         zip.addFile(name: "docProps/core.xml", data: Data(coreXML.utf8))
         zip.addFile(name: "docProps/app.xml", data: Data(appXML.utf8))
-        return zip.finalize()
+        return try zip.finalize()
     }
 
     /// The Edit-Data workbook for a scatter chart: per series i, x-values in
     /// column `seriesColumn(2i)`, y-values (with the series name in row 1) in
     /// column `seriesColumn(2i+1)` — matching the c:f formulas in ChartXML.
-    static func makeXY(data: XYChartData) -> Data {
+    static func makeXY(data: XYChartData) throws -> Data {
         var zip = ZipWriter()
         zip.addFile(name: "[Content_Types].xml", data: Data(contentTypesXML.utf8))
         zip.addFile(name: "_rels/.rels", data: Data(relsXML.utf8))
@@ -39,7 +39,57 @@ enum ChartWorkbook {
         zip.addFile(name: "xl/theme/theme1.xml", data: Data(themeXML.utf8))
         zip.addFile(name: "docProps/core.xml", data: Data(coreXML.utf8))
         zip.addFile(name: "docProps/app.xml", data: Data(appXML.utf8))
-        return zip.finalize()
+        return try zip.finalize()
+    }
+
+    static func makeBubble(data: BubbleChartData) throws -> Data {
+        var zip = ZipWriter()
+        zip.addFile(name: "[Content_Types].xml", data: Data(contentTypesXML.utf8))
+        zip.addFile(name: "_rels/.rels", data: Data(relsXML.utf8))
+        zip.addFile(name: "xl/workbook.xml", data: Data(workbookXML.utf8))
+        zip.addFile(name: "xl/_rels/workbook.xml.rels", data: Data(workbookRelsXML.utf8))
+        zip.addFile(name: "xl/worksheets/sheet1.xml", data: Data(sheetXMLBubble(data).utf8))
+        zip.addFile(name: "xl/sharedStrings.xml", data: Data(sharedStringsXMLBubble(data).utf8))
+        zip.addFile(name: "xl/styles.xml", data: Data(stylesXML.utf8))
+        zip.addFile(name: "xl/theme/theme1.xml", data: Data(themeXML.utf8))
+        zip.addFile(name: "docProps/core.xml", data: Data(coreXML.utf8))
+        zip.addFile(name: "docProps/app.xml", data: Data(appXML.utf8))
+        return try zip.finalize()
+    }
+
+    private static func sharedStringsXMLBubble(_ data: BubbleChartData) -> String {
+        let items = data.series.map { "<si><t>\(escape($0.name))</t></si>" }.joined()
+        return """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="\(data.series.count)" uniqueCount="\(data.series.count)">\(items)</sst>
+            """
+    }
+
+    /// Three columns per series (x, y, size); the name sits above the y
+    /// column, matching the formulas `ChartXML.bubbleSeries` writes.
+    private static func sheetXMLBubble(_ data: BubbleChartData) -> String {
+        let maxN = data.series.map(\.points.count).max() ?? 0
+        let lastCol = seriesColumn(data.series.count * 3 - 1)
+        var rows = ""
+        var row1 = "<row r=\"1\">"
+        for (k, _) in data.series.enumerated() {
+            row1 += "<c r=\"\(seriesColumn(3 * k + 1))1\" t=\"s\"><v>\(k)</v></c>"
+        }
+        rows += row1 + "</row>"
+        for i in 0..<maxN {
+            var row = "<row r=\"\(i + 2)\">"
+            for (k, series) in data.series.enumerated() where i < series.points.count {
+                let point = series.points[i]
+                row += "<c r=\"\(seriesColumn(3 * k))\(i + 2)\"><v>\(chartNumber(point.x))</v></c>"
+                row += "<c r=\"\(seriesColumn(3 * k + 1))\(i + 2)\"><v>\(chartNumber(point.y))</v></c>"
+                row += "<c r=\"\(seriesColumn(3 * k + 2))\(i + 2)\"><v>\(chartNumber(point.size))</v></c>"
+            }
+            rows += row + "</row>"
+        }
+        return """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><dimension ref="A1:\(lastCol)\(maxN + 1)"/><sheetViews><sheetView tabSelected="1" workbookViewId="0"/></sheetViews><sheetFormatPr defaultRowHeight="15"/><sheetData>\(rows)</sheetData><pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>
+            """
     }
 
     private static func sharedStringsXMLXY(_ data: XYChartData) -> String {

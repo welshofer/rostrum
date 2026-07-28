@@ -3,20 +3,30 @@ import Foundation
 // Headless slide → SVG rendering, for thumbnails and deterministic visual-diff
 // tests. Glyphs are delegated to the SVG viewer (no rasterizer), so this stays
 // zero-dependency. Coordinates are EMU (the viewBox is in EMU); font sizes are
-// points × 12700 EMU/pt. Not pixel-perfect — text layout is approximate (one
-// line per paragraph, positioned by font size) — but recognizable and byte-
-// deterministic.
+// points × 12700 EMU/pt. Not pixel-perfect — paragraphs whose typeface has no
+// registered metrics are wrapped on a character-width estimate, so breaks land
+// near, not exactly where, PowerPoint puts them — but recognizable, complete
+// (no text is dropped short of a hostile-input bound) and byte-deterministic.
 struct SVGRenderer {
     let slidePart: Part
     let slideSize: (width: EMU, height: EMU)
     let theme: Theme
     let package: OPCPackage
+    /// Registered fonts: paragraphs whose typeface resolves here are wrapped
+    /// on real advance widths with baseline placement; the rest are wrapped on
+    /// a character-width estimate.
+    let fonts: FontLibrary
 
     private let emuPerPoint = 12700
 
     func render(pixelWidth: Int) throws -> String {
         let dom = try slidePart.dom()
-        let w = slideSize.width.rawValue, h = slideSize.height.rawValue
+        // p:sldSz comes from the file too, and the aspect-ratio conversion below
+        // goes through Int(_: Double), which traps when the double is out of
+        // range — so bound the dimensions before dividing by them.
+        let bound = OOXMLBounds.coordinate
+        let w = bound.contains(slideSize.width.rawValue) ? slideSize.width.rawValue : 0
+        let h = bound.contains(slideSize.height.rawValue) ? slideSize.height.rawValue : 0
         let pxH = w > 0 ? Int((Double(pixelWidth) * Double(h) / Double(w)).rounded()) : pixelWidth
         var defs = ""
         var body = ""
@@ -28,7 +38,7 @@ struct SVGRenderer {
             body += box(0, 0, w, h, fill: "#FFFFFF")
         }
 
-        if let spTree = try? Slide.spTree(of: slidePart) {
+        if let spTree = Slide.existingSpTree(of: slidePart) {
             for child in spTree.childElements {
                 switch child.name {
                 case "p:sp": body += renderShape(child, defs: &defs)
@@ -71,10 +81,18 @@ struct SVGRenderer {
         }
     }
 
-    // MARK: - Text (approximate: one line per paragraph)
+    // MARK: - Text (wrapped on real metrics when the typeface is registered,
+    // else on a character-width estimate)
 
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int)) -> String {
         let (x, y, w, h) = f
+        let bodyPr = txBody.firstChild(named: "a:bodyPr")
+        // Bounded like every other coordinate here: `x + inset(…)` traps.
+        func inset(_ name: String, _ fallback: Int) -> Int {
+            bodyPr?.coordinate(name) ?? fallback
+        }
+        let contentX = x + inset("lIns", 91_440)
+        let contentW = Swift.max(0, w - inset("lIns", 91_440) - inset("rIns", 91_440))
         let paragraphs = txBody.children(named: "a:p")
         // Stack paragraphs from the top with a line height per font size.
         var out = ""
@@ -84,28 +102,140 @@ struct SVGRenderer {
             let text = runs.compactMap { $0.firstChild(named: "a:t")?.textContent }.joined()
             guard !text.isEmpty else { cursorY += emuPerPoint * 18; continue }
             let rPr = runs.first?.firstChild(named: "a:rPr")
-            let sizeEMU = (rPr?[attribute: "sz"].flatMap { Int($0) } ?? 1800) * emuPerPoint / 100
+            // ST_TextFontSize is 1pt–4000pt in hundredths. The file can say
+            // anything, and `sz * 12700` on a large Int is an overflow crash.
+            let sizeHundredths = min(max(rPr?[attribute: "sz"].flatMap { Int($0) } ?? 1800, 100),
+                                     400_000)
+            let sizeEMU = sizeHundredths * emuPerPoint / 100
             let bold = rPr?[attribute: "b"] == "1"
             let color = rPr.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) } ?? "#1A1A1A"
             let align = p.firstChild(named: "a:pPr")?[attribute: "algn"] ?? "l"
             let (anchorX, textAnchor) = align == "ctr" ? (x + w / 2, "middle")
                 : align == "r" ? (x + w, "end") : (x, "start")
-            cursorY += sizeEMU
-            out += "<text x=\"\(anchorX)\" y=\"\(cursorY)\" font-size=\"\(sizeEMU)\" "
-                + "fill=\"\(color)\" text-anchor=\"\(textAnchor)\"\(bold ? " font-weight=\"bold\"" : "")>"
-                + escape(clip(text, width: w, sizeEMU: sizeEMU)) + "</text>"
-            cursorY += sizeEMU / 3
+
+            let typeface = rPr?.firstChild(named: "a:latin")?[attribute: "typeface"]
+            if runs.count == 1, let typeface, let metrics = fonts.metrics(for: typeface) {
+                // Measured path: real word wrap and baseline placement —
+                // single-run paragraphs only, since a mixed-size/font
+                // paragraph measured at the first run's metrics would wrap
+                // wrong; those take the estimated wrap below.
+                // (Left-aligned text starts at the body inset; the unmeasured
+                // branch below keeps its historical `x` so existing output is
+                // byte-identical for decks without registered fonts.)
+                let lineX = textAnchor == "start" ? contentX : anchorX
+                let sizePt = Double(sizeEMU) / Double(emuPerPoint)
+                let lines = TextMeasurer(metrics).wrap(
+                    text, pointSize: sizePt, width: Double(contentW) / Double(emuPerPoint))
+                let lineH = Int((metrics.lineHeight(pointSize: sizePt) * Double(emuPerPoint)).rounded())
+                let ascent = Int((metrics.ascent(pointSize: sizePt) * Double(emuPerPoint)).rounded())
+                for line in lines {
+                    out += "<text x=\"\(lineX)\" y=\"\(cursorY + ascent)\" font-size=\"\(sizeEMU)\" "
+                        + "fill=\"\(color)\" text-anchor=\"\(textAnchor)\"\(bold ? " font-weight=\"bold\"" : "")>"
+                        + escape(line) + "</text>"
+                    cursorY += lineH
+                }
+            } else {
+                // No metrics for this typeface (or a mixed paragraph): estimate
+                // a character width from the font size and wrap on it.
+                //
+                // Wrapping rather than truncating. This branch used to emit one
+                // line and drop the rest behind an ellipsis, which silently
+                // rewrote a headline — "Why Native Rendering Wins" came out
+                // "Why Native Render…" — in a picture whose whole job is to
+                // show what the deck says. The estimate is the same one; only
+                // the overflow behaviour changed, so a paragraph that already
+                // fit on one line emits byte-identical markup. That is a
+                // per-paragraph guarantee, not per-shape: `cursorY` accumulates
+                // down the body, so once any paragraph wraps, every paragraph
+                // after it in the same shape shifts down.
+                for line in wrapEstimated(text, width: w, sizeEMU: sizeEMU) {
+                    cursorY += sizeEMU
+                    out += "<text x=\"\(anchorX)\" y=\"\(cursorY)\" font-size=\"\(sizeEMU)\" "
+                        + "fill=\"\(color)\" text-anchor=\"\(textAnchor)\"\(bold ? " font-weight=\"bold\"" : "")>"
+                        + escape(line) + "</text>"
+                    cursorY += sizeEMU / 3
+                }
+            }
             _ = h
         }
         return out
     }
 
-    /// Rough character clip so a long line doesn't overflow the thumbnail.
-    private func clip(_ text: String, width: Int, sizeEMU: Int) -> String {
+    /// Bound on lines emitted for one estimated paragraph. Width comes out of
+    /// the file, so a hostile deck can declare a one-EMU-wide shape holding a
+    /// megabyte of text and ask for a line per character; the renderer is a
+    /// pure read API that must survive whatever it is pointed at. The old
+    /// single-line clip gave this bound for free — it is explicit now that
+    /// more than one line can be emitted.
+    private static let maxEstimatedLines = 64
+
+    /// Break `text` into lines that fit `width`, estimating character width
+    /// from the font size. Used when the paragraph's typeface has no
+    /// registered metrics — register the font (`deck.fonts`) and the measured
+    /// path above wraps on real advance widths instead.
+    ///
+    /// The trailing ellipsis appears only when the bound actually discarded
+    /// text. That is tracked, not inferred from the line count: a paragraph
+    /// that happens to fill exactly `maxEstimatedLines` with every word intact
+    /// would otherwise be given an ellipsis it never earned *and* have a real
+    /// character deleted to make room for it — the same silent rewriting of
+    /// the deck's own words that replacing the clip was meant to end.
+    private func wrapEstimated(_ text: String, width: Int, sizeEMU: Int) -> [String] {
         let approxCharWidth = sizeEMU / 2
-        guard approxCharWidth > 0 else { return text }
+        guard approxCharWidth > 0, width > 0 else { return [text] }
         let maxChars = Swift.max(1, width / approxCharWidth)
-        return text.count <= maxChars ? text : String(text.prefix(Swift.max(1, maxChars - 1))) + "…"
+        guard text.count > maxChars else { return [text] }
+
+        var lines: [String] = []
+        var current = ""
+        var truncated = false
+
+        /// Appends a line; false once the bound is reached and nothing more
+        /// may be emitted.
+        func commit(_ line: String) -> Bool {
+            lines.append(line)
+            return lines.count < Self.maxEstimatedLines
+        }
+
+        outer: for word in text.split(separator: " ") {
+            let candidate = current.isEmpty ? String(word) : current + " " + word
+            if candidate.count <= maxChars {
+                current = candidate
+                continue
+            }
+            // Both exits below abandon this word and everything after it.
+            if !current.isEmpty, !commit(current) {
+                current = ""
+                truncated = true
+                break outer
+            }
+            // A single word wider than the line is hard-broken rather than
+            // allowed to run past the shape's edge.
+            var rest = Substring(word)
+            while rest.count > maxChars {
+                if !commit(String(rest.prefix(maxChars))) {
+                    current = ""
+                    truncated = true
+                    break outer
+                }
+                rest = rest.dropFirst(maxChars)
+            }
+            current = String(rest)
+        }
+        if !current.isEmpty {
+            if lines.count >= Self.maxEstimatedLines {
+                truncated = true
+            } else {
+                lines.append(current)
+            }
+        }
+
+        // Say so when the bound bit, rather than ending mid-sentence as if the
+        // deck said that.
+        if truncated, let last = lines.last {
+            lines[lines.count - 1] = String(last.prefix(Swift.max(1, maxChars - 1))) + "…"
+        }
+        return lines.isEmpty ? [text] : lines
     }
 
     // MARK: - Pictures
@@ -136,10 +266,153 @@ struct SVGRenderer {
            let tbl = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?.firstChild(named: "a:tbl") {
             return renderTable(tbl, x: x, y: y, defs: &defs)
         }
-        // Charts (and anything else) render as a labeled placeholder.
+        if uri.hasSuffix("/chart"), let plot = renderChart(gf, x: x, y: y, w: w, h: h) {
+            return plot
+        }
+        // Anything still unplotted — SmartArt, OLE, a chart kind with no plot
+        // here — keeps the labeled placeholder. Named rather than "[object]"
+        // so a thumbnail says which thing it could not draw.
+        let label: String
+        if uri.hasSuffix("/chart") { label = "[chart]" }
+        else if uri == GraphicDataURI.diagram { label = "[SmartArt]" }
+        else if uri == GraphicDataURI.ole { label = "[embedded object]" }
+        else { label = "[object]" }
         return box(x, y, w, h, fill: "#F2F2F2", stroke: " stroke=\"#CCCCCC\" stroke-width=\"6350\"")
             + "<text x=\"\(x + w / 2)\" y=\"\(y + h / 2)\" font-size=\"\(18 * emuPerPoint)\" fill=\"#999999\" "
-            + "text-anchor=\"middle\">\(uri.hasSuffix("/chart") ? "[chart]" : "[object]")</text>"
+            + "text-anchor=\"middle\">\(escape(label))</text>"
+    }
+
+    // MARK: - Charts
+
+    /// Plot a chart frame, or nil when this chart is not one of the kinds
+    /// drawn here (combo, scatter, radar…) and the placeholder should stand.
+    ///
+    /// The point is a thumbnail that shows the *shape* of the data — is it
+    /// rising, is one bar dominant — not a second chart engine. PowerPoint
+    /// owns the real rendering; a preview that pretended otherwise would
+    /// invite comparisons it cannot win.
+    private func renderChart(_ gf: XML.Element, x: Int, y: Int, w: Int, h: Int) -> String? {
+        guard w > 0, h > 0,
+              let rId = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
+                  .firstChild(named: "c:chart")?[attribute: "r:id"],
+              let rel = slidePart.rels.relationship(withId: rId),
+              let part = try? package.part(
+                  at: PackURI.resolve(target: rel.target, relativeTo: slidePart.uri.baseURI))
+        else { return nil }
+
+        let chart = Chart(part: part, package: package)
+        guard let kind = chart.plotType, !chart.isCombo else { return nil }
+        let series = chart.series
+        guard !series.isEmpty else { return nil }
+
+        // Inset a margin so bars don't touch the frame edge.
+        let pad = Swift.min(w, h) / 12
+        let plotX = x + pad, plotY = y + pad
+        let plotW = Swift.max(1, w - 2 * pad), plotH = Swift.max(1, h - 2 * pad)
+
+        let palette = (1...6).map { theme.accent($0).map { "#" + $0.hex } ?? "#4472C4" }
+        func color(_ index: Int) -> String { palette[index % palette.count] }
+
+        switch kind {
+        case "barChart": return bars(series, plotX, plotY, plotW, plotH, color)
+        case "lineChart": return lines(series, plotX, plotY, plotW, plotH, color)
+        case "pieChart", "doughnutChart":
+            return pie(series[0], plotX, plotY, plotW, plotH, color)
+        default: return nil
+        }
+    }
+
+    /// The largest magnitude across every plotted value, or nil when nothing
+    /// finite was plotted. Values come out of a file, so `NaN`, infinity and
+    /// absurd magnitudes all have to survive being scaled against.
+    private func plotScale(_ series: [ChartData.Series]) -> Double? {
+        let peak = series.flatMap(\.values).compactMap { $0 }
+            .filter { $0.isFinite }
+            .map { Swift.abs($0) }
+            .max()
+        guard let peak, peak > 0, peak < 1e300 else { return nil }
+        return peak
+    }
+
+    /// A value's height in EMU, clamped into the plot. `Int(_: Double)` traps
+    /// on a non-finite or out-of-range double, and every value here came from
+    /// a file.
+    private func scaled(_ value: Double?, peak: Double, extent: Int) -> Int {
+        guard let value, value.isFinite else { return 0 }
+        let fraction = Swift.min(Swift.max(Swift.abs(value) / peak, 0), 1)
+        return Int((fraction * Double(extent)).rounded())
+    }
+
+    private func bars(_ series: [ChartData.Series], _ x: Int, _ y: Int, _ w: Int, _ h: Int,
+                      _ color: (Int) -> String) -> String? {
+        guard let peak = plotScale(series) else { return nil }
+        let categories = series.map(\.values.count).max() ?? 0
+        guard categories > 0 else { return nil }
+
+        let slot = Swift.max(1, w / categories)
+        let barW = Swift.max(1, (slot * 4 / 5) / series.count)
+        var out = ""
+        for (s, one) in series.enumerated() {
+            for (c, value) in one.values.enumerated() {
+                let height = scaled(value, peak: peak, extent: h)
+                guard height > 0 else { continue }
+                let bx = x + c * slot + slot / 10 + s * barW
+                out += box(bx, y + h - height, barW, height, fill: color(s))
+            }
+        }
+        // The baseline, so an empty-looking plot still reads as a chart.
+        return out + box(x, y + h, w, 6350, fill: "#BFBFBF")
+    }
+
+    private func lines(_ series: [ChartData.Series], _ x: Int, _ y: Int, _ w: Int, _ h: Int,
+                       _ color: (Int) -> String) -> String? {
+        guard let peak = plotScale(series) else { return nil }
+        var out = box(x, y + h, w, 6350, fill: "#BFBFBF")
+        for (s, one) in series.enumerated() {
+            let points = one.values.count
+            guard points > 1 else { continue }
+            let step = w / (points - 1)
+            let coordinates = one.values.enumerated().map { index, value in
+                "\(x + index * step),\(y + h - scaled(value, peak: peak, extent: h))"
+            }
+            out += "<polyline points=\"\(coordinates.joined(separator: " "))\" fill=\"none\" "
+                + "stroke=\"\(color(s))\" stroke-width=\"19050\"/>"
+        }
+        return out
+    }
+
+    /// Slices as SVG arcs. One series only — a pie plots categories, and a
+    /// second series would be a second pie PowerPoint does not draw either.
+    private func pie(_ series: ChartData.Series, _ x: Int, _ y: Int, _ w: Int, _ h: Int,
+                     _ color: (Int) -> String) -> String? {
+        let values = series.values.compactMap { $0 }.filter { $0.isFinite && $0 > 0 }
+        let total = values.reduce(0, +)
+        guard total > 0, total.isFinite else { return nil }
+
+        let radius = Swift.min(w, h) / 2
+        guard radius > 0 else { return nil }
+        let cx = x + w / 2, cy = y + h / 2
+        var out = ""
+        var startAngle = -Double.pi / 2      // 12 o'clock, as PowerPoint starts
+        for (index, value) in values.enumerated() {
+            let sweep = value / total * 2 * Double.pi
+            let end = startAngle + sweep
+            // A full circle cannot be expressed as one arc — its start and end
+            // points coincide, so the path degenerates to nothing.
+            if values.count == 1 {
+                out += "<circle cx=\"\(cx)\" cy=\"\(cy)\" r=\"\(radius)\" fill=\"\(color(0))\"/>"
+                break
+            }
+            let x1 = cx + Int((cos(startAngle) * Double(radius)).rounded())
+            let y1 = cy + Int((sin(startAngle) * Double(radius)).rounded())
+            let x2 = cx + Int((cos(end) * Double(radius)).rounded())
+            let y2 = cy + Int((sin(end) * Double(radius)).rounded())
+            let large = sweep > Double.pi ? 1 : 0
+            out += "<path d=\"M \(cx) \(cy) L \(x1) \(y1) A \(radius) \(radius) 0 \(large) 1 "
+                + "\(x2) \(y2) Z\" fill=\"\(color(index))\"/>"
+            startAngle = end
+        }
+        return out
     }
 
     private func renderTable(_ tbl: XML.Element, x: Int, y: Int, defs: inout String) -> String {
@@ -180,7 +453,7 @@ struct SVGRenderer {
         let isRadial = grad.firstChild(named: "a:path") != nil
         var stopSVG = ""
         for gs in stops {
-            let pos = (Double(gs[attribute: "pos"].flatMap { Int($0) } ?? 0) / 1000).rounded() / 100
+            let pos = (Double(gs.boundedInt("pos", in: 0...100_000) ?? 0) / 1000).rounded() / 100
             let color = colorHex(in: gs) ?? "#000000"
             stopSVG += "<stop offset=\"\(pos)\" stop-color=\"\(color)\"/>"
         }
@@ -194,7 +467,11 @@ struct SVGRenderer {
 
     private func colorHex(in container: XML.Element?) -> String? {
         guard let container else { return nil }
-        if let srgb = container.firstChild(named: "a:srgbClr")?[attribute: "val"] { return "#" + srgb }
+        // Validated, not interpolated raw: this string lands unescaped inside
+        // an SVG attribute, so a file-supplied `val="x&quot; onload=…"` would
+        // otherwise inject markup into the rendered output.
+        if let srgb = container.firstChild(named: "a:srgbClr")?[attribute: "val"],
+           let color = Color(validating: srgb) { return "#" + color.hex }
         if let raw = container.firstChild(named: "a:schemeClr")?[attribute: "val"],
            let scheme = SchemeColor(rawValue: raw), let color = theme.resolve(scheme) { return "#" + color.hex }
         return nil
@@ -203,7 +480,7 @@ struct SVGRenderer {
     private func strokeAttrs(_ spPr: XML.Element) -> String {
         guard let ln = spPr.firstChild(named: "a:ln"), ln.firstChild(named: "a:noFill") == nil,
               let color = colorHex(in: ln.firstChild(named: "a:solidFill")) else { return "" }
-        let width = ln[attribute: "w"].flatMap { Int($0) } ?? 12700
+        let width = ln.coordinate("w") ?? 12700
         return " stroke=\"\(color)\" stroke-width=\"\(width)\""
     }
 
@@ -215,7 +492,17 @@ struct SVGRenderer {
         return (intAttr(off, "x"), intAttr(off, "y"), intAttr(ext, "cx"), intAttr(ext, "cy"))
     }
 
-    private func intAttr(_ e: XML.Element, _ name: String) -> Int { e[attribute: name].flatMap { Int($0) } ?? 0 }
+    /// Every coordinate the renderer reads goes through here, bounded.
+    ///
+    /// The renderer then adds, subtracts and accumulates these values freely
+    /// (`x + inset`, `cx += cw`, `x + w / 2`), and Swift's `+` traps on
+    /// overflow. Bounding at the single point where file bytes become numbers
+    /// is what makes all of that arithmetic safe, rather than clamping each
+    /// expression. A coordinate outside the bound reads as 0 — this is a
+    /// preview renderer, and an absurd frame is not worth a crash.
+    private func intAttr(_ e: XML.Element, _ name: String) -> Int {
+        e.coordinate(name) ?? 0
+    }
 
     private func box(_ x: Int, _ y: Int, _ w: Int, _ h: Int, fill: String, stroke: String = "") -> String {
         "<rect x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\" fill=\"\(fill)\"\(stroke)/>"
@@ -239,7 +526,7 @@ public extension Presentation {
     /// Render one slide to a self-contained SVG string (thumbnails / visual diff).
     func renderSVG(slideAt index: Int, pixelWidth: Int = 1280) throws -> String {
         try SVGRenderer(slidePart: slides[index].part, slideSize: slideSize,
-                        theme: theme, package: package).render(pixelWidth: pixelWidth)
+                        theme: theme, package: package, fonts: fonts).render(pixelWidth: pixelWidth)
     }
 
     /// Write one `slide-N.svg` per slide into `directory`; returns the URLs.

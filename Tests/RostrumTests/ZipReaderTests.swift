@@ -333,9 +333,20 @@ import Testing
             TestEntry(name: "dup.txt", payload: second, crc: CRC32.checksum(second)),
         ])
         let reader = try ZipReader(data: archive)
-        #expect(reader.entryNames == ["dup.txt", "dup.txt"])
+        // Both records are still visible as raw central-directory data...
+        #expect(reader.centralDirectoryRecords.count == 2)
+        // ...and the reader-facing accessors agree with each other.
+        #expect(reader.allEntries.map(\.name) == reader.entryNames)
+        // ...but the name is listed ONCE, because it resolves to one entry.
+        // Listing it twice invited a caller looping over these names to decode
+        // the same entry twice — 65535 records under one name is a few hundred
+        // kilobytes of archive and tens of thousands of decompressions, which no
+        // per-entry budget can see.
+        #expect(reader.entryNames == ["dup.txt"])
         #expect(reader.contains("dup.txt"))
         #expect(try reader.data(forEntry: "dup.txt") == second)
+        // The charge matches the work: only the surviving entry is counted.
+        #expect(reader.declaredUncompressedSize == UInt64(second.count))
     }
 
     @Test func missingEntryThrows() throws {

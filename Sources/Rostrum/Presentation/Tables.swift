@@ -109,7 +109,11 @@ public final class Table {
     @discardableResult
     public func setContents(_ grid: [[String]]) -> Table {
         for (r, rowValues) in grid.enumerated() where r < rowCount {
-            for (c, value) in rowValues.enumerated() where c < columnCount { cell(r, c).text = value }
+            // Tolerant by contract, so a ragged foreign row simply has fewer
+            // cells to fill rather than being an error.
+            for (c, value) in rowValues.enumerated() where c < columnCount {
+                if let cell = try? cell(r, c) { cell.text = value }
+            }
         }
         return self
     }
@@ -131,9 +135,12 @@ public final class Table {
     /// heights, so the table never over/under-flows its frame.
     private func syncFrameExtent() {
         guard let ext = graphicFrame?.firstChild(named: "p:xfrm")?.firstChild(named: "a:ext") else { return }
+        // Bounded: these are file-supplied on an opened deck, and a running
+        // Int sum over unbounded widths overflows — which is a crash, not an
+        // error the caller can handle.
         let cx = (tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol") ?? [])
-            .reduce(0) { $0 + (Int($1[attribute: "w"] ?? "0") ?? 0) }
-        let cy = rows.reduce(0) { $0 + (Int($1[attribute: "h"] ?? "0") ?? 0) }
+            .reduce(0) { $0 + ($1.coordinate("w") ?? 0) }
+        let cy = rows.reduce(0) { $0 + ($1.coordinate("h") ?? 0) }
         if cx > 0 { ext[attribute: "cx"] = String(cx) }
         if cy > 0 { ext[attribute: "cy"] = String(cy) }
     }
@@ -156,10 +163,24 @@ public final class Table {
         tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol").count ?? 0
     }
 
-    public func cell(_ row: Int, _ column: Int) -> TableCell {
-        precondition(rows.indices.contains(row), "row \(row) out of range")
+    /// The cell at `row`, `column`.
+    ///
+    /// Throws rather than trapping, because the indices a caller iterates
+    /// (`0..<rowCount`, `0..<columnCount`) come from the file: `columnCount`
+    /// reports what `a:tblGrid` declares, and a **ragged** table written
+    /// elsewhere can have a row with fewer `a:tc` than that. Reading a foreign
+    /// deck must never abort the host process, so this follows the same rule
+    /// as `Slides.subscript`.
+    public func cell(_ row: Int, _ column: Int) throws -> TableCell {
+        guard rows.indices.contains(row) else {
+            throw RostrumError.packageInvalid("table row \(row) out of range 0..<\(rows.count)")
+        }
         let cells = rows[row].children(named: "a:tc")
-        precondition(cells.indices.contains(column), "column \(column) out of range")
+        guard cells.indices.contains(column) else {
+            throw RostrumError.packageInvalid(
+                "table row \(row) has \(cells.count) cells; column \(column) is out of range "
+                    + "(the grid declares \(columnCount))")
+        }
         return TableCell(tc: cells[column], part: part)
     }
 
@@ -196,21 +217,29 @@ public final class Table {
 
     /// Merge a rectangular region. The origin cell absorbs the span; covered
     /// cells become merge continuations (their text is discarded).
-    public func merge(row: Int, column: Int, rowSpan: Int, columnSpan: Int) {
+    ///
+    /// - Throws: if any cell in the region is missing — which a ragged foreign
+    ///   table can be. Every cell is resolved *before* the first one is
+    ///   modified, so a region that cannot be merged leaves the table exactly
+    ///   as it was rather than half-merged with text already destroyed.
+    public func merge(row: Int, column: Int, rowSpan: Int, columnSpan: Int) throws {
         precondition(rowSpan >= 1 && columnSpan >= 1)
+        var resolved: [(row: Int, column: Int, tc: XML.Element)] = []
         for r in row..<(row + rowSpan) {
             for c in column..<(column + columnSpan) {
-                let tc = cell(r, c).tc
-                if r == row && c == column {
-                    tc[attribute: "gridSpan"] = columnSpan > 1 ? String(columnSpan) : nil
-                    tc[attribute: "rowSpan"] = rowSpan > 1 ? String(rowSpan) : nil
-                } else {
-                    if c > column { tc[attribute: "hMerge"] = "1" }
-                    if r > row { tc[attribute: "vMerge"] = "1" }
-                    if let txBody = tc.firstChild(named: "a:txBody") {
-                        txBody.removeChildren(named: "a:p")
-                        txBody.appendElement(XML.Element("a:p"))
-                    }
+                resolved.append((r, c, try cell(r, c).tc))
+            }
+        }
+        for (r, c, tc) in resolved {
+            if r == row && c == column {
+                tc[attribute: "gridSpan"] = columnSpan > 1 ? String(columnSpan) : nil
+                tc[attribute: "rowSpan"] = rowSpan > 1 ? String(rowSpan) : nil
+            } else {
+                if c > column { tc[attribute: "hMerge"] = "1" }
+                if r > row { tc[attribute: "vMerge"] = "1" }
+                if let txBody = tc.firstChild(named: "a:txBody") {
+                    txBody.removeChildren(named: "a:p")
+                    txBody.appendElement(XML.Element("a:p"))
                 }
             }
         }
@@ -228,12 +257,21 @@ public final class TableCell {
         self.part = part
     }
 
+    /// The cell's text body, created if absent. Writing accessor: use
+    /// `existingTextFrame` (or `text`) to read without touching the DOM.
     public var textFrame: TextFrame {
         TextFrame(txBody: tc.getOrAddChild("a:txBody", beforeAnyOf: ["a:tcPr"]), part: part)
     }
 
+    /// The cell's text body if it has one — a pure read. `a:txBody` is
+    /// optional in `CT_TableCell`, and reading a foreign deck's table must
+    /// not invent one.
+    public var existingTextFrame: TextFrame? {
+        tc.firstChild(named: "a:txBody").map { TextFrame(txBody: $0, part: part) }
+    }
+
     public var text: String {
-        get { textFrame.text }
+        get { existingTextFrame?.text ?? "" }
         set {
             textFrame.text = newValue
             part.markDirty()

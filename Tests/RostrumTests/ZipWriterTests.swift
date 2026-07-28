@@ -34,20 +34,20 @@ struct ZipWriterTests {
     /// - "ppt/media/image1.bin": nested path, ~100KB seeded pseudorandom bytes
     /// STORED-only archive, for deterministically testing header layout
     /// independent of whether a payload happens to compress.
-    private static func makeStoredArchive() -> Data {
+    private static func makeStoredArchive() throws -> Data {
         var writer = ZipWriter()
         writer.addFile(name: "[Content_Types].xml", data: smallText, compress: false)
         writer.addFile(name: "ppt/slides/slide1.xml", data: Data(), compress: false)
         writer.addFile(name: "ppt/media/image1.bin", data: blob, compress: false)
-        return writer.finalize()
+        return try writer.finalize()
     }
 
-    private static func makeArchive() -> Data {
+    private static func makeArchive() throws -> Data {
         var writer = ZipWriter()
         writer.addFile(name: "[Content_Types].xml", data: smallText)
         writer.addFile(name: "ppt/slides/slide1.xml", data: Data())
         writer.addFile(name: "ppt/media/image1.bin", data: blob)
-        return writer.finalize()
+        return try writer.finalize()
     }
 
     private static func writeTempArchive(_ archive: Data) throws -> URL {
@@ -75,17 +75,17 @@ struct ZipWriterTests {
     // MARK: - Determinism
 
     @Test("Same inputs produce byte-identical archives")
-    func deterministicOutput() {
-        let first = Self.makeArchive()
-        let second = Self.makeArchive()
+    func deterministicOutput() throws {
+        let first = try Self.makeArchive()
+        let second = try Self.makeArchive()
         #expect(!first.isEmpty)
         #expect(first == second)
     }
 
     @Test("Empty writer emits just a valid EOCD record")
-    func emptyArchive() {
+    func emptyArchive() throws {
         let writer = ZipWriter()
-        let archive = writer.finalize()
+        let archive = try writer.finalize()
         #expect(archive.count == 22)
         #expect(Array(archive.prefix(4)) == [0x50, 0x4B, 0x05, 0x06])
         // Every remaining field (counts, sizes, offsets, comment length) is zero.
@@ -95,8 +95,8 @@ struct ZipWriterTests {
     // MARK: - Structure
 
     @Test("Archive layout: local header signature, EOCD fields, central directory")
-    func structuralFields() {
-        let archive = Self.makeStoredArchive()
+    func structuralFields() throws {
+        let archive = try Self.makeStoredArchive()
 
         // Starts with a local file header signature PK\x03\x04.
         #expect(Array(archive.prefix(4)) == [0x50, 0x4B, 0x03, 0x04])
@@ -144,6 +144,89 @@ struct ZipWriterTests {
         #expect(le16(cd, 28) == UInt16("[Content_Types].xml".utf8.count))
         #expect(le16(cd, 30) == 0)  // extra length
         #expect(le32(cd, 42) == 0)  // first local header offset
+    }
+
+    // MARK: - 32-bit ceilings
+
+    @Test("Archive-wide ceilings are reported at their boundary, not one past it")
+    func archiveOverflowBoundaries() {
+        let ceiling: UInt64 = 0xFFFF_FFFF
+
+        // `addFile` bounds where an entry *starts*; nothing there can see where
+        // the archive ends. Two entries under the per-entry size limit can end
+        // past the offset field, which is the case that used to trap in
+        // `UInt32(out.count)` rather than throw.
+        // Inclusive: 0xFFFFFFFF is the zip64 SENTINEL for these two fields, not
+        // a usable value. Writing it literally would point a conformant reader
+        // at a zip64 record this writer never emits.
+        #expect(ZipWriter.archiveOverflow(entriesEnd: ceiling - 1, centralDirectorySize: 0) == nil)
+        #expect(ZipWriter.archiveOverflow(entriesEnd: ceiling, centralDirectorySize: 0) != nil)
+
+        #expect(ZipWriter.archiveOverflow(entriesEnd: 0, centralDirectorySize: ceiling - 1) == nil)
+        #expect(ZipWriter.archiveOverflow(entriesEnd: 0, centralDirectorySize: ceiling) != nil)
+
+        // The entries-end message must be the one reported when both overflow,
+        // since that is the first field the writer would have to fill.
+        let both = ZipWriter.archiveOverflow(
+            entriesEnd: ceiling + 1, centralDirectorySize: ceiling + 1)
+        #expect(both?.contains("entries end") == true)
+    }
+
+    @Test("The central-directory size finalize() projects is the size it writes")
+    func projectedCentralDirectorySizeMatches() throws {
+        // finalize() bounds a PROJECTED central-directory size (46 bytes plus
+        // the name, per entry) and hands it to bytes(), which writes it into the
+        // EOCD verbatim. So reading that field back and comparing it to the same
+        // formula proves nothing — both sides would be the projection.
+        //
+        // Measure the emitted central directory instead: it runs from the offset
+        // the EOCD records to the start of the EOCD itself. If the projection
+        // ever drifts from the layout bytes() actually emits, the guard bounds a
+        // number the archive does not have, and this is what notices.
+        let archive = try Self.makeStoredArchive()
+        let eocd = Data(archive.suffix(22))
+        func le32(_ data: Data, _ offset: Int) -> UInt32 {
+            let base = data.startIndex + offset
+            return UInt32(data[base])
+                | (UInt32(data[base + 1]) << 8)
+                | (UInt32(data[base + 2]) << 16)
+                | (UInt32(data[base + 3]) << 24)
+        }
+        let recordedSize = Int(le32(eocd, 12))
+        let recordedOffset = Int(le32(eocd, 16))
+
+        // Establish the two anchors BEFORE doing arithmetic with them, so a
+        // drift fails the test instead of trapping on a bad slice — and so
+        // "22 bytes from the end" is a verified fact about this archive rather
+        // than a second projection subtracted from the first.
+        try #require(recordedOffset >= 0 && recordedOffset + 4 <= archive.count - 22)
+        let eocdStart = archive.startIndex + archive.count - 22
+        #expect(Array(archive[eocdStart..<(eocdStart + 4)]) == [0x50, 0x4B, 0x05, 0x06])
+        let start = archive.startIndex + recordedOffset
+        #expect(Array(archive[start..<(start + 4)]) == [0x50, 0x4B, 0x01, 0x02])
+
+        // The measured size: everything between the central directory's start
+        // and the EOCD that terminates the file.
+        let measuredSize = archive.count - 22 - recordedOffset
+        #expect(recordedSize == measuredSize)
+        #expect(recordedOffset > 0 && measuredSize > 0)
+
+        // Walking the central headers must land exactly on the EOCD, which
+        // catches a per-record size drift that the total could mask.
+        var offset = recordedOffset
+        for _ in 0..<3 {
+            // Bounds-check before indexing. A drift in the layout is exactly
+            // what this walk exists to catch, and an out-of-range subscript
+            // would trap — aborting the whole test process instead of failing
+            // this one test, which is the opposite of catching it.
+            try #require(offset + 46 <= archive.count)
+            #expect(Array(archive[(archive.startIndex + offset)..<(archive.startIndex + offset + 4)])
+                == [0x50, 0x4B, 0x01, 0x02])
+            let nameLength = Int(archive[archive.startIndex + offset + 28])
+                | (Int(archive[archive.startIndex + offset + 29]) << 8)
+            offset += 46 + nameLength
+        }
+        #expect(offset == archive.count - 22)
     }
 
     // MARK: - External oracle (/usr/bin/unzip)

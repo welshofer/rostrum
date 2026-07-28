@@ -19,13 +19,53 @@ public struct Relationship: Sendable, Equatable {
 public final class Relationships {
     public private(set) var items: [Relationship]
 
+    /// The bytes this collection was parsed from, and the items they encoded.
+    /// An untouched `.rels` part re-emits verbatim — the same pristine-blob
+    /// guarantee `Part` gives content parts, since relationship parts are
+    /// parts too and a foreign package writes them with its own attribute
+    /// order, spacing and declaration.
+    ///
+    /// Comparing items rather than latching a dirty flag means a change that
+    /// is later undone (add a relationship, remove it again) still re-emits
+    /// the original bytes.
+    private var pristine: Data?
+    private var pristineItems: [Relationship]?
+
     static let namespace = "http://schemas.openxmlformats.org/package/2006/relationships"
 
     public init() {
         items = []
     }
 
+    /// Take on a parsed collection wholesale — its items **and** the bytes
+    /// they came from. The package reader uses this; `setItems` deliberately
+    /// does not, because its caller (slide duplication) copies items onto a
+    /// different part, whose `.rels` must be written fresh.
+    func adopt(_ parsed: Relationships) {
+        items = parsed.items
+        pristine = parsed.pristine
+        pristineItems = parsed.pristineItems
+    }
+
     public var isEmpty: Bool { items.isEmpty }
+
+    /// Should `serialize()` write a `.rels` entry for this collection?
+    ///
+    /// The one definition of that question. It was spelled out at four sites —
+    /// two deciding what to write and two deciding which carried entries would
+    /// collide with it — and those four had to agree exactly or a carried entry
+    /// gets wrongly kept (two members, one name) or wrongly dropped (silent
+    /// loss). Four copies of a rule is how every previous defect in this area
+    /// started; one definition cannot drift.
+    var isWritten: Bool { !isEmpty || arrivedAsFile }
+
+    /// Did this collection come from a `.rels` part that was in the file?
+    ///
+    /// Distinct from `!isEmpty`: a `<Relationships/>` with no children is legal
+    /// OPC and several producers emit it. Writing is gated on this rather than
+    /// on emptiness, so an arrived-empty stream is re-emitted while a freshly
+    /// created part with no relationships still gets no `.rels` entry.
+    var arrivedAsFile: Bool { pristine != nil }
 
     public func relationship(withId rId: String) -> Relationship? {
         items.first { $0.rId == rId }
@@ -81,11 +121,20 @@ public final class Relationships {
             let external = child[attribute: "TargetMode"] == "External"
             rels.items.append(Relationship(rId: rId, type: type, target: target, isExternal: external))
         }
+        rels.pristine = data
+        rels.pristineItems = rels.items
         return rels
     }
 
-    /// Serialized in insertion order (stable, and matches how Office writes them).
+    /// The original bytes when the relationships still match what was parsed;
+    /// otherwise serialized in insertion order (stable, and matches how
+    /// Office writes them).
     public func serialized() -> Data {
+        if let pristine, let pristineItems, items == pristineItems { return pristine }
+        return rebuilt()
+    }
+
+    private func rebuilt() -> Data {
         let root = XML.Element("Relationships", attributes: [("xmlns", Self.namespace)])
         for rel in items {
             var attrs = [("Id", rel.rId), ("Type", rel.type), ("Target", rel.target)]

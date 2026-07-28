@@ -25,13 +25,12 @@ public final class Slides: Sequence {
         (try? sldIdLst())?.childElements.count ?? 0
     }
 
-    /// The slide at `index`. Traps on out-of-range (like Array); use
-    /// `slide(at:)` for a throwing variant.
+    /// The slide at `index`. Throws on out-of-range and on malformed decks
+    /// (a `sldId` whose relationship or part cannot be resolved) — opening
+    /// untrusted files must never abort the host process.
     public subscript(index: Int) -> Slide {
-        do {
-            return try slide(at: index)
-        } catch {
-            preconditionFailure("Slides[\(index)]: \(error)")
+        get throws {
+            try slide(at: index)
         }
     }
 
@@ -48,12 +47,18 @@ public final class Slides: Sequence {
         return Slide(part: try package.part(at: uri), package: package)
     }
 
+    /// Iterates the resolvable slides. Entries whose relationship or part is
+    /// missing are skipped — `for`-`in` cannot throw, and a malformed deck
+    /// must never abort the host process. Use `slide(at:)` to surface the
+    /// underlying error for a specific index.
     public func makeIterator() -> AnyIterator<Slide> {
         var index = 0
         return AnyIterator {
-            guard index < self.count else { return nil }
-            defer { index += 1 }
-            return self[index]
+            while index < self.count {
+                defer { index += 1 }
+                if let slide = try? self.slide(at: index) { return slide }
+            }
+            return nil
         }
     }
 
@@ -75,7 +80,7 @@ public final class Slides: Sequence {
             target: presentationPart.uri.relativeReference(to: uri))
 
         let entry = XML.Element("p:sldId", attributes: [
-            ("id", String(nextSlideID())), ("r:id", rId),
+            ("id", String(try nextSlideID())), ("r:id", rId),
         ])
         try sldIdLst().appendElement(entry)
         presentationPart.markDirty()
@@ -133,7 +138,7 @@ public final class Slides: Sequence {
             type: RelType.slide,
             target: presentationPart.uri.relativeReference(to: uri))
         let entry = XML.Element("p:sldId", attributes: [
-            ("id", String(nextSlideID())), ("r:id", rId),
+            ("id", String(try nextSlideID())), ("r:id", rId),
         ])
         let list = try sldIdLst()
         var entries = list.childElements
@@ -152,9 +157,16 @@ public final class Slides: Sequence {
     }
 
     /// sldId values live in 256..<2147483648.
-    private func nextSlideID() -> Int {
-        let used = (try? sldIdLst())?.childElements.compactMap { $0[attribute: "id"].flatMap { Int($0) } } ?? []
-        return Swift.max(255, used.max() ?? 255) + 1
+    private func nextSlideID() throws -> Int {
+        // Bounded: an id of Int.max parses fine and then overflows the +1.
+        let used = (try? sldIdLst())?.childElements
+            .compactMap { $0.boundedInt("id", in: OOXMLBounds.slideID) } ?? []
+        let highest = Swift.max(255, used.max() ?? 255)
+        guard highest < OOXMLBounds.slideID.upperBound else {
+            throw RostrumError.packageInvalid(
+                "slide ids reach the format's maximum; there is no id left to assign")
+        }
+        return highest + 1
     }
 
     private func firstLayoutPart() throws -> Part {

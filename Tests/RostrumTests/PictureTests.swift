@@ -78,7 +78,7 @@ private enum Fixture {
         let embed = pic.firstChild(named: "p:blipFill")?
             .firstChild(named: "a:blip")?[attribute: "r:embed"]
         #expect(embed != nil)
-        #expect(reopened.slides[0].part.rels.relationship(withId: embed!)?.type == RelType.image)
+        #expect(try reopened.slides[0].part.rels.relationship(withId: embed!)?.type == RelType.image)
     }
 
     @Test func identicalBytesDeduplicate() throws {

@@ -16,6 +16,15 @@ public enum RostrumError: Error, Equatable, CustomStringConvertible {
     case notAPresentation(String)
     /// A font's embedding permission (OS/2 fsType) forbids embedding it.
     case fontEmbeddingRestricted(String)
+    /// A font file could not be parsed (truncated table, bad offset, unsupported cmap, …).
+    case fontCorrupt(String)
+    /// The entries a name resolves to declare more uncompressed bytes in total
+    /// than the caller's `ZipReader.Limits` allows. Shadowed records are not
+    /// counted: they can never be fetched, so they cost nothing. Distinct from `zipUnsupported` because this is
+    /// the caller's own policy firing, not a capability Rostrum lacks: it is the
+    /// one error here that retrying with a higher ceiling can resolve, and both
+    /// numbers are carried so that decision can be made without parsing prose.
+    case readBudgetExceeded(declared: UInt64, limit: Int)
 
     public var description: String {
         switch self {
@@ -27,6 +36,10 @@ public enum RostrumError: Error, Equatable, CustomStringConvertible {
         case .partMissing(let m): return "missing package part: \(m)"
         case .notAPresentation(let m): return "not a PresentationML package: \(m)"
         case .fontEmbeddingRestricted(let m): return "font embedding is license-restricted: \(m)"
+        case .fontCorrupt(let m): return "corrupt font file: \(m)"
+        case .readBudgetExceeded(let declared, let limit):
+            return "the archive's readable entries declare \(declared) uncompressed bytes, "
+                + "over the \(limit)-byte read budget"
         }
     }
 }

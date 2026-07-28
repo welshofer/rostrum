@@ -16,7 +16,9 @@ that read and write through to the DOM via a generated schema stratum.
 - **Lossless round-trip becomes structural, not aspirational.** A part that
   was never touched is re-emitted from its pristine bytes. Open-then-save with
   no edits must produce byte-identical zip entries — a mechanical CI gate with
-  zero judgment calls.
+  zero judgment calls, and with no exceptions: `.rels` parts and
+  `[Content_Types].xml` keep their original bytes too, and rebuild only when
+  a relationship or content-type actually changes.
 - **The serializer's blast radius is only what the user edited.** "PowerPoint
   wants to repair this file" bugs come from re-serializing parts you didn't
   need to touch. (python-pptx re-serializes every part on save — a perfectly

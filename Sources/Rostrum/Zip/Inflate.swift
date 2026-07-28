@@ -81,7 +81,12 @@ private struct InflateDecoder {
         self.input = input
         self.expectedOutputSize = expectedOutputSize
         if let size = expectedOutputSize, size > 0 {
-            output.reserveCapacity(size)
+            // The declared size comes straight from the archive being read —
+            // attacker-controlled for untrusted files — so cap the up-front
+            // reservation: a few-hundred-byte crafted zip must not force a
+            // multi-gigabyte allocation. Larger honest outputs grow amortized,
+            // and `reserveOutput` still rejects overruns of the declared size.
+            output.reserveCapacity(Swift.min(size, 1 << 20))
         }
     }
 
@@ -123,8 +128,22 @@ private struct InflateDecoder {
 
     // MARK: - Output
 
-    mutating func checkOutputBound() throws {
-        if let expected = expectedOutputSize, output.count > expected {
+    /// Reject a write that WOULD pass the declared size, before making it.
+    ///
+    /// Checking after the append leaves the decoder holding up to 65535 bytes
+    /// (a stored block) or 258 bytes (a match copy) it has already been told it
+    /// may not produce. The overshoot is small and one entry at a time, but the
+    /// read budget's contract says an entry cannot produce more than it
+    /// declared, and a bound that is only observed after the fact does not say
+    /// that.
+    ///
+    /// `count` is bounded, not trusted: on the stored-block path it IS a file
+    /// field, but a 16-bit one (`len` <= 65535), and on the match path it is a
+    /// table lookup <= 258. `output.count` is bounded by what has already been
+    /// appended. So the sum cannot overflow — but the reason is the widths, not
+    /// the provenance.
+    mutating func reserveOutput(_ count: Int) throws {
+        if let expected = expectedOutputSize, output.count + count > expected {
             throw RostrumError.deflateCorrupt(
                 "output exceeds expected size \(expected)")
         }
@@ -168,9 +187,9 @@ private struct InflateDecoder {
         guard pos + len <= input.count else {
             throw RostrumError.deflateCorrupt("truncated stored block data")
         }
+        try reserveOutput(len)
         output.append(contentsOf: input[pos..<pos + len])
         pos += len
-        try checkOutputBound()
     }
 
     /// Read the dynamic-block header and build its two Huffman tables (RFC 1951 §3.2.7).
@@ -274,8 +293,8 @@ private struct InflateDecoder {
         while true {
             let sym = try decode(literals)
             if sym < 256 {
+                try reserveOutput(1)
                 output.append(UInt8(sym))
-                try checkOutputBound()
             } else if sym == 256 {
                 return
             } else {
@@ -294,12 +313,12 @@ private struct InflateDecoder {
                     throw RostrumError.deflateCorrupt(
                         "distance \(distance) reaches before the start of output (\(output.count) bytes so far)")
                 }
+                try reserveOutput(length)
                 var src = output.count - distance
                 for _ in 0..<length {
                     output.append(output[src])
                     src += 1
                 }
-                try checkOutputBound()
             }
         }
     }

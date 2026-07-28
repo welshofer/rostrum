@@ -8,6 +8,8 @@ import Foundation
 
 public extension Table {
     /// Style row 0 as a brand header: primary fill with auto-contrast text.
+    /// Tolerant by contract: a cell `a:tblGrid` declares but the row does not
+    /// have — which a table written elsewhere can be — is skipped, not an error.
     @discardableResult
     func header(style: DeckStyle, fill: Color? = nil, textColor: Color? = nil,
                 role: TypeRole = .heading, align: TextAlignment = .left,
@@ -17,14 +19,18 @@ public extension Table {
         let bg = fill ?? style.primary
         var ts = style.type(role)
         ts.color = textColor ?? style.textColor(on: bg)
+        // Bulk styling is tolerant of a ragged foreign row: a cell the grid
+        // declares but the row does not have is skipped, not an error.
         for c in 0..<columnCount {
-            cell(0, c).setFill(bg).verticalAnchorAndStyle(ts, align: align, anchor: anchor)
+            guard let cell = try? cell(0, c) else { continue }
+            cell.setFill(bg).verticalAnchorAndStyle(ts, align: align, anchor: anchor)
         }
         return self
     }
 
     /// Alternate body-row fills (banded), auto-contrasting text per row, with an
-    /// optional brand header row.
+    /// optional brand header row. Skips cells a ragged row does not have, as
+    /// `header` does.
     @discardableResult
     func styleBanded(style: DeckStyle, header: Bool = true, band1: Color? = nil, band2: Color? = nil,
                      role: TypeRole = .body, align: TextAlignment = .left,
@@ -33,32 +39,36 @@ public extension Table {
         if header { self.header(style: style, align: align, anchor: anchor) }
         let b1 = band1 ?? style.surface
         let b2 = band2 ?? style.primary.mixed(with: style.surface, amount: 0.90)
+        // A zero-row table would make this 1..<0, which is not an empty range
+        // but a trap — Range requires lowerBound <= upperBound.
         let start = header ? 1 : 0
         var band = 0
-        for r in start..<rowCount {
+        for r in start..<Swift.max(start, rowCount) {
             let rowFill = band % 2 == 0 ? b1 : b2
             var ts = style.type(role)
             ts.color = style.textColor(on: rowFill)
             for c in 0..<columnCount {
-                cell(r, c).setFill(rowFill).verticalAnchorAndStyle(ts, align: align, anchor: anchor)
+                guard let cell = try? cell(r, c) else { continue }
+                cell.setFill(rowFill).verticalAnchorAndStyle(ts, align: align, anchor: anchor)
             }
             band += 1
         }
         return self
     }
 
-    /// Uniform cell padding on every cell.
+    /// Uniform cell padding on every cell a row actually has.
     @discardableResult
     func cellPadding(_ inset: EMU) -> Table {
         cellPadding(left: inset, top: inset, right: inset, bottom: inset)
     }
 
-    /// Per-edge cell padding on every cell.
+    /// Per-edge cell padding on every cell a row actually has.
     @discardableResult
     func cellPadding(left: EMU, top: EMU, right: EMU, bottom: EMU) -> Table {
         for r in 0..<rowCount {
             for c in 0..<columnCount {
-                cell(r, c).setPadding(left: left, top: top, right: right, bottom: bottom)
+                guard let cell = try? cell(r, c) else { continue }
+                cell.setPadding(left: left, top: top, right: right, bottom: bottom)
             }
         }
         return self

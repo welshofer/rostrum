@@ -188,7 +188,7 @@ while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
     let all = [headers] + rows
     for (ri, row) in all.enumerated() {
         for (ci, value) in row.enumerated() {
-            let cell = t.cell(ri, ci)
+            let cell = try t.cell(ri, ci)
             cell.verticalAnchor = .middle
             if ri == 0 { try cell.setFill(.solid(headerBg)) }
             else if ri % 2 == 0 { try cell.setFill(.solid(C.cream)) }

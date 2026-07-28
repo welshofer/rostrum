@@ -23,7 +23,7 @@ import Testing
         let rId = frame.firstChild(named: "a:graphic")!
             .firstChild(named: "a:graphicData")!
             .firstChild(named: "c:chart")![attribute: "r:id"]!
-        #expect(reopened.slides[0].part.rels.relationship(withId: rId)?.type == RelType.chart)
+        #expect(try reopened.slides[0].part.rels.relationship(withId: rId)?.type == RelType.chart)
 
         // Chart-part rel scope: rId1 → the workbook.
         #expect(chartPart.rels.relationship(withId: "rId1")?.type == RelType.package)
@@ -70,7 +70,7 @@ import Testing
     }
 
     @Test func embeddedWorkbookIsValidZipWithExpectedCells() throws {
-        let workbook = ChartWorkbook.make(data: sample)
+        let workbook = try ChartWorkbook.make(data: sample)
         let zip = try ZipReader(data: workbook)
         #expect(zip.contains("xl/workbook.xml") && zip.contains("xl/worksheets/sheet1.xml")
                 && zip.contains("[Content_Types].xml") && zip.contains("xl/sharedStrings.xml"))

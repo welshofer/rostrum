@@ -41,6 +41,482 @@ import Testing
         }
     }
 
+    /// Rebuild a deck with one entry's bytes replaced — for malformations that
+    /// are structural rather than random, and so cannot be reached by flipping
+    /// bits.
+    private func deck(_ valid: Data, replacing entry: String,
+                      _ transform: (String) -> String) throws -> Data {
+        let reader = try ZipReader(data: valid)
+        var writer = ZipWriter()
+        for name in reader.entryNames {
+            var bytes = try reader.data(forEntry: name)
+            if name == entry {
+                let text = try #require(String(data: bytes, encoding: .utf8))
+                bytes = Data(transform(text).utf8)
+            }
+            writer.addFile(name: name, data: bytes)
+        }
+        return try writer.finalize()
+    }
+
+    @Test func aRelativePartNameThrowsRatherThanAbortingTheProcess() throws {
+        // OPC requires an <Override> PartName to be absolute. A file that omits
+        // the leading slash reached PackURI's precondition, which aborts the
+        // host process — a caller cannot catch that, and the bytes came from
+        // whoever sent the file.
+        let bad = try deck(try validDeckBytes(), replacing: "[Content_Types].xml") {
+            $0.replacingOccurrences(of: "PartName=\"/", with: "PartName=\"")
+        }
+        #expect(throws: RostrumError.self) { _ = try Presentation(data: bad) }
+        // The layer below must throw too — Presentation delegates to it, but
+        // OPCPackage is public API a caller can reach on its own.
+        #expect(throws: RostrumError.self) { _ = try OPCPackage.read(data: bad) }
+    }
+
+    @Test func aBadColorValueReadsAsNoColorRatherThanAborting() throws {
+        // Third-party writers really do emit 3-digit shorthand, 8-digit ARGB
+        // and bare names. Color's initializer preconditions on six hex digits,
+        // so every read-side accessor that parsed a:srgbClr@val straight from
+        // the file used to abort the process.
+        let box = Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1))
+        for value in ["red", "", "FFF", "80FF0000", "ff0000 ", "GGGGGG"] {
+            let deck = try Presentation()
+            // Every distinct colour-parsing path in one deck, because each
+            // reads a:srgbClr separately: a solid fill, an outline (ReadLine,
+            // which the first sweep missed), a gradient stop, a text run, and
+            // the slide background.
+            try deck.slides[0].shapes.addShape(.rectangle, frame: box,
+                                               fill: .solid(Color("FF0000")),
+                                               line: Line(color: Color("00FF00")))
+            try deck.slides[0].shapes.addShape(
+                .ellipse, frame: box,
+                fill: .gradient(GradientFill(from: Color("112233"), to: Color("445566"))))
+            let textBox = try deck.slides[0].shapes.addTextBox(box)
+            let paragraph = try #require(textBox.textFrame?.paragraphs.first)
+            paragraph.addRun("tinted").color = Color("778899")
+            try deck.slides[0].setBackground(.solid(Color("ABCDEF")))
+            let dom = try deck.slides[0].part.dom()
+            for srgb in Self.descendants(of: dom, named: "a:srgbClr") {
+                srgb[attribute: "val"] = value
+            }
+            try deck.slides[0].part.markDirty()
+            // The theme is read the same way and traps on the same values —
+            // through a:sysClr@lastClr as well as a:srgbClr@val, which is a
+            // separate branch of Theme.color.
+            let theme = try deck.theme.part.dom()
+            for srgb in Self.descendants(of: theme, named: "a:srgbClr") {
+                srgb[attribute: "val"] = value
+            }
+            for sysClr in Self.descendants(of: theme, named: "a:sysClr") {
+                sysClr[attribute: "lastClr"] = value
+            }
+            deck.theme.part.markDirty()
+
+            let reopened = try Presentation(data: try deck.serializedData())
+            let read = try #require(reopened.slides[0].shapes.all.first)
+            // Each of these used to abort the process; returning at all is the
+            // assertion, and a malformed value must read as "no color".
+            // An unreadable color is still a fill — reporting "no fill" would
+            // claim the shape inherits, which it does not.
+            #expect(read.fill == .unmodeled(elementName: "a:srgbClr"))
+            // The outline is still there — only its unreadable color is gone.
+            let line = try #require(read.line)
+            #expect(line.color == nil)
+            #expect(line.width != nil)
+
+            let shapes = try reopened.slides[0].shapes.all
+            // The gradient's stops are unreadable, so the fill reports no stops
+            // rather than trapping on the first one.
+            #expect(shapes.compactMap(\.fill).contains { fill in
+                if case .gradient(let stops) = fill { return stops.isEmpty }
+                return false
+            }, "the gradient stop colours must drop out, not abort")
+            // A run's colour, the slide background, and both theme branches.
+            for shape in shapes {
+                for paragraph in shape.textFrame?.paragraphs ?? [] {
+                    for run in paragraph.runs { #expect(run.color == nil) }
+                }
+            }
+            #expect(try reopened.slides[0].background == .unmodeled(elementName: "a:srgbClr"))
+            #expect(reopened.theme.color(.accent1) == nil)
+            #expect(reopened.theme.color(.dk1) == nil)
+        }
+    }
+
+    /// Every descendant element with the given name, in document order.
+    private static func descendants(of element: XML.Element, named name: String) -> [XML.Element] {
+        var out: [XML.Element] = []
+        if element.name == name { out.append(element) }
+        for child in element.childElements { out += descendants(of: child, named: name) }
+        return out
+    }
+
+    @Test func aHostilePointIndexDoesNotOverflow() throws {
+        // `<c:pt idx="9223372036854775807"/>` parses as a valid Int, and the
+        // cache sizing then computed idx + 1.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addChart(
+            .barClustered, data: ChartData(categories: ["A"], name: "S", values: [1]),
+            frame: Rect(x: .zero, y: .zero, width: .inches(4), height: .inches(3)))
+        let chart = try #require(deck.charts.first)
+        let dom = try chart.part.dom()
+        let caches = Self.descendants(of: dom, named: "c:numCache")
+            + Self.descendants(of: dom, named: "c:strCache")
+        for cache in caches {
+            cache.removeChildren(named: "c:ptCount")
+            for pt in cache.children(named: "c:pt") {
+                pt[attribute: "idx"] = String(Int.max)
+            }
+        }
+        chart.part.markDirty()
+        // Reading must return something (possibly empty), never trap.
+        _ = chart.series
+        _ = chart.categories
+        _ = chart.data
+    }
+
+    /// Plant a `p:cNvPr` carrying `id` on the deck's first slide.
+    private func plantShapeID(_ deck: Presentation, _ id: String) throws {
+        let spTree = try Slide.spTree(of: deck.slides[0].part)
+        let sp = XML.Element("p:sp")
+        let nv = XML.Element("p:nvSpPr")
+        nv.appendElement(XML.Element("p:cNvPr", attributes: [("id", id), ("name", "Hostile")]))
+        sp.appendElement(nv)
+        spTree.appendElement(sp)
+        try deck.slides[0].part.markDirty()
+    }
+
+    private var unitBox: Rect {
+        Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1))
+    }
+
+    @Test func anOutOfRangeShapeIDIsIgnoredNotClamped() throws {
+        // `maxID + 1` on Int.max is a crash. Clamping the id to the ceiling
+        // instead would be its own bug: one hostile id would pin maxID at the
+        // maximum and refuse every future shape on the slide.
+        let deck = try Presentation()
+        try plantShapeID(deck, String(Int.max))
+        let shape = try deck.slides[0].shapes.addShape(
+            .rectangle, frame: unitBox, fill: .solid(Color("FF0000")))
+        let id = try #require(shape.element.firstChild(named: "p:nvSpPr")?
+            .firstChild(named: "p:cNvPr")?[attribute: "id"])
+        #expect(Int(id) != nil && Int(id)! < Slide.maxShapeID,
+                "the out-of-range id must be ignored, leaving a small next id")
+    }
+
+    @Test func aShapeIDAtTheFormatsCeilingThrows() throws {
+        // A legitimately-valid id at the top of ST_DrawingElementId genuinely
+        // leaves nothing to allocate, and that is an error, not a crash.
+        let deck = try Presentation()
+        try plantShapeID(deck, String(Slide.maxShapeID))
+        #expect(throws: RostrumError.self) {
+            _ = try deck.slides[0].shapes.addShape(
+                .rectangle, frame: unitBox, fill: .solid(Color("FF0000")))
+        }
+    }
+
+    @Test func aHostileSlideIDDoesNotOverflowWhenAddingASlide() throws {
+        // The exact twin of the shape-id overflow, on p:sldId@id.
+        let deck = try Presentation()
+        let list = try #require(try deck.presentationPart.dom().firstChild(named: "p:sldIdLst"))
+        list.childElements.first?[attribute: "id"] = String(Int.max)
+        deck.presentationPart.markDirty()
+        // Out of ST_SlideId's range, so ignored — adding must still work.
+        _ = try deck.slides.add()
+
+        // At the ceiling it is a real exhaustion, and must throw.
+        list.childElements.first?[attribute: "id"] = "2147483647"
+        deck.presentationPart.markDirty()
+        #expect(throws: RostrumError.self) { _ = try deck.slides.add() }
+    }
+
+    @Test func hostileGeometryDoesNotOverflowTheSVGRenderer() throws {
+        // renderSVG is a pure read API doing Int arithmetic on every a:off and
+        // a:ext it reads — x + inset, cx += cw, x + w / 2 — and Swift's + traps.
+        let slide = """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" \
+            xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">\
+            <p:cSld><p:spTree>\
+            <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>\
+            <p:grpSpPr/>\
+            <p:sp><p:nvSpPr><p:cNvPr id="2" name="S"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>\
+            <p:spPr><a:xfrm><a:off x="9223372036854775807" y="9223372036854775807"/>\
+            <a:ext cx="9223372036854775807" cy="9223372036854775807"/></a:xfrm>\
+            <a:solidFill><a:srgbClr val="FF0000"/></a:solidFill></p:spPr>\
+            <p:txBody><a:bodyPr lIns="9223372036854775807"/><a:lstStyle/>\
+            <a:p><a:pPr algn="ctr"/><a:r><a:rPr sz="9223372036854775807"/>\
+            <a:t>hi</a:t></a:r></a:p></p:txBody></p:sp>\
+            </p:spTree></p:cSld></p:sld>
+            """
+        let deck = try Presentation()
+        try deck.slides[0].part.replaceBlob(Data(slide.utf8))
+        // Also make the slide size itself absurd: the aspect-ratio conversion
+        // runs Int(_: Double) before any shape is visited.
+        deck.slideSize = (width: EMU(1), height: EMU(Int.max))
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(svg.contains("<svg"))
+    }
+
+    @Test func aHostileColourCannotInjectMarkupIntoTheSVG() throws {
+        // colorHex interpolates into an SVG attribute, unescaped.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addShape(.rectangle, frame: unitBox,
+                                           fill: .solid(Color("FF0000")))
+        let dom = try deck.slides[0].part.dom()
+        for srgb in Self.descendants(of: dom, named: "a:srgbClr") {
+            srgb[attribute: "val"] = "x\" onload=\"alert(1)"
+        }
+        try deck.slides[0].part.markDirty()
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(!svg.contains("onload"), "a file-supplied colour must not become markup")
+    }
+
+    @Test func aChartWithTooManySeriesReadsAsNilRatherThanTrapping() throws {
+        // ChartData's 255-series bound is a precondition — a programmer check.
+        // A file can declare any number of c:ser.
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addChart(
+            .barClustered, data: ChartData(categories: ["A"], name: "S", values: [1]),
+            frame: Rect(x: .zero, y: .zero, width: .inches(4), height: .inches(3)))
+        let chart = try #require(deck.charts.first)
+        let plot = try #require(chart.plots.first)
+        let template = try #require(plot.children(named: "c:ser").first)
+        for _ in 0..<300 { plot.appendElement(template.deepCopy()) }
+        chart.part.markDirty()
+
+        #expect(chart.seriesElements.count > 255)
+        #expect(chart.data == nil, "over the bound, the category view is honestly nil")
+        _ = chart.series
+    }
+
+    @Test func anAbsurdGroupChildSpaceDoesNotOverflow() throws {
+        // Group child-space mapping subtracted and scaled raw Ints from the
+        // file, then forced the result back through Int(_: Double).
+        let slide = """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" \
+            xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">\
+            <p:cSld><p:spTree>\
+            <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>\
+            <p:grpSpPr/>\
+            <p:grpSp>\
+            <p:nvGrpSpPr><p:cNvPr id="2" name="G"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>\
+            <p:grpSpPr><a:xfrm flipH="1" flipV="1">\
+            <a:off x="0" y="0"/><a:ext cx="9223372036854775807" cy="1"/>\
+            <a:chOff x="-9223372036854775808" y="0"/><a:chExt cx="1" cy="1"/></a:xfrm></p:grpSpPr>\
+            <p:sp><p:nvSpPr><p:cNvPr id="3" name="S"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>\
+            <p:spPr><a:xfrm>\
+            <a:off x="9223372036854775807" y="9223372036854775807"/>\
+            <a:ext cx="9223372036854775807" cy="9223372036854775807"/></a:xfrm></p:spPr>\
+            <p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>\
+            </p:grpSp></p:spTree></p:cSld></p:sld>
+            """
+        let deck = try Presentation()
+        try deck.slides[0].part.replaceBlob(Data(slide.utf8))
+        let group = try #require(deck.slides[0].shapes.all.first as? GroupShape)
+        // Every one of these used to be an overflow or an out-of-range
+        // Int(Double) conversion.
+        for child in group.shapes {
+            _ = group.convertToParentSpace(child.frame)
+            _ = child.explicitFrame
+        }
+    }
+
+    @Test func duplicateSectionStartsDoNotTripTheStrictlyIncreasingCheck() throws {
+        // boundaries() is derived from the file, and two p14:section entries
+        // can resolve to the same start slide — an unresolvable sldId falls
+        // back to 0. set(_:) requires strictly increasing starts.
+        let deck = try Presentation()
+        try deck.slides.add()
+        _ = try deck.sections.add("One", startingAtSlide: 1)
+        let list = try #require(try deck.presentationPart.dom()
+            .firstChild(named: "p:extLst"))
+        for sldId in Self.descendants(of: list, named: "p14:sldId") {
+            sldId[attribute: "id"] = "999999"   // resolves nowhere → index 0
+        }
+        deck.presentationPart.markDirty()
+        // The fixture must actually produce the duplicate this test is named
+        // for, or it proves nothing: with every sldId unresolvable, both
+        // sections now report the same start slide.
+        let startsBefore = try deck.sections.boundaries().map(\.startSlide)
+        #expect(startsBefore.count > Set(startsBefore).count,
+                "fixture did not create duplicate section starts: \(startsBefore)")
+
+        // Adding another must not abort, and must succeed — a `try?` here
+        // would pass whether the call worked or threw.
+        let added = try deck.sections.add("Two", startingAtSlide: 1)
+        #expect(added.name == "Two")
+        // What gets written must satisfy set(_:)'s own rule.
+        let startsAfter = try deck.sections.boundaries().map(\.startSlide)
+        #expect(startsAfter == startsAfter.sorted())
+        #expect(startsAfter.count == Set(startsAfter).count)
+    }
+
+    @Test func aPackagePastTheClassicEntryCeilingSavesAndReopens() throws {
+        // This used to assert that saving threw: the 16-bit EOCD entry count
+        // was a ceiling Rostrum reported rather than a format it supported. It
+        // is supported now, via zip64 entry counts, so the honest assertion is
+        // the stronger one — the deck saves AND reads back. The original point
+        // still holds either way: a deck can carry this many parts, and saving
+        // one you just opened must not abort the host.
+        let deck = try Presentation()
+        let before = deck.package.parts.count
+        // One PAST the classic ceiling, so the zip64 path is what runs.
+        while deck.package.parts.count <= 0xFFFF {
+            let n = deck.package.parts.count
+            deck.package.addPart(uri: PackURI("/ppt/media/pad\(n).png"),
+                                 contentType: ContentType.png, blob: Data())
+        }
+        #expect(deck.package.parts.count > before)
+        #expect(deck.package.parts.count > 0xFFFF)
+
+        let saved = try deck.serializedData()
+        let reader = try ZipReader(data: saved)
+        #expect(reader.entryNames.count > 0xFFFF, "the zip64 path must be what ran")
+        #expect(reader.contains("ppt/media/pad100.png"))
+
+        // Reopen as a DECK, not just as an archive. The rename claims it "saves
+        // and reopens", and reading the zip back proves only the container —
+        // OPCPackage.read is the layer that has to survive this many parts.
+        let reopened = try Presentation(data: saved)
+        #expect(reopened.package.parts.count == deck.package.parts.count)
+        #expect(reopened.slides.count == deck.slides.count)
+    }
+
+    @Test func aForgedZip64RecordCannotDictateTheEntryCount() throws {
+        // Every guard on the zip64 count path was unreachable from any test.
+        // Build a real zip64 archive, then corrupt each thing the reader is
+        // supposed to check and require it to refuse rather than trust the file.
+        var writer = ZipWriter()
+        for i in 0..<65_536 { writer.addFile(name: "f\(i)", data: Data(), compress: false) }
+        let good = [UInt8](try writer.finalize())
+        #expect(try ZipReader(data: Data(good)).entryNames.count == 65_536)
+
+        func u32(_ b: [UInt8], _ at: Int) -> Int {
+            (0..<4).reduce(0) { $0 | (Int(b[at + $1]) << (8 * $1)) }
+        }
+        let eocd = good.count - 22
+        let cdOffset = u32(good, eocd + 16)
+        let cdSize = u32(good, eocd + 12)
+        let record = cdOffset + cdSize                    // where the scan expects it
+
+        // (a) A count larger than the directory can physically hold. BOTH
+        // count fields have to be forged: raising only the total makes it
+        // disagree with entries-on-disk, which trips that check first and
+        // never reaches the bound this case is aiming at.
+        var inflatedCount = good
+        for b in 0..<8 {
+            inflatedCount[record + 24 + b] = 0xFF        // entries on this disk
+            inflatedCount[record + 32 + b] = 0xFF        // total entries
+        }
+        expectError("an impossible zip64 count", isContentFailure) {
+            _ = try ZipReader(data: Data(inflatedCount))
+        }
+
+        // (b) entries-on-disk disagreeing with the total.
+        var split = good
+        split[record + 24] = 0x01
+        #expect(throws: RostrumError.self) { _ = try ZipReader(data: Data(split)) }
+
+        // (c) A record whose size field does not reach the locator: the scan
+        // must not accept it, so the EOCD is not found at all.
+        var badSize = good
+        badSize[record + 4] = 0x2C + 1
+        #expect(throws: RostrumError.self) { _ = try ZipReader(data: Data(badSize)) }
+
+        // (d) The locator's own claimed offset is NOT what the reader follows —
+        // the record's position comes from the central directory's end. Point
+        // the locator at nonsense and the archive must still read.
+        var lyingLocator = good
+        for b in 0..<8 { lyingLocator[eocd - 20 + 8 + b] = 0xEE }
+        #expect(try ZipReader(data: Data(lyingLocator)).entryNames.count == 65_536)
+    }
+
+    @Test func anAbsurdlyLongPartNameIsReportedNotTrapped() throws {
+        // ZipWriter's 0xFFFF name field is a precondition; the name can come
+        // from a file somebody else wrote.
+        let deck = try Presentation()
+        let long = "/ppt/media/" + String(repeating: "a", count: 70_000) + ".png"
+        deck.package.addPart(uri: PackURI(long), contentType: ContentType.png, blob: Data([1, 2, 3]))
+        #expect(throws: RostrumError.self) { _ = try deck.serializedData() }
+    }
+
+    @Test func aRaggedForeignTableReportsRatherThanTrapping() throws {
+        // columnCount reports what a:tblGrid declares. A table written
+        // elsewhere can have a row with fewer a:tc than that, so the natural
+        // reading idiom — for c in 0..<columnCount — used to abort the host.
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(
+            rows: 2, columns: 3,
+            frame: Rect(x: .zero, y: .zero, width: .inches(6), height: .inches(2)))
+        // Strip a cell from the second row, leaving the grid claiming three.
+        let tbl = table.tbl
+        let secondRow = tbl.children(named: "a:tr")[1]
+        let doomed = secondRow.children(named: "a:tc")[2]
+        secondRow.removeChild(doomed)
+        try deck.slides[0].part.markDirty()
+
+        #expect(table.columnCount == 3)
+        #expect(throws: RostrumError.self) { _ = try table.cell(1, 2) }
+        // The cells that do exist still read.
+        #expect(try table.cell(1, 1).text == "")
+    }
+
+    /// A table whose grid claims three columns while its second row has two.
+    private func raggedTable(_ deck: Presentation) throws -> Table {
+        let table = try deck.slides[0].shapes.addTable(
+            rows: 2, columns: 3,
+            frame: Rect(x: .zero, y: .zero, width: .inches(6), height: .inches(2)))
+        let secondRow = table.tbl.children(named: "a:tr")[1]
+        secondRow.removeChild(secondRow.children(named: "a:tc")[2])
+        try deck.slides[0].part.markDirty()
+        return table
+    }
+
+    @Test func bulkStylingSkipsCellsARaggedRowDoesNotHave() throws {
+        // header/styleBanded/cellPadding all iterate 0..<columnCount. The
+        // tolerant branch each gained had no test that reached it.
+        let deck = try Presentation()
+        let table = try raggedTable(deck)
+        let style = deck.style
+        table.header(style: style)
+        table.styleBanded(style: style)
+        table.cellPadding(.points(4))
+        // The cells that exist are styled; the missing one is simply absent.
+        #expect(try table.cell(1, 1).tc.firstChild(named: "a:tcPr") != nil)
+        #expect(throws: RostrumError.self) { _ = try table.cell(1, 2) }
+        #expect(try deck.validate().isEmpty)
+    }
+
+    @Test func styleBandedOnAZeroRowTableDoesNotBuildABackwardsRange() throws {
+        // With a header, the loop starts at 1; a zero-row table made that
+        // 1..<0, which is a trap rather than an empty range.
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(
+            rows: 1, columns: 1,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
+        table.tbl.removeChildren(named: "a:tr")
+        try deck.slides[0].part.markDirty()
+        #expect(table.rowCount == 0)
+        table.styleBanded(style: deck.style)
+    }
+
+    @Test func aRefusedMergeLeavesTheTableExactlyAsItWas() throws {
+        // merge destroys covered cells' text as it goes. Throwing part-way
+        // through would leave a half-merged table with text already gone.
+        let deck = try Presentation()
+        let table = try raggedTable(deck)
+        try table.cell(0, 0).text = "keep me"
+        let before = table.tbl.serialized()
+
+        #expect(throws: RostrumError.self) {
+            try table.merge(row: 0, column: 0, rowSpan: 2, columnSpan: 3)
+        }
+        #expect(table.tbl.serialized() == before, "a refused merge must change nothing")
+        #expect(try table.cell(0, 0).text == "keep me")
+    }
+
     @Test func truncatedValidDeckThrowsNotCrash() throws {
         let valid = try validDeckBytes()
         // Truncating a real deck at many lengths must throw a Rostrum error, not trap.
@@ -98,6 +574,630 @@ import Testing
             let deck = try Presentation()
             deck.applyDesign(d)          // must not trap
             _ = deck.style
+        }
+    }
+
+    // MARK: - Aggregate decompression budget
+
+    /// Assert the specific error, not merely that something was thrown. Every
+    /// budget test below distinguishes at least two errors the same fixture can
+    /// produce, so `#expect(throws: RostrumError.self)` would discard the very
+    /// thing the fixture was built to expose.
+    private func expectError(
+        _ label: String, _ isMatch: (RostrumError) -> Bool,
+        sourceLocation: SourceLocation = #_sourceLocation, _ body: () throws -> Void
+    ) {
+        do {
+            try body()
+            Issue.record("\(label): expected an error but nothing was thrown", sourceLocation: sourceLocation)
+        } catch let error as RostrumError {
+            #expect(isMatch(error), "\(label): unexpected error \(error)", sourceLocation: sourceLocation)
+        } catch {
+            Issue.record("\(label): expected RostrumError, got \(error)", sourceLocation: sourceLocation)
+        }
+    }
+
+    private func isOverBudget(_ e: RostrumError) -> Bool {
+        if case .readBudgetExceeded = e { return true }
+        return false
+    }
+
+    private func isPackageInvalid(_ e: RostrumError) -> Bool {
+        if case .packageInvalid = e { return true }
+        return false
+    }
+
+    /// The entry's *content* could not be produced — a broken DEFLATE stream, or
+    /// a decode that came out the wrong length or with the wrong CRC. Damaged
+    /// compressed bytes can surface as any of those depending on where the
+    /// damage lands, so pinning one of them would make a test flaky. What this
+    /// deliberately excludes is `readBudgetExceeded` and `partMissing`: the
+    /// point is that reading the DATA is what failed, not policy or lookup.
+    private func isContentFailure(_ e: RostrumError) -> Bool {
+        switch e {
+        case .zipCorrupt, .deflateCorrupt: return true
+        default: return false
+        }
+    }
+
+    /// An archive whose entries are individually modest but collectively large:
+    /// `count` entries of `each` zero bytes, which DEFLATE crushes to almost
+    /// nothing. This is the shape a per-entry bound cannot see.
+    private func amplifyingArchive(count: Int, each: Int) throws -> Data {
+        var writer = ZipWriter()
+        let payload = Data(repeating: 0, count: each)
+        for i in 0..<count {
+            writer.addFile(name: "ppt/media/pad\(i).bin", data: payload)
+        }
+        return try writer.finalize()
+    }
+
+    /// Rewrite every central-directory `uncompressed size` field to `value`.
+    /// Reaching the 32-bit ceiling with real data would need gigabytes; the
+    /// declared size is what the guard reads, so declare it directly.
+    private func declaringUncompressedSize(_ value: UInt32, in archive: Data) throws -> Data {
+        var bytes = [UInt8](archive)
+        // Walk the central directory from the offset the EOCD records, rather
+        // than scanning the whole file for the signature — those four bytes can
+        // occur inside a compressed payload, and patching one would corrupt it.
+        func u16(_ at: Int) -> Int { Int(bytes[at]) | (Int(bytes[at + 1]) << 8) }
+        func u32(_ at: Int) -> Int {
+            (0..<4).reduce(0) { $0 | (Int(bytes[at + $1]) << (8 * $1)) }
+        }
+        let eocd = bytes.count - 22                    // our writer emits no comment
+        try #require(u32(eocd) == 0x0605_4B50)
+        var offset = u32(eocd + 16)
+        for _ in 0..<u16(eocd + 10) {
+            try #require(u32(offset) == 0x0201_4B50)
+            for b in 0..<4 {                           // field at central header + 24
+                bytes[offset + 24 + b] = UInt8(truncatingIfNeeded: value >> (8 * UInt32(b)))
+            }
+            offset += 46 + u16(offset + 28) + u16(offset + 30) + u16(offset + 32)
+        }
+        return Data(bytes)
+    }
+
+    @Test func anArchiveOverTheReadBudgetIsRefused() throws {
+        // 16 entries x 128 KB of zeros: 2 MB declared from a few kilobytes of
+        // archive. Each entry is well within its own declared size, so nothing
+        // per-entry can object — only the sum can.
+        let bomb = try amplifyingArchive(count: 16, each: 128 * 1024)
+        #expect(bomb.count < 128 * 1024, "fixture did not amplify: \(bomb.count) bytes on disk")
+
+        let declared = 16 * 128 * 1024
+        let generous = try ZipReader(data: bomb, limits: .init(totalUncompressedBytes: declared))
+        #expect(generous.declaredUncompressedSize == UInt64(declared))
+
+        // One byte under the declared total must refuse: the ceiling is
+        // inclusive, so this pins the boundary rather than just "some big number
+        // is rejected".
+        expectError("one byte under the declared total", isOverBudget) {
+            _ = try ZipReader(data: bomb, limits: .init(totalUncompressedBytes: declared - 1))
+        }
+        // And the default is still unlimited — a large deck must keep opening.
+        let unbounded = try ZipReader(data: bomb)
+        #expect(unbounded.declaredUncompressedSize == UInt64(declared))
+    }
+
+    @Test func theBudgetIsCheckedBeforeAnythingIsInflated() throws {
+        // Corrupt every entry's payload, then read it two ways. Without a budget
+        // the failure must come from DEFLATE — proving the data really is
+        // unreadable. With a budget the SAME archive must fail earlier, at the
+        // declared total, without touching the streams.
+        var bomb = [UInt8](try amplifyingArchive(count: 8, each: 64 * 1024))
+        // Damage only the first entry's payload, at a byte the layout puts there
+        // for certain: 30-byte local header + an 18-byte name. Blanket-corrupting
+        // a range could reach the central directory and make the reader fail to
+        // construct, which would test the wrong thing.
+        let firstPayload = 30 + "ppt/media/pad0.bin".utf8.count
+        for i in firstPayload..<(firstPayload + 8) { bomb[i] ^= 0xFF }
+        let corrupt = Data(bomb)
+
+        // Unlimited: the damaged entry must fail while producing its CONTENT.
+        // A bare "some error was thrown" would also accept partMissing, and
+        // then the fixture would stop establishing what it claims — that
+        // decoding this archive is what goes wrong.
+        let unlimited = try ZipReader(data: corrupt)
+        // The damage must be confined to the payload: if it had reached the
+        // central directory the reader would report a structural failure, which
+        // isContentFailure also accepts, and the test would stop meaning what
+        // it says. An intact name list is the evidence.
+        #expect(unlimited.entryNames.count == 8)
+        #expect(unlimited.entryNames.first == "ppt/media/pad0.bin")
+        expectError("the corrupted entry", isContentFailure) {
+            _ = try unlimited.data(forEntry: "ppt/media/pad0.bin")
+        }
+
+        // Budgeted: the SAME archive must fail earlier and differently. If the
+        // budget were enforced by accumulating during decode, this would be the
+        // DEFLATE error instead — which is exactly the implementation this test
+        // exists to rule out.
+        expectError("the same archive under a budget", isOverBudget) {
+            _ = try ZipReader(data: corrupt, limits: .init(totalUncompressedBytes: 1024))
+        }
+    }
+
+    @Test func aDeclaredTotalAboveUInt32MaxIsCarriedExactly() throws {
+        // 0xFFFFFFFE is the largest an entry may declare (0xFFFFFFFF is the
+        // zip64 sentinel, rejected at parse). Eight of them sum past UInt32.max,
+        // so this catches a sum that was accumulated or compared in 32 bits —
+        // it does NOT test Int overflow, which is unreachable: the format caps
+        // the sum at 65535 x 0xFFFFFFFE ~ 2.8e14, five orders below Int64.max on
+        // every platform Rostrum supports.
+        let small = try amplifyingArchive(count: 8, each: 64)
+        let huge = try declaringUncompressedSize(0xFFFF_FFFE, in: small)
+
+        let reader = try ZipReader(data: huge)
+        #expect(reader.declaredUncompressedSize == 8 * UInt64(0xFFFF_FFFE))
+        #expect(reader.declaredUncompressedSize > UInt64(UInt32.max))
+
+        // A budget below the true total must refuse. Were the sum truncated to
+        // 32 bits it would read as 0xFFFFFFF0 and slip under this ceiling.
+        expectError("a total past UInt32.max", isOverBudget) {
+            _ = try ZipReader(data: huge, limits: .init(totalUncompressedBytes: 1 << 33))
+        }
+    }
+
+    @Test func duplicateEntryNamesCannotMultiplyTheWorkTheBudgetBought() throws {
+        // THE hole the budget's premise had: the sum counts central-directory
+        // records, but a caller's loop is driven by NAMES, and duplicate names
+        // are last-wins. N records under one name used to mean N inflations of
+        // the single surviving entry — and the shadows can declare zero bytes,
+        // so they cost the budget nothing while costing the reader everything.
+        // The shadows must come FIRST and the expensive entry LAST. Written the
+        // other way round the survivor is the empty one, every repeated decode
+        // is free, and the fixture cannot exhibit the attack it is named for
+        // even against the unfixed code.
+        var writer = ZipWriter()
+        let payload = Data(repeating: 0, count: 64 * 1024)
+        for _ in 0..<64 { writer.addFile(name: "ppt/media/dup.bin", data: Data()) }
+        writer.addFile(name: "ppt/media/dup.bin", data: payload)
+        writer.addFile(name: "ppt/media/other.bin", data: payload)
+        let archive = try writer.finalize()
+
+        let reader = try ZipReader(data: archive)
+        // The fixture must really contain the duplicates, or it proves nothing.
+        #expect(reader.centralDirectoryRecords.count == 66)
+        #expect(reader.centralDirectoryRecords.filter { $0.name == "ppt/media/dup.bin" }.count == 65)
+        // The survivor is the expensive one — the shape the attack needs.
+        let survivor = try #require(reader.allEntries.first { $0.name == "ppt/media/dup.bin" })
+        #expect(survivor.uncompressedSize == 64 * 1024)
+
+        // One name, once — a caller looping over these decodes each entry once.
+        #expect(reader.entryNames == ["ppt/media/dup.bin", "ppt/media/other.bin"])
+        #expect(reader.entryNames.count == Set(reader.entryNames).count)
+        // The sibling accessor must agree, or the multiplier just moves there.
+        #expect(reader.allEntries.map(\.name) == reader.entryNames)
+
+        // And the charge matches: both surviving payloads, neither shadow.
+        #expect(reader.declaredUncompressedSize == UInt64(2 * 64 * 1024))
+        #expect(reader.allEntries.reduce(UInt64(0)) { $0 + UInt64($1.uncompressedSize) }
+            == reader.declaredUncompressedSize)
+    }
+
+    @Test func entryNamesTakeThePositionOfTheRecordTheyResolveTo() throws {
+        // The documented rule is "each distinct name once, at the position of
+        // the record it resolves to". With last-wins resolution that is the LAST
+        // occurrence, which is what makes entryNames and allEntries line up.
+        var writer = ZipWriter()
+        writer.addFile(name: "a.txt", data: Data("a1".utf8))
+        writer.addFile(name: "b.txt", data: Data("b".utf8))
+        writer.addFile(name: "a.txt", data: Data("a2".utf8))
+        let reader = try ZipReader(data: try writer.finalize())
+
+        // "a.txt" resolves to the record AFTER "b.txt", so it is listed second.
+        #expect(reader.entryNames == ["b.txt", "a.txt"])
+        #expect(try reader.data(forEntry: "a.txt") == Data("a2".utf8))
+        #expect(reader.allEntries.map(\.name) == ["b.txt", "a.txt"])
+    }
+
+    @Test func anArchiveWhoseEntriesShareOnePayloadIsRefused() throws {
+        // The budget bounds bytes PRODUCED; decoding costs compressedSize per
+        // name. Nothing makes two records describe different payload regions,
+        // so N DISTINCT names — all resolvable, all decoded — can point at one
+        // large payload and each declare it produces nothing. That is the same
+        // 65535x multiplier with no duplicate names at all, so the entryNames
+        // dedup does not touch it.
+        var writer = ZipWriter()
+        writer.addFile(name: "a.bin", data: Data(repeating: 7, count: 4096), compress: false)
+        writer.addFile(name: "b.bin", data: Data(repeating: 9, count: 4096), compress: false)
+        var bytes = [UInt8](try writer.finalize())
+        let size = bytes.count
+
+        func u16(_ at: Int) -> Int { Int(bytes[at]) | (Int(bytes[at + 1]) << 8) }
+        func u32(_ at: Int) -> Int { (0..<4).reduce(0) { $0 | (Int(bytes[at + $1]) << (8 * $1)) } }
+        func put32(_ at: Int, _ value: Int) {
+            for b in 0..<4 { bytes[at + b] = UInt8(truncatingIfNeeded: value >> (8 * b)) }
+        }
+
+        // Build the actual attack, not a caricature of it. Both records point
+        // at the SAME local header, and each claims 60% of the file — in range
+        // on its own, so a per-entry check (`dataStart + compressedSize <=
+        // count`, which already existed) still passes. Only summing catches it.
+        // Written the other way — each record claiming several times the file —
+        // the strictly weaker per-entry predicate would pass this test too, and
+        // it would prove nothing about the aggregation this commit added.
+        let eocd = size - 22
+        try #require(u32(eocd) == 0x0605_4B50)
+        let each = size * 6 / 10
+        var offset = u32(eocd + 16)
+        let firstLocalHeader = u32(offset + 42)
+        for _ in 0..<u16(eocd + 10) {
+            try #require(u32(offset) == 0x0201_4B50)
+            put32(offset + 20, each)                  // compressed size
+            put32(offset + 42, firstLocalHeader)      // ...at one shared payload
+            offset += 46 + u16(offset + 28) + u16(offset + 30) + u16(offset + 32)
+        }
+        // The fixture must have the property it is named for, or it proves
+        // nothing: individually legal, collectively impossible.
+        #expect(each < size, "each entry must be in range on its own")
+        #expect(2 * each > size, "the SUM is what has to be out of range")
+
+        // Structural, not policy: it must refuse even with no budget set, and
+        // for the aggregate reason rather than any other zipCorrupt.
+        expectError("entries claiming more compressed bytes than the file holds", {
+            if case .zipCorrupt(let m) = $0 { return m.contains("cannot all be distinct") }
+            return false
+        }) {
+            _ = try ZipReader(data: Data(bytes))
+        }
+    }
+
+    @Test func anEmptyEntryNameIsRejected() throws {
+        // "" passes a leading-slash test and a "//" test, but "/" + "" is "/",
+        // whose relsURI is the package relationships — the same aliasing with
+        // no visible slash at all. This was the gap in the first spelling of
+        // the empty-segment rule.
+        #expect(PackURI.hasEmptySegment(""))
+        #expect(PackURI.hasEmptySegment("ppt//x.xml"))
+        #expect(PackURI.hasEmptySegment("/ppt/x.xml"))
+        // The trailing slash aliases exactly like the internal one: split drops
+        // a trailing empty subsequence too, so both derive one relsURI.
+        #expect(PackURI.hasEmptySegment("ppt/x.xml/"))
+        #expect(PackURI("/ppt/x.xml/").relsURI == PackURI("/ppt/x.xml").relsURI)
+        #expect(!PackURI.hasEmptySegment("ppt/slides/slide1.xml"))
+
+        let valid = try validDeckBytes()
+        let reader = try ZipReader(data: valid)
+        var writer = ZipWriter()
+        for name in reader.entryNames {
+            writer.addFile(name: name, data: try reader.data(forEntry: name))
+        }
+        writer.addFile(name: "", data: Data([1, 2, 3]))
+        expectError("an empty part name", isPackageInvalid) {
+            _ = try Presentation(data: try writer.finalize())
+        }
+    }
+
+    @Test func namesThatDecodeAlikeButDifferAsBytesAreRejected() throws {
+        // Member names are BYTES; indexByName keys them by Swift String, and
+        // Swift compares strings by canonical equivalence. So two records whose
+        // names differ as bytes can be == as Strings — here via NFC/NFD — and
+        // last-wins would drop one part and serve the other's bytes under its
+        // name, with no error at any layer.
+        let precomposed = "caf\u{00E9}.bin"           // é
+        let decomposed = "cafe\u{0301}.bin"           // e + combining acute
+        #expect(precomposed == decomposed, "the premise of this test")
+        #expect(Array(precomposed.utf8) != Array(decomposed.utf8))
+
+        var writer = ZipWriter()
+        writer.addFile(name: precomposed, data: Data([1]))
+        writer.addFile(name: decomposed, data: Data([2]))
+        expectError("two names that decode alike", {
+            if case .zipCorrupt(let m) = $0 { return m.contains("decode") }
+            return false
+        }) {
+            _ = try ZipReader(data: try writer.finalize())
+        }
+
+        // An honest duplicate — the same bytes twice — stays last-wins.
+        var honest = ZipWriter()
+        honest.addFile(name: precomposed, data: Data([1]))
+        honest.addFile(name: precomposed, data: Data([2]))
+        let reader = try ZipReader(data: try honest.finalize())
+        #expect(try reader.data(forEntry: precomposed) == Data([2]))
+    }
+
+    @Test func aNegativeBudgetIsClampedAndReported() throws {
+        // Limits is caller-supplied, and a budget computed as `available -
+        // used` can go negative. Clamping at construction keeps the number
+        // enforced and the number reported from disagreeing.
+        #expect(ZipReader.Limits(totalUncompressedBytes: -1 << 20).totalUncompressedBytes == 0)
+        var mutated = ZipReader.Limits(totalUncompressedBytes: 100)
+        mutated.totalUncompressedBytes = -5
+        #expect(mutated.totalUncompressedBytes == 0)
+        #expect(ZipReader.Limits.unlimited.totalUncompressedBytes == nil)
+
+        // And the error carries both numbers as numbers, so a caller deciding
+        // whether to retry with a higher ceiling need not parse prose.
+        let bomb = try amplifyingArchive(count: 4, each: 64 * 1024)
+        do {
+            _ = try ZipReader(data: bomb, limits: .init(totalUncompressedBytes: -7))
+            Issue.record("expected the clamped budget to refuse")
+        } catch RostrumError.readBudgetExceeded(let declared, let limit) {
+            #expect(limit == 0, "the reported ceiling must be the clamped one")
+            #expect(declared == UInt64(4 * 64 * 1024))
+        }
+    }
+
+    @Test func aPartNameWithAnEmptySegmentIsRejected() throws {
+        // "ppt//slides/s.xml" and "ppt/slides/s.xml" are distinct PackURI keys
+        // — identity is the raw string — yet baseURI/filename split on "/"
+        // discarding empties, so both resolve to ONE _rels file. That is a
+        // part-identity bug, and it also lets an archive make the reader decode
+        // one .rels entry once per alias, which no per-entry budget can see.
+        let valid = try validDeckBytes()
+        let reader = try ZipReader(data: valid)
+        var writer = ZipWriter()
+        for name in reader.entryNames {
+            let bytes = try reader.data(forEntry: name)
+            writer.addFile(name: name, data: bytes)
+            if name == "ppt/slides/slide1.xml" {
+                writer.addFile(name: "ppt//slides/slide1.xml", data: bytes)
+            }
+        }
+        let aliased = try writer.finalize()
+        expectError("an aliased part name", isPackageInvalid) {
+            _ = try Presentation(data: aliased)
+        }
+
+        // Control: the SAME rebuild without the alias must open. Without this,
+        // the test would pass even if the rebuild were broken for an unrelated
+        // reason — a missing content type, say — and prove nothing about the
+        // guard.
+        var clean = ZipWriter()
+        for name in reader.entryNames {
+            clean.addFile(name: name, data: try reader.data(forEntry: name))
+        }
+        let control = try Presentation(data: try clean.finalize())
+        #expect(control.slides.count > 0)
+
+        // And the writer must refuse what the reader refuses, rather than
+        // producing an archive Rostrum cannot reopen.
+        let deck = try Presentation()
+        deck.package.addPart(uri: PackURI("/ppt//media/x.png"),
+                             contentType: ContentType.png, blob: Data([1, 2, 3]))
+        expectError("writing an aliased part name", {
+            if case .packageInvalid(let m) = $0 { return m.contains("empty segment") }
+            return false
+        }) {
+            _ = try deck.serializedData()
+        }
+
+        // The other three name classes `read` disposes of by skipping. Each
+        // used to be written happily and then vanish on reopen, which is worse
+        // than refusing: the Override in [Content_Types].xml survives while the
+        // part it names does not.
+        for (name, reason) in [("/custom.rels", "relationships part"),
+                               ("/[Content_Types].xml", "content-types stream"),
+                               ("/ppt/media/", "empty segment")] {
+            let d = try Presentation()
+            d.package.addPart(uri: PackURI(name), contentType: "application/xml",
+                              blob: Data("<x/>".utf8))
+            expectError("writing \(name)", {
+                if case .packageInvalid(let m) = $0 { return m.contains(reason) }
+                return false
+            }) {
+                _ = try d.serializedData()
+            }
+        }
+    }
+
+    @Test func directoryPlaceholderEntriesSurviveARoundTrip() throws {
+        // Some writers emit zero-length entries whose names end in "/" to mark
+        // folders. They are not parts, and the reader skipped them — so an
+        // untouched foreign deck came back with FEWER zip entries than it went
+        // in with. That is the sacred round-trip rule, and the corpus gate is
+        // already written to catch it (it asserts every `before` name is in
+        // `after`); no fixture has exercised it yet.
+        let valid = try validDeckBytes()
+        let reader = try ZipReader(data: valid)
+        var writer = ZipWriter()
+        // Non-empty, DIFFERENT payloads: with two empty ones the test passes
+        // whether or not the bytes are carried, and whether or not they are
+        // matched to the right name. Written in reverse sorted order so the
+        // output order is the sorting's doing, not the input's.
+        writer.addFile(name: "ppt/media/", data: Data([0xAA, 0xBB]), compress: false)
+        writer.addFile(name: "docProps/", data: Data([0xCC]), compress: false)
+        for name in reader.entryNames {
+            writer.addFile(name: name, data: try reader.data(forEntry: name))
+        }
+        let withDirectories = try writer.finalize()
+
+        let resaved = try Presentation(data: withDirectories).serializedData()
+        let after = try ZipReader(data: resaved)
+        let names = Set(after.entryNames)
+        #expect(names.contains("ppt/media/"), "directory entry dropped on resave")
+        #expect(names.contains("docProps/"), "directory entry dropped on resave")
+        // The bytes, and the name they belong to, must both survive.
+        #expect(try after.data(forEntry: "ppt/media/") == Data([0xAA, 0xBB]))
+        #expect(try after.data(forEntry: "docProps/") == Data([0xCC]))
+        // Sorted, not arrival order — the input had them the other way round.
+        let placeholders = after.entryNames.filter { $0.hasSuffix("/") }
+        #expect(placeholders == ["docProps/", "ppt/media/"])
+        // Every entry that went in must come back, byte for byte — the same
+        // assertion the real-deck corpus gate makes.
+        let before = try ZipReader(data: withDirectories)
+        for name in before.entryNames {
+            #expect(names.contains(name), "\(name) missing after resave")
+            guard names.contains(name) else { continue }
+            #expect(try after.data(forEntry: name) == before.data(forEntry: name),
+                    "\(name) bytes changed on resave")
+        }
+        // And resaving must be a fixed point, or the corpus determinism gate
+        // fails even though the entries survive.
+        #expect(try Presentation(data: resaved).serializedData() == resaved)
+    }
+
+    @Test func emptyAndOrphanRelationshipStreamsSurviveARoundTrip() throws {
+        // The twin of the directory-placeholder skip, missed the first time.
+        // Two shapes of `.rels` entry were read, never modelled, never written:
+        // one that parses to zero <Relationship> children (legal OPC, and some
+        // producers emit it), and one no part claims. Both must be built
+        // EXPLICITLY — a fixture derived from Rostrum's own serialize() cannot
+        // contain either, since it emits a .rels entry only when non-empty and
+        // only at a derived name.
+        let empty = Data("""
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>
+            """.utf8)
+        let reader = try ZipReader(data: try validDeckBytes())
+        let liveRels = "ppt/slides/_rels/slide2.xml.rels"
+        var writer = ZipWriter()
+        for name in reader.entryNames {
+            // (a) an EMPTY rels stream for a part that exists. It must REPLACE
+            // slide2's rels, not be appended alongside it: appending would put
+            // two members under one name, which is a malformed archive testing
+            // something other than what this says — and last-wins would make
+            // the assertions pass for the wrong reason.
+            let bytes = name == liveRels ? empty : try reader.data(forEntry: name)
+            writer.addFile(name: name, data: bytes)
+        }
+        // (b) two orphans, written in REVERSE sorted order so the output order
+        // is the sorting's doing rather than the input's.
+        writer.addFile(name: "ppt/slides/_rels/slide99.xml.rels", data: empty)
+        writer.addFile(name: "ppt/slides/_rels/slide98.xml.rels", data: empty)
+        let original = try writer.finalize()
+
+        // The fixture must really contain all three shapes, or it proves
+        // nothing — and must not itself be a duplicate-name archive.
+        let before = try ZipReader(data: original)
+        #expect(before.centralDirectoryRecords.count == before.entryNames.count,
+                "the fixture must not contain duplicate names")
+        #expect(before.entryNames.contains(liveRels))
+        #expect(before.entryNames.contains("ppt/slides/slide2.xml"),
+                "slide2 must EXIST, or arrivedAsFile is not what is under test")
+        #expect(try before.data(forEntry: liveRels) == empty,
+                "slide2's rels must be the empty one")
+        for orphan in ["ppt/slides/_rels/slide98.xml.rels", "ppt/slides/_rels/slide99.xml.rels"] {
+            #expect(before.entryNames.contains(orphan))
+        }
+        #expect(!before.entryNames.contains("ppt/slides/slide99.xml"),
+                "slide99's rels must be an ORPHAN for this to test what it says")
+        #expect(!before.entryNames.contains("ppt/slides/slide98.xml"))
+
+        let resaved = try Presentation(data: original).serializedData()
+        let after = try ZipReader(data: resaved)
+        let names = Set(after.entryNames)
+        for name in before.entryNames {
+            #expect(names.contains(name), "\(name) missing after resave")
+            guard names.contains(name) else { continue }
+            #expect(try after.data(forEntry: name) == before.data(forEntry: name),
+                    "\(name) bytes changed on resave")
+        }
+        // No name may be written twice — carrying an orphan and deriving the
+        // real entry for the same part would give one member two entries.
+        // `centralDirectoryRecords` is the RAW record list; `entryNames` is one
+        // per distinct name, so a difference is exactly a duplicate.
+        #expect(after.centralDirectoryRecords.count == after.entryNames.count,
+                "an entry name was emitted more than once")
+        // Orphans come out sorted, not in arrival order — the input had 99
+        // before 98.
+        let orphansOut = after.entryNames.filter { $0.contains("slide9") }
+        #expect(orphansOut == ["ppt/slides/_rels/slide98.xml.rels",
+                               "ppt/slides/_rels/slide99.xml.rels"])
+
+        // And the collision case the ordering argument could not close: adding
+        // a slide can claim the very name an orphan was carried under, because
+        // the allocator scans `parts` and an orphan reserves nothing.
+        let deck = try Presentation(data: original)
+        try deck.slides.add()
+        let mutated = try ZipReader(data: try deck.serializedData())
+        #expect(mutated.centralDirectoryRecords.count == mutated.entryNames.count,
+                "adding a part must not collide with a carried orphan")
+        // And resaving stays a fixed point.
+        #expect(try Presentation(data: resaved).serializedData() == resaved)
+    }
+
+    @Test func relationshipTargetsAreMatchedVerbatim() throws {
+        // Deliberately NOT percent-decoded. A part name is pchar segments and
+        // the zip item name is the part name minus its leading slash, so a
+        // conformant package is internally consistent in ENCODED space: item
+        // name, Override/@PartName and Target all carry the same escapes.
+        // Decoding only the Target moves one end of the comparison into a
+        // namespace no other layer shares. An earlier commit did that and had
+        // to be reverted; this pins the behaviour so it does not come back.
+        #expect(PackURI.resolve(target: "../media/my%20image.png",
+                                relativeTo: "/ppt/slides").value
+                == "/ppt/media/my%20image.png")
+        #expect(PackURI.resolve(target: "../media/caf%C3%A9.png",
+                                relativeTo: "/ppt/slides").value
+                == "/ppt/media/caf%C3%A9.png")
+        // Decoding would be many-to-one, which is the aliasing class
+        // hasEmptySegment exists to prevent: these two parts are distinct and
+        // must resolve distinctly.
+        #expect(PackURI.resolve(target: "slide%31.xml", relativeTo: "/ppt/slides").value
+                != PackURI.resolve(target: "slide1.xml", relativeTo: "/ppt/slides").value)
+
+        // An encoded target resolves to the part a conformant package actually
+        // stores under that name — end to end, not just as a string. The deck
+        // has no pictures, so its [Content_Types].xml declares no png Default
+        // and the injected entry would have no content type; declare one.
+        var writer = ZipWriter()
+        let reader = try ZipReader(data: try validDeckBytes())
+        for name in reader.entryNames {
+            var bytes = try reader.data(forEntry: name)
+            if name == PackURI.contentTypes.memberName {
+                let text = try #require(String(data: bytes, encoding: .utf8))
+                #expect(!text.contains("Extension=\"png\""), "fixture already types png")
+                bytes = Data(text.replacingOccurrences(
+                    of: "</Types>",
+                    with: "<Default Extension=\"png\" ContentType=\"image/png\"/></Types>").utf8)
+            }
+            writer.addFile(name: name, data: bytes)
+        }
+        writer.addFile(name: "ppt/media/my%20image.png", data: Data([0x89, 0x50, 0x4E, 0x47]))
+        let package = try OPCPackage.read(data: try writer.finalize())
+        let resolved = PackURI.resolve(target: "../media/my%20image.png",
+                                       relativeTo: "/ppt/slides")
+        #expect(package.parts[resolved] != nil,
+                "an encoded target must find the part stored under that encoded name")
+
+        // The ordinary case is unaffected.
+        #expect(PackURI.resolve(target: "../slideLayouts/slideLayout1.xml",
+                                relativeTo: "/ppt/slides").value
+                == "/ppt/slideLayouts/slideLayout1.xml")
+
+        // The ABSOLUTE branch is the one the revert actually changed, and the
+        // replacement test dropped every assertion about it. An absolute target
+        // is taken verbatim — no dot-segment removal, no rejoining — which is
+        // the long-standing behaviour, not a consequence of the decoding that
+        // came and went.
+        #expect(PackURI.resolve(target: "/ppt/media/img.png", relativeTo: "/ppt/slides").value
+                == "/ppt/media/img.png")
+        #expect(PackURI.resolve(target: "/ppt/./media/img.png", relativeTo: "/ppt/slides").value
+                == "/ppt/./media/img.png")
+        #expect(PackURI.resolve(target: "/ppt//media/img.png", relativeTo: "/ppt/slides").value
+                == "/ppt//media/img.png")
+        // Relative targets DO get dot-segment handling, which is the asymmetry.
+        #expect(PackURI.resolve(target: "./media/img.png", relativeTo: "/ppt").value
+                == "/ppt/media/img.png")
+        #expect(PackURI.resolve(target: "../media/img.png", relativeTo: "/ppt/slides").value
+                == "/ppt/media/img.png")
+    }
+
+    @Test func aBudgetedPresentationOpensAnOrdinaryDeck() throws {
+        // The budget must not get in the way of a real deck: a normal
+        // presentation opens under a modest ceiling and reads back intact.
+        let bytes = try validDeckBytes()
+        // Compare against an unbudgeted open of the same bytes rather than a
+        // hardcoded count: the property under test is that setting a budget
+        // changes nothing, and a literal here would only track the fixture.
+        let reference = try Presentation(data: bytes)
+        let deck = try Presentation(data: bytes, limits: .init(totalUncompressedBytes: 64 << 20))
+        #expect(deck.slides.count == reference.slides.count)
+        #expect(deck.slides.count > 0, "fixture has no slides, so this proves nothing")
+        // Comparing the two serializations rather than comparing to `bytes`
+        // isolates the budget: both decks came from the same input, so any
+        // normalisation on open applies to each equally and cannot make this
+        // fail for a reason that has nothing to do with limits.
+        let budgeted = try deck.serializedData()
+        let plain = try reference.serializedData()
+        #expect(budgeted == plain, "setting a budget changed what was read")
+        // And a one-byte ceiling must refuse for the budget's reason, not
+        // because a deck happened to fail to parse for something unrelated.
+        expectError("a one-byte ceiling", isOverBudget) {
+            _ = try Presentation(data: bytes, limits: .init(totalUncompressedBytes: 1))
         }
     }
 }

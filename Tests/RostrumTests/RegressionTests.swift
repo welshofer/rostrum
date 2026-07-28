@@ -30,7 +30,7 @@ import Testing
         zip.addFile(name: "ppt/slides/slide1.xml", data: Data("<p:sld xmlns:p=\"x\"/>".utf8))
         zip.addFile(name: "ppt/slideMasters/slideMaster1.xml", data: Data("<p:sldMaster xmlns:p=\"x\"/>".utf8))
 
-        let package = try OPCPackage.read(data: zip.finalize())
+        let package = try OPCPackage.read(data: try zip.finalize())
         let main = try package.part(at: PackURI("/ppt/presentation.xml"))
         #expect(main.rels.relationship(withId: "rId5")?.type == RelType.slide)
         #expect(main.rels.relationship(withId: "rId2")?.type == RelType.slideMaster)
@@ -93,16 +93,69 @@ import Testing
 
     // MARK: Zip: 65535 entries is a legal literal count, not a zip64 sentinel
 
+    @Test func archiveWithMoreThan65535EntriesRoundTrips() throws {
+        // The 16-bit EOCD count is the one 32-bit-era ceiling a .pptx can
+        // plausibly reach — 65536 tiny parts is a few megabytes — so it is the
+        // half of zip64 this project implements and can actually prove. The
+        // 64-bit SIZE and OFFSET fields are not implemented and stay reported.
+        var zip = ZipWriter()
+        for i in 0..<65_536 {
+            zip.addFile(name: "f\(i)", data: Data(), compress: false)
+        }
+        let archive = try zip.finalize()
+        let reader = try ZipReader(data: archive)
+        #expect(reader.entryNames.count == 65_536)
+        #expect(reader.contains("f65535"))
+        #expect(reader.contains("f0"))
+
+        // The classic EOCD must carry the sentinel, and a zip64 EOCD + locator
+        // must precede it — otherwise the count came from somewhere else and
+        // this proves nothing about zip64.
+        let bytes = [UInt8](archive)
+        let eocd = bytes.count - 22
+        func u16(_ at: Int) -> Int { Int(bytes[at]) | (Int(bytes[at + 1]) << 8) }
+        func u32(_ at: Int) -> Int { (0..<4).reduce(0) { $0 | (Int(bytes[at + $1]) << (8 * $1)) } }
+        #expect(u32(eocd) == 0x0605_4B50)
+        #expect(u16(eocd + 10) == 0xFFFF, "the classic count must be the sentinel")
+        #expect(u32(eocd - 20) == 0x0706_4B50, "a zip64 locator must precede the EOCD")
+        let zip64EOCD = u32(eocd - 20 + 8)
+        #expect(u32(zip64EOCD) == 0x0606_4B50)
+
+        // External oracle: Info-ZIP must accept it. A format change is exactly
+        // where our own reader agreeing with our own writer proves least.
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rostrum-zip64-\(UUID().uuidString).zip")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try archive.write(to: url)
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
+        process.arguments = ["-t", url.path]
+        process.standardOutput = FileHandle.nullDevice
+        process.standardError = FileHandle.nullDevice
+        try process.run()
+        process.waitUntilExit()
+        #expect(process.terminationStatus == 0, "unzip -t rejected the zip64 archive")
+    }
+
     @Test func archiveWithExactly65535EntriesRoundTrips() throws {
         var zip = ZipWriter()
         let payload = Data()
         for i in 0..<65535 {
             zip.addFile(name: "f\(i)", data: payload)
         }
-        let archive = zip.finalize()
+        let archive = try zip.finalize()
         let reader = try ZipReader(data: archive)
         #expect(reader.entryNames.count == 65535)
         #expect(reader.contains("f65534"))
+        // 65535 fits the classic field, so NO zip64 structures are emitted —
+        // the boundary matters, and an archive that fit before must still be
+        // byte-identical to what it was.
+        let bytes = [UInt8](archive)
+        let eocd = bytes.count - 22
+        func u16(_ at: Int) -> Int { Int(bytes[at]) | (Int(bytes[at + 1]) << 8) }
+        func u32(_ at: Int) -> Int { (0..<4).reduce(0) { $0 | (Int(bytes[at + $1]) << (8 * $1)) } }
+        #expect(u16(eocd + 10) == 65535, "0xFFFF here is a literal count, not a sentinel")
+        #expect(u32(eocd - 20) != 0x0706_4B50, "no zip64 locator may be emitted at the boundary")
     }
 
     // MARK: Zip: CP437 entry names when the UTF-8 flag is clear
@@ -140,7 +193,7 @@ import Testing
         var zip = ZipWriter()
         zip.addFile(name: "ppt/media/naïve.png", data: Data([1]))
         // Our writer sets bit 11; clear it in both headers to simulate.
-        var bytes = [UInt8](zip.finalize())
+        var bytes = [UInt8](try zip.finalize())
         // Local header flags at offset 6; central header flags at cd + 8.
         bytes[6] = 0; bytes[7] = 0
         let cdOffset = bytes.count - 22 - 46 - "ppt/media/naïve.png".utf8.count

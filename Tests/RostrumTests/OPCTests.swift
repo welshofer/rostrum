@@ -123,7 +123,7 @@ import Testing
         var zip = ZipWriter()
         zip.addFile(name: "ppt/presentation.xml", data: Data("<x/>".utf8))
         #expect(throws: RostrumError.self) {
-            try OPCPackage.read(data: zip.finalize())
+            try OPCPackage.read(data: try zip.finalize())
         }
     }
 

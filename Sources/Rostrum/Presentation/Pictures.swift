@@ -37,7 +37,7 @@ extension ShapeCollection {
     /// the frame with no distortion by cropping (source-rect), so the shape
     /// never extends past its frame.
     @discardableResult
-    public func addPicture(_ data: Data, frame: Rect, fit: PictureFit = .stretch) throws -> Shape {
+    public func addPicture(_ data: Data, frame: Rect, fit: PictureFit = .stretch) throws -> Picture {
         guard let info = ImageSniffer.sniff(data) else {
             throw RostrumError.packageInvalid("unrecognized image format (PNG, JPEG and GIF are supported)")
         }
@@ -62,7 +62,7 @@ extension ShapeCollection {
 
     /// Add a picture at its natural size (pixels ÷ dpi), top-left at (x, y).
     @discardableResult
-    public func addPicture(_ data: Data, x: EMU, y: EMU) throws -> Shape {
+    public func addPicture(_ data: Data, x: EMU, y: EMU) throws -> Picture {
         guard let info = ImageSniffer.sniff(data) else {
             throw RostrumError.packageInvalid("unrecognized image format (PNG, JPEG and GIF are supported)")
         }
@@ -75,7 +75,7 @@ extension ShapeCollection {
     /// Source-rectangle crop, as edge insets expressed in fractions 0…1.
     struct SrcCrop { var left, top, right, bottom: Double }
 
-    private func insertPicture(_ data: Data, info: ImageInfo, frame: Rect, crop: SrcCrop? = nil) throws -> Shape {
+    private func insertPicture(_ data: Data, info: ImageInfo, frame: Rect, crop: SrcCrop? = nil) throws -> Picture {
         guard let package else {
             throw RostrumError.packageInvalid("this shape collection has no package attached")
         }
@@ -129,6 +129,6 @@ extension ShapeCollection {
 
         try Slide.spTree(of: part).appendElement(pic)
         part.markDirty()
-        return Shape(element: pic, part: part, package: package)
+        return Picture(element: pic, part: part, package: package)
     }
 }

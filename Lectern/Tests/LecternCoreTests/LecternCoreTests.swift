@@ -11,6 +11,19 @@ import Rostrum
     private func fixtureDeck() throws -> DeckIR {
         try JSONDecoder().decode(DeckIR.self, from: Data(fixtureJSON().utf8))
     }
+    /// A minimal valid PNG. Rostrum never decodes image bytes, it only
+    /// packages them, so a well-formed header is enough to exercise placement.
+    private func png() -> Data {
+        func be32(_ v: Int) -> [UInt8] {
+            [UInt8(v >> 24 & 0xFF), UInt8(v >> 16 & 0xFF), UInt8(v >> 8 & 0xFF), UInt8(v & 0xFF)]
+        }
+        var b: [UInt8] = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
+        b += be32(13); b += Array("IHDR".utf8)
+        b += be32(320); b += be32(180); b += [8, 6, 0, 0, 0]; b += be32(0)
+        b += be32(0); b += Array("IEND".utf8); b += be32(0)
+        return Data(b)
+    }
+
     private func tempDir() -> URL {
         URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent("lectern-test-\(ProcessInfo.processInfo.globallyUniqueString)")
@@ -47,13 +60,13 @@ import Rostrum
         #expect(drawn.slideCount == 2)
         let reopenedDrawn = try Presentation(contentsOf: drawn.url)
         #expect(try reopenedDrawn.validate().isEmpty)
-        #expect(reopenedDrawn.slides[reopenedDrawn.slides.count - 1].smartArtTexts.isEmpty)
+        #expect(try reopenedDrawn.slides[reopenedDrawn.slides.count - 1].smartArtTexts.isEmpty)
 
         // Opt-in: native Basic Block List SmartArt (the flex "five layers" look).
         let smart = try await DeckRenderer().render(validated.deck, designURL: nil, notesEnabled: false,
                                                     into: dir, useSmartArt: true)
         let reopenedSmart = try Presentation(contentsOf: smart.url)
-        #expect(reopenedSmart.slides[reopenedSmart.slides.count - 1].smartArtTexts.first?.count == 3)
+        #expect(try reopenedSmart.slides[reopenedSmart.slides.count - 1].smartArtTexts.first?.count == 3)
     }
 
     @Test func rendersChartAndMetricsSlides() async throws {
@@ -171,6 +184,305 @@ import Rostrum
         var deck = try fixtureDeck()
         deck.slides[3].layout = "hologram"        // unknown, bigNumber body (no bullets)
         #expect(throws: ValidationError.self) { _ = try DeckValidator().validate(deck) }
+    }
+
+    // MARK: - Builder capacity
+
+    /// Rostrum's diagram builders truncate past `SlideCapacity` and publish
+    /// those ceilings so callers can decide rather than be surprised. Lectern
+    /// read none of them: six metrics shipped four and said nothing.
+    @Test func contentThatExceedsABuilderCapIsReportedNotSilentlyDropped() async throws {
+        var deck = try fixtureDeck()
+        // Six metrics against SlideCapacity.metrics == 4, and seven process
+        // steps against SlideCapacity.process == 5.
+        deck.slides[1].layout = "metrics"
+        deck.slides[1].body = Body(stats: (1...6).map { IRStat(value: "\($0)", label: "m\($0)") })
+        deck.slides[2].layout = "diagram"
+        deck.slides[2].body = Body(diagram: IRDiagram(kind: "process",
+                                                      items: (1...7).map { "step \($0)" }))
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir,
+                                                       useSmartArt: false)
+
+        #expect(rendered.droppedContent.count == 2)
+        #expect(rendered.droppedContent.contains { $0.contains("2 of 6 metrics") })
+        #expect(rendered.droppedContent.contains { $0.contains("2 of 7 process steps") })
+        // Reported, not conflated: this is neither a plan warning nor our bug.
+        #expect(rendered.warnings.isEmpty)
+        #expect(rendered.schemaIssues.isEmpty)
+    }
+
+    /// The caps the model stayed inside must stay quiet, or the report is noise.
+    @Test func contentInsideEveryCapReportsNothing() async throws {
+        var deck = try fixtureDeck()
+        deck.slides[1].layout = "metrics"
+        deck.slides[1].body = Body(stats: (1...4).map { IRStat(value: "\($0)", label: "m\($0)") })
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+        #expect(rendered.droppedContent.isEmpty)
+    }
+
+    /// The validator accepts a `bands` slide whose `items` is `[]` as long as
+    /// `bullets` isn't — which is what a model emits when it fills one field
+    /// and leaves the other an empty array. The renderer coalesced on nil, not
+    /// on empty, so the bullets were never consulted and the slide shipped
+    /// with just a title.
+    @Test func bandsWithEmptyItemsFallsBackToItsBulletsRatherThanRenderingBlank() async throws {
+        var deck = try fixtureDeck()
+        deck.slides[1].layout = "bands"
+        deck.slides[1].body = Body(items: [],
+                                   bullets: [Bullet(text: "first band"), Bullet(text: "second band")])
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        // The text is on the slide, not lost between validator and renderer.
+        let reopened = try Presentation(contentsOf: rendered.url)
+        let svg = try reopened.renderSVG(slideAt: 1)
+        #expect(svg.contains("first band"))
+        #expect(svg.contains("second band"))
+    }
+
+    /// Two series with no legend are two indistinguishable sets of bars. One
+    /// series with a legend is a label repeating the title.
+    @Test func onlyMultiSeriesChartsGetALegend() async throws {
+        func render(seriesCount: Int) async throws -> String {
+            var deck = try fixtureDeck()
+            deck.slides[1].layout = "chart"
+            deck.slides[1].body = Body(chart: IRChart(
+                kind: "bar",
+                categories: ["Q1", "Q2"],
+                series: (1...seriesCount).map { IRSeries(name: "s\($0)", values: [1, 2]) }))
+            let validated = try DeckValidator().validate(deck)
+            let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+            let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                           notesEnabled: false, into: dir)
+            #expect(rendered.droppedContent.isEmpty)   // the chart really built
+            let deckOnDisk = try Presentation(contentsOf: rendered.url)
+            let part = try #require(
+                deckOnDisk.package.parts.first { $0.key.value.contains("charts/chart") }?.value)
+            return String(decoding: part.blob, as: UTF8.self)
+        }
+
+        let multi = try await render(seriesCount: 2)
+        let single = try await render(seriesCount: 1)
+        #expect(multi.contains("<c:legend>"))
+        #expect(!single.contains("<c:legend>"))
+    }
+
+    /// Falling back is right — a series whose length disagrees with the
+    /// categories makes a chart PowerPoint has to repair. Doing it silently is
+    /// not: a chart slide carries no bullets, so the user gets a title and
+    /// nothing else, looking like a clean render.
+    @Test func aMalformedChartSaysWhyItBecameSomethingElse() async throws {
+        var deck = try fixtureDeck()
+        deck.slides[1].layout = "chart"
+        deck.slides[1].body = Body(chart: IRChart(
+            kind: "bar",
+            categories: ["Q1", "Q2", "Q3"],
+            // Three categories, two values: exactly the mismatch the renderer
+            // refuses to build.
+            series: [IRSeries(name: "ARR", values: [1, 2])]))
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        #expect(rendered.droppedContent.contains { $0.contains("chart data was malformed") })
+    }
+
+    /// A generated image is the one thing on the slide a screen reader cannot
+    /// infer, and the brief that produced it is already a description of it.
+    @Test func generatedImagesCarryTheirBriefAsAltText() async throws {
+        var deck = try fixtureDeck()
+        // sectionHeader is the layout that places an image as a shape; the
+        // full-bleed layouts set a background fill, which has no shape to
+        // describe.
+        deck.slides[1].layout = "sectionHeader"
+        deck.slides[1].body = Body(kicker: "Part one")
+        deck.slides[1].image = ImageBrief(prompt: "A wind turbine at dawn")
+        let id = deck.slides[1].id
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir,
+                                                       images: [id: png()])
+
+        let reopened = try Presentation(contentsOf: rendered.url)
+        let described = reopened.slides.contains { slide in
+            slide.shapes.contains { $0.altText == "A wind turbine at dawn" }
+        }
+        #expect(described)
+        // It placed, so nothing is reported lost.
+        #expect(rendered.droppedContent.isEmpty)
+    }
+
+    // MARK: - Sections (Rostrum enforces its contract with `precondition`)
+
+    /// Two sections sharing a first slide used to **abort the process**.
+    /// `Sections.set` requires strictly-increasing starts and enforces it with
+    /// `precondition`, which `try?` cannot catch — and a model listing one
+    /// slide under two headings is ordinary output, not misuse.
+    @Test func sectionsSharingAFirstSlideDoNotAbortTheProcess() async throws {
+        var deck = try fixtureDeck()
+        let ids = deck.slides.map(\.id)
+        // Slides carry `sectionId`, and the validator checks it resolves — so
+        // reuse the fixture's section ids rather than inventing new ones.
+        deck.sections = [
+            IRSection(id: "s1", title: "One", slideIds: [ids[0], ids[1]]),
+            // Also starts at slide 0: two sections, one equal startSlide, which
+            // is what trips the strictly-increasing precondition.
+            IRSection(id: "s2", title: "Two", slideIds: [ids[0], ids[2]]),
+        ]
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        // Survived, and the duplicate start collapsed rather than being passed
+        // on: both sections claim slide 0, so exactly one boundary remains.
+        let reopened = try Presentation(contentsOf: rendered.url)
+        #expect(reopened.sections.count == 1)
+    }
+
+    /// A model that leaves the title slide out of every section is the common
+    /// shape. Rostrum requires the first section to start at slide 0, so
+    /// Lectern used to drop *every* section rather than cover the gap.
+    @Test func sectionsStartingAfterTheTitleSlideAreKeptNotDiscarded() async throws {
+        var deck = try fixtureDeck()
+        let ids = deck.slides.map(\.id)
+        deck.sections = [
+            IRSection(id: "s1", title: "Body", slideIds: [ids[1], ids[2]]),
+            IRSection(id: "s2", title: "Close", slideIds: [ids[3], ids[4]]),
+        ]
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        let reopened = try Presentation(contentsOf: rendered.url)
+        // Both the model's sections, plus a synthesized opener for slide 0.
+        #expect(reopened.sections.count == 3)
+        #expect(reopened.sections.contains { $0.name == "Body" })
+        #expect(reopened.sections.contains { $0.name == "Close" })
+    }
+
+    // MARK: - Deck identity and self-check
+
+    /// A generated deck used to arrive anonymous: no title, no subject, nothing
+    /// naming what wrote it. PowerPoint's info pane, Finder, Spotlight and
+    /// SharePoint all read `docProps`.
+    @Test func stampsDocumentPropertiesFromTheIR() async throws {
+        let validated = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: true, into: dir)
+
+        let properties = try Presentation(contentsOf: rendered.url).documentProperties
+        #expect(properties.title == validated.deck.meta.title)
+        #expect(properties.application == "Lectern (Rostrum)")
+        if let subtitle = validated.deck.meta.subtitle, !subtitle.isEmpty {
+            #expect(properties.subject == subtitle)
+        }
+    }
+
+    /// Stamping `docProps` is exactly where a renderer is tempted to write
+    /// `Date()` and quietly lose reproducibility. Rostrum never stamps
+    /// wall-clock time of its own, and Lectern must not either: the same IR has
+    /// to keep producing the same bytes.
+    @Test func renderingTheSameIRTwiceProducesTheSameBytes() async throws {
+        let validated = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let first = tempDir(); defer { try? FileManager.default.removeItem(at: first) }
+        let second = tempDir(); defer { try? FileManager.default.removeItem(at: second) }
+
+        let a = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                notesEnabled: true, into: first)
+        let b = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                notesEnabled: true, into: second)
+        #expect(try Data(contentsOf: a.url) == Data(contentsOf: b.url))
+    }
+
+    /// Rostrum's schema lint, run by Lectern on the file it just wrote. An
+    /// entry here is a defect in Lectern or Rostrum, never in the model's plan
+    /// — which is why it is reported apart from `warnings`.
+    @Test func theWrittenDeckPassesRostrumsOwnLint() async throws {
+        let validated = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: true, into: dir)
+        #expect(rendered.schemaIssues.isEmpty, "\(rendered.schemaIssues)")
+    }
+
+    // MARK: - Previews
+
+    @Test func rendersOnePreviewPerSlideFromTheWrittenDeck() async throws {
+        let validated = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+
+        #expect(rendered.previews.count == rendered.slideCount)
+        #expect(rendered.previews.allSatisfy { $0.hasPrefix("<svg ") && $0.hasSuffix("</svg>") })
+
+        // One render per slide, not one render repeated: distinct slides must
+        // produce distinct SVG.
+        #expect(Set(rendered.previews).count == rendered.previews.count)
+
+        // Rendered from the written deck rather than redrawn from the IR, so
+        // the first slide's title has to be in its own preview. Matched a word
+        // at a time: the renderer line-breaks and XML-escapes, so the full
+        // title may be split across `<text>` elements, but a word is never
+        // split mid-way and a plain alphanumeric one is never escaped.
+        let title = try #require(validated.deck.slides.first?.title)
+        let word = try #require(
+            title.split(separator: " ")
+                .map(String.init)
+                .filter { $0.allSatisfy(\.isLetter) }
+                .max(by: { $0.count < $1.count }))
+        #expect(rendered.previews.first?.contains(word) == true)
+    }
+
+    // MARK: - Font measurement
+
+    #if canImport(CoreText)
+    /// The substitution guard, which is the whole subtlety of resolving a
+    /// typeface name to a file: CoreText answers *every* request, handing back
+    /// the system fallback for a face that isn't installed. Registering that
+    /// under the requested name would measure the wrong glyphs and report
+    /// confidence — strictly worse than the estimate it replaced.
+    @Test func resolvesInstalledFontsAndRefusesSubstitutes() throws {
+        // Helvetica ships with every macOS/iOS install.
+        let helvetica = try #require(DeckRenderer.installedFontFile(named: "Helvetica"))
+        #expect(FileManager.default.fileExists(atPath: helvetica.path))
+
+        // Nothing is named this, so CoreText substitutes — and we must decline.
+        #expect(DeckRenderer.installedFontFile(named: "Nonexistent Face QZX") == nil)
+    }
+    #endif
+
+    @Test func reportsWhichFontsWereEstimatedRatherThanMeasured() async throws {
+        let result = try DeckValidator().validate(fixtureDeck(), notesRequired: true)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(result.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+        // Whether a given face is installed is a fact about the machine, so the
+        // contract is the shape, not the contents: reported faces are real,
+        // named, and never silently duplicated.
+        #expect(Set(rendered.unmeasuredFonts).count == rendered.unmeasuredFonts.count)
+        #expect(!rendered.unmeasuredFonts.contains(""))
+        #expect(rendered.unmeasuredFonts == rendered.unmeasuredFonts.sorted())
+        // And it stays out of `warnings`, which is about the deck.
+        #expect(rendered.warnings.isEmpty)
     }
 
     // MARK: - Rendering (the Rostrum loop)

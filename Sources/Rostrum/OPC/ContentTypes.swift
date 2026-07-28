@@ -8,6 +8,19 @@ public struct ContentTypesMap {
     /// Part URI → content type. Wins over any Default.
     public private(set) var overrides: [PackURI: String]
 
+    /// The bytes this map was parsed from and the maps they encoded, so an
+    /// untouched package re-emits its content-types stream verbatim.
+    /// Rebuilding sorts Defaults and Overrides, while Office writes Overrides
+    /// in document order — a foreign package's stream would otherwise change
+    /// on every save.
+    ///
+    /// Comparing the maps rather than latching a dirty flag means a change
+    /// that nets out — adding a part's override and removing it again, which
+    /// the image-dedup path does on every save — still re-emits the original.
+    private var pristine: Data?
+    private var pristineDefaults: [String: String]?
+    private var pristineOverrides: [PackURI: String]?
+
     static let namespace = "http://schemas.openxmlformats.org/package/2006/content-types"
 
     /// Every package needs these two Defaults to be readable at all.
@@ -55,17 +68,32 @@ public struct ContentTypesMap {
                 guard let part = child[attribute: "PartName"], let ct = child[attribute: "ContentType"] else {
                     throw RostrumError.packageInvalid("<Override> missing PartName or ContentType")
                 }
-                map.overrides[PackURI(part)] = ct
+                guard let uri = PackURI(parsing: part) else {
+                    throw RostrumError.packageInvalid(
+                        "<Override PartName=\"\(part)\"> is not an absolute part name")
+                }
+                map.overrides[uri] = ct
             default:
                 continue
             }
         }
+        map.pristine = data
+        map.pristineDefaults = map.defaults
+        map.pristineOverrides = map.overrides
         return map
     }
 
-    /// Deterministic serialization: Defaults sorted by extension, then
-    /// Overrides sorted by part name.
+    /// The original bytes when the map still matches what was parsed;
+    /// otherwise a deterministic rebuild (Defaults sorted by extension, then
+    /// Overrides sorted by part name).
     public func serialized() -> Data {
+        if let pristine, defaults == pristineDefaults, overrides == pristineOverrides {
+            return pristine
+        }
+        return rebuilt()
+    }
+
+    private func rebuilt() -> Data {
         let root = XML.Element("Types", attributes: [("xmlns", Self.namespace)])
         for (ext, ct) in defaults.sorted(by: { $0.key < $1.key }) {
             root.appendElement(XML.Element("Default", attributes: [("Extension", ext), ("ContentType", ct)]))
@@ -82,6 +110,7 @@ public enum ContentType {
     public static let opcRelationships = "application/vnd.openxmlformats-package.relationships+xml"
     public static let opcCoreProperties = "application/vnd.openxmlformats-package.core-properties+xml"
     public static let officeExtendedProperties = "application/vnd.openxmlformats-officedocument.extended-properties+xml"
+    public static let officeCustomProperties = "application/vnd.openxmlformats-officedocument.custom-properties+xml"
     public static let theme = "application/vnd.openxmlformats-officedocument.theme+xml"
 
     public static let presentationMain = "application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"
@@ -110,6 +139,7 @@ public enum RelType {
     public static let officeDocument = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"
     public static let coreProperties = "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties"
     public static let extendedProperties = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties"
+    public static let customProperties = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties"
     public static let slideMaster = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
     public static let slideLayout = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
     public static let slide = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
@@ -117,6 +147,13 @@ public enum RelType {
     public static let notesMaster = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster"
     public static let notesSlide = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"
     public static let image = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+    /// Legacy video link, followed by readers that predate `p14:media`.
+    public static let video = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"
+    /// Legacy audio link.
+    public static let audio = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"
+    /// The modern media relationship referenced from the `p14:media`
+    /// extension. Points at the same part as the legacy link.
+    public static let media = "http://schemas.microsoft.com/office/2007/relationships/media"
     public static let hyperlink = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"
     public static let presProps = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps"
     public static let viewProps = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps"
