@@ -281,7 +281,7 @@ import Testing
         for src in Self.descendants(of: try deck.slides[0].part.dom(), named: "a:srcRect") {
             for edge in ["l", "t", "r", "b"] { src[attribute: edge] = value }
         }
-        deck.slides[0].part.markDirty()
+        try deck.slides[0].part.markDirty()   // `try` is the slides subscript's
         let svg = try deck.renderSVG(slideAt: 0)
         #expect(svg.contains("<svg"))
     }
