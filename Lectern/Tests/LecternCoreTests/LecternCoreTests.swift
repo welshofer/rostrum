@@ -173,6 +173,48 @@ import Rostrum
         #expect(throws: ValidationError.self) { _ = try DeckValidator().validate(deck) }
     }
 
+    // MARK: - Builder capacity
+
+    /// Rostrum's diagram builders truncate past `SlideCapacity` and publish
+    /// those ceilings so callers can decide rather than be surprised. Lectern
+    /// read none of them: six metrics shipped four and said nothing.
+    @Test func contentThatExceedsABuilderCapIsReportedNotSilentlyDropped() async throws {
+        var deck = try fixtureDeck()
+        // Six metrics against SlideCapacity.metrics == 4, and seven process
+        // steps against SlideCapacity.process == 5.
+        deck.slides[1].layout = "metrics"
+        deck.slides[1].body = Body(stats: (1...6).map { IRStat(value: "\($0)", label: "m\($0)") })
+        deck.slides[2].layout = "diagram"
+        deck.slides[2].body = Body(diagram: IRDiagram(kind: "process",
+                                                      items: (1...7).map { "step \($0)" }))
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir,
+                                                       useSmartArt: false)
+
+        #expect(rendered.droppedContent.count == 2)
+        #expect(rendered.droppedContent.contains { $0.contains("2 of 6 metrics") })
+        #expect(rendered.droppedContent.contains { $0.contains("2 of 7 process steps") })
+        // Reported, not conflated: this is neither a plan warning nor our bug.
+        #expect(rendered.warnings.isEmpty)
+        #expect(rendered.schemaIssues.isEmpty)
+    }
+
+    /// The caps the model stayed inside must stay quiet, or the report is noise.
+    @Test func contentInsideEveryCapReportsNothing() async throws {
+        var deck = try fixtureDeck()
+        deck.slides[1].layout = "metrics"
+        deck.slides[1].body = Body(stats: (1...4).map { IRStat(value: "\($0)", label: "m\($0)") })
+
+        let validated = try DeckValidator().validate(deck)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let rendered = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                       notesEnabled: false, into: dir)
+        #expect(rendered.droppedContent.isEmpty)
+    }
+
     // MARK: - Sections (Rostrum enforces its contract with `precondition`)
 
     /// Two sections sharing a first slide used to **abort the process**.

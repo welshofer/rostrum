@@ -299,6 +299,17 @@ struct ResultView: View {
                 }
                 .frame(maxWidth: 420)
             }
+            if !result.droppedContent.isEmpty {
+                // The model asked for more than the layout holds. Not a
+                // validation warning and not our bug — a collision between the
+                // plan and the slide, which the user is the one who can resolve.
+                DisclosureGroup("\(result.droppedContent.count) slide(s) lost content to layout limits") {
+                    ForEach(result.droppedContent, id: \.self) {
+                        Text($0).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: 420)
+            }
             if !result.schemaIssues.isEmpty {
                 // Rostrum's own lint on the file we just wrote. If this ever
                 // has entries, the bug is Lectern's or Rostrum's — not the

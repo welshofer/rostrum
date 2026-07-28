@@ -32,6 +32,12 @@ public struct DeckResult: Sendable, Equatable {
     /// boundary as a value; `Presentation` is not `Sendable` and must not
     /// leave.
     public let previews: [String]
+    /// Content the model asked for that a Rostrum builder could not fit — the
+    /// 5th metric, the 6th process step. A third bucket rather than a
+    /// `warnings` entry: `warnings` are about the model's plan, `schemaIssues`
+    /// are about our XML, and this is about the collision between what was
+    /// asked for and what the layout holds.
+    public let droppedContent: [String]
 }
 
 public enum RenderError: Error {
@@ -198,15 +204,19 @@ public actor DeckRenderer {
             // builders will be measuring with.
             let unmeasured = Self.registerInstalledFonts(for: presentation)
 
+            var dropped: [String] = []
             for slide in deck.slides {
                 try Task.checkCancellation()
-                let built = try build(slide, in: presentation, useSmartArt: useSmartArt)
+                let built = try build(slide, in: presentation, useSmartArt: useSmartArt,
+                                      dropped: &dropped)
                 if let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
                     case .fullBleed:
                         // Edge-to-edge background behind the text, dimmed so the
                         // slide's ink stays readable over any image.
-                        let scrimmed = Self.scrimmed(data, dark: presentation.style.isDark)
+                        let scrimmed = Self.scrimmed(
+                            data,
+                            dark: Self.paintsADarkBackground(slide.kind, presentation.style))
                         try? built.setBackground(.image(scrimmed, .stretch))
                     case .sidePanel:
                         // A framed panel on the right (title/content sit left).
@@ -245,7 +255,8 @@ public actor DeckRenderer {
                               // Previews are the tail cost and pure
                               // convenience; the deck is already saved, so a
                               // cancel here skips them rather than undoing it.
-                              previews: Task.isCancelled ? [] : Self.previews(of: presentation))
+                              previews: Task.isCancelled ? [] : Self.previews(of: presentation),
+                              droppedContent: dropped)
         } catch is CancellationError {
             // Must precede the generic catch. Wrapped, this becomes
             // RenderError.renderFailed("CancellationError()") and the user is
@@ -258,9 +269,38 @@ public actor DeckRenderer {
         }
     }
 
+    // MARK: - Builder capacity
+
+    /// Record content a builder is about to discard.
+    ///
+    /// Rostrum's diagram builders truncate past a fixed ceiling and publish
+    /// those ceilings as `SlideCapacity` precisely so a caller can decide
+    /// rather than be surprised — its own doc says "items beyond the cap are
+    /// dropped; these constants exist so that is a decision you make". Lectern
+    /// read none of them, so a model returning six metrics shipped four and
+    /// said nothing.
+    ///
+    /// Reported rather than worked around, deliberately. Splitting the
+    /// overflow onto a second slide is only safe for order-independent
+    /// layouts: `processSlide` renumbers its badges from 1 on every call and
+    /// `pyramidSlide` computes its taper across the level count, so half a
+    /// process or half a pyramid would render something the deck does not
+    /// mean. Making the loss visible is honest and cannot itself lie.
+    ///
+    /// Referencing the constants rather than the literals also means a future
+    /// Rostrum retune cannot silently desync Lectern.
+    private static func noteOverflow(_ count: Int, cap: Int, noun: String,
+                                     on slide: IRSlide, into dropped: inout [String]) {
+        guard count > cap else { return }
+        let name = slide.title ?? ""
+        let label = name.isEmpty ? "slide \(slide.id)" : "\"\(name)\""
+        dropped.append("\(label): \(count - cap) of \(count) \(noun) did not fit (\(cap) maximum)")
+    }
+
     // MARK: - IR layout → Rostrum builder
 
-    private func build(_ slide: IRSlide, in deck: Presentation, useSmartArt: Bool) throws -> Slide {
+    private func build(_ slide: IRSlide, in deck: Presentation, useSmartArt: Bool,
+                       dropped: inout [String]) throws -> Slide {
         let title = slide.title ?? ""
         let body = slide.body
         switch slide.kind {
@@ -315,12 +355,17 @@ public actor DeckRenderer {
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .metrics:
             if let stats = body?.stats, !stats.isEmpty {
+                Self.noteOverflow(stats.count, cap: SlideCapacity.metrics,
+                                  noun: "metrics", on: slide, into: &dropped)
                 return try deck.metricsSlide(title, metrics: stats.map { (value: $0.value, label: $0.label) })
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .bands:
             let items = body?.items ?? flatten(body?.bullets ?? [])
             guard !items.isEmpty else { return try deck.bulletSlide(title, []) }
+            Self.noteOverflow(items.count,
+                              cap: useSmartArt ? SlideCapacity.smartArt : SlideCapacity.bands,
+                              noun: "bands", on: slide, into: &dropped)
             // Native Basic Block List SmartArt when opted in; styled shapes otherwise.
             return useSmartArt
                 ? try deck.smartArtSlide(title, kind: .blockList, items: items)
@@ -330,12 +375,21 @@ public actor DeckRenderer {
                 switch d.kind.lowercased() {
                 // pyramid is always drawn (native pyra isn't PowerPoint-faithful).
                 case "pyramid":
+                    // Always drawn, never SmartArt, so its cap is unconditional.
+                    Self.noteOverflow(d.items.count, cap: SlideCapacity.pyramid,
+                                      noun: "pyramid levels", on: slide, into: &dropped)
                     return try deck.pyramidSlide(title, levels: d.items)
                 case "cycle":
+                    Self.noteOverflow(d.items.count,
+                                      cap: useSmartArt ? SlideCapacity.smartArt : SlideCapacity.process,
+                                      noun: "cycle steps", on: slide, into: &dropped)
                     return useSmartArt
                         ? try deck.smartArtSlide(title, kind: .cycle, items: d.items)
                         : try deck.processSlide(title, steps: d.items)
                 default:
+                    Self.noteOverflow(d.items.count,
+                                      cap: useSmartArt ? SlideCapacity.smartArt : SlideCapacity.process,
+                                      noun: "process steps", on: slide, into: &dropped)
                     return useSmartArt
                         ? try deck.smartArtSlide(title, kind: .process, items: d.items)
                         : try deck.processSlide(title, steps: d.items)
@@ -367,6 +421,26 @@ public actor DeckRenderer {
     /// ink stays legible over a full-bleed background. 55% left busy artwork
     /// fighting the stat caption on bigNumber slides; 70% keeps the image as
     /// texture while every text role clears it. No-op without CoreGraphics.
+    /// Whether *this slide's own* background is dark — which is what decides
+    /// which way its scrim has to go.
+    ///
+    /// `style.isDark` describes the **deck** background (`bg.relativeLuminance
+    /// < 0.5`, DeckStyle), and that is the right signal for `title`,
+    /// `bigNumber` and `quote`: all three paint `.solid(s.background)`. It is
+    /// the wrong signal for `closing`, which paints `.solid(s.accent(1))` and
+    /// then picks its ink with `textColor(on: accent(1))`.
+    ///
+    /// On a light deck with a dark brand accent — the ordinary case — the
+    /// closing slide gets light text, while `isDark == false` scrims the image
+    /// white at 70%. Light text on a white wash is invisible, and it is the
+    /// last slide anyone sees.
+    static func paintsADarkBackground(_ kind: SlideLayoutKind, _ style: DeckStyle) -> Bool {
+        switch kind {
+        case .closing: style.accent(1).relativeLuminance < 0.5
+        default: style.isDark
+        }
+    }
+
     private static func scrimmed(_ data: Data, dark: Bool) -> Data {
         #if canImport(CoreGraphics)
         guard let src = CGImageSourceCreateWithData(data as CFData, nil),
