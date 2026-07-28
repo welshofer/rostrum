@@ -197,8 +197,17 @@ public enum SlideLayoutKind: Sendable, Equatable {
     public var imagePlacement: ImagePlacement {
         switch self {
         case .title, .bigNumber, .quote, .closing: return .fullBleed   // sparse, centered/large text
-        case .sectionHeader: return .sidePanel                          // title left, image right
-        case .agenda, .bullets, .twoColumn, .comparison, .chart, .metrics, .bands, .diagram, .unknown: return .none
+        // Text narrows to the left seven columns and the picture takes the
+        // panel Rostrum reserves. Bullets and agendas qualify: they are one
+        // column of text, so losing the right-hand fifth costs width, not
+        // structure. That is what lets a mostly-bullets deck carry imagery at
+        // all — with only the sparse layouts eligible, a 25-slide deck had
+        // barely five places to put a picture.
+        case .sectionHeader, .bullets, .agenda: return .sidePanel
+        // Genuinely full-width: two columns of text, a plotted chart, a row of
+        // metrics, stacked bands, a diagram. Narrowing any of these breaks the
+        // layout rather than reflowing it.
+        case .twoColumn, .comparison, .chart, .metrics, .bands, .diagram, .unknown: return .none
         }
     }
 }

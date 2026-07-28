@@ -104,6 +104,40 @@ import Testing
         _ = try XML.parse(Data(svg.utf8))
     }
 
+    // MARK: - Side image reservation
+
+    /// A slide that reserves the side panel must keep every piece of its text
+    /// clear of it. Lectern computed its panel from slide fractions while the
+    /// builder reserved grid columns, and the two did not line up — the
+    /// picture landed on `sectionSlide`'s subtitle. Both now read one grid, so
+    /// the only way that recurs is if this stops holding.
+    @Test func reservedTextNeverEntersTheSideImagePanel() throws {
+        let deck = try Presentation()
+        let panel = deck.sideImagePanel()
+        try deck.bulletSlide("A headline long enough that it would want the whole width",
+                             ["first point that is also rather long",
+                              "second point", "third point"],
+                             reservingSideImage: true)
+
+        for shape in try deck.slides[1].shapes {
+            let frame = shape.frame
+            guard frame.width.rawValue > 0 else { continue }
+            #expect(frame.maxX.rawValue <= panel.minX.rawValue,
+                    "\"\(shape.name)\" runs to \(frame.maxX.rawValue), panel starts at \(panel.minX.rawValue)")
+        }
+    }
+
+    /// Not reserving is the default, and must be unchanged — a text-only deck
+    /// should not lose a fifth of its width because the feature exists.
+    @Test func notReservingKeepsTheFullWidth() throws {
+        let deck = try Presentation()
+        let panel = deck.sideImagePanel()
+        try deck.bulletSlide("Title", ["a point"])
+
+        let widest = try deck.slides[1].shapes.map(\.frame.maxX.rawValue).max() ?? 0
+        #expect(widest > panel.minX.rawValue, "text was narrowed without being asked")
+    }
+
     // MARK: - Charts
 
     /// A chart slide used to preview as a grey "[chart]" box, which tells the

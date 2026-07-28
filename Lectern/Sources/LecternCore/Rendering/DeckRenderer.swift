@@ -208,8 +208,12 @@ public actor DeckRenderer {
             var dropped: [String] = []
             for slide in deck.slides {
                 try Task.checkCancellation()
+                // Decided before the builder runs: reserving the panel changes
+                // how wide the text is laid out, so it cannot be discovered
+                // afterwards when the picture is placed.
+                let sideImage = images[slide.id] != nil && slide.kind.imagePlacement == .sidePanel
                 let built = try build(slide, in: presentation, useSmartArt: useSmartArt,
-                                      dropped: &dropped)
+                                      hasSideImage: sideImage, dropped: &dropped)
                 if let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
                     case .fullBleed:
@@ -336,7 +340,7 @@ public actor DeckRenderer {
     // MARK: - IR layout → Rostrum builder
 
     private func build(_ slide: IRSlide, in deck: Presentation, useSmartArt: Bool,
-                       dropped: inout [String]) throws -> Slide {
+                       hasSideImage: Bool, dropped: inout [String]) throws -> Slide {
         let title = slide.title ?? ""
         let body = slide.body
         switch slide.kind {
@@ -345,9 +349,11 @@ public actor DeckRenderer {
         case .sectionHeader:
             return try deck.sectionSlide(title, subtitle: body?.kicker)
         case .agenda:
-            return try deck.bulletSlide(title.isEmpty ? "Agenda" : title, body?.items ?? [])
+            return try deck.bulletSlide(title.isEmpty ? "Agenda" : title, body?.items ?? [],
+                                        reservingSideImage: hasSideImage)
         case .bullets:
-            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []),
+                                        reservingSideImage: hasSideImage)
         case .twoColumn, .comparison:
             let left = body?.left ?? Column(heading: "", bullets: [])
             let right = body?.right ?? Column(heading: "", bullets: [])
@@ -472,11 +478,15 @@ public actor DeckRenderer {
 
     /// Right-hand image panel: ~40% width, vertically centered, with a margin —
     /// mirrors the reference hero cards and clears left-aligned title/bullets.
+    /// Where a side image goes — asked of Rostrum rather than computed here.
+    ///
+    /// This used to be slide fractions (x at 55.5% of the width), which is how
+    /// the panel came to sit on top of `sectionSlide`'s subtitle: the builder
+    /// reserved six columns of the twelve-column grid and this reserved from a
+    /// fraction that did not line up with any column boundary. Both sides now
+    /// read the same grid, so they cannot disagree.
     private static func imageFrame(in presentation: Presentation) -> Rect {
-        let size = presentation.slideSize
-        let w = Double(size.width.rawValue), h = Double(size.height.rawValue)
-        return Rect(x: EMU(Int(w * 0.555)), y: EMU(Int(h * 0.21)),
-                    width: EMU(Int(w * 0.40)), height: EMU(Int(h * 0.58)))
+        presentation.sideImagePanel()
     }
 
     /// Darken (dark theme) or lighten (light theme) an image ~70% so the slide's

@@ -88,7 +88,12 @@ public extension Presentation {
             // Start higher (row 8) and run wider (9 cols) so a long closing CTA
             // wraps to a few lines well clear of the bottom edge, not off it. A
             // section header's subtitle is short, so the extra width is harmless.
-            try slide.addText(subtitle, in: grid.cell(column: 0, row: 8, columnSpan: 9, rowSpan: 4),
+            // Six columns, not nine: the renderer places a side image from
+            // `sideImageColumn` on, and a nine-column subtitle ran straight
+            // under it.
+            try slide.addText(subtitle,
+                              in: grid.cell(column: 0, row: 8,
+                                            columnSpan: Self.sideImageColumn - 1, rowSpan: 4),
                               role: .subhead, style: s, color: onBg)
         }
         return slide
@@ -135,11 +140,16 @@ public extension Presentation {
 
     /// A title + bulleted body.
     @discardableResult
+    /// - Parameter reservingSideImage: narrow the title and bullets to the
+    ///   left seven columns, leaving `sideImagePanel()` free for a picture.
+    ///   Text-only slides keep the full width, so nothing moves unless asked.
     func bulletSlide(_ title: String, _ bullets: [String],
-                     kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+                     kicker: String? = nil, reservingSideImage: Bool = false,
+                     style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
-        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s,
+                                 reservingSideImage: reservingSideImage)
         try slide.addBulletList(bullets, in: content, style: s, anchor: .top)   // start just below the title
         return slide
     }
@@ -436,6 +446,25 @@ public extension Presentation {
         Grid(in: bounds, columns: 12, rows: 12, gutter: style.gutter, margin: style.margin)
     }
 
+    /// Where a side image goes on a slide that reserved room for one — the
+    /// right-hand five columns, clear of the title band.
+    ///
+    /// Derived from the same grid the builders lay text on, and published so
+    /// the code that *places* the picture uses the identical rect to the code
+    /// that *made room* for it. A caller computing its own panel from slide
+    /// fractions is how text and image come to overlap: Lectern's did, at
+    /// 55.5% of the slide width, while `sectionSlide`'s subtitle ran nine
+    /// columns wide and straight underneath it.
+    func sideImagePanel(style: DeckStyle? = nil) -> Rect {
+        let s = style ?? self.style
+        return deckGrid(s).cell(column: Self.sideImageColumn, row: 2,
+                                columnSpan: 12 - Self.sideImageColumn, rowSpan: 9)
+    }
+
+    /// First column belonging to the side image. Text on a reserving slide
+    /// stops here; `sideImagePanel` starts here.
+    static let sideImageColumn = 7
+
     /// A content slide with the background painted; returns the slide.
     private func startContentSlide(_ style: DeckStyle) throws -> Slide {
         let slide = try blankCanvas()
@@ -445,10 +474,16 @@ public extension Presentation {
 
     /// Place an optional kicker + a title across the top rows; return the content
     /// rect below them.
-    private func header(on slide: Slide, kicker: String?, title: String, style: DeckStyle) throws -> Rect {
-        let head = try placeHeader(on: slide, kicker: kicker, title: title, style: style)
+    private func header(on slide: Slide, kicker: String?, title: String, style: DeckStyle,
+                        reservingSideImage: Bool = false) throws -> Rect {
+        let head = try placeHeader(on: slide, kicker: kicker, title: title, style: style,
+                                   reservingSideImage: reservingSideImage)
         let grid = deckGrid(style)
-        return grid.cell(column: 0, row: head.contentRow, columnSpan: 12, rowSpan: 12 - head.contentRow)
+        // Stop at the image column when one is reserved, so the picture the
+        // caller places into `sideImagePanel()` cannot land on the text.
+        let span = reservingSideImage ? Self.sideImageColumn : 12
+        return grid.cell(column: 0, row: head.contentRow, columnSpan: span,
+                         rowSpan: 12 - head.contentRow)
     }
 
     /// Draw the kicker + title and report where content may start.
@@ -464,14 +499,19 @@ public extension Presentation {
     /// otherwise prints straight over the cards/bullets below (PowerPoint
     /// renders bare `normAutofit` text at full size until the box is edited).
     private func placeHeader(on slide: Slide, kicker: String?, title: String,
-                             style: DeckStyle) throws -> (contentRow: Int, titleWraps: Bool) {
+                             style: DeckStyle,
+                             reservingSideImage: Bool = false) throws -> (contentRow: Int, titleWraps: Bool) {
         let grid = deckGrid(style)
+        // The title clears the image too — a headline running under the panel
+        // is the same defect as a bullet doing it.
+        let textColumns = reservingSideImage ? Self.sideImageColumn : 11
         var titleRow = 0
         if let kicker {
-            try slide.addKicker(kicker, in: grid.cell(column: 0, row: 0, columnSpan: 12), style: style)
+            try slide.addKicker(kicker, in: grid.cell(column: 0, row: 0, columnSpan: textColumns),
+                                style: style)
             titleRow = 1
         }
-        let band = grid.cell(column: 0, row: titleRow, columnSpan: 11, rowSpan: 2)
+        let band = grid.cell(column: 0, row: titleRow, columnSpan: textColumns, rowSpan: 2)
         // maxLines 1: the band is sized for a single line, so with metrics we
         // prefer the largest size that avoids wrapping at all.
         let fitted = fitSize([title], font: style.type(.title).font,
