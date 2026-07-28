@@ -5,9 +5,15 @@ import WebKit
 ///
 /// The SVG comes from `Presentation.renderSVG(slideAt:)` run on the deck that
 /// was actually written — same theme resolution, same placeholder inheritance,
-/// same line breaking, measured with the same fonts the builders used. Drawing
-/// a preview from the `DeckIR` instead would be a second implementation of
-/// layout, free to disagree with the file the user opens.
+/// same text. Drawing a preview from the `DeckIR` instead would be a second
+/// implementation of layout, free to disagree with the file the user opens.
+///
+/// It is a preview, not a proof. Where the paragraph's typeface is registered
+/// the renderer measures real advance widths and breaks lines exactly as the
+/// builders did; where it isn't — a face the design names that this machine
+/// doesn't have — line breaks come from a character-width estimate and can
+/// fall in different places than PowerPoint puts them. `unmeasuredFonts` on
+/// the result says which faces those were.
 ///
 /// SwiftUI has no SVG view, and neither `NSImage` nor `UIImage` will load one,
 /// so this is a `WKWebView` showing the markup inline: `loadHTMLString` with a

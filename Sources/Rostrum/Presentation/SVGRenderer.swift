@@ -133,11 +133,23 @@ struct SVGRenderer {
                     cursorY += lineH
                 }
             } else {
-                cursorY += sizeEMU
-                out += "<text x=\"\(anchorX)\" y=\"\(cursorY)\" font-size=\"\(sizeEMU)\" "
-                    + "fill=\"\(color)\" text-anchor=\"\(textAnchor)\"\(bold ? " font-weight=\"bold\"" : "")>"
-                    + escape(clip(text, width: w, sizeEMU: sizeEMU)) + "</text>"
-                cursorY += sizeEMU / 3
+                // No metrics for this typeface (or a mixed paragraph): estimate
+                // a character width from the font size and wrap on it.
+                //
+                // Wrapping rather than truncating. This branch used to emit one
+                // line and drop the rest behind an ellipsis, which silently
+                // rewrote a headline — "Why Native Rendering Wins" came out
+                // "Why Native Render…" — in a picture whose whole job is to
+                // show what the deck says. The estimate is the same one; only
+                // the overflow behaviour changed, so text that already fit on
+                // one line renders byte-identically to before.
+                for line in wrapEstimated(text, width: w, sizeEMU: sizeEMU) {
+                    cursorY += sizeEMU
+                    out += "<text x=\"\(anchorX)\" y=\"\(cursorY)\" font-size=\"\(sizeEMU)\" "
+                        + "fill=\"\(color)\" text-anchor=\"\(textAnchor)\"\(bold ? " font-weight=\"bold\"" : "")>"
+                        + escape(line) + "</text>"
+                    cursorY += sizeEMU / 3
+                }
             }
             _ = h
         }
@@ -145,11 +157,60 @@ struct SVGRenderer {
     }
 
     /// Rough character clip so a long line doesn't overflow the thumbnail.
-    private func clip(_ text: String, width: Int, sizeEMU: Int) -> String {
+    /// Break `text` into lines that fit `width`, estimating character width
+    /// from the font size. Used when the paragraph's typeface has no
+    /// registered metrics — register the font (`deck.fonts`) and the measured
+    /// path above wraps on real advance widths instead.
+    ///
+    /// Bounded to `maxEstimatedLines`. Width comes out of the file, so a
+    /// hostile deck can declare a one-EMU-wide shape holding a megabyte of
+    /// text and ask for a line per character; the renderer is a pure read API
+    /// that must survive whatever it is pointed at. The bound is what the old
+    /// single-line clip gave for free, kept explicitly now that more than one
+    /// line can be emitted.
+    private static let maxEstimatedLines = 64
+
+    private func wrapEstimated(_ text: String, width: Int, sizeEMU: Int) -> [String] {
         let approxCharWidth = sizeEMU / 2
-        guard approxCharWidth > 0 else { return text }
+        guard approxCharWidth > 0, width > 0 else { return [text] }
         let maxChars = Swift.max(1, width / approxCharWidth)
-        return text.count <= maxChars ? text : String(text.prefix(Swift.max(1, maxChars - 1))) + "…"
+        guard text.count > maxChars else { return [text] }
+
+        var lines: [String] = []
+        var current = ""
+
+        func commit(_ line: String) -> Bool {
+            lines.append(line)
+            return lines.count < Self.maxEstimatedLines
+        }
+
+        outer: for word in text.split(separator: " ") {
+            let candidate = current.isEmpty ? String(word) : current + " " + word
+            if candidate.count <= maxChars {
+                current = candidate
+                continue
+            }
+            if !current.isEmpty, !commit(current) { current = ""; break outer }
+            // A single word wider than the line is hard-broken rather than
+            // allowed to run past the shape's edge.
+            var rest = Substring(word)
+            while rest.count > maxChars {
+                if !commit(String(rest.prefix(maxChars))) { current = ""; break outer }
+                rest = rest.dropFirst(maxChars)
+            }
+            current = String(rest)
+        }
+        if !current.isEmpty { lines.append(current) }
+
+        if lines.count > Self.maxEstimatedLines {
+            lines = Array(lines.prefix(Self.maxEstimatedLines))
+        }
+        // Say so when the bound bit, rather than ending mid-sentence as if the
+        // deck said that.
+        if lines.count == Self.maxEstimatedLines, let last = lines.last {
+            lines[lines.count - 1] = String(last.prefix(Swift.max(1, maxChars - 1))) + "…"
+        }
+        return lines.isEmpty ? [text] : lines
     }
 
     // MARK: - Pictures

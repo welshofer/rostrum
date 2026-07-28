@@ -26,6 +26,45 @@ import Testing
         _ = try XML.parse(Data(svg.utf8))                          // valid XML
     }
 
+    /// Text too wide for its shape wraps; it does not get truncated behind an
+    /// ellipsis. The unmeasured branch used to emit a single clipped line, so
+    /// a headline came back silently rewritten — the one thing a preview must
+    /// not do.
+    @Test func longTextWrapsRatherThanBeingClippedAway() throws {
+        let deck = try Presentation()
+        // No fonts registered, so this takes the estimated path deliberately.
+        #expect(deck.fonts.isEmpty)
+        let headline = "Why Native Rendering Wins Over Server Round Trips Every Single Time"
+        try deck.titleSlide(headline)
+
+        let svg = try deck.renderSVG(slideAt: 1)
+        // Every word survives somewhere in the output, on whatever line the
+        // estimate put it.
+        for word in headline.split(separator: " ") {
+            #expect(svg.contains(word), "dropped \"\(word)\"")
+        }
+        #expect(svg == (try deck.renderSVG(slideAt: 1)))   // still deterministic
+        _ = try XML.parse(Data(svg.utf8))
+    }
+
+    /// The wrap is bounded. `renderSVG` is a pure read API pointed at files we
+    /// did not write, and a one-EMU-wide shape holding a lot of text must not
+    /// turn into a line per character.
+    @Test func estimatedWrapIsBoundedOnAbsurdGeometry() throws {
+        let deck = try Presentation()
+        let slide = try deck.slides[0]
+        let box = try slide.shapes.addShape(
+            .rectangle,
+            frame: Rect(x: .zero, y: .zero, width: EMU(1), height: .inches(5)),
+            fill: .solid(Color("FFFFFF")))
+        box.textFrame?.text = String(repeating: "overflow ", count: 20_000)
+
+        let svg = try deck.renderSVG(slideAt: 0)
+        let lines = svg.components(separatedBy: "<text").count - 1
+        #expect(lines <= 64, "emitted \(lines) text lines")
+        _ = try XML.parse(Data(svg.utf8))
+    }
+
     @Test func rendersShapesTextImageAndTable() throws {
         let deck = try Presentation()
         let slide = try deck.slides[0]

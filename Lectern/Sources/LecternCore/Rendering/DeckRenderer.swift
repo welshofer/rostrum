@@ -169,7 +169,8 @@ public actor DeckRenderer {
                         try? built.setBackground(.image(scrimmed, .stretch))
                     case .sidePanel:
                         // A framed panel on the right (title/content sit left).
-                        try? built.shapes.addPicture(data, frame: Self.imageFrame(in: presentation), fit: .fill)
+                        _ = try? built.shapes.addPicture(
+                            data, frame: Self.imageFrame(in: presentation), fit: .fill)
                     case .none:
                         break
                     }
