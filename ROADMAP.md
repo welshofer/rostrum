@@ -212,7 +212,9 @@ box; this program makes Rostrum the first.
   as the byte-identical fallback; `SVGRenderer` renders measured word wrap
   and baselines for registered typefaces. Builder capacity is documented
   rather than silent (`SlideCapacity`), and `registerEmbeddedFonts()` feeds
-  a deck's own embedded typefaces to the measurer.
+  a deck's own embedded typefaces to the measurer. (2026-07-28: the renderer
+  also *draws* image fills on slide backgrounds instead of painting them as a
+  grey swatch — see M6 for why that mattered.)
 - **M3 — Read-side object model (core shipped 2026-07-26, this branch).**
   Polymorphic shape enumeration: `p:pic`, `p:graphicFrame` (table/chart/
   diagram/unmodeled), `p:grpSp` and `p:cxnSp` are visible on opened decks as
@@ -243,6 +245,33 @@ box; this program makes Rostrum the first.
   only when a relationship or content type actually changes, so the
   byte-identity gate now covers every zip entry. This was the last documented
   exception to the sacred invariant.
+
+- **M6 — Measure the *design* layer too (shipped 2026-07-28).** Same theme as
+  M1/M2, one level up: two defects reported off a real generated deck both came
+  from a layout decision made on a proxy instead of a measurement.
+
+  `comparisonSlide` climbs one grid row above the shared content top to give
+  its cards headroom, but a grid row is 0.24in and a title line is nearer
+  0.6in — so "one row up" was inside the headline. On the reported deck the
+  card's top edge sat at 1.392in while the title's single 34pt line ran to
+  1.4006in, and a card is an opaque filled shape written after the text.
+  `placeHeader` now reports the title's measured ink (via the metrics engine
+  when the font is registered, a 1.2em estimate otherwise) and the cards clamp
+  below it, which also fixed the wrapped-title case the row arithmetic got
+  wrong in the opposite direction.
+
+  `ImageFillMode` had `.stretch` and `.tile` and no aspect-preserving mode, so
+  every full-bleed background was scaled per-axis: the 1024×1024 images an
+  image model returns arrived on a 16:9 slide 78% too wide. Pictures had had
+  cover-crop since Phase 2 (`PictureFit.fill`) — fills simply never got it, and
+  the two now share one `SrcCrop.cover` rather than each owning the arithmetic.
+
+  Note the shape of the miss: the preview could not show either defect, because
+  `renderSVG` painted every image fill as flat `#DDDDDD` and hard-coded SVG's
+  `slice` (which is *cover*) on pictures, so a distorted file previewed
+  undistorted. A preview that cannot be wrong about the thing you are looking
+  at is worth more than one that is merely fast, and this one was quietly
+  wrong for as long as the feature existed.
 
 Hardening backlog (schedule opportunistically):
 
@@ -382,6 +411,19 @@ Hardening backlog (schedule opportunistically):
   claimed as done is the overstatement this codebase keeps having to walk back.
   The entry count is the ceiling a real `.pptx` can plausibly reach; the size
   fields are not.
+- ✅ 2026-07-28 — `a:srcRect` on the SVG read path. Worth recording because the
+  parse-boundary funnel above exists **specifically** so this cannot happen, and
+  it happened anyway: a brand-new read site simply did not use it. Adding
+  background-image rendering meant reading srcRect insets back, which were parsed
+  as raw `Double`s and then divided into `Int(_: Double)`. `Double("1e30")`,
+  `"inf"` and `"nan"` all parse, and the divisor's `max(0.0001, …)` clamp lets
+  NaN straight through (`nan >= 0.0001` is false, so `max` returns the clamp)
+  to reappear in the offset — an uncatchable abort on a pure read API. Now
+  `boundedInt(_:in: -100_000...100_000)`, with a fuzz case per hostile spelling.
+  Found by adversarial review, not by CI: three of four reviewers converged on
+  it independently. The lesson is not "bound this attribute" — it is that the
+  funnel only protects call sites that opt in, so a *new* file-derived number is
+  the thing to look for in review.
 - Quadratic hot spots on very large decks; `prune()`/orphan audit promised in
   ARCHITECTURE.md.
 

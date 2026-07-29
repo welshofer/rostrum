@@ -80,6 +80,37 @@ let hero = grid.cell(column: 0, row: 0, columnSpan: 8, rowSpan: 6)
 let (left, right) = deck.bounds.inset(by: .inches(1)).split(.horizontal, ratio: 0.5, gutter: .inches(0.3))
 ```
 
+## Images
+
+Two rules cover almost every use: **let Rostrum crop, and let Rostrum place.**
+
+```swift
+// Full-bleed background. `.cover` scales to fill the slide with NO distortion,
+// cropping the overflow; `.stretch` (the default) scales each axis separately.
+try slide.setBackground(.image(jpeg, fit: .cover))
+
+// A picture in a frame — same aspect-preserving behaviour, `fit: .fill`.
+let picture = try slide.shapes.addPicture(png, frame: frame, fit: .fill)
+picture.altText = "Q3 revenue by region"
+
+// Where a side image goes on a builder slide that reserved room for one.
+let bullets = try deck.bulletSlide("Findings", items, reservingSideImage: true)
+try bullets.shapes.addPicture(png, frame: deck.sideImagePanel(), fit: .fill)
+```
+
+**Prefer `.cover`/`.fill` over `.stretch`** unless the image is already the
+region's aspect ratio. Image generators hand back squares far more often than
+they honour a requested aspect, and a 1:1 image stretched onto a 16:9 slide is
+78% too wide — faces flatten, circles become ellipses. Both modes size the crop
+from the image's own pixel dimensions and write an `a:srcRect` when one is
+needed (none when the aspects already agree), so nothing is scaled per-axis and
+nothing bleeds outside the frame.
+
+**Ask `deck.sideImagePanel()` for the rect** rather than computing one from
+slide fractions. The builders reserve whole grid columns; a caller that reserved
+55.5% of the slide width instead put its picture on top of the text, because the
+two numbers do not line up. One source for the slot means they cannot disagree.
+
 ## Tables
 
 ```swift

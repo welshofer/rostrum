@@ -57,6 +57,32 @@ Keychain (never UserDefaults, never logs, write-only UI); **I3** — nothing
 reaches the renderer unvalidated (the IR is checked, repaired at most once,
 and unknown layouts downgrade to bullets rather than crash).
 
+### Where imagery goes
+
+Seven of the thirteen layouts carry a generated image, and the layout decides
+the slot — not the model's brief:
+
+| Slot | Layouts | Shape requested | How it lands |
+|---|---|---|---|
+| Full-bleed background | `title`, `bigNumber`, `quote`, `closing` | 16:9 | scrimmed ~70%, then `setBackground(.image(_, .cover))` |
+| Right-hand side panel | `sectionHeader`, `bullets`, `agenda` | 1:1 | `addPicture(_, frame: deck.sideImagePanel(), fit: .fill)`, alt text = the brief |
+| — | `twoColumn`, `comparison`, `chart`, `metrics`, `bands`, `diagram` | — | text-dense; a brief here is discarded and reported in `droppedContent` |
+
+Three things are deliberate. The **aspect follows the slot**, because both
+slots are fixed by the layout and a square on a 16:9 slide loses 44% of its
+height to the crop. The **crop, not the stretch**, because image models return
+squares far more often than they honour a requested aspect — `.cover` and
+`.fill` both compute an `a:srcRect` from the image's real pixel dimensions, so
+nothing is ever scaled per-axis. And the **panel rect comes from Rostrum**
+(`sideImagePanel()`), because the builders reserve whole grid columns: this
+used to be a slide fraction here, which is exactly how a picture came to sit
+on top of `sectionSlide`'s subtitle.
+
+Gemini gets the aspect as `generationConfig.imageConfig.aspectRatio`, not only
+as a sentence in the prompt — it was ignoring the sentence and returning
+1024×1024 for every slide. The request retries once without the field so a
+model that predates it degrades instead of failing every image in the deck.
+
 ## What's built and proven (headless)
 
 `LecternCore` is complete and tested end-to-end against a fixture provider —

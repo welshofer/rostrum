@@ -79,7 +79,7 @@ then add `"Rostrum"` to your target's dependencies.
 |---|---|
 | **Slides** | add, remove, **move, duplicate**, layouts & placeholder inheritance |
 | **Shapes** | 178 preset geometries, rounded rects (pill corners), transforms, rotation |
-| **Fills & lines** | solid, alpha, multi-stop gradients, outlines, soft shadows |
+| **Fills & lines** | solid, alpha, multi-stop gradients, outlines, soft shadows, image fills (stretch, **aspect-fill `.cover`**, tile) |
 | **Text** | paragraphs, runs, fonts, sizes, colours, alignment, spacing, tracking, **bullets, numbered lists, hyperlinks** |
 | **Pictures** | PNG/JPEG/GIF sniffing, content dedup, natural sizing, **cover-crop (`fit: .fill`)**, alt text |
 | **Tables** | grid, cell fills & anchors, merge, banded rows |
@@ -94,6 +94,7 @@ then add `"Rostrum"` to your target's dependencies.
 | **Design layer** | `DeckStyle` (type scale, WCAG auto-contrast, tokens); one-call slide builders; cards/buttons/kickers/stat tiles; a Grid DSL |
 | **Templates** | open a `.potx`/`.ppsx` directly and round-trip it as one; `documentKind` converts when you want a deck out of a template; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
 | **Sections** | native PowerPoint sections; footers, slide numbers, dates via live fields |
+| **Preview** | `renderSVG(slideAt:)` / `exportSVG(to:)` — headless slide → SVG with measured text, charts, tables and embedded images, no rasterizer |
 | **Tooling** | `pptx-tool inspect`/`validate` — machine-checkable "PowerPoint will accept this" gate |
 
 ## Design
