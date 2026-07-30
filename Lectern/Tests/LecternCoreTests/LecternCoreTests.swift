@@ -1,5 +1,10 @@
 import Foundation
 import Testing
+#if canImport(CoreGraphics)
+import CoreGraphics
+import ImageIO
+import UniformTypeIdentifiers
+#endif
 import Rostrum
 @testable import LecternCore
 
@@ -845,6 +850,85 @@ import Rostrum
         ])
         #expect(throws: (any Error).self) {
             _ = try DeckValidator().validate(deck, notesRequired: false)
+        }
+    }
+
+    // MARK: - Image weight
+
+    /// A scrimmed backdrop used to be re-encoded losslessly, which turned a
+    /// 2.7 MB photograph into a 5.3 MB part and a 13-image deck into 49 MB.
+    @Test func scrimmingAPhotographDoesNotInflateIt() async throws {
+        let source = try #require(Self.photographJPEG())
+        let deck = DeckIR(meta: Meta(title: "Images"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener",
+                    image: ImageBrief(prompt: "a lighthouse")),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                     notesEnabled: false, into: dir,
+                                                     images: ["s1": source])
+        let reopened = try Presentation(contentsOf: result.url)
+        let media = reopened.package.parts.filter { $0.key.value.contains("/media/") }
+        #expect(media.count == 1)
+        let stored = try #require(media.first?.value.blob)
+        // The scrim is opaque, so the backdrop stays a photograph rather than
+        // becoming a lossless copy several times its size.
+        #expect(stored.count <= source.count,
+                "scrimming grew the image from \(source.count) to \(stored.count) bytes")
+        #expect(Array(stored.prefix(2)) == [0xFF, 0xD8], "expected JPEG, got a lossless re-encode")
+    }
+
+    /// A photographic JPEG: gradient noise, which is exactly what PNG cannot
+    /// compress and JPEG can.
+    private static func photographJPEG() -> Data? {
+        #if canImport(CoreGraphics)
+        let w = 900, h = 600
+        guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
+                                  space: CGColorSpaceCreateDeviceRGB(),
+                                  bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        var seed: UInt64 = 42
+        for y in stride(from: 0, to: h, by: 2) {
+            for x in stride(from: 0, to: w, by: 2) {
+                seed = seed &* 6364136223846793005 &+ 1442695040888963407
+                let n = Double((seed >> 33) % 255) / 255
+                ctx.setFillColor(CGColor(red: n, green: Double(x) / Double(w), blue: Double(y) / Double(h), alpha: 1))
+                ctx.fill(CGRect(x: x, y: y, width: 2, height: 2))
+            }
+        }
+        guard let image = ctx.makeImage() else { return nil }
+        let buffer = NSMutableData()
+        guard let dest = CGImageDestinationCreateWithData(
+            buffer as CFMutableData, UTType.jpeg.identifier as CFString, 1, nil) else { return nil }
+        CGImageDestinationAddImage(dest, image, [kCGImageDestinationLossyCompressionQuality: 0.9] as CFDictionary)
+        guard CGImageDestinationFinalize(dest) else { return nil }
+        return buffer as Data
+        #else
+        return nil
+        #endif
+    }
+
+    /// Office keeps Calibri, Cambria and Aptos inside its own app bundles
+    /// rather than installing them, so macOS reports them missing and CoreText
+    /// substitutes. A deck in Calibri was measured as an estimate and reported
+    /// as "not installed", when PowerPoint renders it in Calibri every time.
+    @Test func officeCoreFontsAreMeasuredNotReportedMissing() throws {
+        // Skipped rather than failed where Office is not installed: this is a
+        // fact about the machine, not about the code.
+        try withKnownIssue(isIntermittent: true) {
+            let found = DeckRenderer.officeFontFile(named: "Calibri")
+            try #require(found != nil, "Office not installed on this machine")
+            let data = try Data(contentsOf: found!)
+            // The file really holds Calibri — not a neighbour that sorted first.
+            #expect(DeckRenderer.faceIndex(named: "Calibri", in: data) != nil)
+            // And it measures: real advance widths, not the estimate.
+            let library = FontLibrary()
+            let index = try #require(DeckRenderer.faceIndex(named: "Calibri", in: data))
+            try library.register(data, aliases: ["Calibri"], fontIndex: index)
+            let metrics = try #require(library.metrics(for: "Calibri"))
+            #expect(metrics.advance(of: "M") > 0)
+        } when: {
+            DeckRenderer.officeFontFile(named: "Calibri") == nil
         }
     }
 

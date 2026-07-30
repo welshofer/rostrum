@@ -166,7 +166,7 @@ public actor DeckRenderer {
 
         var unmeasured: [String] = []
         for name in wanted.sorted() where !name.isEmpty {
-            guard let url = installedFontFile(named: name),
+            guard let url = installedFontFile(named: name) ?? officeFontFile(named: name),
                   let data = try? Data(contentsOf: url),
                   let face = faceIndex(named: name, in: data),
                   (try? presentation.fonts.register(data, aliases: [name], fontIndex: face)) != nil
@@ -195,6 +195,53 @@ public actor DeckRenderer {
         guard resolved.caseInsensitiveCompare(name) == .orderedSame else { return nil }
         return CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL
     }
+
+    /// Office ships its core families — Calibri, Cambria, Aptos, the lot —
+    /// inside its own app bundles instead of installing them system-wide. macOS
+    /// therefore reports them missing and CoreText substitutes silently, so a
+    /// deck in Calibri got measured as an estimate and reported as "not
+    /// installed", when PowerPoint will render it in Calibri every time.
+    ///
+    /// The file is read directly rather than registered with the system: this
+    /// only needs advance widths, not a font the OS will draw with.
+    static func officeFontFile(named name: String) -> URL? {
+        for directory in officeFontDirectories {
+            guard let files = try? FileManager.default.contentsOfDirectory(
+                at: URL(fileURLWithPath: directory), includingPropertiesForKeys: nil)
+            else { continue }
+            // Filename first — "Calibri.ttf" for Calibri — because scanning 280
+            // files and parsing each one to ask its family is a lot of work to
+            // find a file that is usually named after what it holds.
+            let stem = name.replacingOccurrences(of: " ", with: "").lowercased()
+            let ranked = files.filter { $0.pathExtension.lowercased().hasPrefix("tt") }
+                .sorted { a, b in
+                    let an = a.deletingPathExtension().lastPathComponent.lowercased()
+                    let bn = b.deletingPathExtension().lastPathComponent.lowercased()
+                    return (an == stem ? 0 : an.hasPrefix(stem) ? 1 : 2)
+                        < (bn == stem ? 0 : bn.hasPrefix(stem) ? 1 : 2)
+                }
+            for url in ranked.prefix(officeFontCandidateLimit) {
+                guard let data = try? Data(contentsOf: url),
+                      faceIndex(named: name, in: data) != nil else { continue }
+                return url
+            }
+        }
+        return nil
+    }
+
+    /// Where Office keeps them. Word and Excel carry the same set, so whichever
+    /// app is installed will do.
+    private static let officeFontDirectories = [
+        "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts",
+        "/Applications/Microsoft Word.app/Contents/Resources/DFonts",
+        "/Applications/Microsoft Excel.app/Contents/Resources/DFonts",
+        "/Library/Fonts/Microsoft",
+    ]
+
+    /// Only the best-named candidates are opened; a family that is really there
+    /// is named after itself, and parsing the whole directory to prove a
+    /// negative is not worth the milliseconds on every render.
+    private static let officeFontCandidateLimit = 8
 
     /// Which face inside `data` calls itself `name`.
     ///
@@ -593,6 +640,11 @@ public actor DeckRenderer {
         }
     }
 
+    /// The source has already been through a lossy encode and is about to be
+    /// dimmed to 30% and printed behind text, so the quality that matters is
+    /// "no visible blocking", not archival.
+    private static let scrimJPEGQuality = 0.82
+
     private static func scrimmed(_ data: Data, dark: Bool) -> Data {
         #if canImport(CoreGraphics)
         guard let src = CGImageSourceCreateWithData(data as CFData, nil),
@@ -609,11 +661,16 @@ public actor DeckRenderer {
         ctx.fill(rect)
         guard let out = ctx.makeImage() else { return data }
         let buffer = NSMutableData()
+        // JPEG, not PNG. A scrimmed backdrop is an opaque photograph — the
+        // scrim fill covers the frame, so there is no alpha to preserve — and
+        // encoding one losslessly is what turned a 2.7 MB source into a 5.3 MB
+        // part. A 13-image deck came out at 49 MB.
         guard let dest = CGImageDestinationCreateWithData(buffer as CFMutableData,
-                                                          UTType.png.identifier as CFString, 1, nil) else { return data }
-        CGImageDestinationAddImage(dest, out, nil)
+                                                          UTType.jpeg.identifier as CFString, 1, nil) else { return data }
+        CGImageDestinationAddImage(dest, out, [kCGImageDestinationLossyCompressionQuality: scrimJPEGQuality] as CFDictionary)
         guard CGImageDestinationFinalize(dest) else { return data }
-        return buffer as Data
+        // Never hand back something larger than we were given.
+        return buffer.length < data.count ? buffer as Data : data
         #else
         return data
         #endif
