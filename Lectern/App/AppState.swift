@@ -315,7 +315,14 @@ final class AppState {
         case .rateLimited(let s): return "Rate-limited — try again in \(s)s."
         case .requestTooLarge: return "That PDF is too large for this model."
         case .networkOffline: return "No connection."
-        case .schemaInvalid: return "The model returned a deck Lectern couldn't parse."
+        case .schemaInvalid(let errors):
+            // The reasons were always there and were thrown away, which left
+            // the one failure mode a user can actually act on looking like a
+            // dead end.
+            let detail = errors.prefix(3).joined(separator: "\n")
+            return detail.isEmpty
+                ? "The model returned a deck Lectern couldn't parse."
+                : "The model returned a deck Lectern couldn't parse:\n\n\(detail)"
         case .providerError(_, let m): return m
         case .renderFailed(let m): return "Couldn't write the deck: \(m)"
         case .cancelled: return "Cancelled."

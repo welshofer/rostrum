@@ -765,13 +765,15 @@ import Rostrum
         #expect(try Presentation(contentsOf: result.url).validate().isEmpty)
     }
 
-    @Test func aQuadrantThatIsNotFourCellsIsRejected() throws {
+    @Test func aQuadrantWithNothingToSalvageIsStillRejected() throws {
+        // A lone cell is not a 2x2 and is not a set of bands either, and there
+        // are no bullets to fall back to — so this one still has to fail and
+        // let the repair loop try again. (Three cells become bands instead:
+        // see aQuadrantWithoutFourCellsBecomesBandsInsteadOfFailing.)
         let deck = DeckIR(meta: Meta(title: "Q"), slides: [
             IRSlide(id: "s1", layout: "title", title: "Opener"),
-            IRSlide(id: "s2", layout: "quadrant", title: "Three",
-                    body: Body(quadrants: [IRQuadrant(heading: "a", detail: "1"),
-                                           IRQuadrant(heading: "b", detail: "2"),
-                                           IRQuadrant(heading: "c", detail: "3")])),
+            IRSlide(id: "s2", layout: "quadrant", title: "One",
+                    body: Body(quadrants: [IRQuadrant(heading: "a", detail: "1")])),
         ])
         #expect(throws: (any Error).self) {
             _ = try DeckValidator().validate(deck, notesRequired: false)
@@ -803,6 +805,47 @@ import Rostrum
         let links = agenda.part.rels.items.filter { $0.type == RelType.slide }
         #expect(links.count == 2)
         #expect(links.allSatisfy { !$0.isExternal && $0.target.contains("slide") })
+    }
+
+    // MARK: - Salvaging a mis-shaped structured layout
+
+    /// A 2x2 the model gave three cells used to fail the entire deck — twelve
+    /// good slides and two model round trips lost to one slide.
+    @Test func aQuadrantWithoutFourCellsBecomesBandsInsteadOfFailing() throws {
+        let deck = DeckIR(meta: Meta(title: "Q"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "quadrant", title: "Three things",
+                    body: Body(quadrants: [IRQuadrant(heading: "Alpha", detail: "first"),
+                                           IRQuadrant(heading: "Beta", detail: "second"),
+                                           IRQuadrant(heading: "Gamma", detail: "third")])),
+        ])
+        let result = try DeckValidator().validate(deck, notesRequired: false)
+        #expect(result.deck.slides[1].layout == "bands")
+        #expect(result.deck.slides[1].body?.items == ["Alpha — first", "Beta — second", "Gamma — third"])
+        #expect(result.warnings.contains { $0.contains("not a 2x2") })
+    }
+
+    @Test func aTimelineWithoutMilestonesFallsBackToItsBullets() throws {
+        let deck = DeckIR(meta: Meta(title: "T"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "timeline", title: "Roadmap",
+                    body: Body(bullets: [Bullet(text: "Q1 core"), Bullet(text: "Q2 charts")])),
+        ])
+        let result = try DeckValidator().validate(deck, notesRequired: false)
+        #expect(result.deck.slides[1].layout == "bullets")
+        #expect(result.warnings.contains { $0.contains("downgraded to bullets") })
+    }
+
+    @Test func aStructuredLayoutWithNothingToSalvageStillFails() throws {
+        // Salvage is not silence: a slide with no usable content at all is
+        // still a hard error, so the repair loop gets a chance at it.
+        let deck = DeckIR(meta: Meta(title: "T"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "timeline", title: "Empty"),
+        ])
+        #expect(throws: (any Error).self) {
+            _ = try DeckValidator().validate(deck, notesRequired: false)
+        }
     }
 
     @Test func slideDecodesOptionalImageBrief() throws {

@@ -42,8 +42,29 @@ public actor DeckGenerator {
                 let result = try decodeAndValidate(repaired.json, request)
                 return try await qaThenFinish(result, draftJSON: repaired.json, request, designURL, directory, usage: repaired.usage, emit: emit)
             } catch let second as DraftErrors {
-                throw LecternError.schemaInvalid(errors: second.errors)
+                // Keep the draft that failed. Without it the only record of
+                // what the model actually sent is an error string, which is not
+                // enough to tell a prompt problem from a schema one.
+                var errors = second.errors
+                if let kept = Self.keepRejectedDraft(repaired.json, in: directory) {
+                    errors.append("the rejected draft is at \(kept.path)")
+                }
+                throw LecternError.schemaInvalid(errors: errors)
             }
+        }
+    }
+
+    /// Write a rejected draft beside the decks so it can be inspected. Best
+    /// effort: a deck already failed, and failing to save the evidence must not
+    /// replace that error with a different one.
+    private static func keepRejectedDraft(_ json: String, in directory: URL) -> URL? {
+        let url = directory.appendingPathComponent("rejected-draft.json")
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try json.write(to: url, atomically: true, encoding: .utf8)
+            return url
+        } catch {
+            return nil
         }
     }
 

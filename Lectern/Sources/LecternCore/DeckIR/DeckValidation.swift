@@ -1,4 +1,5 @@
 import Foundation
+import Rostrum
 
 /// The result of validating a deck: the (possibly downgraded) deck plus soft
 /// warnings. Hard failures throw `ValidationError`.
@@ -54,6 +55,43 @@ public struct DeckValidator: Sendable {
                 } else {
                     errors.append("slide \"\(s.id)\": unknown layout \"\(raw)\" with no bullets-compatible body")
                 }
+            }
+            return s
+        }
+
+        // §8.5b — salvage a structured layout the model shaped wrong.
+        //
+        // These layouts carry a shape requirement the others do not: a 2x2 is
+        // exactly four cells, a timeline needs its milestones. Failing the deck
+        // over one of them costs twelve good slides and two model round trips,
+        // so a slide whose content can still be told another way is re-laid-out
+        // with a warning — the same bargain the unknown-layout downgrade makes.
+        deck.slides = deck.slides.map { slide in
+            var s = slide
+            switch s.kind {
+            case .quadrant:
+                let cells = s.body?.quadrants ?? []
+                guard cells.count != 4 else { break }
+                if (2...SlideCapacity.bands).contains(cells.count) {
+                    warnings.append("slide \"\(s.id)\": \(cells.count) quadrants is not a 2x2 — laid out as bands")
+                    s.body?.items = cells.map { "\($0.heading) — \($0.detail)" }
+                    s.layout = "bands"
+                } else if s.body?.bullets != nil {
+                    warnings.append("slide \"\(s.id)\": quadrant without four cells downgraded to bullets")
+                    s.layout = "bullets"
+                }
+            case .timeline where (s.body?.milestones ?? []).isEmpty:
+                if s.body?.bullets != nil {
+                    warnings.append("slide \"\(s.id)\": timeline without milestones downgraded to bullets")
+                    s.layout = "bullets"
+                }
+            case .table where (s.body?.table?.rows ?? []).isEmpty:
+                if s.body?.bullets != nil {
+                    warnings.append("slide \"\(s.id)\": table without rows downgraded to bullets")
+                    s.layout = "bullets"
+                }
+            default:
+                break
             }
             return s
         }
