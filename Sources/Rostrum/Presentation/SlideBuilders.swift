@@ -391,8 +391,13 @@ public extension Presentation {
         var options = options
         if options.text == nil {
             let caption = s.type(.caption)
-            options.text = ChartTextStyle(font: caption.font, color: s.mutedInk,
-                                          sizePt: Swift.min(caption.sizePt, 12))
+            // Muted ink reads as "quiet" on a light deck and as "invisible" on
+            // a dark one, so the caption color is nudged until it clears AA
+            // against the background the chart actually sits on.
+            options.text = ChartTextStyle(
+                font: caption.font,
+                color: DeckStyle.legibleEmphasis(s.mutedInk, on: s.background, ink: s.ink),
+                sizePt: Swift.min(caption.sizePt, 12))
         }
         try slide.shapes.addChart(kind, data: data, frame: content,
                                   colors: colors ?? s.accents, options: options)
@@ -534,7 +539,7 @@ public extension Presentation {
             let card = try slide.addCard(in: cell, style: s)
             let (head, body) = card.content.split(.vertical, ratio: 0.34, gutter: s.spacing.xs)
             try slide.addText(quadrant.heading, in: head, role: .heading, style: headingStyle,
-                              color: s.legibleAccent(i + 1, on: s.surface), anchor: .top)
+                              color: s.textColor(on: s.surface), anchor: .top)
             try slide.addText(quadrant.detail, in: body, role: .body, style: detailStyle, anchor: .top)
         }
 

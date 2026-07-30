@@ -778,6 +778,33 @@ import Rostrum
         }
     }
 
+    @Test func agendaRowsLinkToTheirSection() async throws {
+        let deck = DeckIR(
+            meta: Meta(title: "Quarterly review"),
+            sections: [IRSection(id: "one", title: "Results", slideIds: ["s3"]),
+                       IRSection(id: "two", title: "Outlook", slideIds: ["s4"])],
+            slides: [
+                IRSlide(id: "s1", layout: "title", title: "Quarterly review"),
+                IRSlide(id: "s2", layout: "agenda", title: "Agenda",
+                        body: Body(items: ["Results", "Outlook"])),
+                IRSlide(id: "s3", layout: "sectionHeader", title: "Results"),
+                IRSlide(id: "s4", layout: "sectionHeader", title: "Outlook"),
+            ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                     notesEnabled: false, into: dir)
+        let reopened = try Presentation(contentsOf: result.url)
+        #expect(try reopened.validate().isEmpty)
+
+        // Internal jumps, not external URLs: the relationship points at a
+        // slide part and survives the file being moved.
+        let agenda = try reopened.slides[1]
+        let links = agenda.part.rels.items.filter { $0.type == RelType.slide }
+        #expect(links.count == 2)
+        #expect(links.allSatisfy { !$0.isExternal && $0.target.contains("slide") })
+    }
+
     @Test func slideDecodesOptionalImageBrief() throws {
         let withImage = #"{"id":"s1","layout":"title","image":{"prompt":"a lighthouse at dawn","aspect":"16:9"}}"#
         let slide = try JSONDecoder().decode(IRSlide.self, from: Data(withImage.utf8))

@@ -104,4 +104,21 @@ import Testing
             #expect(try deck.validate().isEmpty, "\(kind) needed repair")
         }
     }
+
+    /// Chart text is drawn on the slide, so it has to clear the slide's own
+    /// background. Muted ink reads as "quiet" on a light deck and as
+    /// "invisible" on a dark one.
+    @Test func chartTextClearsContrastOnLightAndDarkDecks() throws {
+        for background in ["FFFFFF", "000000", "0B1D33"] {
+            let deck = try Presentation()
+            deck.applyDesign(Design.parse("## Palette\n- Background: #\(background)\n- Accent 1: #18A999"))
+            try deck.chartSlide("T", .barClustered, sample)
+            let chart = try deck.package.part(at: PackURI("/ppt/charts/chart1.xml")).dom()
+            let hex = try #require(chart.firstChild(named: "c:txPr")?.firstChild(named: "a:p")?
+                .firstChild(named: "a:pPr")?.firstChild(named: "a:defRPr")?
+                .firstChild(named: "a:solidFill")?.firstChild(named: "a:srgbClr")?[attribute: "val"])
+            #expect(Color(hex).contrastRatio(with: Color(background)) >= 4.5,
+                    "chart text #\(hex) is unreadable on #\(background)")
+        }
+    }
 }

@@ -85,6 +85,30 @@ public actor DeckRenderer {
     /// Timestamps are deliberately not stamped. Rostrum never sets them for
     /// you (see `DocumentProperties`) precisely so that building the same IR
     /// twice yields the same bytes, and Lectern has no reason to give that up.
+    /// Turn the agenda's rows into "go to slide" jumps at the section each one
+    /// names. The deck already declares its sections; this is what makes them
+    /// navigable in presenter mode instead of decorative.
+    private static func linkAgenda(_ deck: DeckIR, _ built: [String: Slide]) {
+        guard let sections = deck.sections, !sections.isEmpty,
+              let agenda = deck.slides.first(where: { $0.kind == .agenda }),
+              let agendaSlide = built[agenda.id],
+              let items = agenda.body?.items, !items.isEmpty else { return }
+        // Agenda rows are written in section order, so row i names section i.
+        // A section whose slides all failed to build simply goes unlinked.
+        let targets = sections.compactMap { section in
+            section.slideIds.compactMap { built[$0] }.first
+        }
+        guard !targets.isEmpty else { return }
+        let rows = agendaSlide.shapes.compactMap(\.textFrame).flatMap(\.paragraphs)
+            .filter { paragraph in
+                let text = paragraph.runs.map(\.text).joined()
+                return items.contains { $0 == text }
+            }
+        for (index, paragraph) in rows.enumerated() where index < targets.count {
+            for run in paragraph.runs { run.setSlideLink(to: targets[index]) }
+        }
+    }
+
     /// Slide numbers and a running footer — what every real deck has and no
     /// generated one ever remembers. Best effort: furniture is not worth
     /// failing a deck that is otherwise finished.
@@ -220,6 +244,7 @@ public actor DeckRenderer {
             let unmeasured = Self.registerInstalledFonts(for: presentation)
 
             var dropped: [String] = []
+            var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {
                 try Task.checkCancellation()
                 // Decided before the builder runs: reserving the panel changes
@@ -228,6 +253,7 @@ public actor DeckRenderer {
                 let sideImage = images[slide.id] != nil && slide.kind.imagePlacement == .sidePanel
                 let built = try build(slide, in: presentation, useSmartArt: useSmartArt,
                                       hasSideImage: sideImage, dropped: &dropped)
+                builtSlides[slide.id] = built
                 if let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
                     case .fullBleed:
@@ -268,6 +294,7 @@ public actor DeckRenderer {
                 try presentation.slides.remove(at: 0)
             }
             applySections(deck, to: presentation)
+            Self.linkAgenda(deck, builtSlides)
             Self.stampProperties(of: deck, on: presentation)
             Self.addFurniture(deck, to: presentation)
 
