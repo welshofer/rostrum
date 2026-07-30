@@ -328,6 +328,13 @@ public extension Presentation {
         for (i, text) in items.enumerated() {
             let y = content.minY.rawValue + i * (bandH + gap)
             let rect = Rect(x: content.minX, y: EMU(y), width: content.width, height: EMU(bandH))
+            // Raw accents on purpose, not `plotColors`. A contrast floor is
+            // right for a chart series, which has to be told apart from
+            // whitespace and from the other series; a band is a full-width
+            // block in a contiguous stack, so its neighbours define its edges
+            // and a pale tint reads as tonal variation rather than a mistake.
+            // Verified by rendering: forcing 3:1 here flattens designs whose
+            // bands are deliberately graduated.
             let fill = s.accent(i + 1)
             // Label goes in the band rect itself (always positive height). Using
             // the card's padded content would go negative on a thin band — a
