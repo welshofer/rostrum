@@ -78,6 +78,42 @@ extension SlidePreview: UIViewRepresentable {
 }
 #endif
 
+/// The contact sheet for a finished deck: every slide, in order, three across
+/// and scrolling down — the sheet a designer lays out to read a deck's rhythm
+/// rather than its words.
+struct SlideContactSheet: View {
+    let previews: [String]
+    /// Fixed at three so the grid reads as a contact sheet at any window size;
+    /// the tiles resize, the column count does not.
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 3)
+
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 14) {
+                ForEach(Array(previews.enumerated()), id: \.offset) { index, svg in
+                    SlidePreview(svg: svg)
+                        .aspectRatio(16.0 / 9.0, contentMode: .fit)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .strokeBorder(.primary.opacity(0.12)))
+                        .overlay(alignment: .bottomTrailing) {
+                            Text("\(index + 1)")
+                                .font(.caption2.monospacedDigit())
+                                .padding(.horizontal, 6).padding(.vertical, 2)
+                                .background(.thinMaterial, in: Capsule())
+                                .padding(5)
+                        }
+                        .accessibilityLabel("Slide \(index + 1) of \(previews.count)")
+                }
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 16)
+        }
+    }
+}
+
 /// The filmstrip under a finished deck: every slide, in order, at a glance.
 struct SlideFilmstrip: View {
     let previews: [String]
