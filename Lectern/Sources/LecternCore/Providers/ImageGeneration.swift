@@ -1,22 +1,37 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
+typealias HTTPRequestSender = @Sendable (URLRequest) async throws -> (Data, URLResponse)
 
 /// Optional image generators. A deck is fully valid without one; when the user
 /// supplies an image key, slides whose model added an `ImageBrief` get an on-brand
 /// illustration (invariant I1: the key lives only in the Keychain).
 public enum ImageProviderID: String, Sendable, CaseIterable, Codable {
-    case gemini      // Gemini 2.5 Flash Image ("Nano Banana")
+    case gemini      // Gemini 3.1 Flash Image ("Nano Banana 2")
     case openAI      // gpt-image-1
 
     public var label: String {
         switch self {
-        case .gemini: "Gemini (Nano Banana)"
+        case .gemini: "Gemini (Nano Banana 2)"
         case .openAI: "OpenAI Images"
         }
     }
     public var defaultModel: String {
         switch self {
-        case .gemini: "gemini-2.5-flash-image"
+        case .gemini: "gemini-3.1-flash-image"
         case .openAI: "gpt-image-1"
+        }
+    }
+
+    /// Gemini image quotas are sensitive to request bursts. Keep its calls
+    /// serialized while allowing providers with independent request capacity to
+    /// render several bespoke images in parallel.
+    public var maximumConcurrentRequests: Int {
+        switch self {
+        case .gemini: 1
+        case .openAI: 4
         }
     }
 }
@@ -45,34 +60,43 @@ public protocol ImageProvider: Sendable {
 
 public enum ImageProviderFactory {
     public static func make(id: ImageProviderID, apiKey: String?, model: String? = nil) throws -> any ImageProvider {
-        guard let key = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines), !key.isEmpty else {
-            throw LecternError.noKey
-        }
+        let key = try normalizedKey(apiKey)
         switch id {
         case .gemini: return GeminiImageProvider(apiKey: key, model: model ?? id.defaultModel)
         case .openAI: return OpenAIImageProvider(apiKey: key, model: model ?? id.defaultModel)
         }
     }
-}
 
-/// Distills a `design.md` into a concise art-direction line so generated imagery
-/// matches the deck's visual language (palette, vibe, personality). Pure/testable.
-public enum ImageStyleDirective {
-    public static func from(style: Style, designText: String?) -> String {
-        var parts: [String] = []
-        if let vibe = style.vibe { parts.append("\(vibe.lowercased()) visual style") }
-        if style.theme != .unknown { parts.append("\(style.theme.rawValue) theme") }
-        if !style.swatches.isEmpty { parts.append("color palette " + style.swatches.prefix(5).joined(separator: ", ")) }
-        if let text = designText, let personality = personality(text) { parts.append(personality) }
-        parts.append("cohesive editorial art direction; absolutely no text, letters, logos, or watermarks in the image")
-        return "ART DIRECTION — " + parts.joined(separator: "; ") + "."
+    /// Confirms both authentication and access to the selected image model.
+    public static func validate(id: ImageProviderID, apiKey: String?, model: String? = nil) async throws {
+        let key = try normalizedKey(apiKey)
+        switch id {
+        case .gemini:
+            try await GeminiImageProvider(apiKey: key, model: model ?? id.defaultModel).validate()
+        case .openAI:
+            try await OpenAIImageProvider(apiKey: key, model: model ?? id.defaultModel).validate()
+        }
     }
 
-    /// The "Overall visual personality" sentence, if the design.md has one.
-    private static func personality(_ text: String) -> String? {
-        guard let r = text.range(of: "Overall visual personality", options: .caseInsensitive) else { return nil }
-        let after = text[r.upperBound...].drop { $0 == ":" || $0 == " " || $0 == "\n" }
-        let snippet = after.prefix(220).replacingOccurrences(of: "\n", with: " ").trimmingCharacters(in: .whitespaces)
-        return snippet.isEmpty ? nil : snippet
+    private static func normalizedKey(_ apiKey: String?) throws -> String {
+        guard let key = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines), !key.isEmpty else {
+            throw LecternError.noKey
+        }
+        return key
+    }
+}
+
+/// Turns the selected style's visual metadata into image-only art direction.
+/// Deck/UI prose is intentionally excluded because typography and component
+/// guidance conflict with the requirement that generated images contain no text.
+public enum ImageStyleDirective {
+    public static func from(style: Style) -> String {
+        var parts: [String] = []
+        if let vibe = style.vibe { parts.append("\(vibe.lowercased()) editorial imagery") }
+        if style.theme != .unknown { parts.append("\(style.theme.rawValue) overall tonality") }
+        if !style.swatches.isEmpty { parts.append("color palette " + style.swatches.prefix(5).joined(separator: ", ")) }
+        parts.append("use the palette through lighting, materials, atmosphere, and background")
+        parts.append("premium cohesive art direction; no typography, letters, numbers, interface chrome, charts, logos, or watermarks")
+        return "ART DIRECTION — " + parts.joined(separator: "; ") + "."
     }
 }

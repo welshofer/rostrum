@@ -30,7 +30,10 @@ enum DeckSchema {
             "type": "object",
             "description": "chart layout — real quantitative data, not decoration",
             "properties": [
-                "kind": ["type": "string", "enum": ["bar", "line", "pie"]],
+                "kind": ["type": "string",
+                         "enum": ["bar", "stackedBar", "percentStackedBar", "line",
+                                  "area", "pie", "doughnut", "radar"],
+                         "description": "bar = compare categories; stackedBar/percentStackedBar = composition; line/area = change over time; pie/doughnut = share of one whole; radar = several measures at once"],
                 "categories": strings,
                 "series": ["type": "array", "items": series,
                            "description": "each series' values align 1:1 with categories"],
@@ -51,6 +54,17 @@ enum DeckSchema {
             ],
             "required": ["kind", "items"],
         ]
+        let table: [String: Any] = [
+            "type": "object",
+            "description": "table layout — a real matrix of short values (plans, specs, milestones), never prose",
+            "properties": [
+                "headers": ["type": "array", "items": str("a column header, 1–3 words")],
+                "rows": ["type": "array",
+                         "items": ["type": "array", "items": str("one cell, a few words at most")],
+                         "description": "each row has one cell per header, in the same order"],
+            ],
+            "required": ["headers", "rows"],
+        ]
         let body: [String: Any] = [
             "type": "object",
             "description": "Only include the fields the slide's layout uses.",
@@ -68,6 +82,7 @@ enum DeckSchema {
                 "stats": ["type": "array", "items": stat,           // metrics (2–4 numbers)
                           "description": "metrics layout — 2 to 4 headline numbers"],
                 "diagram": diagram,                                 // diagram
+                "table": table,                                     // table
             ],
         ]
         let image: [String: Any] = [
@@ -88,7 +103,7 @@ enum DeckSchema {
                     "type": "string",
                     "enum": ["title", "agenda", "sectionHeader", "bullets",
                              "twoColumn", "comparison", "quote", "bigNumber", "closing",
-                             "chart", "metrics", "bands", "diagram"],
+                             "chart", "metrics", "bands", "diagram", "table"],
                 ],
                 "title": str(),
                 "body": body,

@@ -85,6 +85,15 @@ public actor DeckRenderer {
     /// Timestamps are deliberately not stamped. Rostrum never sets them for
     /// you (see `DocumentProperties`) precisely so that building the same IR
     /// twice yields the same bytes, and Lectern has no reason to give that up.
+    /// Slide numbers and a running footer — what every real deck has and no
+    /// generated one ever remembers. Best effort: furniture is not worth
+    /// failing a deck that is otherwise finished.
+    private static func addFurniture(_ deck: DeckIR, to presentation: Presentation) {
+        _ = try? presentation.showSlideNumbers()
+        let footer = deck.meta.title.trimmingCharacters(in: .whitespaces)
+        if !footer.isEmpty { _ = try? presentation.footer(footer) }
+    }
+
     private static func stampProperties(of deck: DeckIR, on presentation: Presentation) {
         // A live view onto docProps, not a value to write back — every setter
         // goes straight to the part.
@@ -255,6 +264,7 @@ public actor DeckRenderer {
             }
             applySections(deck, to: presentation)
             Self.stampProperties(of: deck, on: presentation)
+            Self.addFurniture(deck, to: presentation)
 
             // Rostrum's schema lint, run on what we are about to write rather
             // than on a deck someone opens later. It reads the DOM and mutates
@@ -374,7 +384,12 @@ public actor DeckRenderer {
                 let kind: ChartKind = {
                     switch c.kind.lowercased() {
                     case "line": return .line
-                    case "pie", "doughnut": return .pie
+                    case "area": return .area
+                    case "pie": return .pie
+                    case "doughnut": return .doughnut
+                    case "radar": return .radar
+                    case "stackedbar": return .barStacked
+                    case "percentstackedbar": return .barPercentStacked
                     default: return .barClustered
                     }
                 }()
@@ -385,10 +400,19 @@ public actor DeckRenderer {
                 // show a percentage with a legend.
                 let options: ChartOptions
                 switch kind {
-                case .pie:
-                    // Pie slices are categories, not series: the legend names
+                case .pie, .doughnut:
+                    // Slices are categories, not series: the legend names
                     // them, so it is always warranted.
                     options = ChartOptions(legend: .right, dataLabels: DataLabelOptions(showPercent: true))
+                case .radar, .radarFilled, .area:
+                    // Labels on a filled or looped plot obscure the shape that
+                    // is the whole reason for choosing it.
+                    options = ChartOptions(legend: .bottom)
+                case .barStacked, .barPercentStacked:
+                    // A stacked segment can only label inside itself; "outEnd"
+                    // is what makes PowerPoint offer to repair the chart.
+                    options = ChartOptions(legend: .bottom,
+                                           dataLabels: DataLabelOptions(showValue: true, position: "ctr"))
                 case .line:
                     // Left to Rostrum, which already gives a multi-series line
                     // chart a legend of its own accord (ChartXML) and none to a
@@ -462,6 +486,11 @@ public actor DeckRenderer {
                         ? try deck.smartArtSlide(title, kind: .process, items: d.items)
                         : try deck.processSlide(title, steps: d.items)
                 }
+            }
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .table:
+            if let table = body?.table, !table.headers.isEmpty, !table.rows.isEmpty {
+                return try deck.tableSlide(title, rows: table.grid)
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .unknown:

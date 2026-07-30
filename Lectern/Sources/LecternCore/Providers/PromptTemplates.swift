@@ -40,8 +40,10 @@ public enum PromptTemplates {
         - quote            body: { quote, attribution? }
         - bigNumber        body: { value, label }
         - metrics          body: { stats: [{ value, label }] }   (2–4 headline numbers)
-        - chart            body: { chart: { kind: bar|line|pie, categories: [string], series: [{ name, values: [number] }] } }
+        - chart            body: { chart: { kind: bar|stackedBar|percentStackedBar|line|area|pie|doughnut|radar, categories: [string], series: [{ name, values: [number] }] } }
         - bands            body: { items: [string] }   (3–6 parallel concepts/phases/layers as colored bands; each item "Label — short detail")
+        - table            body: { table: { headers: [string], rows: [[string]] } }
+                             2–5 columns, 2–6 body rows; every cell a few words at most — specs, plans, milestones, never prose
         - diagram          body: { diagram: { kind: process|pyramid|cycle, items: [string] } }
                              process = sequential steps; pyramid = hierarchy/ladder (base→peak); each item short "Label — detail"
         - closing          body: { callToAction?, contact? }  (at most one, last)

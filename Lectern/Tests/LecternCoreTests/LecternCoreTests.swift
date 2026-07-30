@@ -685,12 +685,59 @@ import Rostrum
     @Test func styleDirectiveIsOnBrandAndTextFree() {
         let style = Style(slug: "aurora", name: "Aurora", vibe: "Technical", theme: .light,
                           swatches: ["#533afd", "#4434d4"], designURL: URL(fileURLWithPath: "/x"))
-        let directive = ImageStyleDirective.from(
-            style: style, designText: "Overall visual personality: crisp fintech gradients throughout.")
+        let directive = ImageStyleDirective.from(style: style)
         #expect(directive.contains("#533afd"))
         #expect(directive.lowercased().contains("technical"))
-        #expect(directive.lowercased().contains("no text"))          // guards against baked-in words
-        #expect(directive.contains("crisp fintech"))
+        // Deck/UI prose is deliberately excluded now: typography guidance
+        // fights the requirement that generated images carry no text.
+        #expect(directive.lowercased().contains("no typography"))
+    }
+
+    @Test func rendersTableSlideAndOpensClean() async throws {
+        let deck = DeckIR(meta: Meta(title: "Plans"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "table", title: "Plan comparison",
+                    body: Body(table: IRTable(headers: ["Plan", "Seats", "Price"],
+                                              rows: [["Starter", "5", "$29"],
+                                                     ["Team", "25", "$99"],
+                                                     ["Enterprise", "Unlimited"]]))),   // ragged on purpose
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                     notesEnabled: false, into: dir)
+        #expect(result.slideCount == 2)
+        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)
+    }
+
+    @Test func tableWithNoBodyRowsIsRejectedLikeAnEmptyChart() throws {
+        let deck = DeckIR(meta: Meta(title: "T"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "table", title: "Empty",
+                    body: Body(table: IRTable(headers: ["A"], rows: []))),
+        ])
+        #expect(throws: (any Error).self) {
+            _ = try DeckValidator().validate(deck, notesRequired: false)
+        }
+    }
+
+    @Test func everyOfferedChartKindOpensWithoutRepair() async throws {
+        // Each kind carries its own data-label position; a position that is not
+        // legal for the kind is exactly what makes PowerPoint offer to repair.
+        for kind in ["bar", "stackedBar", "percentStackedBar", "line", "area", "pie", "doughnut", "radar"] {
+            let deck = DeckIR(meta: Meta(title: kind), slides: [
+                IRSlide(id: "s1", layout: "title", title: "Opener"),
+                IRSlide(id: "s2", layout: "chart", title: kind,
+                        body: Body(chart: IRChart(kind: kind, categories: ["A", "B", "C"],
+                                                  series: [IRSeries(name: "one", values: [3, 5, 4]),
+                                                           IRSeries(name: "two", values: [2, 1, 6])]))),
+            ])
+            let validated = try DeckValidator().validate(deck, notesRequired: false)
+            let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+            let result = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                         notesEnabled: false, into: dir)
+            #expect(try Presentation(contentsOf: result.url).validate().isEmpty, "\(kind) needed repair")
+        }
     }
 
     @Test func slideDecodesOptionalImageBrief() throws {

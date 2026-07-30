@@ -15,6 +15,7 @@ import Testing
             ("chart", { try $0.chartSlide("Ch", .barClustered, ChartData(categories: ["A", "B"], name: "S", values: [1, 2])) }),
             ("callout", { try $0.calloutSlide(stat: "47", caption: "NPS") }),
             ("quote", { try $0.quoteSlide("Q", attribution: "me") }),
+            ("table", { try $0.tableSlide("T", rows: [["A", "B"], ["1", "2"]]) }),
         ]
         for (name, make) in builders {
             let deck = try Presentation()
@@ -145,5 +146,68 @@ import Testing
         (dom.firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")?.children(named: "p:sp") ?? [])
             .flatMap { $0.firstChild(named: "p:txBody")?.children(named: "a:p") ?? [] }
             .flatMap { $0.children(named: "a:r") }
+    }
+
+    // MARK: - Tables
+
+    @Test func tableSlideBuildsARectangularGridWithProportionalColumns() throws {
+        let deck = try Presentation()
+        let slide = try deck.tableSlide("Plans", rows: [
+            ["Plan", "Notes"],
+            ["Starter", "a much longer cell than the first column ever holds"],
+            ["Team"],                                    // ragged on purpose
+        ])
+        let tbl = try #require(slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:spTree")?.children(named: "p:graphicFrame").first?
+            .firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
+            .firstChild(named: "a:tbl"))
+        let rows = tbl.children(named: "a:tr")
+        #expect(rows.count == 3)
+        // A short row is padded, so every row has a cell per grid column.
+        #expect(rows.allSatisfy { $0.children(named: "a:tc").count == 2 })
+        let widths = tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol")
+            .compactMap { $0[attribute: "w"].flatMap(Int.init) } ?? []
+        #expect(widths.count == 2)
+        #expect(widths[1] > widths[0])          // the wordier column gets more room
+        #expect(try deck.validate().isEmpty)
+    }
+
+    @Test func tableSlideColumnsSpanTheContentRectExactly() throws {
+        let deck = try Presentation()
+        let slide = try deck.tableSlide("W", rows: [["a", "bb", "ccc"], ["1", "2", "3"]])
+        let frame = try #require(slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:spTree")?.children(named: "p:graphicFrame").first)
+        let total = frame.firstChild(named: "p:xfrm")?.firstChild(named: "a:ext")?[attribute: "cx"]
+            .flatMap(Int.init) ?? 0
+        let widths = frame.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
+            .firstChild(named: "a:tbl")?.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol")
+            .compactMap { $0[attribute: "w"].flatMap(Int.init) } ?? []
+        #expect(widths.reduce(0, +) == total)   // no rounding gap at the right edge
+    }
+
+    // MARK: - Internal links
+
+    @Test func slideLinkPointsAtAnotherSlideInTheSameDeck() throws {
+        let deck = try Presentation()
+        let agenda = try deck.bulletSlide("Agenda", ["Results"])
+        let target = try deck.sectionSlide("Results")
+        let run = try #require(agenda.shapes.compactMap(\.textFrame)
+            .flatMap(\.paragraphs).flatMap(\.runs).first { $0.text == "Results" })
+        run.setSlideLink(to: target)
+
+        let rel = try #require(agenda.part.rels.items.first { $0.type == RelType.slide })
+        #expect(!rel.isExternal)                                  // internal, not a URL
+        #expect(rel.target.contains(target.part.uri.filename))
+        #expect(run.hyperlink?.contains("slide") == true)
+        // The jump action is what makes PowerPoint navigate rather than browse.
+        let hlink = try #require(agenda.part.dom()
+            .firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")?
+            .children(named: "p:sp").compactMap { $0.firstChild(named: "p:txBody") }
+            .flatMap { $0.children(named: "a:p") }
+            .flatMap { $0.children(named: "a:r") }
+            .compactMap { $0.firstChild(named: "a:rPr")?.firstChild(named: "a:hlinkClick") }
+            .first)
+        #expect(hlink[attribute: "action"] == "ppaction://hlinksldjump")
+        #expect(try deck.validate().isEmpty)
     }
 }

@@ -358,4 +358,17 @@ public final class Run {
         guard let rId = rPr.firstChild(named: "a:hlinkClick")?[attribute: "r:id"] else { return nil }
         return part.rels.relationship(withId: rId)?.target
     }
+
+    /// Link this run to another slide in the same deck — PowerPoint's "go to
+    /// slide" jump. Unlike `setHyperlink` this is an *internal* relationship
+    /// plus the jump action, so it survives the file being moved or renamed.
+    public func setSlideLink(to slide: Slide) {
+        let rId = part.rels.add(type: RelType.slide,
+                                target: part.uri.relativeReference(to: slide.part.uri))
+        rPr.removeChildren(named: "a:hlinkClick")
+        rPr.insertChild(XML.Element("a:hlinkClick", attributes: [
+            ("r:id", rId), ("action", "ppaction://hlinksldjump"),
+        ]), beforeAnyOf: ["a:hlinkMouseOver", "a:rtl", "a:extLst"])
+        part.markDirty()
+    }
 }

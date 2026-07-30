@@ -109,17 +109,19 @@ public struct Body: Codable, Sendable, Equatable {
     public var chart: IRChart?                // chart
     public var stats: [IRStat]?               // metrics (2–4 headline numbers)
     public var diagram: IRDiagram?            // diagram (process | pyramid | cycle)
+    public var table: IRTable?                // table (header row + body rows)
 
     public init(subtitle: String? = nil, items: [String]? = nil, kicker: String? = nil,
                 bullets: [Bullet]? = nil, left: Column? = nil, right: Column? = nil,
                 quote: String? = nil, attribution: String? = nil, value: String? = nil,
                 label: String? = nil, callToAction: String? = nil, contact: String? = nil,
-                chart: IRChart? = nil, stats: [IRStat]? = nil, diagram: IRDiagram? = nil) {
+                chart: IRChart? = nil, stats: [IRStat]? = nil, diagram: IRDiagram? = nil,
+                table: IRTable? = nil) {
         self.subtitle = subtitle; self.items = items; self.kicker = kicker
         self.bullets = bullets; self.left = left; self.right = right
         self.quote = quote; self.attribution = attribution; self.value = value
         self.label = label; self.callToAction = callToAction; self.contact = contact
-        self.chart = chart; self.stats = stats; self.diagram = diagram
+        self.chart = chart; self.stats = stats; self.diagram = diagram; self.table = table
     }
 }
 
@@ -129,6 +131,18 @@ public struct IRDiagram: Codable, Sendable, Equatable {
     public var kind: String
     public var items: [String]
     public init(kind: String, items: [String]) { self.kind = kind; self.items = items }
+}
+
+/// A table on a `table` slide: `headers` is the header row, `rows` the body.
+/// Ragged rows are padded when rendered, so a short row costs a cell, not the
+/// slide.
+public struct IRTable: Codable, Sendable, Equatable {
+    public var headers: [String]
+    public var rows: [[String]]
+    public init(headers: [String], rows: [[String]]) { self.headers = headers; self.rows = rows }
+
+    /// Header row followed by the body rows — what the builder takes.
+    public var grid: [[String]] { [headers] + rows }
 }
 
 /// A chart on a `chart` slide. `kind` is bar | line | pie; `series[i].values`
@@ -170,7 +184,7 @@ public struct Column: Codable, Sendable, Equatable {
 /// The known layout vocabulary (§8.2), plus `.unknown` for forward-compat.
 public enum SlideLayoutKind: Sendable, Equatable {
     case title, agenda, sectionHeader, bullets, twoColumn, comparison, quote, bigNumber, closing
-    case chart, metrics, bands, diagram
+    case chart, metrics, bands, diagram, table
     case unknown(String)
 
     public init(_ raw: String) {
@@ -188,6 +202,7 @@ public enum SlideLayoutKind: Sendable, Equatable {
         case "metrics": self = .metrics
         case "bands": self = .bands
         case "diagram": self = .diagram
+        case "table": self = .table
         default: self = .unknown(raw)
         }
     }
@@ -207,7 +222,8 @@ public enum SlideLayoutKind: Sendable, Equatable {
         // Genuinely full-width: two columns of text, a plotted chart, a row of
         // metrics, stacked bands, a diagram. Narrowing any of these breaks the
         // layout rather than reflowing it.
-        case .twoColumn, .comparison, .chart, .metrics, .bands, .diagram, .unknown: return .none
+        case .twoColumn, .comparison, .chart, .metrics, .bands, .diagram, .table, .unknown:
+            return .none
         }
     }
 }

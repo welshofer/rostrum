@@ -436,6 +436,57 @@ public extension Presentation {
         return slide
     }
 
+    /// A titled table: header row on the brand primary, banded body rows, and
+    /// column widths proportional to the widest cell in each column so a column
+    /// of dates never takes the same space as a column of sentences.
+    ///
+    /// `rows` is the full grid including the header row. Ragged rows are padded
+    /// so the table is always rectangular — a short row from a model is a
+    /// missing cell, not a broken deck.
+    @discardableResult
+    func tableSlide(_ title: String, rows: [[String]], style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: nil, title: title, style: s)
+        let columns = rows.map(\.count).max() ?? 0
+        guard !rows.isEmpty, columns > 0 else { return slide }
+        let grid = rows.map { row in row + Array(repeating: "", count: columns - row.count) }
+
+        // Rows get equal height, but a table taller than its rect would run off
+        // the slide, so cap the height at the content rect.
+        let table = try slide.shapes.addTable(rows: grid.count, columns: columns, frame: content)
+        table.setContents(grid)
+            .columnWidths(Self.proportionalWidths(of: grid, in: content.width))
+            .styleBanded(style: s, role: .body, anchor: .middle)
+            .cellPadding(s.spacing.sm)
+        return slide
+    }
+
+    /// Split `total` across columns in proportion to each column's longest cell,
+    /// clamped so no column collapses below a readable minimum.
+    private static func proportionalWidths(of grid: [[String]], in total: EMU) -> [EMU] {
+        let columns = grid.first?.count ?? 0
+        guard columns > 0, total.rawValue > 0 else { return [] }
+        let longest = (0..<columns).map { column in
+            Swift.max(1, grid.map { $0[column].count }.max() ?? 1)
+        }
+        // A column never drops below half its equal share: proportional widths
+        // keep tables readable, but a lone one-character column shouldn't
+        // shrink to nothing.
+        let equalShare = total.rawValue / columns
+        let floorWidth = equalShare / 2
+        let flexible = total.rawValue - floorWidth * columns
+        let weightTotal = longest.reduce(0, +)
+        var widths = longest.map { EMU(floorWidth + flexible * $0 / weightTotal) }
+        // Rounding leaves a few EMU over; give them to the widest column so the
+        // table spans the content rect exactly.
+        let used = widths.reduce(0) { $0 + $1.rawValue }
+        if let widest = longest.firstIndex(of: longest.max() ?? 0), used < total.rawValue {
+            widths[widest] = EMU(widths[widest].rawValue + (total.rawValue - used))
+        }
+        return widths
+    }
+
     // MARK: - Private layout helpers
 
     /// A blank, placeholder-free slide bound to a single layout — the canvas all

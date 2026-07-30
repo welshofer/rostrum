@@ -118,6 +118,10 @@ public struct DeckValidator: Sendable {
             if (body?.items ?? []).isEmpty && (body?.bullets ?? []).isEmpty { return "bands requires body.items" }
         case .diagram:
             if (body?.diagram?.items ?? []).isEmpty { return "diagram requires body.diagram with items" }
+        case .table:
+            guard let table = body?.table else { return "table requires body.table" }
+            if table.headers.isEmpty { return "table requires body.table.headers" }
+            if table.rows.isEmpty { return "table requires at least one body row" }
         case .title, .sectionHeader, .closing:
             break                                   // all payload fields optional
         case .unknown:

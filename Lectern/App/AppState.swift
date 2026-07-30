@@ -35,6 +35,9 @@ final class AppState {
     enum KeyStatus: Equatable { case unknown, validating, valid(Int), invalid(String) }
     private(set) var keyStatus: KeyStatus = .unknown
 
+    enum ImageKeyStatus: Equatable { case unknown, validating, valid, invalid(String) }
+    private(set) var imageKeyStatus: ImageKeyStatus = .unknown
+
     /// A curated, clean model list — NOT the provider's raw /v1/models dump
     /// (which is full of point-releases and internal EAP builds). Validate only
     /// confirms the key; it never rewrites this list.
@@ -146,18 +149,39 @@ final class AppState {
 
     func selectImageProvider(_ id: ImageProviderID) {
         imageProviderID = id
+        imageKeyStatus = .unknown
         UserDefaults.standard.set(id.rawValue, forKey: Keys.imageProvider)
         hasImageKey = KeychainStore.hasKey(forImage: id)
     }
 
     func saveImageKey(_ key: String) {
-        KeychainStore.save(key, forImage: imageProviderID)
+        let ok = KeychainStore.save(key, forImage: imageProviderID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
+        imageKeyStatus = ok && hasImageKey ? .unknown : .invalid("Couldn't write to the Keychain.")
     }
 
     func clearImageKey() {
         KeychainStore.delete(forImage: imageProviderID)
         hasImageKey = false
+        imageKeyStatus = .unknown
+    }
+
+    /// Validate authentication and access to the exact image model Lectern uses.
+    func validateImageKey() async {
+        let id = imageProviderID
+        guard let key = KeychainStore.read(forImage: id) else {
+            imageKeyStatus = .invalid("No image key stored.")
+            return
+        }
+        imageKeyStatus = .validating
+        do {
+            try await ImageProviderFactory.validate(id: id, apiKey: key)
+            guard imageProviderID == id else { return }
+            imageKeyStatus = .valid
+        } catch {
+            guard imageProviderID == id else { return }
+            imageKeyStatus = .invalid(Self.describe(error))
+        }
     }
 
     /// Validate the stored key by pinging the provider's models endpoint (§294).
@@ -228,11 +252,21 @@ final class AppState {
                 // comes from the chosen style's design.md so images stay on-brand.
                 var imageProvider: (any ImageProvider)?
                 var imageStyle: String?
-                if let imageKey, let provider = try? ImageProviderFactory.make(id: imageID, apiKey: imageKey) {
+                if let imageKey {
+                    self.stage = "Checking image provider"
+                    do {
+                        try await ImageProviderFactory.validate(id: imageID, apiKey: imageKey)
+                        if self.imageProviderID == imageID { self.imageKeyStatus = .valid }
+                    } catch {
+                        if self.imageProviderID == imageID {
+                            self.imageKeyStatus = .invalid(Self.describe(error))
+                        }
+                        throw error
+                    }
+                    let provider = try ImageProviderFactory.make(id: imageID, apiKey: imageKey)
                     imageProvider = provider
                     if let style {
-                        let text = try? String(contentsOf: style.designURL, encoding: .utf8)
-                        imageStyle = ImageStyleDirective.from(style: style, designText: text)
+                        imageStyle = ImageStyleDirective.from(style: style)
                     }
                 }
                 let result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
