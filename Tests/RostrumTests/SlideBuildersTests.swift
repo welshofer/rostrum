@@ -210,4 +210,48 @@ import Testing
         #expect(hlink[attribute: "action"] == "ppaction://hlinksldjump")
         #expect(try deck.validate().isEmpty)
     }
+
+    @Test func numericTableColumnsAlignRightAndTextColumnsDoNot() throws {
+        let deck = try Presentation()
+        let slide = try deck.tableSlide("Plans", rows: [
+            ["Plan", "Seats", "Price", "Support"],
+            ["Starter", "5", "$29", "Community"],
+            ["Team", "1,200", "$1,499", "Email"],
+        ])
+        let tbl = try #require(slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:spTree")?.children(named: "p:graphicFrame").first?
+            .firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
+            .firstChild(named: "a:tbl"))
+        func alignments(ofColumn column: Int) -> [String?] {
+            tbl.children(named: "a:tr").map { row in
+                row.children(named: "a:tc")[column].firstChild(named: "a:txBody")?
+                    .children(named: "a:p").first?.firstChild(named: "a:pPr")?[attribute: "algn"]
+            }
+        }
+        // Figures only read as a column when their digits line up — header
+        // included, or it floats away from what it labels.
+        #expect(alignments(ofColumn: 1).allSatisfy { $0 == "r" })
+        #expect(alignments(ofColumn: 2).allSatisfy { $0 == "r" })
+        // Words stay left, and a column mixing words in is not numeric.
+        #expect(alignments(ofColumn: 0).allSatisfy { $0 != "r" })
+        #expect(alignments(ofColumn: 3).allSatisfy { $0 != "r" })
+    }
+
+    @Test func aColumnMixingWordsWithFiguresStaysLeftAligned() throws {
+        let deck = try Presentation()
+        let slide = try deck.tableSlide("Plans", rows: [
+            ["Plan", "Seats"],
+            ["Starter", "5"],
+            ["Enterprise", "Unlimited"],       // one word makes the column non-numeric
+        ])
+        let tbl = try #require(slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:spTree")?.children(named: "p:graphicFrame").first?
+            .firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
+            .firstChild(named: "a:tbl"))
+        let aligned = tbl.children(named: "a:tr").map { row in
+            row.children(named: "a:tc")[1].firstChild(named: "a:txBody")?
+                .children(named: "a:p").first?.firstChild(named: "a:pPr")?[attribute: "algn"]
+        }
+        #expect(aligned.allSatisfy { $0 != "r" })
+    }
 }

@@ -135,14 +135,39 @@ public struct AxisOptions: Sendable {
     public var majorUnit: Double?
     public var numberFormat: String?
     public var title: String?
+    /// Hide the axis entirely (`c:delete`). A chart that labels every point
+    /// does not also need a scale to read them against.
+    public var hidden: Bool
+    /// Override the plot's default gridlines. nil keeps the chart kind's own
+    /// choice.
+    public var gridlines: Bool?
 
     public init(min: Double? = nil, max: Double? = nil, majorUnit: Double? = nil,
-                numberFormat: String? = nil, title: String? = nil) {
+                numberFormat: String? = nil, title: String? = nil,
+                hidden: Bool = false, gridlines: Bool? = nil) {
         self.min = min
         self.max = max
         self.majorUnit = majorUnit
         self.numberFormat = numberFormat
         self.title = title
+        self.hidden = hidden
+        self.gridlines = gridlines
+    }
+}
+
+/// Typography for a chart's own text — axis labels, legend and data labels.
+/// Charts otherwise render at a flat 14pt in whatever the theme supplies,
+/// which is the main reason a generated chart reads as bolted-on rather than
+/// designed.
+public struct ChartTextStyle: Sendable {
+    public var font: String?
+    public var color: Color?
+    public var sizePt: Double
+
+    public init(font: String? = nil, color: Color? = nil, sizePt: Double = 14) {
+        self.font = font
+        self.color = color
+        self.sizePt = sizePt
     }
 }
 
@@ -158,17 +183,21 @@ public struct ChartOptions: Sendable {
     /// The right-hand value axis of a combo chart. Ignored by every other
     /// chart kind, and by a combo with no `.secondary` group.
     public var secondaryValueAxis: AxisOptions
+    /// Typography for every piece of text the chart draws itself.
+    public var text: ChartTextStyle?
 
     public init(title: String? = nil, legend: LegendPosition? = nil,
                 dataLabels: DataLabelOptions? = nil, valueAxis: AxisOptions = AxisOptions(),
                 categoryAxisTitle: String? = nil,
-                secondaryValueAxis: AxisOptions = AxisOptions()) {
+                secondaryValueAxis: AxisOptions = AxisOptions(),
+                text: ChartTextStyle? = nil) {
         self.title = title
         self.legend = legend
         self.dataLabels = dataLabels
         self.valueAxis = valueAxis
         self.categoryAxisTitle = categoryAxisTitle
         self.secondaryValueAxis = secondaryValueAxis
+        self.text = text
     }
 }
 

@@ -381,6 +381,15 @@ public extension Presentation {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        // Charts otherwise draw their own text in the theme font at a flat
+        // 14pt, which is what makes a generated chart look bolted on next to
+        // the slide it sits in.
+        var options = options
+        if options.text == nil {
+            let caption = s.type(.caption)
+            options.text = ChartTextStyle(font: caption.font, color: s.mutedInk,
+                                          sizePt: Swift.min(caption.sizePt, 12))
+        }
         try slide.shapes.addChart(kind, data: data, frame: content,
                                   colors: colors ?? s.accents, options: options)
         return slide
@@ -459,7 +468,37 @@ public extension Presentation {
             .columnWidths(Self.proportionalWidths(of: grid, in: content.width))
             .styleBanded(style: s, role: .body, anchor: .middle)
             .cellPadding(s.spacing.sm)
+        // Figures read as a column only when their digits line up, so a column
+        // whose body cells are all numeric flips to the right — header
+        // included, or the header floats away from what it labels.
+        for column in 0..<columns where Self.isNumericColumn(grid, column) {
+            for row in 0..<grid.count {
+                guard let cell = try? table.cell(row, column) else { continue }
+                var text = s.type(row == 0 ? .heading : .body)
+                text.color = cell.textFrame.paragraphs.first?.runs.first?.color ?? text.color
+                cell.applyTextStyle(text, align: .right)
+            }
+        }
         return slide
+    }
+
+    /// Whether every body cell in `column` reads as a figure — digits with the
+    /// punctuation money and percentages carry. An empty cell is ignored (a
+    /// gap in a numeric column is still a numeric column); a column of empties
+    /// is not numeric.
+    private static func isNumericColumn(_ grid: [[String]], _ column: Int) -> Bool {
+        var sawValue = false
+        for row in grid.dropFirst() {
+            guard column < row.count else { continue }
+            let cell = row[column].trimmingCharacters(in: .whitespaces)
+            if cell.isEmpty { continue }
+            sawValue = true
+            let digits = cell.filter(\.isNumber).count
+            guard digits > 0,
+                  cell.allSatisfy({ $0.isNumber || "+-.,%$€£¥ ()".contains($0) })
+            else { return false }
+        }
+        return sawValue
     }
 
     /// Split `total` across columns in proportion to each column's longest cell,

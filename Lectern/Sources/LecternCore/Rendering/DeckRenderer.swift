@@ -88,6 +88,11 @@ public actor DeckRenderer {
     /// Slide numbers and a running footer — what every real deck has and no
     /// generated one ever remembers. Best effort: furniture is not worth
     /// failing a deck that is otherwise finished.
+    /// Every point already carries its number, so the scale beside it is
+    /// redundant furniture — and the default gridlines are the heaviest thing
+    /// on the slide.
+    private static let labelledAxis = AxisOptions(hidden: true, gridlines: false)
+
     private static func addFurniture(_ deck: DeckIR, to presentation: Presentation) {
         _ = try? presentation.showSlideNumbers()
         let footer = deck.meta.title.trimmingCharacters(in: .whitespaces)
@@ -406,26 +411,30 @@ public actor DeckRenderer {
                     options = ChartOptions(legend: .right, dataLabels: DataLabelOptions(showPercent: true))
                 case .radar, .radarFilled, .area:
                     // Labels on a filled or looped plot obscure the shape that
-                    // is the whole reason for choosing it.
+                    // is the whole reason for choosing it, so these keep their
+                    // axis and gridlines and drop the labels instead.
                     options = ChartOptions(legend: .bottom)
                 case .barStacked, .barPercentStacked:
                     // A stacked segment can only label inside itself; "outEnd"
                     // is what makes PowerPoint offer to repair the chart.
                     options = ChartOptions(legend: .bottom,
-                                           dataLabels: DataLabelOptions(showValue: true, position: "ctr"))
+                                           dataLabels: DataLabelOptions(showValue: true, position: "ctr"),
+                                           valueAxis: Self.labelledAxis)
                 case .line:
                     // Left to Rostrum, which already gives a multi-series line
                     // chart a legend of its own accord (ChartXML) and none to a
                     // single-series one. Passing a position here would override
                     // that choice rather than fill a gap.
-                    options = ChartOptions(dataLabels: DataLabelOptions(showValue: true, position: "t"))
+                    options = ChartOptions(dataLabels: DataLabelOptions(showValue: true, position: "t"),
+                                           valueAxis: Self.labelledAxis)
                 default:
                     // Bars get no legend from either side, so several series
                     // arrived as indistinguishable groups of columns. One
                     // series still gets none: the title already says what the
                     // bars are, and a legend repeating it only costs plot area.
                     options = ChartOptions(legend: c.series.count > 1 ? .bottom : nil,
-                                           dataLabels: DataLabelOptions(showValue: true, position: "outEnd"))
+                                           dataLabels: DataLabelOptions(showValue: true, position: "outEnd"),
+                                           valueAxis: Self.labelledAxis)
                 }
                 return try deck.chartSlide(title, kind, data, options: options)
             }
