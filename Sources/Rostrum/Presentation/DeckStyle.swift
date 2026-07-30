@@ -172,17 +172,30 @@ public struct DeckStyle: Sendable, Equatable {
         Color.bestTextColor(on: fill, options: [ink, background, .black, .white])
     }
 
-    /// An accent nudged toward the background's opposite until it clears WCAG AA
-    /// (4.5:1) — keeping the brand hue where possible — else the ink color.
-    static func legibleEmphasis(_ color: Color, on bg: Color, ink: Color) -> Color {
-        if color.contrastRatio(with: bg) >= 4.5 { return color }
+    /// An accent nudged toward the background's opposite until it clears
+    /// `minimum` — keeping the brand hue where possible — else the ink color.
+    /// Defaults to WCAG AA for text (4.5:1); filled shapes want 3:1.
+    static func legibleEmphasis(_ color: Color, on bg: Color, ink: Color,
+                                minimum: Double = 4.5) -> Color {
+        if color.contrastRatio(with: bg) >= minimum { return color }
         let toward: Color = bg.relativeLuminance < 0.5 ? .white : .black
         var out = color
         for _ in 0..<7 {
             out = out.mixed(with: toward, amount: 0.16)
-            if out.contrastRatio(with: bg) >= 4.5 { return out }
+            if out.contrastRatio(with: bg) >= minimum { return out }
         }
         return ink
+    }
+
+    /// Series colors for a plot: the deck's accents, each nudged until it
+    /// clears WCAG's 3:1 for non-text graphics against the background.
+    ///
+    /// Many of the bundled designs use their later accents as *surface tints* —
+    /// a near-white beige, a pale pink — which is fine behind a card and
+    /// invisible as a bar or a pie slice. 109 of 150 bundled styles have at
+    /// least one accent under 3:1 on their own canvas.
+    public var plotColors: [Color] {
+        accents.map { Self.legibleEmphasis($0, on: background, ink: ink, minimum: 3.0) }
     }
 
     /// Accent `n` if it clears WCAG AA (4.5:1) on `bg`, else legible text.

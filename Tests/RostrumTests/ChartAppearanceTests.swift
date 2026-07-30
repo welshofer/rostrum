@@ -121,4 +121,39 @@ import Testing
                     "chart text #\(hex) is unreadable on #\(background)")
         }
     }
+    /// Chart fills are graphical objects, so WCAG's bar is 3:1 against the
+    /// background — and many designs use their later accents as *surface
+    /// tints*, which is fine behind a card and invisible as a bar.
+    @Test func plotColorsClearContrastEvenWhenTheAccentsAreSurfaceTints() throws {
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse(
+            "## Palette\n- Background: #FFFFFF\n- Text: #1A1A1A\n"
+            + "- Accent 1: #E7E0D3\n- Accent 2: #C0186D\n- Accent 3: #F2E4EC"))
+        let style = deck.style
+        // The tints are genuinely invisible as bars to begin with.
+        #expect(style.accent(1).contrastRatio(with: style.background) < 3)
+        #expect(style.accent(3).contrastRatio(with: style.background) < 3)
+
+        for (i, color) in style.plotColors.enumerated() {
+            #expect(color.contrastRatio(with: style.background) >= 3,
+                    "plot color \(i + 1) (#\(color.hex)) is invisible on the canvas")
+        }
+        // An accent that already carries is left exactly as the designer set it.
+        #expect(style.plotColors[1] == style.accent(2))
+    }
+
+    @Test func chartSeriesUseThePlotColorsNotTheRawAccents() throws {
+        let deck = try Presentation()
+        deck.applyDesign(Design.parse(
+            "## Palette\n- Background: #FFFFFF\n- Text: #1A1A1A\n- Accent 1: #E7E0D3"))
+        try deck.chartSlide("T", .barClustered, sample)
+        let chart = try deck.package.part(at: PackURI("/ppt/charts/chart1.xml")).dom()
+        let fills = (chart.firstChild(named: "c:chart")?.firstChild(named: "c:plotArea")?
+            .firstChild(named: "c:barChart")?.children(named: "c:ser") ?? [])
+            .compactMap { $0.firstChild(named: "c:spPr")?.firstChild(named: "a:solidFill")?
+                .firstChild(named: "a:srgbClr")?[attribute: "val"] }
+        #expect(!fills.isEmpty)
+        #expect(fills[0] != "E7E0D3", "the invisible accent went straight onto the chart")
+        #expect(Color(fills[0]).contrastRatio(with: Color("FFFFFF")) >= 3)
+    }
 }

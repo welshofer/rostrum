@@ -400,7 +400,7 @@ public extension Presentation {
                 sizePt: Swift.min(caption.sizePt, 12))
         }
         try slide.shapes.addChart(kind, data: data, frame: content,
-                                  colors: colors ?? s.accents, options: options)
+                                  colors: colors ?? s.plotColors, options: options)
         return slide
     }
 
