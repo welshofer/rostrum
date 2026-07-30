@@ -497,6 +497,21 @@ public actor DeckRenderer {
                 }
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .timeline:
+            if let milestones = body?.milestones, !milestones.isEmpty {
+                Self.noteOverflow(milestones.count, cap: SlideCapacity.timeline,
+                                  noun: "milestones", on: slide, into: &dropped)
+                return try deck.timelineSlide(
+                    title, milestones: milestones.map { (label: $0.label, detail: $0.detail) })
+            }
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .quadrant:
+            if let quadrants = body?.quadrants, quadrants.count == SlideCapacity.quadrant {
+                return try deck.quadrantSlide(
+                    title, quadrants: quadrants.map { (heading: $0.heading, detail: $0.detail) },
+                    xAxis: body?.xAxis, yAxis: body?.yAxis)
+            }
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .table:
             if let table = body?.table, !table.headers.isEmpty, !table.rows.isEmpty {
                 return try deck.tableSlide(title, rows: table.grid)

@@ -65,6 +65,18 @@ enum DeckSchema {
             ],
             "required": ["headers", "rows"],
         ]
+        let milestone: [String: Any] = [
+            "type": "object",
+            "properties": ["label": str("a date or phase, 1–3 words"),
+                           "detail": str("what happens then, one short line")],
+            "required": ["label", "detail"],
+        ]
+        let quadrant: [String: Any] = [
+            "type": "object",
+            "properties": ["heading": str("the quadrant's name, 1–3 words"),
+                           "detail": str("one short line")],
+            "required": ["heading", "detail"],
+        ]
         let body: [String: Any] = [
             "type": "object",
             "description": "Only include the fields the slide's layout uses.",
@@ -83,6 +95,12 @@ enum DeckSchema {
                           "description": "metrics layout — 2 to 4 headline numbers"],
                 "diagram": diagram,                                 // diagram
                 "table": table,                                     // table
+                "milestones": ["type": "array", "items": milestone,  // timeline
+                               "description": "timeline layout — 3 to 5 milestones in time order"],
+                "quadrants": ["type": "array", "items": quadrant,    // quadrant
+                              "description": "quadrant layout — EXACTLY four, in reading order: top-left, top-right, bottom-left, bottom-right"],
+                "xAxis": str("quadrant layout — what the horizontal axis measures"),
+                "yAxis": str("quadrant layout — what the vertical axis measures"),
             ],
         ]
         let image: [String: Any] = [
@@ -103,7 +121,8 @@ enum DeckSchema {
                     "type": "string",
                     "enum": ["title", "agenda", "sectionHeader", "bullets",
                              "twoColumn", "comparison", "quote", "bigNumber", "closing",
-                             "chart", "metrics", "bands", "diagram", "table"],
+                             "chart", "metrics", "bands", "diagram", "table",
+                             "timeline", "quadrant"],
                 ],
                 "title": str(),
                 "body": body,

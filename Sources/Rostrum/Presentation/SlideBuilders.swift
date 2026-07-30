@@ -21,6 +21,10 @@ public enum SlideCapacity {
     public static let pyramid = 5
     /// `metricsSlide(_:metrics:)` — side-by-side headline numbers.
     public static let metrics = 4
+    /// `timelineSlide(_:milestones:)` — markers sharing one rule.
+    public static let timeline = 5
+    /// `quadrantSlide(_:quadrants:)` — a 2x2 is exactly four.
+    public static let quadrant = 4
 }
 
 public extension Presentation {
@@ -441,6 +445,114 @@ public extension Presentation {
             try slide.addText("— \(attribution)",
                               in: grid.cell(column: 1, row: 9, columnSpan: 10, rowSpan: 1),
                               role: .caption, style: s, align: .center)
+        }
+        return slide
+    }
+
+    /// A horizontal timeline: milestones pegged to one rule, each with a short
+    /// label above and its detail below.
+    ///
+    /// Lays out at most `SlideCapacity.timeline` milestones; extras are
+    /// dropped, because a sixth marker leaves no room for the text under it.
+    @discardableResult
+    func timelineSlide(_ title: String, milestones: [(label: String, detail: String)],
+                       kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        let items = Array(milestones.prefix(SlideCapacity.timeline))
+        guard !items.isEmpty else { return slide }
+
+        let columns = content.split(.horizontal, count: items.count, gutter: s.gutter)
+        // The rule sits below the labels so the eye reads label → marker →
+        // detail top to bottom, the order the milestones are spoken in.
+        let ruleY = content.y + content.height * 0.5
+        let ruleHeight = EMU.points(2)
+        let marker = EMU.points(14)
+        try slide.shapes.addShape(
+            .rectangle,
+            frame: Rect(x: columns[0].midX, y: ruleY,
+                        width: columns[columns.count - 1].midX - columns[0].midX, height: ruleHeight),
+            fill: .solid(s.mutedInk))
+
+        let labelStyle = s.with(.heading) { $0.sizePt = Swift.min($0.sizePt, 22) }
+        let detailStyle = s.with(.body) {
+            $0.sizePt = Swift.min($0.sizePt, 18)
+            $0.lineHeight = Swift.min($0.lineHeight, 1.2)
+        }
+        for (i, milestone) in items.enumerated() {
+            let column = columns[i]
+            let accent = s.legibleAccent(i + 1, on: s.background)
+            let labelBottom = ruleY - EMU.points(18)
+            try slide.addText(milestone.label,
+                              in: Rect(x: column.x, y: content.y, width: column.width,
+                                       height: Swift.max(.zero, labelBottom - content.y)),
+                              role: .heading, style: labelStyle, color: accent,
+                              align: .center, anchor: .bottom)
+            try slide.shapes.addShape(
+                .ellipse,
+                frame: Rect(x: column.midX - marker / 2.0, y: ruleY + ruleHeight / 2.0 - marker / 2.0,
+                            width: marker, height: marker),
+                fill: .solid(accent))
+            let detailTop = ruleY + marker
+            try slide.addText(milestone.detail,
+                              in: Rect(x: column.x, y: detailTop, width: column.width,
+                                       height: Swift.max(.zero, content.maxY - detailTop)),
+                              role: .body, style: detailStyle, align: .center, anchor: .top)
+        }
+        return slide
+    }
+
+    /// A 2x2 of labelled cards, read left to right and top to bottom, with
+    /// optional axis captions down the left edge and along the bottom.
+    ///
+    /// Takes exactly `SlideCapacity.quadrant` entries — a 2x2 with a hole in it
+    /// is a different diagram — and returns an empty slide otherwise.
+    @discardableResult
+    func quadrantSlide(_ title: String, quadrants: [(heading: String, detail: String)],
+                       xAxis: String? = nil, yAxis: String? = nil,
+                       kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        guard quadrants.count == SlideCapacity.quadrant else { return slide }
+
+        // Axis captions get a gutter of their own so they never overlap a card.
+        let axisGap = EMU.points(22)
+        let grid = content.inset(top: yAxis == nil ? .zero : axisGap,
+                                 bottom: xAxis == nil ? .zero : axisGap)
+        let rows = grid.split(.vertical, count: 2, gutter: s.spacing.sm)
+        let cells = rows.flatMap { $0.split(.horizontal, count: 2, gutter: s.spacing.sm) }
+
+        let headingStyle = s.with(.heading) { $0.sizePt = Swift.min($0.sizePt, 22) }
+        let detailStyle = s.with(.body) {
+            $0.sizePt = Swift.min($0.sizePt, 17)
+            $0.lineHeight = Swift.min($0.lineHeight, 1.2)
+        }
+        for (i, quadrant) in quadrants.enumerated() {
+            let cell = cells[i]
+            let card = try slide.addCard(in: cell, style: s)
+            let (head, body) = card.content.split(.vertical, ratio: 0.34, gutter: s.spacing.xs)
+            try slide.addText(quadrant.heading, in: head, role: .heading, style: headingStyle,
+                              color: s.legibleAccent(i + 1, on: s.surface), anchor: .top)
+            try slide.addText(quadrant.detail, in: body, role: .body, style: detailStyle, anchor: .top)
+        }
+
+        let axisStyle = s.with(.caption) { $0.sizePt = Swift.min($0.sizePt, 14) }
+        if let xAxis {
+            try slide.addText(xAxis,
+                              in: Rect(x: grid.x, y: grid.maxY, width: grid.width, height: axisGap),
+                              role: .caption, style: axisStyle, color: s.mutedInk,
+                              align: .center, anchor: .middle)
+        }
+        if let yAxis {
+            // Rotated text would need a transform the text path does not carry,
+            // so the vertical caption takes a band above the grid rather than
+            // the left margin — where, at this size, it printed over the cards.
+            try slide.addText(yAxis,
+                              in: Rect(x: grid.x, y: content.y, width: grid.width, height: axisGap),
+                              role: .caption, style: axisStyle, color: s.mutedInk,
+                              align: .left, anchor: .middle)
         }
         return slide
     }

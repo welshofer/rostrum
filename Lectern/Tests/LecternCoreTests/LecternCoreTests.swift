@@ -203,7 +203,10 @@ import Rostrum
 
     @Test func downgradesUnknownLayoutWithBulletsBody() throws {
         var deck = try fixtureDeck()
-        deck.slides[1].layout = "timeline"        // unknown, but has a bullets body
+        // Deliberately a layout we do not have. "timeline" used to stand in
+        // here and became real, which is the hazard with naming a real-looking
+        // one — "sankey" is not on the roadmap.
+        deck.slides[1].layout = "sankey"          // unknown, but has a bullets body
         let result = try DeckValidator().validate(deck)
         #expect(result.deck.slides[1].layout == "bullets")
         #expect(result.warnings.contains { $0.contains("downgraded to bullets") })
@@ -737,6 +740,41 @@ import Rostrum
             let result = try await DeckRenderer().render(validated.deck, designURL: nil,
                                                          notesEnabled: false, into: dir)
             #expect(try Presentation(contentsOf: result.url).validate().isEmpty, "\(kind) needed repair")
+        }
+    }
+
+    @Test func rendersTimelineAndQuadrantLayouts() async throws {
+        let deck = DeckIR(meta: Meta(title: "Layouts"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "timeline", title: "Roadmap",
+                    body: Body(milestones: [IRMilestone(label: "Q1", detail: "Zip core"),
+                                            IRMilestone(label: "Q2", detail: "Charts"),
+                                            IRMilestone(label: "Q3", detail: "Corpus")])),
+            IRSlide(id: "s3", layout: "quadrant", title: "Where the work sits",
+                    body: Body(quadrants: [IRQuadrant(heading: "Ship now", detail: "high value"),
+                                           IRQuadrant(heading: "Plan", detail: "high effort"),
+                                           IRQuadrant(heading: "Fill-in", detail: "low value"),
+                                           IRQuadrant(heading: "Avoid", detail: "low effort")],
+                               xAxis: "Effort", yAxis: "Value")),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                     notesEnabled: false, into: dir)
+        #expect(result.slideCount == 3)
+        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)
+    }
+
+    @Test func aQuadrantThatIsNotFourCellsIsRejected() throws {
+        let deck = DeckIR(meta: Meta(title: "Q"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "quadrant", title: "Three",
+                    body: Body(quadrants: [IRQuadrant(heading: "a", detail: "1"),
+                                           IRQuadrant(heading: "b", detail: "2"),
+                                           IRQuadrant(heading: "c", detail: "3")])),
+        ])
+        #expect(throws: (any Error).self) {
+            _ = try DeckValidator().validate(deck, notesRequired: false)
         }
     }
 

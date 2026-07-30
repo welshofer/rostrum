@@ -42,6 +42,8 @@ public enum PromptTemplates {
         - metrics          body: { stats: [{ value, label }] }   (2–4 headline numbers)
         - chart            body: { chart: { kind: bar|stackedBar|percentStackedBar|line|area|pie|doughnut|radar, categories: [string], series: [{ name, values: [number] }] } }
         - bands            body: { items: [string] }   (3–6 parallel concepts/phases/layers as colored bands; each item "Label — short detail")
+        - timeline         body: { milestones: [{ label, detail }] }   (3–5, in time order; label is a date or phase)
+        - quadrant         body: { quadrants: [{ heading, detail }], xAxis?, yAxis? }   (EXACTLY 4, reading order: TL, TR, BL, BR)
         - table            body: { table: { headers: [string], rows: [[string]] } }
                              2–5 columns, 2–6 body rows; every cell a few words at most — specs, plans, milestones, never prose
         - diagram          body: { diagram: { kind: process|pyramid|cycle, items: [string] } }

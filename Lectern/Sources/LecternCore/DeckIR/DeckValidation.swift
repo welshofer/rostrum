@@ -118,6 +118,11 @@ public struct DeckValidator: Sendable {
             if (body?.items ?? []).isEmpty && (body?.bullets ?? []).isEmpty { return "bands requires body.items" }
         case .diagram:
             if (body?.diagram?.items ?? []).isEmpty { return "diagram requires body.diagram with items" }
+        case .timeline:
+            if (body?.milestones ?? []).isEmpty { return "timeline requires body.milestones" }
+        case .quadrant:
+            // A 2x2 with a hole in it is a different diagram.
+            if (body?.quadrants ?? []).count != 4 { return "quadrant requires exactly four quadrants" }
         case .table:
             guard let table = body?.table else { return "table requires body.table" }
             if table.headers.isEmpty { return "table requires body.table.headers" }

@@ -16,6 +16,9 @@ import Testing
             ("callout", { try $0.calloutSlide(stat: "47", caption: "NPS") }),
             ("quote", { try $0.quoteSlide("Q", attribution: "me") }),
             ("table", { try $0.tableSlide("T", rows: [["A", "B"], ["1", "2"]]) }),
+            ("timeline", { try $0.timelineSlide("T", milestones: [("Q1", "one"), ("Q2", "two")]) }),
+            ("quadrant", { try $0.quadrantSlide("Q", quadrants: [("a", "1"), ("b", "2"),
+                                                                 ("c", "3"), ("d", "4")]) }),
         ]
         for (name, make) in builders {
             let deck = try Presentation()
@@ -253,5 +256,75 @@ import Testing
                 .children(named: "a:p").first?.firstChild(named: "a:pPr")?[attribute: "algn"]
         }
         #expect(aligned.allSatisfy { $0 != "r" })
+    }
+
+    // MARK: - Timeline and quadrant
+
+    /// Preset geometries used on a slide, in document order.
+    private func geometries(_ slide: Slide) throws -> [String] {
+        (try slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:spTree")?.children(named: "p:sp") ?? [])
+            .compactMap { $0.firstChild(named: "p:spPr")?.firstChild(named: "a:prstGeom")?[attribute: "prst"] }
+    }
+
+    private func text(_ slide: Slide) throws -> String {
+        allRuns(try slide.part.dom()).compactMap { $0.firstChild(named: "a:t")?.textContent }
+            .joined(separator: " ")
+    }
+
+    @Test func timelineDrawsAMarkerPerMilestoneOnOneRule() throws {
+        let deck = try Presentation()
+        let slide = try deck.timelineSlide("Roadmap", milestones: [
+            ("Q1", "Zip core"), ("Q2", "Charts"), ("Q3", "Corpus"),
+        ])
+        #expect(try geometries(slide).filter { $0 == "ellipse" }.count == 3)
+        #expect(try geometries(slide).contains("rect"))          // the rule they sit on
+        let words = try text(slide)
+        for word in ["Q1", "Q2", "Q3", "Zip core", "Charts", "Corpus"] {
+            #expect(words.contains(word))
+        }
+        #expect(try deck.validate().isEmpty)
+    }
+
+    @Test func timelineDropsMilestonesPastItsCapacity() throws {
+        let deck = try Presentation()
+        let many = (1...9).map { (label: "M\($0)", detail: "d\($0)") }
+        let slide = try deck.timelineSlide("Too many", milestones: many)
+        #expect(try geometries(slide).filter { $0 == "ellipse" }.count == SlideCapacity.timeline)
+    }
+
+    @Test func quadrantNeedsExactlyFour() throws {
+        let deck = try Presentation()
+        // Three is a different diagram, so the builder declines to guess: the
+        // slide keeps its title and draws no cells at all.
+        let short = try deck.quadrantSlide("Priorities", quadrants: [
+            ("Alpha", "1"), ("Beta", "2"), ("Gamma", "3"),
+        ])
+        let words = try text(short)
+        #expect(words.contains("Priorities"))
+        #expect(!words.contains("Alpha") && !words.contains("Beta") && !words.contains("Gamma"))
+    }
+
+    @Test func quadrantKeepsAxisCaptionsClearOfTheCards() throws {
+        let deck = try Presentation()
+        let slide = try deck.quadrantSlide("Q", quadrants: [
+            ("Ship now", "high value"), ("Plan", "high effort"),
+            ("Fill-in", "low value"), ("Avoid", "low effort"),
+        ], xAxis: "Effort", yAxis: "Value")
+        let words = try text(slide)
+        for word in ["Ship now", "Plan", "Fill-in", "Avoid", "Effort", "Value"] {
+            #expect(words.contains(word))
+        }
+        // The y caption used to print straight over the top row of cards: every
+        // card has to start below it, and the x caption below every card.
+        let boxes = slide.shapes.all.map(\.frame).filter { $0.height.rawValue > 0 }
+        let cards = boxes.filter { $0.height.rawValue >= EMU.inches(0.8).rawValue }
+        #expect(cards.count >= 4)
+        let cardTop = cards.map(\.y.rawValue).min() ?? 0
+        let cardBottom = cards.map(\.maxY.rawValue).max() ?? 0
+        let captions = boxes.filter { $0.height.rawValue < EMU.inches(0.5).rawValue }
+        #expect(captions.contains { $0.maxY.rawValue <= cardTop }, "no caption above the cards")
+        #expect(captions.contains { $0.y.rawValue >= cardBottom }, "no caption below the cards")
+        #expect(try deck.validate().isEmpty)
     }
 }
