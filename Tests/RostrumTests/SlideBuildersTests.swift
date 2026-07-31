@@ -327,4 +327,55 @@ import Testing
         #expect(captions.contains { $0.y.rawValue >= cardBottom }, "no caption below the cards")
         #expect(try deck.validate().isEmpty)
     }
+    // MARK: - Overprint
+
+    /// Nothing a builder draws may sit on top of its own title.
+    ///
+    /// `comparisonSlide` reached one row above the content row to buy its cards
+    /// headroom, which was safe while `placeHeader` left a spare row and
+    /// stopped being safe when that arithmetic tightened — the row above
+    /// content became the title's own, and a 40pt headline had its descenders
+    /// covered by 0.29in of card. The compensation and the thing it compensated
+    /// for lived in different functions, so nothing caught it. This is the
+    /// invariant that would have.
+    @Test func noBuilderPrintsOverItsOwnTitle() throws {
+        let title = "The demand side is already straining"
+        let builders: [(String, (Presentation) throws -> Slide)] = [
+            ("bullet", { try $0.bulletSlide(title, ["one", "two", "three"]) }),
+            ("twoColumn", { try $0.twoColumnSlide(title, left: ["l"], right: ["r"]) }),
+            ("comparison", { try $0.comparisonSlide(title, leftHeader: "Q1 2026 GDP growth",
+                                                    left: ["a"], rightHeader: "Household finances",
+                                                    right: ["b"]) }),
+            ("chart", { try $0.chartSlide(title, .barClustered,
+                                          ChartData(categories: ["A", "B"], name: "s", values: [1, 2])) }),
+            ("metrics", { try $0.metricsSlide(title, metrics: [("2,000", "papers"), ("292", "cases")]) }),
+            ("bands", { try $0.bandsSlide(title, bands: ["one", "two", "three"]) }),
+            ("process", { try $0.processSlide(title, steps: ["one", "two", "three"]) }),
+            ("pyramid", { try $0.pyramidSlide(title, levels: ["base", "middle", "peak"]) }),
+            ("table", { try $0.tableSlide(title, rows: [["A", "B"], ["1", "2"]]) }),
+            ("timeline", { try $0.timelineSlide(title, milestones: [("Q1", "one"), ("Q2", "two")]) }),
+            ("quadrant", { try $0.quadrantSlide(title, quadrants: [("a", "1"), ("b", "2"),
+                                                                   ("c", "3"), ("d", "4")]) }),
+        ]
+        for (name, make) in builders {
+            let deck = try Presentation()
+            let slide = try make(deck)
+            guard let titleShape = slide.shapes.all.first(where: {
+                ($0.textFrame?.text ?? "").contains("demand side")
+            }) else {
+                Issue.record(Comment(rawValue: "\(name) drew no title")); continue
+            }
+            let band = titleShape.frame
+            for other in slide.shapes.all where other.frame != band {
+                let f = other.frame
+                let overlapY = Swift.min(f.maxY.rawValue, band.maxY.rawValue)
+                    - Swift.max(f.y.rawValue, band.y.rawValue)
+                let overlapX = Swift.min(f.maxX.rawValue, band.maxX.rawValue)
+                    - Swift.max(f.x.rawValue, band.x.rawValue)
+                let inches = Double(Swift.max(0, overlapY)) / 914_400
+                #expect(overlapY <= 0 || overlapX <= 0,
+                        "\(name): a shape overlaps the title by \(inches)in vertically")
+            }
+        }
+    }
 }

@@ -188,11 +188,16 @@ public extension Presentation {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let headerInfo = try placeHeader(on: slide, kicker: nil, title: title, style: s)
-        // Comparison cards run a row taller than the shared content rect (one row
-        // above the standard content top) so their bullets get real headroom — a
-        // bullet that wraps (wider fonts in PowerPoint than in preview) then
-        // never runs off the card. A wrapped title shifts the cards down with it.
-        let cardRow = headerInfo.contentRow - 1
+        // Cards start where the header says content may start — no higher.
+        //
+        // They used to reach a row above it to buy their bullets headroom, which
+        // was safe when `placeHeader` left a spare row below the title band. It
+        // stopped being safe when that arithmetic tightened to `wraps ? 3 : 2`:
+        // the row above content is now the *title's own* row, so a single-line
+        // 40pt headline had its descenders covered by the cards — measured at
+        // 0.29in of overlap. Headroom is not worth printing over the title, and
+        // the bullets inside are size-fitted anyway.
+        let cardRow = headerInfo.contentRow
         let content = deckGrid(s).cell(column: 0, row: cardRow, columnSpan: 12, rowSpan: 12 - cardRow)
         let cols = content.split(.horizontal, count: 2, gutter: s.gutter)
         // Header gets its own top band (room for two lines) and the bullets fill
