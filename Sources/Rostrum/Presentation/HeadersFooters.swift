@@ -46,7 +46,12 @@ public extension Presentation {
         let frame = Rect(x: left, y: b.maxY - .inches(0.55),
                          width: Swift.max(EMU.inches(1), b.midX - .inches(2.6) - left),
                          height: .inches(0.35))
-        let sourceStyle = s.with(.caption) { $0.sizePt = Swift.min($0.sizePt, 10) }
+        // One line: a citation that wraps stops reading as a margin note and
+        // starts competing with the footer beside it.
+        let fitted = fitSize([text], font: s.type(.caption).font,
+                             candidates: [10, 9, 8], maxLines: 1, lineWidth: frame.width,
+                             fallback: text.count > 64 ? 8 : (text.count > 46 ? 9 : 10))
+        let sourceStyle = s.with(.caption) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         return try slide.addText(text, in: frame, role: .caption, style: sourceStyle,
                                  color: furnitureColor(on: slide, style: s),
                                  align: .left, anchor: .middle)
