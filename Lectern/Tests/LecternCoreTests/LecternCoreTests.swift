@@ -909,6 +909,12 @@ import Rostrum
 
     /// A scrimmed backdrop used to be re-encoded losslessly, which turned a
     /// 2.7 MB photograph into a 5.3 MB part and a 13-image deck into 49 MB.
+    ///
+    /// Both halves of this need CoreGraphics: the scrim is applied there, and
+    /// `photographJPEG()` builds its fixture there too, returning nil where it
+    /// cannot. Where there is no CoreGraphics the image is passed through
+    /// untouched, so there is no re-encode to measure.
+    #if canImport(CoreGraphics)
     @Test func scrimmingAPhotographDoesNotInflateIt() async throws {
         let source = try #require(Self.photographJPEG())
         let deck = DeckIR(meta: Meta(title: "Images"), slides: [
@@ -930,6 +936,7 @@ import Rostrum
                 "scrimming grew the image from \(source.count) to \(stored.count) bytes")
         #expect(Array(stored.prefix(2)) == [0xFF, 0xD8], "expected JPEG, got a lossless re-encode")
     }
+    #endif
 
     /// A photographic JPEG: gradient noise, which is exactly what PNG cannot
     /// compress and JPEG can.
@@ -1122,7 +1129,14 @@ import Rostrum
         #expect(message.contains("slides"), "does not say which field")
         // The syntax detail Foundation buries two errors deep — "unexpected
         // character ... around line N" — is the part a repair can act on.
+        // Apple's Foundation puts it in NSDebugDescription; swift-corelibs
+        // words the same failure differently and has no equivalent to pull
+        // out, so this is asserted where the detail exists. What Lectern
+        // itself contributes — the field, and what to send instead — is
+        // checked on every platform.
+        #if canImport(Darwin)
         #expect(message.lowercased().contains("unexpected"), "no syntax detail: \(message)")
+        #endif
         #expect(message.contains("real JSON array"), "does not say what to send instead")
         #expect(!message.contains("isn't in the correct format"))
     }
