@@ -880,6 +880,19 @@ public extension Presentation {
         let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top)
         let wraps = estimatedLines(title, style: titleStyle.type(.title), width: band.width) >= 2
+        // A hairline under the title, the width of the text column.
+        //
+        // The one piece of furniture that reads as typesetting rather than
+        // decoration: it gives the title a baseline to sit on and separates it
+        // from the content without a gap wide enough to waste a slide. Derived
+        // from the palette — muted ink most of the way to the background — so a
+        // design that is already quiet stays quiet and a dark deck gets a light
+        // rule rather than an invisible one.
+        let rule = style.mutedInk.mixed(with: style.background, amount: 0.72)
+        try slide.shapes.addShape(
+            .rectangle,
+            frame: Rect(x: band.x, y: band.maxY, width: band.width, height: .points(1)),
+            fill: .solid(rule))
         // One row of gap after the space the title actually occupies: a
         // single-line title fills roughly one row, a wrapped one both.
         return (titleRow + (wraps ? 3 : 2), wraps)
