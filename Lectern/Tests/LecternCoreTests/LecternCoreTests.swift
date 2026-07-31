@@ -964,6 +964,10 @@ import Rostrum
     /// rather than installing them, so macOS reports them missing and CoreText
     /// substitutes. A deck in Calibri was measured as an estimate and reported
     /// as "not installed", when PowerPoint renders it in Calibri every time.
+    ///
+    /// CoreText-gated like the resolver it exercises: `officeFontFile`,
+    /// `familyCandidates` and `faceIndex` are only declared where CoreText is.
+    #if canImport(CoreText)
     @Test func officeCoreFontsAreMeasuredNotReportedMissing() throws {
         // Skipped rather than failed where Office is not installed: this is a
         // fact about the machine, not about the code.
@@ -1014,6 +1018,7 @@ import Rostrum
             DeckRenderer.installedFontFile(named: "Helvetica Neue") == nil
         }
     }
+    #endif
 
     /// The classic pairing, both ways round. A deck that can only put the
     /// picture on the right reads as the same slide repeated.
