@@ -548,6 +548,11 @@ import Testing
         let inputs: [String] = [
             "", "<", "<a", "<a>", "<a></b>", "<a x=", "<a x='>", "<?xml", "<!--",
             "<![CDATA[", "<a>&badentity;</a>", String(repeating: "<a>", count: 5000),
+            // 5,000 sat just under the depth where the tree's teardown used to
+            // overflow the stack, so this corpus watched the bug go past it.
+            // These two are on the far side of it, opened and balanced.
+            String(repeating: "<a>", count: 40_000),
+            String(repeating: "<a>", count: 40_000) + String(repeating: "</a>", count: 40_000),
             "<a>\u{FFFF}</a>", "<\u{0}>", "<a b='\u{0}'/>",
         ]
         for s in inputs { _ = try? XML.parse(Data(s.utf8)) }
@@ -604,6 +609,11 @@ import Testing
 
     private func isPackageInvalid(_ e: RostrumError) -> Bool {
         if case .packageInvalid = e { return true }
+        return false
+    }
+
+    private func isMalformedXML(_ e: RostrumError) -> Bool {
+        if case .xmlMalformed = e { return true }
         return false
     }
 
@@ -679,8 +689,70 @@ import Testing
         #expect(unbounded.declaredUncompressedSize == UInt64(declared))
     }
 
-    @Test func theBudgetIsCheckedBeforeAnythingIsInflated() throws {
-        // Corrupt every entry's payload, then read it two ways. Without a budget
+    /// A `.pptx` whose main part nests `depth` elements: a few hundred KB of
+    /// `<a>` that DEFLATE crushes to about a kilobyte. The shape no byte
+    /// budget can see, because it is the depth that costs, not the size.
+    private func deeplyNestedPackage(depth: Int) throws -> Data {
+        let part = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+            + "<p:presentation xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\">"
+            + String(repeating: "<a>", count: depth) + "x" + String(repeating: "</a>", count: depth)
+            + "</p:presentation>"
+        let contentTypes = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+            + "<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">"
+            + "<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"
+            + "<Override PartName=\"/ppt/presentation.xml\" ContentType=\""
+            + "application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml\"/></Types>"
+        let rootRels = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+            + "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
+            + "<Relationship Id=\"rId1\" Type=\""
+            + "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\""
+            + " Target=\"ppt/presentation.xml\"/></Relationships>"
+        let partRels = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+            + "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"/>"
+
+        var writer = ZipWriter()
+        writer.addFile(name: "[Content_Types].xml", data: Data(contentTypes.utf8))
+        writer.addFile(name: "_rels/.rels", data: Data(rootRels.utf8))
+        writer.addFile(name: "ppt/presentation.xml", data: Data(part.utf8))
+        writer.addFile(name: "ppt/_rels/presentation.xml.rels", data: Data(partRels.utf8))
+        return try writer.finalize()
+    }
+
+    @Test func aDeeplyNestedPartIsRefusedRatherThanCrashingTheProcess() throws {
+        // The regression: 40,000 nested elements deflate to about a kilobyte,
+        // so neither a size check nor the read budget refuses the file — and
+        // the budget bounds *declared uncompressed bytes*, which here are
+        // trivial. The part parsed fine and then took the process down with
+        // SIGSEGV when the tree deallocated. A 1.4 KB input must not be able
+        // to do that, and `<a>` is not even a PresentationML element.
+        let bomb = try deeplyNestedPackage(depth: 40_000)
+        #expect(bomb.count < 8 * 1024, "fixture did not amplify: \(bomb.count) bytes on disk")
+
+        // The package itself is structurally sound, so opening it is not where
+        // this is caught. Reading the part is the moment that used to crash.
+        let deck = try Presentation(data: bomb)
+        expectError("a part nested past the ceiling", isMalformedXML) {
+            _ = try XML.parse(try deck.package.mainDocumentPart().blob)
+        }
+
+        // A part right at the ceiling is a document, not an attack, and must
+        // still read — the guard has to have a boundary, not just a direction.
+        // `maxDepth - 1` because the `p:presentation` root is itself a level:
+        // the ceiling counts total nesting, not the nesting inside the root.
+        let legal = try Presentation(data: try deeplyNestedPackage(depth: XML.maxDepth - 1))
+        #expect(throws: Never.self) {
+            _ = try XML.parse(try legal.package.mainDocumentPart().blob)
+        }
+
+        // And one level past it is refused, which pins the boundary rather
+        // than just showing that some big number is rejected.
+        let overByOne = try Presentation(data: try deeplyNestedPackage(depth: XML.maxDepth))
+        expectError("one level past the ceiling", isMalformedXML) {
+            _ = try XML.parse(try overByOne.package.mainDocumentPart().blob)
+        }
+    }
+
+    @Test func theBudgetIsCheckedBeforeAnythingIsInflated() throws {        // Corrupt every entry's payload, then read it two ways. Without a budget
         // the failure must come from DEFLATE — proving the data really is
         // unreadable. With a budget the SAME archive must fail earlier, at the
         // declared total, without touching the streams.
