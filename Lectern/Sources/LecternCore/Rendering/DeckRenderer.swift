@@ -773,8 +773,14 @@ public actor DeckRenderer {
     /// Downsamples to a coarse grid and returns each cell's WCAG relative
     /// luminance. Averaging into cells is deliberate: text sits over an *area*,
     /// so what matters is how bright a region reads, not any one pixel.
+    ///
+    /// Declared inside the `canImport` guard, not just implemented inside one:
+    /// `CGImage` in the signature is compiled on every platform regardless of
+    /// what the body is conditioned on, which is why a `#if` around the body
+    /// alone still failed to build on Linux. The sole caller is in `scrimmed`,
+    /// already within this same guard.
+    #if canImport(CoreGraphics)
     private static func sampledLuminances(of img: CGImage) -> [Double] {
-        #if canImport(CoreGraphics)
         let w = 32, h = 18
         var pixels = [UInt8](repeating: 0, count: w * h * 4)
         guard let ctx = pixels.withUnsafeMutableBytes({ raw in
@@ -794,10 +800,8 @@ public actor DeckRenderer {
             0.2126 * linear(buffer[i * 4]) + 0.7152 * linear(buffer[i * 4 + 1])
                 + 0.0722 * linear(buffer[i * 4 + 2])
         }
-        #else
-        return []
-        #endif
     }
+    #endif
 
     private static func scrimmed(_ data: Data, dark: Bool, textLuminance: Double) -> Data {
         #if canImport(CoreGraphics)
