@@ -649,6 +649,14 @@ public actor DeckRenderer {
                     xAxis: body?.xAxis, yAxis: body?.yAxis)
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .statement:
+            return try deck.statementSlide(body?.claim ?? title,
+                                           detail: body?.lead ?? body?.subtitle,
+                                           kicker: body?.kicker)
+        case .callout:
+            return try deck.calloutBandSlide(title, band: body?.band ?? "",
+                                             bullets: flatten(body?.bullets ?? []),
+                                             kicker: body?.kicker, lead: body?.lead)
         case .table:
             if let table = body?.table, !table.headers.isEmpty, !table.rows.isEmpty {
                 return try deck.tableSlide(title, rows: table.grid)

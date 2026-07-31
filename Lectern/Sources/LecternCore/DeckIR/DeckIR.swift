@@ -154,6 +154,8 @@ public struct Body: Codable, Sendable, Equatable {
     public var stats: [IRStat]?               // metrics (2–4 headline numbers)
     public var diagram: IRDiagram?            // diagram (process | pyramid | cycle)
     public var table: IRTable?                // table (header row + body rows)
+    public var claim: String?                 // statement — the argument in one sentence
+    public var band: String?                   // callout — the plated line (formula, threshold)
     public var lead: String?                  // one-sentence standfirst under the title
     public var source: String?                // citation / provenance, bottom-left
     public var milestones: [IRMilestone]?     // timeline
@@ -166,7 +168,8 @@ public struct Body: Codable, Sendable, Equatable {
                 quote: String? = nil, attribution: String? = nil, value: String? = nil,
                 label: String? = nil, callToAction: String? = nil, contact: String? = nil,
                 chart: IRChart? = nil, stats: [IRStat]? = nil, diagram: IRDiagram? = nil,
-                table: IRTable? = nil, lead: String? = nil, source: String? = nil,
+                table: IRTable? = nil, claim: String? = nil, band: String? = nil,
+                lead: String? = nil, source: String? = nil,
                 milestones: [IRMilestone]? = nil,
                 quadrants: [IRQuadrant]? = nil, xAxis: String? = nil, yAxis: String? = nil) {
         self.subtitle = subtitle; self.items = items; self.kicker = kicker
@@ -174,6 +177,7 @@ public struct Body: Codable, Sendable, Equatable {
         self.quote = quote; self.attribution = attribution; self.value = value
         self.label = label; self.callToAction = callToAction; self.contact = contact
         self.chart = chart; self.stats = stats; self.diagram = diagram; self.table = table
+        self.claim = claim; self.band = band
         self.lead = lead; self.source = source
         self.milestones = milestones; self.quadrants = quadrants
         self.xAxis = xAxis; self.yAxis = yAxis
@@ -256,7 +260,7 @@ public struct Column: Codable, Sendable, Equatable {
 public enum SlideLayoutKind: Sendable, Equatable {
     case title, agenda, sectionHeader, bullets, twoColumn, comparison, quote, bigNumber, closing
     case chart, metrics, bands, diagram, table, timeline, quadrant
-    case imageLeft, imageRight
+    case imageLeft, imageRight, statement, callout
     case unknown(String)
 
     public init(_ raw: String) {
@@ -279,6 +283,8 @@ public enum SlideLayoutKind: Sendable, Equatable {
         case "quadrant": self = .quadrant
         case "imageLeft": self = .imageLeft
         case "imageRight": self = .imageRight
+        case "statement": self = .statement
+        case "callout": self = .callout
         default: self = .unknown(raw)
         }
     }
@@ -287,7 +293,7 @@ public enum SlideLayoutKind: Sendable, Equatable {
     /// clips or crowds text.
     public var imagePlacement: ImagePlacement {
         switch self {
-        case .title, .bigNumber, .quote, .closing: return .fullBleed   // sparse, centered/large text
+        case .title, .bigNumber, .quote, .closing, .statement: return .fullBleed   // sparse, centered/large text
         // Text narrows to the left seven columns and the picture takes the
         // panel Rostrum reserves. Bullets and agendas qualify: they are one
         // column of text, so losing the right-hand fifth costs width, not
@@ -303,7 +309,7 @@ public enum SlideLayoutKind: Sendable, Equatable {
         // metrics, stacked bands, a diagram. Narrowing any of these breaks the
         // layout rather than reflowing it.
         case .twoColumn, .comparison, .chart, .metrics, .bands, .diagram, .table,
-             .timeline, .quadrant, .unknown:
+             .timeline, .quadrant, .callout, .unknown:
             return .none
         }
     }

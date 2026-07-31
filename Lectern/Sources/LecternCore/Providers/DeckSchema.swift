@@ -84,6 +84,8 @@ enum DeckSchema {
                 "subtitle": str("title layout"),
                 "items": strings,                                   // agenda
                 "kicker": str("a 2–4 word eyebrow above the title, e.g. the section or theme"),
+                "claim": str("statement layout — the argument in ONE short sentence"),
+                "band": str("callout layout — the plated line: an equation, a definition, a threshold"),
                 "lead": str("ONE sentence under the title saying what the slide shows, before the detail"),
                 "source": str("where the claim comes from, e.g. 'BLS, Q1 2026' — omit unless it is a real citation"),
                 "bullets": ["type": "array", "items": bullet],      // bullets
@@ -124,7 +126,8 @@ enum DeckSchema {
                     "enum": ["title", "agenda", "sectionHeader", "bullets",
                              "twoColumn", "comparison", "quote", "bigNumber", "closing",
                              "chart", "metrics", "bands", "diagram", "table",
-                             "timeline", "quadrant", "imageLeft", "imageRight"],
+                             "timeline", "quadrant", "imageLeft", "imageRight",
+                             "statement", "callout"],
                 ],
                 "title": str(),
                 "body": body,

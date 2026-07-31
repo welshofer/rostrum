@@ -1086,6 +1086,35 @@ import Rostrum
         #expect(message.contains("meta"))
     }
 
+    @Test func statementAndCalloutRenderAndOpenClean() async throws {
+        let deck = DeckIR(meta: Meta(title: "Layouts"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "statement",
+                    body: Body(claim: "The trap, in one sentence",
+                               lead: "Each firm captures the full saving but bears a fraction of the loss.")),
+            IRSlide(id: "s3", layout: "callout", title: "Proposition 1",
+                    body: Body(bullets: [Bullet(text: "dominant strategy")],
+                               band: "a = min[(s - l/N) / k, 1]",
+                               source: "The frictionless case is treated separately")),
+        ])
+        let validated = try DeckValidator().validate(deck, notesRequired: false)
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(validated.deck, designURL: nil,
+                                                     notesEnabled: false, into: dir)
+        #expect(result.slideCount == 3)
+        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)
+    }
+
+    @Test func statementWithoutAClaimIsRejected() throws {
+        let deck = DeckIR(meta: Meta(title: "T"), slides: [
+            IRSlide(id: "s1", layout: "title", title: "Opener"),
+            IRSlide(id: "s2", layout: "statement", title: "No claim"),
+        ])
+        #expect(throws: (any Error).self) {
+            _ = try DeckValidator().validate(deck, notesRequired: false)
+        }
+    }
+
     @Test func slideDecodesOptionalImageBrief() throws {
         let withImage = #"{"id":"s1","layout":"title","image":{"prompt":"a lighthouse at dawn","aspect":"16:9"}}"#
         let slide = try JSONDecoder().decode(IRSlide.self, from: Data(withImage.utf8))

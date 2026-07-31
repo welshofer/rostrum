@@ -44,6 +44,8 @@ public enum PromptTemplates {
         - bands            body: { items: [string] }   (3–6 parallel concepts/phases/layers as colored bands; each item "Label — short detail")
         - imageLeft        body: { bullets: [...] } + image   (picture on the LEFT, title and 3–5 bullets on the right)
         - imageRight       body: { bullets: [...] } + image   (picture on the RIGHT, title and 3–5 bullets on the left)
+        - statement        body: { claim, lead? }   (the deck's own thesis in ONE sentence, alone on the slide — at most once or twice)
+        - callout          body: { band, bullets: [...] }   (a plated line — an equation, definition or threshold — with the argument for it beneath)
         - timeline         body: { milestones: [{ label, detail }] }   (3–5, in time order; label is a date or phase)
         - quadrant         body: { quadrants: [{ heading, detail }], xAxis?, yAxis? }   (EXACTLY 4, reading order: TL, TR, BL, BR)
         - table            body: { table: { headers: [string], rows: [[string]] } }

@@ -399,6 +399,9 @@ import Testing
         ("timeline", { try $0.timelineSlide($1, milestones: [("Q1", "one"), ("Q2", "two")]) }),
         ("quadrant", { try $0.quadrantSlide($1, quadrants: [("a", "1"), ("b", "2"),
                                                             ("c", "3"), ("d", "4")]) }),
+        ("callout", { try $0.calloutBandSlide($1, band: "a(NE) = min[(s - l/N) / k, 1]",
+                                              bullets: ["The equilibrium rate is dominant",
+                                                        "Every firm over-automates"]) }),
     ] }
 
     @Test func noBuilderPrintsOverItsOwnTitle() throws {
@@ -416,6 +419,7 @@ import Testing
             ("process", { try $0.processSlide(title, steps: ["one", "two", "three"]) }),
             ("pyramid", { try $0.pyramidSlide(title, levels: ["base", "middle", "peak"]) }),
             ("table", { try $0.tableSlide(title, rows: [["A", "B"], ["1", "2"]]) }),
+            ("callout", { try $0.calloutBandSlide(title, band: "x = y / z", bullets: ["one"]) }),
             ("timeline", { try $0.timelineSlide(title, milestones: [("Q1", "one"), ("Q2", "two")]) }),
             ("quadrant", { try $0.quadrantSlide(title, quadrants: [("a", "1"), ("b", "2"),
                                                                    ("c", "3"), ("d", "4")]) }),
@@ -479,5 +483,42 @@ import Testing
                         "\(name): \"\(text.prefix(28))\" needs ~\(Int(needed))pt in a \(Int(heightPt))pt box")
             }
         }
+    }
+
+    // MARK: - Statement and callout
+
+    @Test func statementSlideIsAClaimAloneOnTheSlide() throws {
+        let deck = try Presentation()
+        let slide = try deck.statementSlide(
+            "The trap, in one sentence",
+            detail: "Each firm captures the full cost saving but bears a fraction of the loss.")
+        let words = try text(slide)
+        #expect(words.contains("The trap, in one sentence"))
+        #expect(words.contains("captures the full cost saving"))
+        // An accent bar across the very top edge — full slide width, outside
+        // the margin, which is what marks the slide before it is read.
+        let bar = try #require(slide.shapes.all.first { $0.frame.width == deck.bounds.width })
+        #expect(bar.frame.y == deck.bounds.minY)
+        #expect(try deck.validate().isEmpty)
+    }
+
+    @Test func calloutBandPlatesItsLineAndKeepsBulletsBelow() throws {
+        let deck = try Presentation()
+        let slide = try deck.calloutBandSlide("Proposition 1", band: "a = min[(s - l/N) / k, 1]",
+                                              bullets: ["dominant strategy", "over-automates"])
+        let words = try text(slide)
+        #expect(words.contains("min[(s - l/N)"))
+        #expect(words.contains("dominant strategy"))
+        // The band is plated on the deck's ink, so its text takes the
+        // contrasting colour rather than the body ink it would vanish into.
+        let banded = try #require(slide.shapes.all.first {
+            ($0.textFrame?.text ?? "").contains("min[")
+        })
+        let bullets = try #require(slide.shapes.all.first {
+            ($0.textFrame?.text ?? "").contains("dominant")
+        })
+        #expect(banded.frame.maxY.rawValue <= bullets.frame.y.rawValue,
+                "the bullets are not below the band")
+        #expect(try deck.validate().isEmpty)
     }
 }

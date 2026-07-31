@@ -160,6 +160,10 @@ public struct DeckValidator: Sendable {
             // Same body as bullets; the picture is optional and the slide
             // simply uses the full width when none arrives.
             if (body?.bullets ?? []).isEmpty { return "\(slide.layout) requires body.bullets" }
+        case .statement:
+            if (body?.claim ?? "").isEmpty { return "statement requires body.claim" }
+        case .callout:
+            if (body?.band ?? "").isEmpty { return "callout requires body.band" }
         case .timeline:
             if (body?.milestones ?? []).isEmpty { return "timeline requires body.milestones" }
         case .quadrant:

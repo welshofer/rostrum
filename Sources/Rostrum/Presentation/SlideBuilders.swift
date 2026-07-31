@@ -602,6 +602,81 @@ public extension Presentation {
         return slide
     }
 
+    /// The argument in one sentence: an accent bar across the top, a short
+    /// claim centred in the upper half, and the sentence that carries it below.
+    ///
+    /// Distinct from `quoteSlide` (someone else's words, attributed) and from
+    /// `calloutSlide` (a number). This is the deck's own thesis, and it earns a
+    /// slide with nothing else on it.
+    @discardableResult
+    func statementSlide(_ claim: String, detail: String? = nil,
+                        kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try blankCanvas()
+        try slide.setBackground(.solid(s.background))
+        let grid = deckGrid(s)
+        let accent = s.legibleAccent(1, on: s.background)
+
+        // A bar across the very top edge, outside the margin: the one piece of
+        // furniture that says "this slide is a statement" before it is read.
+        try slide.shapes.addShape(
+            .rectangle,
+            frame: Rect(x: bounds.minX, y: bounds.minY, width: bounds.width, height: .points(10)),
+            fill: .solid(accent))
+        // A short rule under it, at the margin, echoing the title rules.
+        try slide.shapes.addShape(
+            .rectangle,
+            frame: Rect(x: grid.content.minX, y: grid.cell(column: 0, row: 1).minY,
+                        width: .inches(1.1), height: .points(3)),
+            fill: .solid(accent))
+        if let kicker {
+            try slide.addKicker(kicker, in: grid.cell(column: 0, row: 2, columnSpan: 12), style: s)
+        }
+        let claimBand = grid.cell(column: 1, row: 3, columnSpan: 10, rowSpan: 3)
+        let fitted = fitSize([claim], font: s.type(.quote).font,
+                             candidates: [s.type(.quote).sizePt, 34, 28],
+                             maxLines: 2, lineWidth: claimBand.width,
+                             fallback: claim.count > 60 ? 28 : (claim.count > 38 ? 34 : s.type(.quote).sizePt))
+        let claimStyle = s.with(.quote) { $0.sizePt = Swift.min($0.sizePt, fitted) }
+        try slide.addText(claim, in: claimBand, role: .quote, style: claimStyle,
+                          align: .center, anchor: .middle)
+        if let detail, !detail.isEmpty {
+            try slide.addText(detail, in: grid.cell(column: 1, row: 7, columnSpan: 10, rowSpan: 3),
+                              role: .subhead, style: s, color: s.mutedInk,
+                              align: .center, anchor: .top)
+        }
+        return slide
+    }
+
+    /// A title, one full-width banded line, and bullets beneath it.
+    ///
+    /// The band is for the thing the slide is *about* — an equation, a
+    /// definition, a threshold — set on the deck's ink so it reads as a plate
+    /// rather than a heading, with the argument for it underneath.
+    @discardableResult
+    func calloutBandSlide(_ title: String, band: String, bullets: [String] = [],
+                          kicker: String? = nil, lead: String? = nil,
+                          style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s, lead: lead)
+        // The band takes the top of the content and the bullets take the rest,
+        // so a long band pushes them down instead of printing on them.
+        let (plate, rest) = content.split(.vertical, ratio: 0.26, gutter: s.spacing.md)
+        let plateInk = s.ink
+        _ = try slide.addCard(in: plate, style: s, fill: .solid(plateInk),
+                              radiusToken: "sm", shadow: false)
+        let bandStyle = s.with(.heading) {
+            $0.sizePt = Swift.min($0.sizePt, band.count > 46 ? 22 : 28)
+        }
+        try slide.addText(band, in: plate, role: .heading, style: bandStyle,
+                          color: s.textColor(on: plateInk), align: .center, anchor: .middle)
+        if !bullets.isEmpty {
+            try slide.addBulletList(bullets, in: rest, style: s, anchor: .top)
+        }
+        return slide
+    }
+
     /// A titled table: header row on the brand primary, banded body rows, and
     /// column widths proportional to the widest cell in each column so a column
     /// of dates never takes the same space as a column of sentences.
