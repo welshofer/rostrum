@@ -1115,6 +1115,46 @@ import Rostrum
         }
     }
 
+    /// Variety asked for is not variety enforced. A model that likes a layout
+    /// will use it eight times, and the deck reads as one slide repeated.
+    @Test func aLayoutUsedPastItsShareIsThinnedToBullets() throws {
+        // Twelve slides, seven of them the five-circle diagram.
+        var slides = [IRSlide(id: "s1", layout: "title", title: "Opener")]
+        for i in 2...8 {
+            slides.append(IRSlide(id: "s\(i)", layout: "diagram", title: "Step set \(i)",
+                                  body: Body(diagram: IRDiagram(kind: "process",
+                                                                items: ["one", "two", "three"]))))
+        }
+        for i in 9...12 {
+            slides.append(IRSlide(id: "s\(i)", layout: "quote", title: "Q",
+                                  body: Body(quote: "a quote")))
+        }
+        let result = try DeckValidator().validate(DeckIR(meta: Meta(title: "Repeats"),
+                                                         slides: slides), notesRequired: false)
+        let diagrams = result.deck.slides.filter { $0.layout == "diagram" }
+        // 17% of twelve slides is two; the rest become bullets.
+        #expect(diagrams.count == 2)
+        #expect(result.deck.slides.filter { $0.layout == "bullets" }.count == 5)
+        #expect(result.warnings.contains { $0.contains("laid out as bullets") })
+        // Nothing is lost: the steps survive as the bullets.
+        let thinned = try #require(result.deck.slides.first { $0.id == "s8" })
+        #expect(thinned.body?.bullets?.map(\.text) == ["one", "two", "three"])
+    }
+
+    @Test func aLayoutWithinItsShareIsUntouched() throws {
+        var slides = [IRSlide(id: "s1", layout: "title", title: "Opener")]
+        for i in 2...12 {
+            slides.append(IRSlide(id: "s\(i)", layout: i <= 3 ? "diagram" : "quote",
+                                  title: "S\(i)",
+                                  body: i <= 3
+                                      ? Body(diagram: IRDiagram(kind: "process", items: ["a", "b"]))
+                                      : Body(quote: "q")))
+        }
+        let result = try DeckValidator().validate(DeckIR(meta: Meta(title: "Fine"),
+                                                         slides: slides), notesRequired: false)
+        #expect(result.deck.slides.filter { $0.layout == "diagram" }.count == 2)
+    }
+
     @Test func slideDecodesOptionalImageBrief() throws {
         let withImage = #"{"id":"s1","layout":"title","image":{"prompt":"a lighthouse at dawn","aspect":"16:9"}}"#
         let slide = try JSONDecoder().decode(IRSlide.self, from: Data(withImage.utf8))
