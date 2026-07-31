@@ -368,6 +368,54 @@ import Rostrum
         #expect(rendered.droppedContent.isEmpty)
     }
 
+    /// Image requests must respect the ceiling the provider declares.
+    ///
+    /// Every briefed slide used to get a task at once, so a long deck opened
+    /// dozens of simultaneous requests — at Gemini, the default, which sets its
+    /// ceiling to one because its quotas are burst-sensitive. The rate limiting
+    /// that followed was self-inflicted and surfaced to the user as images that
+    /// "couldn't be generated".
+    @Test func imageRequestsRespectTheProvidersBurstCeiling() async throws {
+        // Ten briefs: comfortably above both ceilings, so an unbounded fan-out
+        // is unmistakable against either one.
+        let briefCount = 10
+        var deck = try fixtureDeck()
+        let sectionId = deck.slides[1].sectionId
+        let illustrated = (0..<briefCount).map { i in
+            IRSlide(id: "illustrated-\(i)", sectionId: sectionId, layout: "sectionHeader",
+                    title: "Part \(i)", body: Body(kicker: "Part \(i)"),
+                    image: ImageBrief(prompt: "a wind turbine at dawn, take \(i)"))
+        }
+        deck.slides.insert(contentsOf: illustrated, at: 1)
+        if var sections = deck.sections, let idx = sections.firstIndex(where: { $0.id == sectionId }) {
+            sections[idx].slideIds.insert(contentsOf: illustrated.map(\.id), at: 0)
+            deck.sections = sections
+        }
+        let json = String(decoding: try JSONEncoder().encode(deck), as: UTF8.self)
+
+        for providerID in ImageProviderID.allCases {
+            let probe = ConcurrencyProbe()
+            let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+            let request = DeckRequest(prompt: "turbines", slideCount: deck.slides.count, notes: false)
+            _ = try await DeckGenerator(
+                provider: FixtureProvider(validJSON: json),
+                imageProvider: ProbeImageProvider(id: providerID, probe: probe),
+                quality: false
+            ).generate(request, designURL: nil, into: dir) { _ in }
+
+            let ceiling = providerID.maximumConcurrentRequests
+            let peak = await probe.peak
+            #expect(await probe.total == briefCount,
+                    "\(providerID): every briefed slide should still be requested")
+            #expect(peak <= ceiling,
+                    "\(providerID): \(peak) requests in flight against a ceiling of \(ceiling)")
+            // And it uses the allowance rather than quietly serialising, which
+            // would trade the 429s for a needlessly slow illustration pass.
+            #expect(peak == ceiling,
+                    "\(providerID): peaked at \(peak), never reaching its ceiling of \(ceiling)")
+        }
+    }
+
     // MARK: - Sections (Rostrum enforces its contract with `precondition`)
 
     /// Two sections sharing a first slide used to **abort the process**.
@@ -1216,4 +1264,34 @@ private final class EventBox: @unchecked Sendable {
         }
     }
     var stages: Set<String> { lock.lock(); defer { lock.unlock() }; return Set(events) }
+}
+
+/// Records how many image requests are in flight at once, and the high-water
+/// mark. An actor so the counter is safe under real concurrency.
+private actor ConcurrencyProbe {
+    private(set) var peak = 0
+    private var inFlight = 0
+    private(set) var total = 0
+
+    func enter() {
+        inFlight += 1
+        total += 1
+        peak = max(peak, inFlight)
+    }
+    func leave() { inFlight -= 1 }
+}
+
+/// A test-only image provider that does no I/O but stays "in flight" long
+/// enough that anything allowed to overlap will overlap — so the peak the probe
+/// records is the fan-out the pipeline actually chose.
+private struct ProbeImageProvider: ImageProvider {
+    let id: ImageProviderID
+    let probe: ConcurrencyProbe
+
+    func image(prompt: String, style: String?, aspect: ImageAspect, role: ImageRole) async throws -> Data {
+        await probe.enter()
+        try? await Task.sleep(nanoseconds: 20_000_000)
+        await probe.leave()
+        return Data("image-bytes".utf8)
+    }
 }

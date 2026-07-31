@@ -114,11 +114,38 @@ public actor DeckGenerator {
 
         emit(.illustrating(completed: 0, total: briefed.count))
         let style = imageStyle
+        // Honour the provider's own burst policy instead of starting everything
+        // at once. Every briefed slide used to get a task immediately, so a
+        // 40-slide deck fired 40 simultaneous requests — at Gemini, the default,
+        // which declares a ceiling of one precisely because its quotas are
+        // sensitive to bursts. The 429s that came back were self-inflicted: the
+        // provider's own retry budget was being spent on congestion this code
+        // created, and the user read the result as "N of M image(s) couldn't be
+        // generated". `maximumConcurrentRequests` existed and said all of this;
+        // nothing had ever read it.
+        let inFlightLimit = max(1, imageProvider.id.maximumConcurrentRequests)
         var images: [String: Data] = [:]
         var failures: [String] = []
         var done = 0
         await withTaskGroup(of: (String, Result<Data, Error>).self) { group in
-            for (id, brief, aspect, role) in briefed {
+            func record(_ outcome: (String, Result<Data, Error>)) {
+                let (id, result) = outcome
+                done += 1
+                emit(.illustrating(completed: done, total: briefed.count))
+                switch result {
+                case .success(let data): images[id] = data
+                case .failure(let error): failures.append(DeckGenerator.imageFailure(error))
+                }
+            }
+            var next = 0
+            while next < briefed.count {
+                // At the ceiling, wait for one to land before starting another,
+                // so the number in flight never exceeds it.
+                if next >= inFlightLimit, let finished = await group.next() {
+                    record(finished)
+                }
+                let (id, brief, aspect, role) = briefed[next]
+                next += 1
                 group.addTask {
                     do {
                         let data = try await imageProvider.image(prompt: brief.prompt, style: style,
@@ -129,14 +156,7 @@ public actor DeckGenerator {
                     }
                 }
             }
-            for await (id, result) in group {
-                done += 1
-                emit(.illustrating(completed: done, total: briefed.count))
-                switch result {
-                case .success(let data): images[id] = data
-                case .failure(let error): failures.append(DeckGenerator.imageFailure(error))
-                }
-            }
+            while let finished = await group.next() { record(finished) }
         }
         var warnings: [String] = discarded
         if !failures.isEmpty {
