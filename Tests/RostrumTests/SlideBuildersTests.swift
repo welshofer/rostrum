@@ -338,6 +338,69 @@ import Testing
     /// covered by 0.29in of card. The compensation and the thing it compensated
     /// for lived in different functions, so nothing caught it. This is the
     /// invariant that would have.
+    /// Every builder, every pair of shapes it draws: text may not be printed
+    /// over other text.
+    ///
+    /// The title-only version of this caught `comparisonSlide`. This is the
+    /// same idea without the special case — the complaint that keeps coming
+    /// back is "overprint", and it does not care which shape was on top.
+    ///
+    /// Filled shapes a text box deliberately sits on — a card, a band, a
+    /// coloured tile — are excluded by only comparing shapes that *carry text*.
+    @Test func noBuilderPrintsTextOverText() throws {
+        let title = "The demand side is already straining"
+        for (name, make) in titledBuilders {
+            let deck = try Presentation()
+            let slide = try make(deck, title)
+            let texts = slide.shapes.all.filter { !($0.textFrame?.text ?? "").isEmpty }
+            for i in texts.indices {
+                for j in texts.indices where j > i {
+                    let a = texts[i].frame, b = texts[j].frame
+                    let overlapX = Swift.min(a.maxX.rawValue, b.maxX.rawValue)
+                        - Swift.max(a.x.rawValue, b.x.rawValue)
+                    let overlapY = Swift.min(a.maxY.rawValue, b.maxY.rawValue)
+                        - Swift.max(a.y.rawValue, b.y.rawValue)
+                    guard overlapX > 0, overlapY > 0 else { continue }
+                    let smaller = Swift.min(a.width.rawValue * a.height.rawValue,
+                                            b.width.rawValue * b.height.rawValue)
+                    let fraction = Double(overlapX * overlapY) / Double(Swift.max(1, smaller))
+                    let one = (texts[i].textFrame?.text ?? "").prefix(20)
+                    let two = (texts[j].textFrame?.text ?? "").prefix(20)
+                    #expect(fraction < 0.05,
+                            "\(name): \"\(one)\" and \"\(two)\" overlap by \(Int(fraction * 100))%")
+                }
+            }
+        }
+    }
+
+    /// The builders that draw a title, shared by the overprint checks.
+    private var titledBuilders: [(String, (Presentation, String) throws -> Slide)] { [
+        ("bullet", { try $0.bulletSlide($1, ["one", "two", "three"]) }),
+        ("bulletLead", { try $0.bulletSlide($1, ["one", "two"], kicker: "Section",
+                                            lead: "A single sector with N >= 2 symmetric firms, "
+                                                + "each owned by an equity holder.") }),
+        ("twoColumn", { try $0.twoColumnSlide($1, left: ["l"], right: ["r"]) }),
+        ("comparison", { try $0.comparisonSlide($1, leftHeader: "Q1 2026 GDP growth",
+                                                left: ["a"], rightHeader: "Household finances",
+                                                right: ["b"]) }),
+        ("chart", { try $0.chartSlide($1, .barClustered,
+                                      ChartData(categories: ["A", "B"], name: "s", values: [1, 2])) }),
+        ("metrics", { try $0.metricsSlide($1, metrics: [("2,000", "papers sampled"),
+                                                        ("292", "test cases curated")]) }),
+        ("bands", { try $0.bandsSlide($1, bands: ["one", "two", "three"]) }),
+        ("process", { try $0.processSlide($1, steps: ["Sample — pull 2,000 papers from recent "
+                                                      + "NeurIPS proceedings",
+                                                      "Filter — keep only papers with a diagram",
+                                                      "Restrict — require landscape aspect ratio",
+                                                      "Categorize — tag each figure by type",
+                                                      "Curate — annotators verify quality"]) }),
+        ("pyramid", { try $0.pyramidSlide($1, levels: ["base", "middle", "peak"]) }),
+        ("table", { try $0.tableSlide($1, rows: [["A", "B"], ["1", "2"]]) }),
+        ("timeline", { try $0.timelineSlide($1, milestones: [("Q1", "one"), ("Q2", "two")]) }),
+        ("quadrant", { try $0.quadrantSlide($1, quadrants: [("a", "1"), ("b", "2"),
+                                                            ("c", "3"), ("d", "4")]) }),
+    ] }
+
     @Test func noBuilderPrintsOverItsOwnTitle() throws {
         let title = "The demand side is already straining"
         let builders: [(String, (Presentation) throws -> Slide)] = [
@@ -375,6 +438,45 @@ import Testing
                 let inches = Double(Swift.max(0, overlapY)) / 914_400
                 #expect(overlapY <= 0 || overlapX <= 0,
                         "\(name): a shape overlaps the title by \(inches)in vertically")
+            }
+        }
+    }
+    /// Text may not run past the box it was given.
+    ///
+    /// The overprint people actually see is usually this, not two frames
+    /// intersecting: a caption in a narrow column wraps to five lines, runs
+    /// out of the bottom of its own tile, and lands on whatever is beneath.
+    /// The frames never touch, so a box-overlap check finds nothing.
+    ///
+    /// Estimated at 0.52em average advance and 1.25 line height — the same
+    /// arithmetic the builders fit against — with a generous tolerance, so
+    /// this fails on genuine overflow rather than on a rounding disagreement.
+    @Test func textFitsInsideTheBoxItWasGiven() throws {
+        let title = "The demand side is already straining"
+        for (name, make) in titledBuilders {
+            let deck = try Presentation()
+            let slide = try make(deck, title)
+            for shape in slide.shapes.all {
+                guard let frame = shape.textFrame else { continue }
+                let text = frame.text
+                guard !text.isEmpty else { continue }
+                let widthPt = Double(shape.frame.width.rawValue) / Double(EMU.perPoint)
+                let heightPt = Double(shape.frame.height.rawValue) / Double(EMU.perPoint)
+                guard widthPt > 1, heightPt > 1 else { continue }
+
+                var needed = 0.0
+                for paragraph in frame.paragraphs {
+                    let size = paragraph.runs.compactMap(\.fontSize).max() ?? 18
+                    let body = paragraph.runs.map(\.text).joined()
+                    guard !body.isEmpty else { needed += size * 1.25; continue }
+                    let perLine = Swift.max(1.0, widthPt / (0.52 * size))
+                    let lines = (Double(body.count) / perLine).rounded(.up)
+                    needed += lines * size * 1.25
+                }
+                // 1.6x: autofit shrinks text the estimate does not know about,
+                // so only a clear overflow should fail.
+                #expect(needed <= heightPt * 1.6,
+                        "\(name): \"\(text.prefix(28))\" needs ~\(Int(needed))pt in a \(Int(heightPt))pt box")
             }
         }
     }
