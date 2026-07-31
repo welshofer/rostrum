@@ -31,7 +31,50 @@ public struct DeckIR: Codable, Sendable, Equatable {
         self.irVersion = (try? c.decodeIfPresent(String.self, forKey: .irVersion)) ?? DeckIR.currentVersion
         self.meta = try c.decode(Meta.self, forKey: .meta)
         self.sections = (try? c.decodeIfPresent([IRSection].self, forKey: .sections)) ?? nil
-        self.slides = try c.decode([IRSlide].self, forKey: .slides)
+        self.slides = try c.decodeArray([IRSlide].self, forKey: .slides)
+    }
+}
+
+extension KeyedDecodingContainer {
+    /// Decode an array that a model may have handed back as a *string* holding
+    /// the array's JSON.
+    ///
+    /// Tool-calling models double-encode a nested array often enough to be a
+    /// failure mode rather than a curiosity: one 29-slide draft arrived with
+    /// `meta` and `sections` as proper JSON and `slides` as an 11,649-character
+    /// string. Both attempts of the repair loop came back the same way, so the
+    /// deck was lost to a quoting mistake in one field.
+    ///
+    /// The strict decode is still tried first; this only rescues the shape that
+    /// would otherwise be thrown away.
+    func decodeArray<T: Decodable>(_ type: [T].Type, forKey key: Key) throws -> [T] {
+        if let array = try? decode([T].self, forKey: key) { return array }
+        let embedded = try decode(String.self, forKey: key)
+        guard let data = embedded.data(using: .utf8) else {
+            throw DecodingError.dataCorruptedError(
+                forKey: key, in: self, debugDescription: "\(key.stringValue) was not decodable text")
+        }
+        do {
+            return try JSONDecoder().decode([T].self, from: data)
+        } catch {
+            // Keep the underlying error attached: the line and column live in
+            // its debug description, and that is the only part a repair
+            // attempt can actually act on.
+            // Foundation nests it: the DecodingError says only "not valid
+            // JSON", and the line and column are in the error underneath it.
+            var detail = (error as NSError).userInfo["NSDebugDescription"] as? String
+            if case let DecodingError.dataCorrupted(inner) = error,
+               let deeper = (inner.underlyingError as NSError?)?
+                   .userInfo["NSDebugDescription"] as? String {
+                detail = deeper
+            }
+            throw DecodingError.dataCorrupted(DecodingError.Context(
+                codingPath: codingPath + [key],
+                debugDescription: "was sent as a string containing JSON, and that JSON is "
+                    + "malformed" + (detail.map { " — \($0)" } ?? "")
+                    + ". Send it as a real JSON array, not a quoted string.",
+                underlyingError: nil))
+        }
     }
 }
 

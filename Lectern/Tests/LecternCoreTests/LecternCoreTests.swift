@@ -1012,6 +1012,80 @@ import Rostrum
         return Data(b)
     }
 
+    /// Tool-calling models double-encode a nested array often enough to be a
+    /// failure mode rather than a curiosity. One 29-slide draft arrived with
+    /// `meta` and `sections` as proper JSON and `slides` as an 11,649-character
+    /// string; both attempts of the repair loop came back the same way, so a
+    /// whole deck was lost to a quoting mistake in one field.
+    @Test func aStringifiedSlidesArrayStillDecodes() throws {
+        let inner = #"[{"id":"s1","layout":"title","title":"Opener"},"#
+            + #"{"id":"s2","layout":"bullets","title":"Points",""#
+            + #"body":{"bullets":[{"text":"one"}]}}]"#
+        let escaped = String(data: try JSONEncoder().encode(inner), encoding: .utf8)!
+        let json = #"{"meta":{"title":"Trap"},"slides":"# + escaped + "}"
+
+        let deck = try JSONDecoder().decode(DeckIR.self, from: Data(json.utf8))
+        #expect(deck.slides.count == 2)
+        #expect(deck.slides[1].kind == .bullets)
+        #expect(deck.meta.title == "Trap")
+        // And it still validates end to end, which is the point.
+        #expect(throws: Never.self) {
+            _ = try DeckValidator().validate(deck, notesRequired: false)
+        }
+    }
+
+    @Test func aProperSlidesArrayIsUnaffected() throws {
+        let json = #"{"meta":{"title":"T"},"slides":[{"id":"s1","layout":"title","title":"O"}]}"#
+        let deck = try JSONDecoder().decode(DeckIR.self, from: Data(json.utf8))
+        #expect(deck.slides.count == 1)
+    }
+
+    @Test func aStringThatIsNotSlidesJSONStillFails() throws {
+        // Rescue, not guesswork: nonsense inside the string is still an error,
+        // and the message says both things that went wrong.
+        let json = #"{"meta":{"title":"T"},"slides":"not json at all"}"#
+        #expect(throws: (any Error).self) {
+            _ = try JSONDecoder().decode(DeckIR.self, from: Data(json.utf8))
+        }
+    }
+
+    /// `localizedDescription` on a DecodingError is "The data couldn't be read
+    /// because it isn't in the correct format" — true, and useless as the only
+    /// thing a repair attempt is told. A 29-slide draft was lost because the
+    /// repair was handed that sentence and repeated the same mistake.
+    @Test func aDecodeFailureTellsTheRepairWhereToLook() throws {
+        // Two objects with the separator missing, inside a stringified array —
+        // the shape of the draft that lost a deck.
+        let broken = #"[{"id":"s1","layout":"title","title":"A"} {"id":"s2","layout":"bullets"}]"#
+        let escaped = String(data: try JSONEncoder().encode(broken), encoding: .utf8)!
+        let json = #"{"meta":{"title":"T"},"slides":"# + escaped + "}"
+
+        var message = ""
+        do {
+            _ = try JSONDecoder().decode(DeckIR.self, from: Data(json.utf8))
+        } catch {
+            message = DeckGenerator.describeDecodingFailure(error)
+        }
+        #expect(message.contains("slides"), "does not say which field")
+        // The syntax detail Foundation buries two errors deep — "unexpected
+        // character ... around line N" — is the part a repair can act on.
+        #expect(message.lowercased().contains("unexpected"), "no syntax detail: \(message)")
+        #expect(message.contains("real JSON array"), "does not say what to send instead")
+        #expect(!message.contains("isn't in the correct format"))
+    }
+
+    @Test func aMissingKeyNamesTheKeyAndThePath() throws {
+        // `meta` is required; the message has to name it rather than shrug.
+        let json = #"{"slides":[]}"#
+        var message = ""
+        do {
+            _ = try JSONDecoder().decode(DeckIR.self, from: Data(json.utf8))
+        } catch {
+            message = DeckGenerator.describeDecodingFailure(error)
+        }
+        #expect(message.contains("meta"))
+    }
+
     @Test func slideDecodesOptionalImageBrief() throws {
         let withImage = #"{"id":"s1","layout":"title","image":{"prompt":"a lighthouse at dawn","aspect":"16:9"}}"#
         let slide = try JSONDecoder().decode(IRSlide.self, from: Data(withImage.utf8))

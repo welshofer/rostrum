@@ -171,12 +171,51 @@ public actor DeckGenerator {
         return ValidationResult(deck: revalidated.deck, warnings: result.warnings)
     }
 
+    /// A decode failure the model can act on.
+    ///
+    /// `localizedDescription` on a `DecodingError` is "The data couldn't be
+    /// read because it isn't in the correct format" — true, and useless as the
+    /// only thing a repair attempt is told. One draft came back with a slide
+    /// object missing its closing brace; the repair was handed that sentence
+    /// and made the same mistake again, losing a 29-slide deck to a defect its
+    /// author could have found in seconds if told where to look.
+    ///
+    /// So: which field, what was expected, what arrived, and — for a syntax
+    /// error — the line and column, which Foundation puts in the underlying
+    /// error's debug description rather than anywhere `localizedDescription`
+    /// will show.
+    static func describeDecodingFailure(_ error: Error) -> String {
+        func path(_ context: DecodingError.Context) -> String {
+            let keys = context.codingPath.map { $0.intValue.map { "[\($0)]" } ?? $0.stringValue }
+            return keys.isEmpty ? "the top level" : keys.joined(separator: ".")
+        }
+        func syntax(_ error: Error?) -> String {
+            guard let detail = (error as NSError?)?.userInfo["NSDebugDescription"] as? String
+            else { return "" }
+            return " (\(detail))"
+        }
+        switch error {
+        case let DecodingError.typeMismatch(type, context):
+            return "\(path(context)) should be \(type) — \(context.debugDescription)"
+        case let DecodingError.valueNotFound(type, context):
+            return "\(path(context)) is missing its \(type) value"
+        case let DecodingError.keyNotFound(key, context):
+            return "\(path(context)) is missing the required key \"\(key.stringValue)\""
+        case let DecodingError.dataCorrupted(context):
+            return "\(path(context)): \(context.debugDescription)"
+                + syntax(context.underlyingError)
+        default:
+            return error.localizedDescription + syntax(error)
+        }
+    }
+
     private func decodeAndValidate(_ json: String, _ request: DeckRequest) throws -> ValidationResult {
         let deck: DeckIR
         do {
             deck = try JSONDecoder().decode(DeckIR.self, from: Data(json.utf8))
         } catch {
-            throw DraftErrors(errors: ["JSON did not decode as \(DeckIR.currentVersion): \(error.localizedDescription)"])
+            throw DraftErrors(errors: ["JSON did not decode as \(DeckIR.currentVersion): "
+                                       + Self.describeDecodingFailure(error)])
         }
         do {
             return try validator.validate(deck, requestedSlideCount: request.slideCount, notesRequired: request.notes)
