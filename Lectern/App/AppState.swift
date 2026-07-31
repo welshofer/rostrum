@@ -314,6 +314,9 @@ final class AppState {
         case .authFailed(let p): return "That key was rejected by \(p)."
         case .rateLimited(let s): return "Rate-limited — try again in \(s)s."
         case .requestTooLarge: return "That PDF is too large for this model."
+        case .responseTruncated(let slideCount):
+            return "The model ran out of room before it finished all \(slideCount) slides. "
+                + "Ask for fewer slides, or turn speaker notes off, and try again."
         case .networkOffline: return "No connection."
         case .schemaInvalid(let errors):
             // The reasons were always there and were thrown away, which left

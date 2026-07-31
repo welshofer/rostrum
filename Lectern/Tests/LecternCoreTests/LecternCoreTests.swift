@@ -666,6 +666,96 @@ import Rostrum
         }
     }
 
+    // MARK: - Output budget and truncation
+
+    /// A response the model stopped writing still decodes, so a short deck used
+    /// to be indistinguishable from a finished one.
+    @Test func aTruncatedDraftIsReportedNotReturnedShort() async throws {
+        // A well-formed tool_use answer that happens to be cut off: exactly what
+        // the API returns when the deck outgrows the output ceiling.
+        let body = anthropicResponse(stopReason: "max_tokens",
+                                     deck: #"{"meta":{"title":"T"},"slides":[]}"#)
+        let provider = AnthropicProvider(apiKey: "k", send: stubSender(200, body))
+        let request = DeckRequest(prompt: "x", slideCount: 40, notes: true)
+
+        await #expect(throws: LecternError.responseTruncated(slideCount: 40)) {
+            _ = try await provider.draft(request, repairing: nil) { _ in }
+        }
+        // The same body with a normal stop reason must still come back fine —
+        // otherwise this is just rejecting everything.
+        let ok = AnthropicProvider(apiKey: "k",
+                                   send: stubSender(200, anthropicResponse(stopReason: "tool_use",
+                                                                           deck: #"{"meta":{"title":"T"},"slides":[]}"#)))
+        let draft = try await ok.draft(request, repairing: nil) { _ in }
+        #expect(draft.json.contains("\"title\""))
+    }
+
+    @Test func theOutputBudgetGrowsWithTheDeckAndStaysInBounds() {
+        let floor = AnthropicProvider.floorOutputTokens
+        // A small deck must never get *less* room than the old constant.
+        #expect(AnthropicProvider.outputTokenBudget(
+            for: DeckRequest(prompt: "x", slideCount: 3, notes: false)) == floor)
+        // The old constant was a flat 8,192, so a 40-slide deck with notes —
+        // what the UI's stepper allows — asked for the same room as a 3-slide
+        // one and came back short. It has to ask for more now.
+        let big = AnthropicProvider.outputTokenBudget(
+            for: DeckRequest(prompt: "x", slideCount: 40, notes: true))
+        #expect(big > floor, "a 40-slide deck with notes still asks for only \(big)")
+        #expect(big <= AnthropicProvider.maxOutputTokens)
+        // Notes are extra writing, so they cost extra room.
+        #expect(AnthropicProvider.outputTokenBudget(for: DeckRequest(prompt: "x", slideCount: 40, notes: true))
+                > AnthropicProvider.outputTokenBudget(for: DeckRequest(prompt: "x", slideCount: 40, notes: false)))
+    }
+
+    /// A model whose ceiling is below the budget rejects the whole call, so
+    /// asking for more room must not become a new way to fail.
+    @Test func aRefusedOutputBudgetRetriesAtTheFloorInsteadOfFailing() async throws {
+        let sent = SentBox()
+        let good = anthropicResponse(stopReason: "tool_use", deck: #"{"meta":{"title":"T"},"slides":[]}"#)
+        let provider = AnthropicProvider(apiKey: "k", send: { request in
+            let budget = (try? JSONSerialization.jsonObject(with: request.httpBody ?? Data()))
+                .flatMap { ($0 as? [String: Any])?["max_tokens"] as? Int } ?? 0
+            sent.record(budget)
+            if budget > AnthropicProvider.floorOutputTokens {
+                let error = #"{"error":{"message":"max_tokens: 19200 > 8192, which is the maximum for this model"}}"#
+                return (Data(error.utf8), Self.http(400))
+            }
+            return (Data(good.utf8), Self.http(200))
+        })
+
+        let draft = try await provider.draft(
+            DeckRequest(prompt: "x", slideCount: 40, notes: true), repairing: nil) { _ in }
+        #expect(draft.json.contains("\"title\""))
+        // It asked for the larger budget first, then dropped to the floor —
+        // rather than giving up, or never trying for more in the first place.
+        let budgets = sent.values
+        #expect(budgets.count == 2, "expected one retry, saw budgets \(budgets)")
+        #expect(budgets.first! > AnthropicProvider.floorOutputTokens)
+        #expect(budgets.last == AnthropicProvider.floorOutputTokens)
+    }
+
+    // MARK: Anthropic stub helpers
+
+    private static func http(_ status: Int) -> HTTPURLResponse {
+        HTTPURLResponse(url: URL(string: "https://api.anthropic.com/v1/messages")!,
+                        statusCode: status, httpVersion: nil, headerFields: nil)!
+    }
+
+    private func stubSender(_ status: Int, _ body: String) -> @Sendable (URLRequest) async throws -> (Data, URLResponse) {
+        { _ in (Data(body.utf8), Self.http(status)) }
+    }
+
+    /// A Messages API response carrying `deck` in a forced `tool_use` block.
+    private func anthropicResponse(stopReason: String, deck: String) -> String {
+        let input = (try? JSONSerialization.jsonObject(with: Data(deck.utf8))) ?? [:]
+        let obj: [String: Any] = [
+            "stop_reason": stopReason,
+            "usage": ["input_tokens": 10, "output_tokens": 20],
+            "content": [["type": "tool_use", "name": "emit_deck", "input": input]],
+        ]
+        return String(decoding: try! JSONSerialization.data(withJSONObject: obj), as: UTF8.self)
+    }
+
     // MARK: - Provider selection (live-only, no keychain, no network)
 
     @Test func factoryThrowsWithoutAKey() throws {
@@ -1313,4 +1403,12 @@ private struct ProbeImageProvider: ImageProvider {
         await probe.leave()
         return Data("image-bytes".utf8)
     }
+}
+
+/// Records the `max_tokens` each outgoing request asked for.
+private final class SentBox: @unchecked Sendable {
+    private let lock = NSLock()
+    private var budgets: [Int] = []
+    func record(_ budget: Int) { lock.lock(); defer { lock.unlock() }; budgets.append(budget) }
+    var values: [Int] { lock.lock(); defer { lock.unlock() }; return budgets }
 }

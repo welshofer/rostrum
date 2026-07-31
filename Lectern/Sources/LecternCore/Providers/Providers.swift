@@ -98,6 +98,8 @@ public enum LecternError: Error, Equatable {
     case authFailed(provider: String)
     case rateLimited(afterSeconds: Int)
     case requestTooLarge
+    /// The model stopped at its output ceiling before finishing the deck.
+    case responseTruncated(slideCount: Int)
     case networkOffline
     case schemaInvalid(errors: [String])
     case providerError(status: Int, message: String)
