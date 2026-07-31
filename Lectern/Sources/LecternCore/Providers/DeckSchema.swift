@@ -83,7 +83,9 @@ enum DeckSchema {
             "properties": [
                 "subtitle": str("title layout"),
                 "items": strings,                                   // agenda
-                "kicker": str("sectionHeader eyebrow"),
+                "kicker": str("a 2–4 word eyebrow above the title, e.g. the section or theme"),
+                "lead": str("ONE sentence under the title saying what the slide shows, before the detail"),
+                "source": str("where the claim comes from, e.g. 'BLS, Q1 2026' — omit unless it is a real citation"),
                 "bullets": ["type": "array", "items": bullet],      // bullets
                 "left": column, "right": column,                    // twoColumn / comparison
                 "quote": str(), "attribution": str(),               // quote

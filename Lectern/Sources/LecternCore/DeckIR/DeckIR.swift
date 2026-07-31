@@ -154,6 +154,8 @@ public struct Body: Codable, Sendable, Equatable {
     public var stats: [IRStat]?               // metrics (2–4 headline numbers)
     public var diagram: IRDiagram?            // diagram (process | pyramid | cycle)
     public var table: IRTable?                // table (header row + body rows)
+    public var lead: String?                  // one-sentence standfirst under the title
+    public var source: String?                // citation / provenance, bottom-left
     public var milestones: [IRMilestone]?     // timeline
     public var quadrants: [IRQuadrant]?       // quadrant (exactly four)
     public var xAxis: String?                 // quadrant axis captions
@@ -164,13 +166,15 @@ public struct Body: Codable, Sendable, Equatable {
                 quote: String? = nil, attribution: String? = nil, value: String? = nil,
                 label: String? = nil, callToAction: String? = nil, contact: String? = nil,
                 chart: IRChart? = nil, stats: [IRStat]? = nil, diagram: IRDiagram? = nil,
-                table: IRTable? = nil, milestones: [IRMilestone]? = nil,
+                table: IRTable? = nil, lead: String? = nil, source: String? = nil,
+                milestones: [IRMilestone]? = nil,
                 quadrants: [IRQuadrant]? = nil, xAxis: String? = nil, yAxis: String? = nil) {
         self.subtitle = subtitle; self.items = items; self.kicker = kicker
         self.bullets = bullets; self.left = left; self.right = right
         self.quote = quote; self.attribution = attribution; self.value = value
         self.label = label; self.callToAction = callToAction; self.contact = contact
         self.chart = chart; self.stats = stats; self.diagram = diagram; self.table = table
+        self.lead = lead; self.source = source
         self.milestones = milestones; self.quadrants = quadrants
         self.xAxis = xAxis; self.yAxis = yAxis
     }

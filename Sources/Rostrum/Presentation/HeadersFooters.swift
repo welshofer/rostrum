@@ -30,6 +30,28 @@ extension Slide {
 }
 
 public extension Presentation {
+    /// A source or citation line along the bottom-left of one slide.
+    ///
+    /// Sits in the same band as the running footer but hard left, where a
+    /// reader looks for provenance and not before. Quiet by construction: a
+    /// citation that competes with the content it supports is worse than none,
+    /// and this is the line that makes a claim checkable.
+    @discardableResult
+    func addSource(_ text: String, to slide: Slide, style: DeckStyle? = nil) throws -> Shape {
+        let s = style ?? self.style
+        let b = bounds
+        // Aligned with the content margin, not the slide edge: a citation
+        // touching the trim reads as a printing accident.
+        let left = b.minX + s.margin
+        let frame = Rect(x: left, y: b.maxY - .inches(0.55),
+                         width: Swift.max(EMU.inches(1), b.midX - .inches(2.6) - left),
+                         height: .inches(0.35))
+        let sourceStyle = s.with(.caption) { $0.sizePt = Swift.min($0.sizePt, 10) }
+        return try slide.addText(text, in: frame, role: .caption, style: sourceStyle,
+                                 color: furnitureColor(on: slide, style: s),
+                                 align: .left, anchor: .middle)
+    }
+
     /// Add a live slide-number field to the bottom-right of every slide.
     @discardableResult
     func showSlideNumbers(from firstSlide: Int = 0, style: DeckStyle? = nil) throws -> Presentation {

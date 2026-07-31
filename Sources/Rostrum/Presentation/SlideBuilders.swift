@@ -157,12 +157,14 @@ public extension Presentation {
     ///   left seven columns, leaving `sideImagePanel()` free for a picture.
     ///   Text-only slides keep the full width, so nothing moves unless asked.
     func bulletSlide(_ title: String, _ bullets: [String],
-                     kicker: String? = nil, reservingSideImage: Bool = false,
+                     kicker: String? = nil, lead: String? = nil,
+                     reservingSideImage: Bool = false,
                      imageSide: SideImage = .right,
                      style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s,
+                                 lead: lead,
                                  reservingSideImage: reservingSideImage, imageSide: imageSide)
         try slide.addBulletList(bullets, in: content, style: s, anchor: .top)   // start just below the title
         return slide
@@ -721,10 +723,16 @@ public extension Presentation {
     /// Place an optional kicker + a title across the top rows; return the content
     /// rect below them.
     private func header(on slide: Slide, kicker: String?, title: String, style: DeckStyle,
+                        lead: String? = nil,
                         reservingSideImage: Bool = false,
                         imageSide: SideImage = .right) throws -> Rect {
-        let head = try placeHeader(on: slide, kicker: kicker, title: title, style: style,
+        var head = try placeHeader(on: slide, kicker: kicker, title: title, style: style,
                                    reservingSideImage: reservingSideImage, imageSide: imageSide)
+        if let lead, !lead.isEmpty {
+            head.contentRow = try placeLead(lead, on: slide, from: head.contentRow, style: style,
+                                            reservingSideImage: reservingSideImage,
+                                            imageSide: imageSide)
+        }
         let grid = deckGrid(style)
         // Stop at the image column when one is reserved, so the picture the
         // caller places into `sideImagePanel()` cannot land on the text.
@@ -732,6 +740,31 @@ public extension Presentation {
         let column = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
         return grid.cell(column: column, row: head.contentRow, columnSpan: span,
                          rowSpan: 12 - head.contentRow)
+    }
+
+    /// A standfirst: the one sentence under the title that says what the slide
+    /// is about before the reader reaches the detail.
+    ///
+    /// Quiet and italic so it reads as an editor's line rather than a second
+    /// heading, and it *consumes* rows — a lead that overlapped the content it
+    /// introduces would be worse than not having one.
+    private func placeLead(_ text: String, on slide: Slide, from contentRow: Int,
+                           style: DeckStyle, reservingSideImage: Bool,
+                           imageSide: SideImage) throws -> Int {
+        let grid = deckGrid(style)
+        let span = reservingSideImage ? Self.sideImageColumn : 11
+        let column = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
+        let band = grid.cell(column: column, row: contentRow, columnSpan: span, rowSpan: 2)
+        // No italic in the run model, so the quiet comes from size and colour.
+        let leadStyle = style.with(.subhead) {
+            $0.sizePt = Swift.min($0.sizePt, 17)
+            $0.lineHeight = Swift.min($0.lineHeight, 1.3)
+        }
+        try slide.addText(text, in: band, role: .subhead, style: leadStyle,
+                          color: style.mutedInk, anchor: .top)
+        // Two rows when it wraps, one when it doesn't, plus a row of air.
+        let lines = estimatedLines(text, style: leadStyle.type(TypeRole.subhead), width: band.width)
+        return contentRow + (lines >= 2 ? 3 : 2)
     }
 
     /// Draw the kicker + title and report where content may start.

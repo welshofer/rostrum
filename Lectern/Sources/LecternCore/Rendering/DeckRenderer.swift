@@ -350,6 +350,11 @@ public actor DeckRenderer {
                 let built = try build(slide, in: presentation, useSmartArt: useSmartArt,
                                       hasSideImage: sideImage, dropped: &dropped)
                 builtSlides[slide.id] = built
+                // Provenance is additive and position-independent, so every
+                // layout can carry it without threading it through a builder.
+                if let source = slide.body?.source, !source.isEmpty {
+                    _ = try? presentation.addSource(source, to: built)
+                }
                 if let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
                     case .fullBleed:
@@ -491,6 +496,7 @@ public actor DeckRenderer {
                                         reservingSideImage: hasSideImage)
         case .bullets:
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []),
+                                        kicker: body?.kicker, lead: body?.lead,
                                         reservingSideImage: hasSideImage)
         case .imageLeft, .imageRight:
             // Bullets that have asked for a picture beside them. Without one
@@ -498,6 +504,7 @@ public actor DeckRenderer {
             // no image key still reads correctly.
             let side: SideImage = slide.kind == .imageLeft ? .left : .right
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []),
+                                        kicker: body?.kicker, lead: body?.lead,
                                         reservingSideImage: hasSideImage, imageSide: side)
         case .twoColumn, .comparison:
             let left = body?.left ?? Column(heading: "", bullets: [])

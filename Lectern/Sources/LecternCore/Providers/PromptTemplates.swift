@@ -52,6 +52,13 @@ public enum PromptTemplates {
                              process = sequential steps; pyramid = hierarchy/ladder (base→peak); each item short "Label — detail"
         - closing          body: { callToAction?, contact? }  (at most one, last)
 
+        EVERY content slide may carry three editorial fields, and a deck that uses \
+        them reads as written rather than generated: "kicker" (a 2–4 word eyebrow), \
+        "lead" (ONE sentence under the title saying what the slide shows before the \
+        detail arrives), and "source" (a real citation — omit it rather than invent \
+        one). Use "lead" on most content slides; it is the single biggest \
+        difference between a designed deck and a list of headings.
+
         VARY THE LAYOUTS. A deck of near-identical bullet slides is a failure. Reach \
         for the richest fitting layout — bands for parallel concepts, chart for \
         quantities, metrics for figures, comparison for two sides. Use "bullets" \
