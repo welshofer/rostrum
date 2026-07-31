@@ -1,5 +1,10 @@
 import Foundation
 import Testing
+// URLRequest, URLResponse and HTTPURLResponse live in FoundationNetworking on
+// Linux, not in core Foundation — the same guard the providers under test use.
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 #if canImport(CoreGraphics)
 import CoreGraphics
 import ImageIO
