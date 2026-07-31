@@ -521,4 +521,65 @@ import Testing
                 "the bullets are not below the band")
         #expect(try deck.validate().isEmpty)
     }
+    /// A declared row height is a minimum, not a height: PowerPoint grows a row
+    /// to fit its text. Six policy rows at 26pt grew past the frame and ran off
+    /// the bottom of the slide — and the shape-overlap invariants missed it,
+    /// because a table is a graphic frame rather than a `p:sp`.
+    @Test func aTableFitsItsTypeToTheRowsItHas() throws {
+        let deck = try Presentation()
+        let slide = try deck.tableSlide("Six policy fixes were tested", rows: [
+            ["Instrument", "Changes automation threshold?", "Fixes the externality?"],
+            ["Upskilling / retraining", "Yes", "Partially"],
+            ["Universal Basic Income", "No", "No"],
+            ["Capital income tax", "No", "No"],
+            ["Automation tax", "Yes", "Yes"],
+            ["Sectoral bargaining", "Partially", "Partially"],
+            ["Working-time reduction", "Yes", "No"],
+        ])
+        let frame = try #require(slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:spTree")?.children(named: "p:graphicFrame").first)
+        let box = try #require(frame.firstChild(named: "p:xfrm"))
+        let top = box.firstChild(named: "a:off")?[attribute: "y"].flatMap(Int.init) ?? 0
+        let height = box.firstChild(named: "a:ext")?[attribute: "cy"].flatMap(Int.init) ?? 0
+        let tbl = try #require(frame.firstChild(named: "a:graphic")?
+            .firstChild(named: "a:graphicData")?.firstChild(named: "a:tbl"))
+        let widths = tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol")
+            .compactMap { $0[attribute: "w"].flatMap(Int.init) } ?? []
+        let size = Double(tbl.children(named: "a:tr")
+            .flatMap { $0.children(named: "a:tc") }
+            .compactMap { $0.firstChild(named: "a:txBody")?.children(named: "a:p").first?
+                .firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"]
+                .flatMap(Int.init) }
+            .max() ?? 1800) / 100
+
+        // Every cell has to sit on one line at the size chosen, or the row it
+        // is in grows and the table walks off the slide.
+        for row in tbl.children(named: "a:tr") {
+            for (column, cell) in row.children(named: "a:tc").enumerated() where column < widths.count {
+                let text = cell.firstChild(named: "a:txBody").map {
+                    $0.children(named: "a:p").flatMap { $0.children(named: "a:r") }
+                        .compactMap { $0.firstChild(named: "a:t")?.textContent }.joined()
+                } ?? ""
+                guard !text.isEmpty else { continue }
+                let widthPt = Double(widths[column]) / Double(EMU.perPoint)
+                let perLine = Swift.max(1.0, widthPt / (0.52 * size))
+                #expect(Double(text.count) <= perLine * 1.15,
+                        "\"\(text)\" wraps in its column at \(size)pt — the row will grow")
+            }
+        }
+        // And the frame itself stays on the slide.
+        #expect(top + height <= deck.slideSize.height.rawValue)
+        #expect(try deck.validate().isEmpty)
+    }
+
+    @Test func aTableDropsRowsPastItsCapacity() throws {
+        let deck = try Presentation()
+        let many = [["H1", "H2"]] + (1...20).map { ["row \($0)", "value \($0)"] }
+        let slide = try deck.tableSlide("Long", rows: many)
+        let tbl = try #require(slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:spTree")?.children(named: "p:graphicFrame").first?
+            .firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
+            .firstChild(named: "a:tbl"))
+        #expect(tbl.children(named: "a:tr").count == SlideCapacity.tableRows)
+    }
 }

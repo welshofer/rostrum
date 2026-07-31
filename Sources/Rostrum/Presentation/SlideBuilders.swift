@@ -34,6 +34,8 @@ public enum SlideCapacity {
     public static let timeline = 5
     /// `quadrantSlide(_:quadrants:)` — a 2x2 is exactly four.
     public static let quadrant = 4
+    /// `tableSlide(_:rows:)` — header plus body rows that still read.
+    public static let tableRows = 8
 }
 
 public extension Presentation {
@@ -691,15 +693,26 @@ public extension Presentation {
         let content = try header(on: slide, kicker: nil, title: title, style: s)
         let columns = rows.map(\.count).max() ?? 0
         guard !rows.isEmpty, columns > 0 else { return slide }
-        let grid = rows.map { row in row + Array(repeating: "", count: columns - row.count) }
+        let kept = Array(rows.prefix(SlideCapacity.tableRows))
+        let grid = kept.map { row in row + Array(repeating: "", count: columns - row.count) }
 
         // Rows get equal height, but a table taller than its rect would run off
         // the slide, so cap the height at the content rect.
+        let widths = Self.proportionalWidths(of: grid, in: content.width)
+        // A declared row height is a MINIMUM. PowerPoint grows a row to fit its
+        // text, so a table whose cells wrap runs off the bottom of the slide
+        // however short we ask the rows to be — six policy rows at 26pt did
+        // exactly that. Fit the type to the rows rather than the rows to the
+        // type.
+        let fitted = fitTableText(grid, widths: widths, height: content.height, style: s)
+        let tableStyle = s.with(.body) { $0.sizePt = Swift.min($0.sizePt, fitted) }
+            .with(.heading) { $0.sizePt = Swift.min($0.sizePt, fitted) }
+
         let table = try slide.shapes.addTable(rows: grid.count, columns: columns, frame: content)
         table.setContents(grid)
-            .columnWidths(Self.proportionalWidths(of: grid, in: content.width))
-            .styleBanded(style: s, role: .body, anchor: .middle)
-            .cellPadding(s.spacing.sm)
+            .columnWidths(widths)
+            .styleBanded(style: tableStyle, role: .body, anchor: .middle)
+            .cellPadding(s.spacing.xs)
         // Figures read as a column only when their digits line up, so a column
         // whose body cells are all numeric flips to the right — header
         // included, or the header floats away from what it labels.
@@ -731,6 +744,33 @@ public extension Presentation {
             else { return false }
         }
         return sawValue
+    }
+
+    /// The largest size at which every row's tallest cell still fits the height
+    /// each row is given.
+    ///
+    /// Rows share the rect equally, so the budget per row is fixed; what varies
+    /// is how many lines a cell needs at a given size in its own column. The
+    /// first size where every row fits its share wins, and the floor is a size
+    /// that is still a table rather than a diagram of text.
+    private func fitTableText(_ grid: [[String]], widths: [EMU],
+                              height: EMU, style: DeckStyle) -> Double {
+        let rowBudgetPt = Double(height.rawValue) / Double(Swift.max(1, grid.count))
+            / Double(EMU.perPoint)
+        for size in [style.type(.body).sizePt, 20, 18, 16, 14, 12, 11].sorted(by: >) {
+            var text = style.type(.body)
+            text.sizePt = size
+            let lineHeight = size * Swift.min(text.lineHeight, 1.25)
+            let fits = grid.allSatisfy { row in
+                let tallest = row.enumerated().map { column, cell -> Int in
+                    guard column < widths.count else { return 1 }
+                    return estimatedLines(cell, style: text, width: widths[column])
+                }.max() ?? 1
+                return Double(tallest) * lineHeight <= rowBudgetPt
+            }
+            if fits { return size }
+        }
+        return 11
     }
 
     /// Split `total` across columns in proportion to each column's longest cell,

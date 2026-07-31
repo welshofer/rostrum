@@ -72,19 +72,26 @@ public enum PromptTemplates {
         one slide in four should be bands — reach for a "diagram" (process/pyramid),
         "chart", "comparison", or "metrics" instead so the deck stays visually varied.
 
-        IMAGES — an "image" brief ({ prompt, aspect? }) is only ever rendered on these \
-        five layouts: "title", "sectionHeader", "quote", "bigNumber" and "closing". A \
-        brief on any other layout is discarded, so put them where they will be seen and \
-        do not spend one elsewhere. Aim to illustrate MOST of those slides — a deck of \
-        this length should carry several images, not one. Give each a vivid, specific \
-        subject; the palette and finish are applied later.
+        IMAGES — an "image" brief ({ prompt, aspect? }) renders on these layouts only, \
+        and does one of two very different jobs.
 
-        All five carry imagery equally — a "quote" or a "bigNumber" slide is as good a \
-        home for one as a section header. Note only that "title" and "closing" occur \
-        once each, so on a longer deck the recurring opportunities are "sectionHeader", \
-        "quote" and "bigNumber"; if the deck has almost none of those and is otherwise \
-        "bullets", "chart", "metrics", "bands" and "diagram", there is nowhere for \
-        imagery to go at all.
+        BACKGROUND (full-bleed behind large text, dimmed): "title", "sectionHeader", \
+        "quote", "bigNumber", "closing", "statement". Write an evocative, atmospheric \
+        subject — a place, a texture, a condition, a mood. Avoid a single centred object \
+        or a face; it will sit under a headline and be dimmed, so mood beats detail.
+
+        PANEL (a sharp, framed picture beside the text, shown at full strength): \
+        "imageLeft", "imageRight", "bullets", "agenda". This is the classic \
+        title-bullets-and-a-picture slide, and it is the workhorse — reach for \
+        "imageLeft" and "imageRight" often, alternating sides down the deck so the \
+        composition changes. Here the image is the hero and is seen clearly, so write a \
+        concrete subject with a clear focal point: a specific object, person at work, \
+        material, or scene. Vague abstractions look weak at this size.
+
+        A brief on any other layout is discarded, so do not spend one there. Aim to \
+        illustrate MOST eligible slides — a deck of this length should carry several \
+        images, not one. Give each a vivid, specific subject; the palette and finish are \
+        applied later.
         """
     }
 

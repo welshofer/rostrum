@@ -95,11 +95,11 @@ public actor DeckGenerator {
         // Only slides whose layout can actually show an image (skip text-dense ones,
         // so we never waste an API call or clip text). Full-bleed layouts get a wide
         // image so the background barely stretches.
-        let briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect)? in
+        let briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect, ImageRole)? in
             let placement = slide.kind.imagePlacement
             guard placement != .none, let brief = slide.image else { return nil }
             let aspect = placement == .fullBleed ? ImageAspect.wide : ImageAspect(brief: brief.aspect)
-            return (slide.id, brief, aspect)
+            return (slide.id, brief, aspect, ImageRole(placement: placement))
         }
         // A brief the model wrote for a layout that cannot render one is thrown
         // away here. That used to be silent, which is why "why aren't we making
@@ -118,10 +118,11 @@ public actor DeckGenerator {
         var failures: [String] = []
         var done = 0
         await withTaskGroup(of: (String, Result<Data, Error>).self) { group in
-            for (id, brief, aspect) in briefed {
+            for (id, brief, aspect, role) in briefed {
                 group.addTask {
                     do {
-                        let data = try await imageProvider.image(prompt: brief.prompt, style: style, aspect: aspect)
+                        let data = try await imageProvider.image(prompt: brief.prompt, style: style,
+                                                                 aspect: aspect, role: role)
                         return (id, .success(data))
                     } catch {
                         return (id, .failure(error))

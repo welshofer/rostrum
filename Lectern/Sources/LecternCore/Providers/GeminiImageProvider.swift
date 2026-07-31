@@ -49,13 +49,9 @@ public struct GeminiImageProvider: ImageProvider {
         }
     }
 
-    public func image(prompt: String, style: String?, aspect: ImageAspect) async throws -> Data {
+    public func image(prompt: String, style: String?, aspect: ImageAspect, role: ImageRole) async throws -> Data {
         guard !apiKey.isEmpty else { throw LecternError.noKey }
-        let full = [
-            style,
-            "SUBJECT — \(prompt)",
-            composition(for: aspect),
-        ].compactMap { $0 }.joined(separator: "\n\n")
+        let full = ImageStyleDirective.compose(style: style, role: role, subject: prompt, aspect: aspect)
         let body: [String: Any] = [
             "model": model,
             "store": false,
@@ -113,20 +109,6 @@ public struct GeminiImageProvider: ImageProvider {
         throw LecternError.providerError(status: 0, message: "Gemini image retry loop exhausted")
     }
 
-    private func composition(for aspect: ImageAspect) -> String {
-        switch aspect {
-        case .wide:
-            return "COMPOSITION — polished cinematic 16:9 presentation background; one clear focal hierarchy; generous negative space for slide content; keep important subject matter away from the edges."
-        case .standard:
-            return "COMPOSITION — polished 4:3 editorial image for a presentation side panel; one clear focal hierarchy; keep all important subject matter fully inside the frame."
-        case .square:
-            return "COMPOSITION — balanced 1:1 editorial image; one clear focal hierarchy; keep all important subject matter fully inside the frame."
-        case .tall:
-            return "COMPOSITION — refined 3:4 portrait editorial image; one clear focal hierarchy; keep all important subject matter fully inside the frame."
-        case .portrait:
-            return "COMPOSITION — refined 9:16 portrait editorial image; one clear focal hierarchy; keep all important subject matter fully inside the frame."
-        }
-    }
 
     private func request(url: URL, method: String = "GET", timeout: TimeInterval = 30) -> URLRequest {
         var req = URLRequest(url: url, timeoutInterval: timeout)

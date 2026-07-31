@@ -358,11 +358,15 @@ public actor DeckRenderer {
                 if let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
                     case .fullBleed:
-                        // Edge-to-edge background behind the text, dimmed so the
-                        // slide's ink stays readable over any image.
-                        let scrimmed = Self.scrimmed(
-                            data,
-                            dark: Self.paintsADarkBackground(slide.kind, presentation.style))
+                        // Edge-to-edge background behind the text, dimmed only
+                        // as much as this image needs to keep the ink legible.
+                        let dark = Self.paintsADarkBackground(slide.kind, presentation.style)
+                        // At working strength the field reads as the scrim
+                        // colour, so the ink Rostrum picks against that colour
+                        // is the ink the scrim has to serve.
+                        let ink = presentation.style.textColor(on: dark ? .black : .white)
+                        let scrimmed = Self.scrimmed(data, dark: dark,
+                                                     textLuminance: ink.relativeLuminance)
                         // No alt text: a background fill is not a shape, and a
                         // decorative backdrop is what assistive tech should
                         // skip anyway.
@@ -712,11 +716,90 @@ public actor DeckRenderer {
     }
 
     /// The source has already been through a lossy encode and is about to be
-    /// dimmed to 30% and printed behind text, so the quality that matters is
-    /// "no visible blocking", not archival.
+    /// dimmed and printed behind text, so the quality that matters is "no
+    /// visible blocking", not archival.
     private static let scrimJPEGQuality = 0.82
 
-    private static func scrimmed(_ data: Data, dark: Bool) -> Data {
+    /// The least dimming this *particular* image needs.
+    ///
+    /// A flat 70% wash was insurance against the worst imaginable photograph,
+    /// and every photograph paid for it: a calm, well-exposed background lost
+    /// 70% of its life for contrast it already had. That is why backgrounds
+    /// read as washed out. So measure the image instead and apply the smallest
+    /// scrim that still clears WCAG AA for the text landing on it — a good
+    /// image keeps most of itself, and only a blown-out one pays full price.
+    ///
+    /// Monotonic in alpha (more scrim always moves the field further from the
+    /// text), so each sample is solved by bisection.
+    static func scrimAlpha(luminances: [Double], scrimIsBlack: Bool, textLuminance: Double) -> Double {
+        guard !luminances.isEmpty else { return scrimCeiling }
+        let target = 4.5
+        func ratio(_ background: Double) -> Double {
+            let hi = Swift.max(background, textLuminance), lo = Swift.min(background, textLuminance)
+            return (hi + 0.05) / (lo + 0.05)
+        }
+        // Compositing happens in sRGB, but the sample is already a luminance;
+        // scrim luminance is 0 (black) or 1 (white), and mixing toward either
+        // is monotonic in the same direction, so mixing luminances preserves
+        // the ordering bisection relies on.
+        let scrim = scrimIsBlack ? 0.0 : 1.0
+        func needed(for sample: Double) -> Double {
+            if ratio(sample) >= target { return 0 }
+            var lo = 0.0, hi = 1.0
+            for _ in 0..<14 {
+                let mid = (lo + hi) / 2
+                if ratio(sample * (1 - mid) + scrim * mid) >= target { hi = mid } else { lo = mid }
+            }
+            return hi
+        }
+        // The 99th percentile, not the maximum: one specular highlight should
+        // not darken the whole frame, but a genuinely bright region should. At
+        // this grid size 1% is about six cells — the size of a highlight — so
+        // a blown-out spot is still discounted while a merely bright frame is
+        // served properly. A looser percentile shortchanges calm images, which
+        // are exactly the ones the art direction now asks for.
+        let sorted = luminances.map(needed).sorted()
+        let index = Swift.min(sorted.count - 1, Int(Double(sorted.count - 1) * 0.99))
+        return Swift.min(scrimCeiling, Swift.max(scrimFloor, sorted[index]))
+    }
+
+    /// Some separation is always wanted, even over a perfect image — a photo
+    /// running at full strength behind a headline looks like an accident.
+    private static let scrimFloor = 0.28
+    /// Past this the image is gone anyway, and we would rather show a hostile
+    /// one faintly than pretend it is a flat colour.
+    private static let scrimCeiling = 0.78
+
+    /// Downsamples to a coarse grid and returns each cell's WCAG relative
+    /// luminance. Averaging into cells is deliberate: text sits over an *area*,
+    /// so what matters is how bright a region reads, not any one pixel.
+    private static func sampledLuminances(of img: CGImage) -> [Double] {
+        #if canImport(CoreGraphics)
+        let w = 32, h = 18
+        var pixels = [UInt8](repeating: 0, count: w * h * 4)
+        guard let ctx = pixels.withUnsafeMutableBytes({ raw in
+            CGContext(data: raw.baseAddress, width: w, height: h, bitsPerComponent: 8,
+                      bytesPerRow: w * 4, space: CGColorSpaceCreateDeviceRGB(),
+                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        }) else { return [] }
+        ctx.interpolationQuality = .medium
+        ctx.draw(img, in: CGRect(x: 0, y: 0, width: w, height: h))
+        guard let data = ctx.data else { return [] }
+        let buffer = data.assumingMemoryBound(to: UInt8.self)
+        func linear(_ c: UInt8) -> Double {
+            let s = Double(c) / 255
+            return s <= 0.03928 ? s / 12.92 : pow((s + 0.055) / 1.055, 2.4)
+        }
+        return (0..<(w * h)).map { i in
+            0.2126 * linear(buffer[i * 4]) + 0.7152 * linear(buffer[i * 4 + 1])
+                + 0.0722 * linear(buffer[i * 4 + 2])
+        }
+        #else
+        return []
+        #endif
+    }
+
+    private static func scrimmed(_ data: Data, dark: Bool, textLuminance: Double) -> Data {
         #if canImport(CoreGraphics)
         guard let src = CGImageSourceCreateWithData(data as CFData, nil),
               let img = CGImageSourceCreateImageAtIndex(src, 0, nil),
@@ -727,8 +810,11 @@ public actor DeckRenderer {
                                   bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return data }
         let rect = CGRect(x: 0, y: 0, width: img.width, height: img.height)
         ctx.draw(img, in: rect)
-        ctx.setFillColor(dark ? CGColor(red: 0, green: 0, blue: 0, alpha: 0.70)
-                              : CGColor(red: 1, green: 1, blue: 1, alpha: 0.70))
+        let alpha = scrimAlpha(luminances: sampledLuminances(of: img),
+                               scrimIsBlack: dark,
+                               textLuminance: textLuminance)
+        ctx.setFillColor(dark ? CGColor(red: 0, green: 0, blue: 0, alpha: alpha)
+                              : CGColor(red: 1, green: 1, blue: 1, alpha: alpha))
         ctx.fill(rect)
         guard let out = ctx.makeImage() else { return data }
         let buffer = NSMutableData()

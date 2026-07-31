@@ -43,9 +43,9 @@ public struct OpenAIImageProvider: ImageProvider {
         }
     }
 
-    public func image(prompt: String, style: String?, aspect: ImageAspect) async throws -> Data {
+    public func image(prompt: String, style: String?, aspect: ImageAspect, role: ImageRole) async throws -> Data {
         guard !apiKey.isEmpty else { throw LecternError.noKey }
-        let full = [style, prompt].compactMap { $0 }.joined(separator: "\n\n")
+        let full = ImageStyleDirective.compose(style: style, role: role, subject: prompt, aspect: aspect)
         let body: [String: Any] = ["model": model, "prompt": full, "size": aspect.openAISize, "n": 1]
 
         var req = URLRequest(url: URL(string: "https://api.openai.com/v1/images/generations")!, timeoutInterval: 120)
