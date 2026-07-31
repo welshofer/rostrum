@@ -166,9 +166,13 @@ public actor DeckRenderer {
 
         var unmeasured: [String] = []
         for name in wanted.sorted() where !name.isEmpty {
+            // The face is found under whichever candidate name the file
+            // answers to, but registered under the name the design asked for,
+            // so every later lookup uses the design's own vocabulary.
             guard let url = installedFontFile(named: name) ?? officeFontFile(named: name),
                   let data = try? Data(contentsOf: url),
-                  let face = faceIndex(named: name, in: data),
+                  let face = familyCandidates(for: name)
+                      .lazy.compactMap({ faceIndex(named: $0, in: data) }).first,
                   (try? presentation.fonts.register(data, aliases: [name], fontIndex: face)) != nil
             else {
                 unmeasured.append(name)
@@ -190,11 +194,46 @@ public actor DeckRenderer {
     /// which is worse than estimating, so the family it resolved to has to be
     /// the family that was asked for.
     static func installedFontFile(named name: String) -> URL? {
-        let font = CTFontCreateWithName(name as CFString, 12, nil)
-        let resolved = CTFontCopyFamilyName(font) as String
-        guard resolved.caseInsensitiveCompare(name) == .orderedSame else { return nil }
-        return CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL
+        for candidate in familyCandidates(for: name) {
+            let font = CTFontCreateWithName(candidate as CFString, 12, nil)
+            let resolved = CTFontCopyFamilyName(font) as String
+            guard resolved.caseInsensitiveCompare(candidate) == .orderedSame else { continue }
+            if let url = CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL { return url }
+        }
+        return nil
     }
+
+    /// The family as written, then the same family without its foundry or
+    /// format suffix.
+    ///
+    /// Designs name faces the way a foundry licenses them — "Helvetica Neue
+    /// LT", "Futura PT", "Garamond ITC" — while the copy installed on a Mac is
+    /// simply "Helvetica Neue". Matching only the exact string meant a font
+    /// sitting right there in Font Book was declared missing and its text
+    /// fitted by estimate.
+    ///
+    /// The suffix is dropped only as a fallback, after the exact name fails,
+    /// because several of these are real distinct families in their own right
+    /// — "Gill Sans MT" and "Bodoni MT" both ship with Office. Where the
+    /// stripped name resolves to a relative rather than the licensed cut, its
+    /// advance widths are far closer than the character-count estimate they
+    /// replace.
+    static func familyCandidates(for name: String) -> [String] {
+        var candidates = [name]
+        var parts = name.split(separator: " ").map(String.init)
+        while parts.count > 1, foundrySuffixes.contains(parts[parts.count - 1].uppercased()) {
+            parts.removeLast()
+            let stripped = parts.joined(separator: " ")
+            if !stripped.isEmpty, !candidates.contains(stripped) { candidates.append(stripped) }
+        }
+        return candidates
+    }
+
+    /// Foundry and format tags, not design words: "Neue", "Condensed" and
+    /// "Display" change which face you get and are never stripped.
+    private static let foundrySuffixes: Set<String> = [
+        "LT", "MT", "ITC", "BT", "EF", "URW", "PS", "PT", "STD", "PRO", "COM", "W1G", "TT",
+    ]
 
     /// Office ships its core families — Calibri, Cambria, Aptos, the lot —
     /// inside its own app bundles instead of installing them system-wide. macOS
@@ -212,7 +251,8 @@ public actor DeckRenderer {
             // Filename first — "Calibri.ttf" for Calibri — because scanning 280
             // files and parsing each one to ask its family is a lot of work to
             // find a file that is usually named after what it holds.
-            let stem = name.replacingOccurrences(of: " ", with: "").lowercased()
+            let stem = (familyCandidates(for: name).last ?? name)
+                .replacingOccurrences(of: " ", with: "").lowercased()
             let ranked = files.filter { $0.pathExtension.lowercased().hasPrefix("tt") }
                 .sorted { a, b in
                     let an = a.deletingPathExtension().lastPathComponent.lowercased()
@@ -221,9 +261,11 @@ public actor DeckRenderer {
                         < (bn == stem ? 0 : bn.hasPrefix(stem) ? 1 : 2)
                 }
             for url in ranked.prefix(officeFontCandidateLimit) {
-                guard let data = try? Data(contentsOf: url),
-                      faceIndex(named: name, in: data) != nil else { continue }
-                return url
+                guard let data = try? Data(contentsOf: url) else { continue }
+                for candidate in familyCandidates(for: name)
+                where faceIndex(named: candidate, in: data) != nil {
+                    return url
+                }
             }
         }
         return nil

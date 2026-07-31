@@ -369,7 +369,23 @@ public extension Presentation {
         } else {
             shrink = maxLen >= 6
         }
-        let numberStyle = s.with(.stat) { $0.sizePt = shrink ? base * 0.8 : base }
+        // Fit the caption to the column as well as the number. Only the value
+        // was ever fitted, so a label like "research domain categories" in a
+        // 2.4in column ran past its tile and PowerPoint broke it mid-word
+        // ("categorie" / "s").
+        let labels = items.map(\.label)
+        let captionWidth = cols[0].width - .points(22)
+        let longestLabel = labels.map(\.count).max() ?? 0
+        let captionSize = fitSize(labels, font: s.type(.caption).font,
+                                  candidates: [s.type(.caption).sizePt, 16, 14, 12],
+                                  maxLines: 3, lineWidth: captionWidth,
+                                  fallback: longestLabel > 26 ? 12
+                                      : (longestLabel > 18 ? 14 : s.type(.caption).sizePt))
+        let tileStyle = s.with(.stat) { $0.sizePt = shrink ? base * 0.8 : base }
+            .with(.caption) {
+                $0.sizePt = Swift.min($0.sizePt, captionSize)
+                $0.lineHeight = Swift.min($0.lineHeight, 1.25)
+            }
         for (i, m) in items.enumerated() {
             let col = cols[i]
             let accent = s.legibleAccent(i + 1, on: s.background)
@@ -378,7 +394,7 @@ public extension Presentation {
                                     style: s, color: accent)
             let textRect = Rect(x: col.minX + .points(22), y: col.minY,
                                 width: col.width - .points(22), height: col.height)
-            try slide.addStatTile(m.value, caption: m.label, in: textRect, style: numberStyle,
+            try slide.addStatTile(m.value, caption: m.label, in: textRect, style: tileStyle,
                                   valueColor: accent, anchor: .top)
         }
         return slide

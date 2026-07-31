@@ -932,6 +932,37 @@ import Rostrum
         }
     }
 
+    /// Designs name faces the way a foundry licenses them — "Helvetica Neue
+    /// LT" — while the copy installed on a Mac is plain "Helvetica Neue".
+    /// Matching only the exact string declared a font sitting in Font Book
+    /// missing and fitted its text by estimate.
+    @Test func aFoundrySuffixDoesNotHideAnInstalledFamily() throws {
+        #expect(DeckRenderer.familyCandidates(for: "Helvetica Neue LT")
+                == ["Helvetica Neue LT", "Helvetica Neue"])
+        // Design words are not suffixes: stripping these would hand back a
+        // different face than the one asked for.
+        #expect(DeckRenderer.familyCandidates(for: "Helvetica Neue") == ["Helvetica Neue"])
+        #expect(DeckRenderer.familyCandidates(for: "Gill Sans Condensed")
+                == ["Gill Sans Condensed"])
+        // Stacked tags peel one at a time.
+        #expect(DeckRenderer.familyCandidates(for: "Futura PT Std").last == "Futura")
+
+        try withKnownIssue(isIntermittent: true) {
+            let url = try #require(DeckRenderer.installedFontFile(named: "Helvetica Neue LT"),
+                                   "Helvetica Neue not installed on this machine")
+            let data = try Data(contentsOf: url)
+            let face = try #require(DeckRenderer.familyCandidates(for: "Helvetica Neue LT")
+                .lazy.compactMap { DeckRenderer.faceIndex(named: $0, in: data) }.first)
+            let library = FontLibrary()
+            try library.register(data, aliases: ["Helvetica Neue LT"], fontIndex: face)
+            // Registered under the design's own name, measuring real widths.
+            let metrics = try #require(library.metrics(for: "Helvetica Neue LT"))
+            #expect(metrics.advance(of: "M") > 0)
+        } when: {
+            DeckRenderer.installedFontFile(named: "Helvetica Neue") == nil
+        }
+    }
+
     @Test func slideDecodesOptionalImageBrief() throws {
         let withImage = #"{"id":"s1","layout":"title","image":{"prompt":"a lighthouse at dawn","aspect":"16:9"}}"#
         let slide = try JSONDecoder().decode(IRSlide.self, from: Data(withImage.utf8))
