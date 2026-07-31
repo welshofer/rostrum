@@ -69,7 +69,7 @@ public struct GeminiImageProvider: ImageProvider {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        for attempt in 0..<3 {
+        for attempt in 0..<HTTPRetry.maxAttempts {
             let (data, http) = try await perform(req)
             switch http.statusCode {
             case 200:
@@ -93,12 +93,12 @@ public struct GeminiImageProvider: ImageProvider {
             case 400:
                 throw LecternError.providerError(status: 400, message: message(data))
             case 429:
-                let fallback = min(60, 2 * (1 << attempt))
-                let delay = retryDelay(http, data: data, fallback: fallback)
-                if attempt < 2 {
-                    if delay > 0 {
-                        try await Task.sleep(nanoseconds: UInt64(delay) * 1_000_000_000)
-                    }
+                let retryAfter = retryDelay(http, data: data, fallback: -1)
+                let delay = retryAfter >= 0
+                    ? HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter)
+                    : HTTPRetry.backoff(attempt: attempt, retryAfter: nil)
+                if attempt + 1 < HTTPRetry.maxAttempts {
+                    try await HTTPRetry.wait(seconds: delay)
                     continue
                 }
                 throw LecternError.rateLimited(afterSeconds: delay)
@@ -118,40 +118,43 @@ public struct GeminiImageProvider: ImageProvider {
     }
 
     private func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        let data: Data, response: URLResponse
-        do {
-            (data, response) = try await send(request)
-        } catch let error as URLError where error.code == .notConnectedToInternet {
-            throw LecternError.networkOffline
+        var attempt = 0
+        while true {
+            let data: Data, response: URLResponse
+            do {
+                (data, response) = try await send(request)
+            } catch let error as URLError where error.code == .notConnectedToInternet {
+                throw LecternError.networkOffline
+            } catch let error as URLError where HTTPRetry.isRetriable(error)
+                        && attempt + 1 < HTTPRetry.maxAttempts {
+                // The 429 arm below was retried; a dropped connection was not,
+                // though it says even less about the request.
+                try await HTTPRetry.wait(seconds: HTTPRetry.backoff(attempt: attempt, retryAfter: nil))
+                attempt += 1
+                continue
+            }
+            guard let http = response as? HTTPURLResponse else {
+                throw LecternError.providerError(status: 0, message: "no response")
+            }
+            return (data, http)
         }
-        guard let http = response as? HTTPURLResponse else {
-            throw LecternError.providerError(status: 0, message: "no response")
-        }
-        return (data, http)
     }
 
     private func retryDelay(_ response: HTTPURLResponse, data: Data, fallback: Int) -> Int {
         if let value = response.value(forHTTPHeaderField: "Retry-After"),
-           let seconds = seconds(value) {
+           let seconds = HTTPRetry.seconds(value) {
             return seconds
         }
         if let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
            let error = obj["error"] as? [String: Any],
            let details = error["details"] as? [[String: Any]] {
             for detail in details {
-                if let value = detail["retryDelay"] as? String, let seconds = seconds(value) {
+                if let value = detail["retryDelay"] as? String, let seconds = HTTPRetry.seconds(value) {
                     return seconds
                 }
             }
         }
         return fallback
-    }
-
-    private func seconds(_ value: String) -> Int? {
-        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        let number = trimmed.hasSuffix("s") ? String(trimmed.dropLast()) : trimmed
-        guard let seconds = Double(number), seconds >= 0 else { return nil }
-        return Int(ceil(seconds))
     }
 
     private func message(_ data: Data) -> String {

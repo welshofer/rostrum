@@ -54,6 +54,7 @@ public struct OpenAIImageProvider: ImageProvider {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
+        for attempt in 0..<HTTPRetry.maxAttempts {
         let (data, http) = try await perform(req)
         switch http.statusCode {
         case 200:
@@ -66,24 +67,51 @@ public struct OpenAIImageProvider: ImageProvider {
             return bytes
         case 401, 403:
             throw LecternError.authFailed(provider: "OpenAI")
-        case 429:
-            throw LecternError.rateLimited(afterSeconds: Int(http.value(forHTTPHeaderField: "Retry-After") ?? "") ?? 5)
+        case let status where HTTPRetry.isRetriable(status: status):
+            // This used to give up on the first 429 — the one status a burst of
+            // image requests is most likely to provoke — and the user read it
+            // as an image that couldn't be generated. Gemini retried; this did
+            // not; nothing about the two providers justified the difference.
+            let retryAfter = HTTPRetry.retryAfterSeconds(http)
+            if attempt + 1 < HTTPRetry.maxAttempts {
+                try await HTTPRetry.wait(
+                    seconds: HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter))
+                continue
+            }
+            if status == 429 {
+                throw LecternError.rateLimited(
+                    afterSeconds: retryAfter ?? HTTPRetry.backoff(attempt: attempt, retryAfter: nil))
+            }
+            throw LecternError.providerError(status: status, message: message(data))
         default:
             throw LecternError.providerError(status: http.statusCode, message: message(data))
         }
+        }
+        throw LecternError.providerError(status: 0, message: "OpenAI image retry loop exhausted")
     }
 
     private func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        let data: Data, response: URLResponse
-        do {
-            (data, response) = try await send(request)
-        } catch let error as URLError where error.code == .notConnectedToInternet {
-            throw LecternError.networkOffline
+        var attempt = 0
+        while true {
+            let data: Data, response: URLResponse
+            do {
+                (data, response) = try await send(request)
+            } catch let error as URLError where error.code == .notConnectedToInternet {
+                throw LecternError.networkOffline
+            } catch let error as URLError where HTTPRetry.isRetriable(error)
+                        && attempt + 1 < HTTPRetry.maxAttempts {
+                // A dropped or timed-out connection says nothing about the
+                // request, so it is worth asking again rather than reporting a
+                // failed image.
+                try await HTTPRetry.wait(seconds: HTTPRetry.backoff(attempt: attempt, retryAfter: nil))
+                attempt += 1
+                continue
+            }
+            guard let http = response as? HTTPURLResponse else {
+                throw LecternError.providerError(status: 0, message: "no response")
+            }
+            return (data, http)
         }
-        guard let http = response as? HTTPURLResponse else {
-            throw LecternError.providerError(status: 0, message: "no response")
-        }
-        return (data, http)
     }
 
     private func message(_ data: Data) -> String {

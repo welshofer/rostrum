@@ -739,10 +739,86 @@ import Rostrum
         #expect(budgets.last == AnthropicProvider.floorOutputTokens)
     }
 
+    // MARK: - Retry policy
+
+    @Test func backoffIsExponentialCappedAndDefersToRetryAfter() {
+        // Exponential from two seconds, not a flat wait.
+        #expect(HTTPRetry.backoff(attempt: 0, retryAfter: nil) == 2)
+        #expect(HTTPRetry.backoff(attempt: 1, retryAfter: nil) == 4)
+        #expect(HTTPRetry.backoff(attempt: 2, retryAfter: nil) == 8)
+        // Capped, so a 5xx spike cannot park the UI for minutes.
+        #expect(HTTPRetry.backoff(attempt: 20, retryAfter: nil) == HTTPRetry.maxBackoffSeconds)
+        // The server knows more than we do.
+        #expect(HTTPRetry.backoff(attempt: 0, retryAfter: 17) == 17)
+        #expect(HTTPRetry.backoff(attempt: 0, retryAfter: 9_999) == HTTPRetry.maxBackoffSeconds)
+        // Google-style durations and junk.
+        #expect(HTTPRetry.seconds("3s") == 3)
+        #expect(HTTPRetry.seconds("1.2") == 2)
+        #expect(HTTPRetry.seconds("soon") == nil)
+    }
+
+    @Test func transientTransportFailuresAreRetriableAndOfflineIsNot() {
+        for code in [URLError.timedOut, .networkConnectionLost, .cannotConnectToHost,
+                     .cannotFindHost, .dnsLookupFailed, .secureConnectionFailed] {
+            #expect(HTTPRetry.isRetriable(URLError(code)), "\(code) should be worth retrying")
+        }
+        // No radio: waiting and asking again is theatre, and the user has a
+        // different thing to do about it.
+        #expect(!HTTPRetry.isRetriable(URLError(.notConnectedToInternet)))
+        #expect(!HTTPRetry.isRetriable(URLError(.badURL)))
+        #expect(HTTPRetry.isRetriable(status: 429))
+        #expect(HTTPRetry.isRetriable(status: 503))
+        #expect(!HTTPRetry.isRetriable(status: 400))
+        #expect(!HTTPRetry.isRetriable(status: 401))
+    }
+
+    /// A dropped connection used to end the run. This is the longest and most
+    /// expensive call in the product, so one dead socket threw away a paid
+    /// generation without ever asking again.
+    @Test func aDroppedConnectionIsRetriedRatherThanEndingTheDraft() async throws {
+        let attempts = SentBox()
+        let good = anthropicResponse(stopReason: "tool_use", deck: #"{"meta":{"title":"T"},"slides":[]}"#)
+        let provider = AnthropicProvider(apiKey: "k", send: { _ in
+            attempts.record(1)
+            if attempts.values.count < 3 { throw URLError(.networkConnectionLost) }
+            return (Data(good.utf8), Self.http(200))
+        })
+        let draft = try await provider.draft(DeckRequest(prompt: "x", slideCount: 5), repairing: nil) { _ in }
+        #expect(draft.json.contains("\"title\""))
+        #expect(attempts.values.count == 3, "expected three attempts, saw \(attempts.values.count)")
+    }
+
+    /// Offline is different: there is nothing to wait for, and the user gets a
+    /// message they can act on instead of three silent retries.
+    @Test func beingOfflineFailsImmediatelyWithoutRetrying() async throws {
+        let attempts = SentBox()
+        let provider = AnthropicProvider(apiKey: "k", send: { _ in
+            attempts.record(1)
+            throw URLError(.notConnectedToInternet)
+        })
+        await #expect(throws: LecternError.networkOffline) {
+            _ = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
+        }
+        #expect(attempts.values.count == 1, "offline should not be retried")
+    }
+
+    /// Auth is final — asking again cannot change the answer, and each retry
+    /// is another round-trip the user waits through.
+    @Test func aRejectedKeyIsNotRetried() async throws {
+        let attempts = SentBox()
+        let provider = AnthropicProvider(apiKey: "k", send: { _ in
+            attempts.record(1)
+            return (Data(#"{"error":{"message":"invalid x-api-key"}}"#.utf8), Self.http(401))
+        })
+        await #expect(throws: LecternError.authFailed(provider: "Anthropic")) {
+            _ = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
+        }
+        #expect(attempts.values.count == 1)
+    }
+
     // MARK: Anthropic stub helpers
 
-    private static func http(_ status: Int) -> HTTPURLResponse {
-        HTTPURLResponse(url: URL(string: "https://api.anthropic.com/v1/messages")!,
+    private static func http(_ status: Int) -> HTTPURLResponse {        HTTPURLResponse(url: URL(string: "https://api.anthropic.com/v1/messages")!,
                         statusCode: status, httpVersion: nil, headerFields: nil)!
     }
 

@@ -130,10 +130,13 @@ public struct AnthropicProvider: LLMProvider {
         throw LecternError.responseTruncated(slideCount: request.slideCount)
     }
 
-    /// POST with exactly one retry on 429/5xx (honoring Retry-After); no retry on
-    /// 4xx auth errors (§7.6). A model that refuses the requested output budget
-    /// is retried once at the floor, which is not a retry of the same request
-    /// and so does not spend the 429 attempt.
+    /// POST, retrying rate limits, server faults and dropped connections on the
+    /// shared schedule in `HTTPRetry`. Auth failures and other 4xx are final —
+    /// asking again cannot change the answer.
+    ///
+    /// A model that refuses the requested output budget is retried once at the
+    /// floor. That is a different request rather than another go at the same
+    /// one, so it does not spend an attempt.
     private func send(_ payload: [String: Any]) async throws -> (Data, Usage) {
         var payload = payload
         var attempt = 0
@@ -147,8 +150,22 @@ public struct AnthropicProvider: LLMProvider {
             req.httpBody = try JSONSerialization.data(withJSONObject: payload)
 
             let data: Data, response: URLResponse
-            do { (data, response) = try await http(req) }
-            catch let error as URLError where error.code == .notConnectedToInternet { throw LecternError.networkOffline }
+            do {
+                (data, response) = try await http(req)
+            } catch let error as URLError where error.code == .notConnectedToInternet {
+                throw LecternError.networkOffline
+            } catch let error as URLError where HTTPRetry.isRetriable(error) {
+                // A dropped or timed-out connection says nothing about the
+                // request. This used to end the run: the longest, most
+                // expensive call in the product threw away a paid generation
+                // because one socket died.
+                guard attempt + 1 < HTTPRetry.maxAttempts else {
+                    throw LecternError.providerError(status: 0, message: error.localizedDescription)
+                }
+                try await HTTPRetry.wait(seconds: HTTPRetry.backoff(attempt: attempt, retryAfter: nil))
+                attempt += 1
+                continue
+            }
 
             guard let http = response as? HTTPURLResponse else { throw LecternError.providerError(status: 0, message: "no response") }
             switch http.statusCode {
@@ -164,15 +181,19 @@ public struct AnthropicProvider: LLMProvider {
                 loweredBudget = true
                 payload["max_tokens"] = Self.floorOutputTokens
                 continue
-            case 429, 500...599:
-                let retryAfter = Int(http.value(forHTTPHeaderField: "Retry-After") ?? "") ?? 2
-                if attempt == 0 {
+            case let status where HTTPRetry.isRetriable(status: status):
+                let retryAfter = HTTPRetry.retryAfterSeconds(http)
+                if attempt + 1 < HTTPRetry.maxAttempts {
+                    try await HTTPRetry.wait(
+                        seconds: HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter))
                     attempt += 1
-                    try? await Task.sleep(nanoseconds: UInt64(retryAfter) * 1_000_000_000)
                     continue
                 }
-                if http.statusCode == 429 { throw LecternError.rateLimited(afterSeconds: retryAfter) }
-                throw LecternError.providerError(status: http.statusCode, message: message(data))
+                if status == 429 {
+                    throw LecternError.rateLimited(
+                        afterSeconds: retryAfter ?? HTTPRetry.backoff(attempt: attempt, retryAfter: nil))
+                }
+                throw LecternError.providerError(status: status, message: message(data))
             default:
                 throw LecternError.providerError(status: http.statusCode, message: message(data))
             }
