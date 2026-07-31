@@ -10,6 +10,15 @@ import Foundation
 /// cap are dropped — these constants exist so that is a decision you make
 /// rather than a surprise: check `SlideCapacity.process` before calling, or
 /// split the content across slides.
+/// Which side of a slide a picture takes, leaving the rest for text.
+///
+/// The classic pairing: title and a few bullets on one side, a picture on the
+/// other. Alternating the side down a deck is what stops a run of them reading
+/// as the same slide repeated.
+public enum SideImage: Sendable, Equatable {
+    case left, right
+}
+
 public enum SlideCapacity {
     /// `processSlide(_:steps:)` — steps share one row of columns.
     public static let process = 5
@@ -149,11 +158,12 @@ public extension Presentation {
     ///   Text-only slides keep the full width, so nothing moves unless asked.
     func bulletSlide(_ title: String, _ bullets: [String],
                      kicker: String? = nil, reservingSideImage: Bool = false,
+                     imageSide: SideImage = .right,
                      style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s,
-                                 reservingSideImage: reservingSideImage)
+                                 reservingSideImage: reservingSideImage, imageSide: imageSide)
         try slide.addBulletList(bullets, in: content, style: s, anchor: .top)   // start just below the title
         return slide
     }
@@ -685,10 +695,11 @@ public extension Presentation {
     /// fractions is how text and image come to overlap: Lectern's did, at
     /// 55.5% of the slide width, while `sectionSlide`'s subtitle ran nine
     /// columns wide and straight underneath it.
-    func sideImagePanel(style: DeckStyle? = nil) -> Rect {
+    func sideImagePanel(_ side: SideImage = .right, style: DeckStyle? = nil) -> Rect {
         let s = style ?? self.style
-        return deckGrid(s).cell(column: Self.sideImageColumn, row: 2,
-                                columnSpan: 12 - Self.sideImageColumn, rowSpan: 9)
+        let span = 12 - Self.sideImageColumn
+        return deckGrid(s).cell(column: side == .right ? Self.sideImageColumn : 0,
+                                row: 2, columnSpan: span, rowSpan: 9)
     }
 
     /// First column belonging to the side image. Text on a reserving slide
@@ -705,14 +716,16 @@ public extension Presentation {
     /// Place an optional kicker + a title across the top rows; return the content
     /// rect below them.
     private func header(on slide: Slide, kicker: String?, title: String, style: DeckStyle,
-                        reservingSideImage: Bool = false) throws -> Rect {
+                        reservingSideImage: Bool = false,
+                        imageSide: SideImage = .right) throws -> Rect {
         let head = try placeHeader(on: slide, kicker: kicker, title: title, style: style,
-                                   reservingSideImage: reservingSideImage)
+                                   reservingSideImage: reservingSideImage, imageSide: imageSide)
         let grid = deckGrid(style)
         // Stop at the image column when one is reserved, so the picture the
         // caller places into `sideImagePanel()` cannot land on the text.
         let span = reservingSideImage ? Self.sideImageColumn : 12
-        return grid.cell(column: 0, row: head.contentRow, columnSpan: span,
+        let column = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
+        return grid.cell(column: column, row: head.contentRow, columnSpan: span,
                          rowSpan: 12 - head.contentRow)
     }
 
@@ -730,18 +743,21 @@ public extension Presentation {
     /// renders bare `normAutofit` text at full size until the box is edited).
     private func placeHeader(on slide: Slide, kicker: String?, title: String,
                              style: DeckStyle,
-                             reservingSideImage: Bool = false) throws -> (contentRow: Int, titleWraps: Bool) {
+                             reservingSideImage: Bool = false,
+                             imageSide: SideImage = .right) throws -> (contentRow: Int, titleWraps: Bool) {
         let grid = deckGrid(style)
         // The title clears the image too — a headline running under the panel
         // is the same defect as a bullet doing it.
         let textColumns = reservingSideImage ? Self.sideImageColumn : 11
+        let textColumn = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
         var titleRow = 0
         if let kicker {
-            try slide.addKicker(kicker, in: grid.cell(column: 0, row: 0, columnSpan: textColumns),
+            try slide.addKicker(kicker,
+                                in: grid.cell(column: textColumn, row: 0, columnSpan: textColumns),
                                 style: style)
             titleRow = 1
         }
-        let band = grid.cell(column: 0, row: titleRow, columnSpan: textColumns, rowSpan: 2)
+        let band = grid.cell(column: textColumn, row: titleRow, columnSpan: textColumns, rowSpan: 2)
         // maxLines 1: the band is sized for a single line, so with metrics we
         // prefer the largest size that avoids wrapping at all.
         let fitted = fitSize([title], font: style.type(.title).font,
@@ -776,7 +792,7 @@ public extension Presentation {
     /// `fallback` (each call site's calibrated character-count ladder), so a
     /// deck built without registered fonts is byte-identical to before the
     /// metrics engine existed.
-    private func fitSize(_ texts: [String], font: String, candidates: [Double],
+    func fitSize(_ texts: [String], font: String, candidates: [Double],
                          maxLines: Int, lineWidth: EMU,
                          fallback: @autoclosure () -> Double) -> Double {
         guard let metrics = fonts.metrics(for: font) else { return fallback() }

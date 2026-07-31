@@ -126,9 +126,13 @@ import Rostrum
         // the columns left of the panel. That the narrowing genuinely clears
         // it is pinned in Rostrum by `reservedTextNeverEntersTheSideImagePanel`;
         // this pins which layouts opt in.
-        #expect(SlideLayoutKind.sectionHeader.imagePlacement == .sidePanel)
-        #expect(SlideLayoutKind.bullets.imagePlacement == .sidePanel)
-        #expect(SlideLayoutKind.agenda.imagePlacement == .sidePanel)
+        #expect(SlideLayoutKind.sectionHeader.imagePlacement == .sidePanel(.right))
+        #expect(SlideLayoutKind.bullets.imagePlacement == .sidePanel(.right))
+        #expect(SlideLayoutKind.agenda.imagePlacement == .sidePanel(.right))
+        // Asked for explicitly, so a deck can alternate rather than leaning on
+        // one composition.
+        #expect(SlideLayoutKind.imageLeft.imagePlacement == .sidePanel(.left))
+        #expect(SlideLayoutKind.imageRight.imagePlacement == .sidePanel(.right))
 
         // None: two columns of text, a plotted chart, a row of metrics,
         // stacked bands, a diagram. Narrowing these breaks the layout rather
@@ -961,6 +965,51 @@ import Rostrum
         } when: {
             DeckRenderer.installedFontFile(named: "Helvetica Neue") == nil
         }
+    }
+
+    /// The classic pairing, both ways round. A deck that can only put the
+    /// picture on the right reads as the same slide repeated.
+    @Test func imageLeftAndImageRightMirrorEachOther() async throws {
+        func render(_ layout: String) async throws -> (text: Rect, panel: Rect) {
+            let deck = DeckIR(meta: Meta(title: "Mirror"), slides: [
+                IRSlide(id: "s1", layout: "title", title: "Opener"),
+                IRSlide(id: "s2", layout: layout, title: "Findings",
+                        body: Body(bullets: [Bullet(text: "one"), Bullet(text: "two")]),
+                        image: ImageBrief(prompt: "a lighthouse")),
+            ])
+            let validated = try DeckValidator().validate(deck, notesRequired: false)
+            let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+            let result = try await DeckRenderer().render(
+                validated.deck, designURL: nil, notesEnabled: false, into: dir,
+                images: ["s2": Self.smallPNG()])
+            let reopened = try Presentation(contentsOf: result.url)
+            let slide = try reopened.slides[1]
+            let picture = try #require(slide.shapes.all.first { $0.altText != nil })
+            let title = try #require(slide.shapes.all.first {
+                ($0.textFrame?.text ?? "").contains("Findings")
+            })
+            return (title.frame, picture.frame)
+        }
+
+        let right = try await render("imageRight")
+        let left = try await render("imageLeft")
+        // Text left of the picture one way, right of it the other.
+        #expect(right.text.maxX.rawValue <= right.panel.x.rawValue)
+        #expect(left.panel.maxX.rawValue <= left.text.x.rawValue)
+        // And the panel really did swap sides.
+        #expect(left.panel.x.rawValue < right.panel.x.rawValue)
+    }
+
+    /// An 8x8 PNG: enough for `addPicture` to sniff and place.
+    private static func smallPNG() -> Data {
+        var b: [UInt8] = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
+        func be32(_ v: Int) -> [UInt8] {
+            [UInt8(v >> 24 & 0xFF), UInt8(v >> 16 & 0xFF), UInt8(v >> 8 & 0xFF), UInt8(v & 0xFF)]
+        }
+        b += be32(13); b += Array("IHDR".utf8); b += be32(8); b += be32(8)
+        b += [8, 6, 0, 0, 0]; b += be32(0)
+        b += be32(0); b += Array("IEND".utf8); b += be32(0)
+        return Data(b)
     }
 
     @Test func slideDecodesOptionalImageBrief() throws {

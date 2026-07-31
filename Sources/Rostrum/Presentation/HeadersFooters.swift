@@ -32,12 +32,12 @@ extension Slide {
 public extension Presentation {
     /// Add a live slide-number field to the bottom-right of every slide.
     @discardableResult
-    func showSlideNumbers(style: DeckStyle? = nil) throws -> Presentation {
+    func showSlideNumbers(from firstSlide: Int = 0, style: DeckStyle? = nil) throws -> Presentation {
         let s = style ?? self.style
         let b = bounds
         let frame = Rect(x: b.maxX - .inches(1.3), y: b.maxY - .inches(0.55),
                          width: .inches(1.0), height: .inches(0.35))
-        try forEachSlide {
+        try forEachSlide(from: firstSlide) {
             try $0.shapes.addFieldBox(type: "slidenum", text: "1", frame: frame,
                                       style: s, align: .right,
                                       color: furnitureColor(on: $0, style: s))
@@ -47,11 +47,11 @@ public extension Presentation {
 
     /// Add a live date field to the bottom-left of every slide.
     @discardableResult
-    func showDate(style: DeckStyle? = nil) throws -> Presentation {
+    func showDate(from firstSlide: Int = 0, style: DeckStyle? = nil) throws -> Presentation {
         let s = style ?? self.style
         let b = bounds
         let frame = Rect(x: b.minX, y: b.maxY - .inches(0.55), width: .inches(2.4), height: .inches(0.35))
-        try forEachSlide {
+        try forEachSlide(from: firstSlide) {
             try $0.shapes.addFieldBox(type: "datetime", text: "2020-01-01", frame: frame,
                                       style: s, align: .left,
                                       color: furnitureColor(on: $0, style: s))
@@ -61,17 +61,34 @@ public extension Presentation {
 
     /// Add footer text to the bottom-center of every slide.
     @discardableResult
-    func footer(_ text: String, style: DeckStyle? = nil) throws -> Presentation {
+    func footer(_ text: String, from firstSlide: Int = 0,
+                style: DeckStyle? = nil) throws -> Presentation {
         let s = style ?? self.style
         let b = bounds
-        let frame = Rect(x: b.midX - .inches(2.5), y: b.maxY - .inches(0.55),
-                         width: .inches(5.0), height: .inches(0.35))
-        try forEachSlide {
-            try $0.addText(text, in: frame, role: .caption, style: s,
+        // The band between the date and the slide number, not a fixed 5in: a
+        // deck title is as long as it is, and 63 characters needed 567pt of a
+        // 360pt box.
+        let width = Swift.max(EMU.inches(2), b.width - .inches(3.4))
+        let frame = Rect(x: b.midX - width / 2.0, y: b.maxY - .inches(0.55),
+                         width: width, height: .inches(0.35))
+        // Furniture, not content. The caption role is sized for captions —
+        // 18pt in some designs — which is far too big for a running footer and
+        // was never fitted to the box it had to sit in.
+        let fitted = fitSize([text], font: s.type(.caption).font,
+                             candidates: [furnitureSizePt, 10, 9],
+                             maxLines: 1, lineWidth: width,
+                             fallback: text.count > 70 ? 9 : (text.count > 48 ? 10 : furnitureSizePt))
+        let furniture = s.with(.caption) { $0.sizePt = Swift.min($0.sizePt, fitted) }
+        try forEachSlide(from: firstSlide) {
+            try $0.addText(text, in: frame, role: .caption, style: furniture,
                            color: furnitureColor(on: $0, style: s), align: .center, anchor: .middle)
         }
         return self
     }
+
+    /// Running furniture sits below the smallest thing a design calls text;
+    /// it is there to be found, not read.
+    private var furnitureSizePt: Double { 11 }
 
     /// The colour furniture should take on `slide`.
     ///
@@ -94,8 +111,11 @@ public extension Presentation {
         }
     }
 
-    private func forEachSlide(_ body: (Slide) throws -> Void) throws {
-        for i in 0..<slides.count { try body(slides[i]) }
+    /// `firstSlide` skips the opener: a title slide already says what the deck
+    /// is, so a footer repeating it and a "1" under it are noise.
+    private func forEachSlide(from firstSlide: Int = 0, _ body: (Slide) throws -> Void) throws {
+        guard firstSlide < slides.count else { return }
+        for i in Swift.max(0, firstSlide)..<slides.count { try body(slides[i]) }
     }
 }
 

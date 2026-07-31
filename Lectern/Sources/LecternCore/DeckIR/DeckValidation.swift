@@ -156,6 +156,10 @@ public struct DeckValidator: Sendable {
             if (body?.items ?? []).isEmpty && (body?.bullets ?? []).isEmpty { return "bands requires body.items" }
         case .diagram:
             if (body?.diagram?.items ?? []).isEmpty { return "diagram requires body.diagram with items" }
+        case .imageLeft, .imageRight:
+            // Same body as bullets; the picture is optional and the slide
+            // simply uses the full width when none arrives.
+            if (body?.bullets ?? []).isEmpty { return "\(slide.layout) requires body.bullets" }
         case .timeline:
             if (body?.milestones ?? []).isEmpty { return "timeline requires body.milestones" }
         case .quadrant:

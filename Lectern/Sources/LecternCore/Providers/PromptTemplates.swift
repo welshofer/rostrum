@@ -42,6 +42,8 @@ public enum PromptTemplates {
         - metrics          body: { stats: [{ value, label }] }   (2–4 headline numbers)
         - chart            body: { chart: { kind: bar|stackedBar|percentStackedBar|line|area|pie|doughnut|radar, categories: [string], series: [{ name, values: [number] }] } }
         - bands            body: { items: [string] }   (3–6 parallel concepts/phases/layers as colored bands; each item "Label — short detail")
+        - imageLeft        body: { bullets: [...] } + image   (picture on the LEFT, title and 3–5 bullets on the right)
+        - imageRight       body: { bullets: [...] } + image   (picture on the RIGHT, title and 3–5 bullets on the left)
         - timeline         body: { milestones: [{ label, detail }] }   (3–5, in time order; label is a date or phase)
         - quadrant         body: { quadrants: [{ heading, detail }], xAxis?, yAxis? }   (EXACTLY 4, reading order: TL, TR, BL, BR)
         - table            body: { table: { headers: [string], rows: [[string]] } }
@@ -136,7 +138,13 @@ public enum PromptTemplates {
         "bigNumber". HARD CAP on bands: no more than about one slide in four may be a \
         bands slide — count them, and convert the excess into diagrams, charts, \
         comparisons, or metrics. Allow at most TWO plain "bullets" slides in the whole \
-        deck, and NEVER two bullet slides back to back. The finished deck should feel \
+        deck, and NEVER two bullet slides back to back. The workhorse of a real \
+        deck is a title, three to five bullets and one picture beside them — use \
+        "imageLeft" and "imageRight" for those, and ALTERNATE the side so two in \
+        a row never sit the same way. HARD CAP on "diagram": at most about one \
+        slide in six, and never two in the same deck with the same kind — five \
+        numbered circles in a row is a strong device that stops meaning anything \
+        the third time it appears. The finished deck should feel \
         visually different slide to slide, like a deck a designer built, not a list \
         with headings.
 

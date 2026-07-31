@@ -118,9 +118,12 @@ public actor DeckRenderer {
     private static let labelledAxis = AxisOptions(hidden: true, gridlines: false)
 
     private static func addFurniture(_ deck: DeckIR, to presentation: Presentation) {
-        _ = try? presentation.showSlideNumbers()
+        // From slide 2: the opener already carries the deck title, so a footer
+        // repeating it and a "1" beneath it are noise on the one slide with
+        // the most deliberate composition.
+        _ = try? presentation.showSlideNumbers(from: 1)
         let footer = deck.meta.title.trimmingCharacters(in: .whitespaces)
-        if !footer.isEmpty { _ = try? presentation.footer(footer) }
+        if !footer.isEmpty { _ = try? presentation.footer(footer, from: 1) }
     }
 
     private static func stampProperties(of deck: DeckIR, on presentation: Presentation) {
@@ -339,7 +342,11 @@ public actor DeckRenderer {
                 // Decided before the builder runs: reserving the panel changes
                 // how wide the text is laid out, so it cannot be discovered
                 // afterwards when the picture is placed.
-                let sideImage = images[slide.id] != nil && slide.kind.imagePlacement == .sidePanel
+                var imageSide: SideImage?
+                if case .sidePanel(let side) = slide.kind.imagePlacement, images[slide.id] != nil {
+                    imageSide = side
+                }
+                let sideImage = imageSide != nil
                 let built = try build(slide, in: presentation, useSmartArt: useSmartArt,
                                       hasSideImage: sideImage, dropped: &dropped)
                 builtSlides[slide.id] = built
@@ -356,10 +363,10 @@ public actor DeckRenderer {
                         // skip anyway.
                         do { try built.setBackground(.image(scrimmed, .stretch)) }
                         catch { Self.noteLostImage(on: slide, into: &dropped) }
-                    case .sidePanel:
+                    case .sidePanel(let side):
                         // A framed panel on the right (title/content sit left).
                         if let picture = try? built.shapes.addPicture(
-                            data, frame: Self.imageFrame(in: presentation), fit: .fill) {
+                            data, frame: presentation.sideImagePanel(side), fit: .fill) {
                             // The brief that generated this image *is* its
                             // description — exactly what a screen reader needs,
                             // and the app has been holding it all along.
@@ -485,6 +492,13 @@ public actor DeckRenderer {
         case .bullets:
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []),
                                         reservingSideImage: hasSideImage)
+        case .imageLeft, .imageRight:
+            // Bullets that have asked for a picture beside them. Without one
+            // the slide simply takes the full width, so a deck generated with
+            // no image key still reads correctly.
+            let side: SideImage = slide.kind == .imageLeft ? .left : .right
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []),
+                                        reservingSideImage: hasSideImage, imageSide: side)
         case .twoColumn, .comparison:
             let left = body?.left ?? Column(heading: "", bullets: [])
             let right = body?.right ?? Column(heading: "", bullets: [])

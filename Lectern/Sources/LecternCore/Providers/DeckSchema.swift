@@ -122,7 +122,7 @@ enum DeckSchema {
                     "enum": ["title", "agenda", "sectionHeader", "bullets",
                              "twoColumn", "comparison", "quote", "bigNumber", "closing",
                              "chart", "metrics", "bands", "diagram", "table",
-                             "timeline", "quadrant"],
+                             "timeline", "quadrant", "imageLeft", "imageRight"],
                 ],
                 "title": str(),
                 "body": body,
