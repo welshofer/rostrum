@@ -29,12 +29,12 @@ struct ContentView: View {
                 }
                 .sheet(isPresented: $showSettings) { SettingsView().environment(app) }
         }
-        .task { await app.loadStyles() }
+        .task { await app.start(); await app.loadStyles() }
         #else
         // No sidebar — there's no deck History to show, so a single pane is honest.
         phaseView
             .frame(minWidth: 640, minHeight: 560)
-            .task { await app.loadStyles() }
+            .task { await app.start(); await app.loadStyles() }
         #endif
     }
 
@@ -104,6 +104,22 @@ struct ComposeView: View {
         @Bindable var app = app
         ScrollView {
             VStack(spacing: 16) {
+                if let notice = app.migrationNotice {
+                    HStack(spacing: 10) {
+                        Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                        Text(notice).font(.callout)
+                        Spacer()
+                        Button { app.dismissMigrationNotice() } label: {
+                            Image(systemName: "xmark")
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.secondary)
+                        .accessibilityLabel("Dismiss")
+                    }
+                    .padding(12)
+                    .background(.regularMaterial, in: .rect(cornerRadius: 12, style: .continuous))
+                    .accessibilityElement(children: .combine)
+                }
                 Card(title: "PROMPT", systemImage: "text.alignleft") {
                     TextEditor(text: $app.prompt)
                         .font(.body).scrollContentBackground(.hidden)

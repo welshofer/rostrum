@@ -26,6 +26,7 @@ public actor DeckGenerator {
     private struct DraftErrors: Error { var errors: [String] }
 
     public func generate(_ request: DeckRequest, designURL: URL?, into directory: URL,
+                         diagnostics: URL? = nil,
                          emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         let first = try await provider.draft(request, repairing: nil, emit: emit)
         emit(.validating)
@@ -46,7 +47,7 @@ public actor DeckGenerator {
                 // what the model actually sent is an error string, which is not
                 // enough to tell a prompt problem from a schema one.
                 var errors = second.errors
-                if let kept = Self.keepRejectedDraft(repaired.json, in: directory) {
+                if let kept = Self.keepRejectedDraft(repaired.json, in: diagnostics ?? directory) {
                     errors.append("the rejected draft is at \(kept.path)")
                 }
                 throw LecternError.schemaInvalid(errors: errors)
@@ -54,9 +55,14 @@ public actor DeckGenerator {
         }
     }
 
-    /// Write a rejected draft beside the decks so it can be inspected. Best
-    /// effort: a deck already failed, and failing to save the evidence must not
-    /// replace that error with a different one.
+    /// Write a rejected draft where it can be inspected. Best effort: a deck
+    /// already failed, and failing to save the evidence must not replace that
+    /// error with a different one.
+    ///
+    /// The caller passes a diagnostics directory rather than the decks folder.
+    /// This file is the app's, not the user's — and it is the model's rendering
+    /// of their prompt plus up to 40,000 characters lifted from whatever PDF
+    /// they attached, so it has no business sitting among their documents.
     private static func keepRejectedDraft(_ json: String, in directory: URL) -> URL? {
         let url = directory.appendingPathComponent("rejected-draft.json")
         do {
