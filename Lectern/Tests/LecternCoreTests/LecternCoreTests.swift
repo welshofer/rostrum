@@ -757,8 +757,53 @@ import Rostrum
         #expect(HTTPRetry.seconds("soon") == nil)
     }
 
-    @Test func transientTransportFailuresAreRetriableAndOfflineIsNot() {
-        for code in [URLError.timedOut, .networkConnectionLost, .cannotConnectToHost,
+    /// Retrying without a ceiling turned a stalled network into six minutes of
+    /// a UI that looks frozen. The deadline bounds when a retry may start.
+    @Test func retryingStopsAtTheOverallDeadline() {
+        let start = Date()
+        let deadline = HTTPRetry.overallDeadline
+        // Early on there is plenty of room.
+        #expect(HTTPRetry.hasTimeToRetry(startedAt: start, nextWait: 4, now: start))
+        // Just inside: the wait still lands before the deadline.
+        #expect(HTTPRetry.hasTimeToRetry(
+            startedAt: start, nextWait: 4, now: start.addingTimeInterval(deadline - 10)))
+        // Just outside: elapsed plus the wait crosses it, so no new attempt starts.
+        #expect(!HTTPRetry.hasTimeToRetry(
+            startedAt: start, nextWait: 4, now: start.addingTimeInterval(deadline - 2)))
+        // The wait itself counts, rather than being checked after sleeping.
+        #expect(!HTTPRetry.hasTimeToRetry(
+            startedAt: start, nextWait: 30, now: start.addingTimeInterval(deadline - 10)))
+        // Well past it, nothing is retried at all.
+        #expect(!HTTPRetry.hasTimeToRetry(
+            startedAt: start, nextWait: 0, now: start.addingTimeInterval(deadline + 60)))
+    }
+
+    /// The Validate button's own network call was the one HTTPRetry did not
+    /// reach, so a dropped connection reported a good key as broken.
+    @Test func listingModelsRetriesADroppedConnection() async throws {
+        let attempts = SentBox()
+        let models = #"{"data":[{"id":"claude-sonnet-5"},{"id":"claude-opus-4-8"}]}"#
+        let ids = try await AnthropicModels.list(apiKey: "k", send: { _ in
+            attempts.record(1)
+            if attempts.values.count < 3 { throw URLError(.networkConnectionLost) }
+            return (Data(models.utf8), Self.http(200))
+        })
+        #expect(ids == ["claude-sonnet-5", "claude-opus-4-8"])
+        #expect(attempts.values.count == 3, "expected three attempts, saw \(attempts.values.count)")
+    }
+
+    @Test func listingModelsStillFailsFastOnARejectedKey() async throws {
+        let attempts = SentBox()
+        await #expect(throws: LecternError.authFailed(provider: "Anthropic")) {
+            _ = try await AnthropicModels.list(apiKey: "k", send: { _ in
+                attempts.record(1)
+                return (Data(#"{"error":{"message":"invalid"}}"#.utf8), Self.http(401))
+            })
+        }
+        #expect(attempts.values.count == 1, "auth failures must not be retried")
+    }
+
+    @Test func transientTransportFailuresAreRetriableAndOfflineIsNot() {        for code in [URLError.timedOut, .networkConnectionLost, .cannotConnectToHost,
                      .cannotFindHost, .dnsLookupFailed, .secureConnectionFailed] {
             #expect(HTTPRetry.isRetriable(URLError(code)), "\(code) should be worth retrying")
         }

@@ -107,6 +107,10 @@ final class AppState {
     var total = 0
     var progressNoun = "slides"          // "slides" while drafting, "images" while illustrating
     private var task: Task<Void, Never>?
+    /// Which generation the UI is currently showing. A cancelled task's
+    /// continuation runs after `cancel()` returns, so every write it makes is
+    /// checked against this first — see `RunGate`.
+    private var runs = RunGate()
 
     private enum Keys {
         static let provider = "providerID", model = "model", favorites = "favoriteStyles"
@@ -224,12 +228,19 @@ final class AppState {
     /// This ONLY confirms the key works — it never touches the curated model list
     /// or the current selection.
     func validateKey() async {
-        guard let key = KeychainStore.read(for: providerID) else { keyStatus = .invalid("No key stored."); return }
+        // Capture and re-check the provider, exactly as validateImageKey does:
+        // switching provider mid-flight would otherwise paint this verdict
+        // against the wrong key — and selectProvider has already reset the
+        // status to .unknown by then, so the stale write undoes a correct one.
+        let id = providerID
+        guard let key = KeychainStore.read(for: id) else { keyStatus = .invalid("No key stored."); return }
         keyStatus = .validating
         do {
             let models = try await AnthropicModels.list(apiKey: key)
+            guard providerID == id else { return }
             keyStatus = .valid(models.count)
         } catch {
+            guard providerID == id else { return }
             keyStatus = .invalid(Self.describe(error))
         }
     }
@@ -268,6 +279,7 @@ final class AppState {
         guard hasKey else { phase = .failed("Add your \(providerID.label) API key in \(Self.settingsHint) to generate."); return }
 
         phase = .generating; stage = "Starting"; drafted = 0; total = slideCount
+        let run = runs.begin()
         let request = DeckRequest(prompt: prompt, audience: audience, goal: goal,
                                   slideCount: slideCount, notes: includeNotes,
                                   groundingText: grounding?.text,
@@ -290,7 +302,7 @@ final class AppState {
                 var imageProvider: (any ImageProvider)?
                 var imageStyle: String?
                 if let imageKey {
-                    self.stage = "Checking image provider"
+                    if self.runs.isCurrent(run) { self.stage = "Checking image provider" }
                     do {
                         try await ImageProviderFactory.validate(id: imageID, apiKey: imageKey)
                         if self.imageProviderID == imageID { self.imageKeyStatus = .valid }
@@ -309,21 +321,36 @@ final class AppState {
                 let result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
                     .generate(request, designURL: designURL, into: directory,
                               diagnostics: diagnostics) { [weak self] event in
-                        Task { @MainActor in self?.apply(event) }
+                        Task { @MainActor in self?.apply(event, run: run) }
                     }
+                // Cancellation is cooperative, so all three of these can run
+                // after the user has already started a replacement. Writing
+                // them unconditionally is what dropped a live generation off
+                // the screen.
+                guard self.runs.isCurrent(run) else { return }
                 self.phase = .result(result)
             } catch is CancellationError {
+                guard self.runs.isCurrent(run) else { return }
                 self.phase = .compose
             } catch {
+                guard self.runs.isCurrent(run) else { return }
                 self.phase = .failed(Self.describe(error))
             }
         }
     }
 
-    func cancel() { task?.cancel(); task = nil; phase = .compose }
+    func cancel() {
+        // Abandon the run before cancelling, so anything already past its last
+        // cancellation check still cannot write over what replaces it.
+        runs.abandon()
+        task?.cancel(); task = nil; phase = .compose
+    }
     func reset() { stage = ""; drafted = 0; total = 0; phase = .compose }
 
-    private func apply(_ event: GenerationEvent) {
+    private func apply(_ event: GenerationEvent, run: Int) {
+        // Progress from a run the user already cancelled would otherwise drive
+        // the stage label and the bar of the one that replaced it.
+        guard runs.isCurrent(run) else { return }
         switch event {
         case .preparingSource: stage = "Reading source"
         case .outlining: stage = "Outlining"
