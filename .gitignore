@@ -22,3 +22,10 @@ DerivedData/
 /review.pptx
 /Lectern/.signing.local
 ~$*
+
+# Real-deck corpus: drop foreign-authored decks in here to run the
+# RealDeckCorpusTests gate locally. They stay out of the repo unless their
+# author deliberately adds one with `git add -f`.
+/Tests/RostrumTests/Fixtures/RealDecks/*.pptx
+/Tests/RostrumTests/Fixtures/RealDecks/*.potx
+/Tests/RostrumTests/Fixtures/RealDecks/*.ppsx

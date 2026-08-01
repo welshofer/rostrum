@@ -172,17 +172,30 @@ public struct DeckStyle: Sendable, Equatable {
         Color.bestTextColor(on: fill, options: [ink, background, .black, .white])
     }
 
-    /// An accent nudged toward the background's opposite until it clears WCAG AA
-    /// (4.5:1) — keeping the brand hue where possible — else the ink color.
-    static func legibleEmphasis(_ color: Color, on bg: Color, ink: Color) -> Color {
-        if color.contrastRatio(with: bg) >= 4.5 { return color }
+    /// An accent nudged toward the background's opposite until it clears
+    /// `minimum` — keeping the brand hue where possible — else the ink color.
+    /// Defaults to WCAG AA for text (4.5:1); filled shapes want 3:1.
+    static func legibleEmphasis(_ color: Color, on bg: Color, ink: Color,
+                                minimum: Double = 4.5) -> Color {
+        if color.contrastRatio(with: bg) >= minimum { return color }
         let toward: Color = bg.relativeLuminance < 0.5 ? .white : .black
         var out = color
         for _ in 0..<7 {
             out = out.mixed(with: toward, amount: 0.16)
-            if out.contrastRatio(with: bg) >= 4.5 { return out }
+            if out.contrastRatio(with: bg) >= minimum { return out }
         }
         return ink
+    }
+
+    /// Series colors for a plot: the deck's accents, each nudged until it
+    /// clears WCAG's 3:1 for non-text graphics against the background.
+    ///
+    /// Many of the bundled designs use their later accents as *surface tints* —
+    /// a near-white beige, a pale pink — which is fine behind a card and
+    /// invisible as a bar or a pie slice. 109 of 150 bundled styles have at
+    /// least one accent under 3:1 on their own canvas.
+    public var plotColors: [Color] {
+        accents.map { Self.legibleEmphasis($0, on: background, ink: ink, minimum: 3.0) }
     }
 
     /// Accent `n` if it clears WCAG AA (4.5:1) on `bg`, else legible text.
@@ -257,17 +270,28 @@ public struct DeckStyle: Sendable, Equatable {
         // Presentation-grade sizes (pt) for a 13.3"×7.5" canvas — projected type,
         // not web reading type. design.md tokens may only grow these, never shrink
         // them below a legible floor (see the clamp below).
+        //
+        // These are floors, not preferences: the clamp takes the larger of the
+        // default and the token, so every design in the catalogue rendered its
+        // body at *at least* the number here whatever its own tokens said. Set
+        // too high, one number flattens 150 designs into the same density and
+        // the same four-bullets-per-slide rhythm.
+        //
+        // Calibrated against a hand-made deck: 12.5pt body on a 10in slide, or
+        // ~17pt on this canvas. The floors below sit just above that — low
+        // enough to let a design's own smaller type through and stay varied,
+        // high enough to read when projected.
         // role, size, weight, tracking, lineHeight, usesHeadingFont, color, uppercase
         let defs: [(TypeRole, Double, Int, Double, Double, Bool, Color, Bool)] = [
-            (.kicker,  16, 700,  2.0,  1.0,  false, emphasis, true),
+            (.kicker,  13, 700,  2.0,  1.0,  false, emphasis, true),
             (.display, 96, 700, -1.5,  1.02, true,  ink,      false),
             (.title,   40, 700, -0.5,  1.06, true,  ink,      false),
-            (.heading, 30, 700, -0.25, 1.1,  true,  ink,      false),
-            (.subhead, 26, 400,  0,    1.2,  false, mutedInk, false),
-            (.body,    26, 400,  0,    1.3,  false, ink,      false),
+            (.heading, 26, 700, -0.25, 1.1,  true,  ink,      false),
+            (.subhead, 19, 400,  0,    1.3,  false, mutedInk, false),
+            (.body,    20, 400,  0,    1.35, false, ink,      false),
             (.stat,   130, 700, -2.0,  1.0,  true,  emphasis, false),
-            (.quote,   40, 500, -0.25, 1.25, true,  ink,      false),
-            (.caption, 18, 400,  0,    1.2,  false, mutedInk, false),
+            (.quote,   38, 500, -0.25, 1.25, true,  ink,      false),
+            (.caption, 13, 400,  0,    1.25, false, mutedInk, false),
         ]
         let aliases: [TypeRole: [String]] = [
             .kicker:  ["kicker", "eyebrow", "overline", "label"],

@@ -188,7 +188,18 @@ public final class Presentation {
         try package.serialize()
     }
 
+    /// Write the file, atomically.
+    ///
+    /// `Data.write(to:)` on its own truncates the destination and then streams
+    /// into it, so an interruption — a crash, a full disk, an iOS suspension —
+    /// leaves a half-written `.pptx` that PowerPoint refuses to open. When the
+    /// path already held a deck, that deck is gone too: the truncation happens
+    /// before the first byte of the new one arrives.
+    ///
+    /// Atomically means a temporary file in the same directory, renamed over
+    /// the destination once it is complete, so a reader sees either the old
+    /// file or the new one and never something in between.
     public func save(to url: URL) throws {
-        try serializedData().write(to: url)
+        try serializedData().write(to: url, options: .atomic)
     }
 }

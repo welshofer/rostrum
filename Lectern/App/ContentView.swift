@@ -260,16 +260,29 @@ struct ResultView: View {
     @State private var previewURL: URL?
     #endif
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "checkmark.seal.fill").font(.system(size: 52)).foregroundStyle(.green)
-            Text(result.url.lastPathComponent).font(.title3.weight(.semibold))
-            Text("\(result.slideCount) slides · written by Rostrum").foregroundStyle(.secondary)
-            if !result.previews.isEmpty {
+        VStack(spacing: 0) {
+            // Title band, then the sheet takes the room, then the actions sit
+            // where the hand already is.
+            VStack(spacing: 6) {
+                Text(result.url.lastPathComponent).font(.title3.weight(.semibold))
+                    .lineLimit(1).truncationMode(.middle)
+                Text("\(result.slideCount) slides · written by Rostrum")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
+            .padding(.top, 24).padding(.horizontal, 24).padding(.bottom, 12)
+
+            if result.previews.isEmpty {
+                Spacer()
+                Image(systemName: "checkmark.seal.fill").font(.system(size: 52)).foregroundStyle(.green)
+                Spacer()
+            } else {
                 // Rendered by Rostrum from the deck on disk, so what you see
                 // here is what PowerPoint will open — not a redraw of the plan.
-                SlideFilmstrip(previews: result.previews)
-                    .frame(maxWidth: 620)
+                SlideContactSheet(previews: result.previews)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                Divider()
             }
+            VStack(spacing: 14) {
             #if os(iOS)
             // No Finder to reveal in: Quick Look renders the deck in place, and
             // the share sheet exports it (Save to Files, AirDrop, Keynote…).
@@ -332,8 +345,9 @@ struct ResultView: View {
                 }
                 .frame(maxWidth: 420)
             }
+            }
+            .padding(.horizontal, 24).padding(.top, 14).padding(.bottom, 20)
         }
-        .padding(48)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

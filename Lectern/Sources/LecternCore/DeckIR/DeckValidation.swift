@@ -1,4 +1,5 @@
 import Foundation
+import Rostrum
 
 /// The result of validating a deck: the (possibly downgraded) deck plus soft
 /// warnings. Hard failures throw `ValidationError`.
@@ -58,6 +59,52 @@ public struct DeckValidator: Sendable {
             return s
         }
 
+        // §8.5b — salvage a structured layout the model shaped wrong.
+        //
+        // These layouts carry a shape requirement the others do not: a 2x2 is
+        // exactly four cells, a timeline needs its milestones. Failing the deck
+        // over one of them costs twelve good slides and two model round trips,
+        // so a slide whose content can still be told another way is re-laid-out
+        // with a warning — the same bargain the unknown-layout downgrade makes.
+        deck.slides = deck.slides.map { slide in
+            var s = slide
+            switch s.kind {
+            case .quadrant:
+                let cells = s.body?.quadrants ?? []
+                guard cells.count != 4 else { break }
+                if (2...SlideCapacity.bands).contains(cells.count) {
+                    warnings.append("slide \"\(s.id)\": \(cells.count) quadrants is not a 2x2 — laid out as bands")
+                    s.body?.items = cells.map { "\($0.heading) — \($0.detail)" }
+                    s.layout = "bands"
+                } else if s.body?.bullets != nil {
+                    warnings.append("slide \"\(s.id)\": quadrant without four cells downgraded to bullets")
+                    s.layout = "bullets"
+                }
+            case .timeline where (s.body?.milestones ?? []).isEmpty:
+                if s.body?.bullets != nil {
+                    warnings.append("slide \"\(s.id)\": timeline without milestones downgraded to bullets")
+                    s.layout = "bullets"
+                }
+            case .table where (s.body?.table?.rows ?? []).isEmpty:
+                if s.body?.bullets != nil {
+                    warnings.append("slide \"\(s.id)\": table without rows downgraded to bullets")
+                    s.layout = "bullets"
+                }
+            default:
+                break
+            }
+            return s
+        }
+
+        // §8.5c — layout variety, enforced rather than requested.
+        //
+        // The prompt asks for variety and caps the strong devices. A model that
+        // finds a layout it likes will still use it eight times, and the result
+        // is the complaint that keeps coming back: a deck that reads as one
+        // slide repeated. Asking is not a control, so the excess is downgraded
+        // the same way a mis-shaped quadrant is salvaged.
+        deck.slides = Self.thinRepeats(deck.slides, warnings: &warnings)
+
         for slide in deck.slides {
             if let problem = bodyProblem(for: slide) { errors.append("slide \"\(slide.id)\": \(problem)") }
         }
@@ -96,6 +143,55 @@ public struct DeckValidator: Sendable {
         return ValidationResult(deck: deck, warnings: warnings)
     }
 
+    /// How many slides in a row, and in a deck, a strong layout may take.
+    ///
+    /// A diagram of five numbered circles is a device: striking once, furniture
+    /// twice, wallpaper by the third. Bullets are the opposite problem — never
+    /// striking, and endless if nothing stops them.
+    private static let deckShare: [(layout: String, share: Double)] = [
+        ("diagram", 0.17), ("bands", 0.25), ("bullets", 0.30),
+        ("quadrant", 0.17), ("timeline", 0.17),
+    ]
+
+    /// Downgrade a layout used past its share of the deck, keeping the earliest
+    /// uses and rewriting the rest as bullets.
+    ///
+    /// Only layouts whose body already carries bullet-compatible content are
+    /// touched, so nothing is lost — a `bands` slide's items become its bullets,
+    /// a diagram's steps likewise. A layout with nothing to fall back to keeps
+    /// its slide.
+    private static func thinRepeats(_ slides: [IRSlide], warnings: inout [String]) -> [IRSlide] {
+        var out = slides
+        for (layout, share) in deckShare {
+            let indices = out.indices.filter { out[$0].layout == layout }
+            let allowed = Swift.max(1, Int((Double(out.count) * share).rounded()))
+            guard indices.count > allowed else { continue }
+            for index in indices.dropFirst(allowed) {
+                guard let items = bulletsFor(out[index]) else { continue }
+                warnings.append("slide \"\(out[index].id)\": \(out[index].layout) used "
+                                + "\(indices.count) times in \(out.count) slides — "
+                                + "this one laid out as bullets")
+                out[index].body?.bullets = items.map { Bullet(text: $0) }
+                out[index].layout = "bullets"
+            }
+        }
+        return out
+    }
+
+    /// Bullet-compatible text already on a slide, or nil when there is none.
+    private static func bulletsFor(_ slide: IRSlide) -> [String]? {
+        if let bullets = slide.body?.bullets, !bullets.isEmpty { return bullets.map(\.text) }
+        if let items = slide.body?.items, !items.isEmpty { return items }
+        if let steps = slide.body?.diagram?.items, !steps.isEmpty { return steps }
+        if let cells = slide.body?.quadrants, !cells.isEmpty {
+            return cells.map { "\($0.heading) — \($0.detail)" }
+        }
+        if let marks = slide.body?.milestones, !marks.isEmpty {
+            return marks.map { "\($0.label) — \($0.detail)" }
+        }
+        return nil
+    }
+
     /// The required-field problem for a slide's body given its layout, or nil.
     private func bodyProblem(for slide: IRSlide) -> String? {
         let body = slide.body
@@ -118,6 +214,23 @@ public struct DeckValidator: Sendable {
             if (body?.items ?? []).isEmpty && (body?.bullets ?? []).isEmpty { return "bands requires body.items" }
         case .diagram:
             if (body?.diagram?.items ?? []).isEmpty { return "diagram requires body.diagram with items" }
+        case .imageLeft, .imageRight:
+            // Same body as bullets; the picture is optional and the slide
+            // simply uses the full width when none arrives.
+            if (body?.bullets ?? []).isEmpty { return "\(slide.layout) requires body.bullets" }
+        case .statement:
+            if (body?.claim ?? "").isEmpty { return "statement requires body.claim" }
+        case .callout:
+            if (body?.band ?? "").isEmpty { return "callout requires body.band" }
+        case .timeline:
+            if (body?.milestones ?? []).isEmpty { return "timeline requires body.milestones" }
+        case .quadrant:
+            // A 2x2 with a hole in it is a different diagram.
+            if (body?.quadrants ?? []).count != 4 { return "quadrant requires exactly four quadrants" }
+        case .table:
+            guard let table = body?.table else { return "table requires body.table" }
+            if table.headers.isEmpty { return "table requires body.table.headers" }
+            if table.rows.isEmpty { return "table requires at least one body row" }
         case .title, .sectionHeader, .closing:
             break                                   // all payload fields optional
         case .unknown:

@@ -35,6 +35,9 @@ final class AppState {
     enum KeyStatus: Equatable { case unknown, validating, valid(Int), invalid(String) }
     private(set) var keyStatus: KeyStatus = .unknown
 
+    enum ImageKeyStatus: Equatable { case unknown, validating, valid, invalid(String) }
+    private(set) var imageKeyStatus: ImageKeyStatus = .unknown
+
     /// A curated, clean model list — NOT the provider's raw /v1/models dump
     /// (which is full of point-releases and internal EAP builds). Validate only
     /// confirms the key; it never rewrites this list.
@@ -85,6 +88,9 @@ final class AppState {
         useSmartArt = d.bool(forKey: Keys.useSmartArt)
         hasKey = KeychainStore.hasKey(for: providerID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
+        #if os(macOS)
+        Self.migrateLegacyDecks()
+        #endif
     }
 
     // MARK: - Styles
@@ -146,18 +152,39 @@ final class AppState {
 
     func selectImageProvider(_ id: ImageProviderID) {
         imageProviderID = id
+        imageKeyStatus = .unknown
         UserDefaults.standard.set(id.rawValue, forKey: Keys.imageProvider)
         hasImageKey = KeychainStore.hasKey(forImage: id)
     }
 
     func saveImageKey(_ key: String) {
-        KeychainStore.save(key, forImage: imageProviderID)
+        let ok = KeychainStore.save(key, forImage: imageProviderID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
+        imageKeyStatus = ok && hasImageKey ? .unknown : .invalid("Couldn't write to the Keychain.")
     }
 
     func clearImageKey() {
         KeychainStore.delete(forImage: imageProviderID)
         hasImageKey = false
+        imageKeyStatus = .unknown
+    }
+
+    /// Validate authentication and access to the exact image model Lectern uses.
+    func validateImageKey() async {
+        let id = imageProviderID
+        guard let key = KeychainStore.read(forImage: id) else {
+            imageKeyStatus = .invalid("No image key stored.")
+            return
+        }
+        imageKeyStatus = .validating
+        do {
+            try await ImageProviderFactory.validate(id: id, apiKey: key)
+            guard imageProviderID == id else { return }
+            imageKeyStatus = .valid
+        } catch {
+            guard imageProviderID == id else { return }
+            imageKeyStatus = .invalid(Self.describe(error))
+        }
     }
 
     /// Validate the stored key by pinging the provider's models endpoint (§294).
@@ -228,11 +255,21 @@ final class AppState {
                 // comes from the chosen style's design.md so images stay on-brand.
                 var imageProvider: (any ImageProvider)?
                 var imageStyle: String?
-                if let imageKey, let provider = try? ImageProviderFactory.make(id: imageID, apiKey: imageKey) {
+                if let imageKey {
+                    self.stage = "Checking image provider"
+                    do {
+                        try await ImageProviderFactory.validate(id: imageID, apiKey: imageKey)
+                        if self.imageProviderID == imageID { self.imageKeyStatus = .valid }
+                    } catch {
+                        if self.imageProviderID == imageID {
+                            self.imageKeyStatus = .invalid(Self.describe(error))
+                        }
+                        throw error
+                    }
+                    let provider = try ImageProviderFactory.make(id: imageID, apiKey: imageKey)
                     imageProvider = provider
                     if let style {
-                        let text = try? String(contentsOf: style.designURL, encoding: .utf8)
-                        imageStyle = ImageStyleDirective.from(style: style, designText: text)
+                        imageStyle = ImageStyleDirective.from(style: style)
                     }
                 }
                 let result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
@@ -280,14 +317,36 @@ final class AppState {
         case .authFailed(let p): return "That key was rejected by \(p)."
         case .rateLimited(let s): return "Rate-limited — try again in \(s)s."
         case .requestTooLarge: return "That PDF is too large for this model."
+        case .responseTruncated(let slideCount):
+            return "The model ran out of room before it finished all \(slideCount) slides. "
+                + "Ask for fewer slides, or turn speaker notes off, and try again."
         case .networkOffline: return "No connection."
-        case .schemaInvalid: return "The model returned a deck Lectern couldn't parse."
+        case .schemaInvalid(let errors):
+            // The reasons were always there and were thrown away, which left
+            // the one failure mode a user can actually act on looking like a
+            // dead end.
+            let detail = errors.prefix(3).joined(separator: "\n")
+            return detail.isEmpty
+                ? "The model returned a deck Lectern couldn't parse."
+                : "The model returned a deck Lectern couldn't parse:\n\n\(detail)"
         case .providerError(_, let m): return m
         case .renderFailed(let m): return "Couldn't write the deck: \(m)"
         case .cancelled: return "Cancelled."
         }
     }
 
+    /// Where generated decks are written.
+    ///
+    /// `~/Documents/Lectern` on macOS; `Documents/Decks` on iOS, where the
+    /// container's Documents is exactly what the Files app shows.
+    ///
+    /// A deck is the user's document, so it goes where documents go. Not the
+    /// app bundle — that is code-signed and read-only, and a user's work has no
+    /// business inside the program that made it. And no longer Application
+    /// Support, which is for data the app owns: it sits in a Library folder
+    /// Finder hides by default, so every deck saved there was one the user had
+    /// to be told how to reach, and it is not where anyone looks for their own
+    /// files.
     static func decksDirectory() -> URL {
         #if os(iOS)
         // Documents, not Application Support: with UIFileSharingEnabled +
@@ -297,9 +356,22 @@ final class AppState {
             ?? URL(fileURLWithPath: NSTemporaryDirectory())
         return base.appendingPathComponent("Decks", isDirectory: true)
         #else
-        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        let base = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
             ?? URL(fileURLWithPath: NSTemporaryDirectory())
-        return base.appendingPathComponent("Lectern/Decks", isDirectory: true)
+        return base.appendingPathComponent("Lectern", isDirectory: true)
         #endif
     }
+
+    #if os(macOS)
+    /// Decks used to be written to `~/Library/Application Support/Lectern/Decks`.
+    /// Moving where they are written does not move the ones already there, so
+    /// without this a user's existing decks would simply be gone from the app's
+    /// point of view.
+    static func migrateLegacyDecks() {
+        guard let support = FileManager.default.urls(
+            for: .applicationSupportDirectory, in: .userDomainMask).first else { return }
+        DeckStorage.migrate(from: support.appendingPathComponent("Lectern/Decks", isDirectory: true),
+                            to: decksDirectory())
+    }
+    #endif
 }

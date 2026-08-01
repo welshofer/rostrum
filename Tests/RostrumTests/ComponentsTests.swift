@@ -92,9 +92,9 @@ import Testing
         try deck.slides[0].addStatTile("47", caption: "NPS, up from 31", in: r, style: deck.style)
         let paras = try lastSp(deck.slides[0]).firstChild(named: "p:txBody")!.children(named: "a:p")
         #expect(paras.count == 2)
-        // sz is hundredths of a point: stat 130pt, caption 18pt (presentation scale).
+        // sz is hundredths of a point: stat 130pt, caption 13pt (presentation scale).
         #expect(paras[0].firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"] == "13000")
-        #expect(paras[1].firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"] == "1800")
+        #expect(paras[1].firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "sz"] == "1300")
     }
 
     @Test func bulletListAutoShrinksAndBullets() throws {

@@ -83,17 +83,13 @@ struct SettingsView: View {
                     .onSubmit(saveImageKey)
                 HStack(spacing: 10) {
                     Button("Save", action: saveImageKey).disabled(imageTrimmed.isEmpty)
+                    Button("Validate") { Task { await app.validateImageKey() } }
+                        .disabled(!app.hasImageKey || app.imageKeyStatus == .validating)
                     if app.hasImageKey { Button("Remove", role: .destructive) { app.clearImageKey() } }
                     Spacer()
-                    if app.hasImageKey {
-                        Label("On", systemImage: "photo.fill").foregroundStyle(.green)
-                    } else {
-                        Label("Off", systemImage: "photo").foregroundStyle(.tertiary)
-                    }
+                    imageStatusView
                 }
-                Text(app.hasImageKey
-                     ? "Slides the model marks for a visual get an on-brand image in the selected style."
-                     : "Optional — add a key and Lectern illustrates suitable slides in your chosen design's style.")
+                Text(imageFooterText)
                     .font(.caption).foregroundStyle(.secondary)
             }
 
@@ -114,12 +110,52 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .task(id: app.imageProviderID) {
+            if app.hasImageKey { await app.validateImageKey() }
+        }
     }
 
     private func saveImageKey() {
         guard !imageTrimmed.isEmpty else { return }
         app.saveImageKey(imageTrimmed)
         imageKeyInput = ""
+        Task { await app.validateImageKey() }
+    }
+
+    @ViewBuilder private var imageStatusView: some View {
+        switch app.imageKeyStatus {
+        case .validating:
+            HStack(spacing: 6) {
+                ProgressView().controlSize(.small)
+                Text("Checking…").foregroundStyle(.secondary)
+            }
+        case .valid:
+            Label("Valid", systemImage: "checkmark.seal.fill").foregroundStyle(.green)
+        case .invalid(let message):
+            Label(message, systemImage: "xmark.seal.fill")
+                .foregroundStyle(.red).lineLimit(1).help(message)
+        case .unknown:
+            if app.hasImageKey {
+                Label("Saved — not checked", systemImage: "key.fill").foregroundStyle(.secondary)
+            } else {
+                Label("Off", systemImage: "photo").foregroundStyle(.tertiary)
+            }
+        }
+    }
+
+    private var imageFooterText: String {
+        switch app.imageKeyStatus {
+        case .valid:
+            return "Slides the model marks for a visual get an on-brand image in the selected style."
+        case .validating:
+            return "Checking that the key can access \(app.imageProviderID.defaultModel)…"
+        case .invalid:
+            return "Fix or remove this key before generating; Lectern won't silently omit failed images."
+        case .unknown:
+            return app.hasImageKey
+                ? "The key is saved but has not been accepted by the provider yet."
+                : "Optional — add a key and Lectern illustrates suitable slides in your chosen design's style."
+        }
     }
 
     @ViewBuilder private var statusView: some View {

@@ -1,4 +1,5 @@
 import Foundation
+import Rostrum
 
 // The `lectern.deck/1` intermediate representation — the versioned contract
 // between every provider and the renderer, and the ONLY thing the renderer
@@ -30,7 +31,50 @@ public struct DeckIR: Codable, Sendable, Equatable {
         self.irVersion = (try? c.decodeIfPresent(String.self, forKey: .irVersion)) ?? DeckIR.currentVersion
         self.meta = try c.decode(Meta.self, forKey: .meta)
         self.sections = (try? c.decodeIfPresent([IRSection].self, forKey: .sections)) ?? nil
-        self.slides = try c.decode([IRSlide].self, forKey: .slides)
+        self.slides = try c.decodeArray([IRSlide].self, forKey: .slides)
+    }
+}
+
+extension KeyedDecodingContainer {
+    /// Decode an array that a model may have handed back as a *string* holding
+    /// the array's JSON.
+    ///
+    /// Tool-calling models double-encode a nested array often enough to be a
+    /// failure mode rather than a curiosity: one 29-slide draft arrived with
+    /// `meta` and `sections` as proper JSON and `slides` as an 11,649-character
+    /// string. Both attempts of the repair loop came back the same way, so the
+    /// deck was lost to a quoting mistake in one field.
+    ///
+    /// The strict decode is still tried first; this only rescues the shape that
+    /// would otherwise be thrown away.
+    func decodeArray<T: Decodable>(_ type: [T].Type, forKey key: Key) throws -> [T] {
+        if let array = try? decode([T].self, forKey: key) { return array }
+        let embedded = try decode(String.self, forKey: key)
+        guard let data = embedded.data(using: .utf8) else {
+            throw DecodingError.dataCorruptedError(
+                forKey: key, in: self, debugDescription: "\(key.stringValue) was not decodable text")
+        }
+        do {
+            return try JSONDecoder().decode([T].self, from: data)
+        } catch {
+            // Keep the underlying error attached: the line and column live in
+            // its debug description, and that is the only part a repair
+            // attempt can actually act on.
+            // Foundation nests it: the DecodingError says only "not valid
+            // JSON", and the line and column are in the error underneath it.
+            var detail = (error as NSError).userInfo["NSDebugDescription"] as? String
+            if case let DecodingError.dataCorrupted(inner) = error,
+               let deeper = (inner.underlyingError as NSError?)?
+                   .userInfo["NSDebugDescription"] as? String {
+                detail = deeper
+            }
+            throw DecodingError.dataCorrupted(DecodingError.Context(
+                codingPath: codingPath + [key],
+                debugDescription: "was sent as a string containing JSON, and that JSON is "
+                    + "malformed" + (detail.map { " — \($0)" } ?? "")
+                    + ". Send it as a real JSON array, not a quoted string.",
+                underlyingError: nil))
+        }
     }
 }
 
@@ -109,17 +153,34 @@ public struct Body: Codable, Sendable, Equatable {
     public var chart: IRChart?                // chart
     public var stats: [IRStat]?               // metrics (2–4 headline numbers)
     public var diagram: IRDiagram?            // diagram (process | pyramid | cycle)
+    public var table: IRTable?                // table (header row + body rows)
+    public var claim: String?                 // statement — the argument in one sentence
+    public var band: String?                   // callout — the plated line (formula, threshold)
+    public var lead: String?                  // one-sentence standfirst under the title
+    public var source: String?                // citation / provenance, bottom-left
+    public var milestones: [IRMilestone]?     // timeline
+    public var quadrants: [IRQuadrant]?       // quadrant (exactly four)
+    public var xAxis: String?                 // quadrant axis captions
+    public var yAxis: String?
 
     public init(subtitle: String? = nil, items: [String]? = nil, kicker: String? = nil,
                 bullets: [Bullet]? = nil, left: Column? = nil, right: Column? = nil,
                 quote: String? = nil, attribution: String? = nil, value: String? = nil,
                 label: String? = nil, callToAction: String? = nil, contact: String? = nil,
-                chart: IRChart? = nil, stats: [IRStat]? = nil, diagram: IRDiagram? = nil) {
+                chart: IRChart? = nil, stats: [IRStat]? = nil, diagram: IRDiagram? = nil,
+                table: IRTable? = nil, claim: String? = nil, band: String? = nil,
+                lead: String? = nil, source: String? = nil,
+                milestones: [IRMilestone]? = nil,
+                quadrants: [IRQuadrant]? = nil, xAxis: String? = nil, yAxis: String? = nil) {
         self.subtitle = subtitle; self.items = items; self.kicker = kicker
         self.bullets = bullets; self.left = left; self.right = right
         self.quote = quote; self.attribution = attribution; self.value = value
         self.label = label; self.callToAction = callToAction; self.contact = contact
-        self.chart = chart; self.stats = stats; self.diagram = diagram
+        self.chart = chart; self.stats = stats; self.diagram = diagram; self.table = table
+        self.claim = claim; self.band = band
+        self.lead = lead; self.source = source
+        self.milestones = milestones; self.quadrants = quadrants
+        self.xAxis = xAxis; self.yAxis = yAxis
     }
 }
 
@@ -129,6 +190,34 @@ public struct IRDiagram: Codable, Sendable, Equatable {
     public var kind: String
     public var items: [String]
     public init(kind: String, items: [String]) { self.kind = kind; self.items = items }
+}
+
+/// A table on a `table` slide: `headers` is the header row, `rows` the body.
+/// Ragged rows are padded when rendered, so a short row costs a cell, not the
+/// slide.
+public struct IRTable: Codable, Sendable, Equatable {
+    public var headers: [String]
+    public var rows: [[String]]
+    public init(headers: [String], rows: [[String]]) { self.headers = headers; self.rows = rows }
+
+    /// Header row followed by the body rows — what the builder takes.
+    public var grid: [[String]] { [headers] + rows }
+}
+
+/// One marker on a `timeline` slide: a short `label` (a date or phase) and the
+/// `detail` printed under it.
+public struct IRMilestone: Codable, Sendable, Equatable {
+    public var label: String
+    public var detail: String
+    public init(label: String, detail: String) { self.label = label; self.detail = detail }
+}
+
+/// One cell of a `quadrant` slide, in reading order: top-left, top-right,
+/// bottom-left, bottom-right.
+public struct IRQuadrant: Codable, Sendable, Equatable {
+    public var heading: String
+    public var detail: String
+    public init(heading: String, detail: String) { self.heading = heading; self.detail = detail }
 }
 
 /// A chart on a `chart` slide. `kind` is bar | line | pie; `series[i].values`
@@ -170,7 +259,8 @@ public struct Column: Codable, Sendable, Equatable {
 /// The known layout vocabulary (§8.2), plus `.unknown` for forward-compat.
 public enum SlideLayoutKind: Sendable, Equatable {
     case title, agenda, sectionHeader, bullets, twoColumn, comparison, quote, bigNumber, closing
-    case chart, metrics, bands, diagram
+    case chart, metrics, bands, diagram, table, timeline, quadrant
+    case imageLeft, imageRight, statement, callout
     case unknown(String)
 
     public init(_ raw: String) {
@@ -188,6 +278,13 @@ public enum SlideLayoutKind: Sendable, Equatable {
         case "metrics": self = .metrics
         case "bands": self = .bands
         case "diagram": self = .diagram
+        case "table": self = .table
+        case "timeline": self = .timeline
+        case "quadrant": self = .quadrant
+        case "imageLeft": self = .imageLeft
+        case "imageRight": self = .imageRight
+        case "statement": self = .statement
+        case "callout": self = .callout
         default: self = .unknown(raw)
         }
     }
@@ -196,18 +293,24 @@ public enum SlideLayoutKind: Sendable, Equatable {
     /// clips or crowds text.
     public var imagePlacement: ImagePlacement {
         switch self {
-        case .title, .bigNumber, .quote, .closing: return .fullBleed   // sparse, centered/large text
+        case .title, .bigNumber, .quote, .closing, .statement: return .fullBleed   // sparse, centered/large text
         // Text narrows to the left seven columns and the picture takes the
         // panel Rostrum reserves. Bullets and agendas qualify: they are one
         // column of text, so losing the right-hand fifth costs width, not
         // structure. That is what lets a mostly-bullets deck carry imagery at
         // all — with only the sparse layouts eligible, a 25-slide deck had
         // barely five places to put a picture.
-        case .sectionHeader, .bullets, .agenda: return .sidePanel
+        case .sectionHeader, .bullets, .agenda: return .sidePanel(.right)
+        // The classic pairing, asked for explicitly so a deck can alternate
+        // sides rather than leaning on one composition.
+        case .imageLeft: return .sidePanel(.left)
+        case .imageRight: return .sidePanel(.right)
         // Genuinely full-width: two columns of text, a plotted chart, a row of
         // metrics, stacked bands, a diagram. Narrowing any of these breaks the
         // layout rather than reflowing it.
-        case .twoColumn, .comparison, .chart, .metrics, .bands, .diagram, .unknown: return .none
+        case .twoColumn, .comparison, .chart, .metrics, .bands, .diagram, .table,
+             .timeline, .quadrant, .callout, .unknown:
+            return .none
         }
     }
 }
@@ -215,6 +318,6 @@ public enum SlideLayoutKind: Sendable, Equatable {
 /// Where a slide's generated image goes.
 public enum ImagePlacement: Sendable, Equatable {
     case none        // don't place an image (text-dense layout)
-    case sidePanel   // a framed panel on the right
+    case sidePanel(SideImage)   // a framed panel on one side, text on the other
     case fullBleed   // a scrimmed, edge-to-edge background behind the text
 }

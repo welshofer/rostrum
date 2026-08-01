@@ -67,8 +67,15 @@ import Testing
 
         // The card (an empty-text rounded rect) must start lower when the title
         // wraps — the old fixed layout put a two-line title straight over it.
-        let shortCard = try #require(try boxes(short).first { $0.text.isEmpty })
-        let longCard = try #require(try boxes(long).first { $0.text.isEmpty })
+        //
+        // Picked by area, not by document order: the title's hairline rule is
+        // also an empty-text shape and is drawn first, so "the first box with
+        // no text" stopped meaning "the card".
+        func card(_ slide: Slide) throws -> (x: Int, y: Int, cx: Int, cy: Int, text: String)? {
+            try boxes(slide).filter { $0.text.isEmpty }.max { $0.cx * $0.cy < $1.cx * $1.cy }
+        }
+        let shortCard = try #require(try card(short))
+        let longCard = try #require(try card(long))
         #expect(longCard.y > shortCard.y)
 
         // And the long title is fitted below the full 40pt display size.

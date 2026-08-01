@@ -10,6 +10,15 @@ import Foundation
 /// cap are dropped — these constants exist so that is a decision you make
 /// rather than a surprise: check `SlideCapacity.process` before calling, or
 /// split the content across slides.
+/// Which side of a slide a picture takes, leaving the rest for text.
+///
+/// The classic pairing: title and a few bullets on one side, a picture on the
+/// other. Alternating the side down a deck is what stops a run of them reading
+/// as the same slide repeated.
+public enum SideImage: Sendable, Equatable {
+    case left, right
+}
+
 public enum SlideCapacity {
     /// `processSlide(_:steps:)` — steps share one row of columns.
     public static let process = 5
@@ -21,6 +30,12 @@ public enum SlideCapacity {
     public static let pyramid = 5
     /// `metricsSlide(_:metrics:)` — side-by-side headline numbers.
     public static let metrics = 4
+    /// `timelineSlide(_:milestones:)` — markers sharing one rule.
+    public static let timeline = 5
+    /// `quadrantSlide(_:quadrants:)` — a 2x2 is exactly four.
+    public static let quadrant = 4
+    /// `tableSlide(_:rows:)` — header plus body rows that still read.
+    public static let tableRows = 8
 }
 
 public extension Presentation {
@@ -144,12 +159,15 @@ public extension Presentation {
     ///   left seven columns, leaving `sideImagePanel()` free for a picture.
     ///   Text-only slides keep the full width, so nothing moves unless asked.
     func bulletSlide(_ title: String, _ bullets: [String],
-                     kicker: String? = nil, reservingSideImage: Bool = false,
+                     kicker: String? = nil, lead: String? = nil,
+                     reservingSideImage: Bool = false,
+                     imageSide: SideImage = .right,
                      style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s,
-                                 reservingSideImage: reservingSideImage)
+                                 lead: lead,
+                                 reservingSideImage: reservingSideImage, imageSide: imageSide)
         try slide.addBulletList(bullets, in: content, style: s, anchor: .top)   // start just below the title
         return slide
     }
@@ -174,11 +192,16 @@ public extension Presentation {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let headerInfo = try placeHeader(on: slide, kicker: nil, title: title, style: s)
-        // Comparison cards run a row taller than the shared content rect (one row
-        // above the standard content top) so their bullets get real headroom — a
-        // bullet that wraps (wider fonts in PowerPoint than in preview) then
-        // never runs off the card. A wrapped title shifts the cards down with it.
-        let cardRow = headerInfo.contentRow - 1
+        // Cards start where the header says content may start — no higher.
+        //
+        // They used to reach a row above it to buy their bullets headroom, which
+        // was safe when `placeHeader` left a spare row below the title band. It
+        // stopped being safe when that arithmetic tightened to `wraps ? 3 : 2`:
+        // the row above content is now the *title's own* row, so a single-line
+        // 40pt headline had its descenders covered by the cards — measured at
+        // 0.29in of overlap. Headroom is not worth printing over the title, and
+        // the bullets inside are size-fitted anyway.
+        let cardRow = headerInfo.contentRow
         let content = deckGrid(s).cell(column: 0, row: cardRow, columnSpan: 12, rowSpan: 12 - cardRow)
         let cols = content.split(.horizontal, count: 2, gutter: s.gutter)
         // Header gets its own top band (room for two lines) and the bullets fill
@@ -324,6 +347,13 @@ public extension Presentation {
         for (i, text) in items.enumerated() {
             let y = content.minY.rawValue + i * (bandH + gap)
             let rect = Rect(x: content.minX, y: EMU(y), width: content.width, height: EMU(bandH))
+            // Raw accents on purpose, not `plotColors`. A contrast floor is
+            // right for a chart series, which has to be told apart from
+            // whitespace and from the other series; a band is a full-width
+            // block in a contiguous stack, so its neighbours define its edges
+            // and a pale tint reads as tonal variation rather than a mistake.
+            // Verified by rendering: forcing 3:1 here flattens designs whose
+            // bands are deliberately graduated.
             let fill = s.accent(i + 1)
             // Label goes in the band rect itself (always positive height). Using
             // the card's padded content would go negative on a thin band — a
@@ -358,7 +388,23 @@ public extension Presentation {
         } else {
             shrink = maxLen >= 6
         }
-        let numberStyle = s.with(.stat) { $0.sizePt = shrink ? base * 0.8 : base }
+        // Fit the caption to the column as well as the number. Only the value
+        // was ever fitted, so a label like "research domain categories" in a
+        // 2.4in column ran past its tile and PowerPoint broke it mid-word
+        // ("categorie" / "s").
+        let labels = items.map(\.label)
+        let captionWidth = cols[0].width - .points(22)
+        let longestLabel = labels.map(\.count).max() ?? 0
+        let captionSize = fitSize(labels, font: s.type(.caption).font,
+                                  candidates: [s.type(.caption).sizePt, 16, 14, 12],
+                                  maxLines: 3, lineWidth: captionWidth,
+                                  fallback: longestLabel > 26 ? 12
+                                      : (longestLabel > 18 ? 14 : s.type(.caption).sizePt))
+        let tileStyle = s.with(.stat) { $0.sizePt = shrink ? base * 0.8 : base }
+            .with(.caption) {
+                $0.sizePt = Swift.min($0.sizePt, captionSize)
+                $0.lineHeight = Swift.min($0.lineHeight, 1.25)
+            }
         for (i, m) in items.enumerated() {
             let col = cols[i]
             let accent = s.legibleAccent(i + 1, on: s.background)
@@ -367,7 +413,7 @@ public extension Presentation {
                                     style: s, color: accent)
             let textRect = Rect(x: col.minX + .points(22), y: col.minY,
                                 width: col.width - .points(22), height: col.height)
-            try slide.addStatTile(m.value, caption: m.label, in: textRect, style: numberStyle,
+            try slide.addStatTile(m.value, caption: m.label, in: textRect, style: tileStyle,
                                   valueColor: accent, anchor: .top)
         }
         return slide
@@ -381,8 +427,22 @@ public extension Presentation {
         let s = style ?? self.style
         let slide = try startContentSlide(s)
         let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        // Charts otherwise draw their own text in the theme font at a flat
+        // 14pt, which is what makes a generated chart look bolted on next to
+        // the slide it sits in.
+        var options = options
+        if options.text == nil {
+            let caption = s.type(.caption)
+            // Muted ink reads as "quiet" on a light deck and as "invisible" on
+            // a dark one, so the caption color is nudged until it clears AA
+            // against the background the chart actually sits on.
+            options.text = ChartTextStyle(
+                font: caption.font,
+                color: DeckStyle.legibleEmphasis(s.mutedInk, on: s.background, ink: s.ink),
+                sizePt: Swift.min(caption.sizePt, 12))
+        }
         try slide.shapes.addChart(kind, data: data, frame: content,
-                                  colors: colors ?? s.accents, options: options)
+                                  colors: colors ?? s.plotColors, options: options)
         return slide
     }
 
@@ -436,6 +496,308 @@ public extension Presentation {
         return slide
     }
 
+    /// A horizontal timeline: milestones pegged to one rule, each with a short
+    /// label above and its detail below.
+    ///
+    /// Lays out at most `SlideCapacity.timeline` milestones; extras are
+    /// dropped, because a sixth marker leaves no room for the text under it.
+    @discardableResult
+    func timelineSlide(_ title: String, milestones: [(label: String, detail: String)],
+                       kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        let items = Array(milestones.prefix(SlideCapacity.timeline))
+        guard !items.isEmpty else { return slide }
+
+        let columns = content.split(.horizontal, count: items.count, gutter: s.gutter)
+        // The rule sits below the labels so the eye reads label → marker →
+        // detail top to bottom, the order the milestones are spoken in.
+        let ruleY = content.y + content.height * 0.5
+        let ruleHeight = EMU.points(2)
+        let marker = EMU.points(14)
+        try slide.shapes.addShape(
+            .rectangle,
+            frame: Rect(x: columns[0].midX, y: ruleY,
+                        width: columns[columns.count - 1].midX - columns[0].midX, height: ruleHeight),
+            fill: .solid(s.mutedInk))
+
+        let labelStyle = s.with(.heading) { $0.sizePt = Swift.min($0.sizePt, 22) }
+        let detailStyle = s.with(.body) {
+            $0.sizePt = Swift.min($0.sizePt, 18)
+            $0.lineHeight = Swift.min($0.lineHeight, 1.2)
+        }
+        for (i, milestone) in items.enumerated() {
+            let column = columns[i]
+            let accent = s.legibleAccent(i + 1, on: s.background)
+            let labelBottom = ruleY - EMU.points(18)
+            try slide.addText(milestone.label,
+                              in: Rect(x: column.x, y: content.y, width: column.width,
+                                       height: Swift.max(.zero, labelBottom - content.y)),
+                              role: .heading, style: labelStyle, color: accent,
+                              align: .center, anchor: .bottom)
+            try slide.shapes.addShape(
+                .ellipse,
+                frame: Rect(x: column.midX - marker / 2.0, y: ruleY + ruleHeight / 2.0 - marker / 2.0,
+                            width: marker, height: marker),
+                fill: .solid(accent))
+            let detailTop = ruleY + marker
+            try slide.addText(milestone.detail,
+                              in: Rect(x: column.x, y: detailTop, width: column.width,
+                                       height: Swift.max(.zero, content.maxY - detailTop)),
+                              role: .body, style: detailStyle, align: .center, anchor: .top)
+        }
+        return slide
+    }
+
+    /// A 2x2 of labelled cards, read left to right and top to bottom, with
+    /// optional axis captions down the left edge and along the bottom.
+    ///
+    /// Takes exactly `SlideCapacity.quadrant` entries — a 2x2 with a hole in it
+    /// is a different diagram — and returns an empty slide otherwise.
+    @discardableResult
+    func quadrantSlide(_ title: String, quadrants: [(heading: String, detail: String)],
+                       xAxis: String? = nil, yAxis: String? = nil,
+                       kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s)
+        guard quadrants.count == SlideCapacity.quadrant else { return slide }
+
+        // Axis captions get a gutter of their own so they never overlap a card.
+        let axisGap = EMU.points(22)
+        let grid = content.inset(top: yAxis == nil ? .zero : axisGap,
+                                 bottom: xAxis == nil ? .zero : axisGap)
+        let rows = grid.split(.vertical, count: 2, gutter: s.spacing.sm)
+        let cells = rows.flatMap { $0.split(.horizontal, count: 2, gutter: s.spacing.sm) }
+
+        let headingStyle = s.with(.heading) { $0.sizePt = Swift.min($0.sizePt, 22) }
+        let detailStyle = s.with(.body) {
+            $0.sizePt = Swift.min($0.sizePt, 17)
+            $0.lineHeight = Swift.min($0.lineHeight, 1.2)
+        }
+        for (i, quadrant) in quadrants.enumerated() {
+            let cell = cells[i]
+            let card = try slide.addCard(in: cell, style: s)
+            let (head, body) = card.content.split(.vertical, ratio: 0.34, gutter: s.spacing.xs)
+            try slide.addText(quadrant.heading, in: head, role: .heading, style: headingStyle,
+                              color: s.textColor(on: s.surface), anchor: .top)
+            try slide.addText(quadrant.detail, in: body, role: .body, style: detailStyle, anchor: .top)
+        }
+
+        let axisStyle = s.with(.caption) { $0.sizePt = Swift.min($0.sizePt, 14) }
+        if let xAxis {
+            try slide.addText(xAxis,
+                              in: Rect(x: grid.x, y: grid.maxY, width: grid.width, height: axisGap),
+                              role: .caption, style: axisStyle, color: s.mutedInk,
+                              align: .center, anchor: .middle)
+        }
+        if let yAxis {
+            // Rotated text would need a transform the text path does not carry,
+            // so the vertical caption takes a band above the grid rather than
+            // the left margin — where, at this size, it printed over the cards.
+            try slide.addText(yAxis,
+                              in: Rect(x: grid.x, y: content.y, width: grid.width, height: axisGap),
+                              role: .caption, style: axisStyle, color: s.mutedInk,
+                              align: .left, anchor: .middle)
+        }
+        return slide
+    }
+
+    /// The argument in one sentence: an accent bar across the top, a short
+    /// claim centred in the upper half, and the sentence that carries it below.
+    ///
+    /// Distinct from `quoteSlide` (someone else's words, attributed) and from
+    /// `calloutSlide` (a number). This is the deck's own thesis, and it earns a
+    /// slide with nothing else on it.
+    @discardableResult
+    func statementSlide(_ claim: String, detail: String? = nil,
+                        kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try blankCanvas()
+        try slide.setBackground(.solid(s.background))
+        let grid = deckGrid(s)
+        let accent = s.legibleAccent(1, on: s.background)
+
+        // A bar across the very top edge, outside the margin: the one piece of
+        // furniture that says "this slide is a statement" before it is read.
+        try slide.shapes.addShape(
+            .rectangle,
+            frame: Rect(x: bounds.minX, y: bounds.minY, width: bounds.width, height: .points(10)),
+            fill: .solid(accent))
+        // A short rule under it, at the margin, echoing the title rules.
+        try slide.shapes.addShape(
+            .rectangle,
+            frame: Rect(x: grid.content.minX, y: grid.cell(column: 0, row: 1).minY,
+                        width: .inches(1.1), height: .points(3)),
+            fill: .solid(accent))
+        if let kicker {
+            try slide.addKicker(kicker, in: grid.cell(column: 0, row: 2, columnSpan: 12), style: s)
+        }
+        let claimBand = grid.cell(column: 1, row: 3, columnSpan: 10, rowSpan: 3)
+        let fitted = fitSize([claim], font: s.type(.quote).font,
+                             candidates: [s.type(.quote).sizePt, 34, 28],
+                             maxLines: 2, lineWidth: claimBand.width,
+                             fallback: claim.count > 60 ? 28 : (claim.count > 38 ? 34 : s.type(.quote).sizePt))
+        let claimStyle = s.with(.quote) { $0.sizePt = Swift.min($0.sizePt, fitted) }
+        try slide.addText(claim, in: claimBand, role: .quote, style: claimStyle,
+                          align: .center, anchor: .middle)
+        if let detail, !detail.isEmpty {
+            try slide.addText(detail, in: grid.cell(column: 1, row: 7, columnSpan: 10, rowSpan: 3),
+                              role: .subhead, style: s, color: s.mutedInk,
+                              align: .center, anchor: .top)
+        }
+        return slide
+    }
+
+    /// A title, one full-width banded line, and bullets beneath it.
+    ///
+    /// The band is for the thing the slide is *about* — an equation, a
+    /// definition, a threshold — set on the deck's ink so it reads as a plate
+    /// rather than a heading, with the argument for it underneath.
+    @discardableResult
+    func calloutBandSlide(_ title: String, band: String, bullets: [String] = [],
+                          kicker: String? = nil, lead: String? = nil,
+                          style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: kicker, title: title, style: s, lead: lead)
+        // The band takes the top of the content and the bullets take the rest,
+        // so a long band pushes them down instead of printing on them.
+        let (plate, rest) = content.split(.vertical, ratio: 0.26, gutter: s.spacing.md)
+        let plateInk = s.ink
+        _ = try slide.addCard(in: plate, style: s, fill: .solid(plateInk),
+                              radiusToken: "sm", shadow: false)
+        let bandStyle = s.with(.heading) {
+            $0.sizePt = Swift.min($0.sizePt, band.count > 46 ? 22 : 28)
+        }
+        try slide.addText(band, in: plate, role: .heading, style: bandStyle,
+                          color: s.textColor(on: plateInk), align: .center, anchor: .middle)
+        if !bullets.isEmpty {
+            try slide.addBulletList(bullets, in: rest, style: s, anchor: .top)
+        }
+        return slide
+    }
+
+    /// A titled table: header row on the brand primary, banded body rows, and
+    /// column widths proportional to the widest cell in each column so a column
+    /// of dates never takes the same space as a column of sentences.
+    ///
+    /// `rows` is the full grid including the header row. Ragged rows are padded
+    /// so the table is always rectangular — a short row from a model is a
+    /// missing cell, not a broken deck.
+    @discardableResult
+    func tableSlide(_ title: String, rows: [[String]], style: DeckStyle? = nil) throws -> Slide {
+        let s = style ?? self.style
+        let slide = try startContentSlide(s)
+        let content = try header(on: slide, kicker: nil, title: title, style: s)
+        let columns = rows.map(\.count).max() ?? 0
+        guard !rows.isEmpty, columns > 0 else { return slide }
+        let kept = Array(rows.prefix(SlideCapacity.tableRows))
+        let grid = kept.map { row in row + Array(repeating: "", count: columns - row.count) }
+
+        // Rows get equal height, but a table taller than its rect would run off
+        // the slide, so cap the height at the content rect.
+        let widths = Self.proportionalWidths(of: grid, in: content.width)
+        // A declared row height is a MINIMUM. PowerPoint grows a row to fit its
+        // text, so a table whose cells wrap runs off the bottom of the slide
+        // however short we ask the rows to be — six policy rows at 26pt did
+        // exactly that. Fit the type to the rows rather than the rows to the
+        // type.
+        let fitted = fitTableText(grid, widths: widths, height: content.height, style: s)
+        let tableStyle = s.with(.body) { $0.sizePt = Swift.min($0.sizePt, fitted) }
+            .with(.heading) { $0.sizePt = Swift.min($0.sizePt, fitted) }
+
+        let table = try slide.shapes.addTable(rows: grid.count, columns: columns, frame: content)
+        table.setContents(grid)
+            .columnWidths(widths)
+            .styleBanded(style: tableStyle, role: .body, anchor: .middle)
+            .cellPadding(s.spacing.xs)
+        // Figures read as a column only when their digits line up, so a column
+        // whose body cells are all numeric flips to the right — header
+        // included, or the header floats away from what it labels.
+        for column in 0..<columns where Self.isNumericColumn(grid, column) {
+            for row in 0..<grid.count {
+                guard let cell = try? table.cell(row, column) else { continue }
+                var text = s.type(row == 0 ? .heading : .body)
+                text.color = cell.textFrame.paragraphs.first?.runs.first?.color ?? text.color
+                cell.applyTextStyle(text, align: .right)
+            }
+        }
+        return slide
+    }
+
+    /// Whether every body cell in `column` reads as a figure — digits with the
+    /// punctuation money and percentages carry. An empty cell is ignored (a
+    /// gap in a numeric column is still a numeric column); a column of empties
+    /// is not numeric.
+    private static func isNumericColumn(_ grid: [[String]], _ column: Int) -> Bool {
+        var sawValue = false
+        for row in grid.dropFirst() {
+            guard column < row.count else { continue }
+            let cell = row[column].trimmingCharacters(in: .whitespaces)
+            if cell.isEmpty { continue }
+            sawValue = true
+            let digits = cell.filter(\.isNumber).count
+            guard digits > 0,
+                  cell.allSatisfy({ $0.isNumber || "+-.,%$€£¥ ()".contains($0) })
+            else { return false }
+        }
+        return sawValue
+    }
+
+    /// The largest size at which every row's tallest cell still fits the height
+    /// each row is given.
+    ///
+    /// Rows share the rect equally, so the budget per row is fixed; what varies
+    /// is how many lines a cell needs at a given size in its own column. The
+    /// first size where every row fits its share wins, and the floor is a size
+    /// that is still a table rather than a diagram of text.
+    private func fitTableText(_ grid: [[String]], widths: [EMU],
+                              height: EMU, style: DeckStyle) -> Double {
+        let rowBudgetPt = Double(height.rawValue) / Double(Swift.max(1, grid.count))
+            / Double(EMU.perPoint)
+        for size in [style.type(.body).sizePt, 20, 18, 16, 14, 12, 11].sorted(by: >) {
+            var text = style.type(.body)
+            text.sizePt = size
+            let lineHeight = size * Swift.min(text.lineHeight, 1.25)
+            let fits = grid.allSatisfy { row in
+                let tallest = row.enumerated().map { column, cell -> Int in
+                    guard column < widths.count else { return 1 }
+                    return estimatedLines(cell, style: text, width: widths[column])
+                }.max() ?? 1
+                return Double(tallest) * lineHeight <= rowBudgetPt
+            }
+            if fits { return size }
+        }
+        return 11
+    }
+
+    /// Split `total` across columns in proportion to each column's longest cell,
+    /// clamped so no column collapses below a readable minimum.
+    private static func proportionalWidths(of grid: [[String]], in total: EMU) -> [EMU] {
+        let columns = grid.first?.count ?? 0
+        guard columns > 0, total.rawValue > 0 else { return [] }
+        let longest = (0..<columns).map { column in
+            Swift.max(1, grid.map { $0[column].count }.max() ?? 1)
+        }
+        // A column never drops below half its equal share: proportional widths
+        // keep tables readable, but a lone one-character column shouldn't
+        // shrink to nothing.
+        let equalShare = total.rawValue / columns
+        let floorWidth = equalShare / 2
+        let flexible = total.rawValue - floorWidth * columns
+        let weightTotal = longest.reduce(0, +)
+        var widths = longest.map { EMU(floorWidth + flexible * $0 / weightTotal) }
+        // Rounding leaves a few EMU over; give them to the widest column so the
+        // table spans the content rect exactly.
+        let used = widths.reduce(0) { $0 + $1.rawValue }
+        if let widest = longest.firstIndex(of: longest.max() ?? 0), used < total.rawValue {
+            widths[widest] = EMU(widths[widest].rawValue + (total.rawValue - used))
+        }
+        return widths
+    }
+
     // MARK: - Private layout helpers
 
     /// A blank, placeholder-free slide bound to a single layout — the canvas all
@@ -455,10 +817,11 @@ public extension Presentation {
     /// fractions is how text and image come to overlap: Lectern's did, at
     /// 55.5% of the slide width, while `sectionSlide`'s subtitle ran nine
     /// columns wide and straight underneath it.
-    func sideImagePanel(style: DeckStyle? = nil) -> Rect {
+    func sideImagePanel(_ side: SideImage = .right, style: DeckStyle? = nil) -> Rect {
         let s = style ?? self.style
-        return deckGrid(s).cell(column: Self.sideImageColumn, row: 2,
-                                columnSpan: 12 - Self.sideImageColumn, rowSpan: 9)
+        let span = 12 - Self.sideImageColumn
+        return deckGrid(s).cell(column: side == .right ? Self.sideImageColumn : 0,
+                                row: 2, columnSpan: span, rowSpan: 9)
     }
 
     /// First column belonging to the side image. Text on a reserving slide
@@ -475,15 +838,48 @@ public extension Presentation {
     /// Place an optional kicker + a title across the top rows; return the content
     /// rect below them.
     private func header(on slide: Slide, kicker: String?, title: String, style: DeckStyle,
-                        reservingSideImage: Bool = false) throws -> Rect {
-        let head = try placeHeader(on: slide, kicker: kicker, title: title, style: style,
-                                   reservingSideImage: reservingSideImage)
+                        lead: String? = nil,
+                        reservingSideImage: Bool = false,
+                        imageSide: SideImage = .right) throws -> Rect {
+        var head = try placeHeader(on: slide, kicker: kicker, title: title, style: style,
+                                   reservingSideImage: reservingSideImage, imageSide: imageSide)
+        if let lead, !lead.isEmpty {
+            head.contentRow = try placeLead(lead, on: slide, from: head.contentRow, style: style,
+                                            reservingSideImage: reservingSideImage,
+                                            imageSide: imageSide)
+        }
         let grid = deckGrid(style)
         // Stop at the image column when one is reserved, so the picture the
         // caller places into `sideImagePanel()` cannot land on the text.
         let span = reservingSideImage ? Self.sideImageColumn : 12
-        return grid.cell(column: 0, row: head.contentRow, columnSpan: span,
+        let column = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
+        return grid.cell(column: column, row: head.contentRow, columnSpan: span,
                          rowSpan: 12 - head.contentRow)
+    }
+
+    /// A standfirst: the one sentence under the title that says what the slide
+    /// is about before the reader reaches the detail.
+    ///
+    /// Quiet and italic so it reads as an editor's line rather than a second
+    /// heading, and it *consumes* rows — a lead that overlapped the content it
+    /// introduces would be worse than not having one.
+    private func placeLead(_ text: String, on slide: Slide, from contentRow: Int,
+                           style: DeckStyle, reservingSideImage: Bool,
+                           imageSide: SideImage) throws -> Int {
+        let grid = deckGrid(style)
+        let span = reservingSideImage ? Self.sideImageColumn : 11
+        let column = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
+        let band = grid.cell(column: column, row: contentRow, columnSpan: span, rowSpan: 2)
+        // No italic in the run model, so the quiet comes from size and colour.
+        let leadStyle = style.with(.subhead) {
+            $0.sizePt = Swift.min($0.sizePt, 17)
+            $0.lineHeight = Swift.min($0.lineHeight, 1.3)
+        }
+        try slide.addText(text, in: band, role: .subhead, style: leadStyle,
+                          color: style.mutedInk, anchor: .top)
+        // Two rows when it wraps, one when it doesn't, plus a row of air.
+        let lines = estimatedLines(text, style: leadStyle.type(TypeRole.subhead), width: band.width)
+        return contentRow + (lines >= 2 ? 3 : 2)
     }
 
     /// Draw the kicker + title and report where content may start.
@@ -500,18 +896,21 @@ public extension Presentation {
     /// renders bare `normAutofit` text at full size until the box is edited).
     private func placeHeader(on slide: Slide, kicker: String?, title: String,
                              style: DeckStyle,
-                             reservingSideImage: Bool = false) throws -> (contentRow: Int, titleWraps: Bool) {
+                             reservingSideImage: Bool = false,
+                             imageSide: SideImage = .right) throws -> (contentRow: Int, titleWraps: Bool) {
         let grid = deckGrid(style)
         // The title clears the image too — a headline running under the panel
         // is the same defect as a bullet doing it.
         let textColumns = reservingSideImage ? Self.sideImageColumn : 11
+        let textColumn = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
         var titleRow = 0
         if let kicker {
-            try slide.addKicker(kicker, in: grid.cell(column: 0, row: 0, columnSpan: textColumns),
+            try slide.addKicker(kicker,
+                                in: grid.cell(column: textColumn, row: 0, columnSpan: textColumns),
                                 style: style)
             titleRow = 1
         }
-        let band = grid.cell(column: 0, row: titleRow, columnSpan: textColumns, rowSpan: 2)
+        let band = grid.cell(column: textColumn, row: titleRow, columnSpan: textColumns, rowSpan: 2)
         // maxLines 1: the band is sized for a single line, so with metrics we
         // prefer the largest size that avoids wrapping at all.
         let fitted = fitSize([title], font: style.type(.title).font,
@@ -521,6 +920,19 @@ public extension Presentation {
         let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top)
         let wraps = estimatedLines(title, style: titleStyle.type(.title), width: band.width) >= 2
+        // A hairline under the title, the width of the text column.
+        //
+        // The one piece of furniture that reads as typesetting rather than
+        // decoration: it gives the title a baseline to sit on and separates it
+        // from the content without a gap wide enough to waste a slide. Derived
+        // from the palette — muted ink most of the way to the background — so a
+        // design that is already quiet stays quiet and a dark deck gets a light
+        // rule rather than an invisible one.
+        let rule = style.mutedInk.mixed(with: style.background, amount: 0.72)
+        try slide.shapes.addShape(
+            .rectangle,
+            frame: Rect(x: band.x, y: band.maxY, width: band.width, height: .points(1)),
+            fill: .solid(rule))
         // One row of gap after the space the title actually occupies: a
         // single-line title fills roughly one row, a wrapped one both.
         return (titleRow + (wraps ? 3 : 2), wraps)
@@ -546,7 +958,7 @@ public extension Presentation {
     /// `fallback` (each call site's calibrated character-count ladder), so a
     /// deck built without registered fonts is byte-identical to before the
     /// metrics engine existed.
-    private func fitSize(_ texts: [String], font: String, candidates: [Double],
+    func fitSize(_ texts: [String], font: String, candidates: [Double],
                          maxLines: Int, lineWidth: EMU,
                          fallback: @autoclosure () -> Double) -> Double {
         guard let metrics = fonts.metrics(for: font) else { return fallback() }

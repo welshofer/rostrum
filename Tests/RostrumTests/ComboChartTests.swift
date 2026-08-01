@@ -340,7 +340,11 @@ import Testing
         let plotArea = try deck.package.part(at: PackURI("/ppt/charts/chart1.xml")).dom()
             .firstChild(named: "c:chart")?.firstChild(named: "c:plotArea")
         let plot = try #require(plotArea?.childElements.first { $0.name.hasSuffix("Chart") })
-        return try #require(plot.firstChild(named: "c:dLbls"))
+        // Labels that sit inside their own segment are written per series, so
+        // each one can contrast with the fill it is printed on; everything else
+        // still carries one `c:dLbls` for the whole plot.
+        return try #require(plot.firstChild(named: "c:dLbls")
+            ?? plot.children(named: "c:ser").compactMap { $0.firstChild(named: "c:dLbls") }.first)
     }
 
     @Test func aLegalPositionSurvives() throws {

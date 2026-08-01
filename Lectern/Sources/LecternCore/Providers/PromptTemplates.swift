@@ -40,11 +40,26 @@ public enum PromptTemplates {
         - quote            body: { quote, attribution? }
         - bigNumber        body: { value, label }
         - metrics          body: { stats: [{ value, label }] }   (2–4 headline numbers)
-        - chart            body: { chart: { kind: bar|line|pie, categories: [string], series: [{ name, values: [number] }] } }
+        - chart            body: { chart: { kind: bar|stackedBar|percentStackedBar|line|area|pie|doughnut|radar, categories: [string], series: [{ name, values: [number] }] } }
         - bands            body: { items: [string] }   (3–6 parallel concepts/phases/layers as colored bands; each item "Label — short detail")
+        - imageLeft        body: { bullets: [...] } + image   (picture on the LEFT, title and 3–5 bullets on the right)
+        - imageRight       body: { bullets: [...] } + image   (picture on the RIGHT, title and 3–5 bullets on the left)
+        - statement        body: { claim, lead? }   (the deck's own thesis in ONE sentence, alone on the slide — at most once or twice)
+        - callout          body: { band, bullets: [...] }   (a plated line — an equation, definition or threshold — with the argument for it beneath)
+        - timeline         body: { milestones: [{ label, detail }] }   (3–5, in time order; label is a date or phase)
+        - quadrant         body: { quadrants: [{ heading, detail }], xAxis?, yAxis? }   (EXACTLY 4, reading order: TL, TR, BL, BR)
+        - table            body: { table: { headers: [string], rows: [[string]] } }
+                             2–5 columns, 2–6 body rows; every cell a few words at most — specs, plans, milestones, never prose
         - diagram          body: { diagram: { kind: process|pyramid|cycle, items: [string] } }
                              process = sequential steps; pyramid = hierarchy/ladder (base→peak); each item short "Label — detail"
         - closing          body: { callToAction?, contact? }  (at most one, last)
+
+        EVERY content slide may carry three editorial fields, and a deck that uses \
+        them reads as written rather than generated: "kicker" (a 2–4 word eyebrow), \
+        "lead" (ONE sentence under the title saying what the slide shows before the \
+        detail arrives), and "source" (a real citation — omit it rather than invent \
+        one). Use "lead" on most content slides; it is the single biggest \
+        difference between a designed deck and a list of headings.
 
         VARY THE LAYOUTS. A deck of near-identical bullet slides is a failure. Reach \
         for the richest fitting layout — bands for parallel concepts, chart for \
@@ -57,19 +72,26 @@ public enum PromptTemplates {
         one slide in four should be bands — reach for a "diagram" (process/pyramid),
         "chart", "comparison", or "metrics" instead so the deck stays visually varied.
 
-        IMAGES — an "image" brief ({ prompt, aspect? }) is only ever rendered on these \
-        five layouts: "title", "sectionHeader", "quote", "bigNumber" and "closing". A \
-        brief on any other layout is discarded, so put them where they will be seen and \
-        do not spend one elsewhere. Aim to illustrate MOST of those slides — a deck of \
-        this length should carry several images, not one. Give each a vivid, specific \
-        subject; the palette and finish are applied later.
+        IMAGES — an "image" brief ({ prompt, aspect? }) renders on these layouts only, \
+        and does one of two very different jobs.
 
-        All five carry imagery equally — a "quote" or a "bigNumber" slide is as good a \
-        home for one as a section header. Note only that "title" and "closing" occur \
-        once each, so on a longer deck the recurring opportunities are "sectionHeader", \
-        "quote" and "bigNumber"; if the deck has almost none of those and is otherwise \
-        "bullets", "chart", "metrics", "bands" and "diagram", there is nowhere for \
-        imagery to go at all.
+        BACKGROUND (full-bleed behind large text, dimmed): "title", "sectionHeader", \
+        "quote", "bigNumber", "closing", "statement". Write an evocative, atmospheric \
+        subject — a place, a texture, a condition, a mood. Avoid a single centred object \
+        or a face; it will sit under a headline and be dimmed, so mood beats detail.
+
+        PANEL (a sharp, framed picture beside the text, shown at full strength): \
+        "imageLeft", "imageRight", "bullets", "agenda". This is the classic \
+        title-bullets-and-a-picture slide, and it is the workhorse — reach for \
+        "imageLeft" and "imageRight" often, alternating sides down the deck so the \
+        composition changes. Here the image is the hero and is seen clearly, so write a \
+        concrete subject with a clear focal point: a specific object, person at work, \
+        material, or scene. Vague abstractions look weak at this size.
+
+        A brief on any other layout is discarded, so do not spend one there. Aim to \
+        illustrate MOST eligible slides — a deck of this length should carry several \
+        images, not one. Give each a vivid, specific subject; the palette and finish are \
+        applied later.
         """
     }
 
@@ -132,7 +154,13 @@ public enum PromptTemplates {
         "bigNumber". HARD CAP on bands: no more than about one slide in four may be a \
         bands slide — count them, and convert the excess into diagrams, charts, \
         comparisons, or metrics. Allow at most TWO plain "bullets" slides in the whole \
-        deck, and NEVER two bullet slides back to back. The finished deck should feel \
+        deck, and NEVER two bullet slides back to back. The workhorse of a real \
+        deck is a title, three to five bullets and one picture beside them — use \
+        "imageLeft" and "imageRight" for those, and ALTERNATE the side so two in \
+        a row never sit the same way. HARD CAP on "diagram": at most about one \
+        slide in six, and never two in the same deck with the same kind — five \
+        numbered circles in a row is a strong device that stops meaning anything \
+        the third time it appears. The finished deck should feel \
         visually different slide to slide, like a deck a designer built, not a list \
         with headings.
 

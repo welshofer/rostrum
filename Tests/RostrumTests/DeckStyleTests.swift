@@ -10,7 +10,7 @@ import Testing
         #expect(s.isDark == false)
         #expect(s.accents.count == 6)
         #expect(s.type(.title).sizePt == 40 && s.type(.title).bold)
-        #expect(s.type(.body).sizePt == 26 && !s.type(.body).bold)
+        #expect(s.type(.body).sizePt == 20 && !s.type(.body).bold)
         #expect(s.type(.kicker).uppercase && s.type(.kicker).trackingPt == 2.0)
         #expect(s.spacing.md == EMU.pixels(16))
         #expect(s.spacing.md == EMU(152_400))
@@ -58,7 +58,7 @@ import Testing
         """))
         // Only the family is known → size/weight/tracking stay at role defaults.
         #expect(deck.style.type(.heading).font == "Georgia")
-        #expect(deck.style.type(.heading).sizePt == 30)
+        #expect(deck.style.type(.heading).sizePt == 26)
         #expect(deck.style.type(.heading).weight == 700)
     }
 
@@ -98,7 +98,12 @@ import Testing
         - body: family Inter, size 13px
         """))
         // 13px → ~10pt on a slide is unreadable; the presentation floor holds.
-        #expect(deck.style.type(.body).sizePt >= 24)
+        // The floor moved from 26 to 20 — low enough to let a design's own
+        // smaller type through, high enough to read projected — so what this
+        // pins is that a web token cannot drag body text under it, not the
+        // number itself.
+        #expect(deck.style.type(.body).sizePt >= 20)
+        #expect(deck.style.type(.body).sizePt > 13)         // not the token
         #expect(deck.style.type(.body).font == "Inter")     // brand font still adopted
     }
 

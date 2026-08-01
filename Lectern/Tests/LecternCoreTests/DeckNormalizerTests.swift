@@ -196,3 +196,102 @@ import Rostrum
         #expect(FileManager.default.fileExists(atPath: result.url.path))
     }
 }
+
+// MARK: - Background scrim
+
+/// The scrim used to be a flat 70% wash over every image, which is why
+/// backgrounds looked lifeless: a calm photograph was erased as hard as a
+/// blown-out one. It now measures the image and spends only what legibility
+/// costs.
+@Suite("Background scrim")
+struct BackgroundScrimTests {
+    /// White text over a black scrim, which is the common case.
+    private func alpha(_ luminances: [Double], textLuminance: Double = 1.0,
+                       black: Bool = true) -> Double {
+        DeckRenderer.scrimAlpha(luminances: luminances, scrimIsBlack: black,
+                                textLuminance: textLuminance)
+    }
+
+    @Test("an already-dark image is barely touched")
+    func darkImageKeepsItself() {
+        // Near-black already clears 4.5:1 against white text unaided, so the
+        // only scrim applied is the floor.
+        #expect(alpha(Array(repeating: 0.02, count: 576)) == 0.28)
+    }
+
+    @Test("a blown-out image is dimmed hard")
+    func brightImagePaysFullPrice() {
+        // Nothing about a near-white frame carries white text, so this is the
+        // case the old flat wash was sized for.
+        #expect(alpha(Array(repeating: 0.95, count: 576)) > 0.7)
+    }
+
+    @Test("a bright image needs more scrim than a dark one")
+    func brighterCostsMore() {
+        #expect(alpha(Array(repeating: 0.6, count: 576)) > alpha(Array(repeating: 0.1, count: 576)))
+    }
+
+    @Test("one specular highlight does not darken the whole frame")
+    func outliersAreIgnored() {
+        // 99% calm, 1% blown out: the frame should be treated as calm.
+        var samples = Array(repeating: 0.05, count: 570)
+        samples.append(contentsOf: Array(repeating: 1.0, count: 6))
+        #expect(alpha(samples) == 0.28)
+    }
+
+    /// Fraction of the frame that clears AA against white text once `a` of a
+    /// black scrim is composited over it.
+    private func legibleFraction(_ samples: [Double], alpha a: Double) -> Double {
+        let passing = samples.filter { (1.0 + 0.05) / ($0 * (1 - a) + 0.05) >= 4.5 }
+        return Double(passing.count) / Double(samples.count)
+    }
+
+    @Test("a background of the kind we now ask for comes out legible throughout")
+    func aCalmFrameIsLegible() {
+        // The art direction now demands a narrow tonal range for backgrounds,
+        // so this is the shape of image the scrim actually has to serve. Only
+        // the deliberate 1% highlight allowance is permitted to fall short,
+        // and it falls short marginally rather than grossly.
+        let samples = (0..<576).map { 0.10 + 0.25 * Double($0) / 575 }
+        #expect(legibleFraction(samples, alpha: alpha(samples)) >= 0.98)
+    }
+
+    @Test("even a hostile frame is more legible than the flat wash it replaced")
+    func beatsTheOldConstant() {
+        // A full black-to-white ramp is the worst case, and the ceiling stops
+        // us dimming it into a flat colour — but it must still beat the 0.70
+        // wash that was applied unconditionally before.
+        let samples = (0..<576).map { Double($0) / 575 }
+        let now = legibleFraction(samples, alpha: alpha(samples))
+        #expect(now > legibleFraction(samples, alpha: 0.70))
+        #expect(now >= 0.80)
+    }
+
+    @Test("a light scrim serves dark text")
+    func lightScrimInverts() {
+        // Dark ink on a white scrim inverts the problem: now it is the *dark*
+        // image that has to be lifted. A real brand ink is a near-black, not a
+        // pure one — against pure black nothing ever needs lifting, because
+        // white reaches the threshold almost immediately.
+        let ink = 0.12
+        let onDarkImage = alpha(Array(repeating: 0.02, count: 576), textLuminance: ink, black: false)
+        let onLightImage = alpha(Array(repeating: 0.95, count: 576), textLuminance: ink, black: false)
+        #expect(onDarkImage > onLightImage)
+        #expect(onLightImage == 0.28)   // already legible; pays only the floor
+    }
+
+    @Test("alpha always stays within the floor and ceiling")
+    func staysInBounds() {
+        for luminance in stride(from: 0.0, through: 1.0, by: 0.05) {
+            let a = alpha(Array(repeating: luminance, count: 100))
+            #expect(a >= 0.28 && a <= 0.78)
+        }
+    }
+
+    @Test("an empty sample falls back to the safe end")
+    func emptyIsConservative() {
+        // If the image could not be read we cannot prove it is safe, so assume
+        // it is not.
+        #expect(alpha([]) == 0.78)
+    }
+}

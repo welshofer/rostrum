@@ -36,7 +36,29 @@ import FoundationXML
 ///   `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n`.
 /// - Parse errors throw `RostrumError.xmlMalformed` with the parser's message
 ///   and line number.
+/// - Nesting is bounded by `maxDepth`; see that property for why a DOM of
+///   reference types needs a depth ceiling that no byte budget can supply.
 public enum XML {
+    /// The deepest element nesting `parse(_:)` will accept.
+    ///
+    /// Real OOXML is shallow: a slide part runs about fifteen levels, and the
+    /// only construct that nests without bound is a group shape inside a group
+    /// shape, which PowerPoint gives up on long before this.
+    ///
+    /// The ceiling exists because the tree is built from reference types, and
+    /// every natural way to walk one — releasing it, serializing it, reading
+    /// its text — costs a stack frame per level. Past roughly twenty thousand
+    /// levels that is a SIGSEGV rather than an error, and the document that
+    /// does it is a few hundred kilobytes of `<a>` that deflates to about one
+    /// kilobyte. No uncompressed-size budget can catch that, so the depth has
+    /// to be refused directly. `Element` also tears down, serializes and reads
+    /// its text iteratively, so this ceiling is a policy about what counts as
+    /// a real document rather than the only thing standing between the parser
+    /// and a crash.
+    ///
+    /// 1,000 is roughly fifty times the deepest part Office produces.
+    public static let maxDepth = 1_000
+
     public enum Node {
         case element(Element)
         case text(String)
@@ -102,21 +124,62 @@ public enum XML {
         }
 
         /// Concatenation of all descendant text nodes, in document order.
+        ///
+        /// Iterative for the reason given on `deinit`: a walk that recurses
+        /// once per level turns a deep tree into a stack overflow.
         public var textContent: String {
             var out = ""
-            collectText(into: &out)
-            return out
-        }
-
-        private func collectText(into out: inout String) {
-            for node in children {
+            var stack: [Node] = children.reversed()
+            while let node = stack.popLast() {
                 switch node {
                 case .text(let text):
                     out += text
                 case .element(let element):
-                    element.collectText(into: &out)
+                    stack.append(contentsOf: element.children.reversed())
                 }
             }
+            return out
+        }
+
+        /// Dismantle the subtree without recursing.
+        ///
+        /// The synthesized teardown releases `children`, which releases each
+        /// child's `children`, one stack frame per level — so a deep enough
+        /// tree kills the process instead of throwing. Measured on this type:
+        /// fine at 5,000 levels, SIGSEGV at 20,000, and the crash lands *after*
+        /// a successful parse, when the tree goes out of scope.
+        ///
+        /// `parse(_:)` refuses anything past `maxDepth`, so a document can no
+        /// longer build one. A tree assembled in code has no such gate, and
+        /// teardown is the one path every tree takes, so it is fixed here too
+        /// rather than left to the parser's good behaviour.
+        ///
+        /// Only elements this one exclusively owns are dismantled. Nodes are
+        /// shareable — `deepCopy()` exists precisely because callers alias
+        /// them — and a subtree someone else still references must come
+        /// through this intact.
+        deinit {
+            guard !children.isEmpty else { return }
+            var owned: [Element] = []
+            for node in children {
+                if case .element(let element) = node { owned.append(element) }
+            }
+            // Dropping our own children first is what makes the uniqueness
+            // test below meaningful: from here, `owned` holds the only
+            // reference this tree contributes to each direct child.
+            children.removeAll()
+            var index = 0
+            while index < owned.count {
+                if isKnownUniquelyReferenced(&owned[index]) {
+                    for node in owned[index].children {
+                        if case .element(let element) = node { owned.append(element) }
+                    }
+                    owned[index].children.removeAll()
+                }
+                index += 1
+            }
+            // `owned` dies here. Every element in it that was ours now holds
+            // nothing, so releasing the array recurses nowhere.
         }
 
         public func append(_ node: Node) {
@@ -128,38 +191,55 @@ public enum XML {
         }
 
         /// Serialize this element (and subtree) without an XML declaration.
+        ///
+        /// Iterative for the reason given on `deinit`. Output is byte-for-byte
+        /// what the recursive form produced: a `.close` step is pushed beneath
+        /// an element's children so it emits after them, and children are
+        /// pushed in reverse so they pop in document order.
         public func serialized() -> String {
             var out = ""
-            serialize(into: &out)
+            var stack: [SerializationStep] = [.open(self)]
+            while let step = stack.popLast() {
+                switch step {
+                case .text(let text):
+                    out += XML.escapeText(text)
+                case .close(let name):
+                    out += "</"
+                    out += name
+                    out += ">"
+                case .open(let element):
+                    out += "<"
+                    out += element.name
+                    for attribute in element.attributes {
+                        out += " "
+                        out += attribute.name
+                        out += "=\""
+                        out += XML.escapeAttributeValue(attribute.value)
+                        out += "\""
+                    }
+                    if element.children.isEmpty {
+                        out += "/>"
+                        continue
+                    }
+                    out += ">"
+                    stack.append(.close(element.name))
+                    for node in element.children.reversed() {
+                        switch node {
+                        case .element(let child): stack.append(.open(child))
+                        case .text(let text): stack.append(.text(text))
+                        }
+                    }
+                }
+            }
             return out
         }
 
-        private func serialize(into out: inout String) {
-            out += "<"
-            out += name
-            for attribute in attributes {
-                out += " "
-                out += attribute.name
-                out += "=\""
-                out += XML.escapeAttributeValue(attribute.value)
-                out += "\""
-            }
-            if children.isEmpty {
-                out += "/>"
-                return
-            }
-            out += ">"
-            for node in children {
-                switch node {
-                case .element(let element):
-                    element.serialize(into: &out)
-                case .text(let text):
-                    out += XML.escapeText(text)
-                }
-            }
-            out += "</"
-            out += name
-            out += ">"
+        /// One unit of pending serialization work. `close` carries the name
+        /// rather than the element so the step cannot keep a subtree alive.
+        private enum SerializationStep {
+            case open(Element)
+            case text(String)
+            case close(String)
         }
     }
 
@@ -194,6 +274,13 @@ public enum XML {
         let builder = TreeBuilder()
         parser.delegate = builder
         let ok = parser.parse()
+        // Checked before the generic failure path so the reason survives:
+        // aborting the parse makes `parserError` report only that a delegate
+        // stopped it, which says nothing about why.
+        if builder.depthExceeded {
+            throw RostrumError.xmlMalformed(
+                "element nesting deeper than \(Self.maxDepth) levels")
+        }
         guard ok, !builder.extraTopLevelContent, let root = builder.root, builder.stack.isEmpty else {
             let line = parser.lineNumber
             let message: String
@@ -299,6 +386,9 @@ public enum XML {
         /// (Linux) silently ignores the trailing content, so we detect it here
         /// for cross-platform parity. See `parse(_:)`.
         var extraTopLevelContent = false
+        /// Set when nesting passed `XML.maxDepth`. The parse is aborted at that
+        /// point rather than allowed to build the rest of the tree.
+        var depthExceeded = false
 
         func parser(
             _ parser: XMLParser,
@@ -307,6 +397,13 @@ public enum XML {
             qualifiedName qName: String?,
             attributes attributeDict: [String: String]
         ) {
+            // `stack.count` is the depth this element would be opened at, so
+            // the ceiling is enforced before the element exists.
+            guard stack.count < XML.maxDepth else {
+                depthExceeded = true
+                parser.abortParsing()
+                return
+            }
             // Stable attribute order: xmlns declarations first, then the rest,
             // each group sorted alphabetically (see class comment).
             var namespaceKeys: [String] = []

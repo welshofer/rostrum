@@ -85,6 +85,47 @@ public actor DeckRenderer {
     /// Timestamps are deliberately not stamped. Rostrum never sets them for
     /// you (see `DocumentProperties`) precisely so that building the same IR
     /// twice yields the same bytes, and Lectern has no reason to give that up.
+    /// Turn the agenda's rows into "go to slide" jumps at the section each one
+    /// names. The deck already declares its sections; this is what makes them
+    /// navigable in presenter mode instead of decorative.
+    private static func linkAgenda(_ deck: DeckIR, _ built: [String: Slide]) {
+        guard let sections = deck.sections, !sections.isEmpty,
+              let agenda = deck.slides.first(where: { $0.kind == .agenda }),
+              let agendaSlide = built[agenda.id],
+              let items = agenda.body?.items, !items.isEmpty else { return }
+        // Agenda rows are written in section order, so row i names section i.
+        // A section whose slides all failed to build simply goes unlinked.
+        let targets = sections.compactMap { section in
+            section.slideIds.compactMap { built[$0] }.first
+        }
+        guard !targets.isEmpty else { return }
+        let rows = agendaSlide.shapes.compactMap(\.textFrame).flatMap(\.paragraphs)
+            .filter { paragraph in
+                let text = paragraph.runs.map(\.text).joined()
+                return items.contains { $0 == text }
+            }
+        for (index, paragraph) in rows.enumerated() where index < targets.count {
+            for run in paragraph.runs { run.setSlideLink(to: targets[index]) }
+        }
+    }
+
+    /// Slide numbers and a running footer — what every real deck has and no
+    /// generated one ever remembers. Best effort: furniture is not worth
+    /// failing a deck that is otherwise finished.
+    /// Every point already carries its number, so the scale beside it is
+    /// redundant furniture — and the default gridlines are the heaviest thing
+    /// on the slide.
+    private static let labelledAxis = AxisOptions(hidden: true, gridlines: false)
+
+    private static func addFurniture(_ deck: DeckIR, to presentation: Presentation) {
+        // From slide 2: the opener already carries the deck title, so a footer
+        // repeating it and a "1" beneath it are noise on the one slide with
+        // the most deliberate composition.
+        _ = try? presentation.showSlideNumbers(from: 1)
+        let footer = deck.meta.title.trimmingCharacters(in: .whitespaces)
+        if !footer.isEmpty { _ = try? presentation.footer(footer, from: 1) }
+    }
+
     private static func stampProperties(of deck: DeckIR, on presentation: Presentation) {
         // A live view onto docProps, not a value to write back — every setter
         // goes straight to the part.
@@ -128,9 +169,13 @@ public actor DeckRenderer {
 
         var unmeasured: [String] = []
         for name in wanted.sorted() where !name.isEmpty {
-            guard let url = installedFontFile(named: name),
+            // The face is found under whichever candidate name the file
+            // answers to, but registered under the name the design asked for,
+            // so every later lookup uses the design's own vocabulary.
+            guard let url = installedFontFile(named: name) ?? officeFontFile(named: name),
                   let data = try? Data(contentsOf: url),
-                  let face = faceIndex(named: name, in: data),
+                  let face = familyCandidates(for: name)
+                      .lazy.compactMap({ faceIndex(named: $0, in: data) }).first,
                   (try? presentation.fonts.register(data, aliases: [name], fontIndex: face)) != nil
             else {
                 unmeasured.append(name)
@@ -152,11 +197,96 @@ public actor DeckRenderer {
     /// which is worse than estimating, so the family it resolved to has to be
     /// the family that was asked for.
     static func installedFontFile(named name: String) -> URL? {
-        let font = CTFontCreateWithName(name as CFString, 12, nil)
-        let resolved = CTFontCopyFamilyName(font) as String
-        guard resolved.caseInsensitiveCompare(name) == .orderedSame else { return nil }
-        return CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL
+        for candidate in familyCandidates(for: name) {
+            let font = CTFontCreateWithName(candidate as CFString, 12, nil)
+            let resolved = CTFontCopyFamilyName(font) as String
+            guard resolved.caseInsensitiveCompare(candidate) == .orderedSame else { continue }
+            if let url = CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL { return url }
+        }
+        return nil
     }
+
+    /// The family as written, then the same family without its foundry or
+    /// format suffix.
+    ///
+    /// Designs name faces the way a foundry licenses them — "Helvetica Neue
+    /// LT", "Futura PT", "Garamond ITC" — while the copy installed on a Mac is
+    /// simply "Helvetica Neue". Matching only the exact string meant a font
+    /// sitting right there in Font Book was declared missing and its text
+    /// fitted by estimate.
+    ///
+    /// The suffix is dropped only as a fallback, after the exact name fails,
+    /// because several of these are real distinct families in their own right
+    /// — "Gill Sans MT" and "Bodoni MT" both ship with Office. Where the
+    /// stripped name resolves to a relative rather than the licensed cut, its
+    /// advance widths are far closer than the character-count estimate they
+    /// replace.
+    static func familyCandidates(for name: String) -> [String] {
+        var candidates = [name]
+        var parts = name.split(separator: " ").map(String.init)
+        while parts.count > 1, foundrySuffixes.contains(parts[parts.count - 1].uppercased()) {
+            parts.removeLast()
+            let stripped = parts.joined(separator: " ")
+            if !stripped.isEmpty, !candidates.contains(stripped) { candidates.append(stripped) }
+        }
+        return candidates
+    }
+
+    /// Foundry and format tags, not design words: "Neue", "Condensed" and
+    /// "Display" change which face you get and are never stripped.
+    private static let foundrySuffixes: Set<String> = [
+        "LT", "MT", "ITC", "BT", "EF", "URW", "PS", "PT", "STD", "PRO", "COM", "W1G", "TT",
+    ]
+
+    /// Office ships its core families — Calibri, Cambria, Aptos, the lot —
+    /// inside its own app bundles instead of installing them system-wide. macOS
+    /// therefore reports them missing and CoreText substitutes silently, so a
+    /// deck in Calibri got measured as an estimate and reported as "not
+    /// installed", when PowerPoint will render it in Calibri every time.
+    ///
+    /// The file is read directly rather than registered with the system: this
+    /// only needs advance widths, not a font the OS will draw with.
+    static func officeFontFile(named name: String) -> URL? {
+        for directory in officeFontDirectories {
+            guard let files = try? FileManager.default.contentsOfDirectory(
+                at: URL(fileURLWithPath: directory), includingPropertiesForKeys: nil)
+            else { continue }
+            // Filename first — "Calibri.ttf" for Calibri — because scanning 280
+            // files and parsing each one to ask its family is a lot of work to
+            // find a file that is usually named after what it holds.
+            let stem = (familyCandidates(for: name).last ?? name)
+                .replacingOccurrences(of: " ", with: "").lowercased()
+            let ranked = files.filter { $0.pathExtension.lowercased().hasPrefix("tt") }
+                .sorted { a, b in
+                    let an = a.deletingPathExtension().lastPathComponent.lowercased()
+                    let bn = b.deletingPathExtension().lastPathComponent.lowercased()
+                    return (an == stem ? 0 : an.hasPrefix(stem) ? 1 : 2)
+                        < (bn == stem ? 0 : bn.hasPrefix(stem) ? 1 : 2)
+                }
+            for url in ranked.prefix(officeFontCandidateLimit) {
+                guard let data = try? Data(contentsOf: url) else { continue }
+                for candidate in familyCandidates(for: name)
+                where faceIndex(named: candidate, in: data) != nil {
+                    return url
+                }
+            }
+        }
+        return nil
+    }
+
+    /// Where Office keeps them. Word and Excel carry the same set, so whichever
+    /// app is installed will do.
+    private static let officeFontDirectories = [
+        "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts",
+        "/Applications/Microsoft Word.app/Contents/Resources/DFonts",
+        "/Applications/Microsoft Excel.app/Contents/Resources/DFonts",
+        "/Library/Fonts/Microsoft",
+    ]
+
+    /// Only the best-named candidates are opened; a family that is really there
+    /// is named after itself, and parsing the whole directory to prove a
+    /// negative is not worth the milliseconds on every render.
+    private static let officeFontCandidateLimit = 8
 
     /// Which face inside `data` calls itself `name`.
     ///
@@ -206,31 +336,46 @@ public actor DeckRenderer {
             let unmeasured = Self.registerInstalledFonts(for: presentation)
 
             var dropped: [String] = []
+            var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {
                 try Task.checkCancellation()
                 // Decided before the builder runs: reserving the panel changes
                 // how wide the text is laid out, so it cannot be discovered
                 // afterwards when the picture is placed.
-                let sideImage = images[slide.id] != nil && slide.kind.imagePlacement == .sidePanel
+                var imageSide: SideImage?
+                if case .sidePanel(let side) = slide.kind.imagePlacement, images[slide.id] != nil {
+                    imageSide = side
+                }
+                let sideImage = imageSide != nil
                 let built = try build(slide, in: presentation, useSmartArt: useSmartArt,
                                       hasSideImage: sideImage, dropped: &dropped)
+                builtSlides[slide.id] = built
+                // Provenance is additive and position-independent, so every
+                // layout can carry it without threading it through a builder.
+                if let source = slide.body?.source, !source.isEmpty {
+                    _ = try? presentation.addSource(source, to: built)
+                }
                 if let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
                     case .fullBleed:
-                        // Edge-to-edge background behind the text, dimmed so the
-                        // slide's ink stays readable over any image.
-                        let scrimmed = Self.scrimmed(
-                            data,
-                            dark: Self.paintsADarkBackground(slide.kind, presentation.style))
+                        // Edge-to-edge background behind the text, dimmed only
+                        // as much as this image needs to keep the ink legible.
+                        let dark = Self.paintsADarkBackground(slide.kind, presentation.style)
+                        // At working strength the field reads as the scrim
+                        // colour, so the ink Rostrum picks against that colour
+                        // is the ink the scrim has to serve.
+                        let ink = presentation.style.textColor(on: dark ? .black : .white)
+                        let scrimmed = Self.scrimmed(data, dark: dark,
+                                                     textLuminance: ink.relativeLuminance)
                         // No alt text: a background fill is not a shape, and a
                         // decorative backdrop is what assistive tech should
                         // skip anyway.
                         do { try built.setBackground(.image(scrimmed, .stretch)) }
                         catch { Self.noteLostImage(on: slide, into: &dropped) }
-                    case .sidePanel:
+                    case .sidePanel(let side):
                         // A framed panel on the right (title/content sit left).
                         if let picture = try? built.shapes.addPicture(
-                            data, frame: Self.imageFrame(in: presentation), fit: .fill) {
+                            data, frame: presentation.sideImagePanel(side), fit: .fill) {
                             // The brief that generated this image *is* its
                             // description — exactly what a screen reader needs,
                             // and the app has been holding it all along.
@@ -254,7 +399,9 @@ public actor DeckRenderer {
                 try presentation.slides.remove(at: 0)
             }
             applySections(deck, to: presentation)
+            Self.linkAgenda(deck, builtSlides)
             Self.stampProperties(of: deck, on: presentation)
+            Self.addFurniture(deck, to: presentation)
 
             // Rostrum's schema lint, run on what we are about to write rather
             // than on a deck someone opens later. It reads the DOM and mutates
@@ -353,7 +500,16 @@ public actor DeckRenderer {
                                         reservingSideImage: hasSideImage)
         case .bullets:
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []),
+                                        kicker: body?.kicker, lead: body?.lead,
                                         reservingSideImage: hasSideImage)
+        case .imageLeft, .imageRight:
+            // Bullets that have asked for a picture beside them. Without one
+            // the slide simply takes the full width, so a deck generated with
+            // no image key still reads correctly.
+            let side: SideImage = slide.kind == .imageLeft ? .left : .right
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []),
+                                        kicker: body?.kicker, lead: body?.lead,
+                                        reservingSideImage: hasSideImage, imageSide: side)
         case .twoColumn, .comparison:
             let left = body?.left ?? Column(heading: "", bullets: [])
             let right = body?.right ?? Column(heading: "", bullets: [])
@@ -374,7 +530,12 @@ public actor DeckRenderer {
                 let kind: ChartKind = {
                     switch c.kind.lowercased() {
                     case "line": return .line
-                    case "pie", "doughnut": return .pie
+                    case "area": return .area
+                    case "pie": return .pie
+                    case "doughnut": return .doughnut
+                    case "radar": return .radar
+                    case "stackedbar": return .barStacked
+                    case "percentstackedbar": return .barPercentStacked
                     default: return .barClustered
                     }
                 }()
@@ -385,23 +546,36 @@ public actor DeckRenderer {
                 // show a percentage with a legend.
                 let options: ChartOptions
                 switch kind {
-                case .pie:
-                    // Pie slices are categories, not series: the legend names
+                case .pie, .doughnut:
+                    // Slices are categories, not series: the legend names
                     // them, so it is always warranted.
                     options = ChartOptions(legend: .right, dataLabels: DataLabelOptions(showPercent: true))
+                case .radar, .radarFilled, .area:
+                    // Labels on a filled or looped plot obscure the shape that
+                    // is the whole reason for choosing it, so these keep their
+                    // axis and gridlines and drop the labels instead.
+                    options = ChartOptions(legend: .bottom)
+                case .barStacked, .barPercentStacked:
+                    // A stacked segment can only label inside itself; "outEnd"
+                    // is what makes PowerPoint offer to repair the chart.
+                    options = ChartOptions(legend: .bottom,
+                                           dataLabels: DataLabelOptions(showValue: true, position: "ctr"),
+                                           valueAxis: Self.labelledAxis)
                 case .line:
                     // Left to Rostrum, which already gives a multi-series line
                     // chart a legend of its own accord (ChartXML) and none to a
                     // single-series one. Passing a position here would override
                     // that choice rather than fill a gap.
-                    options = ChartOptions(dataLabels: DataLabelOptions(showValue: true, position: "t"))
+                    options = ChartOptions(dataLabels: DataLabelOptions(showValue: true, position: "t"),
+                                           valueAxis: Self.labelledAxis)
                 default:
                     // Bars get no legend from either side, so several series
                     // arrived as indistinguishable groups of columns. One
                     // series still gets none: the title already says what the
                     // bars are, and a legend repeating it only costs plot area.
                     options = ChartOptions(legend: c.series.count > 1 ? .bottom : nil,
-                                           dataLabels: DataLabelOptions(showValue: true, position: "outEnd"))
+                                           dataLabels: DataLabelOptions(showValue: true, position: "outEnd"),
+                                           valueAxis: Self.labelledAxis)
                 }
                 return try deck.chartSlide(title, kind, data, options: options)
             }
@@ -464,6 +638,34 @@ public actor DeckRenderer {
                 }
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .timeline:
+            if let milestones = body?.milestones, !milestones.isEmpty {
+                Self.noteOverflow(milestones.count, cap: SlideCapacity.timeline,
+                                  noun: "milestones", on: slide, into: &dropped)
+                return try deck.timelineSlide(
+                    title, milestones: milestones.map { (label: $0.label, detail: $0.detail) })
+            }
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .quadrant:
+            if let quadrants = body?.quadrants, quadrants.count == SlideCapacity.quadrant {
+                return try deck.quadrantSlide(
+                    title, quadrants: quadrants.map { (heading: $0.heading, detail: $0.detail) },
+                    xAxis: body?.xAxis, yAxis: body?.yAxis)
+            }
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .statement:
+            return try deck.statementSlide(body?.claim ?? title,
+                                           detail: body?.lead ?? body?.subtitle,
+                                           kicker: body?.kicker)
+        case .callout:
+            return try deck.calloutBandSlide(title, band: body?.band ?? "",
+                                             bullets: flatten(body?.bullets ?? []),
+                                             kicker: body?.kicker, lead: body?.lead)
+        case .table:
+            if let table = body?.table, !table.headers.isEmpty, !table.rows.isEmpty {
+                return try deck.tableSlide(title, rows: table.grid)
+            }
+            return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
         case .unknown:
             // Validation downgrades unknown → bullets, so this is unreachable for
             // a validated deck; render an empty bulleted slide defensively.
@@ -513,7 +715,95 @@ public actor DeckRenderer {
         }
     }
 
-    private static func scrimmed(_ data: Data, dark: Bool) -> Data {
+    /// The source has already been through a lossy encode and is about to be
+    /// dimmed and printed behind text, so the quality that matters is "no
+    /// visible blocking", not archival.
+    private static let scrimJPEGQuality = 0.82
+
+    /// The least dimming this *particular* image needs.
+    ///
+    /// A flat 70% wash was insurance against the worst imaginable photograph,
+    /// and every photograph paid for it: a calm, well-exposed background lost
+    /// 70% of its life for contrast it already had. That is why backgrounds
+    /// read as washed out. So measure the image instead and apply the smallest
+    /// scrim that still clears WCAG AA for the text landing on it — a good
+    /// image keeps most of itself, and only a blown-out one pays full price.
+    ///
+    /// Monotonic in alpha (more scrim always moves the field further from the
+    /// text), so each sample is solved by bisection.
+    static func scrimAlpha(luminances: [Double], scrimIsBlack: Bool, textLuminance: Double) -> Double {
+        guard !luminances.isEmpty else { return scrimCeiling }
+        let target = 4.5
+        func ratio(_ background: Double) -> Double {
+            let hi = Swift.max(background, textLuminance), lo = Swift.min(background, textLuminance)
+            return (hi + 0.05) / (lo + 0.05)
+        }
+        // Compositing happens in sRGB, but the sample is already a luminance;
+        // scrim luminance is 0 (black) or 1 (white), and mixing toward either
+        // is monotonic in the same direction, so mixing luminances preserves
+        // the ordering bisection relies on.
+        let scrim = scrimIsBlack ? 0.0 : 1.0
+        func needed(for sample: Double) -> Double {
+            if ratio(sample) >= target { return 0 }
+            var lo = 0.0, hi = 1.0
+            for _ in 0..<14 {
+                let mid = (lo + hi) / 2
+                if ratio(sample * (1 - mid) + scrim * mid) >= target { hi = mid } else { lo = mid }
+            }
+            return hi
+        }
+        // The 99th percentile, not the maximum: one specular highlight should
+        // not darken the whole frame, but a genuinely bright region should. At
+        // this grid size 1% is about six cells — the size of a highlight — so
+        // a blown-out spot is still discounted while a merely bright frame is
+        // served properly. A looser percentile shortchanges calm images, which
+        // are exactly the ones the art direction now asks for.
+        let sorted = luminances.map(needed).sorted()
+        let index = Swift.min(sorted.count - 1, Int(Double(sorted.count - 1) * 0.99))
+        return Swift.min(scrimCeiling, Swift.max(scrimFloor, sorted[index]))
+    }
+
+    /// Some separation is always wanted, even over a perfect image — a photo
+    /// running at full strength behind a headline looks like an accident.
+    private static let scrimFloor = 0.28
+    /// Past this the image is gone anyway, and we would rather show a hostile
+    /// one faintly than pretend it is a flat colour.
+    private static let scrimCeiling = 0.78
+
+    /// Downsamples to a coarse grid and returns each cell's WCAG relative
+    /// luminance. Averaging into cells is deliberate: text sits over an *area*,
+    /// so what matters is how bright a region reads, not any one pixel.
+    ///
+    /// Declared inside the `canImport` guard, not just implemented inside one:
+    /// `CGImage` in the signature is compiled on every platform regardless of
+    /// what the body is conditioned on, which is why a `#if` around the body
+    /// alone still failed to build on Linux. The sole caller is in `scrimmed`,
+    /// already within this same guard.
+    #if canImport(CoreGraphics)
+    private static func sampledLuminances(of img: CGImage) -> [Double] {
+        let w = 32, h = 18
+        var pixels = [UInt8](repeating: 0, count: w * h * 4)
+        guard let ctx = pixels.withUnsafeMutableBytes({ raw in
+            CGContext(data: raw.baseAddress, width: w, height: h, bitsPerComponent: 8,
+                      bytesPerRow: w * 4, space: CGColorSpaceCreateDeviceRGB(),
+                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        }) else { return [] }
+        ctx.interpolationQuality = .medium
+        ctx.draw(img, in: CGRect(x: 0, y: 0, width: w, height: h))
+        guard let data = ctx.data else { return [] }
+        let buffer = data.assumingMemoryBound(to: UInt8.self)
+        func linear(_ c: UInt8) -> Double {
+            let s = Double(c) / 255
+            return s <= 0.03928 ? s / 12.92 : pow((s + 0.055) / 1.055, 2.4)
+        }
+        return (0..<(w * h)).map { i in
+            0.2126 * linear(buffer[i * 4]) + 0.7152 * linear(buffer[i * 4 + 1])
+                + 0.0722 * linear(buffer[i * 4 + 2])
+        }
+    }
+    #endif
+
+    private static func scrimmed(_ data: Data, dark: Bool, textLuminance: Double) -> Data {
         #if canImport(CoreGraphics)
         guard let src = CGImageSourceCreateWithData(data as CFData, nil),
               let img = CGImageSourceCreateImageAtIndex(src, 0, nil),
@@ -524,16 +814,24 @@ public actor DeckRenderer {
                                   bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return data }
         let rect = CGRect(x: 0, y: 0, width: img.width, height: img.height)
         ctx.draw(img, in: rect)
-        ctx.setFillColor(dark ? CGColor(red: 0, green: 0, blue: 0, alpha: 0.70)
-                              : CGColor(red: 1, green: 1, blue: 1, alpha: 0.70))
+        let alpha = scrimAlpha(luminances: sampledLuminances(of: img),
+                               scrimIsBlack: dark,
+                               textLuminance: textLuminance)
+        ctx.setFillColor(dark ? CGColor(red: 0, green: 0, blue: 0, alpha: alpha)
+                              : CGColor(red: 1, green: 1, blue: 1, alpha: alpha))
         ctx.fill(rect)
         guard let out = ctx.makeImage() else { return data }
         let buffer = NSMutableData()
+        // JPEG, not PNG. A scrimmed backdrop is an opaque photograph — the
+        // scrim fill covers the frame, so there is no alpha to preserve — and
+        // encoding one losslessly is what turned a 2.7 MB source into a 5.3 MB
+        // part. A 13-image deck came out at 49 MB.
         guard let dest = CGImageDestinationCreateWithData(buffer as CFMutableData,
-                                                          UTType.png.identifier as CFString, 1, nil) else { return data }
-        CGImageDestinationAddImage(dest, out, nil)
+                                                          UTType.jpeg.identifier as CFString, 1, nil) else { return data }
+        CGImageDestinationAddImage(dest, out, [kCGImageDestinationLossyCompressionQuality: scrimJPEGQuality] as CFDictionary)
         guard CGImageDestinationFinalize(dest) else { return data }
-        return buffer as Data
+        // Never hand back something larger than we were given.
+        return buffer.length < data.count ? buffer as Data : data
         #else
         return data
         #endif

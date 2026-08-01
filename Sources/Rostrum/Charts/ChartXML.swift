@@ -67,7 +67,7 @@ enum ChartXML {
         chart.appendElement(V("c:dispBlanksAs", "gap"))
         root.appendElement(chart)
 
-        appendDefaultTextAndData(to: root)
+        appendDefaultTextAndData(to: root, text: options.text)
         return XML.document(root)
     }
 
@@ -123,7 +123,7 @@ enum ChartXML {
         chart.appendElement(V("c:dispBlanksAs", "gap"))
         root.appendElement(chart)
 
-        appendDefaultTextAndData(to: root)
+        appendDefaultTextAndData(to: root, text: options.text)
         return XML.document(root)
     }
 
@@ -168,7 +168,7 @@ enum ChartXML {
         for (i, series) in data.series.enumerated() {
             scatter.appendElement(scatterSeries(index: i, series: series, color: colors?[safe: i]))
         }
-        if let d = options.dataLabels { scatter.appendElement(dLbls(d, plot: "c:scatterChart")) }
+        if let d = options.dataLabels { scatter.appendElement(dLbls(d, plot: "c:scatterChart", text: options.text)) }
         scatter.appendElement(V("c:axId", xValAxID))
         scatter.appendElement(V("c:axId", yValAxID))
         plotArea.appendElement(scatter)
@@ -184,7 +184,7 @@ enum ChartXML {
         chart.appendElement(V("c:dispBlanksAs", "gap"))
         root.appendElement(chart)
 
-        appendDefaultTextAndData(to: root)
+        appendDefaultTextAndData(to: root, text: options.text)
         return XML.document(root)
     }
 
@@ -203,7 +203,7 @@ enum ChartXML {
         for (i, series) in data.series.enumerated() {
             bubble.appendElement(bubbleSeries(index: i, series: series, color: colors?[safe: i]))
         }
-        if let d = options.dataLabels { bubble.appendElement(dLbls(d, plot: "c:bubbleChart")) }
+        if let d = options.dataLabels { bubble.appendElement(dLbls(d, plot: "c:bubbleChart", text: options.text)) }
         // Sizes are areas, not radii — PowerPoint's own default.
         bubble.appendElement(V("c:bubbleScale", "100"))
         bubble.appendElement(V("c:showNegBubbles", "0"))
@@ -221,7 +221,7 @@ enum ChartXML {
         chart.appendElement(V("c:dispBlanksAs", "gap"))
         root.appendElement(chart)
 
-        appendDefaultTextAndData(to: root)
+        appendDefaultTextAndData(to: root, text: options.text)
         return XML.document(root)
     }
 
@@ -287,17 +287,37 @@ enum ChartXML {
         chart.appendElement(legend)
     }
 
-    private static func appendDefaultTextAndData(to root: XML.Element) {
+    /// A `c:txPr` carrying the deck's own typeface, color and size. Charts
+    /// default to a flat 14pt in the theme font, which is why a generated chart
+    /// reads as bolted on rather than designed.
+    static func textProperties(_ text: ChartTextStyle?, color override: Color? = nil) -> XML.Element {
         let txPr = XML.Element("c:txPr")
         txPr.appendElement(XML.Element("a:bodyPr"))
         txPr.appendElement(XML.Element("a:lstStyle"))
         let p = XML.Element("a:p")
         let pPr = XML.Element("a:pPr")
-        pPr.appendElement(XML.Element("a:defRPr", attributes: [("sz", "1400")]))
+        let sizeHundredths = Int(((text?.sizePt ?? 14) * 100).rounded())
+        let defRPr = XML.Element("a:defRPr", attributes: [
+            ("sz", String(Swift.min(Swift.max(sizeHundredths, 100), 400_000))),
+        ])
+        if let color = override ?? text?.color {
+            let fill = XML.Element("a:solidFill")
+            fill.appendElement(XML.Element("a:srgbClr", attributes: [("val", color.hex)]))
+            defRPr.appendElement(fill)
+        }
+        if let font = text?.font, !font.isEmpty {
+            defRPr.appendElement(XML.Element("a:latin", attributes: [("typeface", font)]))
+        }
+        pPr.appendElement(defRPr)
         p.appendElement(pPr)
         p.appendElement(XML.Element("a:endParaRPr", attributes: [("lang", "en-US")]))
         txPr.appendElement(p)
-        root.appendElement(txPr)
+        return txPr
+    }
+
+    private static func appendDefaultTextAndData(to root: XML.Element,
+                                                 text: ChartTextStyle? = nil) {
+        root.appendElement(textProperties(text))
 
         let external = XML.Element("c:externalData", attributes: [("r:id", "rId1")])
         external.appendElement(V("c:autoUpdate", "0"))
@@ -328,16 +348,31 @@ enum ChartXML {
         }
     }
 
+    /// Label positions that sit *on* the plotted shape rather than beside it.
+    /// A label there inherits the chart's text color, which is how a stacked
+    /// bar ends up printing black-on-black and losing its numbers entirely.
+    private static let insideLabelPositions: Set<String> = ["ctr", "inEnd", "inBase"]
+
     private static func dLbls(_ o: DataLabelOptions, plot: String,
-                              grouping: String? = nil) -> XML.Element {
+                              grouping: String? = nil,
+                              text: ChartTextStyle? = nil,
+                              over fill: Color? = nil) -> XML.Element {
         // Order: numFmt, spPr, txPr, dLblPos, then the show* flags in sequence.
         let d = XML.Element("c:dLbls")
         if let fmt = o.numberFormat {
             d.appendElement(XML.Element("c:numFmt", attributes: [("formatCode", fmt), ("sourceLinked", "0")]))
         }
         let legal = legalDataLabelPositions(plot: plot, grouping: grouping)
-        if let pos = o.position, legal?.contains(pos) ?? true {
-            d.appendElement(V("c:dLblPos", pos))
+        let position = o.position.flatMap { legal?.contains($0) ?? true ? $0 : nil }
+        // A label printed inside its own segment has to contrast with that
+        // segment, not with the slide.
+        let inside = position.map(insideLabelPositions.contains) ?? false
+        let labelColor = inside ? fill.map { Color.bestTextColor(on: $0, options: [.white, .black]) } : nil
+        if text != nil || labelColor != nil {
+            d.appendElement(textProperties(text, color: labelColor))
+        }
+        if let position {
+            d.appendElement(V("c:dLblPos", position))
         }
         d.appendElement(V("c:showLegendKey", "0"))
         d.appendElement(V("c:showVal", o.showValue ? "1" : "0"))
@@ -363,15 +398,29 @@ enum ChartXML {
         let bar = XML.Element("c:barChart")
         bar.appendElement(V("c:barDir", "col"))
         bar.appendElement(V("c:grouping", grouping))
+        // A label that sits inside its segment has to contrast with that
+        // segment's own fill, so those labels are emitted per series rather
+        // than once for the whole plot.
+        let labels = context.dataLabels ?? options.dataLabels
+        let perSeriesLabels = labels?.position.map(insideLabelPositions.contains) ?? false
         for (i, series) in (seriesList ?? data.series).enumerated() {
             bar.appendElement(ser(index: context.firstSeriesIndex + i, series: series,
                                   data: data) { serEl in
-                if let color = colors?[safe: i] { serEl.appendElement(solidSpPr(color)) }
+                let color = colors?[safe: i]
+                if let color { serEl.appendElement(solidSpPr(color)) }
+                if perSeriesLabels, let labels {
+                    serEl.appendElement(dLbls(labels, plot: "c:barChart", grouping: grouping,
+                                              text: options.text, over: color))
+                }
             })
         }
-        if let d = context.dataLabels ?? options.dataLabels {
-            bar.appendElement(dLbls(d, plot: "c:barChart", grouping: grouping))
+        if let labels, !perSeriesLabels {
+            bar.appendElement(dLbls(labels, plot: "c:barChart", grouping: grouping,
+                                    text: options.text))
         }
+        // Narrower than OOXML's default 150: bars that carry the eye rather
+        // than float in whitespace.
+        bar.appendElement(V("c:gapWidth", grouping == "clustered" ? "60" : "80"))
         if grouping != "clustered" { bar.appendElement(V("c:overlap", "100")) }
         bar.appendElement(V("c:axId", context.categoryAxisID))
         bar.appendElement(V("c:axId", context.valueAxisID))
@@ -403,7 +452,7 @@ enum ChartXML {
             })
         }
         if let d = context.dataLabels ?? options.dataLabels {
-            line.appendElement(dLbls(d, plot: "c:lineChart"))
+            line.appendElement(dLbls(d, plot: "c:lineChart", text: options.text))
         }
         line.appendElement(V("c:marker", "1"))
         line.appendElement(V("c:axId", context.categoryAxisID))
@@ -434,7 +483,7 @@ enum ChartXML {
                 }
             })
         }
-        if let d = options.dataLabels { radar.appendElement(dLbls(d, plot: "c:radarChart")) }
+        if let d = options.dataLabels { radar.appendElement(dLbls(d, plot: "c:radarChart", text: options.text)) }
         radar.appendElement(V("c:axId", catAxID))
         radar.appendElement(V("c:axId", valAxID))
         return radar
@@ -454,7 +503,7 @@ enum ChartXML {
             })
         }
         if let d = context.dataLabels ?? options.dataLabels {
-            area.appendElement(dLbls(d, plot: "c:areaChart"))
+            area.appendElement(dLbls(d, plot: "c:areaChart", text: options.text))
         }
         area.appendElement(V("c:axId", context.categoryAxisID))
         area.appendElement(V("c:axId", context.valueAxisID))
@@ -631,9 +680,9 @@ enum ChartXML {
         if let mx = options.max { scaling.appendElement(V("c:max", chartNumber(mx))) }
         if let mn = options.min { scaling.appendElement(V("c:min", chartNumber(mn))) }
         ax.appendElement(scaling)
-        ax.appendElement(V("c:delete", "0"))
+        ax.appendElement(V("c:delete", options.hidden ? "1" : "0"))
         ax.appendElement(V("c:axPos", axPos))
-        if gridlines { ax.appendElement(XML.Element("c:majorGridlines")) }
+        if options.gridlines ?? gridlines { ax.appendElement(XML.Element("c:majorGridlines")) }
         if let title = options.title { ax.appendElement(axisTitle(title)) }
         if let fmt = options.numberFormat {
             ax.appendElement(XML.Element("c:numFmt", attributes: [("formatCode", fmt), ("sourceLinked", "0")]))

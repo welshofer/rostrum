@@ -418,4 +418,83 @@ struct XMLTests {
         #expect((try? XML.parse(Data("<a>ok\ttab\nline</a>".utf8))) != nil)
     }
 
+    // MARK: - Nesting depth
+
+    /// `depth` nested `<a>` elements around a single text node.
+    private func nested(depth: Int) -> Data {
+        var xml = ""
+        for _ in 0..<depth { xml += "<a>" }
+        xml += "x"
+        for _ in 0..<depth { xml += "</a>" }
+        return Data(xml.utf8)
+    }
+
+    /// A chain of `depth` elements built in code, which no parser limit gates.
+    private func deepTree(depth: Int) -> XML.Element {
+        let root = XML.Element("a")
+        var current = root
+        for _ in 1..<depth {
+            let child = XML.Element("a")
+            current.appendElement(child)
+            current = child
+        }
+        current.append(.text("x"))
+        return root
+    }
+
+    @Test func nestingAtTheCeilingParsesAndRoundTrips() throws {
+        let root = try XML.parse(nested(depth: XML.maxDepth))
+        #expect(root.name == "a")
+        #expect(root.textContent == "x")
+        #expect(root.serialized() == String(decoding: nested(depth: XML.maxDepth), as: UTF8.self))
+    }
+
+    @Test func nestingPastTheCeilingThrowsRatherThanCrashing() {
+        // The regression this exists for: 40,000 nested elements deflate to
+        // about a kilobyte, so no uncompressed-size budget refuses the file,
+        // and the tree it builds used to take the process down with SIGSEGV
+        // when it deallocated. It has to be an error, not a crash.
+        #expect(throws: RostrumError.self) {
+            try XML.parse(self.nested(depth: XML.maxDepth + 1))
+        }
+        #expect(throws: RostrumError.self) {
+            try XML.parse(self.nested(depth: 40_000))
+        }
+    }
+
+    @Test func deepTreeBuiltInCodeDeallocatesWithoutOverflowingTheStack() {
+        // Well past the ~20,000 level where the recursive teardown died.
+        do {
+            let root = deepTree(depth: 100_000)
+            #expect(root.name == "a")
+        }
+        // Reaching here at all is the assertion: the tree released iteratively.
+        #expect(Bool(true))
+    }
+
+    @Test func deepTreeSerializesAndReadsTextWithoutOverflowingTheStack() {
+        let root = deepTree(depth: 100_000)
+        #expect(root.textContent == "x")
+        let serialized = root.serialized()
+        #expect(serialized.hasPrefix("<a><a><a>"))
+        #expect(serialized.hasSuffix("</a></a></a>"))
+        #expect(serialized.contains(">x<"))
+    }
+
+    @Test func teardownLeavesASharedSubtreeIntact() {
+        // Nodes are aliasable — `deepCopy()` exists because callers share them
+        // — so the iterative teardown must dismantle only what it owns.
+        let shared = XML.Element("shared", children: [.text("keep me")])
+        do {
+            let parent = XML.Element("parent", children: [.element(XML.Element("mid"))])
+            parent.childElements[0].appendElement(shared)
+            #expect(parent.serialized() == "<parent><mid><shared>keep me</shared></mid></parent>")
+        }
+        // `parent` and the `mid` it exclusively owned are gone; `shared` was
+        // referenced from out here, so it must have survived whole.
+        #expect(shared.children.count == 1)
+        #expect(shared.textContent == "keep me")
+        #expect(shared.serialized() == "<shared>keep me</shared>")
+    }
+
 }

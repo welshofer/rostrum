@@ -42,8 +42,29 @@ public actor DeckGenerator {
                 let result = try decodeAndValidate(repaired.json, request)
                 return try await qaThenFinish(result, draftJSON: repaired.json, request, designURL, directory, usage: repaired.usage, emit: emit)
             } catch let second as DraftErrors {
-                throw LecternError.schemaInvalid(errors: second.errors)
+                // Keep the draft that failed. Without it the only record of
+                // what the model actually sent is an error string, which is not
+                // enough to tell a prompt problem from a schema one.
+                var errors = second.errors
+                if let kept = Self.keepRejectedDraft(repaired.json, in: directory) {
+                    errors.append("the rejected draft is at \(kept.path)")
+                }
+                throw LecternError.schemaInvalid(errors: errors)
             }
+        }
+    }
+
+    /// Write a rejected draft beside the decks so it can be inspected. Best
+    /// effort: a deck already failed, and failing to save the evidence must not
+    /// replace that error with a different one.
+    private static func keepRejectedDraft(_ json: String, in directory: URL) -> URL? {
+        let url = directory.appendingPathComponent("rejected-draft.json")
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try json.write(to: url, atomically: true, encoding: .utf8)
+            return url
+        } catch {
+            return nil
         }
     }
 
@@ -74,11 +95,11 @@ public actor DeckGenerator {
         // Only slides whose layout can actually show an image (skip text-dense ones,
         // so we never waste an API call or clip text). Full-bleed layouts get a wide
         // image so the background barely stretches.
-        let briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect)? in
+        let briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect, ImageRole)? in
             let placement = slide.kind.imagePlacement
             guard placement != .none, let brief = slide.image else { return nil }
             let aspect = placement == .fullBleed ? ImageAspect.wide : ImageAspect(brief: brief.aspect)
-            return (slide.id, brief, aspect)
+            return (slide.id, brief, aspect, ImageRole(placement: placement))
         }
         // A brief the model wrote for a layout that cannot render one is thrown
         // away here. That used to be silent, which is why "why aren't we making
@@ -93,21 +114,22 @@ public actor DeckGenerator {
 
         emit(.illustrating(completed: 0, total: briefed.count))
         let style = imageStyle
+        // Honour the provider's own burst policy instead of starting everything
+        // at once. Every briefed slide used to get a task immediately, so a
+        // 40-slide deck fired 40 simultaneous requests — at Gemini, the default,
+        // which declares a ceiling of one precisely because its quotas are
+        // sensitive to bursts. The 429s that came back were self-inflicted: the
+        // provider's own retry budget was being spent on congestion this code
+        // created, and the user read the result as "N of M image(s) couldn't be
+        // generated". `maximumConcurrentRequests` existed and said all of this;
+        // nothing had ever read it.
+        let inFlightLimit = max(1, imageProvider.id.maximumConcurrentRequests)
         var images: [String: Data] = [:]
         var failures: [String] = []
         var done = 0
         await withTaskGroup(of: (String, Result<Data, Error>).self) { group in
-            for (id, brief, aspect) in briefed {
-                group.addTask {
-                    do {
-                        let data = try await imageProvider.image(prompt: brief.prompt, style: style, aspect: aspect)
-                        return (id, .success(data))
-                    } catch {
-                        return (id, .failure(error))
-                    }
-                }
-            }
-            for await (id, result) in group {
+            func record(_ outcome: (String, Result<Data, Error>)) {
+                let (id, result) = outcome
                 done += 1
                 emit(.illustrating(completed: done, total: briefed.count))
                 switch result {
@@ -115,6 +137,26 @@ public actor DeckGenerator {
                 case .failure(let error): failures.append(DeckGenerator.imageFailure(error))
                 }
             }
+            var next = 0
+            while next < briefed.count {
+                // At the ceiling, wait for one to land before starting another,
+                // so the number in flight never exceeds it.
+                if next >= inFlightLimit, let finished = await group.next() {
+                    record(finished)
+                }
+                let (id, brief, aspect, role) = briefed[next]
+                next += 1
+                group.addTask {
+                    do {
+                        let data = try await imageProvider.image(prompt: brief.prompt, style: style,
+                                                                 aspect: aspect, role: role)
+                        return (id, .success(data))
+                    } catch {
+                        return (id, .failure(error))
+                    }
+                }
+            }
+            while let finished = await group.next() { record(finished) }
         }
         var warnings: [String] = discarded
         if !failures.isEmpty {
@@ -150,12 +192,51 @@ public actor DeckGenerator {
         return ValidationResult(deck: revalidated.deck, warnings: result.warnings)
     }
 
+    /// A decode failure the model can act on.
+    ///
+    /// `localizedDescription` on a `DecodingError` is "The data couldn't be
+    /// read because it isn't in the correct format" — true, and useless as the
+    /// only thing a repair attempt is told. One draft came back with a slide
+    /// object missing its closing brace; the repair was handed that sentence
+    /// and made the same mistake again, losing a 29-slide deck to a defect its
+    /// author could have found in seconds if told where to look.
+    ///
+    /// So: which field, what was expected, what arrived, and — for a syntax
+    /// error — the line and column, which Foundation puts in the underlying
+    /// error's debug description rather than anywhere `localizedDescription`
+    /// will show.
+    static func describeDecodingFailure(_ error: Error) -> String {
+        func path(_ context: DecodingError.Context) -> String {
+            let keys = context.codingPath.map { $0.intValue.map { "[\($0)]" } ?? $0.stringValue }
+            return keys.isEmpty ? "the top level" : keys.joined(separator: ".")
+        }
+        func syntax(_ error: Error?) -> String {
+            guard let detail = (error as NSError?)?.userInfo["NSDebugDescription"] as? String
+            else { return "" }
+            return " (\(detail))"
+        }
+        switch error {
+        case let DecodingError.typeMismatch(type, context):
+            return "\(path(context)) should be \(type) — \(context.debugDescription)"
+        case let DecodingError.valueNotFound(type, context):
+            return "\(path(context)) is missing its \(type) value"
+        case let DecodingError.keyNotFound(key, context):
+            return "\(path(context)) is missing the required key \"\(key.stringValue)\""
+        case let DecodingError.dataCorrupted(context):
+            return "\(path(context)): \(context.debugDescription)"
+                + syntax(context.underlyingError)
+        default:
+            return error.localizedDescription + syntax(error)
+        }
+    }
+
     private func decodeAndValidate(_ json: String, _ request: DeckRequest) throws -> ValidationResult {
         let deck: DeckIR
         do {
             deck = try JSONDecoder().decode(DeckIR.self, from: Data(json.utf8))
         } catch {
-            throw DraftErrors(errors: ["JSON did not decode as \(DeckIR.currentVersion): \(error.localizedDescription)"])
+            throw DraftErrors(errors: ["JSON did not decode as \(DeckIR.currentVersion): "
+                                       + Self.describeDecodingFailure(error)])
         }
         do {
             return try validator.validate(deck, requestedSlideCount: request.slideCount, notesRequired: request.notes)

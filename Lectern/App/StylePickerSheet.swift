@@ -133,12 +133,22 @@ struct TagChip: View {
     }
     var body: some View {
         Button(action: action) {
+            // Capsule, padding and content shape all live *inside* the label:
+            // `.plain` hit-tests the label's drawn content, so with the
+            // background hung on the Button the pill's padding was dead space
+            // and only the glyphs themselves selected a filter.
             Text(title)
                 .font(.callout.weight(selected ? .semibold : .regular))
+                .foregroundStyle(selected ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
                 .padding(.horizontal, 13).padding(.vertical, 6)
+                #if !os(macOS)
+                .frame(minWidth: 44, minHeight: 44)     // HIG touch minimum
+                #endif
+                .background(selected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.regularMaterial),
+                            in: .capsule)
+                .contentShape(.capsule)
         }
         .buttonStyle(.plain)
-        .background(selected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.regularMaterial), in: .capsule)
-        .foregroundStyle(selected ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 }
