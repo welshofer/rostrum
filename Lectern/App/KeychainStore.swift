@@ -56,6 +56,28 @@ enum KeychainStore {
         #endif
     }
 
+    /// Whether a key is stored, without decrypting it.
+    ///
+    /// `read` returns the secret itself, so using it to answer a boolean copies
+    /// the API key into an unmanaged Swift `String` — six times per launch from
+    /// `AppState` alone, two of them before the first frame. This asks the
+    /// keychain the same question with `kSecReturnData: false`, so the plaintext
+    /// only ever leaves when it is genuinely about to be sent.
+    static func exists(account: String) -> Bool {
+        #if canImport(Security)
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
+            kSecReturnData as String: false,
+            kSecMatchLimit as String: kSecMatchLimitOne,
+        ]
+        return SecItemCopyMatching(query as CFDictionary, nil) == errSecSuccess
+        #else
+        return false
+        #endif
+    }
+
     @discardableResult
     static func delete(account: String) -> Bool {
         #if canImport(Security)
@@ -78,7 +100,7 @@ enum KeychainStore {
     static func read(for provider: ProviderID) -> String? { read(account: provider.rawValue) }
     @discardableResult
     static func delete(for provider: ProviderID) -> Bool { delete(account: provider.rawValue) }
-    static func hasKey(for provider: ProviderID) -> Bool { read(for: provider) != nil }
+    static func hasKey(for provider: ProviderID) -> Bool { exists(account: provider.rawValue) }
 
     // MARK: Image providers (separate namespace)
 
@@ -87,5 +109,5 @@ enum KeychainStore {
     static func read(forImage provider: ImageProviderID) -> String? { read(account: "image:\(provider.rawValue)") }
     @discardableResult
     static func delete(forImage provider: ImageProviderID) -> Bool { delete(account: "image:\(provider.rawValue)") }
-    static func hasKey(forImage provider: ImageProviderID) -> Bool { read(forImage: provider) != nil }
+    static func hasKey(forImage provider: ImageProviderID) -> Bool { exists(account: "image:\(provider.rawValue)") }
 }

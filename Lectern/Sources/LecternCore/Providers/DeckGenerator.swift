@@ -64,10 +64,20 @@ public actor DeckGenerator {
     /// of their prompt plus up to 40,000 characters lifted from whatever PDF
     /// they attached, so it has no business sitting among their documents.
     private static func keepRejectedDraft(_ json: String, in directory: URL) -> URL? {
-        let url = directory.appendingPathComponent("rejected-draft.json")
+        // A per-run name, not a fixed one. `rejected-draft.json` meant the next
+        // failure silently replaced the evidence for the last, which is exactly
+        // when someone is comparing two of them.
+        let stamp = DeckStorage.timestamp(Date())
+        let url = directory.appendingPathComponent("rejected-draft-\(stamp).json")
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-            try json.write(to: url, atomically: true, encoding: .utf8)
+            // On iOS this file sits in the app container alongside a Documents
+            // folder published over USB file sharing; encrypt it at rest.
+            #if os(iOS)
+            try Data(json.utf8).write(to: url, options: [.atomic, .completeFileProtection])
+            #else
+            try Data(json.utf8).write(to: url, options: .atomic)
+            #endif
             return url
         } catch {
             return nil

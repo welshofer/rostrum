@@ -118,4 +118,56 @@ import Testing
         #expect(read("rejected-draft.json", in: legacy) == "{}")
         #expect(!FileManager.default.fileExists(atPath: destination.path))
     }
+
+    // MARK: - Diagnostics retention
+
+    @Test func oldRejectedDraftsArePrunedAndRecentOnesKept() {
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let now = Date()
+        func draft(_ name: String, ageDays: Double) {
+            write(name, "{}", in: dir)
+            try? FileManager.default.setAttributes(
+                [.modificationDate: now.addingTimeInterval(-ageDays * 24 * 3600)],
+                ofItemAtPath: dir.appendingPathComponent(name).path)
+        }
+        draft("rejected-draft-20260701T120000Z.json", ageDays: 30)
+        draft("rejected-draft-20260730T120000Z.json", ageDays: 1)
+
+        #expect(DeckStorage.pruneDiagnostics(in: dir, now: now) == 1)
+        #expect(names(in: dir) == ["rejected-draft-20260730T120000Z.json"])
+    }
+
+    /// It deletes files. Anything it did not write is not its business — a
+    /// prune that reaches past its own output is how a retention policy
+    /// becomes a data-loss bug.
+    @Test func pruningTouchesOnlyOurOwnDrafts() {
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let ancient = Date().addingTimeInterval(-365 * 24 * 3600)
+        for name in ["rejected-draft-old.json", "notes.txt", "deck.pptx", "something.json"] {
+            write(name, "x", in: dir)
+            try? FileManager.default.setAttributes(
+                [.modificationDate: ancient], ofItemAtPath: dir.appendingPathComponent(name).path)
+        }
+        #expect(DeckStorage.pruneDiagnostics(in: dir) == 1)
+        #expect(names(in: dir) == ["notes.txt", "deck.pptx", "something.json"])
+    }
+
+    @Test func pruningAMissingDirectoryIsNotAnError() {
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        #expect(DeckStorage.pruneDiagnostics(in: dir.appendingPathComponent("absent")) == 0)
+    }
+
+    /// Per-run names, so a second failure does not overwrite the evidence for
+    /// the first — and sortable, so the newest is obvious.
+    @Test func theTimestampIsSortableAndFilenameSafe() {
+        let epoch = Date(timeIntervalSince1970: 0)
+        #expect(DeckStorage.timestamp(epoch) == "19700101T000000Z")
+        let later = Date(timeIntervalSince1970: 1_800_000_000)
+        #expect(DeckStorage.timestamp(later) > DeckStorage.timestamp(epoch))
+        for stamp in [DeckStorage.timestamp(epoch), DeckStorage.timestamp(later)] {
+            #expect(!stamp.contains(":"), "colons are a nuisance in paths")
+            #expect(!stamp.contains("/"))
+            #expect(stamp.count == 16)
+        }
+    }
 }

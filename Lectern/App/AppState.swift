@@ -9,6 +9,12 @@ import LecternCore
 @MainActor
 @Observable
 final class AppState {
+    /// The typed error behind `.failed`, so the failure screen can offer the
+    /// recovery that fits instead of one button back to the form. `describe`
+    /// already knows which error occurred and then flattens it to a String;
+    /// this keeps the original alongside it.
+    private(set) var lastFailure: LecternError?
+
     enum Phase: Equatable {
         case compose, generating
         case result(DeckResult)
@@ -67,6 +73,10 @@ final class AppState {
 
     // MARK: Library — the decks already on disk
     private(set) var library: [DeckFile] = []
+    /// Whether the library sheet is up. On `AppState` rather than local view
+    /// state so the menu bar can open it from anywhere, which is the whole
+    /// point of having a menu item for it.
+    var isShowingLibrary = false
     /// Set once, when decks were actually relocated, so the move is not
     /// something the user has to discover. Cleared when they dismiss it.
     private(set) var migrationNotice: String?
@@ -86,6 +96,11 @@ final class AppState {
             migrationNotice = "Moved \(moved) deck\(moved == 1 ? "" : "s") to Documents › Lectern."
         }
         #endif
+        // Rejected drafts carry the prompt and whatever was lifted from an
+        // attached PDF. Useful while a failure is being looked at; a liability
+        // once it is not.
+        let diagnostics = Self.diagnosticsDirectory()
+        await Task.detached { DeckStorage.pruneDiagnostics(in: diagnostics) }.value
         refreshLibrary()
     }
 
@@ -276,7 +291,11 @@ final class AppState {
 
     func generate() {
         guard phase != .generating else { return }
-        guard hasKey else { phase = .failed("Add your \(providerID.label) API key in \(Self.settingsHint) to generate."); return }
+        guard hasKey else {
+            lastFailure = .noKey
+            phase = .failed("Add your \(providerID.label) API key in \(Self.settingsHint) to generate.")
+            return
+        }
 
         phase = .generating; stage = "Starting"; drafted = 0; total = slideCount
         let run = runs.begin()
@@ -334,6 +353,7 @@ final class AppState {
                 self.phase = .compose
             } catch {
                 guard self.runs.isCurrent(run) else { return }
+                self.lastFailure = error as? LecternError
                 self.phase = .failed(Self.describe(error))
             }
         }
@@ -345,7 +365,7 @@ final class AppState {
         runs.abandon()
         task?.cancel(); task = nil; phase = .compose
     }
-    func reset() { stage = ""; drafted = 0; total = 0; phase = .compose }
+    func reset() { stage = ""; drafted = 0; total = 0; lastFailure = nil; phase = .compose }
 
     private func apply(_ event: GenerationEvent, run: Int) {
         // Progress from a run the user already cancelled would otherwise drive
