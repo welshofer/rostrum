@@ -14,61 +14,16 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Linux only, on purpose. GitHub's hosted macOS runners bill at 10x the Linux
+# rate, and this workflow runs on every push to every branch — which made the
+# Apple-platform jobs by far the most expensive thing in the repository.
+#
+# Nothing is unverified as a result; the verification moved rather than
+# vanished. `scripts/verify.sh` runs the whole gate locally, including the two
+# things a Linux runner genuinely cannot do: build the SwiftUI app targets, and
+# open a generated deck in PowerPoint (`Tools/ppt-check.sh`). Run it before
+# opening a PR — see CONTRIBUTING.md.
 jobs:
-  macos:
-    name: macOS (Swift 6)
-    # A branch in this repo is already covered by its `push` event; without
-    # this the `pull_request` event runs everything a second time on every
-    # PR push. Forks still need it — this workflow never sees their pushes.
-    if: >-
-      github.event_name == 'push'
-      || github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v4
-      - name: Swift version
-        run: swift --version
-      - name: Install python-pptx (oracle gate)
-        run: python3 -m pip install --user --break-system-packages python-pptx || python3 -m pip install --user python-pptx
-      - name: Build
-        run: swift build -v
-      - name: Test
-        run: swift test
-      - name: Test LecternCore (sample app core)
-        run: swift test
-        working-directory: Lectern
-      - name: Run README snippets (docs can't rot)
-        run: swift run ReadmeSnippets "$RUNNER_TEMP"
-
-  apps:
-    # The SwiftUI app targets (macOS + iOS) never compile under `swift test`,
-    # so CI must build them explicitly or the shell can rot unverified. Both
-    # targets deploy at 26.0 (Liquid Glass), hence the macos-26 image.
-    name: Lectern apps (xcodebuild)
-    # A branch in this repo is already covered by its `push` event; without
-    # this the `pull_request` event runs everything a second time on every
-    # PR push. Forks still need it — this workflow never sees their pushes.
-    if: >-
-      github.event_name == 'push'
-      || github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: macos-26
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install xcodegen
-        run: brew install xcodegen
-      - name: Generate project
-        run: xcodegen generate
-        working-directory: Lectern
-      - name: Build macOS app
-        run: |
-          xcodebuild -project Lectern.xcodeproj -scheme Lectern \
-            -configuration Debug -destination 'platform=macOS' \
-            CODE_SIGNING_ALLOWED=NO build
-        working-directory: Lectern
-      - name: Build iOS app (simulator)
-        run: scripts/build-ios.sh
-        working-directory: Lectern
-
   linux:
     name: Linux (Swift ${{ matrix.swift }})
     # A branch in this repo is already covered by its `push` event; without
@@ -107,3 +62,9 @@ jobs:
         run: swift test
         working-directory: Lectern
         if: matrix.swift != '6.0'
+      # Was on the macOS job. It builds and runs library code, so it belongs
+      # anywhere the library builds — and losing it would let the README's
+      # snippets rot silently.
+      - name: Run README snippets (docs can't rot)
+        run: swift run ReadmeSnippets "$RUNNER_TEMP"
+

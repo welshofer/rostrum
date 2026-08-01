@@ -12,7 +12,8 @@ coherent — most are also documented in [`CLAUDE.md`](CLAUDE.md) and
   `FoundationXML` on Linux) is the only import.
 - **Three platforms.** macOS, iOS, and Linux. Never use an API that is absent
   on any of them — notably `XMLDocument`/`XMLNode` (iOS lacks them; use
-  `Sources/Rostrum/XML`). CI builds and tests on macOS and Linux.
+  `Sources/Rostrum/XML`). CI builds and tests on Linux; the Apple platforms are
+  verified locally by `./scripts/verify.sh` (see [Before a PR](#before-a-pr)).
 - **Lossless round-trip is sacred.** Opening a file and saving it must never
   drop or corrupt XML we do not model. A part you never touch re-emits its
   original bytes.
@@ -46,6 +47,22 @@ all tolerate. If you touch the packaging or a part's XML, run it.
   assert) and, where practical, an external-oracle check.
 - Run `swift test` before opening a PR.
 
+## Before a PR
+
+```sh
+./scripts/verify.sh          # everything
+./scripts/verify.sh --fast   # skip the app builds
+```
+
+CI runs Linux only. GitHub's hosted macOS runners bill at ten times the Linux
+rate and this repository pushes often, so the Apple-platform checks live here
+instead, where a Mac is free. `verify.sh` runs both test suites, the README
+snippets, and the two things a Linux runner genuinely cannot do: build the
+Lectern SwiftUI targets for macOS and for the iOS simulator.
+
+Those app targets are not part of any SwiftPM target, so `swift test` never
+compiles them — the app builds are the only thing that catches a break there.
+
 ## Style
 
 - Match the surrounding code's naming and idiom. OOXML element names stay
@@ -57,7 +74,7 @@ all tolerate. If you touch the packaging or a part's XML, run it.
 
 1. Fork and branch from `main`.
 2. Keep changes focused; one feature or fix per PR.
-3. Ensure `swift test` is green and CI passes.
+3. Ensure `./scripts/verify.sh` is green and CI passes.
 4. Describe what changed and how you verified it (oracle output, a rendered
    screenshot for visual features, etc.).
 
