@@ -31,7 +31,7 @@ import Testing
         write("one.pptx", "first", in: legacy)
         write("two.pptx", "second", in: legacy)
 
-        #expect(DeckStorage.migrate(from: legacy, to: destination) == 2)
+        #expect(DeckStorage.migrateDecks(from: legacy, to: destination) == 2)
         #expect(names(in: destination) == ["one.pptx", "two.pptx"])
         #expect(read("one.pptx", in: destination) == "first")
         // Emptied, so it is cleaned up rather than left as a confusing husk.
@@ -49,7 +49,7 @@ import Testing
         write("deck.pptx", "CURRENT", in: destination)
         write("other.pptx", "moved", in: legacy)
 
-        #expect(DeckStorage.migrate(from: legacy, to: destination) == 1)
+        #expect(DeckStorage.migrateDecks(from: legacy, to: destination) == 1)
         #expect(read("deck.pptx", in: destination) == "CURRENT", "the deck in use was overwritten")
         #expect(read("other.pptx", in: destination) == "moved")
         // The skipped deck is still on disk, and because something is left the
@@ -63,11 +63,11 @@ import Testing
         let destination = root.appendingPathComponent("current", isDirectory: true)
 
         // No old folder at all — the ordinary case for a new install.
-        #expect(DeckStorage.migrate(from: root.appendingPathComponent("absent"), to: destination) == 0)
+        #expect(DeckStorage.migrateDecks(from: root.appendingPathComponent("absent"), to: destination) == 0)
         // An empty one, and a destination that was never created.
         let empty = root.appendingPathComponent("empty", isDirectory: true)
         try? FileManager.default.createDirectory(at: empty, withIntermediateDirectories: true)
-        #expect(DeckStorage.migrate(from: empty, to: destination) == 0)
+        #expect(DeckStorage.migrateDecks(from: empty, to: destination) == 0)
         #expect(!FileManager.default.fileExists(atPath: destination.path),
                 "a no-op migration should not create the destination")
     }
@@ -80,7 +80,42 @@ import Testing
         // Same path spelled two ways: without the guard this would move each
         // deck onto itself.
         let alias = root.appendingPathComponent("Decks/", isDirectory: true)
-        #expect(DeckStorage.migrate(from: dir, to: alias) == 0)
+        #expect(DeckStorage.migrateDecks(from: dir, to: alias) == 0)
         #expect(read("deck.pptx", in: dir) == "keep")
+    }
+
+    /// Documents is for the user's documents. The rejected-draft diagnostic is
+    /// the app's — and it holds the model's rendering of the prompt plus
+    /// whatever was lifted from an attached PDF — so it stays in Application
+    /// Support rather than being carried into someone's Documents folder.
+    @Test func onlyDecksMoveAndAppDataStaysBehind() {
+        let root = tempDir(); defer { try? FileManager.default.removeItem(at: root) }
+        let legacy = root.appendingPathComponent("legacy", isDirectory: true)
+        let destination = root.appendingPathComponent("Documents/Lectern", isDirectory: true)
+        write("real.pptx", "deck", in: legacy)
+        write("rejected-draft.json", "{}", in: legacy)
+        // PowerPoint's owner file for a deck it has open.
+        write("~$real.pptx", "lock", in: legacy)
+
+        #expect(DeckStorage.migrateDecks(from: legacy, to: destination) == 1)
+        #expect(names(in: destination) == ["real.pptx"])
+        // Left exactly where they were, and the folder survives because it
+        // still holds something.
+        #expect(read("rejected-draft.json", in: legacy) == "{}")
+        #expect(read("~$real.pptx", in: legacy) == "lock")
+        #expect(FileManager.default.fileExists(atPath: legacy.path))
+    }
+
+    /// A folder holding nothing but app data has no decks to move, so it is
+    /// left completely alone — including not creating the destination.
+    @Test func aFolderWithNoDecksIsUntouched() {
+        let root = tempDir(); defer { try? FileManager.default.removeItem(at: root) }
+        let legacy = root.appendingPathComponent("legacy", isDirectory: true)
+        let destination = root.appendingPathComponent("Documents/Lectern", isDirectory: true)
+        write("rejected-draft.json", "{}", in: legacy)
+
+        #expect(DeckStorage.migrateDecks(from: legacy, to: destination) == 0)
+        #expect(read("rejected-draft.json", in: legacy) == "{}")
+        #expect(!FileManager.default.fileExists(atPath: destination.path))
     }
 }

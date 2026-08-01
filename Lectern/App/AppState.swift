@@ -67,6 +67,27 @@ final class AppState {
 
     // MARK: Library — the decks already on disk
     private(set) var library: [DeckFile] = []
+    /// Set once, when decks were actually relocated, so the move is not
+    /// something the user has to discover. Cleared when they dismiss it.
+    private(set) var migrationNotice: String?
+
+    func dismissMigrationNotice() { migrationNotice = nil }
+
+    /// Launch work that has no business on the launch path.
+    ///
+    /// Called from the first `.task`, not `init`. The migration is a directory
+    /// listing and up to a few dozen renames; on the main actor during `init`
+    /// that is filesystem I/O between the user and their first frame, for a
+    /// job that is a no-op on every launch after the first.
+    func start() async {
+        #if os(macOS)
+        let moved = await Task.detached { Self.migrateLegacyDecks() }.value
+        if moved > 0 {
+            migrationNotice = "Moved \(moved) deck\(moved == 1 ? "" : "s") to Documents › Lectern."
+        }
+        #endif
+        refreshLibrary()
+    }
 
     /// Re-read the decks folder. Cheap (one directory listing, no deck is
     /// opened), so it runs whenever the library is shown rather than being
@@ -103,9 +124,6 @@ final class AppState {
         useSmartArt = d.bool(forKey: Keys.useSmartArt)
         hasKey = KeychainStore.hasKey(for: providerID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
-        #if os(macOS)
-        Self.migrateLegacyDecks()
-        #endif
     }
 
     // MARK: - Styles
@@ -256,6 +274,7 @@ final class AppState {
                                   styleSlug: selectedStyleSlug ?? "default")
         let designURL = selectedStyle?.designURL
         let directory = Self.decksDirectory()
+        let diagnostics = Self.diagnosticsDirectory()
         let key = KeychainStore.read(for: providerID)
         let id = providerID, chosenModel = model
         let style = selectedStyle
@@ -288,7 +307,8 @@ final class AppState {
                     }
                 }
                 let result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
-                    .generate(request, designURL: designURL, into: directory) { [weak self] event in
+                    .generate(request, designURL: designURL, into: directory,
+                              diagnostics: diagnostics) { [weak self] event in
                         Task { @MainActor in self?.apply(event) }
                     }
                 self.phase = .result(result)
@@ -362,7 +382,7 @@ final class AppState {
     /// Finder hides by default, so every deck saved there was one the user had
     /// to be told how to reach, and it is not where anyone looks for their own
     /// files.
-    static func decksDirectory() -> URL {
+    nonisolated static func decksDirectory() -> URL {
         #if os(iOS)
         // Documents, not Application Support: with UIFileSharingEnabled +
         // LSSupportsOpeningDocumentsInPlace the decks show up in the Files app,
@@ -377,16 +397,30 @@ final class AppState {
         #endif
     }
 
+    /// Where the app's own diagnostics go — the rejected draft a failed
+    /// generation leaves behind. Application Support, not the decks folder:
+    /// that file is app-owned, and on iOS the decks folder is published to the
+    /// Files app.
+    nonisolated static func diagnosticsDirectory() -> URL {
+        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? URL(fileURLWithPath: NSTemporaryDirectory())
+        return DeckStorage.diagnosticsDirectory(appSupport: base)
+    }
+
     #if os(macOS)
     /// Decks used to be written to `~/Library/Application Support/Lectern/Decks`.
     /// Moving where they are written does not move the ones already there, so
     /// without this a user's existing decks would simply be gone from the app's
     /// point of view.
-    static func migrateLegacyDecks() {
+    ///
+    /// `nonisolated` and returning the count: it runs off the main actor from
+    /// `start()`, and the count is what tells the user their decks moved.
+    nonisolated static func migrateLegacyDecks() -> Int {
         guard let support = FileManager.default.urls(
-            for: .applicationSupportDirectory, in: .userDomainMask).first else { return }
-        DeckStorage.migrate(from: support.appendingPathComponent("Lectern/Decks", isDirectory: true),
-                            to: decksDirectory())
+            for: .applicationSupportDirectory, in: .userDomainMask).first else { return 0 }
+        return DeckStorage.migrateDecks(
+            from: support.appendingPathComponent("Lectern/Decks", isDirectory: true),
+            to: decksDirectory())
     }
     #endif
 }

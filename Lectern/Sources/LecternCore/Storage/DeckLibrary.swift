@@ -38,13 +38,7 @@ public enum DeckLibrary {
             options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants]) else { return [] }
 
         return entries.compactMap { url -> DeckFile? in
-            guard url.pathExtension.lowercased() == "pptx" else { return nil }
-            // PowerPoint drops an owner file named `~$deck.pptx` beside a deck
-            // it has open. It carries the .pptx extension and is not hidden, so
-            // nothing above excludes it — and a real Decks folder had one,
-            // which would have shown up here as a 165-byte deck the user never
-            // made and cannot open.
-            guard !url.lastPathComponent.hasPrefix("~$") else { return nil }
+            guard isDeck(url) else { return nil }
             let values = try? url.resourceValues(forKeys: Set(keys))
             // A directory named `something.pptx` is not a deck. Nothing creates
             // one, but the listing should describe what is there rather than
@@ -60,6 +54,24 @@ public enum DeckLibrary {
                 ? $0.name.localizedStandardCompare($1.name) == .orderedAscending
                 : $0.modified > $1.modified
         }
+    }
+
+    /// Whether this file is one of the user's decks, as opposed to something
+    /// the app or PowerPoint left lying beside them.
+    ///
+    /// Shared with `DeckStorage.migrateDecks` on purpose. What gets listed and
+    /// what gets moved into someone's Documents folder have to be the same
+    /// answer; two copies of this rule would eventually disagree, and the way
+    /// you would find out is a `rejected-draft.json` in Documents or a deck
+    /// that migrated but never appeared.
+    public static func isDeck(_ url: URL) -> Bool {
+        guard url.pathExtension.lowercased() == "pptx" else { return false }
+        // PowerPoint drops an owner file named `~$deck.pptx` beside a deck it
+        // has open. It carries the .pptx extension and is not hidden, so
+        // nothing else excludes it — and a real Decks folder had one, which
+        // would have listed as a 165-byte deck the user never made and cannot
+        // open.
+        return !url.lastPathComponent.hasPrefix("~$")
     }
 
     /// Move a deck to the trash where that exists, so a mis-tap is recoverable,
