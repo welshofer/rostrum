@@ -141,6 +141,9 @@ public struct AnthropicProvider: LLMProvider {
         var payload = payload
         var attempt = 0
         var loweredBudget = false
+        // Bounds the whole call, not each attempt. Three 120-second timeouts
+        // plus backoff is over six minutes of a UI that looks hung.
+        let startedAt = Date()
         while true {
             var req = URLRequest(url: endpoint, timeoutInterval: 120)
             req.httpMethod = "POST"
@@ -159,10 +162,12 @@ public struct AnthropicProvider: LLMProvider {
                 // request. This used to end the run: the longest, most
                 // expensive call in the product threw away a paid generation
                 // because one socket died.
-                guard attempt + 1 < HTTPRetry.maxAttempts else {
+                let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: nil)
+                guard attempt + 1 < HTTPRetry.maxAttempts,
+                      HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait) else {
                     throw LecternError.providerError(status: 0, message: error.localizedDescription)
                 }
-                try await HTTPRetry.wait(seconds: HTTPRetry.backoff(attempt: attempt, retryAfter: nil))
+                try await HTTPRetry.wait(seconds: wait)
                 attempt += 1
                 continue
             }
@@ -183,9 +188,10 @@ public struct AnthropicProvider: LLMProvider {
                 continue
             case let status where HTTPRetry.isRetriable(status: status):
                 let retryAfter = HTTPRetry.retryAfterSeconds(http)
-                if attempt + 1 < HTTPRetry.maxAttempts {
-                    try await HTTPRetry.wait(
-                        seconds: HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter))
+                let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter)
+                if attempt + 1 < HTTPRetry.maxAttempts,
+                   HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait) {
+                    try await HTTPRetry.wait(seconds: wait)
                     attempt += 1
                     continue
                 }

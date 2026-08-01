@@ -65,6 +65,26 @@ enum HTTPRetry {
         return Int(ceil(seconds))
     }
 
+    /// The longest a call may go on *starting* new attempts.
+    ///
+    /// Retries without a ceiling changed the worst case: three attempts at a
+    /// 120-second timeout, plus backoff, is over six minutes during which
+    /// `GeneratingView` shows a spinner and a stage label that never advances.
+    ///
+    /// This bounds when a retry may begin, not when it finishes — an attempt
+    /// started just inside the deadline still gets its full timeout, so the
+    /// true ceiling is this plus one request timeout. Bounding the finish
+    /// instead would mean assuming every attempt takes the worst case, which
+    /// refuses a cheap retry after a connection that failed in a millisecond.
+    static let overallDeadline: TimeInterval = 180
+
+    /// Whether there is still time to try again, given when the call started
+    /// and how long the next wait would be. Checked before sleeping, so the
+    /// backoff itself cannot carry the call past the deadline.
+    static func hasTimeToRetry(startedAt: Date, nextWait: Int, now: Date = Date()) -> Bool {
+        now.addingTimeInterval(TimeInterval(nextWait)).timeIntervalSince(startedAt) < overallDeadline
+    }
+
     /// Sleep between attempts. Cancellation propagates: a user who pressed
     /// Cancel should not wait out a backoff first.
     static func wait(seconds: Int) async throws {
