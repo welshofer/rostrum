@@ -99,6 +99,7 @@ struct LecternApp: App {
         }
         #if os(macOS)
         .defaultSize(width: 780, height: 1060)
+        .commands { lecternCommands }
         #endif
 
         #if os(macOS)
@@ -108,4 +109,36 @@ struct LecternApp: App {
         }
         #endif
     }
+
+    #if os(macOS)
+    /// The app's own menus.
+    ///
+    /// Without this the app inherits SwiftUI's defaults — a File menu offering
+    /// New Window and Print, an Edit menu offering Undo — none of which do
+    /// anything here. Replacing the ones that are wrong is as much of the job
+    /// as adding the ones that are missing.
+    @CommandsBuilder private var lecternCommands: some Commands {
+        CommandGroup(replacing: .newItem) {
+            Button("New Deck") { app.reset() }
+                .keyboardShortcut("n")
+                // Generating is paid work in flight; the quit guard already
+                // refuses to abandon it silently and this must not either.
+                .disabled(app.phase == .generating)
+            Button("Your Decks") { app.isShowingLibrary = true }
+                .keyboardShortcut("l")
+                .disabled(app.library.isEmpty)
+            Divider()
+            Button("Open Decks Folder") {
+                let directory = AppState.decksDirectory()
+                try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                NSWorkspace.shared.open(directory)
+            }
+            .keyboardShortcut("o", modifiers: [.command, .shift])
+        }
+        CommandGroup(replacing: .help) {
+            Link("Lectern Help",
+                 destination: URL(string: "https://github.com/welshofer/rostrum/blob/main/Lectern/README.md")!)
+        }
+    }
+    #endif
 }

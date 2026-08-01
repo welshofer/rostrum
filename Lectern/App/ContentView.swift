@@ -76,7 +76,6 @@ struct Card<Content: View>: View {
 struct ComposeView: View {
     @Environment(AppState.self) private var app
     @State private var showStyles = false
-    @State private var showLibrary = false
     @State private var importing = false
     @State private var dropTargeted = false
     #if os(iOS)
@@ -174,7 +173,7 @@ struct ComposeView: View {
         }
         .safeAreaInset(edge: .bottom) { generateBar }
         .sheet(isPresented: $showStyles) { StylePickerSheet().environment(app) }
-        .sheet(isPresented: $showLibrary) { DeckLibrarySheet().environment(app) }
+        .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.pdf]) { result in
             if let url = try? result.get() { Task { await app.attachPDF(url) } }
         }
@@ -196,6 +195,7 @@ struct ComposeView: View {
                     Spacer()
                     Button { app.clearPDF() } label: { Image(systemName: "xmark.circle.fill") }
                         .buttonStyle(.plain).foregroundStyle(.secondary)
+                        .accessibilityLabel("Remove PDF")
                 }
             } else {
                 VStack(spacing: 10) {
@@ -241,13 +241,12 @@ struct ComposeView: View {
             // button is a dead end offered to someone who has never generated
             // anything.
             if !app.library.isEmpty {
-                Button { showLibrary = true } label: {
+                Button { app.isShowingLibrary = true } label: {
                     Label("\(app.library.count) deck\(app.library.count == 1 ? "" : "s")",
                           systemImage: "rectangle.stack")
                 }
                 .buttonStyle(.glass)
                 .controlSize(.large)
-                .keyboardShortcut("l", modifiers: .command)
                 .help("Decks you've already generated")
             }
             Button { app.generate() } label: {
@@ -389,13 +388,61 @@ struct ResultView: View {
 struct FailedView: View {
     @Environment(AppState.self) private var app
     let message: String
+
     var body: some View {
         VStack(spacing: 16) {
             Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 44)).foregroundStyle(.orange)
             Text(message).font(.title3).multilineTextAlignment(.center).frame(maxWidth: 420)
-            Button("Back to Compose") { app.reset() }.buttonStyle(.glassProminent).controlSize(.large)
+            // Every failure used to funnel into one button back to the form,
+            // even though `describe` knew exactly which one had happened. The
+            // most common — a rate limit — cost the user their place for no
+            // reason.
+            HStack(spacing: 12) {
+                recovery
+                Button("Back to Compose") { app.reset() }
+                    .buttonStyle(.glass).controlSize(.large)
+            }
         }
         .padding(48)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder private var recovery: some View {
+        switch app.lastFailure {
+        case .rateLimited, .networkOffline, .providerError:
+            // Nothing about the request was wrong, so the same request is the
+            // right thing to send again.
+            Button("Try Again") { app.generate() }
+                .buttonStyle(.glassProminent).controlSize(.large)
+        case .responseTruncated:
+            // The deck did not fit. Shorten it here rather than making the user
+            // find the stepper and guess.
+            Button("Use Fewer Slides") {
+                app.slideCount = max(3, Int(Double(app.slideCount) * 0.6))
+                app.reset()
+            }
+            .buttonStyle(.glassProminent).controlSize(.large)
+        case .noKey, .authFailed:
+            #if os(macOS)
+            SettingsLink { Text("Open Settings") }
+                .buttonStyle(.glassProminent).controlSize(.large)
+            #else
+            EmptyView()
+            #endif
+        case .schemaInvalid:
+            #if os(macOS)
+            // The draft's path is already in the message as unclickable prose.
+            Button("Show Diagnostics") {
+                let directory = AppState.diagnosticsDirectory()
+                try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                NSWorkspace.shared.open(directory)
+            }
+            .buttonStyle(.glassProminent).controlSize(.large)
+            #else
+            EmptyView()
+            #endif
+        case .requestTooLarge, .renderFailed, .cancelled, .none:
+            EmptyView()
+        }
     }
 }

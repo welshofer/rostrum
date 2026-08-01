@@ -23,6 +23,55 @@ public enum DeckStorage {
         appSupport.appendingPathComponent("Lectern/Diagnostics", isDirectory: true)
     }
 
+    /// How long a rejected draft is kept before it is deleted unread.
+    public static let diagnosticsRetention: TimeInterval = 7 * 24 * 60 * 60
+
+    /// Delete diagnostics older than `olderThan`.
+    ///
+    /// These files are the model's rendering of the user's prompt plus up to
+    /// 40,000 characters lifted from whatever PDF they attached. Keeping one
+    /// while a failure is being investigated is the point; keeping every one
+    /// forever is a liability nobody asked for, and until now nothing ever
+    /// deleted them.
+    ///
+    /// - Returns: how many were removed.
+    @discardableResult
+    public static func pruneDiagnostics(in directory: URL,
+                                        olderThan: TimeInterval = diagnosticsRetention,
+                                        now: Date = Date(),
+                                        fileManager: FileManager = .default) -> Int {
+        guard let entries = try? fileManager.contentsOfDirectory(
+            at: directory, includingPropertiesForKeys: [.contentModificationDateKey],
+            options: [.skipsSubdirectoryDescendants]) else { return 0 }
+
+        var removed = 0
+        for url in entries {
+            // Only our own drafts. Anything else in there was not put there by
+            // us and is not ours to delete.
+            guard url.lastPathComponent.hasPrefix("rejected-draft"),
+                  url.pathExtension.lowercased() == "json" else { continue }
+            let modified = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?
+                .contentModificationDate ?? now
+            guard now.timeIntervalSince(modified) > olderThan else { continue }
+            if (try? fileManager.removeItem(at: url)) != nil { removed += 1 }
+        }
+        return removed
+    }
+
+    /// A filename-safe, sortable UTC stamp: `20260731T221500Z`.
+    ///
+    /// Built from components rather than a shared `ISO8601DateFormatter`, which
+    /// is not `Sendable` and cannot be a static under strict concurrency. No
+    /// colons: legal on APFS, a nuisance everywhere a path gets shell-quoted.
+    public static func timestamp(_ date: Date) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC") ?? .gmt
+        let c = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        return String(format: "%04d%02d%02dT%02d%02d%02dZ",
+                      c.year ?? 0, c.month ?? 0, c.day ?? 0,
+                      c.hour ?? 0, c.minute ?? 0, c.second ?? 0)
+    }
+
     /// Move the user's decks out of a previous location into the current one.
     ///
     /// Changing where decks are written is not, on its own, a kindness: the
@@ -70,3 +119,4 @@ public enum DeckStorage {
         return moved
     }
 }
+
