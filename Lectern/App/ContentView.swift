@@ -76,6 +76,7 @@ struct Card<Content: View>: View {
 struct ComposeView: View {
     @Environment(AppState.self) private var app
     @State private var showStyles = false
+    @State private var showLibrary = false
     @State private var importing = false
     @State private var dropTargeted = false
     #if os(iOS)
@@ -157,9 +158,11 @@ struct ComposeView: View {
         }
         .safeAreaInset(edge: .bottom) { generateBar }
         .sheet(isPresented: $showStyles) { StylePickerSheet().environment(app) }
+        .sheet(isPresented: $showLibrary) { DeckLibrarySheet().environment(app) }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.pdf]) { result in
             if let url = try? result.get() { Task { await app.attachPDF(url) } }
         }
+        .task { app.refreshLibrary() }
     }
 
     @ViewBuilder private var groundingCard: some View {
@@ -218,6 +221,19 @@ struct ComposeView: View {
                 }
             }
             Spacer()
+            // Only once there is something to show. An empty library behind a
+            // button is a dead end offered to someone who has never generated
+            // anything.
+            if !app.library.isEmpty {
+                Button { showLibrary = true } label: {
+                    Label("\(app.library.count) deck\(app.library.count == 1 ? "" : "s")",
+                          systemImage: "rectangle.stack")
+                }
+                .buttonStyle(.glass)
+                .controlSize(.large)
+                .keyboardShortcut("l", modifiers: .command)
+                .help("Decks you've already generated")
+            }
             Button { app.generate() } label: {
                 Label("Generate", systemImage: "sparkles").font(.body.weight(.semibold)).padding(.horizontal, 6)
             }
