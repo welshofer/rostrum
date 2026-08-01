@@ -88,6 +88,9 @@ final class AppState {
         useSmartArt = d.bool(forKey: Keys.useSmartArt)
         hasKey = KeychainStore.hasKey(for: providerID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
+        #if os(macOS)
+        Self.migrateLegacyDecks()
+        #endif
     }
 
     // MARK: - Styles
@@ -332,6 +335,18 @@ final class AppState {
         }
     }
 
+    /// Where generated decks are written.
+    ///
+    /// `~/Documents/Lectern` on macOS; `Documents/Decks` on iOS, where the
+    /// container's Documents is exactly what the Files app shows.
+    ///
+    /// A deck is the user's document, so it goes where documents go. Not the
+    /// app bundle — that is code-signed and read-only, and a user's work has no
+    /// business inside the program that made it. And no longer Application
+    /// Support, which is for data the app owns: it sits in a Library folder
+    /// Finder hides by default, so every deck saved there was one the user had
+    /// to be told how to reach, and it is not where anyone looks for their own
+    /// files.
     static func decksDirectory() -> URL {
         #if os(iOS)
         // Documents, not Application Support: with UIFileSharingEnabled +
@@ -341,9 +356,22 @@ final class AppState {
             ?? URL(fileURLWithPath: NSTemporaryDirectory())
         return base.appendingPathComponent("Decks", isDirectory: true)
         #else
-        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        let base = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
             ?? URL(fileURLWithPath: NSTemporaryDirectory())
-        return base.appendingPathComponent("Lectern/Decks", isDirectory: true)
+        return base.appendingPathComponent("Lectern", isDirectory: true)
         #endif
     }
+
+    #if os(macOS)
+    /// Decks used to be written to `~/Library/Application Support/Lectern/Decks`.
+    /// Moving where they are written does not move the ones already there, so
+    /// without this a user's existing decks would simply be gone from the app's
+    /// point of view.
+    static func migrateLegacyDecks() {
+        guard let support = FileManager.default.urls(
+            for: .applicationSupportDirectory, in: .userDomainMask).first else { return }
+        DeckStorage.migrate(from: support.appendingPathComponent("Lectern/Decks", isDirectory: true),
+                            to: decksDirectory())
+    }
+    #endif
 }
