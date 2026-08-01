@@ -65,6 +65,21 @@ final class AppState {
     private(set) var groundingLoading = false
     private(set) var groundingError: String?
 
+    // MARK: Library — the decks already on disk
+    private(set) var library: [DeckFile] = []
+
+    /// Re-read the decks folder. Cheap (one directory listing, no deck is
+    /// opened), so it runs whenever the library is shown rather than being
+    /// cached and going stale when a deck is added or removed in Finder.
+    func refreshLibrary() {
+        library = DeckLibrary.decks(in: Self.decksDirectory())
+    }
+
+    func deleteFromLibrary(_ deck: DeckFile) {
+        try? DeckLibrary.delete(deck)
+        refreshLibrary()
+    }
+
     // MARK: Generating progress
     var stage = ""
     var drafted = 0
