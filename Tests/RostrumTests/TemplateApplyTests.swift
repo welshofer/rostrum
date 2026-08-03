@@ -11,11 +11,94 @@ import Testing
         return url
     }
 
+    /// The corporate `.potx` the cross-producer evidence came from.
+    ///
+    /// Not in the repository, and deliberately: it is someone's real corporate
+    /// template and this repository is public. The tests that need it are
+    /// gated on its presence rather than on a copy of it living here — the
+    /// same bargain `RealDeckCorpusTests` strikes with `ROSTRUM_REAL_DECKS`.
+    /// Everything about the *mechanism* is covered below by a synthetic
+    /// template, which runs everywhere.
+    static var corporateTemplate: URL? {
+        Bundle.module.url(forResource: "Template.potx", withExtension: nil,
+                          subdirectory: "Fixtures/RealDecks")
+    }
+    static var hasCorporateTemplate: Bool { corporateTemplate != nil }
+
     private func template() throws -> Presentation {
-        try Presentation(contentsOf: try fixture("Template.potx"))
+        try Presentation(contentsOf: try #require(Self.corporateTemplate))
     }
 
-    @Test func adoptingATemplateMakesItsThemePrimary() throws {
+    /// A template that is definitely not the deck it will be applied to:
+    /// same layout shapes, different brand. Enough to prove adoption,
+    /// re-laying and reporting without needing a file we cannot ship.
+    private func syntheticTemplate() throws -> Presentation {
+        let template = try Presentation()
+        template.theme.majorFont = "Papyrus"
+        template.theme.minorFont = "Courier New"
+        return template
+    }
+
+    // MARK: - Mechanism (no corpus needed)
+
+    @Test func adoptingASyntheticTemplateTakesItsThemeAndRelaysSlides() throws {
+        let deck = try Presentation()
+        try deck.titleSlide("Before", subtitle: "unbranded")
+        let before = deck.theme.majorFont
+
+        let report = try deck.applyTemplate(from: try syntheticTemplate())
+
+        #expect(report.mastersAdopted == 1)
+        #expect(deck.theme.majorFont == "Papyrus", "the template's theme did not become primary")
+        #expect(deck.theme.majorFont != before)
+        // Same layout vocabulary on both sides, so every slide re-lays, and by
+        // the signature rather than by a name that happens to coincide.
+        #expect(report.kept.isEmpty)
+        #expect(!report.relaid.isEmpty)
+        #expect(report.relaid.allSatisfy { $0.by == .signature })
+        #expect(report.changed)
+    }
+
+    @Test func applyingATemplateLeavesSlideCountAndTextAlone() throws {
+        let deck = try Presentation()
+        try deck.titleSlide("Keep me", subtitle: "and me")
+        try deck.bulletSlide("Bullets", ["one", "two", "three"])
+        let text = (0..<deck.slides.count).map { index in
+            ((try? deck.slides.slide(at: index))?.shapes.all
+                .compactMap { $0.textFrame?.text }.joined(separator: "|")) ?? ""
+        }
+
+        let count = deck.slides.count
+        _ = try deck.applyTemplate(from: try syntheticTemplate())
+
+        #expect(deck.slides.count == count)
+        let after = (0..<deck.slides.count).map { index in
+            ((try? deck.slides.slide(at: index))?.shapes.all
+                .compactMap { $0.textFrame?.text }.joined(separator: "|")) ?? ""
+        }
+        #expect(after == text, "a rebrand rewrote slide text")
+    }
+
+    /// A rebranded deck must still open. This is the cheap continuous version
+    /// of the PowerPoint gate.
+    @Test func aRebrandedDeckRoundTripsAndKeepsEveryLayoutResolvable() throws {
+        let deck = try Presentation()
+        try deck.titleSlide("T", subtitle: "s")
+        try deck.bulletSlide("B", ["a", "b"])
+        let count = deck.slides.count
+        _ = try deck.applyTemplate(from: try syntheticTemplate())
+
+        let reopened = try Presentation(data: try deck.serializedData())
+        #expect(reopened.slides.count == count)
+        for index in 0..<reopened.slides.count {
+            #expect(try reopened.slides.slide(at: index).layout != nil)
+        }
+        #expect(try reopened.validate().isEmpty)
+    }
+
+    // MARK: - Cross-producer evidence (needs the corporate template)
+
+    @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func adoptingATemplateMakesItsThemePrimary() throws {
         let deck = try Presentation(contentsOf: try fixture("SimplePowerPoint.pptx"))
         let before = deck.theme.majorFont
         let report = try deck.applyTemplate(from: try template())
@@ -32,7 +115,7 @@ import Testing
     /// The deck's own masters stay. Any slide that found no counterpart still
     /// needs its layout, and part removal would leave a stale content-type
     /// Override behind.
-    @Test func theDecksOwnMastersSurvive() throws {
+    @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func theDecksOwnMastersSurvive() throws {
         let deck = try Presentation(contentsOf: try fixture("SimplePowerPoint.pptx"))
         let before = deck.slideMasters.count
         let report = try deck.applyTemplate(from: try template())
@@ -42,7 +125,7 @@ import Testing
 
     /// Slide content is not the template's business: a rebrand changes which
     /// layout a slide sits on, never what it says.
-    @Test func slidesKeepTheirContentAndOrder() throws {
+    @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func slidesKeepTheirContentAndOrder() throws {
         let deck = try Presentation(contentsOf: try fixture("FromKeynote.pptx"))
         let before = (0..<deck.slides.count).map { index in
             (try? deck.slides.slide(at: index))?.shapes.all.count ?? -1
@@ -57,7 +140,7 @@ import Testing
     /// Every slide must still resolve a layout afterwards. One that cannot is
     /// a deck PowerPoint offers to repair, which is the outcome this project
     /// refuses to ship.
-    @Test func everySlideStillResolvesALayoutAfterARebrand() throws {
+    @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func everySlideStillResolvesALayoutAfterARebrand() throws {
         for name in ["SimplePowerPoint.pptx", "FromKeynote.pptx", "FromGoogleSlides.pptx"] {
             let deck = try Presentation(contentsOf: try fixture(name))
             _ = try deck.applyTemplate(from: try template())
@@ -77,7 +160,7 @@ import Testing
     /// their own naming — while the placeholder signature matches most of it.
     /// If this ever regresses to a name/type match the feature is dead and
     /// this is how we find out.
-    @Test func layoutsMatchByPlaceholderSignatureNotByName() throws {
+    @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func layoutsMatchByPlaceholderSignatureNotByName() throws {
         let deck = try Presentation(contentsOf: try fixture("FromKeynote.pptx"))
         let report = try deck.applyTemplate(from: try template())
 
@@ -91,7 +174,7 @@ import Testing
 
     /// A slide whose layout has no counterpart is left alone rather than
     /// dropped onto something generic, and is named in the report.
-    @Test func unmatchedSlidesAreKeptAndReported() throws {
+    @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func unmatchedSlidesAreKeptAndReported() throws {
         let deck = try Presentation(contentsOf: try fixture("FromKeynote.pptx"))
         let before = (0..<deck.slides.count).compactMap { try? deck.slides.slide(at: $0).layout?.name }
         let report = try deck.applyTemplate(from: try template())
@@ -159,7 +242,7 @@ import Testing
 
     /// The corpus is the evidence: these are real files from PowerPoint,
     /// Keynote and Google Slides, and none of them should trip the lint.
-    @Test func theRealDeckCorpusLintsClean() throws {
+    @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func theRealDeckCorpusLintsClean() throws {
         for name in ["Template.potx", "FromGoogleSlides.pptx", "SimplePowerPoint.pptx"] {
             let deck = try Presentation(contentsOf: try fixture(name))
             let issues = try deck.validate()
