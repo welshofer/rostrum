@@ -34,13 +34,17 @@ struct RebrandSheet: View {
                         title: "THE DECK",
                         systemImage: "doc.richtext",
                         prompt: "Choose the .pptx you want rebranded",
-                        url: app.rebrandDeck) { choosingDeck = true }
+                        url: app.rebrandDeck,
+                        isPresented: $choosingDeck,
+                        types: Self.deckTypes) { app.setRebrandDeck($0) }
 
                     filePicker(
                         title: "THE BRAND",
                         systemImage: "paintpalette",
                         prompt: "Choose a .potx template — or any .pptx to borrow its look",
-                        url: app.rebrandTemplate) { choosingTemplate = true }
+                        url: app.rebrandTemplate,
+                        isPresented: $choosingTemplate,
+                        types: Self.templateTypes) { app.setRebrandTemplate($0) }
 
                     Card(title: "HOW FAR TO GO", systemImage: "wand.and.stars") {
                         Toggle("Rebind hard-coded colours and fonts", isOn: $app.rebindFormatting)
@@ -64,12 +68,6 @@ struct RebrandSheet: View {
         .frame(minWidth: 620, minHeight: 520)
         #endif
         .background(.background)
-        .fileImporter(isPresented: $choosingDeck, allowedContentTypes: Self.deckTypes) { result in
-            if let url = try? result.get() { app.setRebrandDeck(url) }
-        }
-        .fileImporter(isPresented: $choosingTemplate, allowedContentTypes: Self.templateTypes) { result in
-            if let url = try? result.get() { app.setRebrandTemplate(url) }
-        }
     }
 
     private var header: some View {
@@ -84,8 +82,22 @@ struct RebrandSheet: View {
         .padding(20)
     }
 
+    /// One card, one file.
+    ///
+    /// The first cut hung two `.fileImporter` modifiers on the same view and
+    /// **neither Choose button did anything at all**. SwiftUI honours at most
+    /// one importer per view, and a `.fileImporter` presented from inside a
+    /// `.sheet` is unreliable on macOS besides — two independent reasons for
+    /// the same symptom, and no way to tell them apart without running it.
+    ///
+    /// So macOS does not use `.fileImporter`. `NSOpenPanel` is the native
+    /// panel, it does not depend on SwiftUI's presentation plumbing, and it
+    /// goes through the same powerbox grant. iOS keeps `.fileImporter`, which
+    /// is the only option there and is not presented from a nested sheet.
     @ViewBuilder private func filePicker(title: String, systemImage: String, prompt: String,
-                                         url: URL?, choose: @escaping () -> Void) -> some View {
+                                         url: URL?, isPresented: Binding<Bool>,
+                                         types: [UTType],
+                                         pick: @escaping (URL) -> Void) -> some View {
         Card(title: title, systemImage: systemImage) {
             if let url {
                 HStack(spacing: 12) {
@@ -96,17 +108,42 @@ struct RebrandSheet: View {
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer()
-                    Button("Change…", action: choose).buttonStyle(.glass)
+                    chooseButton("Change…", isPresented: isPresented, types: types, pick: pick)
                 }
             } else {
                 VStack(spacing: 10) {
                     Text(prompt).font(.callout).foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                    Button("Choose…", action: choose).buttonStyle(.glass)
+                    chooseButton("Choose…", isPresented: isPresented, types: types, pick: pick)
                 }
                 .frame(maxWidth: .infinity).padding(.vertical, 18)
             }
         }
+    }
+
+    /// The button that opens a file panel, by whatever route actually works
+    /// on this platform.
+    @ViewBuilder private func chooseButton(_ label: String, isPresented: Binding<Bool>,
+                                           types: [UTType],
+                                           pick: @escaping (URL) -> Void) -> some View {
+        #if os(macOS)
+        Button(label) {
+            let panel = NSOpenPanel()
+            panel.allowedContentTypes = types
+            panel.allowsMultipleSelection = false
+            panel.canChooseDirectories = false
+            panel.canChooseFiles = true
+            panel.message = "Choose a PowerPoint file"
+            if panel.runModal() == .OK, let url = panel.url { pick(url) }
+        }
+        .buttonStyle(.glass)
+        #else
+        Button(label) { isPresented.wrappedValue = true }
+            .buttonStyle(.glass)
+            .fileImporter(isPresented: isPresented, allowedContentTypes: types) { result in
+                if let picked = try? result.get() { pick(picked) }
+            }
+        #endif
     }
 
     private var actions: some View {
