@@ -48,6 +48,9 @@ public struct TemplateReport: Sendable, Equatable {
     /// Masters adopted from the template.
     public var mastersAdopted: Int = 0
 
+    /// What rebinding direct formatting changed, when it was asked for.
+    public var rebind: RebindReport = RebindReport()
+
     /// The deck's original masters, which stay in the package.
     ///
     /// They are not removed even when nothing references them any more, for
@@ -90,10 +93,24 @@ extension Presentation {
     /// `.potx`, `.pptx` and `.ppsx` all work as the template: what is read are
     /// its masters, and every kind has them.
     ///
+    /// - Parameter rebindingDirectFormatting: when true, rebind the deck's
+    ///   hard-coded colours and fonts to theme references *before* the new
+    ///   theme lands, so the new brand actually shows. Off by default, because
+    ///   it rewrites slide content and the rest of this operation does not —
+    ///   see `rebindDirectFormattingToTheme()` for what it does and does not
+    ///   touch. Sequenced here because the rebind has to read the *old* theme,
+    ///   which is the one thing easy to get wrong when calling both by hand.
     /// - Returns: what matched, and what was left alone.
     @discardableResult
-    public func applyTemplate(from template: Presentation) throws -> TemplateReport {
+    public func applyTemplate(from template: Presentation,
+                              rebindingDirectFormatting: Bool = false) throws -> TemplateReport {
         var report = TemplateReport()
+
+        // Before anything is adopted: the deck's literals came from the theme
+        // it has now, so that is the palette they have to be matched against.
+        if rebindingDirectFormatting {
+            report.rebind = try rebindDirectFormattingToTheme()
+        }
 
         let templateMasters = template.slideMasters
         guard !templateMasters.isEmpty else {
