@@ -91,3 +91,34 @@ public extension Slide {
     /// The master behind this slide's layout.
     var master: SlideMaster? { layout?.master }
 }
+
+public extension SlideLayout {
+    /// The placeholders this layout offers, in document order.
+    ///
+    /// A layout's placeholder set is what a slide is actually asking for when
+    /// it says it uses that layout — and unlike `name` or `type`, it is
+    /// written in the schema's own vocabulary, so it means the same thing
+    /// whether PowerPoint, Keynote or Google Slides produced the file. That
+    /// makes it the one signal worth matching layouts across producers on.
+    var placeholders: [Shape] {
+        guard let tree = try? Slide.spTree(of: part) else { return [] }
+        return tree.childElements
+            .map { Shape(element: $0, part: part, package: package) }
+            .filter { $0.placeholder != nil }
+    }
+
+    /// The placeholder types this layout offers, sorted, with the latent
+    /// date/footer/slide-number types dropped — those appear on nearly every
+    /// layout and say nothing about what it is for.
+    ///
+    /// Two layouts with the same signature are interchangeable as far as a
+    /// slide's content is concerned, which is what makes this a usable key for
+    /// re-laying a deck onto another deck's layouts.
+    var placeholderSignature: [String] {
+        placeholders.compactMap { shape in
+            guard let type = shape.placeholder?.type else { return nil }
+            return Placeholders.latentTypes.contains(type) ? nil : type
+        }
+        .sorted()
+    }
+}

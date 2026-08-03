@@ -266,7 +266,7 @@ extension Slides {
         return highest + 1
     }
 
-    private func wireNewMasters(_ masters: [PackURI], _ copier: SlideCopier) throws {
+    func wireNewMasters(_ masters: [PackURI], _ copier: SlideCopier) throws {
         guard !masters.isEmpty else { return }
         let dom = try destPresentationPart.dom()
         let list = dom.getOrAddChild("p:sldMasterIdLst",

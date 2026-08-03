@@ -99,6 +99,20 @@ public final class Relationships {
         items.removeAll { $0.rId == rId }
     }
 
+    /// Move an existing relationship to the front of the list, keeping its rId
+    /// and every other relationship's relative order.
+    ///
+    /// Order is not meaningful to OPC itself, but several PresentationML
+    /// lookups take "the first relationship of this type" to mean the primary
+    /// one — `Presentation.theme` resolves through the first `slideMaster`
+    /// rel, for instance. Adopting a template has to make its master primary,
+    /// and that is what this is for.
+    func moveToFront(rId: String) {
+        guard let index = items.firstIndex(where: { $0.rId == rId }), index != 0 else { return }
+        let item = items.remove(at: index)
+        items.insert(item, at: 0)
+    }
+
     /// Replace the collection's contents wholesale, preserving rIds exactly.
     /// Used by the package reader: rIds parsed from a file MUST survive
     /// untouched, because part XML references them by value (`r:id="rId5"`).
