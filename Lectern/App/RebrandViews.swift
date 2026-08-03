@@ -16,12 +16,13 @@ struct RebrandSheet: View {
     @State private var choosingDeck = false
     @State private var choosingTemplate = false
 
-    /// `.potx` has no first-class UTType, so it is named by filename extension.
-    private static let templateTypes: [UTType] = [
-        UTType(filenameExtension: "potx") ?? .data,
-        UTType(filenameExtension: "pptx") ?? .data,
-    ]
-    private static let deckTypes: [UTType] = [UTType(filenameExtension: "pptx") ?? .data]
+    /// Every PresentationML shape Rostrum can open, on both sides of the sheet.
+    /// A `.potx` is a perfectly good deck to rebrand (it has slides) and a
+    /// `.pptx` is a perfectly good brand to borrow, so narrowing either slot
+    /// only greys out files that would have worked. `DeckRebrander` re-kinds
+    /// the result to `.presentation` on save.
+    private static let presentationTypes: [UTType] = ["pptx", "potx", "ppsx"]
+        .map { UTType(filenameExtension: $0) ?? .data }
 
     var body: some View {
         @Bindable var app = app
@@ -33,10 +34,10 @@ struct RebrandSheet: View {
                     filePicker(
                         title: "THE DECK",
                         systemImage: "doc.richtext",
-                        prompt: "Choose the .pptx you want rebranded",
+                        prompt: "Choose the deck you want rebranded — .pptx, .potx or .ppsx",
                         url: app.rebrandDeck,
                         isPresented: $choosingDeck,
-                        types: Self.deckTypes) { app.setRebrandDeck($0) }
+                        types: Self.presentationTypes) { app.setRebrandDeck($0) }
 
                     filePicker(
                         title: "THE BRAND",
@@ -44,7 +45,7 @@ struct RebrandSheet: View {
                         prompt: "Choose a .potx template — or any .pptx to borrow its look",
                         url: app.rebrandTemplate,
                         isPresented: $choosingTemplate,
-                        types: Self.templateTypes) { app.setRebrandTemplate($0) }
+                        types: Self.presentationTypes) { app.setRebrandTemplate($0) }
 
                     Card(title: "HOW FAR TO GO", systemImage: "wand.and.stars") {
                         Toggle("Rebind hard-coded colours and fonts", isOn: $app.rebindFormatting)

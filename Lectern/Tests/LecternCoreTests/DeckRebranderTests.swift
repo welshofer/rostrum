@@ -132,4 +132,37 @@ import Rostrum
         #expect(second.url.lastPathComponent == "source-rebranded-2.pptx")
         #expect(FileManager.default.fileExists(atPath: first.url.path))
     }
+
+    /// What the user actually did: File ▸ Save as Template. That writes a
+    /// `.potx` whose main part is content-typed `template`, not merely a deck
+    /// with a different extension.
+    private func savedAsTemplate(in directory: URL) throws -> URL {
+        let deck = try Presentation()
+        try deck.titleSlide("Q3 Review", subtitle: "Prepared by Finance")
+        try deck.bulletSlide("Highlights", ["Revenue up", "Costs flat"])
+        deck.documentKind = .template
+        let url = directory.appendingPathComponent("saved-as-template.potx")
+        try deck.save(to: url)
+        return url
+    }
+
+    /// A `.potx` has slides, so it is a legitimate thing to rebrand — but the
+    /// output is written as `.pptx`, and PowerPoint decides what a file is from
+    /// the main part's content type rather than its extension. Ship the
+    /// template content type inside a `.pptx` and double-clicking the result
+    /// spawns a new untitled deck instead of opening the rebranded one.
+    @Test func rebrandingATemplateProducesADeckAndNotAnotherTemplate() async throws {
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let source = try savedAsTemplate(in: dir)
+        #expect(try Presentation(contentsOf: source).documentKind == .template,
+                "the fixture is not actually a template")
+
+        let result = try await DeckRebrander().rebrand(
+            deck: source, template: try templateDeck(in: dir),
+            into: dir.appendingPathComponent("out"))
+
+        #expect(result.url.pathExtension == "pptx")
+        #expect(try Presentation(contentsOf: result.url).documentKind == .presentation)
+        #expect(result.slideCount == (try Presentation(contentsOf: source).slides.count))
+    }
 }

@@ -58,6 +58,13 @@ public actor DeckRebrander {
                 "\(templateURL.lastPathComponent) isn't a template Rostrum can open: \(error)")
         }
 
+        // The output is always written as `.pptx`, so a deck opened from a
+        // `.potx` or `.ppsx` has to be re-kinded to match. PowerPoint reads the
+        // main part's content type, not the extension: leave it saying
+        // "template" and double-clicking the result spawns a new untitled deck
+        // instead of opening the one just rebranded.
+        deck.documentKind = .presentation
+
         try Task.checkCancellation()
         let before = Self.previews(of: deck)
 
