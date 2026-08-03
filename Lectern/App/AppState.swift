@@ -18,6 +18,8 @@ final class AppState {
     enum Phase: Equatable {
         case compose, generating
         case result(DeckResult)
+        case rebranding
+        case rebranded(RebrandResult)
         case failed(String)
     }
     var phase: Phase = .compose
@@ -77,6 +79,9 @@ final class AppState {
     /// state so the menu bar can open it from anywhere, which is the whole
     /// point of having a menu item for it.
     var isShowingLibrary = false
+    /// Whether the rebrand sheet is up — on `AppState` so the menu bar can
+    /// open it from anywhere, same as the library.
+    var isShowingRebrand = false
     /// Set once, when decks were actually relocated, so the move is not
     /// something the user has to discover. Cleared when they dismiss it.
     private(set) var migrationNotice: String?
@@ -114,6 +119,70 @@ final class AppState {
     func deleteFromLibrary(_ deck: DeckFile) {
         try? DeckLibrary.delete(deck)
         refreshLibrary()
+    }
+
+    // MARK: Rebrand — the other direction, and the one that reads a deck
+    /// The deck to rebrand and the template to put on it, both user-chosen.
+    private(set) var rebrandDeck: URL?
+    private(set) var rebrandTemplate: URL?
+    /// Rebind hard-coded colours and fonts to theme references. On by default:
+    /// without it a deck full of literal formatting comes out looking exactly
+    /// as it went in, which reads as "the rebrand did nothing".
+    var rebindFormatting = true
+    private var rebrandTask: Task<Void, Never>?
+
+    var canRebrand: Bool {
+        phase != .rebranding && rebrandDeck != nil && rebrandTemplate != nil
+    }
+
+    func setRebrandDeck(_ url: URL?) { rebrandDeck = url }
+    func setRebrandTemplate(_ url: URL?) { rebrandTemplate = url }
+
+    func rebrand() {
+        guard let deck = rebrandDeck, let template = rebrandTemplate else { return }
+        guard phase != .rebranding else { return }
+        phase = .rebranding
+        let run = runs.begin()
+        let directory = Self.decksDirectory()
+        let rebind = rebindFormatting
+
+        rebrandTask = Task {
+            do {
+                // Both files are the user's own and outside our container, so
+                // the sandbox-scoped access has to be held for the read.
+                let deckScope = deck.startAccessingSecurityScopedResource()
+                let templateScope = template.startAccessingSecurityScopedResource()
+                defer {
+                    if deckScope { deck.stopAccessingSecurityScopedResource() }
+                    if templateScope { template.stopAccessingSecurityScopedResource() }
+                }
+                let result = try await DeckRebrander().rebrand(
+                    deck: deck, template: template, into: directory,
+                    rebindingDirectFormatting: rebind)
+                guard self.runs.isCurrent(run) else { return }
+                self.phase = .rebranded(result)
+                self.refreshLibrary()
+            } catch is CancellationError {
+                guard self.runs.isCurrent(run) else { return }
+                self.phase = .compose
+            } catch {
+                guard self.runs.isCurrent(run) else { return }
+                self.phase = .failed(Self.describeRebrand(error))
+            }
+        }
+    }
+
+    func cancelRebrand() {
+        runs.abandon()
+        rebrandTask?.cancel(); rebrandTask = nil; phase = .compose
+    }
+
+    static func describeRebrand(_ error: Error) -> String {
+        switch error as? RebrandError {
+        case .notAPresentation(let message): return message
+        case .failed(let message): return "The rebrand didn't finish: \(message)"
+        case nil: return error.localizedDescription
+        }
     }
 
     // MARK: Generating progress

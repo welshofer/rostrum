@@ -43,6 +43,8 @@ struct ContentView: View {
         case .compose: ComposeView()
         case .generating: GeneratingView()
         case .result(let r): ResultView(result: r)
+        case .rebranding: RebrandingView()
+        case .rebranded(let r): RebrandResultView(result: r)
         case .failed(let m): FailedView(message: m)
         }
     }
@@ -174,6 +176,7 @@ struct ComposeView: View {
         .safeAreaInset(edge: .bottom) { generateBar }
         .sheet(isPresented: $showStyles) { StylePickerSheet().environment(app) }
         .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
+        .sheet(isPresented: $app.isShowingRebrand) { RebrandSheet().environment(app) }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.pdf]) { result in
             if let url = try? result.get() { Task { await app.attachPDF(url) } }
         }
@@ -249,6 +252,13 @@ struct ComposeView: View {
                 .controlSize(.large)
                 .help("Decks you've already generated")
             }
+            Button { app.isShowingRebrand = true } label: {
+                Label("Rebrand…", systemImage: "wand.and.stars")
+            }
+            .buttonStyle(.glass)
+            .controlSize(.large)
+            .keyboardShortcut("r", modifiers: [.command, .shift])
+            .help("Put a template's brand on a deck you already have")
             Button { app.generate() } label: {
                 Label("Generate", systemImage: "sparkles").font(.body.weight(.semibold)).padding(.horizontal, 6)
             }

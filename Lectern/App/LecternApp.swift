@@ -124,6 +124,9 @@ struct LecternApp: App {
                 // Generating is paid work in flight; the quit guard already
                 // refuses to abandon it silently and this must not either.
                 .disabled(app.phase == .generating)
+            Button("Rebrand a Deck…") { app.isShowingRebrand = true }
+                .keyboardShortcut("r", modifiers: [.command, .shift])
+                .disabled(app.phase == .generating || app.phase == .rebranding)
             Button("Your Decks") { app.isShowingLibrary = true }
                 .keyboardShortcut("l")
                 .disabled(app.library.isEmpty)
