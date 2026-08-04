@@ -278,4 +278,86 @@ import Testing
         #expect(urls.count == deck.slides.count)
         for url in urls { #expect(FileManager.default.fileExists(atPath: url.path)) }
     }
+
+    // MARK: - Inheritance
+
+    /// A slide is not the whole picture. The logo, the photo panel and the
+    /// coloured field a brand puts on its layouts live on the layout and the
+    /// master, and a renderer that draws only the slide's own shapes shows none
+    /// of them — so applying any template looks like nothing but a colour swap,
+    /// however much of it actually landed in the file.
+    @Test func aSlideRendersItsLayoutsBackgroundAndFurniture() throws {
+        let deck = try Presentation()
+        let layout = try #require(deck.layout(type: "title"))
+        let cSld = try #require(try layout.part.dom().firstChild(named: "p:cSld"))
+
+        let bg = XML.Element("p:bg")
+        let bgPr = XML.Element("p:bgPr")
+        let bgFill = XML.Element("a:solidFill")
+        bgFill.appendElement(XML.Element("a:srgbClr", attributes: [("val", "FF6700")]))
+        bgPr.appendElement(bgFill)
+        bg.appendElement(bgPr)
+        cSld.insertChild(bg, beforeAnyOf: ["p:spTree"])
+
+        let deco = XML.Element("p:sp")
+        let nv = XML.Element("p:nvSpPr")
+        nv.appendElement(XML.Element("p:cNvPr", attributes: [("id", "42"), ("name", "Bar 42")]))
+        nv.appendElement(XML.Element("p:cNvSpPr"))
+        nv.appendElement(XML.Element("p:nvPr"))
+        deco.appendElement(nv)
+        let spPr = XML.Element("p:spPr")
+        let xfrm = XML.Element("a:xfrm")
+        xfrm.appendElement(XML.Element("a:off", attributes: [("x", "0"), ("y", "0")]))
+        xfrm.appendElement(XML.Element("a:ext", attributes: [("cx", "914400"), ("cy", "914400")]))
+        spPr.appendElement(xfrm)
+        let fill = XML.Element("a:solidFill")
+        fill.appendElement(XML.Element("a:srgbClr", attributes: [("val", "123456")]))
+        spPr.appendElement(fill)
+        deco.appendElement(spPr)
+        try Slide.spTree(of: layout.part).appendElement(deco)
+        layout.part.markDirty()
+
+        _ = try deck.slides.add(layout: layout)
+        let svg = try deck.renderSVG(slideAt: deck.slides.count - 1)
+
+        #expect(svg.contains("#FF6700"), "the layout's background never reached the render")
+        #expect(svg.contains("#123456"), "the layout's furniture never reached the render")
+    }
+
+    /// A placeholder cloned from a layout carries no transform and no run
+    /// properties of its own — that is the point, it inherits them. A renderer
+    /// that does not follow the chain puts every one of them at the top-left
+    /// corner in its own default 18pt grey, which makes a deck rebuilt on a
+    /// template's layouts look broken rather than rebranded.
+    @Test func aPlaceholderInheritsItsFrameAndTypeFromTheLayout() throws {
+        let deck = try Presentation()
+        let layout = try #require(deck.layout(type: "title"))
+        let tree = try Slide.spTree(of: layout.part)
+        let titleSp = try #require(tree.children(named: "p:sp").first {
+            Placeholders.phElement(of: $0)?[attribute: "type"] == "ctrTitle"
+        })
+        let lstStyle = try #require(titleSp.firstChild(named: "p:txBody")?
+            .firstChild(named: "a:lstStyle"))
+        let lvl1 = XML.Element("a:lvl1pPr")
+        let defRPr = XML.Element("a:defRPr", attributes: [("sz", "8000")])
+        let color = XML.Element("a:solidFill")
+        color.appendElement(XML.Element("a:srgbClr", attributes: [("val", "FF0000")]))
+        defRPr.appendElement(color)
+        lvl1.appendElement(defRPr)
+        lstStyle.appendElement(lvl1)
+        layout.part.markDirty()
+
+        let slide = try deck.slides.add(layout: layout)
+        let title = try #require(slide.title)
+        _ = try #require(title.textFrame).addParagraph().addRun("Inherited")
+
+        let svg = try deck.renderSVG(slideAt: deck.slides.count - 1)
+
+        #expect(svg.contains("Inherited"))
+        #expect(svg.contains("#FF0000"), "the run fell back to the renderer's default colour")
+        #expect(svg.contains("\(80 * 12700)"), "the run fell back to the renderer's default size")
+        // The layout puts ctrTitle at x=1524000; a shape rendered without
+        // inheritance lands at 0.
+        #expect(!svg.contains("<text x=\"0\""), "the placeholder rendered at the origin")
+    }
 }

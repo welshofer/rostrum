@@ -253,8 +253,11 @@ struct RebrandResultView: View {
         if result.reboundColors > 0 || result.reboundFonts > 0 {
             parts.append("\(result.reboundColors) colours and \(result.reboundFonts) fonts rebound")
         }
-        if result.backgroundsAdopted > 0 {
-            parts.append("\(result.backgroundsAdopted) backgrounds adopted")
+        if result.rebuilt > 0 {
+            parts.append("\(result.rebuilt) rebuilt on the template")
+        }
+        if result.keptComposition > 0 {
+            parts.append("\(result.keptComposition) kept (chart, table or picture)")
         }
         return parts.joined(separator: " · ")
     }

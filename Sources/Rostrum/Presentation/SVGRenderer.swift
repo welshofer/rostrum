@@ -33,19 +33,28 @@ struct SVGRenderer {
         var defs = ""
         var body = ""
 
-        if let bgPr = dom.firstChild(named: "p:cSld")?.firstChild(named: "p:bg")?.firstChild(named: "p:bgPr"),
-           let paint = paint(for: bgPr, box: (0, 0, w, h), defs: &defs) {
-            body += box(0, 0, w, h, fill: paint)
-        } else {
-            body += box(0, 0, w, h, fill: "#FFFFFF")
+        // A slide inherits its background and its furniture. Rendering only the
+        // slide's own shapes on the slide's own background makes every deck
+        // look like whatever it was before a template was applied: the logo,
+        // the photo panel, the coloured field a brand puts on its layouts all
+        // live on the layout and the master, not on the slide.
+        let chain = inheritanceChain()
+        body += box(0, 0, w, h,
+                    fill: backgroundFill(chain: chain, box: (0, 0, w, h), defs: &defs) ?? "#FFFFFF")
+
+        if showsMasterShapes(chain: chain), let master = chain.master {
+            body += renderInherited(master, defs: &defs)
+        }
+        if let layout = chain.layout {
+            body += renderInherited(layout, defs: &defs)
         }
 
         if let spTree = Slide.existingSpTree(of: slidePart) {
             for child in spTree.childElements {
                 switch child.name {
-                case "p:sp": body += renderShape(child, defs: &defs)
-                case "p:pic": body += renderPicture(child)
-                case "p:graphicFrame": body += renderGraphicFrame(child, defs: &defs)
+                case "p:sp": body += renderShape(child, ownedBy: slidePart, defs: &defs)
+                case "p:pic": body += renderPicture(child, ownedBy: slidePart)
+                case "p:graphicFrame": body += renderGraphicFrame(child, ownedBy: slidePart, defs: &defs)
                 default: break
                 }
             }
@@ -55,19 +64,147 @@ struct SVGRenderer {
             + "viewBox=\"0 0 \(w) \(h)\"><defs>\(defs)</defs>\(body)</svg>"
     }
 
+    // MARK: - Inheritance
+
+    /// The layout this slide uses and that layout's master.
+    private func inheritanceChain() -> (layout: Part?, master: Part?) {
+        guard let rel = slidePart.rels.first(ofType: RelType.slideLayout),
+              let layout = try? package.part(
+                at: PackURI.resolve(target: rel.target, relativeTo: slidePart.uri.baseURI))
+        else { return (nil, nil) }
+        guard let masterRel = layout.rels.first(ofType: RelType.slideMaster),
+              let master = try? package.part(
+                at: PackURI.resolve(target: masterRel.target, relativeTo: layout.uri.baseURI))
+        else { return (layout, nil) }
+        return (layout, master)
+    }
+
+    /// The first background in the slide → layout → master chain, which is the
+    /// order PowerPoint resolves it in. `p:bgRef` names a fill in the theme's
+    /// `bgFillStyleLst`; its colour child is the one that fill is built from,
+    /// which is close enough for a thumbnail and far closer than white.
+    private func backgroundFill(chain: (layout: Part?, master: Part?),
+                                box f: (Int, Int, Int, Int), defs: inout String) -> String? {
+        for part in [slidePart, chain.layout, chain.master].compactMap({ $0 }) {
+            guard let bg = (try? part.dom())?
+                .firstChild(named: "p:cSld")?.firstChild(named: "p:bg") else { continue }
+            if let bgPr = bg.firstChild(named: "p:bgPr") {
+                if let blip = bgPr.firstChild(named: "a:blipFill"),
+                   let pattern = imagePattern(blip, ownedBy: part, box: f, defs: &defs) {
+                    return pattern
+                }
+                if let paint = paint(for: bgPr, box: f, defs: &defs) { return paint }
+            }
+            if let bgRef = bg.firstChild(named: "p:bgRef") { return colorHex(in: bgRef) }
+        }
+        return nil
+    }
+
+    /// Whether the master's shapes are drawn — a layout or slide can switch
+    /// them off with `showMasterSp="0"`, which is how a full-bleed layout drops
+    /// the master's furniture.
+    private func showsMasterShapes(chain: (layout: Part?, master: Part?)) -> Bool {
+        for part in [slidePart, chain.layout].compactMap({ $0 }) {
+            if (try? part.dom())?[attribute: "showMasterSp"] == "0" { return false }
+        }
+        return true
+    }
+
+    /// A layout's or master's own decoration, beneath the slide's shapes.
+    ///
+    /// Placeholders are skipped: on a layout or a master they are prompts
+    /// ("Click to add title"), and PowerPoint never draws them on a slide.
+    private func renderInherited(_ part: Part, defs: inout String) -> String {
+        guard let tree = Slide.existingSpTree(of: part) else { return "" }
+        var out = ""
+        for child in tree.childElements {
+            if Placeholders.phElement(of: child) != nil { continue }
+            switch child.name {
+            case "p:sp": out += renderShape(child, ownedBy: part, defs: &defs)
+            case "p:pic": out += renderPicture(child, ownedBy: part)
+            case "p:graphicFrame": out += renderGraphicFrame(child, ownedBy: part, defs: &defs)
+            default: break
+            }
+        }
+        return out
+    }
+
     // MARK: - Shapes
 
-    private func renderShape(_ sp: XML.Element, defs: inout String) -> String {
+    private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
+                             defs: inout String) -> String {
         guard let spPr = sp.firstChild(named: "p:spPr") else { return "" }
-        let f = frame(of: spPr)
+        let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
         let prst = spPr.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
         let fill = paint(for: spPr, box: f, defs: &defs)
         let stroke = strokeAttrs(spPr)
         if let fill { out += geometry(prst, f, fill: fill, stroke: stroke) }
         else if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
-        if let txBody = sp.firstChild(named: "p:txBody") { out += renderText(txBody, box: f) }
+        if let txBody = sp.firstChild(named: "p:txBody") {
+            out += renderText(txBody, box: f,
+                              inheriting: inheritedRunDefaults(for: sp, ownedBy: owner))
+        }
         return out
+    }
+
+    /// A shape's frame, resolving placeholder inheritance when it carries no
+    /// transform of its own — which is exactly what a placeholder cloned from a
+    /// layout looks like, and without this every one of them renders at the
+    /// slide's top-left corner with no size.
+    private func resolvedFrame(of sp: XML.Element, spPr: XML.Element,
+                               ownedBy owner: Part) -> (Int, Int, Int, Int) {
+        if spPr.firstChild(named: "a:xfrm") != nil { return frame(of: spPr) }
+        guard owner === slidePart, Placeholders.phElement(of: sp) != nil else {
+            return frame(of: spPr)
+        }
+        let slide = Slide(part: slidePart, package: package)
+        let shape = Shape(element: sp, part: slidePart, package: package)
+        guard let r = slide.effectiveFrame(of: shape) else { return frame(of: spPr) }
+        return (Int(r.x.rawValue), Int(r.y.rawValue),
+                Int(r.width.rawValue), Int(r.height.rawValue))
+    }
+
+    /// The default run properties a placeholder's text inherits.
+    ///
+    /// Resolution order is PowerPoint's: the layout's matching placeholder
+    /// `a:lstStyle`, then the master's `p:txStyles` entry for that class of
+    /// placeholder. Without this every inherited run falls back to 18pt dark
+    /// grey, which is why a deck rebuilt on a template's layouts renders in the
+    /// renderer's defaults instead of the template's typography — the one thing
+    /// applying a template is supposed to change.
+    private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
+        guard owner === slidePart, let ph = Placeholders.phElement(of: sp) else { return nil }
+        let idx = ph[attribute: "idx"].flatMap { Int($0) } ?? 0
+        let chain = inheritanceChain()
+
+        func level1(_ lstStyle: XML.Element?) -> XML.Element? {
+            lstStyle?.firstChild(named: "a:lvl1pPr")?.firstChild(named: "a:defRPr")
+        }
+
+        var layoutType = ph[attribute: "type"] ?? "obj"
+        if let layout = chain.layout, let tree = Slide.existingSpTree(of: layout) {
+            for element in tree.childElements {
+                guard let lph = Placeholders.phElement(of: element),
+                      (lph[attribute: "idx"].flatMap { Int($0) } ?? 0) == idx else { continue }
+                layoutType = lph[attribute: "type"] ?? layoutType
+                if let defaults = level1(element.firstChild(named: "p:txBody")?
+                    .firstChild(named: "a:lstStyle")) {
+                    return defaults
+                }
+                break
+            }
+        }
+
+        guard let master = chain.master, let dom = try? master.dom(),
+              let styles = dom.firstChild(named: "p:txStyles") else { return nil }
+        let bucket: String
+        switch Slide.masterTypeReduction[layoutType] ?? "body" {
+        case "title": bucket = "p:titleStyle"
+        case "body": bucket = "p:bodyStyle"
+        default: bucket = "p:otherStyle"
+        }
+        return level1(styles.firstChild(named: bucket))
     }
 
     private func geometry(_ prst: String, _ f: (Int, Int, Int, Int), fill: String, stroke: String) -> String {
@@ -86,7 +223,8 @@ struct SVGRenderer {
     // MARK: - Text (wrapped on real metrics when the typeface is registered,
     // else on a character-width estimate)
 
-    private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int)) -> String {
+    private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
+                            inheriting defaults: XML.Element? = nil) -> String {
         let (x, y, w, h) = f
         let bodyPr = txBody.firstChild(named: "a:bodyPr")
         // Bounded like every other coordinate here: `x + inset(…)` traps.
@@ -123,11 +261,14 @@ struct SVGRenderer {
             let rPr = pieces.first?.firstChild(named: "a:rPr")
             // ST_TextFontSize is 1pt–4000pt in hundredths. The file can say
             // anything, and `sz * 12700` on a large Int is an overflow crash.
-            let sizeHundredths = min(max(rPr?[attribute: "sz"].flatMap { Int($0) } ?? 1800, 100),
+            let sizeHundredths = min(max(rPr?[attribute: "sz"].flatMap { Int($0) }
+                ?? defaults?[attribute: "sz"].flatMap { Int($0) } ?? 1800, 100),
                                      400_000)
             let sizeEMU = sizeHundredths * emuPerPoint / 100
             let bold = rPr?[attribute: "b"] == "1"
-            let color = rPr.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) } ?? "#1A1A1A"
+                || (rPr?[attribute: "b"] == nil && defaults?[attribute: "b"] == "1")
+            let color = rPr.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) }
+                ?? defaults.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) } ?? "#1A1A1A"
             let align = p.firstChild(named: "a:pPr")?[attribute: "algn"] ?? "l"
             let (anchorX, textAnchor) = align == "ctr" ? (x + w / 2, "middle")
                 : align == "r" ? (x + w, "end") : (x, "start")
@@ -137,7 +278,7 @@ struct SVGRenderer {
             // both is what lets a deck with registered fonts take the measured
             // path for the text it actually renders, not just for runs that
             // happen to carry an explicit `a:latin`.
-            let typeface = resolvedTypeface(rPr)
+            let typeface = resolvedTypeface(rPr) ?? resolvedTypeface(defaults)
             if pieces.count == 1, let typeface, let metrics = fonts.metrics(for: typeface) {
                 // Measured path: real word wrap and baseline placement —
                 // single-run paragraphs only, since a mixed-size/font
@@ -285,23 +426,45 @@ struct SVGRenderer {
 
     // MARK: - Pictures
 
-    private func renderPicture(_ pic: XML.Element) -> String {
+    private func renderPicture(_ pic: XML.Element, ownedBy owner: Part) -> String {
         guard let spPr = pic.firstChild(named: "p:spPr") else { return "" }
         let (x, y, w, h) = frame(of: spPr)
         guard let rId = pic.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip")?[attribute: "r:embed"],
-              let rel = slidePart.rels.relationship(withId: rId) else { return "" }
-        let target = PackURI.resolve(target: rel.target, relativeTo: slidePart.uri.baseURI)
-        guard let media = package.parts[target] else { return "" }
+              let data = imageData(rId: rId, ownedBy: owner) else { return "" }
+        return "<image x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\" "
+            + "preserveAspectRatio=\"xMidYMid slice\" href=\"\(data)\"/>"
+    }
+
+    /// A `data:` URL for an embedded image, resolved against the part that owns
+    /// the relationship — a layout's photo lives in the layout's rels, not the
+    /// slide's, so this cannot assume the slide.
+    private func imageData(rId: String, ownedBy owner: Part) -> String? {
+        guard let rel = owner.rels.relationship(withId: rId) else { return nil }
+        let target = PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)
+        guard let media = package.parts[target] else { return nil }
         let ext = target.ext.lowercased()
         let mime = ext == "jpg" || ext == "jpeg" ? "image/jpeg" : ext == "gif" ? "image/gif" : "image/png"
-        let data = media.blob.base64EncodedString()
-        return "<image x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\" "
-            + "preserveAspectRatio=\"xMidYMid slice\" href=\"data:\(mime);base64,\(data)\"/>"
+        return "data:\(mime);base64,\(media.blob.base64EncodedString())"
+    }
+
+    /// An `a:blipFill` as an SVG pattern, so a photographic background renders
+    /// as the photograph rather than as a neutral grey box.
+    private func imagePattern(_ blip: XML.Element, ownedBy owner: Part,
+                              box f: (Int, Int, Int, Int), defs: inout String) -> String? {
+        guard let rId = blip.firstChild(named: "a:blip")?[attribute: "r:embed"],
+              let data = imageData(rId: rId, ownedBy: owner), f.2 > 0, f.3 > 0 else { return nil }
+        let id = "bg\(defs.count)"
+        defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" "
+            + "x=\"\(f.0)\" y=\"\(f.1)\" width=\"\(f.2)\" height=\"\(f.3)\">"
+            + "<image width=\"\(f.2)\" height=\"\(f.3)\" preserveAspectRatio=\"xMidYMid slice\" "
+            + "href=\"\(data)\"/></pattern>"
+        return "url(#\(id))"
     }
 
     // MARK: - Tables / charts
 
-    private func renderGraphicFrame(_ gf: XML.Element, defs: inout String) -> String {
+    private func renderGraphicFrame(_ gf: XML.Element, ownedBy owner: Part,
+                                    defs: inout String) -> String {
         guard let xfrm = gf.firstChild(named: "p:xfrm"),
               let off = xfrm.firstChild(named: "a:off"), let ext = xfrm.firstChild(named: "a:ext") else { return "" }
         let x = intAttr(off, "x"), y = intAttr(off, "y")
@@ -311,7 +474,7 @@ struct SVGRenderer {
            let tbl = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?.firstChild(named: "a:tbl") {
             return renderTable(tbl, x: x, y: y, defs: &defs)
         }
-        if uri.hasSuffix("/chart"), let plot = renderChart(gf, x: x, y: y, w: w, h: h) {
+        if uri.hasSuffix("/chart"), let plot = renderChart(gf, ownedBy: owner, x: x, y: y, w: w, h: h) {
             return plot
         }
         // Anything still unplotted — SmartArt, OLE, a chart kind with no plot
@@ -340,13 +503,14 @@ struct SVGRenderer {
     /// All scaling runs in `Double` and lands through `coord`: chart values
     /// come from the file unbounded, and coordinates are only bounded to
     /// ±2^40, so multiplying two of them would overflow `Int`.
-    private func renderChart(_ gf: XML.Element, x: Int, y: Int, w: Int, h: Int) -> String? {
+    private func renderChart(_ gf: XML.Element, ownedBy owner: Part,
+                             x: Int, y: Int, w: Int, h: Int) -> String? {
         guard w > 0, h > 0,
               let rId = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
                   .firstChild(named: "c:chart")?[attribute: "r:id"],
-              let rel = slidePart.rels.relationship(withId: rId),
+              let rel = owner.rels.relationship(withId: rId),
               let part = try? package.part(
-                  at: PackURI.resolve(target: rel.target, relativeTo: slidePart.uri.baseURI))
+                  at: PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI))
         else { return nil }
         let chart = Chart(part: part, package: package)
         guard let kind = chart.plotType else { return nil }

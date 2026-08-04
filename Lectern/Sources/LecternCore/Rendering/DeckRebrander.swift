@@ -17,6 +17,12 @@ public struct RebrandResult: Sendable, Equatable {
     /// Slides that gave up their own flat fill so the template's background —
     /// often the most recognisable thing a brand owns — is actually visible.
     public let backgroundsAdopted: Int
+    /// Slides rebuilt in the template's own placeholders rather than left
+    /// drawing their own boxes over it.
+    public let rebuilt: Int
+    /// Slides carrying a chart, table or picture the layout had nowhere to put,
+    /// kept as they were — off-brand beats losing content.
+    public let keptComposition: Int
 
     /// One SVG per slide, before and after, rendered by Rostrum from the decks
     /// themselves. The comparison *is* the product here: a rebrand is only
@@ -72,9 +78,15 @@ public actor DeckRebrander {
         let before = Self.previews(of: deck)
 
         let report: TemplateReport
+        let recomposed: RecomposeReport
         do {
             report = try deck.applyTemplate(
                 from: template, rebindingDirectFormatting: rebindingDirectFormatting)
+            // Pointing a slide at a layout is not the same as using it. Until
+            // the words move into the template's own placeholders the deck goes
+            // on drawing them at its own coordinates, on top of whatever the
+            // layout puts there — which is a collision, not a rebrand.
+            recomposed = try deck.recomposeOntoLayouts()
         } catch {
             throw RebrandError.failed("\(error)")
         }
@@ -98,6 +110,8 @@ public actor DeckRebrander {
             reboundColors: report.rebind.colors,
             reboundFonts: report.rebind.fonts,
             backgroundsAdopted: report.backgroundsAdopted,
+            rebuilt: recomposed.rebuilt.count,
+            keptComposition: recomposed.leftAlone.count,
             before: before,
             after: after,
             schemaIssues: ((try? deck.validate()) ?? []).map(\.description))
