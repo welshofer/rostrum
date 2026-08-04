@@ -78,6 +78,15 @@ public struct TemplateReport: Sendable, Equatable {
     /// result is the original deck in a slightly different colour.
     public var backgroundsAdopted: Int = 0
 
+    /// Whether the deck's light/dark polarity was preserved because the
+    /// template runs the other way up.
+    ///
+    /// A dark deck adopting a light brand keeps its own blacks and whites: the
+    /// alternative is turning it inside out while every unmatched literal stays
+    /// where it was, which is how a legible dark deck becomes dark text on dark
+    /// panels. It still takes the template's accents, fonts and layouts.
+    public var keptPolarity: Bool = false
+
     /// What rebinding direct formatting changed, when it was asked for.
     public var rebind: RebindReport = RebindReport()
 
@@ -138,8 +147,17 @@ extension Presentation {
 
         // Before anything is adopted: the deck's literals came from the theme
         // it has now, so that is the palette they have to be matched against.
+        //
+        // Unless the two disagree about which way up they are. A dark deck
+        // inverts the neutral slots, so rebinding its blacks and whites to
+        // `bg1`/`tx1` and then adopting a normally polarised theme turns the
+        // deck inside out — while every literal that matched nothing stays
+        // dark, leaving dark text on dark panels. When the polarities differ
+        // the neutrals stay literal and only the accents and fonts rebind.
+        let flips = Self.isInverted(theme) != Self.isInverted(template.theme)
+        report.keptPolarity = flips
         if rebindingDirectFormatting {
-            report.rebind = try rebindDirectFormattingToTheme()
+            report.rebind = try rebindDirectFormattingToTheme(includingNeutrals: !flips)
         }
 
         let templateMasters = template.slideMasters
@@ -226,7 +244,10 @@ extension Presentation {
                 continue
             }
             try repoint(slideAt: index, to: layout)
-            if try adoptBackground(slideAt: index, from: layout) {
+            // A dark deck keeping its own polarity must keep its own
+            // background too — dropping to a light layout background is the
+            // same inversion by another route.
+            if !flips, try adoptBackground(slideAt: index, from: layout) {
                 report.backgroundsAdopted += 1
             }
             report.relaid.append(.init(slide: index, from: old.name, to: layout.name, by: by))
@@ -355,6 +376,17 @@ extension Presentation {
             roles.insert("body")
         }
         return roles
+    }
+
+    /// Whether a theme's "light" slot is actually the darker of the two.
+    ///
+    /// Inverting `dk1`/`lt1` is a normal, deliberate way to build a dark deck —
+    /// Lectern's dark style writes `dk1=FFFFFF, lt1=000000` — and it means
+    /// every `bg1`/`tx1` reference in that deck resolves to the opposite of
+    /// what the same reference means under a conventional template.
+    static func isInverted(_ theme: Theme) -> Bool {
+        guard let dark = theme.color(.dk1), let light = theme.color(.lt1) else { return false }
+        return light.relativeLuminance < dark.relativeLuminance
     }
 
     /// Let the template's background through on a slide that was painting its

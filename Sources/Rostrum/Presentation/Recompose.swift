@@ -41,6 +41,7 @@ extension Presentation {
     public func recomposeOntoLayouts() throws -> RecomposeReport {
         var report = RecomposeReport()
         let area = Double(slideSize.width.rawValue) * Double(slideSize.height.rawValue)
+        let height = Double(slideSize.height.rawValue)
 
         for index in 0..<slides.count {
             let slide = try slides.slide(at: index)
@@ -50,7 +51,8 @@ extension Presentation {
             }
             let offered = Set(layout.placeholders.compactMap { $0.placeholder?.type })
 
-            switch Self.content(of: slide, slideArea: area, layoutOffers: offered) {
+            switch Self.content(of: slide, slideArea: area, slideHeight: height,
+                                layoutOffers: offered) {
             case .failure(let why):
                 report.leftAlone.append((index, why))
             case .success(let content):
@@ -77,7 +79,7 @@ extension Presentation {
         var pictures: [XML.Element]
     }
 
-    private static func content(of slide: Slide, slideArea: Double,
+    private static func content(of slide: Slide, slideArea: Double, slideHeight: Double,
                                 layoutOffers offered: Set<String>) -> Either {
         var texts: [(size: Double, paragraphs: [String])] = []
         var pictures: [XML.Element] = []
@@ -104,6 +106,12 @@ extension Presentation {
                 break
             }
             guard let frame = shape.textFrame else { continue }
+            // A running footer or a slide number is furniture, not content, and
+            // the template supplies its own — sweeping it into the body is how
+            // "PaperBanana: Automating Academic Illustration for AI Scientists"
+            // ends up as the last bullet on every slide.
+            if let box = slide.effectiveFrame(of: shape), slideHeight > 0,
+               Double(box.y.rawValue) / slideHeight > 0.86 { continue }
             let paragraphs = frame.paragraphs
                 .map { $0.runs.map(\.text).joined().trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { !$0.isEmpty }
@@ -147,7 +155,13 @@ extension Presentation {
         where !["p:nvGrpSpPr", "p:grpSpPr"].contains(child.name) {
             tree.removeChild(child)
         }
-        // A background the deck painted would hide the template's.
+        // A background the deck painted would hide the template's. Dropping it
+        // is safe precisely here and nowhere else: every shape that was drawn
+        // for that background has just been removed, and the text is about to
+        // be placed in the template's own placeholders, which carry the text
+        // colour the template's background expects. A slide that is *not*
+        // rebuilt keeps both, which is why the polarity guard in
+        // `applyTemplate` leaves those alone.
         if let cSld = try slide.part.dom().firstChild(named: "p:cSld"),
            let bg = cSld.firstChild(named: "p:bg") {
             cSld.removeChild(bg)

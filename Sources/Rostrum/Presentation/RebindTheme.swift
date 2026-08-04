@@ -47,6 +47,21 @@ extension Presentation {
     /// black on purpose will follow too.
     @discardableResult
     public func rebindDirectFormattingToTheme() throws -> RebindReport {
+        try rebindDirectFormattingToTheme(includingNeutrals: true)
+    }
+
+    /// - Parameter includingNeutrals: when false, the `dk1`/`lt1`/`dk2`/`lt2`
+    ///   slots are left as literals and only the accents and fonts rebind.
+    ///
+    ///   A caller that is about to swap this deck's theme for one of the
+    ///   opposite polarity must pass false. A dark deck inverts the neutral
+    ///   slots — Lectern's dark style writes `dk1=FFFFFF, lt1=000000` — so its
+    ///   black backgrounds rebind to `bg1` and its white text to `tx1`, and
+    ///   under a normally polarised template both flip: the deck turns white
+    ///   and the text turns black. Every literal that did not match a theme
+    ///   colour stays where it was, so a dark card keeps its dark fill and the
+    ///   now-black text on it becomes unreadable.
+    func rebindDirectFormattingToTheme(includingNeutrals: Bool) throws -> RebindReport {
         var report = RebindReport()
 
         // hex → the scheme token to write. Built from this deck's own theme,
@@ -54,6 +69,7 @@ extension Presentation {
         // the slot intended even when the map is not the identity.
         var colorToken: [String: String] = [:]
         for slot in ThemeSlot.allCases {
+            if !includingNeutrals, [.dk1, .lt1, .dk2, .lt2].contains(slot) { continue }
             guard let color = theme.color(slot) else { continue }
             let key = color.hex.uppercased()
             // First slot wins, and `ThemeSlot.allCases` puts dk1/lt1 before the
