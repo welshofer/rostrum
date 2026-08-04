@@ -37,6 +37,15 @@ public struct TemplateReport: Sendable, Equatable {
         /// miss, and without this the slide keeps its old layout and adopts
         /// nothing.
         case nearest
+        /// The slide's layout offered no placeholders at all, so its own
+        /// content was read instead — the largest type on the slide is its
+        /// headline, substantial prose elsewhere is a body, a large picture is
+        /// a picture.
+        ///
+        /// This is the only signal a deck assembled from freeform text boxes
+        /// carries, and without it every such slide matches the template's
+        /// Blank layout: the theme is adopted and none of the design is.
+        case content
     }
 
     public struct Relaid: Sendable, Equatable {
@@ -185,7 +194,25 @@ extension Presentation {
 
         for index in 0..<count {
             guard let old = currentLayout[index] else { continue }
+            let slideArea = Double(slideSize.width.rawValue) * Double(slideSize.height.rawValue)
             let match: (SlideLayout, TemplateReport.Match)? = {
+                // A layout with no placeholders says nothing about the slide,
+                // and matching it by signature or by the "blank" type lands
+                // every such slide on the template's Blank — which adopts the
+                // theme and shows none of the design. When the slide's own
+                // content says what it is, that is the better signal.
+                if old.placeholderSignature.isEmpty,
+                   let slide = try? slides.slide(at: index) {
+                    let roles = Self.inferredRoles(of: slide, slideArea: slideArea)
+                    if !roles.isEmpty,
+                       let hit = Self.nearest(wanted: roles, nameKey: Self.layoutKey(old.name),
+                                              // The first slide is the deck's
+                                              // cover; no other slide is.
+                                              cover: index == 0,
+                                              among: adoptedLayouts) {
+                        return (hit, .content)
+                    }
+                }
                 if let hit = bySignature[old.placeholderSignature] { return (hit, .signature) }
                 // "cust" is not an identity — every custom layout claims it —
                 // so it must not match another deck's custom layout by type.
@@ -217,12 +244,14 @@ extension Presentation {
 
     /// The placeholder role a type serves when re-laying. A template that
     /// offers `ctrTitle` where the deck had `title` is offering a title; one
-    /// that offers `obj` where the deck had `body` is offering somewhere for
-    /// the content to go. Matching on the raw tokens misses both.
+    /// that offers `subTitle`, `obj` or `tbl` where the deck had `body` is
+    /// offering somewhere for the rest of the words to go. Matching on the raw
+    /// tokens misses all of it — and costs the cover slide, whose only home in
+    /// most templates is a `ctrTitle`+`subTitle` layout.
     private static func role(of type: String) -> String {
         switch type {
         case "ctrTitle": "title"
-        case "obj", "tbl", "chart", "dgm", "clipArt", "media": "body"
+        case "subTitle", "obj", "tbl", "chart", "dgm", "clipArt", "media": "body"
         default: type
         }
     }
@@ -237,13 +266,19 @@ extension Presentation {
     /// Returns nil when nothing shares a single role, so an unrelated layout
     /// is never forced on a slide.
     private static func nearest(to old: SlideLayout, among candidates: [SlideLayout]) -> SlideLayout? {
-        let wanted = Set(old.placeholderSignature.map(role(of:)))
+        nearest(wanted: Set(old.placeholderSignature.map(role(of:))),
+                nameKey: layoutKey(old.name), among: candidates)
+    }
+
+    private static func nearest(wanted: Set<String>, nameKey oldKey: String,
+                                cover: Bool? = nil,
+                                among candidates: [SlideLayout]) -> SlideLayout? {
         guard !wanted.isEmpty else { return nil }
-        let oldKey = layoutKey(old.name)
 
         var best: (layout: SlideLayout, score: Int)?
         for candidate in candidates {
-            let offered = Set(candidate.placeholderSignature.map(role(of:)))
+            let raw = candidate.placeholderSignature
+            let offered = Set(raw.map(role(of:)))
             let covered = wanted.intersection(offered)
             guard !covered.isEmpty else { continue }
 
@@ -256,13 +291,70 @@ extension Presentation {
             // to carry a spare body slot — without it a section divider lands
             // on "Agenda" because Agenda offers title+body and "Section Header
             // 1" offers only a title.
-            if key.hasPrefix(oldKey) || oldKey.hasPrefix(key) { score += 8 }
+            if !oldKey.isEmpty, key.hasPrefix(oldKey) || oldKey.hasPrefix(key) { score += 8 }
+            // `ctrTitle` is the schema's word for the deck's cover, a
+            // distinction `role(of:)` deliberately flattens. It has to be put
+            // back here or a cover layout and a content layout look identical:
+            // the cover slide lands on "Agenda", or every content slide lands
+            // on "Title 1".
+            if let cover, raw.contains("ctrTitle") { score += cover ? 6 : -6 }
 
             // Strictly greater keeps the first of equals, and layouts arrive in
             // sldLayoutIdLst order, so the choice is deterministic.
             if best == nil || score > best!.score { best = (candidate, score) }
         }
         return best.map(\.layout)
+    }
+
+    /// The placeholder roles a slide's own content implies.
+    ///
+    /// Consulted only when the slide's layout offers no placeholders at all,
+    /// which is the shape of every deck assembled from freeform text boxes —
+    /// everything Rostrum itself wrote before the builders bound placeholders,
+    /// and most generated or exported decks. Such a slide carries its
+    /// structure only in its geometry and type sizes, so that is what gets
+    /// read: the largest run on the slide is its headline, and substantial
+    /// text in any other box is a body.
+    ///
+    /// Deliberately coarse. It decides which of a template's layouts a slide
+    /// is closest to, and being one layout out is a far smaller error than
+    /// putting every slide on Blank.
+    static func inferredRoles(of slide: Slide, slideArea: Double) -> Set<String> {
+        var texts: [(size: Double, characters: Int, paragraphs: Int)] = []
+        var roles: Set<String> = []
+
+        for shape in slide.shapes.all {
+            if shape.kind == .picture,
+               let frame = slide.effectiveFrame(of: shape), slideArea > 0,
+               Double(frame.width.rawValue) * Double(frame.height.rawValue) / slideArea >= 0.12 {
+                roles.insert("pic")
+            }
+            guard let frame = shape.textFrame else { continue }
+            let paragraphs = frame.paragraphs
+            let characters = frame.text.trimmingCharacters(in: .whitespacesAndNewlines).count
+            guard characters > 0 else { continue }
+            // An unsized run inherits from the layout we are leaving, so it
+            // cannot be compared — treat it as ordinary body copy.
+            let size = paragraphs.flatMap(\.runs).compactMap(\.fontSize).max() ?? 18
+            texts.append((size, characters, paragraphs.filter {
+                !$0.runs.map(\.text).joined()
+                    .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            }.count))
+        }
+        guard !texts.isEmpty else { return roles }
+
+        // The headline is the largest type on the slide; ties go to the wordiest
+        // so a one-word kicker set in the same size does not win.
+        let headline = texts.max { ($0.size, $0.characters) < ($1.size, $1.characters) }!
+        roles.insert("title")
+
+        // Anything else carrying real prose is where the content goes. A
+        // single short line is a kicker, an attribution or a page number.
+        let rest = texts.filter { $0.size != headline.size || $0.characters != headline.characters }
+        if rest.contains(where: { $0.paragraphs >= 2 || $0.characters >= 40 }) {
+            roles.insert("body")
+        }
+        return roles
     }
 
     /// Let the template's background through on a slide that was painting its

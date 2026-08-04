@@ -256,6 +256,57 @@ import Testing
         #expect(try deck.slides.slide(at: 0).layout?.name == before, "a kept slide was moved")
     }
 
+    /// A deck assembled from freeform text boxes — no placeholders anywhere,
+    /// every slide on the Blank layout — carries its structure only in its
+    /// geometry and type sizes. Matching on the layout alone puts all of it on
+    /// the template's Blank: the theme is adopted and none of the design is,
+    /// which is exactly what a real 29-slide deck did against a 45-layout
+    /// corporate template.
+    @Test func aDeckOfFreeformTextBoxesIsRelaidFromItsContent() throws {
+        let deck = try Presentation()
+        let slide = try deck.slides.add()
+        #expect(slide.placeholders.isEmpty, "this test needs a slide with no placeholders")
+        try slide.addText("A Headline", in: Rect(x: .inches(1), y: .inches(0.5),
+                                                 width: .inches(8), height: .inches(1.2)),
+                          role: .title, style: deck.style.with(.title) { $0.sizePt = 44 })
+        try slide.addText(String(repeating: "prose that is clearly a body. ", count: 3),
+                          in: Rect(x: .inches(1), y: .inches(2),
+                                   width: .inches(8), height: .inches(3)),
+                          role: .body, style: deck.style)
+
+        let report = try deck.applyTemplate(from: try syntheticTemplate())
+
+        let relaid = try #require(report.relaid.first { $0.slide == deck.slides.count - 1 })
+        #expect(relaid.by == .content)
+        #expect(relaid.from == "Blank")
+        #expect(relaid.to != "Blank", "a freeform slide was left on Blank")
+    }
+
+    /// `ctrTitle` is the schema's word for the deck's cover. Flattening it into
+    /// "a title" makes a cover layout and a content layout indistinguishable —
+    /// and then either the cover lands on "Agenda" or all 29 content slides
+    /// land on "Title 1". Both happened before this was put back.
+    @Test func onlyTheFirstSlideIsTreatedAsTheCover() throws {
+        let deck = try Presentation()
+        for index in 0..<2 {
+            let slide = index == 0 ? try deck.slides.slide(at: 0) : try deck.slides.add()
+            try slide.addText("Headline \(index)", in: Rect(x: .inches(1), y: .inches(0.5),
+                                                            width: .inches(8), height: .inches(1.2)),
+                              role: .title, style: deck.style.with(.title) { $0.sizePt = 44 })
+            try slide.addText(String(repeating: "supporting words here. ", count: 3),
+                              in: Rect(x: .inches(1), y: .inches(2),
+                                       width: .inches(8), height: .inches(3)),
+                              role: .body, style: deck.style)
+        }
+
+        let report = try deck.applyTemplate(from: try syntheticTemplate())
+
+        let cover = try #require(report.relaid.first { $0.slide == 0 })
+        let second = try #require(report.relaid.first { $0.slide == 1 })
+        #expect(cover.to == "Title Slide", "the cover did not find the ctrTitle layout")
+        #expect(second.to != "Title Slide", "a content slide landed on the cover layout")
+    }
+
     /// The difference between a rebrand you can see and one you cannot. Every
     /// builder paints its slide a flat colour, which sits on top of whatever
     /// the adopted layout puts behind it — so a template whose section layout
