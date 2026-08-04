@@ -34,11 +34,26 @@ extension Presentation {
     }
 
     /// Some element names are shared by two unrelated schema types, so a
-    /// name-keyed required-attribute rule over-applies. `c:chart` is the case:
-    /// the CT_RelId *reference* in a slide (`<c:chart r:id="…"/>`, always a leaf)
-    /// requires `r:id`, but the CT_Chart *definition* in a chart part (always has
-    /// children) does not. Distinguish by structure to avoid a false positive.
+    /// name-keyed required-attribute rule over-applies. Distinguish by
+    /// structure to avoid a false positive.
+    ///
+    /// - `c:chart`: the CT_RelId *reference* in a slide (`<c:chart r:id="…"/>`,
+    ///   always a leaf) requires `r:id`; the CT_Chart *definition* in a chart
+    ///   part (always has children) does not.
+    /// - `a:ext`: DrawingML uses the name twice. Inside `a:xfrm` it is
+    ///   CT_PositiveSize2D — an extent, which really does require `cx`/`cy`.
+    ///   Inside `a:extLst` it is CT_OfficeArtExtension — an extension keyed by
+    ///   `uri`, which has no `cx`/`cy` and never did. `uri` is the
+    ///   discriminator: the extent type has no such attribute.
+    ///
+    ///   This one was worth 1,582 false positives on a single real corporate
+    ///   `.potx` — 791 extensions × the two attributes — which was every issue
+    ///   the lint reported for that file. A lint that cries wolf on valid
+    ///   PowerPoint output is worse than no lint, because the real defect it
+    ///   exists to catch is then invisible in the noise.
     private func isHomonymException(_ el: XML.Element) -> Bool {
-        el.name == "c:chart" && !el.childElements.isEmpty
+        if el.name == "c:chart" { return !el.childElements.isEmpty }
+        if el.name == "a:ext" { return el[attribute: "uri"] != nil }
+        return false
     }
 }
