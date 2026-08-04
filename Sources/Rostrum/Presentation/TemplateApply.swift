@@ -25,6 +25,18 @@ public struct TemplateReport: Sendable, Equatable {
         /// The layout names matched, case- and whitespace-insensitively.
         /// The weakest signal, and the only one a `cust` layout carries.
         case name
+        /// No exact counterpart existed, so the closest layout the template
+        /// does offer was chosen — scored on how many of the placeholder roles
+        /// the slide needs it can serve, with `ctrTitle` counted as a title and
+        /// `obj`/`tbl`/`chart` counted as a body.
+        ///
+        /// This is what makes a real designer template usable. Such templates
+        /// routinely omit `@type`, suffix their layout names ("Section Header
+        /// 1", not "Section Header") and offer a title-only section layout
+        /// where the source deck had title+body — so all three exact signals
+        /// miss, and without this the slide keeps its old layout and adopts
+        /// nothing.
+        case nearest
     }
 
     public struct Relaid: Sendable, Equatable {
@@ -47,6 +59,15 @@ public struct TemplateReport: Sendable, Equatable {
 
     /// Masters adopted from the template.
     public var mastersAdopted: Int = 0
+
+    /// Slides that gave up their own flat background so the template's shows.
+    ///
+    /// This is the difference between a rebrand you can see and one you cannot.
+    /// A deck that paints every slide a solid colour hides whatever the
+    /// template's layouts put behind them — adopt a brand whose section layout
+    /// is a solid orange field and, with the deck's own fill still on top, the
+    /// result is the original deck in a slightly different colour.
+    public var backgroundsAdopted: Int = 0
 
     /// What rebinding direct formatting changed, when it was asked for.
     public var rebind: RebindReport = RebindReport()
@@ -170,6 +191,7 @@ extension Presentation {
                 // so it must not match another deck's custom layout by type.
                 if let type = old.type, type != "cust", let hit = byType[type] { return (hit, .type) }
                 if let hit = byName[Self.layoutKey(old.name)] { return (hit, .name) }
+                if let hit = Self.nearest(to: old, among: adoptedLayouts) { return (hit, .nearest) }
                 return nil
             }()
             guard let (layout, by) = match else {
@@ -177,6 +199,9 @@ extension Presentation {
                 continue
             }
             try repoint(slideAt: index, to: layout)
+            if try adoptBackground(slideAt: index, from: layout) {
+                report.backgroundsAdopted += 1
+            }
             report.relaid.append(.init(slide: index, from: old.name, to: layout.name, by: by))
         }
 
@@ -188,6 +213,85 @@ extension Presentation {
     /// "Title and Content" finds "Title And Content".
     private static func layoutKey(_ name: String) -> String {
         name.lowercased().filter { !$0.isWhitespace }
+    }
+
+    /// The placeholder role a type serves when re-laying. A template that
+    /// offers `ctrTitle` where the deck had `title` is offering a title; one
+    /// that offers `obj` where the deck had `body` is offering somewhere for
+    /// the content to go. Matching on the raw tokens misses both.
+    private static func role(of type: String) -> String {
+        switch type {
+        case "ctrTitle": "title"
+        case "obj", "tbl", "chart", "dgm", "clipArt", "media": "body"
+        default: type
+        }
+    }
+
+    /// The template layout that best serves `old`'s placeholder roles.
+    ///
+    /// Scores each candidate on the roles it covers, penalises roles the slide
+    /// needs that it lacks, and mildly penalises extra placeholders the slide
+    /// will not fill — an unfilled slot is clutter, not a benefit. A name that
+    /// extends the source's ("Section Header" → "Section Header 1") breaks
+    /// ties, which is exactly how designer templates enumerate variants.
+    /// Returns nil when nothing shares a single role, so an unrelated layout
+    /// is never forced on a slide.
+    private static func nearest(to old: SlideLayout, among candidates: [SlideLayout]) -> SlideLayout? {
+        let wanted = Set(old.placeholderSignature.map(role(of:)))
+        guard !wanted.isEmpty else { return nil }
+        let oldKey = layoutKey(old.name)
+
+        var best: (layout: SlideLayout, score: Int)?
+        for candidate in candidates {
+            let offered = Set(candidate.placeholderSignature.map(role(of:)))
+            let covered = wanted.intersection(offered)
+            guard !covered.isEmpty else { continue }
+
+            var score = covered.count * 4
+            score -= wanted.subtracting(offered).count * 2
+            score -= offered.subtracting(wanted).count
+            let key = layoutKey(candidate.name)
+            // A name that extends the source's is the designer saying these are
+            // variants of one idea, which outranks a layout that merely happens
+            // to carry a spare body slot — without it a section divider lands
+            // on "Agenda" because Agenda offers title+body and "Section Header
+            // 1" offers only a title.
+            if key.hasPrefix(oldKey) || oldKey.hasPrefix(key) { score += 8 }
+
+            // Strictly greater keeps the first of equals, and layouts arrive in
+            // sldLayoutIdLst order, so the choice is deterministic.
+            if best == nil || score > best!.score { best = (candidate, score) }
+        }
+        return best.map(\.layout)
+    }
+
+    /// Let the template's background through on a slide that was painting its
+    /// own flat colour over it.
+    ///
+    /// Only a plain `solidFill` is given up, and only when the adopted layout
+    /// actually defines a background of its own. A picture or gradient the
+    /// author put on a specific slide is content and is left alone; so is a
+    /// slide whose new layout has nothing to show underneath, which would
+    /// otherwise fall through to a master background that was never designed
+    /// for it.
+    ///
+    /// Returns whether the slide gave one up.
+    @discardableResult
+    private func adoptBackground(slideAt index: Int, from layout: SlideLayout) throws -> Bool {
+        guard let layoutBg = (try? layout.part.dom())?
+            .firstChild(named: "p:cSld")?.firstChild(named: "p:bg"),
+            !layoutBg.childElements.isEmpty
+        else { return false }
+
+        let slide = try slides.slide(at: index)
+        guard let cSld = try slide.part.dom().firstChild(named: "p:cSld"),
+              let bg = cSld.firstChild(named: "p:bg"),
+              bg.firstChild(named: "p:bgPr")?.firstChild(named: "a:solidFill") != nil
+        else { return false }
+
+        cSld.removeChild(bg)
+        slide.part.markDirty()
+        return true
     }
 
     /// Point a slide's `slideLayout` relationship at `layout`, leaving the

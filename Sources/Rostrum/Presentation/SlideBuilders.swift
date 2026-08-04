@@ -44,7 +44,7 @@ public extension Presentation {
     func titleSlide(_ title: String, subtitle: String? = nil,
                     kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
-        let slide = try blankCanvas()
+        let slide = try canvas("title")
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
         // Fit the display size to the title so a long headline stays on the
@@ -66,9 +66,11 @@ public extension Presentation {
         }
         try slide.addText(title, in: titleBand,
                           role: .display, style: titleStyle, anchor: .bottom)
+            .bindPlaceholder(type: "ctrTitle")
         if let subtitle {
             try slide.addText(subtitle, in: grid.cell(column: 0, row: 9, columnSpan: 10, rowSpan: 2),
                               role: .subhead, style: s)
+                .bindPlaceholder(type: "subTitle", idx: 1)
         }
         return slide
     }
@@ -78,7 +80,7 @@ public extension Presentation {
     func sectionSlide(_ title: String, subtitle: String? = nil,
                       number: Int? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
-        let slide = try blankCanvas()
+        let slide = try canvas("secHead")
         let bg = s.accent(1)
         try slide.setBackground(.solid(bg))
         let onBg = s.textColor(on: bg)
@@ -99,6 +101,7 @@ public extension Presentation {
         let titleStyle = s.with(.title) { $0.sizePt = fitted }
         try slide.addText(title, in: titleBand,
                           role: .title, style: titleStyle, color: onBg, anchor: .bottom)
+            .bindPlaceholder(type: "title")
         if let subtitle {
             // Start higher (row 8) and run wider (9 cols) so a long closing CTA
             // wraps to a few lines well clear of the bottom edge, not off it. A
@@ -110,6 +113,7 @@ public extension Presentation {
                               in: grid.cell(column: 0, row: 8,
                                             columnSpan: Self.sideImageColumn - 1, rowSpan: 4),
                               role: .subhead, style: s, color: onBg)
+                .bindPlaceholder(type: "body", idx: 1)
         }
         return slide
     }
@@ -124,7 +128,7 @@ public extension Presentation {
     func closingSlide(_ title: String, callToAction: String? = nil,
                       contact: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
-        let slide = try blankCanvas()
+        let slide = try canvas("secHead")
         let bg = s.accent(1)
         try slide.setBackground(.solid(bg))
         let onBg = s.textColor(on: bg)
@@ -140,9 +144,11 @@ public extension Presentation {
         let titleStyle = s.with(.title) { $0.sizePt = fitted }
         try slide.addText(title, in: titleBand,
                           role: .title, style: titleStyle, color: onBg, anchor: .bottom)
+            .bindPlaceholder(type: "title")
         if let callToAction, !callToAction.isEmpty {
             try slide.addText(callToAction, in: grid.cell(column: 0, row: 7, columnSpan: 10, rowSpan: 3),
                               role: .subhead, style: s, color: onBg, anchor: .top)
+                .bindPlaceholder(type: "body", idx: 1)
         }
         if let contact, !contact.isEmpty {
             // A distinct bottom band (row 11), a clear row below the CTA — the
@@ -451,7 +457,7 @@ public extension Presentation {
     func calloutSlide(stat: String, caption: String,
                       kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
-        let slide = try blankCanvas()
+        let slide = try canvas("secHead")
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
         if let kicker {
@@ -474,7 +480,7 @@ public extension Presentation {
     @discardableResult
     func quoteSlide(_ quote: String, attribution: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
-        let slide = try blankCanvas()
+        let slide = try canvas("secHead")
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
         // Fit the quote: at the full 40pt a four-line quote runs ~240pt in a
@@ -488,10 +494,12 @@ public extension Presentation {
         try slide.addText("\u{201C}\(quote)\u{201D}",
                           in: quoteBand,
                           role: .quote, style: quoteStyle, align: .center, anchor: .middle)
+            .bindPlaceholder(type: "title")
         if let attribution {
             try slide.addText("— \(attribution)",
                               in: grid.cell(column: 1, row: 9, columnSpan: 10, rowSpan: 1),
                               role: .caption, style: s, align: .center)
+                .bindPlaceholder(type: "body", idx: 1)
         }
         return slide
     }
@@ -614,7 +622,7 @@ public extension Presentation {
     func statementSlide(_ claim: String, detail: String? = nil,
                         kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
-        let slide = try blankCanvas()
+        let slide = try canvas("secHead")
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
         let accent = s.legibleAccent(1, on: s.background)
@@ -642,10 +650,12 @@ public extension Presentation {
         let claimStyle = s.with(.quote) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText(claim, in: claimBand, role: .quote, style: claimStyle,
                           align: .center, anchor: .middle)
+            .bindPlaceholder(type: "title")
         if let detail, !detail.isEmpty {
             try slide.addText(detail, in: grid.cell(column: 1, row: 7, columnSpan: 10, rowSpan: 3),
                               role: .subhead, style: s, color: s.mutedInk,
                               align: .center, anchor: .top)
+                .bindPlaceholder(type: "body", idx: 1)
         }
         return slide
     }
@@ -804,6 +814,23 @@ public extension Presentation {
     /// free-shape builders paint on.
     private func blankCanvas() throws -> Slide { try slides.add() }
 
+    /// A canvas bound to the layout that matches what the slide is *for*.
+    ///
+    /// The builders place and size their own text, so the layout's placeholders
+    /// are not cloned — the shapes the builder makes are bound instead. What
+    /// the binding buys is that the deck states each slide's role in the
+    /// schema's own vocabulary, which is the only thing a template, a theme or
+    /// PowerPoint's Designer can match on. Built on `blankCanvas` every slide
+    /// looked identical to a re-lay: an empty placeholder signature, matching
+    /// nothing but the target's Blank layout.
+    ///
+    /// Falls back to a blank canvas when the deck's master has no such layout,
+    /// so a custom template can never make a builder throw.
+    private func canvas(_ layoutType: String) throws -> Slide {
+        guard let layout = layout(type: layoutType) else { return try blankCanvas() }
+        return try slides.add(layout: layout, cloningPlaceholders: false)
+    }
+
     private func deckGrid(_ style: DeckStyle) -> Grid {
         Grid(in: bounds, columns: 12, rows: 12, gutter: style.gutter, margin: style.margin)
     }
@@ -830,7 +857,7 @@ public extension Presentation {
 
     /// A content slide with the background painted; returns the slide.
     private func startContentSlide(_ style: DeckStyle) throws -> Slide {
-        let slide = try blankCanvas()
+        let slide = try canvas("obj")
         try slide.setBackground(.solid(style.background))
         return slide
     }
@@ -919,6 +946,7 @@ public extension Presentation {
                              fallback: title.count > 60 ? 30.0 : (title.count > 36 ? 34.0 : style.type(.title).sizePt))
         let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top)
+            .bindPlaceholder(type: "title")
         let wraps = estimatedLines(title, style: titleStyle.type(.title), width: band.width) >= 2
         // A hairline under the title, the width of the text column.
         //

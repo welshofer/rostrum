@@ -3,9 +3,14 @@ import Testing
 @testable import Rostrum
 
 @Suite struct SlideBuildersTests {
-    /// Every builder must produce a FREE-SHAPE slide: no placeholders, real
-    /// shapes, and exactly ONE slideLayout relationship (the top blankCanvas risk).
-    @Test func everyBuilderIsFreeShapeWithOneLayoutRel() throws {
+    /// Every builder must land on a layout that says what the slide is *for*,
+    /// bind its own shapes to that layout's placeholders, and never leak an
+    /// EMPTY one — an unfilled placeholder renders as a "Click to add title"
+    /// prompt in PowerPoint, which is what the free-shape rule originally
+    /// existed to prevent. Binding filled placeholders is the opposite problem:
+    /// without it every slide sat on Blank, so re-laying onto another deck's
+    /// template could only ever match that template's Blank layout.
+    @Test func everyBuilderBindsFilledPlaceholdersAndOneLayoutRel() throws {
         let builders: [(String, (Presentation) throws -> Slide)] = [
             ("title", { try $0.titleSlide("T", subtitle: "S", kicker: "K") }),
             ("section", { try $0.sectionSlide("Sec", subtitle: "sub", number: 1) }),
@@ -23,10 +28,20 @@ import Testing
         for (name, make) in builders {
             let deck = try Presentation()
             let slide = try make(deck)
-            #expect(slide.placeholders.isEmpty, "\(name) leaked a placeholder")
             #expect(!slide.shapes.all.isEmpty, "\(name) produced no shapes")
             #expect(slide.part.rels.items.filter { $0.type == RelType.slideLayout }.count == 1,
                     "\(name) has != 1 layout rel")
+            for placeholder in slide.placeholders {
+                let text = placeholder.textFrame?.text ?? ""
+                #expect(!text.isEmpty,
+                        "\(name) leaked an empty \(placeholder.placeholder?.type ?? "?") placeholder")
+            }
+            // The layout it landed on must not be Blank, or a re-lay onto
+            // another deck's template has nothing to match on.
+            let rel = slide.part.rels.items.first { $0.type == RelType.slideLayout }!
+            let uri = PackURI.resolve(target: rel.target, relativeTo: slide.part.uri.baseURI)
+            let layout = SlideLayout(part: try deck.package.part(at: uri), package: deck.package)
+            #expect(layout.type != "blank", "\(name) still lands on the Blank layout")
         }
     }
 
@@ -63,7 +78,9 @@ import Testing
             .contains { $0.firstChild(named: "p:txBody")?.children(named: "a:p")
                 .contains { $0.firstChild(named: "a:pPr")?.firstChild(named: "a:buChar") != nil } ?? false }
         #expect(hasBullet)
-        #expect(slide.placeholders.isEmpty)
+        // The title is bound, so the template a deck is re-laid onto can style
+        // it — and it carries text, so it is never an empty prompt box.
+        #expect(slide.title?.textFrame?.text == "Highlights")
     }
 
     @Test func titleSlideUsesDisplayScaleAndLegibleColor() throws {
@@ -581,5 +598,46 @@ import Testing
             .firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
             .firstChild(named: "a:tbl"))
         #expect(tbl.children(named: "a:tr").count == SlideCapacity.tableRows)
+    }
+
+    /// Binding is what makes a slide restylable at all: the shape keeps its own
+    /// geometry and formatting, but the slide now states in the schema's own
+    /// vocabulary what the shape is for. A deck of unbound text boxes cannot be
+    /// re-laid onto a template, and PowerPoint's own Designer and Themes have
+    /// nothing to act on either.
+    @Test func bindingAPlaceholderKeepsTheShapeAndSurvivesARoundTrip() throws {
+        let deck = try Presentation()
+        let slide = try deck.slides.add()
+        let shape = try slide.addText("Headline", in: Rect(x: .inches(1), y: .inches(1),
+                                                           width: .inches(6), height: .inches(1)),
+                                      role: .title, style: deck.style)
+        let frameBefore = slide.effectiveFrame(of: shape)
+        shape.bindPlaceholder(type: "title")
+
+        #expect(shape.placeholder?.type == "title")
+        #expect(shape.placeholder?.idx == 0)
+        #expect(slide.effectiveFrame(of: shape) == frameBefore, "binding moved the shape")
+        #expect(try deck.validate().isEmpty)
+
+        let reopened = try Presentation(data: try deck.serializedData())
+        let back = try reopened.slides.slide(at: reopened.slides.count - 1)
+        #expect(back.title?.textFrame?.text == "Headline")
+        // A placeholder is not a text box and cannot be ungrouped.
+        let nv = back.title!.element.childElements.first!
+        #expect(nv.firstChild(named: "p:cNvSpPr")?[attribute: "txBox"] == nil)
+        #expect(nv.firstChild(named: "p:cNvSpPr")?.firstChild(named: "a:spLocks") != nil)
+    }
+
+    /// idx is how a slide says *which* of the layout's placeholders it means;
+    /// writing it on the title (always 0) would be noise, and omitting it on
+    /// the body would bind two shapes to the same slot.
+    @Test func placeholderIndexIsWrittenOnlyWhereItDisambiguates() throws {
+        let deck = try Presentation()
+        let slide = try deck.titleSlide("T", subtitle: "S")
+        let title = slide.placeholders.first { $0.placeholder?.type == "ctrTitle" }
+        let subtitle = slide.placeholders.first { $0.placeholder?.type == "subTitle" }
+
+        #expect(Placeholders.phElement(of: title!.element)?[attribute: "idx"] == nil)
+        #expect(subtitle?.placeholder?.idx == 1)
     }
 }

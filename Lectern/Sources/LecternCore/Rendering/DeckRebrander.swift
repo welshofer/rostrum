@@ -14,6 +14,9 @@ public struct RebrandResult: Sendable, Equatable {
     /// Hard-coded colours and fonts turned back into theme references.
     public let reboundColors: Int
     public let reboundFonts: Int
+    /// Slides that gave up their own flat fill so the template's background —
+    /// often the most recognisable thing a brand owns — is actually visible.
+    public let backgroundsAdopted: Int
 
     /// One SVG per slide, before and after, rendered by Rostrum from the decks
     /// themselves. The comparison *is* the product here: a rebrand is only
@@ -94,6 +97,7 @@ public actor DeckRebrander {
             kept: report.kept.map { $0.slide + 1 },
             reboundColors: report.rebind.colors,
             reboundFonts: report.rebind.fonts,
+            backgroundsAdopted: report.backgroundsAdopted,
             before: before,
             after: after,
             schemaIssues: ((try? deck.validate()) ?? []).map(\.description))

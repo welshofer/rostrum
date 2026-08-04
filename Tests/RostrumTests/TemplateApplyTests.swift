@@ -59,6 +59,37 @@ import Testing
         #expect(report.changed)
     }
 
+    /// A real designer template names its variants ("Section Header 1"), omits
+    /// `@type`, and offers a title-only section layout where the source deck
+    /// had title+body — so signature, type and name all miss. Without the
+    /// nearest-match fallback the slide keeps its old layout and adopts none of
+    /// the brand, which is what made a Fabrikam rebrand come back looking like
+    /// the original deck in a slightly different blue.
+    @Test func aSectionSlideFindsTheTemplatesSectionVariant() throws {
+        let template = try syntheticTemplate()
+        // Reshape the template's section layout the way a designer's does:
+        // renamed with a numeric suffix, no body placeholder, no @type.
+        let section = template.layouts.first { $0.type == "secHead" }!
+        let dom = try section.part.dom()
+        dom[attribute: "type"] = nil
+        dom.firstChild(named: "p:cSld")![attribute: "name"] = "Section Header 1"
+        let tree = try Slide.spTree(of: section.part)
+        for sp in tree.children(named: "p:sp")
+        where Placeholders.phElement(of: sp)?[attribute: "type"] == "body" {
+            tree.removeChild(sp)
+        }
+        section.part.markDirty()
+
+        let deck = try Presentation()
+        try deck.sectionSlide("The Puzzle", subtitle: "visible danger", number: 1)
+        let report = try deck.applyTemplate(from: template)
+
+        let relaid = report.relaid.first { $0.from == "Section Header" }
+        #expect(relaid?.to == "Section Header 1")
+        #expect(relaid?.by == .nearest)
+        #expect(report.kept.isEmpty, "a section slide adopted nothing")
+    }
+
     @Test func applyingATemplateLeavesSlideCountAndTextAlone() throws {
         let deck = try Presentation()
         try deck.titleSlide("Keep me", subtitle: "and me")
@@ -155,39 +186,119 @@ import Testing
     /// The property the whole feature rests on: layouts match across producers
     /// by what placeholders they offer, not by name or `@type`.
     ///
-    /// Measured on this corpus, name+type together match **nothing** — a
+    /// Measured on this corpus, name and type together match **nothing** — a
     /// designer template leaves `@type` off, Keynote and Google Slides use
-    /// their own naming — while the placeholder signature matches most of it.
-    /// If this ever regresses to a name/type match the feature is dead and
-    /// this is how we find out.
+    /// their own naming — while the placeholder vocabulary carries all of it,
+    /// exactly (`.signature`) or by nearest role coverage (`.nearest`). If a
+    /// match ever comes from the raw name or type the feature is dead and this
+    /// is how we find out.
     @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func layoutsMatchByPlaceholderSignatureNotByName() throws {
         let deck = try Presentation(contentsOf: try fixture("FromKeynote.pptx"))
         let report = try deck.applyTemplate(from: try template())
 
         #expect(!report.relaid.isEmpty, "nothing matched at all")
-        #expect(report.relaid.allSatisfy { $0.by == .signature },
-                "a match came from somewhere other than the placeholder signature")
+        #expect(!report.relaid.contains { $0.by == .name || $0.by == .type },
+                "a match came from a name or @type these producers do not share")
+        #expect(report.relaid.contains { $0.by == .signature },
+                "the exact placeholder signature carried none of it")
         // Names really are unrelated — this is why signature matching is the
         // only thing that works.
         #expect(report.relaid.allSatisfy { $0.from != $0.to })
     }
 
-    /// A slide whose layout has no counterpart is left alone rather than
-    /// dropped onto something generic, and is named in the report.
-    @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func unmatchedSlidesAreKeptAndReported() throws {
+    /// Every slide is accounted for exactly once, and a slide reported as kept
+    /// really was left where it was.
+    @Test(.enabled(if: TemplateApplyTests.hasCorporateTemplate)) func everySlideIsRelaidOrKeptExactlyOnce() throws {
         let deck = try Presentation(contentsOf: try fixture("FromKeynote.pptx"))
         let before = (0..<deck.slides.count).compactMap { try? deck.slides.slide(at: $0).layout?.name }
         let report = try deck.applyTemplate(from: try template())
 
-        #expect(!report.kept.isEmpty, "this corpus has layouts the template cannot serve")
         for kept in report.kept {
             let now = try deck.slides.slide(at: kept.slide).layout?.name
             #expect(now == before[kept.slide], "a 'kept' slide was moved anyway")
             #expect(now == kept.layout)
         }
-        // Every slide is accounted for exactly once.
         let touched = Set(report.relaid.map(\.slide)).union(report.kept.map(\.slide))
         #expect(touched.count == deck.slides.count)
+    }
+
+    /// A slide whose layout asks for something the template has no answer to is
+    /// left alone rather than dropped onto whatever is generic — nearest-match
+    /// needs at least one shared placeholder role before it will move anything.
+    @Test func aSlideTheTemplateCannotServeIsKeptNotForced() throws {
+        let deck = try Presentation()
+        // Reshape the deck's blank layout into something the template has no
+        // answer to: a picture wall, with no @type and a name of its own, so
+        // signature, type and name all miss and only nearest-match is left.
+        let blank = deck.layouts.first { $0.type == "blank" }!
+        let dom = try blank.part.dom()
+        dom[attribute: "type"] = nil
+        dom.firstChild(named: "p:cSld")![attribute: "name"] = "Photo Wall"
+        let sp = XML.Element("p:sp")
+        let nvSpPr = XML.Element("p:nvSpPr")
+        nvSpPr.appendElement(XML.Element("p:cNvPr", attributes: [("id", "9"), ("name", "Pic 9")]))
+        nvSpPr.appendElement(XML.Element("p:cNvSpPr"))
+        let nvPr = XML.Element("p:nvPr")
+        nvPr.appendElement(XML.Element("p:ph", attributes: [("type", "pic"), ("idx", "1")]))
+        nvSpPr.appendElement(nvPr)
+        sp.appendElement(nvSpPr)
+        sp.appendElement(XML.Element("p:spPr"))
+        try Slide.spTree(of: blank.part).appendElement(sp)
+        blank.part.markDirty()
+
+        // A fresh deck's first slide sits on that layout.
+        let before = try deck.slides.slide(at: 0).layout?.name
+        #expect(before == "Photo Wall")
+        let report = try deck.applyTemplate(from: try syntheticTemplate())
+
+        #expect(report.kept.contains { $0.slide == 0 },
+                "a slide asking for a picture wall was forced onto a text layout")
+        #expect(try deck.slides.slide(at: 0).layout?.name == before, "a kept slide was moved")
+    }
+
+    /// The difference between a rebrand you can see and one you cannot. Every
+    /// builder paints its slide a flat colour, which sits on top of whatever
+    /// the adopted layout puts behind it — so a template whose section layout
+    /// is a solid orange field showed none of it until the slide gave its own
+    /// fill up.
+    @Test func aSlideGivesUpItsFlatBackgroundSoTheTemplatesShows() throws {
+        let template = try syntheticTemplate()
+        let titleLayout = template.layouts.first { $0.type == "title" }!
+        let cSld = try #require(try titleLayout.part.dom().firstChild(named: "p:cSld"))
+        let bg = XML.Element("p:bg")
+        let bgPr = XML.Element("p:bgPr")
+        let fill = XML.Element("a:solidFill")
+        fill.appendElement(XML.Element("a:srgbClr", attributes: [("val", "FF6700")]))
+        bgPr.appendElement(fill)
+        bgPr.appendElement(XML.Element("a:effectLst"))
+        bg.appendElement(bgPr)
+        cSld.insertChild(bg, beforeAnyOf: ["p:spTree"])
+        titleLayout.part.markDirty()
+
+        let deck = try Presentation()
+        let slide = try deck.titleSlide("Headline", subtitle: "sub")
+        #expect(try slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:bg") != nil, "the builder stopped painting a background")
+
+        let report = try deck.applyTemplate(from: template)
+
+        #expect(report.backgroundsAdopted >= 1)
+        #expect(try slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:bg") == nil,
+                "the slide kept painting over the template's background")
+    }
+
+    /// Only when there is something to show underneath: a layout with no
+    /// background of its own would drop the slide through to a master
+    /// background never designed for it.
+    @Test func aSlideKeepsItsBackgroundWhenTheLayoutOffersNone() throws {
+        let deck = try Presentation()
+        let slide = try deck.titleSlide("Headline", subtitle: "sub")
+        let report = try deck.applyTemplate(from: try syntheticTemplate())
+
+        #expect(report.backgroundsAdopted == 0)
+        #expect(try slide.part.dom().firstChild(named: "p:cSld")?
+            .firstChild(named: "p:bg") != nil, "a slide lost its background for nothing")
     }
 
     @Test func aTemplateWithNoMasterIsRefused() throws {

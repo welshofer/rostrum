@@ -253,6 +253,9 @@ struct RebrandResultView: View {
         if result.reboundColors > 0 || result.reboundFonts > 0 {
             parts.append("\(result.reboundColors) colours and \(result.reboundFonts) fonts rebound")
         }
+        if result.backgroundsAdopted > 0 {
+            parts.append("\(result.backgroundsAdopted) backgrounds adopted")
+        }
         return parts.joined(separator: " · ")
     }
 }

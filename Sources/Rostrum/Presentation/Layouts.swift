@@ -58,6 +58,14 @@ extension Slides {
     /// would break inheritance.
     @discardableResult
     public func add(layout: SlideLayout) throws -> Slide {
+        try add(layout: layout, cloningPlaceholders: true)
+    }
+
+    /// As `add(layout:)`, but a caller that authors its own placeholder shapes
+    /// (the slide builders do, because they place and size them deliberately)
+    /// passes `false` so it does not also get an empty cloned set.
+    @discardableResult
+    func add(layout: SlideLayout, cloningPlaceholders: Bool) throws -> Slide {
         let slide = try add()
         // Retarget the layout relationship from the default to the chosen one.
         if let rel = slide.part.rels.first(ofType: RelType.slideLayout) {
@@ -67,7 +75,7 @@ extension Slides {
             type: RelType.slideLayout,
             target: slide.part.uri.relativeReference(to: layout.part.uri))
 
-        try Placeholders.clone(from: layout.part, to: slide.part)
+        if cloningPlaceholders { try Placeholders.clone(from: layout.part, to: slide.part) }
         return slide
     }
 }
@@ -142,6 +150,52 @@ extension Shape {
     public var placeholder: (type: String, idx: Int)? {
         guard let ph = Placeholders.phElement(of: element) else { return nil }
         return (ph[attribute: "type"] ?? "obj", ph[attribute: "idx"].flatMap { Int($0) } ?? 0)
+    }
+
+    /// Declare what this shape is *for*, binding it to the layout placeholder
+    /// of that type.
+    ///
+    /// A shape that carries its own geometry and formatting still renders
+    /// exactly as before — the binding adds meaning, not appearance. What it
+    /// buys is that the slide now says "this is the title" in the schema's own
+    /// vocabulary, which is the only thing a layout, a theme, PowerPoint's
+    /// Designer or `applyTemplate` can match on. A deck built entirely from
+    /// unbound text boxes is un-restylable by anything, including PowerPoint.
+    ///
+    /// `idx` identifies which of the layout's placeholders is meant and is
+    /// omitted for `title`/`ctrTitle`, which are always index 0.
+    public func bindPlaceholder(type: String, idx: Int? = nil) {
+        guard let nvContainer = element.childElements.first else { return }
+
+        let nvPr: XML.Element
+        if let existing = nvContainer.firstChild(named: "p:nvPr") {
+            nvPr = existing
+        } else {
+            nvPr = XML.Element("p:nvPr")
+            nvContainer.appendElement(nvPr)
+        }
+        if let stale = nvPr.firstChild(named: "p:ph") { nvPr.removeChild(stale) }
+
+        var attributes: [(String, String)] = []
+        if type != "obj" { attributes.append(("type", type)) }
+        if let idx, idx != 0 { attributes.append(("idx", String(idx))) }
+        // p:ph leads CT_ApplicationNonVisualDrawingProps.
+        nvPr.insertChild(
+            XML.Element("p:ph", attributes: attributes),
+            beforeAnyOf: ["a:audioCd", "a:wavAudioFile", "a:audioFile", "a:videoFile",
+                          "a:quickTimeFile", "p:custDataLst", "p:extLst"])
+
+        // Placeholders are not text boxes and cannot be ungrouped — this is the
+        // shape PowerPoint itself writes.
+        if let cNvSpPr = nvContainer.firstChild(named: "p:cNvSpPr") {
+            cNvSpPr[attribute: "txBox"] = nil
+            if cNvSpPr.firstChild(named: "a:spLocks") == nil {
+                cNvSpPr.insertChild(
+                    XML.Element("a:spLocks", attributes: [("noGrp", "1")]),
+                    beforeAnyOf: ["a:extLst"])
+            }
+        }
+        part.markDirty()
     }
 }
 
