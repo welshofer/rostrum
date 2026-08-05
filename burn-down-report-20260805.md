@@ -192,3 +192,10 @@ runs both Swift test suites, the executable documentation, and both app builds.
     `Lectern/Sources/LecternCore/Workbench/DeckWorkbench.swift` now owns an
     opened `Presentation` inside an actor and returns `DeckInspection`; no
     `Presentation` crosses isolation.
+  - Opus review requested changes. Addressed all three before closing the
+    wave: arbitrary files now use a 1 GiB declared-output budget; an
+    unresolvable slide is skipped and reported instead of aborting inspection;
+    render errors are mapped to the workbench error contract; snapshot models
+    are producer-owned rather than exposing an unusable public initializer.
+  - Final integration gate: 595 Rostrum tests, 128 LecternCore tests, README
+    snippets, macOS build, and iOS Simulator build all passed.

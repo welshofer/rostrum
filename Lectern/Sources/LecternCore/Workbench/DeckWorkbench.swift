@@ -23,7 +23,7 @@ public struct DeckInspection: Sendable, Equatable {
     public let charts: [ChartInspection]
     public let validationIssues: [String]
 
-    public init(
+    init(
         sourceURL: URL,
         fileName: String,
         byteCount: Int,
@@ -139,6 +139,7 @@ public enum DeckWorkbenchError: Error, Sendable, Equatable, CustomStringConverti
     case emptyFile
     case cannotOpen(String)
     case slideOutOfRange(Int)
+    case cannotRenderSlide(Int, String)
 
     public var description: String {
         switch self {
@@ -148,6 +149,8 @@ public enum DeckWorkbenchError: Error, Sendable, Equatable, CustomStringConverti
             "Rostrum could not open this PowerPoint file: \(message)"
         case .slideOutOfRange(let index):
             "Slide \(index + 1) is outside this deck."
+        case .cannotRenderSlide(let index, let message):
+            "Slide \(index + 1) could not be rendered: \(message)"
         }
     }
 }
@@ -156,16 +159,26 @@ public enum DeckWorkbenchError: Error, Sendable, Equatable, CustomStringConverti
 /// mutated. The first slice is intentionally read-only; edit operations build
 /// on this actor so `Presentation` never crosses an isolation boundary.
 public actor DeckWorkbench {
+    /// Same conservative ceiling as `pptx-tool`: far above a real deck, far
+    /// below what a zip bomb wants. The app opens files selected from outside
+    /// its own container, so inheriting Rostrum's `.unlimited` library default
+    /// would make this an unbounded decompression entry point.
+    public static let defaultReadLimit = 1 << 30
+
     public let sourceURL: URL
 
     private let presentation: Presentation
     private let byteCount: Int
     private let embeddedFonts: [String]
 
-    public init(data: Data, sourceURL: URL) throws {
+    public init(
+        data: Data,
+        sourceURL: URL,
+        limits: ZipReader.Limits = .init(totalUncompressedBytes: DeckWorkbench.defaultReadLimit)
+    ) throws {
         guard !data.isEmpty else { throw DeckWorkbenchError.emptyFile }
         do {
-            let presentation = try Presentation(data: data)
+            let presentation = try Presentation(data: data, limits: limits)
             self.presentation = presentation
             self.sourceURL = sourceURL
             self.byteCount = data.count
@@ -177,8 +190,8 @@ public actor DeckWorkbench {
 
     /// Read the entire document into a Sendable inspection model.
     public func inspect() throws -> DeckInspection {
-        let slides = try inspectedSlides()
-        let charts = try inspectedCharts()
+        let slideResult = inspectedSlides()
+        let chartResult = inspectedCharts()
         let properties = presentation.documentProperties
         let themeFonts = [presentation.theme.majorFont, presentation.theme.minorFont]
             .compactMap { $0 }
@@ -217,9 +230,10 @@ public actor DeckWorkbench {
             sections: presentation.sections.map {
                 SectionInspection(id: $0.id, name: $0.name, slideIndices: $0.slideIndices)
             },
-            slides: slides,
-            charts: charts,
-            validationIssues: try presentation.validate().map(\.description))
+            slides: slideResult.values,
+            charts: chartResult.values,
+            validationIssues: try presentation.validate().map(\.description)
+                + slideResult.issues + chartResult.issues)
     }
 
     /// Render one slide on demand. Arbitrary decks can carry multi-megabyte
@@ -229,13 +243,25 @@ public actor DeckWorkbench {
         guard (0..<presentation.slides.count).contains(index) else {
             throw DeckWorkbenchError.slideOutOfRange(index)
         }
-        return try presentation.renderSVG(slideAt: index, pixelWidth: pixelWidth)
+        do {
+            return try presentation.renderSVG(slideAt: index, pixelWidth: pixelWidth)
+        } catch {
+            throw DeckWorkbenchError.cannotRenderSlide(index, String(describing: error))
+        }
     }
 
-    private func inspectedSlides() throws -> [SlideInspection] {
+    private func inspectedSlides() -> (values: [SlideInspection], issues: [String]) {
+        var values: [SlideInspection] = []
+        var issues: [String] = []
         var chartIndex = 0
-        return try (0..<presentation.slides.count).map { index in
-            let slide = try presentation.slides.slide(at: index)
+        for index in 0..<presentation.slides.count {
+            let slide: Slide
+            do {
+                slide = try presentation.slides.slide(at: index)
+            } catch {
+                issues.append("slide \(index + 1) cannot be resolved: \(error)")
+                continue
+            }
             let shapes = Self.flatten(slide.shapes.all)
             let textBlocks = shapes.compactMap(\.textFrame).map(\.text)
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -249,7 +275,7 @@ public actor DeckWorkbench {
                 counts[Self.name(of: shape.kind), default: 0] += 1
             }
 
-            return SlideInspection(
+            values.append(SlideInspection(
                 index: index,
                 headline: Self.headline(in: shapes) ?? "Slide \(index + 1)",
                 text: textBlocks.joined(separator: "\n"),
@@ -266,15 +292,23 @@ public actor DeckWorkbench {
                         resolved: comment.isResolved)
                 },
                 chartIndices: indices,
-                mediaCount: shapes.compactMap { $0 as? Picture }.filter(\.isMedia).count)
+                mediaCount: shapes.compactMap { $0 as? Picture }.filter(\.isMedia).count))
         }
+        return (values, issues)
     }
 
-    private func inspectedCharts() throws -> [ChartInspection] {
+    private func inspectedCharts() -> (values: [ChartInspection], issues: [String]) {
         var result: [ChartInspection] = []
         var chartIndex = 0
         for slideIndex in 0..<presentation.slides.count {
-            let slide = try presentation.slides.slide(at: slideIndex)
+            let slide: Slide
+            do {
+                slide = try presentation.slides.slide(at: slideIndex)
+            } catch {
+                // `inspectedSlides` records the same broken slide. Do not make
+                // the whole deck fail merely because its chart scan reached it.
+                continue
+            }
             for chart in slide.charts {
                 let data = chart.data
                 let problem = data.flatMap { chart.replacementProblem(for: $0) }
@@ -295,7 +329,7 @@ public actor DeckWorkbench {
                 chartIndex += 1
             }
         }
-        return result
+        return (result, [])
     }
 
     private static func explicitFonts(in presentation: Presentation) -> [String] {

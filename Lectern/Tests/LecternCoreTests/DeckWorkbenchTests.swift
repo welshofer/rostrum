@@ -71,6 +71,37 @@ import Rostrum
         }
     }
 
+    @Test func enforcesTheUntrustedFileReadBudget() throws {
+        let data = try deckData()
+
+        #expect(throws: DeckWorkbenchError.self) {
+            _ = try DeckWorkbench(
+                data: data,
+                sourceURL: URL(fileURLWithPath: "/tmp/deck.pptx"),
+                limits: .init(totalUncompressedBytes: 0))
+        }
+    }
+
+    @Test func oneBrokenSlideDoesNotHideTheRestOfTheDeck() async throws {
+        let deck = try Presentation()
+        try deck.titleSlide("Still readable")
+        let main = try deck.package.mainDocumentPart()
+        let broken = try #require(main.rels.all(ofType: RelType.slide).last)
+        main.rels.remove(rId: broken.rId)
+
+        let workbench = try DeckWorkbench(
+            data: try deck.serializedData(),
+            sourceURL: URL(fileURLWithPath: "/tmp/damaged.pptx"))
+        let inspection = try await workbench.inspect()
+
+        #expect(inspection.slideCount == 2)
+        #expect(inspection.slides.count == 1)
+        #expect(inspection.validationIssues.contains { $0.contains("slide 2 cannot be resolved") })
+        await #expect(throws: DeckWorkbenchError.self) {
+            _ = try await workbench.renderSlide(at: 1)
+        }
+    }
+
     @Test func reportsTemplateAndSlideShowKinds() async throws {
         for kind in [DocumentKind.template, .slideShow] {
             let deck = try Presentation()
