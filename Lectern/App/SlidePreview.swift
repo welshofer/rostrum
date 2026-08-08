@@ -53,7 +53,10 @@ struct SlidePreview {
         }
     }
 
-    func makeCoordinator() -> Coordinator { Coordinator() }
+    // `@MainActor` explicitly: this lives in the struct body, outside the
+    // representable extensions that inherit the protocol's isolation, and the
+    // NSObject-backed Coordinator's init is main-actor-isolated.
+    @MainActor func makeCoordinator() -> Coordinator { Coordinator() }
 
     @MainActor fileprivate func makeWebView(_ coordinator: Coordinator) -> WKWebView {
         // The SVG is model-derived — a deck drafted from the user's own PDF —
