@@ -418,6 +418,17 @@ struct XMLTests {
         #expect((try? XML.parse(Data("<a>ok\ttab\nline</a>".utf8))) != nil)
     }
 
+    @Test func rejectsDocumentTypeDeclarations() {
+        // An internal DTD subset is the entity-expansion vector that
+        // `shouldResolveExternalEntities = false` does not cover ("billion
+        // laughs"), and libxml2's own ceilings differ between Apple and
+        // corelibs Foundation. No OOXML part carries a DTD, so the construct
+        // itself is rejected — before the parser ever sees it.
+        expectMalformed("<!DOCTYPE lol [<!ENTITY a \"aaaa\"><!ENTITY b \"&a;&a;&a;\">]><r>&b;</r>")
+        expectMalformed("<!DOCTYPE r SYSTEM \"http://example.com/evil.dtd\"><r/>")
+        expectMalformed("<!DOCTYPE r><r/>")
+    }
+
     // MARK: - Nesting depth
 
     /// `depth` nested `<a>` elements around a single text node.

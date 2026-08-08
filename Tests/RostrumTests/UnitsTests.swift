@@ -34,6 +34,27 @@ import Testing
         #expect(slideWidth + EMU.inches(1) - EMU.inches(1) == slideWidth)
     }
 
+    @Test func nonFiniteInputsDegradeInsteadOfTrapping() {
+        // `Int(Double)` aborts the process on NaN/infinity, and `width / 0.0`
+        // is ordinary layout math gone slightly wrong — it must not be fatal.
+        #expect(EMU.inches(.nan).rawValue == 0)
+        #expect(EMU.points(.nan).rawValue == 0)
+        #expect(EMU.inches(.infinity).rawValue == OOXMLBounds.coordinate.upperBound)
+        #expect(EMU.points(-.infinity).rawValue == OOXMLBounds.coordinate.lowerBound)
+        #expect((EMU.inches(1) / 0.0).rawValue == OOXMLBounds.coordinate.upperBound)
+        #expect((EMU.inches(-1) / 0.0).rawValue == OOXMLBounds.coordinate.lowerBound)
+        #expect((EMU.inches(1) * Double.nan).rawValue == 0)
+    }
+
+    @Test func outOfRangeMagnitudesSaturateToTheCoordinateBound() {
+        // The same ceiling the read side imposes (`OOXMLBounds.coordinate`),
+        // so a saturated value still survives downstream +/* without overflow.
+        #expect(EMU.inches(1e300).rawValue == OOXMLBounds.coordinate.upperBound)
+        #expect(EMU.inches(-1e300).rawValue == OOXMLBounds.coordinate.lowerBound)
+        let saturated = EMU.inches(1e300)
+        #expect((saturated + saturated).rawValue == 2 * OOXMLBounds.coordinate.upperBound)
+    }
+
     @Test func staticMemberInferenceReadsCleanly() throws {
         // The blessed call shape: `.points(…)` / `.inches(…)` in assignment
         // position, no unit privileged over the other.

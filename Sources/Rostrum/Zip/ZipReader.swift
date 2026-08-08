@@ -69,8 +69,9 @@ public struct ZipReader {
     /// archive that declares far more than it would really produce is refused.
     /// That is what a budget means; the alternative is doing the work to find out.
     ///
-    /// The default is `.unlimited`, so decks that are simply large keep opening.
-    /// Set a budget when reading files from somewhere you do not control.
+    /// The default is `.default` — a 4 GiB budget far past any real deck, so
+    /// untrusted input is bounded out of the box. Pass `.unlimited` explicitly
+    /// for archives you already trust, or a tighter budget for hostile ones.
     public struct Limits: Sendable, Equatable {
         /// Maximum total uncompressed bytes the archive may declare across the
         /// entries a name resolves to. `nil` means no ceiling. Never negative:
@@ -90,8 +91,16 @@ public struct ZipReader {
             self.totalUncompressedBytes = totalUncompressedBytes.map { Swift.max(0, $0) }
         }
 
-        /// No ceiling — the default, and the behaviour before limits existed.
+        /// No ceiling. Opt in for archives you generated yourself or already
+        /// trust; everything else should keep a budget.
         public static let unlimited = Limits()
+
+        /// The default budget: 4 GiB of declared uncompressed bytes. Far past
+        /// any real deck — a media-heavy hundred-slide presentation is a few
+        /// hundred MB unpacked — while a crafted archive can no longer ask a
+        /// default-configured reader for unbounded output. Pass `.unlimited`
+        /// explicitly to restore the old behaviour.
+        public static let `default` = Limits(totalUncompressedBytes: 4 << 30)
     }
     public struct Entry: Sendable {
         public let name: String
@@ -140,7 +149,7 @@ public struct ZipReader {
     ///   `RostrumError.zipUnsupported` for multi-disk archives and for zip64
     ///   SIZES/OFFSETS. A zip64 entry COUNT reads normally.
     ///   All of them fire before anything is inflated.
-    public init(data: Data, limits: Limits = .unlimited) throws {
+    public init(data: Data, limits: Limits = .default) throws {
         let bytes = [UInt8](data)
         let size = bytes.count
         guard size >= 22 else {
