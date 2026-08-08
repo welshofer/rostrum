@@ -12,7 +12,10 @@ import CoreText
 public struct DeckResult: Sendable, Equatable {
     public let url: URL
     public let slideCount: Int
-    public let warnings: [String]
+    /// `var`, not `let`: the app appends run-level notes — "images were
+    /// skipped, the key failed its check" — that the pipeline below this
+    /// struct cannot know about.
+    public var warnings: [String]
     /// Schema-rule violations Rostrum's lint found in the deck we just wrote —
     /// a missing required attribute somewhere in the XML. Distinct from
     /// `warnings`, which are about the model's plan: these are ours, and an
@@ -32,6 +35,10 @@ public struct DeckResult: Sendable, Equatable {
     /// boundary as a value; `Presentation` is not `Sendable` and must not
     /// leave.
     public let previews: [String]
+    /// Slide titles, index-aligned with `previews`, so the contact sheet can
+    /// tell VoiceOver what a tile SAYS — "Slide 3 of 12: Why now" — rather
+    /// than only where it sits. A slide with no title contributes "".
+    public let previewTitles: [String]
     /// Content the model asked for that did not make it onto the slide — the
     /// 5th metric and the 6th process step past a builder's capacity, or an
     /// image that was generated and then failed to place. A third bucket
@@ -69,10 +76,17 @@ public actor DeckRenderer {
     /// Best-effort per slide: one slide that fails to render costs its own
     /// preview and nothing else, because a missing thumbnail is not a reason
     /// to fail a deck that saved correctly.
-    private static func previews(of presentation: Presentation) -> [String] {
-        (0..<presentation.slides.count).compactMap { index in
-            try? presentation.renderSVG(slideAt: index, pixelWidth: 640)
+    private static func previews(of presentation: Presentation) -> (svgs: [String], titles: [String]) {
+        // One pass building both, so a slide whose render fails drops its
+        // title too and the two arrays stay index-aligned.
+        var svgs: [String] = []
+        var titles: [String] = []
+        for index in 0..<presentation.slides.count {
+            guard let svg = try? presentation.renderSVG(slideAt: index, pixelWidth: 640) else { continue }
+            svgs.append(svg)
+            titles.append((try? presentation.slides[index].title?.textFrame?.text) ?? "")
         }
+        return (svgs, titles)
     }
 
     // MARK: - Document metadata
@@ -414,13 +428,13 @@ public actor DeckRenderer {
             try Task.checkCancellation()
             let url = try outputURL(title: deck.meta.title, in: directory)
             try presentation.save(to: url)
+            // Previews are the tail cost and pure convenience; the deck is
+            // already saved, so a cancel here skips them rather than undoing it.
+            let (previews, previewTitles) = Task.isCancelled ? ([], []) : Self.previews(of: presentation)
             return DeckResult(url: url, slideCount: presentation.slides.count,
                               warnings: warnings, schemaIssues: schemaIssues,
                               unmeasuredFonts: unmeasured,
-                              // Previews are the tail cost and pure
-                              // convenience; the deck is already saved, so a
-                              // cancel here skips them rather than undoing it.
-                              previews: Task.isCancelled ? [] : Self.previews(of: presentation),
+                              previews: previews, previewTitles: previewTitles,
                               droppedContent: dropped)
         } catch is CancellationError {
             // Must precede the generic catch. Wrapped, this becomes
@@ -854,29 +868,27 @@ public actor DeckRenderer {
         }
         boundaries.sort { $0.startSlide < $1.startSlide }
 
-        // Rostrum enforces strictly-increasing starts with a `precondition`
-        // (Sections.set), which **aborts the process** — `try?` cannot catch
-        // it. Two sections whose slide sets share a first slide, which is all
-        // it takes for a model to list one slide under two headings, would
-        // otherwise take the whole app down. Keep the first of each run.
+        // Rostrum's Sections.set now THROWS on every malformed boundary list
+        // (it used to trap on some of them), so `try?` below catches anything
+        // that slips through. The repairs stay regardless: two sections whose
+        // slide sets share a first slide — a model listing one slide under two
+        // headings — should still produce sections, not a silently sectionless
+        // deck. Keep the first of each run.
         var distinct: [(name: String, startSlide: Int)] = []
         for boundary in boundaries where distinct.last?.startSlide != boundary.startSlide {
             distinct.append(boundary)
         }
         guard let first = distinct.first else { return }
 
-        // Rostrum also requires the first section to start at slide 0, again as
-        // a precondition. A model that leaves the title slide out of every
-        // section is ordinary output, not an error, so cover the gap rather
-        // than silently discarding every section it asked for.
+        // Same reasoning for the first section: a model that leaves the title
+        // slide out of every section is ordinary output, not an error, so
+        // cover the gap rather than losing every section it asked for.
         if first.startSlide != 0 {
             let opening = deck.slides.first?.title
             distinct.insert((name: opening?.isEmpty == false ? opening! : "Opening", startSlide: 0),
                             at: 0)
         }
 
-        // Starts must be inside the deck we actually wrote; out-of-range throws
-        // rather than trapping, so `try?` is the right catch for that half.
         try? presentation.setSections(distinct)
     }
 

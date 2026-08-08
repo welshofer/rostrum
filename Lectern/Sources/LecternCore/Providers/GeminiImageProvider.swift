@@ -11,7 +11,7 @@ public struct GeminiImageProvider: ImageProvider {
     private let model: String
     private let send: HTTPRequestSender
 
-    public init(apiKey: String, model: String = "gemini-3.1-flash-image", session: URLSession = .shared) {
+    public init(apiKey: String, model: String = "gemini-3.1-flash-image", session: URLSession = ProviderNetworking.session) {
         self.apiKey = apiKey
         self.model = model
         self.send = { request in try await session.data(for: request) }
@@ -28,7 +28,9 @@ public struct GeminiImageProvider: ImageProvider {
     /// treating successful Keychain storage as proof that Gemini accepted it.
     public func validate() async throws {
         guard !apiKey.isEmpty else { throw LecternError.noKey }
-        let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/\(model)")!
+        // `model` is caller-supplied API surface: interpolated raw, one space
+        // or `#` makes `URL(string:)` nil and the `!` a crash. Encode it.
+        let url = try Self.endpoint(model: model)
         let (data, http) = try await perform(request(url: url))
         switch http.statusCode {
         case 200:
@@ -109,6 +111,20 @@ public struct GeminiImageProvider: ImageProvider {
         throw LecternError.providerError(status: 0, message: "Gemini image retry loop exhausted")
     }
 
+
+    /// The models endpoint for `model`, percent-encoded. `model` is public
+    /// API surface (`ImageProviderFactory` takes any string), and a raw
+    /// interpolation makes `URL(string:)` nil — and a force-unwrap a crash —
+    /// on the first identifier with a space or `#` in it.
+    static func endpoint(model: String) throws -> URL {
+        let encoded = model.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
+        guard !encoded.isEmpty, let url = URL(
+            string: "https://generativelanguage.googleapis.com/v1beta/models/\(encoded)") else {
+            throw LecternError.providerError(
+                status: 0, message: "\"\(model)\" is not a usable model identifier")
+        }
+        return url
+    }
 
     private func request(url: URL, method: String = "GET", timeout: TimeInterval = 30) -> URLRequest {
         var req = URLRequest(url: url, timeoutInterval: timeout)

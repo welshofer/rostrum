@@ -1,4 +1,16 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
+/// The session provider traffic runs on. `.ephemeral`, not `.shared`: the
+/// shared session's disk-backed `URLCache`, cookie storage and credential
+/// store would put response bodies — the generated deck, derived from the
+/// user's own prompt and PDF — at rest on disk. The key is kept out of
+/// persistent storage everywhere (I1); the payload gets the same posture.
+public enum ProviderNetworking {
+    public static let session = URLSession(configuration: .ephemeral)
+}
 
 public enum ProviderID: String, Sendable, CaseIterable, Codable {
     case anthropic, openAI, gemini, custom
