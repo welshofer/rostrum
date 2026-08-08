@@ -684,9 +684,10 @@ import Testing
         expectError("one byte under the declared total", isOverBudget) {
             _ = try ZipReader(data: bomb, limits: .init(totalUncompressedBytes: declared - 1))
         }
-        // And the default is still unlimited — a large deck must keep opening.
-        let unbounded = try ZipReader(data: bomb)
-        #expect(unbounded.declaredUncompressedSize == UInt64(declared))
+        // And the default budget (4 GiB) is far above a mere 2 MB declaration —
+        // a deck that is simply large must keep opening without opting in.
+        let defaulted = try ZipReader(data: bomb)
+        #expect(defaulted.declaredUncompressedSize == UInt64(declared))
     }
 
     /// A `.pptx` whose main part nests `depth` elements: a few hundred KB of
@@ -799,7 +800,9 @@ import Testing
         let small = try amplifyingArchive(count: 8, each: 64)
         let huge = try declaringUncompressedSize(0xFFFF_FFFE, in: small)
 
-        let reader = try ZipReader(data: huge)
+        // `.unlimited` deliberately: 32 GiB declared is over the 4 GiB default
+        // budget, and what this test pins is the UInt64 carriage, not the budget.
+        let reader = try ZipReader(data: huge, limits: .unlimited)
         #expect(reader.declaredUncompressedSize == 8 * UInt64(0xFFFF_FFFE))
         #expect(reader.declaredUncompressedSize > UInt64(UInt32.max))
 
@@ -979,6 +982,9 @@ import Testing
         mutated.totalUncompressedBytes = -5
         #expect(mutated.totalUncompressedBytes == 0)
         #expect(ZipReader.Limits.unlimited.totalUncompressedBytes == nil)
+        // The out-of-the-box posture is bounded: 4 GiB of declared output,
+        // opt OUT via `.unlimited` rather than opting in to safety.
+        #expect(ZipReader.Limits.default.totalUncompressedBytes == 4 << 30)
 
         // And the error carries both numbers as numbers, so a caller deciding
         // whether to retry with a higher ceiling need not parse prose.
@@ -1053,6 +1059,34 @@ import Testing
                 _ = try d.serializedData()
             }
         }
+    }
+
+    @Test func anUndecodablePlaceholderIsDroppedWithAWarningNotSilently() throws {
+        // A carried entry that cannot be decoded must not stop the deck
+        // opening (it is not a part) — but dropping it makes the round trip
+        // lossy, and a lossy round trip must never be silent.
+        let valid = try validDeckBytes()
+        let reader = try ZipReader(data: valid)
+        var writer = ZipWriter()
+        let marker: [UInt8] = [0xA5, 0x5A, 0xC3, 0x3C, 0x69, 0x96, 0xF0, 0x0F]
+        writer.addFile(name: "ppt/media/", data: Data(marker), compress: false)
+        for name in reader.entryNames {
+            writer.addFile(name: name, data: try reader.data(forEntry: name))
+        }
+        var bytes = [UInt8](try writer.finalize())
+        // Flip one byte of the STORED payload: the placeholder's CRC no
+        // longer matches, so `data(forEntry:)` throws for it and it alone.
+        let at = try #require(bytes.firstRange(of: marker)?.lowerBound)
+        bytes[at] ^= 0xFF
+
+        let deck = try Presentation(data: Data(bytes))
+        #expect(deck.readWarnings.count == 1)
+        #expect(deck.readWarnings.first?.contains("ppt/media/") == true)
+        // The rest of the deck still opens and resaves without the entry.
+        let resaved = try deck.serializedData()
+        #expect(!(try ZipReader(data: resaved).entryNames.contains("ppt/media/")))
+        // And a clean file reports nothing.
+        #expect(try Presentation(data: valid).readWarnings.isEmpty)
     }
 
     @Test func directoryPlaceholderEntriesSurviveARoundTrip() throws {

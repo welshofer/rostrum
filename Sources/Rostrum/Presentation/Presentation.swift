@@ -86,10 +86,11 @@ public final class Presentation {
     /// edits returned a presentation. See `documentKind`.
     ///
     /// - Parameter limits: ceilings applied to the archive before anything is
-    ///   decompressed — see `ZipReader.Limits`. Defaults to `.unlimited`, so
-    ///   genuinely large decks keep opening; pass a budget when the bytes came
-    ///   from somewhere you do not control.
-    public init(data: Data, limits: ZipReader.Limits = .unlimited) throws {
+    ///   decompressed — see `ZipReader.Limits`. Defaults to `.default`
+    ///   (4 GiB of declared uncompressed bytes), far past any real deck while
+    ///   keeping untrusted input bounded out of the box; pass `.unlimited`
+    ///   for files you already trust.
+    public init(data: Data, limits: ZipReader.Limits = .default) throws {
         package = try OPCPackage.read(data: data, limits: limits)
         let main = try package.mainDocumentPart()
         guard DocumentKind(mainContentType: main.contentType) != nil else {
@@ -99,9 +100,15 @@ public final class Presentation {
         presentationPart = main
     }
 
-    public convenience init(contentsOf url: URL, limits: ZipReader.Limits = .unlimited) throws {
+    public convenience init(contentsOf url: URL, limits: ZipReader.Limits = .default) throws {
         try self.init(data: Data(contentsOf: url), limits: limits)
     }
+
+    /// Warnings recorded while opening the file: carried zip entries
+    /// (directory placeholders, orphan `.rels` streams) that could not be
+    /// decoded and will not survive a resave. Empty for files that read
+    /// cleanly — check this when a byte-perfect round trip matters.
+    public var readWarnings: [String] { package.readWarnings }
 
     // MARK: - Document kind
 

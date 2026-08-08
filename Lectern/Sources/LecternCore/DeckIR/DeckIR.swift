@@ -313,6 +313,61 @@ public enum SlideLayoutKind: Sendable, Equatable {
             return .none
         }
     }
+
+    /// Every known case, in vocabulary order. `unknown` is absent by
+    /// construction; `name`'s round-trip through `init(_:)` is pinned by a
+    /// test so a new case cannot silently miss this list.
+    public static let knownCases: [SlideLayoutKind] = [
+        .title, .agenda, .sectionHeader, .bullets, .twoColumn, .comparison, .quote,
+        .bigNumber, .closing, .chart, .metrics, .bands, .diagram, .table, .timeline,
+        .quadrant, .imageLeft, .imageRight, .statement, .callout,
+    ]
+
+    /// The vocabulary name — the inverse of `init(_:)`.
+    public var name: String {
+        switch self {
+        case .title: return "title"
+        case .agenda: return "agenda"
+        case .sectionHeader: return "sectionHeader"
+        case .bullets: return "bullets"
+        case .twoColumn: return "twoColumn"
+        case .comparison: return "comparison"
+        case .quote: return "quote"
+        case .bigNumber: return "bigNumber"
+        case .closing: return "closing"
+        case .chart: return "chart"
+        case .metrics: return "metrics"
+        case .bands: return "bands"
+        case .diagram: return "diagram"
+        case .table: return "table"
+        case .timeline: return "timeline"
+        case .quadrant: return "quadrant"
+        case .imageLeft: return "imageLeft"
+        case .imageRight: return "imageRight"
+        case .statement: return "statement"
+        case .callout: return "callout"
+        case .unknown(let raw): return raw
+        }
+    }
+
+    /// Prompt-facing layout lists DERIVED from `imagePlacement` — the single
+    /// source of truth. Three prompts used to hand-copy these names; the QA
+    /// editor's copy listed five layouts and told the model to move briefs
+    /// off the rest, quietly stripping imagery from the picture-beside-
+    /// bullets slides the renderer was built around. Interpolating from here
+    /// means the vocabulary cannot drift from the renderer again.
+    public static var fullBleedImageLayoutNames: [String] {
+        knownCases.filter { $0.imagePlacement == .fullBleed }.map(\.name)
+    }
+    public static var panelImageLayoutNames: [String] {
+        knownCases.filter {
+            if case .sidePanel = $0.imagePlacement { return true }
+            return false
+        }.map(\.name)
+    }
+    public static var imageEligibleLayoutNames: [String] {
+        fullBleedImageLayoutNames + panelImageLayoutNames
+    }
 }
 
 /// Where a slide's generated image goes.

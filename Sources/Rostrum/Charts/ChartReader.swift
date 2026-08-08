@@ -266,6 +266,7 @@ public final class Chart {
     ///   it, or desynchronize the embedded workbook from the chart's
     ///   formulas. Nothing is written in any of those cases.
     public func replaceData(_ data: ChartData) throws {
+        try data.requireFiniteValues()
         if let problem = replacementProblem(for: data) { throw problem }
 
         for (index, element) in seriesElements.enumerated() {

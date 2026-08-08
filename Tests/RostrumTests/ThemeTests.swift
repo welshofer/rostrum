@@ -14,6 +14,18 @@ import Testing
         #expect(deck.theme.minorFont == "Calibri")
     }
 
+    @Test func outOfRangeAccentsReadNilAndSetAsNoOps() throws {
+        // The optional signature promises "may be absent" — a caller walking
+        // accents 1…8 of an unknown brand kit must get nils, not an abort.
+        // `DeckStyle.accent(_:)` is likewise total (it cycles).
+        let deck = try Presentation()
+        #expect(deck.theme.accent(0) == nil)
+        #expect(deck.theme.accent(7) == nil)
+        #expect(deck.theme.accent(-1) == nil)
+        deck.theme.setAccent(7, Color("123456"))   // no-op, not a trap
+        #expect(deck.theme.accent(1) == Color("4472C4"))
+    }
+
     @Test func brandKitEditRoundTrips() throws {
         let deck = try Presentation()
         deck.theme.setAccent(1, Color("FF6B5B"))

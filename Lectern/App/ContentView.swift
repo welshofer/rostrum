@@ -38,12 +38,23 @@ struct ContentView: View {
         #endif
     }
 
+    /// The four principal states used to cut hard — a bare `switch` with no
+    /// transition, so a two-minute paid generation resolved as an instant
+    /// view swap. One soft cross-blur per phase change and a success tap when
+    /// the deck lands; the states themselves are untouched.
     @ViewBuilder private var phaseView: some View {
-        switch app.phase {
-        case .compose: ComposeView()
-        case .generating: GeneratingView()
-        case .result(let r): ResultView(result: r)
-        case .failed(let m): FailedView(message: m)
+        ZStack {
+            switch app.phase {
+            case .compose: ComposeView().transition(.blurReplace)
+            case .generating: GeneratingView().transition(.blurReplace)
+            case .result(let r): ResultView(result: r).transition(.blurReplace)
+            case .failed(let m): FailedView(message: m).transition(.blurReplace)
+            }
+        }
+        .animation(.smooth(duration: 0.35), value: app.phase)
+        .sensoryFeedback(.success, trigger: app.phase) { _, newPhase in
+            if case .result = newPhase { return true }
+            return false
         }
     }
 }
@@ -309,7 +320,7 @@ struct ResultView: View {
             } else {
                 // Rendered by Rostrum from the deck on disk, so what you see
                 // here is what PowerPoint will open — not a redraw of the plan.
-                SlideContactSheet(previews: result.previews)
+                SlideContactSheet(previews: result.previews, titles: result.previewTitles)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 Divider()
             }

@@ -17,7 +17,7 @@ public struct AnthropicProvider: LLMProvider {
     private let http: HTTPRequestSender
     private let endpoint = URL(string: "https://api.anthropic.com/v1/messages")!
 
-    public init(apiKey: String, model: String = "claude-sonnet-5", session: URLSession = .shared) {
+    public init(apiKey: String, model: String = "claude-sonnet-5", session: URLSession = ProviderNetworking.session) {
         self.apiKey = apiKey
         self.model = model
         self.http = { request in try await session.data(for: request) }

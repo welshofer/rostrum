@@ -39,9 +39,9 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   a presentation on open, so a template could not survive a round trip. To
   build an ordinary deck from a template, set
   `deck.documentKind = .presentation`. Found by the real-deck corpus gate.
-- The python-pptx oracle now runs in CI on macOS and Linux
-  (`PythonPptxOracleTests`): representative Rostrum-written decks must open
-  in python-pptx on every push.
+- The python-pptx oracle runs in CI on Linux on every push, and on macOS in
+  the pull-request gate (`PythonPptxOracleTests`): representative
+  Rostrum-written decks must open in python-pptx before a merge.
 - `RostrumError.fontCorrupt` for unparseable font files.
 - **FontLibrary** — `deck.fonts.register(_:aliases:)` registers fonts under
   their `name`-table family names (parsed from the sfnt, IDs 1/16) for text
@@ -205,6 +205,42 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Changed
 
+- **Read budgets are on by default.** `Presentation(data:)`,
+  `OPCPackage.read` and `ZipReader` now default to `ZipReader.Limits.default`
+  — 4 GiB of declared uncompressed bytes, far past any real deck — instead of
+  `.unlimited`; pass `.unlimited` explicitly for archives you already trust.
+  Bare `Inflate.inflate(_:)` with no declared size caps its output at 1 GiB.
+  Untrusted input is bounded out of the box rather than by opt-in.
+- **`Sections` throws where it used to trap.** `setSections` reports an
+  empty, non-zero-start or non-increasing boundary list as a thrown error —
+  section boundaries routinely arrive from dynamic data, and an abort the
+  caller cannot catch turned a resortable input into a dead process. The
+  section subscript is throwing (`try deck.sections[0]`) with the same
+  contract as `Slides`, and `Theme.accent(7)` now answers its optional
+  signature honestly with `nil` instead of a precondition failure.
+- **`EMU` no longer traps on non-finite math.** `Int(Double)` aborts on
+  NaN/infinity, and `width / 0.0` is ordinary layout code gone slightly
+  wrong; the factories and scalar operators now clamp — NaN to zero,
+  overflow to the same `OOXMLBounds.coordinate` ceiling the read side uses.
+- **Charts refuse non-finite numbers at every write boundary.** A `nan` or
+  `inf` serialized into `c:v` is an invalid `xsd:double` — the repair prompt
+  this library exists to never cause. `addChart` and friends, `replaceData`
+  and `addSeries` throw before anything is written; a refused edit leaves
+  the deck byte-identical.
+- **Document type declarations are rejected on parse.** An internal DTD
+  subset is the entity-expansion vector `shouldResolveExternalEntities =
+  false` does not cover, and libxml2's own ceilings differ across platforms.
+  No OOXML part carries a DTD.
+- A lossy open is now recorded: carried zip entries that cannot be decoded
+  (corrupt directory placeholders, orphan `.rels` streams) are still dropped
+  rather than failing the file, but the drop lands in
+  `Presentation.readWarnings` instead of happening silently.
+- Parse and inflate hot paths shed their quadratic corners: multi-chunk XML
+  text runs coalesce through a buffer instead of repeated concatenation,
+  DEFLATE match copies go through a raw buffer (one memcpy when
+  non-overlapping), and `TextMeasurer.wrap` keeps a running advance sum
+  instead of re-measuring the whole line per word — same results, measured
+  by the same tests.
 - `Slides` subscript is now throwing (`try deck.slides[0]`): a malformed
   deck — a `sldId` whose relationship or part is missing — used to abort
   the host process via `preconditionFailure`; opening untrusted files must
@@ -301,6 +337,42 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   Both now use the same per-kind dispatch as the rest of M3.
 - `GroupShape.convertToParentSpace(_:)` applies the group's `flipH`/`flipV`
   (documented as not composing `@rot`, which a `Rect` cannot express).
+
+### Lectern (the sample app)
+
+- **Cancel now stops the pipeline, not just the screen.** A cancel during
+  the QA pass was swallowed by a `try?`, so the run went on to generate paid
+  images and write a deck the user had stopped; cancellation now propagates,
+  with a checkpoint before `illustrate` starts spending.
+- **A failing image key costs the pictures, not the deck.** The pre-flight
+  image-provider check used to abort the whole generation before a single
+  slide was drafted; it now records the failure, continues without images,
+  and says so in the result's warnings.
+- **The prompts' image rules are derived from the renderer.** Three prompts
+  hand-copied the image-eligible layout list; the QA editor's copy named
+  five layouts and told the model to move briefs off the rest — quietly
+  stripping imagery from the picture-beside-bullets slides `imagePlacement`
+  renders. All three now interpolate from
+  `SlideLayoutKind.imageEligibleLayoutNames`, with a test pinning agreement.
+- **The cost estimate counts what the run costs.** It now includes the
+  user's own prompt and the QA pass (which re-sends the whole draft as
+  input); the old single-call figure under-read real spend by ~2.5–3×
+  exactly when the user pasted a long brief.
+- Provider traffic runs on an `.ephemeral` `URLSession`: the shared
+  session's disk-backed cache would put response bodies — the generated
+  deck, derived from the user's own prompt and PDF — at rest on disk.
+- Image-provider endpoints are percent-encoded instead of force-unwrapped
+  around a raw model-id interpolation.
+- Slide previews render with JavaScript off and navigation cancelled — the
+  SVG is model-derived content, and a preview is a picture, not a program.
+- The contact sheet speaks slide titles to VoiceOver ("Slide 3 of 12: Why
+  now"), not just positions; `DeckResult` carries `previewTitles` alongside
+  `previews`.
+- The main window keeps the user's frame: the launch-frame enforcement that
+  scrubbed saved frames and re-centred 780×1060 on every launch is gone;
+  `.defaultSize` handles genuinely new windows.
+- Phase changes cross-blur instead of hard-cutting, and a finished deck
+  lands with a success haptic.
 
 ## [0.3.1] — 2026-07-19
 

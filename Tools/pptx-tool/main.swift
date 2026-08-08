@@ -23,10 +23,10 @@ guard args.count >= 3, args[1] == "inspect" || args[1] == "validate" else {
 let command = args[1]
 let path = args[2]
 
-// This tool exists to point at files somebody else sent you, so it opts IN to a
-// read budget rather than inheriting `.unlimited`. A gigabyte is far above any
-// real deck and far below what a zip bomb wants; `--max-uncompressed 0` lifts it
-// for the rare legitimately enormous file.
+// This tool exists to point at files somebody else sent you, so it keeps a
+// budget tighter than the library's own 4 GiB `.default`. A gigabyte is far
+// above any real deck and far below what a zip bomb wants;
+// `--max-uncompressed 0` lifts it for the rare legitimately enormous file.
 var budget: Int? = defaultBudget
 if let flag = args.firstIndex(of: "--max-uncompressed") {
     guard flag + 1 < args.count, let value = Int(args[flag + 1]), value >= 0 else {

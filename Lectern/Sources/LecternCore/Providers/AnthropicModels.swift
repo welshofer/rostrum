@@ -13,7 +13,7 @@ public enum AnthropicModels {
     /// GET /v1/models. Returns model ids newest-first (the API's order).
     /// - Throws: `.noKey`, `.authFailed`, `.rateLimited`, `.networkOffline`, or
     ///   `.providerError` — the same taxonomy the UI already renders.
-    public static func list(apiKey: String, session: URLSession = .shared) async throws -> [String] {
+    public static func list(apiKey: String, session: URLSession = ProviderNetworking.session) async throws -> [String] {
         try await list(apiKey: apiKey, send: { request in try await session.data(for: request) })
     }
 

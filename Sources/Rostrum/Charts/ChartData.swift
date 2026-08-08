@@ -225,6 +225,61 @@ public struct XYChartData: Sendable {
     }
 }
 
+/// `nan`/`inf` serialize as invalid `xsd:double` in `c:v`/`c:min`/`c:max`,
+/// and PowerPoint answers an invalid double with a repair prompt — the one
+/// outcome this library refuses to risk. Checked at every write boundary
+/// (`addChart` and friends, `replaceData`, `addSeries`), so by the time a
+/// number reaches `chartNumber` it is already real.
+func requireFiniteChartNumbers<S: Sequence>(_ values: S, in context: String) throws
+where S.Element == Double {
+    for value in values where !value.isFinite {
+        throw RostrumError.packageInvalid(
+            "\(context) contains a non-finite value (\(value)); a chart can only plot real numbers")
+    }
+}
+
+extension ChartData {
+    func requireFiniteValues() throws {
+        for s in series {
+            // `nil` is a gap — legal, and omitted from the cache entirely.
+            try requireFiniteChartNumbers(
+                s.values.lazy.compactMap { $0 }, in: "series \"\(s.name)\"")
+        }
+    }
+}
+
+extension XYChartData {
+    func requireFiniteValues() throws {
+        for s in series {
+            try requireFiniteChartNumbers(
+                s.points.lazy.flatMap { [$0.x, $0.y] }, in: "series \"\(s.name)\"")
+        }
+    }
+}
+
+extension BubbleChartData {
+    func requireFiniteValues() throws {
+        for s in series {
+            try requireFiniteChartNumbers(
+                s.points.lazy.flatMap { [$0.x, $0.y, $0.size] }, in: "series \"\(s.name)\"")
+        }
+    }
+}
+
+extension AxisOptions {
+    func requireFiniteBounds(axis: String) throws {
+        try requireFiniteChartNumbers(
+            [min, max, majorUnit].compactMap { $0 }, in: "the \(axis) axis options")
+    }
+}
+
+extension ChartOptions {
+    func requireFiniteAxes() throws {
+        try valueAxis.requireFiniteBounds(axis: "value")
+        try secondaryValueAxis.requireFiniteBounds(axis: "secondary value")
+    }
+}
+
 /// Invariant-locale minimal decimal formatting for c:v values ("19.2", "42").
 func chartNumber(_ value: Double) -> String {
     if value == value.rounded(), abs(value) < 1e15 {

@@ -20,7 +20,9 @@ extension ShapeCollection {
         _ kind: ChartKind, data: ChartData, frame: Rect,
         colors: [Color]? = nil, options: ChartOptions = ChartOptions()
     ) throws -> Shape {
-        try embedChart(
+        try data.requireFiniteValues()
+        try options.requireFiniteAxes()
+        return try embedChart(
             chart: ChartXML.chartSpace(kind: kind, data: data, colors: colors, options: options),
             workbook: try ChartWorkbook.make(data: data), frame: frame)
     }
@@ -43,6 +45,8 @@ extension ShapeCollection {
         _ data: ComboChartData, frame: Rect, options: ChartOptions = ChartOptions()
     ) throws -> Shape {
         if let problem = data.authoringProblem() { throw problem }
+        try data.flattened.requireFiniteValues()
+        try options.requireFiniteAxes()
         return try embedChart(
             chart: ChartXML.comboChartSpace(data: data, options: options),
             workbook: try ChartWorkbook.make(data: data.flattened), frame: frame)
@@ -54,7 +58,9 @@ extension ShapeCollection {
         _ data: XYChartData, frame: Rect,
         colors: [Color]? = nil, options: ChartOptions = ChartOptions()
     ) throws -> Shape {
-        try embedChart(
+        try data.requireFiniteValues()
+        try options.requireFiniteAxes()
+        return try embedChart(
             chart: ChartXML.scatterChartSpace(data: data, colors: colors, options: options),
             workbook: try ChartWorkbook.makeXY(data: data), frame: frame)
     }
@@ -66,7 +72,9 @@ extension ShapeCollection {
         _ data: BubbleChartData, frame: Rect,
         colors: [Color]? = nil, options: ChartOptions = ChartOptions()
     ) throws -> Shape {
-        try embedChart(
+        try data.requireFiniteValues()
+        try options.requireFiniteAxes()
+        return try embedChart(
             chart: ChartXML.bubbleChartSpace(data: data, colors: colors, options: options),
             workbook: try ChartWorkbook.makeBubble(data: data), frame: frame)
     }

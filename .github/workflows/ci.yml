@@ -68,3 +68,28 @@ jobs:
       - name: Run README snippets (docs can't rot)
         run: swift run ReadmeSnippets "$RUNNER_TEMP"
 
+  # The one thing "Linux only" genuinely could not see: Apple platforms are
+  # what the library primarily ships on, and Linux compiles neither the
+  # Darwin side of the XML bridge (core Foundation's XMLParser), the
+  # CoreText/CoreGraphics half of LecternCore's renderer, nor the SwiftUI
+  # app targets at all. One macOS job on pull requests only — not per-push;
+  # hosted macOS bills ~10x the Linux rate — closes that hole where it
+  # matters: before a merge.
+  macos:
+    name: macOS (PR gate)
+    if: github.event_name == 'pull_request'
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift version
+        run: swift --version
+      - name: Test Rostrum (Darwin XML branch)
+        run: swift test
+      - name: Test LecternCore (CoreText/CoreGraphics half included)
+        run: swift test
+        working-directory: Lectern
+      - name: Build the Lectern app (compiled by nothing else)
+        run: |
+          brew install xcodegen
+          Lectern/scripts/build.sh -quiet
+

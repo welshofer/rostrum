@@ -664,6 +664,36 @@ import Rostrum
         #expect(grounded.contains("SOURCE MATERIAL") && grounded.contains("FACTS HERE"))
     }
 
+    @Test func promptImageLayoutListsComeFromTheRenderer() throws {
+        // The QA editor once hand-listed five image-eligible layouts and told
+        // the model to move briefs off the rest — quietly stripping imagery
+        // from the picture-beside-bullets slides `imagePlacement` was built
+        // to illustrate. The lists are now derived from `imagePlacement`;
+        // this pins the derivation, the interpolation into both prompts and
+        // the tool schema, and the name round-trip that keeps `knownCases`
+        // honest when a layout is added.
+        #expect(SlideLayoutKind.panelImageLayoutNames.contains("bullets"))
+        #expect(SlideLayoutKind.fullBleedImageLayoutNames.contains("statement"))
+        for name in SlideLayoutKind.imageEligibleLayoutNames {
+            #expect(SlideLayoutKind(name).imagePlacement != .none)
+        }
+        for kind in SlideLayoutKind.knownCases {
+            #expect(SlideLayoutKind(kind.name) == kind)
+        }
+        let request = DeckRequest(prompt: "x")
+        let qa = PromptTemplates.editorSystem(for: request)
+        let draft = PromptTemplates.system(for: request)
+        for name in SlideLayoutKind.imageEligibleLayoutNames {
+            #expect(qa.contains("\"\(name)\""), "QA prompt is missing \(name)")
+            #expect(draft.contains("\"\(name)\""), "draft prompt is missing \(name)")
+        }
+        let schemaJSON = try JSONSerialization.data(
+            withJSONObject: DeckSchema.inputSchema(), options: [.withoutEscapingSlashes])
+        let schemaText = String(decoding: schemaJSON, as: UTF8.self)
+        #expect(schemaText.contains(
+            SlideLayoutKind.imageEligibleLayoutNames.joined(separator: "/")))
+    }
+
     @Test func anthropicProviderWithoutKeyThrowsNoKey() async throws {
         let provider = AnthropicProvider(apiKey: "")
         await #expect(throws: LecternError.self) {
@@ -1459,6 +1489,19 @@ import Rostrum
         #expect(PriceTable.cost(model: "claude-opus-4-8", usage: opus) == Decimal(675) / 100)
     }
 
+    @Test func imageProviderEndpointsSurviveHostileModelIdentifiers() throws {
+        // `model` is public API surface headed for user-editability; a space
+        // or `#` in a raw interpolation made `URL(string:)` nil — and the
+        // force-unwrap on it a crash.
+        #expect(try GeminiImageProvider.endpoint(model: "gemini-3.1-flash-image").absoluteString
+            == "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image")
+        #expect(try OpenAIImageProvider.endpoint(model: "weird model#1").absoluteString
+            == "https://api.openai.com/v1/models/weird%20model%231")
+        #expect(throws: LecternError.self) {
+            _ = try OpenAIImageProvider.endpoint(model: "")
+        }
+    }
+
     @Test func unpricedModelYieldsNoNumber() {
         #expect(PriceTable.cost(model: "some-unknown-model", usage: Usage(inputTokens: 999, outputTokens: 999)) == nil)
         #expect(PriceTable.estimate(model: "some-unknown-model", slideCount: 10) == nil)
@@ -1469,6 +1512,20 @@ import Rostrum
         let large = try #require(PriceTable.estimate(model: "claude-sonnet-5", slideCount: 30))
         #expect(large > small)                                    // more slides → more output → dearer
         #expect(small > 0)
+    }
+
+    @Test func preflightEstimateCountsThePromptAndTheQAPass() throws {
+        // A 30k-character brief is real input the user pays for; so is the QA
+        // pass, which re-sends the whole draft. Ignoring both under-read real
+        // spend by ~2.5–3× exactly when the number mattered most.
+        let bare = try #require(PriceTable.estimate(model: "claude-sonnet-5", slideCount: 12,
+                                                    promptChars: 0, qualityPass: false))
+        let longPrompt = try #require(PriceTable.estimate(model: "claude-sonnet-5", slideCount: 12,
+                                                          promptChars: 30_000, qualityPass: false))
+        #expect(longPrompt > bare)
+        let withQA = try #require(PriceTable.estimate(model: "claude-sonnet-5", slideCount: 12,
+                                                      promptChars: 0, qualityPass: true))
+        #expect(withQA > bare * 2)      // second call + the draft re-sent as input
     }
 
     @Test func costFormattingNeverReadsAsFree() {

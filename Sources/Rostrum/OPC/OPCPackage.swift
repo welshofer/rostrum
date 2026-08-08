@@ -90,6 +90,15 @@ public final class OPCPackage {
     /// read, not modelled, and previously not written back.
     private(set) var orphanRelationshipStreams: [(name: String, data: Data)] = []
 
+    /// Diagnostics from `read`: carried entries (directory placeholders,
+    /// orphan `.rels` streams) that could not be decoded and were dropped.
+    /// Opening must survive them — they are not parts, and failing the whole
+    /// package over one was worse — but a resave without them is not a
+    /// byte-perfect round trip, and lossless round-tripping is this library's
+    /// standing rule. The loss is therefore RECORDED, never silent: empty
+    /// means the package read back everything it will write.
+    public private(set) var readWarnings: [String] = []
+
     public init() {
         parts = [:]
         rels = Relationships()
@@ -101,9 +110,10 @@ public final class OPCPackage {
     /// Open a package.
     ///
     /// - Parameter limits: ceilings applied to the archive before anything is
-    ///   decompressed. Defaults to `.unlimited`; pass a budget when the bytes
-    ///   came from somewhere you do not control.
-    public static func read(data: Data, limits: ZipReader.Limits = .unlimited) throws -> OPCPackage {
+    ///   decompressed. Defaults to `.default` (4 GiB of declared uncompressed
+    ///   bytes) so untrusted input is bounded out of the box; pass
+    ///   `.unlimited` for archives you already trust.
+    public static func read(data: Data, limits: ZipReader.Limits = .default) throws -> OPCPackage {
         let zip = try ZipReader(data: data, limits: limits)
 
         guard zip.contains(PackURI.contentTypes.memberName) else {
@@ -120,16 +130,21 @@ public final class OPCPackage {
                 // A directory placeholder, not a part. Carry it rather than
                 // drop it: `serialize()` re-emits it, so the entry survives.
                 //
-                // `try?`, not `try`: before this branch existed the entry was
-                // never touched, so nothing about its payload could stop a deck
-                // opening. Decoding it makes every per-entry failure —
+                // Recovered, not `try`: before this branch existed the entry
+                // was never touched, so nothing about its payload could stop a
+                // deck opening. Decoding it makes every per-entry failure —
                 // encrypted, unsupported method, bad CRC, truncated stream —
                 // fatal to the whole package for something that is not even a
                 // part. Carrying it is a fidelity improvement and must not cost
-                // the ability to open the file; an undecodable placeholder is
-                // dropped exactly as it was before.
-                if let data = try? zip.data(forEntry: name) {
-                    package.directoryEntries.append((name, data))
+                // the ability to open the file — but a dropped entry is a lossy
+                // round trip, so the drop lands in `readWarnings` rather than
+                // happening silently.
+                do {
+                    package.directoryEntries.append((name, try zip.data(forEntry: name)))
+                } catch {
+                    package.readWarnings.append(
+                        "directory placeholder \"\(name)\" could not be decoded and will not "
+                            + "survive a resave: \(error)")
                 }
                 continue
             }
@@ -182,8 +197,12 @@ public final class OPCPackage {
         // carried entry and the one `serialize()` derives for the real part,
         // giving two zip members with one name.
         for name in zip.entryNames where name.hasSuffix(".rels") && !consumed.contains(name) {
-            if let data = try? zip.data(forEntry: name) {
-                package.orphanRelationshipStreams.append((name, data))
+            do {
+                package.orphanRelationshipStreams.append((name, try zip.data(forEntry: name)))
+            } catch {
+                package.readWarnings.append(
+                    "orphan relationship stream \"\(name)\" could not be decoded and will not "
+                        + "survive a resave: \(error)")
             }
         }
         return package

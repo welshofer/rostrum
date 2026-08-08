@@ -17,6 +17,13 @@ import Foundation
 /// - Throw `RostrumError.deflateCorrupt` with a precise message for every
 ///   malformed condition (oversubscribed code lengths, incomplete stream, …).
 public enum Inflate {
+    /// The output ceiling when no `expectedOutputSize` is given. DEFLATE
+    /// expands by up to ~1032:1, so a bare `inflate(_:)` call with no declared
+    /// size would otherwise let a few-KB crafted stream produce unbounded
+    /// output. Callers with genuinely larger streams know the size and pass
+    /// `expectedOutputSize` (as `ZipReader` always does).
+    public static let defaultOutputCeiling = 1 << 30
+
     /// Decode a raw DEFLATE stream.
     public static func inflate(_ input: Data, expectedOutputSize: Int? = nil) throws -> Data {
         var decoder = InflateDecoder(input: [UInt8](input), expectedOutputSize: expectedOutputSize)
@@ -143,9 +150,15 @@ private struct InflateDecoder {
     /// appended. So the sum cannot overflow — but the reason is the widths, not
     /// the provenance.
     mutating func reserveOutput(_ count: Int) throws {
-        if let expected = expectedOutputSize, output.count + count > expected {
+        if let expected = expectedOutputSize {
+            if output.count + count > expected {
+                throw RostrumError.deflateCorrupt(
+                    "output exceeds expected size \(expected)")
+            }
+        } else if output.count + count > Inflate.defaultOutputCeiling {
             throw RostrumError.deflateCorrupt(
-                "output exceeds expected size \(expected)")
+                "output exceeds \(Inflate.defaultOutputCeiling) bytes with no declared size; "
+                    + "pass expectedOutputSize to raise the ceiling")
         }
     }
 
@@ -314,10 +327,23 @@ private struct InflateDecoder {
                         "distance \(distance) reaches before the start of output (\(output.count) bytes so far)")
                 }
                 try reserveOutput(length)
-                var src = output.count - distance
-                for _ in 0..<length {
-                    output.append(output[src])
-                    src += 1
+                // The hot loop of the whole decoder. Growing first and copying
+                // through a raw pointer avoids a bounds/uniqueness check per
+                // byte; a non-overlapping match (the common case) collapses to
+                // one memcpy. An overlapping match MUST copy sequentially —
+                // byte i reads a byte this same match wrote — so it keeps the
+                // loop, just without per-byte `append` overhead.
+                let start = output.count
+                let srcStart = start - distance
+                output.append(contentsOf: repeatElement(0, count: length))
+                output.withUnsafeMutableBufferPointer { buffer in
+                    let base = buffer.baseAddress!
+                    if distance >= length {
+                        UnsafeMutableRawPointer(base + start)
+                            .copyMemory(from: base + srcStart, byteCount: length)
+                    } else {
+                        for i in 0..<length { base[start + i] = base[srcStart + i] }
+                    }
                 }
             }
         }
