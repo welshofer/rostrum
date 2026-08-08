@@ -21,44 +21,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-// Forces the main window to the declared launch frame. `.defaultSize` only
-// applies to never-before-seen windows; both NSWindow frame autosave and macOS
-// state restoration resurrect the previous frame on later launches. This view
-// sits invisibly in the window and re-asserts the declared frame when the
-// window attaches, overriding whatever was restored. Height is clamped to the
-// screen's visible area when the display is too short.
-private final class LaunchFrameView: NSView {
-    static let launchSize = NSSize(width: 780, height: 1060)
-    private var enforced = false
-
-    override func viewDidMoveToWindow() {
-        super.viewDidMoveToWindow()
-        guard !enforced, window != nil else { return }
-        enforced = true
-        enforce()
-        // Re-assert on the next runloop tick in case restoration applies its
-        // frame after the content view is attached.
-        DispatchQueue.main.async { [weak self] in self?.enforce() }
-    }
-
-    private func enforce() {
-        guard let window, let screen = window.screen ?? NSScreen.main else { return }
-        window.isRestorable = false
-        let visible = screen.visibleFrame
-        let height = min(Self.launchSize.height, visible.height)
-        window.setFrame(
-            NSRect(x: (visible.midX - Self.launchSize.width / 2).rounded(),
-                   y: visible.maxY - height,
-                   width: Self.launchSize.width,
-                   height: height),
-            display: true)
-    }
-}
-
-private struct LaunchFrame: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSView { LaunchFrameView() }
-    func updateNSView(_ nsView: NSView, context: Context) {}
-}
 #endif
 
 // Xcode app target entry point, shared by the macOS and iOS/iPadOS targets.
@@ -74,30 +36,19 @@ struct LecternApp: App {
     #endif
     @State private var app = AppState()
 
-    init() {
-        #if os(macOS)
-        // .defaultSize only applies to windows AppKit has never seen; after
-        // that, launch restores the last saved frame from user defaults.
-        // Scrub the main window's saved frame (but not Settings') so every
-        // launch starts at the size declared below.
-        let defaults = UserDefaults.standard
-        for key in defaults.dictionaryRepresentation().keys
-        where key.hasPrefix("NSWindow Frame") && key.contains("AppWindow") {
-            defaults.removeObject(forKey: key)
-        }
-        #endif
-    }
-
     var body: some Scene {
         WindowGroup("Lectern") {
             ContentView()
                 .environment(app)
                 #if os(macOS)
-                .background(LaunchFrame())
                 .onAppear { delegate.app = app }
                 #endif
         }
         #if os(macOS)
+        // Sizes a window AppKit has never seen; after that, the user's own
+        // frame — resized, moved, tiled, restored — is theirs to keep. The
+        // app used to scrub the saved frame and force this size on every
+        // launch, which read as broken window management on macOS.
         .defaultSize(width: 780, height: 1060)
         .commands { lecternCommands }
         #endif
