@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/welshofer/rostrum/actions/workflows/ci.yml/badge.svg)](https://github.com/welshofer/rostrum/actions/workflows/ci.yml)
 [![Swift 6](https://img.shields.io/badge/Swift-6-orange.svg)](https://swift.org)
-[![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20iOS%20%7C%20Linux-blue.svg)](#)
+[![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20iOS%20%7C%20Linux-blue.svg)](#install)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A **pure-Swift, zero-dependency** library for creating and editing PowerPoint
@@ -83,7 +83,9 @@ then add `"Rostrum"` to your target's dependencies.
 | **Text** | paragraphs, runs, fonts, sizes, colours, alignment, spacing, tracking, **bullets, numbered lists, hyperlinks** |
 | **Pictures** | PNG/JPEG/GIF sniffing, content dedup, natural sizing, **cover-crop (`fit: .fill`)**, alt text |
 | **Tables** | grid, cell fills & anchors, merge, banded rows |
-| **Charts** | bar / line / pie / area / doughnut / scatter, stacked & multi-series, titles, **data labels**, axis control, embedded Edit-Data workbook |
+| **Charts** | bar / line / pie / area / doughnut / scatter / **radar / bubble / combo**, stacked & multi-series, titles, **data labels**, axis control, embedded Edit-Data workbook |
+| **Chart editing** | `deck.charts` reads any deck's charts; `replaceData` swaps every cache and the workbook or **refuses without writing a byte**; `addSeries` / `removeSeries` |
+| **Rendering** | `renderSVG(slideAt:)` / `exportSVG` — headless slide→SVG previews with real font metrics, master/layout inheritance, no platform text stack |
 | **SmartArt** | Basic Block List creation; **text extraction from any diagram** |
 | **Comments** | modern threaded comments, replies, resolve |
 | **Notes** | per-slide speaker notes |

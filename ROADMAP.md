@@ -405,7 +405,9 @@ had been claiming full byte identity in its own doc comment.
 
 ## Standing quality gates
 
-- `swift test` green on macOS + Linux
+- `swift test` green on Linux on every push; on macOS in the pull-request
+  gate (hosted macOS bills ~10× Linux, so Apple platforms are verified
+  per-PR rather than per-push)
 - Corpus decks round-trip byte-identical on **every zip entry** — including
   the real-deck fixtures in `Tests/RostrumTests/Fixtures/RealDecks/`. M5
   closed the last exception: `.rels` and `[Content_Types].xml` keep their
