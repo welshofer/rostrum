@@ -16,7 +16,6 @@ struct InspectorView: View {
     @Environment(AppState.self) private var app
 
     var body: some View {
-        @Bindable var app = app
         Group {
             if let inspection = app.inspection {
                 content(for: inspection)
@@ -25,10 +24,14 @@ struct InspectorView: View {
                 ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .fileImporter(isPresented: $app.isChoosingExportDestination,
+        #if !os(macOS)
+        // macOS uses a real open panel instead, because `fileImporter` gives no
+        // way to create a folder — see `chooseExportDestination`.
+        .fileImporter(isPresented: exportDestinationBinding,
                       allowedContentTypes: [.folder]) { result in
             if let url = try? result.get() { app.exportInspected(into: url) }
         }
+        #endif
         .overlay {
             // Copying a deck's media out is measured in megabytes. The window
             // says so rather than going quiet.
@@ -314,6 +317,55 @@ struct InspectorView: View {
         return parts.joined(separator: " · ")
     }
 
+    // MARK: - Choosing where the export goes
+
+    /// Ask for the folder to export into.
+    ///
+    /// On macOS this is a real `NSOpenPanel` rather than SwiftUI's
+    /// `fileImporter`, for one reason: `fileImporter` cannot offer to *create*
+    /// a folder, and the folder a person wants to export a deck into usually
+    /// does not exist yet. `canCreateDirectories` is what puts the New Folder
+    /// button on the panel.
+    private func chooseExportDestination(for inspection: DeckInspection) {
+        #if os(macOS)
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.canCreateDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.prompt = "Export Here"
+        panel.title = "Export “\(inspection.fileName)”"
+        // The exporter makes its own folder inside whatever is chosen, so say
+        // which one rather than leaving a person to guess where it landed.
+        panel.message = "Choose or create a folder. Lectern will write "
+            + "“\(DeckExporter.folderName(for: inspection.fileURL))” inside it."
+        // Start beside the deck itself: exporting next to the original is the
+        // common case, and it makes New Folder land somewhere sensible.
+        panel.directoryURL = inspection.fileURL.deletingLastPathComponent()
+
+        let handle: (NSApplication.ModalResponse) -> Void = { response in
+            guard response == .OK, let url = panel.url else { return }
+            app.exportInspected(into: url)
+        }
+        // A sheet on the window it belongs to when there is one; the panel's
+        // own modal session when there is not.
+        if let window = NSApp.keyWindow {
+            panel.beginSheetModal(for: window, completionHandler: handle)
+        } else {
+            handle(panel.runModal())
+        }
+        #else
+        app.isChoosingExportDestination = true
+        #endif
+    }
+
+    #if !os(macOS)
+    private var exportDestinationBinding: Binding<Bool> {
+        Binding(get: { app.isChoosingExportDestination },
+                set: { app.isChoosingExportDestination = $0 })
+    }
+    #endif
+
     private func exportReport(_ summary: String) -> some View {
         Card(title: "EXPORTED", systemImage: "checkmark.seal") {
             VStack(alignment: .leading, spacing: 8) {
@@ -349,7 +401,7 @@ struct InspectorView: View {
                 Label("Open Another", systemImage: "folder")
             }
             .buttonStyle(.glass)
-            Button { app.isChoosingExportDestination = true } label: {
+            Button { chooseExportDestination(for: inspection) } label: {
                 Label("Export Everything…", systemImage: "square.and.arrow.down.on.square")
                     .font(.body.weight(.semibold)).padding(.horizontal, 6)
             }
