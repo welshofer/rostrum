@@ -138,9 +138,12 @@ import Testing
     @Test func filenamesFromForeignPackagesAreSafe() {
         #expect(SlideOutline.sanitized("image1.png", fallback: "x.bin") == "image1.png")
         #expect(SlideOutline.sanitized("../../etc/passwd", fallback: "x.bin") == "passwd")
-        #expect(SlideOutline.sanitized("a b:c*.png", fallback: "x.bin") == "a-b-c-.png")
+        // A space is legal everywhere and is left alone; ":" and "*" are not.
+        #expect(SlideOutline.sanitized("a b:c*.png", fallback: "x.bin") == "a b-c-.png")
+        #expect(SlideOutline.sanitized("Q3 Review", fallback: "deck") == "Q3 Review")
         #expect(SlideOutline.sanitized("", fallback: "x.bin") == "x.bin")
         #expect(SlideOutline.sanitized("...", fallback: "x.bin") == "x.bin")
+        #expect(SlideOutline.sanitized("   ", fallback: "x.bin") == "x.bin")
         // Legal in a package, unopenable on Windows.
         #expect(SlideOutline.sanitized("NUL.png", fallback: "x.bin") == "_NUL.png")
         #expect(SlideOutline.sanitized(String(repeating: "a", count: 200) + ".png",

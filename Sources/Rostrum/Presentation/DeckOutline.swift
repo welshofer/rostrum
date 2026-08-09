@@ -375,13 +375,17 @@ extension SlideOutline {
     /// set is narrowed to things every filesystem accepts, and the reserved
     /// DOS device names are pushed out of the way — `NUL.png` is a legal part
     /// name and an unopenable file on Windows.
+    ///
+    /// A space is not one of the dangerous characters, and this also names the
+    /// Markdown file from a title the user chose: turning `Q3 Review` into
+    /// `Q3-Review` would be the export inventing a name nobody asked for.
     static func sanitized(_ raw: String, fallback: String) -> String {
         let base = raw.split(separator: "/").last.map(String.init) ?? ""
         var cleaned = ""
         var lastWasDash = false
         for scalar in base.unicodeScalars {
             let allowed = CharacterSet.alphanumerics.contains(scalar)
-                || scalar == "." || scalar == "-" || scalar == "_"
+                || scalar == "." || scalar == "-" || scalar == "_" || scalar == " "
             if allowed {
                 cleaned.unicodeScalars.append(scalar)
                 lastWasDash = false
@@ -390,8 +394,9 @@ extension SlideOutline {
                 lastWasDash = true
             }
         }
-        while cleaned.hasPrefix(".") || cleaned.hasPrefix("-") { cleaned.removeFirst() }
-        while cleaned.hasSuffix(".") || cleaned.hasSuffix("-") { cleaned.removeLast() }
+        let strip: (Character) -> Bool = { $0 == "." || $0 == "-" || $0 == " " }
+        while let first = cleaned.first, strip(first) { cleaned.removeFirst() }
+        while let last = cleaned.last, strip(last) { cleaned.removeLast() }
         guard !cleaned.isEmpty else { return fallback }
 
         let stem = cleaned.split(separator: ".").first.map(String.init) ?? cleaned
