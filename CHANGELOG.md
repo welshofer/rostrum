@@ -8,6 +8,28 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Added
 
+- **Deck extraction** — `Presentation.outline()` projects an opened deck onto
+  a `Sendable` value model: per slide, the title, subtitle, body paragraphs
+  with their outline level, table cells, SmartArt labels, speaker notes, an
+  inventory of the images/movies/sounds it carries, and every chart flattened
+  to the grid a spreadsheet would show. Groups are traversed, so text and
+  pictures inside a grouped shape are no longer invisible. A slide that cannot
+  be read becomes a line in `warnings` instead of failing the whole deck.
+- **`DeckExport.write(_:to:)`** — unpacks a deck into a folder: one Markdown
+  file of every slide's words, plus a folder per slide (only when it has
+  something to put in one) holding that slide's media and one CSV per chart.
+  Deterministic — neither the clock nor the destination path reaches the
+  output — and additive: it overwrites only the files it wrote and never
+  deletes anything. A one-way projection; it only ever reads the deck.
+- `Paragraph.plainText` — the paragraph's text as it reads on the slide.
+  `runs` returns only `a:r`, so a manual line break (`a:br`) welded two runs
+  into one word and a field (`a:fld` — slide number, date) vanished; this
+  walks the children in document order.
+- `pptx-tool extract <file.pptx> <directory>` — the extraction from the
+  command line, exiting non-zero when a deck only partly came out.
+- Lectern: **File ▸ Export Deck to Folder…** (⌘E, macOS) opens any `.pptx` —
+  not only the one just generated — and writes the export beside it.
+  `DeckExporter` in LecternCore holds the UI-free half.
 - **FontMetrics engine** — pure-Swift TrueType/OpenType metrics parsing
   (`head`/`hhea`/`maxp`/`hmtx`/`cmap` formats 4 + 12, `OS/2` typographic
   metrics, `.ttc` collections) with no platform text stack. `FontMetrics`

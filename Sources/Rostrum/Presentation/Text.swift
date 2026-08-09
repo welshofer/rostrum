@@ -202,6 +202,30 @@ public final class Paragraph {
         p.children(named: "a:r").map { Run(r: $0, part: part) }
     }
 
+    /// The paragraph's text as it reads on the slide.
+    ///
+    /// `runs` is the typed model and returns only `a:r`, which is right for
+    /// styling and wrong for reading: a manual line break is an `a:br`
+    /// *between* two runs, and a slide number, date or filename is an `a:fld`
+    /// that is not a run at all. Joining the runs welds the halves of a broken
+    /// line together — "Q3" + break + "results" comes back as "Q3results" —
+    /// and drops every field silently. This walks the children in document
+    /// order instead, which is what anyone extracting the deck's words wants.
+    ///
+    /// A field's text is the value PowerPoint cached when the file was last
+    /// saved; nothing here recomputes it.
+    public var plainText: String {
+        var out = ""
+        for child in p.childElements {
+            switch child.name {
+            case "a:r", "a:fld": out += child.firstChild(named: "a:t")?.textContent ?? ""
+            case "a:br": out += "\n"
+            default: break
+            }
+        }
+        return out
+    }
+
     @discardableResult
     public func addRun(_ text: String) -> Run {
         let r = XML.Element("a:r")

@@ -96,7 +96,8 @@ then add `"Rostrum"` to your target's dependencies.
 | **Design layer** | `DeckStyle` (type scale, WCAG auto-contrast, tokens); one-call slide builders; cards/buttons/kickers/stat tiles; a Grid DSL |
 | **Templates** | open a `.potx`/`.ppsx` directly and round-trip it as one; `documentKind` converts when you want a deck out of a template; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
 | **Sections** | native PowerPoint sections; footers, slide numbers, dates via live fields |
-| **Tooling** | `pptx-tool inspect`/`validate` — machine-checkable "PowerPoint will accept this" gate |
+| **Extraction** | `deck.outline()` — every slide's text (title, subtitle, bullets with outline level, table cells, SmartArt, notes) as a value type; `DeckExport.write` unpacks a deck to a folder: one Markdown file plus per-slide media and one CSV per chart |
+| **Tooling** | `pptx-tool inspect`/`validate` — machine-checkable "PowerPoint will accept this" gate; `pptx-tool extract` — a deck to Markdown + media + chart CSVs |
 
 ## Design
 

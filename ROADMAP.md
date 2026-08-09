@@ -135,6 +135,15 @@ from phase 0 onward.
 
 Ranked by demand evidence from python-pptx's issue tracker:
 
+0. ~~Deck extraction / unpack~~ ✅ **Shipped 2026-08-09**: `deck.outline()`
+   projects a deck onto a value model of its words and its cargo, and
+   `DeckExport.write` unpacks it to a folder — one Markdown file of every
+   slide's text, a folder per slide for its media, one CSV per chart
+   (`pptx-tool extract`, and Lectern's File ▸ Export Deck to Folder…).
+   python-pptx has no equivalent; getting content *out* of a deck is one of
+   the most common reasons people reach for it in the first place.
+   Next: an `--include-poster` for video thumbnails, and reading the
+   embedded chart workbook for the values the chart XML cache omits.
 1. ~~Deck merge / slide import~~ ✅ **Shipped 2026-07-19**: copy slides with
    images, charts, layouts and rels intact (`slides.importAll(from:)`).
 2. ~~Theme & brand kit editing~~ ✅ **Shipped 2026-07-19**: `Theme` object,

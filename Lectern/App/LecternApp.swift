@@ -1,6 +1,8 @@
 import SwiftUI
+import LecternCore
 #if os(macOS)
 import AppKit
+import UniformTypeIdentifiers
 
 // Blocks quit while a deck is generating: an in-flight generation is a paid
 // API call, so any quit path that sends a proper quit event (⌘Q, scripted
@@ -85,10 +87,55 @@ struct LecternApp: App {
                 NSWorkspace.shared.open(directory)
             }
             .keyboardShortcut("o", modifiers: [.command, .shift])
+            Divider()
+            Button("Export Deck to Folder…") { exportDeck() }
+                .keyboardShortcut("e")
         }
         CommandGroup(replacing: .help) {
             Link("Lectern Help",
                  destination: URL(string: "https://github.com/welshofer/rostrum/blob/main/Lectern/README.md")!)
+        }
+    }
+
+    /// Take an existing deck apart into a folder of readable pieces.
+    ///
+    /// Deliberately not limited to the deck this session just generated: the
+    /// deck worth pulling the words out of is usually one that arrived from
+    /// somebody else. So it starts at a file picker, opens whatever `.pptx`
+    /// comes back, and leaves the result selected in the Finder — the export
+    /// is a folder of files, and the Finder is where you look at those.
+    private func exportDeck() {
+        let picker = NSOpenPanel()
+        picker.message = "Choose a deck to export"
+        picker.allowedContentTypes = [UTType(filenameExtension: "pptx")].compactMap { $0 }
+        picker.allowsMultipleSelection = false
+        picker.canChooseDirectories = false
+        picker.directoryURL = AppState.decksDirectory()
+        guard picker.runModal() == .OK, let deck = picker.url else { return }
+
+        let destination = NSOpenPanel()
+        destination.message = "Choose where the exported folder goes"
+        destination.canChooseFiles = false
+        destination.canChooseDirectories = true
+        destination.canCreateDirectories = true
+        destination.prompt = "Export"
+        guard destination.runModal() == .OK, let parent = destination.url else { return }
+
+        do {
+            let outcome = try DeckExporter.export(deckAt: deck, into: parent)
+            NSWorkspace.shared.activateFileViewerSelecting([outcome.markdownFile])
+            // A partial export that reports success is worse than a slow one.
+            guard !outcome.warnings.isEmpty else { return }
+            let alert = NSAlert()
+            alert.messageText = "Exported, but not completely"
+            alert.informativeText = outcome.warnings.joined(separator: "\n")
+            alert.runModal()
+        } catch {
+            let alert = NSAlert()
+            alert.alertStyle = .warning
+            alert.messageText = "Could not export that deck"
+            alert.informativeText = String(describing: error)
+            alert.runModal()
         }
     }
     #endif
