@@ -39,14 +39,35 @@ struct SlidePreview {
 
     /// Remembers what was last loaded. SwiftUI calls `update…` on every
     /// invalidation, and reloading identical markup would flash the slide.
-    @MainActor final class Coordinator {
+    /// Also the navigation gatekeeper: a preview shows exactly one document,
+    /// loaded by `loadHTMLString`, and nothing in it may navigate anywhere.
+    @MainActor final class Coordinator: NSObject, WKNavigationDelegate {
         var loaded: String?
+
+        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                     decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
+            // `loadHTMLString(_, baseURL: nil)` loads as about:blank; that
+            // initial load is the only navigation a preview is allowed.
+            let url = navigationAction.request.url
+            decisionHandler(url == nil || url?.absoluteString == "about:blank" ? .allow : .cancel)
+        }
     }
 
-    func makeCoordinator() -> Coordinator { Coordinator() }
+    // `@MainActor` explicitly: this lives in the struct body, outside the
+    // representable extensions that inherit the protocol's isolation, and the
+    // NSObject-backed Coordinator's init is main-actor-isolated.
+    @MainActor func makeCoordinator() -> Coordinator { Coordinator() }
 
-    @MainActor fileprivate func makeWebView() -> WKWebView {
-        let view = WKWebView()
+    @MainActor fileprivate func makeWebView(_ coordinator: Coordinator) -> WKWebView {
+        // The SVG is model-derived — a deck drafted from the user's own PDF —
+        // and SVG legitimately carries <script>, <foreignObject> and event
+        // attributes. `loadHTMLString(_, baseURL: nil)` already denies any
+        // network or file origin; turning script execution off closes the
+        // scriptable half. A preview is a picture, not a program.
+        let config = WKWebViewConfiguration()
+        config.defaultWebpagePreferences.allowsContentJavaScript = false
+        let view = WKWebView(frame: .zero, configuration: config)
+        view.navigationDelegate = coordinator
         #if os(iOS)
         view.scrollView.isScrollEnabled = false
         view.isOpaque = false
@@ -64,14 +85,14 @@ struct SlidePreview {
 
 #if os(macOS)
 extension SlidePreview: NSViewRepresentable {
-    func makeNSView(context: Context) -> WKWebView { makeWebView() }
+    func makeNSView(context: Context) -> WKWebView { makeWebView(context.coordinator) }
     func updateNSView(_ view: WKWebView, context: Context) {
         load(into: view, context.coordinator)
     }
 }
 #else
 extension SlidePreview: UIViewRepresentable {
-    func makeUIView(context: Context) -> WKWebView { makeWebView() }
+    func makeUIView(context: Context) -> WKWebView { makeWebView(context.coordinator) }
     func updateUIView(_ view: WKWebView, context: Context) {
         load(into: view, context.coordinator)
     }
@@ -83,9 +104,16 @@ extension SlidePreview: UIViewRepresentable {
 /// rather than its words.
 struct SlideContactSheet: View {
     let previews: [String]
+    /// Index-aligned slide titles; when present, VoiceOver hears what a tile
+    /// says, not just where it sits in the grid.
+    var titles: [String] = []
     /// Fixed at three so the grid reads as a contact sheet at any window size;
     /// the tiles resize, the column count does not.
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 3)
+
+    fileprivate func label(_ index: Int) -> String {
+        slideLabel(index, of: previews.count, titles: titles)
+    }
 
     var body: some View {
         ScrollView {
@@ -105,7 +133,7 @@ struct SlideContactSheet: View {
                                 .background(.thinMaterial, in: Capsule())
                                 .padding(5)
                         }
-                        .accessibilityLabel("Slide \(index + 1) of \(previews.count)")
+                        .accessibilityLabel(label(index))
                 }
             }
             .padding(.horizontal, 24)
@@ -114,9 +142,19 @@ struct SlideContactSheet: View {
     }
 }
 
+/// "Slide 3 of 12: Why now" — position always, the slide's own words when the
+/// deck has them. The webview beneath is opaque to VoiceOver, so this label is
+/// the payoff screen's entire accessible surface.
+private func slideLabel(_ index: Int, of count: Int, titles: [String]) -> String {
+    let base = "Slide \(index + 1) of \(count)"
+    guard titles.indices.contains(index), !titles[index].isEmpty else { return base }
+    return "\(base): \(titles[index])"
+}
+
 /// The filmstrip under a finished deck: every slide, in order, at a glance.
 struct SlideFilmstrip: View {
     let previews: [String]
+    var titles: [String] = []
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -136,7 +174,7 @@ struct SlideFilmstrip: View {
                                 .background(.thinMaterial, in: Capsule())
                                 .padding(6)
                         }
-                        .accessibilityLabel("Slide \(index + 1) of \(previews.count)")
+                        .accessibilityLabel(slideLabel(index, of: previews.count, titles: titles))
                 }
             }
             .padding(.horizontal, 2)

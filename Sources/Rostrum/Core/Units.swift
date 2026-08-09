@@ -20,11 +20,25 @@ public struct EMU: RawRepresentable, Hashable, Sendable, Comparable, AdditiveAri
     /// Office uses when it materializes CSS/HTML pixel lengths).
     public static let perPixel = 9_525
 
-    public static func inches(_ v: Double) -> EMU { EMU(Int((v * Double(perInch)).rounded())) }
-    public static func centimeters(_ v: Double) -> EMU { EMU(Int((v * Double(perCentimeter)).rounded())) }
-    public static func millimeters(_ v: Double) -> EMU { EMU(Int((v * Double(perMillimeter)).rounded())) }
-    public static func points(_ v: Double) -> EMU { EMU(Int((v * Double(perPoint)).rounded())) }
-    public static func pixels(_ v: Double) -> EMU { EMU(Int((v * Double(perPixel)).rounded())) }
+    public static func inches(_ v: Double) -> EMU { EMU(clamped(v * Double(perInch))) }
+    public static func centimeters(_ v: Double) -> EMU { EMU(clamped(v * Double(perCentimeter))) }
+    public static func millimeters(_ v: Double) -> EMU { EMU(clamped(v * Double(perMillimeter))) }
+    public static func points(_ v: Double) -> EMU { EMU(clamped(v * Double(perPoint))) }
+    public static func pixels(_ v: Double) -> EMU { EMU(clamped(v * Double(perPixel))) }
+
+    /// `Int(_: Double)` traps on NaN, infinity, and magnitude past `Int.max` —
+    /// an uncatchable abort reachable from every factory and scalar operator
+    /// (`width / 0.0` is all it takes). Layout math must degrade, not kill the
+    /// host process: NaN maps to 0, and out-of-range magnitudes saturate to
+    /// `OOXMLBounds.coordinate`, the same ceiling the read side imposes so
+    /// that downstream `+`/`*` over the result cannot overflow either.
+    private static func clamped(_ value: Double) -> Int {
+        guard value.isFinite else { return value.isNaN ? 0 : (value > 0 ? saturation : -saturation) }
+        let rounded = value.rounded()
+        guard abs(rounded) <= Double(saturation) else { return rounded > 0 ? saturation : -saturation }
+        return Int(rounded)
+    }
+    private static let saturation = OOXMLBounds.coordinate.upperBound
 
     public var inches: Double { Double(rawValue) / Double(EMU.perInch) }
     public var centimeters: Double { Double(rawValue) / Double(EMU.perCentimeter) }
@@ -44,9 +58,9 @@ public struct EMU: RawRepresentable, Hashable, Sendable, Comparable, AdditiveAri
     public static prefix func - (value: EMU) -> EMU { EMU(-value.rawValue) }
 
     // Scalar arithmetic for layout math ("a third of the slide width").
-    public static func * (lhs: EMU, rhs: Double) -> EMU { EMU(Int((Double(lhs.rawValue) * rhs).rounded())) }
+    public static func * (lhs: EMU, rhs: Double) -> EMU { EMU(clamped(Double(lhs.rawValue) * rhs)) }
     public static func * (lhs: Double, rhs: EMU) -> EMU { rhs * lhs }
-    public static func / (lhs: EMU, rhs: Double) -> EMU { EMU(Int((Double(lhs.rawValue) / rhs).rounded())) }
+    public static func / (lhs: EMU, rhs: Double) -> EMU { EMU(clamped(Double(lhs.rawValue) / rhs)) }
     /// The dimensionless ratio of two lengths (aspect ratios, proportions).
     public static func / (lhs: EMU, rhs: EMU) -> Double { Double(lhs.rawValue) / Double(rhs.rawValue) }
 

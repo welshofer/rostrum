@@ -109,7 +109,7 @@ enum DeckSchema {
         ]
         let image: [String: Any] = [
             "type": "object",
-            "description": "OPTIONAL. Add only when a photographic/illustrative visual materially strengthens the slide — never on dense bullet or comparison slides. Describe the subject only; do not mention colors, fonts, or text.",
+            "description": "OPTIONAL. Add only when a photographic/illustrative visual materially strengthens the slide. Renders only on \(SlideLayoutKind.imageEligibleLayoutNames.joined(separator: "/")) layouts — a brief anywhere else is discarded. Describe the subject only; do not mention colors, fonts, or text.",
             "properties": [
                 "prompt": str("the subject/scene to depict, e.g. 'a lighthouse on a rocky coast at dawn'"),
                 "aspect": ["type": "string", "enum": ["16:9", "4:3", "1:1", "3:4", "9:16"]],

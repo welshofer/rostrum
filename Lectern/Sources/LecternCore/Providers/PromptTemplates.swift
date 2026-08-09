@@ -75,13 +75,14 @@ public enum PromptTemplates {
         IMAGES — an "image" brief ({ prompt, aspect? }) renders on these layouts only, \
         and does one of two very different jobs.
 
-        BACKGROUND (full-bleed behind large text, dimmed): "title", "sectionHeader", \
-        "quote", "bigNumber", "closing", "statement". Write an evocative, atmospheric \
-        subject — a place, a texture, a condition, a mood. Avoid a single centred object \
-        or a face; it will sit under a headline and be dimmed, so mood beats detail.
+        BACKGROUND (full-bleed behind large text, dimmed): \
+        \(quotedList(SlideLayoutKind.fullBleedImageLayoutNames)). Write an evocative, \
+        atmospheric subject — a place, a texture, a condition, a mood. Avoid a single \
+        centred object or a face; it will sit under a headline and be dimmed, so mood \
+        beats detail.
 
         PANEL (a sharp, framed picture beside the text, shown at full strength): \
-        "imageLeft", "imageRight", "bullets", "agenda". This is the classic \
+        \(quotedList(SlideLayoutKind.panelImageLayoutNames)). This is the classic \
         title-bullets-and-a-picture slide, and it is the workhorse — reach for \
         "imageLeft" and "imageRight" often, alternating sides down the deck so the \
         composition changes. Here the image is the hero and is seen clearly, so write a \
@@ -170,8 +171,8 @@ public enum PromptTemplates {
         NOTES — speaker notes are what the presenter SAYS aloud (2–4 conversational \
         sentences), not a re-reading of the slide.
 
-        IMAGES — sharpen the image briefs; do not strip them. Only "title", \
-        "sectionHeader", "quote", "bigNumber" and "closing" slides can render one, so \
+        IMAGES — sharpen the image briefs; do not strip them. Only \
+        \(quotedList(SlideLayoutKind.imageEligibleLayoutNames)) slides can render one, so \
         move a brief from a layout that cannot show it onto one that can, and ADD briefs \
         to those slides where they are missing. Make every prompt vivid and specific. \
         A finished deck of this length should carry several images.
@@ -196,6 +197,12 @@ public enum PromptTemplates {
     }
 
     /// Goal → rhetorical stance (Appendix A).
+    /// `"title", "sectionHeader", …` — the shape every prompt quotes layout
+    /// names in.
+    private static func quotedList(_ names: [String]) -> String {
+        names.map { "\"\($0)\"" }.joined(separator: ", ")
+    }
+
     private static func stance(for goal: String) -> String {
         switch goal.lowercased() {
         case "persuade":

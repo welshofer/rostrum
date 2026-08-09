@@ -34,13 +34,27 @@ public enum PriceTable {
         return (input + output) / 1_000_000
     }
 
-    /// A rough *pre-flight* estimate from deck size, before any real usage exists.
-    /// Deliberately simple: a fixed system/prompt overhead, ~180 output tokens per
-    /// slide, and grounding text counted at ~4 chars/token on the input side.
-    public static func estimate(model: String, slideCount: Int, groundingChars: Int = 0) -> Decimal? {
+    /// A rough *pre-flight* estimate from deck size, before any real usage
+    /// exists: a fixed system overhead, the user's own prompt and grounding at
+    /// ~4 chars/token on the input side, and ~180 output tokens per slide —
+    /// PER PIPELINE CALL. The default pipeline drafts and then QA-revises, and
+    /// the revision re-sends the whole draft as input, so an estimate that
+    /// modelled one call under-read real spend by ~2.5–3× exactly when the
+    /// user pasted a long brief. Still a ballpark (repair rounds and images
+    /// are not counted), but no longer a systematic one.
+    public static func estimate(model: String, slideCount: Int, groundingChars: Int = 0,
+                                promptChars: Int = 0, qualityPass: Bool = true) -> Decimal? {
         guard let p = price(for: model) else { return nil }
-        let inputTokens = 700 + groundingChars / 4
-        let outputTokens = max(1, slideCount) * 180
+        let draftInput = 700 + (groundingChars + promptChars) / 4
+        let deckOutput = max(1, slideCount) * 180
+        var inputTokens = draftInput
+        var outputTokens = deckOutput
+        if qualityPass {
+            // The editor gets the instructions plus the entire draft back as
+            // input, and returns a revised deck of about the same size.
+            inputTokens += draftInput + deckOutput
+            outputTokens += deckOutput
+        }
         let input = Decimal(inputTokens) * p.inputPerMTok
         let output = Decimal(outputTokens) * p.outputPerMTok
         return (input + output) / 1_000_000

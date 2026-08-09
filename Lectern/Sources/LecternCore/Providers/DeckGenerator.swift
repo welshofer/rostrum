@@ -93,12 +93,23 @@ public actor DeckGenerator {
         var final = result
         if quality {
             emit(.auditing)
-            if let revised = try? await provider.revise(request, deckJSON: draftJSON, emit: emit),
-               revised.json != draftJSON,
-               let improved = try? decodeAndValidate(revised.json, request) {
-                final = improved
+            do {
+                let revised = try await provider.revise(request, deckJSON: draftJSON, emit: emit)
+                if revised.json != draftJSON,
+                   let improved = try? decodeAndValidate(revised.json, request) {
+                    final = improved
+                }
+            } catch is CancellationError {
+                // A cancel is not a failed QA pass to shrug off: swallowed
+                // here, the pipeline would go on to illustrate (more paid
+                // calls) and write a deck for a run the user stopped.
+                throw CancellationError()
+            } catch {
+                // A failed or invalid revision is ignored — never worse than
+                // the draft.
             }
         }
+        try Task.checkCancellation()
         return try await finish(final, request, designURL, directory, usage: usage, emit: emit)
     }
 
@@ -264,6 +275,9 @@ public actor DeckGenerator {
     private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?,
                         _ directory: URL, usage: Usage,
                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
+        // A cancel must land before `illustrate` starts spending: image calls
+        // are the priciest thing this pipeline does after the draft itself.
+        try Task.checkCancellation()
         let shaped = normalizeIfValid(result, request)
         let (images, imageWarnings) = await illustrate(shaped.deck, emit: emit)   // no-op without an image provider
         emit(.rendering)

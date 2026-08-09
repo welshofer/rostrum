@@ -93,41 +93,61 @@ public final class Sections: Sequence {
 
     public var count: Int { elements.count }
 
+    /// The section at `index`. Throws on out-of-range — the section list (and
+    /// so the valid index space) comes from the file, and opening untrusted
+    /// files must never abort the host process. Same contract as
+    /// `Slides.subscript`.
     public subscript(index: Int) -> Section {
-        Section(element: elements[index], package: package, presentationPart: presentationPart)
+        get throws {
+            let elements = self.elements
+            guard elements.indices.contains(index) else {
+                throw RostrumError.packageInvalid(
+                    "section index \(index) out of range 0..<\(elements.count)")
+            }
+            return Section(element: elements[index], package: package,
+                           presentationPart: presentationPart)
+        }
     }
 
     public func makeIterator() -> AnyIterator<Section> {
         var i = 0
-        return AnyIterator { defer { i += 1 }; return i < self.count ? self[i] : nil }
+        return AnyIterator { defer { i += 1 }; return i < self.count ? (try? self[i]) : nil }
     }
 
     /// Replace all sections with a full partition of the deck's current slides.
-    /// Boundaries are (name, first-slide-index); the first MUST start at 0, and
-    /// starts must strictly increase and be in range. This is the safest section
-    /// primitive — call it after adding the slides.
+    /// Boundaries are (name, first-slide-index); the first must start at 0, and
+    /// starts must strictly increase and be in range — violations THROW rather
+    /// than trap. Section boundaries routinely arrive from dynamic data (a
+    /// parsed outline, a model's plan), and an abort the caller cannot catch
+    /// turns a resortable input into a dead process. This is the safest
+    /// section primitive — call it after adding the slides.
     public func set(_ boundaries: [(name: String, startSlide: Int)]) throws {
         let ids = try slideIds()
-        precondition(!boundaries.isEmpty, "need at least one section")
-        precondition(boundaries.first!.startSlide == 0, "the first section must start at slide 0")
-        // The slide list comes from the file, not the caller, so an empty one
-        // is a malformed deck to report — not a programmer error to trap on.
+        guard !boundaries.isEmpty else {
+            throw RostrumError.packageInvalid("need at least one section boundary")
+        }
+        guard boundaries[0].startSlide == 0 else {
+            throw RostrumError.packageInvalid(
+                "the first section must start at slide 0, not \(boundaries[0].startSlide)")
+        }
+        // The slide list comes from the file: an empty one is a malformed deck
+        // to report, exactly like a bad boundary list is a bad input to report.
         guard !ids.isEmpty else {
             throw RostrumError.packageInvalid("the deck has no slides to partition into sections")
         }
         for i in boundaries.indices {
-            // The upper bound is the FILE's slide count, so a caller passing a
-            // start that was valid for a different deck must get an error, not
-            // an abort. Strictly-increasing is a pure caller contract and
-            // stays a precondition.
             guard boundaries[i].startSlide >= 0, boundaries[i].startSlide < ids.count else {
                 throw RostrumError.packageInvalid(
                     "section start slide \(boundaries[i].startSlide) is outside this deck's "
                         + "\(ids.count) slides")
             }
             if i > 0 {
-                precondition(boundaries[i].startSlide > boundaries[i - 1].startSlide,
-                             "section startSlides must strictly increase")
+                guard boundaries[i].startSlide > boundaries[i - 1].startSlide else {
+                    throw RostrumError.packageInvalid(
+                        "section starts must strictly increase; boundary \(i) starts at slide "
+                            + "\(boundaries[i].startSlide), after one starting at "
+                            + "\(boundaries[i - 1].startSlide) — sort and dedupe the list first")
+                }
             }
         }
         let list = try sectionListElement(creatingIfMissing: true)!
@@ -171,8 +191,8 @@ public final class Sections: Sequence {
         bounds.sort { $0.startSlide < $1.startSlide }
         // `boundaries()` is derived from the FILE's sections, and two of them
         // can resolve to the same start slide — an unresolvable sldId falls
-        // back to 0. `set(_:)` requires strictly increasing starts, so without
-        // this a foreign deck would trip its precondition and abort the host.
+        // back to 0. `set(_:)` refuses non-increasing starts, so without this
+        // a foreign deck's sections could make the re-write fail.
         //
         // The name just added wins its slot outright rather than depending on
         // where `sort` happened to leave it: Swift's sort is not documented
@@ -190,7 +210,7 @@ public final class Sections: Sequence {
                 "sections were written but cannot be read back; the presentation's extension "
                     + "list may carry a section extension this deck does not understand")
         }
-        return self[idx]
+        return try self[idx]
     }
 }
 

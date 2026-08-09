@@ -207,6 +207,8 @@ public extension Chart {
     ///   series without Rostrum having to guess. Nothing is written in that
     ///   case.
     func addSeries(name: String, values: [Double?]) throws {
+        try requireFiniteChartNumbers(
+            values.lazy.compactMap { $0 }, in: "series \"\(name)\"")
         let plot: XML.Element
         let current: ChartData
         switch editableState() {

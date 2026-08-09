@@ -88,13 +88,20 @@ public final class Theme {
         part.markDirty()
     }
 
-    /// Accent 1…6 convenience (a brand's core palette).
-    public func accent(_ n: Int) -> Color? { color(accentSlot(n)) }
-    public func setAccent(_ n: Int, _ color: Color) { setColor(accentSlot(n), color) }
+    /// Accent 1…6 convenience (a brand's core palette). An out-of-range index
+    /// reads as `nil` and sets as a no-op — the optional signature already
+    /// promises "may be absent", so it must not trap for the caller iterating
+    /// an accent list of unknown length. (`DeckStyle.accent(_:)` is likewise
+    /// total; it cycles.)
+    public func accent(_ n: Int) -> Color? { accentSlot(n).flatMap(color) }
+    public func setAccent(_ n: Int, _ color: Color) {
+        guard let slot = accentSlot(n) else { return }
+        setColor(slot, color)
+    }
 
-    private func accentSlot(_ n: Int) -> ThemeSlot {
-        precondition((1...6).contains(n), "accent index must be 1…6")
-        return ThemeSlot(rawValue: "accent\(n)")!
+    private func accentSlot(_ n: Int) -> ThemeSlot? {
+        guard (1...6).contains(n) else { return nil }
+        return ThemeSlot(rawValue: "accent\(n)")
     }
 
     // MARK: - Fonts

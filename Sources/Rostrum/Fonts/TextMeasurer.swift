@@ -23,8 +23,13 @@ public struct TextMeasurer: Sendable {
     /// respected, then greedy word wrap on spaces (runs of spaces collapse to
     /// one). A word wider than the box breaks mid-word rather than
     /// overflowing. Every input, including "", yields at least one line.
+    ///
+    /// Widths are tracked as a running sum of advance units — measurement is
+    /// a pure per-scalar sum, so adding one word's units is EXACTLY the width
+    /// of re-measuring the whole line, without the quadratic re-walk.
     public func wrap(_ text: String, pointSize: Double, width: Double) -> [String] {
         var lines: [String] = []
+        let spaceUnits = metrics.advance(of: " ")
         for hardLine in text.split(separator: "\n", omittingEmptySubsequences: false) {
             let words = hardLine.split(separator: " ").map(String.init)
             guard !words.isEmpty else {
@@ -32,20 +37,26 @@ public struct TextMeasurer: Sendable {
                 continue
             }
             var current = ""
+            var currentUnits = 0
             for word in words {
-                let candidate = current.isEmpty ? word : current + " " + word
-                if metrics.width(of: candidate, pointSize: pointSize) <= width {
-                    current = candidate
+                let wordUnits = units(of: word)
+                let candidateUnits = current.isEmpty
+                    ? wordUnits : currentUnits + spaceUnits + wordUnits
+                if points(candidateUnits, at: pointSize) <= width {
+                    if !current.isEmpty { current += " " }
+                    current += word
+                    currentUnits = candidateUnits
                 } else if current.isEmpty {
-                    current = breakOversizedWord(word, pointSize: pointSize,
-                                                 width: width, into: &lines)
+                    (current, currentUnits) = breakOversizedWord(
+                        word, pointSize: pointSize, width: width, into: &lines)
                 } else {
                     lines.append(current)
-                    if metrics.width(of: word, pointSize: pointSize) <= width {
+                    if points(wordUnits, at: pointSize) <= width {
                         current = word
+                        currentUnits = wordUnits
                     } else {
-                        current = breakOversizedWord(word, pointSize: pointSize,
-                                                     width: width, into: &lines)
+                        (current, currentUnits) = breakOversizedWord(
+                            word, pointSize: pointSize, width: width, into: &lines)
                     }
                 }
             }
@@ -54,24 +65,44 @@ public struct TextMeasurer: Sendable {
         return lines.isEmpty ? [""] : lines
     }
 
+    /// The advance-unit sum of `text` — the integer half of `width(of:)`.
+    private func units(of text: String) -> Int {
+        var total = 0
+        for scalar in text.unicodeScalars { total += metrics.advance(of: scalar) }
+        return total
+    }
+
+    /// Advance units to points, converting exactly as `FontMetrics.width(of:)`
+    /// does so the running-sum comparison matches a full re-measure.
+    private func points(_ units: Int, at pointSize: Double) -> Double {
+        Double(units) / Double(metrics.unitsPerEm) * pointSize
+    }
+
     /// Character-break a word wider than the box, appending all full lines and
-    /// returning the (possibly empty) remainder to continue the current line.
-    /// Always makes progress: at least one character per line.
+    /// returning the (possibly empty) remainder — and its advance units — to
+    /// continue the current line. Always makes progress: at least one
+    /// character per line.
     private func breakOversizedWord(
         _ word: String, pointSize: Double, width: Double, into lines: inout [String]
-    ) -> String {
+    ) -> (remainder: String, units: Int) {
         var current = ""
+        var currentUnits = 0
         for character in word {
-            let candidate = current + String(character)
-            if !current.isEmpty,
-               metrics.width(of: candidate, pointSize: pointSize) > width {
+            var characterUnits = 0
+            for scalar in character.unicodeScalars {
+                characterUnits += metrics.advance(of: scalar)
+            }
+            let candidateUnits = currentUnits + characterUnits
+            if !current.isEmpty, points(candidateUnits, at: pointSize) > width {
                 lines.append(current)
                 current = String(character)
+                currentUnits = characterUnits
             } else {
-                current = candidate
+                current.append(character)
+                currentUnits = candidateUnits
             }
         }
-        return current
+        return (current, currentUnits)
     }
 
     /// The height of `text` wrapped into `width` points, in points.

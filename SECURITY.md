@@ -18,6 +18,11 @@ on this repository. You should receive an acknowledgment within a week.
   `Sources/Rostrum/Zip`, `XML`, and `OPC` are in scope and taken seriously.
   The fuzz suite (`FuzzTests`) is the first line of defense — reproduction
   cases are welcome in reports.
+- Reads are budgeted by default: `Presentation(data:limits:)` and
+  `OPCPackage.read` apply `ZipReader.Limits.default` (4 GiB of declared
+  uncompressed bytes) before anything is decompressed, and document type
+  declarations are rejected outright. For hostile input, pass a tighter
+  budget — `Tools/pptx-tool` uses 1 GiB — rather than `.unlimited`.
 - The Lectern sample app sends prompts to the LLM provider you configure and
   stores API keys in the system Keychain only. A path that writes a key
   anywhere else (defaults, logs, network other than the key's own provider)

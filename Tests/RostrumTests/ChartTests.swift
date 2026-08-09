@@ -43,6 +43,47 @@ import Testing
         #expect(space.childElements.last?.name == "c:externalData")
     }
 
+    @Test func nonFiniteValuesAreRefusedBeforeAnythingIsWritten() throws {
+        // `nan`/`inf` serialize as invalid xsd:double in `c:v`, which
+        // PowerPoint answers with a repair prompt. Every write boundary
+        // refuses instead — and refuses BEFORE creating any part, so a failed
+        // add leaves the deck byte-identical to one that never tried.
+        let deck = try Presentation()
+        let frame = Rect(x: .inches(1), y: .inches(1), width: .inches(8), height: .inches(5))
+        let before = try deck.serializedData()
+
+        #expect(throws: RostrumError.self) {
+            try deck.slides[0].shapes.addChart(
+                .barClustered,
+                data: ChartData(categories: ["A", "B"], values: [1.0, .nan]), frame: frame)
+        }
+        #expect(throws: RostrumError.self) {
+            try deck.slides[0].shapes.addScatterChart(
+                XYChartData(points: [(x: 1, y: .infinity)]), frame: frame)
+        }
+        #expect(throws: RostrumError.self) {
+            try deck.slides[0].shapes.addBubbleChart(
+                BubbleChartData(points: [.init(x: 1, y: 2, size: -.infinity)]), frame: frame)
+        }
+        #expect(throws: RostrumError.self) {
+            try deck.slides[0].shapes.addChart(
+                .line, data: ChartData(categories: ["A"], values: [1.0]), frame: frame,
+                options: ChartOptions(valueAxis: AxisOptions(max: .nan)))
+        }
+        #expect(try deck.serializedData() == before)
+
+        // A valid chart, then a refused replacement: the file keeps the old
+        // numbers, exactly as `replaceData`'s never-corrupt contract promises.
+        try deck.slides[0].shapes.addChart(
+            .barClustered, data: ChartData(categories: ["A", "B"], values: [1, 2]), frame: frame)
+        let written = try deck.serializedData()
+        let chart = try #require(deck.charts.first)
+        #expect(throws: RostrumError.self) {
+            try chart.replaceData(ChartData(categories: ["A", "B"], values: [3, .nan]))
+        }
+        #expect(try deck.serializedData() == written)
+    }
+
     @Test func cachesCarryData() throws {
         let deck = try Presentation()
         try deck.slides[0].shapes.addChart(

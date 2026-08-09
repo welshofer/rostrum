@@ -388,28 +388,35 @@ final class AppState {
                 // comes from the chosen style's design.md so images stay on-brand.
                 var imageProvider: (any ImageProvider)?
                 var imageStyle: String?
+                var imageSkipNote: String?
                 if let imageKey {
                     if self.runs.isCurrent(run) { self.stage = "Checking image provider" }
                     do {
                         try await ImageProviderFactory.validate(id: imageID, apiKey: imageKey)
                         if self.imageProviderID == imageID { self.imageKeyStatus = .valid }
+                        imageProvider = try ImageProviderFactory.make(id: imageID, apiKey: imageKey)
+                        if let style {
+                            imageStyle = ImageStyleDirective.from(style: style)
+                        }
                     } catch {
+                        // Images are an enhancement — "a deck is fully valid
+                        // without one" — and the text run hasn't even started.
+                        // An image key failing its check used to abort the
+                        // whole generation; now it costs the pictures, not the
+                        // deck, and says so on the result.
                         if self.imageProviderID == imageID {
                             self.imageKeyStatus = .invalid(Self.describe(error))
                         }
-                        throw error
-                    }
-                    let provider = try ImageProviderFactory.make(id: imageID, apiKey: imageKey)
-                    imageProvider = provider
-                    if let style {
-                        imageStyle = ImageStyleDirective.from(style: style)
+                        imageSkipNote = "Images were skipped — the image key failed its check: "
+                            + Self.describe(error)
                     }
                 }
-                let result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
+                var result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
                     .generate(request, designURL: designURL, into: directory,
                               diagnostics: diagnostics) { [weak self] event in
                         Task { @MainActor in self?.apply(event, run: run) }
                     }
+                if let imageSkipNote { result.warnings.append(imageSkipNote) }
                 // Cancellation is cooperative, so all three of these can run
                 // after the user has already started a replacement. Writing
                 // them unconditionally is what dropped a live generation off
@@ -461,7 +468,8 @@ final class AppState {
     /// Pre-flight cost ballpark for the current model (nil if unpriced).
     var costEstimate: String? {
         guard let est = PriceTable.estimate(model: model, slideCount: slideCount,
-                                            groundingChars: grounding?.text.count ?? 0) else { return nil }
+                                            groundingChars: grounding?.text.count ?? 0,
+                                            promptChars: prompt.count) else { return nil }
         return PriceTable.formatted(est)
     }
 

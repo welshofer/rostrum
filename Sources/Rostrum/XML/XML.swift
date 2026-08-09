@@ -267,6 +267,16 @@ public enum XML {
             throw RostrumError.xmlMalformed(
                 "input contains U+\(String(format: "%04X", bad.value)), not permitted in XML")
         }
+        // No OOXML part legitimately carries a document type declaration, and
+        // an internal DTD subset is the one entity-expansion vector that
+        // `shouldResolveExternalEntities = false` below does not cover
+        // ("billion laughs"). libxml2 has its own expansion ceilings, but they
+        // differ between Apple Foundation and swift-corelibs-foundation, so
+        // reject the construct itself rather than trusting either.
+        if text.contains("<!DOCTYPE") {
+            throw RostrumError.xmlMalformed(
+                "document type declarations are not permitted in OOXML parts")
+        }
         let parser = XMLParser(data: data)
         parser.shouldProcessNamespaces = false
         parser.shouldReportNamespacePrefixes = false
@@ -404,6 +414,7 @@ public enum XML {
                 parser.abortParsing()
                 return
             }
+            flushPendingText()
             // Stable attribute order: xmlns declarations first, then the rest,
             // each group sorted alphabetically (see class comment).
             var namespaceKeys: [String] = []
@@ -443,6 +454,7 @@ public enum XML {
             namespaceURI: String?,
             qualifiedName qName: String?
         ) {
+            flushPendingText()
             if !stack.isEmpty {
                 stack.removeLast()
             }
@@ -473,11 +485,32 @@ public enum XML {
         // Comments and processing instructions are intentionally dropped:
         // no `foundComment` / `foundProcessingInstruction` handling.
 
+        /// Character-data chunks awaiting materialization. `foundCharacters`
+        /// may deliver a single text run in many chunks (libxml2 buffer
+        /// boundaries, entity references split runs), and coalescing by
+        /// re-concatenating onto the stored node re-copies the accumulated
+        /// prefix per chunk — quadratic in the run's length. Chunks buffer
+        /// here instead and become ONE `.text` node at the next structural
+        /// event (child element opens, or the owner closes).
+        private var pendingText: [String] = []
+        private var pendingOwner: XML.Element?
+
+        private func flushPendingText() {
+            guard let owner = pendingOwner else { return }
+            pendingOwner = nil
+            let text = pendingText.count == 1 ? pendingText[0] : pendingText.joined()
+            pendingText.removeAll(keepingCapacity: true)
+            if let lastIndex = owner.children.indices.last,
+               case .text(let existing) = owner.children[lastIndex] {
+                owner.children[lastIndex] = .text(existing + text)
+            } else {
+                owner.children.append(.text(text))
+            }
+        }
+
         /// Append character data to the current element, coalescing with an
-        /// immediately preceding text node. `foundCharacters` may deliver a
-        /// single text run in multiple chunks (libxml2 buffer boundaries,
-        /// entity references split runs), so ADJACENT text nodes must merge
-        /// into one.
+        /// immediately preceding text node — ADJACENT text nodes must merge
+        /// into one, but via the pending buffer above, not per-chunk copies.
         private func appendText(_ string: String) {
             guard let current = stack.last else {
                 // Text outside any element. Whitespace around the root (or a
@@ -488,12 +521,11 @@ public enum XML {
                 }
                 return
             }
-            if let lastIndex = current.children.indices.last,
-               case .text(let existing) = current.children[lastIndex] {
-                current.children[lastIndex] = .text(existing + string)
-            } else {
-                current.children.append(.text(string))
+            if pendingOwner !== current {
+                flushPendingText()
+                pendingOwner = current
             }
+            pendingText.append(string)
         }
     }
 }

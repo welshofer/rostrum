@@ -11,7 +11,7 @@ public struct OpenAIImageProvider: ImageProvider {
     private let model: String
     private let send: HTTPRequestSender
 
-    public init(apiKey: String, model: String = "gpt-image-1", session: URLSession = .shared) {
+    public init(apiKey: String, model: String = "gpt-image-1", session: URLSession = ProviderNetworking.session) {
         self.apiKey = apiKey
         self.model = model
         self.send = { request in try await session.data(for: request) }
@@ -24,9 +24,23 @@ public struct OpenAIImageProvider: ImageProvider {
         self.send = send
     }
 
+    /// The models endpoint for `model`, percent-encoded. `model` is public
+    /// API surface (`ImageProviderFactory` takes any string), and a raw
+    /// interpolation makes `URL(string:)` nil — and a force-unwrap a crash —
+    /// on the first identifier with a space or `#` in it.
+    static func endpoint(model: String) throws -> URL {
+        let encoded = model.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
+        guard !encoded.isEmpty, let url = URL(
+            string: "https://api.openai.com/v1/models/\(encoded)") else {
+            throw LecternError.providerError(
+                status: 0, message: "\"\(model)\" is not a usable model identifier")
+        }
+        return url
+    }
+
     public func validate() async throws {
         guard !apiKey.isEmpty else { throw LecternError.noKey }
-        var req = URLRequest(url: URL(string: "https://api.openai.com/v1/models/\(model)")!, timeoutInterval: 30)
+        var req = URLRequest(url: try Self.endpoint(model: model), timeoutInterval: 30)
         req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         let (data, http) = try await perform(req)
         switch http.statusCode {
