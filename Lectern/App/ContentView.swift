@@ -86,6 +86,10 @@ struct ContentView: View {
 /// thing here and left opening one with no door at all.
 struct HomeView: View {
     @Environment(AppState.self) private var app
+    @State private var dropTargeted = false
+    /// Fixed point sizes ignore the user's text setting; @ScaledMetric is the
+    /// API that actually tracks it.
+    @ScaledMetric(relativeTo: .largeTitle) private var heroGlyph: CGFloat = 44
 
     var body: some View {
         @Bindable var app = app
@@ -93,7 +97,7 @@ struct HomeView: View {
             Spacer()
             VStack(spacing: 10) {
                 Image(systemName: "rectangle.on.rectangle.angled")
-                    .font(.system(size: 44)).foregroundStyle(.tint)
+                    .font(.system(size: heroGlyph)).foregroundStyle(.tint)
                 Text("Lectern").font(.largeTitle.weight(.semibold))
                 Text("Write a deck, or take one apart.")
                     .font(.title3).foregroundStyle(.secondary)
@@ -128,19 +132,38 @@ struct HomeView: View {
         }
         .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Half the product is "open a deck", and the most natural gesture for
+        // it did nothing. Accepts the same types as the file importer.
+        .dropDestination(for: URL.self) { urls, _ in
+            guard let deck = urls.first(where: {
+                ["pptx", "potx", "ppsx"].contains($0.pathExtension.lowercased())
+            }) else { return false }
+            app.inspect(deckAt: deck)
+            return true
+        } isTargeted: { dropTargeted = $0 }
+        .overlay {
+            if dropTargeted {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(.tint, style: StrokeStyle(lineWidth: 2, dash: [7]))
+                    .padding(18)
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeOut(duration: 0.15), value: dropTargeted)
         .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
         .task { app.refreshLibrary() }
     }
 }
 
 private struct HomeChoiceLabel: View {
+    @ScaledMetric(relativeTo: .title) private var glyph: CGFloat = 28
     let title: String
     let systemImage: String
     let blurb: String
 
     var body: some View {
         VStack(spacing: 8) {
-            Image(systemName: systemImage).font(.system(size: 28))
+            Image(systemName: systemImage).font(.system(size: glyph))
             Text(title).font(.title3.weight(.semibold))
             Text(blurb).font(.caption)
                 .multilineTextAlignment(.center)
@@ -259,6 +282,12 @@ struct ComposeView: View {
                                     .foregroundStyle(.tertiary).allowsHitTesting(false).padding(.top, 2)
                             }
                         }
+                        // The Card heading and the placeholder are both
+                        // decoration as far as VoiceOver is concerned — one is
+                        // a sibling, the other is not hit-testable — so the
+                        // field has to carry its own name and hint.
+                        .accessibilityLabel("Prompt")
+                        .accessibilityHint("What the presentation is about, and what it should accomplish")
                 }
 
                 let audienceGoalLayout = isCompact
@@ -266,16 +295,21 @@ struct ComposeView: View {
                     : AnyLayout(HStackLayout(spacing: 16))
                 audienceGoalLayout {
                     Card(title: "AUDIENCE", systemImage: "person.2") {
-                        Picker("", selection: $app.audience) {
+                        // `.labelsHidden()` hides a label from the eye; a label
+                        // of "" was never there for VoiceOver to hide. Name the
+                        // picker properly, then hide the visible copy.
+                        Picker("Audience", selection: $app.audience) {
                             ForEach(Self.audiences, id: \.self) { Text($0).tag($0) }
                         }
                         .pickerStyle(.menu).labelsHidden()
+                        .accessibilityLabel("Audience")
                     }
                     Card(title: "GOAL", systemImage: "target") {
-                        Picker("", selection: $app.goal) {
+                        Picker("Goal", selection: $app.goal) {
                             ForEach(["inform", "persuade", "entertain", "inspire"], id: \.self) { Text($0.capitalized).tag($0) }
                         }
                         .pickerStyle(.segmented).labelsHidden()
+                        .accessibilityLabel("Goal")
                     }
                 }
 
@@ -397,18 +431,103 @@ struct ComposeView: View {
 struct GeneratingView: View {
     @Environment(AppState.self) private var app
     var body: some View {
-        VStack(spacing: 18) {
-            ProgressView().controlSize(.large)
-            Text(app.stage).font(.title3.weight(.semibold)).contentTransition(.opacity)
+        VStack(spacing: 20) {
+            // The deck assembling itself, rather than a spinner over an empty
+            // pane. This is the longest wait in the app and the one the user
+            // has paid for, so it gets a shape.
             if app.total > 0 {
-                ProgressView(value: Double(app.drafted), total: Double(app.total))
-                    .frame(maxWidth: 280)
-                Text("\(app.drafted) of \(app.total) \(app.progressNoun)").font(.callout).foregroundStyle(.secondary)
+                DraftingSheet(total: app.total, done: app.drafted)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                Spacer()
+                ProgressView().controlSize(.large)
+                Spacer()
             }
-            Button("Cancel", role: .cancel) { app.cancel() }.buttonStyle(.glass)
+
+            VStack(spacing: 10) {
+                Text(app.stage).font(.title3.weight(.semibold)).contentTransition(.opacity)
+                if app.total > 0 {
+                    ProgressView(value: Double(app.drafted), total: Double(app.total))
+                        .frame(maxWidth: 280)
+                    Text("\(app.drafted) of \(app.total) \(app.progressNoun)")
+                        .font(.callout.monospacedDigit()).foregroundStyle(.secondary)
+                        .contentTransition(.numericText())
+                }
+                Button("Cancel", role: .cancel) { app.cancel() }.buttonStyle(.glass)
+            }
+            .padding(.bottom, 28)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(app.total > 0
+                                ? "\(app.stage). \(app.drafted) of \(app.total) \(app.progressNoun)."
+                                : app.stage)
         }
-        .padding(48)
+        .animation(.smooth(duration: 0.3), value: app.drafted)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+/// Placeholder tiles that light up as slides land — the contact sheet the
+/// result screen will show, drawn one slide ahead of the deck existing.
+private struct DraftingSheet: View {
+    let total: Int
+    let done: Int
+    @State private var pulse = false
+
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 3)
+
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 12) {
+                ForEach(0..<total, id: \.self) { index in
+                    DraftingTile(state: state(of: index), dimmed: index == done && pulse)
+                }
+            }
+            .padding(.horizontal, 28)
+            .padding(.top, 28)
+        }
+        .accessibilityHidden(true)
+        .onAppear {
+            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
+                pulse = true
+            }
+        }
+    }
+
+    private func state(of index: Int) -> DraftingTile.State {
+        index < done ? .written : .pending
+    }
+}
+
+/// One placeholder slide. Its own view because a fill, a border, a badge and a
+/// conditional opacity in one chain is more than the type checker will take.
+private struct DraftingTile: View {
+    enum State { case pending, written }
+
+    let state: State
+    let dimmed: Bool
+
+    var body: some View {
+        let written = state == .written
+        RoundedRectangle(cornerRadius: 8, style: .continuous)
+            .fill(written ? AnyShapeStyle(.tint.opacity(0.22)) : AnyShapeStyle(.quaternary))
+            .aspectRatio(16.0 / 9.0, contentMode: .fit)
+            .overlay { border(written) }
+            .overlay(alignment: .bottomTrailing) { badge(written) }
+            .opacity(dimmed ? 0.55 : 1)
+    }
+
+    @ViewBuilder private func border(_ written: Bool) -> some View {
+        RoundedRectangle(cornerRadius: 8, style: .continuous)
+            .strokeBorder(written ? AnyShapeStyle(.tint) : AnyShapeStyle(.clear), lineWidth: 1)
+    }
+
+    @ViewBuilder private func badge(_ written: Bool) -> some View {
+        if written {
+            Image(systemName: "checkmark")
+                .font(.caption2.weight(.bold))
+                .foregroundStyle(.tint)
+                .padding(6)
+        }
     }
 }
 
@@ -433,9 +552,14 @@ struct ResultView: View {
             .padding(.top, 24).padding(.horizontal, 24).padding(.bottom, 12)
 
             if result.previews.isEmpty {
-                Spacer()
-                Image(systemName: "checkmark.seal.fill").font(.system(size: 52)).foregroundStyle(.green)
-                Spacer()
+                // A green glyph floating in whitespace reads as a placeholder,
+                // not a finish. Say what was made and why there is no picture.
+                ContentUnavailableView {
+                    Label("Deck written", systemImage: "checkmark.seal.fill")
+                } description: {
+                    Text("\(result.slideCount) slides are on disk. No previews were rendered for this deck.")
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 // Rendered by Rostrum from the deck on disk, so what you see
                 // here is what PowerPoint will open — not a redraw of the plan.
@@ -517,11 +641,12 @@ struct ResultView: View {
 
 struct FailedView: View {
     @Environment(AppState.self) private var app
+    @ScaledMetric(relativeTo: .largeTitle) private var failGlyph: CGFloat = 44
     let message: String
 
     var body: some View {
         VStack(spacing: 16) {
-            Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 44)).foregroundStyle(.orange)
+            Image(systemName: "exclamationmark.triangle.fill").font(.system(size: failGlyph)).foregroundStyle(.orange)
             Text(message).font(.title3).multilineTextAlignment(.center).frame(maxWidth: 420)
             // Every failure used to funnel into one button back to the form,
             // even though `describe` knew exactly which one had happened. The

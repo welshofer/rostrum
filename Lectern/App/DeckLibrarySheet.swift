@@ -16,9 +16,22 @@ struct DeckLibrarySheet: View {
     @Environment(AppState.self) private var app
     @Environment(\.dismiss) private var dismiss
     @State private var pendingDelete: DeckFile?
+    @State private var query = ""
     #if os(iOS)
     @State private var previewURL: URL?
     #endif
+
+    /// Deck names are model-generated slugs, so matching is on the words a
+    /// person would actually remember rather than the whole string.
+    private var visibleDecks: [DeckFile] {
+        let trimmed = query.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return app.library }
+        let needles = trimmed.lowercased().split(separator: " ").map(String.init)
+        return app.library.filter { deck in
+            let name = deck.name.lowercased()
+            return needles.allSatisfy { name.contains($0) }
+        }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -32,7 +45,7 @@ struct DeckLibrarySheet: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List {
-                    ForEach(app.library) { deck in
+                    ForEach(visibleDecks) { deck in
                         DeckRow(deck: deck,
                                 open: { open(deck) },
                                 inspect: {
@@ -46,6 +59,12 @@ struct DeckLibrarySheet: View {
                 #if os(macOS)
                 .listStyle(.inset)
                 #endif
+                .searchable(text: $query, prompt: "Search decks")
+                .overlay {
+                    if visibleDecks.isEmpty {
+                        ContentUnavailableView.search(text: query)
+                    }
+                }
             }
         }
         #if os(macOS)
