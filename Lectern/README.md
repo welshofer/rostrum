@@ -13,6 +13,7 @@ Lectern/
 ├── Package.swift            # LecternCore SPM package (depends on Rostrum via ../)
 ├── Sources/LecternCore/     # UI-free, fully testable
 │   ├── DeckIR/              # lectern.deck/1 IR + validation + repair prompt
+│   ├── Export/              # deck → folder: Markdown + media + chart CSVs
 │   ├── Providers/           # LLMProvider protocol, DeckGenerator, image providers, errors
 │   ├── Rendering/           # DeckRenderer actor → Rostrum builders
 │   └── StyleCatalog/        # design.md catalog loader
@@ -67,6 +68,12 @@ real network call*.
   (§8.3–8.4), unknown-layout downgrade (§8.5), and the one-shot repair prompt
   (§8.7). Nothing reaches the renderer unvalidated (invariant I3).
 - **DeckGenerator**: `draft → decode+validate → one repair → render`.
+- **DeckExporter**: the other direction. **File ▸ Export Deck to Folder…**
+  (⌘E, macOS) opens any `.pptx` — one Lectern made, or one that arrived by
+  email — and writes a folder holding a Markdown file of every slide's words
+  beside a folder per slide with its images, movies, sounds and one CSV per
+  chart. The extraction itself is Rostrum's `DeckExport`; what lives here is
+  the part with a user in front of it.
 - **DeckRenderer** (an `actor`, invariant I2): maps each IR layout onto Rostrum's
   design-authoring builders and applies the chosen `design.md`:
 
