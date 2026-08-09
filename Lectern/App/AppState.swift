@@ -18,6 +18,9 @@ final class AppState {
     enum Phase: Equatable {
         case compose, generating
         case result(DeckResult)
+        case inspecting(String)
+        case inspected(DeckInspection)
+        case inspectionFailed(String)
         case failed(String)
     }
     var phase: Phase = .compose
@@ -77,6 +80,10 @@ final class AppState {
     /// state so the menu bar can open it from anywhere, which is the whole
     /// point of having a menu item for it.
     var isShowingLibrary = false
+    /// One importer at the ContentView root. Both the compose card and the File
+    /// menu toggle this rather than stacking importers on the same view — a
+    /// pattern SwiftUI has already shown it can silently ignore on macOS.
+    var isImportingDeck = false
     /// Set once, when decks were actually relocated, so the move is not
     /// something the user has to discover. Cleared when they dismiss it.
     private(set) var migrationNotice: String?
@@ -100,7 +107,7 @@ final class AppState {
         // attached PDF. Useful while a failure is being looked at; a liability
         // once it is not.
         let diagnostics = Self.diagnosticsDirectory()
-        await Task.detached { DeckStorage.pruneDiagnostics(in: diagnostics) }.value
+        _ = await Task.detached { DeckStorage.pruneDiagnostics(in: diagnostics) }.value
         refreshLibrary()
     }
 
@@ -122,6 +129,9 @@ final class AppState {
     var total = 0
     var progressNoun = "slides"          // "slides" while drafting, "images" while illustrating
     private var task: Task<Void, Never>?
+    private var workbench: DeckWorkbench?
+    private var inspectionRun = 0
+    private(set) var inspectedPreviews: [Int: String] = [:]
     /// Which generation the UI is currently showing. A cancelled task's
     /// continuation runs after `cancel()` returns, so every write it makes is
     /// checked against this first — see `RunGate`.
@@ -133,7 +143,7 @@ final class AppState {
         static let useSmartArt = "useSmartArt"
     }
 
-    init() {
+    init(skipKeychain: Bool = false) {
         let d = UserDefaults.standard
         if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
         if let m = d.string(forKey: Keys.model), Self.defaultModels(for: providerID).contains(m) { model = m }
@@ -141,6 +151,11 @@ final class AppState {
         favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])
         recents = d.stringArray(forKey: Keys.recents) ?? []
         useSmartArt = d.bool(forKey: Keys.useSmartArt)
+        if skipKeychain {
+            hasKey = false
+            hasImageKey = false
+            return
+        }
         hasKey = KeychainStore.hasKey(for: providerID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
     }
@@ -276,6 +291,59 @@ final class AppState {
 
     func clearPDF() { grounding = nil; groundingError = nil }
 
+    // MARK: - Open deck
+
+    /// Open a PowerPoint document selected by the user and inspect it without
+    /// mutating or saving it. The workbench actor owns the non-Sendable
+    /// `Presentation`; the UI receives only value snapshots and SVG strings.
+    func inspectDeck(_ url: URL) {
+        inspectionRun += 1
+        let run = inspectionRun
+        inspectedPreviews = [:]
+        workbench = nil
+        phase = .inspecting(url.lastPathComponent)
+
+        Task {
+            let scoped = url.startAccessingSecurityScopedResource()
+            defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+            do {
+                let data = try await Task.detached { try Data(contentsOf: url) }.value
+                let workbench = try DeckWorkbench(data: data, sourceURL: url)
+                let inspection = try await workbench.inspect()
+                guard run == inspectionRun else { return }
+                self.workbench = workbench
+                self.phase = .inspected(inspection)
+            } catch {
+                guard run == inspectionRun else { return }
+                self.phase = .inspectionFailed(Self.describeInspection(error))
+            }
+        }
+    }
+
+    func loadInspectionPreview(at index: Int) async {
+        guard inspectedPreviews[index] == nil, let workbench else { return }
+        do {
+            let svg = try await workbench.renderSlide(at: index, pixelWidth: 640)
+            guard case .inspected = phase else { return }
+            inspectedPreviews[index] = svg
+        } catch {
+            // Inspection is still useful when one preview cannot render. The
+            // deck's validation issues and structure remain on screen.
+        }
+    }
+
+    func closeInspection() {
+        inspectionRun += 1
+        workbench = nil
+        inspectedPreviews = [:]
+        phase = .compose
+    }
+
+    private static func describeInspection(_ error: Error) -> String {
+        if let workbench = error as? DeckWorkbenchError { return workbench.description }
+        return error.localizedDescription
+    }
+
     // MARK: - Generate
 
     var canGenerate: Bool {
@@ -365,7 +433,12 @@ final class AppState {
         runs.abandon()
         task?.cancel(); task = nil; phase = .compose
     }
-    func reset() { stage = ""; drafted = 0; total = 0; lastFailure = nil; phase = .compose }
+    func reset() {
+        inspectionRun += 1
+        workbench = nil
+        inspectedPreviews = [:]
+        stage = ""; drafted = 0; total = 0; lastFailure = nil; phase = .compose
+    }
 
     private func apply(_ event: GenerationEvent, run: Int) {
         // Progress from a run the user already cancelled would otherwise drive

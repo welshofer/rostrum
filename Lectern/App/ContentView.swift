@@ -14,6 +14,8 @@ struct ContentView: View {
     #endif
 
     var body: some View {
+        @Bindable var app = app
+        Group {
         #if os(iOS)
         // iOS/iPadOS: no Settings scene exists, so a NavigationStack hosts the
         // toolbar gear that presents Settings as a sheet.
@@ -21,6 +23,11 @@ struct ContentView: View {
             phaseView
                 .navigationTitle("Lectern")
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button { app.isImportingDeck = true } label: {
+                            Label("Open Deck", systemImage: "doc.badge.magnifyingglass")
+                        }
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button { showSettings = true } label: {
                             Label("Settings", systemImage: "gearshape")
@@ -36,6 +43,13 @@ struct ContentView: View {
             .frame(minWidth: 640, minHeight: 560)
             .task { await app.start(); await app.loadStyles() }
         #endif
+        }
+        .fileImporter(
+            isPresented: $app.isImportingDeck,
+            allowedContentTypes: Self.powerPointTypes
+        ) { result in
+            if let url = try? result.get() { app.inspectDeck(url) }
+        }
     }
 
     @ViewBuilder private var phaseView: some View {
@@ -43,9 +57,15 @@ struct ContentView: View {
         case .compose: ComposeView()
         case .generating: GeneratingView()
         case .result(let r): ResultView(result: r)
+        case .inspecting(let name): InspectingDeckView(fileName: name)
+        case .inspected(let inspection): DeckInspectorView(inspection: inspection)
+        case .inspectionFailed(let message): InspectionFailedView(message: message)
         case .failed(let m): FailedView(message: m)
         }
     }
+
+    static let powerPointTypes: [UTType] = ["pptx", "potx", "ppsx"]
+        .compactMap { UTType(filenameExtension: $0) }
 }
 
 // MARK: - A reusable glass card
@@ -103,6 +123,19 @@ struct ComposeView: View {
         @Bindable var app = app
         ScrollView {
             VStack(spacing: 16) {
+                Card(title: "OPEN AN EXISTING DECK", systemImage: "doc.badge.magnifyingglass") {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Inspect what is really in a PowerPoint file")
+                                .font(.headline)
+                            Text("Slides, layouts, masters, fonts, charts, notes, comments, media, and validation.")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Button("Open Deck…") { app.isImportingDeck = true }
+                            .buttonStyle(.glassProminent)
+                    }
+                }
                 if let notice = app.migrationNotice {
                     HStack(spacing: 10) {
                         Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)

@@ -41,6 +41,9 @@ fi
 step "Lectern macOS app"
 Lectern/scripts/build.sh -quiet
 
+step "Lectern app-hosted tests"
+Lectern/scripts/test-app.sh -quiet
+
 step "Lectern iOS app (simulator)"
 Lectern/scripts/build-ios.sh -quiet
 

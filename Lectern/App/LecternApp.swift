@@ -127,13 +127,15 @@ struct LecternApp: App {
             Button("Your Decks") { app.isShowingLibrary = true }
                 .keyboardShortcut("l")
                 .disabled(app.library.isEmpty)
+            Button("Open Deck…") { app.isImportingDeck = true }
+                .keyboardShortcut("o")
             Divider()
             Button("Open Decks Folder") {
                 let directory = AppState.decksDirectory()
                 try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
                 NSWorkspace.shared.open(directory)
             }
-            .keyboardShortcut("o", modifiers: [.command, .shift])
+            .keyboardShortcut("o", modifiers: [.command, .option])
         }
         CommandGroup(replacing: .help) {
             Link("Lectern Help",

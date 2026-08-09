@@ -8,6 +8,19 @@ options:
 packages:
   LecternCore:
     path: .
+  Rostrum:
+    path: ..
+schemes:
+  Lectern:
+    build:
+      targets:
+        Lectern: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - LecternAppTests
 targets:
   Lectern:
     type: application
@@ -23,6 +36,8 @@ targets:
     dependencies:
       - package: LecternCore
         product: LecternCore
+      - package: Rostrum
+        product: Rostrum
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.lectern.app
@@ -68,6 +83,8 @@ targets:
     dependencies:
       - package: LecternCore
         product: LecternCore
+      - package: Rostrum
+        product: Rostrum
     settings:
       base:
         PRODUCT_NAME: Lectern
@@ -94,3 +111,30 @@ targets:
         # CODE_SIGNING_ALLOWED=NO). To run on a real iPhone/iPad, set your team
         # here or in Xcode's Signing & Capabilities tab.
         CODE_SIGN_STYLE: Automatic
+
+  LecternAppTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "26.0"
+    hostApplication: Lectern
+    dependencies:
+      - target: Lectern
+      - package: LecternCore
+        product: LecternCore
+      - package: Rostrum
+        product: Rostrum
+    sources:
+      - path: AppTests
+        excludes:
+          - "Fixtures"
+      - path: AppTests/Fixtures
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.lectern.app.tests
+        GENERATE_INFOPLIST_FILE: "YES"
+        SWIFT_VERSION: "6.0"
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_ALLOWED: "YES"

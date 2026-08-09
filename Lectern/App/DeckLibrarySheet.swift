@@ -35,6 +35,10 @@ struct DeckLibrarySheet: View {
                     ForEach(app.library) { deck in
                         DeckRow(deck: deck,
                                 open: { open(deck) },
+                                inspect: {
+                                    app.inspectDeck(deck.url)
+                                    dismiss()
+                                },
                                 reveal: { reveal(deck) },
                                 delete: { pendingDelete = deck })
                     }
@@ -122,6 +126,7 @@ struct DeckLibrarySheet: View {
 private struct DeckRow: View {
     let deck: DeckFile
     let open: () -> Void
+    let inspect: () -> Void
     let reveal: () -> Void
     let delete: () -> Void
 
@@ -136,12 +141,14 @@ private struct DeckRow: View {
             }
             Spacer(minLength: 8)
             #if os(macOS)
+            Button("Inspect", action: inspect).buttonStyle(.glassProminent)
             Button("Open", action: open).buttonStyle(.glass)
             Button { reveal() } label: { Image(systemName: "folder") }
                 .buttonStyle(.glass)
                 .help("Reveal in Finder")
                 .accessibilityLabel("Reveal \(deck.name) in Finder")
             #else
+            Button("Inspect", action: inspect).buttonStyle(.glassProminent)
             Button("Preview", action: open).buttonStyle(.glass)
             ShareLink(item: deck.url) { Image(systemName: "square.and.arrow.up") }
                 .accessibilityLabel("Share \(deck.name)")
