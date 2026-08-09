@@ -154,6 +154,58 @@ import Testing
 
     // MARK: - Markdown
 
+    /// A table on a slide is a table in the Markdown, not a run-on of cells.
+    ///
+    /// The exact bytes are asserted rather than "contains a pipe": a GitHub
+    /// table is only a table if the header is followed by the `---` delimiter
+    /// row, and that is precisely the line most easily lost.
+    @Test func tablesExportAsMarkdownTables() throws {
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(rows: 3, columns: 3, frame: frame)
+        table.setContents([["Region", "Q1", "Q2"],
+                           ["North", "10", "20"],
+                           ["South", "5", "7"]])
+
+        let markdown = deck.outline().markdown(title: "T")
+
+        #expect(markdown.contains("""
+        | Region | Q1 | Q2 |
+        | --- | --- | --- |
+        | North | 10 | 20 |
+        | South | 5 | 7 |
+        """))
+        // A table needs a blank line ahead of it or it renders as a paragraph.
+        #expect(markdown.contains("\n\n| Region | Q1 | Q2 |"))
+    }
+
+    /// A cell's own pipe must not become a column boundary, and a cell's own
+    /// newline must not become a row boundary — either one silently reshapes
+    /// the table into a different one.
+    @Test func tableCellsCannotBreakOutOfTheirColumn() throws {
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(rows: 2, columns: 2, frame: frame)
+        table.setContents([["Region", "Split | Here"], ["North", "Two\nLines"]])
+
+        let markdown = deck.outline().markdown(title: "T")
+
+        #expect(markdown.contains("| Region | Split \\| Here |"))
+        #expect(markdown.contains("| North | Two Lines |"))
+        // Four rows of pipes and nothing more: header, delimiter, one body row.
+        let rows = markdown.components(separatedBy: "\n").filter { $0.hasPrefix("|") }
+        #expect(rows.count == 3)
+    }
+
+    /// Foreign decks routinely declare more grid columns than a row has cells.
+    /// Every row still has to have the same number of columns or the table
+    /// stops being one.
+    @Test func raggedTableRowsArePaddedToOneWidth() {
+        let lines = DeckOutline.table([["A", "B", "C"], ["only one"]])
+
+        #expect(lines == ["| A | B | C |",
+                          "| --- | --- | --- |",
+                          "| only one |  |  |"])
+    }
+
     @Test func markdownShowsSlideTextRatherThanRenderingItAsMarkup() throws {
         let deck = try Presentation()
         let box = try deck.slides[0].shapes.addTextBox(frame)
@@ -193,6 +245,27 @@ import Testing
         let markdown = try String(contentsOf: summary.markdownFile, encoding: .utf8)
         #expect(markdown.contains("Say hello."))
         #expect(markdown.contains("`slide-01/image1.png`"))
+    }
+
+    /// The written `.md` carries the table too — a table that only survives
+    /// in memory is not an export.
+    @Test func tablesSurviveTheWrittenMarkdownFile() throws {
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(rows: 2, columns: 2, frame: frame)
+        table.setContents([["Region", "Q1"], ["North", "10"]])
+
+        let root = scratchDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let summary = try DeckExport.write(deck, to: root, named: "Deck")
+
+        let markdown = try String(contentsOf: summary.markdownFile, encoding: .utf8)
+        #expect(markdown.contains("""
+        | Region | Q1 |
+        | --- | --- |
+        | North | 10 |
+        """))
+        // A table is text, so it earns the slide no folder of its own.
+        #expect(summary.slideFolders == 0)
     }
 
     @Test func chartDataLandsInACSVBesideTheSlide() throws {
