@@ -13,70 +13,169 @@ struct ContentView: View {
     @State private var showSettings = false
     #endif
 
+    /// The decks this app will open. A `.pptx` and nothing else — the
+    /// inspector reads PresentationML, and offering the user a file it cannot
+    /// open is a worse experience than not offering it.
+    static let deckTypes: [UTType] = [UTType(filenameExtension: "pptx") ?? .data]
+
     var body: some View {
         @Bindable var app = app
         Group {
-        #if os(iOS)
-        // iOS/iPadOS: no Settings scene exists, so a NavigationStack hosts the
-        // toolbar gear that presents Settings as a sheet.
-        NavigationStack {
+            #if os(iOS)
+            // iOS/iPadOS: no Settings scene exists, so a NavigationStack hosts
+            // the toolbar gear that presents Settings as a sheet.
+            NavigationStack {
+                phaseView
+                    .navigationTitle("Lectern")
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button { showSettings = true } label: {
+                                Label("Settings", systemImage: "gearshape")
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $showSettings) { SettingsView().environment(app) }
+            }
+            #else
+            // No sidebar — there's no deck History to show, so a single pane is honest.
             phaseView
-                .navigationTitle("Lectern")
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button { app.isImportingDeck = true } label: {
-                            Label("Open Deck", systemImage: "doc.badge.magnifyingglass")
-                        }
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button { showSettings = true } label: {
-                            Label("Settings", systemImage: "gearshape")
-                        }
-                    }
-                }
-                .sheet(isPresented: $showSettings) { SettingsView().environment(app) }
+                .frame(minWidth: 640, minHeight: 560)
+            #endif
+        }
+        // Attached above the phase switch, not inside a phase: the menu bar
+        // starts this flow too, and a picker owned by a view that isn't on
+        // screen never opens.
+        .fileImporter(isPresented: $app.isChoosingDeckToInspect,
+                      allowedContentTypes: Self.deckTypes) { result in
+            if let url = try? result.get() { app.inspect(deckAt: url) }
         }
         .task { await app.start(); await app.loadStyles() }
-        #else
-        // No sidebar — there's no deck History to show, so a single pane is honest.
-        phaseView
-            .frame(minWidth: 640, minHeight: 560)
-            .task { await app.start(); await app.loadStyles() }
-        #endif
-        }
-        .fileImporter(
-            isPresented: $app.isImportingDeck,
-            allowedContentTypes: Self.powerPointTypes
-        ) { result in
-            if let url = try? result.get() { app.inspectDeck(url) }
-        }
     }
 
-    /// The four principal states used to cut hard — a bare `switch` with no
+    /// The principal states used to cut hard — a bare `switch` with no
     /// transition, so a two-minute paid generation resolved as an instant
     /// view swap. One soft cross-blur per phase change and a success tap when
     /// the deck lands; the states themselves are untouched.
     @ViewBuilder private var phaseView: some View {
         ZStack {
             switch app.phase {
+            case .home: HomeView().transition(.blurReplace)
             case .compose: ComposeView().transition(.blurReplace)
             case .generating: GeneratingView().transition(.blurReplace)
             case .result(let r): ResultView(result: r).transition(.blurReplace)
-            case .inspecting(let name): InspectingDeckView(fileName: name).transition(.blurReplace)
-            case .inspected(let inspection): DeckInspectorView(inspection: inspection).transition(.blurReplace)
-            case .inspectionFailed(let message): InspectionFailedView(message: message).transition(.blurReplace)
             case .failed(let m): FailedView(message: m).transition(.blurReplace)
+            case .inspecting: InspectingView().transition(.blurReplace)
+            case .inspected: InspectorView().transition(.blurReplace)
             }
         }
         .animation(.smooth(duration: 0.35), value: app.phase)
         .sensoryFeedback(.success, trigger: app.phase) { _, newPhase in
             if case .result = newPhase { return true }
+            if case .inspected = newPhase { return true }
             return false
         }
     }
+}
 
-    static let powerPointTypes: [UTType] = ["pptx", "potx", "ppsx"]
-        .compactMap { UTType(filenameExtension: $0) }
+// MARK: - Home
+
+/// The fork. Lectern does two things, and this is where you say which.
+///
+/// Two buttons and nothing else on purpose: the compose form used to be the
+/// launch screen, which quietly asserted that writing a deck was the only
+/// thing here and left opening one with no door at all.
+struct HomeView: View {
+    @Environment(AppState.self) private var app
+
+    var body: some View {
+        @Bindable var app = app
+        VStack(spacing: 30) {
+            Spacer()
+            VStack(spacing: 10) {
+                Image(systemName: "rectangle.on.rectangle.angled")
+                    .font(.system(size: 44)).foregroundStyle(.tint)
+                Text("Lectern").font(.largeTitle.weight(.semibold))
+                Text("Write a deck, or take one apart.")
+                    .font(.title3).foregroundStyle(.secondary)
+            }
+
+            HStack(spacing: 18) {
+                Button { app.startCreate() } label: {
+                    HomeChoiceLabel(title: "Create", systemImage: "sparkles",
+                                    blurb: "Describe it, and Lectern writes the .pptx.")
+                }
+                .buttonStyle(.glassProminent)
+
+                Button { app.chooseDeckToInspect() } label: {
+                    HomeChoiceLabel(title: "Inspect", systemImage: "magnifyingglass",
+                                    blurb: "Open a deck, see what it's made of, export it.")
+                }
+                .buttonStyle(.glass)
+            }
+            .controlSize(.large)
+
+            // Only once there is something to show — an empty library behind a
+            // button is a dead end offered to someone who has never generated
+            // anything.
+            if !app.library.isEmpty {
+                Button { app.isShowingLibrary = true } label: {
+                    Label("\(app.library.count) deck\(app.library.count == 1 ? "" : "s") you've made",
+                          systemImage: "rectangle.stack")
+                }
+                .buttonStyle(.glass)
+            }
+            Spacer()
+        }
+        .padding(40)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
+        .task { app.refreshLibrary() }
+    }
+}
+
+private struct HomeChoiceLabel: View {
+    let title: String
+    let systemImage: String
+    let blurb: String
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: systemImage).font(.system(size: 28))
+            Text(title).font(.title3.weight(.semibold))
+            Text(blurb).font(.caption)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 170)
+                .opacity(0.75)
+        }
+        .padding(.vertical, 20).padding(.horizontal, 16)
+        .frame(minWidth: 190)
+    }
+}
+
+// MARK: - Inspecting
+
+/// Opening a deck, walking every shape and drawing every slide is real work.
+/// This is the window saying so, with the one step that has a denominator
+/// driving a real bar.
+struct InspectingView: View {
+    @Environment(AppState.self) private var app
+
+    var body: some View {
+        VStack(spacing: 18) {
+            ProgressView().controlSize(.large)
+            Text(app.inspectStage.isEmpty ? "Opening the deck" : app.inspectStage)
+                .font(.title3.weight(.semibold)).contentTransition(.opacity)
+            if app.inspectTotal > 0 {
+                ProgressView(value: Double(app.inspectDone), total: Double(app.inspectTotal))
+                    .frame(maxWidth: 280)
+                Text("\(app.inspectDone) of \(app.inspectTotal) slides")
+                    .font(.callout).foregroundStyle(.secondary)
+            }
+            Button("Cancel", role: .cancel) { app.cancelInspection() }.buttonStyle(.glass)
+        }
+        .padding(48)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
 }
 
 // MARK: - A reusable glass card
@@ -134,19 +233,6 @@ struct ComposeView: View {
         @Bindable var app = app
         ScrollView {
             VStack(spacing: 16) {
-                Card(title: "OPEN AN EXISTING DECK", systemImage: "doc.badge.magnifyingglass") {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text("Inspect what is really in a PowerPoint file")
-                                .font(.headline)
-                            Text("Slides, layouts, masters, fonts, charts, notes, comments, media, and validation.")
-                                .font(.caption).foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        Button("Open Deck…") { app.isImportingDeck = true }
-                            .buttonStyle(.glassProminent)
-                    }
-                }
                 if let notice = app.migrationNotice {
                     HStack(spacing: 10) {
                         Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
@@ -443,7 +529,11 @@ struct FailedView: View {
             // reason.
             HStack(spacing: 12) {
                 recovery
-                Button("Back to Compose") { app.reset() }
+                // "Start over" rather than "back to compose": a failure now
+                // arrives from opening a deck as well as from writing one, and
+                // the compose form is the wrong place to land after the first.
+                // Nothing typed is lost — Home keeps the form's contents.
+                Button("Start Over") { app.goHome() }
                     .buttonStyle(.glass).controlSize(.large)
             }
         }
@@ -463,7 +553,7 @@ struct FailedView: View {
             // find the stepper and guess.
             Button("Use Fewer Slides") {
                 app.slideCount = max(3, Int(Double(app.slideCount) * 0.6))
-                app.reset()
+                app.startCreate()
             }
             .buttonStyle(.glassProminent).controlSize(.large)
         case .noKey, .authFailed:

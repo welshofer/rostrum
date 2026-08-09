@@ -36,7 +36,7 @@ struct DeckLibrarySheet: View {
                         DeckRow(deck: deck,
                                 open: { open(deck) },
                                 inspect: {
-                                    app.inspectDeck(deck.url)
+                                    app.inspect(deckAt: deck.url)
                                     dismiss()
                                 },
                                 reveal: { reveal(deck) },

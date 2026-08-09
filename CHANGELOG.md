@@ -27,9 +27,24 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   walks the children in document order.
 - `pptx-tool extract <file.pptx> <directory>` — the extraction from the
   command line, exiting non-zero when a deck only partly came out.
-- Lectern: **File ▸ Export Deck to Folder…** (⌘E, macOS) opens any `.pptx` —
-  not only the one just generated — and writes the export beside it.
-  `DeckExporter` in LecternCore holds the UI-free half.
+- Lectern opens on a **fork — Create or Inspect** — rather than straight into
+  the compose form, which had asserted that writing a deck was the only thing
+  the app did and left opening one with no door at all.
+  - **Inspect** (⌘I, or the button) picks a `.pptx`, opens and lints and reads
+    and draws it entirely off the main actor, and shows what it turned out to
+    be: counts, geometry, sections, findings, a contact sheet of every slide,
+    and every word in it. **Export Everything…** writes the full teardown into
+    a chosen folder.
+  - Nothing slow is silent: opening, validating, extracting and rendering each
+    announce themselves, slide rendering drives a determinate `n of N` bar, and
+    the export raises a progress overlay while it copies media. Both are
+    cancellable.
+  - `DeckInspector` and `SlideDigest` in LecternCore hold the whole inspection,
+    so it is tested headlessly on Linux; they expose `String`/`Int` rather than
+    Rostrum's `DeckOutline` because the app target links LecternCore and
+    nothing below it.
+  - Because the pickers are SwiftUI's rather than AppKit panels, Inspect and
+    Export work on **iOS/iPadOS** too.
 - **FontMetrics engine** — pure-Swift TrueType/OpenType metrics parsing
   (`head`/`hhea`/`maxp`/`hmtx`/`cmap` formats 4 + 12, `OS/2` typographic
   metrics, `.ttc` collections) with no platform text stack. `FontMetrics`

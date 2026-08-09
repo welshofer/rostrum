@@ -14,6 +14,7 @@ Lectern/
 ├── Sources/LecternCore/     # UI-free, fully testable
 │   ├── DeckIR/              # lectern.deck/1 IR + validation + repair prompt
 │   ├── Export/              # deck → folder: Markdown + media + chart CSVs
+│   ├── Inspection/          # deck → counts, findings, digests, previews
 │   ├── Providers/           # LLMProvider protocol, DeckGenerator, image providers, errors
 │   ├── Rendering/           # DeckRenderer actor → Rostrum builders
 │   └── StyleCatalog/        # design.md catalog loader
@@ -68,12 +69,20 @@ real network call*.
   (§8.3–8.4), unknown-layout downgrade (§8.5), and the one-shot repair prompt
   (§8.7). Nothing reaches the renderer unvalidated (invariant I3).
 - **DeckGenerator**: `draft → decode+validate → one repair → render`.
-- **DeckExporter**: the other direction. **File ▸ Export Deck to Folder…**
-  (⌘E, macOS) opens any `.pptx` — one Lectern made, or one that arrived by
-  email — and writes a folder holding a Markdown file of every slide's words
-  beside a folder per slide with its images, movies, sounds and one CSV per
-  chart. The extraction itself is Rostrum's `DeckExport`; what lives here is
-  the part with a user in front of it.
+- **DeckInspector / DeckExporter**: the other direction. The app opens on a
+  fork — **Create** or **Inspect** — and Inspect (⌘I) takes any `.pptx`, one
+  Lectern made or one that arrived by email, and shows what it is made of:
+  counts, geometry, sections, schema findings, a contact sheet of every slide,
+  and every word in it. **Export Everything…** then writes a folder holding a
+  Markdown file of the deck's words beside a folder per slide with its images,
+  movies, sounds and one CSV per chart.
+
+  Every step of that is off the main actor and reports progress — slide
+  rendering drives a real `n of N` bar — because opening a large deck and
+  drawing every slide is seconds of work, not milliseconds. The extraction
+  itself is Rostrum's `DeckOutline`/`DeckExport`; what lives here is the part
+  with a user in front of it, and it speaks in `String` and `Int` so the app
+  target never needs to link Rostrum.
 - **DeckRenderer** (an `actor`, invariant I2): maps each IR layout onto Rostrum's
   design-authoring builders and applies the chosen `design.md`:
 

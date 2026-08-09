@@ -15,15 +15,21 @@ final class AppState {
     /// this keeps the original alongside it.
     private(set) var lastFailure: LecternError?
 
+    /// The app has two errands, and the first screen is where you say which.
+    ///
+    /// `inspected` carries no payload: the inspection is held beside it rather
+    /// than inside, because `Phase` is `Equatable` and drives a SwiftUI
+    /// `.animation(value:)` that compares it on every pass. A deck's whole
+    /// outline — every paragraph of every slide — is not something to compare
+    /// on the render path.
     enum Phase: Equatable {
+        case home
         case compose, generating
         case result(DeckResult)
-        case inspecting(String)
-        case inspected(DeckInspection)
-        case inspectionFailed(String)
         case failed(String)
+        case inspecting, inspected
     }
-    var phase: Phase = .compose
+    var phase: Phase = .home
 
     // MARK: Compose form
     var prompt = ""
@@ -80,10 +86,6 @@ final class AppState {
     /// state so the menu bar can open it from anywhere, which is the whole
     /// point of having a menu item for it.
     var isShowingLibrary = false
-    /// One importer at the ContentView root. Both the compose card and the File
-    /// menu toggle this rather than stacking importers on the same view — a
-    /// pattern SwiftUI has already shown it can silently ignore on macOS.
-    var isImportingDeck = false
     /// Set once, when decks were actually relocated, so the move is not
     /// something the user has to discover. Cleared when they dismiss it.
     private(set) var migrationNotice: String?
@@ -107,7 +109,7 @@ final class AppState {
         // attached PDF. Useful while a failure is being looked at; a liability
         // once it is not.
         let diagnostics = Self.diagnosticsDirectory()
-        _ = await Task.detached { DeckStorage.pruneDiagnostics(in: diagnostics) }.value
+        await Task.detached { DeckStorage.pruneDiagnostics(in: diagnostics) }.value
         refreshLibrary()
     }
 
@@ -129,9 +131,6 @@ final class AppState {
     var total = 0
     var progressNoun = "slides"          // "slides" while drafting, "images" while illustrating
     private var task: Task<Void, Never>?
-    private var workbench: DeckWorkbench?
-    private var inspectionRun = 0
-    private(set) var inspectedPreviews: [Int: String] = [:]
     /// Which generation the UI is currently showing. A cancelled task's
     /// continuation runs after `cancel()` returns, so every write it makes is
     /// checked against this first — see `RunGate`.
@@ -143,6 +142,9 @@ final class AppState {
         static let useSmartArt = "useSmartArt"
     }
 
+    /// - Parameter skipKeychain: pass `true` from tests. Reading the login
+    ///   keychain from a test process is slow at best and a modal prompt at
+    ///   worst, and no test here is about whether a key is stored.
     init(skipKeychain: Bool = false) {
         let d = UserDefaults.standard
         if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
@@ -151,11 +153,7 @@ final class AppState {
         favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])
         recents = d.stringArray(forKey: Keys.recents) ?? []
         useSmartArt = d.bool(forKey: Keys.useSmartArt)
-        if skipKeychain {
-            hasKey = false
-            hasImageKey = false
-            return
-        }
+        guard !skipKeychain else { return }
         hasKey = KeychainStore.hasKey(for: providerID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
     }
@@ -291,59 +289,6 @@ final class AppState {
 
     func clearPDF() { grounding = nil; groundingError = nil }
 
-    // MARK: - Open deck
-
-    /// Open a PowerPoint document selected by the user and inspect it without
-    /// mutating or saving it. The workbench actor owns the non-Sendable
-    /// `Presentation`; the UI receives only value snapshots and SVG strings.
-    func inspectDeck(_ url: URL) {
-        inspectionRun += 1
-        let run = inspectionRun
-        inspectedPreviews = [:]
-        workbench = nil
-        phase = .inspecting(url.lastPathComponent)
-
-        Task {
-            let scoped = url.startAccessingSecurityScopedResource()
-            defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-            do {
-                let data = try await Task.detached { try Data(contentsOf: url) }.value
-                let workbench = try DeckWorkbench(data: data, sourceURL: url)
-                let inspection = try await workbench.inspect()
-                guard run == inspectionRun else { return }
-                self.workbench = workbench
-                self.phase = .inspected(inspection)
-            } catch {
-                guard run == inspectionRun else { return }
-                self.phase = .inspectionFailed(Self.describeInspection(error))
-            }
-        }
-    }
-
-    func loadInspectionPreview(at index: Int) async {
-        guard inspectedPreviews[index] == nil, let workbench else { return }
-        do {
-            let svg = try await workbench.renderSlide(at: index, pixelWidth: 640)
-            guard case .inspected = phase else { return }
-            inspectedPreviews[index] = svg
-        } catch {
-            // Inspection is still useful when one preview cannot render. The
-            // deck's validation issues and structure remain on screen.
-        }
-    }
-
-    func closeInspection() {
-        inspectionRun += 1
-        workbench = nil
-        inspectedPreviews = [:]
-        phase = .compose
-    }
-
-    private static func describeInspection(_ error: Error) -> String {
-        if let workbench = error as? DeckWorkbenchError { return workbench.description }
-        return error.localizedDescription
-    }
-
     // MARK: - Generate
 
     var canGenerate: Bool {
@@ -440,11 +385,153 @@ final class AppState {
         runs.abandon()
         task?.cancel(); task = nil; phase = .compose
     }
-    func reset() {
-        inspectionRun += 1
-        workbench = nil
-        inspectedPreviews = [:]
-        stage = ""; drafted = 0; total = 0; lastFailure = nil; phase = .compose
+
+    /// Back to the first screen — the fork between the app's two errands.
+    func goHome() {
+        stage = ""; drafted = 0; total = 0; lastFailure = nil
+        inspection = nil
+        clearExportReport()
+        phase = .home
+    }
+
+    /// Into the compose form, keeping whatever is already typed in it.
+    func startCreate() {
+        stage = ""; drafted = 0; total = 0; lastFailure = nil
+        phase = .compose
+    }
+
+    func reset() { goHome() }
+
+    // MARK: - Inspect
+
+    /// The deck currently torn down. Held beside `.inspected` rather than
+    /// inside it — see `Phase`.
+    private(set) var inspection: DeckInspection?
+
+    /// Whether the "choose a deck" importer is up. On `AppState` so the menu
+    /// bar can start the flow from anywhere.
+    var isChoosingDeckToInspect = false
+    /// Whether the "choose a destination folder" importer is up.
+    var isChoosingExportDestination = false
+
+    private(set) var inspectStage = ""
+    private(set) var inspectDone = 0
+    private(set) var inspectTotal = 0
+    private var inspectTask: Task<Void, Never>?
+
+    private(set) var isExporting = false
+    private(set) var exportedDirectory: URL?
+    private(set) var exportSummary: String?
+    private(set) var exportProblem: String?
+
+    func chooseDeckToInspect() { isChoosingDeckToInspect = true }
+
+    func clearExportReport() {
+        exportedDirectory = nil; exportSummary = nil; exportProblem = nil
+    }
+
+    /// Open a deck and take it apart.
+    ///
+    /// All of it runs off the main actor: opening a large package, walking
+    /// every shape and rendering a picture of every slide is exactly the work
+    /// that freezes a window if it is done where the window is drawn (I6).
+    func inspect(deckAt url: URL) {
+        inspectTask?.cancel()
+        inspection = nil
+        clearExportReport()
+        inspectStage = "Opening the deck"
+        inspectDone = 0
+        inspectTotal = 0
+        phase = .inspecting
+
+        // Detached *is* the task we keep, rather than a detached task inside a
+        // structured one: unstructured work does not inherit cancellation, so
+        // wrapping it would have left Cancel dismissing the screen while the
+        // deck kept being parsed behind it.
+        inspectTask = Task.detached(priority: .userInitiated) { [self] in
+            do {
+                // A file the user picked arrives security-scoped; without this
+                // the read fails outside the sandbox for no visible reason.
+                let scoped = url.startAccessingSecurityScopedResource()
+                defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+                let result = try DeckInspector.inspect(deckAt: url) { event in
+                    Task { @MainActor in self.applyInspect(event) }
+                }
+                await MainActor.run {
+                    self.inspection = result
+                    self.phase = .inspected
+                }
+            } catch is CancellationError {
+                // `cancelInspection` already moved the screen; don't move it back.
+                return
+            } catch {
+                // Rendered here, where the error still exists: `describe` is
+                // main-actor isolated and an `Error` is not `Sendable`, so what
+                // crosses back is the `String`.
+                let message = String(describing: error)
+                await MainActor.run {
+                    self.phase = .failed("Couldn't open that deck: \(message)")
+                }
+            }
+        }
+    }
+
+    func cancelInspection() {
+        inspectTask?.cancel()
+        inspectTask = nil
+        phase = .home
+    }
+
+    private func applyInspect(_ event: DeckInspector.Event) {
+        switch event {
+        case .opening: inspectStage = "Opening the deck"
+        case .validating: inspectStage = "Checking it against the schema"
+        case .extracting: inspectStage = "Reading every slide"
+        case .rendering(let done, let total):
+            inspectStage = "Rendering slide previews"
+            inspectDone = done
+            inspectTotal = total
+        case .finished: inspectStage = "Done"
+        }
+    }
+
+    /// Write the full teardown into a folder the user chose.
+    ///
+    /// Copying media out of a deck is I/O measured in megabytes, so it gets
+    /// the same treatment as everything else here: off the main actor, with
+    /// something on screen saying so.
+    func exportInspected(into parent: URL) {
+        guard let deck = inspection?.fileURL, !isExporting else { return }
+        isExporting = true
+        clearExportReport()
+
+        Task.detached(priority: .userInitiated) { [self] in
+            do {
+                let scopedDeck = deck.startAccessingSecurityScopedResource()
+                defer { if scopedDeck { deck.stopAccessingSecurityScopedResource() } }
+                let scopedParent = parent.startAccessingSecurityScopedResource()
+                defer { if scopedParent { parent.stopAccessingSecurityScopedResource() } }
+                let outcome = try DeckExporter.export(deckAt: deck, into: parent)
+                let summary = "\(outcome.slideCount) slide\(outcome.slideCount == 1 ? "" : "s")"
+                    + " · \(outcome.assetsWritten) media file\(outcome.assetsWritten == 1 ? "" : "s")"
+                    + " · \(outcome.chartsWritten) chart CSV\(outcome.chartsWritten == 1 ? "" : "s")"
+                // A partial export that reports success is worse than a slow one.
+                let problem = outcome.warnings.isEmpty
+                    ? nil : outcome.warnings.joined(separator: "\n")
+                await MainActor.run {
+                    self.exportedDirectory = outcome.directory
+                    self.exportSummary = summary
+                    self.exportProblem = problem
+                    self.isExporting = false
+                }
+            } catch {
+                let message = String(describing: error)
+                await MainActor.run {
+                    self.exportProblem = message
+                    self.isExporting = false
+                }
+            }
+        }
     }
 
     private func apply(_ event: GenerationEvent, run: Int) {
