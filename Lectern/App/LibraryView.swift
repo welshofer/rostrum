@@ -182,6 +182,7 @@ struct DeckGridView: View {
     @Environment(AppState.self) private var app
     let section: LibrarySection
     @Binding var query: String
+    let layout: LibraryLayout
     @State private var renaming: DeckFile?
     @State private var draftName = ""
 
@@ -208,6 +209,12 @@ struct DeckGridView: View {
                 header
                 if decks.isEmpty {
                     empty
+                } else if layout == .list {
+                    DeckListView(decks: decks) { deck in
+                        renaming = deck
+                        draftName = deck.name
+                    }
+                    .frame(minHeight: 420)
                 } else {
                     LazyVGrid(columns: columns, alignment: .leading, spacing: 30) {
                         ForEach(decks) { deck in
@@ -224,6 +231,12 @@ struct DeckGridView: View {
             .padding(.bottom, 36)
         }
         .task(id: app.library.count) { app.refreshLibrary() }
+        // The list shows slide count as a sortable column, so it needs every
+        // value rather than one per visible row. Cheap now that a count is one
+        // zip entry, and cached after the first pass.
+        .task(id: "\(layout.rawValue)-\(app.library.count)") {
+            if layout == .list { await app.loadSlideCounts() }
+        }
         .alert("Rename deck",
                isPresented: Binding(get: { renaming != nil },
                                     set: { if !$0 { renaming = nil } })) {

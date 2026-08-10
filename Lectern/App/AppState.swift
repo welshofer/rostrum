@@ -120,6 +120,20 @@ final class AppState {
         library = DeckLibrary.decks(in: Self.decksDirectory())
     }
 
+    /// Slide counts, keyed by deck. The list view shows them in a column, which
+    /// needs every value up front rather than one per row as it scrolls — and
+    /// reading one is now a single zip entry, so filling the whole library is
+    /// cheap enough to do on a refresh.
+    private(set) var slideCounts: [URL: Int] = [:]
+
+    func loadSlideCounts() async {
+        for deck in library where slideCounts[deck.url] == nil {
+            if let card = await DeckCardIndex.shared.card(for: deck) {
+                slideCounts[deck.url] = card.slideCount
+            }
+        }
+    }
+
     func deleteFromLibrary(_ deck: DeckFile) {
         try? DeckLibrary.delete(deck)
         refreshLibrary()

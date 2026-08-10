@@ -13,6 +13,8 @@ struct ContentView: View {
     @State private var query = ""
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var droppingDeck = false
+    /// How you like to read your own library, remembered between launches.
+    @AppStorage("libraryLayout") private var layout: LibraryLayout = .grid
     #if os(iOS)
     @State private var showSettings = false
     #endif
@@ -90,7 +92,7 @@ struct ContentView: View {
         Group {
             switch app.phase {
             case .home:
-                DeckGridView(section: section, query: $query)
+                DeckGridView(section: section, query: $query, layout: layout)
                     .searchable(text: $query, placement: .toolbar, prompt: "Search")
             case .compose: ComposeView().transition(.blurReplace)
             case .generating: GeneratingView().transition(.blurReplace)
@@ -121,6 +123,24 @@ struct ContentView: View {
                     Label("Library", systemImage: "chevron.backward")
                 }
                 .help("Back to your decks")
+            }
+        } else {
+            ToolbarItem {
+                // A segmented picker rather than a single toggle: with one
+                // button the icon has to mean either "what you have" or "what
+                // you'll get", and every user reads it the other way. Showing
+                // both, with one selected, cannot be misread — and it is what
+                // Finder does.
+                Picker("Layout", selection: $layout) {
+                    ForEach(LibraryLayout.allCases, id: \.self) { option in
+                        Label(option.label, systemImage: option.symbol)
+                            .tag(option)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .help("Show your decks as a grid or a list")
+                .accessibilityLabel("Library layout")
             }
         }
     }
