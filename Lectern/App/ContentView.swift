@@ -9,6 +9,9 @@ import LecternCore
 
 struct ContentView: View {
     @Environment(AppState.self) private var app
+    @State private var section: LibrarySection = .recent
+    @State private var query = ""
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
     #if os(iOS)
     @State private var showSettings = false
     #endif
@@ -16,32 +19,22 @@ struct ContentView: View {
     /// The decks this app will open. A `.pptx` and nothing else — the
     /// inspector reads PresentationML, and offering the user a file it cannot
     /// open is a worse experience than not offering it.
-    static let deckTypes: [UTType] = [UTType(filenameExtension: "pptx") ?? .data]
+    static let deckTypes: [UTType] = ["pptx", "potx", "ppsx"].compactMap {
+        UTType(filenameExtension: $0)
+    }
 
     var body: some View {
         @Bindable var app = app
-        Group {
-            #if os(iOS)
-            // iOS/iPadOS: no Settings scene exists, so a NavigationStack hosts
-            // the toolbar gear that presents Settings as a sheet.
-            NavigationStack {
-                phaseView
-                    .navigationTitle("Lectern")
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button { showSettings = true } label: {
-                                Label("Settings", systemImage: "gearshape")
-                            }
-                        }
-                    }
-                    .sheet(isPresented: $showSettings) { SettingsView().environment(app) }
-            }
-            #else
-            // No sidebar — there's no deck History to show, so a single pane is honest.
-            phaseView
-                .frame(minWidth: 640, minHeight: 560)
-            #endif
+        // One shell on every platform: a sidebar beside the work on a Mac and
+        // an iPad, the same views pushed on a phone. NavigationSplitView is
+        // what makes that one description rather than three.
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            LibrarySidebar(section: $section) { openSettings() }
+                .navigationSplitViewColumnWidth(min: 240, ideal: 270, max: 320)
+        } detail: {
+            detail
         }
+        .navigationSplitViewStyle(.balanced)
         // Attached above the phase switch, not inside a phase: the menu bar
         // starts this flow too, and a picker owned by a view that isn't on
         // screen never opens.
@@ -49,17 +42,22 @@ struct ContentView: View {
                       allowedContentTypes: Self.deckTypes) { result in
             if let url = try? result.get() { app.inspect(deckAt: url) }
         }
+        #if os(iOS)
+        .sheet(isPresented: $showSettings) { SettingsView().environment(app) }
+        #endif
+        .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
         .task { await app.start(); await app.loadStyles() }
     }
 
-    /// The principal states used to cut hard — a bare `switch` with no
-    /// transition, so a two-minute paid generation resolved as an instant
-    /// view swap. One soft cross-blur per phase change and a success tap when
-    /// the deck lands; the states themselves are untouched.
-    @ViewBuilder private var phaseView: some View {
-        ZStack {
+    /// The detail column. `home` is the library; every other phase is the work
+    /// that replaced it, which is why they share the column rather than the
+    /// library being one more destination.
+    @ViewBuilder private var detail: some View {
+        Group {
             switch app.phase {
-            case .home: HomeView().transition(.blurReplace)
+            case .home:
+                DeckGridView(section: section, query: $query)
+                    .searchable(text: $query, placement: .toolbar, prompt: "Search")
             case .compose: ComposeView().transition(.blurReplace)
             case .generating: GeneratingView().transition(.blurReplace)
             case .result(let r): ResultView(result: r).transition(.blurReplace)
@@ -68,12 +66,38 @@ struct ContentView: View {
             case .inspected: InspectorView().transition(.blurReplace)
             }
         }
+        .frame(minWidth: 520, minHeight: 480)
         .animation(.smooth(duration: 0.35), value: app.phase)
         .sensoryFeedback(.success, trigger: app.phase) { _, newPhase in
             if case .result = newPhase { return true }
             if case .inspected = newPhase { return true }
             return false
         }
+        .toolbar { toolbar }
+    }
+
+    @ToolbarContentBuilder private var toolbar: some ToolbarContent {
+        // Anything that is not the library is a task you finish and come back
+        // from, so it gets a way back rather than a dead end.
+        if app.phase != .home {
+            ToolbarItem(placement: .navigation) {
+                Button {
+                    app.goHome()
+                } label: {
+                    Label("Library", systemImage: "chevron.backward")
+                }
+                .help("Back to your decks")
+            }
+        }
+    }
+
+    private func openSettings() {
+        #if os(macOS)
+        // The Settings scene is the native home for this on a Mac.
+        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        #else
+        showSettings = true
+        #endif
     }
 }
 
