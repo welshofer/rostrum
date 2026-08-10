@@ -57,10 +57,6 @@ struct InspectorView: View {
                     factsCard(inspection)
                     if !inspection.sections.isEmpty { sectionsCard(inspection) }
                     if inspection.hasFindings { findingsCard(inspection) }
-                    if !inspection.masters.isEmpty { mastersCard(inspection) }
-                    if !inspection.charts.isEmpty { chartsCard(inspection) }
-                    if hasFonts(inspection) { fontsCard(inspection) }
-                    if !inspection.properties.isEmpty { propertiesCard(inspection) }
                     if !inspection.previews.isEmpty {
                         Card(title: "SLIDES", systemImage: "rectangle.on.rectangle") {
                             SlideContactSheet(previews: inspection.previews,
@@ -69,6 +65,11 @@ struct InspectorView: View {
                         }
                     }
                     textCard(inspection)
+                    // The deeper reads, folded away. Nine same-weight cards
+                    // gave the eye no hierarchy: everything looked equally
+                    // important, so nothing was. These are the answers you go
+                    // looking for, not the ones you arrive for.
+                    howItsBuilt(inspection)
                     if let summary = app.exportSummary { exportReport(summary) }
                 }
                 .padding(20)
@@ -100,6 +101,35 @@ struct InspectorView: View {
         }
     }
 
+    /// One card holding everything about how the deck is put together, each
+    /// part closed until asked for.
+    @ViewBuilder private func howItsBuilt(_ inspection: DeckInspection) -> some View {
+        let hasAnything = !inspection.masters.isEmpty || !inspection.charts.isEmpty
+            || hasFonts(inspection) || !inspection.properties.isEmpty
+        if hasAnything {
+            Card(title: "HOW IT'S BUILT", systemImage: "wrench.and.screwdriver") {
+                VStack(alignment: .leading, spacing: 4) {
+                    if !inspection.masters.isEmpty {
+                        DisclosureGroup("Masters & layouts (\(inspection.masters.count))") {
+                            mastersBody(inspection)
+                        }
+                    }
+                    if !inspection.charts.isEmpty {
+                        DisclosureGroup("Charts (\(inspection.charts.count))") {
+                            chartsBody(inspection)
+                        }
+                    }
+                    if hasFonts(inspection) {
+                        DisclosureGroup("Fonts") { fontsBody(inspection) }
+                    }
+                    if !inspection.properties.isEmpty {
+                        DisclosureGroup("Document properties") { propertiesBody(inspection) }
+                    }
+                }
+            }
+        }
+    }
+
     private func sectionsCard(_ inspection: DeckInspection) -> some View {
         Card(title: "SECTIONS", systemImage: "list.bullet.indent") {
             VStack(alignment: .leading, spacing: 6) {
@@ -119,9 +149,8 @@ struct InspectorView: View {
     /// The masters a deck is actually built on, and the layouts each owns.
     /// A deck with three masters is usually three decks somebody pasted
     /// together, so this is worth showing rather than counting.
-    private func mastersCard(_ inspection: DeckInspection) -> some View {
-        Card(title: "MASTERS & LAYOUTS", systemImage: "square.stack") {
-            VStack(alignment: .leading, spacing: 10) {
+    private func mastersBody(_ inspection: DeckInspection) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
                 ForEach(inspection.masters) { master in
                     DisclosureGroup {
                         Text(master.layoutNames.isEmpty
@@ -142,7 +171,6 @@ struct InspectorView: View {
                 }
             }
         }
-    }
 
     private func fontPair(of master: MasterInspection) -> String {
         [master.majorFont, master.minorFont].compactMap { $0 }
@@ -152,15 +180,13 @@ struct InspectorView: View {
 
     /// What the charts plot — and whether Lectern could write new numbers back
     /// into them, which is the question the rest of the app cares about.
-    private func chartsCard(_ inspection: DeckInspection) -> some View {
-        Card(title: "CHARTS", systemImage: "chart.bar") {
-            VStack(alignment: .leading, spacing: 10) {
+    private func chartsBody(_ inspection: DeckInspection) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
                 ForEach(inspection.charts) { chart in
                     ChartRow(chart: chart)
                 }
             }
         }
-    }
 
     private func hasFonts(_ inspection: DeckInspection) -> Bool {
         !inspection.themeFonts.isEmpty || !inspection.explicitFonts.isEmpty
@@ -170,15 +196,13 @@ struct InspectorView: View {
     /// Three font lists that answer three different questions: what the theme
     /// asks for, what the slides override it with, and what the file carries
     /// so it looks the same somewhere else.
-    private func fontsCard(_ inspection: DeckInspection) -> some View {
-        Card(title: "FONTS", systemImage: "textformat") {
-            VStack(alignment: .leading, spacing: 8) {
+    private func fontsBody(_ inspection: DeckInspection) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
                 fontRow("Theme", inspection.themeFonts)
                 fontRow("Named on slides", inspection.explicitFonts)
                 fontRow("Embedded", inspection.embeddedFonts)
             }
         }
-    }
 
     @ViewBuilder private func fontRow(_ label: String, _ fonts: [String]) -> some View {
         if !fonts.isEmpty {
@@ -192,9 +216,8 @@ struct InspectorView: View {
         }
     }
 
-    private func propertiesCard(_ inspection: DeckInspection) -> some View {
-        Card(title: "WHO MADE IT", systemImage: "person.text.rectangle") {
-            VStack(alignment: .leading, spacing: 4) {
+    private func propertiesBody(_ inspection: DeckInspection) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
                 let properties = inspection.properties
                 propertyRow("Title", properties.title)
                 propertyRow("Author", properties.author)
@@ -207,7 +230,6 @@ struct InspectorView: View {
                 propertyRow("Modified", properties.modified.map(Self.dateFormatter.string(from:)))
             }
         }
-    }
 
     @ViewBuilder private func propertyRow(_ label: String, _ value: String?) -> some View {
         if let value, !value.isEmpty {

@@ -125,6 +125,20 @@ final class AppState {
         refreshLibrary()
     }
 
+    /// The last rename that failed, for the view to show and then clear. A
+    /// rename that silently does nothing is worse than one that explains why.
+    var renameProblem: String?
+
+    func renameInLibrary(_ deck: DeckFile, to name: String) {
+        do {
+            try DeckLibrary.rename(deck, to: name)
+            renameProblem = nil
+        } catch {
+            renameProblem = String(describing: error)
+        }
+        refreshLibrary()
+    }
+
     // MARK: Generating progress
     var stage = ""
     var drafted = 0

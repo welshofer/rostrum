@@ -85,3 +85,85 @@ import Testing
         #expect(!FileManager.default.fileExists(atPath: doomed.url.path))
     }
 }
+
+// MARK: - Renaming
+
+@Suite struct DeckRenameTests {
+    private func scratch() throws -> URL {
+        let dir = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent("rename-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return dir
+    }
+
+    private func makeDeck(_ name: String, in dir: URL) throws -> DeckFile {
+        let url = dir.appendingPathComponent("\(name).pptx")
+        try Data("deck".utf8).write(to: url)
+        return DeckFile(url: url, name: name, modified: Date(), byteCount: 4)
+    }
+
+    @Test func renamingMovesTheFileTheUserSeesInFinder() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let deck = try makeDeck("ugly-model-generated-slug", in: dir)
+
+        let renamed = try DeckLibrary.rename(deck, to: "Q3 Review")
+
+        #expect(renamed.name == "Q3 Review")
+        #expect(renamed.url.lastPathComponent == "Q3 Review.pptx")
+        #expect(FileManager.default.fileExists(atPath: renamed.url.path))
+        #expect(!FileManager.default.fileExists(atPath: deck.url.path))
+    }
+
+    /// Renaming onto a deck that already exists would destroy it.
+    @Test func aNameAlreadyTakenIsRefusedRatherThanOverwriting() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let first = try makeDeck("Keep me", in: dir)
+        let second = try makeDeck("Rename me", in: dir)
+
+        #expect(throws: DeckLibrary.RenameProblem.nameTaken("Keep me")) {
+            try DeckLibrary.rename(second, to: "Keep me")
+        }
+        // Both survive, and neither moved.
+        #expect(FileManager.default.fileExists(atPath: first.url.path))
+        #expect(FileManager.default.fileExists(atPath: second.url.path))
+    }
+
+    @Test func aNameThatIsOnlyPunctuationIsNotAName() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let deck = try makeDeck("Real", in: dir)
+
+        #expect(throws: DeckLibrary.RenameProblem.empty) {
+            try DeckLibrary.rename(deck, to: "   ")
+        }
+        #expect(throws: DeckLibrary.RenameProblem.empty) {
+            try DeckLibrary.rename(deck, to: "/")
+        }
+    }
+
+    /// A slash means one deck with a slash in the name, not an error and
+    /// certainly not a subdirectory.
+    @Test func charactersAFilenameCannotCarryAreStrippedNotRejected() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let deck = try makeDeck("Before", in: dir)
+
+        let renamed = try DeckLibrary.rename(deck, to: "Q3 / Q4 review")
+
+        #expect(renamed.name == "Q3   Q4 review")
+        #expect(renamed.url.deletingLastPathComponent().path == dir.path)
+    }
+
+    @Test func renamingToTheSameNameIsANoOp() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let deck = try makeDeck("Steady", in: dir)
+
+        let renamed = try DeckLibrary.rename(deck, to: "Steady")
+
+        #expect(renamed == deck)
+        #expect(FileManager.default.fileExists(atPath: deck.url.path))
+    }
+}

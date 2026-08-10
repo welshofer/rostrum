@@ -182,6 +182,8 @@ struct DeckGridView: View {
     @Environment(AppState.self) private var app
     let section: LibrarySection
     @Binding var query: String
+    @State private var renaming: DeckFile?
+    @State private var draftName = ""
 
     /// Cards size themselves between a readable floor and a ceiling past which
     /// a thumbnail stops earning its width. `.top` so rows stay aligned when a
@@ -209,7 +211,10 @@ struct DeckGridView: View {
                 } else {
                     LazyVGrid(columns: columns, alignment: .leading, spacing: 30) {
                         ForEach(decks) { deck in
-                            DeckCardView(deck: deck)
+                            DeckCardView(deck: deck) {
+                                renaming = deck
+                                draftName = deck.name
+                            }
                         }
                     }
                 }
@@ -219,6 +224,25 @@ struct DeckGridView: View {
             .padding(.bottom, 36)
         }
         .task(id: app.library.count) { app.refreshLibrary() }
+        .alert("Rename deck",
+               isPresented: Binding(get: { renaming != nil },
+                                    set: { if !$0 { renaming = nil } })) {
+            TextField("Name", text: $draftName)
+            Button("Rename") {
+                if let deck = renaming { app.renameInLibrary(deck, to: draftName) }
+                renaming = nil
+            }
+            Button("Cancel", role: .cancel) { renaming = nil }
+        } message: {
+            Text("The file is renamed too, so it reads the same in Finder.")
+        }
+        .alert("Couldn't rename that deck",
+               isPresented: Binding(get: { app.renameProblem != nil },
+                                    set: { if !$0 { app.renameProblem = nil } })) {
+            Button("OK", role: .cancel) { app.renameProblem = nil }
+        } message: {
+            Text(app.renameProblem ?? "")
+        }
     }
 
     private var header: some View {
@@ -236,7 +260,31 @@ struct DeckGridView: View {
     }
 
     @ViewBuilder private var empty: some View {
-        if query.isEmpty {
+        if !query.isEmpty {
+            ContentUnavailableView.search(text: query)
+                .frame(maxWidth: .infinity, minHeight: 320)
+        } else if !app.hasKey {
+            // First run. Create needs a key and will fail on the first press
+            // without one, and nothing used to say so — while Inspect works
+            // perfectly well with no key at all.
+            ContentUnavailableView {
+                Label("Welcome to Lectern", systemImage: "sparkles")
+            } description: {
+                Text("Describe a deck and Lectern writes the .pptx. "
+                     + "That needs an API key — or open a deck you already have, "
+                     + "which needs nothing.")
+            } actions: {
+                VStack(spacing: 10) {
+                    #if os(macOS)
+                    SettingsLink { Text("Add an API key") }
+                        .buttonStyle(.borderedProminent)
+                    #endif
+                    Button("Inspect a deck instead") { app.chooseDeckToInspect() }
+                        .buttonStyle(.bordered)
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 320)
+        } else {
             ContentUnavailableView {
                 Label("No decks yet", systemImage: "rectangle.stack")
             } description: {
@@ -245,9 +293,6 @@ struct DeckGridView: View {
                 Button("New Deck") { app.startCreate() }.buttonStyle(.borderedProminent)
             }
             .frame(maxWidth: .infinity, minHeight: 320)
-        } else {
-            ContentUnavailableView.search(text: query)
-                .frame(maxWidth: .infinity, minHeight: 320)
         }
     }
 }
@@ -263,48 +308,58 @@ struct DeckGridView: View {
 struct DeckCardView: View {
     @Environment(AppState.self) private var app
     let deck: DeckFile
+    /// Renaming is presented by the grid, not the card: an alert owned by a
+    /// cell inside a LazyVGrid goes away with the cell when it scrolls.
+    var onRename: () -> Void = {}
 
     @State private var card: DeckCard?
     @State private var hovering = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            DeckThumbnail(url: deck.url, fallbackTitle: deck.name)
-                .frame(maxWidth: .infinity)
-                // Slides are 16:9, so the card is too — a deck's own picture
-                // arrives uncropped rather than trimmed to a nicer rectangle.
-                .aspectRatio(16.0 / 9.0, contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .strokeBorder(.primary.opacity(0.10))
-                }
-                .shadow(color: .black.opacity(hovering ? 0.18 : 0.10),
-                        radius: hovering ? 14 : 6, y: hovering ? 7 : 3)
-                .scaleEffect(hovering ? 1.015 : 1)
+        // A real Button, not a tap gesture wearing `.isButton`: the trait made
+        // it *look* activatable to VoiceOver and to the keyboard while only a
+        // mouse could actually open it. A Button gets press, focus, keyboard
+        // activation and the trait for free, and they agree with each other.
+        Button {
+            app.inspect(deckAt: deck.url)
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                DeckThumbnail(url: deck.url, fallbackTitle: deck.name)
+                    .frame(maxWidth: .infinity)
+                    // Slides are 16:9, so the card is too — a deck's own
+                    // picture arrives uncropped rather than trimmed to a nicer
+                    // rectangle.
+                    .aspectRatio(16.0 / 9.0, contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .strokeBorder(.primary.opacity(0.10))
+                    }
+                    .shadow(color: .black.opacity(hovering ? 0.18 : 0.10),
+                            radius: hovering ? 14 : 6, y: hovering ? 7 : 3)
+                    .scaleEffect(hovering ? 1.015 : 1)
 
-            VStack(alignment: .leading, spacing: 3) {
-                Text(deck.name)
-                    .font(.body.weight(.semibold))
-                    .lineLimit(1).truncationMode(.middle)
-                Text("Modified \(deck.modified.formatted(date: .abbreviated, time: .omitted))")
-                    .font(.callout).foregroundStyle(.secondary)
-                    .lineLimit(1)
-                Text(card.map { "\($0.slideCount) slide\($0.slideCount == 1 ? "" : "s")" }
-                     ?? deck.byteCount.formattedByteCount)
-                    .font(.callout).foregroundStyle(.tertiary)
-                    .lineLimit(1)
-                    .contentTransition(.opacity)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(deck.name)
+                        .font(.body.weight(.semibold))
+                        .lineLimit(1).truncationMode(.middle)
+                    Text("Modified \(deck.modified.formatted(date: .abbreviated, time: .omitted))")
+                        .font(.callout).foregroundStyle(.secondary)
+                        .lineLimit(1)
+                    Text(card.map { "\($0.slideCount) slide\($0.slideCount == 1 ? "" : "s")" }
+                         ?? deck.byteCount.formattedByteCount)
+                        .font(.callout).foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                        .contentTransition(.opacity)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(.rect)
         }
-        .contentShape(.rect)
-        .onTapGesture { app.inspect(deckAt: deck.url) }
+        .buttonStyle(.plain)
         .onHover { hovering = $0 }
         .animation(.smooth(duration: 0.18), value: hovering)
-        .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityText)
-        .accessibilityAddTraits(.isButton)
         .accessibilityHint("Opens this deck in the inspector")
         .contextMenu { menu }
         .task(id: deck.id) {
@@ -321,6 +376,7 @@ struct DeckCardView: View {
 
     @ViewBuilder private var menu: some View {
         Button("Inspect") { app.inspect(deckAt: deck.url) }
+        Button("Rename…") { onRename() }
         #if os(macOS)
         Button("Open in PowerPoint") { NSWorkspace.shared.open(deck.url) }
         Button("Reveal in Finder") {
