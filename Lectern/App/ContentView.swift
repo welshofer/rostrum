@@ -9,6 +9,7 @@ import LecternCore
 
 struct ContentView: View {
     @Environment(AppState.self) private var app
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var section: LibrarySection = .recent
     @State private var query = ""
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
@@ -78,7 +79,9 @@ struct ContentView: View {
         // transition moves it, so re-opening it by hand during a task sticks.
         .onChange(of: app.phase) { previous, next in
             guard (previous == .home) != (next == .home) else { return }
-            withAnimation(.smooth(duration: 0.3)) {
+            // The same curve the content uses. Two durations here made the
+            // shell arrive in two stages.
+            withAnimation(shellMotion) {
                 columnVisibility = next == .home ? .all : .detailOnly
             }
         }
@@ -94,22 +97,49 @@ struct ContentView: View {
             case .home:
                 DeckGridView(section: section, query: $query, layout: layout)
                     .searchable(text: $query, placement: .toolbar, prompt: "Search")
-            case .compose: ComposeView().transition(.blurReplace)
-            case .generating: GeneratingView().transition(.blurReplace)
-            case .result(let r): ResultView(result: r).transition(.blurReplace)
-            case .failed(let m): FailedView(message: m).transition(.blurReplace)
-            case .inspecting: InspectingView().transition(.blurReplace)
-            case .inspected: InspectorView().transition(.blurReplace)
+                    .transition(phaseTransition)
+            case .compose: ComposeView().transition(phaseTransition)
+            case .generating: GeneratingView().transition(phaseTransition)
+            case .result(let r): ResultView(result: r).transition(phaseTransition)
+            case .failed(let m): FailedView(message: m).transition(phaseTransition)
+            case .inspecting: InspectingView().transition(phaseTransition)
+            case .inspected: InspectorView().transition(phaseTransition)
             }
         }
         .frame(minWidth: 520, minHeight: 480)
-        .animation(.smooth(duration: 0.35), value: app.phase)
+        .animation(shellMotion, value: app.phase)
         .sensoryFeedback(.success, trigger: app.phase) { _, newPhase in
             if case .result = newPhase { return true }
             if case .inspected = newPhase { return true }
             return false
         }
         .toolbar { toolbar }
+    }
+
+    // MARK: - Motion
+
+    /// One curve for the whole shell.
+    ///
+    /// The sidebar and the content it makes room for are a single movement, so
+    /// they cannot be two animations of different lengths — at 0.30 against
+    /// 0.35 the window visibly settled twice, which is most of what read as
+    /// abrupt.
+    private var shellMotion: Animation? {
+        reduceMotion ? nil : .smooth(duration: 0.34)
+    }
+
+    /// Transform and opacity only.
+    ///
+    /// This was `.blurReplace`, which had to blur a grid of a dozen full-size
+    /// thumbnails for a third of a second. That is a lot of bitmap to filter,
+    /// and frames dropped during it are exactly what a hard cut feels like.
+    /// A scale of 0.985 is barely visible on its own and does all the work of
+    /// making the swap read as one surface replacing another.
+    ///
+    /// Reduce Motion keeps the cross-fade and drops the movement, which is the
+    /// accommodation rather than removing the transition altogether.
+    private var phaseTransition: AnyTransition {
+        reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.985))
     }
 
     @ToolbarContentBuilder private var toolbar: some ToolbarContent {
@@ -450,6 +480,7 @@ struct GeneratingView: View {
 private struct DraftingSheet: View {
     let total: Int
     let done: Int
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var pulse = false
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 3)
@@ -466,6 +497,9 @@ private struct DraftingSheet: View {
         }
         .accessibilityHidden(true)
         .onAppear {
+            // A forever-repeating pulse is the exact thing Reduce Motion is
+            // for. The tile still fills in; it just stops breathing.
+            guard !reduceMotion else { return }
             withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
                 pulse = true
             }
