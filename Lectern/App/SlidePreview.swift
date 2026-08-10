@@ -66,7 +66,11 @@ struct SlidePreview {
         // scriptable half. A preview is a picture, not a program.
         let config = WKWebViewConfiguration()
         config.defaultWebpagePreferences.allowsContentJavaScript = false
+        #if os(macOS)
+        let view = PassiveWebView(frame: .zero, configuration: config)
+        #else
         let view = WKWebView(frame: .zero, configuration: config)
+        #endif
         view.navigationDelegate = coordinator
         #if os(iOS)
         view.scrollView.isScrollEnabled = false
@@ -82,6 +86,28 @@ struct SlidePreview {
         view.loadHTMLString(document, baseURL: nil)
     }
 }
+
+#if os(macOS)
+/// A preview that declines to scroll, and declines to be clicked into.
+///
+/// The iOS side says this with `scrollView.isScrollEnabled = false`. AppKit has
+/// no such switch: a `WKWebView` handles the scroll wheel itself, so a grid of
+/// them turns every tile into a dead patch where the enclosing `ScrollView`
+/// stops receiving the gesture — the contact sheet stutters exactly where the
+/// pictures are. Declining the event lets it reach the scroll view underneath.
+///
+/// These are pictures. Nothing in them is meant to be interacted with, so
+/// nothing is lost by not handling the event.
+final class PassiveWebView: WKWebView {
+    override func scrollWheel(with event: NSEvent) {
+        nextResponder?.scrollWheel(with: event)
+    }
+
+    /// Keeps the tile from stealing first responder on a click, which would
+    /// otherwise put a focus ring inside a thumbnail.
+    override var acceptsFirstResponder: Bool { false }
+}
+#endif
 
 #if os(macOS)
 extension SlidePreview: NSViewRepresentable {

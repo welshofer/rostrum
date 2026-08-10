@@ -46,6 +46,15 @@ struct ContentView: View {
         .sheet(isPresented: $showSettings) { SettingsView().environment(app) }
         #endif
         .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
+        // Creating and inspecting are both full-attention work, so they get the
+        // whole window; the sidebar comes back with the library. Only the
+        // transition moves it, so re-opening it by hand during a task sticks.
+        .onChange(of: app.phase) { previous, next in
+            guard (previous == .home) != (next == .home) else { return }
+            withAnimation(.smooth(duration: 0.3)) {
+                columnVisibility = next == .home ? .all : .detailOnly
+            }
+        }
         .task { await app.start(); await app.loadStyles() }
     }
 
