@@ -128,19 +128,14 @@ struct ContentView: View {
         reduceMotion ? nil : .smooth(duration: 0.34)
     }
 
-    /// Transform and opacity only.
+    /// A cross-fade, and nothing else.
     ///
-    /// This was `.blurReplace`, which had to blur a grid of a dozen full-size
-    /// thumbnails for a third of a second. That is a lot of bitmap to filter,
-    /// and frames dropped during it are exactly what a hard cut feels like.
-    /// A scale of 0.985 is barely visible on its own and does all the work of
-    /// making the swap read as one surface replacing another.
-    ///
-    /// Reduce Motion keeps the cross-fade and drops the movement, which is the
-    /// accommodation rather than removing the transition altogether.
-    private var phaseTransition: AnyTransition {
-        reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.985))
-    }
+    /// This was `.blurReplace`, then opacity with a small scale. Both make the
+    /// compositor resample the entire subtree every frame — and that subtree is
+    /// a dozen shadowed thumbnails. Opacity alone composites the layer without
+    /// resampling it, which is the difference between a fade and a stutter.
+    /// The scale was decoration; the frames are not.
+    private var phaseTransition: AnyTransition { .opacity }
 
     @ToolbarContentBuilder private var toolbar: some ToolbarContent {
         // Anything that is not the library is a task you finish and come back

@@ -6,66 +6,59 @@ import AppKit
 import UIKit
 #endif
 
-/// A deck's cover, taken from Quick Look.
+/// Thumbnails that survive the view being torn down.
 ///
-/// The system has already rendered these files — it draws the same picture in
-/// Finder, in Spotlight and in the share sheet — and it keeps the result in its
-/// own cache. Asking for that costs a thumbnail request; drawing our own cost
-/// a full package parse per card, which on a library of ninety-megabyte decks
-/// measured three minutes and two gigabytes before it drew anything.
+/// `DeckThumbnail` used to hold its picture in `@State`, which dies with the
+/// view — and the grid's views die every time you leave the library. Coming
+/// back therefore re-requested every visible thumbnail from Quick Look and
+/// re-decoded every one of them, on the exact frame the return transition
+/// started. That is what the stutter was.
 ///
-/// Falls back to a tinted placard when Quick Look has nothing, which happens
-/// for a deck that has never been previewed on a machine with no PowerPoint
-/// and no QuickLook generator for PresentationML.
-struct DeckThumbnail: View {
-    let url: URL
-    /// The name to set on the placard when there is no thumbnail.
-    let fallbackTitle: String
+/// Keyed by path, modification date and the width it was asked for, so a deck
+/// rewritten in place gets a fresh picture, and the same deck at two sizes gets
+/// two entries rather than the wrong one.
+@MainActor
+final class DeckThumbnailStore {
+    static let shared = DeckThumbnailStore()
 
-    @Environment(\.displayScale) private var displayScale
-    @State private var image: Image?
-    @State private var resolved = false
+    private var cache: [String: Image] = [:]
+    private var inFlight: [String: Task<Image?, Never>] = [:]
 
-    var body: some View {
-        ZStack {
-            if let image {
-                image.resizable().aspectRatio(contentMode: .fill)
-            } else {
-                DeckPlacard(title: fallbackTitle, muted: !resolved)
-            }
-        }
-        // The generated image is whatever shape the slide is; the card decides
-        // the shape. Without this, a wider thumbnail renders past its own
-        // corners and over the card beside it.
-        .clipped()
-        .task(id: url.path) { await load() }
+    /// A hit means the grid can draw immediately, with no async work at all —
+    /// which is the whole point.
+    func cached(_ key: String) -> Image? { cache[key] }
+
+    static func key(url: URL, version: Date, width: CGFloat) -> String {
+        "\(url.path)|\(version.timeIntervalSince1970)|\(Int(width))"
     }
 
-    private func load() async {
-        image = nil
-        resolved = false
-        let scale = displayScale
-        let thumbnail = await Self.thumbnail(for: url, scale: scale)
-        // A thumbnail that arrives after the card scrolled away would flash the
-        // wrong deck; `task(id:)` cancels first, so only check the result.
-        guard !Task.isCancelled else { return }
-        withAnimation(.easeOut(duration: 0.18)) {
-            image = thumbnail
-            resolved = true
+    func thumbnail(url: URL, key: String, width: CGFloat, scale: CGFloat) async -> Image? {
+        if let hit = cache[key] { return hit }
+        if let running = inFlight[key] { return await running.value }
+
+        let task = Task<Image?, Never> {
+            await Self.generate(url: url, width: width, scale: scale)
         }
+        inFlight[key] = task
+        let image = await task.value
+        inFlight[key] = nil
+        if let image { cache[key] = image }
+        return image
     }
 
-    /// One request, `.thumbnail` representation: the cheapest one Quick Look
-    /// offers, and the one it is most likely to already have.
-    static func thumbnail(for url: URL, scale: CGFloat) async -> Image? {
+    /// Asks for the size it will actually be drawn at.
+    ///
+    /// This used to ask for 640×400 whatever the caller did with it — at 2×
+    /// that is 1280×800 of bitmap per card, and the list drew it into 44×25
+    /// points. Twelve oversized decodes is both the memory and the frames.
+    private static func generate(url: URL, width: CGFloat, scale: CGFloat) async -> Image? {
         let request = QLThumbnailGenerator.Request(
             fileAt: url,
-            size: CGSize(width: 640, height: 400),
+            size: CGSize(width: width, height: (width * 9 / 16).rounded()),
             scale: scale,
             representationTypes: .thumbnail)
-        let generated = try? await QLThumbnailGenerator.shared
-            .generateBestRepresentation(for: request)
-        guard let generated else { return nil }
+        guard let generated = try? await QLThumbnailGenerator.shared
+            .generateBestRepresentation(for: request) else { return nil }
         #if os(macOS)
         return Image(nsImage: generated.nsImage)
         #else
@@ -74,8 +67,65 @@ struct DeckThumbnail: View {
     }
 }
 
-/// The stand-in when Quick Look has no picture: the deck's name, set on a
-/// surface, rather than an empty grey rectangle.
+/// A deck's cover, taken from Quick Look.
+///
+/// The system has already rendered these files — it draws the same picture in
+/// Finder, in Spotlight and in the share sheet — and it keeps the result in its
+/// own cache. Asking for that costs a thumbnail request; drawing our own cost a
+/// full package parse per card, which on a library of ninety-megabyte decks
+/// measured three minutes and two gigabytes before it drew anything.
+///
+/// Falls back to a quiet placard when Quick Look has nothing.
+struct DeckThumbnail: View {
+    let url: URL
+    /// The name to set on the placard when there is no thumbnail.
+    let fallbackTitle: String
+    /// The deck's modification date, so a deck rewritten in place is not shown
+    /// with its old cover.
+    var version: Date = .distantPast
+    /// The width this will be drawn at, in points. Quick Look is asked for
+    /// exactly this rather than one size that suits nobody.
+    var width: CGFloat = 320
+
+    @Environment(\.displayScale) private var displayScale
+    @State private var loaded: Image?
+
+    private var key: String {
+        DeckThumbnailStore.key(url: url, version: version, width: width)
+    }
+
+    /// The cache is read synchronously in `body`: a warm grid draws on the
+    /// first frame rather than after a hop through the concurrency runtime, so
+    /// returning to the library does no work at all.
+    private var image: Image? {
+        loaded ?? DeckThumbnailStore.shared.cached(key)
+    }
+
+    var body: some View {
+        ZStack {
+            if let image {
+                image.resizable().aspectRatio(contentMode: .fill)
+            } else {
+                DeckPlacard(title: fallbackTitle, muted: true)
+            }
+        }
+        // The generated image is whatever shape the slide is; the card decides
+        // the shape. Without this, a wider thumbnail renders past its own
+        // corners and over the card beside it.
+        .clipped()
+        .task(id: key) {
+            // Already had it: no request, no decode, and nothing to animate.
+            guard DeckThumbnailStore.shared.cached(key) == nil else { return }
+            let image = await DeckThumbnailStore.shared.thumbnail(
+                url: url, key: key, width: width, scale: displayScale)
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeOut(duration: 0.18)) { loaded = image }
+        }
+    }
+}
+
+/// The stand-in when Quick Look has no picture: a quiet surface rather than an
+/// empty grey rectangle.
 struct DeckPlacard: View {
     let title: String
     /// True while the thumbnail is still being fetched, so the placard reads as
@@ -93,11 +143,6 @@ struct DeckPlacard: View {
                     .lineLimit(3)
                     .minimumScaleFactor(0.75)
                     .padding(16)
-            }
-        }
-        .overlay {
-            if muted {
-                ProgressView().controlSize(.small)
             }
         }
     }

@@ -337,7 +337,10 @@ struct DeckCardView: View {
             app.inspect(deckAt: deck.url)
         } label: {
             VStack(alignment: .leading, spacing: 10) {
-                DeckThumbnail(url: deck.url, fallbackTitle: deck.name)
+                DeckThumbnail(url: deck.url,
+                              fallbackTitle: deck.name,
+                              version: deck.modified,
+                              width: 340)
                     .frame(maxWidth: .infinity)
                     // Slides are 16:9, so the card is too — a deck's own
                     // picture arrives uncropped rather than trimmed to a nicer

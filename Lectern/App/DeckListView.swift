@@ -63,7 +63,10 @@ struct DeckListView: View {
         Table(rows, selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Name", value: \.name) { row in
                 HStack(spacing: 8) {
-                    DeckThumbnail(url: row.deck.url, fallbackTitle: row.name)
+                    DeckThumbnail(url: row.deck.url,
+                                  fallbackTitle: row.name,
+                                  version: row.modified,
+                                  width: 44)
                         .frame(width: 44, height: 25)
                         .clipShape(RoundedRectangle(cornerRadius: 3, style: .continuous))
                         .overlay {
@@ -103,7 +106,10 @@ struct DeckListView: View {
         List(rows, selection: $selection) { row in
             Button { app.inspect(deckAt: row.deck.url) } label: {
                 HStack(spacing: 12) {
-                    DeckThumbnail(url: row.deck.url, fallbackTitle: row.name)
+                    DeckThumbnail(url: row.deck.url,
+                                  fallbackTitle: row.name,
+                                  version: row.modified,
+                                  width: 64)
                         .frame(width: 64, height: 36)
                         .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
                     VStack(alignment: .leading, spacing: 3) {
