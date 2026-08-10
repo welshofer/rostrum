@@ -183,14 +183,17 @@ struct DeckGridView: View {
     let section: LibrarySection
     @Binding var query: String
     let layout: LibraryLayout
+    /// Fixed, and decided by the window rather than by this column's width —
+    /// see `ContentView.deckColumnCount`. Flexible columns then let the cards
+    /// resize with the sidebar instead of being re-dealt into new slots.
+    let columnCount: Int
     @State private var renaming: DeckFile?
     @State private var draftName = ""
 
-    /// Cards size themselves between a readable floor and a ceiling past which
-    /// a thumbnail stops earning its width. `.top` so rows stay aligned when a
-    /// title wraps differently from its neighbour's.
-    private let columns = [GridItem(.adaptive(minimum: 260, maximum: 380),
-                                    spacing: 22, alignment: .top)]
+    private var columns: [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: 22, alignment: .top),
+              count: max(1, columnCount))
+    }
 
     private var decks: [DeckFile] {
         let base = section == .recent ? Array(app.library.prefix(12)) : app.library

@@ -12,7 +12,26 @@ struct ContentView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var section: LibrarySection = .recent
     @State private var query = ""
-    @State private var columnVisibility: NavigationSplitViewVisibility = .all
+    @State private var preferredColumns: NavigationSplitViewVisibility = .all
+    @State private var windowWidth: CGFloat = 1200
+
+    /// How many deck columns to draw, decided by the **window** rather than by
+    /// the space left over after the sidebar.
+    ///
+    /// `.adaptive` columns re-count themselves as the detail column narrows, so
+    /// showing or hiding the sidebar moved every card into a different slot —
+    /// and `LazyVGrid` does not animate that, it just re-places them. Deciding
+    /// from the window keeps the count fixed across a sidebar toggle, and the
+    /// flexible columns let the cards themselves narrow smoothly instead.
+    private var deckColumnCount: Int {
+        switch windowWidth {
+        case ..<820: 1
+        case ..<1180: 2
+        case ..<1560: 3
+        case ..<1960: 4
+        default: 5
+        }
+    }
     @State private var droppingDeck = false
     /// How you like to read your own library, remembered between launches.
     @AppStorage("libraryLayout") private var layout: LibraryLayout = .grid
@@ -35,13 +54,23 @@ struct ContentView: View {
         // One shell on every platform: a sidebar beside the work on a Mac and
         // an iPad, the same views pushed on a phone. NavigationSplitView is
         // what makes that one description rather than three.
-        NavigationSplitView(columnVisibility: $columnVisibility) {
+        NavigationSplitView(columnVisibility: shellColumns) {
             LibrarySidebar(section: $section) { openSettings() }
                 .navigationSplitViewColumnWidth(min: 240, ideal: 270, max: 320)
         } detail: {
             detail
         }
         .navigationSplitViewStyle(.balanced)
+        // The window's own width, which — unlike the detail column's — does not
+        // change when the sidebar comes and goes. Read from a background so it
+        // observes the layout without taking part in it.
+        .background {
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear { windowWidth = proxy.size.width }
+                    .onChange(of: proxy.size.width) { _, width in windowWidth = width }
+            }
+        }
         // Dropping a deck on the window is the most natural way to open one,
         // and it belongs to the shell rather than to a screen — the target
         // moved out from under it once already when the home screen was
@@ -75,16 +104,7 @@ struct ContentView: View {
         #endif
         .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
         // Creating and inspecting are both full-attention work, so they get the
-        // whole window; the sidebar comes back with the library. Only the
-        // transition moves it, so re-opening it by hand during a task sticks.
-        .onChange(of: app.phase) { previous, next in
-            guard (previous == .home) != (next == .home) else { return }
-            // The same curve the content uses. Two durations here made the
-            // shell arrive in two stages.
-            withAnimation(shellMotion) {
-                columnVisibility = next == .home ? .all : .detailOnly
-            }
-        }
+        // whole window; the sidebar comes back with the library.
         .task { await app.start(); await app.loadStyles() }
     }
 
@@ -95,7 +115,8 @@ struct ContentView: View {
         Group {
             switch app.phase {
             case .home:
-                DeckGridView(section: section, query: $query, layout: layout)
+                DeckGridView(section: section, query: $query, layout: layout,
+                             columnCount: deckColumnCount)
                     .searchable(text: $query, placement: .toolbar, prompt: "Search")
                     .transition(phaseTransition)
             case .compose: ComposeView().transition(phaseTransition)
@@ -121,11 +142,35 @@ struct ContentView: View {
     /// One curve for the whole shell.
     ///
     /// The sidebar and the content it makes room for are a single movement, so
-    /// they cannot be two animations of different lengths — at 0.30 against
-    /// 0.35 the window visibly settled twice, which is most of what read as
-    /// abrupt.
+    /// they cannot be two animations of different lengths.
     private var shellMotion: Animation? {
         reduceMotion ? nil : .smooth(duration: 0.34)
+    }
+
+    /// Whether the sidebar is showing.
+    ///
+    /// Derived from the phase rather than set in reaction to it, and this is
+    /// the whole point: `onChange` runs *after* the new phase has been laid
+    /// out, so returning to the library laid the grid out twice — once at the
+    /// full window width (four columns across), then again 270pt narrower once
+    /// the sidebar arrived (three). A `LazyVGrid` does not animate a change of
+    /// column count; the cards simply jump to new slots, in the middle of the
+    /// transition that was supposed to be smooth.
+    ///
+    /// As a derived binding the visibility changes in the *same* update as the
+    /// phase, so SwiftUI resolves one final width and lays the grid out once.
+    ///
+    /// The stored value is only the preference for when the library is showing,
+    /// so hiding the sidebar by hand still sticks.
+    private var shellColumns: Binding<NavigationSplitViewVisibility> {
+        Binding(
+            get: { app.phase == .home ? preferredColumns : .detailOnly },
+            set: { newValue in
+                // A drag or a toolbar toggle while the library is up is a
+                // preference; the same thing during a task is not worth
+                // remembering.
+                if app.phase == .home { preferredColumns = newValue }
+            })
     }
 
     /// A cross-fade, and nothing else.
