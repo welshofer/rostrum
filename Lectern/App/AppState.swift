@@ -58,7 +58,7 @@ final class AppState {
     /// confirms the key; it never rewrites this list.
     static func defaultModels(for id: ProviderID) -> [String] {
         switch id {
-        case .anthropic: return ["claude-opus-4-8", "claude-sonnet-5", "claude-fable-5", "claude-haiku-4-5-20251001"]
+        case .anthropic: return ["claude-opus-5", "claude-sonnet-5", "claude-fable-5", "claude-haiku-4-5-20251001"]
         default: return []
         }
     }

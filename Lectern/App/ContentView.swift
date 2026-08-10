@@ -100,11 +100,10 @@ struct ContentView: View {
         }
     }
 
+    /// macOS opens the Settings scene through `SettingsLink` in the sidebar
+    /// itself; only iOS, which has no such scene, needs a callback.
     private func openSettings() {
-        #if os(macOS)
-        // The Settings scene is the native home for this on a Mac.
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        #else
+        #if !os(macOS)
         showSettings = true
         #endif
     }

@@ -812,13 +812,13 @@ import Rostrum
     /// reach, so a dropped connection reported a good key as broken.
     @Test func listingModelsRetriesADroppedConnection() async throws {
         let attempts = SentBox()
-        let models = #"{"data":[{"id":"claude-sonnet-5"},{"id":"claude-opus-4-8"}]}"#
+        let models = #"{"data":[{"id":"claude-sonnet-5"},{"id":"claude-opus-5"}]}"#
         let ids = try await AnthropicModels.list(apiKey: "k", send: { _ in
             attempts.record(1)
             if attempts.values.count < 3 { throw URLError(.networkConnectionLost) }
             return (Data(models.utf8), Self.http(200))
         })
-        #expect(ids == ["claude-sonnet-5", "claude-opus-4-8"])
+        #expect(ids == ["claude-sonnet-5", "claude-opus-5"])
         #expect(attempts.values.count == 3, "expected three attempts, saw \(attempts.values.count)")
     }
 
@@ -923,7 +923,7 @@ import Rostrum
     }
 
     @Test func factoryBuildsAnthropicWithAKey() throws {
-        let provider = try ProviderFactory.make(id: .anthropic, apiKey: "sk-ant-xyz", model: "claude-opus-4-8")
+        let provider = try ProviderFactory.make(id: .anthropic, apiKey: "sk-ant-xyz", model: "claude-opus-5")
         #expect(provider.id == .anthropic)
         #expect(provider.displayName == "Anthropic")
         #expect(ProviderFactory.isWired(.anthropic))
@@ -1486,7 +1486,7 @@ import Rostrum
         #expect(PriceTable.cost(model: "claude-sonnet-5", usage: usage) == Decimal(18))
         // 200k in @ $15 + 50k out @ $75 = $3.00 + $3.75 = $6.75 on opus.
         let opus = Usage(inputTokens: 200_000, outputTokens: 50_000)
-        #expect(PriceTable.cost(model: "claude-opus-4-8", usage: opus) == Decimal(675) / 100)
+        #expect(PriceTable.cost(model: "claude-opus-5", usage: opus) == Decimal(675) / 100)
     }
 
     @Test func imageProviderEndpointsSurviveHostileModelIdentifiers() throws {

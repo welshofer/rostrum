@@ -43,7 +43,17 @@ struct StylePickerSheet: View {
             Divider().padding(.top, 12)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 26) {
-                    if filtered.isEmpty {
+                    if app.styles.isEmpty {
+                        // Not "no match" — nothing has been read yet. Saying
+                        // "try a different search" here blames the user's
+                        // filter for the catalog still loading.
+                        ContentUnavailableView {
+                            Label("Loading styles", systemImage: "paintpalette")
+                        } description: {
+                            Text("Reading the style catalog.")
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else if filtered.isEmpty {
                         ContentUnavailableView(
                             "No styles match",
                             systemImage: "paintpalette",
@@ -58,6 +68,9 @@ struct StylePickerSheet: View {
                 .padding(20)
             }
         }
+        // The sheet can be opened before ContentView's load has finished — or
+        // instead of it. `loadStyles` returns immediately once they are in.
+        .task { await app.loadStyles() }
         #if os(macOS)
         .frame(minWidth: 860, minHeight: 640)
         #endif

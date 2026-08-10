@@ -18,7 +18,7 @@ public enum PriceTable {
     /// Approximate list rates (USD / 1M tokens). Edit here when pricing changes;
     /// unknown models simply yield no estimate rather than a wrong one.
     public static let defaults: [String: ModelPrice] = [
-        "claude-opus-4-8":  ModelPrice(inputPerMTok: 15, outputPerMTok: 75),
+        "claude-opus-5":    ModelPrice(inputPerMTok: 15, outputPerMTok: 75),
         "claude-sonnet-5":  ModelPrice(inputPerMTok: 3,  outputPerMTok: 15),
         "claude-haiku-4-5": ModelPrice(inputPerMTok: 1,  outputPerMTok: 5),
     ]

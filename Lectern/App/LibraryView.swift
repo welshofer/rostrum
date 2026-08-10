@@ -99,11 +99,63 @@ struct LibrarySidebar: View {
 
             Divider().padding(.horizontal, 20).padding(.bottom, 12)
 
+            // `SettingsLink` is the only supported way to open the Settings
+            // scene — the old `showSettingsWindow:` selector is private and has
+            // been renamed at least once between releases.
+            #if os(macOS)
+            SettingsLink {
+                SidebarActionLabel(title: "Settings", systemImage: "gearshape")
+            }
+            .modifier(SidebarActionChrome(prominent: false))
+            .padding(.horizontal, 16)
+            .padding(.bottom, 16)
+            #else
             SidebarAction(title: "Settings", systemImage: "gearshape", action: onSettings)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
+            #endif
         }
         .frame(maxHeight: .infinity, alignment: .top)
+    }
+}
+
+/// The contents of a sidebar button, without the button.
+///
+/// Split out so a `Button` and a `SettingsLink` — which cannot be a Button —
+/// look identical rather than nearly identical.
+private struct SidebarActionLabel: View {
+    let title: String
+    let systemImage: String
+    var prominent = false
+
+    var body: some View {
+        Label(title, systemImage: systemImage)
+            .font(.body.weight(prominent ? .semibold : .regular))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 9)
+            .padding(.horizontal, 12)
+            .contentShape(.rect)
+    }
+}
+
+/// The surface a sidebar action sits on.
+private struct SidebarActionChrome: ViewModifier {
+    let prominent: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .buttonStyle(.plain)
+            .background {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(prominent ? AnyShapeStyle(.tint.opacity(0.12))
+                                    : AnyShapeStyle(.quaternary.opacity(0.5)))
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .strokeBorder(prominent ? AnyShapeStyle(.tint.opacity(0.35))
+                                            : AnyShapeStyle(.quaternary))
+            }
+            .foregroundStyle(prominent ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
     }
 }
 
@@ -117,25 +169,9 @@ private struct SidebarAction: View {
 
     var body: some View {
         Button(action: action) {
-            Label(title, systemImage: systemImage)
-                .font(.body.weight(prominent ? .semibold : .regular))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 9)
-                .padding(.horizontal, 12)
-                .contentShape(.rect)
+            SidebarActionLabel(title: title, systemImage: systemImage, prominent: prominent)
         }
-        .buttonStyle(.plain)
-        .background {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(prominent ? AnyShapeStyle(.tint.opacity(0.12))
-                                : AnyShapeStyle(.quaternary.opacity(0.5)))
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .strokeBorder(prominent ? AnyShapeStyle(.tint.opacity(0.35))
-                                        : AnyShapeStyle(.quaternary))
-        }
-        .foregroundStyle(prominent ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
+        .modifier(SidebarActionChrome(prominent: prominent))
     }
 }
 
