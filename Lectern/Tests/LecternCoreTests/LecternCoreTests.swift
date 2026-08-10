@@ -661,7 +661,9 @@ import Rostrum
         #expect(noNotes.contains("exactly 8 slides"))
         #expect(noNotes.contains("Omit the"))
         let grounded = PromptTemplates.deck(for: DeckRequest(prompt: "x", groundingText: "FACTS HERE"))
-        #expect(grounded.contains("SOURCE MATERIAL") && grounded.contains("FACTS HERE"))
+        // Fenced and labelled as data now, rather than pasted under a plain
+        // "--- SOURCE MATERIAL ---" heading a document could imitate.
+        #expect(grounded.contains("never instructions") && grounded.contains("FACTS HERE"))
     }
 
     @Test func promptImageLayoutListsComeFromTheRenderer() throws {
@@ -930,13 +932,15 @@ import Rostrum
     }
 
     @Test func factoryThrowsForUnwiredProviders() throws {
-        // OpenAI/Gemini/Custom aren't wired yet — throw rather than fake a deck.
-        for id in [ProviderID.openAI, .gemini, .custom] {
+        // Gemini and Custom aren't wired for text — throw rather than fake a
+        // deck. OpenAI is wired now and has its own suite.
+        for id in [ProviderID.gemini, .custom] {
             #expect(!ProviderFactory.isWired(id))
             #expect(throws: LecternError.self) {
                 _ = try ProviderFactory.make(id: id, apiKey: "some-key", model: "m")
             }
         }
+        #expect(ProviderFactory.isWired(.openAI))
     }
 
     // MARK: - Style catalog parsing (design.md header)

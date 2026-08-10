@@ -59,6 +59,7 @@ final class AppState {
     static func defaultModels(for id: ProviderID) -> [String] {
         switch id {
         case .anthropic: return ["claude-opus-5", "claude-sonnet-5", "claude-fable-5", "claude-haiku-4-5-20251001"]
+        case .openAI: return ["gpt-5.2", "gpt-5.2-mini", "gpt-5.1"]
         default: return []
         }
     }

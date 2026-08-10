@@ -44,16 +44,16 @@ public struct AnthropicProvider: LLMProvider {
     /// request gets less room than it used to, and capped because a model asked
     /// for more than it supports rejects the call outright — `send` recovers
     /// from that, but it is better not to provoke it.
+    ///
+    /// Kept here as the name the tests know; the arithmetic is about the size
+    /// of a deck rather than about Anthropic, so it lives in `DeckOutputBudget`
+    /// where a second provider can use it without reaching across.
     static func outputTokenBudget(for request: DeckRequest) -> Int {
-        let perSlide = 180 + (request.notes ? 120 : 0)
-        let estimate = 800 + max(1, request.slideCount) * perSlide
-        return min(maxOutputTokens, max(floorOutputTokens, estimate * 3 / 2))
+        DeckOutputBudget.tokens(for: request)
     }
 
-    /// Every current Claude model accepts at least this much, so it is what
-    /// `send` falls back to when a model refuses a larger budget.
-    static let floorOutputTokens = 8_192
-    static let maxOutputTokens = 32_000
+    static let floorOutputTokens = DeckOutputBudget.floor
+    static let maxOutputTokens = DeckOutputBudget.ceiling
 
     public func draft(_ request: DeckRequest, repairing: RepairContext?,
                       emit: @Sendable (GenerationEvent) -> Void) async throws -> RawDraft {
@@ -145,7 +145,13 @@ public struct AnthropicProvider: LLMProvider {
         // plus backoff is over six minutes of a UI that looks hung.
         let startedAt = Date()
         while true {
-            var req = URLRequest(url: endpoint, timeoutInterval: 120)
+            // The deadline is only real if a request cannot outlive it. An
+            // attempt that starts late gets what is left, not a fresh 120.
+            guard let timeout = HTTPRetry.timeout(startedAt: startedAt, cap: 120) else {
+                throw LecternError.providerError(
+                    status: 0, message: "the request ran out of time before it could finish")
+            }
+            var req = URLRequest(url: endpoint, timeoutInterval: timeout)
             req.httpMethod = "POST"
             req.setValue(apiKey, forHTTPHeaderField: "x-api-key")           // never logged (I1)
             req.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")

@@ -71,12 +71,32 @@ enum HTTPRetry {
     /// 120-second timeout, plus backoff, is over six minutes during which
     /// `GeneratingView` shows a spinner and a stage label that never advances.
     ///
-    /// This bounds when a retry may begin, not when it finishes — an attempt
-    /// started just inside the deadline still gets its full timeout, so the
-    /// true ceiling is this plus one request timeout. Bounding the finish
-    /// instead would mean assuming every attempt takes the worst case, which
-    /// refuses a cheap retry after a connection that failed in a millisecond.
+    /// The ceiling for a whole call, retries and backoff included.
     static let overallDeadline: TimeInterval = 180
+
+    /// How long a single request may take, given the call started at
+    /// `startedAt`.
+    ///
+    /// The deadline used to bound only when a retry could *begin*, so an
+    /// attempt starting at 179 seconds still got its full 120-second timeout
+    /// and the true ceiling was 300 — a UI that looks hung for five minutes
+    /// while the code says three. Refusing those late retries instead would
+    /// mean assuming every attempt takes the worst case, which throws away a
+    /// cheap retry after a connection that failed in a millisecond.
+    ///
+    /// Clamping the timeout keeps both: a late retry is still allowed, it just
+    /// cannot outlive the deadline it was allowed under.
+    ///
+    /// - Returns: the timeout to use, or `nil` when there is no useful time
+    ///   left and the caller should give up rather than start a request that
+    ///   cannot finish.
+    static func timeout(startedAt: Date, cap: TimeInterval, now: Date = Date()) -> TimeInterval? {
+        let remaining = overallDeadline - now.timeIntervalSince(startedAt)
+        // Under a second is not worth a round trip; it would fail on the wire
+        // and read as a network fault rather than as running out of time.
+        guard remaining > 1 else { return nil }
+        return Swift.min(cap, remaining)
+    }
 
     /// Whether there is still time to try again, given when the call started
     /// and how long the next wait would be. Checked before sleeping, so the

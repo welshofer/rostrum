@@ -104,6 +104,23 @@ public extension LLMProvider {
     }
 }
 
+/// How much room a deck of a given size needs to come back whole.
+///
+/// A property of the deck, not of whoever writes it, so both providers ask the
+/// same question the same way.
+enum DeckOutputBudget {
+    /// Every current model accepts at least this much, so it is what a provider
+    /// falls back to when one refuses a larger budget.
+    static let floor = 8_192
+    static let ceiling = 32_000
+
+    static func tokens(for request: DeckRequest) -> Int {
+        let perSlide = 180 + (request.notes ? 120 : 0)
+        let estimate = 800 + max(1, request.slideCount) * perSlide
+        return min(ceiling, max(floor, estimate * 3 / 2))
+    }
+}
+
 /// The user-facing error taxonomy (§12).
 public enum LecternError: Error, Equatable {
     case noKey
