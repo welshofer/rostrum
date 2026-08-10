@@ -12,14 +12,18 @@ struct ContentView: View {
     @State private var section: LibrarySection = .recent
     @State private var query = ""
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
+    @State private var droppingDeck = false
     #if os(iOS)
     @State private var showSettings = false
     #endif
 
+    /// The extensions the inspector can actually open.
+    static let deckExtensions = ["pptx", "potx", "ppsx"]
+
     /// The decks this app will open. A `.pptx` and nothing else — the
     /// inspector reads PresentationML, and offering the user a file it cannot
     /// open is a worse experience than not offering it.
-    static let deckTypes: [UTType] = ["pptx", "potx", "ppsx"].compactMap {
+    static let deckTypes: [UTType] = deckExtensions.compactMap {
         UTType(filenameExtension: $0)
     }
 
@@ -35,6 +39,27 @@ struct ContentView: View {
             detail
         }
         .navigationSplitViewStyle(.balanced)
+        // Dropping a deck on the window is the most natural way to open one,
+        // and it belongs to the shell rather than to a screen — the target
+        // moved out from under it once already when the home screen was
+        // replaced by the library.
+        .dropDestination(for: URL.self) { urls, _ in
+            guard let deck = urls.first(where: {
+                Self.deckExtensions.contains($0.pathExtension.lowercased())
+            }) else { return false }
+            app.inspect(deckAt: deck)
+            return true
+        } isTargeted: { droppingDeck = $0 }
+        .overlay {
+            if droppingDeck {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .strokeBorder(.tint, style: StrokeStyle(lineWidth: 2, dash: [7]))
+                    .padding(10)
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeOut(duration: 0.15), value: droppingDeck)
         // Attached above the phase switch, not inside a phase: the menu bar
         // starts this flow too, and a picker owned by a view that isn't on
         // screen never opens.
@@ -106,104 +131,6 @@ struct ContentView: View {
         #if !os(macOS)
         showSettings = true
         #endif
-    }
-}
-
-// MARK: - Home
-
-/// The fork. Lectern does two things, and this is where you say which.
-///
-/// Two buttons and nothing else on purpose: the compose form used to be the
-/// launch screen, which quietly asserted that writing a deck was the only
-/// thing here and left opening one with no door at all.
-struct HomeView: View {
-    @Environment(AppState.self) private var app
-    @State private var dropTargeted = false
-    /// Fixed point sizes ignore the user's text setting; @ScaledMetric is the
-    /// API that actually tracks it.
-    @ScaledMetric(relativeTo: .largeTitle) private var heroGlyph: CGFloat = 44
-
-    var body: some View {
-        @Bindable var app = app
-        VStack(spacing: 30) {
-            Spacer()
-            VStack(spacing: 10) {
-                Image(systemName: "rectangle.on.rectangle.angled")
-                    .font(.system(size: heroGlyph)).foregroundStyle(.tint)
-                Text("Lectern").font(.largeTitle.weight(.semibold))
-                Text("Write a deck, or take one apart.")
-                    .font(.title3).foregroundStyle(.secondary)
-            }
-
-            HStack(spacing: 18) {
-                Button { app.startCreate() } label: {
-                    HomeChoiceLabel(title: "Create", systemImage: "sparkles",
-                                    blurb: "Describe it, and Lectern writes the .pptx.")
-                }
-                .buttonStyle(.glassProminent)
-
-                Button { app.chooseDeckToInspect() } label: {
-                    HomeChoiceLabel(title: "Inspect", systemImage: "magnifyingglass",
-                                    blurb: "Open a deck, see what it's made of, export it.")
-                }
-                .buttonStyle(.glass)
-            }
-            .controlSize(.large)
-
-            // Only once there is something to show — an empty library behind a
-            // button is a dead end offered to someone who has never generated
-            // anything.
-            if !app.library.isEmpty {
-                Button { app.isShowingLibrary = true } label: {
-                    Label("\(app.library.count) deck\(app.library.count == 1 ? "" : "s") you've made",
-                          systemImage: "rectangle.stack")
-                }
-                .buttonStyle(.glass)
-            }
-            Spacer()
-        }
-        .padding(40)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // Half the product is "open a deck", and the most natural gesture for
-        // it did nothing. Accepts the same types as the file importer.
-        .dropDestination(for: URL.self) { urls, _ in
-            guard let deck = urls.first(where: {
-                ["pptx", "potx", "ppsx"].contains($0.pathExtension.lowercased())
-            }) else { return false }
-            app.inspect(deckAt: deck)
-            return true
-        } isTargeted: { dropTargeted = $0 }
-        .overlay {
-            if dropTargeted {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .strokeBorder(.tint, style: StrokeStyle(lineWidth: 2, dash: [7]))
-                    .padding(18)
-                    .transition(.opacity)
-            }
-        }
-        .animation(.easeOut(duration: 0.15), value: dropTargeted)
-        .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
-        .task { app.refreshLibrary() }
-    }
-}
-
-private struct HomeChoiceLabel: View {
-    @ScaledMetric(relativeTo: .title) private var glyph: CGFloat = 28
-    let title: String
-    let systemImage: String
-    let blurb: String
-
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: systemImage).font(.system(size: glyph))
-            Text(title).font(.title3.weight(.semibold))
-            Text(blurb).font(.caption)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 170)
-                .opacity(0.75)
-        }
-        .padding(.vertical, 20).padding(.horizontal, 16)
-        .frame(minWidth: 190)
     }
 }
 
