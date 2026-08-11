@@ -51,6 +51,7 @@ struct DeckListView: View {
 
     @State private var sortOrder = [KeyPathComparator(\DeckListRow.modified, order: .reverse)]
     @State private var selection: URL?
+    @State private var pendingDelete: DeckFile?
 
     private var rows: [DeckListRow] {
         decks
@@ -59,6 +60,26 @@ struct DeckListView: View {
     }
 
     var body: some View {
+        content
+            // A deck is the output of a paid model call, so removing one
+            // asks first — the trailing ellipsis on "Delete…" promises
+            // exactly that, on both the macOS table and the iOS list.
+            .confirmationDialog(
+                pendingDelete.map { "Delete “\($0.name)”?" } ?? "",
+                isPresented: Binding(get: { pendingDelete != nil },
+                                     set: { if !$0 { pendingDelete = nil } }),
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) {
+                    pendingDelete = DeckDeletionRequest.confirming(pendingDelete, in: app)
+                }
+                Button("Cancel", role: .cancel) { pendingDelete = nil }
+            } message: {
+                Text(DeckDeletionRequest.explanation)
+            }
+    }
+
+    @ViewBuilder private var content: some View {
         #if os(macOS)
         Table(rows, selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Name", value: \.name) { row in
@@ -146,7 +167,7 @@ struct DeckListView: View {
         #endif
         ShareLink(item: deck.url)
         Divider()
-        Button("Delete…", role: .destructive) { app.deleteFromLibrary(deck) }
+        Button("Delete…", role: .destructive) { pendingDelete = DeckDeletionRequest.requesting(deck) }
     }
 }
 
