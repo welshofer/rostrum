@@ -124,6 +124,9 @@ enum DeckOutputBudget {
 /// The user-facing error taxonomy (§12).
 public enum LecternError: Error, Equatable {
     case noKey
+    /// A key is stored but the keychain will not release it to this build —
+    /// distinct from `noKey`, because the fix is to re-save rather than to add.
+    case keyUnreadable
     case authFailed(provider: String)
     case rateLimited(afterSeconds: Int)
     case requestTooLarge

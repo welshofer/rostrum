@@ -263,11 +263,39 @@ final class AppState {
         imageKeyStatus = .unknown
     }
 
+    /// What to do when the keychain has the key but will not hand it over.
+    ///
+    /// On macOS the login keychain gates an item by the signature of the build
+    /// that saved it. A build signed differently — which every ad-hoc build is,
+    /// since its cdhash changes each time — can still *find* the item and
+    /// cannot read it. Re-saving rewrites the access control for the build in
+    /// front of the user, which is the one action that fixes it.
+    static let unreadableKeyAdvice =
+        "A key is saved, but this build of Lectern can't open it — paste it again to re-save."
+
+    /// Whether a keychain read failed because the item is there but sealed to a
+    /// different build, as opposed to simply not existing.
+    static func isUnreadable(_ result: Result<String, Error>) -> Bool {
+        guard case .failure(let error) = result,
+              case KeychainStore.ReadProblem.unreadable = error else { return false }
+        return true
+    }
+
     /// Validate authentication and access to the exact image model Lectern uses.
     func validateImageKey() async {
         let id = imageProviderID
-        guard let key = KeychainStore.read(forImage: id) else {
+        let key: String
+        do {
+            key = try KeychainStore.readOrFail(forImage: id)
+        } catch KeychainStore.ReadProblem.unreadable {
+            // The item is there; this build just cannot open it. Saying "no key
+            // stored" here sent us hunting a save bug that did not exist.
+            imageKeyStatus = .invalid(Self.unreadableKeyAdvice)
+            hasImageKey = true
+            return
+        } catch {
             imageKeyStatus = .invalid("No image key stored.")
+            hasImageKey = false
             return
         }
         imageKeyStatus = .validating
@@ -290,7 +318,16 @@ final class AppState {
         // against the wrong key — and selectProvider has already reset the
         // status to .unknown by then, so the stale write undoes a correct one.
         let id = providerID
-        guard let key = KeychainStore.read(for: id) else { keyStatus = .invalid("No key stored."); return }
+        let key: String
+        do {
+            key = try KeychainStore.readOrFail(for: id)
+        } catch KeychainStore.ReadProblem.unreadable {
+            keyStatus = .invalid(Self.unreadableKeyAdvice)
+            return
+        } catch {
+            keyStatus = .invalid("No key stored.")
+            return
+        }
         keyStatus = .validating
         do {
             let models = try await AnthropicModels.list(apiKey: key)
@@ -348,21 +385,35 @@ final class AppState {
         let designURL = selectedStyle?.designURL
         let directory = Self.decksDirectory()
         let diagnostics = Self.diagnosticsDirectory()
-        let key = KeychainStore.read(for: providerID)
+        let keyRead = Result { try KeychainStore.readOrFail(for: providerID) }
         let id = providerID, chosenModel = model
         let style = selectedStyle
         let smartArt = useSmartArt
         let imageID = imageProviderID
-        let imageKey = KeychainStore.read(forImage: imageProviderID)
+        let imageKeyRead = Result { try KeychainStore.readOrFail(forImage: imageProviderID) }
+        // An unreadable key is not a missing one. Treated as missing, the text
+        // key fails the run as "no key" while one sits in the keychain, and the
+        // image key silently drops every picture from a paid deck — which is
+        // exactly what Settings promises does not happen.
+        let key = try? keyRead.get()
+        let imageKey = try? imageKeyRead.get()
+        let unreadableKey = Self.isUnreadable(keyRead)
+        let unreadableImageKey = Self.isUnreadable(imageKeyRead)
 
         task = Task {
             do {
+                guard !unreadableKey else { throw LecternError.keyUnreadable }
                 let provider = try ProviderFactory.make(id: id, apiKey: key, model: chosenModel)
                 // Optional imagery: only when an image key exists. Art direction
                 // comes from the chosen style's design.md so images stay on-brand.
                 var imageProvider: (any ImageProvider)?
                 var imageStyle: String?
                 var imageSkipNote: String?
+                if unreadableImageKey {
+                    // Silence here would drop every picture from a paid deck
+                    // while an image key sits in the keychain.
+                    imageSkipNote = "Images were skipped — " + Self.unreadableKeyAdvice
+                }
                 if let imageKey {
                     if self.runs.isCurrent(run) { self.stage = "Checking image provider" }
                     do {
@@ -593,6 +644,7 @@ final class AppState {
         guard let lectern = error as? LecternError else { return "\(error.localizedDescription)" }
         switch lectern {
         case .noKey: return "Add an API key in Settings to begin."
+        case .keyUnreadable: return Self.unreadableKeyAdvice
         case .authFailed(let p): return "That key was rejected by \(p)."
         case .rateLimited(let s): return "Rate-limited — try again in \(s)s."
         case .requestTooLarge: return "That PDF is too large for this model."

@@ -734,7 +734,7 @@ struct FailedView: View {
                 app.startCreate()
             }
             .buttonStyle(.glassProminent).controlSize(.large)
-        case .noKey, .authFailed:
+        case .noKey, .authFailed, .keyUnreadable:
             #if os(macOS)
             SettingsLink { Text("Open Settings") }
                 .buttonStyle(.glassProminent).controlSize(.large)
