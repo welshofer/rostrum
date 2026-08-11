@@ -80,6 +80,9 @@ extension XML.Element {
             switch node {
             case .text(let text): return .text(text)
             case .element(let element): return .element(element.deepCopy())
+            case .comment(let body): return .comment(body)
+            case .processingInstruction(let target, let data):
+                return .processingInstruction(target: target, data: data)
             }
         })
     }
