@@ -3,8 +3,18 @@ import Testing
 @testable import Rostrum
 
 @Suite struct SlideBuildersTests {
-    /// Every builder must produce a FREE-SHAPE slide: no placeholders, real
-    /// shapes, and exactly ONE slideLayout relationship (the top blankCanvas risk).
+    /// Every builder must produce a slide the builder itself laid out: its own
+    /// shapes, positioned explicitly, and exactly ONE slideLayout relationship
+    /// (the top blankCanvas risk).
+    ///
+    /// This used to assert `placeholders.isEmpty`, which conflated two things:
+    /// "no layout placeholder shapes were cloned in" — still true and still
+    /// checked — with "no shape carries a `p:ph` binding". The second is what
+    /// left every generated deck with no titles at all: no outline view, no
+    /// slide navigator, nothing for a screen reader. The builders now label the
+    /// title they draw. What must stay true is that the geometry is still
+    /// theirs, so every placeholder they mark carries an explicit `a:xfrm`, and
+    /// that nothing empty was inherited.
     @Test func everyBuilderIsFreeShapeWithOneLayoutRel() throws {
         let builders: [(String, (Presentation) throws -> Slide)] = [
             ("title", { try $0.titleSlide("T", subtitle: "S", kicker: "K") }),
@@ -23,8 +33,17 @@ import Testing
         for (name, make) in builders {
             let deck = try Presentation()
             let slide = try make(deck)
-            #expect(slide.placeholders.isEmpty, "\(name) leaked a placeholder")
             #expect(!slide.shapes.all.isEmpty, "\(name) produced no shapes")
+            for shape in slide.placeholders {
+                // Marked, not inherited: the builder positioned it.
+                #expect(shape.element.firstChild(named: "p:spPr")?
+                    .firstChild(named: "a:xfrm") != nil,
+                        "\(name) has a placeholder with no explicit frame")
+                #expect(shape.textFrame?.text.isEmpty == false,
+                        "\(name) left an empty placeholder, which shows as a prompt")
+            }
+            #expect(slide.placeholders.filter { $0.placeholder?.type == "title" }.count <= 1,
+                    "\(name) has more than one title")
             #expect(slide.part.rels.items.filter { $0.type == RelType.slideLayout }.count == 1,
                     "\(name) has != 1 layout rel")
         }
@@ -63,7 +82,10 @@ import Testing
             .contains { $0.firstChild(named: "p:txBody")?.children(named: "a:p")
                 .contains { $0.firstChild(named: "a:pPr")?.firstChild(named: "a:buChar") != nil } ?? false }
         #expect(hasBullet)
-        #expect(slide.placeholders.isEmpty)
+        // The title is a real title now; the bullets remain the builder's own
+        // shape rather than an inherited body placeholder.
+        #expect(slide.title?.textFrame?.text == "Highlights")
+        #expect(slide.placeholders.allSatisfy { $0.textFrame?.text.isEmpty == false })
     }
 
     @Test func titleSlideUsesDisplayScaleAndLegibleColor() throws {

@@ -72,6 +72,58 @@ extension Slides {
     }
 }
 
+extension Slides {
+    /// Add a slide bound to `layout` without cloning its placeholders.
+    ///
+    /// For builders that place every shape themselves: they need the *binding*
+    /// to a layout that declares a title, so the shape they mark as the title
+    /// has something to inherit from and PowerPoint reads the slide as titled —
+    /// but not the layout's empty placeholder shapes, which would sit on top of
+    /// the drawn ones showing "Click to add title".
+    @discardableResult
+    func add(boundTo layout: SlideLayout) throws -> Slide {
+        let slide = try add()
+        if let rel = slide.part.rels.first(ofType: RelType.slideLayout) {
+            slide.part.rels.remove(rId: rel.rId)
+        }
+        slide.part.rels.add(
+            type: RelType.slideLayout,
+            target: slide.part.uri.relativeReference(to: layout.part.uri))
+        return slide
+    }
+}
+
+public extension Shape {
+    /// Make this shape the slide's title (or any other placeholder).
+    ///
+    /// Rostrum's builders position every shape on their own grid, which is why
+    /// they drew the title as a plain text box — and a deck of plain text boxes
+    /// has no titles at all as far as PowerPoint is concerned: nothing in the
+    /// outline view, nothing in the slide navigator, nothing for a screen
+    /// reader, and nothing for anything that summarises a deck. Adding the
+    /// `p:ph` binding costs no pixels — the explicit `a:xfrm` still wins — and
+    /// buys back every one of those.
+    ///
+    /// - Parameters:
+    ///   - type: `"title"`, `"ctrTitle"`, `"subTitle"`, `"body"`, …
+    ///   - idx: the layout placeholder index, for the types that carry one.
+    func markAsPlaceholder(type: String, idx: Int? = nil) {
+        guard let nvSpPr = element.firstChild(named: "p:nvSpPr"),
+              let nvPr = nvSpPr.firstChild(named: "p:nvPr") else { return }
+        // Never two of them: a second p:ph on one shape is invalid, and a
+        // rebuild that marked twice would produce it.
+        nvPr.children.removeAll { node in
+            if case .element(let child) = node, child.name == "p:ph" { return true }
+            return false
+        }
+        var attributes = [(String, String)]()
+        if !type.isEmpty { attributes.append(("type", type)) }
+        if let idx { attributes.append(("idx", String(idx))) }
+        nvPr.appendElement(XML.Element("p:ph", attributes: attributes))
+        part.markDirty()
+    }
+}
+
 enum Placeholders {
     /// Layout ph types never cloned onto slides.
     static let latentTypes: Set<String> = ["dt", "ftr", "sldNum"]
