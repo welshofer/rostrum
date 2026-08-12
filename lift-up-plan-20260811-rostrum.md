@@ -230,3 +230,91 @@ a promise it actually keeps.
 - **`OPCPackage` multi-pass serialisation** — measured in milliseconds against a whole-deck save; below the noise floor.
 - **`RostrumError` carries prose, not structured cases** — real API ergonomics gap, low leverage while the consumer set is this small.
 - **Text measurement ignores kerning, ligatures and shaping** (`FontMetrics.swift:12-16`) — documented behaviour, and fixing it means a shaping engine, which is out of scope for a zero-dependency library.
+
+---
+
+# Burn-down — 20260811
+
+Executed by `/burn-down` on branch `burndown/liftup-20260811`, stacked on
+`burndown/deck-workbench-20260805` (PR #25), which is where the audited code lives.
+
+## Routing table
+
+Fable was unavailable, so per the tier-resolution rule the best Opus **is** the frontier
+tier for this run — recorded as a substitution, not a degradation. The orchestrator ran at
+frontier (Opus 5), so this was not a degraded-mode run.
+
+| Tier | Resolved model |
+|---|---|
+| frontier | `claude-opus-5` |
+| strong | `claude-opus-4.8` |
+| fast | `claude-sonnet-5` |
+| reviewer | `gpt-5.6-sol` (different family — chosen for decorrelation) |
+
+**Roster substitution, recorded for honesty.** This runtime's agent tool exposes a fixed
+`agent_type` enum, so the installed `burndown-*` agents could not be dispatched by name.
+Equivalent pinning was achieved with `general-purpose` plus a per-call `model` override, so
+tier pins and cross-model review were genuinely in effect. Every executor below is the
+*actual* model that ran, confirmed in the live agent list.
+
+**Isolation.** The runtime exposes no `isolation: "worktree"` parameter, so worktrees were
+created manually (`git worktree add`) and agents were pointed at them. Isolation was
+preserved *and* concurrency was kept — better than the reference fallback, which serialises.
+Concurrency was capped at 3 implementers (10 cores; Swift builds are memory-hungry).
+
+## Manifest — Rostrum items
+
+| Item | Status | Lane | Actual executor | Commit | Verify |
+|---|---|---|---|---|---|
+| R-FUNC-1 | shipped | frontier-delegated | `claude-opus-5` | `dd6c552` | 643 tests green; foreign-deck fixed-point corpus + python-pptx oracle green |
+| R-PERF-1 | shipped | frontier-delegated | `claude-opus-5` | `3e96aad` | 653 tests green |
+| R-REL-1 | shipped | strong | `claude-opus-4.8` | `d00ef27` | 647 tests green |
+| R-USE-1 | shipped | strong | `claude-opus-4.8` | `9fe054a` | 665 tests green |
+| R-ATTR-1 | shipped | frontier-inline | orchestrator (`claude-opus-5`) | `574023f` | docs; full gate green |
+
+Final integration gate: `./scripts/verify.sh` → **All green** (Rostrum 665, LecternCore 162,
+app-hosted 28, macOS + iOS app builds).
+
+## Citation-gate evidence (orchestrator re-read, non-delegable)
+
+- **R-FUNC-1** — `grep -c 'intentionally dropped' Sources/Rostrum/XML/XML.swift` → `0`;
+  `foundComment` / `foundProcessingInstruction` now implemented at `XML.swift:634,640`; the
+  pinning test is renamed and reversed to `commentsSurviveTheRoundTrip`.
+- **R-PERF-1** — `count`/`subscript` no longer route through `all`; they call `childCount(of:)`
+  and `childElement(of:at:)`. Route **B** chosen (no cache at all), so there is nothing that
+  can go stale.
+- **R-REL-1** — the bare `return (nil, nil)` flattening is gone; `renderSVG(slideAt:pixelWidth:)`
+  keeps its exact signature at `:963`, diagnostics are additive.
+- **R-USE-1** — `add(boundTo:)` gone; `add(clonedFrom:)` at `:67`, `addBound(to:)` at `:106`,
+  deprecated shim at `:84`. `git tag` shows v0.1.0–v0.3.1, so the shim is warranted.
+- **R-ATTR-1** — see the erratum note below; the finding moved.
+
+## Plan errata found during execution
+
+The audit's *findings* held up under re-verification — they came from real greps. Several
+*suggested fixes* did not, because lift-up's grounding rules police findings, not remedies.
+Each was corrected in the delegation packet rather than implemented against fiction:
+
+1. **R-REL-1** — the plan said to surface problems "the way `renderSVG` already surfaces
+   `unmeasuredFonts`". `grep -rn 'unmeasuredFonts' Sources/` returns nothing; there was no
+   diagnostics mechanism at all. The reporting channel had to be built.
+2. **R-USE-1** — the orchestrator's own blast-radius grep was truncated with `head -10` and
+   missed the `Examples/` programs and three further test files. The agent found all 19 call
+   sites by checking for itself.
+3. **R-ATTR-1** — the cited defect was not real: strict concurrency genuinely *is* `complete`
+   (`Lectern/project.yml:49,97`) and `verify.sh` builds both apps, so the "Verified:" claim was
+   honest. The real inaccuracy was **introduced during this run** by L-STAB-1, which wrote "CI
+   is Linux only on purpose" while a `macos-26` PR-gate job exists. That is what was fixed.
+
+## Cross-model review
+
+Reviewed by `gpt-5.6-sol`. It found one **blocker** against R-FUNC-1 that a same-family
+reviewer would plausibly have shared:
+
+> `Sources/Rostrum/Schema/OXMLHelpers.swift:54` — `replaceChildElements` discards every comment
+> and PI. Slide move, duplicate, and import invoke it, violating lossless round-trip.
+
+Confirmed and fixed inline (`c472fa7`): comments and processing instructions are now carried
+through the rebuild, while insignificant whitespace is still dropped. Five regression tests
+added; **four of the five fail against the old code**, and the whitespace test correctly still
+passes — verified by reverting the function and re-running.

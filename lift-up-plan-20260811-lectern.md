@@ -302,3 +302,104 @@ almost nothing, and it is the item that makes shipping the other seven safe.
 - **No cancel affordance during a long generation** — real gap against Keynote, but it needs a cancellation token threaded through `DeckGenerator` and the provider; L effort for an operation that usually completes in under a minute.
 - **The 29 existing decks remain headless** — the title fix only applies to newly written decks. A one-shot repair pass over the library is real work but is a migration, not a lift-up item.
 - **iOS keeps live `WKWebView` slide previews while macOS rasterizes** — a platform asymmetry worth closing, but `takeSnapshot` needs a window and the iOS path is not currently slow.
+
+---
+
+# Burn-down — 20260811
+
+Executed by `/burn-down` on branch `burndown/liftup-20260811`. The routing table, roster
+substitution and isolation notes are recorded once, in
+`lift-up-plan-20260811-rostrum.md` — the two plans were burned down as a single run.
+
+Summary: frontier `claude-opus-5`, strong `claude-opus-4.8`, fast `claude-sonnet-5`,
+reviewer `gpt-5.6-sol` (different family, for genuine decorrelation).
+
+## Manifest — Lectern items
+
+| Item | Status | Lane | Actual executor | Commit | Verify |
+|---|---|---|---|---|---|
+| L-STAB-1 | shipped | strong | `claude-opus-4.8` | `c98def5` | full gate green; `ci.yml` diff **0 bytes** |
+| L-USE-1 | shipped | fast | `claude-sonnet-5` | `6bd4f76` | 627/161/5 green |
+| L-SEC-1 | shipped | strong | `claude-opus-4.8` | `ac6fb6e` | 627/162 green |
+| L-REL-1 | shipped | strong | `claude-opus-4.8` | `1b0fc87` | 643/161/7 green |
+| L-PERF-1 | shipped | strong | `claude-opus-4.8` | `a6b146f` | 643/162/7 green |
+| L-PERF-2 | shipped | strong | `claude-opus-4.8` | `995a1b8` | 643/162/15 green |
+| L-FUNC-1 | shipped | fast | `claude-sonnet-5` | `ef39583` | 643/162/24 green |
+| L-ATTR-1 | shipped | strong | `claude-opus-4.8` | `813e212` | 662/162/21 green |
+
+Final integration gate: `./scripts/verify.sh` → **All green** (Rostrum 665, LecternCore 162,
+app-hosted 28, macOS + iOS app builds). The app-hosted suite went from **2 tests, run by
+nothing** to **28 tests, run by a real gate**.
+
+## Scope amendment authorised by the repository owner
+
+**L-STAB-1** was planned as "add an `xcodebuild test` step to the existing macOS CI job". The
+owner overrode that approach on cost grounds (hosted macOS bills ~10x; standing rule is that
+CI stays cheap and Apple-side verification happens locally). Implemented instead as a local
+gate: the app-hosted test stage was added to the existing `scripts/verify.sh`, plus a tracked
+`scripts/hooks/pre-push` and `scripts/install-hooks.sh`. **`.github/workflows/ci.yml` is
+byte-identical** — no CI cost was added.
+
+This turned out to restore consistency rather than merely apply a preference: `git log` shows
+`scripts/verify.sh` was created in `3f6acce "ci: Linux only, and make the local gate a real
+command"`. The audit had proposed contradicting a decision already recorded in the repo's own
+history.
+
+## Citation-gate evidence (orchestrator re-read, non-delegable)
+
+- **L-USE-1** — the direct-delete button exists nowhere in `Lectern/App/`; both sites now set
+  `pendingDelete`, gating a wired `.confirmationDialog`.
+- **L-SEC-1** — the plain `.atomic` macOS write is gone; the file is created owner-only.
+- **L-REL-1** — `try? result.get()` absent from all three sites outside a doc comment; all
+  three route through `FileImportOutcome.handle`.
+- **L-PERF-1** — the serial `for deck in library where…` loop is gone; `withTaskGroup` +
+  a single `slideCounts.merge`. **`DeckCardIndex` diff is 0 bytes** — the throttle that
+  prevents oversubscription was not weakened.
+- **L-PERF-2** — no unbounded `[String: Image]` remains; `BoundedCache` defined once;
+  `inFlight` drains via `defer`.
+- **L-FUNC-1** — picker driven by `ProviderPicker.selectable`; `ProviderFactory`'s throw intact.
+- **L-STAB-1** — `scripts/verify.sh:64` runs `Lectern/scripts/test-app.sh`; `ci.yml` unchanged;
+  `core.hooksPath` confirmed unset so the hook could not block this run.
+- **L-ATTR-1** — appearance entries present; `assetutil` shows `UIAppearanceDark` and
+  `ISAppearanceTintable` in the compiled `Assets.car`; **both PNGs visually inspected by the
+  orchestrator** and judged legible and on-brand.
+
+## Plan errata found during execution
+
+1. **L-STAB-1** — the audit's `Verified:` field listed three app-test files
+   (`Lectern/Tests/LecternAppTests/{DeckRenderer,KeychainStore,SlideRasterizer}Tests.swift`)
+   that **do not exist and never did**. The real app-test target is `Lectern/AppTests/`, which
+   held one file. The gap was real; the proof was fabricated. Corrected mid-flight, and no
+   landed artifact repeats the false claim.
+2. **L-REL-1** — the plan claimed `.failure` could set "the existing `errorMessage` state that
+   both views already render". No such state existed; the surfacing had to be built.
+3. **L-FUNC-1** — the plan claimed the `isWired` helper was "unused by the UI". It was already
+   used: `SettingsView.swift:45` renders `"\(id.label) (soon)"`. Scope was narrowed to the gap
+   that genuinely remained — a "(soon)" row was still *selectable*.
+4. **L-PERF-2** — the plan quoted the cache types as `[Key: CGImage]` and `[String: Data]`;
+   both are `[String: Image]`. It also proposed `NSCache`, which cannot hold a SwiftUI `Image`
+   (a struct) without boxing — that guidance would have sent the agent down a dead end.
+
+## Cross-model review
+
+`gpt-5.6-sol` raised one **major** and two **minors** against Lectern items.
+
+- **Major, fixed** (`DeckGenerator.swift`): `FileManager.createFile` does not guarantee the mode
+  is applied before the bytes land, so L-SEC-1's window may have remained open. Replaced with
+  `open(O_WRONLY|O_CREAT|O_EXCL, 0o600)`, where POSIX applies the mode at inode creation —
+  correct regardless of Foundation's internals. (`c472fa7`)
+- **Minor, accepted with reason** (L-USE-1, L-REL-1): the added tests exercise the extracted
+  helper, so reverting the *view* wiring would still pass. This is a fair critique. The app has
+  no UI-test harness, and adding XCUITest for these two items would mean flaky tests and real
+  scope creep, so it is recorded honestly here rather than papered over. Worth a future item.
+- The reviewer also flagged that HEAD contained items outside its first review scope. That was
+  wave pipelining, not a defect; those items were covered by the second review pass.
+
+## Out-of-scope observations, for a future `/lift-up`
+
+Recorded, deliberately **not** acted on, per burn-down's rule against self-directed additions:
+
+- `DeckRenderer`, `KeychainStore` and `SlideRasterizer` have **no tests at all** — genuine
+  missing coverage, distinct from the L-STAB-1 gap that they merely never *ran*.
+- Two pre-existing warnings remain: `SVGRenderer.swift:25` (unused `dom`) and
+  `AppState.swift:113` (unused `Int` expression).
