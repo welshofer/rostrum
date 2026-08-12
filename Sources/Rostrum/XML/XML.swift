@@ -26,8 +26,11 @@ import FoundationXML
 ///   setting nil removes it.
 /// - Text nodes are preserved exactly as parsed, including whitespace-only
 ///   runs (significant inside `a:t`). CDATA becomes an ordinary text node.
-///   Comments and processing instructions are dropped (Office never emits
-///   meaningful ones inside parts).
+///   Comments and processing instructions are carried through as opaque
+///   nodes, in their original position: they are precisely the XML Rostrum
+///   does not model, which is the XML the round-trip promise is about. Ones
+///   outside the root element live on `XML.Document`, which is what
+///   `parseDocument(_:)` returns.
 /// - Serialization: single-quotes never; attributes double-quoted; escape
 ///   `& < > "` in attribute values and `& < >` in text; no added indentation
 ///   or newlines anywhere (byte fidelity beats prettiness — Office files are
@@ -62,6 +65,59 @@ public enum XML {
     public enum Node {
         case element(Element)
         case text(String)
+        /// An XML comment. The payload is the body between `<!--` and `-->`,
+        /// verbatim and unescaped — XML defines no escaping inside a comment,
+        /// which also means a CR in the body cannot survive a reparse: line
+        /// endings are normalized inside a comment and there is no character
+        /// reference to hide one behind.
+        case comment(String)
+        /// A processing instruction, `<?target data?>`. `data` is nil for the
+        /// dataless form `<?target?>`, and distinct from `""`, which is
+        /// `<?target ?>` — the space is part of the original bytes.
+        case processingInstruction(target: String, data: String?)
+    }
+
+    /// What may legally appear outside the root element: comments and
+    /// processing instructions (the XML spec's `Misc`, minus whitespace).
+    ///
+    /// A separate type from `Node` because outside the root the other two node
+    /// kinds are not merely unusual but forbidden — text is malformed, and a
+    /// second element is a second root. Modelling the prologue as `[Node]`
+    /// would leave `document(_:)` a choice between emitting XML nothing can
+    /// reopen and silently dropping content, and this type has neither.
+    public enum Markup {
+        case comment(String)
+        case processingInstruction(target: String, data: String?)
+
+        /// The same markup as an element child, for code that walks both.
+        public var node: Node {
+            switch self {
+            case .comment(let body): return .comment(body)
+            case .processingInstruction(let target, let data):
+                return .processingInstruction(target: target, data: data)
+            }
+        }
+    }
+
+    /// A whole XML document: the root element, plus the comments and
+    /// processing instructions that sit outside it.
+    ///
+    /// `Element` alone cannot express a leading `<?mso-application?>` or a
+    /// producer's copyright banner ahead of the root, so re-serializing from a
+    /// bare root drops them. Parts parse through this type instead, which is
+    /// what lets those survive a save.
+    public struct Document {
+        /// Markup between the XML declaration and the root element.
+        public var prologue: [Markup]
+        public var root: Element
+        /// Markup after the root element's closing tag.
+        public var epilogue: [Markup]
+
+        public init(root: Element, prologue: [Markup] = [], epilogue: [Markup] = []) {
+            self.root = root
+            self.prologue = prologue
+            self.epilogue = epilogue
+        }
     }
 
     public final class Element {
@@ -136,6 +192,9 @@ public enum XML {
                     out += text
                 case .element(let element):
                     stack.append(contentsOf: element.children.reversed())
+                case .comment, .processingInstruction:
+                    // Markup, not character data: `<a><!--x-->y</a>` is "y".
+                    break
                 }
             }
             return out
@@ -203,6 +262,8 @@ public enum XML {
                 switch step {
                 case .text(let text):
                     out += XML.escapeText(text)
+                case .verbatim(let markup):
+                    out += markup
                 case .close(let name):
                     out += "</"
                     out += name
@@ -227,6 +288,11 @@ public enum XML {
                         switch node {
                         case .element(let child): stack.append(.open(child))
                         case .text(let text): stack.append(.text(text))
+                        case .comment(let body):
+                            stack.append(.verbatim(XML.commentMarkup(body)))
+                        case .processingInstruction(let target, let data):
+                            stack.append(.verbatim(
+                                XML.processingInstructionMarkup(target: target, data: data)))
                         }
                     }
                 }
@@ -236,14 +302,17 @@ public enum XML {
 
         /// One unit of pending serialization work. `close` carries the name
         /// rather than the element so the step cannot keep a subtree alive.
+        /// `verbatim` carries already-rendered markup (a comment or processing
+        /// instruction), which is emitted as-is — XML defines no escaping
+        /// inside either, so escaping one would change what it says.
         private enum SerializationStep {
             case open(Element)
             case text(String)
+            case verbatim(String)
             case close(String)
         }
     }
 
-    /// Parse a complete XML document; returns the root element.
     /// The XML 1.0 `Char` production: tab/LF/CR, then the legal scalar ranges.
     /// Control characters (except tab/LF/CR), surrogates, and the U+FFFE/FFFF
     /// non-characters are excluded — feeding them to the Linux parser can crash it.
@@ -254,7 +323,18 @@ public enum XML {
             || (v >= 0x10000 && v <= 0x10FFFF)
     }
 
+    /// Parse a complete XML document; returns the root element.
+    ///
+    /// Markup outside the root element is dropped by this overload, because an
+    /// `Element` cannot hold it. Callers that re-serialize what they parsed —
+    /// every part in a package — must use `parseDocument(_:)` instead.
     public static func parse(_ data: Data) throws -> Element {
+        try parseDocument(data).root
+    }
+
+    /// Parse a complete XML document, keeping the comments and processing
+    /// instructions that sit outside the root element.
+    public static func parseDocument(_ data: Data) throws -> Document {
         // Reject input that XML forbids BEFORE handing it to XMLParser: on Linux,
         // swift-corelibs-foundation's parser can TRAP (SIGILL, not throw) on
         // invalid UTF-8 or characters outside the XML 1.0 Char production. Real
@@ -303,14 +383,79 @@ public enum XML {
             }
             throw RostrumError.xmlMalformed("line \(line): \(message)")
         }
-        return root
+        return Document(root: root, prologue: builder.prologue, epilogue: builder.epilogue)
     }
 
     /// Serialize a root element into a complete UTF-8 document, with the
     /// Office-style XML declaration.
     public static func document(_ root: Element) -> Data {
-        let declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n"
-        return Data((declaration + root.serialized()).utf8)
+        document(Document(root: root))
+    }
+
+    /// Serialize a whole document — prologue markup, root, epilogue markup —
+    /// with the Office-style XML declaration.
+    public static func document(_ document: Document) -> Data {
+        var out = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n"
+        for markup in document.prologue { out += self.markup(markup) }
+        out += document.root.serialized()
+        for markup in document.epilogue { out += self.markup(markup) }
+        return Data(out.utf8)
+    }
+
+    // MARK: - Comments and processing instructions
+
+    /// Render one piece of markup exactly as it will appear in the output.
+    fileprivate static func markup(_ markup: Markup) -> String {
+        switch markup {
+        case .comment(let body):
+            return commentMarkup(body)
+        case .processingInstruction(let target, let data):
+            return processingInstructionMarkup(target: target, data: data)
+        }
+    }
+
+    /// `<!--` body `-->`, body verbatim. XML defines no escaping inside a
+    /// comment: whatever is between the delimiters is what the comment says,
+    /// so escaping it would change it.
+    fileprivate static func commentMarkup(_ body: String) -> String {
+        "<!--" + breakingUpPairs(in: body, of: "-", and: "-", padTrailing: true) + "-->"
+    }
+
+    /// `<?target data?>`, or `<?target?>` when `data` is nil — the dataless
+    /// form is a distinct spelling and must come back as it went in.
+    fileprivate static func processingInstructionMarkup(target: String, data: String?) -> String {
+        let body = data.map { target + " " + $0 } ?? target
+        return "<?" + breakingUpPairs(in: body, of: "?", and: ">", padTrailing: false) + "?>"
+    }
+
+    /// Separate every `first`+`second` pair in `body` with a space, and (when
+    /// `padTrailing`) a trailing `first` as well.
+    ///
+    /// This is the identity function on anything `parse(_:)` produced: XML
+    /// forbids `--` inside a comment and a `-` immediately before its closing
+    /// delimiter, forbids `?>` inside a processing instruction, and every
+    /// conforming parser refuses all three — so a round-tripped comment or
+    /// instruction passes through untouched, byte for byte.
+    ///
+    /// Markup assembled in code has no such gate, and neither construct has an
+    /// escape mechanism to fall back on. Emitting `-->` from inside a comment
+    /// body would end the comment early and leave a part PowerPoint can only
+    /// offer to repair, so the sequence is separated rather than passed on.
+    private static func breakingUpPairs(
+        in body: String, of first: Unicode.Scalar, and second: Unicode.Scalar, padTrailing: Bool
+    ) -> String {
+        // Fast path: without `first` there is no pair to break.
+        guard body.unicodeScalars.contains(first) else { return body }
+        var out = String.UnicodeScalarView()
+        out.reserveCapacity(body.unicodeScalars.count + 8)
+        var previousWasFirst = false
+        for scalar in body.unicodeScalars {
+            if previousWasFirst, scalar == second { out.append(" ") }
+            out.append(scalar)
+            previousWasFirst = scalar == first
+        }
+        if padTrailing, previousWasFirst { out.append(" ") }
+        return String(out)
     }
 
     // MARK: - Escaping
@@ -399,6 +544,10 @@ public enum XML {
         /// Set when nesting passed `XML.maxDepth`. The parse is aborted at that
         /// point rather than allowed to build the rest of the tree.
         var depthExceeded = false
+        /// Comments and processing instructions before the root element opened,
+        /// and after it closed. Legal XML, and `Element` cannot hold either.
+        var prologue: [XML.Markup] = []
+        var epilogue: [XML.Markup] = []
 
         func parser(
             _ parser: XMLParser,
@@ -482,8 +631,42 @@ public enum XML {
         // instead: `parse()`'s return value, an unclosed `stack`, a missing
         // `root`, and `extraTopLevelContent` (a second root / trailing text).
 
-        // Comments and processing instructions are intentionally dropped:
-        // no `foundComment` / `foundProcessingInstruction` handling.
+        func parser(_ parser: XMLParser, foundComment comment: String) {
+            place(.comment(comment))
+        }
+
+        func parser(
+            _ parser: XMLParser,
+            foundProcessingInstructionWithTarget target: String,
+            data: String?
+        ) {
+            place(.processingInstruction(target: target, data: data))
+        }
+
+        /// File a comment or processing instruction where it was found.
+        ///
+        /// These are the XML Rostrum models least of all, which is exactly why
+        /// they are kept: the round-trip promise is about the markup we do not
+        /// understand, and a comment is the plainest case of it. Inside an
+        /// element they become opaque children in document order; outside one
+        /// they go to the document's prologue or epilogue, since an `Element`
+        /// has nowhere to put them.
+        ///
+        /// Flushing pending text FIRST is what keeps a comment inside a text
+        /// run from disturbing the run: the characters seen so far materialize
+        /// ahead of the comment node, and the characters after it start a new
+        /// text node instead of coalescing across it — `<a>one<!--c-->two</a>`
+        /// stays three children in that order rather than becoming "onetwo".
+        private func place(_ markup: XML.Markup) {
+            flushPendingText()
+            if let current = stack.last {
+                current.children.append(markup.node)
+            } else if root == nil {
+                prologue.append(markup)
+            } else {
+                epilogue.append(markup)
+            }
+        }
 
         /// Character-data chunks awaiting materialization. `foundCharacters`
         /// may deliver a single text run in many chunks (libxml2 buffer
