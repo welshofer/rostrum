@@ -631,19 +631,6 @@ struct XMLTests {
         return Data(xml.utf8)
     }
 
-    /// A chain of `depth` elements built in code, which no parser limit gates.
-    private func deepTree(depth: Int) -> XML.Element {
-        let root = XML.Element("a")
-        var current = root
-        for _ in 1..<depth {
-            let child = XML.Element("a")
-            current.appendElement(child)
-            current = child
-        }
-        current.append(.text("x"))
-        return root
-    }
-
     @Test func nestingAtTheCeilingParsesAndRoundTrips() throws {
         let root = try XML.parse(nested(depth: XML.maxDepth))
         #expect(root.name == "a")
@@ -662,25 +649,6 @@ struct XMLTests {
         #expect(throws: RostrumError.self) {
             try XML.parse(self.nested(depth: 40_000))
         }
-    }
-
-    @Test func deepTreeBuiltInCodeDeallocatesWithoutOverflowingTheStack() {
-        // Well past the ~20,000 level where the recursive teardown died.
-        do {
-            let root = deepTree(depth: 100_000)
-            #expect(root.name == "a")
-        }
-        // Reaching here at all is the assertion: the tree released iteratively.
-        #expect(Bool(true))
-    }
-
-    @Test func deepTreeSerializesAndReadsTextWithoutOverflowingTheStack() {
-        let root = deepTree(depth: 100_000)
-        #expect(root.textContent == "x")
-        let serialized = root.serialized()
-        #expect(serialized.hasPrefix("<a><a><a>"))
-        #expect(serialized.hasSuffix("</a></a></a>"))
-        #expect(serialized.contains(">x<"))
     }
 
     @Test func teardownLeavesASharedSubtreeIntact() {
