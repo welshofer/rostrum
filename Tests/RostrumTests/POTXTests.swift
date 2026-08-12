@@ -71,7 +71,7 @@ import Testing
     /// a choice rather than a precondition.
     @Test func aTemplatesLayoutsBuildSlidesWithoutConverting() throws {
         let deck = try Presentation(data: try documentBytes(ContentType.presentationTemplateMain))
-        let slide = try deck.slides.add(layout: deck.layout(type: "title")!)
+        let slide = try deck.slides.add(clonedFrom: deck.layout(type: "title")!)
         slide.title?.textFrame?.text = "Built from a template"
 
         let reopened = try Presentation(data: try deck.serializedData())

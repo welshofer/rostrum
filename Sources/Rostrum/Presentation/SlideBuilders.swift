@@ -821,7 +821,7 @@ public extension Presentation {
                 ?? layouts.first(where: { $0.type == "title" }) else {
             return try blankCanvas()
         }
-        return try slides.add(boundTo: layout)
+        return try slides.addBound(to: layout)
     }
 
     private func deckGrid(_ style: DeckStyle) -> Grid {

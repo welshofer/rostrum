@@ -13,7 +13,7 @@ import Testing
 
     @Test func addWithTitleLayoutClonesPlaceholders() throws {
         let deck = try Presentation()
-        let slide = try deck.slides.add(layout: deck.layout(type: "title")!)
+        let slide = try deck.slides.add(clonedFrom: deck.layout(type: "title")!)
 
         let phs = slide.placeholders.compactMap(\.placeholder)
         #expect(phs.map(\.type) == ["ctrTitle", "subTitle"])
@@ -28,7 +28,7 @@ import Testing
 
     @Test func titleAccessorMatchesIdxZeroAnyTitleType() throws {
         let deck = try Presentation()
-        let slide = try deck.slides.add(layout: deck.layout(type: "title")!)
+        let slide = try deck.slides.add(clonedFrom: deck.layout(type: "title")!)
         slide.title?.textFrame?.text = "Hello from the placeholder"
 
         let reopened = try Presentation(data: try deck.serializedData())
@@ -39,13 +39,13 @@ import Testing
     @Test func effectiveFrameResolvesThroughLayoutToMaster() throws {
         let deck = try Presentation()
         // Title Slide layout: explicit layout geometry wins.
-        let title = try deck.slides.add(layout: deck.layout(type: "title")!)
+        let title = try deck.slides.add(clonedFrom: deck.layout(type: "title")!)
         let titleFrame = title.effectiveFrame(of: title.title!)
         #expect(titleFrame?.x == EMU(1_524_000))
         #expect(titleFrame?.height == EMU(1_470_025))
 
         // Title and Content layout has no geometry: falls through to master.
-        let content = try deck.slides.add(layout: deck.layout(type: "obj")!)
+        let content = try deck.slides.add(clonedFrom: deck.layout(type: "obj")!)
         let bodyFrame = content.effectiveFrame(of: content.placeholder(idx: 1)!)
         #expect(bodyFrame?.x == EMU(609_600))
         #expect(bodyFrame?.y == EMU(1_600_200))
@@ -59,7 +59,7 @@ import Testing
 
     @Test func untypedPhDefaultsToObjAndClones() throws {
         let deck = try Presentation()
-        let slide = try deck.slides.add(layout: deck.layout(type: "obj")!)
+        let slide = try deck.slides.add(clonedFrom: deck.layout(type: "obj")!)
         let content = slide.placeholder(idx: 1)
         #expect(content?.placeholder?.type == "obj")
         // The clone kept the idx attribute but no type attribute (default

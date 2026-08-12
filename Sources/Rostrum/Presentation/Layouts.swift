@@ -48,7 +48,14 @@ extension Presentation {
 }
 
 extension Slides {
-    /// Add a slide based on `layout`, cloning its placeholders.
+    /// Add a slide based on `layout`, **cloning the layout's placeholder shapes
+    /// onto it**, and return it.
+    ///
+    /// This is the adder that copies: the new slide gets a placeholder shape for
+    /// each of the layout's (title, body, …), ready for a caller to fill in, so
+    /// the slide looks like the layout out of the box. For a slide that is bound
+    /// to the layout but carries *none* of its placeholder shapes — the canvas
+    /// for builders that draw everything themselves — use `addBound(to:)`.
     ///
     /// Cloning is synthesis, not copying (python-pptx semantics): each layout
     /// placeholder — except the latent date/footer/slide-number types — yields
@@ -57,7 +64,7 @@ extension Slides {
     /// body for text-bearing types. Copying layout geometry or prompt text
     /// would break inheritance.
     @discardableResult
-    public func add(layout: SlideLayout) throws -> Slide {
+    public func add(clonedFrom layout: SlideLayout) throws -> Slide {
         let slide = try add()
         // Retarget the layout relationship from the default to the chosen one.
         if let rel = slide.part.rels.first(ofType: RelType.slideLayout) {
@@ -70,18 +77,33 @@ extension Slides {
         try Placeholders.clone(from: layout.part, to: slide.part)
         return slide
     }
+
+    /// Renamed to `add(clonedFrom:)`, whose label states plainly that it copies
+    /// the layout's placeholder shapes — so it can no longer be confused with
+    /// `addBound(to:)`, which copies nothing.
+    @available(*, deprecated, renamed: "add(clonedFrom:)")
+    @discardableResult
+    public func add(layout: SlideLayout) throws -> Slide {
+        try add(clonedFrom: layout)
+    }
 }
 
 extension Slides {
-    /// Add a slide bound to `layout` without cloning its placeholders.
+    /// Add a slide **bound to `layout` but with none of its placeholder shapes
+    /// copied**, and return it.
     ///
-    /// For builders that place every shape themselves: they need the *binding*
-    /// to a layout that declares a title, so the shape they mark as the title
-    /// has something to inherit from and PowerPoint reads the slide as titled —
-    /// but not the layout's empty placeholder shapes, which would sit on top of
-    /// the drawn ones showing "Click to add title".
+    /// This is the adder that copies nothing: the new slide has the layout
+    /// relationship set — so a shape a caller marks as the title has a layout
+    /// declaring one to inherit from, and PowerPoint reads the slide as titled —
+    /// but the layout's own placeholder shapes are left off it. For a slide that
+    /// *does* carry a copy of each of the layout's placeholders, use
+    /// `add(clonedFrom:)`.
+    ///
+    /// For builders that place every shape themselves: they need the *binding*,
+    /// not the layout's empty placeholder shapes, which would otherwise sit on
+    /// top of the drawn ones showing "Click to add title".
     @discardableResult
-    func add(boundTo layout: SlideLayout) throws -> Slide {
+    func addBound(to layout: SlideLayout) throws -> Slide {
         let slide = try add()
         if let rel = slide.part.rels.first(ofType: RelType.slideLayout) {
             slide.part.rels.remove(rId: rel.rId)

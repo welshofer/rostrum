@@ -26,7 +26,7 @@ let sunflowerMD = URL(filePath: #filePath)
 
 func quickStart() throws {
     let deck = try Presentation()                       // starts with one blank 16:9 slide
-    let slide = try deck.slides.add(layout: deck.layout(type: "title")!)
+    let slide = try deck.slides.add(clonedFrom: deck.layout(type: "title")!)
     slide.title?.textFrame?.text = "Hello, Rostrum"
     try deck.slides.remove(at: 0)                       // drop the blank starter slide
     try deck.save(to: outDir.appending(path: "hello.pptx"))

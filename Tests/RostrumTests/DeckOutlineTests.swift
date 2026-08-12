@@ -28,7 +28,7 @@ import Testing
 
     @Test func classifiesTitleSubtitleAndBullets() throws {
         let deck = try Presentation()
-        let slide = try deck.slides.add(layout: deck.layout(type: "title")!)
+        let slide = try deck.slides.add(clonedFrom: deck.layout(type: "title")!)
         slide.title?.textFrame?.text = "Quarterly review"
         slide.placeholder(idx: 1)?.textFrame?.text = "Fiscal 2026"
 
