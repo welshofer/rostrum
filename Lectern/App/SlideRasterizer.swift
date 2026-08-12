@@ -20,9 +20,17 @@ import AppKit
 final class SlideRasterizer {
     static let shared = SlideRasterizer()
 
+    /// Hard ceiling on rendered slides. A contact sheet is one deck's slides —
+    /// "typically tens" — so a single deck fits with plenty of room. 256 keeps
+    /// several recently-viewed decks resident before the least-recently-used
+    /// slide is dropped, which bounds a long session (this otherwise held a
+    /// picture per slide of *every* deck opened, forever) while capping the
+    /// worst case to a few hundred renders rather than an unbounded pile.
+    static let defaultCapacity = 256
+
     /// Keyed by the markup itself — the same slide re-inspected is the same
     /// picture, and two slides that happen to be identical cost one render.
-    private var cache: [String: Image] = [:]
+    private var cache: BoundedCache<String, Image>
     private var host: SnapshotHost?
 
     // One web view means one render at a time. The gate is what makes that a
@@ -30,20 +38,41 @@ final class SlideRasterizer {
     private var busy = false
     private var waiting: [CheckedContinuation<Void, Never>] = []
 
+    /// Custom-capacity initialiser: production uses the default; tests pass a
+    /// small cap to assert the cache stays bounded without the shared singleton.
+    init(capacity: Int = SlideRasterizer.defaultCapacity) {
+        cache = BoundedCache(capacity: capacity)
+    }
+
+    /// A cached render, marked most-recently-used on a hit. Synchronous, so the
+    /// gate below is only ever taken for a slide that genuinely needs drawing.
+    func cached(_ key: String) -> Image? { cache.value(forKey: key) }
+
+    /// Live entry count. Exposed so tests can assert the cache never grows past
+    /// its cap.
+    var cacheCount: Int { cache.count }
+
     func image(for svg: String, pixelWidth: CGFloat = 640) async -> Image? {
         let key = Self.key(for: svg)
-        if let cached = cache[key] { return cached }
+        if let hit = cached(key) { return hit }
 
         await acquire()
         defer { release() }
         // A queued caller may have rendered this very slide while we waited.
-        if let cached = cache[key] { return cached }
+        if let hit = cached(key) { return hit }
 
         let host = host ?? SnapshotHost()
         self.host = host
         guard let image = await host.snapshot(svg: svg, pixelWidth: pixelWidth) else { return nil }
-        cache[key] = image
+        remember(image, forKey: key)
         return image
+    }
+
+    /// Records a finished render, evicting the least-recently-used entry once
+    /// the cache is full. Internal so a test can seed the cache without standing
+    /// up the off-screen web view.
+    func remember(_ image: Image, forKey key: String) {
+        cache.insert(image, forKey: key)
     }
 
     /// FNV-1a over the markup: stable within a run and cheap on strings this
