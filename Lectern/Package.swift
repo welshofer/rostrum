@@ -13,7 +13,11 @@ let package = Package(
         .library(name: "LecternCore", targets: ["LecternCore"]),
     ],
     dependencies: [
-        .package(path: ".."),
+        // Explicit `name:` so this resolves by the dependency's declared
+        // identity rather than by the checkout directory's name — SwiftPM's
+        // default for `.package(path:)` — which breaks in a git worktree
+        // whose folder isn't literally named "rostrum" or "Rostrum".
+        .package(name: "Rostrum", path: ".."),
     ],
     targets: [
         .target(
