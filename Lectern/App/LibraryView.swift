@@ -313,6 +313,40 @@ struct DeckGridView: View {
     }
 }
 
+// MARK: - Deletion
+
+/// The two things "Delete…" goes through in the redesigned library: asking,
+/// then (only once the user confirms) acting. Shared by `DeckCardView`'s and
+/// `DeckListView`'s confirmation dialogs so the rule — nothing is deleted
+/// before the second step — has one implementation, and is directly
+/// testable without hosting the SwiftUI view that owns the `@State` gating
+/// it (`@State` only takes effect once a view is installed in a live
+/// hierarchy, which a bare unit test cannot arrange).
+enum DeckDeletionRequest {
+    /// What "Delete…" always does: hand the deck to the pending slot. It is
+    /// never the thing that deletes.
+    static func requesting(_ deck: DeckFile) -> DeckFile? { deck }
+
+    /// What the confirmation dialog's own "Delete" button does: perform the
+    /// deletion and clear the pending slot.
+    @MainActor
+    static func confirming(_ pending: DeckFile?, in app: AppState) -> DeckFile? {
+        if let pending { app.deleteFromLibrary(pending) }
+        return nil
+    }
+
+    /// Matches `DeckLibrarySheet`'s wording: the delete is recoverable
+    /// wherever the platform has a Trash, and plainly irreversible where it
+    /// does not.
+    static var explanation: String {
+        #if os(macOS)
+        "It moves to the Trash, so you can put it back."
+        #else
+        "This can't be undone."
+        #endif
+    }
+}
+
 // MARK: - One card
 
 /// A deck as a cover, a name and two facts.
@@ -330,6 +364,7 @@ struct DeckCardView: View {
 
     @State private var card: DeckCard?
     @State private var hovering = false
+    @State private var pendingDelete: DeckFile?
 
     var body: some View {
         // A real Button, not a tap gesture wearing `.isButton`: the trait made
@@ -384,6 +419,22 @@ struct DeckCardView: View {
         .task(id: deck.id) {
             card = await DeckCardIndex.shared.card(for: deck)
         }
+        // A deck is the output of a paid model call, so removing one asks
+        // first — the trailing ellipsis on "Delete…" below promises exactly
+        // that.
+        .confirmationDialog(
+            pendingDelete.map { "Delete “\($0.name)”?" } ?? "",
+            isPresented: Binding(get: { pendingDelete != nil },
+                                 set: { if !$0 { pendingDelete = nil } }),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                pendingDelete = DeckDeletionRequest.confirming(pendingDelete, in: app)
+            }
+            Button("Cancel", role: .cancel) { pendingDelete = nil }
+        } message: {
+            Text(DeckDeletionRequest.explanation)
+        }
     }
 
     private var accessibilityText: String {
@@ -404,7 +455,7 @@ struct DeckCardView: View {
         #endif
         ShareLink(item: deck.url)
         Divider()
-        Button("Delete…", role: .destructive) { app.deleteFromLibrary(deck) }
+        Button("Delete…", role: .destructive) { pendingDelete = DeckDeletionRequest.requesting(deck) }
     }
 }
 

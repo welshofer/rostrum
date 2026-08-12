@@ -293,6 +293,18 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Fixed
 
+- **An edited part no longer loses its XML comments and processing
+  instructions.** The promise is that opening and saving never drops XML
+  Rostrum does not model, and a comment is the plainest case of that XML —
+  yet the parser dropped both constructs on the floor, so the first edit to a
+  part silently deleted every comment in it. `XML.Node` gained `.comment` and
+  `.processingInstruction` cases, which parse and serialize in their original
+  position (before, among and after element children, and around text without
+  disturbing the run either side). `XML.Document` — returned by the new
+  `XML.parseDocument(_:)`, which parts now use — carries what sits outside the
+  root element, so a leading `<?mso-application?>` or a producer's banner
+  survives a save too.
+
 - **Reading a hostile deck no longer aborts the host process.** A Swift
   `precondition` or an integer overflow is a crash a caller cannot catch, and a
   `.pptx` arrives from users, email and the web.

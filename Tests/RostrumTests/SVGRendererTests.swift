@@ -317,7 +317,7 @@ import Testing
         try Slide.spTree(of: layout.part).appendElement(deco)
         layout.part.markDirty()
 
-        _ = try deck.slides.add(layout: layout)
+        _ = try deck.slides.add(clonedFrom: layout)
         let svg = try deck.renderSVG(slideAt: deck.slides.count - 1)
 
         #expect(svg.contains("#FF6700"), "the layout's background never reached the render")
@@ -347,7 +347,7 @@ import Testing
         lstStyle.appendElement(lvl1)
         layout.part.markDirty()
 
-        let slide = try deck.slides.add(layout: layout)
+        let slide = try deck.slides.add(clonedFrom: layout)
         let title = try #require(slide.title)
         _ = try #require(title.textFrame).addParagraph().addRun("Inherited")
 

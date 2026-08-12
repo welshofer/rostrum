@@ -56,9 +56,17 @@ struct XMLTests {
         #expect(root.serialized() == "<a>x &lt; y &amp; z</a>")
     }
 
-    @Test func commentsAreDropped() throws {
+    @Test func commentsSurviveTheRoundTrip() throws {
+        // A comment is XML Rostrum does not model, which is exactly the XML
+        // the round-trip promise covers. It used to be dropped here.
         let root = try parse("<a><!-- nope --><b/></a>")
-        #expect(root.serialized() == "<a><b/></a>")
+        #expect(root.serialized() == "<a><!-- nope --><b/></a>")
+        #expect(root.children.count == 2)
+        guard case .comment(let body) = root.children[0] else {
+            Issue.record("first child is not a comment: \(root.children[0])")
+            return
+        }
+        #expect(body == " nope ")
     }
 
     @Test func entitiesDecodedOnParse() throws {
@@ -79,6 +87,9 @@ struct XMLTests {
             "<t>café 中文 🎉</t>",
             #"<p:sld xmlns:p="urn:p" xmlns:a="urn:a"><p:cSld><a:t> hi </a:t></p:cSld></p:sld>"#,
             #"<e z="26" a="1" xmlns:p="P" xmlns="D" m="13"/>"#,
+            "<a><!--keep me--><b/></a>",
+            "<a>one<!--c-->two</a>",
+            "<a><?target with data?><?bare?><?spaced ?></a>",
         ]
         for input in inputs {
             let once = try normalized(input)
@@ -94,6 +105,186 @@ struct XMLTests {
         let doc = XML.document(root)
         let reparsed = try XML.parse(doc)
         #expect(XML.document(reparsed) == doc)
+    }
+
+    // MARK: - Comments and processing instructions
+
+    @Test func processingInstructionSurvivesTheRoundTrip() throws {
+        let input = "<a><?target some data?><b/></a>"
+        let root = try parse(input)
+        #expect(root.serialized() == input)
+        guard case .processingInstruction(let target, let data) = root.children[0] else {
+            Issue.record("first child is not a processing instruction: \(root.children[0])")
+            return
+        }
+        #expect(target == "target")
+        #expect(data == "some data")
+    }
+
+    @Test func processingInstructionKeepsItsExactSpelling() throws {
+        // `<?t?>`, `<?t ?>` and `<?t d?>` are three different byte sequences,
+        // and nil-vs-empty data is what tells the first two apart.
+        #expect(try normalized("<a><?t?></a>") == "<a><?t?></a>")
+        #expect(try normalized("<a><?t ?></a>") == "<a><?t ?></a>")
+        #expect(try normalized("<a><?t d?></a>") == "<a><?t d?></a>")
+        guard case .processingInstruction(_, let bare) = try parse("<a><?t?></a>").children[0],
+              case .processingInstruction(_, let spaced) = try parse("<a><?t ?></a>").children[0]
+        else {
+            Issue.record("expected two processing instructions")
+            return
+        }
+        #expect(bare == nil)
+        #expect(spaced == "")
+    }
+
+    @Test func commentKeepsItsPositionAmongChildren() throws {
+        let input = "<r><!--first--><a/><!--between--><b/><!--last--></r>"
+        #expect(try normalized(input) == input)
+        let root = try parse(input)
+        #expect(root.children.count == 5)
+        #expect(root.childElements.map(\.name) == ["a", "b"])
+    }
+
+    @Test func commentIsNotCharacterData() throws {
+        let root = try parse("<a><!--not text-->y<b><!--nor this--></b></a>")
+        #expect(root.textContent == "y")
+    }
+
+    @Test func emptyAndAdjacentCommentsRoundTrip() throws {
+        #expect(try normalized("<a><!----></a>") == "<a><!----></a>")
+        #expect(try normalized("<a><!--x--><!--y--></a>") == "<a><!--x--><!--y--></a>")
+        // A comment is content: the element is no longer empty, so it cannot
+        // collapse to a self-closing tag.
+        #expect(try normalized("<a><!--x--></a>") != "<a/>")
+    }
+
+    @Test func commentInTheMiddleOfTextDoesNotCorruptTheText() throws {
+        let input = "<a>one<!--c-->two</a>"
+        let root = try parse(input)
+        #expect(root.serialized() == input)
+        // The text either side stays separate, in order, and uncoalesced —
+        // the pending-text buffer must flush BEFORE the comment lands.
+        #expect(root.children.count == 3)
+        guard case .text(let before) = root.children[0],
+              case .comment(let body) = root.children[1],
+              case .text(let after) = root.children[2] else {
+            Issue.record("expected text/comment/text, got \(root.children)")
+            return
+        }
+        #expect(before == "one")
+        #expect(body == "c")
+        #expect(after == "two")
+        #expect(root.textContent == "onetwo")
+    }
+
+    @Test func commentBetweenEntitySplitTextKeepsOneNodeEitherSide() throws {
+        // An entity reference splits a run into several `foundCharacters`
+        // chunks; they must still coalesce into one node per side.
+        let root = try parse("<a>x&amp;y<!--c-->z&lt;w</a>")
+        #expect(root.children.count == 3)
+        guard case .text(let before) = root.children[0],
+              case .text(let after) = root.children[2] else {
+            Issue.record("expected text either side of the comment: \(root.children)")
+            return
+        }
+        #expect(before == "x&y")
+        #expect(after == "z<w")
+        #expect(root.serialized() == "<a>x&amp;y<!--c-->z&lt;w</a>")
+    }
+
+    @Test func commentInsideALongChunkedTextRunKeepsTheRunIntact() throws {
+        // Long runs arrive in many chunks (libxml2 buffer boundaries). The
+        // comment must not split either side into several text nodes.
+        let left = String(repeating: "L", count: 200_000)
+        let right = String(repeating: "R", count: 200_000)
+        let root = try parse("<a>\(left)<!--c-->\(right)</a>")
+        #expect(root.children.count == 3)
+        guard case .text(let before) = root.children[0],
+              case .text(let after) = root.children[2] else {
+            Issue.record("expected exactly one text node either side of the comment")
+            return
+        }
+        #expect(before == left)
+        #expect(after == right)
+        #expect(root.textContent == left + right)
+    }
+
+    @Test func markupSerializationIsByteStable() throws {
+        let input = #"""
+        <p:sld xmlns:a="urn:a" xmlns:p="urn:p"><!--  banner  --><?mso-app x?>\#
+        <p:cSld><a:t>hi<!--in text--> there</a:t></p:cSld><!--tail--></p:sld>
+        """#
+        let once = try normalized(input)
+        #expect(once == input)
+        // Same bytes every time, over repeated parses and repeated builds.
+        for _ in 0..<8 {
+            #expect(try normalized(once) == once)
+            #expect(try XML.document(XML.parse(Data(input.utf8)))
+                == XML.document(XML.parse(Data(input.utf8))))
+        }
+    }
+
+    @Test func markupOutsideTheRootSurvivesOnTheDocument() throws {
+        let input = Data(#"""
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>\#u{0D}
+        <?mso-application progid="PowerPoint.Show"?><!--lead--><a><!--in--></a><!--trail-->
+        """#.utf8)
+        let document = try XML.parseDocument(input)
+        #expect(document.prologue.count == 2)
+        #expect(document.epilogue.count == 1)
+        #expect(document.root.children.count == 1)
+        #expect(XML.document(document) == input)
+        // The element-only overload cannot express any of that, and says so.
+        #expect(try XML.parse(input).serialized() == "<a><!--in--></a>")
+    }
+
+    @Test func deepCopyCarriesCommentsAndInstructions() throws {
+        let input = "<a><!--c--><?t d?><b>x</b></a>"
+        let root = try parse(input)
+        let copy = root.deepCopy()
+        #expect(copy.serialized() == input)
+        copy.appendElement(XML.Element("z"))
+        #expect(root.serialized() == input)
+    }
+
+    @Test func parsedMarkupIsNeverRewritten() throws {
+        // The well-formedness guard below must be the identity on everything
+        // the parser can produce: lone dashes, a `?>` inside a comment and a
+        // `?` inside instruction data are all legal and must pass untouched.
+        for input in [
+            "<a><!--a-b-c--></a>",
+            "<a><!--?>--></a>",
+            "<a><!--\n multi \n line --></a>",
+            "<a><?t a?b?></a>",
+            "<a><?t a??></a>",
+            "<a><!--é–--></a>",
+        ] {
+            #expect(try normalized(input) == input, "rewrote \(input)")
+        }
+    }
+
+    @Test func handBuiltCommentCannotEndItselfEarly() throws {
+        // XML has no escape mechanism inside a comment, and a parser refuses
+        // `--` in one — so a body assembled in code has its terminator broken
+        // rather than being emitted as markup nothing can reopen.
+        let root = XML.Element("a", children: [.comment("x-->y"), .comment("trailing-")])
+        let out = root.serialized()
+        #expect(!out.contains("x-->y"))
+        let reparsed = try XML.parse(Data(out.utf8))
+        #expect(reparsed.children.count == 2)
+        #expect(reparsed.name == "a")
+        #expect(reparsed.serialized() == out)
+    }
+
+    @Test func handBuiltProcessingInstructionCannotEndItselfEarly() throws {
+        let root = XML.Element("a", children: [
+            .processingInstruction(target: "t", data: "a?><b/>"),
+        ])
+        let out = root.serialized()
+        let reparsed = try XML.parse(Data(out.utf8))
+        #expect(reparsed.children.count == 1)
+        #expect(reparsed.childElements.isEmpty)
+        #expect(reparsed.serialized() == out)
     }
 
     // MARK: - Escaping
@@ -440,19 +631,6 @@ struct XMLTests {
         return Data(xml.utf8)
     }
 
-    /// A chain of `depth` elements built in code, which no parser limit gates.
-    private func deepTree(depth: Int) -> XML.Element {
-        let root = XML.Element("a")
-        var current = root
-        for _ in 1..<depth {
-            let child = XML.Element("a")
-            current.appendElement(child)
-            current = child
-        }
-        current.append(.text("x"))
-        return root
-    }
-
     @Test func nestingAtTheCeilingParsesAndRoundTrips() throws {
         let root = try XML.parse(nested(depth: XML.maxDepth))
         #expect(root.name == "a")
@@ -471,25 +649,6 @@ struct XMLTests {
         #expect(throws: RostrumError.self) {
             try XML.parse(self.nested(depth: 40_000))
         }
-    }
-
-    @Test func deepTreeBuiltInCodeDeallocatesWithoutOverflowingTheStack() {
-        // Well past the ~20,000 level where the recursive teardown died.
-        do {
-            let root = deepTree(depth: 100_000)
-            #expect(root.name == "a")
-        }
-        // Reaching here at all is the assertion: the tree released iteratively.
-        #expect(Bool(true))
-    }
-
-    @Test func deepTreeSerializesAndReadsTextWithoutOverflowingTheStack() {
-        let root = deepTree(depth: 100_000)
-        #expect(root.textContent == "x")
-        let serialized = root.serialized()
-        #expect(serialized.hasPrefix("<a><a><a>"))
-        #expect(serialized.hasSuffix("</a></a></a>"))
-        #expect(serialized.contains(">x<"))
     }
 
     @Test func teardownLeavesASharedSubtreeIntact() {

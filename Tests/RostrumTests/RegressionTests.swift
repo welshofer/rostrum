@@ -253,4 +253,40 @@ import Testing
         let xml = String(decoding: core, as: UTF8.self)
         #expect(xml.contains("2020-01-01T00:00:00Z"))
     }
+
+    // MARK: XML: comments in a deck survive open → edit → save
+
+    /// The headline promise is that opening and saving never drops XML Rostrum
+    /// does not model. Comments used to be dropped the moment a part was
+    /// edited, which made the promise false for every deck that carried one.
+    @Test func commentsInAnEditedSlideSurviveSave() throws {
+        let deck = try Presentation()
+        let slide = try deck.slides[0]
+        let tree = try slide.part.dom()
+        tree.children.insert(.comment(" authored elsewhere "), at: 0)
+        tree.children.append(.processingInstruction(target: "vendor", data: "note"))
+        slide.part.markDirty()
+
+        // An ordinary edit, through the public API, on the same part.
+        let box = try slide.shapes.addTextBox(
+            Rect(x: .inches(1), y: .inches(1), width: .inches(4), height: .inches(1)))
+        box.textFrame?.text = "hello"
+
+        let reopened = try Presentation(data: try deck.serializedData())
+        let saved = String(decoding: try reopened.slides[0].part.blob, as: UTF8.self)
+        #expect(saved.contains("<!-- authored elsewhere -->"))
+        #expect(saved.contains("<?vendor note?>"))
+        // And they came back as nodes, in place, not as text.
+        let reparsed = try reopened.slides[0].part.dom()
+        guard case .comment(let body) = reparsed.children.first else {
+            Issue.record("first child of p:sld is not a comment: \(reparsed.children)")
+            return
+        }
+        #expect(body == " authored elsewhere ")
+        guard case .processingInstruction(let target, _) = reparsed.children.last else {
+            Issue.record("last child of p:sld is not a processing instruction")
+            return
+        }
+        #expect(target == "vendor")
+    }
 }

@@ -135,12 +135,12 @@ deck.slideSize = (width: .inches(13.333333), height: .inches(7.5))   // 16:9, ex
 while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
 
 @MainActor func creamSlide() throws -> Slide {
-    let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "blank")!)
     try s.setBackground(.solid(C.cream))
     return s
 }
 @MainActor func whiteSlide() throws -> Slide {
-    let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "blank")!)
     try s.setBackground(.solid(C.white))
     return s
 }
@@ -150,7 +150,7 @@ while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
 // section number, title, and subtitle stack in the darkened lower band.
 @MainActor func divider(_ index: String, _ title: String, _ subtitle: String,
                         image name: String) throws {
-    let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "blank")!)
     try bleed(s, name, aspect: 1.5, fallback: C.yellowDeep)
     try bottomScrim(s, top: 4.3, dark: 0.92)
     try text(s, r(0.95, 5.02, 9, 0.4),
@@ -235,7 +235,7 @@ while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
 
 // ---- 1 · Title
 do {
-    let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "blank")!)
     try bleed(s, "title-hero", aspect: 1.5, fallback: C.yellow)
     try bottomScrim(s, top: 3.55, dark: 0.86)
     try tag(s, "A field guide", x: 0.95, y: 0.9)
@@ -757,7 +757,7 @@ do {
 
 // ---- 30 · Closing
 do {
-    let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "blank")!)
     try bleed(s, "closing", aspect: 1.5, fallback: C.yellowDeep)
     try bottomScrim(s, top: 3.55, dark: 0.74)
     try text(s, r(0.9, 2.7, 11.5, 1.5),

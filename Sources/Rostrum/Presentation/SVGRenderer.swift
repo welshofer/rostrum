@@ -21,7 +21,7 @@ struct SVGRenderer {
 
     private let emuPerPoint = 12700
 
-    func render(pixelWidth: Int) throws -> String {
+    func render(pixelWidth: Int) throws -> (svg: String, problems: SlideRenderProblems) {
         let dom = try slidePart.dom()
         // p:sldSz comes from the file too, and the aspect-ratio conversion below
         // goes through Int(_: Double), which traps when the double is out of
@@ -38,7 +38,7 @@ struct SVGRenderer {
         // look like whatever it was before a template was applied: the logo,
         // the photo panel, the coloured field a brand puts on its layouts all
         // live on the layout and the master, not on the slide.
-        let chain = inheritanceChain()
+        let (chain, problems) = inheritanceChain()
         body += box(0, 0, w, h,
                     fill: backgroundFill(chain: chain, box: (0, 0, w, h), defs: &defs) ?? "#FFFFFF")
 
@@ -60,23 +60,33 @@ struct SVGRenderer {
             }
         }
 
-        return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\(pixelWidth)\" height=\"\(pxH)\" "
+        let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\(pixelWidth)\" height=\"\(pxH)\" "
             + "viewBox=\"0 0 \(w) \(h)\"><defs>\(defs)</defs>\(body)</svg>"
+        return (svg, problems)
     }
 
     // MARK: - Inheritance
 
-    /// The layout this slide uses and that layout's master.
-    private func inheritanceChain() -> (layout: Part?, master: Part?) {
+    /// The layout this slide uses and that layout's master, plus a note of any
+    /// link in that chain we could not follow.
+    ///
+    /// A slide points at a layout and the layout points at a master, and the
+    /// slide inherits its background and furniture down that chain. When a link
+    /// is broken the slide still renders — just without whatever it would have
+    /// inherited — so the break leaves no trace in the SVG. Rather than flatten
+    /// both breaks into a bare `nil`, record which one happened, so a caller
+    /// can tell a damaged deck apart from one we rendered wrong.
+    private func inheritanceChain()
+        -> (chain: (layout: Part?, master: Part?), problems: SlideRenderProblems) {
         guard let rel = slidePart.rels.first(ofType: RelType.slideLayout),
               let layout = try? package.part(
                 at: PackURI.resolve(target: rel.target, relativeTo: slidePart.uri.baseURI))
-        else { return (nil, nil) }
+        else { return ((nil, nil), SlideRenderProblems(layoutUnresolved: true)) }
         guard let masterRel = layout.rels.first(ofType: RelType.slideMaster),
               let master = try? package.part(
                 at: PackURI.resolve(target: masterRel.target, relativeTo: layout.uri.baseURI))
-        else { return (layout, nil) }
-        return (layout, master)
+        else { return ((layout, nil), SlideRenderProblems(masterUnresolved: true)) }
+        return ((layout, master), SlideRenderProblems())
     }
 
     /// The first background in the slide → layout → master chain, which is the
@@ -176,7 +186,7 @@ struct SVGRenderer {
     private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
         guard owner === slidePart, let ph = Placeholders.phElement(of: sp) else { return nil }
         let idx = ph[attribute: "idx"].flatMap { Int($0) } ?? 0
-        let chain = inheritanceChain()
+        let chain = inheritanceChain().chain
 
         func level1(_ lstStyle: XML.Element?) -> XML.Element? {
             lstStyle?.firstChild(named: "a:lvl1pPr")?.firstChild(named: "a:defRPr")
@@ -921,9 +931,50 @@ struct SVGRenderer {
     }
 }
 
+/// What a slide could not resolve while rendering it to SVG.
+///
+/// `renderSVG(slideAt:pixelWidth:)` always produces an SVG, even from a deck
+/// whose inheritance is broken — but a broken link means everything the slide
+/// inherits (its background, its placeholder positions, its theme colours) is
+/// missing from that SVG, with nothing in the output to say so. To a viewer the
+/// slide then looks like Rostrum rendered it wrong, when really the deck is
+/// damaged. These flags let a caller tell the two apart. An empty value
+/// (`isEmpty`) means every link resolved and nothing was left out.
+public struct SlideRenderProblems: Sendable, Equatable {
+    /// The slide names no layout, or the layout part it names could not be
+    /// loaded. Nothing the layout would have contributed was drawn.
+    public var layoutUnresolved: Bool
+
+    /// The layout loaded, but it names no master, or the master part it names
+    /// could not be loaded. Nothing the master would have contributed was drawn.
+    public var masterUnresolved: Bool
+
+    /// No link in the slide → layout → master chain was broken.
+    public var isEmpty: Bool { !layoutUnresolved && !masterUnresolved }
+
+    public init(layoutUnresolved: Bool = false, masterUnresolved: Bool = false) {
+        self.layoutUnresolved = layoutUnresolved
+        self.masterUnresolved = masterUnresolved
+    }
+}
+
 public extension Presentation {
     /// Render one slide to a self-contained SVG string (thumbnails / visual diff).
     func renderSVG(slideAt index: Int, pixelWidth: Int = 1280) throws -> String {
+        try renderSVGReportingProblems(slideAt: index, pixelWidth: pixelWidth).svg
+    }
+
+    /// Render one slide, and report anything its inheritance chain could not
+    /// resolve.
+    ///
+    /// The `svg` is exactly what `renderSVG(slideAt:pixelWidth:)` returns —
+    /// this is the same render, with the diagnostics kept instead of dropped.
+    /// `problems` names any broken link (see `SlideRenderProblems`), so a
+    /// caller can tell a damaged deck apart from one rendered wrong. A slide
+    /// with a broken chain still renders; it just comes back without whatever
+    /// it would have inherited.
+    func renderSVGReportingProblems(slideAt index: Int, pixelWidth: Int = 1280)
+        throws -> (svg: String, problems: SlideRenderProblems) {
         try SVGRenderer(slidePart: slides[index].part, slideSize: slideSize,
                         theme: theme, package: package, fonts: fonts,
                         slideNumber: index + 1).render(pixelWidth: pixelWidth)

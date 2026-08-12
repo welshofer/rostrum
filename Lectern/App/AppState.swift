@@ -128,11 +128,48 @@ final class AppState {
     private(set) var slideCounts: [URL: Int] = [:]
 
     func loadSlideCounts() async {
-        for deck in library where slideCounts[deck.url] == nil {
-            if let card = await DeckCardIndex.shared.card(for: deck) {
-                slideCounts[deck.url] = card.slideCount
+        await loadSlideCounts(for: library) {
+            await DeckCardIndex.shared.card(for: $0)?.slideCount
+        }
+    }
+
+    /// Fan the reads out instead of awaiting them one at a time.
+    ///
+    /// The old serial loop paid two costs per deck: each `DeckCardIndex` read
+    /// hopped off the main actor and back, and every assignment to
+    /// `slideCounts` invalidated every observing card, re-rendering the whole
+    /// list once per deck. Here the reads run concurrently, land in one local
+    /// dictionary, and `slideCounts` is mutated a single time at the end.
+    ///
+    /// The concurrency ceiling that keeps a library of ninety-megabyte decks
+    /// from oversubscribing the machine lives inside `DeckCardIndex`,
+    /// deliberately, and is left untouched — this only stops the reads from
+    /// serialising on the main actor. Decks already counted are skipped, and a
+    /// `nil` reading leaves that deck without a count, exactly as before.
+    ///
+    /// `reading` is injected so a test can supply its own counts and observe
+    /// that the reads overlap; production passes the `DeckCardIndex.shared`
+    /// read. Everything captured into the group is `Sendable` — `DeckFile` is,
+    /// and no `FileManager` is captured.
+    func loadSlideCounts(
+        for decks: [DeckFile],
+        reading count: @Sendable @escaping (DeckFile) async -> Int?
+    ) async {
+        let pending = decks.filter { slideCounts[$0.url] == nil }
+        guard !pending.isEmpty else { return }
+
+        var counts: [URL: Int] = [:]
+        await withTaskGroup(of: (URL, Int?).self) { group in
+            for deck in pending {
+                group.addTask { (deck.url, await count(deck)) }
+            }
+            for await (url, slideCount) in group {
+                if let slideCount { counts[url] = slideCount }
             }
         }
+
+        guard !counts.isEmpty else { return }
+        slideCounts.merge(counts) { _, new in new }
     }
 
     func deleteFromLibrary(_ deck: DeckFile) {
@@ -177,7 +214,23 @@ final class AppState {
     init(skipKeychain: Bool = false) {
         let d = UserDefaults.standard
         if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
-        if let m = d.string(forKey: Keys.model), Self.defaultModels(for: providerID).contains(m) { model = m }
+        // A selection stored before Settings started excluding unwired
+        // providers (or `.custom`, never wired) — land on the default rather
+        // than one the picker no longer offers.
+        providerID = ProviderPicker.resolveStoredSelection(providerID)
+        d.set(providerID.rawValue, forKey: Keys.provider)
+        // The model has to agree with the provider. A stored pair can disagree
+        // — the provider was just migrated, or the model list moved on — and a
+        // mismatch is not cosmetic: it sends one vendor's model name to
+        // another vendor's API, and leaves the Model picker with no matching
+        // tag. Land on the provider's first model and write that back, so the
+        // stored pair is consistent from here on.
+        if let m = d.string(forKey: Keys.model), Self.defaultModels(for: providerID).contains(m) {
+            model = m
+        } else if let first = Self.defaultModels(for: providerID).first {
+            model = first
+        }
+        d.set(model, forKey: Keys.model)
         if let raw = d.string(forKey: Keys.imageProvider), let id = ImageProviderID(rawValue: raw) { imageProviderID = id }
         favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])
         recents = d.stringArray(forKey: Keys.recents) ?? []
@@ -218,6 +271,10 @@ final class AppState {
         keyStatus = .unknown
         if !Self.defaultModels(for: id).contains(model) { model = Self.defaultModels(for: id).first ?? model }
         UserDefaults.standard.set(id.rawValue, forKey: Keys.provider)
+        // Persist the model too. Without this the pair on disk disagrees the
+        // moment the provider changes, and the next launch reads a model that
+        // belongs to the previous vendor.
+        UserDefaults.standard.set(model, forKey: Keys.model)
         hasKey = KeychainStore.hasKey(for: id)
     }
 

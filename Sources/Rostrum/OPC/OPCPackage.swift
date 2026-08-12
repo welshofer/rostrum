@@ -18,7 +18,7 @@ public final class Part {
     /// The part's serialized bytes. Authoritative while `isDirty` is false.
     public internal(set) var blob: Data
 
-    private var cachedDOM: XML.Element?
+    private var cachedDocument: XML.Document?
     public private(set) var isDirty = false
 
     public init(uri: PackURI, contentType: String, blob: Data, rels: Relationships = Relationships()) {
@@ -30,11 +30,15 @@ public final class Part {
 
     /// The part's DOM, parsed once and cached. Reading it does NOT flip
     /// authority — call `markDirty()` after any mutation.
+    ///
+    /// Parsed as a whole document, not a bare root: a comment or processing
+    /// instruction ahead of the root element is XML we do not model, and a
+    /// re-serialized part has to give it back.
     public func dom() throws -> XML.Element {
-        if let cachedDOM { return cachedDOM }
-        let dom = try XML.parse(blob)
-        cachedDOM = dom
-        return dom
+        if let cachedDocument { return cachedDocument.root }
+        let document = try XML.parseDocument(blob)
+        cachedDocument = document
+        return document.root
     }
 
     /// Flip authority to the DOM. Every facade setter must call this; it is
@@ -46,14 +50,14 @@ public final class Part {
     /// Replace the part's bytes wholesale, discarding any cached DOM.
     public func replaceBlob(_ data: Data) {
         blob = data
-        cachedDOM = nil
+        cachedDocument = nil
         isDirty = false
     }
 
     /// Re-serialize the DOM into `blob` if (and only if) it was mutated.
     func flushIfDirty() {
-        guard isDirty, let cachedDOM else { return }
-        blob = XML.document(cachedDOM)
+        guard isDirty, let cachedDocument else { return }
+        blob = XML.document(cachedDocument)
         isDirty = false
     }
 
