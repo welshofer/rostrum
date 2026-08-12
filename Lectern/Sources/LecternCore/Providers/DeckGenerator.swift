@@ -71,12 +71,27 @@ public actor DeckGenerator {
         let url = directory.appendingPathComponent("rejected-draft-\(stamp).json")
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            #if os(iOS)
             // On iOS this file sits in the app container alongside a Documents
             // folder published over USB file sharing; encrypt it at rest.
-            #if os(iOS)
             try Data(json.utf8).write(to: url, options: [.atomic, .completeFileProtection])
             #else
-            try Data(json.utf8).write(to: url, options: .atomic)
+            // macOS/Linux have no data-protection-at-rest, so the desktop
+            // equivalent is to keep the draft — the model's rendering of the
+            // user's prompt plus pasted grounding text — unreadable by other
+            // processes running as the user: create it owner-only (0o600).
+            // Creating the file *with* that permission, rather than writing it
+            // and chmod-ing after, is deliberate: an `.atomic` write first
+            // lands the file world-readable (0o644) and only then narrows it,
+            // leaving a brief window in which the confidential draft is exposed.
+            // The tradeoff is that `createFile` is not a temp-file-then-rename
+            // atomic write, so a crash mid-write could truncate this best-effort
+            // diagnostic — acceptable, since never exposing the content matters
+            // more than crash-atomicity for a file that only exists to be read
+            // back by a developer.
+            guard FileManager.default.createFile(
+                atPath: url.path, contents: Data(json.utf8), attributes: [.posixPermissions: 0o600])
+            else { return nil }
             #endif
             return url
         } catch {
