@@ -14,6 +14,12 @@ import LecternCore
 /// success mark.
 struct InspectorView: View {
     @Environment(AppState.self) private var app
+    #if !os(macOS)
+    /// A folder-picker failure worth a word. macOS never reaches this — it uses
+    /// an `NSOpenPanel` (see `chooseExportDestination`) — so the surface lives
+    /// only where the `fileImporter` does.
+    @State private var importError: String?
+    #endif
 
     var body: some View {
         Group {
@@ -29,7 +35,14 @@ struct InspectorView: View {
         // way to create a folder — see `chooseExportDestination`.
         .fileImporter(isPresented: exportDestinationBinding,
                       allowedContentTypes: [.folder]) { result in
-            if let url = try? result.get() { app.exportInspected(into: url) }
+            importError = FileImportOutcome.handle(result) { app.exportInspected(into: $0) }
+        }
+        .alert("Couldn't export that deck",
+               isPresented: Binding(get: { importError != nil },
+                                    set: { if !$0 { importError = nil } })) {
+            Button("OK", role: .cancel) { importError = nil }
+        } message: {
+            Text(importError ?? "")
         }
         #endif
         .overlay {

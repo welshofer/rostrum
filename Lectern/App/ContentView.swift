@@ -33,6 +33,11 @@ struct ContentView: View {
         }
     }
     @State private var droppingDeck = false
+    /// A file-picker failure worth a word — an unmounted volume, a refused
+    /// sandbox bookmark, an iCloud file that isn't downloaded yet. Nil the rest
+    /// of the time. View-local because the failure is transient and belongs to
+    /// this screen, not to shared app state.
+    @State private var importError: String?
     /// How you like to read your own library, remembered between launches.
     @AppStorage("libraryLayout") private var layout: LibraryLayout = .grid
     #if os(iOS)
@@ -97,7 +102,14 @@ struct ContentView: View {
         // screen never opens.
         .fileImporter(isPresented: $app.isChoosingDeckToInspect,
                       allowedContentTypes: Self.deckTypes) { result in
-            if let url = try? result.get() { app.inspect(deckAt: url) }
+            importError = FileImportOutcome.handle(result) { app.inspect(deckAt: $0) }
+        }
+        .alert("Couldn't open that deck",
+               isPresented: Binding(get: { importError != nil },
+                                    set: { if !$0 { importError = nil } })) {
+            Button("OK", role: .cancel) { importError = nil }
+        } message: {
+            Text(importError ?? "")
         }
         #if os(iOS)
         .sheet(isPresented: $showSettings) { SettingsView().environment(app) }
@@ -224,6 +236,41 @@ struct ContentView: View {
     }
 }
 
+// MARK: - File import
+
+/// The one decision every `fileImporter` in the app shares: a `Result` is
+/// either a URL to act on or an error to surface. `try? result.get()` collapsed
+/// both a real failure and a plain Cancel into "do nothing" — no message, no
+/// spinner, no explanation. This keeps the failure.
+///
+/// A user's Cancel never arrives here as a `.failure`: SwiftUI dismisses it
+/// with no callback at all, so any `.failure` that does reach this point is a
+/// genuine problem — an unmounted volume, a refused sandbox bookmark, an iCloud
+/// file that isn't downloaded — and worth a word.
+///
+/// Factored out of the three call sites' closures so that once-silent failure
+/// path is directly testable, without hosting the SwiftUI view that owns the
+/// `@State` it drives (`@State` only takes effect inside a live hierarchy,
+/// which a bare unit test cannot arrange).
+enum FileImportOutcome {
+    /// Run `onChosen` for a picked file and report no error; for a failure,
+    /// skip the action and return the message the alert shows. The return value
+    /// is exactly what the view assigns to its error state, so a success also
+    /// clears any message left from a previous attempt.
+    @MainActor
+    @discardableResult
+    static func handle(_ result: Result<URL, Error>,
+                       onChosen: (URL) -> Void) -> String? {
+        switch result {
+        case .success(let url):
+            onChosen(url)
+            return nil
+        case .failure(let error):
+            return error.localizedDescription
+        }
+    }
+}
+
 // MARK: - Inspecting
 
 /// Opening a deck, walking every shape and drawing every slide is real work.
@@ -280,6 +327,9 @@ struct ComposeView: View {
     @State private var showStyles = false
     @State private var importing = false
     @State private var dropTargeted = false
+    /// A PDF-picker failure worth a word — the same transient, view-local shape
+    /// the deck picker uses. Nil unless a `.failure` just came back.
+    @State private var importError: String?
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
@@ -388,7 +438,16 @@ struct ComposeView: View {
         .sheet(isPresented: $showStyles) { StylePickerSheet().environment(app) }
         .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.pdf]) { result in
-            if let url = try? result.get() { Task { await app.attachPDF(url) } }
+            importError = FileImportOutcome.handle(result) { url in
+                Task { await app.attachPDF(url) }
+            }
+        }
+        .alert("Couldn't open that PDF",
+               isPresented: Binding(get: { importError != nil },
+                                    set: { if !$0 { importError = nil } })) {
+            Button("OK", role: .cancel) { importError = nil }
+        } message: {
+            Text(importError ?? "")
         }
         .task { app.refreshLibrary() }
     }
