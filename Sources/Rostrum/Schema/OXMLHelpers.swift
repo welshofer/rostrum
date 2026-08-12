@@ -48,10 +48,28 @@ extension XML.Element {
         }
     }
 
-    /// Element children of `sldIdLst`-style order-bearing lists, ignoring any
-    /// insignificant whitespace text nodes a parsed file may carry.
+    /// Reorder the element children of an `sldIdLst`-style order-bearing list,
+    /// keeping any comments or processing instructions the file carried.
+    ///
+    /// The elements carry the list's meaning and the caller owns their new
+    /// order, so they are replaced wholesale. Insignificant whitespace text
+    /// between them is still dropped — it is formatting, and the writer lays
+    /// the list out itself. A comment or processing instruction is different:
+    /// it is markup Rostrum does not model, which is exactly the markup the
+    /// round-trip promise covers, so dropping it here would undo that promise
+    /// the moment a deck's slides were reordered, removed or merged.
+    ///
+    /// Where such a node belongs once the list around it has been reordered
+    /// has no honest answer, so they are kept in their original relative order
+    /// after the elements: nothing is lost, and the result is deterministic.
     func replaceChildElements(with elements: [XML.Element]) {
-        children = elements.map { .element($0) }
+        let carried = children.filter {
+            switch $0 {
+            case .comment, .processingInstruction: return true
+            case .element, .text: return false
+            }
+        }
+        children = elements.map { .element($0) } + carried
     }
 
     /// An integer attribute parsed from a file, or nil when it is absent,

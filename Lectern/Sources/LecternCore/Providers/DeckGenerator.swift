@@ -80,18 +80,26 @@ public actor DeckGenerator {
             // equivalent is to keep the draft — the model's rendering of the
             // user's prompt plus pasted grounding text — unreadable by other
             // processes running as the user: create it owner-only (0o600).
-            // Creating the file *with* that permission, rather than writing it
-            // and chmod-ing after, is deliberate: an `.atomic` write first
-            // lands the file world-readable (0o644) and only then narrows it,
-            // leaving a brief window in which the confidential draft is exposed.
-            // The tradeoff is that `createFile` is not a temp-file-then-rename
-            // atomic write, so a crash mid-write could truncate this best-effort
-            // diagnostic — acceptable, since never exposing the content matters
-            // more than crash-atomicity for a file that only exists to be read
-            // back by a developer.
-            guard FileManager.default.createFile(
-                atPath: url.path, contents: Data(json.utf8), attributes: [.posixPermissions: 0o600])
-            else { return nil }
+            //
+            // The mode has to be applied when the inode is created, not after
+            // the bytes land. Neither `Data.write(options: .atomic)` nor
+            // `FileManager.createFile(atPath:contents:attributes:)` guarantees
+            // that ordering — both can put the content on disk under the
+            // default mode and narrow it afterwards, leaving a window in which
+            // the draft is world-readable. `open` with an explicit mode has no
+            // such window: POSIX applies it at creation, and O_EXCL means we
+            // never write into a file we did not just make ourselves.
+            //
+            // The tradeoff is that this is not a temp-file-then-rename atomic
+            // write, so a crash mid-write could truncate this best-effort
+            // diagnostic. That is the right trade: never exposing the content
+            // matters more than crash-atomicity for a file that exists only to
+            // be read back by a developer.
+            let descriptor = open(url.path, O_WRONLY | O_CREAT | O_EXCL, 0o600)
+            guard descriptor >= 0 else { return nil }
+            let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+            try handle.write(contentsOf: Data(json.utf8))
+            try handle.close()
             #endif
             return url
         } catch {
