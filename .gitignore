@@ -29,3 +29,7 @@ DerivedData/
 /Tests/RostrumTests/Fixtures/RealDecks/*.pptx
 /Tests/RostrumTests/Fixtures/RealDecks/*.potx
 /Tests/RostrumTests/Fixtures/RealDecks/*.ppsx
+
+# Core dumps (a crashing test run inside a container drops one here)
+core
+core.*

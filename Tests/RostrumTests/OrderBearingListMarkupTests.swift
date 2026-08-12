@@ -151,3 +151,71 @@ import Foundation
         #expect(root.serialized() == "<a><?deck note?><b/><?bare?></a>")
     }
 }
+
+/// A processing instruction with no data — `<?target?>` — is a NULL dereference
+/// inside libxml2 on swift-corelibs-foundation: the process dies with SIGSEGV
+/// before any Rostrum code runs, so no caller can defend against it. Rostrum
+/// parses files it did not write, which makes that a denial of service rather
+/// than a curiosity.
+///
+/// `XML.parseDocument` now gives every such instruction a payload before the
+/// parser sees it, and turns that payload back into `nil` on the way out. These
+/// pin both halves: it must not crash, and the original spelling must survive.
+@Suite struct DatalessProcessingInstructionTests {
+
+    private func roundTrip(_ xml: String) throws -> String {
+        let document = try XML.parseDocument(Data(xml.utf8))
+        let out = String(decoding: XML.document(document), as: UTF8.self)
+        let declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n"
+        return out.hasPrefix(declaration) ? String(out.dropFirst(declaration.count)) : out
+    }
+
+    @Test func theThreeSpellingsAreAllDistinctAndAllSurvive() throws {
+        #expect(try roundTrip("<a><?t?></a>") == "<a><?t?></a>")
+        #expect(try roundTrip("<a><?t ?></a>") == "<a><?t ?></a>")
+        #expect(try roundTrip("<a><?t d?></a>") == "<a><?t d?></a>")
+    }
+
+    @Test func datalessInstructionsSurviveAnywhereTheyAreLegal() throws {
+        #expect(try roundTrip("<?before?><a/>") == "<?before?><a/>")
+        #expect(try roundTrip("<a/><?after?>") == "<a/><?after?>")
+        #expect(try roundTrip("<a><b><?deep?></b></a>") == "<a><b><?deep?></b></a>")
+        #expect(try roundTrip("<a><?one?><?two?></a>") == "<a><?one?><?two?></a>")
+    }
+
+    @Test func theNilDataIsWhatDistinguishesTheDatalessForm() throws {
+        let bare = try XML.parse(Data("<a><?t?></a>".utf8))
+        let spaced = try XML.parse(Data("<a><?t ?></a>".utf8))
+        guard case .processingInstruction(_, let bareData) = bare.children[0],
+              case .processingInstruction(_, let spacedData) = spaced.children[0] else {
+            Issue.record("expected processing instructions")
+            return
+        }
+        #expect(bareData == nil)
+        #expect(spacedData == "")
+    }
+
+    /// The rewrite must not reach inside a comment or a CDATA section — what
+    /// looks like an instruction there is content, and turning it into one would
+    /// change the document's meaning.
+    @Test func lookalikesInsideCommentsAndCDATAAreLeftAlone() throws {
+        #expect(try roundTrip("<a><!-- <?t?> --></a>") == "<a><!-- <?t?> --></a>")
+
+        // CDATA is folded into text by design (see `cdataAdjacentToTextCoalesces`),
+        // so the assertion here is that the lookalike stayed *text* rather than
+        // being promoted to a processing instruction by the rewrite.
+        let cdata = try XML.parse(Data("<a><![CDATA[<?t?>]]></a>".utf8))
+        guard case .text(let content) = cdata.children[0] else {
+            Issue.record("expected the CDATA to survive as text, got \(cdata.children[0])")
+            return
+        }
+        #expect(content == "<?t?>")
+    }
+
+    /// The token is only introduced when there is something to fix, so an
+    /// ordinary document takes the untouched path.
+    @Test func documentsWithoutOneAreNotRewrittenAtAll() {
+        let plain = Data("<?xml version=\"1.0\"?><a><?t d?></a>".utf8)
+        #expect(XML.neutralizingDatalessInstructions(plain) == nil)
+    }
+}

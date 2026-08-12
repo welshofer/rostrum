@@ -340,6 +340,112 @@ public enum XML {
         try parseDocument(data).root
     }
 
+    /// Give every dataless processing instruction a payload, so none reaches
+    /// `XMLParser` in the spelling that crashes it on Linux.
+    ///
+    /// Returns `nil` — and copies nothing — when the document has no such
+    /// instruction, which is almost every document. When it does, each
+    /// `<?target?>` becomes `<?target TOKEN?>`, where the token is generated for
+    /// this parse alone. `TreeBuilder` turns that token back into `nil` data, so
+    /// the node still remembers it was the dataless spelling and still writes
+    /// itself back as `<?target?>`.
+    ///
+    /// A token rather than counting keeps the mapping local: there is no
+    /// positional bookkeeping to drift out of step with whichever instructions
+    /// libxml2 decides to report. Comments and CDATA are stepped over rather
+    /// than scanned into — a `<?t?>` inside a comment is comment text, and
+    /// rewriting it would change bytes the round trip promises to preserve.
+    static func neutralizingDatalessInstructions(_ data: Data) -> (data: Data, token: String)? {
+        let bytes = [UInt8](data)
+        guard Self.containsDatalessInstruction(bytes) else { return nil }
+
+        var token = ""
+        repeat {
+            // U+E000 is private use: valid XML, and absent from real documents.
+            token = "\u{E000}" + String(UInt64.random(in: .min ... .max), radix: 16)
+        } while data.range(of: Data(token.utf8)) != nil
+        let tokenBytes = [UInt8](token.utf8)
+
+        var out: [UInt8] = []
+        out.reserveCapacity(bytes.count + tokenBytes.count * 4)
+        Self.scanInstructions(bytes) { span in
+            switch span {
+            case .verbatim(let range):
+                out.append(contentsOf: bytes[range])
+            case .datalessInstruction(let range):
+                // `<?target` … then the payload that makes it survive the parser.
+                out.append(contentsOf: bytes[range.lowerBound..<(range.upperBound - 2)])
+                out.append(0x20)
+                out.append(contentsOf: tokenBytes)
+                out.append(contentsOf: [0x3F, 0x3E])  // ?>
+            }
+        }
+        return (Data(out), token)
+    }
+
+    private enum InstructionSpan {
+        case verbatim(Range<Int>)
+        case datalessInstruction(Range<Int>)
+    }
+
+    private static func containsDatalessInstruction(_ bytes: [UInt8]) -> Bool {
+        var found = false
+        Self.scanInstructions(bytes) { span in
+            if case .datalessInstruction = span { found = true }
+        }
+        return found
+    }
+
+    /// Walk the document handing out spans, stepping over comments and CDATA so
+    /// only real processing instructions are classified.
+    private static func scanInstructions(_ bytes: [UInt8], _ emit: (InstructionSpan) -> Void) {
+        let n = bytes.count
+        var i = 0
+        var copyFrom = 0
+        func flush(upTo end: Int) {
+            if end > copyFrom { emit(.verbatim(copyFrom..<end)) }
+        }
+        while i < n {
+            guard bytes[i] == 0x3C else { i += 1; continue }  // <
+            if Self.matches(bytes, at: i, "<!--") {
+                i = Self.index(of: "-->", in: bytes, from: i + 4) ?? n
+            } else if Self.matches(bytes, at: i, "<![CDATA[") {
+                i = Self.index(of: "]]>", in: bytes, from: i + 9) ?? n
+            } else if Self.matches(bytes, at: i, "<?") {
+                guard let close = Self.index(of: "?>", in: bytes, from: i + 2) else { i = n; break }
+                let content = (i + 2)..<close
+                let hasData = bytes[content].contains { $0 == 0x20 || $0 == 0x09 || $0 == 0x0A || $0 == 0x0D }
+                if !hasData && !content.isEmpty {
+                    flush(upTo: i)
+                    emit(.datalessInstruction(i..<(close + 2)))
+                    copyFrom = close + 2
+                }
+                i = close + 2
+            } else {
+                i += 1
+            }
+        }
+        flush(upTo: n)
+    }
+
+    private static func matches(_ bytes: [UInt8], at index: Int, _ literal: String) -> Bool {
+        let pattern = [UInt8](literal.utf8)
+        guard index + pattern.count <= bytes.count else { return false }
+        for (offset, byte) in pattern.enumerated() where bytes[index + offset] != byte { return false }
+        return true
+    }
+
+    private static func index(of literal: String, in bytes: [UInt8], from start: Int) -> Int? {
+        let pattern = [UInt8](literal.utf8)
+        guard start >= 0, bytes.count >= pattern.count else { return nil }
+        var i = start
+        while i + pattern.count <= bytes.count {
+            if Self.matches(bytes, at: i, literal) { return i }
+            i += 1
+        }
+        return nil
+    }
+
     /// Parse a complete XML document, keeping the comments and processing
     /// instructions that sit outside the root element.
     public static func parseDocument(_ data: Data) throws -> Document {
@@ -365,11 +471,20 @@ public enum XML {
             throw RostrumError.xmlMalformed(
                 "document type declarations are not permitted in OOXML parts")
         }
-        let parser = XMLParser(data: data)
+        // `<?target?>` — a processing instruction with no data — is a NULL
+        // dereference inside libxml2's callback on swift-corelibs-foundation:
+        // SIGSEGV, not a throw, so no caller can defend against it. `<?target ?>`
+        // and `<?target data?>` are both fine; it is only the dataless spelling.
+        // Rostrum opens files it did not write, so a construct that kills the
+        // process is a denial of service, and the fix has to be in front of the
+        // parser rather than around it.
+        let neutralized = Self.neutralizingDatalessInstructions(data)
+        let parser = XMLParser(data: neutralized?.data ?? data)
         parser.shouldProcessNamespaces = false
         parser.shouldReportNamespacePrefixes = false
         parser.shouldResolveExternalEntities = false
         let builder = TreeBuilder()
+        builder.datalessInstructionToken = neutralized?.token
         parser.delegate = builder
         let ok = parser.parse()
         // Checked before the generic failure path so the reason survives:
@@ -552,6 +667,10 @@ public enum XML {
         /// Set when nesting passed `XML.maxDepth`. The parse is aborted at that
         /// point rather than allowed to build the rest of the tree.
         var depthExceeded = false
+        /// Set when the document had a dataless processing instruction that had
+        /// to be given a payload to survive the Linux parser. See
+        /// `neutralizingDatalessInstructions(_:)`.
+        var datalessInstructionToken: String?
         /// Comments and processing instructions before the root element opened,
         /// and after it closed. Legal XML, and `Element` cannot hold either.
         var prologue: [XML.Markup] = []
@@ -648,7 +767,12 @@ public enum XML {
             foundProcessingInstructionWithTarget target: String,
             data: String?
         ) {
-            place(.processingInstruction(target: target, data: data))
+            // The token exists only because the dataless spelling crashes the
+            // Linux parser; turning it back into `nil` here is what makes that
+            // workaround invisible to everything above.
+            var payload = data
+            if let token = datalessInstructionToken, payload == token { payload = nil }
+            place(.processingInstruction(target: target, data: payload))
         }
 
         /// File a comment or processing instruction where it was found.
