@@ -214,6 +214,11 @@ final class AppState {
     init(skipKeychain: Bool = false) {
         let d = UserDefaults.standard
         if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
+        // A selection stored before Settings started excluding unwired
+        // providers (or `.custom`, never wired) — land on the default rather
+        // than one the picker no longer offers.
+        providerID = ProviderPicker.resolveStoredSelection(providerID)
+        d.set(providerID.rawValue, forKey: Keys.provider)
         if let m = d.string(forKey: Keys.model), Self.defaultModels(for: providerID).contains(m) { model = m }
         if let raw = d.string(forKey: Keys.imageProvider), let id = ImageProviderID(rawValue: raw) { imageProviderID = id }
         favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])

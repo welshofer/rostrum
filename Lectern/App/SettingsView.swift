@@ -1,6 +1,30 @@
 import SwiftUI
 import LecternCore
 
+/// What the Settings provider picker offers, and what to do about a stored
+/// selection that no longer belongs there.
+///
+/// A "(soon)" label warns; it doesn't stop a tap. Left merely labelled, a
+/// user can select Gemini, paste a real key, save it, and only discover the
+/// provider can't run when Generate throws. Excluding unwired providers from
+/// the picker's own option list — rather than listing and disabling them —
+/// is what actually makes them unselectable, regardless of which control
+/// style `Picker` resolves to on a given platform.
+enum ProviderPicker {
+    /// The picker's option list: wired providers only, in `ProviderID`'s
+    /// declared order. See `ProviderFactory.isWired`.
+    static var selectable: [ProviderID] { ProviderID.allCases.filter(ProviderFactory.isWired) }
+
+    /// A provider persisted before this gate existed — or `.custom`, which
+    /// has never had a live implementation — is no longer one of
+    /// `selectable`'s options. Binding a `Picker` to a tag it doesn't offer
+    /// renders blank, so on load this steers a stored-but-unwired selection
+    /// back to `fallback` instead.
+    static func resolveStoredSelection(_ stored: ProviderID, fallback: ProviderID = .anthropic) -> ProviderID {
+        ProviderFactory.isWired(stored) ? stored : fallback
+    }
+}
+
 /// Providers, keys, and model — the Settings scene (§10 / §294). The key goes
 /// straight to the Keychain (I1); the SecureField is write-only, so a stored key
 /// never round-trips through the UI. Validate confirms the key and populates the
@@ -41,8 +65,8 @@ struct SettingsView: View {
                     get: { app.providerID },
                     set: { app.selectProvider($0); keyInput = "" }
                 )) {
-                    ForEach(ProviderID.allCases, id: \.self) { id in
-                        Text(ProviderFactory.isWired(id) ? id.label : "\(id.label) (soon)").tag(id)
+                    ForEach(ProviderPicker.selectable, id: \.self) { id in
+                        Text(id.label).tag(id)
                     }
                 }
                 Picker("Model", selection: Binding(get: { app.model }, set: { app.setModel($0) })) {
