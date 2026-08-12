@@ -185,8 +185,13 @@ From the repo root, `./scripts/verify.sh` is the full local gate: it runs the
 Rostrum and LecternCore suites, the README snippets, both app builds (macOS and
 the iOS simulator), and — the part nothing else covers — the **app-hosted
 tests** (`Lectern/AppTests`), which exercise `AppState` and the SwiftUI target
-that `swift test` never compiles. CI is Linux only on purpose; this is where
-the Apple side gets verified.
+that `swift test` never compiles.
+
+CI deliberately does less. Linux runs on every push (Swift 6.0 and 6.1); a
+single macOS job runs on pull requests only, because a hosted macOS runner
+bills about ten times the Linux rate. Even that job stops at building the app —
+nothing in CI ever runs the app-hosted tests. This local gate is where the
+Apple side actually gets verified, which is why the pre-push hook matters.
 
 Install the pre-push hook once so every `git push` runs it for you:
 
