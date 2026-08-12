@@ -74,7 +74,15 @@ public enum XML {
         /// A processing instruction, `<?target data?>`. `data` is nil for the
         /// dataless form `<?target?>`, and distinct from `""`, which is
         /// `<?target ?>` — the space is part of the original bytes.
-        case processingInstruction(target: String, data: String?)
+        ///
+        /// `indirect` because this is the only case with a two-word payload,
+        /// and without the box it sets the size of every node in every
+        /// element's `children` array — a stride of 40 bytes instead of 24,
+        /// paid on every child of every element in the document, to inline a
+        /// case that almost no file contains. Boxing costs an allocation on
+        /// the rare processing instruction and gives back a third of the
+        /// memory of every tree Rostrum builds.
+        indirect case processingInstruction(target: String, data: String?)
     }
 
     /// What may legally appear outside the root element: comments and

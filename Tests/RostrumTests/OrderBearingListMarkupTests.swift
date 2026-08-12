@@ -130,3 +130,24 @@ import Foundation
         return nil
     }
 }
+
+/// `XML.Node` sits in every element's `children` array, so its stride is
+/// multiplied by every node in every document Rostrum touches.
+///
+/// Adding the processing-instruction case with an inline `(String, String?)`
+/// payload pushed the stride from 24 bytes to 40 — a two-thirds increase paid
+/// on every child of every element — and that was enough to exhaust memory on
+/// Linux while the suite built two 100,000-node trees in parallel. The case is
+/// `indirect` now. This pins the size so it cannot drift back.
+@Suite struct XMLNodeFootprintTests {
+
+    @Test func aNodeStaysTheSizeOfItsLargestUnboxedPayload() {
+        // One word of class reference or a String's two words, plus the tag.
+        #expect(MemoryLayout<XML.Node>.stride == 24)
+    }
+
+    @Test func aProcessingInstructionStillRoundTripsThroughTheBox() throws {
+        let root = try XML.parse(Data("<a><?deck note?><b/><?bare?></a>".utf8))
+        #expect(root.serialized() == "<a><?deck note?><b/><?bare?></a>")
+    }
+}
