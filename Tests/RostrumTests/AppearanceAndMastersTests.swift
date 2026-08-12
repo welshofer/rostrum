@@ -59,7 +59,7 @@ import Testing
         // there would be a lie. nil is the honest answer.
         let deck = try Presentation()
         let layout = try #require(deck.layout(type: "title"))
-        let slide = try deck.slides.add(layout: layout)
+        let slide = try deck.slides.add(clonedFrom: layout)
         let placeholder = try #require(slide.shapes.all.first)
         #expect(placeholder.fill == nil)
         #expect(placeholder.line == nil)
@@ -110,7 +110,7 @@ import Testing
         let layout = try #require(deck.layout(type: "title"))
         #expect(layout.master?.part.uri == deck.slideMasters.first?.part.uri)
 
-        let slide = try deck.slides.add(layout: layout)
+        let slide = try deck.slides.add(clonedFrom: layout)
         #expect(slide.layout?.name == layout.name)
         #expect(slide.master?.part.uri == deck.slideMasters.first?.part.uri)
     }

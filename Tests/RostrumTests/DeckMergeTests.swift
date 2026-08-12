@@ -19,7 +19,7 @@ import Testing
         try deck.slides[0].shapes.addTextBox(Rect(x: .inches(1), y: .inches(1), width: .inches(6), height: .inches(1)))
             .textFrame?.text = "Imported slide one"
         try deck.slides[0].shapes.addPicture(pngFixture, x: .inches(1), y: .inches(3))
-        let s2 = try deck.slides.add(layout: deck.layout(type: "obj")!)
+        let s2 = try deck.slides.add(clonedFrom: deck.layout(type: "obj")!)
         try s2.shapes.addChart(.pie,
             data: ChartData(categories: ["X", "Y", "Z"], name: "Data", values: [3, 2, 1]),
             frame: Rect(x: .inches(2), y: .inches(2), width: .inches(6), height: .inches(4)))

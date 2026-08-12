@@ -89,19 +89,19 @@ func blend(_ t: Double) -> Color {
 let deck = try Presentation()
 while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
 @MainActor func darkSlide() throws -> Slide {
-    let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "blank")!)
     try s.setBackground(.solid(Ink.charcoal))
     return s
 }
 @MainActor func paperSlide() throws -> Slide {
-    let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "blank")!)
     try s.setBackground(.solid(Ink.paper))
     return s
 }
 
 // ---- 1 · Title (+ live comment thread, speaker notes)
 do {
-    let s = try deck.slides.add(layout: deck.layout(type: "blank")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "blank")!)
     try s.setBackground(.gradient(GradientFill(stops: [
         GradientStop(position: 0, color: Ink.charcoal),
         GradientStop(position: 1, color: Ink.navy),
@@ -130,7 +130,7 @@ do {
 
 // ---- 2 · Placeholder-driven slide (Title and Content layout, geometry inherited)
 do {
-    let s = try deck.slides.add(layout: deck.layout(type: "obj")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "obj")!)
     s.title?.textFrame.map { tf in
         tf.clear()
         let p = tf.addParagraph()
@@ -150,7 +150,7 @@ do {
         }
         let code = body.addParagraph()
         code.setSpacing(beforePoints: 14)
-        let codeRun = code.addRun("slides.add(layout: deck.layout(type: \"obj\")!)")
+        let codeRun = code.addRun("slides.add(clonedFrom: deck.layout(type: \"obj\")!)")
         codeRun.fontName = "Menlo"; codeRun.fontSize = 16; codeRun.color = Ink.teal
     }
     try s.setNotes("Placeholder inheritance: the sp elements carry only a ph binding; renderers pull geometry from the layout and master.")
@@ -333,7 +333,7 @@ do {
 
 // ---- 11 · Divider (Section Header layout, real placeholders)
 do {
-    let s = try deck.slides.add(layout: deck.layout(type: "secHead")!)
+    let s = try deck.slides.add(clonedFrom: deck.layout(type: "secHead")!)
     try s.setBackground(.gradient(GradientFill(
         from: Ink.navy, to: Ink.charcoal, angleDegrees: 115)))
     let ghost = try s.shapes.addTextBox(r(6.2, 0.7, 6.8, 6.1))
