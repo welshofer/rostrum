@@ -318,3 +318,19 @@ Confirmed and fixed inline (`c472fa7`): comments and processing instructions are
 through the rebuild, while insignificant whitespace is still dropped. Five regression tests
 added; **four of the five fail against the old code**, and the whitespace test correctly still
 passes — verified by reverting the function and re-running.
+
+## Cross-model review, second pass
+
+The same reviewer (`gpt-5.6-sol`) re-reviewed the full delta and found the first repair
+incomplete. Both findings were confirmed by the orchestrator and fixed in `c634ea4`:
+
+- **Blocker — preserved is not the same as unmoved.** The first fix appended carried nodes
+  *after* the elements, so even `move(from: 0, to: 0)` relocated a comment. Each carried node
+  now returns to the index it held, making a no-op rebuild byte-identical. A new test asserts
+  **exact serialization**, not merely that the comment is present somewhere.
+- **Blocker — the same bug in two more places.** Asked explicitly whether the element-only
+  rebuild existed elsewhere, the reviewer found `Sections.swift:154` (`list.children = []`)
+  and `Theme.swift:87` (`el.children = [.element(...)]`). Both now route through the shared
+  `replaceChildElements`, so a fourth site cannot quietly drift from the rule.
+
+Final gate after these fixes: **Rostrum 669, LecternCore 162, app-hosted 30 — All green.**

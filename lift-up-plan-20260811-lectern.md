@@ -403,3 +403,18 @@ Recorded, deliberately **not** acted on, per burn-down's rule against self-direc
   missing coverage, distinct from the L-STAB-1 gap that they merely never *ran*.
 - Two pre-existing warnings remain: `SVGRenderer.swift:25` (unused `dom`) and
   `AppState.swift:113` (unused `Int` expression).
+
+## Cross-model review, second pass
+
+- **Major, fixed** (`AppState.swift`): `selectProvider` corrected the model for the newly
+  chosen provider but never persisted it, and `init` fell back to the property default when the
+  stored model did not match. Together, a stored OpenAI selection could come back after a
+  relaunch holding a **Claude** model name — which generation would then send to OpenAI, with
+  the Model picker showing no matching tag. Both ends now normalise and persist the pair, with
+  a test asserting the model always belongs to the selected provider. (`c634ea4`)
+- **Not taken, with reason**: the reviewer reported that `DeckGenerator`'s `open()` needs
+  conditional `Darwin`/`Glibc` imports or LecternCore will not build on Linux.
+  `Lectern/Package.swift:11` declares `platforms: [.macOS(.v13), .iOS(.v16)]` — LecternCore does
+  not target Linux, and both app builds pass. Dropped as inapplicable.
+
+Final gate after these fixes: **Rostrum 669, LecternCore 162, app-hosted 30 — All green.**
