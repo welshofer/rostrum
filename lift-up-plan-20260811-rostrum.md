@@ -334,3 +334,42 @@ incomplete. Both findings were confirmed by the orchestrator and fixed in `c634e
   `replaceChildElements`, so a fourth site cannot quietly drift from the rule.
 
 Final gate after these fixes: **Rostrum 669, LecternCore 162, app-hosted 30 — All green.**
+
+## CI state at merge — an unresolved Linux Swift 6.1 crash
+
+Recorded honestly rather than rounded up.
+
+| Check | Result |
+|---|---|
+| Local `./scripts/verify.sh` (macOS + iOS) | **green** — Rostrum 671, LecternCore 162, app-hosted 30 |
+| Linux Swift 6.0 | **green** |
+| GitGuardian | **green** |
+| macOS (PR gate) | skipped by the workflow's own conditions |
+| Linux Swift 6.1 | **red — SIGSEGV, not root-caused** |
+
+The 6.1 job dies with `Bad pointer dereference at 0x0` in a thread whose only frame is inside
+libc; every other thread is an unrelated test doing ordinary Zip/Inflate work. It reproduces
+across re-runs, so it is not flaky, but it is not attributable to a line of our code.
+
+**It did not take a green check red.** The base branch (`burndown/deck-workbench-20260805`,
+PR #25) was already failing Linux 6.1 before this run, for an unrelated and pre-existing
+reason: `Lectern/Sources/LecternCore/Providers/OpenAIProvider.swift` uses `URLSession` without
+importing `FoundationNetworking`, which does not compile on Linux. On that run the Rostrum test
+step passed (627 tests) and the LecternCore step failed to build.
+
+Two hypotheses were tried and **both were wrong about the crash**, though each was worth keeping:
+
+1. **`XML.Node` had grown from stride 24 to 40** — measured with `MemoryLayout` on both branches
+   — because the processing-instruction case carries a two-word payload inline, and a
+   multi-payload enum is sized by its largest case. Making that one case `indirect` restored
+   stride 24 exactly. That is a real memory win on the hottest structure in the library and a
+   test now pins it. It did not fix the crash.
+2. **Two tests each build a 100,000-node tree** and this branch took the suite from 627 to 671
+   tests, so more runs concurrently. They now live in a `@Suite(.serialized)`, keeping the depth
+   and both assertions unchanged. It did not fix the crash either.
+
+Merged on the owner's decision, with the crash tracked as separate work. The obvious next steps
+for whoever picks it up: fix the `FoundationNetworking` import so the 6.1 job can get past
+LecternCore at all, then bisect the Rostrum suite on 6.1 — most cheaply by running it
+non-parallel, since every symptom so far points at whole-suite memory pressure under Swift
+6.1's runtime rather than at any single test.
