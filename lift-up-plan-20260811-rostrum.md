@@ -373,3 +373,53 @@ for whoever picks it up: fix the `FoundationNetworking` import so the 6.1 job ca
 LecternCore at all, then bisect the Rostrum suite on 6.1 — most cheaply by running it
 non-parallel, since every symptom so far points at whole-suite memory pressure under Swift
 6.1's runtime rather than at any single test.
+
+## Linux, resolved — root cause found in a container, not guessed
+
+The crash recorded above is fixed. It was neither of the two things guessed at
+while iterating through CI; both of those changes were kept because each stands
+on its own, but neither was the cause. Getting a real Linux environment
+(`colima` + the `swift:6.1` image) turned a day of speculation into a
+twenty-minute bisect.
+
+**A processing instruction with no data kills the process.** `<?target?>` is a
+NULL dereference inside libxml2 by way of swift-corelibs-foundation's
+`XMLParser` — SIGSEGV, not a throw, before any Rostrum code runs. Isolated to
+exactly that spelling with a four-line program:
+
+| Input | Result |
+|---|---|
+| `<a><?t d?></a>` | ok, `data="d"` |
+| `<a><?t ?></a>` | ok, `data=""` |
+| **`<a><?t?></a>`** | **SIGSEGV** |
+| `<a><!-- c --></a>` | ok |
+
+This was a **denial of service on untrusted input**, not a test-only problem:
+Rostrum opens files it did not write, and any `.pptx` carrying `<?something?>`
+would have taken the process down on Linux. It belongs in the same family as
+the DOCTYPE rejection and the nesting ceiling — and `parseDocument` already
+established the remedy, since it screens for invalid UTF-8 and out-of-range
+scalars precisely because *"swift-corelibs-foundation's parser can TRAP (SIGILL,
+not throw)"*.
+
+The fix gives every dataless instruction a payload before the parser sees it and
+turns that payload back into `nil` on the way out, so the node still knows it
+was the dataless spelling and still writes itself back as `<?target?>`. A token
+generated per parse, rather than a positional count, keeps the mapping local
+with no bookkeeping to drift out of step with whichever instructions libxml2
+reports. Comments and CDATA are stepped over rather than scanned into, and a
+document without one — very nearly all of them — is not copied at all.
+
+**Then a second, older problem surfaced behind it.** With the crash gone the job
+reached the LecternCore step, where `OpenAIProvider.swift` and its test used
+`URLSession` without `import FoundationNetworking`. Every sibling provider
+already had it; both files were added earlier in the same session. That also
+settled a cross-model review question empirically: `DeckGenerator`'s `open()`
+with an explicit `0600` mode needs no Darwin/Glibc shim, because Foundation
+re-exports it on Linux.
+
+**Verified**, in `swift:6.1` on Linux with CI's own oracle tooling installed:
+Rostrum **676** tests pass where the suite previously died mid-run, LecternCore
+**158** pass, and Swift 6.0 builds. CI on PR #25 is now green on every check —
+Linux 6.1, Linux 6.0, the macOS PR gate, and GitGuardian — for the first time on
+this branch.
