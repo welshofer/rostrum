@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking   // URLSession/URLRequest/HTTPURLResponse live here on Linux
+#endif
 
 /// Deck generation through OpenAI's chat completions API.
 ///
