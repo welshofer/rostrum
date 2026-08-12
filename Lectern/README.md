@@ -179,6 +179,24 @@ round-trip has been exercised on Mac and iPad with a real key.
 
 [xcodegen]: https://github.com/yonaskolb/XcodeGen
 
+## The local gate
+
+From the repo root, `./scripts/verify.sh` is the full local gate: it runs the
+Rostrum and LecternCore suites, the README snippets, both app builds (macOS and
+the iOS simulator), and — the part nothing else covers — the **app-hosted
+tests** (`Lectern/AppTests`), which exercise `AppState` and the SwiftUI target
+that `swift test` never compiles. CI is Linux only on purpose; this is where
+the Apple side gets verified.
+
+Install the pre-push hook once so every `git push` runs it for you:
+
+```sh
+./scripts/install-hooks.sh   # points core.hooksPath at scripts/hooks
+```
+
+After that, `git push` runs `./scripts/verify.sh` first and refuses the push if
+it fails (`--fast` skips the app builds; `git push --no-verify` bypasses once).
+
 ## Settings, keys, and provider selection — done
 
 Keys and provider choice are wired end-to-end (§10 / invariant I1):

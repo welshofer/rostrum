@@ -1,0 +1,20 @@
+#!/bin/bash
+# Pre-push hook: run the full local gate before anything leaves this machine.
+#
+# CI is Linux only on purpose (hosted macOS runners bill at 10x), so the Apple
+# platforms and the app-hosted tests are verified here instead. This hook makes
+# that gate automatic: `git push` runs ./scripts/verify.sh and is refused if it
+# fails. Wire it up once with ./scripts/install-hooks.sh
+# (git config core.hooksPath scripts/hooks).
+#
+# Bypass a single push you know is fine with:  git push --no-verify
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "$0")/../.." && pwd)"
+
+printf '\033[1m[pre-push] running ./scripts/verify.sh — the full local gate\033[0m\n'
+if ! "$repo_root/scripts/verify.sh"; then
+  printf '\n\033[1;31m[pre-push] push refused: the local gate failed.\033[0m\n' >&2
+  printf 'Fix the failure above, or bypass this one push with: git push --no-verify\n' >&2
+  exit 1
+fi
