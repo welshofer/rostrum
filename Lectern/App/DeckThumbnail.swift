@@ -6,6 +6,63 @@ import AppKit
 import UIKit
 #endif
 
+/// A least-recently-used cache with a hard entry-count ceiling.
+///
+/// Both of the app's image caches were plain dictionaries with no eviction, so
+/// every thumbnail and every rasterised slide lived until the process exited.
+/// That is invisible on today's ~29-deck library and a slow leak with no
+/// ceiling on a large one, or on a session left open for days. This bounds
+/// them: once `capacity` is reached, inserting a new key evicts the
+/// least-recently-used entry.
+///
+/// The audit's suggestion — `NSCache` with a `totalCostLimit` — is a poor fit
+/// here: the value is a SwiftUI `Image`, a *struct*, which `NSCache` (an
+/// Objective-C class-object cache) cannot hold without boxing, and its eviction
+/// is opaque and so untestable. A plain dictionary plus a recency-ordered key
+/// array is a value type, evicts on a rule we can assert, and — with caps in
+/// the low hundreds — is far simpler than a hand-rolled linked list while being
+/// more than fast enough. Reads count as uses, so an image the grid is actively
+/// drawing keeps its place and is never the entry dropped.
+struct BoundedCache<Key: Hashable, Value> {
+    /// The hard upper bound on live entries. Never exceeded after `insert`.
+    let capacity: Int
+    private var entries: [Key: Value] = [:]
+    /// Keys in use order, least-recently-used first, most-recently-used last.
+    private var recency: [Key] = []
+
+    init(capacity: Int) {
+        precondition(capacity > 0, "BoundedCache needs a positive capacity")
+        self.capacity = capacity
+    }
+
+    /// Live entry count; never greater than `capacity`.
+    var count: Int { entries.count }
+
+    /// Returns the value for `key`, marking it most-recently-used on a hit.
+    /// Synchronous by construction — the fast path a view can call from `body`.
+    mutating func value(forKey key: Key) -> Value? {
+        guard let value = entries[key] else { return nil }
+        promote(key)
+        return value
+    }
+
+    /// Inserts (or replaces) `value` for `key` and, if that pushes the cache
+    /// past `capacity`, evicts the single least-recently-used entry.
+    mutating func insert(_ value: Value, forKey key: Key) {
+        entries[key] = value
+        promote(key)
+        while entries.count > capacity, let oldest = recency.first {
+            recency.removeFirst()
+            entries.removeValue(forKey: oldest)
+        }
+    }
+
+    private mutating func promote(_ key: Key) {
+        if let index = recency.firstIndex(of: key) { recency.remove(at: index) }
+        recency.append(key)
+    }
+}
+
 /// Thumbnails that survive the view being torn down.
 ///
 /// `DeckThumbnail` used to hold its picture in `@State`, which dies with the
@@ -21,29 +78,63 @@ import UIKit
 final class DeckThumbnailStore {
     static let shared = DeckThumbnailStore()
 
-    private var cache: [String: Image] = [:]
+    /// Hard ceiling on cached thumbnails. The library is ~29 decks and the grid
+    /// asks for at most a couple of widths, so ~58 entries is the common live
+    /// set. 128 leaves better than 2× headroom for a larger library and for the
+    /// stale entries an in-place rewrite strands — the file's modification date
+    /// is part of the key, so a rewritten deck's old picture can never be hit
+    /// again and is dead weight that eviction must reclaim — while still capping
+    /// worst-case memory (a couple of hundred small thumbnails).
+    static let defaultCapacity = 128
+
+    private var images: BoundedCache<String, Image>
     private var inFlight: [String: Task<Image?, Never>] = [:]
 
+    /// Custom-capacity initialiser: production uses the default; tests pass a
+    /// small cap to assert the cache stays bounded without the shared singleton.
+    init(capacity: Int = DeckThumbnailStore.defaultCapacity) {
+        images = BoundedCache(capacity: capacity)
+    }
+
     /// A hit means the grid can draw immediately, with no async work at all —
-    /// which is the whole point.
-    func cached(_ key: String) -> Image? { cache[key] }
+    /// which is the whole point. Reading also marks the entry most-recently-used,
+    /// so a thumbnail the grid is actively drawing is never the one evicted.
+    func cached(_ key: String) -> Image? { images.value(forKey: key) }
+
+    /// Live entry count. Exposed so tests can assert the cache never grows past
+    /// its cap.
+    var cacheCount: Int { images.count }
 
     static func key(url: URL, version: Date, width: CGFloat) -> String {
         "\(url.path)|\(version.timeIntervalSince1970)|\(Int(width))"
     }
 
     func thumbnail(url: URL, key: String, width: CGFloat, scale: CGFloat) async -> Image? {
-        if let hit = cache[key] { return hit }
+        if let hit = cached(key) { return hit }
         if let running = inFlight[key] { return await running.value }
 
         let task = Task<Image?, Never> {
             await Self.generate(url: url, width: width, scale: scale)
         }
         inFlight[key] = task
+        // The in-flight map is its own small cache and must not leak either.
+        // It only ever holds one entry per distinct thumbnail being fetched
+        // right now — a second caller for the same key coalesces onto the task
+        // above rather than adding a row — and this `defer` removes that entry
+        // the moment the task finishes, so the map drains instead of growing.
+        // (The task never throws and awaiting its value is not cancellable, so
+        // this runs on every path out of the function.)
+        defer { inFlight[key] = nil }
         let image = await task.value
-        inFlight[key] = nil
-        if let image { cache[key] = image }
+        if let image { remember(image, forKey: key) }
         return image
+    }
+
+    /// Records a finished thumbnail, evicting the least-recently-used entry once
+    /// the cache is full. Internal so a test can seed the cache without standing
+    /// up a live Quick Look request.
+    func remember(_ image: Image, forKey key: String) {
+        images.insert(image, forKey: key)
     }
 
     /// Asks for the size it will actually be drawn at.
