@@ -128,11 +128,48 @@ final class AppState {
     private(set) var slideCounts: [URL: Int] = [:]
 
     func loadSlideCounts() async {
-        for deck in library where slideCounts[deck.url] == nil {
-            if let card = await DeckCardIndex.shared.card(for: deck) {
-                slideCounts[deck.url] = card.slideCount
+        await loadSlideCounts(for: library) {
+            await DeckCardIndex.shared.card(for: $0)?.slideCount
+        }
+    }
+
+    /// Fan the reads out instead of awaiting them one at a time.
+    ///
+    /// The old serial loop paid two costs per deck: each `DeckCardIndex` read
+    /// hopped off the main actor and back, and every assignment to
+    /// `slideCounts` invalidated every observing card, re-rendering the whole
+    /// list once per deck. Here the reads run concurrently, land in one local
+    /// dictionary, and `slideCounts` is mutated a single time at the end.
+    ///
+    /// The concurrency ceiling that keeps a library of ninety-megabyte decks
+    /// from oversubscribing the machine lives inside `DeckCardIndex`,
+    /// deliberately, and is left untouched — this only stops the reads from
+    /// serialising on the main actor. Decks already counted are skipped, and a
+    /// `nil` reading leaves that deck without a count, exactly as before.
+    ///
+    /// `reading` is injected so a test can supply its own counts and observe
+    /// that the reads overlap; production passes the `DeckCardIndex.shared`
+    /// read. Everything captured into the group is `Sendable` — `DeckFile` is,
+    /// and no `FileManager` is captured.
+    func loadSlideCounts(
+        for decks: [DeckFile],
+        reading count: @Sendable @escaping (DeckFile) async -> Int?
+    ) async {
+        let pending = decks.filter { slideCounts[$0.url] == nil }
+        guard !pending.isEmpty else { return }
+
+        var counts: [URL: Int] = [:]
+        await withTaskGroup(of: (URL, Int?).self) { group in
+            for deck in pending {
+                group.addTask { (deck.url, await count(deck)) }
+            }
+            for await (url, slideCount) in group {
+                if let slideCount { counts[url] = slideCount }
             }
         }
+
+        guard !counts.isEmpty else { return }
+        slideCounts.merge(counts) { _, new in new }
     }
 
     func deleteFromLibrary(_ deck: DeckFile) {
