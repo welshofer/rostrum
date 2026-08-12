@@ -151,7 +151,7 @@ public final class Sections: Sequence {
             }
         }
         let list = try sectionListElement(creatingIfMissing: true)!
-        list.children = []
+        var sections: [XML.Element] = []
         var used = Set<String>()
         for (i, boundary) in boundaries.enumerated() {
             let end = i + 1 < boundaries.count ? boundaries[i + 1].startSlide : ids.count
@@ -163,8 +163,12 @@ public final class Sections: Sequence {
                 sldIdLst.appendElement(XML.Element("p14:sldId", attributes: [("id", String(ids[slide]))]))
             }
             section.appendElement(sldIdLst)
-            list.appendElement(section)
+            sections.append(section)
         }
+        // Rebuild through the shared helper rather than clearing `children`,
+        // so a comment or processing instruction in the section list survives
+        // being re-sectioned.
+        list.replaceChildElements(with: sections)
         presentationPart.markDirty()
     }
 

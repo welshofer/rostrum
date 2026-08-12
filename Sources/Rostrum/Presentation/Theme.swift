@@ -84,7 +84,9 @@ public final class Theme {
     /// Set a slot to a concrete RGB (replaces sysClr/srgbClr with srgbClr).
     public func setColor(_ slot: ThemeSlot, _ color: Color) {
         guard let el = clrScheme?.firstChild(named: "a:\(slot.rawValue)") else { return }
-        el.children = [.element(color.srgbElement())]
+        // Through the shared helper, so a comment annotating the slot in a
+        // hand-authored theme is not lost when the colour is changed.
+        el.replaceChildElements(with: [color.srgbElement()])
         part.markDirty()
     }
 

@@ -59,17 +59,24 @@ extension XML.Element {
     /// round-trip promise covers, so dropping it here would undo that promise
     /// the moment a deck's slides were reordered, removed or merged.
     ///
-    /// Where such a node belongs once the list around it has been reordered
-    /// has no honest answer, so they are kept in their original relative order
-    /// after the elements: nothing is lost, and the result is deterministic.
+    /// Each carried node goes back at the index it held before, so a rebuild
+    /// that does not change the element count — including a no-op reorder like
+    /// `move(from: 0, to: 0)` — puts every byte back exactly where it was. When
+    /// elements are removed the index is clamped to the shorter list, which is
+    /// the closest thing to "where it was" that still exists.
     func replaceChildElements(with elements: [XML.Element]) {
-        let carried = children.filter {
-            switch $0 {
-            case .comment, .processingInstruction: return true
-            case .element, .text: return false
+        var carried: [(index: Int, node: XML.Node)] = []
+        for (index, child) in children.enumerated() {
+            switch child {
+            case .comment, .processingInstruction: carried.append((index, child))
+            case .element, .text: continue
             }
         }
-        children = elements.map { .element($0) } + carried
+        var rebuilt: [XML.Node] = elements.map { .element($0) }
+        for (index, node) in carried {
+            rebuilt.insert(node, at: Swift.min(index, rebuilt.count))
+        }
+        children = rebuilt
     }
 
     /// An integer attribute parsed from a file, or nil when it is absent,

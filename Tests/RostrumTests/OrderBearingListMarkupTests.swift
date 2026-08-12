@@ -68,4 +68,65 @@ import Foundation
 
         #expect(list.serialized().contains("<!-- authored by hand -->"))
     }
+
+    /// The reviewer's point: preserving a comment is not the same as keeping
+    /// it where it was. A rebuild that changes nothing must change no bytes.
+    @Test func aNoOpRebuildIsByteIdentical() throws {
+        let xml = "<p:sldIdLst><p:sldId id=\"1\"/><!-- middle --><p:sldId id=\"2\"/></p:sldIdLst>"
+        let root = try list(xml)
+        root.replaceChildElements(with: root.childElements)
+
+        #expect(root.serialized() == xml)
+    }
+
+    @Test func aCommentKeepsItsSlotAcrossAReorder() throws {
+        let root = try list("<p:sldIdLst><p:sldId id=\"1\"/><!-- middle --><p:sldId id=\"2\"/></p:sldIdLst>")
+        var entries = root.childElements
+        entries.reverse()
+        root.replaceChildElements(with: entries)
+
+        #expect(root.serialized()
+            == "<p:sldIdLst><p:sldId id=\"2\"/><!-- middle --><p:sldId id=\"1\"/></p:sldIdLst>")
+    }
+
+    @Test func movingASlideToItsOwnPositionChangesNothing() throws {
+        let deck = try Presentation()
+        _ = try deck.slides.add()
+        _ = try deck.slides.add()
+
+        let root = try deck.presentationPart.dom()
+        let list = try #require(root.firstChild(named: "p:sldIdLst"))
+        list.children.insert(.comment(" pinned "), at: 1)
+        let before = list.serialized()
+
+        try deck.slides.move(from: 0, to: 0)
+
+        #expect(list.serialized() == before)
+    }
+
+    /// The reviewer found the same element-only rebuild in two more places.
+    /// `Sections.set` has a public seam, so it gets the integration test;
+    /// `Theme.setColor` now routes through the same helper exercised above.
+    @Test func reSectioningKeepsAComment() throws {
+        let deck = try Presentation()
+        _ = try deck.slides.add()
+        try deck.sections.set([(name: "One", startSlide: 0)])
+
+        let root = try deck.presentationPart.dom()
+        let list = try #require(Self.find("p14:sectionLst", under: root))
+        list.children.append(.comment(" hand written "))
+
+        try deck.sections.set([(name: "Renamed", startSlide: 0)])
+
+        #expect(list.serialized().contains("<!-- hand written -->"))
+        #expect(list.serialized().contains("Renamed"))
+    }
+
+    private static func find(_ name: String, under element: XML.Element) -> XML.Element? {
+        if element.name == name { return element }
+        for case .element(let child) in element.children {
+            if let hit = find(name, under: child) { return hit }
+        }
+        return nil
+    }
 }
