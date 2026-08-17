@@ -6,8 +6,32 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [0.4.0] — 2026-08-17
+
+The **"Measure & trust"** program (see `ROADMAP.md`): the library's two
+biggest asserted qualities become measured ones. Text layout stops guessing —
+real font metrics, a computed `normAutofit`, and text that provably fits its
+box — and the lossless round-trip stops being unproven against foreign files,
+gated by a real-deck corpus and the python-pptx oracle. Alongside it, a pass
+of untrusted-input hardening: a malformed or hostile `.pptx` now throws,
+clamps, or is recorded, instead of aborting the host process.
+
 ### Added
 
+- **`renderSVGReportingProblems(slideAt:pixelWidth:)`** — the same render as
+  `renderSVG`, with the inheritance diagnostics kept instead of dropped. The
+  returned `SlideRenderProblems` names a broken slide → layout → master link
+  (`layoutUnresolved` / `masterUnresolved`, `isEmpty` when the chain is
+  sound), so a caller can tell a damaged deck apart from one rendered wrong.
+  A slide with a broken chain still renders; it just comes back without what
+  it would have inherited.
+- **`Shape.markAsPlaceholder(type:idx:)`** — writes the `p:ph` binding onto a
+  shape the caller positioned itself, so a drawn title is a *title* to
+  PowerPoint: present in the outline view, the slide navigator, "reuse
+  slides" and a screen reader. Costs no pixels, since an explicit `a:xfrm`
+  still wins.
 - **Deck extraction** — `Presentation.outline()` projects an opened deck onto
   a `Sendable` value model: per slide, the title, subtitle, body paragraphs
   with their outline level, table cells, SmartArt labels, speaker notes, an
@@ -71,6 +95,25 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Changed
 
+- **`slides.add(layout:)` is now `slides.add(clonedFrom:)`.** The old label
+  did not say what it did, which left it a near-homophone of the adder that
+  binds a slide to a layout *without* copying its placeholder shapes. The new
+  name states plainly that it clones them. The old spelling still compiles,
+  deprecated with `renamed:`, so existing code keeps building and Xcode
+  offers the fix-it.
+- **Slides built by the one-call builders carry real title placeholders.**
+  Every deck the builders wrote was headless: they draw the title on their
+  own grid as a plain text box, and a deck of plain text boxes has no titles
+  at all as far as PowerPoint is concerned — nothing in the outline view, the
+  slide navigator, "reuse slides" or a screen reader. Builders now bind the
+  slide to a layout that declares a title and mark the drawn title with
+  `p:ph`. Identical pixels; the semantics come back.
+- **`ShapeCollection.count` and its subscript stopped walking the whole
+  tree.** Both routed through `all`, which builds one facade per shape, so
+  reading `count` — or indexing in a loop — cost a full `p:spTree` walk every
+  time and made ordinary iteration quadratic. They now count and index the
+  children directly, building no facade at all for `count` and exactly one
+  per subscript. No cache, so there is nothing that can go stale.
 - **Opening a `.potx` or `.ppsx` no longer converts it.** A template opens as
   a template and saves as one, byte-identically; previously it was retyped to
   a presentation on open, so a template could not survive a round trip. To
@@ -93,8 +136,6 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 - **Measured SVG rendering** — single-run paragraphs whose typeface is
   registered render with real word wrap and baseline placement in
   `renderSVG`; the rest wrap on a character-width estimate.
-
-### Changed
 
 - **`renderSVG` wraps long text instead of truncating it.** Paragraphs
   without registered metrics used to emit one line and drop the remainder
@@ -240,8 +281,6 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   coordinates, plus `shape.shapeID` and `shape.explicitFrame`.
   `shapes.autoShapes` keeps the old `p:sp`-only view.
 
-### Changed
-
 - **Read budgets are on by default.** `Presentation(data:)`,
   `OPCPackage.read` and `ZipReader` now default to `ZipReader.Limits.default`
   — 4 GiB of declared uncompressed bytes, far past any real deck — instead of
@@ -293,6 +332,29 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Fixed
 
+- **A processing instruction with no data no longer kills the process on
+  Linux.** `<?target?>` — the dataless spelling — is a NULL dereference
+  inside libxml2 by way of swift-corelibs-foundation's `XMLParser`: SIGSEGV,
+  not a throw, raised before any Rostrum code runs, so no caller could defend
+  against it. Since Rostrum opens files it did not write, any `.pptx`
+  carrying one was a **denial of service on untrusted input** — the same
+  family as the DOCTYPE rejection and the nesting ceiling, and the same
+  remedy this file already establishes: check the bytes before the parser
+  sees them, because that parser traps rather than throws. Isolated to
+  exactly that spelling — `<?t d?>` and `<?t ?>` parse, `<?t?>` crashes,
+  comments are fine. Every dataless instruction is now given a payload before
+  parsing and has it turned back into `nil` on the way out, so the node still
+  knows it was the dataless spelling and still writes itself back as
+  `<?target?>`; the payload is a token generated per parse rather than a
+  positional count, so there is no bookkeeping to drift out of step with
+  whichever instructions libxml2 reports. Comments and CDATA are stepped over
+  rather than scanned into — a lookalike inside one is content, and rewriting
+  it would change bytes the round trip promises to keep — and a document
+  without one, which is very nearly all of them, is not copied at all.
+  Root-caused in a Linux container rather than inferred from CI.
+- `import FoundationNetworking` where Linux needs it: `OpenAIProvider` and
+  its test were the only two places using `URLSession` without it, which
+  broke the Linux build once the crash above stopped masking it.
 - **An edited part no longer loses its XML comments and processing
   instructions.** The promise is that opening and saving never drops XML
   Rostrum does not model, and a comment is the plainest case of that XML —
@@ -389,6 +451,41 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Lectern (the sample app)
 
+- **The shell is a library.** The app opens on the decks you already have —
+  Quick Look covers, a grid or a list, search, and drag-and-drop onto the
+  shell itself — rather than on a compose form that asserted writing a deck
+  was the only thing the app did. Returning to the library is one movement
+  instead of three, the grid lays out once at the width it will end up, and
+  thumbnails survive the trip instead of being rebuilt on every return.
+- **One deck inspector, not two.** The two that had grown separately are
+  reconciled into a single `DeckInspector`/`SlideDigest` pair in LecternCore,
+  which is why the inspection is testable headlessly on Linux.
+- **Slide counts for the whole library are read concurrently, off the main
+  actor.** They were fetched one deck at a time on the main actor, so a
+  library of any size stalled the UI on launch. Decks that already have a
+  count are not re-read.
+- **The two image caches are bounded.** Both grew for the life of the
+  process; they are now LRU with a cap, pinned by tests.
+- **Settings only offers providers the app can actually use.** Two were
+  listed but unwired; OpenAI is now wired for real, and a stored selection
+  pointing at an unwired provider migrates to the default instead of
+  silently failing.
+- **A file-picker failure is no longer indistinguishable from a cancel** —
+  the app says what went wrong instead of quietly doing nothing.
+- **Rejected drafts are written with file protection on macOS too**, matching
+  what iOS already did.
+- **Deleting a deck asks first.** The redesigned library deleted from a
+  button that promised a confirmation it never showed.
+- The app icon has dark and tinted variants, on an OS that asks for both.
+- **The app-hosted tests now run in a gate.** `Lectern/AppTests` compiled but
+  was executed by nothing; `scripts/verify.sh` runs it, along with a tracked
+  `scripts/hooks/pre-push` and `scripts/install-hooks.sh`. Implemented
+  locally rather than as a hosted-macOS CI step, so `ci.yml` is unchanged and
+  no CI cost was added.
+- `Export Everything…` creates the folder it exports into, and test runs no
+  longer orphan saved API keys.
+- Attached documents are fenced in the prompt, and the generation deadline is
+  a real ceiling rather than a suggestion.
 - **Cancel now stops the pipeline, not just the screen.** A cancel during
   the QA pass was swallowed by a `try?`, so the run went on to generate paid
   images and write a deck the user had stopped; cancellation now propagates,

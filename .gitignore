@@ -33,3 +33,9 @@ DerivedData/
 # Core dumps (a crashing test run inside a container drops one here)
 core
 core.*
+
+# Audit scratch: lift-up plans and burn-down reports are session artifacts.
+# Their durable findings belong in ROADMAP.md (deferred work) and CHANGELOG.md
+# (what shipped), not as 200KB of process notes at the repo root.
+/lift-up-plan-*.md
+/burn-down-report-*.md
