@@ -23,7 +23,7 @@ jobs:
   build:
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build DocC archive
         run: |
           xcodebuild docbuild -scheme Rostrum \
@@ -34,6 +34,11 @@ jobs:
           ARCHIVE=$(find .docc-build -name 'Rostrum.doccarchive' -print -quit)
           "$(xcrun --find docc)" process-archive transform-for-static-hosting \
             "$ARCHIVE" --output-path site --hosting-base-path rostrum
+      # Deliberately still v3. It is a composite action wrapping
+      # actions/upload-artifact@v4, so unlike checkout and deploy-pages it
+      # carries no Node 20 deprecation. v4 dropped dotfiles from the artifact
+      # — a silent change for a directory we do not fully control, since
+      # `transform-for-static-hosting` decides what lands in `site`.
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
@@ -45,4 +50,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
