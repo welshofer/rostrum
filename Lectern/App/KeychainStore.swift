@@ -39,6 +39,31 @@ enum KeychainStore {
     }
 
     static func read(account: String) -> String? {
+        try? readOrFail(account: account)
+    }
+
+    /// Why a key that is demonstrably there still cannot be read.
+    ///
+    /// The distinction matters because the two need opposite responses from the
+    /// user: one means "add a key", the other means "the key is fine, this
+    /// build cannot open it".
+    enum ReadProblem: Error, Equatable {
+        /// No item for this account at all.
+        case missing
+        /// An item exists, but the keychain refused to hand over its contents —
+        /// on macOS this is the login keychain's access control, which is bound
+        /// to the signature of the build that saved it.
+        case unreadable(OSStatus)
+    }
+
+    /// Read the secret, saying which kind of failure occurred.
+    ///
+    /// `exists` matches attributes and never decrypts; this decrypts. When a
+    /// build's signature differs from the one that saved the item — which is
+    /// what ad-hoc signing guarantees, since its cdhash changes every build —
+    /// the first succeeds and the second does not. Reporting that as "no key
+    /// stored" sent us looking for a save bug that was not there.
+    static func readOrFail(account: String) throws -> String {
         #if canImport(Security)
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -48,11 +73,23 @@ enum KeychainStore {
             kSecMatchLimit as String: kSecMatchLimitOne,
         ]
         var item: CFTypeRef?
-        guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess,
-              let data = item as? Data else { return nil }
-        return String(data: data, encoding: .utf8)
+        let status = SecItemCopyMatching(query as CFDictionary, &item)
+        switch status {
+        case errSecSuccess:
+            guard let data = item as? Data,
+                  let key = String(data: data, encoding: .utf8) else {
+                throw ReadProblem.unreadable(status)
+            }
+            return key
+        case errSecItemNotFound:
+            throw ReadProblem.missing
+        default:
+            // errSecAuthFailed / errSecInteractionNotAllowed land here, and so
+            // does a user who declined the "wants to access" prompt.
+            throw exists(account: account) ? ReadProblem.unreadable(status) : ReadProblem.missing
+        }
         #else
-        return nil
+        throw ReadProblem.missing
         #endif
     }
 
@@ -98,6 +135,9 @@ enum KeychainStore {
     @discardableResult
     static func save(_ key: String, for provider: ProviderID) -> Bool { save(key, account: provider.rawValue) }
     static func read(for provider: ProviderID) -> String? { read(account: provider.rawValue) }
+    static func readOrFail(for provider: ProviderID) throws -> String {
+        try readOrFail(account: provider.rawValue)
+    }
     @discardableResult
     static func delete(for provider: ProviderID) -> Bool { delete(account: provider.rawValue) }
     static func hasKey(for provider: ProviderID) -> Bool { exists(account: provider.rawValue) }
@@ -107,6 +147,9 @@ enum KeychainStore {
     @discardableResult
     static func save(_ key: String, forImage provider: ImageProviderID) -> Bool { save(key, account: "image:\(provider.rawValue)") }
     static func read(forImage provider: ImageProviderID) -> String? { read(account: "image:\(provider.rawValue)") }
+    static func readOrFail(forImage provider: ImageProviderID) throws -> String {
+        try readOrFail(account: "image:\(provider.rawValue)")
+    }
     @discardableResult
     static func delete(forImage provider: ImageProviderID) -> Bool { delete(account: "image:\(provider.rawValue)") }
     static func hasKey(forImage provider: ImageProviderID) -> Bool { exists(account: "image:\(provider.rawValue)") }

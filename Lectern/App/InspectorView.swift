@@ -14,9 +14,14 @@ import LecternCore
 /// success mark.
 struct InspectorView: View {
     @Environment(AppState.self) private var app
+    #if !os(macOS)
+    /// A folder-picker failure worth a word. macOS never reaches this — it uses
+    /// an `NSOpenPanel` (see `chooseExportDestination`) — so the surface lives
+    /// only where the `fileImporter` does.
+    @State private var importError: String?
+    #endif
 
     var body: some View {
-        @Bindable var app = app
         Group {
             if let inspection = app.inspection {
                 content(for: inspection)
@@ -25,10 +30,21 @@ struct InspectorView: View {
                 ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .fileImporter(isPresented: $app.isChoosingExportDestination,
+        #if !os(macOS)
+        // macOS uses a real open panel instead, because `fileImporter` gives no
+        // way to create a folder — see `chooseExportDestination`.
+        .fileImporter(isPresented: exportDestinationBinding,
                       allowedContentTypes: [.folder]) { result in
-            if let url = try? result.get() { app.exportInspected(into: url) }
+            importError = FileImportOutcome.handle(result) { app.exportInspected(into: $0) }
         }
+        .alert("Couldn't export that deck",
+               isPresented: Binding(get: { importError != nil },
+                                    set: { if !$0 { importError = nil } })) {
+            Button("OK", role: .cancel) { importError = nil }
+        } message: {
+            Text(importError ?? "")
+        }
+        #endif
         .overlay {
             // Copying a deck's media out is measured in megabytes. The window
             // says so rather than going quiet.
@@ -44,6 +60,8 @@ struct InspectorView: View {
                 Text("\(inspection.slideCount) slide\(inspection.slideCount == 1 ? "" : "s") · "
                      + "\(inspection.formattedSize) · \(inspection.slideSize)")
                     .font(.subheadline).foregroundStyle(.secondary)
+                Text(inspection.documentKind)
+                    .font(.caption).foregroundStyle(.tertiary)
             }
             .padding(.top, 24).padding(.horizontal, 24).padding(.bottom, 12)
 
@@ -60,6 +78,11 @@ struct InspectorView: View {
                         }
                     }
                     textCard(inspection)
+                    // The deeper reads, folded away. Nine same-weight cards
+                    // gave the eye no hierarchy: everything looked equally
+                    // important, so nothing was. These are the answers you go
+                    // looking for, not the ones you arrive for.
+                    howItsBuilt(inspection)
                     if let summary = app.exportSummary { exportReport(summary) }
                 }
                 .padding(20)
@@ -91,12 +114,154 @@ struct InspectorView: View {
         }
     }
 
-    private func sectionsCard(_ inspection: DeckInspection) -> some View {
-        Card(title: "SECTIONS", systemImage: "list.bullet.indent") {
-            Text(inspection.sections.joined(separator: " · "))
-                .font(.callout).foregroundStyle(.secondary)
+    /// One card holding everything about how the deck is put together, each
+    /// part closed until asked for.
+    @ViewBuilder private func howItsBuilt(_ inspection: DeckInspection) -> some View {
+        let hasAnything = !inspection.masters.isEmpty || !inspection.charts.isEmpty
+            || hasFonts(inspection) || !inspection.properties.isEmpty
+        if hasAnything {
+            Card(title: "HOW IT'S BUILT", systemImage: "wrench.and.screwdriver") {
+                VStack(alignment: .leading, spacing: 4) {
+                    if !inspection.masters.isEmpty {
+                        DisclosureGroup("Masters & layouts (\(inspection.masters.count))") {
+                            mastersBody(inspection)
+                        }
+                    }
+                    if !inspection.charts.isEmpty {
+                        DisclosureGroup("Charts (\(inspection.charts.count))") {
+                            chartsBody(inspection)
+                        }
+                    }
+                    if hasFonts(inspection) {
+                        DisclosureGroup("Fonts") { fontsBody(inspection) }
+                    }
+                    if !inspection.properties.isEmpty {
+                        DisclosureGroup("Document properties") { propertiesBody(inspection) }
+                    }
+                }
+            }
         }
     }
+
+    private func sectionsCard(_ inspection: DeckInspection) -> some View {
+        Card(title: "SECTIONS", systemImage: "list.bullet.indent") {
+            VStack(alignment: .leading, spacing: 6) {
+                ForEach(inspection.sections) { section in
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text(section.name).font(.callout)
+                        Spacer(minLength: 12)
+                        Text("\(section.slideCount) slide\(section.slideCount == 1 ? "" : "s")")
+                            .font(.caption.monospacedDigit()).foregroundStyle(.tertiary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+        }
+    }
+
+    /// The masters a deck is actually built on, and the layouts each owns.
+    /// A deck with three masters is usually three decks somebody pasted
+    /// together, so this is worth showing rather than counting.
+    private func mastersBody(_ inspection: DeckInspection) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+                ForEach(inspection.masters) { master in
+                    DisclosureGroup {
+                        Text(master.layoutNames.isEmpty
+                             ? "No layouts"
+                             : master.layoutNames.joined(separator: " · "))
+                            .font(.caption).foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    } label: {
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            Text(master.name).font(.callout)
+                            Spacer(minLength: 12)
+                            Text(fontPair(of: master))
+                                .font(.caption).foregroundStyle(.tertiary)
+                            Text("\(master.layoutNames.count)")
+                                .font(.caption.monospacedDigit()).foregroundStyle(.tertiary)
+                        }
+                    }
+                }
+            }
+        }
+
+    private func fontPair(of master: MasterInspection) -> String {
+        [master.majorFont, master.minorFont].compactMap { $0 }
+            .filter { !$0.isEmpty }
+            .joined(separator: " / ")
+    }
+
+    /// What the charts plot — and whether Lectern could write new numbers back
+    /// into them, which is the question the rest of the app cares about.
+    private func chartsBody(_ inspection: DeckInspection) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+                ForEach(inspection.charts) { chart in
+                    ChartRow(chart: chart)
+                }
+            }
+        }
+
+    private func hasFonts(_ inspection: DeckInspection) -> Bool {
+        !inspection.themeFonts.isEmpty || !inspection.explicitFonts.isEmpty
+            || !inspection.embeddedFonts.isEmpty
+    }
+
+    /// Three font lists that answer three different questions: what the theme
+    /// asks for, what the slides override it with, and what the file carries
+    /// so it looks the same somewhere else.
+    private func fontsBody(_ inspection: DeckInspection) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+                fontRow("Theme", inspection.themeFonts)
+                fontRow("Named on slides", inspection.explicitFonts)
+                fontRow("Embedded", inspection.embeddedFonts)
+            }
+        }
+
+    @ViewBuilder private func fontRow(_ label: String, _ fonts: [String]) -> some View {
+        if !fonts.isEmpty {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label.uppercased()).font(.caption2.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                Text(fonts.joined(separator: " · "))
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func propertiesBody(_ inspection: DeckInspection) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+                let properties = inspection.properties
+                propertyRow("Title", properties.title)
+                propertyRow("Author", properties.author)
+                propertyRow("Company", properties.company)
+                propertyRow("Subject", properties.subject)
+                propertyRow("Keywords", properties.keywords)
+                propertyRow("Category", properties.category)
+                propertyRow("Application", properties.application)
+                propertyRow("Created", properties.created.map(Self.dateFormatter.string(from:)))
+                propertyRow("Modified", properties.modified.map(Self.dateFormatter.string(from:)))
+            }
+        }
+
+    @ViewBuilder private func propertyRow(_ label: String, _ value: String?) -> some View {
+        if let value, !value.isEmpty {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(label).font(.caption).foregroundStyle(.tertiary)
+                    .frame(width: 92, alignment: .leading)
+                Text(value).font(.caption).foregroundStyle(.secondary)
+                    .textSelection(.enabled)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }()
 
     private func findingsCard(_ inspection: DeckInspection) -> some View {
         Card(title: "FINDINGS", systemImage: "exclamationmark.triangle") {
@@ -151,6 +316,15 @@ struct InspectorView: View {
                         if slide.tableCount > 0 || slide.hasAttachments {
                             Text(cargo(of: slide)).font(.caption).foregroundStyle(.tertiary)
                         }
+                        Text(slide.layoutName).font(.caption2).foregroundStyle(.tertiary)
+                        ForEach(slide.comments) { comment in
+                            Label("\(comment.author): \(comment.text)"
+                                  + (comment.replyCount > 0 ? " (+\(comment.replyCount))" : ""),
+                                  systemImage: comment.resolved
+                                    ? "checkmark.bubble" : "bubble.left.and.bubble.right")
+                                .font(.caption).foregroundStyle(.tertiary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                         ForEach(Array(slide.notes.enumerated()), id: \.offset) { _, note in
                             Label(note, systemImage: "text.bubble")
                                 .font(.caption).foregroundStyle(.tertiary)
@@ -177,6 +351,55 @@ struct InspectorView: View {
         }
         return parts.joined(separator: " · ")
     }
+
+    // MARK: - Choosing where the export goes
+
+    /// Ask for the folder to export into.
+    ///
+    /// On macOS this is a real `NSOpenPanel` rather than SwiftUI's
+    /// `fileImporter`, for one reason: `fileImporter` cannot offer to *create*
+    /// a folder, and the folder a person wants to export a deck into usually
+    /// does not exist yet. `canCreateDirectories` is what puts the New Folder
+    /// button on the panel.
+    private func chooseExportDestination(for inspection: DeckInspection) {
+        #if os(macOS)
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.canCreateDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.prompt = "Export Here"
+        panel.title = "Export “\(inspection.fileName)”"
+        // The exporter makes its own folder inside whatever is chosen, so say
+        // which one rather than leaving a person to guess where it landed.
+        panel.message = "Choose or create a folder. Lectern will write "
+            + "“\(DeckExporter.folderName(for: inspection.fileURL))” inside it."
+        // Start beside the deck itself: exporting next to the original is the
+        // common case, and it makes New Folder land somewhere sensible.
+        panel.directoryURL = inspection.fileURL.deletingLastPathComponent()
+
+        let handle: (NSApplication.ModalResponse) -> Void = { response in
+            guard response == .OK, let url = panel.url else { return }
+            app.exportInspected(into: url)
+        }
+        // A sheet on the window it belongs to when there is one; the panel's
+        // own modal session when there is not.
+        if let window = NSApp.keyWindow {
+            panel.beginSheetModal(for: window, completionHandler: handle)
+        } else {
+            handle(panel.runModal())
+        }
+        #else
+        app.isChoosingExportDestination = true
+        #endif
+    }
+
+    #if !os(macOS)
+    private var exportDestinationBinding: Binding<Bool> {
+        Binding(get: { app.isChoosingExportDestination },
+                set: { app.isChoosingExportDestination = $0 })
+    }
+    #endif
 
     private func exportReport(_ summary: String) -> some View {
         Card(title: "EXPORTED", systemImage: "checkmark.seal") {
@@ -213,7 +436,7 @@ struct InspectorView: View {
                 Label("Open Another", systemImage: "folder")
             }
             .buttonStyle(.glass)
-            Button { app.isChoosingExportDestination = true } label: {
+            Button { chooseExportDestination(for: inspection) } label: {
                 Label("Export Everything…", systemImage: "square.and.arrow.down.on.square")
                     .font(.body.weight(.semibold)).padding(.horizontal, 6)
             }
@@ -260,5 +483,56 @@ private struct Stat: View {
             Text(label).font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+/// One chart, with what it plots folded away until asked for.
+///
+/// Its own view rather than a closure inside `InspectorView`: a chart carries
+/// four nested collections, and inlining that is what turns a card into an
+/// expression the type checker gives up on.
+private struct ChartRow: View {
+    let chart: ChartInspection
+
+    var body: some View {
+        DisclosureGroup {
+            VStack(alignment: .leading, spacing: 4) {
+                if !chart.categories.isEmpty {
+                    row("Categories: " + chart.categories.joined(separator: ", "))
+                }
+                ForEach(chart.series) { series in
+                    row("\(series.name): " + Self.describe(series.values))
+                }
+                if let problem = chart.replacementProblem {
+                    Label(problem, systemImage: "pencil.slash")
+                        .font(.caption).foregroundStyle(.orange)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+        } label: {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(chart.title).font(.callout).lineLimit(1)
+                Spacer(minLength: 12)
+                Text("slide \(chart.slideIndex + 1)")
+                    .font(.caption.monospacedDigit()).foregroundStyle(.tertiary)
+                Image(systemName: chart.canReplaceData ? "square.and.pencil" : "pencil.slash")
+                    .font(.caption)
+                    .foregroundStyle(chart.canReplaceData ? AnyShapeStyle(.secondary)
+                                                          : AnyShapeStyle(.orange))
+            }
+        }
+    }
+
+    private func row(_ text: String) -> some View {
+        Text(text).font(.caption).foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private static func describe(_ values: [Double?]) -> String {
+        let parts: [String] = values.map { value in
+            guard let value else { return "—" }
+            return String(format: "%g", value)
+        }
+        return parts.joined(separator: ", ")
     }
 }

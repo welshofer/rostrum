@@ -48,10 +48,35 @@ extension XML.Element {
         }
     }
 
-    /// Element children of `sldIdLst`-style order-bearing lists, ignoring any
-    /// insignificant whitespace text nodes a parsed file may carry.
+    /// Reorder the element children of an `sldIdLst`-style order-bearing list,
+    /// keeping any comments or processing instructions the file carried.
+    ///
+    /// The elements carry the list's meaning and the caller owns their new
+    /// order, so they are replaced wholesale. Insignificant whitespace text
+    /// between them is still dropped — it is formatting, and the writer lays
+    /// the list out itself. A comment or processing instruction is different:
+    /// it is markup Rostrum does not model, which is exactly the markup the
+    /// round-trip promise covers, so dropping it here would undo that promise
+    /// the moment a deck's slides were reordered, removed or merged.
+    ///
+    /// Each carried node goes back at the index it held before, so a rebuild
+    /// that does not change the element count — including a no-op reorder like
+    /// `move(from: 0, to: 0)` — puts every byte back exactly where it was. When
+    /// elements are removed the index is clamped to the shorter list, which is
+    /// the closest thing to "where it was" that still exists.
     func replaceChildElements(with elements: [XML.Element]) {
-        children = elements.map { .element($0) }
+        var carried: [(index: Int, node: XML.Node)] = []
+        for (index, child) in children.enumerated() {
+            switch child {
+            case .comment, .processingInstruction: carried.append((index, child))
+            case .element, .text: continue
+            }
+        }
+        var rebuilt: [XML.Node] = elements.map { .element($0) }
+        for (index, node) in carried {
+            rebuilt.insert(node, at: Swift.min(index, rebuilt.count))
+        }
+        children = rebuilt
     }
 
     /// An integer attribute parsed from a file, or nil when it is absent,
@@ -80,6 +105,9 @@ extension XML.Element {
             switch node {
             case .text(let text): return .text(text)
             case .element(let element): return .element(element.deepCopy())
+            case .comment(let body): return .comment(body)
+            case .processingInstruction(let target, let data):
+                return .processingInstruction(target: target, data: data)
             }
         })
     }

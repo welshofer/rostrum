@@ -22,7 +22,12 @@ public final class ShapeCollection: Sequence {
     /// values with `kind == .other` — so nothing on a foreign deck is
     /// invisible to enumeration.
     ///
-    /// A pure read: nothing here creates or dirties XML.
+    /// A pure read: nothing here creates or dirties XML, and nothing is
+    /// cached — the array is built from the tree as it stands right now, so
+    /// it can never go stale behind a mutation. Materialising it costs one
+    /// facade per shape; reach for `count` or `subscript` instead when you
+    /// only need the total or a single shape, as those read `p:spTree` in
+    /// place and allocate nothing they don't hand back.
     public var all: [Shape] {
         guard let spTree = Slide.existingSpTree(of: part) else { return [] }
         return Self.children(of: spTree, part: part, package: package)
@@ -38,15 +43,55 @@ public final class ShapeCollection: Sequence {
     /// skipping the container's own non-shape properties.
     static func children(of container: XML.Element, part: Part,
                          package: OPCPackage?) -> [Shape] {
-        container.childElements.compactMap { element in
-            // A shape tree's first children are its own properties, not
-            // shapes: p:nvGrpSpPr and p:grpSpPr (plus a trailing p:extLst).
-            // Enumerating those as shapes is the classic bug here.
-            switch element.name {
-            case "p:nvGrpSpPr", "p:grpSpPr", "p:extLst": return nil
-            default: return make(element, part: part, package: package)
-            }
+        var shapes: [Shape] = []
+        for node in container.children {
+            guard case .element(let element) = node, isShape(element) else { continue }
+            shapes.append(make(element, part: part, package: package))
         }
+        return shapes
+    }
+
+    /// Whether a shape-tree child element is a shape at all.
+    ///
+    /// A shape tree's first children are its own properties, not shapes:
+    /// p:nvGrpSpPr and p:grpSpPr (plus a trailing p:extLst). Enumerating
+    /// those as shapes is the classic bug here.
+    ///
+    /// The one predicate behind `all`, `count`, `subscript` and iteration, so
+    /// the four cannot disagree about what a shape is.
+    static func isShape(_ element: XML.Element) -> Bool {
+        switch element.name {
+        case "p:nvGrpSpPr", "p:grpSpPr", "p:extLst": return false
+        default: return true
+        }
+    }
+
+    /// How many shapes `container` holds, counted in place: no facades, no
+    /// intermediate array.
+    ///
+    /// Walks `children` rather than `childElements` so it neither allocates
+    /// nor miscounts a tree carrying comments, processing instructions or
+    /// whitespace text — none of which is a shape.
+    static func childCount(of container: XML.Element) -> Int {
+        var count = 0
+        for node in container.children {
+            if case .element(let element) = node, isShape(element) { count += 1 }
+        }
+        return count
+    }
+
+    /// The `index`-th shape element of `container` in document order, or nil
+    /// when `index` is out of range. Same walk as `childCount(of:)`, stopped
+    /// early — no facade is built here either.
+    static func childElement(of container: XML.Element, at index: Int) -> XML.Element? {
+        guard index >= 0 else { return nil }
+        var remaining = index
+        for node in container.children {
+            guard case .element(let element) = node, isShape(element) else { continue }
+            if remaining == 0 { return element }
+            remaining -= 1
+        }
+        return nil
     }
 
     /// The most specific facade for a shape-tree child.
@@ -64,9 +109,30 @@ public final class ShapeCollection: Sequence {
         }
     }
 
-    public var count: Int { all.count }
+    /// How many shapes are on the slide, counted straight off `p:spTree`.
+    ///
+    /// Reads the tree in place: no `Shape` facade is built and no array is
+    /// materialised, so asking for the count of a hundred-shape slide costs a
+    /// hundred name comparisons rather than a hundred allocations.
+    public var count: Int {
+        guard let spTree = Slide.existingSpTree(of: part) else { return 0 }
+        return Self.childCount(of: spTree)
+    }
 
-    public subscript(index: Int) -> Shape { all[index] }
+    /// The shape at `index` in z-order, built by walking to that one child of
+    /// `p:spTree` — exactly one facade per subscript, never the whole slide.
+    /// That is what keeps the obvious `for i in 0..<shapes.count { shapes[i] }`
+    /// from allocating a shape list per iteration.
+    ///
+    /// Traps on an out-of-range index, as indexing the array `all` returns
+    /// always has.
+    public subscript(index: Int) -> Shape {
+        guard let spTree = Slide.existingSpTree(of: part),
+              let element = Self.childElement(of: spTree, at: index) else {
+            preconditionFailure("shape index \(index) out of range")
+        }
+        return Self.make(element, part: part, package: package)
+    }
 
     public func makeIterator() -> IndexingIterator<[Shape]> {
         all.makeIterator()
@@ -199,6 +265,9 @@ public class Shape {
         self.element = element
         self.part = part
         self.package = package
+        #if DEBUG
+        Shape.facadeTally?.record()
+        #endif
     }
 
     /// What this shape is — the cheap discriminator, derived from the element
@@ -310,3 +379,36 @@ public class Shape {
         element.firstChild(named: "p:txBody").map { TextFrame(txBody: $0, part: part) }
     }
 }
+
+#if DEBUG
+extension Shape {
+    /// A tally of `Shape` facade constructions.
+    ///
+    /// The point of reading `p:spTree` in place is a cost model: `count`
+    /// builds no facade at all and `subscript` builds exactly one. That is a
+    /// structural claim, and no wall clock can check it — this is the seam
+    /// that lets a test check it directly.
+    ///
+    /// Task-local, so a suite running its tests in parallel cannot perturb one
+    /// reading with another test's shapes, and debug-only, so a shipping build
+    /// carries neither the storage nor the lookup.
+    final class FacadeTally: @unchecked Sendable {
+        private let lock = NSLock()
+        private var value = 0
+
+        var built: Int {
+            lock.lock()
+            defer { lock.unlock() }
+            return value
+        }
+
+        func record() {
+            lock.lock()
+            defer { lock.unlock() }
+            value += 1
+        }
+    }
+
+    @TaskLocal static var facadeTally: FacadeTally?
+}
+#endif

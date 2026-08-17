@@ -71,12 +71,35 @@ public actor DeckGenerator {
         let url = directory.appendingPathComponent("rejected-draft-\(stamp).json")
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            #if os(iOS)
             // On iOS this file sits in the app container alongside a Documents
             // folder published over USB file sharing; encrypt it at rest.
-            #if os(iOS)
             try Data(json.utf8).write(to: url, options: [.atomic, .completeFileProtection])
             #else
-            try Data(json.utf8).write(to: url, options: .atomic)
+            // macOS/Linux have no data-protection-at-rest, so the desktop
+            // equivalent is to keep the draft — the model's rendering of the
+            // user's prompt plus pasted grounding text — unreadable by other
+            // processes running as the user: create it owner-only (0o600).
+            //
+            // The mode has to be applied when the inode is created, not after
+            // the bytes land. Neither `Data.write(options: .atomic)` nor
+            // `FileManager.createFile(atPath:contents:attributes:)` guarantees
+            // that ordering — both can put the content on disk under the
+            // default mode and narrow it afterwards, leaving a window in which
+            // the draft is world-readable. `open` with an explicit mode has no
+            // such window: POSIX applies it at creation, and O_EXCL means we
+            // never write into a file we did not just make ourselves.
+            //
+            // The tradeoff is that this is not a temp-file-then-rename atomic
+            // write, so a crash mid-write could truncate this best-effort
+            // diagnostic. That is the right trade: never exposing the content
+            // matters more than crash-atomicity for a file that exists only to
+            // be read back by a developer.
+            let descriptor = open(url.path, O_WRONLY | O_CREAT | O_EXCL, 0o600)
+            guard descriptor >= 0 else { return nil }
+            let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+            try handle.write(contentsOf: Data(json.utf8))
+            try handle.close()
             #endif
             return url
         } catch {

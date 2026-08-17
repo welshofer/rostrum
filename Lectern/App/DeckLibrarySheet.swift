@@ -16,9 +16,22 @@ struct DeckLibrarySheet: View {
     @Environment(AppState.self) private var app
     @Environment(\.dismiss) private var dismiss
     @State private var pendingDelete: DeckFile?
+    @State private var query = ""
     #if os(iOS)
     @State private var previewURL: URL?
     #endif
+
+    /// Deck names are model-generated slugs, so matching is on the words a
+    /// person would actually remember rather than the whole string.
+    private var visibleDecks: [DeckFile] {
+        let trimmed = query.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return app.library }
+        let needles = trimmed.lowercased().split(separator: " ").map(String.init)
+        return app.library.filter { deck in
+            let name = deck.name.lowercased()
+            return needles.allSatisfy { name.contains($0) }
+        }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -32,9 +45,13 @@ struct DeckLibrarySheet: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List {
-                    ForEach(app.library) { deck in
+                    ForEach(visibleDecks) { deck in
                         DeckRow(deck: deck,
                                 open: { open(deck) },
+                                inspect: {
+                                    app.inspect(deckAt: deck.url)
+                                    dismiss()
+                                },
                                 reveal: { reveal(deck) },
                                 delete: { pendingDelete = deck })
                     }
@@ -42,6 +59,12 @@ struct DeckLibrarySheet: View {
                 #if os(macOS)
                 .listStyle(.inset)
                 #endif
+                .searchable(text: $query, prompt: "Search decks")
+                .overlay {
+                    if visibleDecks.isEmpty {
+                        ContentUnavailableView.search(text: query)
+                    }
+                }
             }
         }
         #if os(macOS)
@@ -122,6 +145,7 @@ struct DeckLibrarySheet: View {
 private struct DeckRow: View {
     let deck: DeckFile
     let open: () -> Void
+    let inspect: () -> Void
     let reveal: () -> Void
     let delete: () -> Void
 
@@ -136,12 +160,14 @@ private struct DeckRow: View {
             }
             Spacer(minLength: 8)
             #if os(macOS)
+            Button("Inspect", action: inspect).buttonStyle(.glassProminent)
             Button("Open", action: open).buttonStyle(.glass)
             Button { reveal() } label: { Image(systemName: "folder") }
                 .buttonStyle(.glass)
                 .help("Reveal in Finder")
                 .accessibilityLabel("Reveal \(deck.name) in Finder")
             #else
+            Button("Inspect", action: inspect).buttonStyle(.glassProminent)
             Button("Preview", action: open).buttonStyle(.glass)
             ShareLink(item: deck.url) { Image(systemName: "square.and.arrow.up") }
                 .accessibilityLabel("Share \(deck.name)")

@@ -135,4 +135,34 @@ import Testing
         let theme = try master.related(by: RelType.theme, in: package)
         #expect(theme.uri.value == "/ppt/theme/theme1.xml")
     }
+
+    /// A part that gets edited is rebuilt from its DOM, so anything the DOM
+    /// cannot hold is gone at that moment. Comments and processing
+    /// instructions are the plainest case of XML Rostrum does not model, and
+    /// the round-trip promise is about exactly that XML.
+    @Test func editingAPartKeepsTheMarkupItDoesNotModel() throws {
+        let original = Data("""
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r
+            <?mso-application progid="PowerPoint.Show"?><!-- produced elsewhere -->\
+            <p:sld xmlns:p="x"><!-- keep me --><p:cSld/></p:sld>
+            """.utf8)
+        let part = Part(uri: PackURI("/ppt/slides/slide1.xml"),
+                        contentType: ContentType.slide, blob: original)
+        // Untouched, the original bytes stand.
+        part.flushIfDirty()
+        #expect(part.blob == original)
+
+        try part.dom().appendElement(XML.Element("p:extLst"))
+        part.markDirty()
+        part.flushIfDirty()
+        #expect(part.blob != original)
+        let rebuilt = String(decoding: part.blob, as: UTF8.self)
+        #expect(rebuilt.contains(#"<?mso-application progid="PowerPoint.Show"?>"#))
+        #expect(rebuilt.contains("<!-- produced elsewhere -->"))
+        #expect(rebuilt.contains("<!-- keep me -->"))
+        #expect(rebuilt.hasSuffix("<!-- keep me --><p:cSld/><p:extLst/></p:sld>"))
+        // Still well-formed, and stable on a second pass.
+        let reread = try XML.parseDocument(part.blob)
+        #expect(XML.document(reread) == part.blob)
+    }
 }

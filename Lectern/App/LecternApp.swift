@@ -50,6 +50,9 @@ struct LecternApp: App {
         // app used to scrub the saved frame and force this size on every
         // launch, which read as broken window management on macOS.
         .defaultSize(width: 780, height: 1060)
+        // ContentView declares a 640×560 floor; without this the window is free
+        // to ignore it and clip the controls instead.
+        .windowResizability(.contentMinSize)
         .commands { lecternCommands }
         #endif
 

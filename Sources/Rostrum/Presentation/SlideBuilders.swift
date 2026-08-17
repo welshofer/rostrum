@@ -44,7 +44,7 @@ public extension Presentation {
     func titleSlide(_ title: String, subtitle: String? = nil,
                     kicker: String? = nil, style: DeckStyle? = nil) throws -> Slide {
         let s = style ?? self.style
-        let slide = try blankCanvas()
+        let slide = try titledCanvas(type: "title")
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
         // Fit the display size to the title so a long headline stays on the
@@ -64,11 +64,16 @@ public extension Presentation {
         if let kicker {
             try slide.addKicker(kicker, in: grid.cell(column: 0, row: 3, columnSpan: 12), style: s)
         }
+        // The deck's title, as PowerPoint understands the word. Positioned by
+        // the grid exactly as before; the `p:ph` binding is what puts it in the
+        // outline view, the slide navigator and a screen reader.
         try slide.addText(title, in: titleBand,
                           role: .display, style: titleStyle, anchor: .bottom)
+            .markAsPlaceholder(type: "ctrTitle")
         if let subtitle {
             try slide.addText(subtitle, in: grid.cell(column: 0, row: 9, columnSpan: 10, rowSpan: 2),
                               role: .subhead, style: s)
+                .markAsPlaceholder(type: "subTitle", idx: 1)
         }
         return slide
     }
@@ -804,6 +809,21 @@ public extension Presentation {
     /// free-shape builders paint on.
     private func blankCanvas() throws -> Slide { try slides.add() }
 
+    /// A canvas bound to a layout that declares a title.
+    ///
+    /// The builders draw every shape themselves, so they do not want the
+    /// layout's placeholder *shapes* — but they do need the binding, or the
+    /// title they mark has nothing to inherit from. Falls back to whatever
+    /// exists in a deck whose master was replaced by a template.
+    private func titledCanvas(type: String) throws -> Slide {
+        guard let layout = layouts.first(where: { $0.type == type })
+                ?? layouts.first(where: { $0.type == "obj" })
+                ?? layouts.first(where: { $0.type == "title" }) else {
+            return try blankCanvas()
+        }
+        return try slides.addBound(to: layout)
+    }
+
     private func deckGrid(_ style: DeckStyle) -> Grid {
         Grid(in: bounds, columns: 12, rows: 12, gutter: style.gutter, margin: style.margin)
     }
@@ -830,7 +850,7 @@ public extension Presentation {
 
     /// A content slide with the background painted; returns the slide.
     private func startContentSlide(_ style: DeckStyle) throws -> Slide {
-        let slide = try blankCanvas()
+        let slide = try titledCanvas(type: "obj")
         try slide.setBackground(.solid(style.background))
         return slide
     }
@@ -919,6 +939,7 @@ public extension Presentation {
                              fallback: title.count > 60 ? 30.0 : (title.count > 36 ? 34.0 : style.type(.title).sizePt))
         let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
         try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top)
+            .markAsPlaceholder(type: "title")
         let wraps = estimatedLines(title, style: titleStyle.type(.title), width: band.width) >= 2
         // A hairline under the title, the width of the text column.
         //

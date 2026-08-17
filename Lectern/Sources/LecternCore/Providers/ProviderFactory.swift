@@ -16,11 +16,13 @@ public enum ProviderFactory {
         switch id {
         case .anthropic:
             return AnthropicProvider(apiKey: key, model: model)
-        case .openAI, .gemini, .custom:
-            throw LecternError.providerError(status: 0, message: "\(id.rawValue) isn't wired up yet — use Anthropic.")
+        case .openAI:
+            return OpenAIProvider(apiKey: key, model: model)
+        case .gemini, .custom:
+            throw LecternError.providerError(status: 0, message: "\(id.rawValue) isn't wired up yet — use Anthropic or OpenAI.")
         }
     }
 
     /// Whether `id` currently has a live implementation (independent of any key).
-    public static func isWired(_ id: ProviderID) -> Bool { id == .anthropic }
+    public static func isWired(_ id: ProviderID) -> Bool { id == .anthropic || id == .openAI }
 }

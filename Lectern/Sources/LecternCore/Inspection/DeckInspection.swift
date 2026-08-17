@@ -22,7 +22,18 @@ public struct SlideDigest: Sendable, Identifiable {
     public let assetNames: [String]
     public let notes: [String]
 
+    /// Which layout and master this slide is built on — the first thing worth
+    /// knowing about a slide somebody else formatted.
+    public let layoutName: String
+    public let masterName: String
+    /// How many of each kind of shape the slide carries, keyed by a name a
+    /// person can read rather than by `ShapeKind`.
+    public let shapeCounts: [String: Int]
+    public let comments: [CommentInspection]
+    public let mediaCount: Int
+
     public var hasAttachments: Bool { !assetNames.isEmpty || !chartTitles.isEmpty }
+    public var shapeCount: Int { shapeCounts.values.reduce(0, +) }
 }
 
 /// What a deck turns out to be made of.
@@ -48,8 +59,25 @@ public struct DeckInspection: Sendable {
     public let partCount: Int
     /// e.g. `13.33in × 7.50in`.
     public let slideSize: String
-    /// Section names with their slide counts; empty when the deck has none.
-    public let sections: [String]
+    /// Whether the file is a deck, a template or a slide show.
+    public let documentKind: String
+    /// The sections the deck is divided into, with the slides in each; empty
+    /// when the deck has none.
+    public let sections: [SectionInspection]
+
+    /// What the file says about itself — author, company, when it was made.
+    public let properties: DeckPropertyInspection
+    /// The two fonts the theme names.
+    public let themeFonts: [String]
+    /// Fonts individual runs ask for by name, over the theme's head.
+    public let explicitFonts: [String]
+    /// Fonts the file actually carries inside it.
+    public let embeddedFonts: [String]
+    /// Every master with the layouts it owns and the fonts it names.
+    public let masters: [MasterInspection]
+    /// Every chart in the deck, with what it plots and whether Lectern could
+    /// write new numbers into it.
+    public let charts: [ChartInspection]
 
     /// Rostrum's schema lint on a deck it did not write. Empty is the normal
     /// case, and an entry is a fact about the file rather than about Lectern.
@@ -93,6 +121,13 @@ public struct DeckInspection: Sendable {
 /// is doing rather than leaving a window frozen with no explanation, and it
 /// checks for cancellation between slides.
 public enum DeckInspector {
+    /// Same conservative ceiling `pptx-tool` uses: far above a real deck, far
+    /// below what a zip bomb wants. Inspection is the one path that opens a
+    /// file chosen from outside the app's own container, so inheriting
+    /// Rostrum's `.unlimited` library default would make this an unbounded
+    /// decompression entry point.
+    public static let defaultReadLimit = 1 << 30
+
     public enum Event: Sendable, Equatable {
         case opening
         case validating
@@ -112,10 +147,19 @@ public enum DeckInspector {
     ///   only the numbers and the text are wanted.
     public static func inspect(deckAt url: URL,
                                renderPreviews: Bool = true,
+                               limits: ZipReader.Limits =
+                                   .init(totalUncompressedBytes: DeckInspector.defaultReadLimit),
                                onEvent: (Event) -> Void = { _ in }) throws -> DeckInspection {
         onEvent(.opening)
         let data = try Data(contentsOf: url)
-        let deck = try Presentation(data: data)
+        guard !data.isEmpty else { throw DeckInspectionError.emptyFile }
+        let deck: Presentation
+        do {
+            deck = try Presentation(data: data, limits: limits)
+        } catch {
+            throw DeckInspectionError.cannotOpen(String(describing: error))
+        }
+        let embeddedFonts = deck.registerEmbeddedFonts().sorted()
 
         onEvent(.validating)
         // A deck somebody else wrote is exactly the one whose lint might throw;
@@ -124,7 +168,10 @@ public enum DeckInspector {
 
         onEvent(.extracting)
         let outline = deck.outline()
-        let digests = outline.slides.map(digest(of:))
+        let detail = DeckDetailExtractor.walk(deck)
+        let digests = outline.slides.map { slide in
+            digest(of: slide, detail: detail.slideDetails[slide.number - 1])
+        }
 
         var previews: [String] = []
         var titles: [String] = []
@@ -159,16 +206,26 @@ public enum DeckInspector {
             partCount: deck.package.parts.count,
             slideSize: String(format: "%.2fin × %.2fin",
                               deck.slideSize.width.inches, deck.slideSize.height.inches),
-            sections: Array(deck.sections).map { "\($0.name) (\($0.slideCount))" },
+            documentKind: DeckDetailExtractor.name(of: deck.documentKind),
+            sections: deck.sections.map {
+                SectionInspection(id: $0.id, name: $0.name, slideIndices: $0.slideIndices)
+            },
+            properties: DeckDetailExtractor.properties(of: deck),
+            themeFonts: DeckDetailExtractor.themeFonts(of: deck),
+            explicitFonts: detail.explicitFonts.sorted(),
+            embeddedFonts: embeddedFonts,
+            masters: DeckDetailExtractor.masters(of: deck),
+            charts: detail.charts,
             schemaIssues: issues.map { "\($0)" },
             readWarnings: deck.package.readWarnings,
-            outlineWarnings: outline.warnings,
+            outlineWarnings: outline.warnings + detail.issues,
             slides: digests,
             previews: previews,
             previewTitles: titles)
     }
 
-    private static func digest(of slide: SlideOutline) -> SlideDigest {
+    private static func digest(of slide: SlideOutline,
+                               detail: DeckDetailExtractor.SlideDetail?) -> SlideDigest {
         let bullets = slide.body.flatMap { block in
             block.paragraphs.map { paragraph in
                 String(repeating: "    ", count: min(paragraph.level, 6))
@@ -182,7 +239,12 @@ public enum DeckInspector {
                            tableCount: slide.tables.count,
                            chartTitles: slide.charts.map { $0.title ?? "Untitled chart" },
                            assetNames: slide.assets.map(\.filename),
-                           notes: slide.notes)
+                           notes: slide.notes,
+                           layoutName: detail?.layoutName ?? "Unknown layout",
+                           masterName: detail?.masterName ?? "",
+                           shapeCounts: detail?.shapeCounts ?? [:],
+                           comments: detail?.comments ?? [],
+                           mediaCount: detail?.mediaCount ?? 0)
     }
 
     private static func partCount(_ deck: Presentation, _ prefix: String) -> Int {

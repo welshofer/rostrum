@@ -58,7 +58,8 @@ final class AppState {
     /// confirms the key; it never rewrites this list.
     static func defaultModels(for id: ProviderID) -> [String] {
         switch id {
-        case .anthropic: return ["claude-opus-4-8", "claude-sonnet-5", "claude-fable-5", "claude-haiku-4-5-20251001"]
+        case .anthropic: return ["claude-opus-5", "claude-sonnet-5", "claude-fable-5", "claude-haiku-4-5-20251001"]
+        case .openAI: return ["gpt-5.2", "gpt-5.2-mini", "gpt-5.1"]
         default: return []
         }
     }
@@ -120,8 +121,73 @@ final class AppState {
         library = DeckLibrary.decks(in: Self.decksDirectory())
     }
 
+    /// Slide counts, keyed by deck. The list view shows them in a column, which
+    /// needs every value up front rather than one per row as it scrolls — and
+    /// reading one is now a single zip entry, so filling the whole library is
+    /// cheap enough to do on a refresh.
+    private(set) var slideCounts: [URL: Int] = [:]
+
+    func loadSlideCounts() async {
+        await loadSlideCounts(for: library) {
+            await DeckCardIndex.shared.card(for: $0)?.slideCount
+        }
+    }
+
+    /// Fan the reads out instead of awaiting them one at a time.
+    ///
+    /// The old serial loop paid two costs per deck: each `DeckCardIndex` read
+    /// hopped off the main actor and back, and every assignment to
+    /// `slideCounts` invalidated every observing card, re-rendering the whole
+    /// list once per deck. Here the reads run concurrently, land in one local
+    /// dictionary, and `slideCounts` is mutated a single time at the end.
+    ///
+    /// The concurrency ceiling that keeps a library of ninety-megabyte decks
+    /// from oversubscribing the machine lives inside `DeckCardIndex`,
+    /// deliberately, and is left untouched — this only stops the reads from
+    /// serialising on the main actor. Decks already counted are skipped, and a
+    /// `nil` reading leaves that deck without a count, exactly as before.
+    ///
+    /// `reading` is injected so a test can supply its own counts and observe
+    /// that the reads overlap; production passes the `DeckCardIndex.shared`
+    /// read. Everything captured into the group is `Sendable` — `DeckFile` is,
+    /// and no `FileManager` is captured.
+    func loadSlideCounts(
+        for decks: [DeckFile],
+        reading count: @Sendable @escaping (DeckFile) async -> Int?
+    ) async {
+        let pending = decks.filter { slideCounts[$0.url] == nil }
+        guard !pending.isEmpty else { return }
+
+        var counts: [URL: Int] = [:]
+        await withTaskGroup(of: (URL, Int?).self) { group in
+            for deck in pending {
+                group.addTask { (deck.url, await count(deck)) }
+            }
+            for await (url, slideCount) in group {
+                if let slideCount { counts[url] = slideCount }
+            }
+        }
+
+        guard !counts.isEmpty else { return }
+        slideCounts.merge(counts) { _, new in new }
+    }
+
     func deleteFromLibrary(_ deck: DeckFile) {
         try? DeckLibrary.delete(deck)
+        refreshLibrary()
+    }
+
+    /// The last rename that failed, for the view to show and then clear. A
+    /// rename that silently does nothing is worse than one that explains why.
+    var renameProblem: String?
+
+    func renameInLibrary(_ deck: DeckFile, to name: String) {
+        do {
+            try DeckLibrary.rename(deck, to: name)
+            renameProblem = nil
+        } catch {
+            renameProblem = String(describing: error)
+        }
         refreshLibrary()
     }
 
@@ -142,14 +208,34 @@ final class AppState {
         static let useSmartArt = "useSmartArt"
     }
 
-    init() {
+    /// - Parameter skipKeychain: pass `true` from tests. Reading the login
+    ///   keychain from a test process is slow at best and a modal prompt at
+    ///   worst, and no test here is about whether a key is stored.
+    init(skipKeychain: Bool = false) {
         let d = UserDefaults.standard
         if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
-        if let m = d.string(forKey: Keys.model), Self.defaultModels(for: providerID).contains(m) { model = m }
+        // A selection stored before Settings started excluding unwired
+        // providers (or `.custom`, never wired) — land on the default rather
+        // than one the picker no longer offers.
+        providerID = ProviderPicker.resolveStoredSelection(providerID)
+        d.set(providerID.rawValue, forKey: Keys.provider)
+        // The model has to agree with the provider. A stored pair can disagree
+        // — the provider was just migrated, or the model list moved on — and a
+        // mismatch is not cosmetic: it sends one vendor's model name to
+        // another vendor's API, and leaves the Model picker with no matching
+        // tag. Land on the provider's first model and write that back, so the
+        // stored pair is consistent from here on.
+        if let m = d.string(forKey: Keys.model), Self.defaultModels(for: providerID).contains(m) {
+            model = m
+        } else if let first = Self.defaultModels(for: providerID).first {
+            model = first
+        }
+        d.set(model, forKey: Keys.model)
         if let raw = d.string(forKey: Keys.imageProvider), let id = ImageProviderID(rawValue: raw) { imageProviderID = id }
         favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])
         recents = d.stringArray(forKey: Keys.recents) ?? []
         useSmartArt = d.bool(forKey: Keys.useSmartArt)
+        guard !skipKeychain else { return }
         hasKey = KeychainStore.hasKey(for: providerID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
     }
@@ -185,6 +271,10 @@ final class AppState {
         keyStatus = .unknown
         if !Self.defaultModels(for: id).contains(model) { model = Self.defaultModels(for: id).first ?? model }
         UserDefaults.standard.set(id.rawValue, forKey: Keys.provider)
+        // Persist the model too. Without this the pair on disk disagrees the
+        // moment the provider changes, and the next launch reads a model that
+        // belongs to the previous vendor.
+        UserDefaults.standard.set(model, forKey: Keys.model)
         hasKey = KeychainStore.hasKey(for: id)
     }
 
@@ -230,11 +320,39 @@ final class AppState {
         imageKeyStatus = .unknown
     }
 
+    /// What to do when the keychain has the key but will not hand it over.
+    ///
+    /// On macOS the login keychain gates an item by the signature of the build
+    /// that saved it. A build signed differently — which every ad-hoc build is,
+    /// since its cdhash changes each time — can still *find* the item and
+    /// cannot read it. Re-saving rewrites the access control for the build in
+    /// front of the user, which is the one action that fixes it.
+    static let unreadableKeyAdvice =
+        "A key is saved, but this build of Lectern can't open it — paste it again to re-save."
+
+    /// Whether a keychain read failed because the item is there but sealed to a
+    /// different build, as opposed to simply not existing.
+    static func isUnreadable(_ result: Result<String, Error>) -> Bool {
+        guard case .failure(let error) = result,
+              case KeychainStore.ReadProblem.unreadable = error else { return false }
+        return true
+    }
+
     /// Validate authentication and access to the exact image model Lectern uses.
     func validateImageKey() async {
         let id = imageProviderID
-        guard let key = KeychainStore.read(forImage: id) else {
+        let key: String
+        do {
+            key = try KeychainStore.readOrFail(forImage: id)
+        } catch KeychainStore.ReadProblem.unreadable {
+            // The item is there; this build just cannot open it. Saying "no key
+            // stored" here sent us hunting a save bug that did not exist.
+            imageKeyStatus = .invalid(Self.unreadableKeyAdvice)
+            hasImageKey = true
+            return
+        } catch {
             imageKeyStatus = .invalid("No image key stored.")
+            hasImageKey = false
             return
         }
         imageKeyStatus = .validating
@@ -257,7 +375,16 @@ final class AppState {
         // against the wrong key — and selectProvider has already reset the
         // status to .unknown by then, so the stale write undoes a correct one.
         let id = providerID
-        guard let key = KeychainStore.read(for: id) else { keyStatus = .invalid("No key stored."); return }
+        let key: String
+        do {
+            key = try KeychainStore.readOrFail(for: id)
+        } catch KeychainStore.ReadProblem.unreadable {
+            keyStatus = .invalid(Self.unreadableKeyAdvice)
+            return
+        } catch {
+            keyStatus = .invalid("No key stored.")
+            return
+        }
         keyStatus = .validating
         do {
             let models = try await AnthropicModels.list(apiKey: key)
@@ -315,21 +442,35 @@ final class AppState {
         let designURL = selectedStyle?.designURL
         let directory = Self.decksDirectory()
         let diagnostics = Self.diagnosticsDirectory()
-        let key = KeychainStore.read(for: providerID)
+        let keyRead = Result { try KeychainStore.readOrFail(for: providerID) }
         let id = providerID, chosenModel = model
         let style = selectedStyle
         let smartArt = useSmartArt
         let imageID = imageProviderID
-        let imageKey = KeychainStore.read(forImage: imageProviderID)
+        let imageKeyRead = Result { try KeychainStore.readOrFail(forImage: imageProviderID) }
+        // An unreadable key is not a missing one. Treated as missing, the text
+        // key fails the run as "no key" while one sits in the keychain, and the
+        // image key silently drops every picture from a paid deck — which is
+        // exactly what Settings promises does not happen.
+        let key = try? keyRead.get()
+        let imageKey = try? imageKeyRead.get()
+        let unreadableKey = Self.isUnreadable(keyRead)
+        let unreadableImageKey = Self.isUnreadable(imageKeyRead)
 
         task = Task {
             do {
+                guard !unreadableKey else { throw LecternError.keyUnreadable }
                 let provider = try ProviderFactory.make(id: id, apiKey: key, model: chosenModel)
                 // Optional imagery: only when an image key exists. Art direction
                 // comes from the chosen style's design.md so images stay on-brand.
                 var imageProvider: (any ImageProvider)?
                 var imageStyle: String?
                 var imageSkipNote: String?
+                if unreadableImageKey {
+                    // Silence here would drop every picture from a paid deck
+                    // while an image key sits in the keychain.
+                    imageSkipNote = "Images were skipped — " + Self.unreadableKeyAdvice
+                }
                 if let imageKey {
                     if self.runs.isCurrent(run) { self.stage = "Checking image provider" }
                     do {
@@ -560,6 +701,7 @@ final class AppState {
         guard let lectern = error as? LecternError else { return "\(error.localizedDescription)" }
         switch lectern {
         case .noKey: return "Add an API key in Settings to begin."
+        case .keyUnreadable: return Self.unreadableKeyAdvice
         case .authFailed(let p): return "That key was rejected by \(p)."
         case .rateLimited(let s): return "Rate-limited — try again in \(s)s."
         case .requestTooLarge: return "That PDF is too large for this model."

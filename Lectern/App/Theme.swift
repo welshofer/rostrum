@@ -34,7 +34,7 @@ extension ProviderID {
     }
 }
 
-/// A concise label for a model id, e.g. `claude-opus-4-8` → "Opus 4.8",
+/// A concise label for a model id, e.g. `claude-opus-5` → "Opus 5",
 /// `claude-haiku-4-5-20251001` → "Haiku 4.5".
 func modelLabel(_ id: String) -> String {
     var s = id

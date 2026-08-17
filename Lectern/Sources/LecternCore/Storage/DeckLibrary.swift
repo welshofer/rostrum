@@ -78,11 +78,80 @@ public enum DeckLibrary {
     /// and delete it outright where it does not (Linux, and iOS, which has no
     /// trash). Deleting someone's document should be undoable wherever the
     /// platform can manage it.
+    /// Move a deck to the trash where that exists, so a mis-tap is recoverable,
+    /// and delete it outright where it does not (Linux, and iOS, which has no
+    /// trash). Deleting someone's document should be undoable wherever the
+    /// platform can manage it.
     public static func delete(_ deck: DeckFile, fileManager: FileManager = .default) throws {
         #if os(macOS)
         try fileManager.trashItem(at: deck.url, resultingItemURL: nil)
         #else
         try fileManager.removeItem(at: deck.url)
         #endif
+    }
+
+    /// Give a deck a different name, keeping it where it is.
+    ///
+    /// Deck names are model-generated slugs — `paperbanana-automating-academic-
+    /// illustration-for-ai-scientis-2-rebranded` is a real one — and the
+    /// library is now the first thing the app shows, so the name is worth being
+    /// able to fix. This renames the file rather than storing a display name
+    /// beside it: the deck is the document, and it should read the same in
+    /// Finder as it does here.
+    ///
+    /// - Returns: the deck at its new URL.
+    /// - Throws: `RenameProblem` for a name that cannot be used, and whatever
+    ///   the file system says for anything else. Never overwrites.
+    @discardableResult
+    public static func rename(_ deck: DeckFile,
+                              to proposed: String,
+                              fileManager: FileManager = .default) throws -> DeckFile {
+        let name = sanitizedName(proposed)
+        guard !name.isEmpty else { throw RenameProblem.empty }
+        guard name != deck.name else { return deck }
+
+        let destination = deck.url
+            .deletingLastPathComponent()
+            .appendingPathComponent(name)
+            .appendingPathExtension(deck.url.pathExtension)
+
+        // A case-only change is a move onto itself on a case-insensitive
+        // volume, which `fileExists` would call a collision.
+        let sameFile = destination.standardizedFileURL == deck.url.standardizedFileURL
+        if !sameFile, fileManager.fileExists(atPath: destination.path) {
+            throw RenameProblem.nameTaken(name)
+        }
+
+        try fileManager.moveItem(at: deck.url, to: destination)
+        return DeckFile(url: destination,
+                        name: name,
+                        modified: deck.modified,
+                        byteCount: deck.byteCount)
+    }
+
+    /// Why a rename could not happen, in words a person can act on.
+    public enum RenameProblem: Error, Equatable, CustomStringConvertible {
+        case empty
+        case nameTaken(String)
+
+        public var description: String {
+            switch self {
+            case .empty: "A deck needs a name."
+            case .nameTaken(let name): "There is already a deck called “\(name)”."
+            }
+        }
+    }
+
+    /// Strip what a filename cannot carry, rather than refusing the whole name.
+    /// A user typing `Q3 / Q4 review` means one deck, not an error.
+    static func sanitizedName(_ proposed: String) -> String {
+        let illegal = CharacterSet(charactersIn: "/:\\")
+            .union(.controlCharacters)
+        return proposed
+            .components(separatedBy: illegal)
+            .joined(separator: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            // A leading dot would hide the deck from the very list it is in.
+            .trimmingCharacters(in: CharacterSet(charactersIn: "."))
     }
 }

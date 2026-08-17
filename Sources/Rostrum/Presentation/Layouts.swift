@@ -48,7 +48,14 @@ extension Presentation {
 }
 
 extension Slides {
-    /// Add a slide based on `layout`, cloning its placeholders.
+    /// Add a slide based on `layout`, **cloning the layout's placeholder shapes
+    /// onto it**, and return it.
+    ///
+    /// This is the adder that copies: the new slide gets a placeholder shape for
+    /// each of the layout's (title, body, …), ready for a caller to fill in, so
+    /// the slide looks like the layout out of the box. For a slide that is bound
+    /// to the layout but carries *none* of its placeholder shapes — the canvas
+    /// for builders that draw everything themselves — use `addBound(to:)`.
     ///
     /// Cloning is synthesis, not copying (python-pptx semantics): each layout
     /// placeholder — except the latent date/footer/slide-number types — yields
@@ -57,7 +64,7 @@ extension Slides {
     /// body for text-bearing types. Copying layout geometry or prompt text
     /// would break inheritance.
     @discardableResult
-    public func add(layout: SlideLayout) throws -> Slide {
+    public func add(clonedFrom layout: SlideLayout) throws -> Slide {
         let slide = try add()
         // Retarget the layout relationship from the default to the chosen one.
         if let rel = slide.part.rels.first(ofType: RelType.slideLayout) {
@@ -69,6 +76,73 @@ extension Slides {
 
         try Placeholders.clone(from: layout.part, to: slide.part)
         return slide
+    }
+
+    /// Renamed to `add(clonedFrom:)`, whose label states plainly that it copies
+    /// the layout's placeholder shapes — so it can no longer be confused with
+    /// `addBound(to:)`, which copies nothing.
+    @available(*, deprecated, renamed: "add(clonedFrom:)")
+    @discardableResult
+    public func add(layout: SlideLayout) throws -> Slide {
+        try add(clonedFrom: layout)
+    }
+}
+
+extension Slides {
+    /// Add a slide **bound to `layout` but with none of its placeholder shapes
+    /// copied**, and return it.
+    ///
+    /// This is the adder that copies nothing: the new slide has the layout
+    /// relationship set — so a shape a caller marks as the title has a layout
+    /// declaring one to inherit from, and PowerPoint reads the slide as titled —
+    /// but the layout's own placeholder shapes are left off it. For a slide that
+    /// *does* carry a copy of each of the layout's placeholders, use
+    /// `add(clonedFrom:)`.
+    ///
+    /// For builders that place every shape themselves: they need the *binding*,
+    /// not the layout's empty placeholder shapes, which would otherwise sit on
+    /// top of the drawn ones showing "Click to add title".
+    @discardableResult
+    func addBound(to layout: SlideLayout) throws -> Slide {
+        let slide = try add()
+        if let rel = slide.part.rels.first(ofType: RelType.slideLayout) {
+            slide.part.rels.remove(rId: rel.rId)
+        }
+        slide.part.rels.add(
+            type: RelType.slideLayout,
+            target: slide.part.uri.relativeReference(to: layout.part.uri))
+        return slide
+    }
+}
+
+public extension Shape {
+    /// Make this shape the slide's title (or any other placeholder).
+    ///
+    /// Rostrum's builders position every shape on their own grid, which is why
+    /// they drew the title as a plain text box — and a deck of plain text boxes
+    /// has no titles at all as far as PowerPoint is concerned: nothing in the
+    /// outline view, nothing in the slide navigator, nothing for a screen
+    /// reader, and nothing for anything that summarises a deck. Adding the
+    /// `p:ph` binding costs no pixels — the explicit `a:xfrm` still wins — and
+    /// buys back every one of those.
+    ///
+    /// - Parameters:
+    ///   - type: `"title"`, `"ctrTitle"`, `"subTitle"`, `"body"`, …
+    ///   - idx: the layout placeholder index, for the types that carry one.
+    func markAsPlaceholder(type: String, idx: Int? = nil) {
+        guard let nvSpPr = element.firstChild(named: "p:nvSpPr"),
+              let nvPr = nvSpPr.firstChild(named: "p:nvPr") else { return }
+        // Never two of them: a second p:ph on one shape is invalid, and a
+        // rebuild that marked twice would produce it.
+        nvPr.children.removeAll { node in
+            if case .element(let child) = node, child.name == "p:ph" { return true }
+            return false
+        }
+        var attributes = [(String, String)]()
+        if !type.isEmpty { attributes.append(("type", type)) }
+        if let idx { attributes.append(("idx", String(idx))) }
+        nvPr.appendElement(XML.Element("p:ph", attributes: attributes))
+        part.markDirty()
     }
 }
 
