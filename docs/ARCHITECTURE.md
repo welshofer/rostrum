@@ -81,8 +81,10 @@ part.
 
 **Orphan preservation.** Zip members unreachable from the relationship graph
 are preserved on save (a stricter posture than python-pptx, which
-re-packages only reachable parts). An audit API reports
-them; `prune()` is an explicit opt-in.
+re-packages only reachable parts). What a read could *not* keep is reported:
+`deck.readWarnings` names any carried entry that failed to decode and was
+dropped, rather than letting it vanish silently. A general orphan-audit API
+and an opt-in `prune()` are intended but **not yet implemented**.
 
 **Stable identity handles.** `deck.slides[slideID]` subscripts keyed on the
 `sldId`/`spid` values already in the XML, alongside positional access, so user

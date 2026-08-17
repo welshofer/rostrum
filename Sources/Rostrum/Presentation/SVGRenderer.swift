@@ -22,7 +22,11 @@ struct SVGRenderer {
     private let emuPerPoint = 12700
 
     func render(pixelWidth: Int) throws -> (svg: String, problems: SlideRenderProblems) {
-        let dom = try slidePart.dom()
+        // Not for the value: this is the one call that surfaces a malformed
+        // slide part as a thrown error. Everything below reaches the tree
+        // through `existingSpTree`, which swallows the parse with `try?` and
+        // would render a silently blank slide instead.
+        _ = try slidePart.dom()
         // p:sldSz comes from the file too, and the aspect-ratio conversion below
         // goes through Int(_: Double), which traps when the double is out of
         // range — so bound the dimensions before dividing by them.

@@ -64,7 +64,7 @@ More recipes in the [cookbook](docs/COOKBOOK.md).
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/welshofer/rostrum", from: "0.3.0")
+.package(url: "https://github.com/welshofer/rostrum", from: "0.4.0")
 ```
 
 then add `"Rostrum"` to your target's dependencies.
@@ -85,7 +85,7 @@ then add `"Rostrum"` to your target's dependencies.
 | **Tables** | grid, cell fills & anchors, merge, banded rows |
 | **Charts** | bar / line / pie / area / doughnut / scatter / **radar / bubble / combo**, stacked & multi-series, titles, **data labels**, axis control, embedded Edit-Data workbook |
 | **Chart editing** | `deck.charts` reads any deck's charts; `replaceData` swaps every cache and the workbook or **refuses without writing a byte**; `addSeries` / `removeSeries` |
-| **Rendering** | `renderSVG(slideAt:)` / `exportSVG` — headless slide→SVG previews with real font metrics, master/layout inheritance, no platform text stack |
+| **Rendering** | `renderSVG(slideAt:)` / `exportSVG` — headless slide→SVG previews with real font metrics, master/layout inheritance, no platform text stack; `renderSVGReportingProblems` names a broken inheritance chain instead of quietly rendering without it |
 | **SmartArt** | Basic Block List creation; **text extraction from any diagram** |
 | **Comments** | modern threaded comments, replies, resolve |
 | **Notes** | per-slide speaker notes |

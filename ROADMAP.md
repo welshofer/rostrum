@@ -190,7 +190,7 @@ shipped; both are re-opened above (Phase 3 / Phase 4 item 5). P4's "using
 the TTF metrics we already parse" was wrong: nothing parsed TTF metrics
 until v0.4 M1 below; the SVG renderer's text is still approximate until M2.
 
-## Program: v0.4 — Measure & trust (2026-07-22 →)
+## Program: v0.4 — Measure & trust ✅ (2026-07-22 → 2026-08-17, shipped as v0.4.0)
 
 The theme: convert the library's two biggest asserted qualities into
 *measured* ones. Text layout stops guessing (the #1 pain in Lectern, the
@@ -279,8 +279,11 @@ Hardening backlog (schedule opportunistically):
   bomb amplifies across many entries~~ ✅ 2026-07-27. Resource exhaustion
   rather than a trap, so the fix had to be an API decision, not a patch: a
   caller-supplied `ZipReader.Limits` threaded through `OPCPackage.read` and
-  `Presentation.init`, defaulting to `.unlimited` so decks that are merely
-  large keep opening.
+  `Presentation.init`. It first defaulted to `.unlimited` so decks that are
+  merely large kept opening; the default is now `.default` — 4 GiB of
+  declared uncompressed bytes, far past any real deck — so untrusted input is
+  bounded out of the box, with `.unlimited` passed explicitly for archives
+  the caller already trusts.
 
   The budget is enforced **up front, from the central directory**, not
   accumulated as entries decode. Since each entry is bounded by its own declared
@@ -411,6 +414,47 @@ through the writer is the fix; it needs `ZipReader` to surface per-entry
 encoding and `OPCPackage.serialize` to honour it for parts that never went
 dirty. Found 2026-07-28 by an adversarial review of the corpus gate, which
 had been claiming full byte identity in its own doc comment.
+
+## Deferred — real, deliberately not scheduled
+
+Findings from the 2026-08-11 audits that were confirmed against the code and
+then *not* acted on, recorded here so they are not rediscovered from scratch.
+Each is a judgement about leverage, not a doubt about the finding.
+
+**Rostrum**
+
+- **Effective-frame inheritance matches layout → master by reduced type**
+  (`Slide.swift`) — a real asymmetry, but no observed deck reaches it and the
+  fix needs the full placeholder-matching table.
+- **`OPCPackage` multi-pass serialisation** — measured in milliseconds against
+  a whole-deck save; below the noise floor.
+- **`RostrumError` carries prose, not structured cases** — a genuine API
+  ergonomics gap, low leverage while the consumer set is this small.
+- **Text measurement ignores kerning, ligatures and shaping**
+  (`FontMetrics.swift`) — documented behaviour; fixing it means a shaping
+  engine, which is out of scope for a zero-dependency library.
+- **No snapshot or golden-file tests for `SVGRenderer`** —
+  `SVGRendererTests.swift` asserts structure, so a *visual* regression in the
+  preview path would pass silently.
+- `DeckRenderer`, `KeychainStore` and `SlideRasterizer` have **no tests at
+  all** — distinct from tests that existed but never ran, which is closed.
+- **`Examples/` and `Tools/` have never been audited** — four executable
+  targets plus `extract-schema.py` sit outside every surveyed set so far.
+
+**Lectern**
+
+- Only one image failure is reported when several fail — the collapse is in a
+  warning path the user rarely sees.
+- No cancel affordance *during* a long generation — needs a cancellation
+  token threaded through `DeckGenerator` and the provider.
+- **The decks already written remain headless.** The title-placeholder fix
+  applies to newly written decks only; repairing the existing library is a
+  migration, not a lift-up item.
+- iOS keeps live `WKWebView` slide previews while macOS rasterizes —
+  `takeSnapshot` needs a window, and the iOS path is not currently slow.
+- **`DeckRenderer.swift` is 923 lines** — the single place where IR, layout,
+  furniture, fonts, charts and previews all meet. Not a defect, but previews
+  and font resolution are both self-contained and the obvious next split.
 
 ## Standing quality gates
 
