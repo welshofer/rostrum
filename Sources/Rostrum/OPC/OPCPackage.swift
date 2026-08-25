@@ -94,6 +94,22 @@ public final class OPCPackage {
     /// read, not modelled, and previously not written back.
     private(set) var orphanRelationshipStreams: [(name: String, data: Data)] = []
 
+    /// Entries with no declared content type.
+    ///
+    /// `[Content_Types].xml` is required to cover every part (OPC M1.2), and a
+    /// package that breaks that rule is malformed. But PowerPoint itself ships
+    /// them: deleting content can leave a `/[trash]/0000.dat` behind in the
+    /// archive with no Override and no matching Default, and PowerPoint reopens
+    /// its own files perfectly happily. Refusing the whole deck over a part
+    /// nothing references cost 12 of 471 real decks in one library — 2.5%,
+    /// every one of which opens in PowerPoint and in python-pptx.
+    ///
+    /// So they are carried, not modelled and not rejected: same treatment as an
+    /// orphan `.rels` stream, and for the same reason. They cannot become
+    /// `Part`s — a `Part` without a content type has no legal serialization —
+    /// and dropping them would break the round trip.
+    private(set) var untypedEntries: [(name: String, data: Data)] = []
+
     /// Diagnostics from `read`: carried entries (directory placeholders,
     /// orphan `.rels` streams) that could not be decoded and were dropped.
     /// Opening must survive them — they are not parts, and failing the whole
@@ -169,7 +185,16 @@ public final class OPCPackage {
             }
             let uri = PackURI("/" + name)
             let blob = try zip.data(forEntry: name)
-            let ct = try package.contentTypes.contentType(for: uri)
+            guard let ct = package.contentTypes.declaredContentType(for: uri) else {
+                // Not a part — nothing can reference it, because a relationship
+                // target without a content type could not be loaded either.
+                // Carried verbatim so the resave stays a fixed point.
+                package.untypedEntries.append((name, blob))
+                package.readWarnings.append(
+                    "part \"\(name)\" has no declared content type and is carried "
+                        + "through unmodelled")
+                continue
+            }
             package.parts[uri] = Part(uri: uri, contentType: ct, blob: blob)
         }
 
@@ -311,6 +336,10 @@ public final class OPCPackage {
         // Carried entries next, each sorted — a fixed position and a fixed
         // order, so output is deterministic and resaving is a fixed point.
         for entry in orphanRelationshipStreams.sorted(by: { $0.name < $1.name })
+        where !derived.contains(entry.name) {
+            zip.addFile(name: entry.name, data: entry.data)
+        }
+        for entry in untypedEntries.sorted(by: { $0.name < $1.name })
         where !derived.contains(entry.name) {
             zip.addFile(name: entry.name, data: entry.data)
         }

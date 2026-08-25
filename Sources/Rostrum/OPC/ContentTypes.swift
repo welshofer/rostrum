@@ -44,11 +44,19 @@ public struct ContentTypesMap {
         overrides[partName] = nil
     }
 
+    /// Override first, then extension Default. Nil when the package declares
+    /// neither — which is malformed, but survivable; see
+    /// `OPCPackage.untypedEntries`.
+    public func declaredContentType(for partName: PackURI) -> String? {
+        overrides[partName] ?? defaults[partName.ext]
+    }
+
     /// Override first, then extension Default.
     public func contentType(for partName: PackURI) throws -> String {
-        if let ct = overrides[partName] { return ct }
-        if let ct = defaults[partName.ext] { return ct }
-        throw RostrumError.packageInvalid("no content type for part \(partName)")
+        guard let ct = declaredContentType(for: partName) else {
+            throw RostrumError.packageInvalid("no content type for part \(partName)")
+        }
+        return ct
     }
 
     public static func parse(_ data: Data) throws -> ContentTypesMap {
