@@ -251,6 +251,7 @@ struct SVGRenderer {
             let x: Int, baseline: Int, size: Int
             let fill: String, anchor: String, text: String
             let bold: Bool
+            let typeface: String?
         }
         var lines: [Line] = []
         var cursorY = 0
@@ -305,7 +306,8 @@ struct SVGRenderer {
                 let ascent = Int((metrics.ascent(pointSize: sizePt) * Double(emuPerPoint)).rounded())
                 for line in wrapped {
                     lines.append(Line(x: lineX, baseline: cursorY + ascent, size: sizeEMU,
-                                      fill: color, anchor: textAnchor, text: line, bold: bold))
+                                      fill: color, anchor: textAnchor, text: line, bold: bold,
+                                      typeface: typeface))
                     cursorY += lineH
                 }
             } else {
@@ -316,7 +318,8 @@ struct SVGRenderer {
                 for line in wrapEstimated(text, width: w, sizeEMU: sizeEMU) {
                     cursorY += sizeEMU
                     lines.append(Line(x: anchorX, baseline: cursorY, size: sizeEMU,
-                                      fill: color, anchor: textAnchor, text: line, bold: bold))
+                                      fill: color, anchor: textAnchor, text: line, bold: bold,
+                                      typeface: typeface))
                     cursorY += sizeEMU / 3
                 }
             }
@@ -333,11 +336,61 @@ struct SVGRenderer {
         default: offsetY = y
         }
         return lines.map { line in
-            "<text x=\"\(line.x)\" y=\"\(line.baseline + offsetY)\" font-size=\"\(line.size)\" "
-                + "fill=\"\(line.fill)\" text-anchor=\"\(line.anchor)\""
-                + (line.bold ? " font-weight=\"bold\"" : "") + ">"
-                + escape(line.text) + "</text>"
+            textElement(line.text, x: line.x, baseline: line.baseline + offsetY,
+                        sizeEMU: line.size, fill: line.fill, anchor: line.anchor,
+                        bold: line.bold, typeface: line.typeface)
         }.joined()
+    }
+
+
+    // MARK: - Text emission
+
+    /// One `<text>`, positioned in EMU but sized in points.
+    ///
+    /// The obvious markup — `font-size` in EMU, like every other length here —
+    /// is silently unreadable in a browser. WebKit and Blink clamp computed
+    /// `font-size` to a five-digit maximum *before* the viewBox transform
+    /// shrinks it, so a 68pt title asking for `font-size="863600"` gets clamped
+    /// and then scaled down to roughly one pixel. The text is present, in the
+    /// right place, and invisible.
+    ///
+    /// So the glyphs are specified in points, under their own
+    /// `translate(x, y) scale(emuPerPoint)`: the size never approaches the
+    /// clamp, and the scale puts it back into EMU space. `text-anchor` still
+    /// works — it anchors at x = 0 of the scaled space, which the translate has
+    /// already put at the anchor point.
+    private func textElement(_ text: String, x: Int, baseline: Int, sizeEMU: Int,
+                             fill: String, anchor: String, bold: Bool,
+                             typeface: String?) -> String {
+        "<text transform=\"translate(\(x),\(baseline)) scale(\(emuPerPoint))\" "
+            + "font-size=\"\(points(sizeEMU))\" fill=\"\(fill)\" text-anchor=\"\(anchor)\""
+            + fontFamilyAttr(typeface)
+            + (bold ? " font-weight=\"bold\"" : "") + ">"
+            + escape(text) + "</text>"
+    }
+
+    /// The typeface the run resolved to, as a `font-family` the viewer can use.
+    ///
+    /// Without this every deck renders in the viewer's default serif, whatever
+    /// its brand font is — the renderer already resolves the typeface to pick
+    /// wrapping metrics, it just never said so in the markup. A generic
+    /// fallback keeps a missing font from landing back on serif by accident.
+    private func fontFamilyAttr(_ typeface: String?) -> String {
+        guard let typeface, !typeface.isEmpty else { return "" }
+        return " font-family=\"\(escape(typeface)), sans-serif\""
+    }
+
+    /// EMU as points, formatted deterministically.
+    ///
+    /// Run sizes come from `a:rPr/@sz` in hundredths of a point, so this is at
+    /// most two decimals; trailing zeros are trimmed so whole sizes stay whole
+    /// and byte-identical output survives.
+    private func points(_ emu: Int) -> String {
+        let hundredths = emu * 100 / emuPerPoint
+        let whole = hundredths / 100, frac = abs(hundredths % 100)
+        if frac == 0 { return String(whole) }
+        if frac % 10 == 0 { return "\(whole).\(frac / 10)" }
+        return String(format: "%d.%02d", whole, frac)
     }
 
     /// The typeface a run renders in: its own `a:latin`, the theme font it
@@ -496,8 +549,9 @@ struct SVGRenderer {
         else if uri == GraphicDataURI.ole { label = "[embedded object]" }
         else { label = "[object]" }
         return box(x, y, w, h, fill: "#F2F2F2", stroke: " stroke=\"#CCCCCC\" stroke-width=\"6350\"")
-            + "<text x=\"\(x + w / 2)\" y=\"\(y + h / 2)\" font-size=\"\(18 * emuPerPoint)\" fill=\"#999999\" "
-            + "text-anchor=\"middle\">\(escape(label))</text>"
+            + textElement(label, x: x + w / 2, baseline: y + h / 2,
+                          sizeEMU: 18 * emuPerPoint, fill: "#999999", anchor: "middle",
+                          bold: false, typeface: nil)
     }
 
     // MARK: - Charts
@@ -546,9 +600,10 @@ struct SVGRenderer {
 
         var out = ""
         if let title {
-            out += "<text x=\"\(coord(fx + fw / 2))\" y=\"\(coord(fy + fh * 0.11))\" "
-                + "font-size=\"\(13 * emuPerPoint)\" fill=\"#666666\" text-anchor=\"middle\">"
-                + escape(clipLabel(title, width: w, sizeEMU: 13 * emuPerPoint)) + "</text>"
+            out += textElement(clipLabel(title, width: w, sizeEMU: 13 * emuPerPoint),
+                               x: coord(fx + fw / 2), baseline: coord(fy + fh * 0.11),
+                               sizeEMU: 13 * emuPerPoint, fill: "#666666", anchor: "middle",
+                               bold: false, typeface: nil)
         }
 
         switch kind {
@@ -772,9 +827,11 @@ struct SVGRenderer {
         let size = 10 * emuPerPoint
         var out = ""
         for (index, label) in categories.prefix(catCount).enumerated() {
-            out += "<text x=\"\(coord(plotX + step * (Double(index) + 0.5)))\" "
-                + "y=\"\(coord(baseY + height * 0.06))\" font-size=\"\(size)\" fill=\"#808080\" "
-                + "text-anchor=\"middle\">" + escape(clipLabel(label, width: coord(step), sizeEMU: size)) + "</text>"
+            out += textElement(clipLabel(label, width: coord(step), sizeEMU: size),
+                               x: coord(plotX + step * (Double(index) + 0.5)),
+                               baseline: coord(baseY + height * 0.06),
+                               sizeEMU: size, fill: "#808080", anchor: "middle",
+                               bold: false, typeface: nil)
         }
         return out
     }
@@ -792,9 +849,11 @@ struct SVGRenderer {
             let left = x + slot * Double(slotIndex) + slot * 0.1
             out += box(coord(left), coord(y + height * 0.02), coord(swatch), coord(swatch),
                        fill: seriesColor(entry.offset))
-            out += "<text x=\"\(coord(left + swatch * 1.5))\" y=\"\(coord(y + height * 0.02 + swatch * 0.85))\" "
-                + "font-size=\"\(size)\" fill=\"#808080\" text-anchor=\"start\">"
-                + escape(clipLabel(entry.element, width: coord(slot * 0.75), sizeEMU: size)) + "</text>"
+            out += textElement(clipLabel(entry.element, width: coord(slot * 0.75), sizeEMU: size),
+                               x: coord(left + swatch * 1.5),
+                               baseline: coord(y + height * 0.02 + swatch * 0.85),
+                               sizeEMU: size, fill: "#808080", anchor: "start",
+                               bold: false, typeface: nil)
         }
         return out
     }

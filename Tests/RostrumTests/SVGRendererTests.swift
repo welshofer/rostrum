@@ -355,9 +355,63 @@ import Testing
 
         #expect(svg.contains("Inherited"))
         #expect(svg.contains("#FF0000"), "the run fell back to the renderer's default colour")
-        #expect(svg.contains("\(80 * 12700)"), "the run fell back to the renderer's default size")
+        #expect(svg.contains("font-size=\"80\""), "the run fell back to the renderer's default size")
         // The layout puts ctrTitle at x=1524000; a shape rendered without
-        // inheritance lands at 0.
-        #expect(!svg.contains("<text x=\"0\""), "the placeholder rendered at the origin")
+        // inheritance lands at 0. Text is positioned by `transform`, so the
+        // origin case reads `translate(0,` — checking for an `x="0"` attribute
+        // here would pass without testing anything.
+        #expect(!svg.contains("translate(0,"), "the placeholder rendered at the origin")
+    }
+
+    /// Browsers clamp computed `font-size` to a five-digit maximum before the
+    /// viewBox transform is applied, so a size emitted in EMU (a 68pt title is
+    /// 863600) is clamped and then scaled down to about a pixel: text present,
+    /// correctly placed, and invisible. Sizes therefore go out in points, under
+    /// a per-text `scale(12700)` that restores EMU space.
+    @Test func textIsSizedInPointsSoBrowsersDoNotClampItAway() throws {
+        let deck = try Presentation()
+        let slide = try deck.slides[0]
+        let shape = try slide.shapes.addTextBox(Rect(x: EMU(914_400), y: EMU(914_400),
+                                                     width: EMU(5_486_400), height: EMU(1_828_800)))
+        let frame = try #require(shape.textFrame)
+        frame.text = "Sized"
+
+        let svg = try deck.renderSVG(slideAt: 0)
+
+        let sizes = matches(of: "font-size=\"([0-9.]+)\"", in: svg)
+        #expect(!sizes.isEmpty, "nothing was rendered to size")
+        for size in sizes {
+            let value = try #require(Double(size))
+            #expect(value < 10_000,
+                    "font-size \(value) is in the range browsers clamp — EMU leaked back in")
+        }
+        #expect(svg.contains("scale(12700)"), "text was not scaled back into EMU space")
+    }
+
+    /// The renderer resolves a run's typeface to choose wrapping metrics; if it
+    /// does not also say so in the markup, every deck renders in the viewer's
+    /// default serif no matter what its brand font is.
+    @Test func aResolvedTypefaceIsNamedInTheMarkup() throws {
+        let deck = try Presentation()
+        let slide = try deck.slides[0]
+        let shape = try slide.shapes.addTextBox(Rect(x: EMU(914_400), y: EMU(914_400),
+                                                     width: EMU(5_486_400), height: EMU(1_828_800)))
+        let frame = try #require(shape.textFrame)
+        let run = frame.addParagraph().addRun("Branded")
+        run.fontName = "Georgia"
+
+        let svg = try deck.renderSVG(slideAt: 0)
+
+        #expect(svg.contains("font-family=\"Georgia"), "the resolved typeface never reached the markup")
+    }
+
+    /// Regex-free attribute scrape: the renderer's output is the contract, and
+    /// a test that parsed it with the library's own XML would hide a malformed
+    /// emission.
+    private func matches(of pattern: String, in text: String) -> [String] {
+        guard let re = try? NSRegularExpression(pattern: pattern) else { return [] }
+        let ns = text as NSString
+        return re.matches(in: text, range: NSRange(location: 0, length: ns.length))
+            .compactMap { $0.numberOfRanges > 1 ? ns.substring(with: $0.range(at: 1)) : nil }
     }
 }
