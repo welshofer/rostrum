@@ -47,6 +47,32 @@ public final class Slide {
         (try? part.dom())?.firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")
     }
 
+    /// The slide's own solid background colour, if it sets one.
+    ///
+    /// `setBackground` had no counterpart, so a caller could write a background
+    /// but never ask what one was — which makes "build a new slide that looks
+    /// like this deck" impossible to do faithfully. Plenty of real decks carry
+    /// their look on the slide rather than in the theme: a Keynote export puts
+    /// `<p:bg><a:solidFill><a:srgbClr val="000000"/>` on every slide while the
+    /// theme's `dk1`/`lt1` stay at the Office defaults, so a reader consulting
+    /// only the theme concludes the deck is light.
+    ///
+    /// Nil when the slide inherits its background, or sets a gradient or
+    /// picture fill rather than a solid one — this answers one narrow question
+    /// and says nothing when the answer is not simple.
+    public var solidBackground: Color? {
+        guard let bg = (try? part.dom())?
+            .firstChild(named: "p:cSld")?
+            .firstChild(named: "p:bg")?
+            .firstChild(named: "p:bgPr")?
+            .firstChild(named: "a:solidFill"),
+            let srgb = bg.firstChild(named: "a:srgbClr"),
+            let value = srgb[attribute: "val"] else { return nil }
+        // `validating:` rather than the literal init: this value came out of a
+        // file, and a malformed one should be nil rather than a trap.
+        return Color(validating: value)
+    }
+
     /// Set the slide's background fill (`p:bg`, always the first child of
     /// `p:cSld`).
     public func setBackground(_ fill: Fill) throws {
