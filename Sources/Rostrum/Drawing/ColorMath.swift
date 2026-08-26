@@ -20,7 +20,13 @@ public extension Color {
     }
 
     /// WCAG 2.x relative luminance — gamma-correct, 0 (black) … 1 (white).
-    var relativeLuminance: Double {
+    ///
+    /// Public because anything building slides on top of Rostrum has to make
+    /// the same light-text-or-dark-text decision `DeckStyle` makes internally,
+    /// and the alternative is every caller hand-rolling its own luminance —
+    /// which is how two parts of one deck end up disagreeing about whether a
+    /// background is dark.
+    public var relativeLuminance: Double {
         func linear(_ c: Int) -> Double {
             let s = Double(c) / 255
             return s <= 0.03928 ? s / 12.92 : pow((s + 0.055) / 1.055, 2.4)
@@ -30,7 +36,7 @@ public extension Color {
 
     /// WCAG contrast ratio with `other`, 1 (identical) … 21 (black↔white).
     /// Symmetric.
-    func contrastRatio(with other: Color) -> Double {
+    public func contrastRatio(with other: Color) -> Double {
         let hi = Swift.max(relativeLuminance, other.relativeLuminance)
         let lo = Swift.min(relativeLuminance, other.relativeLuminance)
         return (hi + 0.05) / (lo + 0.05)
@@ -38,14 +44,15 @@ public extension Color {
 
     /// The more legible of `dark`/`light` to sit ON this color as a background.
     /// Ties favor `dark`.
-    func onColor(dark: Color = .black, light: Color = .white) -> Color {
+    public func onColor(dark: Color = .black, light: Color = .white) -> Color {
         contrastRatio(with: dark) >= contrastRatio(with: light) ? dark : light
     }
 
     /// The `option` with the highest contrast against `background` (auto-contrast
     /// text). Deterministic — the first of equally-good options wins; empty
     /// `options` yields `.black`.
-    static func bestTextColor(on background: Color, options: [Color] = [.black, .white]) -> Color {
+    public static func bestTextColor(on background: Color,
+                                     options: [Color] = [.black, .white]) -> Color {
         var best = Color.black
         var bestRatio = -1.0
         for option in options {
