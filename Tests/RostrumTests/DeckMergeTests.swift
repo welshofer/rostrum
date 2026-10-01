@@ -245,3 +245,110 @@ import Testing
         #expect(try dest.serializedData() == before)
     }
 }
+
+@Suite struct NotesMasterImportTests {
+    private func brandedSource() throws -> Presentation {
+        let source = try Presentation()
+        try source.slides[0].setNotes("branded notes")
+        let master = try source.presentationPart.related(by: RelType.notesMaster, in: source.package)
+        let root = try master.dom()
+        let bg = try #require(root.firstChild(named: "p:cSld")?.firstChild(named: "p:bg"))
+        bg.children = [.element(XML.Element("p:bgPr", children: [.element(
+            XML.Element("a:solidFill", children: [.element(XML.Element("a:srgbClr", attributes: [("val", "123456")]))]))]))]
+        root.appendElement(XML.Element("p:notesStyle", children: [.element(XML.Element("a:lvl1pPr", children: [
+            .element(XML.Element("a:defRPr", attributes: [("sz", "2200")], children: [
+                .element(XML.Element("a:latin", attributes: [("typeface", "Brand Notes Font")]))])),
+        ]))]))
+        root.appendElement(XML.Element("custom:extension", attributes: [("xmlns:custom", "urn:notes-brand"), ("keep", "opaque")]))
+        master.markDirty()
+        let theme = try master.related(by: RelType.theme, in: source.package)
+        let themeRoot = try theme.dom()
+        themeRoot[attribute: "name"] = "Notes Brand Theme"
+        theme.markDirty()
+        let image = source.package.addPart(uri: PackURI("/ppt/media/notesLogo.png"), contentType: ContentType.png,
+            blob: Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j1ioAAAAASUVORK5CYII=")!)
+        master.rels.add(type: RelType.image, target: master.uri.relativeReference(to: image.uri))
+        let size = try #require(source.presentationPart.dom().firstChild(named: "p:notesSz"))
+        size[attribute: "cx"] = "7000000"
+        size[attribute: "cy"] = "9000000"
+        source.presentationPart.markDirty()
+        return source
+    }
+
+    @Test func firstNotesMasterPreservesActualMasterThemeImagesAndPageSize() throws {
+        let source = try brandedSource()
+        _ = try source.serializedData()
+        let oldMaster = try source.presentationPart.related(by: RelType.notesMaster, in: source.package)
+        let alternate = source.package.addPart(uri: PackURI("/ppt/notesMasters/company.xml"),
+            contentType: oldMaster.contentType, blob: oldMaster.blob)
+        alternate.rels.setItems(oldMaster.rels.items)
+        for part in source.package.parts.values {
+            part.rels.setItems(part.rels.items.map { rel in
+                guard !rel.isExternal,
+                      PackURI.resolve(target: rel.target, relativeTo: part.uri.baseURI) == oldMaster.uri else { return rel }
+                return Relationship(rId: rel.rId, type: rel.type,
+                    target: part.uri.relativeReference(to: alternate.uri), isExternal: false)
+            })
+        }
+        source.package.removePart(at: oldMaster.uri)
+        let sourceMaster = try source.presentationPart.related(by: RelType.notesMaster, in: source.package)
+        let dest = try Presentation()
+        let imported = try dest.slides.import(from: source, at: 0)
+        let notes = try imported.part.related(by: RelType.notesSlide, in: dest.package)
+        let master = try notes.related(by: RelType.notesMaster, in: dest.package)
+        #expect(master.blob == sourceMaster.blob)
+        #expect(try master.related(by: RelType.theme, in: dest.package).blob
+            == sourceMaster.related(by: RelType.theme, in: source.package).blob)
+        #expect(try master.related(by: RelType.image, in: dest.package).blob
+            == sourceMaster.related(by: RelType.image, in: source.package).blob)
+        #expect(try dest.presentationPart.dom().firstChild(named: "p:notesSz")?.serialized()
+            == source.presentationPart.dom().firstChild(named: "p:notesSz")?.serialized())
+        #expect(imported.notesText == "branded notes")
+        #expect(try notes.related(by: RelType.slide, in: dest.package).uri == imported.part.uri)
+        let reopened = try Presentation(data: try dest.serializedData())
+        let reopenedMaster = try reopened.presentationPart.related(by: RelType.notesMaster, in: reopened.package)
+        #expect(reopenedMaster.blob == sourceMaster.blob)
+        #expect(try reopened.validate().isEmpty)
+        let added = try reopened.slides.add()
+        try added.setNotes("new notes use imported master")
+        let addedMaster = try added.part.related(by: RelType.notesSlide, in: reopened.package)
+            .related(by: RelType.notesMaster, in: reopened.package)
+        #expect(addedMaster.uri == reopenedMaster.uri)
+    }
+
+    @Test func compatibleMastersReuseExistingNotesAppearanceAcrossRepeatedImports() throws {
+        let source = try brandedSource()
+        let dest = try Presentation()
+        try dest.slides.import(from: source, at: 0)
+        let before = try dest.presentationPart.related(by: RelType.notesMaster, in: dest.package)
+        try dest.slides.import(from: source, at: 0)
+        #expect(dest.package.parts.values.filter { $0.contentType == ContentType.notesMaster }.count == 1)
+        #expect(try dest.slides[2].part.related(by: RelType.notesSlide, in: dest.package)
+            .related(by: RelType.notesMaster, in: dest.package).uri == before.uri)
+        let saved = try dest.serializedData()
+        #expect(try Presentation(data: saved).serializedData() == saved)
+    }
+
+    @Test func conflictingMastersThemesAndDimensionsAreRefusedAtomically() throws {
+        let source = try brandedSource()
+        let dest = try Presentation()
+        try dest.slides.import(from: source, at: 0)
+        let master = try source.presentationPart.related(by: RelType.notesMaster, in: source.package)
+        let theme = try master.related(by: RelType.theme, in: source.package)
+        let before = try dest.serializedData()
+        try theme.dom()[attribute: "name"] = "Conflicting Theme"
+        theme.markDirty()
+        #expect(throws: NotesImportError.self) { try dest.slides.importAll(from: source) }
+        #expect(try dest.serializedData() == before)
+        let fresh = try brandedSource()
+        try fresh.presentationPart.dom().firstChild(named: "p:notesSz")?[attribute: "cx"] = "8000000"
+        fresh.presentationPart.markDirty()
+        #expect(throws: NotesImportError.self) { try dest.slides.import(from: fresh, at: 0) }
+        #expect(try dest.serializedData() == before)
+        let unbranded = try Presentation()
+        try unbranded.slides[0].setNotes("existing unbranded notes")
+        let unbrandedBefore = try unbranded.serializedData()
+        #expect(throws: NotesImportError.self) { try unbranded.slides.import(from: source, at: 0) }
+        #expect(try unbranded.serializedData() == unbrandedBefore)
+    }
+}

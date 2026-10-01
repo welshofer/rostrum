@@ -1,5 +1,17 @@
 import Foundation
 
+/// A format-valid import cannot retain the source's inherited notes appearance
+/// under the destination's single notes master. The destination is unchanged.
+public enum NotesImportError: Error, Equatable, CustomStringConvertible {
+    case incompatibleAppearance(String)
+
+    public var description: String {
+        switch self {
+        case .incompatibleAppearance(let reason): return "unsupported notes appearance reconciliation: \(reason)"
+        }
+    }
+}
+
 /// Speaker notes. Notes live in a `notesSlide` part per slide, all bound to a
 /// single `notesMaster`; Rostrum creates both lazily on first use.
 extension Slide {
@@ -77,8 +89,14 @@ extension Slide {
     /// `p:notesMasterIdLst` (schema position: after sldMasterIdLst, before
     /// sldIdLst).
     private func ensureNotesMaster() throws -> Part {
-        let uri = PackURI("/ppt/notesMasters/notesMaster1.xml")
-        if let existing = package.parts[uri] { return existing }
+        let presentation = try package.mainDocumentPart()
+        if let relationship = presentation.rels.first(ofType: RelType.notesMaster) {
+            guard !relationship.isExternal else { throw RostrumError.packageInvalid("notes master must be internal") }
+            return try presentation.related(by: RelType.notesMaster, in: package)
+        }
+        var n = 1
+        while package.parts[PackURI("/ppt/notesMasters/notesMaster\(n).xml")] != nil { n += 1 }
+        let uri = PackURI("/ppt/notesMasters/notesMaster\(n).xml")
 
         let master = package.addPart(
             uri: uri, contentType: ContentType.notesMaster,
@@ -93,7 +111,6 @@ extension Slide {
             blob: Data(MinimalTemplate.themeXML.utf8))
         master.rels.add(type: RelType.theme, target: master.uri.relativeReference(to: notesTheme.uri))
 
-        let presentation = try package.mainDocumentPart()
         let rId = presentation.rels.add(
             type: RelType.notesMaster,
             target: presentation.uri.relativeReference(to: uri))

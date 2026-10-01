@@ -20,6 +20,7 @@ final class SlideCopier {
     private var stagedParts: [PackURI: Part] = [:]
     private var authorImport: AnnotationAuthorImport?
     private var newNotesMaster: PackURI?
+    private var sourceNotesSize: XML.Element?
     /// Running allocator for the shared sldMasterId/sldLayoutId id namespace
     /// (2147483648+), which must be globally unique across the presentation.
     private var _nextBigId: Int?
@@ -46,7 +47,7 @@ final class SlideCopier {
 
         // Notes/handout masters are package singletons — never duplicate.
         if sourcePart.contentType == ContentType.notesMaster {
-            let nm = try ensureDestNotesMaster()
+            let nm = try ensureDestNotesMaster(from: sourcePart)
             map[sourceURI] = nm
             return nm
         }
@@ -200,6 +201,10 @@ final class SlideCopier {
         }
         authorImport?.commit()
         if let uri = newNotesMaster, let dom = try? destPresentation.dom() {
+            if let size = sourceNotesSize {
+                dom.removeChildren(named: "p:notesSz")
+                dom.insertChild(size, beforeAnyOf: ["p:smartTags", "p:embeddedFontLst", "p:custShowLst", "p:photoAlbum", "p:custDataLst", "p:kinsoku", "p:defaultTextStyle", "p:modifyVerifier", "p:extLst"])
+            }
             let rId = destPresentation.rels.add(type: RelType.notesMaster,
                 target: destPresentation.uri.relativeReference(to: uri))
             let list = dom.getOrAddChild("p:notesMasterIdLst",
@@ -211,29 +216,83 @@ final class SlideCopier {
 
     // MARK: - Notes-master singleton
 
-    private func ensureDestNotesMaster() throws -> PackURI {
-        if let cached = destNotesMaster { return cached }
-        let uri = PackURI("/ppt/notesMasters/notesMaster1.xml")
-        if let existing = dest.parts[uri] {
+    /// Notes masters are presentation singletons. Preserve the first source
+    /// master and its actual dependency graph; reuse only an exact compatible
+    /// appearance. Conflicts are rejected while all imports are still staged.
+    private func ensureDestNotesMaster(from sourceMaster: Part) throws -> PackURI {
+        let sourcePresentation = try source.mainDocumentPart()
+        guard let size = try sourcePresentation.dom().firstChild(named: "p:notesSz") else {
+            throw RostrumError.packageInvalid("source notes-page dimensions are missing")
+        }
+        let destinationMaster: Part?
+        if let cached = destNotesMaster {
+            destinationMaster = dest.parts[cached] ?? stagedParts[cached]
+        } else if let rel = destPresentation.rels.first(ofType: RelType.notesMaster) {
+            guard !rel.isExternal else { throw RostrumError.packageInvalid("notes master must be internal") }
+            destinationMaster = try dest.part(at: PackURI.resolve(target: rel.target, relativeTo: destPresentation.uri.baseURI))
+        } else { destinationMaster = nil }
+        if let existing = destinationMaster {
+            let destinationSize = try sourceNotesSize ?? destPresentation.dom().firstChild(named: "p:notesSz")
+            guard destinationSize?.attributes.elementsEqual(size.attributes, by: { $0.name == $1.name && $0.value == $1.value }) == true else {
+                throw NotesImportError.incompatibleAppearance("notes-page dimensions conflict; import would change notes appearance")
+            }
+            var visited: Set<String> = []
+            guard try notesGraphsMatch(sourceMaster, existing, visited: &visited) else {
+                throw NotesImportError.incompatibleAppearance("notes masters or their themes/images conflict; appearance reconciliation is unsupported")
+            }
             destNotesMaster = existing.uri
             return existing.uri
         }
-        // Create one (mirrors Slide.ensureNotesMaster): master + own theme +
-        // notesMasterIdLst entry.
-        let master = Part(uri: uri, contentType: ContentType.notesMaster,
-                          blob: Data(Slide.notesMasterXML.utf8))
+        let uri = freshName(like: sourceMaster.uri)
+        map[sourceMaster.uri] = uri  // cycle guard before copying dependencies
+        let master = Part(uri: uri, contentType: sourceMaster.contentType, blob: sourceMaster.blob)
+        _ = try master.dom()
         stagedParts[uri] = master
-        var themeN = 1
-        while dest.parts[PackURI("/ppt/theme/theme\(themeN).xml")] != nil
-            || stagedParts[PackURI("/ppt/theme/theme\(themeN).xml")] != nil { themeN += 1 }
-        let themeURI = PackURI("/ppt/theme/theme\(themeN).xml")
-        stagedParts[themeURI] = Part(uri: themeURI, contentType: ContentType.theme,
-                                     blob: Data(MinimalTemplate.themeXML.utf8))
-        master.rels.add(type: RelType.theme, target: master.uri.relativeReference(to: themeURI))
+        for rel in sourceMaster.rels.items {
+            if rel.isExternal {
+                master.rels.add(rId: rel.rId, type: rel.type, target: rel.target, isExternal: true)
+            } else {
+                let target = PackURI.resolve(target: rel.target, relativeTo: sourceMaster.uri.baseURI)
+                let copied = try copy(target)
+                master.rels.add(rId: rel.rId, type: rel.type, target: uri.relativeReference(to: copied))
+            }
+        }
         newNotesMaster = uri
+        sourceNotesSize = size.deepCopy()
         destNotesMaster = uri
         return uri
     }
+
+    /// Compare actual payloads and corresponding relationship graphs, allowing
+    /// different part filenames. Unknown master/theme/image data must match,
+    /// otherwise reuse would silently change inherited notes-page appearance.
+    private func notesGraphsMatch(_ sourcePart: Part, _ destinationPart: Part,
+                                  visited: inout Set<String>) throws -> Bool {
+        let pair = "\(sourcePart.uri.value)\u{1}\(destinationPart.uri.value)"
+        guard visited.insert(pair).inserted else { return true }
+        sourcePart.flushIfDirty()
+        destinationPart.flushIfDirty()
+        guard sourcePart.contentType == destinationPart.contentType,
+              sourcePart.blob == destinationPart.blob,
+              sourcePart.rels.items.count == destinationPart.rels.items.count else { return false }
+        for rel in sourcePart.rels.items {
+            guard let other = destinationPart.rels.relationship(withId: rel.rId),
+                  rel.type == other.type, rel.isExternal == other.isExternal else { return false }
+            if rel.isExternal {
+                if rel.target != other.target { return false }
+            } else {
+                let sourceURI = PackURI.resolve(target: rel.target, relativeTo: sourcePart.uri.baseURI)
+                let destURI = PackURI.resolve(target: other.target, relativeTo: destinationPart.uri.baseURI)
+                let target = try source.part(at: sourceURI)
+                guard let otherTarget = dest.parts[destURI] ?? stagedParts[destURI] else {
+                    throw RostrumError.partMissing(destURI.value)
+                }
+                if try !notesGraphsMatch(target, otherTarget, visited: &visited) { return false }
+            }
+        }
+        return true
+    }
+
 }
 
 extension Slides {
