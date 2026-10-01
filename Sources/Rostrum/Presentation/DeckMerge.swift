@@ -20,6 +20,8 @@ final class SlideCopier {
     private var stagedParts: [PackURI: Part] = [:]
     private var authorImport: AnnotationAuthorImport?
     private var legacyAuthorImport: LegacyAnnotationAuthorImport?
+    private var tableStyleImport: TableStyleImport?
+    private var reservedStyleURIs: Set<PackURI> = []
     private var newNotesMaster: PackURI?
     private var sourceNotesSize: XML.Element?
     /// Running allocator for the shared sldMasterId/sldLayoutId id namespace
@@ -90,8 +92,52 @@ final class SlideCopier {
             }
         }
 
+        if [ContentType.slide, ContentType.slideLayout, ContentType.slideMaster].contains(sourcePart.contentType) {
+            try importTableStyles(in: destPart)
+        }
         if sourcePart.contentType == ContentType.slideMaster { newMasters.append(destURI) }
         return destURI
+    }
+
+    /// Styles live on the presentation, outside a slide's relationship graph.
+    /// Remap references on detached copied slides/layouts/masters before commit.
+    private func importTableStyles(in part: Part) throws {
+        var tables: [(XML.Element, [String: String])] = []
+        try TableStyleXML.walk(part.dom()) { node, scope in
+            if TableStyleXML.isDrawing(node, "tbl", namespaces: scope) { tables.append((node, scope)) }
+        }
+        guard !tables.isEmpty else { return }
+        let presentation = try source.mainDocumentPart()
+        guard let rel = presentation.rels.first(ofType: RelType.tableStyles) else { return }
+        guard !rel.isExternal else { throw RostrumError.packageInvalid("source table styles must be internal") }
+        let sourceStyles = try presentation.related(by: RelType.tableStyles, in: source)
+        let root = try sourceStyles.dom()
+        for (table, scope) in tables {
+            guard let properties = table.childElements.first(where: { TableStyleXML.isDrawing($0, "tblPr", namespaces: scope) }) else { continue }
+            let propertyScope = TableStyleXML.bindings(properties, inheriting: scope)
+            if properties.childElements.contains(where: { TableStyleXML.isDrawing($0, "tableStyle", namespaces: propertyScope) }) { continue }
+            let reference = properties.childElements.first { TableStyleXML.isDrawing($0, "tableStyleId", namespaces: propertyScope) }
+            guard let id = reference?.textContent ?? root[attribute: "def"] else { continue }
+            let matches = TableStyleXML.definitions(in: root).filter { $0[attribute: "styleId"]?.lowercased() == id.lowercased() }
+            guard matches.count <= 1 else { throw RostrumError.packageInvalid("ambiguous source table style ID") }
+            guard let definition = matches.first else { continue } // Preserve native style IDs without embedded definitions.
+            let mapped = try importTableStyle(definition, from: sourceStyles)
+            let target = reference ?? XML.Element("a:tableStyleId", attributes: [("xmlns:a", TableStyleXML.drawing)])
+            target.children = [.text(mapped)]
+            if reference == nil { properties.insertChild(target, beforeAnyOf: properties.childElements.filter { TableStyleXML.isDrawing($0, "extLst", namespaces: propertyScope) }.map(\.name)) }
+            part.markDirty()
+        }
+    }
+
+    func importTableStyle(_ definition: XML.Element, from owner: Part) throws -> String {
+        if tableStyleImport == nil {
+            tableStyleImport = try TableStyleImport(source: source, destination: dest, presentation: destPresentation) { uri in
+                let reserved = self.freshName(like: uri)
+                self.reservedStyleURIs.insert(reserved)
+                return reserved
+            }
+        }
+        return try tableStyleImport!.transfer(definition, from: owner) { try self.copy($0) }
     }
 
     /// Allocate a fresh id in the sldMasterId/sldLayoutId namespace, unique
@@ -140,7 +186,8 @@ final class SlideCopier {
         let extPart = ext.isEmpty ? "" : ".\(ext)"
         var n = 1
         while dest.parts[PackURI("\(dir)/\(prefix)\(n)\(extPart)")] != nil
-            || stagedParts[PackURI("\(dir)/\(prefix)\(n)\(extPart)")] != nil { n += 1 }
+            || stagedParts[PackURI("\(dir)/\(prefix)\(n)\(extPart)")] != nil
+            || reservedStyleURIs.contains(PackURI("\(dir)/\(prefix)\(n)\(extPart)")) { n += 1 }
         return PackURI("\(dir)/\(prefix)\(n)\(extPart)")
     }
 
@@ -208,6 +255,7 @@ final class SlideCopier {
             installed.rels.setItems(part.rels.items)
             registerContentType(part.uri, part.contentType)
         }
+        tableStyleImport?.commit()
         authorImport?.commit()
         legacyAuthorImport?.commit()
         if let uri = newNotesMaster, let dom = try? destPresentation.dom() {

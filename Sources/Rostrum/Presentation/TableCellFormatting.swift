@@ -103,24 +103,23 @@ public extension Table {
     /// is copied, including unknown extensions. Relationship-bearing styles
     /// need a source part/package and are rejected before any modification.
     func setStyleDefinition(_ definition: XML.Element) throws {
-        guard definition.name == "a:tblStyle", let id = definition[attribute: "styleId"], !id.isEmpty,
+        guard TableStyleXML.isDrawing(definition, "tblStyle", namespaces: TableStyleXML.defaults), let id = definition[attribute: "styleId"], !id.isEmpty,
               let package else { throw RostrumError.packageInvalid("table style requires tblStyle/styleId and a package") }
-        var stack = [definition]
-        while let node = stack.popLast() {
-            guard !node.attributes.contains(where: { $0.name.hasPrefix("r:") }) else {
-                throw RostrumError.packageInvalid("standalone table style contains unresolved relationships")
+        try TableStyleXML.walk(definition) { node, scope in
+            guard TableStyleXML.relationshipAttributes(node, namespaces: scope).isEmpty else {
+                throw RostrumError.packageInvalid("standalone table style contains unresolved relationships; supply its source part and package")
             }
-            stack.append(contentsOf: node.childElements)
         }
         let presentation = try package.mainDocumentPart()
         let existing = try presentation.rels.first(ofType: RelType.tableStyles).map {
-            try package.part(at: PackURI.resolve(target: $0.target, relativeTo: presentation.uri.baseURI))
+            guard !$0.isExternal else { throw RostrumError.packageInvalid("table styles must be internal") }
+            return try package.part(at: PackURI.resolve(target: $0.target, relativeTo: presentation.uri.baseURI))
         }
         let root: XML.Element
         let stylePart: Part
         if let existing {
             root = try existing.dom()
-            guard root.name == "a:tblStyleLst" else { throw RostrumError.packageInvalid("invalid table style list") }
+            guard TableStyleXML.isDrawing(root, "tblStyleLst", namespaces: TableStyleXML.defaults) else { throw RostrumError.packageInvalid("invalid table style list") }
             stylePart = existing
         } else {
             root = XML.Element("a:tblStyleLst", attributes: [("xmlns:a", "http://schemas.openxmlformats.org/drawingml/2006/main"), ("def", id)])
@@ -136,11 +135,26 @@ public extension Table {
         let targetRoot = existing == nil ? try stylePart.dom() : root
         let replacement = definition.deepCopy()
         if let old = targetRoot.children.firstIndex(where: {
-            if case .element(let element) = $0 { return element.name == "a:tblStyle" && element[attribute: "styleId"] == id }
+            if case .element(let element) = $0 { return TableStyleXML.isDrawing(element, "tblStyle", namespaces: TableStyleXML.bindings(targetRoot, inheriting: TableStyleXML.defaults)) && element[attribute: "styleId"]?.lowercased() == id.lowercased() }
             return false
         }) { targetRoot.children[old] = .element(replacement) }
-        else { targetRoot.insertChild(replacement, beforeAnyOf: ["a:extLst"]) }
+        else { targetRoot.insertChild(replacement, beforeAnyOf: targetRoot.childElements.filter {
+            TableStyleXML.isDrawing($0, "extLst", namespaces: TableStyleXML.bindings(targetRoot, inheriting: TableStyleXML.defaults))
+        }.map(\.name)) }
         stylePart.markDirty()
         styleID = id
     }
+
+    /// Transfer a definition with its source relationship graph. Conflicting
+    /// GUIDs get deterministic new IDs; equivalent definitions are reused.
+    /// All parts and XML changes are staged until every dependency is valid.
+    func setStyleDefinition(_ definition: XML.Element, from sourcePart: Part, in sourcePackage: OPCPackage) throws {
+        guard let package else { throw RostrumError.packageInvalid("table style requires a destination package") }
+        let presentation = try package.mainDocumentPart()
+        let copier = SlideCopier(source: sourcePackage, dest: package, destPresentation: presentation)
+        let id = try copier.importTableStyle(definition, from: sourcePart)
+        copier.commit()
+        styleID = id
+    }
+
 }

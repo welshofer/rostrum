@@ -13,7 +13,7 @@ public struct TableStyleResolver {
         self.table = table; self.theme = theme
         grid = TableGridSnapshot(table.tbl)
         let found = Self.definition(for: table.tbl, package: table.package)
-        definition = found.0; stylePart = found.1
+        definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }; stylePart = found.1
     }
 
     /// False for an unresolved native style ID. Such a style is preserved, but
@@ -201,7 +201,7 @@ public struct TableStyleResolver {
         if let package, let presentation = try? package.mainDocumentPart(),
            let styles = try? presentation.related(by: RelType.tableStyles, in: package), let root = try? styles.dom() {
             let desired = id ?? root[attribute: "def"]
-            if let definition = root.children(named: "a:tblStyle").first(where: { $0[attribute: "styleId"]?.lowercased() == desired?.lowercased() }) { return (definition, styles) }
+            if let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired?.lowercased() }) { return (definition, styles) }
         }
         return (nil, nil)
     }
