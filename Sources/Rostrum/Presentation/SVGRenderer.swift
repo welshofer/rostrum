@@ -857,6 +857,15 @@ struct SVGRenderer {
         let grid = TableGridSnapshot(tbl)
         let topology = try? grid.topology()
         let resolver = TableStyleResolver(table: table, theme: theme)
+        if let definition = resolver.activeDefinition() {
+            let location = diagnostics.location
+            diagnostics.inspect(definition, owner: resolver.stylePart ?? owner, slideIndex: slideNumber - 1,
+                path: "/a:tblStyleLst/a:tblStyle[@styleId='\(table.styleID ?? "default")']", package: package)
+            diagnostics.location = location
+        }
+        if topology == nil {
+            diagnostics.record(.unsupportedGeometry, .approximation, "Malformed table merges are previewed as separate physical cells.")
+        }
         let widths = grid.columns.map { max(0, intAttr($0, "w")) }
         let heights = grid.rows.map { max(0, intAttr($0, "h")) }
         var xs = [0], ys = [0]

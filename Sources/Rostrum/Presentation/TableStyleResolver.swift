@@ -8,17 +8,22 @@ public struct TableStyleResolver {
     let grid: TableGridSnapshot
     let definition: XML.Element?
     let stylePart: Part?
+    private let enabledFlags: Set<String>
 
     public init(table: Table, theme: Theme) {
         self.table = table; self.theme = theme
         grid = TableGridSnapshot(table.tbl)
+        let flags = table.tbl.firstChild(named: "a:tblPr")
+        enabledFlags = Set(["rtl", "firstRow", "lastRow", "firstCol", "lastCol", "bandRow", "bandCol"].filter { name in
+            flags.map { TableMergeTopology.flag($0, name) } ?? false
+        })
         let found = Self.definition(for: table.tbl, package: table.package)
         definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }; stylePart = found.1
     }
 
     /// False for an unresolved native style ID. Such a style is preserved, but
     /// its appearance needs an embedded definition before it can be previewed.
-    public var hasStyleDefinition: Bool { definition != nil || table.styleID == Table.noStyleGUID }
+    public var hasStyleDefinition: Bool { definition != nil || table.styleID?.lowercased() == Table.noStyleGUID.lowercased() }
 
     public func fill(row: Int, column: Int) throws -> ReadFill? {
         _ = try grid.cell(row, column)
@@ -50,14 +55,9 @@ public struct TableStyleResolver {
         let fillOwner: Part
     }
 
-    func effective(row: Int, column: Int) -> Effective {
-        let properties = XML.Element("a:tcPr"), text = XML.Element("a:defRPr")
-        var fillOwner = stylePart ?? table.part
-        let flags = table.tbl.firstChild(named: "a:tblPr")
-        func enabled(_ flag: String) -> Bool { flags.map { TableMergeTopology.flag($0, flag) } ?? false }
+    private func regionNames(row: Int, column: Int) -> [String] {
+        func enabled(_ flag: String) -> Bool { enabledFlags.contains(flag) }
         let lastRow = grid.rows.count - 1, lastColumn = grid.columns.count - 1
-        let leftColumn = enabled("rtl") ? lastColumn : 0
-        let rightColumn = enabled("rtl") ? 0 : lastColumn
         let firstR = enabled("firstRow"), lastR = enabled("lastRow")
         let firstC = enabled("firstCol"), lastC = enabled("lastCol")
         var regions = ["wholeTbl"]
@@ -77,7 +77,39 @@ public struct TableStyleResolver {
         if firstR && lastC && row == 0 && column == lastColumn { regions.append("neCell") }
         if lastR && firstC && row == lastRow && column == 0 { regions.append("swCell") }
         if lastR && lastC && row == lastRow && column == lastColumn { regions.append("seCell") }
-        for name in regions {
+        return regions
+    }
+
+    /// A detached view of regions enabled for this grid, used by preview
+    /// diagnostics. Edge and parity samples cover every region without a full
+    /// cell traversal. Disabled regions remain preserved in the source style.
+    func activeDefinition() -> XML.Element? {
+        guard let definition else { return nil }
+        let copy = definition.deepCopy()
+        func samples(_ count: Int) -> [Int] {
+            Array(Set([0, 1, 2, count - 2, count - 1].filter { $0 >= 0 && $0 < count })).sorted()
+        }
+        var active: Set<String> = ["a:tblBg"]
+        for row in samples(grid.rows.count) {
+            for column in samples(grid.columns.count) {
+                active.formUnion(regionNames(row: row, column: column).map { "a:" + $0 })
+            }
+        }
+        copy.children = copy.children.filter { child in
+            guard case .element(let element) = child else { return true }
+            return active.contains(element.name)
+        }
+        return copy
+    }
+
+    func effective(row: Int, column: Int) -> Effective {
+        let properties = XML.Element("a:tcPr"), text = XML.Element("a:defRPr")
+        var fillOwner = stylePart ?? table.part
+        func enabled(_ flag: String) -> Bool { enabledFlags.contains(flag) }
+        let lastRow = grid.rows.count - 1, lastColumn = grid.columns.count - 1
+        let leftColumn = enabled("rtl") ? lastColumn : 0
+        let rightColumn = enabled("rtl") ? 0 : lastColumn
+        for name in regionNames(row: row, column: column) {
             guard let region = definition?.firstChild(named: "a:\(name)") else { continue }
             if let style = region.firstChild(named: "a:tcStyle") {
                 if let fill = style.firstChild(named: "a:fill")?.childElements.first ?? referenceFill(style) {

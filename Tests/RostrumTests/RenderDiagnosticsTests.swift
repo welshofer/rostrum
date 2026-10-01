@@ -59,6 +59,24 @@ import Testing
         #expect(try deck.serializedData() == before)
     }
 
+    @Test func supportedPictureTransformsPassAndInvalidCropIsDiagnosed() throws {
+        let deck = try Presentation()
+        let png = Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=")!
+        let picture = try deck.slides[0].shapes.addPicture(png,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
+        let transform = try #require(picture.element.firstChild(named: "p:spPr")?.firstChild(named: "a:xfrm"))
+        transform[attribute: "rot"] = "5400000"; transform[attribute: "flipH"] = "1"
+        let blip = try #require(picture.element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip"))
+        blip.appendElement(XML.Element("a:extLst"))
+        try picture.setCrop(PictureCrop(left: 0.25))
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true).problems.isEmpty)
+        let crop = try #require(picture.element.firstChild(named: "p:blipFill")?.firstChild(named: "a:srcRect"))
+        crop[attribute: "l"] = "100000"
+        let report = try deck.renderSVGReportingProblems(slideAt: 0)
+        #expect(report.problems.fidelityIssues.contains { $0.code == .unsupportedImage && $0.location.path.contains("a:srcRect") })
+        #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+    }
+
     @Test func missingFacesHaveStableLocationsAndStrictCarriesTheSameReport() throws {
         let deck = try Presentation()
         let shape = try deck.slides[0].shapes.addTextBox(Rect(x: .zero, y: .zero, width: .inches(3), height: .inches(1)))
@@ -114,7 +132,7 @@ import Testing
         let collector = RenderDiagnosticCollector()
         collector.inspect(shape, owner: part, slideIndex: 2, path: "/p:sp[1]", package: deck.package)
         let codes = Set(collector.issues.map(\.code))
-        #expect(codes.isSuperset(of: [.ignoredTransform, .unsupportedGeometry, .omittedEffect, .unsupportedFill, .unavailableImage, .unsupportedTextProperty]))
+        #expect(codes.isSuperset(of: [.ignoredTransform, .unsupportedGeometry, .omittedEffect, .unavailableImage, .unsupportedTextProperty]))
         #expect(collector.issues.allSatisfy { $0.location.slideIndex == 2 && $0.location.shapeID == "99" })
         #expect(XML.document(shape) == before)
     }
@@ -138,6 +156,29 @@ import Testing
         let report = try deck.renderSVGReportingProblems(slideAt: 0)
         #expect(report.problems.fidelityIssues.contains { $0.code == .unsupportedFill })
         #expect(report.problems.fidelityIssues.filter { $0.code == .unsupportedColor }.count == 2)
+        #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+    }
+
+    @Test func unresolvedTableStylePropertiesAreReportedAtTheirOwningPart() throws {
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(rows: 1, columns: 1,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
+        try table.setStyleDefinition(XML.parse(Data("<a:tblStyle styleId=\"{00000000-0000-0000-0000-000000000001}\" styleName=\"Pattern\"><a:wholeTbl><a:tcStyle><a:fill><a:pattFill prst=\"cross\"/></a:fill></a:tcStyle></a:wholeTbl></a:tblStyle>".utf8)))
+        let report = try deck.renderSVGReportingProblems(slideAt: 0)
+        let issue = try #require(report.problems.fidelityIssues.first { $0.code == .unsupportedFill })
+        #expect(issue.location.partURI == "/ppt/tableStyles.xml")
+        #expect(issue.location.path.contains("a:pattFill"))
+        #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+    }
+
+    @Test func disabledTableStyleRegionsDoNotCauseFalseStrictFailures() throws {
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(rows: 1, columns: 1,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
+        table.firstRowHeader = false
+        try table.setStyleDefinition(XML.parse(Data("<a:tblStyle styleId=\"{00000000-0000-0000-0000-000000000002}\" styleName=\"Inactive\"><a:wholeTbl><a:tcStyle><a:fill><a:solidFill><a:srgbClr val=\"FF0000\"/></a:solidFill></a:fill></a:tcStyle></a:wholeTbl><a:firstRow><a:tcStyle><a:fill><a:pattFill prst=\"cross\"/></a:fill></a:tcStyle></a:firstRow></a:tblStyle>".utf8)))
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true).problems.isEmpty)
+        table.firstRowHeader = true
         #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
     }
 
