@@ -3,6 +3,22 @@ import Foundation
 /// The deliberately bounded OpenType subset used by TextShaper. Each reader is
 /// sliced to one table, so offsets cannot escape into unrelated font data.
 struct FontLayoutTables: Sendable {
+    /// Bound parsing work, including records expanded through aliased offsets.
+    /// Ordinary tables get sixteen work units per input byte; the floor permits
+    /// small valid tables and the hard ceiling bounds one font's layout table.
+    /// Unsupported tables are diagnosed instead of allocating partial graphs.
+    private struct Budget {
+        static let maximumWork = 262_144
+        private var remaining: Int
+        init(bytes: Int) {
+            remaining = max(4096, min(bytes, Self.maximumWork / 16) * 16)
+        }
+        mutating func consume(_ count: Int) throws {
+            guard count >= 0, count <= remaining else { throw BudgetExceeded() }
+            remaining -= count
+        }
+    }
+    private struct BudgetExceeded: Error {}
     struct Ligature: Sendable { let components: [Int]; let replacement: Int }
     struct Adjustment: Sendable {
         var x = 0, y = 0, advance = 0
@@ -62,25 +78,38 @@ struct FontLayoutTables: Sendable {
 
     init(tables: [String: [UInt8]]) {
         if let bytes = tables["kern"] {
-            do { try readKern(SFNTReader(bytes: bytes)) }
+            var budget = Budget(bytes: bytes.count)
+            do { try readKern(SFNTReader(bytes: bytes), budget: &budget) }
+            catch is BudgetExceeded {
+                legacyPairs = [:]
+                diagnostics.append("kern layout expansion exceeds the parsing budget")
+            }
             catch { diagnostics.append("Malformed or unsupported kern table") }
         }
         for tag in ["GSUB", "GPOS"] {
             guard let bytes = tables[tag] else { continue }
-            do { try readLayout(SFNTReader(bytes: bytes), substitution: tag == "GSUB") }
+            var budget = Budget(bytes: bytes.count)
+            do { try readLayout(SFNTReader(bytes: bytes), substitution: tag == "GSUB", budget: &budget) }
+            catch is BudgetExceeded {
+                if tag == "GSUB" { ligatureLookups = [] } else { pairLookups = [] }
+                diagnostics.append("\(tag) layout expansion exceeds the parsing budget")
+            }
             catch { diagnostics.append("Malformed or unsupported \(tag) Latin layout table") }
         }
         if tables["fvar"] != nil { diagnostics.append("Variable-font shaping is unsupported") }
     }
 
-    private mutating func readKern(_ r: SFNTReader) throws {
+    private mutating func readKern(_ r: SFNTReader, budget: inout Budget) throws {
         guard try r.u16(0) == 0 else { throw corrupt() }
         var p = 4
-        for _ in 0..<(try r.u16(2)) {
+        let subtableCount = try r.u16(2)
+        try budget.consume(subtableCount)
+        for _ in 0..<subtableCount {
             let length = try r.u16(p + 2), flags = try r.u16(p + 4)
             guard length >= 6, p + length <= r.count else { throw corrupt() }
             if flags == 1 || flags == 9 { // format 0, horizontal, optional override
                 let count = try r.u16(p + 6)
+                try budget.consume(count)
                 guard 14 + 6 * count <= length else { throw corrupt() }
                 for i in 0..<count {
                     let q = p + 14 + 6 * i
@@ -93,14 +122,16 @@ struct FontLayoutTables: Sendable {
         }
     }
 
-    private mutating func readLayout(_ r: SFNTReader, substitution: Bool) throws {
+    private mutating func readLayout(_ r: SFNTReader, substitution: Bool, budget: inout Budget) throws {
         guard try r.u16(0) == 1 else { throw corrupt() }
         if try r.u16(2) > 0, try r.u32(10) != 0 {
             diagnostics.append("OpenType feature variations are unsupported")
         }
         let scripts = try r.u16(4), features = try r.u16(6), lookups = try r.u16(8)
         var script: Int?, fallback: Int?
-        for i in 0..<(try r.u16(scripts)) {
+        let scriptCount = try r.u16(scripts)
+        try budget.consume(scriptCount)
+        for i in 0..<scriptCount {
             let p = scripts + 2 + i * 6, tag = try r.tag(p)
             if tag == "latn" { script = scripts + (try r.u16(p + 4)) }
             if tag == "DFLT" { fallback = scripts + (try r.u16(p + 4)) }
@@ -110,7 +141,9 @@ struct FontLayoutTables: Sendable {
         guard languageOffset != 0 else { return }
         let language = selected + languageOffset
         let required = try r.u16(language + 2)
-        var indices = try (0..<(r.u16(language + 4))).map { try r.u16(language + 6 + 2 * $0) }
+        let featureIndexCount = try r.u16(language + 4)
+        try budget.consume(featureIndexCount + 1)
+        var indices = try (0..<featureIndexCount).map { try r.u16(language + 6 + 2 * $0) }
         if required != 0xFFFF { indices.append(required) }
         let featureCount = try r.u16(features)
         var lookupIndices: Set<Int> = []
@@ -122,7 +155,9 @@ struct FontLayoutTables: Sendable {
                 continue
             }
             let feature = features + (try r.u16(p + 4))
-            for i in 0..<(try r.u16(feature + 2)) {
+            let count = try r.u16(feature + 2)
+            try budget.consume(count)
+            for i in 0..<count {
                 lookupIndices.insert(try r.u16(feature + 4 + i * 2))
             }
         }
@@ -133,7 +168,9 @@ struct FontLayoutTables: Sendable {
             let type = try r.u16(lookup), flags = try r.u16(lookup + 2)
             guard flags == 0 else { diagnostics.append("Unsupported lookup flags \(flags)"); continue }
             var ligatures: [Int: [Ligature]] = [:], pairs: [PairTable] = []
-            for i in 0..<(try r.u16(lookup + 4)) {
+            let subtableCount = try r.u16(lookup + 4)
+            try budget.consume(subtableCount)
+            for i in 0..<subtableCount {
                 var sub = lookup + (try r.u16(lookup + 6 + 2 * i)), kind = type
                 if kind == (substitution ? 7 : 9) {
                     guard try r.u16(sub) == 1 else { throw corrupt() }
@@ -142,15 +179,18 @@ struct FontLayoutTables: Sendable {
                 }
                 if substitution, kind == 4 {
                     guard try r.u16(sub) == 1 else { throw corrupt() }
-                    let coverage = try Self.coverage(r, sub + r.u16(sub + 2))
+                    let coverage = try Self.coverage(r, sub + r.u16(sub + 2), budget: &budget)
                     let setCount = try r.u16(sub + 4)
                     for (glyph, coverageIndex) in coverage.sorted(by: { $0.value < $1.value }) {
                         guard coverageIndex < setCount else { throw corrupt() }
                         let set = sub + (try r.u16(sub + 6 + 2 * coverageIndex))
-                        for j in 0..<(try r.u16(set)) {
+                        let ligatureCount = try r.u16(set)
+                        try budget.consume(ligatureCount)
+                        for j in 0..<ligatureCount {
                             let lig = set + (try r.u16(set + 2 + 2 * j))
                             let replacement = try r.u16(lig), count = try r.u16(lig + 2)
                             guard count >= 2 else { throw corrupt() }
+                            try budget.consume(count - 1)
                             let components = try (0..<(count - 1)).map { try r.u16(lig + 4 + 2 * $0) }
                             ligatures[glyph, default: []].append(Ligature(components: components, replacement: replacement))
                         }
@@ -159,11 +199,11 @@ struct FontLayoutTables: Sendable {
                     let format = try r.u16(sub), v1 = try r.u16(sub + 4), v2 = try r.u16(sub + 6)
                     // Device/variation offsets and vertical advances need a richer contract.
                     guard (format == 1 || format == 2), (v1 | v2) & ~7 == 0 else { throw corrupt() }
-                    let coverage = try Self.coverage(r, sub + r.u16(sub + 2))
+                    let coverage = try Self.coverage(r, sub + r.u16(sub + 2), budget: &budget)
                     var c1: [Int: Int] = [:], c2: [Int: Int] = [:], count2 = 0
                     if format == 2 {
-                        c1 = try Self.classes(r, sub + r.u16(sub + 8))
-                        c2 = try Self.classes(r, sub + r.u16(sub + 10))
+                        c1 = try Self.classes(r, sub + r.u16(sub + 8), budget: &budget)
+                        c2 = try Self.classes(r, sub + r.u16(sub + 10), budget: &budget)
                         let count1 = try r.u16(sub + 12); count2 = try r.u16(sub + 14)
                         guard count1 > 0, count2 > 0,
                               c1.values.allSatisfy({ $0 < count1 }), c2.values.allSatisfy({ $0 < count2 }),
@@ -171,10 +211,12 @@ struct FontLayoutTables: Sendable {
                         else { throw corrupt() }
                     } else {
                         let count = try r.u16(sub + 8)
+                        try budget.consume(count)
                         guard coverage.values.allSatisfy({ $0 < count }) else { throw corrupt() }
                         for j in 0..<count {
                             let set = sub + (try r.u16(sub + 10 + 2 * j))
                             let pairs = try r.u16(set)
+                            try budget.consume(pairs)
                             guard set + 2 + pairs * (2 + 2 * (v1.nonzeroBitCount + v2.nonzeroBitCount)) <= r.count
                             else { throw corrupt() }
                         }
@@ -188,8 +230,9 @@ struct FontLayoutTables: Sendable {
         }
     }
 
-    private static func coverage(_ r: SFNTReader, _ p: Int) throws -> [Int: Int] {
+    private static func coverage(_ r: SFNTReader, _ p: Int, budget: inout Budget) throws -> [Int: Int] {
         let format = try r.u16(p), count = try r.u16(p + 2)
+        try budget.consume(count)
         var result: [Int: Int] = [:]
         if format == 1 {
             for i in 0..<count { result[try r.u16(p + 4 + 2 * i)] = i }
@@ -197,23 +240,28 @@ struct FontLayoutTables: Sendable {
             for i in 0..<count {
                 let q = p + 4 + 6 * i, start = try r.u16(q), end = try r.u16(q + 2), index = try r.u16(q + 4)
                 guard start <= end, result.count + end - start + 1 <= 65536 else { throw corrupt() }
+                try budget.consume(end - start + 1)
                 for glyph in start...end { result[glyph] = index + glyph - start }
             }
         } else { throw corrupt() }
         return result
     }
 
-    private static func classes(_ r: SFNTReader, _ p: Int) throws -> [Int: Int] {
+    private static func classes(_ r: SFNTReader, _ p: Int, budget: inout Budget) throws -> [Int: Int] {
         let format = try r.u16(p)
         var result: [Int: Int] = [:]
         if format == 1 {
             let start = try r.u16(p + 2), count = try r.u16(p + 4)
+            try budget.consume(count)
             guard start + count <= 65536 else { throw corrupt() }
             for i in 0..<count { result[start + i] = try r.u16(p + 6 + 2 * i) }
         } else if format == 2 {
-            for i in 0..<(try r.u16(p + 2)) {
+            let count = try r.u16(p + 2)
+            try budget.consume(count)
+            for i in 0..<count {
                 let q = p + 4 + 6 * i, start = try r.u16(q), end = try r.u16(q + 2), value = try r.u16(q + 4)
                 guard start <= end, result.count + end - start + 1 <= 65536 else { throw corrupt() }
+                try budget.consume(end - start + 1)
                 for glyph in start...end { result[glyph] = value }
             }
         } else { throw corrupt() }
