@@ -176,29 +176,15 @@ public struct TableStyleResolver {
     private func resolveColors(in root: XML.Element) {
         var stack = [root]
         while let node = stack.popLast() {
-            let transforms: [ColorTransform] = node.childElements.compactMap { child in
-                guard let value = child.boundedInt("val", in: -1_000_000...1_000_000) else { return nil }
-                let fraction = Double(value) / 100_000
-                switch child.name {
-                case "a:tint": return .tint(fraction)
-                case "a:shade": return .shade(fraction)
-                case "a:lumMod": return .lumMod(fraction)
-                case "a:lumOff": return .lumOff(fraction)
-                case "a:satMod": return .satMod(fraction)
-                default: return nil
-                }
-            }
-            var resolved: Color?
-            if node.name == "a:schemeClr", let raw = node[attribute: "val"], let scheme = SchemeColor(rawValue: raw) {
-                resolved = theme.resolve(scheme, transforms: transforms)
-            } else if node.name == "a:srgbClr", let raw = node[attribute: "val"], let color = Color(validating: raw) {
-                var rgb = RGB(color)
-                for transform in transforms { rgb = rgb.applying(transform) }
-                resolved = rgb.color
-            } else if node.name == "a:sysClr", let raw = node[attribute: "lastClr"] { resolved = Color(validating: raw) }
+            let wrapper = XML.Element("color", children: [.element(node)])
+            let result = DrawingColor.resolve(in: wrapper, theme: theme)
+            let resolved = result?.color
             if let resolved {
                 node.name = "a:srgbClr"; node.attributes = [("val", resolved.hex)]
-                node.children = node.children.filter { if case .element(let child) = $0 { return child.name == "a:alpha" }; return true }
+                node.children = node.children.filter { if case .element = $0 { return false }; return true }
+                if let alpha = result?.alpha, alpha < 1 {
+                    node.appendElement(XML.Element("a:alpha", attributes: [("val", String(Int((alpha * 100_000).rounded())))]))
+                }
             } else { stack.append(contentsOf: node.childElements) }
         }
     }

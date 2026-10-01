@@ -25,6 +25,21 @@ import Testing
         #expect(throws: RostrumError.self) { try OPCArchive(data: bytes, validation: .onAccess, maximumEntryBytes: 0) }
         #expect(throws: RostrumError.self) { try OPCArchive(data: bytes, validation: .onAccess, limits: .init(totalUncompressedBytes: 0)) }
     }
+    @Test func deferredCRCFailuresAreExplicitWhileEagerOpenStillThrows() throws {
+        let p = try Presentation()
+        let uri = PackURI("/ppt/media/bad.png")
+        p.package.addPart(uri: uri, contentType: "image/png", blob: Data([1,2,3,4]))
+        var data = try p.serializedData()
+        let entry = try #require(ZipReader(data: data).allEntries.first { $0.name == uri.memberName })
+        let offset = entry.localHeaderOffset
+        let nameLength = Int(data[offset + 26]) + (Int(data[offset + 27]) << 8)
+        let extraLength = Int(data[offset + 28]) + (Int(data[offset + 29]) << 8)
+        data[offset + 30 + nameLength + extraLength] ^= 255
+        let archive = try OPCArchive(data: data, validation: .onAccess)
+        #expect(throws: RostrumError.self) { try archive.data(forPart: uri) }
+        #expect(throws: RostrumError.self) { try OPCArchive(data: data, validation: .strict) }
+        #expect(throws: RostrumError.self) { try Presentation(data: data) }
+    }
     @Test func streamingAndCachedSavesAreByteIdenticalAndInvalidate() throws {
         let p = try Presentation()
         let text = try p.slides[0].shapes.addTextBox(Rect(x: .zero, y: .zero, width: .inches(3), height: .inches(2))).textFrame!

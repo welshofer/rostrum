@@ -61,13 +61,15 @@ if scenario == "file", args.count > 1 {
     }
 }
 let bytes = try measure("initial-save") { try deck.serializedData() }
+let archive = try measure("lazy-open") { try OPCArchive(data: bytes, validation: .onAccess) }
+if let uri = archive.mainPartURI { _ = try measure("lazy-first-part") { try archive.xml(forPart: uri) } }
 let reopened = try measure("reopen") { try Presentation(data: bytes) }
 try measure("first-slide") { sample.checksum += try reopened.slides[0].shapes.count }
 measure("traversal") { for slide in reopened.slides { sample.checksum += slide.shapes.count } }
 let svg = try measure("render") { try reopened.renderSVG(slideAt: 0) }
 sample.checksum += svg.utf8.count
 let saved = try measure("unchanged-save") { try reopened.serializedData() }
-let second = try reopened.serializedData()
+let second = try measure("warm-unchanged-save") { try reopened.serializedData() }
 guard saved == second else { fatalError("non-deterministic save") }
 if let table = try reopened.slides[0].shapes.compactMap({ ($0 as? TableFrame)?.table }).first {
     let edited = try measure("one-cell-edit-save") { () -> Data in

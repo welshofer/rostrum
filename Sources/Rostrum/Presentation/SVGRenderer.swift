@@ -826,7 +826,7 @@ struct SVGRenderer {
                     let edgeRow = edge == .bottom ? rowEnd - 1 : r
                     let edgeColumn = edge == .left ? (rtl ? columnEnd - 1 : c) : edge == .right ? (rtl ? c : columnEnd - 1) : c
                     let direct = grid.cells[r][c].firstChild(named: "a:tcPr")?.firstChild(named: edge.rawValue)
-                    let edgeProperties = direct != nil ? properties : resolver.effective(row: edgeRow, column: edgeColumn).properties
+                    let edgeProperties = direct != nil || (edgeRow == r && edgeColumn == c) ? properties : resolver.effective(row: edgeRow, column: edgeColumn).properties
                     guard let line = edgeProperties.firstChild(named: edge.rawValue),
                           line.firstChild(named: "a:noFill") == nil,
                           let color = colorHex(in: line.firstChild(named: "a:solidFill")) else { continue }
