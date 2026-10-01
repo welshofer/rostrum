@@ -129,6 +129,18 @@ import Testing
         #expect(collector.issues.contains { $0.code == .unresolvedTableStyle })
     }
 
+    @Test func unsupportedCellPatternAndColorTransformsRemainVisible() throws {
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(rows: 1, columns: 1,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
+        table.clearBuiltInStyle()
+        try table.cell(0, 0).tcPr.appendElement(XML.parse(Data("<a:pattFill prst=\"cross\"><a:fgClr><a:srgbClr val=\"FF0000\"><a:hueOff val=\"60000\"/></a:srgbClr></a:fgClr><a:bgClr><a:prstClr val=\"orange\"/></a:bgClr></a:pattFill>".utf8)))
+        let report = try deck.renderSVGReportingProblems(slideAt: 0)
+        #expect(report.problems.fidelityIssues.contains { $0.code == .unsupportedFill })
+        #expect(report.problems.fidelityIssues.filter { $0.code == .unsupportedColor }.count == 2)
+        #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+    }
+
     @Test func fontFamilyAttributeRemainsValidXML() throws {
         let deck = try Presentation()
         let shape = try deck.slides[0].shapes.addTextBox(Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))

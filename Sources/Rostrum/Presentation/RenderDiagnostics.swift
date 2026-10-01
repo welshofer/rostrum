@@ -154,7 +154,17 @@ final class RenderDiagnosticCollector {
                     issue(.gradientApproximation, .approximation, "Gradient geometry is approximated by the preview.")
                 }
             case "a:pattFill":
-                if parent != "a:tcPr" { issue(.unsupportedFill, .omission, "Pattern fill is not rendered in this shape path.") }
+                issue(.unsupportedFill, .omission, "Pattern fill is not rendered in this shape path.")
+            case "a:hslClr":
+                issue(.unsupportedColor, .omission, "HSL color sources are not resolved by the preview.")
+            case "a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr":
+                let transforms: Set<String> = ["a:tint", "a:shade", "a:lumMod", "a:lumOff", "a:satMod", "a:alpha", "a:alphaMod", "a:alphaOff"]
+                if element.childElements.contains(where: { !transforms.contains($0.name) }) {
+                    issue(.unsupportedColor, .approximation, "A color transform is not applied by the preview.")
+                }
+                if element.name == "a:prstClr", !["black", "white", "red", "green", "blue", "yellow", "gray", "cyan", "magenta", "transparent"].contains(element[attribute: "val"] ?? "") {
+                    issue(.unsupportedColor, .omission, "This preset color is not resolved by the preview.")
+                }
             case "a:blipFill":
                 if parent == "p:spPr" { issue(.unsupportedFill, .approximation, "Shape image fill is represented by a neutral fill.") }
             case "a:blip":

@@ -32,7 +32,7 @@ tell application "System Events"
 end tell
 tell application "Microsoft PowerPoint"
     repeat with p in presentations
-        if name of p is wanted then return "OPEN"
+        if (name of p is wanted) or (name of p is wanted & ".pptx") then return "OPEN"
     end repeat
 end tell
 return "WAIT"
@@ -41,7 +41,7 @@ end run'''
 CLOSE = '''on run argv
 tell application "Microsoft PowerPoint"
     repeat with p in presentations
-        if name of p is item 1 of argv then
+        if (name of p is item 1 of argv) or (name of p is (item 1 of argv) & ".pptx") then
             close p saving no
             return "CLOSED"
         end if
@@ -72,7 +72,7 @@ def check(path, timeout=45):
     deadline = time.monotonic() + timeout
     status, stable = 'TIMEOUT', 0
     while time.monotonic() < deadline:
-        state = apple(PROBE, own.name)
+        state = apple(PROBE, own.stem)
         if state == 'OPEN':
             stable += 1
             # Give Office time to finish asynchronous validation after open.
@@ -84,7 +84,7 @@ def check(path, timeout=45):
         time.sleep(1)
     code = classify(status)
     if code == 0:
-        if apple(CLOSE, own.name) != 'CLOSED':
+        if apple(CLOSE, own.stem) != 'CLOSED':
             raise RuntimeError('owned document could not be closed')
         shutil.rmtree(folder)
     return {'status':status, 'exitCode':code, 'input':str(path),
