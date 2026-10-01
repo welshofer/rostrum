@@ -181,37 +181,12 @@ struct SVGRenderer {
     /// renderer's defaults instead of the template's typography — the one thing
     /// applying a template is supposed to change.
     private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
-        guard owner === slidePart, let ph = Placeholders.phElement(of: sp) else { return nil }
-        let idx = ph[attribute: "idx"].flatMap { Int($0) } ?? 0
-        let chain = inheritanceChain().chain
-
-        func level1(_ lstStyle: XML.Element?) -> XML.Element? {
-            lstStyle?.firstChild(named: "a:lvl1pPr")?.firstChild(named: "a:defRPr")
-        }
-
-        var layoutType = ph[attribute: "type"] ?? "obj"
-        if let layout = chain.layout, let tree = Slide.existingSpTree(of: layout) {
-            for element in tree.childElements {
-                guard let lph = Placeholders.phElement(of: element),
-                      (lph[attribute: "idx"].flatMap { Int($0) } ?? 0) == idx else { continue }
-                layoutType = lph[attribute: "type"] ?? layoutType
-                if let defaults = level1(element.firstChild(named: "p:txBody")?
-                    .firstChild(named: "a:lstStyle")) {
-                    return defaults
-                }
-                break
-            }
-        }
-
-        guard let master = chain.master, let dom = try? master.dom(),
-              let styles = dom.firstChild(named: "p:txStyles") else { return nil }
-        let bucket: String
-        switch Slide.masterTypeReduction[layoutType] ?? "body" {
-        case "title": bucket = "p:titleStyle"
-        case "body": bucket = "p:bodyStyle"
-        default: bucket = "p:otherStyle"
-        }
-        return level1(styles.firstChild(named: bucket))
+        guard owner === slidePart else { return nil }
+        let styles = RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
+        guard !styles.isEmpty else { return nil }
+        let resolved = XML.Element("rostrum:inheritedStyles")
+        for style in styles { resolved.appendElement(style) }
+        return resolved
     }
 
     private func geometry(_ prst: String, _ f: (Int, Int, Int, Int), fill: String, stroke: String) -> String {
@@ -232,113 +207,33 @@ struct SVGRenderer {
 
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
                             inheriting defaults: XML.Element? = nil) -> String {
-        let (x, y, w, h) = f
-        let bodyPr = txBody.firstChild(named: "a:bodyPr")
-        // Bounded like every other coordinate here: `x + inset(…)` traps.
-        func inset(_ name: String, _ fallback: Int) -> Int {
-            bodyPr?.coordinate(name) ?? fallback
+        let layout = RichTextLayout(textBody: txBody,
+            width: Double(f.2) / Double(emuPerPoint), height: Double(f.3) / Double(emuPerPoint),
+            fonts: fonts, theme: theme, inheritedStyles: defaults.map {
+                $0.name == "rostrum:inheritedStyles" ? $0.childElements : [$0]
+            } ?? [],
+            slideNumber: slideNumber, maxLines: 64)
+        func decimal(_ value: Double) -> String {
+            guard value.isFinite else { return "0" }
+            if value.rounded() == value, abs(value) < 1e15 { return String(Int(value)) }
+            return String(format: "%.4f", locale: Locale(identifier: "en_US_POSIX"), value)
         }
-        let contentX = x + inset("lIns", 91_440)
-        let contentW = Swift.max(0, w - inset("lIns", 91_440) - inset("rIns", 91_440))
-        let paragraphs = txBody.children(named: "a:p")
-
-        // Laid out relative to the top of the box, so the finished block can be
-        // moved as a unit to honour `a:bodyPr/@anchor` below.
-        struct Line {
-            let x: Int, baseline: Int, size: Int
-            let fill: String, anchor: String, text: String
-            let bold: Bool
-            let typeface: String?
-        }
-        var lines: [Line] = []
-        var cursorY = 0
-        for p in paragraphs {
-            // Fields (slide number, date) are siblings of the runs and carry
-            // their own cached text; a renderer that reads only `a:r` silently
-            // drops the deck's furniture.
-            let pieces = p.childElements.filter { $0.name == "a:r" || $0.name == "a:fld" }
-            let text = pieces.map { piece -> String in
-                if piece.name == "a:fld", piece[attribute: "type"] == "slidenum" {
-                    // The cached value is whatever it was when written; the
-                    // real number is the position we're rendering from.
-                    return String(slideNumber)
-                }
-                return piece.firstChild(named: "a:t")?.textContent ?? ""
-            }.joined()
-            guard !text.isEmpty else { cursorY += emuPerPoint * 18; continue }
-            let rPr = pieces.first?.firstChild(named: "a:rPr")
-            // ST_TextFontSize is 1pt–4000pt in hundredths. The file can say
-            // anything, and `sz * 12700` on a large Int is an overflow crash.
-            let sizeHundredths = min(max(rPr?[attribute: "sz"].flatMap { Int($0) }
-                ?? defaults?[attribute: "sz"].flatMap { Int($0) } ?? 1800, 100),
-                                     400_000)
-            let sizeEMU = sizeHundredths * emuPerPoint / 100
-            let bold = rPr?[attribute: "b"] == "1"
-                || (rPr?[attribute: "b"] == nil && defaults?[attribute: "b"] == "1")
-            let color = rPr.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) }
-                ?? defaults.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) } ?? "#1A1A1A"
-            let align = p.firstChild(named: "a:pPr")?[attribute: "algn"] ?? "l"
-            let (anchorX, textAnchor) = align == "ctr" ? (x + w / 2, "middle")
-                : align == "r" ? (x + w, "end") : (x, "start")
-
-            // A run usually inherits its typeface from the theme rather than
-            // naming one, and `+mj-lt`/`+mn-lt` name it indirectly. Resolving
-            // both is what lets a deck with registered fonts take the measured
-            // path for the text it actually renders, not just for runs that
-            // happen to carry an explicit `a:latin`.
-            let typeface = resolvedTypeface(rPr) ?? resolvedTypeface(defaults)
-            if pieces.count == 1, let typeface, let metrics = fonts.metrics(for: typeface) {
-                // Measured path: real word wrap and baseline placement —
-                // single-run paragraphs only, since a mixed-size/font
-                // paragraph measured at the first run's metrics would wrap
-                // wrong; those keep the estimated path below.
-                // (Left-aligned text starts at the body inset; the estimated
-                // branch below keeps its historical `x` so existing output is
-                // byte-identical for decks without registered fonts.)
-                let lineX = textAnchor == "start" ? contentX : anchorX
-                let sizePt = Double(sizeEMU) / Double(emuPerPoint)
-                let wrapped = TextMeasurer(metrics).wrap(
-                    text, pointSize: sizePt, width: Double(contentW) / Double(emuPerPoint))
-                let lineH = Int((metrics.lineHeight(pointSize: sizePt) * Double(emuPerPoint)).rounded())
-                let ascent = Int((metrics.ascent(pointSize: sizePt) * Double(emuPerPoint)).rounded())
-                for line in wrapped {
-                    lines.append(Line(x: lineX, baseline: cursorY + ascent, size: sizeEMU,
-                                      fill: color, anchor: textAnchor, text: line, bold: bold,
-                                      typeface: typeface))
-                    cursorY += lineH
-                }
-            } else {
-                // No metrics for this typeface (or a mixed paragraph): estimate
-                // a character width from the font size and wrap on it. Line
-                // advance stays exactly as the estimated path always had it, so
-                // a paragraph that already fit emits byte-identical markup.
-                for line in wrapEstimated(text, width: w, sizeEMU: sizeEMU) {
-                    cursorY += sizeEMU
-                    lines.append(Line(x: anchorX, baseline: cursorY, size: sizeEMU,
-                                      fill: color, anchor: textAnchor, text: line, bold: bold,
-                                      typeface: typeface))
-                    cursorY += sizeEMU / 3
-                }
+        return layout.lines.map { line in
+            let baseline = Double(f.1) + line.baseline * Double(emuPerPoint)
+            var result = "<text transform=\"translate(\(f.0),\(decimal(baseline))) scale(\(emuPerPoint))\" xml:space=\"preserve\">"
+            for span in line.spans {
+                let run = span.run
+                result += "<tspan x=\"\(decimal(span.x))\" font-size=\"\(decimal(run.fontSize))\" fill=\"\(run.color)\""
+                    + fontFamilyAttr(run.fontFamily)
+                    + (run.bold ? " font-weight=\"bold\"" : "")
+                    + (run.italic ? " font-style=\"italic\"" : "")
+                    + (run.tracking == 0 ? "" : " letter-spacing=\"\(decimal(run.tracking))\"")
+                if span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
+                result += ">" + escape(run.text) + "</tspan>"
             }
-        }
-
-        // `a:bodyPr/@anchor`: bottom- and center-anchored bodies grow away from
-        // their anchored edge. Ignoring it put a wrapped bottom-anchored title
-        // straight through the content below it instead of up into the space
-        // the layout left for exactly that.
-        let offsetY: Int
-        switch bodyPr?[attribute: "anchor"] {
-        case "b": offsetY = y + h - cursorY
-        case "ctr": offsetY = y + (h - cursorY) / 2
-        default: offsetY = y
-        }
-        return lines.map { line in
-            textElement(line.text, x: line.x, baseline: line.baseline + offsetY,
-                        sizeEMU: line.size, fill: line.fill, anchor: line.anchor,
-                        bold: line.bold, typeface: line.typeface)
+            return result + "</text>"
         }.joined()
     }
-
 
     // MARK: - Text emission
 

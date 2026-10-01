@@ -166,8 +166,8 @@ public struct TextShaper: Sendable {
                 }
             }
         }
-        var unique: [ShapingDiagnostic] = []
-        for diagnostic in diagnostics where !unique.contains(diagnostic) { unique.append(diagnostic) }
+        var unique: [ShapingDiagnostic] = [], seen: Set<ShapingDiagnostic> = []
+        for diagnostic in diagnostics where seen.insert(diagnostic).inserted { unique.append(diagnostic) }
         return ShapedGlyphRun(glyphs: glyphs, breaks: Self.lineBreaks(in: text),
                               diagnostics: unique, direction: resolvedDirection)
     }

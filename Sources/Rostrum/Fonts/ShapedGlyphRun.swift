@@ -4,7 +4,7 @@ public enum TextDirection: String, Sendable { case automatic, leftToRight, right
 
 /// A precise warning: advances remain available for an explicitly approximate
 /// preview, but callers must not silently treat an unsupported run as exact.
-public enum ShapingDiagnostic: Equatable, Sendable {
+public enum ShapingDiagnostic: Hashable, Sendable {
     case unsupportedScript(scalar: UInt32)
     case unsupportedCombiningSequence(scalarRange: Range<Int>)
     case unsupportedBidirectionalControl(scalar: UInt32)
