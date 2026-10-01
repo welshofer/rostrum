@@ -41,6 +41,7 @@ public struct FontMetrics: Sendable {
     private let advances: [Int]
     private let characterMap: CharacterMap
     let layoutTables: FontLayoutTables
+    let hasOutlines: Bool
 
     // MARK: - Loading
 
@@ -107,6 +108,7 @@ public struct FontMetrics: Sendable {
             return table.offset
         }
 
+        hasOutlines = (tables["glyf"] != nil && tables["loca"] != nil) || tables["CFF "] != nil || tables["CFF2"] != nil
         let layoutTags: Set<String> = ["kern", "GSUB", "GPOS", "fvar"]
         layoutTables = FontLayoutTables(tables: tables.filter { layoutTags.contains($0.key) }
             .mapValues { Array(reader.bytes[$0.offset..<($0.offset + $0.length)]) })

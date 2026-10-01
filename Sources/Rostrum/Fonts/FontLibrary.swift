@@ -11,6 +11,7 @@ import Foundation
 public final class FontLibrary {
     /// Distinct styles never overwrite one another.
     private var byFace: [FontFaceKey: FontMetrics] = [:]
+    private var sourceData: [FontFaceKey: Data] = [:]
 
     public init() {}
 
@@ -24,7 +25,7 @@ public final class FontLibrary {
     @discardableResult
     public func register(_ data: Data, aliases: [String] = [], fontIndex: Int = 0) throws -> String {
         let metrics = try FontMetrics(data: data, fontIndex: fontIndex)
-        return try register(metrics, names: metrics.familyNames + aliases,
+        return try register(metrics, data: data, names: metrics.familyNames + aliases,
                             bold: metrics.isBold, italic: metrics.isItalic)
     }
 
@@ -33,16 +34,18 @@ public final class FontLibrary {
     public func register(_ data: Data, face: FontFaceKey, aliases: [String] = [],
                          fontIndex: Int = 0) throws -> String {
         let metrics = try FontMetrics(data: data, fontIndex: fontIndex)
-        return try register(metrics, names: [face.family] + metrics.familyNames + aliases,
+        return try register(metrics, data: data, names: [face.family] + metrics.familyNames + aliases,
                             bold: face.bold, italic: face.italic)
     }
 
-    private func register(_ metrics: FontMetrics, names: [String], bold: Bool, italic: Bool) throws -> String {
+    private func register(_ metrics: FontMetrics, data: Data, names: [String], bold: Bool, italic: Bool) throws -> String {
         guard let primary = names.first else {
             throw RostrumError.fontCorrupt("font has no family name; pass aliases: when registering")
         }
         for name in names {
-            byFace[FontFaceKey(family: name, bold: bold, italic: italic)] = metrics
+            let key = FontFaceKey(family: name, bold: bold, italic: italic)
+            byFace[key] = metrics
+            sourceData[key] = data
         }
         return primary
     }
@@ -68,6 +71,10 @@ public final class FontLibrary {
     }
 
     public func metrics(for face: FontFaceKey) -> FontMetrics? { byFace[face] }
+
+    /// Original explicit font bytes. Aliases share the same value; consumers
+    /// must honor the font's OS/2 embedding restrictions when exporting them.
+    public func data(for face: FontFaceKey) -> Data? { sourceData[face] }
 
     public var isEmpty: Bool { byFace.isEmpty }
 }

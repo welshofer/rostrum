@@ -20,6 +20,7 @@ struct SVGRenderer {
     let slideNumber: Int
 
     private let emuPerPoint = 12700
+    private let diagnostics = RenderDiagnosticCollector()
 
     func render(pixelWidth: Int) throws -> (svg: String, problems: SlideRenderProblems) {
         // Not for the value: this is the one call that surfaces a malformed
@@ -27,6 +28,9 @@ struct SVGRenderer {
         // through `existingSpTree`, which swallows the parse with `try?` and
         // would render a silently blank slide instead.
         _ = try slidePart.dom()
+        diagnostics.reset()
+        diagnostics.location = FidelityLocation(slideIndex: slideNumber - 1,
+            partURI: slidePart.uri.description, path: "/p:sld")
         // p:sldSz comes from the file too, and the aspect-ratio conversion below
         // goes through Int(_: Double), which traps when the double is out of
         // range — so bound the dimensions before dividing by them.
@@ -42,7 +46,25 @@ struct SVGRenderer {
         // look like whatever it was before a template was applied: the logo,
         // the photo panel, the coloured field a brand puts on its layouts all
         // live on the layout and the master, not on the slide.
-        let (chain, problems) = inheritanceChain()
+        let (chain, inheritedProblems) = inheritanceChain()
+        if inheritedProblems.layoutUnresolved || inheritedProblems.masterUnresolved {
+            diagnostics.record(.unresolvedInheritance, .missingResource, "The slide layout/master inheritance chain is incomplete.")
+        }
+        for owner in [slidePart, chain.layout, chain.master].compactMap({ $0 }) {
+            guard let background = (try? owner.dom())?.firstChild(named: "p:cSld")?.firstChild(named: "p:bg") else { continue }
+            diagnostics.inspect(background, owner: owner, slideIndex: slideNumber - 1,
+                path: "/p:cSld/p:bg", package: package)
+            if let reference = background.firstChild(named: "p:bgRef"), let index = reference[attribute: "idx"].flatMap(Int.init),
+               let format = (try? theme.part.dom())?.firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme") {
+                let list = index >= 1001 ? "a:bgFillStyleLst" : "a:fillStyleLst"
+                let offset = index >= 1001 ? index - 1001 : index - 1
+                if let fills = format.firstChild(named: list)?.childElements, fills.indices.contains(offset) {
+                    diagnostics.inspect(fills[offset], owner: theme.part, slideIndex: slideNumber - 1,
+                        path: "/a:theme/a:themeElements/a:fmtScheme/\(list)[\(offset + 1)]", package: package)
+                }
+            }
+            break
+        }
         body += box(0, 0, w, h,
                     fill: backgroundFill(chain: chain, box: (0, 0, w, h), defs: &defs) ?? "#FFFFFF")
 
@@ -54,7 +76,9 @@ struct SVGRenderer {
         }
 
         if let spTree = Slide.existingSpTree(of: slidePart) {
-            for child in spTree.childElements {
+            for (index, child) in spTree.childElements.enumerated() {
+                diagnostics.inspect(child, owner: slidePart, slideIndex: slideNumber - 1,
+                    path: "/p:cSld/p:spTree/\(child.name)[\(index + 1)]", package: package)
                 switch child.name {
                 case "p:sp": body += renderShape(child, ownedBy: slidePart, defs: &defs)
                 case "p:pic": body += renderPicture(child, ownedBy: slidePart)
@@ -64,8 +88,11 @@ struct SVGRenderer {
             }
         }
 
+        defs += diagnostics.fontDefinitions
         let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\(pixelWidth)\" height=\"\(pxH)\" "
             + "viewBox=\"0 0 \(w) \(h)\"><defs>\(defs)</defs>\(body)</svg>"
+        var problems = inheritedProblems
+        problems.fidelityIssues = diagnostics.issues
         return (svg, problems)
     }
 
@@ -124,8 +151,10 @@ struct SVGRenderer {
     private func renderInherited(_ part: Part, defs: inout String) -> String {
         guard let tree = Slide.existingSpTree(of: part) else { return "" }
         var out = ""
-        for child in tree.childElements {
+        for (index, child) in tree.childElements.enumerated() {
             if Placeholders.phElement(of: child) != nil { continue }
+            diagnostics.inspect(child, owner: part, slideIndex: slideNumber - 1,
+                path: "/p:cSld/p:spTree/\(child.name)[\(index + 1)]", package: package)
             switch child.name {
             case "p:sp": out += renderShape(child, ownedBy: part, defs: &defs)
             case "p:pic": out += renderPicture(child, ownedBy: part)
@@ -213,6 +242,7 @@ struct SVGRenderer {
                 $0.name == "rostrum:inheritedStyles" ? $0.childElements : [$0]
             } ?? [],
             slideNumber: slideNumber, maxLines: 64)
+        diagnostics.text(layout)
         func decimal(_ value: Double) -> String {
             guard value.isFinite else { return "0" }
             if value.rounded() == value, abs(value) < 1e15 { return String(Int(value)) }
@@ -223,8 +253,11 @@ struct SVGRenderer {
             var result = "<text transform=\"translate(\(f.0),\(decimal(baseline))) scale(\(emuPerPoint))\" xml:space=\"preserve\">"
             for span in line.spans {
                 let run = span.run
+                let embedded = run.fontFamily.flatMap {
+                    diagnostics.embeddedFamily(for: FontFaceKey(family: $0, bold: run.bold, italic: run.italic), fonts: fonts)
+                }
                 result += "<tspan x=\"\(decimal(span.x))\" font-size=\"\(decimal(run.fontSize))\" fill=\"\(run.color)\""
-                    + fontFamilyAttr(run.fontFamily)
+                    + fontFamilyAttr(embedded ?? run.fontFamily)
                     + (run.bold ? " font-weight=\"bold\"" : "")
                     + (run.italic ? " font-style=\"italic\"" : "")
                     + (run.tracking == 0 ? "" : " letter-spacing=\"\(decimal(run.tracking))\"")
@@ -976,6 +1009,7 @@ struct SVGRenderer {
             case "&": out += "&amp;"
             case "<": out += "&lt;"
             case ">": out += "&gt;"
+            case "\"": out += "&quot;"
             default: out.append(c)
             }
         }
@@ -991,7 +1025,7 @@ struct SVGRenderer {
 /// missing from that SVG, with nothing in the output to say so. To a viewer the
 /// slide then looks like Rostrum rendered it wrong, when really the deck is
 /// damaged. These flags let a caller tell the two apart. An empty value
-/// (`isEmpty`) means every link resolved and nothing was left out.
+/// (`isEmpty`) means no known issue was detected in the covered paths.
 public struct SlideRenderProblems: Sendable, Equatable {
     /// The slide names no layout, or the layout part it names could not be
     /// loaded. Nothing the layout would have contributed was drawn.
@@ -1001,23 +1035,30 @@ public struct SlideRenderProblems: Sendable, Equatable {
     /// could not be loaded. Nothing the master would have contributed was drawn.
     public var masterUnresolved: Bool
 
-    /// No link in the slide → layout → master chain was broken.
-    public var isEmpty: Bool { !layoutUnresolved && !masterUnresolved }
+    /// Actual content that the current preview approximated, omitted or lacked.
+    public var fidelityIssues: [FidelityIssue]
 
-    public init(layoutUnresolved: Bool = false, masterUnresolved: Bool = false) {
+    /// No known issues were detected by the covered renderer paths. This is
+    /// not a universal fidelity guarantee or an Office conformance certificate.
+    public var isEmpty: Bool { !layoutUnresolved && !masterUnresolved && fidelityIssues.isEmpty }
+
+    public init(layoutUnresolved: Bool = false, masterUnresolved: Bool = false,
+                fidelityIssues: [FidelityIssue] = []) {
         self.layoutUnresolved = layoutUnresolved
         self.masterUnresolved = masterUnresolved
+        self.fidelityIssues = fidelityIssues
     }
 }
 
 public extension Presentation {
     /// Render one slide to a self-contained SVG string (thumbnails / visual diff).
-    func renderSVG(slideAt index: Int, pixelWidth: Int = 1280) throws -> String {
-        try renderSVGReportingProblems(slideAt: index, pixelWidth: pixelWidth).svg
+    func renderSVG(slideAt index: Int, pixelWidth: Int = 1280, strictRendering: Bool = false) throws -> String {
+        try renderSVGReportingProblems(slideAt: index, pixelWidth: pixelWidth, strictRendering: strictRendering).svg
     }
 
     /// Render one slide, and report anything its inheritance chain could not
-    /// resolve.
+    /// resolve, along with known fidelity gaps in the content it rendered.
+    /// Set `strictRendering` to refuse known approximations, omissions and missing fonts.
     ///
     /// The `svg` is exactly what `renderSVG(slideAt:pixelWidth:)` returns —
     /// this is the same render, with the diagnostics kept instead of dropped.
@@ -1025,12 +1066,14 @@ public extension Presentation {
     /// caller can tell a damaged deck apart from one rendered wrong. A slide
     /// with a broken chain still renders; it just comes back without whatever
     /// it would have inherited.
-    func renderSVGReportingProblems(slideAt index: Int, pixelWidth: Int = 1280)
+    func renderSVGReportingProblems(slideAt index: Int, pixelWidth: Int = 1280, strictRendering: Bool = false)
         throws -> (svg: String, problems: SlideRenderProblems) {
         let slide = try slides[index]
-        return try SVGRenderer(slidePart: slide.part, slideSize: slideSize,
+        let result = try SVGRenderer(slidePart: slide.part, slideSize: slideSize,
                         theme: slide.resolvedTheme, package: package, fonts: fonts,
                         slideNumber: index + 1).render(pixelWidth: pixelWidth)
+        if strictRendering && !result.problems.isEmpty { throw StrictRenderingError(problems: result.problems) }
+        return result
     }
 
     /// Write one `slide-N.svg` per slide into `directory`; returns the URLs.
