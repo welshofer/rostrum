@@ -39,6 +39,11 @@ let package = Package(
             name: "pptx-tool",
             dependencies: ["Rostrum"],
             path: "Tools/pptx-tool"),
+        .executableTarget(
+            name: "rostrum-bench",
+            dependencies: ["Rostrum"],
+            path: "Tools/rostrum-bench",
+            exclude: ["run.py", "corpus.json"]),
         .testTarget(
             name: "RostrumTests",
             dependencies: ["Rostrum"],
