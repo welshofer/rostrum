@@ -26,6 +26,7 @@ enum DrawingColor {
         default: base = nil
         }
         guard let base else { return nil }
+        guard !node.childElements.isEmpty else { return Resolved(color: base, alpha: 1) }
         var rgb = RGB(base), alpha = 1.0
         for child in node.childElements {
             guard let raw = child[attribute: "val"].flatMap(Double.init), raw.isFinite, abs(raw) <= 2_147_483_647 else { continue }

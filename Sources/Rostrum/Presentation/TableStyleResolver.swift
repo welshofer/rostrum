@@ -176,6 +176,11 @@ public struct TableStyleResolver {
     private func resolveColors(in root: XML.Element) {
         var stack = [root]
         while let node = stack.popLast() {
+            if node.name == "a:srgbClr", node.childElements.isEmpty { continue }
+            guard ["a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr"].contains(node.name) else {
+                stack.append(contentsOf: node.childElements)
+                continue
+            }
             let wrapper = XML.Element("color", children: [.element(node)])
             let result = DrawingColor.resolve(in: wrapper, theme: theme)
             let resolved = result?.color
