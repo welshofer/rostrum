@@ -76,11 +76,15 @@ public final class Slides: Sequence {
     @discardableResult
     public func add() throws -> Slide {
         let uri = nextSlideURI()
+        let slideID = try nextSlideID()
+        let layout = try firstLayoutPart()
+        let list = try sldIdLst()
+        let oldIDs = list.childElements.compactMap { $0[attribute: "id"].flatMap(Int.init) }
+        let sections = try Sections(package: package, presentationPart: presentationPart)
+            .maintainSectionMembership(order: oldIDs + [slideID], insertedIDs: [slideID])
         let part = package.addPart(
             uri: uri, contentType: ContentType.slide,
             blob: Data(MinimalTemplate.slideXML.utf8))
-
-        let layout = try firstLayoutPart()
         part.rels.add(type: RelType.slideLayout, target: uri.relativeReference(to: layout.uri))
 
         let rId = presentationPart.rels.add(
@@ -88,9 +92,10 @@ public final class Slides: Sequence {
             target: presentationPart.uri.relativeReference(to: uri))
 
         let entry = XML.Element("p:sldId", attributes: [
-            ("id", String(try nextSlideID())), ("r:id", rId),
+            ("id", String(slideID)), ("r:id", rId),
         ])
-        try sldIdLst().appendElement(entry)
+        list.appendElement(entry)
+        sections?.commit()
         presentationPart.markDirty()
         return Slide(part: part, package: package)
     }
@@ -104,6 +109,10 @@ public final class Slides: Sequence {
             throw RostrumError.packageInvalid("slide index \(index) out of range 0..<\(entries.count)")
         }
         let entry = entries[index]
+        let remainingIDs = entries.enumerated().filter { $0.offset != index }
+            .compactMap { $0.element[attribute: "id"].flatMap(Int.init) }
+        let sections = try Sections(package: package, presentationPart: presentationPart)
+            .maintainSectionMembership(order: remainingIDs)
         if let rId = entry[attribute: "r:id"],
            let rel = presentationPart.rels.relationship(withId: rId) {
             let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
@@ -116,6 +125,7 @@ public final class Slides: Sequence {
             }
         }
         list.removeChild(entry)
+        sections?.commit()
         presentationPart.markDirty()
     }
 
@@ -129,7 +139,12 @@ public final class Slides: Sequence {
         }
         let entry = entries.remove(at: from)
         entries.insert(entry, at: to)
+        let order = entries.compactMap { $0[attribute: "id"].flatMap(Int.init) }
+        let sections = try Sections(package: package, presentationPart: presentationPart)
+            .maintainSectionMembership(order: order, insertedAt: to,
+                                      moving: entry[attribute: "id"].flatMap(Int.init))
         list.replaceChildElements(with: entries)
+        sections?.commit()
         presentationPart.markDirty()
     }
 
@@ -148,6 +163,11 @@ public final class Slides: Sequence {
         // Resolve and parse every annotation before changing the package. A
         // missing or malformed part must not leave a half-inserted duplicate.
         let annotations = try copySlideAnnotations(from: source.part, to: uri, slideID: slideID)
+        var order = entries.compactMap { $0[attribute: "id"].flatMap(Int.init) }
+        order.insert(slideID, at: index + 1)
+        let sections = try Sections(package: package, presentationPart: presentationPart)
+            .maintainSectionMembership(order: order, insertedAt: index + 1,
+                                      insertedIDs: [slideID], duplicateOf: try source.slideID())
 
         let copy = package.addPart(uri: uri, contentType: ContentType.slide, blob: source.part.blob)
         copy.rels.setItems(annotations.relationships)
@@ -164,6 +184,7 @@ public final class Slides: Sequence {
         ])
         entries.insert(entry, at: index + 1)
         list.replaceChildElements(with: entries)
+        sections?.commit()
         presentationPart.markDirty()
         return Slide(part: copy, package: package)
     }

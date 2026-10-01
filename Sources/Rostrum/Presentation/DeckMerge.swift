@@ -281,6 +281,11 @@ extension Slides {
             try copier.importAnnotations(on: uri, slideID: id)
             copied.append((uri, id))
         }
+        var sectionOrder = list.childElements.compactMap { $0[attribute: "id"].flatMap(Int.init) }
+        sectionOrder.insert(contentsOf: copied.map(\.id), at: insertAt)
+        let sections = try Sections(package: package, presentationPart: presentationPart)
+            .maintainSectionMembership(order: sectionOrder, insertedAt: insertAt,
+                                      insertedIDs: copied.map(\.id))
         // The package graph and annotation author/anchor transforms are now
         // validated. No throwing operation follows the commit boundary.
         copier.commit()
@@ -294,6 +299,7 @@ extension Slides {
             ]), at: insertAt + offset)
         }
         list.replaceChildElements(with: entries)
+        sections?.commit()
         destPresentationPart.markDirty()
         return copied.compactMap { copy in
             destPackage.parts[copy.uri].map { Slide(part: $0, package: destPackage) }

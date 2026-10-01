@@ -81,3 +81,115 @@ import Testing
         #expect(try deck.sections[0].name == "Only")
     }
 }
+
+@Suite struct SectionLifecycleTests {
+    private func deck() throws -> Presentation {
+        let deck = try Presentation()
+        for _ in 0..<3 { try deck.slides.add() }
+        try deck.setSections([("First", 0), ("Second", 2)])
+        return deck
+    }
+
+    private func assertPartition(_ deck: Presentation) throws {
+        let indices = Array(deck.sections).flatMap(\.slideIndices)
+        #expect(indices == Array(0..<deck.slides.count))
+        #expect(Set(indices).count == indices.count)
+        #expect(try deck.sections.membership() != nil)
+        #expect(try deck.validate().isEmpty)
+    }
+
+    @Test func everySlideOperationMaintainsMembershipAndOriginalSectionXML() throws {
+        let deck = try deck()
+        let first = try deck.sections[0]
+        let second = try deck.sections[1]
+        let ids = [first.id, second.id]
+        let unknown = XML.Element("custom:payload", attributes: [("xmlns:custom", "urn:section"), ("id", "opaque")])
+        first.element.appendElement(unknown)
+        deck.presentationPart.markDirty()
+        try deck.slides.duplicate(at: 1)
+        #expect(first.slideIndices == [0, 1, 2])
+        #expect(second.slideIndices == [3, 4])
+        try deck.slides.add()
+        #expect(second.slideIndices == [3, 4, 5])
+        try deck.slides.move(from: 0, to: 4)
+        #expect(first.slideIndices == [0, 1])
+        #expect(second.slideIndices == [2, 3, 4, 5])
+        try deck.slides.remove(at: 1)
+        try assertPartition(deck)
+        #expect(Array(deck.sections).map(\.id) == ids)
+        #expect(first.element.firstChild(named: "custom:payload")?.serialized() == unknown.serialized())
+        let reopened = try Presentation(data: try deck.serializedData())
+        try assertPartition(reopened)
+        #expect(Array(reopened.sections).map(\.id) == ids)
+        #expect(try reopened.sections[0].element.firstChild(named: "custom:payload")?.serialized() == unknown.serialized())
+    }
+
+    @Test func importsAtBoundariesJoinFollowingSectionAndAppendsJoinLast() throws {
+        let source = try Presentation()
+        let dest = try deck()
+        let ids = Array(dest.sections).map(\.id)
+        try dest.slides.import(from: source, at: 0, insertAt: 2)
+        #expect(try dest.sections[0].slideIndices == [0, 1])
+        #expect(try dest.sections[1].slideIndices == [2, 3, 4])
+        try dest.slides.import(from: source, at: 0, insertAt: 0)
+        #expect(try dest.sections[0].slideIndices == [0, 1, 2])
+        try dest.slides.importAll(from: source)
+        #expect(try dest.sections[1].slideIndices == [3, 4, 5, 6])
+        #expect(Array(dest.sections).map(\.id) == ids)
+        try assertPartition(try Presentation(data: try dest.serializedData()))
+    }
+
+    @Test func emptySectionsArePreservedAndReusable() throws {
+        let deck = try deck()
+        let ids = Array(deck.sections).map(\.id)
+        try deck.slides.remove(at: 3)
+        try deck.slides.remove(at: 2)
+        #expect(try deck.sections[1].slideCount == 0)
+        #expect(Array(deck.sections).map(\.id) == ids)
+        try deck.slides.add()
+        #expect(try deck.sections[1].slideIndices == [2])
+        while deck.slides.count > 0 { try deck.slides.remove(at: 0) }
+        #expect(deck.sections.count == 2)
+        try deck.slides.add()
+        #expect(try deck.sections[1].slideIndices == [0])
+        try assertPartition(deck)
+    }
+
+    @Test func sectionSplitReorderingAndRemovalPreserveUnaffectedIdentities() throws {
+        let deck = try deck()
+        let firstID = try deck.sections[0].id
+        let secondID = try deck.sections[1].id
+        let firstSlides = try deck.sections[0].slides.map { $0.part.uri }
+        let secondSlides = try deck.sections[1].slides.map { $0.part.uri }
+        let split = try deck.addSection("Split", startingAtSlide: 1)
+        #expect(try deck.sections[0].id == firstID)
+        #expect(try deck.sections[2].id == secondID)
+        try deck.sections.move(from: 2, to: 0)
+        #expect(Array(deck.slides).map { $0.part.uri } == secondSlides + firstSlides)
+        #expect(Array(deck.sections).map(\.id) == [secondID, firstID, split.id])
+        try assertPartition(deck)
+        try deck.sections.remove(at: 1)
+        #expect(Array(deck.sections).map(\.id) == [secondID, split.id])
+        try assertPartition(deck)
+        try deck.sections.remove(at: 0)
+        #expect(try deck.sections[0].id == split.id)
+        #expect(try deck.sections[0].slideCount == 4)
+        try deck.sections.remove(at: 0)
+        #expect(deck.sections.count == 0)
+        #expect(deck.slides.count == 4)
+    }
+
+    @Test func invalidSectionPartitionRefusesSlideMutationAtomically() throws {
+        let deck = try deck()
+        let first = try deck.sections[0]
+        first.element.firstChild(named: "p14:sldIdLst")?.appendElement(XML.Element("p14:sldId", attributes: [("id", "999")]))
+        deck.presentationPart.markDirty()
+        let before = try deck.serializedData()
+        #expect(throws: (any Error).self) { try deck.slides.add() }
+        #expect(throws: (any Error).self) { try deck.slides.remove(at: 0) }
+        #expect(throws: (any Error).self) { try deck.slides.move(from: 0, to: 3) }
+        #expect(throws: (any Error).self) { try deck.slides.duplicate(at: 0) }
+        #expect(throws: (any Error).self) { try deck.slides.importAll(from: Presentation()) }
+        #expect(try deck.serializedData() == before)
+    }
+}

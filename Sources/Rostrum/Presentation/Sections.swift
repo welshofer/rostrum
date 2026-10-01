@@ -186,35 +186,58 @@ public final class Sections: Sequence {
     }
 
     /// Insert a section boundary starting at `startIndex`, splitting the section
-    /// that currently owns it. Builds on `set`.
+    /// that currently owns it, preserving existing section IDs and extensions.
     @discardableResult
     public func add(_ name: String, startingAtSlide startIndex: Int) throws -> Section {
-        var bounds = try boundaries()
-        bounds.removeAll { $0.startSlide == startIndex }
-        bounds.append((name, startIndex))
-        bounds.sort { $0.startSlide < $1.startSlide }
-        // `boundaries()` is derived from the FILE's sections, and two of them
-        // can resolve to the same start slide — an unresolvable sldId falls
-        // back to 0. `set(_:)` refuses non-increasing starts, so without this
-        // a foreign deck's sections could make the re-write fail.
-        //
-        // The name just added wins its slot outright rather than depending on
-        // where `sort` happened to leave it: Swift's sort is not documented
-        // stable, so relying on tie order would make the output vary run to
-        // run, and determinism is a stated invariant of this library.
-        var seen: Set<Int> = [startIndex]
-        bounds = bounds.filter { $0.startSlide == startIndex || seen.insert($0.startSlide).inserted }
-        if bounds.first?.startSlide != 0 { bounds.insert(("Default", 0), at: 0) }
-        try set(bounds)
-        // Resolve against what was actually written. `?? 0` on an empty list
-        // would index an empty array — a crash, not a fallback.
-        guard let idx = try boundaries().firstIndex(where: { $0.startSlide == startIndex }),
-              idx < count else {
-            throw RostrumError.packageInvalid(
-                "sections were written but cannot be read back; the presentation's extension "
-                    + "list may carry a section extension this deck does not understand")
+        let ids = try slideIds()
+        guard ids.indices.contains(startIndex) else {
+            throw RostrumError.packageInvalid("section start slide is outside this deck")
         }
-        return try self[idx]
+        guard let current = try? membership() else {
+            // addSection historically repairs malformed foreign boundaries.
+            // Preserve that explicit repair API; slide lifecycle operations
+            // still refuse malformed membership before changing the deck.
+            var bounds = try boundaries()
+            bounds.removeAll { $0.startSlide == startIndex }
+            bounds.append((name, startIndex))
+            bounds.sort { $0.startSlide < $1.startSlide }
+            var seen: Set<Int> = [startIndex]
+            bounds = bounds.filter { $0.startSlide == startIndex || seen.insert($0.startSlide).inserted }
+            if bounds.first?.startSlide != 0 { bounds.insert(("Default", 0), at: 0) }
+            try set(bounds)
+            guard let index = try boundaries().firstIndex(where: { $0.startSlide == startIndex }) else {
+                throw RostrumError.packageInvalid("written section boundary cannot be resolved")
+            }
+            return try self[index]
+        }
+        let owningIndex = current.owner[ids[startIndex]]!
+        let owning = current.sections[owningIndex]
+        let members = ids.filter { current.owner[$0] == owningIndex }
+        if members.first == ids[startIndex] {
+            owning[attribute: "name"] = name
+            presentationPart.markDirty()
+            return Section(element: owning, package: package, presentationPart: presentationPart)
+        }
+        let split = members.firstIndex(of: ids[startIndex])!
+        let used = Set(current.sections.compactMap { $0[attribute: "id"] })
+        let section = XML.Element("p14:section", attributes: [
+            ("name", name), ("id", SectionGUID.make(name: name, index: startIndex, avoiding: used)),
+        ])
+        let list = XML.Element("p14:sldIdLst")
+        let originalEntries = owning.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId") ?? []
+        for id in members.dropFirst(split) {
+            list.appendElement(originalEntries.first { $0[attribute: "id"] == String(id) }
+                ?? XML.Element("p14:sldId", attributes: [("id", String(id))]))
+        }
+        section.appendElement(list)
+        let sectionList = try sectionListElement(creatingIfMissing: false)!
+        var sections = current.sections
+        sections.insert(section, at: owningIndex + 1)
+        SectionMembershipPlan(updates: [(owning, Array(members.prefix(split)))], presentation: presentationPart).commit()
+        Self.replaceKnownChildren(in: sectionList, named: "p14:section", with: sections)
+        presentationPart.markDirty()
+        return Section(element: section, package: package, presentationPart: presentationPart)
+
     }
 }
 
@@ -273,5 +296,157 @@ public extension Presentation {
     @discardableResult
     func addSection(_ name: String, startingAtSlide startIndex: Int) throws -> Section {
         try sections.add(name, startingAtSlide: startIndex)
+    }
+}
+
+/// Prepared membership edits preserve the existing section/slide-ID elements
+/// (and their unknown XML) rather than rebuilding sections from boundaries.
+struct SectionMembershipPlan {
+    let updates: [(section: XML.Element, ids: [Int])]
+    let presentation: Part
+
+    func commit() {
+        for (section, ids) in updates {
+            let list = section.getOrAddChild("p14:sldIdLst", beforeAnyOf: ["p14:extLst"])
+            var byID: [Int: XML.Element] = [:]
+            for entry in list.children(named: "p14:sldId") {
+                if let id = entry[attribute: "id"].flatMap(Int.init) { byID[id] = entry }
+            }
+            let members = ids.map { byID[$0] ?? XML.Element("p14:sldId", attributes: [("id", String($0))]) }
+            Sections.replaceKnownChildren(in: list, named: "p14:sldId", with: members)
+        }
+        if !updates.isEmpty { presentation.markDirty() }
+    }
+}
+
+extension Sections {
+    struct Membership {
+        let sections: [XML.Element]
+        let liveIDs: [Int]
+        let owner: [Int: Int]
+    }
+
+    /// Sectionless decks remain sectionless. Existing sections must partition
+    /// the live slides; malformed references are refused before any mutation.
+    func membership() throws -> Membership? {
+        guard let list = try sectionListElement(creatingIfMissing: false) else { return nil }
+        let sections = list.children(named: "p14:section")
+        guard !sections.isEmpty else { return nil }
+        let liveIDs = try slideIds()
+        guard Set(liveIDs).count == liveIDs.count else {
+            throw RostrumError.packageInvalid("duplicate slide IDs prevent section maintenance")
+        }
+        let live = Set(liveIDs)
+        var owner: [Int: Int] = [:]
+        var ordered: [Int] = []
+        for (index, section) in sections.enumerated() {
+            for entry in section.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId") ?? [] {
+                guard let id = entry[attribute: "id"].flatMap(Int.init), live.contains(id), owner[id] == nil else {
+                    throw RostrumError.packageInvalid("sections contain stale or duplicate slide references")
+                }
+                owner[id] = index
+                ordered.append(id)
+            }
+        }
+        guard ordered == liveIDs else {
+            throw RostrumError.packageInvalid("sections must cover every slide once in presentation order")
+        }
+        return Membership(sections: sections, liveIDs: liveIDs, owner: owner)
+    }
+
+    /// Insertion before a boundary belongs to the following section; appends
+    /// belong to the last section (including an explicitly retained empty one).
+    /// A duplicate belongs to its original's section. Moves adopt the section
+    /// at their destination after removal. Empty sections retain their IDs.
+    func maintainSectionMembership(order: [Int], insertedAt position: Int? = nil,
+                                   insertedIDs: [Int] = [], duplicateOf original: Int? = nil,
+                                   moving movedID: Int? = nil) throws -> SectionMembershipPlan? {
+        guard let current = try membership() else { return nil }
+        var owner = current.owner
+        if !insertedIDs.isEmpty || movedID != nil {
+            let remaining = current.liveIDs.filter { $0 != movedID }
+            let index = position ?? remaining.count
+            guard index >= 0, index <= remaining.count else {
+                throw RostrumError.packageInvalid("section insertion index out of range")
+            }
+            let destination = original.flatMap { owner[$0] }
+                ?? (index < remaining.count ? owner[remaining[index]] : current.sections.count - 1)
+                ?? current.sections.count - 1
+            for id in insertedIDs { owner[id] = destination }
+            if let movedID { owner[movedID] = destination }
+        }
+        guard Set(order).count == order.count, order.allSatisfy({ owner[$0] != nil }) else {
+            throw RostrumError.packageInvalid("section mutation has unassigned or duplicate slides")
+        }
+        let assigned = order.compactMap { owner[$0] }
+        guard assigned == assigned.sorted() else {
+            throw RostrumError.packageInvalid("section mutation would interleave section membership")
+        }
+        let updates = current.sections.enumerated().map { index, section in
+            (section: section, ids: order.filter { owner[$0] == index })
+        }
+        return SectionMembershipPlan(updates: updates, presentation: presentationPart)
+    }
+
+    /// Preserve foreign elements, comments and instructions while replacing
+    /// only the named vocabulary, reusing existing element slots where possible.
+    static func replaceKnownChildren(in parent: XML.Element, named name: String, with elements: [XML.Element]) {
+        var index = 0
+        var children: [XML.Node] = []
+        for child in parent.children {
+            if case .element(let element) = child, element.name == name {
+                if index < elements.count { children.append(.element(elements[index])); index += 1 }
+            } else { children.append(child) }
+        }
+        children.append(contentsOf: elements.dropFirst(index).map { .element($0) })
+        parent.children = children
+    }
+
+    /// Remove a section boundary, transferring its slides to the preceding
+    /// section, or the following section when removing the first. Removing the
+    /// final section leaves the deck sectionless; slide order never changes.
+    public func remove(at index: Int) throws {
+        guard let current = try membership(), current.sections.indices.contains(index),
+              let list = try sectionListElement(creatingIfMissing: false) else {
+            throw RostrumError.packageInvalid("section removal index out of range")
+        }
+        let removed = current.sections[index]
+        if current.sections.count > 1 {
+            let recipient = index > 0 ? index - 1 : 1
+            let ids = current.liveIDs.filter { current.owner[$0] == index || current.owner[$0] == recipient }
+            SectionMembershipPlan(updates: [(current.sections[recipient], ids)], presentation: presentationPart).commit()
+        }
+        list.removeChild(removed)
+        presentationPart.markDirty()
+    }
+
+    /// Reorder entire sections together with their slides. Both indices use
+    /// the final section order, matching Slides.move(from:to:).
+    public func move(from: Int, to: Int) throws {
+        guard let current = try membership(), current.sections.indices.contains(from),
+              current.sections.indices.contains(to),
+              let list = try sectionListElement(creatingIfMissing: false),
+              let slides = try presentationPart.dom().firstChild(named: "p:sldIdLst") else {
+            throw RostrumError.packageInvalid("section move index out of range")
+        }
+        var sections = current.sections
+        let section = sections.remove(at: from)
+        sections.insert(section, at: to)
+        let ids = sections.flatMap { section in
+            section.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId")
+                .compactMap { $0[attribute: "id"].flatMap(Int.init) } ?? []
+        }
+        let entries = slides.childElements
+        var byID: [Int: XML.Element] = [:]
+        for entry in entries {
+            if let id = entry[attribute: "id"].flatMap(Int.init) { byID[id] = entry }
+        }
+        let reordered = try ids.map { id in
+            guard let entry = byID[id] else { throw RostrumError.packageInvalid("section slide cannot be resolved") }
+            return entry
+        }
+        Self.replaceKnownChildren(in: list, named: "p14:section", with: sections)
+        slides.replaceChildElements(with: reordered)
+        presentationPart.markDirty()
     }
 }
