@@ -174,9 +174,8 @@ extension Presentation {
     ///
     /// Reads `p:embeddedFontLst`, unwraps each EOT-Lite part back to raw sfnt
     /// bytes, and registers it under the deck's declared typeface name (plus
-    /// whatever family names the font itself carries). One face per family —
-    /// the regular weight when present — because metrics are keyed by family
-    /// (see `FontLibrary.register`). Returns the typefaces registered.
+    /// whatever family names the font itself carries). Every supplied variant
+    /// is registered under its declared style. Returns each registered family once.
     ///
     /// Explicit by design: nothing registers fonts behind your back, so
     /// output stays deterministic unless you ask for this.
@@ -190,16 +189,17 @@ extension Presentation {
             guard let typeface = embedded.firstChild(named: "p:font")?[attribute: "typeface"] else {
                 continue
             }
-            // Regular first: it is the face measurement should use.
-            for tag in ["p:regular", "p:bold", "p:italic", "p:boldItalic"] {
+            let variants = [("p:regular", false, false), ("p:bold", true, false),
+                            ("p:italic", false, true), ("p:boldItalic", true, true)]
+            for (tag, bold, italic) in variants {
                 guard let rId = embedded.firstChild(named: tag)?[attribute: "r:id"],
                       let rel = presentationPart.rels.relationship(withId: rId) else { continue }
                 let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
                 guard let part = try? package.part(at: uri),
                       let sfnt = EOTLite.unwrap(part.blob),
-                      (try? fonts.register(sfnt, aliases: [typeface])) != nil else { continue }
-                registered.append(typeface)
-                break
+                      (try? fonts.register(sfnt, face: FontFaceKey(
+                        family: typeface, bold: bold, italic: italic))) != nil else { continue }
+                if !registered.contains(typeface) { registered.append(typeface) }
             }
         }
         return registered
