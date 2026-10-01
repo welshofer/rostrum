@@ -50,3 +50,23 @@ The `.pptx` format Rostrum reads and writes is specified by
 [ECMA-376](https://ecma-international.org/publications-and-standards/standards/ecma-376/),
 which Ecma International makes available royalty-free. Rostrum implements the
 specification; it includes no text from it.
+
+## Native PowerPoint table-style data (PPTX Studio)
+
+`Tools/table-style-catalog/styles.json` and generated
+`Sources/Rostrum/Presentation/BuiltInTableStyle.swift` contain 74 native table
+style definitions collected by [PPTX Studio](https://github.com/Dewiride-Open-Source/Dewiride-PPTX-Studio),
+Copyright 2026 Dewiride Technologies, licensed under Apache License 2.0.
+The complete [license](Tools/table-style-catalog/LICENSE) and upstream
+[NOTICE](Tools/table-style-catalog/NOTICE) are retained. The NOTICE contains
+upstream project-wide entries; Rostrum imports only the table-style data.
+
+The pinned source is `corpus/ground-truth/table-styles.json` at revision
+`875a825d156812dda5fd7a359599d69fe700c972` (SHA-256
+`4d9a420bc013a41b21b797b0909d257240a422d68852a0228881011324e21613`).
+Rostrum extracts the GUID/name/XML roster, adds the DrawingML namespace for
+standalone parsing and generates a Swift enumeration. These are modifications
+to the source data representation; no upstream implementation code is included.
+The definitions are PowerPoint-serialized output according to the source's
+provenance. Rostrum's separate Office raster references were exported from an
+original python-pptx-authored test deck and are not copied from that project.

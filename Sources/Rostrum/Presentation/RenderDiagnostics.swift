@@ -145,10 +145,10 @@ final class RenderDiagnosticCollector {
 
     /// Inspect only the shapes selected for rendering, not hidden placeholders.
     /// Traversal is iterative and document ordered; paths include same-name indices.
-    func inspect(_ shape: XML.Element, owner: Part, slideIndex: Int, path: String, package: OPCPackage) {
+    func inspect(_ shape: XML.Element, owner: Part, slideIndex: Int, path: String, package: OPCPackage, tableStyleReference: Bool = false) {
         let id = shape.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"]
         location = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: id, path: path)
-        if !["p:sp", "p:pic", "p:graphicFrame", "p:bg", "p:bgPr", "a:solidFill", "a:gradFill", "a:blipFill", "a:tblStyle", "a:tableStyle"].contains(shape.name) {
+        if !["p:sp", "p:pic", "p:graphicFrame", "p:bg", "p:bgPr", "a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:tblStyle", "a:tableStyle", "a:ln", "a:effectStyle"].contains(shape.name) {
             if ShapeCollection.isShape(shape) { record(.omittedShape, .omission, "The SVG renderer does not draw \(shape.name).") }
             return
         }
@@ -157,7 +157,7 @@ final class RenderDiagnosticCollector {
         // every descendant (notably every run/color/border in large tables).
         var stack: [(element: XML.Element, occurrence: Int, depth: Int, parent: String)] = [(shape, 0, 0, "")]
         var components: [(name: String, occurrence: Int)] = []
-        let tableStyle = shape.name == "a:tblStyle" || shape.name == "a:tableStyle"
+        let tableStyle = tableStyleReference || shape.name == "a:tblStyle" || shape.name == "a:tableStyle"
         while let (element, occurrence, depth, parent) = stack.popLast() {
             if components.count > depth { components.removeLast(components.count - depth) }
             if occurrence > 0 { components.append((element.name, occurrence)) }
@@ -222,7 +222,7 @@ final class RenderDiagnosticCollector {
                 if uri.hasSuffix("/chart") { issue(.chartApproximation, .approximation, "Chart preview approximates axes, labels and formatting; series/point bounds may omit data.") }
                 else if !uri.hasSuffix("/table") { issue(.graphicPlaceholder, .omission, "Graphic content is represented by a labeled placeholder.") }
             case "a:tbl":
-                if !Self.hasTableStyle(element, package: package) { issue(.unresolvedTableStyle, .approximation, "The native table style has no embedded definition; preview uses fallback/direct formatting.") }
+                if !Self.hasTableStyle(element, package: package) { issue(.unresolvedTableStyle, .approximation, "The table style has no recognized native or embedded definition; preview uses fallback/direct formatting.") }
             case "a:tcPr":
                 if let direction = element[attribute: "vert"], !["horz", "vert", "vert270"].contains(direction) {
                     issue(.unsupportedTextProperty, .approximation, "This vertical cell text direction is not implemented.")
@@ -275,14 +275,13 @@ final class RenderDiagnosticCollector {
     private static func hasTableStyle(_ table: XML.Element, package: OPCPackage) -> Bool {
         let properties = table.firstChild(named: "a:tblPr")
         if properties?.firstChild(named: "a:tableStyle") != nil { return true }
-        let id = properties?.firstChild(named: "a:tableStyleId")?.textContent
-        if id?.lowercased() == Table.noStyleGUID.lowercased() { return true }
+        var id = properties?.firstChild(named: "a:tableStyleId")?.textContent
         if let presentation = try? package.mainDocumentPart(),
            let styles = try? presentation.related(by: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles", in: package),
            let root = try? styles.dom() {
-            let desired = id ?? root[attribute: "def"]
-            return TableStyleXML.definitions(in: root).contains { $0[attribute: "styleId"]?.lowercased() == desired?.lowercased() }
+            id = id ?? root[attribute: "def"]
+            if TableStyleXML.definitions(in: root).contains(where: { $0[attribute: "styleId"]?.lowercased() == id?.lowercased() }) { return true }
         }
-        return id == nil
+        return id == nil || id.flatMap(BuiltInTableStyle.init(id:)) != nil
     }
 }

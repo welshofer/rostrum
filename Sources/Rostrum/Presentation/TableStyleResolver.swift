@@ -21,9 +21,8 @@ public struct TableStyleResolver {
         definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }; stylePart = found.1
     }
 
-    /// False for an unresolved native style ID. Such a style is preserved, but
-    /// its appearance needs an embedded definition before it can be previewed.
-    public var hasStyleDefinition: Bool { definition != nil || table.styleID?.lowercased() == Table.noStyleGUID.lowercased() }
+    /// True when an inline, package-owned or recognized native style is resolved.
+    public var hasStyleDefinition: Bool { definition != nil }
 
     public func fill(row: Int, column: Int) throws -> ReadFill? {
         _ = try grid.cell(row, column)
@@ -38,9 +37,12 @@ public struct TableStyleResolver {
     func background() -> (properties: XML.Element, owner: Part) {
         let properties = XML.Element("a:tcPr")
         var owner = stylePart ?? table.part
-        if let background = definition?.firstChild(named: "a:tblBg"),
-           let fill = background.firstChild(named: "a:fill")?.childElements.first ?? referenceFill(background) {
-            setFill(fill, on: properties)
+        if let background = definition?.firstChild(named: "a:tblBg") {
+            if let fill = background.firstChild(named: "a:fill")?.childElements.first {
+                setFill(fill, on: properties)
+            } else if let fill = referenceFill(background) {
+                setFill(fill, on: properties); owner = theme.part
+            }
         }
         if let direct = table.tbl.firstChild(named: "a:tblPr")?.childElements.first(where: { Fill.choiceNames.contains($0.name) }) {
             setFill(direct, on: properties); owner = table.part
@@ -102,6 +104,30 @@ public struct TableStyleResolver {
         return copy
     }
 
+    /// Diagnostic views retain the owning theme part for relationship lookup.
+    /// The source style and its direct resources keep their own owner.
+    func themeReferences(in active: XML.Element) -> [(root: XML.Element, path: String)] {
+        guard let scheme = try? theme.part.dom().firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme") else { return [] }
+        var result: [(XML.Element, String)] = []
+        var pending = [active]
+        while let node = pending.popLast() {
+            pending.append(contentsOf: node.childElements.reversed())
+            for (name, list) in [("a:fillRef", "a:fillStyleLst"), ("a:lnRef", "a:lnStyleLst"), ("a:effectRef", "a:effectStyleLst")] {
+                guard let reference = node.firstChild(named: name),
+                      let index = reference[attribute: "idx"].flatMap(Int.init), index > 0 else { continue }
+                let actualList = name == "a:fillRef" && index >= 1001 ? "a:bgFillStyleLst" : list
+                let offset = actualList == "a:bgFillStyleLst" ? index - 1001 : index - 1
+                guard let definitions = scheme.firstChild(named: actualList)?.childElements,
+                      definitions.indices.contains(offset) else { continue }
+                let copy = definitions[offset].deepCopy()
+                replacePlaceholderColors(copy, reference: reference)
+                let occurrence = definitions.prefix(offset + 1).filter { $0.name == copy.name }.count
+                result.append((copy, "/a:theme/a:themeElements/a:fmtScheme/\(actualList)/\(copy.name)[\(occurrence)]"))
+            }
+        }
+        return result
+    }
+
     func effective(row: Int, column: Int) -> Effective {
         let properties = XML.Element("a:tcPr"), text = XML.Element("a:defRPr")
         var fillOwner = stylePart ?? table.part
@@ -112,8 +138,10 @@ public struct TableStyleResolver {
         for name in regionNames(row: row, column: column) {
             guard let region = definition?.firstChild(named: "a:\(name)") else { continue }
             if let style = region.firstChild(named: "a:tcStyle") {
-                if let fill = style.firstChild(named: "a:fill")?.childElements.first ?? referenceFill(style) {
-                    setFill(fill, on: properties)
+                if let fill = style.firstChild(named: "a:fill")?.childElements.first {
+                    setFill(fill, on: properties); fillOwner = stylePart ?? table.part
+                } else if let fill = referenceFill(style) {
+                    setFill(fill, on: properties); fillOwner = theme.part
                 }
                 if let borders = style.firstChild(named: "a:tcBdr") {
                     for (edge, regionName, applies) in [
@@ -229,12 +257,12 @@ public struct TableStyleResolver {
     static func definition(for table: XML.Element, package: OPCPackage?) -> (XML.Element?, Part?) {
         let properties = table.firstChild(named: "a:tblPr")
         if let inline = properties?.firstChild(named: "a:tableStyle") { return (inline, nil) }
-        let id = properties?.firstChild(named: "a:tableStyleId")?.textContent
+        var desired = properties?.firstChild(named: "a:tableStyleId")?.textContent
         if let package, let presentation = try? package.mainDocumentPart(),
            let styles = try? presentation.related(by: RelType.tableStyles, in: package), let root = try? styles.dom() {
-            let desired = id ?? root[attribute: "def"]
+            desired = desired ?? root[attribute: "def"]
             if let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired?.lowercased() }) { return (definition, styles) }
         }
-        return (nil, nil)
+        return (desired.flatMap(BuiltInTableStyle.init(id:))?.definition(), nil)
     }
 }

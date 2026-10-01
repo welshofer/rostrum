@@ -862,6 +862,10 @@ struct SVGRenderer {
             let location = diagnostics.location
             diagnostics.inspect(definition, owner: resolver.stylePart ?? owner, slideIndex: slideNumber - 1,
                 path: "/a:tblStyleLst/a:tblStyle[@styleId='\(table.styleID ?? "default")']", package: package)
+            for reference in resolver.themeReferences(in: definition) {
+                diagnostics.inspect(reference.root, owner: theme.part, slideIndex: slideNumber - 1,
+                    path: reference.path, package: package, tableStyleReference: true)
+            }
             diagnostics.location = location
         }
         if topology == nil {
@@ -972,11 +976,7 @@ struct SVGRenderer {
 
     private func tableGradient(_ gradient: XML.Element, box frame: (Int, Int, Int, Int), defs: inout String) -> String {
         let id = "tg\(defs.utf8.count)"
-        var stops = ""
-        for stop in gradient.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? [] {
-            let offset = Double(stop.boundedInt("pos", in: 0...100000) ?? 0) / 100000
-            stops += "<stop offset=\"\(offset)\" stop-color=\"\(colorHex(in: stop) ?? "#000000")\"/>"
-        }
+        let stops = GradientStops.svg(gradient, theme: theme)
         if gradient.firstChild(named: "a:path") != nil {
             defs += "<radialGradient id=\"\(id)\">\(stops)</radialGradient>"
         } else {
@@ -999,15 +999,9 @@ struct SVGRenderer {
     }
 
     private func gradientRef(_ grad: XML.Element, box f: (Int, Int, Int, Int), defs: inout String) -> String {
-        let stops = grad.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? []
         let id = "g\(f.0)_\(f.1)_\(defs.utf8.count)"
         let isRadial = grad.firstChild(named: "a:path") != nil
-        var stopSVG = ""
-        for gs in stops {
-            let pos = (Double(gs.boundedInt("pos", in: 0...100_000) ?? 0) / 1000).rounded() / 100
-            let color = colorHex(in: gs) ?? "#000000"
-            stopSVG += "<stop offset=\"\(pos)\" stop-color=\"\(color)\"/>"
-        }
+        let stopSVG = GradientStops.svg(grad, theme: theme)
         if isRadial {
             defs += "<radialGradient id=\"\(id)\">\(stopSVG)</radialGradient>"
         } else {

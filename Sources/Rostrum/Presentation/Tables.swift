@@ -74,7 +74,7 @@ public final class Table {
     static let defaultStyleGUID = "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"
     /// The built-in "No Style, No Grid" — needs no tableStyles.xml part, so
     /// explicit per-cell fills are the single source of truth.
-    static let noStyleGUID = "{5940675A-B579-460E-94D1-54222C63F5DA}"
+    static let noStyleGUID = "{2D5ABB26-0587-4C30-8999-92F81FD0307C}"
 
     let tbl: XML.Element
     let part: Part
@@ -132,8 +132,7 @@ public final class Table {
         for flag in ["firstRow", "lastRow", "firstCol", "lastCol", "bandRow", "bandCol"] {
             tblPr[attribute: flag] = nil
         }
-        tblPr.getOrAddChild("a:tableStyleId").children = [.text(Table.noStyleGUID)]
-        part.markDirty()
+        styleID = Table.noStyleGUID
         return self
     }
 

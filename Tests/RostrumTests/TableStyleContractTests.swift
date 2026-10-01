@@ -129,7 +129,9 @@ import Testing
         #expect(svg.contains("data:image/png;base64,"))
         #expect(svg.contains("<linearGradient"))
         #expect(svg.contains("stop-color=\"#000000\""))
-        #expect(!svg.contains("#DDDDDD"))
+        // Gray can be a legitimate intermediate gradient stop; the old
+        // placeholder was a solid cell fill.
+        #expect(!svg.contains("fill=\"#DDDDDD\""))
         let reopened = try Presentation(data: deck.serializedData())
         #expect(try reopened.renderSVG(slideAt: 0) == svg)
         let copied = try #require((reopened.slides[0].shapes.all.first as? TableFrame)?.table)
