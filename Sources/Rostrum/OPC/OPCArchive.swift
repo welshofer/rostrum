@@ -42,7 +42,7 @@ public final class OPCArchive {
         reader = try ZipReader(data: data, limits: limits)
         // Enforce per-entry working-set ceilings before decompression, including
         // the two metadata streams required to identify the package.
-        for entry in reader.allEntries where entry.uncompressedSize > self.maximumEntryBytes {
+        for entry in reader.allEntries where entry.uncompressedSize > self.maximumEntryBytes || entry.compressedSize > self.maximumEntryBytes {
             throw RostrumError.packageInvalid("entry \(entry.name) exceeds the lazy archive per-entry budget")
         }
         contentTypes = try ContentTypesMap.parse(reader.data(forEntry: PackURI.contentTypes.memberName))

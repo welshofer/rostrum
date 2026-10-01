@@ -25,6 +25,19 @@ import Testing
         #expect(throws: RostrumError.self) { try OPCArchive(data: bytes, validation: .onAccess, maximumEntryBytes: 0) }
         #expect(throws: RostrumError.self) { try OPCArchive(data: bytes, validation: .onAccess, limits: .init(totalUncompressedBytes: 0)) }
     }
+    @Test func lazyBudgetAlsoBoundsCompressedInputWithTinyDecodedOutput() throws {
+        let reader = try ZipReader(data: Presentation().serializedData())
+        var zip = ZipWriter()
+        for name in reader.entryNames { zip.addFile(name: name, data: try reader.data(forEntry: name)) }
+        var emptyBlocks = Data()
+        for _ in 0..<3000 { emptyBlocks.append(contentsOf: [0, 0, 0, 255, 255]) }
+        emptyBlocks.append(contentsOf: [1, 0, 0, 255, 255])
+        zip.addFile(name: "ppt/media/padded.bin", payload: .init(data: emptyBlocks, method: 8, size: 0, crc: 0))
+        let bytes = try zip.finalize()
+        #expect(try ZipReader(data: bytes).data(forEntry: "ppt/media/padded.bin").isEmpty)
+        #expect(throws: RostrumError.self) { try OPCArchive(data: bytes, validation: .onAccess, maximumEntryBytes: 10000) }
+        #expect(throws: RostrumError.self) { try OPCArchive(data: bytes, validation: .strict, maximumEntryBytes: 10000) }
+    }
     @Test func lazyOpenRejectsNamesThatWouldNormalizeToAnotherPart() throws {
         let reader = try ZipReader(data: Presentation().serializedData())
         var zip = ZipWriter()
@@ -69,5 +82,39 @@ import Testing
         let beforeFailure = try Data(contentsOf: url)
         #expect(throws: RostrumError.self) { try p.save(to: url) }
         #expect(try Data(contentsOf: url) == beforeFailure)
+    }
+
+    @Test func replacingPartReleasesOldCompressionCacheOwnershipImmediately() throws {
+        let p = try Presentation()
+        let uri = PackURI("/ppt/media/replaced.png")
+        weak var oldPart: Part?
+        do {
+            let part = p.package.addPart(uri: uri, contentType: "image/png", blob: Data(repeating: 1, count: 100000))
+            oldPart = part
+            _ = try p.serializedData()
+        }
+        #expect(oldPart != nil)
+        p.package.addPart(uri: uri, contentType: "image/png", blob: Data([2]))
+        #expect(oldPart == nil)
+        let reopened = try Presentation(data: p.serializedData())
+        #expect(reopened.package.parts[uri]?.blob == Data([2]))
+    }
+
+    @Test func saveCannotReplaceADirectoryAndPreservesExistingFilePermissions() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent("rostrum-atomic-\(UUID())", isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let child = folder.appendingPathComponent("keep.txt")
+        let original = Data("keep nested data".utf8)
+        try original.write(to: child)
+        let deck = try Presentation()
+        #expect(throws: (any Error).self) { try deck.save(to: folder) }
+        #expect(try Data(contentsOf: child) == original)
+        #expect(try FileManager.default.contentsOfDirectory(atPath: folder.path) == ["keep.txt"])
+        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: child.path)
+        try deck.save(to: child)
+        let mode = try FileManager.default.attributesOfItem(atPath: child.path)[.posixPermissions] as? NSNumber
+        #expect(mode?.intValue == 0o600)
+        #expect(try Presentation(contentsOf: child).slideCount == deck.slideCount)
     }
 }
