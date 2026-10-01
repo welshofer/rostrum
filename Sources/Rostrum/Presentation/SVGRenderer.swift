@@ -445,10 +445,9 @@ struct SVGRenderer {
     /// Read supported embedded raster bytes without recoding. Unsupported
     /// formats remain preserved in the package, but are not mislabeled PNGs.
     private func imageResource(rId: String, ownedBy owner: Part) -> (url: String, info: ImageInfo)? {
-        guard let rel = owner.rels.relationship(withId: rId), !rel.isExternal,
-              let media = package.parts[PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)],
-              let info = ImageSniffer.sniff(media.blob) else { return nil }
-        return ("data:\(info.format.contentType);base64,\(media.blob.base64EncodedString())", info)
+        guard let resource = diagnostics.images.resolve(rId, owner: owner, package: package),
+              let info = resource.info, let url = diagnostics.images.url(for: resource) else { return nil }
+        return (url, info)
     }
 
     /// Crop and stretch share ImagePlacement with picture editing. Tile uses
@@ -940,7 +939,15 @@ struct SVGRenderer {
                     out += "<line x1=\"\(endpoints.0)\" y1=\"\(endpoints.1)\" x2=\"\(endpoints.2)\" y2=\"\(endpoints.3)\" stroke=\"\(color)\" stroke-width=\"\(width)\"\(dashAttribute)/>"
                 }
                 if let body = grid.cells[r][c].firstChild(named: "a:txBody") {
-                    let text = body.deepCopy()
+                    // Layout reads paragraphs without modifying them. Only
+                    // bodyPr needs a private copy for the cell overrides.
+                    let text = XML.Element(body.name, attributes: body.attributes, children: body.children)
+                    if let index = text.children.firstIndex(where: {
+                        if case .element(let node) = $0 { return node.name == "a:bodyPr" }
+                        return false
+                    }), case .element(let original) = text.children[index] {
+                        text.children[index] = .element(original.deepCopy())
+                    }
                     let bodyPr = text.getOrAddChild("a:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
                     for (margin, inset, fallback) in [("marL", "lIns", 91440), ("marR", "rIns", 91440), ("marT", "tIns", 45720), ("marB", "bIns", 45720)] {
                         bodyPr[attribute: inset] = String(properties.coordinate(margin) ?? fallback)

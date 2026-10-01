@@ -43,9 +43,23 @@ public struct StrictRenderingError: Error, Sendable, CustomStringConvertible {
 
 /// One render owns one collector. It never retains or mutates source XML.
 final class RenderDiagnosticCollector {
+    let images = RenderImageResources()
     var location = FidelityLocation(slideIndex: 0, partURI: "", path: "/")
     private(set) var issues: [FidelityIssue] = []
     private var seen: Set<FidelityIssue> = []
+    private struct RecentIssue: Equatable {
+        let code: FidelityIssueCode
+        let impact: FidelityImpact
+        let message: String
+    }
+    // Cell text often reports the same missing face thousands of times at one
+    // table location. A small lookaside avoids hashing the full location each
+    // time; the complete set remains authoritative across location changes.
+    private var recentLocation: FidelityLocation?
+    private var recentIssues: [RecentIssue] = []
+    private static let supportedColorTransforms: Set<String> = [
+        "a:tint", "a:shade", "a:lumMod", "a:lumOff", "a:satMod", "a:alpha", "a:alphaMod", "a:alphaOff",
+    ]
     private struct EmbeddedFace {
         let data: Data
         let bold: Bool
@@ -56,7 +70,7 @@ final class RenderDiagnosticCollector {
     private var embeddedFaces: [EmbeddedFace] = []
     private var resolvedFaces: [FontFaceKey: String] = [:]
     private var unavailableFaces: [FontFaceKey: (FidelityIssueCode, FidelityImpact, String)] = [:]
-    func reset() { issues = []; seen = []; embeddedFaces = []; resolvedFaces = [:]; unavailableFaces = [:] }
+    func reset() { images.reset(); recentLocation = nil; recentIssues = []; issues = []; seen = []; embeddedFaces = []; resolvedFaces = [:]; unavailableFaces = [:] }
 
     /// Names point at renderer-owned CSS faces, so aliases use one resource and
     /// the SVG does not accidentally pick a similarly named platform font.
@@ -101,7 +115,17 @@ final class RenderDiagnosticCollector {
     }
     func record(_ code: FidelityIssueCode, _ impact: FidelityImpact, _ message: String,
                 at location: FidelityLocation? = nil) {
-        let issue = FidelityIssue(code: code, impact: impact, location: location ?? self.location, message: message)
+        let resolvedLocation = location ?? self.location
+        let recent = RecentIssue(code: code, impact: impact, message: message)
+        if recentLocation == resolvedLocation {
+            if recentIssues.contains(recent) { return }
+        } else {
+            recentLocation = resolvedLocation
+            recentIssues.removeAll(keepingCapacity: true)
+        }
+        if recentIssues.count == 4 { recentIssues.removeFirst() }
+        recentIssues.append(recent)
+        let issue = FidelityIssue(code: code, impact: impact, location: resolvedLocation, message: message)
         if seen.insert(issue).inserted { issues.append(issue) }
     }
 
@@ -128,11 +152,18 @@ final class RenderDiagnosticCollector {
             if ShapeCollection.isShape(shape) { record(.omittedShape, .omission, "The SVG renderer does not draw \(shape.name).") }
             return
         }
-        var stack: [(XML.Element, String, String)] = [(shape, path, "")]
+        // Most visited nodes have no issue. Carry path components through the
+        // same document-order traversal instead of allocating a full XPath for
+        // every descendant (notably every run/color/border in large tables).
+        var stack: [(element: XML.Element, occurrence: Int, depth: Int, parent: String)] = [(shape, 0, 0, "")]
+        var components: [(name: String, occurrence: Int)] = []
         let tableStyle = shape.name == "a:tblStyle" || shape.name == "a:tableStyle"
-        while let (element, elementPath, parent) = stack.popLast() {
-            let here = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: id, path: elementPath)
+        while let (element, occurrence, depth, parent) = stack.popLast() {
+            if components.count > depth { components.removeLast(components.count - depth) }
+            if occurrence > 0 { components.append((element.name, occurrence)) }
             func issue(_ code: FidelityIssueCode, _ impact: FidelityImpact, _ text: String) {
+                let elementPath = path + components.map { "/\($0.name)[\($0.occurrence)]" }.joined()
+                let here = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: id, path: elementPath)
                 record(code, impact, text, at: here)
             }
             switch element.name {
@@ -159,8 +190,7 @@ final class RenderDiagnosticCollector {
             case "a:hslClr":
                 issue(.unsupportedColor, .omission, "HSL color sources are not resolved by the preview.")
             case "a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr":
-                let transforms: Set<String> = ["a:tint", "a:shade", "a:lumMod", "a:lumOff", "a:satMod", "a:alpha", "a:alphaMod", "a:alphaOff"]
-                if element.childElements.contains(where: { !transforms.contains($0.name) }) {
+                if element.childElements.contains(where: { !Self.supportedColorTransforms.contains($0.name) }) {
                     issue(.unsupportedColor, .approximation, "A color transform is not applied by the preview.")
                 }
                 if element.name == "a:prstClr", !["black", "white", "red", "green", "blue", "yellow", "gray", "cyan", "magenta", "transparent"].contains(element[attribute: "val"] ?? "") {
@@ -179,11 +209,11 @@ final class RenderDiagnosticCollector {
                     issue(.unsupportedImage, .omission, "The image rectangle is empty, inverted or outside the supported percentage encoding.")
                 }
             case "a:blip":
-                guard let rID = element[attribute: "r:embed"], let rel = owner.rels.relationship(withId: rID), !rel.isExternal,
-                      let media = package.parts[PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)] else {
+                guard let rID = element[attribute: "r:embed"],
+                      let resource = images.resolve(rID, owner: owner, package: package) else {
                     issue(.unavailableImage, .missingResource, "Image bytes could not be resolved from the owning part."); break
                 }
-                if ImageSniffer.sniff(media.blob) == nil {
+                if resource.info == nil {
                     issue(.unsupportedImage, .omission, "The embedded bytes are not a recognized PNG, JPEG or GIF image.")
                 }
                 if element.childElements.contains(where: { $0.name != "a:extLst" }) { issue(.omittedEffect, .omission, "Image effects are not applied.") }
@@ -223,15 +253,22 @@ final class RenderDiagnosticCollector {
                 }
             default: break
             }
-            var counts: [String: Int] = [:], children: [(XML.Element, String, String)] = []
-            for child in element.childElements {
-                counts[child.name, default: 0] += 1
-                // Table rendering inspects only enabled style regions, for
-                // both inline and presentation-owned definitions.
-                if element.name == "a:tblPr", child.name == "a:tableStyle" { continue }
-                children.append((child, elementPath + "/\(child.name)[\(counts[child.name]!)]", element.name))
+            let children = element.childElements
+            if children.count == 1, let child = children.first {
+                if element.name != "a:tblPr" || child.name != "a:tableStyle" {
+                    stack.append((child, 1, components.count, element.name))
+                }
+            } else if !children.isEmpty {
+                var counts: [String: Int] = [:]
+                for child in children { counts[child.name, default: 0] += 1 }
+                for child in children.reversed() {
+                    let occurrence = counts[child.name]!
+                    counts[child.name] = occurrence - 1
+                    // Table rendering inspects only enabled style regions.
+                    if element.name == "a:tblPr", child.name == "a:tableStyle" { continue }
+                    stack.append((child, occurrence, components.count, element.name))
+                }
             }
-            stack.append(contentsOf: children.reversed())
         }
     }
 
