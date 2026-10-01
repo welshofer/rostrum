@@ -3,20 +3,19 @@ import Foundation
 /// Plans contain detached parts/relationship values. All throwing work happens
 /// before Slides commits the plan, so refused lifecycle operations are atomic.
 extension Slides {
-    private static let legacyCommentsRelType =
-        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"
 
     private static func isAnnotation(_ relationship: Relationship) -> Bool {
         relationship.type == RelType.notesSlide
             || relationship.type == ModernComments.commentsRelType
-            || relationship.type == legacyCommentsRelType
+            || relationship.type == LegacyComments.commentsRelType
     }
 
     func copySlideAnnotations(from source: Part, to destination: PackURI, slideID: Int) throws
-        -> (relationships: [Relationship], parts: [Part]) {
+        -> (relationships: [Relationship], parts: [Part], legacyAuthors: LegacyAnnotationAuthorImport?) {
         var reserved = Set(package.parts.keys)
         var clones: [PackURI: Part] = [:]
         var parts: [Part] = []
+        var legacyAuthors: LegacyAnnotationAuthorImport?
         var commentIDs: Set<String> = []
         if source.rels.items.contains(where: { $0.type == ModernComments.commentsRelType }) {
             for part in package.parts.values.sorted(by: { $0.uri.value < $1.uri.value })
@@ -67,6 +66,14 @@ extension Slides {
                         try ModernComments.retargetCopy(clone, slideID: slideID, avoiding: &commentIDs)
                         clone.flushIfDirty()
                     }
+                    if relationship.type == LegacyComments.commentsRelType {
+                        if legacyAuthors == nil {
+                            legacyAuthors = try LegacyAnnotationAuthorImport(source: package, dest: package,
+                                                                            presentation: presentationPart)
+                        }
+                        try legacyAuthors?.remapAuthors(in: clone)
+                        clone.flushIfDirty()
+                    }
                     clones[originalURI] = clone
                     parts.append(clone)
                     targetURI = uri
@@ -75,7 +82,7 @@ extension Slides {
             relationships.append(Relationship(rId: relationship.rId, type: relationship.type,
                 target: destination.relativeReference(to: targetURI), isExternal: false))
         }
-        return (relationships, parts)
+        return (relationships, parts, legacyAuthors)
     }
 
     func annotationRemovalPlan(for slide: Part) throws

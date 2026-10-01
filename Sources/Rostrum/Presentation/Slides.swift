@@ -176,6 +176,7 @@ public final class Slides: Sequence {
                 uri: annotation.uri, contentType: annotation.contentType, blob: annotation.blob)
             installed.rels.setItems(annotation.rels.items)
         }
+        annotations.legacyAuthors?.commit()
         let rId = presentationPart.rels.add(
             type: RelType.slide,
             target: presentationPart.uri.relativeReference(to: uri))

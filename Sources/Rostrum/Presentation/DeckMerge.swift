@@ -19,6 +19,7 @@ final class SlideCopier {
     private var destNotesMaster: PackURI?
     private var stagedParts: [PackURI: Part] = [:]
     private var authorImport: AnnotationAuthorImport?
+    private var legacyAuthorImport: LegacyAnnotationAuthorImport?
     private var newNotesMaster: PackURI?
     private var sourceNotesSize: XML.Element?
     /// Running allocator for the shared sldMasterId/sldLayoutId id namespace
@@ -165,13 +166,21 @@ final class SlideCopier {
     /// IDs have been allocated, while the copied parts are still detached.
     func importAnnotations(on slideURI: PackURI, slideID: Int) throws {
         guard let slide = stagedParts[slideURI] else { return }
-        for rel in slide.rels.items where rel.type == ModernComments.commentsRelType {
+        for rel in slide.rels.items where rel.type == ModernComments.commentsRelType || rel.type == LegacyComments.commentsRelType {
             guard !rel.isExternal else {
                 throw RostrumError.packageInvalid("comment relationship must be internal")
             }
             let uri = PackURI.resolve(target: rel.target, relativeTo: slide.uri.baseURI)
             guard let comments = stagedParts[uri] else {
                 throw RostrumError.packageInvalid("imported comment part is not staged")
+            }
+            if rel.type == LegacyComments.commentsRelType {
+                if legacyAuthorImport == nil {
+                    legacyAuthorImport = try LegacyAnnotationAuthorImport(source: source, dest: dest,
+                                                                          presentation: destPresentation)
+                }
+                try legacyAuthorImport?.remapAuthors(in: comments)
+                continue
             }
             if authorImport == nil {
                 authorImport = try AnnotationAuthorImport(source: source, dest: dest,
@@ -200,6 +209,7 @@ final class SlideCopier {
             registerContentType(part.uri, part.contentType)
         }
         authorImport?.commit()
+        legacyAuthorImport?.commit()
         if let uri = newNotesMaster, let dom = try? destPresentation.dom() {
             if let size = sourceNotesSize {
                 dom.removeChildren(named: "p:notesSz")

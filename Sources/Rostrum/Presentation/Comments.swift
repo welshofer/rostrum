@@ -46,46 +46,48 @@ public final class Comment {
     }
 
     public var text: String {
-        cm.firstChild(named: "p188:txBody")?.textContent ?? ""
+        textParagraphs.joined(separator: "\n")
     }
 
-    /// Author display name, resolved through /ppt/authors.xml.
+    /// Author display name, resolved through the presentation relationship.
     public var authorName: String? {
-        guard let authorId = cm[attribute: "authorId"],
-              let presentation = try? package.mainDocumentPart(),
-              let authors = try? presentation.related(by: ModernComments.authorsRelType, in: package),
-              let dom = try? authors.dom() else { return nil }
-        return AnnotationAuthorImport.authorElements(dom)
-            .first { $0[attribute: "id"] == authorId }?[attribute: "name"]
+        author?.name
     }
 
     public var replies: [Comment] {
-        cm.firstChild(named: "p188:replyLst")?.children(named: "p188:reply")
-            .map { Comment(cm: $0, part: part, package: package, isReply: true) } ?? []
+        guard let list = children("replyLst").first else { return [] }
+        return children("reply", in: list).map { Comment(cm: $0, part: part, package: package, isReply: true) }
     }
 
     /// Add a threaded reply (single-level; replies carry no anchor or pos).
     @discardableResult
     public func addReply(_ text: String, author: String, initials: String? = nil) throws -> Comment {
-        precondition(!isReply, "replies to replies are not part of the format")
+        guard !isReply else { throw RostrumError.packageInvalid("replies to replies are not part of the format") }
         let authorId = try Slide.ensureAuthor(named: author, initials: initials, in: package)
-        let reply = XML.Element("p188:reply", attributes: [
+        let reply = XML.Element(ModernComments.qualified("reply", like: cm), attributes: [
             ("id", ModernComments.guid()),
             ("authorId", authorId),
             ("created", ModernComments.timestamp()),
         ])
-        reply.appendElement(Slide.commentTxBody(text))
+        let body = Slide.commentTxBody(text)
+        body[attribute: "xmlns:p188"] = ModernComments.ns
+        body[attribute: "xmlns:a"] = MinimalTemplate.nsA
+        reply.appendElement(body)
         // replyLst sits between pos and txBody (strict sequence).
-        let replyLst = cm.getOrAddChild("p188:replyLst", beforeAnyOf: ["p188:txBody"])
+        let replyLst = children("replyLst").first ?? cm.getOrAddChild(
+            ModernComments.qualified("replyLst", like: cm), beforeAnyOf: [children("txBody").first?.name ?? ModernComments.qualified("txBody", like: cm)])
         replyLst.appendElement(reply)
         part.markDirty()
         return Comment(cm: reply, part: part, package: package, isReply: true)
     }
 
     /// Mark the thread resolved (root comments only).
-    public func resolve() {
+    @discardableResult
+    public func resolve() -> Bool {
+        guard !isReply else { return false }
         cm[attribute: "status"] = "resolved"
         part.markDirty()
+        return true
     }
 
     public var isResolved: Bool {
@@ -98,7 +100,7 @@ extension Slide {
     public var comments: [Comment] {
         guard let commentsPart = try? existingCommentsPart(),
               let dom = try? commentsPart.dom() else { return [] }
-        return dom.children(named: "p188:cm")
+        return ModernComments.directChildren(of: dom, in: dom, namespace: ModernComments.ns, named: "cm")
             .map { Comment(cm: $0, part: commentsPart, package: package) }
     }
 
@@ -107,23 +109,27 @@ extension Slide {
     @discardableResult
     public func addComment(
         _ text: String, author: String, initials: String? = nil,
-        at position: (x: EMU, y: EMU) = (.inches(0.5), .inches(0.5))
+        at position: (x: EMU, y: EMU) = (.inches(0.5), .inches(0.5)),
+        anchoredTo anchor: CommentAnchor? = nil
     ) throws -> Comment {
+        guard OOXMLBounds.coordinate.contains(position.x.rawValue), OOXMLBounds.coordinate.contains(position.y.rawValue) else {
+            throw RostrumError.packageInvalid("comment position out of bounds")
+        }
+        let anchorElement = try ModernComments.anchorElement(anchor ?? .slide(slideID: slideID()), for: self)
+        _ = try part.dom()
+        let existing = try existingCommentsPart()
+        _ = try existing?.dom()
         let authorId = try Slide.ensureAuthor(named: author, initials: initials, in: package)
-        let commentsPart = try existingCommentsPart() ?? createCommentsPart()
+        let commentsPart = try existing ?? createCommentsPart()
 
         let cm = XML.Element("p188:cm", attributes: [
+            ("xmlns:p188", ModernComments.ns), ("xmlns:a", MinimalTemplate.nsA),
             ("id", ModernComments.guid()),
             ("authorId", authorId),
             ("created", ModernComments.timestamp()),
         ])
         // Strict child order: anchor → pos → (replyLst) → txBody.
-        let anchor = XML.Element("pc:sldMkLst", attributes: [("xmlns:pc", ModernComments.nsPC)])
-        anchor.appendElement(XML.Element("pc:docMk"))
-        anchor.appendElement(XML.Element("pc:sldMk", attributes: [
-            ("cId", "0"), ("sldId", String(try slideID())),
-        ]))
-        cm.appendElement(anchor)
+        cm.appendElement(anchorElement)
         cm.appendElement(XML.Element("p188:pos", attributes: [
             ("x", String(position.x.rawValue)), ("y", String(position.y.rawValue)),
         ]))
@@ -140,14 +146,16 @@ extension Slide {
         let txBody = XML.Element("p188:txBody")
         txBody.appendElement(XML.Element("a:bodyPr"))
         txBody.appendElement(XML.Element("a:lstStyle"))
-        let p = XML.Element("a:p")
-        let r = XML.Element("a:r")
-        r.appendElement(XML.Element("a:rPr", attributes: [("lang", "en-US")]))
-        let t = XML.Element("a:t")
-        t.children = [.text(text)]
-        r.appendElement(t)
-        p.appendElement(r)
-        txBody.appendElement(p)
+        for line in text.components(separatedBy: "\n") {
+            let p = XML.Element("a:p")
+            let r = XML.Element("a:r")
+            r.appendElement(XML.Element("a:rPr", attributes: [("lang", "en-US")]))
+            let t = XML.Element("a:t")
+            t.children = [.text(line)]
+            r.appendElement(t)
+            p.appendElement(r)
+            txBody.appendElement(p)
+        }
         return txBody
     }
 
@@ -178,7 +186,7 @@ extension Slide {
         let id = ModernComments.guid()
         let derivedInitials = initials ?? String(
             name.split(separator: " ").compactMap(\.first).prefix(3)).uppercased()
-        dom.appendElement(XML.Element("p188:author", attributes: [
+        dom.appendElement(XML.Element(ModernComments.qualified("author", like: dom), attributes: [
             ("id", id), ("name", name), ("initials", derivedInitials),
             ("userId", name), ("providerId", "None"),
         ]))

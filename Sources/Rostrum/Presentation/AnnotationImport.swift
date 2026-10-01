@@ -88,6 +88,12 @@ final class AnnotationAuthorImport {
                     return
                 }
                 element[attribute: "authorId"] = id
+                if let assigned = element[attribute: "assignedTo"] {
+                    let oldIDs = assigned.split(whereSeparator: \.isWhitespace).map(String.init)
+                    let remapped = oldIDs.compactMap { mapping[$0] }
+                    if remapped.count != oldIDs.count { unresolved = "assigned author" }
+                    else { element[attribute: "assignedTo"] = remapped.joined(separator: " ") }
+                }
             }
         }
         if let unresolved { throw RostrumError.packageInvalid("comment author \(unresolved) cannot be resolved") }
