@@ -171,12 +171,20 @@ import Testing
         #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
     }
 
-    @Test func disabledTableStyleRegionsDoNotCauseFalseStrictFailures() throws {
+    @Test(arguments: [false, true])
+    func disabledTableStyleRegionsDoNotCauseFalseStrictFailures(_ inline: Bool) throws {
         let deck = try Presentation()
         let table = try deck.slides[0].shapes.addTable(rows: 1, columns: 1,
             frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
         table.firstRowHeader = false
         try table.setStyleDefinition(XML.parse(Data("<a:tblStyle styleId=\"{00000000-0000-0000-0000-000000000002}\" styleName=\"Inactive\"><a:wholeTbl><a:tcStyle><a:fill><a:solidFill><a:srgbClr val=\"FF0000\"/></a:solidFill></a:fill></a:tcStyle></a:wholeTbl><a:firstRow><a:tcStyle><a:fill><a:pattFill prst=\"cross\"/></a:fill></a:tcStyle></a:firstRow></a:tblStyle>".utf8)))
+        if inline {
+            let definition = try #require(TableStyleResolver.definition(for: table.tbl, package: deck.package).0).deepCopy()
+            definition.name = "a:tableStyle"
+            let properties = try #require(table.tbl.firstChild(named: "a:tblPr"))
+            properties.removeChildren(named: "a:tableStyleId")
+            properties.insertChild(definition, beforeAnyOf: ["a:extLst"])
+        }
         #expect(try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true).problems.isEmpty)
         table.firstRowHeader = true
         #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }

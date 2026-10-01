@@ -29,20 +29,27 @@ for fixture in manifest['fixtures']:
     except Exception as e:
         errors.append(f'{path.name}: semantic failure: {e}')
     if not args.semantic_only:
-        for ref in ['powerPointReference', 'notesPageReference']:
-            if not fixture.get(ref): errors.append(f'{path.name}: required {ref} missing')
-        if fixture.get('powerPointReference'):
-            reference = folder/fixture['powerPointReference']['file']
-            expected = fixture['powerPointReference']['sha256']
+        for ref, suffix in [('powerPointReference', ''), ('notesPageReference', '-notes')]:
+            if not fixture.get(ref):
+                errors.append(f'{path.name}: required {ref} missing')
+                continue
+            reference = folder/fixture[ref]['file']
+            expected = fixture[ref]['sha256']
             if not reference.is_file() or hashlib.sha256(reference.read_bytes()).hexdigest() != expected:
-                errors.append(f'{path.name}: reference hash mismatch')
-            candidate = args.rendered_dir/(fixture['id']+'.png') if args.rendered_dir else None
+                errors.append(f'{path.name}: {ref} hash mismatch')
+                continue
+            candidate = args.rendered_dir/(fixture['id']+suffix+'.png') if args.rendered_dir else None
             if candidate is None or not candidate.is_file():
-                errors.append(f'{path.name}: required candidate render missing')
+                errors.append(f'{path.name}: required {ref} candidate render missing')
             else:
                 from compare_images import compare
                 diff = compare(reference,candidate)
-                if not diff['passed']: errors.append(f'{path.name}: visual difference: {diff}')
+                if not diff['passed']: errors.append(f'{path.name}: {ref} visual difference: {diff}')
+# Do not launch Office when mandatory semantic/reference checks already fail.
+# This is still a failed release gate, not a skipped-oracle success.
+if not args.semantic_only and not errors:
+    for fixture in manifest['fixtures']:
+        path = folder/fixture['file']
         result = subprocess.run([sys.executable,str(ROOT/'Tools/conformance/powerpoint_check.py'),str(path)])
         if result.returncode: errors.append(f'{path.name}: PowerPoint oracle failed ({result.returncode})')
 print(json.dumps({'mode':'development' if args.semantic_only else 'release','errors':errors},indent=2))

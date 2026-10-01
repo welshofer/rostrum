@@ -226,6 +226,9 @@ final class RenderDiagnosticCollector {
             var counts: [String: Int] = [:], children: [(XML.Element, String, String)] = []
             for child in element.childElements {
                 counts[child.name, default: 0] += 1
+                // Table rendering inspects only enabled style regions, for
+                // both inline and presentation-owned definitions.
+                if element.name == "a:tblPr", child.name == "a:tableStyle" { continue }
                 children.append((child, elementPath + "/\(child.name)[\(counts[child.name]!)]", element.name))
             }
             stack.append(contentsOf: children.reversed())
