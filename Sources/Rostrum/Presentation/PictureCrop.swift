@@ -71,11 +71,28 @@ public extension Picture {
               let blip = element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip") else {
             throw RostrumError.packageInvalid("picture replacement needs a package, blip and recognized PNG/JPEG/GIF data")
         }
+        let relationshipsNamespace = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        var bindings = ["r": relationshipsNamespace]
+        // Prefixes belong to namespace bindings, not to attribute spelling.
+        // Resolve the blip's inherited declarations without parent pointers.
+        var ancestors: [(XML.Element, [String: String])] = [(try part.dom(), bindings)]
+        while let (node, inherited) = ancestors.popLast() {
+            var current = inherited
+            for attribute in node.attributes where attribute.name.hasPrefix("xmlns:") {
+                current[String(attribute.name.dropFirst(6))] = attribute.value
+            }
+            if node === blip { bindings = current; break }
+            for child in node.childElements { ancestors.append((child, current)) }
+        }
+        let linkedSource = blip.attributes.contains { attribute in
+            let name = attribute.name.split(separator: ":", maxSplits: 1)
+            return name.count == 2 && name[1] == "link" && bindings[String(name[0])] == relationshipsNamespace
+        }
         var stack = [blip]
         while let node = stack.popLast() {
             let localName = node.name.split(separator: ":").last.map(String.init) ?? node.name
             guard !["svgBlip", "imgProps", "imgLayer"].contains(localName),
-                  !(node === blip && node[attribute: "r:link"] != nil) else {
+                  !(node === blip && linkedSource) else {
                 throw RostrumError.packageInvalid("picture has an alternate SVG, image-layer or linked source; replacing only its raster fallback would be incomplete")
             }
             stack.append(contentsOf: node.childElements)

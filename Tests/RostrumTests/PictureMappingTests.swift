@@ -128,6 +128,22 @@ import Testing
         }
     }
 
+    @Test func linkedSourceNamespaceAliasRefusesBeforeReplacingFallback() throws {
+        let (deck, picture) = try picture()
+        let slideRoot = try picture.part.dom()
+        slideRoot[attribute: "xmlns:rel"] = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        let blip = try #require(picture.element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip"))
+        let link = picture.part.rels.add(type: RelType.image, target: "https://example.invalid/original.png", isExternal: true)
+        blip[attribute: "rel:link"] = link
+        picture.part.markDirty()
+        let before = try deck.serializedData()
+        let replacement = Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==")!
+        #expect(throws: RostrumError.self) { try picture.replaceImage(replacement) }
+        #expect(try deck.serializedData() == before)
+        #expect(!picture.part.isDirty)
+        #expect(picture.imageData == quadrants)
+    }
+
     @Test func replacementPreservesCropUnknownMetadataAndSharedImage() throws {
         let (deck, picture) = try picture()
         let shared = try deck.slides[0].shapes.addPicture(quadrants, frame: frame)
