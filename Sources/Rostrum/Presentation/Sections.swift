@@ -16,11 +16,24 @@ public enum SectionExt {
 /// Namespace scopes are captured before editing: XML elements have no parent
 /// pointers, and moving a node must not change the meaning of its opaque XML.
 private struct SectionNamespaces {
+    private static let compatibility = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+    private struct Token: Hashable {
+        let namespace: String
+        let local: String?
+    }
+    private struct Context {
+        var xml: [String: String] = [:]
+        var rules: [String: Set<Token>] = [:]
+        var names: [String: String] = [:]
+        var unsupported = false
+    }
     private var scopes: [ObjectIdentifier: [String: String]] = [:]
+    private var contexts: [ObjectIdentifier: Context] = [:]
+    private var parents: [ObjectIdentifier: ObjectIdentifier] = [:]
 
     init(_ root: XML.Element) {
-        var pending = [(root, ["": "", "xml": "http://www.w3.org/XML/1998/namespace"])]
-        while let (element, inherited) = pending.popLast() {
+        var pending = [(root, ["": "", "xml": "http://www.w3.org/XML/1998/namespace"], Context())]
+        while let (element, inherited, inheritedContext) = pending.popLast() {
             var bindings = inherited
             for attribute in element.attributes {
                 if attribute.name == "xmlns" { bindings[""] = attribute.value }
@@ -28,9 +41,99 @@ private struct SectionNamespaces {
                     bindings[String(attribute.name.dropFirst(6))] = attribute.value
                 }
             }
+            let context = Self.context(of: element, bindings: bindings, inheriting: inheritedContext)
             scopes[ObjectIdentifier(element)] = bindings
-            for child in element.childElements { pending.append((child, bindings)) }
+            contexts[ObjectIdentifier(element)] = context
+            for child in element.childElements {
+                parents[ObjectIdentifier(child)] = ObjectIdentifier(element)
+                pending.append((child, bindings, context))
+            }
         }
+    }
+
+    private static func context(of element: XML.Element, bindings: [String: String], inheriting inherited: Context) -> Context {
+        var result = inherited
+        var declarations: [String: Set<Token>] = [:]
+        for attribute in element.attributes {
+            let pieces = attribute.name.split(separator: ":", omittingEmptySubsequences: false)
+            guard pieces.count == 2, let namespace = bindings[String(pieces[0])] else { continue }
+            let local = String(pieces[1])
+            if namespace == "http://www.w3.org/XML/1998/namespace", ["lang", "space"].contains(local) {
+                result.xml[local] = attribute.value
+            } else if namespace == compatibility {
+                guard ["Ignorable", "MustUnderstand", "ProcessContent", "PreserveElements", "PreserveAttributes"].contains(local) else {
+                    result.unsupported = true; continue
+                }
+                if declarations[local] != nil { result.unsupported = true }
+                result.names[local] = attribute.name
+                var tokens: Set<Token> = []
+                for raw in attribute.value.split(whereSeparator: \.isWhitespace) {
+                    let parts = raw.split(separator: ":", omittingEmptySubsequences: false)
+                    let prefixOnly = local == "Ignorable" || local == "MustUnderstand"
+                    guard parts.count == (prefixOnly ? 1 : 2), parts.allSatisfy({ !$0.isEmpty }),
+                          let uri = bindings[String(parts[0])], !uri.isEmpty, uri != compatibility else {
+                        result.unsupported = true; continue
+                    }
+                    tokens.insert(Token(namespace: uri, local: prefixOnly ? nil : String(parts[1])))
+                }
+                declarations[local] = tokens
+            }
+        }
+        // ECMA-376 Part 3 §9.2 considers declarations on the element and
+        // every ancestor. Keep expanded namespace/name pairs across rebinding.
+        for (local, tokens) in declarations { result.rules[local, default: []].formUnion(tokens) }
+        return result
+    }
+
+    /// Prepare attributes without touching live XML. Destination-only inherited
+    /// MC requirements cannot be cancelled by a child, so refuse those transfers.
+    func localizedContext(_ member: XML.Element, to parent: XML.Element, fallbackSection: XML.Element?) throws -> [(name: String, value: String)] {
+        let source = contexts[ObjectIdentifier(member)] ?? Context()
+        let fallback = fallbackSection.flatMap { parents[ObjectIdentifier($0)] }.flatMap { contexts[$0] } ?? Context()
+        let destination = contexts[ObjectIdentifier(parent)] ?? fallback
+        guard !source.unsupported, !destination.unsupported else {
+            throw RostrumError.packageInvalid("section member has unsupported inherited compatibility context")
+        }
+        for local in ["Ignorable", "MustUnderstand"] {
+            guard destination.rules[local, default: []].isSubset(of: source.rules[local, default: []]) else {
+                throw RostrumError.packageInvalid("section transfer would add inherited compatibility requirements")
+            }
+        }
+        for local in ["ProcessContent", "PreserveElements", "PreserveAttributes"] {
+            guard destination.rules[local, default: []].isSubset(of: source.rules[local, default: []]) else {
+                throw RostrumError.packageInvalid("section transfer would change inherited compatibility processing")
+            }
+        }
+        var attributes: [(name: String, value: String)] = []
+        for local in ["lang", "space"] {
+            if let value = source.xml[local] { attributes.append(("xml:" + local, value)) }
+            else if destination.xml[local] != nil { attributes.append(("xml:" + local, local == "space" ? "default" : "")) }
+        }
+        var bindings = scope(member)
+        func prefix(for namespace: String, preferred: String? = nil) -> String {
+            if let preferred, !preferred.isEmpty, bindings[preferred] == namespace { return preferred }
+            if let existing = bindings.keys.sorted().first(where: { !$0.isEmpty && bindings[$0] == namespace }) { return existing }
+            var index = 1
+            while bindings["sectionContext" + String(index)] != nil { index += 1 }
+            let name = "sectionContext" + String(index)
+            bindings[name] = namespace
+            attributes.append(("xmlns:" + name, namespace))
+            return name
+        }
+        for local in ["Ignorable", "MustUnderstand", "ProcessContent", "PreserveElements", "PreserveAttributes"] {
+            let tokens = source.rules[local, default: []]
+            guard !tokens.isEmpty else { continue }
+            let preferred = source.names[local]?.split(separator: ":").first.map(String.init)
+            let name = prefix(for: Self.compatibility, preferred: preferred) + ":" + local
+            let values = tokens.sorted {
+                ($0.namespace, $0.local ?? "") < ($1.namespace, $1.local ?? "")
+            }.map { token in
+                let name = prefix(for: token.namespace)
+                return token.local.map { name + ":" + $0 } ?? name
+            }
+            attributes.append((name, values.joined(separator: " ")))
+        }
+        return attributes
     }
 
     func scope(_ element: XML.Element) -> [String: String] {
@@ -267,7 +370,7 @@ public final class Sections: Sequence {
         // Rebuild through the shared helper rather than clearing `children`,
         // so a comment or processing instruction in the section list survives
         // being re-sectioned.
-        SectionMembershipPlan(updates: updates, presentation: presentationPart, membersFrom: oldSections, names: names).commit()
+        try SectionMembershipPlan(updates: updates, presentation: presentationPart, membersFrom: oldSections, names: names).commit()
         Self.replaceKnownChildren(in: list, replacing: oldSections, with: sections)
         presentationPart.markDirty()
     }
@@ -330,7 +433,7 @@ public final class Sections: Sequence {
         section.appendElement(XML.Element(SectionNamespaces.childName("sldIdLst", of: section)))
         var sections = current.sections
         sections.insert(section, at: owningIndex + 1)
-        SectionMembershipPlan(updates: [(owning, Array(members.prefix(split))), (section, Array(members.dropFirst(split)))],
+        try SectionMembershipPlan(updates: [(owning, Array(members.prefix(split))), (section, Array(members.dropFirst(split)))],
                               presentation: presentationPart, membersFrom: current.sections, names: current.names).commit()
         Self.replaceKnownChildren(in: sectionList, replacing: current.sections, with: sections)
         presentationPart.markDirty()
@@ -407,9 +510,10 @@ struct SectionMembershipPlan {
     let presentation: Part
     private let names: SectionNamespaces
     private let membersByID: [Int: (element: XML.Element, section: XML.Element, bindings: [String: String])]
+    private let contextAttributes: [ObjectIdentifier: [(name: String, value: String)]]
 
     fileprivate init(updates: [(section: XML.Element, ids: [Int])], presentation: Part,
-                     membersFrom sections: [XML.Element], names: SectionNamespaces) {
+                     membersFrom sections: [XML.Element], names: SectionNamespaces) throws {
         self.updates = updates
         self.presentation = presentation
         self.names = names
@@ -422,6 +526,16 @@ struct SectionMembershipPlan {
             }
         }
         membersByID = byID
+        var prepared: [ObjectIdentifier: [(name: String, value: String)]] = [:]
+        for (section, ids) in updates {
+            for id in ids {
+                if let source = byID[id], source.section !== section {
+                    prepared[ObjectIdentifier(source.element)] = try names.localizedContext(source.element,
+                        to: names.memberList(section) ?? section, fallbackSection: sections.first)
+                }
+            }
+        }
+        contextAttributes = prepared
     }
 
     func commit() {
@@ -440,6 +554,9 @@ struct SectionMembershipPlan {
                 }
                 if source.section !== section {
                     SectionNamespaces.preserveScope(source.bindings, on: source.element)
+                    for attribute in contextAttributes[ObjectIdentifier(source.element)] ?? [] {
+                        source.element[attribute: attribute.name] = attribute.value
+                    }
                 }
                 return source.element
             }
@@ -517,7 +634,7 @@ extension Sections {
         let updates = current.sections.enumerated().map { index, section in
             (section: section, ids: order.filter { owner[$0] == index })
         }
-        return SectionMembershipPlan(updates: updates, presentation: presentationPart, membersFrom: current.sections, names: current.names)
+        return try SectionMembershipPlan(updates: updates, presentation: presentationPart, membersFrom: current.sections, names: current.names)
     }
 
     /// Preserve foreign elements, comments and instructions while replacing
@@ -547,7 +664,7 @@ extension Sections {
         if current.sections.count > 1 {
             let recipient = index > 0 ? index - 1 : 1
             let ids = current.liveIDs.filter { current.owner[$0] == index || current.owner[$0] == recipient }
-            SectionMembershipPlan(updates: [(current.sections[recipient], ids)], presentation: presentationPart, membersFrom: current.sections, names: current.names).commit()
+            try SectionMembershipPlan(updates: [(current.sections[recipient], ids)], presentation: presentationPart, membersFrom: current.sections, names: current.names).commit()
         }
         list.removeChild(removed)
         presentationPart.markDirty()
