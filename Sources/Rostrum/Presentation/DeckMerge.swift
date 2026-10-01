@@ -113,17 +113,31 @@ final class SlideCopier {
         let sourceStyles = try presentation.related(by: RelType.tableStyles, in: source)
         let root = try sourceStyles.dom()
         for (table, scope) in tables {
-            guard let properties = table.childElements.first(where: { TableStyleXML.isDrawing($0, "tblPr", namespaces: scope) }) else { continue }
+            let existingProperties = table.childElements.first { TableStyleXML.isDrawing($0, "tblPr", namespaces: scope) }
+            let properties = existingProperties ?? XML.Element("a:tblPr", attributes: [("xmlns:a", TableStyleXML.drawing)])
             let propertyScope = TableStyleXML.bindings(properties, inheriting: scope)
             if properties.childElements.contains(where: { TableStyleXML.isDrawing($0, "tableStyle", namespaces: propertyScope) }) { continue }
             let reference = properties.childElements.first { TableStyleXML.isDrawing($0, "tableStyleId", namespaces: propertyScope) }
             guard let id = reference?.textContent ?? root[attribute: "def"] else { continue }
             let matches = TableStyleXML.definitions(in: root).filter { $0[attribute: "styleId"]?.lowercased() == id.lowercased() }
             guard matches.count <= 1 else { throw RostrumError.packageInvalid("ambiguous source table style ID") }
-            guard let definition = matches.first else { continue } // Preserve native style IDs without embedded definitions.
-            let mapped = try importTableStyle(definition, from: sourceStyles)
+            // An implicit native default still needs an explicit reference in
+            // the destination, even when no embedded definition is available.
+            let mapped = try matches.first.map { try importTableStyle($0, from: sourceStyles) } ?? id
             let target = reference ?? XML.Element("a:tableStyleId", attributes: [("xmlns:a", TableStyleXML.drawing)])
-            target.children = [.text(mapped)]
+            var wroteText = false
+            target.children = target.children.compactMap { node in
+                guard case .text = node else { return node }
+                guard !wroteText else { return nil }
+                wroteText = true
+                return .text(mapped)
+            }
+            if !wroteText { target.children.insert(.text(mapped), at: 0) }
+            if existingProperties == nil {
+                table.insertChild(properties, beforeAnyOf: table.childElements.filter {
+                    TableStyleXML.isDrawing($0, "tblGrid", namespaces: scope) || TableStyleXML.isDrawing($0, "tr", namespaces: scope)
+                }.map(\.name))
+            }
             if reference == nil { properties.insertChild(target, beforeAnyOf: properties.childElements.filter { TableStyleXML.isDrawing($0, "extLst", namespaces: propertyScope) }.map(\.name)) }
             part.markDirty()
         }
