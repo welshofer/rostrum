@@ -458,7 +458,9 @@ struct SVGRenderer {
                               box frame: (Int, Int, Int, Int), defs: inout String) -> String? {
         guard let rId = blip.firstChild(named: "a:blip")?[attribute: "r:embed"],
               let resource = imageResource(rId: rId, ownedBy: owner), frame.2 > 0, frame.3 > 0 else { return nil }
-        let id = "image\(defs.count)"
+        // Definitions only grow; byte count gives unique IDs without rescanning
+        // all preceding base64 image data for extended grapheme clusters.
+        let id = "image\(defs.utf8.count)"
         if let tile = blip.firstChild(named: "a:tile") {
             let crop = PictureCrop.read(blip.firstChild(named: "a:srcRect"))
             guard crop.valid else { return nil }
@@ -962,7 +964,7 @@ struct SVGRenderer {
     }
 
     private func tableGradient(_ gradient: XML.Element, box frame: (Int, Int, Int, Int), defs: inout String) -> String {
-        let id = "tg\(defs.count)"
+        let id = "tg\(defs.utf8.count)"
         var stops = ""
         for stop in gradient.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? [] {
             let offset = Double(stop.boundedInt("pos", in: 0...100000) ?? 0) / 100000
@@ -991,7 +993,7 @@ struct SVGRenderer {
 
     private func gradientRef(_ grad: XML.Element, box f: (Int, Int, Int, Int), defs: inout String) -> String {
         let stops = grad.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? []
-        let id = "g\(f.0)_\(f.1)_\(defs.count)"
+        let id = "g\(f.0)_\(f.1)_\(defs.utf8.count)"
         let isRadial = grad.firstChild(named: "a:path") != nil
         var stopSVG = ""
         for gs in stops {
