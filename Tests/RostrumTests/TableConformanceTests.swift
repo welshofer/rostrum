@@ -4,16 +4,17 @@ import Testing
 
 /// Independent python-pptx producer fixture, rather than round-tripping our own writer.
 @Suite struct TableConformanceTests {
-    private func fixture() throws -> Presentation {
+    private func fixture(_ name: String) throws -> Presentation {
         let root = try #require(Bundle.module.url(forResource: "Fixtures", withExtension: nil))
-        return try Presentation(contentsOf: root.appendingPathComponent("Conformance/python-tables.pptx"))
+        return try Presentation(contentsOf: root.appendingPathComponent("Conformance/\(name).pptx"))
     }
     private func table(_ deck: Presentation, _ index: Int = 0) throws -> Table {
         let tables = try deck.slides[index].shapes.compactMap { ($0 as? TableFrame)?.table }
         return try #require(tables.first)
     }
-    @Test func independentTableReadEditAndReopen() throws {
-        let deck = try fixture()
+    @Test(arguments: ["python-tables", "python-tables-v2"])
+    func independentTableReadEditAndReopen(_ name: String) throws {
+        let deck = try fixture(name)
         let t = try table(deck)
         #expect(t.rowCount == 4 && t.columnCount == 4)
         #expect(try t.cell(0, 0).text == "Merged origin")
@@ -30,8 +31,9 @@ import Testing
         #expect(try table(reopened).cell(2, 1).tc.firstChild(named: "a:tcPr")?[attribute: "marR"] == "210312")
         #expect(try reopened.serializedData() == Presentation(data: reopened.serializedData()).serializedData())
     }
-    @Test func tableSurvivesDuplicateAndImport() throws {
-        let source = try fixture()
+    @Test(arguments: ["python-tables", "python-tables-v2"])
+    func tableSurvivesDuplicateAndImport(_ name: String) throws {
+        let source = try fixture(name)
         _ = try source.slides.duplicate(at: 0)
         let destination = try Presentation()
         try destination.slides.importAll(from: source)
