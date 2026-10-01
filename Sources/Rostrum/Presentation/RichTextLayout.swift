@@ -333,8 +333,10 @@ public struct RichTextLayout: Sendable {
         var color = "#1A1A1A"
         for element in properties {
             guard let fill = element.firstChild(named: "a:solidFill") else { continue }
-            if let rgb = fill.firstChild(named: "a:srgbClr")?[attribute: "val"], let value = Color(validating: rgb) { color = "#" + value.hex; break }
-            if let raw = fill.firstChild(named: "a:schemeClr")?[attribute: "val"], let scheme = SchemeColor(rawValue: raw), let value = theme?.resolve(scheme) { color = "#" + value.hex; break }
+            if let resolved = DrawingColor.resolve(in: fill, theme: theme) {
+                color = resolved.alpha < 1 ? "rgba(\(resolved.color.red),\(resolved.color.green),\(resolved.color.blue),\(resolved.alpha))" : "#" + resolved.color.hex
+                break
+            }
         }
         return ResolvedTextRun(text: text, fontFamily: family,
             fontSize: bounded(attr("sz").flatMap(Double.init) ?? defaultSize * 100, 100...400000) / 100 * scale,

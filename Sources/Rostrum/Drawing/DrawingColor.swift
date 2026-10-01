@@ -5,14 +5,14 @@ import Foundation
 enum DrawingColor {
     struct Resolved { var color: Color; var alpha: Double }
 
-    static func resolve(in container: XML.Element, theme: Theme) -> Resolved? {
+    static func resolve(in container: XML.Element, theme: Theme?) -> Resolved? {
         let names: Set<String> = ["a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr"]
         guard let node = container.childElements.first(where: { names.contains($0.name) }) else { return nil }
         let base: Color?
         switch node.name {
         case "a:srgbClr": base = node[attribute: "val"].flatMap(Color.init(validating:))
         case "a:sysClr": base = node[attribute: "lastClr"].flatMap(Color.init(validating:))
-        case "a:schemeClr": base = node[attribute: "val"].flatMap(SchemeColor.init(rawValue:)).flatMap { theme.resolve($0) }
+        case "a:schemeClr": base = node[attribute: "val"].flatMap(SchemeColor.init(rawValue:)).flatMap { theme?.resolve($0) }
         case "a:prstClr":
             let values = ["black":"000000", "white":"FFFFFF", "red":"FF0000", "green":"008000", "blue":"0000FF", "yellow":"FFFF00", "gray":"808080", "cyan":"00FFFF", "magenta":"FF00FF", "transparent":"000000"]
             base = node[attribute: "val"].flatMap { values[$0] }.flatMap(Color.init(validating:))

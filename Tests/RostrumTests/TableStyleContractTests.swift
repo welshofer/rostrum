@@ -3,6 +3,24 @@ import Testing
 @testable import Rostrum
 
 @Suite struct TableStyleContractTests {
+    @Test func tableSolidBorderAndGradientApplyAlphaOnce() throws {
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(rows: 1, columns: 2,
+            frame: Rect(x: .zero, y: .zero, width: .points(200), height: .points(100)))
+        table.clearBuiltInStyle()
+        let translucent = "<a:srgbClr val=\"FF0000\"><a:alpha val=\"50000\"/></a:srgbClr>"
+        let left = try table.cell(0, 0).tcPr
+        left.appendElement(try XML.parse(Data("<a:solidFill>\(translucent)</a:solidFill>".utf8)))
+        left.appendElement(try XML.parse(Data("<a:lnL w=\"12700\"><a:solidFill>\(translucent)</a:solidFill></a:lnL>".utf8)))
+        try table.cell(0, 1).tcPr.appendElement(XML.parse(Data("<a:gradFill><a:gsLst><a:gs pos=\"0\">\(translucent)</a:gs><a:gs pos=\"100000\">\(translucent)</a:gs></a:gsLst><a:lin ang=\"0\"/></a:gradFill>".utf8)))
+        let svg = try deck.renderSVG(slideAt: 0)
+        #expect(svg.contains("fill=\"rgba(255,0,0,0.5)\""))
+        #expect(svg.contains("stroke=\"rgba(255,0,0,0.5)\""))
+        #expect(svg.contains("stop-color=\"rgba(255,0,0,0.5)\""))
+        #expect(!svg.contains("fill-opacity="))
+        #expect(!svg.contains("stroke-opacity="))
+        #expect(!svg.contains("stop-opacity="))
+    }
     private let styleXML = """
     <a:tblStyle xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" styleId="{11111111-2222-3333-4444-555555555555}" styleName="Contract">
       <a:wholeTbl><a:tcTxStyle b="on"><a:schemeClr val="tx1"/></a:tcTxStyle><a:tcStyle>

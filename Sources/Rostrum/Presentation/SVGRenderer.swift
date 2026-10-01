@@ -829,8 +829,7 @@ struct SVGRenderer {
             backgroundPaint = tableGradient(gradient, box: tableFrame, defs: &defs)
         } else { backgroundPaint = paint(for: background.properties, box: tableFrame, defs: &defs) }
         if let backgroundPaint {
-            let alpha = tableAlpha(background.properties.firstChild(named: "a:solidFill"))
-            out += box(x, y, tableFrame.2, tableFrame.3, fill: backgroundPaint, stroke: alpha < 1 ? " fill-opacity=\"\(alpha)\"" : "")
+            out += box(x, y, tableFrame.2, tableFrame.3, fill: backgroundPaint, stroke: "")
         }
         for r in grid.rows.indices {
             for c in grid.cells[r].indices where c < widths.count {
@@ -849,8 +848,7 @@ struct SVGRenderer {
                     fill = tableGradient(gradient, box: frame, defs: &defs)
                 } else { fill = paint(for: properties, box: frame, defs: &defs) }
                 if let fill {
-                    let alpha = tableAlpha(properties.firstChild(named: "a:solidFill"))
-                    out += box(cx, cy, cw, rh, fill: fill, stroke: alpha < 1 ? " fill-opacity=\"\(alpha)\"" : "")
+                    out += box(cx, cy, cw, rh, fill: fill, stroke: "")
                 }
                 // Borders are independent authored edges, never a synthetic
                 // grid. Use the far physical cell for a merge's outer edge,
@@ -884,8 +882,7 @@ struct SVGRenderer {
                     default: pattern = ""
                     }
                     let dashAttribute = pattern.isEmpty ? "" : " stroke-dasharray=\"\(pattern)\""
-                    let alpha = tableAlpha(line.firstChild(named: "a:solidFill"))
-                    out += "<line x1=\"\(endpoints.0)\" y1=\"\(endpoints.1)\" x2=\"\(endpoints.2)\" y2=\"\(endpoints.3)\" stroke=\"\(color)\" stroke-width=\"\(width)\" stroke-opacity=\"\(alpha)\"\(dashAttribute)/>"
+                    out += "<line x1=\"\(endpoints.0)\" y1=\"\(endpoints.1)\" x2=\"\(endpoints.2)\" y2=\"\(endpoints.3)\" stroke=\"\(color)\" stroke-width=\"\(width)\"\(dashAttribute)/>"
                 }
                 if let body = grid.cells[r][c].firstChild(named: "a:txBody") {
                     let text = body.deepCopy()
@@ -911,18 +908,12 @@ struct SVGRenderer {
         return out
     }
 
-    private func tableAlpha(_ container: XML.Element?) -> Double {
-        guard let color = container?.childElements.first(where: { $0.name.hasSuffix("Clr") }),
-              let value = color.firstChild(named: "a:alpha")?.boundedInt("val", in: 0...100000) else { return 1 }
-        return Double(value) / 100000
-    }
-
     private func tableGradient(_ gradient: XML.Element, box frame: (Int, Int, Int, Int), defs: inout String) -> String {
         let id = "tg\(defs.count)"
         var stops = ""
         for stop in gradient.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? [] {
             let offset = Double(stop.boundedInt("pos", in: 0...100000) ?? 0) / 100000
-            stops += "<stop offset=\"\(offset)\" stop-color=\"\(colorHex(in: stop) ?? "#000000")\" stop-opacity=\"\(tableAlpha(stop))\"/>"
+            stops += "<stop offset=\"\(offset)\" stop-color=\"\(colorHex(in: stop) ?? "#000000")\"/>"
         }
         if gradient.firstChild(named: "a:path") != nil {
             defs += "<radialGradient id=\"\(id)\">\(stops)</radialGradient>"

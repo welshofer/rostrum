@@ -183,10 +183,6 @@ final class RenderDiagnosticCollector {
                 if ["baseline", "u", "strike", "cap", "kumimoji", "normalizeH"].contains(where: { element[attribute: $0].map { $0 != "0" && $0 != "none" && $0 != "noStrike" } ?? false }) {
                     issue(.unsupportedTextProperty, .approximation, "Baseline shift, decoration or character transforms are not rendered.")
                 }
-            case "a:tint", "a:shade", "a:lumMod", "a:lumOff", "a:satMod", "a:alpha", "a:alphaMod", "a:alphaOff":
-                if elementPath.contains("/a:rPr[") || elementPath.contains("/a:defRPr[") {
-                    issue(.unsupportedColor, .approximation, "Text color transforms are not applied by the rich-text span renderer.")
-                }
             case "a:tab":
                 if let alignment = element[attribute: "algn"], alignment != "l" { issue(.unsupportedTextProperty, .approximation, "Only left-aligned tab stops are supported.") }
             case "a:buBlip": issue(.unsupportedTextProperty, .omission, "Picture bullets are not rendered.")
