@@ -56,26 +56,4 @@ import Testing
         #expect(authors.rels.relationship(withId: id) != nil)
     }
 
-    @Test func aliasedSectionMutationsAreRefusedBeforeChangingDeck() throws {
-        let deck = try Presentation()
-        _ = try deck.slides.add()
-        try deck.setSections([("A", 0)])
-        let root = try deck.presentationPart.dom()
-        let list = try #require(root.firstChild(named: "p:extLst")?.children(named: "p:ext").first { $0[attribute: "uri"] == SectionExt.uri }?.firstChild(named: "p14:sectionLst"))
-        var stack = [list]
-        while let element = stack.popLast() {
-            element.name = element.name.replacingOccurrences(of: "p14:", with: "sec:")
-            stack.append(contentsOf: element.childElements)
-        }
-        list[attribute: "xmlns:sec"] = SectionExt.ns
-        deck.presentationPart.markDirty()
-        let before = try deck.serializedData()
-        #expect(throws: RostrumError.self) { try deck.slides.remove(at: 0) }
-        #expect(throws: RostrumError.self) { try deck.slides.move(from: 0, to: 1) }
-        #expect(throws: RostrumError.self) { _ = try deck.slides.duplicate(at: 0) }
-        #expect(throws: RostrumError.self) { _ = try deck.slides.add() }
-        #expect(throws: RostrumError.self) { _ = try deck.addSection("B", startingAtSlide: 0) }
-        #expect(throws: RostrumError.self) { try deck.setSections([("B", 0)]) }
-        #expect(try deck.serializedData() == before)
-    }
 }

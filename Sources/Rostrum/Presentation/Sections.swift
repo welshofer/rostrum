@@ -13,6 +13,64 @@ public enum SectionExt {
     public static let ns = "http://schemas.microsoft.com/office/powerpoint/2010/main"
 }
 
+/// Namespace scopes are captured before editing: XML elements have no parent
+/// pointers, and moving a node must not change the meaning of its opaque XML.
+private struct SectionNamespaces {
+    private var scopes: [ObjectIdentifier: [String: String]] = [:]
+
+    init(_ root: XML.Element) {
+        var pending = [(root, ["": "", "xml": "http://www.w3.org/XML/1998/namespace"])]
+        while let (element, inherited) = pending.popLast() {
+            var bindings = inherited
+            for attribute in element.attributes {
+                if attribute.name == "xmlns" { bindings[""] = attribute.value }
+                else if attribute.name.hasPrefix("xmlns:") {
+                    bindings[String(attribute.name.dropFirst(6))] = attribute.value
+                }
+            }
+            scopes[ObjectIdentifier(element)] = bindings
+            for child in element.childElements { pending.append((child, bindings)) }
+        }
+    }
+
+    func scope(_ element: XML.Element) -> [String: String] {
+        scopes[ObjectIdentifier(element)] ?? [:]
+    }
+
+    func matches(_ element: XML.Element, _ local: String, namespace: String = SectionExt.ns) -> Bool {
+        let pieces = element.name.split(separator: ":", omittingEmptySubsequences: false)
+        guard pieces.count <= 2, pieces.allSatisfy({ !$0.isEmpty }), pieces.last.map(String.init) == local else { return false }
+        let prefix = pieces.count == 2 ? String(pieces[0]) : ""
+        return scope(element)[prefix] == namespace
+    }
+
+    func children(_ parent: XML.Element, _ local: String, namespace: String = SectionExt.ns) -> [XML.Element] {
+        parent.childElements.filter { matches($0, local, namespace: namespace) }
+    }
+
+    func memberList(_ section: XML.Element) -> XML.Element? {
+        children(section, "sldIdLst").first
+    }
+
+    func members(_ section: XML.Element) -> [XML.Element] {
+        memberList(section).map { children($0, "sldId") } ?? []
+    }
+
+    /// New descendants reuse the parent's vocabulary spelling. Existing nodes
+    /// retain their own spelling, even when the document mixes valid prefixes.
+    static func childName(_ local: String, of parent: XML.Element) -> String {
+        guard let colon = parent.name.firstIndex(of: ":") else { return local }
+        return String(parent.name[...colon]) + local
+    }
+
+    static func preserveScope(_ bindings: [String: String], on element: XML.Element) {
+        for prefix in bindings.keys.sorted() where prefix != "xml" {
+            let name = prefix.isEmpty ? "xmlns" : "xmlns:" + prefix
+            if element[attribute: name] == nil { element[attribute: name] = bindings[prefix]! }
+        }
+    }
+}
+
 /// Deterministic {8-4-4-4-12} GUID from a section's name + index — no UUID()/
 /// random, so section ids are byte-stable across builds.
 enum SectionGUID {
@@ -55,39 +113,54 @@ public final class Sections: Sequence {
         self.presentationPart = presentationPart
     }
 
+    private func namespaces() throws -> SectionNamespaces {
+        SectionNamespaces(try presentationPart.dom())
+    }
+
     private func slideIds() throws -> [Int] {
-        (try presentationPart.dom().firstChild(named: "p:sldIdLst")?.children(named: "p:sldId") ?? [])
-            .compactMap { $0[attribute: "id"].flatMap { Int($0) } }
+        let dom = try presentationPart.dom()
+        let names = SectionNamespaces(dom)
+        return names.children(dom, "sldIdLst", namespace: MinimalTemplate.nsP).first
+            .map { names.children($0, "sldId", namespace: MinimalTemplate.nsP) }?
+            .compactMap { $0[attribute: "id"].flatMap(Int.init) } ?? []
     }
 
     private func sectionListElement(creatingIfMissing create: Bool) throws -> XML.Element? {
         let dom = try presentationPart.dom()
-        // Reuse the ext carrying the section URI if there is one. A foreign
-        // deck can have that ext without a `p14:sectionLst` child — empty, or
-        // spelling the 2010 namespace with a different prefix, both legal.
-        // Appending a *second* ext with the same URI would leave the reader
-        // resolving to the first, so `elements` would stay empty and the
-        // caller-facing `add` would index an empty array.
-        let existing = dom.firstChild(named: "p:extLst")?.children(named: "p:ext")
-            .first(where: { $0[attribute: "uri"] == SectionExt.uri })
+        let names = SectionNamespaces(dom)
+        let extLists = names.children(dom, "extLst", namespace: MinimalTemplate.nsP)
+        let extensions = extLists.flatMap { names.children($0, "ext", namespace: MinimalTemplate.nsP) }
+            .filter { $0[attribute: "uri"] == SectionExt.uri }
+        guard extensions.count <= 1 else {
+            throw RostrumError.packageInvalid("multiple section extensions cannot be maintained")
+        }
+        let existing = extensions.first
         if let existing {
-            var unsupported = false
-            ModernComments.visit(in: dom) { element, namespace, local in
-                if namespace == SectionExt.ns, ["sectionLst", "section", "sldIdLst", "sldId"].contains(local),
-                   !element.name.hasPrefix("p14:") { unsupported = true }
+            let lists = names.children(existing, "sectionLst")
+            guard lists.count <= 1 else {
+                throw RostrumError.packageInvalid("multiple section lists cannot be maintained")
             }
-            guard !unsupported else {
-                throw RostrumError.packageInvalid("aliased section vocabulary cannot be edited without preserving its namespace")
+            if let list = lists.first {
+                try validateStructure(list, names: names)
+                return list
             }
-            if let list = existing.firstChild(named: "p14:sectionLst") { return list }
+            // A section URI with misspelled/undeclared vocabulary is malformed,
+            // rather than sectionless: slide edits must not leave stale members.
+            guard !existing.childElements.contains(where: { $0.name.split(separator: ":").last == "sectionLst" }) else {
+                throw RostrumError.packageInvalid("section list has an invalid namespace")
+            }
         }
         guard create else { return nil }
         let list = XML.Element("p14:sectionLst", attributes: [("xmlns:p14", SectionExt.ns)])
-        if let existing {
-            existing.appendElement(list)
-        } else {
-            let extLst = dom.getOrAddChild("p:extLst")             // extLst is last in p:presentation
-            let ext = XML.Element("p:ext", attributes: [("uri", SectionExt.uri)])
+        if let existing { existing.appendElement(list) }
+        else {
+            let extLst: XML.Element
+            if let found = extLists.first { extLst = found }
+            else {
+                extLst = XML.Element(SectionNamespaces.childName("extLst", of: dom))
+                dom.appendElement(extLst)
+            }
+            let ext = XML.Element(SectionNamespaces.childName("ext", of: extLst), attributes: [("uri", SectionExt.uri)])
             ext.appendElement(list)
             extLst.appendElement(ext)
         }
@@ -95,8 +168,26 @@ public final class Sections: Sequence {
         return list
     }
 
+    private func validateStructure(_ list: XML.Element, names: SectionNamespaces) throws {
+        let sections = names.children(list, "section")
+        if sections.isEmpty, list.childElements.contains(where: { $0.name.split(separator: ":").last == "section" }) {
+            throw RostrumError.packageInvalid("section entries have an invalid namespace")
+        }
+        for section in sections {
+            let memberLists = names.children(section, "sldIdLst")
+            guard !memberLists.isEmpty || !section.childElements.contains(where: { $0.name.split(separator: ":").last == "sldIdLst" }) else {
+                throw RostrumError.packageInvalid("section member list has an invalid namespace")
+            }
+            guard memberLists.count <= 1 else {
+                throw RostrumError.packageInvalid("section has multiple member lists")
+            }
+        }
+    }
+
     private var elements: [XML.Element] {
-        ((try? sectionListElement(creatingIfMissing: false)) ?? nil)?.children(named: "p14:section") ?? []
+        guard let list = try? sectionListElement(creatingIfMissing: false),
+              let names = try? namespaces() else { return [] }
+        return names.children(list, "section")
     }
 
     public var count: Int { elements.count }
@@ -159,24 +250,25 @@ public final class Sections: Sequence {
             }
         }
         let list = try sectionListElement(creatingIfMissing: true)!
+        let names = try namespaces()
+        let oldSections = names.children(list, "section")
         var sections: [XML.Element] = []
+        var updates: [(section: XML.Element, ids: [Int])] = []
         var used = Set<String>()
         for (i, boundary) in boundaries.enumerated() {
             let end = i + 1 < boundaries.count ? boundaries[i + 1].startSlide : ids.count
             let guid = SectionGUID.make(name: boundary.name, index: i, avoiding: used)
             used.insert(guid)
-            let section = XML.Element("p14:section", attributes: [("name", boundary.name), ("id", guid)])
-            let sldIdLst = XML.Element("p14:sldIdLst")
-            for slide in boundary.startSlide..<end {
-                sldIdLst.appendElement(XML.Element("p14:sldId", attributes: [("id", String(ids[slide]))]))
-            }
-            section.appendElement(sldIdLst)
+            let section = XML.Element(SectionNamespaces.childName("section", of: list), attributes: [("name", boundary.name), ("id", guid)])
+            section.appendElement(XML.Element(SectionNamespaces.childName("sldIdLst", of: section)))
             sections.append(section)
+            updates.append((section, Array(ids[boundary.startSlide..<end])))
         }
         // Rebuild through the shared helper rather than clearing `children`,
         // so a comment or processing instruction in the section list survives
         // being re-sectioned.
-        list.replaceChildElements(with: sections)
+        SectionMembershipPlan(updates: updates, presentation: presentationPart, membersFrom: oldSections, names: names).commit()
+        Self.replaceKnownChildren(in: list, replacing: oldSections, with: sections)
         presentationPart.markDirty()
     }
 
@@ -185,10 +277,10 @@ public final class Sections: Sequence {
     func boundaries() throws -> [(name: String, startSlide: Int)] {
         let ids = try slideIds()
         let indexOf = Dictionary(ids.enumerated().map { ($1, $0) }, uniquingKeysWith: { a, _ in a })
+        let names = try namespaces()
         return elements.map { section in
             let name = section[attribute: "name"] ?? ""
-            let firstId = section.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId")
-                .first?[attribute: "id"].flatMap { Int($0) }
+            let firstId = names.members(section).first?[attribute: "id"].flatMap(Int.init)
             return (name, firstId.flatMap { indexOf[$0] } ?? 0)
         }
     }
@@ -201,6 +293,9 @@ public final class Sections: Sequence {
         guard ids.indices.contains(startIndex) else {
             throw RostrumError.packageInvalid("section start slide is outside this deck")
         }
+        // Namespace/structural errors are never repaired by treating the deck
+        // as sectionless. The historical boundary repair still handles bad IDs.
+        _ = try sectionListElement(creatingIfMissing: false)
         guard let current = try? membership() else {
             // addSection historically repairs malformed foreign boundaries.
             // Preserve that explicit repair API; slide lifecycle operations
@@ -228,21 +323,16 @@ public final class Sections: Sequence {
         }
         let split = members.firstIndex(of: ids[startIndex])!
         let used = Set(current.sections.compactMap { $0[attribute: "id"] })
-        let section = XML.Element("p14:section", attributes: [
+        let sectionList = try sectionListElement(creatingIfMissing: false)!
+        let section = XML.Element(SectionNamespaces.childName("section", of: sectionList), attributes: [
             ("name", name), ("id", SectionGUID.make(name: name, index: startIndex, avoiding: used)),
         ])
-        let list = XML.Element("p14:sldIdLst")
-        let originalEntries = owning.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId") ?? []
-        for id in members.dropFirst(split) {
-            list.appendElement(originalEntries.first { $0[attribute: "id"] == String(id) }
-                ?? XML.Element("p14:sldId", attributes: [("id", String(id))]))
-        }
-        section.appendElement(list)
-        let sectionList = try sectionListElement(creatingIfMissing: false)!
+        section.appendElement(XML.Element(SectionNamespaces.childName("sldIdLst", of: section)))
         var sections = current.sections
         sections.insert(section, at: owningIndex + 1)
-        SectionMembershipPlan(updates: [(owning, Array(members.prefix(split)))], presentation: presentationPart, membersFrom: current.sections).commit()
-        Self.replaceKnownChildren(in: sectionList, named: "p14:section", with: sections)
+        SectionMembershipPlan(updates: [(owning, Array(members.prefix(split))), (section, Array(members.dropFirst(split)))],
+                              presentation: presentationPart, membersFrom: current.sections, names: current.names).commit()
+        Self.replaceKnownChildren(in: sectionList, replacing: current.sections, with: sections)
         presentationPart.markDirty()
         return Section(element: section, package: package, presentationPart: presentationPart)
 
@@ -271,16 +361,19 @@ public final class Section {
 
     /// Indices (into the deck's slide order) of the slides in this section.
     public var slideIndices: [Int] {
-        let ids = ((try? presentationPart.dom().firstChild(named: "p:sldIdLst")?.children(named: "p:sldId")) ?? nil)?
-            .compactMap { $0[attribute: "id"].flatMap { Int($0) } } ?? []
+        guard let root = try? presentationPart.dom() else { return [] }
+        let names = SectionNamespaces(root)
+        let ids = names.children(root, "sldIdLst", namespace: MinimalTemplate.nsP).first
+            .map { names.children($0, "sldId", namespace: MinimalTemplate.nsP) }?
+            .compactMap { $0[attribute: "id"].flatMap(Int.init) } ?? []
         let indexOf = Dictionary(ids.enumerated().map { ($1, $0) }, uniquingKeysWith: { a, _ in a })
-        return (element.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId") ?? [])
-            .compactMap { $0[attribute: "id"].flatMap { Int($0) } }
+        return names.members(element).compactMap { $0[attribute: "id"].flatMap(Int.init) }
             .compactMap { indexOf[$0] }
     }
 
     public var slideCount: Int {
-        element.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId").count ?? 0
+        guard let root = try? presentationPart.dom() else { return 0 }
+        return SectionNamespaces(root).members(element).count
     }
 
     /// The section's slides, skipping any entry whose part cannot be resolved
@@ -312,18 +405,20 @@ public extension Presentation {
 struct SectionMembershipPlan {
     let updates: [(section: XML.Element, ids: [Int])]
     let presentation: Part
-    private let membersByID: [Int: (element: XML.Element, section: XML.Element, namespaces: [(name: String, value: String)])]
+    private let names: SectionNamespaces
+    private let membersByID: [Int: (element: XML.Element, section: XML.Element, bindings: [String: String])]
 
-    init(updates: [(section: XML.Element, ids: [Int])], presentation: Part,
-         membersFrom sections: [XML.Element]) {
+    fileprivate init(updates: [(section: XML.Element, ids: [Int])], presentation: Part,
+                     membersFrom sections: [XML.Element], names: SectionNamespaces) {
         self.updates = updates
         self.presentation = presentation
-        var byID: [Int: (element: XML.Element, section: XML.Element, namespaces: [(name: String, value: String)])] = [:]
+        self.names = names
+        var byID: [Int: (element: XML.Element, section: XML.Element, bindings: [String: String])] = [:]
         for section in sections {
-            guard let list = section.firstChild(named: "p14:sldIdLst") else { continue }
-            let namespaces = (section.attributes + list.attributes).filter { $0.name == "xmlns" || $0.name.hasPrefix("xmlns:") }
-            for entry in list.children(named: "p14:sldId") {
-                if let id = entry[attribute: "id"].flatMap(Int.init) { byID[id] = (entry, section, namespaces) }
+            for entry in names.members(section) {
+                if let id = entry[attribute: "id"].flatMap(Int.init) {
+                    byID[id] = (entry, section, names.scope(entry))
+                }
             }
         }
         membersByID = byID
@@ -331,19 +426,24 @@ struct SectionMembershipPlan {
 
     func commit() {
         for (section, ids) in updates {
-            let list = section.getOrAddChild("p14:sldIdLst", beforeAnyOf: ["p14:extLst"])
+            let list: XML.Element
+            if let found = names.memberList(section) { list = found }
+            else if names.scope(section).isEmpty, let detached = section.childElements.first(where: { $0.name == SectionNamespaces.childName("sldIdLst", of: section) }) {
+                list = detached
+            } else {
+                list = XML.Element(SectionNamespaces.childName("sldIdLst", of: section))
+                section.appendElement(list)
+            }
             let members = ids.map { id -> XML.Element in
-                guard let source = membersByID[id] else { return XML.Element("p14:sldId", attributes: [("id", String(id))]) }
+                guard let source = membersByID[id] else {
+                    return XML.Element(SectionNamespaces.childName("sldId", of: list), attributes: [("id", String(id))])
+                }
                 if source.section !== section {
-                    // A moved member may inherit extension namespace bindings
-                    // from its old section/list. Make them local before transfer.
-                    for namespace in source.namespaces where source.element[attribute: namespace.name] == nil {
-                        source.element[attribute: namespace.name] = namespace.value
-                    }
+                    SectionNamespaces.preserveScope(source.bindings, on: source.element)
                 }
                 return source.element
             }
-            Sections.replaceKnownChildren(in: list, named: "p14:sldId", with: members)
+            Sections.replaceKnownChildren(in: list, replacing: names.children(list, "sldId"), with: members)
         }
         if !updates.isEmpty { presentation.markDirty() }
     }
@@ -354,13 +454,15 @@ extension Sections {
         let sections: [XML.Element]
         let liveIDs: [Int]
         let owner: [Int: Int]
+        fileprivate let names: SectionNamespaces
     }
 
     /// Sectionless decks remain sectionless. Existing sections must partition
     /// the live slides; malformed references are refused before any mutation.
     func membership() throws -> Membership? {
         guard let list = try sectionListElement(creatingIfMissing: false) else { return nil }
-        let sections = list.children(named: "p14:section")
+        let names = try namespaces()
+        let sections = names.children(list, "section")
         guard !sections.isEmpty else { return nil }
         let liveIDs = try slideIds()
         guard Set(liveIDs).count == liveIDs.count else {
@@ -370,7 +472,7 @@ extension Sections {
         var owner: [Int: Int] = [:]
         var ordered: [Int] = []
         for (index, section) in sections.enumerated() {
-            for entry in section.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId") ?? [] {
+            for entry in names.members(section) {
                 guard let id = entry[attribute: "id"].flatMap(Int.init), live.contains(id), owner[id] == nil else {
                     throw RostrumError.packageInvalid("sections contain stale or duplicate slide references")
                 }
@@ -381,7 +483,7 @@ extension Sections {
         guard ordered == liveIDs else {
             throw RostrumError.packageInvalid("sections must cover every slide once in presentation order")
         }
-        return Membership(sections: sections, liveIDs: liveIDs, owner: owner)
+        return Membership(sections: sections, liveIDs: liveIDs, owner: owner, names: names)
     }
 
     /// Insertion before a boundary belongs to the following section; appends
@@ -415,16 +517,17 @@ extension Sections {
         let updates = current.sections.enumerated().map { index, section in
             (section: section, ids: order.filter { owner[$0] == index })
         }
-        return SectionMembershipPlan(updates: updates, presentation: presentationPart, membersFrom: current.sections)
+        return SectionMembershipPlan(updates: updates, presentation: presentationPart, membersFrom: current.sections, names: current.names)
     }
 
     /// Preserve foreign elements, comments and instructions while replacing
     /// only the named vocabulary, reusing existing element slots where possible.
-    static func replaceKnownChildren(in parent: XML.Element, named name: String, with elements: [XML.Element]) {
+    static func replaceKnownChildren(in parent: XML.Element, replacing old: [XML.Element], with elements: [XML.Element]) {
+        let identities = Set(old.map(ObjectIdentifier.init))
         var index = 0
         var children: [XML.Node] = []
         for child in parent.children {
-            if case .element(let element) = child, element.name == name {
+            if case .element(let element) = child, identities.contains(ObjectIdentifier(element)) {
                 if index < elements.count { children.append(.element(elements[index])); index += 1 }
             } else { children.append(child) }
         }
@@ -444,7 +547,7 @@ extension Sections {
         if current.sections.count > 1 {
             let recipient = index > 0 ? index - 1 : 1
             let ids = current.liveIDs.filter { current.owner[$0] == index || current.owner[$0] == recipient }
-            SectionMembershipPlan(updates: [(current.sections[recipient], ids)], presentation: presentationPart, membersFrom: current.sections).commit()
+            SectionMembershipPlan(updates: [(current.sections[recipient], ids)], presentation: presentationPart, membersFrom: current.sections, names: current.names).commit()
         }
         list.removeChild(removed)
         presentationPart.markDirty()
@@ -456,17 +559,16 @@ extension Sections {
         guard let current = try membership(), current.sections.indices.contains(from),
               current.sections.indices.contains(to),
               let list = try sectionListElement(creatingIfMissing: false),
-              let slides = try presentationPart.dom().firstChild(named: "p:sldIdLst") else {
+              let slides = current.names.children(try presentationPart.dom(), "sldIdLst", namespace: MinimalTemplate.nsP).first else {
             throw RostrumError.packageInvalid("section move index out of range")
         }
         var sections = current.sections
         let section = sections.remove(at: from)
         sections.insert(section, at: to)
         let ids = sections.flatMap { section in
-            section.firstChild(named: "p14:sldIdLst")?.children(named: "p14:sldId")
-                .compactMap { $0[attribute: "id"].flatMap(Int.init) } ?? []
+            current.names.members(section).compactMap { $0[attribute: "id"].flatMap(Int.init) }
         }
-        let entries = slides.childElements
+        let entries = current.names.children(slides, "sldId", namespace: MinimalTemplate.nsP)
         var byID: [Int: XML.Element] = [:]
         for entry in entries {
             if let id = entry[attribute: "id"].flatMap(Int.init) { byID[id] = entry }
@@ -475,8 +577,8 @@ extension Sections {
             guard let entry = byID[id] else { throw RostrumError.packageInvalid("section slide cannot be resolved") }
             return entry
         }
-        Self.replaceKnownChildren(in: list, named: "p14:section", with: sections)
-        slides.replaceChildElements(with: reordered)
+        Self.replaceKnownChildren(in: list, replacing: current.sections, with: sections)
+        Self.replaceKnownChildren(in: slides, replacing: entries, with: reordered)
         presentationPart.markDirty()
     }
 }
