@@ -1,5 +1,20 @@
 import Foundation
 
+/// Locale-independent SVG numbers without invoking a locale/ICU formatter for
+/// every text coordinate. Four fractional digits exceed the layout precision.
+enum SVGNumber {
+    static func decimal(_ value: Double) -> String {
+        guard value.isFinite else { return "0" }
+        if value.rounded() == value, abs(value) < 1e15 { return String(Int64(value)) }
+        guard abs(value) < 9e14 else { return String(value) }
+        let units = Int64((value * 10000).rounded(.toNearestOrEven))
+        let magnitude = units.magnitude
+        let fraction = String(magnitude % 10000)
+        return (value.sign == .minus ? "-" : "") + String(magnitude / 10000)
+            + "." + String(repeating: "0", count: 4 - fraction.count) + fraction
+    }
+}
+
 // Headless slide → SVG rendering, for thumbnails and deterministic visual-diff
 // tests. Glyphs are delegated to the SVG viewer (no rasterizer), so this stays
 // zero-dependency. Coordinates are EMU (the viewBox is in EMU); font sizes are
@@ -243,11 +258,7 @@ struct SVGRenderer {
             } ?? [],
             slideNumber: slideNumber, maxLines: 64)
         diagnostics.text(layout)
-        func decimal(_ value: Double) -> String {
-            guard value.isFinite else { return "0" }
-            if value.rounded() == value, abs(value) < 1e15 { return String(Int(value)) }
-            return String(format: "%.4f", locale: Locale(identifier: "en_US_POSIX"), value)
-        }
+        let decimal = SVGNumber.decimal
         return layout.lines.map { line in
             let baseline = Double(f.1) + line.baseline * Double(emuPerPoint)
             var result = "<text transform=\"translate(\(f.0),\(decimal(baseline))) scale(\(emuPerPoint))\" xml:space=\"preserve\">"

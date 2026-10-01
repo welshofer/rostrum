@@ -25,6 +25,15 @@ import Testing
         #expect(throws: RostrumError.self) { try OPCArchive(data: bytes, validation: .onAccess, maximumEntryBytes: 0) }
         #expect(throws: RostrumError.self) { try OPCArchive(data: bytes, validation: .onAccess, limits: .init(totalUncompressedBytes: 0)) }
     }
+    @Test func lazyOpenRejectsNamesThatWouldNormalizeToAnotherPart() throws {
+        let reader = try ZipReader(data: Presentation().serializedData())
+        var zip = ZipWriter()
+        for name in reader.entryNames { zip.addFile(name: name, data: try reader.data(forEntry: name)) }
+        zip.addFile(name: "ppt//unexpected.xml", data: Data("<unexpected/>".utf8))
+        let bytes = try zip.finalize()
+        #expect(throws: RostrumError.self) { try OPCArchive(data: bytes, validation: .onAccess) }
+        #expect(throws: RostrumError.self) { try Presentation(data: bytes) }
+    }
     @Test func deferredCRCFailuresAreExplicitWhileEagerOpenStillThrows() throws {
         let p = try Presentation()
         let uri = PackURI("/ppt/media/bad.png")

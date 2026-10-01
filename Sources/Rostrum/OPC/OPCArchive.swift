@@ -48,6 +48,11 @@ public final class OPCArchive {
         contentTypes = try ContentTypesMap.parse(reader.data(forEntry: PackURI.contentTypes.memberName))
         relationships = reader.contains(PackURI.packageRels.memberName)
             ? try Relationships.parse(reader.data(forEntry: PackURI.packageRels.memberName)) : Relationships()
+        for name in reader.entryNames where !name.hasSuffix("/") && !name.hasSuffix(".rels") {
+            guard !PackURI.hasEmptySegment(name) else {
+                throw RostrumError.packageInvalid("part name \(name) has an empty segment")
+            }
+        }
         partURIs = reader.entryNames.filter {
             !$0.hasSuffix("/") && !$0.hasSuffix(".rels") && $0 != PackURI.contentTypes.memberName
         }.map { PackURI("/" + $0) }.sorted { $0.value < $1.value }
