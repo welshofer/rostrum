@@ -102,13 +102,15 @@ final class SlideCopier {
     /// Styles live on the presentation, outside a slide's relationship graph.
     /// Remap references on detached copied slides/layouts/masters before commit.
     private func importTableStyles(in part: Part) throws {
+        // A package without presentation-owned styles has nothing to transfer.
+        // Avoid parsing every copied shape tree just to establish that fact.
+        let presentation = try source.mainDocumentPart()
+        guard let rel = presentation.rels.first(ofType: RelType.tableStyles) else { return }
         var tables: [(XML.Element, [String: String])] = []
         try TableStyleXML.walk(part.dom()) { node, scope in
             if TableStyleXML.isDrawing(node, "tbl", namespaces: scope) { tables.append((node, scope)) }
         }
         guard !tables.isEmpty else { return }
-        let presentation = try source.mainDocumentPart()
-        guard let rel = presentation.rels.first(ofType: RelType.tableStyles) else { return }
         guard !rel.isExternal else { throw RostrumError.packageInvalid("source table styles must be internal") }
         let sourceStyles = try presentation.related(by: RelType.tableStyles, in: source)
         let root = try sourceStyles.dom()
