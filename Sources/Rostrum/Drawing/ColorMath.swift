@@ -111,9 +111,9 @@ struct RGB {
         switch t {
         case .tint:   return map { $0 * f + 255 * (1 - f) }      // mix toward white
         case .shade:  return map { $0 * f }                       // mix toward black
-        case .lumMod: return map { $0 * f }
-        case .lumOff: return map { $0 + 255 * f }
-        case .satMod: return scalingSaturation(by: f)            // HSL saturation × f
+        case .lumMod: return adjustingHSL(luminanceScale: f)
+        case .lumOff: return adjustingHSL(luminanceOffset: f)
+        case .satMod: return adjustingHSL(saturationScale: f)            // HSL saturation × f
         case .alpha:  return self                                // opacity: no RGB effect
         }
     }
@@ -124,19 +124,20 @@ struct RGB {
 
     /// Multiply HSL saturation by `factor` (DrawingML `a:satMod`), clamping the
     /// result to [0, 1]. Grayscale colors (saturation 0) are unaffected.
-    private func scalingSaturation(by factor: Double) -> RGB {
+    private func adjustingHSL(saturationScale: Double = 1, luminanceScale: Double = 1, luminanceOffset: Double = 0) -> RGB {
         let rn = r / 255, gn = g / 255, bn = b / 255
         let maxc = Swift.max(rn, gn, bn), minc = Swift.min(rn, gn, bn)
-        let lum = (maxc + minc) / 2
+        let originalLum = (maxc + minc) / 2
+        let lum = Swift.max(0, Swift.min(1, originalLum * luminanceScale + luminanceOffset))
         let delta = maxc - minc
-        guard delta != 0 else { return self }
+        guard delta != 0 else { return RGB(r: lum * 255, g: lum * 255, b: lum * 255) }
         var hue: Double
         if maxc == rn { hue = (gn - bn) / delta + (gn < bn ? 6 : 0) }
         else if maxc == gn { hue = (bn - rn) / delta + 2 }
         else { hue = (rn - gn) / delta + 4 }
         hue /= 6
-        let sat0 = lum > 0.5 ? delta / (2 - maxc - minc) : delta / (maxc + minc)
-        let sat = Swift.max(0, Swift.min(1, sat0 * factor))
+        let sat0 = originalLum > 0.5 ? delta / (2 - maxc - minc) : delta / (maxc + minc)
+        let sat = Swift.max(0, Swift.min(1, sat0 * saturationScale))
         let q = lum < 0.5 ? lum * (1 + sat) : lum + sat - lum * sat
         let p = 2 * lum - q
         func channel(_ offset: Double) -> Double {

@@ -99,19 +99,12 @@ struct SVGRenderer {
     /// which is close enough for a thumbnail and far closer than white.
     private func backgroundFill(chain: (layout: Part?, master: Part?),
                                 box f: (Int, Int, Int, Int), defs: inout String) -> String? {
-        for part in [slidePart, chain.layout, chain.master].compactMap({ $0 }) {
-            guard let bg = (try? part.dom())?
-                .firstChild(named: "p:cSld")?.firstChild(named: "p:bg") else { continue }
-            if let bgPr = bg.firstChild(named: "p:bgPr") {
-                if let blip = bgPr.firstChild(named: "a:blipFill"),
-                   let pattern = imagePattern(blip, ownedBy: part, box: f, defs: &defs) {
-                    return pattern
-                }
-                if let paint = paint(for: bgPr, box: f, defs: &defs) { return paint }
-            }
-            if let bgRef = bg.firstChild(named: "p:bgRef") { return colorHex(in: bgRef) }
+        let parts = [slidePart, chain.layout, chain.master].compactMap { $0 }
+        guard let selected = BackgroundResolver.fill(chain: parts, theme: theme) else { return nil }
+        if let blip = selected.paint.firstChild(named: "a:blipFill") {
+            return imagePattern(blip, ownedBy: selected.owner, box: f, defs: &defs)
         }
-        return nil
+        return paint(for: selected.paint, box: f, defs: &defs)
     }
 
     /// Whether the master's shapes are drawn — a layout or slide can switch
@@ -938,15 +931,11 @@ struct SVGRenderer {
     }
 
     private func colorHex(in container: XML.Element?) -> String? {
-        guard let container else { return nil }
-        // Validated, not interpolated raw: this string lands unescaped inside
-        // an SVG attribute, so a file-supplied `val="x&quot; onload=…"` would
-        // otherwise inject markup into the rendered output.
-        if let srgb = container.firstChild(named: "a:srgbClr")?[attribute: "val"],
-           let color = Color(validating: srgb) { return "#" + color.hex }
-        if let raw = container.firstChild(named: "a:schemeClr")?[attribute: "val"],
-           let scheme = SchemeColor(rawValue: raw), let color = theme.resolve(scheme) { return "#" + color.hex }
-        return nil
+        guard let container, let resolved = DrawingColor.resolve(in: container, theme: theme) else { return nil }
+        if resolved.alpha < 1 {
+            return "rgba(\(resolved.color.red),\(resolved.color.green),\(resolved.color.blue),\(resolved.alpha))"
+        }
+        return "#" + resolved.color.hex
     }
 
     private func strokeAttrs(_ spPr: XML.Element) -> String {
@@ -1038,8 +1027,9 @@ public extension Presentation {
     /// it would have inherited.
     func renderSVGReportingProblems(slideAt index: Int, pixelWidth: Int = 1280)
         throws -> (svg: String, problems: SlideRenderProblems) {
-        try SVGRenderer(slidePart: slides[index].part, slideSize: slideSize,
-                        theme: theme, package: package, fonts: fonts,
+        let slide = try slides[index]
+        return try SVGRenderer(slidePart: slide.part, slideSize: slideSize,
+                        theme: slide.resolvedTheme, package: package, fonts: fonts,
                         slideNumber: index + 1).render(pixelWidth: pixelWidth)
     }
 
