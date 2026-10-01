@@ -107,51 +107,100 @@ public struct TextShaper: Sendable {
                     xOffset: 0, yOffset: 0, bidiLevel: cluster.level))
             }
         }
+        // Build successor links once per lookup. Long ignored-mark runs stay
+        // linear to scan, and filters never cross line breaks or bidi runs.
+        func successors(_ filter: FontLayoutTables.Filter) -> [Int] {
+            var links = Array(repeating: glyphs.count, count: glyphs.count)
+            guard glyphs.count > 1 else { return links }
+            for i in stride(from: glyphs.count - 2, through: 0, by: -1) {
+                guard glyphs[i].bidiLevel == glyphs[i + 1].bidiLevel,
+                      glyphs[i].scalarRange.upperBound >= glyphs[i + 1].scalarRange.lowerBound else { continue }
+                links[i] = filter.ignores(glyphs[i + 1].glyphID) ? links[i + 1] : i + 1
+            }
+            return links
+        }
         for lookup in tables.ligatureLookups {
+            let links = successors(lookup.filter)
             var next: [ShapedGlyph] = [], i = 0
             while i < glyphs.count {
                 let first = glyphs[i]
-                var matched = false
-                for ligature in lookup[first.glyphID] ?? [] {
-                    let count = ligature.components.count + 1
-                    guard i + count <= glyphs.count else { continue }
-                    let rest = glyphs[(i + 1)..<(i + count)]
-                    guard Array(rest.map(\.glyphID)) == ligature.components,
-                          rest.allSatisfy({ $0.bidiLevel == first.bidiLevel }),
-                          zip(glyphs[i..<(i + count - 1)], rest).allSatisfy({ $0.scalarRange.upperBound == $1.scalarRange.lowerBound })
-                    else { continue }
-                    next.append(ShapedGlyph(glyphID: ligature.replacement,
-                        scalarRange: first.scalarRange.lowerBound..<glyphs[i + count - 1].scalarRange.upperBound,
-                        advance: Double(metrics.advance(ofGlyph: ligature.replacement)) * scale,
-                        xOffset: 0, yOffset: 0, bidiLevel: first.bidiLevel))
-                    i += count; matched = true; break
+                var matched: [Int] = [], replacement: Int?
+                if !lookup.filter.ignores(first.glyphID) {
+                    for ligature in lookup.content[first.glyphID] ?? [] {
+                        var positions = [i], cursor = i
+                        for component in ligature.components {
+                            cursor = links[cursor]
+                            guard cursor < glyphs.count, glyphs[cursor].glyphID == component else { break }
+                            positions.append(cursor)
+                        }
+                        if positions.count == ligature.components.count + 1 {
+                            matched = positions; replacement = ligature.replacement; break
+                        }
+                    }
                 }
-                if !matched { next.append(first); i += 1 }
+                if let replacement, let last = matched.last {
+                    let range = first.scalarRange.lowerBound..<glyphs[last].scalarRange.upperBound
+                    next.append(ShapedGlyph(glyphID: replacement, scalarRange: range,
+                        advance: Double(metrics.advance(ofGlyph: replacement)) * scale,
+                        xOffset: 0, yOffset: 0, bidiLevel: first.bidiLevel))
+                    // Preserve skipped glyphs; their source belongs to the merged
+                    // ligature cluster even though they were not substituted.
+                    var componentIndex = 1
+                    if last > i {
+                        for j in (i + 1)...last {
+                            if componentIndex < matched.count && matched[componentIndex] == j {
+                                componentIndex += 1
+                            } else {
+                                let skipped = glyphs[j]
+                                next.append(ShapedGlyph(glyphID: skipped.glyphID, scalarRange: range,
+                                    advance: skipped.advance, xOffset: skipped.xOffset,
+                                    yOffset: skipped.yOffset, bidiLevel: skipped.bidiLevel))
+                            }
+                        }
+                    }
+                    i = last + 1
+                } else { next.append(first); i += 1 }
             }
             glyphs = next
         }
         if glyphs.count > 1 {
-            for i in 0..<(glyphs.count - 1) {
-                guard glyphs[i].bidiLevel == glyphs[i + 1].bidiLevel,
-                      glyphs[i].scalarRange.upperBound == glyphs[i + 1].scalarRange.lowerBound else { continue }
-                let left = glyphs[i].glyphID, right = glyphs[i + 1].glyphID
-                if tables.pairLookups.isEmpty {
-                    glyphs[i].advance += Double(tables.legacyPairs[left * 65536 + right] ?? 0) * scale
-                } else {
-                    for lookup in tables.pairLookups {
-                        for subtable in lookup {
-                            guard let pair = try? subtable.pair(left, right) else { continue }
+            if tables.pairLookups.isEmpty {
+                for i in 0..<(glyphs.count - 1) {
+                    guard glyphs[i].bidiLevel == glyphs[i + 1].bidiLevel,
+                          glyphs[i].scalarRange.upperBound == glyphs[i + 1].scalarRange.lowerBound else { continue }
+                    let key = glyphs[i].glyphID * 65536 + glyphs[i + 1].glyphID
+                    glyphs[i].advance += Double(tables.legacyPairs[key] ?? 0) * scale
+                }
+            } else {
+                for lookup in tables.pairLookups {
+                    let links = successors(lookup.filter)
+                    var i = 0
+                    while i < glyphs.count {
+                        let j = links[i]
+                        guard !lookup.filter.ignores(glyphs[i].glyphID), j < glyphs.count else { i += 1; continue }
+                        var nextIndex = i + 1
+                        for subtable in lookup.content {
+                            guard let pair = try? subtable.pair(glyphs[i].glyphID, glyphs[j].glyphID) else { continue }
                             glyphs[i].advance += Double(pair.first.advance) * scale
                             glyphs[i].xOffset += Double(pair.first.x) * scale
                             glyphs[i].yOffset += Double(pair.first.y) * scale
-                            glyphs[i + 1].advance += Double(pair.second.advance) * scale
-                            glyphs[i + 1].xOffset += Double(pair.second.x) * scale
-                            glyphs[i + 1].yOffset += Double(pair.second.y) * scale
+                            glyphs[j].advance += Double(pair.second.advance) * scale
+                            glyphs[j].xOffset += Double(pair.second.x) * scale
+                            glyphs[j].yOffset += Double(pair.second.y) * scale
+                            // A nonempty second ValueRecord consumes both glyphs;
+                            // with valueFormat2 == 0 the second can start a pair.
+                            nextIndex = subtable.value2 == 0 ? j : j + 1
                             break
                         }
+                        i = nextIndex
                     }
                 }
             }
+        }
+        // GDEF nonspacing marks retain placement adjustments but do not advance
+        // the pen, including when a pair ValueRecord supplied an advance.
+        for i in glyphs.indices where tables.isNonspacingMark(glyphs[i].glyphID) {
+            glyphs[i].advance = 0
         }
         // Reverse maximal runs at each embedding level, retaining source clusters.
         let maximum = glyphs.map(\.bidiLevel).max() ?? 0

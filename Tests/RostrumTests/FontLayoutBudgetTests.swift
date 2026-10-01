@@ -49,7 +49,7 @@ import Testing
     @Test func smallSharedOffsetsRemainSupported() {
         let parsed = FontLayoutTables(tables: ["GSUB": aliasedLigatures(sets: 2, copies: 2)])
         #expect(parsed.diagnostics.isEmpty)
-        #expect(parsed.ligatureLookups.flatMap { $0.values }.reduce(0) { $0 + $1.count } == 4)
+        #expect(parsed.ligatureLookups.flatMap { $0.content.values }.reduce(0) { $0 + $1.count } == 4)
     }
 
     @Test func registrationWithOverBudgetLayoutUsesDiagnosedFallback() throws {

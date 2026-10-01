@@ -71,12 +71,48 @@ struct FontLayoutTables: Sendable {
             return result
         }
     }
-    var ligatureLookups: [[Int: [Ligature]]] = []
-    var pairLookups: [[PairTable]] = []
+    struct GlyphDefinitions: Sendable {
+        var classes: [Int: Int]?
+        var markClasses: [Int: Int]?
+        var markSets: [Set<Int>]?
+    }
+    struct Filter: Sendable {
+        let flags: Int
+        let definitions: GlyphDefinitions
+        let markSet: Int?
+
+        func ignores(_ glyph: Int) -> Bool {
+            switch definitions.classes?[glyph] ?? 0 {
+            case 1: return flags & 2 != 0
+            case 2: return flags & 4 != 0
+            case 3:
+                if flags & 8 != 0 { return true }
+                if let markSet { return !(definitions.markSets?[markSet].contains(glyph) ?? false) }
+                let attachmentClass = flags >> 8
+                return attachmentClass != 0 && definitions.markClasses?[glyph] != attachmentClass
+            default: return false // Class 0 and component glyphs are never filtered.
+            }
+        }
+    }
+    struct Lookup<Content: Sendable>: Sendable {
+        let filter: Filter
+        let content: Content
+    }
+    var ligatureLookups: [Lookup<[Int: [Ligature]]>] = []
+    var pairLookups: [Lookup<[PairTable]>] = []
+    private var definitions = GlyphDefinitions()
+    func isNonspacingMark(_ glyph: Int) -> Bool { definitions.classes?[glyph] == 3 }
+
     var legacyPairs: [Int: Int] = [:]
     var diagnostics: [String] = []
 
     init(tables: [String: [UInt8]]) {
+        if let bytes = tables["GDEF"] {
+            var budget = Budget(bytes: bytes.count)
+            do { definitions = try Self.readDefinitions(SFNTReader(bytes: bytes), budget: &budget) }
+            catch is BudgetExceeded { diagnostics.append("GDEF layout expansion exceeds the parsing budget") }
+            catch { diagnostics.append("Malformed or unsupported GDEF table") }
+        }
         if let bytes = tables["kern"] {
             var budget = Budget(bytes: bytes.count)
             do { try readKern(SFNTReader(bytes: bytes), budget: &budget) }
@@ -97,6 +133,43 @@ struct FontLayoutTables: Sendable {
             catch { diagnostics.append("Malformed or unsupported \(tag) Latin layout table") }
         }
         if tables["fvar"] != nil { diagnostics.append("Variable-font shaping is unsupported") }
+    }
+
+    /// GDEF 1.0, 1.2 and 1.3 share class definitions; 1.2 adds mark sets.
+    /// Attachment points, carets and variation stores are not needed by the
+    /// supported lookup types and are not interpreted here.
+    private static func readDefinitions(_ r: SFNTReader, budget: inout Budget) throws -> GlyphDefinitions {
+        let minor = try r.u16(2)
+        guard try r.u16(0) == 1, [0, 2, 3].contains(minor) else { throw corrupt() }
+        let headerSize = minor == 0 ? 12 : (minor == 2 ? 14 : 18)
+        guard r.count >= headerSize else { throw corrupt() }
+        var result = GlyphDefinitions()
+        for field in [4, 10] {
+            let offset = try r.u16(field)
+            if offset != 0 {
+                guard offset >= headerSize else { throw corrupt() }
+                let values = try classes(r, offset, budget: &budget, ordered: true)
+                guard values.values.allSatisfy({ $0 <= (field == 4 ? 4 : 255) }) else { throw corrupt() }
+                if field == 4 { result.classes = values } else { result.markClasses = values }
+            }
+        }
+        if minor >= 2 {
+            let offset = try r.u16(12)
+            if offset != 0 {
+                guard offset >= headerSize, try r.u16(offset) == 1 else { throw corrupt() }
+                let count = try r.u16(offset + 2)
+                try budget.consume(count)
+                guard offset + 4 + 4 * count <= r.count else { throw corrupt() }
+                var sets: [Set<Int>] = []
+                for i in 0..<count {
+                    let relative = try r.u32(offset + 4 + 4 * i)
+                    guard relative >= 4 + 4 * count, relative <= r.count - offset else { throw corrupt() }
+                    sets.append(Set(try coverage(r, offset + relative, budget: &budget, ordered: true).keys))
+                }
+                result.markSets = sets
+            }
+        }
+        return result
     }
 
     private mutating func readKern(_ r: SFNTReader, budget: inout Budget) throws {
@@ -166,10 +239,18 @@ struct FontLayoutTables: Sendable {
             guard index < lookupCount else { throw corrupt() }
             let lookup = lookups + (try r.u16(lookups + 2 + 2 * index))
             let type = try r.u16(lookup), flags = try r.u16(lookup + 2)
-            guard flags == 0 else { diagnostics.append("Unsupported lookup flags \(flags)"); continue }
             var ligatures: [Int: [Ligature]] = [:], pairs: [PairTable] = []
             let subtableCount = try r.u16(lookup + 4)
             try budget.consume(subtableCount)
+            guard flags & 0xE0 == 0 else { diagnostics.append("Unsupported lookup flags \(flags)"); continue }
+            let markSet = flags & 0x10 != 0 ? try r.u16(lookup + 6 + 2 * subtableCount) : nil
+            // Do not guess Unicode properties when required font classifications
+            // are absent. A partial/malformed GDEF never enables filtering.
+            guard flags & 0xFF1E == 0 || definitions.classes != nil,
+                  flags & 0xFF00 == 0 || flags & 0x18 != 0 || definitions.markClasses != nil,
+                  markSet == nil || (definitions.markSets != nil && markSet! < definitions.markSets!.count)
+            else { diagnostics.append("Lookup flags \(flags) require valid GDEF classification/filtering data"); continue }
+            let filter = Filter(flags: flags, definitions: definitions, markSet: markSet)
             for i in 0..<subtableCount {
                 var sub = lookup + (try r.u16(lookup + 6 + 2 * i)), kind = type
                 if kind == (substitution ? 7 : 9) {
@@ -225,29 +306,37 @@ struct FontLayoutTables: Sendable {
                                            value1: v1, value2: v2, classes1: c1, classes2: c2, classCount2: count2))
                 } else { diagnostics.append("Unsupported \(substitution ? "GSUB" : "GPOS") lookup \(kind)") }
             }
-            if !ligatures.isEmpty { ligatureLookups.append(ligatures) }
-            if !pairs.isEmpty { pairLookups.append(pairs) }
+            if !ligatures.isEmpty { ligatureLookups.append(Lookup(filter: filter, content: ligatures)) }
+            if !pairs.isEmpty { pairLookups.append(Lookup(filter: filter, content: pairs)) }
         }
     }
 
-    private static func coverage(_ r: SFNTReader, _ p: Int, budget: inout Budget) throws -> [Int: Int] {
+    private static func coverage(_ r: SFNTReader, _ p: Int, budget: inout Budget, ordered: Bool = false) throws -> [Int: Int] {
         let format = try r.u16(p), count = try r.u16(p + 2)
         try budget.consume(count)
         var result: [Int: Int] = [:]
         if format == 1 {
-            for i in 0..<count { result[try r.u16(p + 4 + 2 * i)] = i }
+            var previous = -1
+            for i in 0..<count {
+                let glyph = try r.u16(p + 4 + 2 * i)
+                guard !ordered || glyph > previous else { throw corrupt() }
+                result[glyph] = i; previous = glyph
+            }
         } else if format == 2 {
+            var previous = -1
             for i in 0..<count {
                 let q = p + 4 + 6 * i, start = try r.u16(q), end = try r.u16(q + 2), index = try r.u16(q + 4)
                 guard start <= end, result.count + end - start + 1 <= 65536 else { throw corrupt() }
                 try budget.consume(end - start + 1)
+                guard !ordered || (start > previous && index == result.count) else { throw corrupt() }
+                previous = end
                 for glyph in start...end { result[glyph] = index + glyph - start }
             }
         } else { throw corrupt() }
         return result
     }
 
-    private static func classes(_ r: SFNTReader, _ p: Int, budget: inout Budget) throws -> [Int: Int] {
+    private static func classes(_ r: SFNTReader, _ p: Int, budget: inout Budget, ordered: Bool = false) throws -> [Int: Int] {
         let format = try r.u16(p)
         var result: [Int: Int] = [:]
         if format == 1 {
@@ -258,10 +347,13 @@ struct FontLayoutTables: Sendable {
         } else if format == 2 {
             let count = try r.u16(p + 2)
             try budget.consume(count)
+            var previous = -1
             for i in 0..<count {
                 let q = p + 4 + 6 * i, start = try r.u16(q), end = try r.u16(q + 2), value = try r.u16(q + 4)
                 guard start <= end, result.count + end - start + 1 <= 65536 else { throw corrupt() }
                 try budget.consume(end - start + 1)
+                guard !ordered || start > previous else { throw corrupt() }
+                previous = end
                 for glyph in start...end { result[glyph] = value }
             }
         } else { throw corrupt() }
