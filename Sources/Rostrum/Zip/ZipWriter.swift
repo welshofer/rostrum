@@ -91,28 +91,43 @@ public struct ZipWriter {
             return note("the archive passes the 4294967295 offset field at entry \(name)")
         }
 
+        addFile(name: name, payload: Self.prepare(data: data, compress: compress))
+    }
+
+    struct Payload {
+        let data: Data
+        let method: UInt16
+        let size: UInt32
+        let crc: UInt32
+    }
+
+    static func prepare(data: Data, compress: Bool) -> Payload {
         var method = Self.methodStored
         var payload = data
         if compress, !data.isEmpty {
             let deflated = Deflate.deflate(data)
-            if deflated.count < data.count {
-                method = Self.methodDeflate
-                payload = deflated
-            }
+            if deflated.count < data.count { method = Self.methodDeflate; payload = deflated }
         }
+        return Payload(data: payload, method: method, size: UInt32(data.count), crc: CRC32.checksum(data))
+    }
 
+    mutating func addFile(name: String, payload: Payload) {
+        let nameBytes = Data(name.utf8)
+        guard nameBytes.count <= 0xFFFF, nextOffset <= 0xFFFF_FFFF else {
+            return note("entry name or offset exceeds the supported ZIP fields")
+        }
         let entry = Entry(
             nameBytes: nameBytes,
-            payload: payload,
-            method: method,
-            uncompressedSize: UInt32(data.count),
-            crc: CRC32.checksum(data),
+            payload: payload.data,
+            method: payload.method,
+            uncompressedSize: payload.size,
+            crc: payload.crc,
             localHeaderOffset: UInt32(nextOffset)
         )
         entries.append(entry)
 
         // 30-byte fixed local header + name + payload.
-        nextOffset += 30 + UInt64(nameBytes.count) + UInt64(payload.count)
+        nextOffset += 30 + UInt64(nameBytes.count) + UInt64(payload.data.count)
     }
 
     /// The first limit an entry exceeded, if any. `finalize()` throws on it.
@@ -159,6 +174,18 @@ public struct ZipWriter {
     ///   archive is written. This is the difference between reporting an
     ///   unimplemented case and aborting the process.
     public func finalize() throws -> Data {
+        var result = Data()
+        try emit { result.append($0) }
+        return result
+    }
+
+    /// Write bounded header chunks and existing payloads directly to a sink.
+    /// The caller owns the handle and decides how to publish the completed file.
+    public func write(to handle: FileHandle) throws {
+        try emit { try handle.write(contentsOf: $0) }
+    }
+
+    private func emit(_ write: (Data) throws -> Void) throws {
         if let violation {
             throw RostrumError.packageInvalid("cannot write this archive: \(violation)")
         }
@@ -170,13 +197,13 @@ public struct ZipWriter {
         }
         // Both conversions are the ones the check above just proved fit; they
         // are made here, next to it, rather than left for `bytes()` to redo.
-        return bytes(centralDirectoryOffset: UInt32(nextOffset),
-                     centralDirectorySize: UInt32(centralDirectorySize))
+        try bytes(centralDirectoryOffset: UInt32(nextOffset),
+                  centralDirectorySize: UInt32(centralDirectorySize), write: write)
     }
 
-    private func bytes(centralDirectoryOffset: UInt32, centralDirectorySize: UInt32) -> Data {
+    private func bytes(centralDirectoryOffset: UInt32, centralDirectorySize: UInt32,
+                       write: (Data) throws -> Void) throws {
         var out = Data()
-        out.reserveCapacity(Int(nextOffset) + entries.count * 46 + 22)
 
         // Local file headers + data, in insertion order.
         for entry in entries {
@@ -192,7 +219,9 @@ public struct ZipWriter {
             out.appendLE(UInt16(entry.nameBytes.count))
             out.appendLE(UInt16(0))  // extra field length
             out.append(entry.nameBytes)
-            out.append(entry.payload)
+            try write(out)
+            out.removeAll(keepingCapacity: true)
+            try write(entry.payload)
         }
 
         // Central directory. Its offset is where the local blocks ended, which
@@ -216,6 +245,8 @@ public struct ZipWriter {
             out.appendLE(UInt32(0))  // external file attributes
             out.appendLE(entry.localHeaderOffset)
             out.append(entry.nameBytes)
+            try write(out)
+            out.removeAll(keepingCapacity: true)
         }
 
         // Zip64, but ONLY for the entry count, and only when it is needed.
@@ -235,7 +266,7 @@ public struct ZipWriter {
         // determinism gate both depend on that.
         let needsZip64 = entries.count > 0xFFFF
         if needsZip64 {
-            let zip64EOCDOffset = UInt64(out.count)
+            let zip64EOCDOffset = UInt64(centralDirectoryOffset) + UInt64(centralDirectorySize)
             out.appendLE(Self.zip64EOCDSignature)
             out.appendLE(UInt64(44))                     // size of the rest of this record
             out.appendLE(UInt16(45))                     // version made by
@@ -264,7 +295,7 @@ public struct ZipWriter {
         out.appendLE(centralDirectoryOffset)
         out.appendLE(UInt16(0))  // comment length
 
-        return out
+        try write(out)
     }
 }
 

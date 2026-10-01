@@ -47,16 +47,24 @@ public final class Slides: Sequence {
         return Slide(part: try package.part(at: uri), package: package)
     }
 
-    /// Iterates the resolvable slides. Entries whose relationship or part is
+    /// Iterates an operation-local snapshot of the resolvable slide identities. Entries whose relationship or part is
     /// missing are skipped — `for`-`in` cannot throw, and a malformed deck
     /// must never abort the host process. Use `slide(at:)` to surface the
     /// underlying error for a specific index.
     public func makeIterator() -> AnyIterator<Slide> {
-        var index = 0
+        // Snapshot the operation, not the mutable DOM's lifetime. This avoids
+        // rescanning the entire slide-id list and relationships for each item.
+        let entries = (try? sldIdLst().childElements) ?? []
+        var byID: [String: Relationship] = [:]
+        for rel in presentationPart.rels.items where byID[rel.rId] == nil { byID[rel.rId] = rel }
+        let uris = entries.compactMap { entry -> PackURI? in
+            guard let id = entry[attribute: "r:id"], let rel = byID[id] else { return nil }
+            return PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
+        }
+        var iterator = uris.makeIterator()
         return AnyIterator {
-            while index < self.count {
-                defer { index += 1 }
-                if let slide = try? self.slide(at: index) { return slide }
+            while let uri = iterator.next() {
+                if let part = try? self.package.part(at: uri) { return Slide(part: part, package: self.package) }
             }
             return nil
         }

@@ -56,14 +56,9 @@ final class SlideCopier {
         // per-process-random iteration, so an unsorted scan could pick a
         // different duplicate each run and break byte-identical output when the
         // destination already holds two same-content images.
-        if sourceURI.value.hasPrefix("/ppt/media/") {
-            let mediaURIs = Set(dest.parts.keys).union(stagedParts.keys)
-                .filter { $0.value.hasPrefix("/ppt/media/") }
-                .sorted { $0.value < $1.value }
-            for uri in mediaURIs where (dest.parts[uri] ?? stagedParts[uri])?.blob == sourcePart.blob {
-                map[sourceURI] = uri
-                return uri
-            }
+        if sourceURI.value.hasPrefix("/ppt/media/"), let existing = dest.matchingMedia(for: sourcePart.blob) {
+            map[sourceURI] = existing.uri
+            return existing.uri
         }
 
         let destURI = freshName(like: sourceURI)

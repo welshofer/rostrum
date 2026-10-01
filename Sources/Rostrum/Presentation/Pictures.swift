@@ -5,10 +5,7 @@ extension OPCPackage {
     /// identical bytes are stored once no matter how many slides use them
     /// (python-pptx's SHA-1 registry, done with direct comparison).
     func imagePart(for data: Data, info: ImageInfo) -> Part {
-        for (uri, part) in parts
-        where uri.value.hasPrefix("/ppt/media/") && part.blob == data {
-            return part
-        }
+        if let existing = matchingMedia(for: data) { return existing }
         var n = 1
         while parts[PackURI("/ppt/media/image\(n).\(info.format.fileExtension)")] != nil { n += 1 }
         let uri = PackURI("/ppt/media/image\(n).\(info.format.fileExtension)")

@@ -117,7 +117,7 @@ public struct ZipReader {
     private static let centralSignature: UInt32 = 0x0201_4B50
     private static let localSignature: UInt32 = 0x0403_4B50
 
-    private let archive: [UInt8]
+    private let archive: Data
     private let entries: [Entry]
     /// General-purpose bit flags per entry, parallel to `entries`.
     private let entryFlags: [UInt16]
@@ -150,7 +150,7 @@ public struct ZipReader {
     ///   SIZES/OFFSETS. A zip64 entry COUNT reads normally.
     ///   All of them fire before anything is inflated.
     public init(data: Data, limits: Limits = .default) throws {
-        let bytes = [UInt8](data)
+        let bytes = Data(data)
         let size = bytes.count
         guard size >= 22 else {
             throw RostrumError.zipCorrupt("file too small to contain an end-of-central-directory record (\(size) bytes)")
@@ -539,17 +539,17 @@ public struct ZipReader {
 
     // MARK: - Little-endian readers
 
-    private static func u16(_ bytes: [UInt8], _ offset: Int) -> Int {
+    private static func u16(_ bytes: Data, _ offset: Int) -> Int {
         Int(bytes[offset]) | Int(bytes[offset + 1]) << 8
     }
 
-    private static func u64(_ bytes: [UInt8], _ offset: Int) -> UInt64 {
+    private static func u64(_ bytes: Data, _ offset: Int) -> UInt64 {
         var value: UInt64 = 0
         for i in 0..<8 { value |= UInt64(bytes[offset + i]) << UInt64(8 * i) }
         return value
     }
 
-    private static func u32(_ bytes: [UInt8], _ offset: Int) -> UInt32 {
+    private static func u32(_ bytes: Data, _ offset: Int) -> UInt32 {
         UInt32(bytes[offset])
             | UInt32(bytes[offset + 1]) << 8
             | UInt32(bytes[offset + 2]) << 16
