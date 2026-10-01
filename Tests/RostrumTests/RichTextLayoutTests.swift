@@ -11,7 +11,7 @@ import Testing
     @Test func colorTransformsAndOpacityApplyWithoutATheme() throws {
         let xml = try body("<a:p><a:r><a:rPr><a:solidFill><a:srgbClr val=\"808080\"><a:shade val=\"50000\"/><a:alpha val=\"80000\"/><a:alphaMod val=\"50000\"/></a:srgbClr></a:solidFill></a:rPr><a:t>A</a:t></a:r></a:p>")
         let layout = RichTextLayout(textBody: xml, width: 100, height: 100, fallbackMetrics: try metrics())
-        #expect(layout.lines.first?.spans.first?.run.color == "rgba(64,64,64,0.4)")
+        #expect(layout.lines.first?.spans.first?.run.color == "rgba(92,92,92,0.4)")
     }
 
     @Test func mixedFacesSizesStylesAndTrackingKeepTheirOwnMeasurements() throws {

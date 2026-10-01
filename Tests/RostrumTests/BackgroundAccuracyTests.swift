@@ -11,9 +11,9 @@ import Testing
     @Test func colorTransformsAffectPublicAndRenderedColors() throws {
         let p = try Presentation(); let slide = try p.slides[0]
         try background(slide, "<p:bg><p:bgPr><a:solidFill><a:srgbClr val=\"808080\"><a:shade val=\"50000\"/></a:srgbClr></a:solidFill></p:bgPr></p:bg>")
-        #expect(slide.solidBackground == Color("404040"))
-        #expect(slide.effectiveBackgroundColor == Color("404040"))
-        #expect(try p.renderSVG(slideAt: 0).contains("fill=\"#404040\""))
+        #expect(slide.solidBackground == Color("5C5C5C"))
+        #expect(slide.effectiveBackgroundColor == Color("5C5C5C"))
+        #expect(try p.renderSVG(slideAt: 0).contains("fill=\"#5C5C5C\""))
         try background(slide, "<p:bg><p:bgPr><a:solidFill><a:schemeClr val=\"accent1\"/></a:solidFill></p:bgPr></p:bg>")
         #expect(slide.solidBackground == p.theme.resolve(.accent1))
     }
@@ -43,9 +43,9 @@ import Testing
         let list = matrix.getOrAddChild("a:bgFillStyleLst")
         list.children = [.element(try XML.parse(Data("<a:gradFill><a:gsLst><a:gs pos=\"0\"><a:schemeClr val=\"phClr\"><a:shade val=\"50000\"/></a:schemeClr></a:gs><a:gs pos=\"100000\"><a:srgbClr val=\"FFFFFF\"/></a:gs></a:gsLst><a:lin ang=\"0\"/></a:gradFill>".utf8)))]
         try background(slide, "<p:bg><p:bgRef idx=\"1001\"><a:srgbClr val=\"808080\"/></p:bgRef></p:bg>")
-        #expect(slide.effectiveBackground == .gradient(Color("404040")))
+        #expect(slide.effectiveBackground == .gradient(Color("5C5C5C")))
         let svg = try p.renderSVG(slideAt: 0)
-        #expect(svg.contains("linearGradient") && svg.contains("#404040"))
+        #expect(svg.contains("linearGradient") && svg.contains("#5C5C5C"))
     }
     @Test func luminanceTransformsUseHSL() throws {
         let p = try Presentation(); p.theme.setColor(.accent1, Color("FF0000"))
