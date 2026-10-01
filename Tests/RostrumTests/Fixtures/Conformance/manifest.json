@@ -20,9 +20,20 @@
         "Arial"
       ],
       "semanticOracle": "python-pptx 1.0.2",
-      "powerPointReference": null,
+      "powerPointReference": {
+        "file": "python-tables-office.png",
+        "sha256": "273672c876602fd9777d382e4021104731b1f5e118b4d5e39737c7763772c046",
+        "producer": "Microsoft PowerPoint 16.113.3 for Mac",
+        "export": "PNG current slide 1200x700; local File > Export",
+        "date": "2026-10-01",
+        "status": "captured; pixel comparison not yet passing"
+      },
       "notesPageReference": null,
-      "referenceStatus": "pending Office export; release gate rejects missing reference"
+      "referenceStatus": "Slide reference captured, notes-page and visual match still pending",
+      "fontHashes": {
+        "Arial.ttf": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+        "Arial Bold.ttf": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
+      }
     }
   ]
 }
