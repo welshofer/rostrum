@@ -17,6 +17,9 @@ final class SlideCopier {
     /// Destination URIs of newly-copied slide masters (need sldMasterId wiring).
     private(set) var newMasters: [PackURI] = []
     private var destNotesMaster: PackURI?
+    private var stagedParts: [PackURI: Part] = [:]
+    private var authorImport: AnnotationAuthorImport?
+    private var newNotesMaster: PackURI?
     /// Running allocator for the shared sldMasterId/sldLayoutId id namespace
     /// (2147483648+), which must be globally unique across the presentation.
     private var _nextBigId: Int?
@@ -54,10 +57,10 @@ final class SlideCopier {
         // different duplicate each run and break byte-identical output when the
         // destination already holds two same-content images.
         if sourceURI.value.hasPrefix("/ppt/media/") {
-            let mediaURIs = dest.parts.keys
+            let mediaURIs = Set(dest.parts.keys).union(stagedParts.keys)
                 .filter { $0.value.hasPrefix("/ppt/media/") }
                 .sorted { $0.value < $1.value }
-            for uri in mediaURIs where dest.parts[uri]!.blob == sourcePart.blob {
+            for uri in mediaURIs where (dest.parts[uri] ?? stagedParts[uri])?.blob == sourcePart.blob {
                 map[sourceURI] = uri
                 return uri
             }
@@ -66,9 +69,8 @@ final class SlideCopier {
         let destURI = freshName(like: sourceURI)
         map[sourceURI] = destURI   // record before recursing (master↔layout cycles)
 
-        let destPart = dest.addPart(uri: destURI, contentType: sourcePart.contentType,
-                                    blob: sourcePart.blob)
-        registerContentType(destURI, sourcePart.contentType)
+        let destPart = Part(uri: destURI, contentType: sourcePart.contentType, blob: sourcePart.blob)
+        stagedParts[destURI] = destPart
 
         // A copied master carries the source's sldLayoutId ids verbatim, which
         // collide with the destination's — renumber them into fresh unique ids.
@@ -140,7 +142,8 @@ final class SlideCopier {
         let prefix = String(base.prefix { !$0.isNumber })
         let extPart = ext.isEmpty ? "" : ".\(ext)"
         var n = 1
-        while dest.parts[PackURI("\(dir)/\(prefix)\(n)\(extPart)")] != nil { n += 1 }
+        while dest.parts[PackURI("\(dir)/\(prefix)\(n)\(extPart)")] != nil
+            || stagedParts[PackURI("\(dir)/\(prefix)\(n)\(extPart)")] != nil { n += 1 }
         return PackURI("\(dir)/\(prefix)\(n)\(extPart)")
     }
 
@@ -162,6 +165,55 @@ final class SlideCopier {
         }
     }
 
+    /// Annotation bodies can only be retargeted once the destination slide
+    /// IDs have been allocated, while the copied parts are still detached.
+    func importAnnotations(on slideURI: PackURI, slideID: Int) throws {
+        guard let slide = stagedParts[slideURI] else { return }
+        for rel in slide.rels.items where rel.type == ModernComments.commentsRelType {
+            guard !rel.isExternal else {
+                throw RostrumError.packageInvalid("comment relationship must be internal")
+            }
+            let uri = PackURI.resolve(target: rel.target, relativeTo: slide.uri.baseURI)
+            guard let comments = stagedParts[uri] else {
+                throw RostrumError.packageInvalid("imported comment part is not staged")
+            }
+            if authorImport == nil {
+                authorImport = try AnnotationAuthorImport(source: source, dest: dest,
+                                                         presentation: destPresentation)
+            }
+            try authorImport?.remapAuthors(in: comments)
+            var ids: Set<String> = []
+            for part in Array(dest.parts.values) + Array(stagedParts.values)
+                where part.contentType == ModernComments.commentsContentType {
+                ModernComments.visit(in: try part.dom()) { element, ns, name in
+                    if ns == ModernComments.ns, name == "cm" || name == "reply",
+                       let id = element[attribute: "id"] { ids.insert(id.uppercased()) }
+                }
+            }
+            try ModernComments.retargetCopy(comments, slideID: slideID, avoiding: &ids)
+        }
+    }
+
+    /// Called only after every requested slide, annotation and presentation
+    /// target has been validated. Installing the staged parts cannot throw.
+    func commit() {
+        for part in stagedParts.values.sorted(by: { $0.uri.value < $1.uri.value }) {
+            part.flushIfDirty()
+            let installed = dest.addPart(uri: part.uri, contentType: part.contentType, blob: part.blob)
+            installed.rels.setItems(part.rels.items)
+            registerContentType(part.uri, part.contentType)
+        }
+        authorImport?.commit()
+        if let uri = newNotesMaster, let dom = try? destPresentation.dom() {
+            let rId = destPresentation.rels.add(type: RelType.notesMaster,
+                target: destPresentation.uri.relativeReference(to: uri))
+            let list = dom.getOrAddChild("p:notesMasterIdLst",
+                beforeAnyOf: ["p:handoutMasterIdLst", "p:sldIdLst", "p:sldSz", "p:notesSz"])
+            list.appendElement(XML.Element("p:notesMasterId", attributes: [("r:id", rId)]))
+            destPresentation.markDirty()
+        }
+    }
+
     // MARK: - Notes-master singleton
 
     private func ensureDestNotesMaster() throws -> PackURI {
@@ -173,20 +225,17 @@ final class SlideCopier {
         }
         // Create one (mirrors Slide.ensureNotesMaster): master + own theme +
         // notesMasterIdLst entry.
-        let master = dest.addPart(uri: uri, contentType: ContentType.notesMaster,
-                                  blob: Data(Slide.notesMasterXML.utf8))
+        let master = Part(uri: uri, contentType: ContentType.notesMaster,
+                          blob: Data(Slide.notesMasterXML.utf8))
+        stagedParts[uri] = master
         var themeN = 1
-        while dest.parts[PackURI("/ppt/theme/theme\(themeN).xml")] != nil { themeN += 1 }
+        while dest.parts[PackURI("/ppt/theme/theme\(themeN).xml")] != nil
+            || stagedParts[PackURI("/ppt/theme/theme\(themeN).xml")] != nil { themeN += 1 }
         let themeURI = PackURI("/ppt/theme/theme\(themeN).xml")
-        dest.addPart(uri: themeURI, contentType: ContentType.theme, blob: Data(MinimalTemplate.themeXML.utf8))
+        stagedParts[themeURI] = Part(uri: themeURI, contentType: ContentType.theme,
+                                     blob: Data(MinimalTemplate.themeXML.utf8))
         master.rels.add(type: RelType.theme, target: master.uri.relativeReference(to: themeURI))
-        let rId = destPresentation.rels.add(type: RelType.notesMaster,
-                                            target: destPresentation.uri.relativeReference(to: uri))
-        let dom = try destPresentation.dom()
-        let list = dom.getOrAddChild("p:notesMasterIdLst",
-            beforeAnyOf: ["p:handoutMasterIdLst", "p:sldIdLst", "p:sldSz", "p:notesSz"])
-        list.appendElement(XML.Element("p:notesMasterId", attributes: [("r:id", rId)]))
-        destPresentation.markDirty()
+        newNotesMaster = uri
         destNotesMaster = uri
         return uri
     }
@@ -199,51 +248,61 @@ extension Slides {
     /// `insertAt` positions it in the slide order (nil appends).
     @discardableResult
     public func `import`(from source: Presentation, at index: Int, insertAt: Int? = nil) throws -> Slide {
-        let sourceSlide = try source.slides.slide(at: index)
-        let copier = SlideCopier(source: source.package, dest: destPackage,
-                                 destPresentation: destPresentationPart)
-
-        let newSlideURI = try copier.copy(sourceSlide.part.uri)
-
-        // Register any imported masters in this deck's sldMasterIdLst.
-        try wireNewMasters(copier.newMasters, copier)
-
-        // Wire the new slide into the presentation (a pre-existing part → fresh rId + sldId).
-        let rId = destPresentationPart.rels.add(
-            type: RelType.slide, target: destPresentationPart.uri.relativeReference(to: newSlideURI))
-        let sldIdLst = try destSldIdLst()
-        let entry = XML.Element("p:sldId", attributes: [("id", String(try nextSldId())), ("r:id", rId)])
-        if let insertAt, insertAt < sldIdLst.childElements.count {
-            var entries = sldIdLst.childElements
-            entries.insert(entry, at: insertAt)
-            sldIdLst.replaceChildElements(with: entries)
-        } else {
-            sldIdLst.appendElement(entry)
+        let count = self.count
+        let position = insertAt ?? count
+        guard position >= 0, position <= count else {
+            throw RostrumError.packageInvalid("import insertion index \(position) out of range 0...\(count)")
         }
-        destPresentationPart.markDirty()
-        return Slide(part: try destPackage.part(at: newSlideURI), package: destPackage)
+        let slides = try importSlides(from: source, indices: [index], insertAt: position)
+        return slides[0]
     }
 
-    /// Import a range of slides (or all) from `source`, sharing one copy pass
-    /// so masters/themes/images referenced by several slides copy exactly once.
+    /// Import a range of slides (or all) atomically, sharing one copy pass so
+    /// masters/themes/images referenced by several slides copy exactly once.
     @discardableResult
     public func importAll(from source: Presentation, at indices: Range<Int>? = nil) throws -> [Slide] {
         let range = indices ?? 0..<source.slides.count
+        guard range.lowerBound >= 0, range.upperBound <= source.slides.count else {
+            throw RostrumError.packageInvalid("import range is outside source slides")
+        }
+        return try importSlides(from: source, indices: Array(range), insertAt: count)
+    }
+
+    private func importSlides(from source: Presentation, indices: [Int], insertAt: Int) throws -> [Slide] {
+        guard !indices.isEmpty else { return [] }
+        let sourceSlides = try indices.map { try source.slides.slide(at: $0) }
+        let firstID = try nextSldId()
+        guard indices.count - 1 <= OOXMLBounds.slideID.upperBound - firstID else {
+            throw RostrumError.packageInvalid("not enough slide IDs remain for import")
+        }
+        let dom = try destPresentationPart.dom()
+        let list = try destSldIdLst()
         let copier = SlideCopier(source: source.package, dest: destPackage,
                                  destPresentation: destPresentationPart)
-        var result: [Slide] = []
-        for index in range {
-            let sourceSlide = try source.slides.slide(at: index)
-            let newSlideURI = try copier.copy(sourceSlide.part.uri)
-            try wireNewMasters(copier.newMasters, copier)
-            let rId = destPresentationPart.rels.add(
-                type: RelType.slide, target: destPresentationPart.uri.relativeReference(to: newSlideURI))
-            try destSldIdLst().appendElement(
-                XML.Element("p:sldId", attributes: [("id", String(try nextSldId())), ("r:id", rId)]))
-            result.append(Slide(part: try destPackage.part(at: newSlideURI), package: destPackage))
+        var copied: [(uri: PackURI, id: Int)] = []
+        for (offset, sourceSlide) in sourceSlides.enumerated() {
+            let uri = try copier.copy(sourceSlide.part.uri)
+            let id = firstID + offset
+            try copier.importAnnotations(on: uri, slideID: id)
+            copied.append((uri, id))
         }
+        // The package graph and annotation author/anchor transforms are now
+        // validated. No throwing operation follows the commit boundary.
+        copier.commit()
+        wireNewMasters(copier.newMasters, copier, in: dom)
+        var entries = list.childElements
+        for (offset, copy) in copied.enumerated() {
+            let rId = destPresentationPart.rels.add(type: RelType.slide,
+                target: destPresentationPart.uri.relativeReference(to: copy.uri))
+            entries.insert(XML.Element("p:sldId", attributes: [
+                ("id", String(copy.id)), ("r:id", rId),
+            ]), at: insertAt + offset)
+        }
+        list.replaceChildElements(with: entries)
         destPresentationPart.markDirty()
-        return result
+        return copied.compactMap { copy in
+            destPackage.parts[copy.uri].map { Slide(part: $0, package: destPackage) }
+        }
     }
 
     // MARK: - Presentation wiring helpers
@@ -266,9 +325,8 @@ extension Slides {
         return highest + 1
     }
 
-    private func wireNewMasters(_ masters: [PackURI], _ copier: SlideCopier) throws {
+    private func wireNewMasters(_ masters: [PackURI], _ copier: SlideCopier, in dom: XML.Element) {
         guard !masters.isEmpty else { return }
-        let dom = try destPresentationPart.dom()
         let list = dom.getOrAddChild("p:sldMasterIdLst",
             beforeAnyOf: ["p:notesMasterIdLst", "p:handoutMasterIdLst", "p:sldIdLst", "p:sldSz", "p:notesSz"])
         for masterURI in masters {

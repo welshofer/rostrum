@@ -52,9 +52,10 @@ public final class Comment {
     /// Author display name, resolved through /ppt/authors.xml.
     public var authorName: String? {
         guard let authorId = cm[attribute: "authorId"],
-              let authors = package.parts[PackURI("/ppt/authors.xml")],
+              let presentation = try? package.mainDocumentPart(),
+              let authors = try? presentation.related(by: ModernComments.authorsRelType, in: package),
               let dom = try? authors.dom() else { return nil }
-        return dom.children(named: "p188:author")
+        return AnnotationAuthorImport.authorElements(dom)
             .first { $0[attribute: "id"] == authorId }?[attribute: "name"]
     }
 
@@ -154,8 +155,9 @@ extension Slide {
     static func ensureAuthor(named name: String, initials: String?, in package: OPCPackage) throws -> String {
         let uri = PackURI("/ppt/authors.xml")
         let authorsPart: Part
-        if let existing = package.parts[uri] {
-            authorsPart = existing
+        let presentation = try package.mainDocumentPart()
+        if presentation.rels.first(ofType: ModernComments.authorsRelType) != nil {
+            authorsPart = try presentation.related(by: ModernComments.authorsRelType, in: package)
         } else {
             let root = XML.Element("p188:authorLst", attributes: [
                 ("xmlns:a", MinimalTemplate.nsA),
@@ -166,11 +168,10 @@ extension Slide {
                 uri: uri, contentType: ModernComments.authorsContentType,
                 blob: XML.document(root))
             // Implicit relationship: rels entry only, nothing in the XML.
-            let presentation = try package.mainDocumentPart()
             presentation.rels.add(type: ModernComments.authorsRelType, target: "authors.xml")
         }
         let dom = try authorsPart.dom()
-        if let existing = dom.children(named: "p188:author").first(where: { $0[attribute: "name"] == name }),
+        if let existing = AnnotationAuthorImport.authorElements(dom).first(where: { $0[attribute: "name"] == name }),
            let id = existing[attribute: "id"] {
             return id
         }
