@@ -15,6 +15,12 @@ final class LegacyAnnotationAuthorImport {
     init(source: OPCPackage, dest: OPCPackage, presentation: Part) throws {
         self.dest = dest; self.presentation = presentation
         let sourceAuthors = try LegacyComments.authorPart(in: source)
+        // Unknown author extensions can refer to a dependency graph. Until
+        // graph-aware author merging is supported, refuse cross-package import
+        // before any destination mutation instead of dropping relationships.
+        guard source === dest || sourceAuthors.rels.items.isEmpty else {
+            throw RostrumError.packageInvalid("author parts with dependency relationships cannot be imported")
+        }
         sourceAuthors.flushIfDirty()
         let sourceRoot = try sourceAuthors.dom()
         if presentation.rels.first(ofType: LegacyComments.authorsRelType) != nil {

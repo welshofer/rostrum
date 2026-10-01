@@ -70,8 +70,16 @@ public final class Sections: Sequence {
         // caller-facing `add` would index an empty array.
         let existing = dom.firstChild(named: "p:extLst")?.children(named: "p:ext")
             .first(where: { $0[attribute: "uri"] == SectionExt.uri })
-        if let existing, let list = existing.firstChild(named: "p14:sectionLst") {
-            return list
+        if let existing {
+            var unsupported = false
+            ModernComments.visit(in: dom) { element, namespace, local in
+                if namespace == SectionExt.ns, ["sectionLst", "section", "sldIdLst", "sldId"].contains(local),
+                   !element.name.hasPrefix("p14:") { unsupported = true }
+            }
+            guard !unsupported else {
+                throw RostrumError.packageInvalid("aliased section vocabulary cannot be edited without preserving its namespace")
+            }
+            if let list = existing.firstChild(named: "p14:sectionLst") { return list }
         }
         guard create else { return nil }
         let list = XML.Element("p14:sectionLst", attributes: [("xmlns:p14", SectionExt.ns)])
@@ -233,7 +241,7 @@ public final class Sections: Sequence {
         let sectionList = try sectionListElement(creatingIfMissing: false)!
         var sections = current.sections
         sections.insert(section, at: owningIndex + 1)
-        SectionMembershipPlan(updates: [(owning, Array(members.prefix(split)))], presentation: presentationPart).commit()
+        SectionMembershipPlan(updates: [(owning, Array(members.prefix(split)))], presentation: presentationPart, membersFrom: current.sections).commit()
         Self.replaceKnownChildren(in: sectionList, named: "p14:section", with: sections)
         presentationPart.markDirty()
         return Section(element: section, package: package, presentationPart: presentationPart)
@@ -304,15 +312,37 @@ public extension Presentation {
 struct SectionMembershipPlan {
     let updates: [(section: XML.Element, ids: [Int])]
     let presentation: Part
+    private let membersByID: [Int: (element: XML.Element, section: XML.Element, namespaces: [(name: String, value: String)])]
+
+    init(updates: [(section: XML.Element, ids: [Int])], presentation: Part,
+         membersFrom sections: [XML.Element]) {
+        self.updates = updates
+        self.presentation = presentation
+        var byID: [Int: (element: XML.Element, section: XML.Element, namespaces: [(name: String, value: String)])] = [:]
+        for section in sections {
+            guard let list = section.firstChild(named: "p14:sldIdLst") else { continue }
+            let namespaces = (section.attributes + list.attributes).filter { $0.name == "xmlns" || $0.name.hasPrefix("xmlns:") }
+            for entry in list.children(named: "p14:sldId") {
+                if let id = entry[attribute: "id"].flatMap(Int.init) { byID[id] = (entry, section, namespaces) }
+            }
+        }
+        membersByID = byID
+    }
 
     func commit() {
         for (section, ids) in updates {
             let list = section.getOrAddChild("p14:sldIdLst", beforeAnyOf: ["p14:extLst"])
-            var byID: [Int: XML.Element] = [:]
-            for entry in list.children(named: "p14:sldId") {
-                if let id = entry[attribute: "id"].flatMap(Int.init) { byID[id] = entry }
+            let members = ids.map { id -> XML.Element in
+                guard let source = membersByID[id] else { return XML.Element("p14:sldId", attributes: [("id", String(id))]) }
+                if source.section !== section {
+                    // A moved member may inherit extension namespace bindings
+                    // from its old section/list. Make them local before transfer.
+                    for namespace in source.namespaces where source.element[attribute: namespace.name] == nil {
+                        source.element[attribute: namespace.name] = namespace.value
+                    }
+                }
+                return source.element
             }
-            let members = ids.map { byID[$0] ?? XML.Element("p14:sldId", attributes: [("id", String($0))]) }
             Sections.replaceKnownChildren(in: list, named: "p14:sldId", with: members)
         }
         if !updates.isEmpty { presentation.markDirty() }
@@ -385,7 +415,7 @@ extension Sections {
         let updates = current.sections.enumerated().map { index, section in
             (section: section, ids: order.filter { owner[$0] == index })
         }
-        return SectionMembershipPlan(updates: updates, presentation: presentationPart)
+        return SectionMembershipPlan(updates: updates, presentation: presentationPart, membersFrom: current.sections)
     }
 
     /// Preserve foreign elements, comments and instructions while replacing
@@ -414,7 +444,7 @@ extension Sections {
         if current.sections.count > 1 {
             let recipient = index > 0 ? index - 1 : 1
             let ids = current.liveIDs.filter { current.owner[$0] == index || current.owner[$0] == recipient }
-            SectionMembershipPlan(updates: [(current.sections[recipient], ids)], presentation: presentationPart).commit()
+            SectionMembershipPlan(updates: [(current.sections[recipient], ids)], presentation: presentationPart, membersFrom: current.sections).commit()
         }
         list.removeChild(removed)
         presentationPart.markDirty()

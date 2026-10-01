@@ -14,6 +14,12 @@ final class AnnotationAuthorImport {
         self.presentation = presentation
         let sourcePresentation = try source.mainDocumentPart()
         let sourceAuthors = try sourcePresentation.related(by: ModernComments.authorsRelType, in: source)
+        // Unknown author extensions can refer to a dependency graph. Until
+        // graph-aware author merging is supported, refuse cross-package import
+        // before any destination mutation instead of dropping relationships.
+        guard source === dest || sourceAuthors.rels.items.isEmpty else {
+            throw RostrumError.packageInvalid("author parts with dependency relationships cannot be imported")
+        }
         sourceAuthors.flushIfDirty()
         let sourceRoot = try sourceAuthors.dom()
         if let rel = presentation.rels.first(ofType: ModernComments.authorsRelType) {
