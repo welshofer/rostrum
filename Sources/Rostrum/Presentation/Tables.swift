@@ -284,9 +284,9 @@ public final class TableCell {
     }
 
     public func setFill(_ fill: Fill) throws {
+        let element = try fill.fillElement(embeddingInto: part, package: nil)
         for name in Fill.choiceNames { tcPr.removeChildren(named: name) }
-        // Table cells have no package handle; pure fills work, image fills throw.
-        tcPr.appendElement(try fill.fillElement(embeddingInto: part, package: nil))
+        tcPr.insertChild(element, beforeAnyOf: ["a:headers", "a:extLst"])
         part.markDirty()
     }
 
