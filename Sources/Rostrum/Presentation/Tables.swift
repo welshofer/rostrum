@@ -42,14 +42,16 @@ extension ShapeCollection {
 
         let grid = XML.Element("a:tblGrid")
         let colWidth = frame.width.rawValue / columns
-        for _ in 0..<columns {
-            grid.appendElement(XML.Element("a:gridCol", attributes: [("w", String(colWidth))]))
+        for column in 0..<columns {
+            let width = column == columns - 1 ? frame.width.rawValue - colWidth * (columns - 1) : colWidth
+            grid.appendElement(XML.Element("a:gridCol", attributes: [("w", String(width))]))
         }
         tbl.appendElement(grid)
 
         let rowHeight = frame.height.rawValue / rows
-        for _ in 0..<rows {
-            let tr = XML.Element("a:tr", attributes: [("h", String(rowHeight))])
+        for row in 0..<rows {
+            let height = row == rows - 1 ? frame.height.rawValue - rowHeight * (rows - 1) : rowHeight
+            let tr = XML.Element("a:tr", attributes: [("h", String(height))])
             for _ in 0..<columns {
                 tr.appendElement(Table.makeCell())
             }
@@ -62,7 +64,7 @@ extension ShapeCollection {
 
         try Slide.spTree(of: part).appendElement(graphicFrame)
         part.markDirty()
-        return Table(tbl: tbl, part: part, graphicFrame: graphicFrame)
+        return Table(tbl: tbl, part: part, graphicFrame: graphicFrame, package: package)
     }
 }
 
@@ -80,10 +82,13 @@ public final class Table {
     /// its extent in sync. `nil` when reconstructed from a parsed table.
     let graphicFrame: XML.Element?
 
-    init(tbl: XML.Element, part: Part, graphicFrame: XML.Element? = nil) {
+    let package: OPCPackage?
+
+    init(tbl: XML.Element, part: Part, graphicFrame: XML.Element? = nil, package: OPCPackage? = nil) {
         self.tbl = tbl
         self.part = part
         self.graphicFrame = graphicFrame
+        self.package = package
     }
 
     /// Set column widths (left to right) and resize the frame to match.
@@ -99,6 +104,7 @@ public final class Table {
     /// Set row heights (top to bottom) and resize the frame to match.
     @discardableResult
     public func rowHeights(_ heights: [EMU]) -> Table {
+        let rows = TableGridSnapshot(tbl).rows
         for (i, h) in heights.enumerated() where i < rows.count { rows[i][attribute: "h"] = String(h.rawValue) }
         syncFrameExtent()
         part.markDirty()
@@ -108,11 +114,11 @@ public final class Table {
     /// Fill cell text row-major; tolerant of size mismatch.
     @discardableResult
     public func setContents(_ grid: [[String]]) -> Table {
-        for (r, rowValues) in grid.enumerated() where r < rowCount {
-            // Tolerant by contract, so a ragged foreign row simply has fewer
-            // cells to fill rather than being an error.
-            for (c, value) in rowValues.enumerated() where c < columnCount {
-                if let cell = try? cell(r, c) { cell.text = value }
+        let snapshot = TableGridSnapshot(tbl)
+        for (r, rowValues) in grid.enumerated() where r < snapshot.rows.count {
+            for (c, value) in rowValues.enumerated()
+            where c < snapshot.columns.count && c < snapshot.cells[r].count {
+                TableCell(tc: snapshot.cells[r][c], part: part, package: package).text = value
             }
         }
         return self
@@ -133,7 +139,7 @@ public final class Table {
 
     /// Resize the graphic frame's extent to the sum of column widths / row
     /// heights, so the table never over/under-flows its frame.
-    private func syncFrameExtent() {
+    func syncFrameExtent() {
         guard let ext = graphicFrame?.firstChild(named: "p:xfrm")?.firstChild(named: "a:ext") else { return }
         // Bounded: these are file-supplied on an opened deck, and a running
         // Int sum over unbounded widths overflows — which is a crash, not an
@@ -141,8 +147,8 @@ public final class Table {
         let cx = (tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol") ?? [])
             .reduce(0) { $0 + ($1.coordinate("w") ?? 0) }
         let cy = rows.reduce(0) { $0 + ($1.coordinate("h") ?? 0) }
-        if cx > 0 { ext[attribute: "cx"] = String(cx) }
-        if cy > 0 { ext[attribute: "cy"] = String(cy) }
+        ext[attribute: "cx"] = String(cx)
+        ext[attribute: "cy"] = String(cy)
     }
 
     static func makeCell() -> XML.Element {
@@ -172,35 +178,30 @@ public final class Table {
     /// deck must never abort the host process, so this follows the same rule
     /// as `Slides.subscript`.
     public func cell(_ row: Int, _ column: Int) throws -> TableCell {
-        guard rows.indices.contains(row) else {
-            throw RostrumError.packageInvalid("table row \(row) out of range 0..<\(rows.count)")
-        }
-        let cells = rows[row].children(named: "a:tc")
-        guard cells.indices.contains(column) else {
-            throw RostrumError.packageInvalid(
-                "table row \(row) has \(cells.count) cells; column \(column) is out of range "
-                    + "(the grid declares \(columnCount))")
-        }
-        return TableCell(tc: cells[column], part: part)
+        let snapshot = TableGridSnapshot(tbl)
+        return TableCell(tc: try snapshot.cell(row, column), part: part, package: package)
     }
 
     public func setColumnWidth(_ column: Int, _ width: EMU) {
         guard let cols = tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol"),
               cols.indices.contains(column) else { return }
         cols[column][attribute: "w"] = String(width.rawValue)
+        syncFrameExtent()
         part.markDirty()
     }
 
     public func setRowHeight(_ row: Int, _ height: EMU) {
+        let rows = TableGridSnapshot(tbl).rows
         guard rows.indices.contains(row) else { return }
         rows[row][attribute: "h"] = String(height.rawValue)
+        syncFrameExtent()
         part.markDirty()
     }
 
     /// Header-row and banded-row style flags (rendering follows the table
     /// style).
     public var firstRowHeader: Bool {
-        get { tbl.firstChild(named: "a:tblPr")?[attribute: "firstRow"] == "1" }
+        get { tbl.firstChild(named: "a:tblPr").map { TableMergeTopology.flag($0, "firstRow") } ?? false }
         set {
             tbl.getOrAddChild("a:tblPr", beforeAnyOf: ["a:tblGrid"])[attribute: "firstRow"] = newValue ? "1" : nil
             part.markDirty()
@@ -208,7 +209,7 @@ public final class Table {
     }
 
     public var bandedRows: Bool {
-        get { tbl.firstChild(named: "a:tblPr")?[attribute: "bandRow"] == "1" }
+        get { tbl.firstChild(named: "a:tblPr").map { TableMergeTopology.flag($0, "bandRow") } ?? false }
         set {
             tbl.getOrAddChild("a:tblPr", beforeAnyOf: ["a:tblGrid"])[attribute: "bandRow"] = newValue ? "1" : nil
             part.markDirty()
@@ -223,28 +224,32 @@ public final class Table {
     ///   modified, so a region that cannot be merged leaves the table exactly
     ///   as it was rather than half-merged with text already destroyed.
     public func merge(row: Int, column: Int, rowSpan: Int, columnSpan: Int) throws {
-        precondition(rowSpan >= 1 && columnSpan >= 1)
-        var resolved: [(row: Int, column: Int, tc: XML.Element)] = []
-        for r in row..<(row + rowSpan) {
-            for c in column..<(column + columnSpan) {
-                resolved.append((r, c, try cell(r, c).tc))
-            }
+        let snapshot = TableGridSnapshot(tbl)
+        let topology = try snapshot.topology()
+        guard row >= 0, column >= 0, rowSpan > 0, columnSpan > 0,
+              row < snapshot.rows.count, column < snapshot.columns.count,
+              rowSpan <= snapshot.rows.count - row, columnSpan <= snapshot.columns.count - column else {
+            throw RostrumError.packageInvalid("table merge region is out of range")
         }
-        for (r, c, tc) in resolved {
-            if r == row && c == column {
-                tc[attribute: "gridSpan"] = columnSpan > 1 ? String(columnSpan) : nil
-                tc[attribute: "rowSpan"] = rowSpan > 1 ? String(rowSpan) : nil
-            } else {
-                if c > column { tc[attribute: "hMerge"] = "1" }
-                if r > row { tc[attribute: "vMerge"] = "1" }
-                if let txBody = tc.firstChild(named: "a:txBody") {
-                    txBody.removeChildren(named: "a:p")
-                    txBody.appendElement(XML.Element("a:p"))
-                }
+        for r in row..<(row + rowSpan) { for c in column..<(column + columnSpan) {
+            _ = try snapshot.cell(r, c)
+            guard topology.region(row: r, column: c) == nil else {
+                throw RostrumError.packageInvalid("table merge overlaps an existing merge; unmerge it first")
             }
-        }
+        } }
+        if rowSpan == 1 && columnSpan == 1 { return }
+        let region = TableMergeRegion(row: row, column: column, rowSpan: rowSpan, columnSpan: columnSpan)
+        TableMergeTopology.write(topology.regions + [region], cells: snapshot.cells)
+        for r in row..<(row + rowSpan) { for c in column..<(column + columnSpan) {
+            if r == row && c == column { continue }
+            if let txBody = snapshot.cells[r][c].firstChild(named: "a:txBody") {
+                txBody.removeChildren(named: "a:p")
+                txBody.appendElement(XML.Element("a:p"))
+            }
+        } }
         part.markDirty()
     }
+
 }
 
 /// One table cell (`a:tc`).
@@ -252,9 +257,12 @@ public final class TableCell {
     let tc: XML.Element
     let part: Part
 
-    init(tc: XML.Element, part: Part) {
+    let package: OPCPackage?
+
+    init(tc: XML.Element, part: Part, package: OPCPackage? = nil) {
         self.tc = tc
         self.part = part
+        self.package = package
     }
 
     /// The cell's text body, created if absent. Writing accessor: use
@@ -284,14 +292,14 @@ public final class TableCell {
     }
 
     public func setFill(_ fill: Fill) throws {
-        let element = try fill.fillElement(embeddingInto: part, package: nil)
+        let element = try fill.fillElement(embeddingInto: part, package: package)
         for name in Fill.choiceNames { tcPr.removeChildren(named: name) }
         tcPr.insertChild(element, beforeAnyOf: ["a:headers", "a:extLst"])
         part.markDirty()
     }
 
     public var verticalAnchor: VerticalAnchor {
-        get { tcPr[attribute: "anchor"].flatMap(VerticalAnchor.init(rawValue:)) ?? .top }
+        get { tc.firstChild(named: "a:tcPr")?[attribute: "anchor"].flatMap(VerticalAnchor.init(rawValue:)) ?? .top }
         set {
             tcPr[attribute: "anchor"] = newValue.rawValue
             part.markDirty()

@@ -78,7 +78,7 @@ public final class TableFrame: GraphicFrame {
     /// of `addTable`, with the same cell/row/column API.
     public var table: Table? {
         guard let tbl = graphicData?.firstChild(named: "a:tbl") else { return nil }
-        return Table(tbl: tbl, part: part, graphicFrame: element)
+        return Table(tbl: tbl, part: part, graphicFrame: element, package: package)
     }
 }
 

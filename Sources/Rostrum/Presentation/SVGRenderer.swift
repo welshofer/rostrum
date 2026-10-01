@@ -532,7 +532,7 @@ struct SVGRenderer {
         let uri = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?[attribute: "uri"] ?? ""
         if uri.hasSuffix("/table"),
            let tbl = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?.firstChild(named: "a:tbl") {
-            return renderTable(tbl, x: x, y: y, defs: &defs)
+            return renderTable(tbl, ownedBy: owner, x: x, y: y, defs: &defs)
         }
         if uri.hasSuffix("/chart"), let plot = renderChart(gf, ownedBy: owner, x: x, y: y, w: w, h: h) {
             return plot
@@ -880,26 +880,131 @@ struct SVGRenderer {
         return Int(Swift.min(Swift.max(value.rounded(), -bound), bound))
     }
 
-    private func renderTable(_ tbl: XML.Element, x: Int, y: Int, defs: inout String) -> String {
-        let cols = tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol").map { intAttr($0, "w") } ?? []
-        let rows = tbl.children(named: "a:tr")
+    private func renderTable(_ tbl: XML.Element, ownedBy owner: Part, x: Int, y: Int, defs: inout String) -> String {
+        let table = Table(tbl: tbl, part: owner, package: package)
+        let grid = TableGridSnapshot(tbl)
+        let topology = try? grid.topology()
+        let resolver = TableStyleResolver(table: table, theme: theme)
+        let widths = grid.columns.map { max(0, intAttr($0, "w")) }
+        let heights = grid.rows.map { max(0, intAttr($0, "h")) }
+        var xs = [0], ys = [0]
+        for width in widths { xs.append(xs.last! + width) }
+        for height in heights { ys.append(ys.last! + height) }
+        let rtl = table.rightToLeft
         var out = ""
-        var cy = y
-        for tr in rows {
-            let rh = intAttr(tr, "h")
-            var cx = x
-            for (c, tc) in tr.children(named: "a:tc").enumerated() {
-                let cw = c < cols.count ? cols[c] : 0
-                let fill = colorHex(in: tc.firstChild(named: "a:tcPr")?.firstChild(named: "a:solidFill")) ?? "#FFFFFF"
-                out += box(cx, cy, cw, rh, fill: fill, stroke: " stroke=\"#DDDDDD\" stroke-width=\"3175\"")
-                if let txBody = tc.firstChild(named: "a:txBody") {
-                    out += renderText(txBody, box: (cx + cw / 20, cy, cw, rh))
+        let background = resolver.background()
+        let tableFrame = (x, y, xs.last!, ys.last!)
+        let backgroundPaint: String?
+        if let blip = background.properties.firstChild(named: "a:blipFill") {
+            backgroundPaint = imagePattern(blip, ownedBy: background.owner, box: tableFrame, defs: &defs)
+        } else if let gradient = background.properties.firstChild(named: "a:gradFill") {
+            backgroundPaint = tableGradient(gradient, box: tableFrame, defs: &defs)
+        } else { backgroundPaint = paint(for: background.properties, box: tableFrame, defs: &defs) }
+        if let backgroundPaint {
+            let alpha = tableAlpha(background.properties.firstChild(named: "a:solidFill"))
+            out += box(x, y, tableFrame.2, tableFrame.3, fill: backgroundPaint, stroke: alpha < 1 ? " fill-opacity=\"\(alpha)\"" : "")
+        }
+        for r in grid.rows.indices {
+            for c in grid.cells[r].indices where c < widths.count {
+                let region = topology?.region(row: r, column: c)
+                if let region, region.row != r || region.column != c { continue }
+                let rowEnd = r + (region?.rowSpan ?? 1), columnEnd = c + (region?.columnSpan ?? 1)
+                let cw = xs[columnEnd] - xs[c], rh = ys[rowEnd] - ys[r]
+                let cx = x + (rtl ? xs.last! - xs[columnEnd] : xs[c]), cy = y + ys[r]
+                let frame = (cx, cy, cw, rh)
+                let effective = resolver.effective(row: r, column: c)
+                let properties = effective.properties
+                var fill: String?
+                if let blip = properties.firstChild(named: "a:blipFill") {
+                    fill = imagePattern(blip, ownedBy: effective.fillOwner, box: frame, defs: &defs)
+                } else if let gradient = properties.firstChild(named: "a:gradFill") {
+                    fill = tableGradient(gradient, box: frame, defs: &defs)
+                } else { fill = paint(for: properties, box: frame, defs: &defs) }
+                if let fill {
+                    let alpha = tableAlpha(properties.firstChild(named: "a:solidFill"))
+                    out += box(cx, cy, cw, rh, fill: fill, stroke: alpha < 1 ? " fill-opacity=\"\(alpha)\"" : "")
                 }
-                cx += cw
+                // Borders are independent authored edges, never a synthetic
+                // grid. Use the far physical cell for a merge's outer edge,
+                // unless the origin explicitly overrides that edge.
+                for edge in TableCellBorder.allCases {
+                    let edgeRow = edge == .bottom ? rowEnd - 1 : r
+                    let edgeColumn = edge == .left ? (rtl ? columnEnd - 1 : c) : edge == .right ? (rtl ? c : columnEnd - 1) : c
+                    let direct = grid.cells[r][c].firstChild(named: "a:tcPr")?.firstChild(named: edge.rawValue)
+                    let edgeProperties = direct != nil ? properties : resolver.effective(row: edgeRow, column: edgeColumn).properties
+                    guard let line = edgeProperties.firstChild(named: edge.rawValue),
+                          line.firstChild(named: "a:noFill") == nil,
+                          let color = colorHex(in: line.firstChild(named: "a:solidFill")) else { continue }
+                    let width = max(0, line.coordinate("w") ?? 12700)
+                    if width == 0 { continue }
+                    let endpoints: (Int, Int, Int, Int)
+                    switch edge {
+                    case .left: endpoints = (cx, cy, cx, cy + rh)
+                    case .right: endpoints = (cx + cw, cy, cx + cw, cy + rh)
+                    case .top: endpoints = (cx, cy, cx + cw, cy)
+                    case .bottom: endpoints = (cx, cy + rh, cx + cw, cy + rh)
+                    case .diagonalDown: endpoints = (cx, cy, cx + cw, cy + rh)
+                    case .diagonalUp: endpoints = (cx, cy + rh, cx + cw, cy)
+                    }
+                    let dash = line.firstChild(named: "a:prstDash")?[attribute: "val"]
+                    let pattern: String
+                    switch dash {
+                    case "dot", "sysDot": pattern = "\(width) \(width * 2)"
+                    case "dash", "sysDash": pattern = "\(width * 3) \(width * 2)"
+                    case "lgDash": pattern = "\(width * 6) \(width * 2)"
+                    case "dashDot", "sysDashDot": pattern = "\(width * 3) \(width * 2) \(width) \(width * 2)"
+                    default: pattern = ""
+                    }
+                    let dashAttribute = pattern.isEmpty ? "" : " stroke-dasharray=\"\(pattern)\""
+                    let alpha = tableAlpha(line.firstChild(named: "a:solidFill"))
+                    out += "<line x1=\"\(endpoints.0)\" y1=\"\(endpoints.1)\" x2=\"\(endpoints.2)\" y2=\"\(endpoints.3)\" stroke=\"\(color)\" stroke-width=\"\(width)\" stroke-opacity=\"\(alpha)\"\(dashAttribute)/>"
+                }
+                if let body = grid.cells[r][c].firstChild(named: "a:txBody") {
+                    let text = body.deepCopy()
+                    let bodyPr = text.getOrAddChild("a:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
+                    for (margin, inset, fallback) in [("marL", "lIns", 91440), ("marR", "rIns", 91440), ("marT", "tIns", 45720), ("marB", "bIns", 45720)] {
+                        bodyPr[attribute: inset] = String(properties.coordinate(margin) ?? fallback)
+                    }
+                    bodyPr[attribute: "anchor"] = properties[attribute: "anchor"] ?? "t"
+                    let direction = properties[attribute: "vert"] ?? "horz"
+                    // Rotation belongs to the cell, while text layout uses a
+                    // horizontal box with swapped dimensions.
+                    if direction == "vert" || direction == "vert270" {
+                        bodyPr[attribute: "vert"] = "horz"
+                        let transform = direction == "vert" ? "translate(\(cx + cw) \(cy)) rotate(90)" : "translate(\(cx) \(cy + rh)) rotate(-90)"
+                        out += "<g transform=\"\(transform)\">" + renderText(text, box: (0, 0, rh, cw), inheriting: effective.text) + "</g>"
+                    } else {
+                        bodyPr[attribute: "vert"] = direction
+                        out += renderText(text, box: frame, inheriting: effective.text)
+                    }
+                }
             }
-            cy += rh
         }
         return out
+    }
+
+    private func tableAlpha(_ container: XML.Element?) -> Double {
+        guard let color = container?.childElements.first(where: { $0.name.hasSuffix("Clr") }),
+              let value = color.firstChild(named: "a:alpha")?.boundedInt("val", in: 0...100000) else { return 1 }
+        return Double(value) / 100000
+    }
+
+    private func tableGradient(_ gradient: XML.Element, box frame: (Int, Int, Int, Int), defs: inout String) -> String {
+        let id = "tg\(defs.count)"
+        var stops = ""
+        for stop in gradient.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? [] {
+            let offset = Double(stop.boundedInt("pos", in: 0...100000) ?? 0) / 100000
+            stops += "<stop offset=\"\(offset)\" stop-color=\"\(colorHex(in: stop) ?? "#000000")\" stop-opacity=\"\(tableAlpha(stop))\"/>"
+        }
+        if gradient.firstChild(named: "a:path") != nil {
+            defs += "<radialGradient id=\"\(id)\">\(stops)</radialGradient>"
+        } else {
+            let degrees = Double(gradient.firstChild(named: "a:lin")?.boundedInt("ang", in: 0...21600000) ?? 0) / 60000
+            let radians = degrees * .pi / 180
+            let dx = cos(radians), dy = sin(radians)
+            defs += "<linearGradient id=\"\(id)\" x1=\"\((1 - dx) / 2)\" y1=\"\((1 - dy) / 2)\" x2=\"\((1 + dx) / 2)\" y2=\"\((1 + dy) / 2)\">\(stops)</linearGradient>"
+        }
+        return "url(#\(id))"
     }
 
     // MARK: - Paint / helpers
