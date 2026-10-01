@@ -99,8 +99,13 @@ public final class Slides: Sequence {
         if let rId = entry[attribute: "r:id"],
            let rel = presentationPart.rels.relationship(withId: rId) {
             let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
+            let annotations = try annotationRemovalPlan(for: try package.part(at: uri))
             presentationPart.rels.remove(rId: rId)
             package.removePart(at: uri)
+            for annotationURI in annotations.removed { package.removePart(at: annotationURI) }
+            for (part, relationships) in annotations.retained {
+                part.rels.setItems(relationships)
+            }
         }
         list.removeChild(entry)
         presentationPart.markDirty()
@@ -121,27 +126,34 @@ public final class Slides: Sequence {
     }
 
     /// Duplicate the slide at `index`, inserting the copy immediately after
-    /// the original. Copies the slide XML and its relationships.
+    /// the original. Copies slide-owned notes and comments independently;
+    /// layout, notes master, authors and media remain shared.
     @discardableResult
     public func duplicate(at index: Int) throws -> Slide {
         let source = try slide(at: index)
         source.part.flushIfDirty()
 
         let uri = nextSlideURI()
-        let copy = package.addPart(uri: uri, contentType: ContentType.slide, blob: source.part.blob)
-        // Relationship targets are relative to /ppt/slides for both parts, so
-        // they copy verbatim; rIds are preserved because the slide XML
-        // references them by value.
-        copy.rels.setItems(source.part.rels.items)
+        let slideID = try nextSlideID()
+        let list = try sldIdLst()
+        var entries = list.childElements
+        // Resolve and parse every annotation before changing the package. A
+        // missing or malformed part must not leave a half-inserted duplicate.
+        let annotations = try copySlideAnnotations(from: source.part, to: uri, slideID: slideID)
 
+        let copy = package.addPart(uri: uri, contentType: ContentType.slide, blob: source.part.blob)
+        copy.rels.setItems(annotations.relationships)
+        for annotation in annotations.parts {
+            let installed = package.addPart(
+                uri: annotation.uri, contentType: annotation.contentType, blob: annotation.blob)
+            installed.rels.setItems(annotation.rels.items)
+        }
         let rId = presentationPart.rels.add(
             type: RelType.slide,
             target: presentationPart.uri.relativeReference(to: uri))
         let entry = XML.Element("p:sldId", attributes: [
-            ("id", String(try nextSlideID())), ("r:id", rId),
+            ("id", String(slideID)), ("r:id", rId),
         ])
-        let list = try sldIdLst()
-        var entries = list.childElements
         entries.insert(entry, at: index + 1)
         list.replaceChildElements(with: entries)
         presentationPart.markDirty()

@@ -238,3 +238,45 @@ extension Slide {
         throw RostrumError.packageInvalid("slide \(part.uri) not found in sldIdLst")
     }
 }
+
+extension ModernComments {
+    /// Match annotation vocabulary by namespace, allowing foreign producers'
+    /// prefixes while leaving unrelated extension XML untouched.
+    static func visit(in root: XML.Element,
+                      _ body: (XML.Element, String?, String) -> Void) {
+        var stack: [(XML.Element, [String: String])] = [(root, [:])]
+        while let (element, inherited) = stack.popLast() {
+            var namespaces = inherited
+            for attribute in element.attributes {
+                if attribute.name == "xmlns" { namespaces[""] = attribute.value }
+                else if attribute.name.hasPrefix("xmlns:") {
+                    namespaces[String(attribute.name.dropFirst(6))] = attribute.value
+                }
+            }
+            let components = element.name.split(separator: ":", maxSplits: 1).map(String.init)
+            let prefix = components.count == 2 ? components[0] : ""
+            let localName = components.last ?? element.name
+            body(element, namespaces[prefix], localName)
+            for child in element.childElements.reversed() { stack.append((child, namespaces)) }
+        }
+    }
+
+    static func retargetCopy(_ part: Part, slideID: Int, avoiding ids: inout Set<String>) throws {
+        var ordinal = 0
+        visit(in: try part.dom()) { element, namespace, localName in
+            if namespace == ns, localName == "cm" || localName == "reply" {
+                // Use the existing deterministic GUID allocator; include the
+                // destination part so repeated duplicates get independent IDs.
+                let id = SectionGUID.make(
+                    name: "comment:\(part.uri.value):\(ordinal):\(element[attribute: "id"] ?? "")",
+                    index: slideID, avoiding: ids)
+                element[attribute: "id"] = id
+                ids.insert(id)
+                ordinal += 1
+            } else if namespace == nsPC, localName == "sldMk" {
+                element[attribute: "sldId"] = String(slideID)
+            }
+        }
+        part.markDirty()
+    }
+}

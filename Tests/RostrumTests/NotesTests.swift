@@ -73,15 +73,90 @@ import Testing
         #expect(reopened.package.parts.keys.filter { $0.value.hasPrefix("/ppt/notesSlides/") }.count == 1)
     }
 
-    @Test func duplicatedSlideSharesNotesPartSafely() throws {
-        // duplicate(at:) copies rels — both slides point at the same notes
-        // part. That is lossless (PowerPoint tolerates shared notes refs);
-        // editing either edits both until per-slide notes copy lands.
+    @Test func duplicatedSlidesHaveIndependentRichNotesAndBacklinks() throws {
         let deck = try Presentation()
-        try deck.slides[0].setNotes("shared")
-        try deck.slides.duplicate(at: 0)
+        let original = try deck.slides[0]
+        let frame = try original.notesTextFrame()
+        let run = frame.addParagraph().addRun("Rich note")
+        run.bold = true
+        run.fontSize = 24
+        let notes = try original.part.related(by: RelType.notesSlide, in: deck.package)
+        let dom = try notes.dom()
+        dom.appendElement(XML.Element("foreign:payload", attributes: [
+            ("xmlns:foreign", "urn:unknown-notes"), ("token", "preserve-me"),
+        ], children: [.comment("inside notes"), .processingInstruction(target: "opaque", data: "value")]))
+        notes.markDirty()
+        notes.flushIfDirty()
+        let originalXML = notes.blob
+
+        let copy = try deck.slides.duplicate(at: 0)
+        let copiedNotes = try copy.part.related(by: RelType.notesSlide, in: deck.package)
+        #expect(notes.uri != copiedNotes.uri)
+        #expect(copiedNotes.blob == originalXML)
+        #expect(try notes.related(by: RelType.slide, in: deck.package).uri == original.part.uri)
+        #expect(try copiedNotes.related(by: RelType.slide, in: deck.package).uri == copy.part.uri)
+        #expect(try notes.related(by: RelType.notesMaster, in: deck.package).uri
+            == copiedNotes.related(by: RelType.notesMaster, in: deck.package).uri)
+        #expect(try copy.notesTextFrame().paragraphs.last?.runs[0].bold == true)
+        #expect(try copy.notesTextFrame().paragraphs.last?.runs[0].fontSize == 24)
+
+        try original.appendNote("original only")
+        try copy.appendNote("copy only")
         let reopened = try Presentation(data: try deck.serializedData())
-        #expect(try reopened.slides[1].notesText == "shared")
+        #expect(try reopened.slides[0].notesParagraphs == ["", "Rich note", "original only"])
+        #expect(try reopened.slides[1].notesParagraphs == ["", "Rich note", "copy only"])
+        for slide in reopened.slides {
+            let part = try slide.part.related(by: RelType.notesSlide, in: reopened.package)
+            #expect(try part.related(by: RelType.slide, in: reopened.package).uri == slide.part.uri)
+            #expect(try part.dom().firstChild(named: "foreign:payload")?.serialized()
+                == dom.firstChild(named: "foreign:payload")?.serialized())
+        }
+    }
+
+    @Test(arguments: [0, 1]) func deletingEitherDuplicatePreservesOtherNotes(index: Int) throws {
+        let deck = try Presentation()
+        try deck.slides[0].setNotes("talk track")
+        try deck.slides.duplicate(at: 0)
+        let removed = try deck.slides[index].part.related(by: RelType.notesSlide, in: deck.package).uri
+        let survivor = try deck.slides[1 - index].part.uri
+        try deck.slides.remove(at: index)
+        #expect(deck.package.parts[removed] == nil)
+        let reopened = try Presentation(data: try deck.serializedData())
+        #expect(try reopened.slides[0].part.uri == survivor)
+        #expect(try reopened.slides[0].notesText == "talk track")
+        let notes = try reopened.slides[0].part.related(by: RelType.notesSlide, in: reopened.package)
+        #expect(try notes.related(by: RelType.slide, in: reopened.package).uri == survivor)
+        #expect(try reopened.validate().isEmpty)
+    }
+
+    @Test func deletingOwnerOfPreviouslySharedNotesRetargetsBacklink() throws {
+        let deck = try Presentation()
+        let original = try deck.slides[0]
+        try original.setNotes("shared old deck")
+        let notes = try original.part.related(by: RelType.notesSlide, in: deck.package)
+        let second = try deck.slides.add()
+        second.part.rels.add(type: RelType.notesSlide, target: second.part.uri.relativeReference(to: notes.uri))
+        try deck.slides.remove(at: 0)
+        #expect(second.notesText == "shared old deck")
+        #expect(try notes.related(by: RelType.slide, in: deck.package).uri == second.part.uri)
+        #expect(try deck.validate().isEmpty)
+    }
+
+    @Test func failedAnnotationDuplicateLeavesPackageUnchanged() throws {
+        let deck = try Presentation()
+        try deck.slides[0].setNotes("valid notes")
+        let slide = try deck.slides[0]
+        let broken = deck.package.addPart(uri: PackURI("/ppt/comments/broken.xml"),
+            contentType: ModernComments.commentsContentType, blob: Data("<broken>".utf8))
+        slide.part.rels.add(type: ModernComments.commentsRelType, target: "../comments/broken.xml")
+        let before = try deck.serializedData()
+        #expect(throws: (any Error).self) { try deck.slides.duplicate(at: 0) }
+        #expect(try deck.serializedData() == before)
+        broken.replaceBlob(Data("<p188:cmLst xmlns:p188=\"\(ModernComments.ns)\"/>".utf8))
+        slide.part.rels.add(type: RelType.notesSlide, target: "../notesSlides/missing.xml")
+        let beforeMissing = try deck.serializedData()
+        #expect(throws: (any Error).self) { try deck.slides.duplicate(at: 0) }
+        #expect(try deck.serializedData() == beforeMissing)
     }
 
     @Test func multiParagraphNotesRoundTrip() throws {
