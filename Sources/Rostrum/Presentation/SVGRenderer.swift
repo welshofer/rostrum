@@ -96,7 +96,7 @@ struct SVGRenderer {
                     path: "/p:cSld/p:spTree/\(child.name)[\(index + 1)]", package: package)
                 switch child.name {
                 case "p:sp": body += renderShape(child, ownedBy: slidePart, defs: &defs)
-                case "p:pic": body += renderPicture(child, ownedBy: slidePart)
+                case "p:pic": body += renderPicture(child, ownedBy: slidePart, defs: &defs)
                 case "p:graphicFrame": body += renderGraphicFrame(child, ownedBy: slidePart, defs: &defs)
                 default: break
                 }
@@ -172,7 +172,7 @@ struct SVGRenderer {
                 path: "/p:cSld/p:spTree/\(child.name)[\(index + 1)]", package: package)
             switch child.name {
             case "p:sp": out += renderShape(child, ownedBy: part, defs: &defs)
-            case "p:pic": out += renderPicture(child, ownedBy: part)
+            case "p:pic": out += renderPicture(child, ownedBy: part, defs: &defs)
             case "p:graphicFrame": out += renderGraphicFrame(child, ownedBy: part, defs: &defs)
             default: break
             }
@@ -188,7 +188,7 @@ struct SVGRenderer {
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
         let prst = spPr.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
-        let fill = paint(for: spPr, box: f, defs: &defs)
+        let fill = paint(for: spPr, box: f, defs: &defs, ownedBy: owner)
         let stroke = strokeAttrs(spPr)
         if let fill { out += geometry(prst, f, fill: fill, stroke: stroke) }
         else if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
@@ -425,38 +425,71 @@ struct SVGRenderer {
 
     // MARK: - Pictures
 
-    private func renderPicture(_ pic: XML.Element, ownedBy owner: Part) -> String {
-        guard let spPr = pic.firstChild(named: "p:spPr") else { return "" }
-        let (x, y, w, h) = frame(of: spPr)
-        guard let rId = pic.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip")?[attribute: "r:embed"],
-              let data = imageData(rId: rId, ownedBy: owner) else { return "" }
-        return "<image x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\" "
-            + "preserveAspectRatio=\"xMidYMid slice\" href=\"\(data)\"/>"
+    private func renderPicture(_ pic: XML.Element, ownedBy owner: Part, defs: inout String) -> String {
+        guard let spPr = pic.firstChild(named: "p:spPr"),
+              let fill = pic.firstChild(named: "p:blipFill") else { return "" }
+        let frame = resolvedFrame(of: pic, spPr: spPr, ownedBy: owner)
+        guard let pattern = imagePattern(fill, ownedBy: owner, box: frame, defs: &defs) else { return "" }
+        let preset = spPr.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
+        let shape = geometry(preset, frame, fill: pattern, stroke: strokeAttrs(spPr))
+        let transform = spPr.firstChild(named: "a:xfrm")
+        let angle = Double(transform?.boundedInt("rot", in: Int(Int32.min)...Int(Int32.max)) ?? 0) / 60000
+        let flipH = transform?[attribute: "flipH"] == "1" || transform?[attribute: "flipH"] == "true"
+        let flipV = transform?[attribute: "flipV"] == "1" || transform?[attribute: "flipV"] == "true"
+        guard angle != 0 || flipH || flipV else { return shape }
+        let centerX = Double(frame.0) + Double(frame.2) / 2
+        let centerY = Double(frame.1) + Double(frame.3) / 2
+        return "<g transform=\"translate(\(centerX) \(centerY)) rotate(\(angle)) scale(\(flipH ? -1 : 1) \(flipV ? -1 : 1)) translate(\(-centerX) \(-centerY))\">\(shape)</g>"
     }
 
-    /// A `data:` URL for an embedded image, resolved against the part that owns
-    /// the relationship — a layout's photo lives in the layout's rels, not the
-    /// slide's, so this cannot assume the slide.
-    private func imageData(rId: String, ownedBy owner: Part) -> String? {
-        guard let rel = owner.rels.relationship(withId: rId) else { return nil }
-        let target = PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)
-        guard let media = package.parts[target] else { return nil }
-        let ext = target.ext.lowercased()
-        let mime = ext == "jpg" || ext == "jpeg" ? "image/jpeg" : ext == "gif" ? "image/gif" : "image/png"
-        return "data:\(mime);base64,\(media.blob.base64EncodedString())"
+    /// Read supported embedded raster bytes without recoding. Unsupported
+    /// formats remain preserved in the package, but are not mislabeled PNGs.
+    private func imageResource(rId: String, ownedBy owner: Part) -> (url: String, info: ImageInfo)? {
+        guard let rel = owner.rels.relationship(withId: rId), !rel.isExternal,
+              let media = package.parts[PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)],
+              let info = ImageSniffer.sniff(media.blob) else { return nil }
+        return ("data:\(info.format.contentType);base64,\(media.blob.base64EncodedString())", info)
     }
 
-    /// An `a:blipFill` as an SVG pattern, so a photographic background renders
-    /// as the photograph rather than as a neutral grey box.
+    /// Crop and stretch share ImagePlacement with picture editing. Tile uses
+    /// the image's physical native size, percentage scale, alignment, offsets
+    /// and optional alternating mirror tiles. SVG preserves intrinsic alpha.
     private func imagePattern(_ blip: XML.Element, ownedBy owner: Part,
-                              box f: (Int, Int, Int, Int), defs: inout String) -> String? {
+                              box frame: (Int, Int, Int, Int), defs: inout String) -> String? {
         guard let rId = blip.firstChild(named: "a:blip")?[attribute: "r:embed"],
-              let data = imageData(rId: rId, ownedBy: owner), f.2 > 0, f.3 > 0 else { return nil }
-        let id = "bg\(defs.count)"
-        defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" "
-            + "x=\"\(f.0)\" y=\"\(f.1)\" width=\"\(f.2)\" height=\"\(f.3)\">"
-            + "<image width=\"\(f.2)\" height=\"\(f.3)\" preserveAspectRatio=\"xMidYMid slice\" "
-            + "href=\"\(data)\"/></pattern>"
+              let resource = imageResource(rId: rId, ownedBy: owner), frame.2 > 0, frame.3 > 0 else { return nil }
+        let id = "image\(defs.count)"
+        if let tile = blip.firstChild(named: "a:tile") {
+            let crop = PictureCrop.read(blip.firstChild(named: "a:srcRect"))
+            guard crop.valid else { return nil }
+            let sx = Double(tile.boundedInt("sx", in: 1...Int(Int32.max)) ?? 100000) / 100000
+            let sy = Double(tile.boundedInt("sy", in: 1...Int(Int32.max)) ?? 100000) / 100000
+            let width = Double(resource.info.nativeSize.width.rawValue) * sx * (1 - crop.left - crop.right)
+            let height = Double(resource.info.nativeSize.height.rawValue) * sy * (1 - crop.top - crop.bottom)
+            guard width.isFinite, height.isFinite, width >= 1, height >= 1 else { return nil }
+            let flip = tile[attribute: "flip"] ?? "none"
+            let mirrorX = flip == "x" || flip == "xy", mirrorY = flip == "y" || flip == "xy"
+            let alignment = tile[attribute: "algn"] ?? "tl"
+            let ax: Double = ["t", "ctr", "b"].contains(alignment) ? 0.5 : ["tr", "r", "br"].contains(alignment) ? 1 : 0
+            let ay: Double = ["l", "ctr", "r"].contains(alignment) ? 0.5 : ["bl", "b", "br"].contains(alignment) ? 1 : 0
+            let x = Double(frame.0) + (Double(frame.2) - width) * ax + Double(tile.coordinate("tx") ?? 0)
+            let y = Double(frame.1) + (Double(frame.3) - height) * ay + Double(tile.coordinate("ty") ?? 0)
+            let imageWidth = width / (1 - crop.left - crop.right), imageHeight = height / (1 - crop.top - crop.bottom)
+            let clipID = "\(id)Clip"
+            defs += "<clipPath id=\"\(clipID)\"><rect width=\"\(width)\" height=\"\(height)\"/></clipPath>"
+            let image = "<g clip-path=\"url(#\(clipID))\"><image x=\"\(-crop.left * imageWidth)\" y=\"\(-crop.top * imageHeight)\" width=\"\(imageWidth)\" height=\"\(imageHeight)\" preserveAspectRatio=\"none\" href=\"\(resource.url)\"/></g>"
+            defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(x)\" y=\"\(y)\" width=\"\(width * (mirrorX ? 2 : 1))\" height=\"\(height * (mirrorY ? 2 : 1))\">\(image)"
+            if mirrorX { defs += "<g transform=\"translate(\(2 * width) 0) scale(-1 1)\">\(image)</g>" }
+            if mirrorY { defs += "<g transform=\"translate(0 \(2 * height)) scale(1 -1)\">\(image)</g>" }
+            if mirrorX && mirrorY { defs += "<g transform=\"translate(\(2 * width) \(2 * height)) scale(-1 -1)\">\(image)</g>" }
+            defs += "</pattern>"
+        } else {
+            guard let mapping = ImagePlacement(fill: blip, frame: frame) else { return nil }
+            let clipID = "\(id)Clip"
+            defs += "<clipPath id=\"\(clipID)\"><rect x=\"\(mapping.clip.x - Double(frame.0))\" y=\"\(mapping.clip.y - Double(frame.1))\" width=\"\(mapping.clip.width)\" height=\"\(mapping.clip.height)\"/></clipPath>"
+            defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(frame.0)\" y=\"\(frame.1)\" width=\"\(frame.2)\" height=\"\(frame.3)\">"
+                + "<g clip-path=\"url(#\(clipID))\"><image x=\"\(mapping.image.x - Double(frame.0))\" y=\"\(mapping.image.y - Double(frame.1))\" width=\"\(mapping.image.width)\" height=\"\(mapping.image.height)\" preserveAspectRatio=\"none\" href=\"\(resource.url)\"/></g></pattern>"
+        }
         return "url(#\(id))"
     }
 
@@ -939,10 +972,10 @@ struct SVGRenderer {
 
     // MARK: - Paint / helpers
 
-    private func paint(for pr: XML.Element, box f: (Int, Int, Int, Int), defs: inout String) -> String? {
+    private func paint(for pr: XML.Element, box f: (Int, Int, Int, Int), defs: inout String, ownedBy owner: Part? = nil) -> String? {
         if let solid = pr.firstChild(named: "a:solidFill") { return colorHex(in: solid) }
         if let grad = pr.firstChild(named: "a:gradFill") { return gradientRef(grad, box: f, defs: &defs) }
-        if pr.firstChild(named: "a:blipFill") != nil { return "#DDDDDD" }   // image fill → neutral
+        if let blip = pr.firstChild(named: "a:blipFill") { return imagePattern(blip, ownedBy: owner ?? slidePart, box: f, defs: &defs) }
         if pr.firstChild(named: "a:noFill") != nil { return nil }
         return nil
     }

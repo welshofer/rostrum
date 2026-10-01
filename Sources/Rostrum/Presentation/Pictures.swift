@@ -35,6 +35,10 @@ extension ShapeCollection {
     /// never extends past its frame.
     @discardableResult
     public func addPicture(_ data: Data, frame: Rect, fit: PictureFit = .stretch) throws -> Picture {
+        guard frame.width.rawValue > 0, frame.height.rawValue > 0,
+              [frame.x.rawValue, frame.y.rawValue, frame.width.rawValue, frame.height.rawValue].allSatisfy(OOXMLBounds.coordinate.contains) else {
+            throw RostrumError.packageInvalid("picture frame must have positive bounded dimensions")
+        }
         guard let info = ImageSniffer.sniff(data) else {
             throw RostrumError.packageInvalid("unrecognized image format (PNG, JPEG and GIF are supported)")
         }
@@ -76,12 +80,17 @@ extension ShapeCollection {
         guard let package else {
             throw RostrumError.packageInvalid("this shape collection has no package attached")
         }
+        guard frame.width.rawValue > 0, frame.height.rawValue > 0,
+              [frame.x.rawValue, frame.y.rawValue, frame.width.rawValue, frame.height.rawValue].allSatisfy(OOXMLBounds.coordinate.contains) else {
+            throw RostrumError.packageInvalid("picture frame must have positive bounded dimensions")
+        }
+        let id = try Slide.nextShapeID(of: part)
+        let tree = try Slide.spTree(of: part)
         let image = package.imagePart(for: data, info: info)
         let rId = part.rels.add(
             type: RelType.image,
             target: part.uri.relativeReference(to: image.uri))
 
-        let id = try Slide.nextShapeID(of: part)
         let pic = XML.Element("p:pic")
 
         let nvPicPr = XML.Element("p:nvPicPr")
@@ -124,7 +133,7 @@ extension ShapeCollection {
         spPr.appendElement(prstGeom)
         pic.appendElement(spPr)
 
-        try Slide.spTree(of: part).appendElement(pic)
+        tree.appendElement(pic)
         part.markDirty()
         return Picture(element: pic, part: part, package: package)
     }
