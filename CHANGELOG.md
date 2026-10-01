@@ -6,7 +6,58 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- Table merge inspection/unmerge, row and column insertion/removal/reordering,
+  frame synchronization, individual edge/diagonal borders, package-aware image
+  fills, and embedded/custom table-style resolution. Overlapping merges and
+  edits that split a merged region fail before changing the document.
+- Shared rich-text layout for fitting and SVG: mixed runs, explicit breaks,
+  fields, tabs, spacing, insets, bullets and computed autofit. Distinct font
+  faces and a bounded Swift shaping implementation have pinned HarfBuzz
+  kerning/ligature/cluster oracles.
+- `OPCArchive` provides bounded read-only package inspection with explicit
+  strict or on-access CRC validation; materialization produces an independent
+  complete editable presentation. Existing initializers remain eager.
+- Release benchmark executable/driver, independent table fixture, pinned
+  PowerPoint reference, and fail-closed semantic/visual conformance tools.
+- Modern comment text editing, reopen/delete, author/timestamp/anchor access,
+  slide/shape/text anchors, and legacy comment read/create/edit/delete with
+  collision-safe author/index remapping. Reply-only invalid operations refuse.
+- Structured render fidelity issues with part/shape/XML locations, optional
+  strict rendering, permitted font embedding in SVG, and CLI render diagnostics.
+- Picture crop read/edit, isolated image replacement, source and destination
+  crop rectangles, stretch/tile mappings, picture rotation/reflection and
+  geometry clipping. Unsupported alternate image representations refuse edits
+  atomically; unknown extensions remain intact.
+- Custom table-style import preserves dependent relationship graphs, namespace
+  context and opaque XML, remapping conflicting GUIDs deterministically.
+
+### Fixed
+
+- Rejected table fills preserve the original XML and dirty state.
+- Background resolution shares color transforms, color-map overrides and
+  indexed theme paints with SVG, including per-slide master themes.
+- Duplicated notes/comment threads are independent. Imports remap author
+  identities and slide anchors, preserve source notes-master appearance,
+  and refuse incompatible notes masters atomically.
+- Section membership follows slide addition, deletion, move, duplicate and
+  import; explicit section removal and reordering preserve metadata.
+- Table bulk operations and slide iteration use operation-local snapshots.
+  Media lookup uses a collision-checked content index. Saves stream atomically
+  and cache unchanged part compression within a bounded compressed-byte budget.
+- Atomic saves cannot overwrite directories, retain existing file permissions,
+  and avoid the older Linux Foundation replacement fallback. Replaced parts
+  immediately release cached payload ownership.
+- OpenType layout parsing has byte-derived expansion budgets, preventing small
+  aliased-offset tables from allocating unbounded ligature/coverage structures.
+
+### Fidelity status
+
+See [the operation-level conformance matrix](docs/CONFORMANCE.md). Native table
+styles without definitions, full complex-script shaping, advanced text layout
+and Office visual equivalence remain acceptance gaps. New inspection APIs or
+passing round-trip tests do not certify those capabilities.
 
 ## [0.4.0] — 2026-08-17
 

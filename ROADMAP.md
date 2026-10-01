@@ -129,7 +129,13 @@ from phase 0 onward.
   `<p:cond delay="indefinite"/>`, and the auto-play spelling is exactly what a
   second sample, of a clip set to *Start: Automatically*, would settle; and
   PowerPoint's speaker icon for poster-less audio.
-- [ ] Performance pass on large decks (no benchmarks exist yet)
+- [x] Reproducible release benchmark runner and first macOS baseline
+  (2026-10-01): slide/table/media/text/open/save phases, five-sample latency
+  distributions, per-process peak RSS and independently parsed outputs.
+- [x] Operation-local slide/table scans, indexed media deduplication and
+  cached streaming atomic saves (2026-10-01).
+- [ ] Linux/iOS performance baselines and regression limits derived from
+  same-platform variance; benchmark evidence is not portable across machines.
 
 ## Phase 4 — Beyond parity (the reason Rostrum exists)
 
@@ -172,7 +178,10 @@ Ranked by demand evidence from python-pptx's issue tracker:
 - Rendering: slide → image/PDF without LibreOffice (SwiftUI/CoreGraphics
   renderer on Darwin; cross-platform raster backend later). The v0.4 metrics
   engine is the foundation: faithful text is most of a faithful slide.
-- Streaming/partial loading for production-scale decks
+- Bounded partial loading: `OPCArchive` now provides read-only lazy access
+  with explicit validation/cache policy. Fully editable lazy Presentation parts
+  remain separate work because the existing nonthrowing `Part.blob` contract
+  cannot conceal deferred decode failures.
 - OMML math, connector routing to attachment sites, placeholders in groups
 
 ## Program: v0.1 release — hardening & design layer ✅ (2026-07-18 → 19)
@@ -426,16 +435,18 @@ Each is a judgement about leverage, not a doubt about the finding.
 - **Effective-frame inheritance matches layout → master by reduced type**
   (`Slide.swift`) — a real asymmetry, but no observed deck reaches it and the
   fix needs the full placeholder-matching table.
-- **`OPCPackage` multi-pass serialisation** — measured in milliseconds against
-  a whole-deck save; below the noise floor.
+- **`OPCPackage` multi-pass serialisation** — revisited 2026-10-01:
+  streaming saves and bounded compression reuse are implemented. See
+  [measured results](docs/PERFORMANCE.md) for cold versus warm save costs.
 - **`RostrumError` carries prose, not structured cases** — a genuine API
   ergonomics gap, low leverage while the consumer set is this small.
-- **Text measurement ignores kerning, ligatures and shaping**
-  (`FontMetrics.swift`) — documented behaviour; fixing it means a shaping
-  engine, which is out of scope for a zero-dependency library.
-- **No snapshot or golden-file tests for `SVGRenderer`** —
-  `SVGRendererTests.swift` asserts structure, so a *visual* regression in the
-  preview path would pass silently.
+- **Text shaping** — revisited 2026-10-01: owned, bounded kerning and ligature
+  shaping now has pinned HarfBuzz fixtures. Full complex-script shaping,
+  bidi and Unicode line breaking remain open under the Foundation-only rule.
+- **SVG visual regression coverage** — revisited 2026-10-01: independent
+  image raster probes pass and a pinned PowerPoint table reference exists.
+  Office visual equivalence and notes-page references remain open; see
+  [conformance evidence](docs/CONFORMANCE.md).
 - `DeckRenderer`, `KeychainStore` and `SlideRasterizer` have **no tests at
   all** — distinct from tests that existed but never ran, which is closed.
 - **`Examples/` and `Tools/` have never been audited** — four executable
@@ -470,3 +481,27 @@ Each is a judgement about leverage, not a doubt about the finding.
   repair prompt
 - Malformed input throws; it never traps the host process
 - Zero SwiftPM dependencies, forever
+
+
+## Accuracy acceptance work (2026-10-01)
+
+The current implementation expands tables, typography, annotations and package
+performance. [CONFORMANCE.md](docs/CONFORMANCE.md) is the per-operation evidence
+ledger. These gates remain open and must not be relabeled complete:
+
+- [ ] Exhaustive native table style catalog where the file contains only a GUID;
+  advanced vertical cell typography and pattern/compound-border preview support.
+- [ ] Full contextual Arabic/Indic shaping, mark positioning, language features
+  and complete Unicode bidirectional/line-break conformance.
+- [ ] Pinned PowerPoint slide and notes-page equivalence after edits, duplication
+  and import. An earlier table comparison failed and the final preview still
+  reports fidelity issues; preservation and semantic tests do not close this gate.
+- [ ] Broader images/crop and annotation lifecycle Office fixture coverage.
+- [ ] Namespace-aliased section mutation, relationship-bearing author imports,
+  and conflicting notes-master reconciliation. These currently refuse atomically.
+- [ ] Reduce the richer table/image renderer's measured latency regressions while
+  retaining layout and fidelity diagnostics; see [performance results](docs/PERFORMANCE.md).
+- [ ] Execute the new package save/loading paths on Linux and collect Linux/iOS
+  performance baselines. This run's executed checks are on macOS.
+
+Animation work remains outside this accuracy/performance program.
