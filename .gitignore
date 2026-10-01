@@ -39,3 +39,6 @@ core.*
 # (what shipped), not as 200KB of process notes at the repo root.
 /lift-up-plan-*.md
 /burn-down-report-*.md
+
+# Python test-tool caches
+__pycache__/
