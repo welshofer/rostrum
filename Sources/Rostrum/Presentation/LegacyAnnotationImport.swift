@@ -12,57 +12,74 @@ final class LegacyAnnotationAuthorImport {
     private var highIndex: [String: Int] = [:]
     private var recordsByID: [String: XML.Element] = [:]
 
-    init(source: OPCPackage, dest: OPCPackage, presentation: Part) throws {
+    init(source: OPCPackage, dest: OPCPackage, presentation: Part,
+         allocate: ((PackURI) -> PackURI)? = nil, register: ((Part, Part) throws -> Void)? = nil,
+         lookup: ((PackURI) -> Part?)? = nil, mapped: ((PackURI) -> PackURI?)? = nil,
+         bind: ((PackURI, PackURI) throws -> Void)? = nil, copy: ((PackURI) throws -> PackURI)? = nil) throws {
         self.dest = dest; self.presentation = presentation
         let sourceAuthors = try LegacyComments.authorPart(in: source)
-        // Unknown author extensions can refer to a dependency graph. Until
-        // graph-aware author merging is supported, refuse cross-package import
-        // before any destination mutation instead of dropping relationships.
-        guard source === dest || sourceAuthors.rels.items.isEmpty else {
-            throw RostrumError.packageInvalid("author parts with dependency relationships cannot be imported")
-        }
+        guard source === dest || copy != nil else { throw RostrumError.packageInvalid("cross-package author import requires graph staging") }
         sourceAuthors.flushIfDirty()
         let sourceRoot = try sourceAuthors.dom()
         if presentation.rels.first(ofType: LegacyComments.authorsRelType) != nil {
             let existing = try LegacyComments.authorPart(in: dest)
             existing.flushIfDirty()
             authors = Part(uri: existing.uri, contentType: existing.contentType, blob: existing.blob)
+            authors.rels.setItems(existing.rels.items)
             isNew = false
         } else {
             var n = 1
             var uri = PackURI("/ppt/commentAuthors.xml")
             while dest.parts[uri] != nil { uri = PackURI("/ppt/commentAuthors\(n).xml"); n += 1 }
-            authors = Part(uri: uri, contentType: LegacyComments.authorsContentType, blob: sourceAuthors.blob)
+            authors = Part(uri: allocate?(uri) ?? uri, contentType: LegacyComments.authorsContentType, blob: sourceAuthors.blob)
             let root = try authors.dom()
-            for record in LegacyComments.elements(root, named: "cmAuthor") { root.removeChild(record) }
+            let recordIDs = Set(LegacyComments.elements(root, named: "cmAuthor").map(ObjectIdentifier.init))
+            root.children.removeAll { node in
+                if case .element(let element) = node { return recordIDs.contains(ObjectIdentifier(element)) }
+                return false
+            }
             authors.markDirty()
             isNew = true
         }
         let root = try authors.dom()
         var records = LegacyComments.elements(root, named: "cmAuthor")
         for record in records {
-            guard let id = record[attribute: "id"], recordsByID[id] == nil,
+            guard let id = LegacyComments.idKey(record[attribute: "id"]), recordsByID[id] == nil,
                   record.boundedInt("id", in: OOXMLBounds.drawingElementID) != nil else {
                 throw RostrumError.packageInvalid("destination legacy authors have invalid or duplicate IDs")
             }
             recordsByID[id] = record
         }
+        try register?(sourceAuthors, authors)
+        let dependencies = try AnnotationDependencies(source: source, original: sourceAuthors, target: authors,
+            lookup: lookup ?? { dest.parts[$0] }, mapped: mapped ?? { source === dest ? $0 : nil },
+            bind: bind ?? { _, _ in }, copy: copy ?? { $0 }, allowSemanticParts: source === dest && copy == nil)
+        let priorMetadata = root.serialized()
+        try AnnotationXML.mergeMetadata(from: sourceRoot, records: LegacyComments.elements(sourceRoot, named: "cmAuthor"),
+            into: root, records: records, dependencies: dependencies, isNew: isNew)
+        if root.serialized() != priorMetadata { authors.markDirty() }
+        var sourceIDs: Set<String> = []
         for sourceRecord in LegacyComments.elements(sourceRoot, named: "cmAuthor") {
-            guard let sourceID = sourceRecord[attribute: "id"], mapping[sourceID] == nil,
+            guard let sourceID = sourceRecord[attribute: "id"], let sourceKey = LegacyComments.idKey(sourceID), sourceIDs.insert(sourceKey).inserted,
                   sourceRecord.boundedInt("id", in: OOXMLBounds.drawingElementID) != nil else {
                 throw RostrumError.packageInvalid("source legacy authors have invalid or duplicate IDs")
             }
+            let clone = try AnnotationXML.copy(sourceRecord, from: sourceRoot)
             let signature = Self.signature(sourceRecord)
-            var match = records.first { $0[attribute: "id"] == sourceID && Self.signature($0) == signature }
             let identity = Self.presenceIdentity(sourceRecord)
-            if match == nil, let identity { match = records.first { Self.presenceIdentity($0) == identity } }
+            var match: XML.Element?
+            for record in records {
+                try dependencies.consumeComparisonWork()
+                guard LegacyComments.idKey(record[attribute: "id"]) == sourceKey || (identity != nil && Self.presenceIdentity(record) == identity) else { continue }
+                if try dependencies.equivalentRecord(clone, to: AnnotationXML.copy(record, from: root), ignoring: ["id", "lastIdx", "clrIdx"]) { match = record; break }
+            }
             var id = sourceID
-            if match == nil, recordsByID[id] != nil {
+            if match == nil, recordsByID[sourceKey] != nil {
                 let guid = SectionGUID.make(name: "legacy-author:\(sourceID):\(signature)", index: 0, avoiding: [])
                 let hex = String(guid.dropFirst().prefix(8))
                 var candidate = Int(UInt32(hex, radix: 16) ?? 0)
                 while let existing = recordsByID[String(candidate)] {
-                    if Self.signature(existing) == signature { match = existing; break }
+                    if try dependencies.equivalentRecord(clone, to: AnnotationXML.copy(existing, from: root), ignoring: ["id", "lastIdx", "clrIdx"]) { match = existing; break }
                     guard candidate < OOXMLBounds.drawingElementID.upperBound else {
                         throw RostrumError.packageInvalid("legacy author ID collision cannot be resolved")
                     }
@@ -72,16 +89,13 @@ final class LegacyAnnotationAuthorImport {
             }
             if let match, let matchedID = match[attribute: "id"] { id = matchedID }
             else {
-                let clone = sourceRecord.deepCopy()
-                for attr in sourceRoot.attributes where attr.name == "xmlns" || attr.name.hasPrefix("xmlns:") {
-                    if clone[attribute: attr.name] == nil { clone[attribute: attr.name] = attr.value }
-                }
+                try dependencies.remap(clone)
                 clone[attribute: "id"] = id
                 root.appendElement(clone); authors.markDirty()
-                records.append(clone); recordsByID[id] = clone
+                records.append(clone); recordsByID[LegacyComments.idKey(id)!] = clone
             }
-            mapping[sourceID] = id
-            if highIndex[id] == nil, let record = recordsByID[id] {
+            mapping[sourceKey] = id
+            if highIndex[id] == nil, let record = recordsByID[LegacyComments.idKey(id)!] {
                 highIndex[id] = try LegacyComments.nextIndex(authorID: id, in: dest, record: record) - 1
             }
         }
@@ -107,9 +121,9 @@ final class LegacyAnnotationAuthorImport {
     func remapAuthors(in comments: Part) throws {
         let root = try comments.dom()
         for cm in LegacyComments.elements(root, named: "cm") {
-            guard let oldID = cm[attribute: "authorId"], let id = mapping[oldID],
+            guard let oldID = LegacyComments.idKey(cm[attribute: "authorId"]), let id = mapping[oldID],
                   let high = highIndex[id], high < OOXMLBounds.drawingElementID.upperBound,
-                  let record = recordsByID[id] else {
+                  let record = recordsByID[LegacyComments.idKey(id)!] else {
                 throw RostrumError.packageInvalid("legacy comment author or index cannot be resolved")
             }
             let index = high + 1
@@ -122,9 +136,12 @@ final class LegacyAnnotationAuthorImport {
 
     func commit() {
         authors.flushIfDirty()
+        let installed: Part
         if let existing = dest.parts[authors.uri] {
             if existing.blob != authors.blob { existing.replaceBlob(authors.blob) }
-        } else { dest.addPart(uri: authors.uri, contentType: authors.contentType, blob: authors.blob) }
+            installed = existing
+        } else { installed = dest.addPart(uri: authors.uri, contentType: authors.contentType, blob: authors.blob) }
+        installed.rels.setItems(authors.rels.items)
         if isNew {
             presentation.rels.add(type: LegacyComments.authorsRelType,
                                   target: presentation.uri.relativeReference(to: authors.uri))

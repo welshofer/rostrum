@@ -31,7 +31,7 @@ import Testing
         #expect(final[attribute: "xmlns:custom"] == "urn:original-section")
     }
 
-    @Test(arguments: [false, true]) func sourceAuthorRelationshipsRefuseCrossDeckImportAtomically(legacy: Bool) throws {
+    @Test(arguments: [false, true]) func sourceAuthorRelationshipsCopyAndReopenWithoutMutation(legacy: Bool) throws {
         let source = try Presentation()
         let slide = try source.slides[0]
         if legacy { _ = try slide.addLegacyComment("text", author: "Source") }
@@ -46,10 +46,18 @@ import Testing
         authors.markDirty()
         let sourceBytes = try source.serializedData()
         let dest = try Presentation()
-        let before = try dest.serializedData()
-        #expect(throws: RostrumError.self) { _ = try dest.slides.import(from: source, at: 0) }
-        #expect(throws: RostrumError.self) { _ = try dest.slides.importAll(from: source) }
-        #expect(try dest.serializedData() == before)
+        _ = try dest.slides.import(from: source, at: 0)
+        let importedAuthors = try dest.presentationPart.related(by: type, in: dest.package)
+        let rel = try #require(importedAuthors.rels.first(ofType: "urn:author-extension"))
+        let importedPayload = try dest.package.part(at: PackURI.resolve(target: rel.target, relativeTo: importedAuthors.uri.baseURI))
+        #expect(importedPayload.blob == payload.blob)
+        #expect(try importedAuthors.dom().serialized().contains("r:id=\"" + rel.rId + "\""))
+        let saved = try dest.serializedData()
+        let reopened = try Presentation(data: saved)
+        #expect(try reopened.serializedData() == saved)
+        _ = try dest.slides.importAll(from: source)
+        #expect(importedAuthors.rels.items.count == 1)
+        #expect((legacy ? LegacyComments.elements(try importedAuthors.dom(), named: "cmAuthor") : AnnotationAuthorImport.authorElements(try importedAuthors.dom())).count == 1)
         #expect(try source.serializedData() == sourceBytes)
         // Duplication shares presentation-owned authors and retains their graph.
         _ = try source.slides.duplicate(at: 0)

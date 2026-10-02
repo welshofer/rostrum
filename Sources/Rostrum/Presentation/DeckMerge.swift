@@ -18,6 +18,8 @@ final class SlideCopier {
     private(set) var newMasters: [PackURI] = []
     private var destNotesMaster: PackURI?
     private var stagedParts: [PackURI: Part] = [:]
+    private var authorGraphDepth = 0
+    private var stagedAuthors: [PackURI: Part] = [:]
     private var authorImport: AnnotationAuthorImport?
     private var legacyAuthorImport: LegacyAnnotationAuthorImport?
     private var tableStyleImport: TableStyleImport?
@@ -48,6 +50,17 @@ final class SlideCopier {
         // flushed; copy the current bytes, not the pre-edit ones.
         sourcePart.flushIfDirty()
 
+        if sourcePart.contentType == ModernComments.authorsContentType {
+            try prepareAuthors(legacy: false)
+            guard let uri = map[sourceURI] else { throw RostrumError.packageInvalid("author part is not presentation-owned") }
+            return uri
+        }
+        if sourcePart.contentType == LegacyComments.authorsContentType {
+            try prepareAuthors(legacy: true)
+            guard let uri = map[sourceURI] else { throw RostrumError.packageInvalid("author part is not presentation-owned") }
+            return uri
+        }
+
         // Notes/handout masters are package singletons — never duplicate.
         if sourcePart.contentType == ContentType.notesMaster {
             let nm = try ensureDestNotesMaster(from: sourcePart)
@@ -60,7 +73,8 @@ final class SlideCopier {
         // per-process-random iteration, so an unsorted scan could pick a
         // different duplicate each run and break byte-identical output when the
         // destination already holds two same-content images.
-        if sourceURI.value.hasPrefix("/ppt/media/"), let existing = dest.matchingMedia(for: sourcePart.blob) {
+        if authorGraphDepth == 0, sourceURI.value.hasPrefix("/ppt/media/"), sourcePart.rels.items.isEmpty,
+           let existing = dest.matchingMedia(for: sourcePart.blob), existing.rels.items.isEmpty {
             map[sourceURI] = existing.uri
             return existing.uri
         }
@@ -225,6 +239,40 @@ final class SlideCopier {
         }
     }
 
+    private func prepareAuthors(legacy: Bool) throws {
+        authorGraphDepth += 1
+        defer { authorGraphDepth -= 1 }
+        func allocate(_ preferred: PackURI) -> PackURI {
+            let uri = dest.parts[preferred] == nil && stagedParts[preferred] == nil && !reservedStyleURIs.contains(preferred)
+                ? preferred : freshName(like: preferred)
+            reservedStyleURIs.insert(uri)
+            return uri
+        }
+        func register(_ source: Part, _ target: Part) throws {
+            try bind(source.uri, target.uri)
+            stagedAuthors[target.uri] = target
+        }
+        let lookup: (PackURI) -> Part? = { [unowned self] in self.stagedAuthors[$0] ?? self.stagedParts[$0] ?? self.dest.parts[$0] }
+        let mapped: (PackURI) -> PackURI? = { [unowned self] in self.map[$0] }
+        let bind: (PackURI, PackURI) throws -> Void = { [unowned self] in try self.bind($0, $1) }
+        if legacy {
+            if legacyAuthorImport == nil {
+                legacyAuthorImport = try LegacyAnnotationAuthorImport(source: source, dest: dest, presentation: destPresentation,
+                    allocate: allocate, register: register, lookup: lookup, mapped: mapped, bind: bind, copy: copy)
+            }
+        } else if authorImport == nil {
+            authorImport = try AnnotationAuthorImport(source: source, dest: dest, presentation: destPresentation,
+                allocate: allocate, register: register, lookup: lookup, mapped: mapped, bind: bind, copy: copy)
+        }
+    }
+
+    private func bind(_ sourceURI: PackURI, _ destinationURI: PackURI) throws {
+        guard map[sourceURI] == nil || map[sourceURI] == destinationURI else {
+            throw RostrumError.packageInvalid("annotation dependency has conflicting destination identities")
+        }
+        map[sourceURI] = destinationURI
+    }
+
     /// Annotation bodies can only be retargeted once the destination slide
     /// IDs have been allocated, while the copied parts are still detached.
     func importAnnotations(on slideURI: PackURI, slideID: Int) throws {
@@ -238,17 +286,11 @@ final class SlideCopier {
                 throw RostrumError.packageInvalid("imported comment part is not staged")
             }
             if rel.type == LegacyComments.commentsRelType {
-                if legacyAuthorImport == nil {
-                    legacyAuthorImport = try LegacyAnnotationAuthorImport(source: source, dest: dest,
-                                                                          presentation: destPresentation)
-                }
+                try prepareAuthors(legacy: true)
                 try legacyAuthorImport?.remapAuthors(in: comments)
                 continue
             }
-            if authorImport == nil {
-                authorImport = try AnnotationAuthorImport(source: source, dest: dest,
-                                                         presentation: destPresentation)
-            }
+            try prepareAuthors(legacy: false)
             try authorImport?.remapAuthors(in: comments)
             var ids: Set<String> = []
             for part in Array(dest.parts.values) + Array(stagedParts.values)

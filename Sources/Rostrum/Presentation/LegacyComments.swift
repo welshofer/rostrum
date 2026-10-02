@@ -20,10 +20,15 @@ enum LegacyComments {
         try package.mainDocumentPart().related(by: authorsRelType, in: package)
     }
 
+    static func idKey(_ raw: String?) -> String? {
+        guard let raw, let value = Int(raw), OOXMLBounds.drawingElementID.contains(value) else { return nil }
+        return String(value)
+    }
+
     static func nextIndex(authorID: String, in package: OPCPackage, record: XML.Element) throws -> Int {
         var maximum = record.boundedInt("lastIdx", in: OOXMLBounds.drawingElementID) ?? 0
         for part in package.parts.values where part.contentType == contentType {
-            for cm in elements(try part.dom(), named: "cm") where cm[attribute: "authorId"] == authorID {
+            for cm in elements(try part.dom(), named: "cm") where idKey(cm[attribute: "authorId"]) == idKey(authorID) {
                 maximum = max(maximum, cm.boundedInt("idx", in: OOXMLBounds.drawingElementID) ?? 0)
             }
         }
@@ -47,9 +52,9 @@ public final class LegacyComment {
     public var authorID: String? { cm[attribute: "authorId"] }
     public var createdTimestamp: String? { cm[attribute: "dt"] }
     public var author: CommentAuthor? {
-        guard let id = authorID, let authors = try? LegacyComments.authorPart(in: package),
+        guard let id = LegacyComments.idKey(authorID), let authors = try? LegacyComments.authorPart(in: package),
               let root = try? authors.dom(),
-              let author = LegacyComments.elements(root, named: "cmAuthor").first(where: { $0[attribute: "id"] == id }) else { return nil }
+              let author = LegacyComments.elements(root, named: "cmAuthor").first(where: { LegacyComments.idKey($0[attribute: "id"]) == id }) else { return nil }
         return CommentAuthor(author)
     }
     public var authorName: String? { author?.name }
