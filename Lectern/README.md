@@ -23,6 +23,37 @@ Lectern/
 
 Rostrum is a **local path dependency** (`../`), resolving OQ-4.
 
+## Feature integration and regression checks
+
+The inspector exposes table cells, speaker notes, section membership, modern
+comment threads and replies, resolved status, and legacy comments. Wide tables
+page through six columns with lazy rows. Export includes table text, notes,
+sections and complete comment text alongside the original media bytes.
+
+Preview geometry follows each slide's aspect ratio. macOS snapshots have bounded
+dimensions, queue depth and completion time; cache identity includes the full SVG
+and output size. Installed font lookup validates actual families and styles,
+preserves embedded faces, and reports unavailable metrics. Rendering limitations
+remain visible separately from schema findings.
+
+The deterministic [feature pipeline fixture](Tests/LecternCoreTests/Fixtures/FeaturePipeline/README.md)
+combines native/custom tables, rich text, image crops, notes, comments, sections,
+duplication and import. Run the core and app checks from the repository root:
+
+```sh
+swift test --package-path Lectern --jobs 2
+python3 Lectern/scripts/test-inspection-headless.py --all-app-tests
+Lectern/scripts/test-app.sh -parallel-testing-enabled NO
+```
+
+The Xcode Test action isolates defaults, library folders and diagnostics and skips
+keychain reads while exercising the production startup tasks. It also enables
+real WebKit portrait/4:3 snapshot tests. The headless harness exercises app state
+and view compilation; it does not replace native UI or WebKit checks. Normal app
+launches retain their usual storage and keychain behavior. See the
+[October 2 integration record](../docs/LECTERN-INTEGRATION-20261002.md) for exact
+results, live inspection/export evidence and remaining limits.
+
 ## How a deck gets made
 
 ```mermaid

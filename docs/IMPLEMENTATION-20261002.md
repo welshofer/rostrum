@@ -1,5 +1,9 @@
 # Integrated performance and accuracy follow-up — 2026-10-02
 
+The later [Lectern integration pass](LECTERN-INTEGRATION-20261002.md) adds native
+inspection/export verification and passing app-hosted tests. This checkpoint's
+results and Office fidelity qualifications remain preserved below.
+
 All changes described here are committed locally on `codex/burndown/20261001`.
 The tested code revision is `00a32311b4037441105cc1c86a2cd335f2d95825`;
 subsequent record updates do not change executable source. The requested pull
