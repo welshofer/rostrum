@@ -21,6 +21,8 @@ public extension TableCell {
 
     /// Set an explicit border. A nil line suppresses this border; use
     /// `clearBorder` to restore inheritance from the table style.
+    /// Unspecified compound/dash settings retain the existing border's style.
+    /// Use `.single` and `.solid` to explicitly reset those settings.
     @discardableResult
     func setBorder(_ edge: TableCellBorder, line: Line?) -> TableCell {
         let element = Line.makeElement(line)
@@ -32,6 +34,15 @@ public extension TableCell {
             for name in Fill.choiceNames { existing.removeChildren(named: name) }
             if let fill = element.childElements.first {
                 existing.insertChild(fill, beforeAnyOf: ["a:prstDash", "a:custDash", "a:round", "a:bevel", "a:miter", "a:headEnd", "a:tailEnd", "a:extLst"])
+            }
+            if let compound = line?.compound { existing[attribute: "cmpd"] = compound.rawValue }
+            if let dash = line?.dash {
+                // Preset and custom dash elements are mutually exclusive.
+                // Update the existing preset in place to retain opaque data.
+                existing.removeChildren(named: "a:custDash")
+                let preset = existing.getOrAddChild("a:prstDash", beforeAnyOf:
+                    ["a:round", "a:bevel", "a:miter", "a:headEnd", "a:tailEnd", "a:extLst"])
+                preset[attribute: "val"] = dash.rawValue
             }
         } else {
             let edges = TableCellBorder.allCases.map(\.rawValue)

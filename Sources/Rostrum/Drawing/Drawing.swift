@@ -190,24 +190,52 @@ public enum Fill: Hashable, Sendable {
     ]
 }
 
+/// DrawingML compound stroke arrangements (`a:ln@cmpd`).
+public enum LineCompound: String, CaseIterable, Hashable, Sendable {
+    case single = "sng", double = "dbl", thickThin, thinThick, triple = "tri"
+}
+
+/// DrawingML preset dash patterns (`a:prstDash@val`).
+public enum LineDash: String, CaseIterable, Hashable, Sendable {
+    case solid, dot, dash, largeDash = "lgDash", dashDot
+    case largeDashDot = "lgDashDot", largeDashDotDot = "lgDashDotDot"
+    case systemDash = "sysDash", systemDot = "sysDot"
+    case systemDashDot = "sysDashDot", systemDashDotDot = "sysDashDotDot"
+}
+
 /// A shape outline. `nil` on a Rostrum shape means an explicit `a:ln` with
 /// `a:noFill` — design shapes shouldn't inherit theme outlines by surprise.
 public struct Line: Hashable, Sendable {
     public var color: Color
     public var width: EMU
+    /// Nil leaves the arrangement unspecified; existing table borders retain it.
+    public var compound: LineCompound?
+    /// Nil leaves the pattern unspecified; existing table borders retain it.
+    public var dash: LineDash?
 
     public init(color: Color, width: EMU = .points(1)) {
+        self.init(color: color, width: width, compound: nil, dash: nil)
+    }
+
+    public init(color: Color, width: EMU = .points(1),
+                compound: LineCompound? = nil, dash: LineDash? = nil) {
         self.color = color
         self.width = width
+        self.compound = compound
+        self.dash = dash
     }
 
     static func makeElement(_ line: Line?) -> XML.Element {
         let ln = XML.Element("a:ln")
         if let line {
             ln[attribute: "w"] = String(line.width.rawValue)
+            ln[attribute: "cmpd"] = line.compound?.rawValue
             let fill = XML.Element("a:solidFill")
             fill.appendElement(line.color.srgbElement())
             ln.appendElement(fill)
+            if let dash = line.dash {
+                ln.appendElement(XML.Element("a:prstDash", attributes: [("val", dash.rawValue)]))
+            }
         } else {
             ln.appendElement(XML.Element("a:noFill"))
         }
