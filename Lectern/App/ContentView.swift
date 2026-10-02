@@ -449,7 +449,7 @@ struct ComposeView: View {
         } message: {
             Text(importError ?? "")
         }
-        .task { app.refreshLibrary() }
+        .task { await app.refreshLibraryAndWait() }
     }
 
     @ViewBuilder private var groundingCard: some View {

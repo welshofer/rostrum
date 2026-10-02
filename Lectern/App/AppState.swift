@@ -2,6 +2,12 @@ import Foundation
 import Observation
 import LecternCore
 
+struct LibraryStartupPaths: Sendable {
+    let library: URL
+    let legacy: URL?
+    let diagnostics: URL
+}
+
 // The app's single source of truth (@Observable — views observe it directly, no
 // ViewModels). Wired to the tested LecternCore pipeline. There is NO mock
 // provider: generation requires a real key (invariant I1: key lives only in the
@@ -83,6 +89,12 @@ final class AppState {
 
     // MARK: Library — the decks already on disk
     private(set) var library: [DeckFile] = []
+    private(set) var isRefreshingLibrary = false
+    private var libraryTask: Task<Void, Never>?
+    private var libraryRuns = RunGate()
+    private(set) var libraryRevision = UUID()
+    private var startupWork: Task<Int, Never>?
+    private var publishedStartup = false
     /// Whether the library sheet is up. On `AppState` rather than local view
     /// state so the menu bar can open it from anywhere, which is the whole
     /// point of having a menu item for it.
@@ -100,25 +112,77 @@ final class AppState {
     /// that is filesystem I/O between the user and their first frame, for a
     /// job that is a no-op on every launch after the first.
     func start() async {
-        #if os(macOS)
-        let moved = await Task.detached { Self.migrateLegacyDecks() }.value
-        if moved > 0 {
+        // Share filesystem preparation across overlapping view tasks. Once a
+        // migration has begun it finishes safely; cancellation suppresses this
+        // caller's publication rather than racing another migration against it.
+        if startupWork == nil {
+            let library = injectedLibraryDirectory
+            let legacy = injectedLegacyDirectory
+            let diagnostics = injectedDiagnosticsDirectory
+            let prepare = preparingLibrary
+            startupWork = Task.detached(priority: .utility) {
+                let paths = LibraryStartupPaths(library: library ?? Self.decksDirectory(),
+                    legacy: legacy ?? Self.legacyDecksDirectory(),
+                    diagnostics: diagnostics ?? Self.diagnosticsDirectory())
+                return await prepare(paths)
+            }
+        }
+        let moved = await startupWork!.value
+        guard !Task.isCancelled else { return }
+        if !publishedStartup, moved > 0 {
             migrationNotice = "Moved \(moved) deck\(moved == 1 ? "" : "s") to Documents › Lectern."
         }
-        #endif
-        // Rejected drafts carry the prompt and whatever was lifted from an
-        // attached PDF. Useful while a failure is being looked at; a liability
-        // once it is not.
-        let diagnostics = Self.diagnosticsDirectory()
-        await Task.detached { DeckStorage.pruneDiagnostics(in: diagnostics) }.value
-        refreshLibrary()
+        publishedStartup = true
+        await refreshLibraryAndWait()
     }
 
-    /// Re-read the decks folder. Cheap (one directory listing, no deck is
-    /// opened), so it runs whenever the library is shown rather than being
-    /// cached and going stale when a deck is added or removed in Finder.
-    func refreshLibrary() {
-        library = DeckLibrary.decks(in: libraryDirectory)
+    /// Directory enumeration and metadata reads can block on local/cloud
+    /// storage. Run them off-main; only the newest uncancelled scan publishes.
+    @discardableResult
+    func refreshLibrary() -> Task<Void, Never> {
+        libraryTask?.cancel()
+        let run = libraryRuns.begin()
+        let injectedDirectory = injectedLibraryDirectory
+        let read = readingLibrary
+        isRefreshingLibrary = true
+        let work = Task.detached(priority: .userInitiated) { [self] in
+            guard !Task.isCancelled else {
+                await self.finishLibraryRefresh(nil, run: run)
+                return
+            }
+            let directory = injectedDirectory ?? Self.decksDirectory()
+            let decks = await read(directory)
+            await self.finishLibraryRefresh(Task.isCancelled ? nil : decks, run: run)
+        }
+        libraryTask = work
+        return work
+    }
+
+    /// SwiftUI task cancellation also cancels its owned refresh request.
+    func refreshLibraryAndWait() async {
+        guard !Task.isCancelled else { return }
+        let work = refreshLibrary()
+        await withTaskCancellationHandler {
+            await work.value
+        } onCancel: {
+            work.cancel()
+        }
+    }
+
+    private func finishLibraryRefresh(_ decks: [DeckFile]?, run: Int) {
+        guard libraryRuns.isCurrent(run) else { return }
+        let cancelled = libraryTask?.isCancelled ?? true
+        libraryRuns.abandon()
+        libraryTask = nil
+        isRefreshingLibrary = false
+        guard !cancelled, let decks else { return }
+        var prior: [URL: DeckFile] = [:]
+        for deck in library { prior[deck.url] = deck }
+        var current: [URL: DeckFile] = [:]
+        for deck in decks { current[deck.url] = deck }
+        libraryRevision = UUID()
+        library = decks
+        slideCounts = slideCounts.filter { prior[$0.key] == current[$0.key] && current[$0.key] != nil }
     }
 
     /// Slide counts, keyed by deck. The list view shows them in a column, which
@@ -155,6 +219,7 @@ final class AppState {
         for decks: [DeckFile],
         reading count: @Sendable @escaping (DeckFile) async -> Int?
     ) async {
+        let revision = libraryRevision
         let pending = decks.filter { slideCounts[$0.url] == nil }
         guard !pending.isEmpty else { return }
 
@@ -168,7 +233,7 @@ final class AppState {
             }
         }
 
-        guard !counts.isEmpty else { return }
+        guard !Task.isCancelled, libraryRevision == revision, !counts.isEmpty else { return }
         slideCounts.merge(counts) { _, new in new }
     }
 
@@ -207,7 +272,11 @@ final class AppState {
     private let defaults: UserDefaults
     private let skipKeychain: Bool
     private let injectedLibraryDirectory: URL?
+    private let injectedLegacyDirectory: URL?
+    private let injectedDiagnosticsDirectory: URL?
     private let deletingDeck: (DeckFile) throws -> Void
+    private let readingLibrary: @Sendable (URL) async -> [DeckFile]
+    private let preparingLibrary: @Sendable (LibraryStartupPaths) async -> Int
     private var libraryDirectory: URL { injectedLibraryDirectory ?? Self.decksDirectory() }
 
     private enum Keys {
@@ -221,11 +290,18 @@ final class AppState {
     ///   worst, and no test here is about whether a key is stored.
     init(skipKeychain: Bool = false, defaults: UserDefaults = .standard,
          libraryDirectory: URL? = nil,
-         deletingDeck: @escaping (DeckFile) throws -> Void = { try DeckLibrary.delete($0) }) {
+         deletingDeck: @escaping (DeckFile) throws -> Void = { try DeckLibrary.delete($0) },
+         legacyDirectory: URL? = nil, diagnosticsDirectory: URL? = nil,
+         readingLibrary: @escaping @Sendable (URL) async -> [DeckFile] = { DeckLibrary.decks(in: $0) },
+         preparingLibrary: @escaping @Sendable (LibraryStartupPaths) async -> Int = { AppState.prepareLibrary($0) }) {
         self.defaults = defaults
         self.skipKeychain = skipKeychain
         injectedLibraryDirectory = libraryDirectory
         self.deletingDeck = deletingDeck
+        injectedLegacyDirectory = legacyDirectory
+        injectedDiagnosticsDirectory = diagnosticsDirectory
+        self.readingLibrary = readingLibrary
+        self.preparingLibrary = preparingLibrary
         let d = defaults
         if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
         // A selection stored before Settings started excluding unwired
@@ -252,6 +328,40 @@ final class AppState {
         guard !skipKeychain else { return }
         hasKey = KeychainStore.hasKey(for: providerID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
+    }
+
+    /// The test scheme changes storage/keychain dependencies, not startup
+    /// behavior: it still runs the real migration, pruning and library scan.
+    static func forLaunch(environment: [String: String] = ProcessInfo.processInfo.environment,
+                          testRoot: URL? = nil, testDefaults: UserDefaults? = nil) -> AppState {
+        guard environment["LECTERN_TEST_HOST"] == "1" else { return AppState() }
+        let identity = "Lectern.HostedTests.\(UUID().uuidString)"
+        let root = testRoot ?? FileManager.default.temporaryDirectory.appendingPathComponent(identity, isDirectory: true)
+        let defaults = testDefaults ?? UserDefaults(suiteName: identity)!
+        return AppState(skipKeychain: true, defaults: defaults,
+            libraryDirectory: root.appendingPathComponent("Library", isDirectory: true),
+            deletingDeck: { deck in
+                guard deck.url.deletingLastPathComponent().standardizedFileURL == root.appendingPathComponent("Library", isDirectory: true).standardizedFileURL else {
+                    throw CocoaError(.fileWriteNoPermission)
+                }
+                try FileManager.default.removeItem(at: deck.url)
+            }, legacyDirectory: root.appendingPathComponent("Legacy", isDirectory: true),
+            diagnosticsDirectory: root.appendingPathComponent("Diagnostics", isDirectory: true))
+    }
+
+    nonisolated static func prepareLibrary(_ paths: LibraryStartupPaths) -> Int {
+        let moved = paths.legacy.map { DeckStorage.migrateDecks(from: $0, to: paths.library) } ?? 0
+        DeckStorage.pruneDiagnostics(in: paths.diagnostics)
+        return moved
+    }
+
+    nonisolated static func legacyDecksDirectory() -> URL? {
+        #if os(macOS)
+        return FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("Lectern/Decks", isDirectory: true)
+        #else
+        return nil
+        #endif
     }
 
     // MARK: - Styles
@@ -455,7 +565,7 @@ final class AppState {
                                   styleSlug: selectedStyleSlug ?? "default")
         let designURL = selectedStyle?.designURL
         let directory = libraryDirectory
-        let diagnostics = Self.diagnosticsDirectory()
+        let diagnostics = injectedDiagnosticsDirectory ?? Self.diagnosticsDirectory()
         let keyRead = Result { try KeychainStore.readOrFail(for: providerID) }
         let id = providerID, chosenModel = model
         let style = selectedStyle
@@ -577,10 +687,20 @@ final class AppState {
     private(set) var exportedDirectory: URL?
     private(set) var exportSummary: String?
     private(set) var exportProblem: String?
+    private var exportTask: Task<Void, Never>?
+    // Cancellation invalidates the UI request, but synchronous filesystem work
+    // can still finish. Keep that physical tail so later exports cannot race its
+    // writes, including when both source decks have the same filename.
+    private var exportTail: Task<Void, Never>?
+    private var exportRuns = RunGate()
 
     func chooseDeckToInspect() { isChoosingDeckToInspect = true }
 
     func clearExportReport() {
+        exportRuns.abandon()
+        exportTask?.cancel()
+        exportTask = nil
+        isExporting = false
         exportedDirectory = nil; exportSummary = nil; exportProblem = nil
     }
 
@@ -678,6 +798,7 @@ final class AppState {
         inspectionRuns.abandon()
         inspectTask?.cancel()
         inspectTask = nil
+        clearExportReport()
         phase = .home
     }
 
@@ -700,18 +821,32 @@ final class AppState {
     /// Copying media out of a deck is I/O measured in megabytes, so it gets
     /// the same treatment as everything else here: off the main actor, with
     /// something on screen saying so.
-    func exportInspected(into parent: URL) {
-        guard let deck = inspection?.fileURL, !isExporting else { return }
-        isExporting = true
-        clearExportReport()
+    @discardableResult
+    func exportInspected(into parent: URL) -> Task<Void, Never>? {
+        exportInspected(into: parent) { deck, parent in
+            try DeckExporter.export(deckAt: deck, into: parent)
+        }
+    }
 
-        Task.detached(priority: .userInitiated) { [self] in
+    @discardableResult
+    func exportInspected(into parent: URL,
+        exporting operation: @escaping @Sendable (URL, URL) async throws -> DeckExporter.Outcome
+    ) -> Task<Void, Never>? {
+        guard phase == .inspected, let deck = inspection?.fileURL, !isExporting else { return nil }
+        clearExportReport()
+        let run = exportRuns.begin()
+        isExporting = true
+
+        let previous = exportTail
+        let work = Task.detached(priority: .userInitiated) { [self] in
             do {
+                await previous?.value
+                try Task.checkCancellation()
                 let scopedDeck = deck.startAccessingSecurityScopedResource()
                 defer { if scopedDeck { deck.stopAccessingSecurityScopedResource() } }
                 let scopedParent = parent.startAccessingSecurityScopedResource()
                 defer { if scopedParent { parent.stopAccessingSecurityScopedResource() } }
-                let outcome = try DeckExporter.export(deckAt: deck, into: parent)
+                let outcome = try await operation(deck, parent)
                 let summary = "\(outcome.slideCount) slide\(outcome.slideCount == 1 ? "" : "s")"
                     + " · \(outcome.assetsWritten) media file\(outcome.assetsWritten == 1 ? "" : "s")"
                     + " · \(outcome.chartsWritten) chart CSV\(outcome.chartsWritten == 1 ? "" : "s")"
@@ -719,19 +854,34 @@ final class AppState {
                 let problem = outcome.warnings.isEmpty
                     ? nil : outcome.warnings.joined(separator: "\n")
                 await MainActor.run {
+                    guard self.exportRuns.isCurrent(run), self.phase == .inspected,
+                          self.inspection?.fileURL == deck else { return }
+                    let cancelled = self.exportTask?.isCancelled ?? true
+                    self.exportRuns.abandon()
+                    self.exportTask = nil
+                    self.isExporting = false
+                    guard !cancelled else { return }
                     self.exportedDirectory = outcome.directory
                     self.exportSummary = summary
                     self.exportProblem = problem
-                    self.isExporting = false
                 }
             } catch {
                 let message = String(describing: error)
                 await MainActor.run {
-                    self.exportProblem = message
+                    guard self.exportRuns.isCurrent(run), self.phase == .inspected,
+                          self.inspection?.fileURL == deck else { return }
+                    let cancelled = self.exportTask?.isCancelled ?? true
+                    self.exportRuns.abandon()
+                    self.exportTask = nil
                     self.isExporting = false
+                    guard !cancelled else { return }
+                    self.exportProblem = message
                 }
             }
         }
+        exportTask = work
+        exportTail = work
+        return work
     }
 
     private func apply(_ event: GenerationEvent, run: Int) {

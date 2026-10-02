@@ -233,11 +233,11 @@ struct DeckGridView: View {
             .padding(.top, 20)
             .padding(.bottom, 36)
         }
-        .task(id: app.library.count) { app.refreshLibrary() }
+        .task { await app.refreshLibraryAndWait() }
         // The list shows slide count as a sortable column, so it needs every
         // value rather than one per visible row. Cheap now that a count is one
         // zip entry, and cached after the first pass.
-        .task(id: "\(layout.rawValue)-\(app.library.count)") {
+        .task(id: "\(layout.rawValue)-\(app.libraryRevision)") {
             if layout == .list { await app.loadSlideCounts() }
         }
         .alert("Rename deck",

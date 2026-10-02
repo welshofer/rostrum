@@ -35,24 +35,26 @@ import LecternCore
         #expect(snapshot(UserDefaults.standard, keys: keys) == standardBefore)
     }
 
-    @Test func libraryRefreshRenameAndDeleteUseOnlyTheInjectedLibrary() throws {
+    @Test func libraryRefreshRenameAndDeleteUseOnlyTheInjectedLibrary() async throws {
         let left = try AppStateTestContext(), right = try AppStateTestContext()
         defer { left.remove(); right.remove() }
         let leftURL = left.libraryDirectory.appendingPathComponent("left.pptx")
         let rightURL = right.libraryDirectory.appendingPathComponent("right.pptx")
         try Data("left fixture".utf8).write(to: leftURL)
         try Data("right fixture".utf8).write(to: rightURL)
-        left.app.refreshLibrary()
-        right.app.refreshLibrary()
+        await left.app.refreshLibrary().value
+        await right.app.refreshLibrary().value
         #expect(left.app.library.map(\.url.standardizedFileURL) == [leftURL.standardizedFileURL])
         #expect(right.app.library.map(\.url.standardizedFileURL) == [rightURL.standardizedFileURL])
         let deck = try #require(left.app.library.first)
         left.app.renameInLibrary(deck, to: "renamed")
+        await left.app.refreshLibrary().value
         #expect(left.app.renameProblem == nil)
         let renamed = try #require(left.app.library.first)
         #expect(renamed.url.standardizedFileURL == left.libraryDirectory.appendingPathComponent("renamed.pptx").standardizedFileURL)
         #expect(!FileManager.default.fileExists(atPath: leftURL.path))
         left.app.deleteFromLibrary(renamed)
+        await left.app.refreshLibrary().value
         #expect(left.app.library.isEmpty)
         #expect(!FileManager.default.fileExists(atPath: renamed.url.path))
         #expect(try Data(contentsOf: rightURL) == Data("right fixture".utf8))

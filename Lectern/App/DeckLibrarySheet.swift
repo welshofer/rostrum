@@ -71,7 +71,7 @@ struct DeckLibrarySheet: View {
         .frame(minWidth: 560, minHeight: 420)
         #endif
         .background(.background)
-        .task { app.refreshLibrary() }
+        .task { await app.refreshLibraryAndWait() }
         #if os(iOS)
         .quickLookPreview($previewURL)
         #endif
