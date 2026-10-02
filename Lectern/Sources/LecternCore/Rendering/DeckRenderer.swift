@@ -21,10 +21,9 @@ public struct DeckResult: Sendable, Equatable {
     /// `warnings`, which are about the model's plan: these are ours, and an
     /// empty list is the normal case.
     public let schemaIssues: [String]
-    /// Typefaces this deck's style asks for that aren't installed here, so
-    /// their text was laid out from Rostrum's calibrated estimates rather than
-    /// real advance widths. Kept out of `warnings` on purpose: whether a font
-    /// is present is a fact about this machine, not about the deck.
+    /// Unavailable regular/bold/italic/bold-italic faces of the requested style
+    /// families. Text using these faces falls back to estimated measurements.
+    /// Availability is a fact about this machine, not a defect in the deck.
     public let unmeasuredFonts: [String]
     /// One self-contained SVG per slide, rendered by Rostrum from the deck it
     /// just wrote — not a reconstruction from the IR. Empty if rendering
@@ -158,177 +157,31 @@ public actor DeckRenderer {
 
     // MARK: - Text measurement
 
-    /// Register the typefaces this deck's style actually uses, so Rostrum's
-    /// builders measure text with real advance widths instead of falling back
-    /// to their calibrated character-count estimates. Every builder Lectern
-    /// calls — bullets, metrics, quotes, comparisons, bands, process — consults
-    /// `presentation.fonts`, so this is the difference between text that is
-    /// known to fit and text that is guessed to.
-    ///
-    /// Rostrum deliberately never looks in platform font directories: implicit
-    /// lookup would make identical code emit different bytes on different
-    /// machines, and its determinism is a library-level promise. Lectern is an
-    /// app rendering for the machine in front of it and can make the opposite
-    /// trade — measure with the fonts that are actually here, and estimate for
-    /// the ones that aren't.
-    ///
-    /// - Returns: the requested typefaces that could not be registered, in
-    ///   sorted order. Empty on platforms without CoreText, where nothing is
-    ///   registered and every builder estimates exactly as it did before.
-    private static func registerInstalledFonts(for presentation: Presentation) -> [String] {
-        #if canImport(CoreText)
+    private static func registerInstalledFonts(for presentation: Presentation) -> InstalledFonts.RegistrationReport {
         let style = presentation.style
         var wanted: Set<String> = [style.headingFont, style.bodyFont]
         for role in TypeRole.allCases { wanted.insert(style.type(role).font) }
-
-        var unmeasured: [String] = []
-        for name in wanted.sorted() where !name.isEmpty {
-            // The face is found under whichever candidate name the file
-            // answers to, but registered under the name the design asked for,
-            // so every later lookup uses the design's own vocabulary.
-            guard let url = installedFontFile(named: name) ?? officeFontFile(named: name),
-                  let data = try? Data(contentsOf: url),
-                  let face = familyCandidates(for: name)
-                      .lazy.compactMap({ faceIndex(named: $0, in: data) }).first,
-                  (try? presentation.fonts.register(data, aliases: [name], fontIndex: face)) != nil
-            else {
-                unmeasured.append(name)
-                continue
-            }
-        }
-        return unmeasured
-        #else
-        return []
-        #endif
+        return InstalledFonts.registerForGeneration(in: presentation, families: wanted.sorted())
     }
 
+    // Internal compatibility helpers used by existing platform resolver tests.
     #if canImport(CoreText)
-    /// The file backing an installed font family, or nil when it isn't here.
-    ///
-    /// CoreText substitutes silently — ask for a face that isn't installed and
-    /// it hands back the system fallback. Registering *that* under the
-    /// requested name would measure the wrong glyphs and report confidence,
-    /// which is worse than estimating, so the family it resolved to has to be
-    /// the family that was asked for.
     static func installedFontFile(named name: String) -> URL? {
-        for candidate in familyCandidates(for: name) {
-            let font = CTFontCreateWithName(candidate as CFString, 12, nil)
-            let resolved = CTFontCopyFamilyName(font) as String
-            guard resolved.caseInsensitiveCompare(candidate) == .orderedSame else { continue }
-            if let url = CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL { return url }
-        }
-        return nil
+        InstalledFonts.Session().firstFile(named: name, system: true)
     }
-
-    /// The family as written, then the same family without its foundry or
-    /// format suffix.
-    ///
-    /// Designs name faces the way a foundry licenses them — "Helvetica Neue
-    /// LT", "Futura PT", "Garamond ITC" — while the copy installed on a Mac is
-    /// simply "Helvetica Neue". Matching only the exact string meant a font
-    /// sitting right there in Font Book was declared missing and its text
-    /// fitted by estimate.
-    ///
-    /// The suffix is dropped only as a fallback, after the exact name fails,
-    /// because several of these are real distinct families in their own right
-    /// — "Gill Sans MT" and "Bodoni MT" both ship with Office. Where the
-    /// stripped name resolves to a relative rather than the licensed cut, its
-    /// advance widths are far closer than the character-count estimate they
-    /// replace.
-    static func familyCandidates(for name: String) -> [String] {
-        var candidates = [name]
-        var parts = name.split(separator: " ").map(String.init)
-        while parts.count > 1, foundrySuffixes.contains(parts[parts.count - 1].uppercased()) {
-            parts.removeLast()
-            let stripped = parts.joined(separator: " ")
-            if !stripped.isEmpty, !candidates.contains(stripped) { candidates.append(stripped) }
-        }
-        return candidates
-    }
-
-    /// Foundry and format tags, not design words: "Neue", "Condensed" and
-    /// "Display" change which face you get and are never stripped.
-    private static let foundrySuffixes: Set<String> = [
-        "LT", "MT", "ITC", "BT", "EF", "URW", "PS", "PT", "STD", "PRO", "COM", "W1G", "TT",
-    ]
-
-    /// Office ships its core families — Calibri, Cambria, Aptos, the lot —
-    /// inside its own app bundles instead of installing them system-wide. macOS
-    /// therefore reports them missing and CoreText substitutes silently, so a
-    /// deck in Calibri got measured as an estimate and reported as "not
-    /// installed", when PowerPoint will render it in Calibri every time.
-    ///
-    /// The file is read directly rather than registered with the system: this
-    /// only needs advance widths, not a font the OS will draw with.
     static func officeFontFile(named name: String) -> URL? {
-        for directory in officeFontDirectories {
-            guard let files = try? FileManager.default.contentsOfDirectory(
-                at: URL(fileURLWithPath: directory), includingPropertiesForKeys: nil)
-            else { continue }
-            // Filename first — "Calibri.ttf" for Calibri — because scanning 280
-            // files and parsing each one to ask its family is a lot of work to
-            // find a file that is usually named after what it holds.
-            let stem = (familyCandidates(for: name).last ?? name)
-                .replacingOccurrences(of: " ", with: "").lowercased()
-            let ranked = files.filter { $0.pathExtension.lowercased().hasPrefix("tt") }
-                .sorted { a, b in
-                    let an = a.deletingPathExtension().lastPathComponent.lowercased()
-                    let bn = b.deletingPathExtension().lastPathComponent.lowercased()
-                    return (an == stem ? 0 : an.hasPrefix(stem) ? 1 : 2)
-                        < (bn == stem ? 0 : bn.hasPrefix(stem) ? 1 : 2)
-                }
-            for url in ranked.prefix(officeFontCandidateLimit) {
-                guard let data = try? Data(contentsOf: url) else { continue }
-                for candidate in familyCandidates(for: name)
-                where faceIndex(named: candidate, in: data) != nil {
-                    return url
-                }
-            }
-        }
-        return nil
+        InstalledFonts.Session().firstFile(named: name, system: false)
     }
-
-    /// Where Office keeps them. Word and Excel carry the same set, so whichever
-    /// app is installed will do.
-    private static let officeFontDirectories = [
-        "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts",
-        "/Applications/Microsoft Word.app/Contents/Resources/DFonts",
-        "/Applications/Microsoft Excel.app/Contents/Resources/DFonts",
-        "/Library/Fonts/Microsoft",
-    ]
-
-    /// Only the best-named candidates are opened; a family that is really there
-    /// is named after itself, and parsing the whole directory to prove a
-    /// negative is not worth the milliseconds on every render.
-    private static let officeFontCandidateLimit = 8
-
-    /// Which face inside `data` calls itself `name`.
-    ///
-    /// `kCTFontURLAttribute` gives a path, not a face — and on macOS a `.ttc`
-    /// routinely holds several *families*, not just several weights of one
-    /// (PingFang SC/TC/HK, Songti SC/TC/STSong). Registering without an index
-    /// parses face 0, so asking for a family that lives deeper in the
-    /// collection would measure a different typeface's advance widths under
-    /// the requested name — and, because parsing succeeded, leave it out of
-    /// `unmeasuredFonts`. That is exactly the confidently-wrong outcome the
-    /// family check above exists to prevent, one level further in: CoreText
-    /// vouches for the file, this vouches for the face inside it.
-    ///
-    /// Returns nil when no face claims the name, so the caller estimates
-    /// rather than measuring something else.
+    static func familyCandidates(for name: String) -> [String] {
+        InstalledFonts.familyCandidates(for: name)
+    }
     static func faceIndex(named name: String, in data: Data) -> Int? {
-        for index in 0..<Self.maxFacesPerCollection {
+        for index in 0..<64 {
             guard let metrics = try? FontMetrics(data: data, fontIndex: index) else { return nil }
-            if metrics.familyNames.contains(where: { $0.caseInsensitiveCompare(name) == .orderedSame }) {
-                return index
-            }
+            if metrics.familyNames.contains(where: { $0.caseInsensitiveCompare(name) == .orderedSame }) { return index }
         }
         return nil
     }
-
-    /// Enough for any collection Apple ships; a bound because the loop's exit
-    /// otherwise depends on a parse failing.
-    private static let maxFacesPerCollection = 64
     #endif
 
     /// Render `deck` (styled by the `design.md` at `designURL`, if any) into
@@ -347,7 +200,7 @@ public actor DeckRenderer {
             if let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
             // After applyDesign: the style is what decides which typefaces the
             // builders will be measuring with.
-            let unmeasured = Self.registerInstalledFonts(for: presentation)
+            let registration = Self.registerInstalledFonts(for: presentation)
 
             var dropped: [String] = []
             var builtSlides: [String: Slide] = [:]
@@ -432,8 +285,8 @@ public actor DeckRenderer {
             // already saved, so a cancel here skips them rather than undoing it.
             let previews = Task.isCancelled ? DeckPreviews() : Self.previews(of: presentation)
             return DeckResult(url: url, slideCount: presentation.slides.count,
-                              warnings: warnings, schemaIssues: schemaIssues,
-                              unmeasuredFonts: unmeasured,
+                              warnings: warnings + registration.approximations, schemaIssues: schemaIssues,
+                              unmeasuredFonts: registration.missing,
                               previews: previews.svgs, previewTitles: previews.titles,
                               previewSlideNumbers: previews.slideNumbers,
                               previewDiagnostics: previews.diagnostics,
