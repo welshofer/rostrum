@@ -257,12 +257,11 @@ enum AnnotationXML {
                     throw RostrumError.packageInvalid("author extension overrides inherited compatibility policy")
                 }
                 if local == nil { clone[attribute: attribute.name] = attribute.value }
-            } else if attribute.name == "xml:space" || attribute.name == "xml:lang" {
-                if clone[attribute: attribute.name] == nil { clone[attribute: attribute.name] = attribute.value }
             }
         }
-        if clone[attribute: "xml:lang"] == nil { clone[attribute: "xml:lang"] = "" }
-        if clone[attribute: "xml:space"] == nil { clone[attribute: "xml:space"] = "default" }
+        // XML language/whitespace context remains on the author-list root.
+        // Author schemas do not permit synthesizing xml:lang/xml:space here;
+        // mergeMetadata rejects unequal inherited contexts before attachment.
         return clone
     }
 
@@ -278,11 +277,26 @@ enum AnnotationXML {
         }
         if isNew { try dependencies.remap(destination); return }
         let sourceScope = bindings(source), destScope = bindings(destination)
+        guard (source[attribute: "xml:lang"] ?? "") == (destination[attribute: "xml:lang"] ?? ""),
+              (source[attribute: "xml:space"] ?? "default") == (destination[attribute: "xml:space"] ?? "default") else {
+            throw RostrumError.packageInvalid("author-list XML language or whitespace context cannot be represented safely")
+        }
         func metadata(_ root: XML.Element, _ scope: [String: String]) -> [String: String] {
             var result: [String: String] = [:]
             for attr in root.attributes where attr.name != "xmlns" && !attr.name.hasPrefix("xmlns:") {
                 let name = expanded(attr.name, scope: scope, attribute: true)
-                if !name.hasPrefix("{\(compatibility)}"), attr.name != "xml:lang", attr.name != "xml:space" { result[name] = attr.value }
+                if !name.hasPrefix("{\(compatibility)}"), attr.name != "xml:lang", attr.name != "xml:space" {
+                    // Opaque values may contain QNames. Equal spelling alone
+                    // cannot establish equality across different prefix scopes.
+                    var value = "\(attr.value.utf8.count):" + attr.value
+                    for word in attr.value.split(whereSeparator: \.isWhitespace) {
+                        let prefix = String(word.split(separator: ":").first ?? "")
+                        for binding in [scope[prefix] ?? "UNBOUND", scope[""] ?? ""] {
+                            value += "\(binding.utf8.count):" + binding
+                        }
+                    }
+                    result[name] = value
+                }
             }
             return result
         }

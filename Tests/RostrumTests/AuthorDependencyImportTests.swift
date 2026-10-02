@@ -276,26 +276,161 @@ import Testing
         #expect(try dest.serializedData() == before)
     }
 
+    @Test(arguments: [false, true]) func authorCopiesKeepXMLContextOnListRoot(legacy: Bool) throws {
+        let (source, authors, _, _) = try fixture(legacy: legacy)
+        let root = try authors.dom()
+        root[attribute: "xml:lang"] = "fr"
+        root[attribute: "xml:space"] = "preserve"
+        authors.markDirty()
+        let sourceBytes = try source.serializedData()
+        let dest = try Presentation()
+        _ = try dest.slides.import(from: source, at: 0)
+        let installed = try authorPart(dest, legacy: legacy)
+        let installedRoot = try installed.dom()
+        #expect(installedRoot[attribute: "xml:lang"] == "fr")
+        #expect(installedRoot[attribute: "xml:space"] == "preserve")
+        for record in records(installedRoot, legacy: legacy) {
+            #expect(record[attribute: "xml:lang"] == nil)
+            #expect(record[attribute: "xml:space"] == nil)
+        }
+        _ = try dest.slides.import(from: source, at: 0)
+        #expect(records(try installed.dom(), legacy: legacy).count == 1)
+        #expect(try source.serializedData() == sourceBytes)
+        let saved = try dest.serializedData()
+        #expect(try Presentation(data: saved).serializedData() == saved)
+    }
+
+    @Test(arguments: [false, true]) func absentAndExplicitDefaultAuthorContextsAreEquivalent(legacy: Bool) throws {
+        for explicitOnSource in [false, true] {
+            let (source, sourceAuthors, sourceRecord, _) = try fixture(legacy: legacy)
+            let (dest, destAuthors, destRecord, _) = try fixture(legacy: legacy)
+            destRecord[attribute: "id"] = sourceRecord[attribute: "id"]
+            destAuthors.markDirty()
+            let explicit = explicitOnSource ? sourceAuthors : destAuthors
+            let root = try explicit.dom()
+            root[attribute: "xml:lang"] = ""
+            root[attribute: "xml:space"] = "default"
+            explicit.markDirty()
+            let sourceBytes = try source.serializedData()
+            _ = try dest.slides.import(from: source, at: 0)
+            let installedRoot = try destAuthors.dom()
+            #expect(records(installedRoot, legacy: legacy).count == 1)
+            #expect(installedRoot[attribute: "xml:lang"] == (explicitOnSource ? nil : ""))
+            #expect(installedRoot[attribute: "xml:space"] == (explicitOnSource ? nil : "default"))
+            let record = try #require(records(installedRoot, legacy: legacy).first)
+            #expect(record[attribute: "xml:lang"] == nil)
+            #expect(record[attribute: "xml:space"] == nil)
+            #expect(try source.serializedData() == sourceBytes)
+            let saved = try dest.serializedData()
+            #expect(try Presentation(data: saved).serializedData() == saved)
+        }
+    }
+
+    @Test(arguments: [false, true]) func conflictingInheritedAuthorContextRefusesAtomically(legacy: Bool) throws {
+        for attribute in ["xml:lang", "xml:space"] {
+            let (source, authors, _, _) = try fixture(legacy: legacy)
+            let (dest, installed, _, _) = try fixture(legacy: legacy)
+            let sourceRoot = try authors.dom()
+            sourceRoot[attribute: attribute] = attribute == "xml:lang" ? "fr" : "preserve"
+            authors.markDirty()
+            let sourceBytes = try source.serializedData()
+            let before = try dest.serializedData()
+            let relationships = installed.rels.items
+            #expect(throws: RostrumError.self) { _ = try dest.slides.import(from: source, at: 0) }
+            #expect(try dest.serializedData() == before)
+            #expect(installed.rels.items == relationships)
+            #expect(try source.serializedData() == sourceBytes)
+            // The reverse direction must not cause absent defaults to adopt a
+            // destination list's language/whitespace policy either.
+            #expect(throws: RostrumError.self) { _ = try source.slides.import(from: dest, at: 0) }
+            #expect(try source.serializedData() == sourceBytes)
+        }
+    }
+
+    @Test(arguments: [false, true]) func opaqueListQNameBindingsRefuseAtomically(legacy: Bool) throws {
+        let (source, sourceAuthors, _, _) = try fixture(legacy: legacy)
+        let (dest, destAuthors, _, _) = try fixture(legacy: legacy)
+        for (part, namespace) in [(sourceAuthors, "urn:source-meaning"), (destAuthors, "urn:destination-meaning")] {
+            let root = try part.dom()
+            root[attribute: "xmlns:policy"] = "urn:author-policy"
+            root[attribute: "xmlns:q"] = namespace
+            root[attribute: "policy:mode"] = "q:meaning"
+            root[attribute: "xmlns:mc"] = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+            root[attribute: "mc:Ignorable"] = "policy"
+            part.markDirty()
+        }
+        let sourceBytes = try source.serializedData()
+        let before = try dest.serializedData()
+        #expect(throws: RostrumError.self) { _ = try dest.slides.import(from: source, at: 0) }
+        #expect(try dest.serializedData() == before)
+        #expect(try source.serializedData() == sourceBytes)
+        let sourceRoot = try sourceAuthors.dom()
+        sourceRoot[attribute: "xmlns:q"] = "urn:destination-meaning"
+        sourceAuthors.markDirty()
+        _ = try dest.slides.import(from: source, at: 0)
+        let installed = try destAuthors.dom()
+        #expect(installed[attribute: "policy:mode"] == "q:meaning")
+        #expect(installed[attribute: "xmlns:q"] == "urn:destination-meaning")
+        let saved = try dest.serializedData()
+        #expect(try Presentation(data: saved).serializedData() == saved)
+    }
+
+    @Test func pinnedOfficeAcceptedCustomXMLGraphReopens() throws {
+        let url = (Bundle.module.resourceURL ?? Bundle.module.bundleURL)
+            .appendingPathComponent("Fixtures/AuthorDependencyImport/ModernCustomXML.pptx")
+        let deck = try Presentation(data: Data(contentsOf: url))
+        #expect(deck.slides.count == 2)
+        #expect(Array(deck.slides).filter { !$0.comments.isEmpty }.count == 1)
+        let authors = try authorPart(deck, legacy: false)
+        let payload = try authors.related(by: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXml", in: deck.package)
+        #expect(payload.blob == Data("<?extension retain?><custom xmlns=\"urn:rel3-oracle\"><!--keep-->Office author payload</custom>".utf8))
+        let author = try #require(records(authors.dom(), legacy: false).first)
+        #expect(author[attribute: "xml:lang"] == nil)
+        #expect(author[attribute: "xml:space"] == nil)
+        let saved = try deck.serializedData()
+        #expect(try Presentation(data: saved).serializedData() == saved)
+    }
+
     @Test func realPowerPointAuthorsImportWithCustomExtensionGraph() throws {
         let url = (Bundle.module.resourceURL ?? Bundle.module.bundleURL)
             .appendingPathComponent("Fixtures/RealDecks/MovieAndComments.pptx")
-        let source = try Presentation(data: Data(contentsOf: url))
+        let original = try Data(contentsOf: url)
+        let source = try Presentation(data: original)
         let slideIndex = try #require(Array(source.slides).firstIndex { !$0.comments.isEmpty })
         let sourceAuthor = try #require(source.slides[slideIndex].comments.first?.author)
+        if let output = ProcessInfo.processInfo.environment["ROSTRUM_REL3_REVIEW_OUTPUT"] {
+            let directory = URL(fileURLWithPath: output).deletingLastPathComponent()
+            try original.write(to: directory.appendingPathComponent("rostrum-rel3-office-original.pptx"))
+            try source.serializedData().write(to: directory.appendingPathComponent("rostrum-rel3-office-roundtrip.pptx"))
+            let plain = try Presentation()
+            _ = try plain.slides.import(from: source, at: slideIndex)
+            try plain.serializedData().write(to: directory.appendingPathComponent("rostrum-rel3-office-plain-import.pptx"))
+        }
         let authors = try authorPart(source, legacy: false)
         let record = try #require(records(authors.dom(), legacy: false).first)
         let payload = source.package.addPart(uri: PackURI("/custom/author-extension.xml"), contentType: "application/xml",
             blob: Data("<?extension retain?><custom xmlns=\"urn:rel3-oracle\"><!--keep-->Office author payload</custom>".utf8))
-        let rel = authors.rels.add(type: "urn:rel3-oracle", target: authors.uri.relativeReference(to: payload.uri))
+        // The consumer acceptance fixture uses the standard customXml relation.
+        // An arbitrary urn relationship referenced by r:id repairs in Office,
+        // including in the augmented source before Rostrum imports it.
+        let customXMLRelationship = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXml"
+        let rel = authors.rels.add(type: customXMLRelationship, target: authors.uri.relativeReference(to: payload.uri))
         // MS-PPTX CT_Author specifies p188:extLst with p:CT_ExtensionList.
         let extensionNode = XML.Element("p:ext", attributes: [("xmlns:p", MinimalTemplate.nsP), ("uri", "urn:rel3-oracle")],
             children: [.element(XML.Element("custom:payload", attributes: [("xmlns:custom", "urn:rel3-oracle"), ("xmlns:rel", MinimalTemplate.nsR), ("rel:id", rel)]))])
         record.appendElement(XML.Element(ModernComments.qualified("extLst", like: record), children: [.element(extensionNode)]))
         authors.markDirty()
+        if let output = ProcessInfo.processInfo.environment["ROSTRUM_REL3_REVIEW_OUTPUT"] {
+            try source.serializedData().write(to: URL(fileURLWithPath: output).deletingLastPathComponent()
+                .appendingPathComponent("rostrum-rel3-office-valid-custom-source.pptx"))
+        }
         let dest = try Presentation()
         let imported = try dest.slides.import(from: source, at: slideIndex)
+        let importedRecord = try #require(records(authorPart(dest, legacy: false).dom(), legacy: false).first)
+        #expect(importedRecord[attribute: "xml:lang"] == nil)
+        #expect(importedRecord[attribute: "xml:space"] == nil)
         #expect(imported.comments.first?.author == sourceAuthor)
-        #expect(try authorPart(dest, legacy: false).related(by: "urn:rel3-oracle", in: dest.package).blob == payload.blob)
+        #expect(try authorPart(dest, legacy: false).related(by: customXMLRelationship, in: dest.package).blob == payload.blob)
         let saved = try dest.serializedData()
         #expect(try Presentation(data: saved).serializedData() == saved)
         if let output = ProcessInfo.processInfo.environment["ROSTRUM_REL3_REVIEW_OUTPUT"] {
