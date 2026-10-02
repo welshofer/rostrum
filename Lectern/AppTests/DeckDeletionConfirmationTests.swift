@@ -16,8 +16,11 @@ import LecternCore
 /// `DeckDeletionRequest` (see `LibraryView.swift`) and exercised here
 /// directly — the same functions the views' buttons call.
 @Suite struct DeckDeletionConfirmationTests {
+    @MainActor
     @Test func requestingADeleteSetsThePendingTargetWithoutDeletingAnything() throws {
-        let deck = try makeFixtureDeck()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let deck = try makeFixtureDeck(in: context.libraryDirectory)
         defer { try? FileManager.default.removeItem(at: deck.url) }
 
         let pending = DeckDeletionRequest.requesting(deck)
@@ -28,9 +31,11 @@ import LecternCore
 
     @MainActor
     @Test func confirmingADeleteRemovesTheDeckAndClearsThePendingTarget() throws {
-        let deck = try makeFixtureDeck()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let deck = try makeFixtureDeck(in: context.libraryDirectory)
         defer { try? FileManager.default.removeItem(at: deck.url) }
-        let app = AppState(skipKeychain: true)
+        let app = context.app
 
         // The two-step sequence a tap on "Delete…" followed by a tap on the
         // confirmation's own "Delete" produces.
@@ -45,9 +50,11 @@ import LecternCore
 
     @MainActor
     @Test func confirmingWithNoPendingTargetDeletesNothing() throws {
-        let deck = try makeFixtureDeck()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let deck = try makeFixtureDeck(in: context.libraryDirectory)
         defer { try? FileManager.default.removeItem(at: deck.url) }
-        let app = AppState(skipKeychain: true)
+        let app = context.app
 
         // "Cancel" clears the pending slot without ever calling `confirming`;
         // this covers the defensive nil case, e.g. a dialog dismissed by
@@ -58,8 +65,8 @@ import LecternCore
         #expect(FileManager.default.fileExists(atPath: deck.url.path))
     }
 
-    private func makeFixtureDeck() throws -> DeckFile {
-        let url = FileManager.default.temporaryDirectory
+    private func makeFixtureDeck(in directory: URL) throws -> DeckFile {
+        let url = directory
             .appendingPathComponent("deck-deletion-\(UUID().uuidString).pptx")
         try Data("not a real deck, just bytes to delete".utf8).write(to: url)
         let attributes = try FileManager.default.attributesOfItem(atPath: url.path)

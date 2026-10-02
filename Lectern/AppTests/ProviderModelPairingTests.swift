@@ -13,27 +13,23 @@ import Foundation
 @MainActor
 @Suite struct ProviderModelPairingTests {
 
-    private func defaults(_ suite: String) -> UserDefaults {
-        let d = UserDefaults(suiteName: suite)!
-        d.removePersistentDomain(forName: suite)
-        return d
-    }
-
-    @Test func selectingAProviderPersistsItsModelToo() {
-        let app = AppState(skipKeychain: true)
-        let before = UserDefaults.standard.string(forKey: "model")
+    @Test func selectingAProviderPersistsItsModelToo() throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
 
         app.selectProvider(.openAI)
-        let persisted = UserDefaults.standard.string(forKey: "model")
+        let persisted = context.defaults.string(forKey: "model")
 
         #expect(persisted == app.model)
         #expect(AppState.defaultModels(for: .openAI).contains(app.model))
-        // Restore whatever the developer's own defaults held.
-        if let before { UserDefaults.standard.set(before, forKey: "model") }
+        #expect(context.makeApp().model == app.model)
     }
 
-    @Test func aModelNeverBelongsToTheWrongProvider() {
-        let app = AppState(skipKeychain: true)
+    @Test func aModelNeverBelongsToTheWrongProvider() throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         for id in ProviderID.allCases where ProviderFactory.isWired(id) {
             app.selectProvider(id)
             #expect(AppState.defaultModels(for: id).contains(app.model),

@@ -11,7 +11,9 @@ import LecternCore
     func replacedRequestCannotPublishOrClearTheLiveTask(fails: Bool) async throws {
         let fixture = try InspectionFixture()
         defer { fixture.remove() }
-        let app = makeApp()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         let old = ControlledInspection(), live = ControlledInspection()
         let oldTask = app.inspect(deckAt: fixture.old.fileURL, inspecting: old.run)
         await old.waitUntilStarted()
@@ -40,7 +42,9 @@ import LecternCore
     func replacementFinishesBeforeTheOldRequest(fails: Bool) async throws {
         let fixture = try InspectionFixture()
         defer { fixture.remove() }
-        let app = makeApp()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         let old = ControlledInspection(), live = ControlledInspection()
         let oldTask = app.inspect(deckAt: fixture.old.fileURL, inspecting: old.run)
         await old.waitUntilStarted()
@@ -67,7 +71,9 @@ import LecternCore
     func cancelRejectsLateProgressAndCompletion(fails: Bool) async throws {
         let fixture = try InspectionFixture()
         defer { fixture.remove() }
-        let app = makeApp()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         let worker = ControlledInspection()
         let task = app.inspect(deckAt: fixture.old.fileURL, inspecting: worker.run)
         await worker.waitUntilStarted()
@@ -87,7 +93,9 @@ import LecternCore
     func terminalPublicationRejectsQueuedProgress(fails: Bool) async throws {
         let fixture = try InspectionFixture()
         defer { fixture.remove() }
-        let app = makeApp()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         let worker = ControlledInspection()
         let task = app.inspect(deckAt: fixture.live.fileURL, inspecting: worker.run)
         await worker.waitUntilStarted()
@@ -114,7 +122,9 @@ import LecternCore
     func leavingInspectionInvalidatesItsRequest(create: Bool) async throws {
         let fixture = try InspectionFixture()
         defer { fixture.remove() }
-        let app = makeApp()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         let worker = ControlledInspection()
         let task = app.inspect(deckAt: fixture.old.fileURL, inspecting: worker.run)
         await worker.waitUntilStarted()
@@ -134,7 +144,9 @@ import LecternCore
     func directTaskCancellationRejectsAllPublications(completion: DirectCompletion) async throws {
         let fixture = try InspectionFixture()
         defer { fixture.remove() }
-        let app = makeApp()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         let worker = ControlledInspection()
         let task = app.inspect(deckAt: fixture.old.fileURL, inspecting: worker.run)
         await worker.waitUntilStarted()
@@ -162,7 +174,9 @@ import LecternCore
     @Test func operationCancellationRetiresTheCurrentRequest() async throws {
         let fixture = try InspectionFixture()
         defer { fixture.remove() }
-        let app = makeApp()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         let worker = ControlledInspection()
         let task = app.inspect(deckAt: fixture.old.fileURL, inspecting: worker.run)
         await worker.waitUntilStarted()
@@ -177,21 +191,15 @@ import LecternCore
     @Test func defaultOperationStillInspectsTheDeck() async throws {
         let fixture = try InspectionFixture()
         defer { fixture.remove() }
-        let app = makeApp()
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         await app.inspect(deckAt: fixture.live.fileURL).value
         #expect(app.phase == .inspected)
         #expect(app.inspection?.fileURL == fixture.live.fileURL)
         #expect(app.inspection?.previews == fixture.live.previews)
         #expect(app.inspection?.previewDiagnostics == fixture.live.previewDiagnostics)
         #expect(app.inspectStage == "Done")
-    }
-
-    @MainActor
-    private func makeApp() -> AppState {
-        let domain = "Lectern.InspectionRequestTests.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: domain)!
-        defer { defaults.removePersistentDomain(forName: domain) }
-        return AppState(skipKeychain: true, defaults: defaults)
     }
 
     private func outcome(_ result: DeckInspection, fails: Bool) -> Result<DeckInspection, Error> {

@@ -118,7 +118,7 @@ final class AppState {
     /// opened), so it runs whenever the library is shown rather than being
     /// cached and going stale when a deck is added or removed in Finder.
     func refreshLibrary() {
-        library = DeckLibrary.decks(in: Self.decksDirectory())
+        library = DeckLibrary.decks(in: libraryDirectory)
     }
 
     /// Slide counts, keyed by deck. The list view shows them in a column, which
@@ -173,7 +173,7 @@ final class AppState {
     }
 
     func deleteFromLibrary(_ deck: DeckFile) {
-        try? DeckLibrary.delete(deck)
+        try? deletingDeck(deck)
         refreshLibrary()
     }
 
@@ -202,6 +202,14 @@ final class AppState {
     /// checked against this first — see `RunGate`.
     private var runs = RunGate()
 
+    // Explicit dependencies keep tests out of the user's preferences, keychain
+    // and document library; omitted arguments preserve the app's usual behavior.
+    private let defaults: UserDefaults
+    private let skipKeychain: Bool
+    private let injectedLibraryDirectory: URL?
+    private let deletingDeck: (DeckFile) throws -> Void
+    private var libraryDirectory: URL { injectedLibraryDirectory ?? Self.decksDirectory() }
+
     private enum Keys {
         static let provider = "providerID", model = "model", favorites = "favoriteStyles"
         static let recents = "recentStyles", imageProvider = "imageProviderID"
@@ -211,7 +219,13 @@ final class AppState {
     /// - Parameter skipKeychain: pass `true` from tests. Reading the login
     ///   keychain from a test process is slow at best and a modal prompt at
     ///   worst, and no test here is about whether a key is stored.
-    init(skipKeychain: Bool = false, defaults: UserDefaults = .standard) {
+    init(skipKeychain: Bool = false, defaults: UserDefaults = .standard,
+         libraryDirectory: URL? = nil,
+         deletingDeck: @escaping (DeckFile) throws -> Void = { try DeckLibrary.delete($0) }) {
+        self.defaults = defaults
+        self.skipKeychain = skipKeychain
+        injectedLibraryDirectory = libraryDirectory
+        self.deletingDeck = deletingDeck
         let d = defaults
         if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
         // A selection stored before Settings started excluding unwired
@@ -254,14 +268,14 @@ final class AppState {
         recents.removeAll { $0 == slug }
         recents.insert(slug, at: 0)
         recents = Array(recents.prefix(8))
-        UserDefaults.standard.set(recents, forKey: Keys.recents)
+        defaults.set(recents, forKey: Keys.recents)
     }
 
     func isFavorite(_ slug: String) -> Bool { favorites.contains(slug) }
 
     func toggleFavorite(_ slug: String) {
         if favorites.contains(slug) { favorites.remove(slug) } else { favorites.insert(slug) }
-        UserDefaults.standard.set(Array(favorites), forKey: Keys.favorites)
+        defaults.set(Array(favorites), forKey: Keys.favorites)
     }
 
     // MARK: - Provider / key
@@ -270,22 +284,22 @@ final class AppState {
         providerID = id
         keyStatus = .unknown
         if !Self.defaultModels(for: id).contains(model) { model = Self.defaultModels(for: id).first ?? model }
-        UserDefaults.standard.set(id.rawValue, forKey: Keys.provider)
+        defaults.set(id.rawValue, forKey: Keys.provider)
         // Persist the model too. Without this the pair on disk disagrees the
         // moment the provider changes, and the next launch reads a model that
         // belongs to the previous vendor.
-        UserDefaults.standard.set(model, forKey: Keys.model)
-        hasKey = KeychainStore.hasKey(for: id)
+        defaults.set(model, forKey: Keys.model)
+        hasKey = !skipKeychain && KeychainStore.hasKey(for: id)
     }
 
     func setModel(_ value: String) {
         model = value
-        UserDefaults.standard.set(value, forKey: Keys.model)
+        defaults.set(value, forKey: Keys.model)
     }
 
     func setUseSmartArt(_ value: Bool) {
         useSmartArt = value
-        UserDefaults.standard.set(value, forKey: Keys.useSmartArt)
+        defaults.set(value, forKey: Keys.useSmartArt)
     }
 
     func saveKey(_ key: String) {
@@ -304,8 +318,8 @@ final class AppState {
     func selectImageProvider(_ id: ImageProviderID) {
         imageProviderID = id
         imageKeyStatus = .unknown
-        UserDefaults.standard.set(id.rawValue, forKey: Keys.imageProvider)
-        hasImageKey = KeychainStore.hasKey(forImage: id)
+        defaults.set(id.rawValue, forKey: Keys.imageProvider)
+        hasImageKey = !skipKeychain && KeychainStore.hasKey(forImage: id)
     }
 
     func saveImageKey(_ key: String) {
@@ -440,7 +454,7 @@ final class AppState {
                                   groundingText: grounding?.text,
                                   styleSlug: selectedStyleSlug ?? "default")
         let designURL = selectedStyle?.designURL
-        let directory = Self.decksDirectory()
+        let directory = libraryDirectory
         let diagnostics = Self.diagnosticsDirectory()
         let keyRead = Result { try KeychainStore.readOrFail(for: providerID) }
         let id = providerID, chosenModel = model
