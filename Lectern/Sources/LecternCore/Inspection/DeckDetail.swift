@@ -79,7 +79,13 @@ public struct TableInspection: Sendable, Equatable, Identifiable {
     public let index: Int
     public let rows: [[String]]
     public var id: Int { index }
-    public var columnCount: Int { rows.map(\.count).max() ?? 0 }
+    public let columnCount: Int
+
+    public init(index: Int, rows: [[String]]) {
+        self.index = index
+        self.rows = rows
+        columnCount = rows.reduce(0) { max($0, $1.count) }
+    }
 }
 
 // MARK: - Charts
@@ -148,6 +154,7 @@ enum DeckDetailExtractor {
         var masterName: String
         var shapeCounts: [String: Int]
         var comments: [CommentInspection]
+        var tables: [TableInspection]
         var mediaCount: Int
         var chartIndices: [Int]
     }
@@ -155,6 +162,7 @@ enum DeckDetailExtractor {
     static func walk(_ presentation: Presentation) -> Result {
         var result = Result()
         var chartIndex = 0
+        var remainingTableCells = TableTextExtractor.maximumTotalCells
 
         for index in 0..<presentation.slides.count {
             let slide: Slide
@@ -173,8 +181,12 @@ enum DeckDetailExtractor {
                 counts[name(of: shape.kind), default: 0] += 1
             }
 
+            var tables: [TableInspection] = []
             if let dom = try? slide.part.dom() {
                 result.explicitFonts.formUnion(declaredFonts(in: dom))
+                let extraction = TableTextExtractor.extract(in: dom, remainingCells: &remainingTableCells)
+                tables = extraction.tables
+                result.issues += extraction.warnings.map { "slide \(index + 1): " + $0 }
             }
 
             let slideCharts = slide.charts
@@ -203,6 +215,7 @@ enum DeckDetailExtractor {
                 masterName: slide.master?.name ?? "",
                 shapeCounts: counts,
                 comments: comments(in: slide),
+                tables: tables,
                 mediaCount: shapes.compactMap { $0 as? Picture }.filter(\.isMedia).count,
                 chartIndices: indices)
         }

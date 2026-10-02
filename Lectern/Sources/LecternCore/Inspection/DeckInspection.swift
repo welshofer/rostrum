@@ -174,6 +174,7 @@ public enum DeckInspector {
         let issues = (try? deck.validate()) ?? []
 
         onEvent(.extracting)
+        try TableTextExtractor.preflight(deck)
         let outline = deck.outline()
         let detail = DeckDetailExtractor.walk(deck)
         let digests = outline.slides.map { slide in
@@ -241,8 +242,8 @@ public enum DeckInspector {
                            title: slide.title,
                            subtitle: slide.subtitle,
                            bullets: bullets,
-                           tableCount: slide.tables.count,
-                           tables: slide.tables.enumerated().map { TableInspection(index: $0.offset, rows: $0.element.rows) },
+                           tableCount: detail?.tables.count ?? slide.tables.count,
+                           tables: detail?.tables ?? slide.tables.enumerated().map { TableInspection(index: $0.offset, rows: $0.element.rows) },
                            chartTitles: slide.charts.map { $0.title ?? "Untitled chart" },
                            assetNames: slide.assets.map(\.filename),
                            notes: slide.notes,

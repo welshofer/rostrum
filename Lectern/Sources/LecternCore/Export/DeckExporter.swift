@@ -49,23 +49,29 @@ public enum DeckExporter {
         let name = folderName(for: deck)
         let directory = parent.appendingPathComponent(name, isDirectory: true)
         try Task.checkCancellation()
+        try TableTextExtractor.preflight(presentation)
         let summary = try DeckExport.write(presentation, to: directory, named: name)
         // DeckExport owns the base outline/assets. Refresh that file first, then
         // append the metadata Lectern inspects, so repeated exports never duplicate it.
         let metadata = metadataMarkdown(from: presentation)
-        if !metadata.isEmpty {
+        if !metadata.text.isEmpty {
             let base = try String(contentsOf: summary.markdownFile, encoding: .utf8)
-            try (base + metadata).write(to: summary.markdownFile, atomically: true, encoding: .utf8)
+            try (base + metadata.text).write(to: summary.markdownFile, atomically: true, encoding: .utf8)
         }
         return Outcome(directory: summary.directory,
                        markdownFile: summary.markdownFile,
                        slideCount: presentation.slides.count,
                        assetsWritten: summary.assetsWritten,
                        chartsWritten: summary.chartsWritten,
-                       warnings: summary.warnings)
+                       warnings: summary.warnings + metadata.warnings)
     }
-    private static func metadataMarkdown(from deck: Presentation) -> String {
+    private static func metadataMarkdown(from deck: Presentation) -> (text: String, warnings: [String]) {
         var lines: [String] = []
+        var warnings: [String] = []
+        var remainingTableCells = TableTextExtractor.maximumTotalCells
+        // Compare against the exact projection used for the base Markdown.
+        // Count equal matrices, so repeated identical tables are not duplicated.
+        let outlineTables = Dictionary(uniqueKeysWithValues: deck.outline().slides.map { ($0.number - 1, $0.tables) })
         let sections = Array(deck.sections)
         if !sections.isEmpty {
             lines += ["", "## Sections", ""]
@@ -76,6 +82,23 @@ public enum DeckExporter {
         }
         for index in 0..<deck.slides.count {
             guard let slide = try? deck.slides.slide(at: index) else { continue }
+            if let root = try? slide.part.dom() {
+                let extraction = TableTextExtractor.extract(in: root, remainingCells: &remainingTableCells)
+                warnings += extraction.warnings.map { "slide \(index + 1): " + $0 }
+                var represented: [[[String]]: Int] = [:]
+                for table in outlineTables[index] ?? [] { represented[table.rows, default: 0] += 1 }
+                for table in extraction.tables where !table.rows.isEmpty {
+                    if let count = represented[table.rows], count > 0 {
+                        represented[table.rows] = count - 1
+                    } else {
+                        lines += ["", "## Slide \(index + 1) table \(table.index + 1) text", ""]
+                        lines += tableMarkdown(table.rows)
+                    }
+                }
+                if represented.values.contains(where: { $0 > 0 }) {
+                    warnings.append("slide \(index + 1): ordinary table outline differs from namespace-aware table text; the base table projection may be incomplete or inaccurate")
+                }
+            }
             let comments = DeckDetailExtractor.comments(in: slide)
             guard !comments.isEmpty else { continue }
             lines += ["", "## Slide \(index + 1) comments", ""]
@@ -90,7 +113,14 @@ public enum DeckExporter {
                 lines.append("")
             }
         }
-        return lines.isEmpty ? "" : lines.joined(separator: "\n") + "\n"
+        return (lines.isEmpty ? "" : lines.joined(separator: "\n") + "\n", warnings)
+    }
+
+    private static func tableMarkdown(_ rows: [[String]]) -> [String] {
+        guard let first = rows.first else { return [] }
+        func row(_ cells: [String]) -> String { "| " + cells.map(inline).joined(separator: " | ") + " |" }
+        return [row(first), "| " + Array(repeating: "---", count: first.count).joined(separator: " | ") + " |"]
+            + rows.dropFirst().map(row)
     }
 
     private static func inline(_ text: String) -> String {
