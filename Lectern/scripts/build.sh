@@ -27,5 +27,5 @@ fi
 
 xcodebuild -project Lectern.xcodeproj -scheme Lectern -configuration Debug \
   -destination 'platform=macOS' -derivedDataPath .build-xcode \
-  ${LECTERN_SIGN_IDENTITY:+CODE_SIGN_IDENTITY="$LECTERN_SIGN_IDENTITY"} \
+  CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="${LECTERN_SIGN_IDENTITY:--}" \
   build "$@"

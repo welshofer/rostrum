@@ -159,7 +159,9 @@ public enum LibraryLab {
             let enumerator = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: [.isRegularFileKey])
             var artifacts: [URL] = []
             while let url = enumerator?.nextObject() as? URL {
-                if try url.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true { artifacts.append(url) }
+                if try url.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true {
+                    artifacts.append(url.resolvingSymlinksInPath())
+                }
             }
             return LibraryLabResult(id: id, options: options, directory: directory, beforeURL: beforeURL, afterURL: afterURL,
                 reportURL: reportURL, markdownURL: export.markdownFile, artifacts: artifacts.sorted { $0.path < $1.path }, coverSVG: inspection.previews.first,
