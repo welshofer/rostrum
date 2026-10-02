@@ -184,9 +184,9 @@ public actor DeckRenderer {
     }
     #endif
 
-    /// Render `deck` (styled by the `design.md` at `designURL`, if any) into
-    /// `directory`. `warnings` from validation are passed through to the result.
-    public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool,
+    /// Render into `directory`, using the template snapshot when supplied;
+    /// otherwise apply `designURL`. Validation warnings pass through to the result.
+    public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool, template: DeckTemplate? = nil,
                        into directory: URL, warnings: [String] = [],
                        images: [String: Data] = [:], useSmartArt: Bool = false) throws -> DeckResult {
         do {
@@ -196,8 +196,14 @@ public actor DeckRenderer {
             // seconds later, thrown into a Result screen for the deck they just
             // cancelled, with the file already written.
             try Task.checkCancellation()
-            let presentation = try Presentation()
-            if let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
+            let presentation: Presentation
+            if let template {
+                presentation = try template.makePresentation()
+            } else {
+                presentation = try Presentation()
+                try presentation.slides.remove(at: 0)
+                if let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
+            }
             // After applyDesign: the style is what decides which typefaces the
             // builders will be measuring with.
             let registration = Self.registerInstalledFonts(for: presentation)
@@ -260,11 +266,6 @@ public actor DeckRenderer {
                     try built.setNotes(notes)
                 }
             }
-            // Presentation() starts with one blank slide; the builders appended
-            // after it. Drop the leading blank so the deck is exactly the IR.
-            if presentation.slides.count > deck.slides.count {
-                try presentation.slides.remove(at: 0)
-            }
             applySections(deck, to: presentation)
             Self.linkAgenda(deck, builtSlides)
             Self.stampProperties(of: deck, on: presentation)
@@ -285,7 +286,7 @@ public actor DeckRenderer {
             // already saved, so a cancel here skips them rather than undoing it.
             let previews = Task.isCancelled ? DeckPreviews() : Self.previews(of: presentation)
             return DeckResult(url: url, slideCount: presentation.slides.count,
-                              warnings: warnings + registration.approximations, schemaIssues: schemaIssues,
+                              warnings: warnings + (template?.warnings ?? []) + registration.approximations, schemaIssues: schemaIssues,
                               unmeasuredFonts: registration.missing,
                               previews: previews.svgs, previewTitles: previews.titles,
                               previewSlideNumbers: previews.slideNumbers,

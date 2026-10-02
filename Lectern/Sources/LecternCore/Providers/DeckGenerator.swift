@@ -25,14 +25,16 @@ public actor DeckGenerator {
 
     private struct DraftErrors: Error { var errors: [String] }
 
-    public func generate(_ request: DeckRequest, designURL: URL?, into directory: URL,
+    /// Template snapshots are validated before entry and travel only to the
+    /// local renderer. They take precedence over the catalog design.
+    public func generate(_ request: DeckRequest, designURL: URL?, template: DeckTemplate? = nil, into directory: URL,
                          diagnostics: URL? = nil,
                          emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         let first = try await provider.draft(request, repairing: nil, emit: emit)
         emit(.validating)
         do {
             let result = try decodeAndValidate(first.json, request)
-            return try await qaThenFinish(result, draftJSON: first.json, request, designURL, directory, usage: first.usage, emit: emit)
+            return try await qaThenFinish(result, draftJSON: first.json, request, designURL, template, directory, usage: first.usage, emit: emit)
         } catch let failure as DraftErrors {
             // §8.7 — exactly one repair attempt.
             emit(.repairing)
@@ -41,7 +43,7 @@ public actor DeckGenerator {
             emit(.validating)
             do {
                 let result = try decodeAndValidate(repaired.json, request)
-                return try await qaThenFinish(result, draftJSON: repaired.json, request, designURL, directory, usage: repaired.usage, emit: emit)
+                return try await qaThenFinish(result, draftJSON: repaired.json, request, designURL, template, directory, usage: repaired.usage, emit: emit)
             } catch let second as DraftErrors {
                 // Keep the draft that failed. Without it the only record of
                 // what the model actually sent is an error string, which is not
@@ -111,7 +113,7 @@ public actor DeckGenerator {
     /// revision when it also validates. A failed or invalid revision is ignored
     /// (never worse than the draft).
     private func qaThenFinish(_ result: ValidationResult, draftJSON: String, _ request: DeckRequest,
-                              _ designURL: URL?, _ directory: URL, usage: Usage,
+                              _ designURL: URL?, _ template: DeckTemplate?, _ directory: URL, usage: Usage,
                               emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         var final = result
         if quality {
@@ -133,7 +135,7 @@ public actor DeckGenerator {
             }
         }
         try Task.checkCancellation()
-        return try await finish(final, request, designURL, directory, usage: usage, emit: emit)
+        return try await finish(final, request, designURL, template, directory, usage: usage, emit: emit)
     }
 
     /// Generate an image for each slide that carries an `ImageBrief`, concurrently.
@@ -295,7 +297,7 @@ public actor DeckGenerator {
         }
     }
 
-    private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?,
+    private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?, _ template: DeckTemplate?,
                         _ directory: URL, usage: Usage,
                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         // A cancel must land before `illustrate` starts spending: image calls
@@ -307,7 +309,7 @@ public actor DeckGenerator {
         let deckResult: DeckResult
         do {
             deckResult = try await renderer.render(
-                shaped.deck, designURL: designURL, notesEnabled: request.notes,
+                shaped.deck, designURL: designURL, notesEnabled: request.notes, template: template,
                 into: directory, warnings: shaped.warnings + imageWarnings, images: images,
                 useSmartArt: useSmartArt)
         } catch let RenderError.renderFailed(underlying) {

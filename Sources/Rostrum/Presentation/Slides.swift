@@ -212,7 +212,12 @@ public final class Slides: Sequence {
     }
 
     private func firstLayoutPart() throws -> Part {
-        let master = try presentationPart.related(by: RelType.slideMaster, in: package)
-        return try master.related(by: RelType.slideLayout, in: package)
+        let master = try firstPresentationMaster(presentationPart, in: package)
+        guard let entry = try master.dom().firstChild(named: "p:sldLayoutIdLst")?.children(named: "p:sldLayoutId").first,
+              let id = entry[attribute: "r:id"], let relationship = master.rels.relationship(withId: id),
+              relationship.type == RelType.slideLayout, !relationship.isExternal else {
+            throw RostrumError.packageInvalid("slide master has no resolvable first layout")
+        }
+        return try package.part(at: PackURI.resolve(target: relationship.target, relativeTo: master.uri.baseURI))
     }
 }

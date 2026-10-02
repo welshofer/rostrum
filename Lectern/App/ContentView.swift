@@ -429,8 +429,12 @@ struct ComposeView: View {
                     }
                 }
 
-                Card(title: "STYLE", systemImage: "paintpalette") {
-                    StyleButton(style: app.selectedStyle) { showStyles = true }
+                TemplatePickerCard(model: app.templateSelection)
+
+                if app.templateSelection.selected == nil {
+                    Card(title: "STYLE", systemImage: "paintpalette") {
+                        StyleButton(style: app.selectedStyle) { showStyles = true }
+                    }
                 }
 
                 groundingCard

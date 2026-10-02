@@ -24,7 +24,7 @@ public final class SlideLayout {
 extension Presentation {
     /// The first master's layouts, in `sldLayoutIdLst` order.
     public var layouts: [SlideLayout] {
-        guard let master = try? presentationPart.related(by: RelType.slideMaster, in: package),
+        guard let master = try? firstPresentationMaster(presentationPart, in: package),
               let dom = try? master.dom(),
               let list = dom.firstChild(named: "p:sldLayoutIdLst") else { return [] }
         return list.childElements.compactMap { entry in
@@ -45,6 +45,18 @@ extension Presentation {
     public func layout(named name: String) -> SlideLayout? {
         layouts.first { $0.name == name }
     }
+}
+
+/// Master relationships are an unordered lookup table. The presentation's
+/// master-id list supplies the display order used by every public accessor.
+func firstPresentationMaster(_ presentationPart: Part, in package: OPCPackage) throws -> Part {
+    guard let entry = try presentationPart.dom().firstChild(named: "p:sldMasterIdLst")?.children(named: "p:sldMasterId").first,
+          let id = entry[attribute: "r:id"],
+          let relationship = presentationPart.rels.relationship(withId: id),
+          relationship.type == RelType.slideMaster, !relationship.isExternal else {
+        throw RostrumError.packageInvalid("presentation has no resolvable first slide master")
+    }
+    return try package.part(at: PackURI.resolve(target: relationship.target, relativeTo: presentationPart.uri.baseURI))
 }
 
 extension Slides {

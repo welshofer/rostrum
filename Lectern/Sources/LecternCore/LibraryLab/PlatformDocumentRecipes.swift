@@ -4,6 +4,17 @@ import Rostrum
 extension PlatformLabRecipes {
     static func layouts(_ options: LibraryLabOptions) throws -> LibraryLabDraft {
         let deck = try LibraryLabSupport.deck(title: "Layouts")
+        let imported = try Presentation()
+        imported.theme.majorFont = "Georgia"
+        _ = try deck.slides.importAll(from: imported)
+        try deck.slides.remove(at: deck.slides.count - 1)
+        let main = try deck.package.mainDocumentPart()
+        let masters = try require(try main.dom().firstChild(named: "p:sldMasterIdLst"), "Master order missing")
+        // Keep relationship order unchanged while making the imported master
+        // first in the presentation's ordered list. Public theme/layout access
+        // and both slide creation paths must follow that same list.
+        masters.children.reverse()
+        main.markDirty()
         let selected = try require(deck.layout(type: options.alternative ? "obj" : "title"), "Bundled template layout missing")
         let before = try deck.serializedData()
         let cloned = try deck.slides.add(clonedFrom: selected)
@@ -20,14 +31,16 @@ extension PlatformLabRecipes {
         return LibraryLabDraft(deck: deck, before: before, checks: [
             .init("Cloned versus bound", cloned.placeholders.count > bound.placeholders.count && builderHasOnlyAuthoredTitle, "The clone copies layout placeholders; the public slide builder binds the layout and authors only its own title placeholder."),
             .init("Layout lookup and master", deck.layout(named: name)?.part.uri == selected.part.uri && selected.master != nil, "\(name); \(deck.slideMasters.count) master(s), \(deck.allLayouts.count) layouts."),
-            .init("Inherited placeholder geometry", inherited != nil, "A clone has an effective frame supplied by its layout.")
+            .init("Inherited placeholder geometry", inherited != nil, "A clone has an effective frame supplied by its layout."),
+            .init("Ordered master selection", deck.theme.majorFont == "Georgia" && selected.master?.part.uri == deck.slideMasters.first?.part.uri, "Theme and layout selection follow the first declared master, independently of relationship stream order.")
         ], verify: { reopened in
             let clone = try reopened.slides[1], bound = try reopened.slides[2]
             return [
                 .init("Layout bindings reopened", clone.layout?.type == kind && bound.layout?.type == kind, "Both slides retain their selected layout relationship."),
                 .init("Placeholder content reopened", clone.title?.textFrame?.text == label(options) && bound.title?.textFrame?.text == "Bound canvas: " + label(options), "Cloned and explicitly marked titles remain discoverable."),
                 .init("Inherited geometry reopened", clone.title.flatMap { clone.effectiveFrame(of: $0) } == inherited, "The layout-provided frame survives serialization."),
-                .init("Master hierarchy reopened", !reopened.slideMasters.isEmpty && reopened.slideMasters.allSatisfy { !$0.layouts.isEmpty && $0.theme != nil }, "All declared masters expose layouts and a theme.")
+                .init("Master hierarchy reopened", !reopened.slideMasters.isEmpty && reopened.slideMasters.allSatisfy { !$0.layouts.isEmpty && $0.theme != nil }, "All declared masters expose layouts and a theme."),
+                .init("Ordered master selection reopened", reopened.theme.majorFont == "Georgia" && clone.master?.part.uri == reopened.slideMasters.first?.part.uri && bound.master?.part.uri == reopened.slideMasters.first?.part.uri, "Both generated slides and the deck theme use the first declared master.")
             ]
         })
     }

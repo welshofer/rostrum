@@ -2,7 +2,7 @@
 
 The demo application for **Rostrum** — prove the full loop in one window: a
 prompt, optional PDF grounding, a few intent parameters, and one of many bundled
-`design.md` styles go in; a native `.pptx` written entirely by Rostrum comes out.
+`design.md` styles or a PowerPoint template go in; a native `.pptx` written entirely by Rostrum comes out.
 Everything runs on-device except the LLM call. (Section references like §8.3
 below cite the internal Lectern spec, which is not part of this repository.)
 
@@ -36,6 +36,29 @@ No provider key is required. File checks and preview limitations are reported
 separately; passing a demo is not a claim of perfect PowerPoint rendering.
 
 See the [coverage and verification record](../docs/LIBRARY-LAB-20261002.md).
+
+## Choose a PowerPoint template
+
+In **New Deck**, choose **Choose Template…** and select a `.potx` or `.pptx`.
+Lectern validates a local snapshot and shows its filename, canvas size and layout
+count. The snapshot is kept for the current app session; the source file stays
+unchanged. Replace or remove the choice at any time before generation. A failed
+replacement keeps the previous selection, and generation waits for import to finish.
+
+The template takes precedence over the style catalog. New decks retain its theme,
+fonts, slide size, masters and layouts, while replacing its example slides and
+sections with generated content. The output is an editable `.pptx`. Template
+bytes are used locally and are not sent to the text or image provider.
+
+Generated content uses Lectern's compositions and the first slide master's theme
+and layouts. Arbitrary placeholder positions are not reproduced, and generated
+background fills can cover template background imagery. These limits are shown in
+the form and output warnings. Remove the template to return to the selected catalog
+style. For an offline sample, run **Library Lab → Templates and document properties**
+and choose its `template.potx` from **All Files**.
+
+See the [template selection verification record](../docs/TEMPLATE-SELECTION-20261002.md)
+for file limits, regression coverage and native PowerPoint checks.
 
 ## Feature integration and regression checks
 

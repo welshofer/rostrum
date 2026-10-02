@@ -26,7 +26,7 @@ visible in Lectern and in its JSON report.
 | Demo | Behavior exercised | Recipe source |
 |---|---|---|
 | Slide lifecycle | Add, duplicate, move, remove; independent copy edits; footer, date, slide numbers and source | [Document](../Lectern/Sources/LecternCore/LibraryLab/DocumentLabRecipes.swift) |
-| Layouts and placeholders | Layout lookup, cloned placeholders, layout-bound builders, effective inherited frames and masters | [Platform document](../Lectern/Sources/LecternCore/LibraryLab/PlatformDocumentRecipes.swift) |
+| Layouts and placeholders | Layout lookup, cloned placeholders, layout-bound builders, effective inherited frames and declared master order independent of relationship order | [Platform document](../Lectern/Sources/LecternCore/LibraryLab/PlatformDocumentRecipes.swift) |
 | 178 shape presets | Complete enum gallery; frame, rotation, naming and rounded corners | [Drawing](../Lectern/Sources/LecternCore/LibraryLab/DrawingLabRecipes.swift) |
 | Fills, outlines and shadows | Solid/alpha/theme/none/linear/radial/image fills; every dash and compound line; shadow | Drawing |
 | Rich text and live fields | Runs, paragraphs, list numbering/bullets, margins, alignment, spacing, tracking, superscript/subscript, links and fields | Drawing |
@@ -105,6 +105,11 @@ remove their own temporary directories. Tests do not read provider credentials o
 modify the user's deck library.
 
 ## Verification record
+
+The subsequent [template selection pass](TEMPLATE-SELECTION-20261002.md) adds a
+Compose picker, template-based generation, corrected cover fitting, and two
+additional layout demo checks for master ordering. The record below remains
+pinned to its original implementation and artifacts.
 
 Verified implementation: `85627ec` (the documentation/receipt commit follows).
 The [machine-readable receipt](benchmarks/2026-10-02-library-lab-verification.json)

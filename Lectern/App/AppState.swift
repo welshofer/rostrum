@@ -43,6 +43,7 @@ final class AppState {
     var goal = "inform"
     var slideCount = 12
     var includeNotes = true
+    let templateSelection = TemplateSelectionModel()
 
     /// Render diagrams (process/cycle/layers) as native PowerPoint SmartArt when
     /// on; as styled shapes when off. Default off — SmartArt is opt-in.
@@ -539,7 +540,7 @@ final class AppState {
     // MARK: - Generate
 
     var canGenerate: Bool {
-        phase != .generating && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        phase != .generating && !templateSelection.isLoading && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     /// Where Settings lives on this platform, for user-facing hints.
@@ -550,7 +551,7 @@ final class AppState {
     #endif
 
     func generate() {
-        guard phase != .generating else { return }
+        guard phase != .generating, !templateSelection.isLoading else { return }
         guard hasKey else {
             lastFailure = .noKey
             phase = .failed("Add your \(providerID.label) API key in \(Self.settingsHint) to generate.")
@@ -559,16 +560,17 @@ final class AppState {
 
         phase = .generating; stage = "Starting"; drafted = 0; total = slideCount
         let run = runs.begin()
+        let template = templateSelection.selected
         let request = DeckRequest(prompt: prompt, audience: audience, goal: goal,
                                   slideCount: slideCount, notes: includeNotes,
                                   groundingText: grounding?.text,
-                                  styleSlug: selectedStyleSlug ?? "default")
-        let designURL = selectedStyle?.designURL
+                                  styleSlug: template == nil ? selectedStyleSlug ?? "default" : "template")
+        let designURL = template == nil ? selectedStyle?.designURL : nil
         let directory = libraryDirectory
         let diagnostics = injectedDiagnosticsDirectory ?? Self.diagnosticsDirectory()
         let keyRead = Result { try KeychainStore.readOrFail(for: providerID) }
         let id = providerID, chosenModel = model
-        let style = selectedStyle
+        let style = template == nil ? selectedStyle : nil
         let smartArt = useSmartArt
         let imageID = imageProviderID
         let imageKeyRead = Result { try KeychainStore.readOrFail(forImage: imageProviderID) }
@@ -618,7 +620,7 @@ final class AppState {
                     }
                 }
                 var result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
-                    .generate(request, designURL: designURL, into: directory,
+                    .generate(request, designURL: designURL, template: template, into: directory,
                               diagnostics: diagnostics) { [weak self] event in
                         Task { @MainActor in self?.apply(event, run: run) }
                     }

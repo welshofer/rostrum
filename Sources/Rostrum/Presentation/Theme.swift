@@ -164,7 +164,7 @@ extension Presentation {
     /// The deck's theme (via the first slide master), for brand-kit editing
     /// and color resolution.
     public var theme: Theme {
-        let master = try? presentationPart.related(by: RelType.slideMaster, in: package)
+        let master = try? firstPresentationMaster(presentationPart, in: package)
         let themePart: Part? = {
             if let master, let t = try? master.related(by: RelType.theme, in: package) { return t }
             return package.parts[PackURI("/ppt/theme/theme1.xml")]
