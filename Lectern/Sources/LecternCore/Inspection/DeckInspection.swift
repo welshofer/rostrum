@@ -17,6 +17,7 @@ public struct SlideDigest: Sendable, Identifiable {
     /// level so the view can print it without knowing about levels.
     public let bullets: [String]
     public let tableCount: Int
+    public let tables: [TableInspection]
     public let chartTitles: [String]
     /// Filenames the export would write into this slide's folder.
     public let assetNames: [String]
@@ -154,6 +155,7 @@ public enum DeckInspector {
                                limits: ZipReader.Limits =
                                    .init(totalUncompressedBytes: DeckInspector.defaultReadLimit),
                                onEvent: (Event) -> Void = { _ in }) throws -> DeckInspection {
+        try Task.checkCancellation()
         onEvent(.opening)
         let data = try Data(contentsOf: url)
         guard !data.isEmpty else { throw DeckInspectionError.emptyFile }
@@ -165,6 +167,7 @@ public enum DeckInspector {
         }
         let embeddedFonts = deck.registerEmbeddedFonts().sorted()
 
+        try Task.checkCancellation()
         onEvent(.validating)
         // A deck somebody else wrote is exactly the one whose lint might throw;
         // that is a finding, not a failure of the inspection.
@@ -190,6 +193,7 @@ public enum DeckInspector {
             }
         }
 
+        try Task.checkCancellation()
         onEvent(.finished)
         return DeckInspection(
             fileURL: url,
@@ -238,6 +242,7 @@ public enum DeckInspector {
                            subtitle: slide.subtitle,
                            bullets: bullets,
                            tableCount: slide.tables.count,
+                           tables: slide.tables.enumerated().map { TableInspection(index: $0.offset, rows: $0.element.rows) },
                            chartTitles: slide.charts.map { $0.title ?? "Untitled chart" },
                            assetNames: slide.assets.map(\.filename),
                            notes: slide.notes,

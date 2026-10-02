@@ -61,8 +61,25 @@ public struct CommentInspection: Sendable, Equatable, Identifiable {
     public let text: String
     public let replyCount: Int
     public let resolved: Bool
+    /// Modern threads and legacy comments coexist in imported presentations.
+    public let kind: String
+    public let replies: [CommentReplyInspection]
 
     public var id: Int { index }
+}
+
+public struct CommentReplyInspection: Sendable, Equatable, Identifiable {
+    public let index: Int
+    public let author: String
+    public let text: String
+    public var id: Int { index }
+}
+
+public struct TableInspection: Sendable, Equatable, Identifiable {
+    public let index: Int
+    public let rows: [[String]]
+    public var id: Int { index }
+    public var columnCount: Int { rows.map(\.count).max() ?? 0 }
 }
 
 // MARK: - Charts
@@ -154,13 +171,10 @@ enum DeckDetailExtractor {
             var counts: [String: Int] = [:]
             for shape in shapes {
                 counts[name(of: shape.kind), default: 0] += 1
-                for paragraph in shape.textFrame?.paragraphs ?? [] {
-                    for run in paragraph.runs {
-                        if let font = run.fontName, !font.isEmpty {
-                            result.explicitFonts.insert(font)
-                        }
-                    }
-                }
+            }
+
+            if let dom = try? slide.part.dom() {
+                result.explicitFonts.formUnion(declaredFonts(in: dom))
             }
 
             let slideCharts = slide.charts
@@ -188,17 +202,54 @@ enum DeckDetailExtractor {
                 layoutName: slide.layout?.name ?? "Unknown layout",
                 masterName: slide.master?.name ?? "",
                 shapeCounts: counts,
-                comments: slide.comments.enumerated().map { commentIndex, comment in
-                    CommentInspection(index: commentIndex,
-                                      author: comment.authorName ?? "Unknown",
-                                      text: comment.text,
-                                      replyCount: comment.replies.count,
-                                      resolved: comment.isResolved)
-                },
+                comments: comments(in: slide),
                 mediaCount: shapes.compactMap { $0 as? Picture }.filter(\.isMedia).count,
                 chartIndices: indices)
         }
         return result
+    }
+
+    static func comments(in slide: Slide) -> [CommentInspection] {
+        var result = slide.comments.enumerated().map { index, comment in
+            let replies = comment.replies.enumerated().map {
+                CommentReplyInspection(index: $0.offset, author: $0.element.authorName ?? "Unknown",
+                                       text: $0.element.text)
+            }
+            return CommentInspection(index: index, author: comment.authorName ?? "Unknown",
+                                     text: comment.text, replyCount: replies.count,
+                                     resolved: comment.isResolved, kind: "modern", replies: replies)
+        }
+        let firstLegacy = result.count
+        result += slide.legacyComments.enumerated().map { index, comment in
+            CommentInspection(index: firstLegacy + index, author: comment.authorName ?? "Unknown",
+                              text: comment.text, replyCount: 0, resolved: false,
+                              kind: "legacy", replies: [])
+        }
+        return result
+    }
+
+    /// Include table/default/field fonts, with namespace aliases and local rebinding.
+    /// Font registration later excludes theme tokens and preserves embedded faces.
+    static func declaredFonts(in root: XML.Element) -> Set<String> {
+        var names: Set<String> = []
+        var stack: [(XML.Element, [String: String])] = [(root, [:])]
+        while let (element, inherited) = stack.popLast() {
+            var namespaces = inherited
+            for (name, value) in element.attributes {
+                if name == "xmlns" { namespaces[""] = value }
+                else if name.hasPrefix("xmlns:") { namespaces[String(name.dropFirst(6))] = value }
+            }
+            let pieces = element.name.split(separator: ":", maxSplits: 1).map(String.init)
+            let prefix = pieces.count == 2 ? pieces[0] : ""
+            let local = pieces.last ?? ""
+            if namespaces[prefix] == "http://schemas.openxmlformats.org/drawingml/2006/main",
+               ["latin", "ea", "cs"].contains(local),
+               let name = element[attribute: "typeface"], !name.isEmpty, !name.hasPrefix("+") {
+                names.insert(name)
+            }
+            for child in element.childElements { stack.append((child, namespaces)) }
+        }
+        return names
     }
 
     static func masters(of presentation: Presentation) -> [MasterInspection] {

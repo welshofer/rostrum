@@ -43,10 +43,20 @@ public enum DeckExporter {
     /// wrote and leaves everything else in the folder alone, so running it
     /// twice is a refresh rather than a mess.
     public static func export(deckAt deck: URL, into parent: URL) throws -> Outcome {
-        let presentation = try Presentation(contentsOf: deck)
+        try Task.checkCancellation()
+        let presentation = try Presentation(contentsOf: deck,
+            limits: .init(totalUncompressedBytes: DeckInspector.defaultReadLimit))
         let name = folderName(for: deck)
         let directory = parent.appendingPathComponent(name, isDirectory: true)
+        try Task.checkCancellation()
         let summary = try DeckExport.write(presentation, to: directory, named: name)
+        // DeckExport owns the base outline/assets. Refresh that file first, then
+        // append the metadata Lectern inspects, so repeated exports never duplicate it.
+        let metadata = metadataMarkdown(from: presentation)
+        if !metadata.isEmpty {
+            let base = try String(contentsOf: summary.markdownFile, encoding: .utf8)
+            try (base + metadata).write(to: summary.markdownFile, atomically: true, encoding: .utf8)
+        }
         return Outcome(directory: summary.directory,
                        markdownFile: summary.markdownFile,
                        slideCount: presentation.slides.count,
@@ -54,4 +64,47 @@ public enum DeckExporter {
                        chartsWritten: summary.chartsWritten,
                        warnings: summary.warnings)
     }
+    private static func metadataMarkdown(from deck: Presentation) -> String {
+        var lines: [String] = []
+        let sections = Array(deck.sections)
+        if !sections.isEmpty {
+            lines += ["", "## Sections", ""]
+            for section in sections {
+                let slides = section.slideIndices.map { String($0 + 1) }.joined(separator: ", ")
+                lines.append("- \(inline(section.name)) — slides \(slides)")
+            }
+        }
+        for index in 0..<deck.slides.count {
+            guard let slide = try? deck.slides.slide(at: index) else { continue }
+            let comments = DeckDetailExtractor.comments(in: slide)
+            guard !comments.isEmpty else { continue }
+            lines += ["", "## Slide \(index + 1) comments", ""]
+            for comment in comments {
+                let status = comment.kind == "legacy" ? "legacy" : (comment.resolved ? "resolved" : "open")
+                lines.append("### \(inline(comment.author)) (\(status))")
+                lines += quoted(comment.text)
+                for reply in comment.replies {
+                    lines += ["", "Reply — \(inline(reply.author))"]
+                    lines += quoted(reply.text)
+                }
+                lines.append("")
+            }
+        }
+        return lines.isEmpty ? "" : lines.joined(separator: "\n") + "\n"
+    }
+
+    private static func inline(_ text: String) -> String {
+        var result = text.replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n", with: " ")
+        for character in ["\\", "`", "*", "_", "[", "]", "<", ">", "#", "|"] {
+            result = result.replacingOccurrences(of: character, with: "\\" + character)
+        }
+        return result
+    }
+
+    private static func quoted(_ text: String) -> [String] {
+        text.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
+            .components(separatedBy: "\n").map { "> " + inline($0) }
+    }
+
 }
