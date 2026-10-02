@@ -39,6 +39,39 @@ import Rostrum
         }
     }
 
+    @Test(arguments: Self.ids, [false, true])
+    func everyRecipeAcceptsMultilineText(id: LibraryDemoID, alternative: Bool) throws {
+        let input = "Line one\nLine two & <three> 😀"
+        let draft = try DocumentLabRecipes.make(id, options: .init(text: input, sampleSize: 3, alternative: alternative))
+        let saved = try draft.deck.serializedData()
+        let reopened = try Presentation(data: saved)
+        for check in draft.checks + (try draft.verify(reopened)) {
+            #expect(check.passed, "Multiline \(id.rawValue): \(check.name): \(check.detail)")
+        }
+        #expect(try reopened.validate().isEmpty)
+        #expect(try reopened.serializedData() == saved)
+        if id == .comments {
+            #expect(try reopened.slides[0].comments.first?.textParagraphs == ["Line one", "Line two & <three> 😀", "Edited thread"])
+        } else if id == .charts {
+            #expect(reopened.charts.first?.title == input)
+            #expect(reopened.charts.first?.series.first?.name == input)
+        }
+    }
+
+    @Test(arguments: [2, 12])
+    func percentStackedUsesNativePercentageAxis(sampleSize: Int) throws {
+        let draft = try DocumentLabRecipes.make(.charts, options: .init(sampleSize: sampleSize))
+        let reopened = try Presentation(data: draft.deck.serializedData())
+        let plotArea = try reopened.charts[2].part.dom().firstChild(named: "c:chart")?.firstChild(named: "c:plotArea")
+        let axis = try #require(plotArea?.firstChild(named: "c:valAx"))
+        #expect(plotArea?.firstChild(named: "c:barChart")?.firstChild(named: "c:grouping")?[attribute: "val"] == "percentStacked")
+        #expect(axis.firstChild(named: "c:scaling")?.firstChild(named: "c:min")?[attribute: "val"] == "0")
+        #expect(axis.firstChild(named: "c:scaling")?.firstChild(named: "c:max")?[attribute: "val"] == "1")
+        #expect(axis.firstChild(named: "c:majorUnit")?[attribute: "val"] == "0.25")
+        #expect(axis.firstChild(named: "c:numFmt")?[attribute: "formatCode"] == "0%")
+        #expect(axis.firstChild(named: "c:title")?.textContent == "Share")
+    }
+
     @Test func chartEditingHasIndependentExpectedDataAndAtomicRefusals() throws {
         let draft = try DocumentLabRecipes.make(.chartEditing,
                                                options: .init(text: "Revenue", sampleSize: 3))

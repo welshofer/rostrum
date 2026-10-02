@@ -130,6 +130,10 @@ enum DocumentLabRecipes {
             let slide = index == 0 ? try deck.slides[0] : try deck.slides.add()
             try LibraryLabSupport.text("\(kind) · \(options.text)", on: slide)
             var kindOptions = styles
+            if kind == .barPercentStacked {
+                kindOptions.valueAxis = .init(min: 0, max: 1, majorUnit: 0.25,
+                                              numberFormat: "0%", title: "Share", gridlines: true)
+            }
             if kind == .pie || kind == .doughnut {
                 kindOptions.dataLabels = .init(showCategory: true, showPercent: true, numberFormat: "0%")
             }
@@ -174,6 +178,16 @@ enum DocumentLabRecipes {
                 checks.append(.init("\(kind) plot identity survives", chart.plotType == plotType && settingMatches, "Native plot type, stacking mode or radar style matches the requested kind."))
                 if kind == .pie || kind == .doughnut {
                     checks.append(.init("\(kind) percent labels survive", plot?.firstChild(named: "c:dLbls")?.firstChild(named: "c:showPercent")?[attribute: "val"] == "1", "Pie and doughnut show percentages alongside category labels."))
+                }
+                if kind == .barPercentStacked {
+                    let axis = try chart.part.dom().firstChild(named: "c:chart")?.firstChild(named: "c:plotArea")?.firstChild(named: "c:valAx")
+                    let scaling = axis?.firstChild(named: "c:scaling")
+                    let boundsMatch = scaling?.firstChild(named: "c:min")?[attribute: "val"] == "0"
+                        && scaling?.firstChild(named: "c:max")?[attribute: "val"] == "1"
+                    let ticksMatch = axis?.firstChild(named: "c:majorUnit")?[attribute: "val"] == "0.25"
+                        && axis?.firstChild(named: "c:numFmt")?[attribute: "formatCode"] == "0%"
+                    checks.append(.init("Percent-stacked native axis survives", boundsMatch && ticksMatch && axis?.firstChild(named: "c:title")?.textContent == "Share",
+                                        "The saved value axis spans 0–100%, with 25% ticks and the title Share."))
                 }
             }
             let scatter = try firstChart(reopened.slides[kinds.count])
