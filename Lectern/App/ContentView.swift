@@ -673,9 +673,10 @@ struct ResultView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                // Rendered by Rostrum from the deck on disk, so what you see
-                // here is what PowerPoint will open — not a redraw of the plan.
-                SlideContactSheet(previews: result.previews, titles: result.previewTitles)
+                // Rendered from the written deck. Known preview differences
+                // are reported separately below.
+                SlideContactSheet(previews: result.previews, titles: result.previewTitles,
+                                  slideNumbers: result.previewSlideNumbers, slideCount: result.slideCount)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 Divider()
             }
@@ -730,6 +731,10 @@ struct ResultView: View {
                     }
                 }
                 .frame(maxWidth: 420)
+            }
+            if !result.previewDiagnostics.isEmpty {
+                PreviewDiagnosticsView(diagnostics: result.previewDiagnostics)
+                    .frame(maxWidth: 420)
             }
             if !result.unmeasuredFonts.isEmpty {
                 // Not a warning: the deck is fine, its text was just sized by

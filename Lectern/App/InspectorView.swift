@@ -73,7 +73,9 @@ struct InspectorView: View {
                     if !inspection.previews.isEmpty {
                         Card(title: "SLIDES", systemImage: "rectangle.on.rectangle") {
                             SlideContactSheet(previews: inspection.previews,
-                                              titles: inspection.previewTitles)
+                                              titles: inspection.previewTitles,
+                                              slideNumbers: inspection.previewSlideNumbers,
+                                              slideCount: inspection.slideCount)
                                 .frame(minHeight: 260)
                         }
                     }
@@ -266,6 +268,9 @@ struct InspectorView: View {
     private func findingsCard(_ inspection: DeckInspection) -> some View {
         Card(title: "FINDINGS", systemImage: "exclamationmark.triangle") {
             VStack(alignment: .leading, spacing: 10) {
+                if !inspection.previewDiagnostics.isEmpty {
+                    PreviewDiagnosticsView(diagnostics: inspection.previewDiagnostics)
+                }
                 if !inspection.schemaIssues.isEmpty {
                     DisclosureGroup("\(inspection.schemaIssues.count) schema issue(s)") {
                         ForEach(inspection.schemaIssues, id: \.self) {

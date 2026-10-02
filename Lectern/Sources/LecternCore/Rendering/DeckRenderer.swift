@@ -39,6 +39,11 @@ public struct DeckResult: Sendable, Equatable {
     /// tell VoiceOver what a tile SAYS — "Slide 3 of 12: Why now" — rather
     /// than only where it sits. A slide with no title contributes "".
     public let previewTitles: [String]
+    /// Original deck positions, aligned with `previews` even if a slide failed.
+    public let previewSlideNumbers: [Int]
+    /// Known limitations and failures in the SVG previews. Kept apart from
+    /// model warnings, XML validation, font measurement and dropped content.
+    public let previewDiagnostics: [SlidePreviewDiagnostics]
     /// Content the model asked for that did not make it onto the slide — the
     /// 5th metric and the 6th process step past a builder's capacity, or an
     /// image that was generated and then failed to place. A third bucket
@@ -76,17 +81,12 @@ public actor DeckRenderer {
     /// Best-effort per slide: one slide that fails to render costs its own
     /// preview and nothing else, because a missing thumbnail is not a reason
     /// to fail a deck that saved correctly.
-    private static func previews(of presentation: Presentation) -> (svgs: [String], titles: [String]) {
-        // One pass building both, so a slide whose render fails drops its
-        // title too and the two arrays stay index-aligned.
-        var svgs: [String] = []
-        var titles: [String] = []
+    private static func previews(of presentation: Presentation) -> DeckPreviews {
+        var result = DeckPreviews()
         for index in 0..<presentation.slides.count {
-            guard let svg = try? presentation.renderSVG(slideAt: index, pixelWidth: 640) else { continue }
-            svgs.append(svg)
-            titles.append((try? presentation.slides[index].title?.textFrame?.text) ?? "")
+            result.append(slideAt: index, from: presentation)
         }
-        return (svgs, titles)
+        return result
     }
 
     // MARK: - Document metadata
@@ -430,11 +430,13 @@ public actor DeckRenderer {
             try presentation.save(to: url)
             // Previews are the tail cost and pure convenience; the deck is
             // already saved, so a cancel here skips them rather than undoing it.
-            let (previews, previewTitles) = Task.isCancelled ? ([], []) : Self.previews(of: presentation)
+            let previews = Task.isCancelled ? DeckPreviews() : Self.previews(of: presentation)
             return DeckResult(url: url, slideCount: presentation.slides.count,
                               warnings: warnings, schemaIssues: schemaIssues,
                               unmeasuredFonts: unmeasured,
-                              previews: previews, previewTitles: previewTitles,
+                              previews: previews.svgs, previewTitles: previews.titles,
+                              previewSlideNumbers: previews.slideNumbers,
+                              previewDiagnostics: previews.diagnostics,
                               droppedContent: dropped)
         } catch is CancellationError {
             // Must precede the generic catch. Wrapped, this becomes

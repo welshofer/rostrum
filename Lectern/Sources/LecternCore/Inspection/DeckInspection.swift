@@ -94,9 +94,13 @@ public struct DeckInspection: Sendable {
     /// missing picture is never a reason to fail an inspection.
     public let previews: [String]
     public let previewTitles: [String]
+    public let previewSlideNumbers: [Int]
+    /// Preview limitations are distinct from file validation and read failures.
+    public let previewDiagnostics: [SlidePreviewDiagnostics]
 
     public var hasFindings: Bool {
         !schemaIssues.isEmpty || !readWarnings.isEmpty || !outlineWarnings.isEmpty
+            || !previewDiagnostics.isEmpty
     }
 
     /// A size a person can read, computed the same way every time.
@@ -173,8 +177,7 @@ public enum DeckInspector {
             digest(of: slide, detail: detail.slideDetails[slide.number - 1])
         }
 
-        var previews: [String] = []
-        var titles: [String] = []
+        var previews = DeckPreviews()
         if renderPreviews {
             let total = deck.slides.count
             onEvent(.rendering(done: 0, total: total))
@@ -182,11 +185,7 @@ public enum DeckInspector {
                 try Task.checkCancellation()
                 // Best-effort per slide, matching the write side: a slide that
                 // will not render costs its own thumbnail and nothing else.
-                // Both arrays are appended together so they stay aligned.
-                if let svg = try? deck.renderSVG(slideAt: index, pixelWidth: 640) {
-                    previews.append(svg)
-                    titles.append((try? deck.slides[index].title?.textFrame?.text) ?? "")
-                }
+                previews.append(slideAt: index, from: deck)
                 onEvent(.rendering(done: index + 1, total: total))
             }
         }
@@ -220,8 +219,10 @@ public enum DeckInspector {
             readWarnings: deck.package.readWarnings,
             outlineWarnings: outline.warnings + detail.issues,
             slides: digests,
-            previews: previews,
-            previewTitles: titles)
+            previews: previews.svgs,
+            previewTitles: previews.titles,
+            previewSlideNumbers: previews.slideNumbers,
+            previewDiagnostics: previews.diagnostics)
     }
 
     private static func digest(of slide: SlideOutline,

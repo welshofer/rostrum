@@ -133,12 +133,16 @@ struct SlideContactSheet: View {
     /// Index-aligned slide titles; when present, VoiceOver hears what a tile
     /// says, not just where it sits in the grid.
     var titles: [String] = []
+    /// Original positions survive a missing thumbnail; totals describe the deck.
+    var slideNumbers: [Int] = []
+    var slideCount: Int?
     /// Fixed at three so the grid reads as a contact sheet at any window size;
     /// the tiles resize, the column count does not.
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 3)
 
     fileprivate func label(_ index: Int) -> String {
-        slideLabel(index, of: previews.count, titles: titles)
+        slideLabel(index, of: slideCount ?? previews.count, titles: titles,
+                   slideNumbers: slideNumbers)
     }
 
     var body: some View {
@@ -153,7 +157,7 @@ struct SlideContactSheet: View {
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
                                 .strokeBorder(.primary.opacity(0.12)))
                         .overlay(alignment: .bottomTrailing) {
-                            Text("\(index + 1)")
+                            Text("\(slideNumbers.indices.contains(index) ? slideNumbers[index] : index + 1)")
                                 .font(.caption2.monospacedDigit())
                                 .padding(.horizontal, 6).padding(.vertical, 2)
                                 .background(.thinMaterial, in: Capsule())
@@ -171,8 +175,9 @@ struct SlideContactSheet: View {
 /// "Slide 3 of 12: Why now" — position always, the slide's own words when the
 /// deck has them. The webview beneath is opaque to VoiceOver, so this label is
 /// the payoff screen's entire accessible surface.
-private func slideLabel(_ index: Int, of count: Int, titles: [String]) -> String {
-    let base = "Slide \(index + 1) of \(count)"
+func slideLabel(_ index: Int, of count: Int, titles: [String], slideNumbers: [Int] = []) -> String {
+    let number = slideNumbers.indices.contains(index) ? slideNumbers[index] : index + 1
+    let base = "Slide \(number) of \(count)"
     guard titles.indices.contains(index), !titles[index].isEmpty else { return base }
     return "\(base): \(titles[index])"
 }
