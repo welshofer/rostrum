@@ -136,10 +136,36 @@ public struct TableStyleResolver {
     private func styleProperties(row: Int, column: Int) -> Effective {
         let properties = XML.Element("a:tcPr"), text = XML.Element("a:defRPr")
         var fillOwner = stylePart ?? table.part
-        func enabled(_ flag: String) -> Bool { enabledFlags.contains(flag) }
-        let lastRow = grid.rows.count - 1, lastColumn = grid.columns.count - 1
-        let leftColumn = enabled("rtl") ? lastColumn : 0
-        let rightColumn = enabled("rtl") ? 0 : lastColumn
+        var borderRanks: [String: Int] = [:]
+        func rank(_ name: String) -> Int {
+            switch name {
+            case "wholeTbl": 0
+            case "band1V", "band2V": 1
+            case "band1H", "band2H": 2
+            case "lastCol": 3
+            case "firstCol": 4
+            case "lastRow": 5
+            case "firstRow": 6
+            default: 7
+            }
+        }
+        func contains(_ name: String, row: Int, column: Int) -> Bool {
+            grid.cells.indices.contains(row) && grid.cells[row].indices.contains(column)
+                && regionNames(row: row, column: column).contains(name)
+        }
+        func wrapper(_ borders: XML.Element, region name: String,
+                     row: Int, column: Int, edge: TableCellBorder) -> XML.Element? {
+            let part: String
+            switch edge {
+            case .left: part = contains(name, row: row, column: column - 1) ? "insideV" : "left"
+            case .right: part = contains(name, row: row, column: column + 1) ? "insideV" : "right"
+            case .top: part = contains(name, row: row - 1, column: column) ? "insideH" : "top"
+            case .bottom: part = contains(name, row: row + 1, column: column) ? "insideH" : "bottom"
+            case .diagonalDown: part = "tl2br"
+            case .diagonalUp: part = "tr2bl"
+            }
+            return borders.firstChild(named: "a:\(part)")
+        }
         for name in regionNames(row: row, column: column) {
             guard let region = definition?.firstChild(named: "a:\(name)") else { continue }
             if let style = region.firstChild(named: "a:tcStyle") {
@@ -149,23 +175,38 @@ public struct TableStyleResolver {
                     setFill(fill, on: properties); fillOwner = theme.part
                 }
                 if let borders = style.firstChild(named: "a:tcBdr") {
-                    for (edge, regionName, applies) in [
-                        (TableCellBorder.left, "left", column == leftColumn || name != "wholeTbl"),
-                        (.right, "right", column == rightColumn || name != "wholeTbl"),
-                        (.top, "top", row == 0 || name != "wholeTbl"),
-                        (.bottom, "bottom", row == lastRow || name != "wholeTbl"),
-                        (.left, "insideV", column != leftColumn), (.right, "insideV", column != rightColumn),
-                        (.top, "insideH", row > 0), (.bottom, "insideH", row < lastRow),
-                        (.diagonalDown, "tl2br", true), (.diagonalUp, "tr2bl", true)
-                    ] where applies {
-                        guard let wrapper = borders.firstChild(named: "a:\(regionName)"),
+                    for edge in TableCellBorder.allCases {
+                        guard let wrapper = wrapper(borders, region: name, row: row, column: column, edge: edge),
                               let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
                         let copy = line.deepCopy(); copy.name = edge.rawValue
                         properties.removeChildren(named: edge.rawValue); properties.appendElement(copy)
+                        borderRanks[edge.rawValue] = rank(name)
                     }
                 }
             }
             if let tx = region.firstChild(named: "a:tcTxStyle") { mergeText(tx, into: text) }
+        }
+        // A style region owns both sides of its boundary. Office's native
+        // lastRow/top separator therefore styles the preceding row's
+        // bottom edge too. Propagate style-only values before the donor
+        // cell's direct overlay; the neighboring direct edge is not used.
+        for (neighborRow, neighborColumn, edge, opposite) in [
+            (row - 1, column, TableCellBorder.top, TableCellBorder.bottom),
+            (row + 1, column, .bottom, .top),
+            (row, column - 1, .left, .right),
+            (row, column + 1, .right, .left)
+        ] where grid.cells.indices.contains(neighborRow)
+            && grid.cells[neighborRow].indices.contains(neighborColumn) {
+            for name in regionNames(row: neighborRow, column: neighborColumn) {
+                guard rank(name) > (borderRanks[edge.rawValue] ?? -1),
+                      let borders = definition?.firstChild(named: "a:\(name)")?
+                        .firstChild(named: "a:tcStyle")?.firstChild(named: "a:tcBdr") else { continue }
+                guard let wrapper = wrapper(borders, region: name, row: neighborRow, column: neighborColumn, edge: opposite),
+                      let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
+                let copy = line.deepCopy(); copy.name = edge.rawValue
+                properties.removeChildren(named: edge.rawValue); properties.appendElement(copy)
+                borderRanks[edge.rawValue] = rank(name)
+            }
         }
         return Effective(properties: properties, text: text, fillOwner: fillOwner)
     }
@@ -206,12 +247,13 @@ public struct TableStyleResolver {
 
         mutating func effective(row: Int, column: Int) -> Effective {
             // Region membership and whole-table edge selection depend only on
-            // first/last position and parity: at most 8 x 8 variants, regardless
+            // first/last/adjacent position and parity: at most 6 x 6 variants, regardless
             // of table size. Flags, theme and style are constant in this session.
             func category(_ index: Int, _ count: Int) -> Int {
-                (index == 0 ? 1 : 0) | (index == count - 1 ? 2 : 0) | ((index & 1) << 2)
+                (index == 0 ? 1 : 0) | (index == count - 1 ? 2 : 0)
+                    | (index == 1 ? 4 : 0) | (index == count - 2 ? 8 : 0) | ((index & 1) << 4)
             }
-            let key = category(row, resolver.grid.rows.count) | (category(column, resolver.grid.columns.count) << 3)
+            let key = category(row, resolver.grid.rows.count) | (category(column, resolver.grid.columns.count) << 5)
             let base: Effective
             if let cached = templates[key] { base = cached }
             else {

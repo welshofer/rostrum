@@ -954,9 +954,11 @@ struct SVGRenderer {
         for height in heights { ys.append(ys.last! + height) }
         let rtl = table.rightToLeft
         var out = "", diagonals = "", textContent = ""
+        var reportedDoubleJunction = false
         struct BorderPaint {
             let color: String; let width: Int; let pattern: String
             let simpleSolid: Bool
+            let double: Bool
         }
         var borders = TableBorderSegments<BorderPaint>()
         func borderPaint(_ line: XML.Element?) -> BorderPaint? {
@@ -980,10 +982,15 @@ struct SVGRenderer {
                 && ["a:custDash", "a:headEnd", "a:tailEnd", "a:round", "a:bevel"].allSatisfy {
                     line.firstChild(named: $0) == nil
                 }
-            return BorderPaint(color: color, width: width, pattern: pattern, simpleSolid: simpleSolid)
+            return BorderPaint(color: color, width: width, pattern: pattern, simpleSolid: simpleSolid,
+                               double: TableDoubleBorder.supports(line))
         }
         func lineSVG(_ paint: BorderPaint, _ endpoints: (Int, Int, Int, Int), offset: Int = 0,
                      startExtension: Double = 0, endExtension: Double = 0) -> String {
+            if paint.double {
+                return TableDoubleBorder.svg(color: paint.color, width: paint.width, endpoints: endpoints,
+                                             startExtension: startExtension, endExtension: endExtension)
+            }
             let dash = paint.pattern.isEmpty ? "" : " stroke-dasharray=\"\(paint.pattern)\""
                 + (offset == 0 ? "" : " stroke-dashoffset=\"\(offset)\"")
             let coordinates: String
@@ -1040,6 +1047,15 @@ struct SVGRenderer {
                     let direct = grid.cells[r][c].firstChild(named: "a:tcPr")?.firstChild(named: edge.rawValue)
                     let edgeProperties = direct != nil || (edgeRow == r && edgeColumn == c) ? properties : styles.effective(row: edgeRow, column: edgeColumn).properties
                     let paint = borderPaint(edgeProperties.firstChild(named: edge.rawValue))
+                    if paint?.double == true, edge == .diagonalDown || edge == .diagonalUp,
+                       !reportedDoubleJunction,
+                       [TableCellBorder.left, .right, .top, .bottom].contains(where: {
+                           borderPaint(properties.firstChild(named: $0.rawValue)) != nil
+                       }) {
+                        diagnostics.record(.unsupportedBorder, .approximation,
+                            "Double diagonal junctions with cell borders are approximated.")
+                        reportedDoubleJunction = true
+                    }
                     switch edge {
                     case .left, .right:
                         borders.append(axis: .vertical, boundary: edge == .left ? c : columnEnd,
@@ -1114,8 +1130,30 @@ struct SVGRenderer {
             let halfWidth = Double(segment.paint.width) / 2
             let start = edge.axis == .horizontal && rtl ? joins.upper : joins.lower
             let end = edge.axis == .horizontal && rtl ? joins.lower : joins.upper
+            var startExtension = start ? halfWidth : 0, endExtension = end ? halfWidth : 0
+            if segment.paint.double {
+                let neighbors = borders.terminalPaints(segment)
+                func extent(_ paints: [BorderPaint]) -> Double {
+                    guard let first = paints.first else { return 0 }
+                    guard paints.allSatisfy({ $0.simpleSolid && $0.color.hasPrefix("#") && $0.width == first.width }) else {
+                        if !reportedDoubleJunction {
+                            diagnostics.record(.unsupportedBorder, .approximation,
+                                "Double-border junctions with compound, dashed, translucent or unequal neighboring strokes are approximated.")
+                            reportedDoubleJunction = true
+                        }
+                        return 0
+                    }
+                    // The native Office PDF extends each component to the
+                    // outside of a perpendicular plain border, not by half
+                    // the double border's own (potentially wider) width.
+                    return Double(first.width) / 2
+                }
+                let lower = extent(neighbors.lower), upper = extent(neighbors.upper)
+                startExtension = edge.axis == .horizontal && rtl ? upper : lower
+                endExtension = edge.axis == .horizontal && rtl ? lower : upper
+            }
             out += lineSVG(segment.paint, endpoints, offset: offset,
-                           startExtension: start ? halfWidth : 0, endExtension: end ? halfWidth : 0)
+                           startExtension: startExtension, endExtension: endExtension)
           }
         }
         return out + diagonals + textContent

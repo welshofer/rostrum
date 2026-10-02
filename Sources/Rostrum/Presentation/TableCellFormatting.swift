@@ -1,7 +1,7 @@
 import Foundation
 
-/// Physical cell edges, including both diagonals. Left/right remain physical
-/// edges even when the table's visual column order is right-to-left.
+/// DrawingML cell edges, including both diagonals. In a right-to-left table,
+/// left/right follow the logical column direction and are mirrored visually.
 public enum TableCellBorder: String, CaseIterable, Sendable {
     case left = "a:lnL", right = "a:lnR", top = "a:lnT", bottom = "a:lnB"
     case diagonalDown = "a:lnTlToBr", diagonalUp = "a:lnBlToTr"

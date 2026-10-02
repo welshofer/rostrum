@@ -77,4 +77,21 @@ struct TableBorderSegments<Paint> {
         return (joins(segment.range.lowerBound, preceding: true),
                 joins(segment.range.upperBound, preceding: false))
     }
+    /// Perpendicular donors at a terminal, excluding collinear continuations.
+    /// Each endpoint has at most two neighbors; no grid scan is required.
+    func terminalPaints(_ segment: Segment) -> (lower: [Paint], upper: [Paint]) {
+        let vertical = segment.edge.axis == .vertical
+        let boundary = segment.edge.boundary
+        func neighbors(_ position: Int, preceding: Bool) -> [Paint] {
+            guard owners[Key(vertical: vertical, boundary: boundary,
+                             position: preceding ? position - 1 : position)] == nil else { return [] }
+            return [boundary - 1, boundary].compactMap { neighbor in
+                guard let index = owners[Key(vertical: !vertical, boundary: position, position: neighbor)] else { return nil }
+                return edges[index].paint
+            }
+        }
+        return (neighbors(segment.range.lowerBound, preceding: true),
+                neighbors(segment.range.upperBound, preceding: false))
+    }
+
 }

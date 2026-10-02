@@ -251,13 +251,15 @@ final class RenderDiagnosticCollector {
                 if let alignment = element[attribute: "algn"], alignment != "l" { issue(.unsupportedTextProperty, .approximation, "Only left-aligned tab stops are supported.") }
             case "a:buBlip": issue(.unsupportedTextProperty, .omission, "Picture bullets are not rendered.")
             case "a:ln":
-                if element[attribute: "cmpd"].map({ $0 != "sng" }) == true
+                if (element[attribute: "cmpd"].map({ $0 != "sng" }) == true
+                    && !(tableStyle && TableDoubleBorder.supports(element)))
                     || (!tableStyle && element.firstChild(named: "a:prstDash").map { $0[attribute: "val"] != "solid" } == true)
                     || ["a:custDash", "a:headEnd", "a:tailEnd"].contains(where: { element.firstChild(named: $0) != nil }) {
                     issue(.unsupportedBorder, .approximation, "Compound, dashed or arrowed shape strokes are approximated.")
                 }
             case "a:lnL", "a:lnR", "a:lnT", "a:lnB", "a:lnTlToBr", "a:lnBlToTr":
-                if element[attribute: "cmpd"].map({ $0 != "sng" }) == true
+                if (element[attribute: "cmpd"].map({ $0 != "sng" }) == true
+                    && !TableDoubleBorder.supports(element))
                     || ["a:custDash", "a:headEnd", "a:tailEnd"].contains(where: { element.firstChild(named: $0) != nil }) {
                     issue(.unsupportedBorder, .approximation, "Compound, custom-dashed or arrowed table borders are approximated.")
                 }

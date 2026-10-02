@@ -114,7 +114,7 @@ import Testing
             } else if variant == "custom-dash" {
                 right.appendElement(XML.Element("a:custDash"))
             } else if variant == "compound" {
-                right[attribute: "cmpd"] = "dbl"
+                right[attribute: "cmpd"] = "tri"
             } else if variant == "round-cap" {
                 right[attribute: "cap"] = "rnd"
             }
