@@ -1,0 +1,626 @@
+{
+  "date": "2026-10-02",
+  "implementationCommit": "85627ec38380a1c5486d7ff9a4eaaf8e20cb47ad",
+  "method": "Native PowerPoint 16.113.3 GUI opening through cua_repl; each observed expected document window and slide count with no repair prompt. Structural/semantic checks are separate; this is not a pixel-parity or playback test.",
+  "catalogDemos": 23,
+  "fileChecks": 282,
+  "failedFileChecks": 0,
+  "tests": {
+    "library": {
+      "passed": 994,
+      "suites": 134,
+      "log": "/tmp/rostrum-lab-library-final.log"
+    },
+    "core": {
+      "passed": 222,
+      "suites": 24,
+      "log": "/tmp/rostrum-lab-core-final-85627ec.log"
+    },
+    "nativeApp": {
+      "passedTests": 69,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "totalTestCount": 69
+    },
+    "headlessReceipt": "/tmp/rostrum-lab-headless-final.json",
+    "iosArchitectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "releaseBuild": "passed"
+  },
+  "native": [
+    {
+      "recipe": "chartEditing",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/chartEditing-1A9B7591-6E4D-450E-8FE0-A14CF6DE80B9/chartEditing.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/chartEditing.pptx",
+      "sha256": "ea99297096e9d4f20bb11a5e68479095049e10647f29cea32c392bad76eb5cad",
+      "slides": 4,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "charts",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/charts-C471E39F-03BB-4699-A6F9-D923A1EFB6EB/charts.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/charts.pptx",
+      "sha256": "0cf9af74a4b96432b414e9ce35208113c6b1a630de94973ce4e7df0bed62b9f4",
+      "slides": 12,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "comments",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/comments-D06B62D9-6B63-410C-AF31-41FC7B93A6DC/comments.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/comments.pptx",
+      "sha256": "7095e9b69e8f741b7d448ca4c69945fb5d85c3f543d5938ce88a567a2299de04",
+      "slides": 1,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "design",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/design-E36F4318-B16F-48EC-A777-65F257DBDF26/design.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/design.pptx",
+      "sha256": "60c0e0cf76eb862f36b0eed9cb345a10b5c6ca227f03759a730a85b52a762944",
+      "slides": 20,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "extractionAndRendering",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/extractionAndRendering-66B603EE-0101-4879-BC4B-9D132D50B146/extractionAndRendering.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/extractionAndRendering.pptx",
+      "sha256": "9994eaa841dd3da058978076758adf0360a69e7060a41cce01368171a6549155",
+      "slides": 3,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "fillsAndLines",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/fillsAndLines-BE86981A-7B93-44A4-A476-4DD953686A03/fillsAndLines.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/fillsAndLines.pptx",
+      "sha256": "d16f544588feb63d21a4ffa68fee266439d80d3bef4b4bdce646cb82043cd8fb",
+      "slides": 10,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "fontsAndFitting",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/fontsAndFitting-1A45462D-1A86-40F0-903C-6449DA936B11/fontsAndFitting.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/fontsAndFitting.pptx",
+      "sha256": "d3d7b79dd955f5cfb5b7a1f318326fcbabf602b17f29adab36688d75130e26e4",
+      "slides": 1,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "layouts",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/layouts-44F5847C-8CB8-4D63-B2EE-F7133EFE5A3A/layouts.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/layouts.pptx",
+      "sha256": "331970dd737a34dde662ed286d753ea70b040abc8997a7a796960ec5d1930e09",
+      "slides": 3,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "mediaAndAttachments",
+      "sourceCommit": "85627ec",
+      "artifact": "/tmp/rostrum-lab-final-85627ec/mediaAndAttachments-424B56CC-F7A1-4097-9E9B-6268E8D631D3/mediaAndAttachments.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/mediaAndAttachments-fixed.pptx",
+      "sha256": "44a3e7ac080c338991543570e5032cda2f91b72d82f760d623620d7cdfa3af21",
+      "slides": 2,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "notes",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/notes-BF10A65D-0125-4219-810E-782D090F3702/notes.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/notes.pptx",
+      "sha256": "2f5c2ae22655f8086719144fe6c124ae30498da69e8ba00a9cee8cd4bb3b78dd",
+      "slides": 3,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "package",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/package-8A4780A8-4DBA-41A3-8A73-3EBA987E9BF8/package.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/package.pptx",
+      "sha256": "c98d6c673cd92e9d316e1e536ed28a242dad7e8b580b2d072d011c125877ea3a",
+      "slides": 1,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "pictures",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/pictures-F9A70F95-52A0-4C03-912F-AFFD7A26A3B5/pictures.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/pictures.pptx",
+      "sha256": "a0f77e4e6e99f2d3f187bac214cbdabe8c115f817e3b7dcf2a84203ed1858f57",
+      "slides": 2,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "sections",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/sections-2315C4E8-C2AC-4701-A774-C9CFA860E14F/sections.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/sections.pptx",
+      "sha256": "4ccb2b8ff46d15cb08dd167d6bb39f6690e14706488b8d8617b37094c687d4f3",
+      "slides": 7,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "shapes",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/shapes-660C26E4-2023-4758-A8A3-7E36D804E327/shapes.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/shapes.pptx",
+      "sha256": "8a4e2546af9062b7090799b1d7bc9cf75b176ff6525a19b1ce8d98d7fc132e8f",
+      "slides": 15,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "slideImport",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/slideImport-5C9071D3-2C28-458F-B5DA-99A3CF579721/slideImport.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/slideImport.pptx",
+      "sha256": "80d252e1ba5e96e8ce7fa3d569571eb03609c9ed74cd10a1a858f6d127c070f2",
+      "slides": 6,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "slides",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/slides-F32EE952-3977-45EF-B129-F0B723DAC97C/slides.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/slides.pptx",
+      "sha256": "9ba5dd2fb1375fefa9051719335ea2f70ee16745c095001580361f82668f3f4d",
+      "slides": 4,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "smartArt",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/smartArt-6680D016-2165-4CC3-8C35-C7F8BBBCC7E6/smartArt.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/smartArt.pptx",
+      "sha256": "e68b359d176fb1fd9f6c742724f608c25a84e16c11656874d798659f96854768",
+      "slides": 4,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "tableAppearance",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/tableAppearance-AB1961CB-FF0E-49B0-A1BC-B79FCA3E3F10/tableAppearance.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/tableAppearance.pptx",
+      "sha256": "3b989b2d4bf4b398a391e14e2241346421aaed28bc17d79e71d7d5658ec459e2",
+      "slides": 2,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "tableStructure",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/tableStructure-9D83A2B6-563E-45A7-B490-964B1685A272/tableStructure.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/tableStructure.pptx",
+      "sha256": "5616bb415a4e4eed8ec35510c6611f4ab8c9c0e1c21e13b63c6d39dae3851556",
+      "slides": 1,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "tableStyles",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/tableStyles-972CB144-5D34-47FA-9DE2-636618363A9A/tableStyles.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/tableStyles.pptx",
+      "sha256": "434031c7380b7c742dadc66d87512d9822561240cb72e4cb70958ca3111c3558",
+      "slides": 19,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "templates",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/templates-FC5FB35F-467A-48FA-B6BE-8ECA7566CC95/templates.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/templates.pptx",
+      "sha256": "11ef5debcaeec9280f7f3fc85cdb5c422cd3b889e7938d28d903cc1366affce4",
+      "slides": 1,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "text",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/text-15E495CF-0B45-4EFE-A39A-2FBA8ABF41D5/text.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/text.pptx",
+      "sha256": "2a1a38226487f7b1eea73cbe32b37851dbb78935e1b7733e4073495e9b13223e",
+      "slides": 2,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    },
+    {
+      "recipe": "theme",
+      "sourceCommit": "ef665f5",
+      "artifact": "/tmp/rostrum-lab-verified-artifacts/theme-F7723F6B-B2B9-44E3-838B-985CAB7BB3BC/theme.pptx",
+      "nativeCopy": "/Users/welshofer/Developer/rostrum/.build/library-lab-20261002/native-open/theme.pptx",
+      "sha256": "cc090f46cb194029bb6e445d42f998bda681fbeeca554cc689481d49ce2ee537",
+      "slides": 1,
+      "powerPointOpenedWithoutRepair": true,
+      "originalBytesUnchanged": true
+    }
+  ],
+  "documentKindExtras": [
+    {
+      "artifact": "/tmp/rostrum-lab-final-85627ec/templates-386DF87E-8B21-4A6C-BB81-E8E6F0185C31/template.potx",
+      "sha256": "b0f67c8c4a6eb8b28a05bfb57b7d9af2081f2569ab13507e8163c3731cb730a5",
+      "powerPointOpenedWithoutRepair": true,
+      "zipAndContentType": "passed"
+    },
+    {
+      "artifact": "/tmp/rostrum-lab-final-85627ec/templates-386DF87E-8B21-4A6C-BB81-E8E6F0185C31/slideshow.ppsx",
+      "sha256": "6b458513c58d72c6f439e8c2efd66de3ff7d0f2ef48d9402546ac5525e2c50c5",
+      "powerPointOpenedWithoutRepair": true,
+      "zipAndContentType": "passed"
+    }
+  ],
+  "externalOracle": [
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/chartEditing-A0F406BA-483B-40BE-B9A7-D954BBF75EB6/chartEditing-before.pptx",
+      "sha256": "3a81b28c762d4074a18463cb3f926e70d1d4ad2985e5f36004ea31fec9065268",
+      "slides": 4,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/chartEditing-A0F406BA-483B-40BE-B9A7-D954BBF75EB6/chartEditing.pptx",
+      "sha256": "ea99297096e9d4f20bb11a5e68479095049e10647f29cea32c392bad76eb5cad",
+      "slides": 4,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/charts-25103896-4B68-481A-B52B-DD1C364BC210/charts.pptx",
+      "sha256": "0cf9af74a4b96432b414e9ce35208113c6b1a630de94973ce4e7df0bed62b9f4",
+      "slides": 12,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/comments-0F8C3832-A772-4483-8E21-EB53D3B79669/comments-before.pptx",
+      "sha256": "f94ecb48737dc095de4e25cbeb2b51236ed88b0c0532bb1aa52c99257264897f",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/comments-0F8C3832-A772-4483-8E21-EB53D3B79669/comments.pptx",
+      "sha256": "8de67b1a384e3caa7bf82ba8e1ea85102a78165dfe50234ee6e47f2aed1a4645",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/design-3C4D8487-774B-417C-B7A3-16DA577DB291/design-before.pptx",
+      "sha256": "a635c89d415376e2c0759d2498707526603cd4b87e03272e33a917b6b005d58c",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/design-3C4D8487-774B-417C-B7A3-16DA577DB291/design.pptx",
+      "sha256": "60c0e0cf76eb862f36b0eed9cb345a10b5c6ca227f03759a730a85b52a762944",
+      "slides": 20,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/extractionAndRendering-93ABF418-59FC-44E6-9F75-BB2246282B90/extractionAndRendering-before.pptx",
+      "sha256": "55be7cca8370ad9f86339d3e74b7ba31873350e4aaf83ea590e1e6ac34d0e743",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/extractionAndRendering-93ABF418-59FC-44E6-9F75-BB2246282B90/extractionAndRendering.pptx",
+      "sha256": "9994eaa841dd3da058978076758adf0360a69e7060a41cce01368171a6549155",
+      "slides": 3,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/fillsAndLines-2B860BB4-6926-480F-9520-803A14E758D3/fillsAndLines-before.pptx",
+      "sha256": "b97b424855be08e875977db18b59159cfd4b92dbc7bb749c6febac1eecff70d0",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/fillsAndLines-2B860BB4-6926-480F-9520-803A14E758D3/fillsAndLines.pptx",
+      "sha256": "d16f544588feb63d21a4ffa68fee266439d80d3bef4b4bdce646cb82043cd8fb",
+      "slides": 10,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/fontsAndFitting-6FEE7FAB-E559-469A-B1C9-21A371C94359/fontsAndFitting-before.pptx",
+      "sha256": "82990dfc35c80b1d46f0da91a511c0c5eb85be4bca17f9eb7f1a7d8ba0901574",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/fontsAndFitting-6FEE7FAB-E559-469A-B1C9-21A371C94359/fontsAndFitting.pptx",
+      "sha256": "d3d7b79dd955f5cfb5b7a1f318326fcbabf602b17f29adab36688d75130e26e4",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/layouts-49614E4C-0257-48AB-8743-2D1EBB02383B/layouts-before.pptx",
+      "sha256": "8412bfe3d3d20f382c46e805ae98e5d2f0cf15cc1de4ebd5f1f53d672b4b5f72",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/layouts-49614E4C-0257-48AB-8743-2D1EBB02383B/layouts.pptx",
+      "sha256": "331970dd737a34dde662ed286d753ea70b040abc8997a7a796960ec5d1930e09",
+      "slides": 3,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/mediaAndAttachments-424B56CC-F7A1-4097-9E9B-6268E8D631D3/mediaAndAttachments-before.pptx",
+      "sha256": "35da598b77ae3b1e1801a31849e27192abfc6b7c9030bad354d8e9fe42ada9b8",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/mediaAndAttachments-424B56CC-F7A1-4097-9E9B-6268E8D631D3/mediaAndAttachments.pptx",
+      "sha256": "44a3e7ac080c338991543570e5032cda2f91b72d82f760d623620d7cdfa3af21",
+      "slides": 2,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/notes-81B4DB36-E4C9-49EA-850F-4A582EA3FCDD/notes-before.pptx",
+      "sha256": "76b1c791c728a153f6d07bc1af365aeb49154546c43696f0a567fac01d786a3e",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/notes-81B4DB36-E4C9-49EA-850F-4A582EA3FCDD/notes-source.pptx",
+      "sha256": "d193258313fcbb8552428b4d58ee3fc0cd93bd949a5f74f40188c692abffa1a3",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/notes-81B4DB36-E4C9-49EA-850F-4A582EA3FCDD/notes.pptx",
+      "sha256": "2f5c2ae22655f8086719144fe6c124ae30498da69e8ba00a9cee8cd4bb3b78dd",
+      "slides": 3,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/package-11B4A12C-9005-4CF1-BC89-BFA60327456F/package-before.pptx",
+      "sha256": "38e0b40b6a5ed68653fedec8af624b69597d66e6cdff481a0dbf1d9d8e9de1e0",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/package-11B4A12C-9005-4CF1-BC89-BFA60327456F/package.pptx",
+      "sha256": "c98d6c673cd92e9d316e1e536ed28a242dad7e8b580b2d072d011c125877ea3a",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/pictures-138A433B-7755-4F53-8C38-77E594AE6277/pictures-before.pptx",
+      "sha256": "1013508109a261f5f8371cf12e6dab26e1fbc60eb40d1124ee19ef7f5889c393",
+      "slides": 2,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/pictures-138A433B-7755-4F53-8C38-77E594AE6277/pictures.pptx",
+      "sha256": "a0f77e4e6e99f2d3f187bac214cbdabe8c115f817e3b7dcf2a84203ed1858f57",
+      "slides": 2,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/sections-B71814CE-F09E-46CF-BD98-A92B9F655B90/sections-before.pptx",
+      "sha256": "a7aa23a63eba30abfad9c27b61958a4e31f4142f6d25c887f02a0a3dd4237243",
+      "slides": 6,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/sections-B71814CE-F09E-46CF-BD98-A92B9F655B90/sections.pptx",
+      "sha256": "4ccb2b8ff46d15cb08dd167d6bb39f6690e14706488b8d8617b37094c687d4f3",
+      "slides": 7,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/shapes-BC385DFD-5EB9-41C8-B08D-BD3700EDB2ED/shapes-before.pptx",
+      "sha256": "28a56717be882445fb747deb741bfd5ba79226ad380a2bb1828fbbfde00ac01d",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/shapes-BC385DFD-5EB9-41C8-B08D-BD3700EDB2ED/shapes.pptx",
+      "sha256": "8a4e2546af9062b7090799b1d7bc9cf75b176ff6525a19b1ce8d98d7fc132e8f",
+      "slides": 15,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/slideImport-3F15A842-8EA6-4C10-8212-6B96000A5707/import-source.pptx",
+      "sha256": "f308e0600cbdf1e03dddab56611c1f9c7181d26fb5fa3c3e02dddca80802b4ff",
+      "slides": 4,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/slideImport-3F15A842-8EA6-4C10-8212-6B96000A5707/slideImport-before.pptx",
+      "sha256": "b3a3552416136d667857335688e005e5bb4ee147a3fe00b73b7f661148c5336a",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/slideImport-3F15A842-8EA6-4C10-8212-6B96000A5707/slideImport.pptx",
+      "sha256": "f215dbe29151c33354a48993fe590c96568fcdc730206161f6b05901c4d0a5e7",
+      "slides": 6,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/slides-50ADF022-AC09-4BA8-A991-F5BF1021C7B6/slides-before.pptx",
+      "sha256": "39a8887b5b64e15c01476ee3931e0cc8ff4a1effa6dec52cfc6c8968f8e143c2",
+      "slides": 4,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/slides-50ADF022-AC09-4BA8-A991-F5BF1021C7B6/slides.pptx",
+      "sha256": "9ba5dd2fb1375fefa9051719335ea2f70ee16745c095001580361f82668f3f4d",
+      "slides": 4,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/smartArt-D47E3785-F17C-41F1-86ED-BAF399E5A233/smartArt.pptx",
+      "sha256": "e68b359d176fb1fd9f6c742724f608c25a84e16c11656874d798659f96854768",
+      "slides": 4,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/tableAppearance-D43C9B2B-CF4D-4C9C-827A-5912666C8E44/tableAppearance-before.pptx",
+      "sha256": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/tableAppearance-D43C9B2B-CF4D-4C9C-827A-5912666C8E44/tableAppearance.pptx",
+      "sha256": "3b989b2d4bf4b398a391e14e2241346421aaed28bc17d79e71d7d5658ec459e2",
+      "slides": 2,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/tableStructure-2E8DCD74-B985-4DBB-B1E8-A6D82BCC0F3E/tableStructure-before.pptx",
+      "sha256": "a090209dea654ea4753ae51d5b3ae1d441679564b7b0bcf7dc771a1c7d787030",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/tableStructure-2E8DCD74-B985-4DBB-B1E8-A6D82BCC0F3E/tableStructure.pptx",
+      "sha256": "5616bb415a4e4eed8ec35510c6611f4ab8c9c0e1c21e13b63c6d39dae3851556",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/tableStyles-56CE8B4F-655E-4007-A801-8930E1C5020D/tableStyles-before.pptx",
+      "sha256": "21e97d9f2e74bcaca77786f289691d99d28b281aac5220bbaa2236e0d3a3172f",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/tableStyles-56CE8B4F-655E-4007-A801-8930E1C5020D/tableStyles.pptx",
+      "sha256": "434031c7380b7c742dadc66d87512d9822561240cb72e4cb70958ca3111c3558",
+      "slides": 19,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/templates-386DF87E-8B21-4A6C-BB81-E8E6F0185C31/templates-before.pptx",
+      "sha256": "52047af7d6c258179defe6aac3df8059f02ab2346a27a2828ec4f92f80a0db31",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/templates-386DF87E-8B21-4A6C-BB81-E8E6F0185C31/templates.pptx",
+      "sha256": "11ef5debcaeec9280f7f3fc85cdb5c422cd3b889e7938d28d903cc1366affce4",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/text-BA5C4874-475D-4838-9AFD-4DC24FBE450A/text-before.pptx",
+      "sha256": "952bd3f451f773a612f3f181f661a38ac46a209628925c931d2325512c0708fd",
+      "slides": 2,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/text-BA5C4874-475D-4838-9AFD-4DC24FBE450A/text.pptx",
+      "sha256": "2a1a38226487f7b1eea73cbe32b37851dbb78935e1b7733e4073495e9b13223e",
+      "slides": 2,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/theme-CC71B36D-DB88-4BD0-8B0E-1AE6493AA3D5/theme-before.pptx",
+      "sha256": "c767a2b1a04c30b76404c64884817f84d85f26712a0f010f2adc3db48a24217e",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    },
+    {
+      "path": "/tmp/rostrum-lab-final-85627ec/theme-CC71B36D-DB88-4BD0-8B0E-1AE6493AA3D5/theme.pptx",
+      "sha256": "cc090f46cb194029bb6e445d42f998bda681fbeeca554cc689481d49ce2ee537",
+      "slides": 1,
+      "pythonPptx": "passed",
+      "unzip": "passed"
+    }
+  ],
+  "knownLimits": [
+    "No Linux runtime available in this workspace session.",
+    "Native opening is not visual equivalence or media playback validation.",
+    "Previous table, typography and notes pixel acceptance failures remain unchanged."
+  ],
+  "review": {
+    "recipeExecutorRequests": [
+      "gpt-6-astra (drawing)",
+      "gpt-6-astra (document)",
+      "inherited/unknown (reused platform worker)"
+    ],
+    "reviewerRequest": "gpt-6.1-sol",
+    "scope": "Final runner/UI/recipes plus media/OLE native fixes; no remaining actionable findings reported."
+  },
+  "normalApp": {
+    "finalBuild": "85627ec",
+    "runAllCompleted": 23,
+    "runAllFailures": 0,
+    "catalogPassingCheckmarks": 23,
+    "tableInputAndAlternative": "verified",
+    "inspectBeforeAndAfter": "verified",
+    "retainedResultOnReturn": "verified",
+    "allFilesSheet": "verified"
+  }
+}

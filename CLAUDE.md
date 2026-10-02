@@ -39,7 +39,7 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
   saved-file/reopen checks, visible support boundaries and an updated coverage
   record. Keep catalog operations executable; a screenshot or a passing preview
   alone does not establish support. Exercise the app inspector/export path too.
-  See `docs/LIBRARY-LAB-20261002.md` and `LecternCore/LibraryLab` under Lectern.
+  See `docs/LIBRARY-LAB-20261002.md` and `Lectern/Sources/LecternCore/LibraryLab`.
 
 ## Naming
 

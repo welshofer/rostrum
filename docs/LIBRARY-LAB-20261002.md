@@ -106,4 +106,60 @@ modify the user's deck library.
 
 ## Verification record
 
-Integration verification is in progress; final receipts will be recorded here.
+Verified implementation: `85627ec` (the documentation/receipt commit follows).
+The [machine-readable receipt](benchmarks/2026-10-02-library-lab-verification.json)
+records commands/logs, artifact paths/hashes, native opening results and limits.
+
+| Check | Result |
+|---|---|
+| Rostrum | 994 tests / 134 suites passed |
+| LecternCore | 222 tests / 24 suites passed |
+| Native hosted app | 69 tests / 17 suites passed; zero failures or skips |
+| Headless app harness | 69 reported tests; three native WebKit checks explicitly skipped and covered by the hosted run |
+| iOS simulator | Both arm64 and x86_64 build; final binary verified with `lipo` |
+| Release library build | Passed |
+| All 23 demo pipelines | 282 saved-file checks passed |
+| External file checks | All 46 generated before/after/source PPTX files opened with python-pptx and passed `unzip -t` |
+| Native PowerPoint 16.113.3 | All 23 result decks plus POTX/PPSX opened without repair |
+| Normal Lectern app | Final **Run All** completed 23/23; every catalog entry displayed a passing checkmark |
+
+Native Lectern actions also verified editable sample text and the alternative
+merge option, before/after inspector navigation, retained results on return,
+WebKit preview content and the complete artifact list. Hosted app tests exercise
+file-backed table/notes/comment demonstrations through actual AppState inspection
+and export, failure recovery, cancellation and retired-task completion. Linux
+execution remains unavailable in this environment; cross-platform source/tests
+are retained, but no Linux runtime result is claimed.
+
+The native sweep found two real issues that structural lint missed. The owned
+OLE specimen lacked its preview picture, and `ShapeCollection.addMedia` authored
+an invalid `evt="onStopped"` end condition. Isolated native variants established
+that the media timing caused repair; removing only the invented end condition
+matches the existing independent PowerPoint fixture while retaining the media
+start/target/transport structure. The OLE example now includes a resolvable PNG
+preview. A native-oracle structural regression covers audio and video after
+reopening. The exact integrated media result was regenerated and opened natively
+without repair. No playback equivalence or animation support is inferred.
+
+Native artifacts for the 22 unaffected recipes were generated at `ef665f5`; the
+corrected media artifact and the template/slide-show extras at `85627ec`. The
+receipt pins their exact SHA-256 values and confirms the source bytes were
+unchanged by opening. All 23 pipelines and all external PPTX checks were rerun
+at the final implementation commit. Native opening establishes file acceptance,
+not pixel fidelity or third-party-deck compatibility.
+
+Three isolated recipe workers were integrated sequentially. Drawing and document
+executor requests used `gpt-6-astra`; the reused platform worker reports inherited
+model provenance. Independent review requested `gpt-6.1-sol` and closed the
+reported correctness findings after fixes: multiline wrapping, portable font
+embedding, percentage-chart axes, missing background demonstrations, hidden
+input validation, artifact access, direct lint, media timing and OLE preview.
+Requested model names are recorded without asserting unavailable runtime identity.
+
+The new resource bundle exposed a macOS signing configuration gap. Both canonical
+build/test scripts now pass manual signing and the existing configured identity
+(or the previous ad-hoc default) consistently to the app and SwiftPM resource
+bundle. Hosted tests and normal app launch passed with that configuration.
+
+No existing tests or visual thresholds were weakened. No push, pull request,
+merge, release publication or deployment occurred.
