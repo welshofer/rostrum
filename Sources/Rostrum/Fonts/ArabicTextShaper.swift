@@ -16,7 +16,7 @@ struct ArabicTextShaper {
     }
     let metrics: FontMetrics
 
-    func shape(_ text: String, pointSize: Double, direction: TextDirection) -> ShapedGlyphRun {
+    func shape(_ text: String, pointSize: Double, direction: TextDirection, kerning: Bool = true) -> ShapedGlyphRun {
         guard pointSize.isFinite, pointSize >= 0 else {
             return ShapedGlyphRun(glyphs: [], breaks: [], diagnostics: [.invalidPointSize], direction: direction)
         }
@@ -75,7 +75,7 @@ struct ArabicTextShaper {
             glyphs[i].advance = metrics.advance(ofGlyph: glyphs[i].id)
         }
         // Pair positioning uses Arabic's selected kern lookups, not Latin's.
-        for lookup in tables.arabicPairs {
+        for lookup in tables.arabicPairs where kerning {
             var i = 0
             while i < glyphs.count {
                 if glyphs[i].control || lookup.filter.ignores(glyphs[i].id) { i += 1; continue }

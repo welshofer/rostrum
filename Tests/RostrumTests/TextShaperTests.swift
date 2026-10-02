@@ -103,5 +103,6 @@ import Testing
         let run = TextShaper(try FontMetrics(data: font)).shape("AV", pointSize: 10)
         #expect(run.isSupported)
         #expect(run.width == 9.2)
+        #expect(TextShaper(try FontMetrics(data: font)).shape("AV", pointSize: 10, kerning: false).width == 10)
     }
 }

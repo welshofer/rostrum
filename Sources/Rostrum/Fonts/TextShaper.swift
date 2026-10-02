@@ -17,8 +17,15 @@ public struct TextShaper: Sendable {
 
     public func shape(_ text: String, pointSize: Double,
                       direction: TextDirection = .automatic) -> ShapedGlyphRun {
+        shape(text, pointSize: pointSize, direction: direction, kerning: true)
+    }
+
+    /// Disabling kerning suppresses only pair adjustments; substitutions,
+    /// joining, bidi and unsupported-feature diagnostics remain unchanged.
+    public func shape(_ text: String, pointSize: Double,
+                      direction: TextDirection = .automatic, kerning: Bool) -> ShapedGlyphRun {
         if text.unicodeScalars.contains(where: { ArabicJoining.isArabic($0.value) }) {
-            return ArabicTextShaper(metrics: metrics).shape(text, pointSize: pointSize, direction: direction)
+            return ArabicTextShaper(metrics: metrics).shape(text, pointSize: pointSize, direction: direction, kerning: kerning)
         }
         let tables = metrics.layoutTables
         var diagnostics = tables.diagnostics.map { ShapingDiagnostic.unsupportedLayoutFeature($0) }
@@ -168,7 +175,7 @@ public struct TextShaper: Sendable {
             }
             glyphs = next
         }
-        if glyphs.count > 1 {
+        if kerning && glyphs.count > 1 {
             if tables.pairLookups.isEmpty {
                 for i in 0..<(glyphs.count - 1) {
                     guard glyphs[i].bidiLevel == glyphs[i + 1].bidiLevel,

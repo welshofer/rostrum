@@ -8,6 +8,7 @@ final class RenderTextAttributes {
         let bold: Bool
         let italic: Bool
         let tracking: Double
+        let usesKerning: Bool
 
         static func == (lhs: Self, rhs: Self) -> Bool {
             // Swift String equality normalizes canonically equivalent Unicode.
@@ -20,6 +21,7 @@ final class RenderTextAttributes {
             }
             return sameFamily && lhs.size == rhs.size && lhs.color.utf8.elementsEqual(rhs.color.utf8)
                 && lhs.bold == rhs.bold && lhs.italic == rhs.italic && lhs.tracking == rhs.tracking
+                && lhs.usesKerning == rhs.usesKerning
         }
     }
     private var entries: [Key: String] = [:]
@@ -32,7 +34,7 @@ final class RenderTextAttributes {
 
     func attributes(for run: ResolvedTextRun, family: String?) -> String {
         let key = Key(family: family, size: run.fontSize, color: run.color,
-                      bold: run.bold, italic: run.italic, tracking: run.tracking)
+                      bold: run.bold, italic: run.italic, tracking: run.tracking, usesKerning: run.usesKerning)
         if let cached = entries[key] { return cached }
         var result = " font-size=\"\(SVGNumber.decimal(run.fontSize))\" fill=\"\(run.color)\""
         if let family, !family.isEmpty {
@@ -40,6 +42,9 @@ final class RenderTextAttributes {
         }
         if run.bold { result += " font-weight=\"bold\"" }
         if run.italic { result += " font-style=\"italic\"" }
+        // SVG 1.1 kerning=0 disables font pair adjustments without disabling
+        // ligatures. Span-wide textLength alone would stretch kerned glyphs.
+        if !run.usesKerning { result += " kerning=\"0\"" }
         if run.tracking != 0 { result += " letter-spacing=\"\(SVGNumber.decimal(run.tracking))\"" }
         // Bound keys as well as values. Unusual fonts/styles still serialize
         // normally when the cache is full or a single entry exceeds the budget.

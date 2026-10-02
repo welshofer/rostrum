@@ -9,6 +9,10 @@ public struct ResolvedTextRun: Equatable, Sendable {
     public var italic: Bool
     public var color: String
     public var tracking: Double
+    /// Minimum rendered point size at which DrawingML enables kerning.
+    /// Zero preserves the default of kerning at every size.
+    public var kerningThreshold: Double = 0
+    public var usesKerning: Bool { fontSize >= kerningThreshold }
 }
 
 public struct RichTextSpan: Equatable, Sendable {
@@ -148,7 +152,7 @@ public struct RichTextLayout: Sendable {
                     guard !segment.isEmpty else { return }
                     let breaks = Set(TextShaper.lineBreaks(in: segment).map(\.scalarOffset))
                     if let metrics {
-                        let shaped = TextShaper(metrics).shape(segment, pointSize: style.fontSize)
+                        let shaped = TextShaper(metrics).shape(segment, pointSize: style.fontSize, kerning: style.usesKerning)
                         warnings.append(contentsOf: shaped.diagnostics)
                         if shaped.glyphs.contains(where: { $0.bidiLevel > 0 }) {
                             warnings.append(.unsupportedLayoutFeature("Rich-text bidirectional span ordering requires a verified paragraph renderer"))
@@ -242,7 +246,7 @@ public struct RichTextLayout: Sendable {
                     let fragment = lineAtoms[fragmentStart..<end]
                     if let font = face(lineAtoms[fragmentStart].style) {
                         let value = fragment.map(\.text).joined(), style = lineAtoms[fragmentStart].style
-                        let exact = TextShaper(font).shape(value, pointSize: style.fontSize).width
+                        let exact = TextShaper(font).shape(value, pointSize: style.fontSize, kerning: style.usesKerning).width
                             + Double(value.count) * style.tracking
                         let adjustment = exact - fragment.reduce(0) { $0 + $1.width }
                         lineAtoms[end - 1].width += adjustment; lineWidth += adjustment
@@ -402,7 +406,8 @@ public struct RichTextLayout: Sendable {
         return ResolvedTextRun(text: text, fontFamily: family,
             fontSize: bounded(attr("sz").flatMap(Double.init) ?? defaultSize * 100, 100...400000) / 100 * scale,
             bold: ["1", "true"].contains(attr("b") ?? "0"), italic: ["1", "true"].contains(attr("i") ?? "0"), color: color,
-            tracking: bounded(attr("spc").flatMap(Double.init) ?? 0, -400000...400000) / 100 * scale)
+            tracking: bounded(attr("spc").flatMap(Double.init) ?? 0, -400000...400000) / 100 * scale,
+            kerningThreshold: bounded(attr("kern").flatMap(Double.init) ?? 0, 0...400000) / 100)
     }
     private static func numberLabel(_ number: Int, type: String) -> String {
         var value = String(number)
