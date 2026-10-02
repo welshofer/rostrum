@@ -17,9 +17,15 @@ p.add_argument('--candidate-revision', required=True)
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--work-dir', type=Path, required=True)
 p.add_argument('--iterations', type=int, default=12)
+p.add_argument('--scenarios', nargs='+', default=['table-banded', 'table-grid', 'images-unique', 'images-repeated'],
+               help='Known synthetic scenarios or file:/absolute/path/deck.pptx; exact output checks still apply')
 a = p.parse_args()
 if not 3 <= a.iterations <= 100:
     p.error('--iterations must be between 3 and 100')
+if any(s not in ['table-banded', 'table-grid', 'images-unique', 'images-repeated'] and not s.startswith('file:') for s in a.scenarios):
+    p.error('unknown scenario')
+if len(set(a.scenarios)) != len(a.scenarios):
+    p.error('duplicate scenarios')
 a.work_dir.mkdir(parents=True, exist_ok=True)
 
 def digest(path):
@@ -34,13 +40,13 @@ report = dict(platform=platform.platform(), compiler=subprocess.check_output(['s
               binarySHA256={name: digest(path) for name, path in binaries.items()},
               method='Two paired warm-render rounds in AB then BA order; first sample excluded in each invocation; no registered fonts.',
               scenarios={})
-for scenario in ['table-banded', 'table-grid', 'images-unique', 'images-repeated']:
+for scenario_index, scenario in enumerate(a.scenarios):
     samples = {'baseline': [], 'candidate': []}
     warmups = {'baseline': [], 'candidate': []}
     hashes = {}
     for round_index, order in enumerate([['baseline', 'candidate'], ['candidate', 'baseline']]):
         for name in order:
-            prefix = a.work_dir / f'{scenario}-{round_index}-{name}'
+            prefix = a.work_dir / f'{scenario_index}-{round_index}-{name}'
             result = json.loads(subprocess.check_output([str(binaries[name]), scenario, str(a.iterations), str(prefix)], text=True, env=environment))
             timings = result['millisecondsIncludingWarmup']
             warmups[name].append(timings[0])
