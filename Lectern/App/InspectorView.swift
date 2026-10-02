@@ -14,6 +14,7 @@ import LecternCore
 /// success mark.
 struct InspectorView: View {
     @Environment(AppState.self) private var app
+    @State private var notesPreviewRequest: NotesPagePreviewRequest?
     #if !os(macOS)
     /// A folder-picker failure worth a word. macOS never reaches this — it uses
     /// an `NSOpenPanel` (see `chooseExportDestination`) — so the surface lives
@@ -49,6 +50,9 @@ struct InspectorView: View {
             // Copying a deck's media out is measured in megabytes. The window
             // says so rather than going quiet.
             if app.isExporting { exportingOverlay }
+        }
+        .sheet(item: $notesPreviewRequest) { request in
+            NotesPagePreviewView(request: request)
         }
     }
 
@@ -347,6 +351,14 @@ struct InspectorView: View {
                             Label(note, systemImage: "text.bubble")
                                 .font(.caption).foregroundStyle(.tertiary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        if slide.hasNotesPage {
+                            Button("Preview notes page", systemImage: "doc.richtext") {
+                                notesPreviewRequest = NotesPagePreviewRequest(
+                                    fileURL: inspection.fileURL, slideNumber: slide.number)
+                            }
+                            .font(.caption)
+                            .accessibilityLabel("Preview notes page for slide \(slide.number)")
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

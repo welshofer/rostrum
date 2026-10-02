@@ -238,7 +238,7 @@ private final class SnapshotHost: NSObject, WKNavigationDelegate {
         <!doctype html><html><head><meta charset="utf-8">
         <style>
           html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
-          svg { display: block; width: 100%; height: 100%; }
+          body > svg { display: block; width: 100%; height: 100%; }
         </style></head><body>\(svg)</body></html>
         """
     }

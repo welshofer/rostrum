@@ -22,6 +22,8 @@ public struct SlideDigest: Sendable, Identifiable {
     /// Filenames the export would write into this slide's folder.
     public let assetNames: [String]
     public let notes: [String]
+    /// A notes page can contain artwork even when its body text is empty.
+    public let hasNotesPage: Bool
 
     /// Which layout and master this slide is built on — the first thing worth
     /// knowing about a slide somebody else formatted.
@@ -250,6 +252,7 @@ public enum DeckInspector {
                            chartTitles: slide.charts.map { $0.title ?? "Untitled chart" },
                            assetNames: slide.assets.map(\.filename),
                            notes: slide.notes,
+                           hasNotesPage: detail?.hasNotesPage ?? !slide.notes.isEmpty,
                            layoutName: detail?.layoutName ?? "Unknown layout",
                            masterName: detail?.masterName ?? "",
                            shapeCounts: detail?.shapeCounts ?? [:],

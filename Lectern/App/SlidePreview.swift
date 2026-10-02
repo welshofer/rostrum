@@ -32,7 +32,7 @@ struct SlidePreview {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
           html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
-          svg { display: block; width: 100%; height: 100%; }
+          body > svg { display: block; width: 100%; height: 100%; }
         </style></head><body>\(svg)</body></html>
         """
     }

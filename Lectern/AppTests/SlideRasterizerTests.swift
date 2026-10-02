@@ -149,5 +149,44 @@ import AppKit
             #expect(color.blueComponent > 0.9 && color.redComponent < 0.1)
         }
     }
+
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
+    func nativeNotesPreviewKeepsPageAndThumbnailGeometry() async throws {
+        let preview = try notesPreviewFixture()
+        let geometry = try #require(SlidePreviewGeometry(svg: preview.svg))
+        #expect(abs(geometry.aspectRatio - 7.5 / 10) < 0.001)
+        let image = try #require(await SlideRasterizer.shared.image(for: preview.svg, pixelWidth: 540))
+        let rendered = try #require(ImageRenderer(content: image).nsImage)
+        #expect(rendered.size == CGSize(width: 540, height: 720))
+        let data = try #require(rendered.tiffRepresentation)
+        let bitmap = try #require(NSBitmapImageRep(data: data))
+        // The source fixture's page background and blue slide image must both
+        // survive the actual nested SVG data image and WebKit snapshot path.
+        var bluePixels = 0, backgroundPixels = 0
+        for y in stride(from: 0, to: bitmap.pixelsHigh, by: 4) {
+            for x in stride(from: 0, to: bitmap.pixelsWide, by: 4) {
+                guard let color = bitmap.colorAt(x: x, y: y)?.usingColorSpace(.deviceRGB) else { continue }
+                if color.blueComponent > 0.45 && color.redComponent < 0.3 { bluePixels += 1 }
+                if color.redComponent > 0.8 && color.redComponent < 0.98 && color.blueComponent > 0.85 {
+                    backgroundPixels += 1
+                }
+            }
+        }
+        #expect(bluePixels > 100)
+        #expect(backgroundPixels > 1_000)
+    }
+
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
+    func nativeWrapperDoesNotResizeNestedSVGViewports() async throws {
+        let markup = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 600\"><rect width=\"400\" height=\"600\" fill=\"white\"/><svg x=\"100\" y=\"100\" width=\"80\" height=\"60\" viewBox=\"0 0 4 3\"><rect width=\"4\" height=\"3\" fill=\"blue\"/></svg></svg>"
+        let image = try #require(await SlideRasterizer.shared.image(for: markup, pixelWidth: 400))
+        let rendered = try #require(ImageRenderer(content: image).nsImage)
+        let data = try #require(rendered.tiffRepresentation)
+        let bitmap = try #require(NSBitmapImageRep(data: data))
+        let inside = try #require(bitmap.colorAt(x: 120, y: 120)?.usingColorSpace(.deviceRGB))
+        let outside = try #require(bitmap.colorAt(x: 200, y: 200)?.usingColorSpace(.deviceRGB))
+        #expect(inside.blueComponent > 0.9 && inside.redComponent < 0.1)
+        #expect(outside.redComponent > 0.9 && outside.greenComponent > 0.9)
+    }
 }
 #endif

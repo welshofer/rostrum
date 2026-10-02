@@ -150,6 +150,7 @@ enum DeckDetailExtractor {
     /// The per-slide facts that come from the slide itself rather than from
     /// Rostrum's outline.
     struct SlideDetail {
+        var hasNotesPage: Bool
         var layoutName: String
         var masterName: String
         var shapeCounts: [String: Int]
@@ -211,6 +212,7 @@ enum DeckDetailExtractor {
             }
 
             result.slideDetails[index] = SlideDetail(
+                hasNotesPage: slide.hasNotes,
                 layoutName: slide.layout?.name ?? "Unknown layout",
                 masterName: slide.master?.name ?? "",
                 shapeCounts: counts,
