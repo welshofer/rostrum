@@ -33,3 +33,17 @@ The driver also accepts `file:/absolute/path/deck.pptx`. Set
 the paired synthetic runner is intended to run without that environment variable.
 It never changes the input deck. Pixel comparison against Office remains the
 separate, unchanged `Tools/conformance/check_text_rendering.py` gate.
+
+## Explaining an existing pixel failure
+
+The supplemental diagnostic partitions this specific v3 fixture into its known
+stroke zones and remaining text. It also renders a standalone fractional-width
+line to separate rasterizer coverage from Rostrum geometry. It invokes the
+unchanged pixel comparator; diagnostic completion is not an acceptance pass.
+
+```sh
+python Tools/render-regression/analyze_fidelity.py --candidate /path/to/font-corrected.png --reference Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-office.png --candidate-revision SOURCE_SHA --output /path/to/diagnostic.json
+```
+
+Use the same pinned Pillow 12.3.0 and resvg-py 0.5.0 environment as the text
+comparison adapter. The fixed zones are valid only for the 1200×700 v3 fixture.
