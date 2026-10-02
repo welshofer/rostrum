@@ -31,6 +31,10 @@ import AppKit
         let bounded = try #require(geometry.snapshotSize(pixelWidth: 1_000_000))
         #expect(bounded.width == 1024 && bounded.height == 4096)
         #expect(bounded.width * bounded.height <= 4_194_304)
+        let awkward = try #require(SlidePreviewGeometry(svg: "<svg viewBox=\"0 0 2503 10000\"/>"))
+        let awkwardSize = try #require(awkward.snapshotSize(pixelWidth: 4096))
+        #expect(awkwardSize.width * awkwardSize.height <= 4_194_304)
+        #expect(awkwardSize.width <= 4096 && awkwardSize.height <= 4096)
         // Reading dimensions does not parse or allocate embedded payload DOMs.
         let large = "<svg viewBox=\"0 0 4 3\"><defs>" + String(repeating: "x", count: 100_000) + "</defs></svg>"
         #expect(SlidePreviewGeometry(svg: large)?.aspectRatio == 4.0 / 3)

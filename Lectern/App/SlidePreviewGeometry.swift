@@ -33,7 +33,9 @@ struct SlidePreviewGeometry: Equatable {
         let reduction = min(1, 4096 / max(w, h), sqrt(4_194_304 / (w * h)))
         w *= reduction; h *= reduction
         guard w >= 0.5, h >= 0.5 else { return nil }
-        return CGSize(width: max(1, w.rounded()), height: max(1, h.rounded()))
+        // Rounding both axes up can cross the total-pixel ceiling after the
+        // continuous scale above (for example a 2503:10000 portrait slide).
+        return CGSize(width: max(1, w.rounded(.down)), height: max(1, h.rounded(.down)))
     }
 }
 
