@@ -1,0 +1,334 @@
+{
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "baselineRevision": "2783ea38616cfd7c30ad2358c1056b9dc3f19481",
+  "candidateRevision": "9478ea9a6a5f3182dc96081d90b4dfcbdc9e2bce",
+  "driverSHA256": "db91aa725ae3b6229cfe01e6ba465360d7f261f00041cfbc2a48311315a96b65",
+  "binarySHA256": {
+    "baseline": "5213e85b97905c6278bc5db8b6451d46cd70780bab7c82319743528daa01b68c",
+    "candidate": "c2f76c4f3d40c06c52e6fb348b54631a92af9249775dd11901db0faea8f7329e"
+  },
+  "method": "Two paired warm-render rounds in AB then BA order; first sample excluded in each invocation; no registered fonts.",
+  "scenarios": {
+    "table-banded": {
+      "samplesMS": {
+        "baseline": [
+          191.997709,
+          193.258834,
+          193.0425,
+          192.091833,
+          193.551625,
+          194.640958,
+          194.284625,
+          192.414166,
+          193.387166,
+          193.00825,
+          193.217834,
+          194.073792,
+          192.653916,
+          193.550709,
+          193.525125,
+          194.032416,
+          194.356792,
+          194.259,
+          190.549583,
+          190.96625,
+          192.711041,
+          192.351625
+        ],
+        "candidate": [
+          161.378,
+          159.906125,
+          165.210417,
+          165.395791,
+          166.786709,
+          165.480666,
+          165.454666,
+          165.553083,
+          164.329458,
+          166.83475,
+          165.522708,
+          161.523,
+          160.275084,
+          161.221375,
+          163.591291,
+          160.188292,
+          159.845666,
+          159.434125,
+          160.625333,
+          162.846209,
+          160.957208,
+          160.364958
+        ]
+      },
+      "warmupsMS": {
+        "baseline": [
+          199.371459,
+          197.856625
+        ],
+        "candidate": [
+          169.029041,
+          170.913666
+        ]
+      },
+      "medianMS": {
+        "baseline": 193.238334,
+        "candidate": 162.18460449999998
+      },
+      "candidateReductionPercent": 16.070170373131056,
+      "outputSHA256": {
+        "baseline": {
+          ".svg": "70ae514b3b4389726c695571fdb2ca9838ed103e1625c49131ad5beab4b12087",
+          "-issues.json": "40429581746e5682c9d06fdf40de14ceac23722fddd55def4047eb58550f789e",
+          "-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+        },
+        "candidate": {
+          ".svg": "70ae514b3b4389726c695571fdb2ca9838ed103e1625c49131ad5beab4b12087",
+          "-issues.json": "40429581746e5682c9d06fdf40de14ceac23722fddd55def4047eb58550f789e",
+          "-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+        }
+      },
+      "exactOutputs": true
+    },
+    "table-grid": {
+      "samplesMS": {
+        "baseline": [
+          174.551291,
+          171.536917,
+          172.102916,
+          174.43,
+          172.803583,
+          172.417167,
+          169.476416,
+          170.349625,
+          171.039708,
+          171.970875,
+          172.902958,
+          168.428875,
+          167.422375,
+          169.295833,
+          169.6515,
+          168.450625,
+          169.194625,
+          169.064167,
+          169.115333,
+          170.199834,
+          169.045042,
+          169.795209
+        ],
+        "candidate": [
+          140.381583,
+          139.962292,
+          140.208041,
+          141.45225,
+          137.894,
+          137.98425,
+          138.779792,
+          140.690416,
+          141.315291,
+          140.526458,
+          141.100709,
+          142.380916,
+          140.16475,
+          140.808792,
+          140.721208,
+          141.300208,
+          139.981291,
+          140.491291,
+          154.413708,
+          141.278333,
+          140.145,
+          140.511917
+        ]
+      },
+      "warmupsMS": {
+        "baseline": [
+          178.561916,
+          175.311666
+        ],
+        "candidate": [
+          148.972625,
+          148.365916
+        ]
+      },
+      "medianMS": {
+        "baseline": 169.9975215,
+        "candidate": 140.5191875
+      },
+      "candidateReductionPercent": 17.340449284138547,
+      "outputSHA256": {
+        "baseline": {
+          ".svg": "6bca3025bf51412afdc37ae97a81eaa70508b49c5e392263cc9678e7113d78f3",
+          "-issues.json": "55f03e1b51f1dc403e8e7450e09ad54335174501f176ace12a9f0ff5a52ef634",
+          "-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+        },
+        "candidate": {
+          ".svg": "6bca3025bf51412afdc37ae97a81eaa70508b49c5e392263cc9678e7113d78f3",
+          "-issues.json": "55f03e1b51f1dc403e8e7450e09ad54335174501f176ace12a9f0ff5a52ef634",
+          "-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+        }
+      },
+      "exactOutputs": true
+    },
+    "images-unique": {
+      "samplesMS": {
+        "baseline": [
+          1.89475,
+          1.905667,
+          1.845375,
+          1.842041,
+          1.76825,
+          1.782584,
+          1.816417,
+          1.843,
+          1.808959,
+          1.79375,
+          1.806042,
+          1.998875,
+          1.78575,
+          1.77775,
+          1.783291,
+          1.754708,
+          1.850666,
+          1.84775,
+          1.848041,
+          1.803333,
+          1.81925,
+          1.855916
+        ],
+        "candidate": [
+          1.855041,
+          1.873,
+          1.881792,
+          1.828041,
+          1.873166,
+          1.827375,
+          1.898417,
+          1.868917,
+          1.859709,
+          1.794291,
+          1.782042,
+          1.932875,
+          1.79775,
+          1.771541,
+          1.865291,
+          1.790708,
+          1.889666,
+          1.900958,
+          1.848208,
+          1.867916,
+          1.873542,
+          1.958875
+        ]
+      },
+      "warmupsMS": {
+        "baseline": [
+          2.458416,
+          2.458375
+        ],
+        "candidate": [
+          2.572875,
+          2.534125
+        ]
+      },
+      "medianMS": {
+        "baseline": 1.8178334999999999,
+        "candidate": 1.8666035
+      },
+      "candidateReductionPercent": -2.6828639696649947,
+      "outputSHA256": {
+        "baseline": {
+          ".svg": "138ef8f2ef222760991bc121795e1776a8a86bc585e6623b16abedabf8c4674e",
+          "-issues.json": "ace810d7e2cbb4f8c40ce09dc8e191ae466adb4e1a7d49c59f2215b411d38b05",
+          "-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+        },
+        "candidate": {
+          ".svg": "138ef8f2ef222760991bc121795e1776a8a86bc585e6623b16abedabf8c4674e",
+          "-issues.json": "ace810d7e2cbb4f8c40ce09dc8e191ae466adb4e1a7d49c59f2215b411d38b05",
+          "-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+        }
+      },
+      "exactOutputs": true
+    },
+    "images-repeated": {
+      "samplesMS": {
+        "baseline": [
+          1.747917,
+          1.687708,
+          1.659041,
+          1.612458,
+          1.635375,
+          1.654125,
+          1.66425,
+          1.690875,
+          1.656125,
+          1.694875,
+          1.674708,
+          1.703666,
+          1.607541,
+          1.611125,
+          1.610834,
+          1.62925,
+          1.659958,
+          1.667833,
+          1.646,
+          1.599959,
+          1.60975,
+          1.665083
+        ],
+        "candidate": [
+          1.7955,
+          1.702375,
+          1.652417,
+          1.664291,
+          1.678,
+          1.678333,
+          1.723875,
+          1.678792,
+          1.648167,
+          1.658291,
+          1.861917,
+          1.75925,
+          1.666667,
+          1.683708,
+          1.662833,
+          1.7165,
+          1.74575,
+          1.62975,
+          1.638042,
+          1.62875,
+          1.621708,
+          1.73
+        ]
+      },
+      "warmupsMS": {
+        "baseline": [
+          2.373292,
+          2.243
+        ],
+        "candidate": [
+          2.351292,
+          2.448334
+        ]
+      },
+      "medianMS": {
+        "baseline": 1.657583,
+        "candidate": 1.6781665000000001
+      },
+      "candidateReductionPercent": -1.241777938118327,
+      "outputSHA256": {
+        "baseline": {
+          ".svg": "2223effa27d77ea06c3fe1297c587236330e45215d547b405085b536ff50dbc0",
+          "-issues.json": "ace810d7e2cbb4f8c40ce09dc8e191ae466adb4e1a7d49c59f2215b411d38b05",
+          "-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+        },
+        "candidate": {
+          ".svg": "2223effa27d77ea06c3fe1297c587236330e45215d547b405085b536ff50dbc0",
+          "-issues.json": "ace810d7e2cbb4f8c40ce09dc8e191ae466adb4e1a7d49c59f2215b411d38b05",
+          "-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+        }
+      },
+      "exactOutputs": true
+    }
+  }
+}
