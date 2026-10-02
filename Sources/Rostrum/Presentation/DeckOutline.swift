@@ -436,7 +436,10 @@ extension DeckOutline {
     ///
     /// Deterministic: the same deck renders the same bytes, with nothing
     /// stamped in from the clock or the filesystem.
-    public func markdown(title: String? = nil) -> String {
+    /// `tableOverrides` replaces the table text for the supplied one-based slide
+    /// numbers. This lets callers supply a richer read-only table projection
+    /// while retaining the outline's text, notes, diagrams and asset references.
+    public func markdown(title: String? = nil, tableOverrides: [Int: [OutlineTable]] = [:]) -> String {
         var out: [String] = []
         out.append("# \(DeckOutline.heading(title ?? "Deck outline"))")
         out.append("")
@@ -470,7 +473,7 @@ extension DeckOutline {
                 out.append(contentsOf: DeckOutline.bullets(block.paragraphs))
             }
 
-            for table in slide.tables where !table.rows.isEmpty {
+            for table in tableOverrides[slide.number] ?? slide.tables where !table.rows.isEmpty {
                 out.append("")
                 out.append(contentsOf: DeckOutline.table(table.rows))
             }

@@ -154,6 +154,26 @@ import Testing
 
     // MARK: - Markdown
 
+    @Test func tableProjectionOverridesReplaceOnlyTheNamedSlideTables() throws {
+        let deck = try Presentation()
+        let first = try deck.slides[0]
+        try first.shapes.addTable(rows: 1, columns: 1, frame: frame).setContents([["Old projection"]])
+        try first.setNotes("Keep these notes.")
+        let second = try deck.slides.add()
+        try second.shapes.addTable(rows: 1, columns: 1, frame: frame).setContents([["Unchanged table"]])
+        let before = try deck.serializedData(), outline = deck.outline()
+        let overrides = [1: [OutlineTable(rows: [["Complete | heading", "Value"], ["Data", "42"]])]]
+        let markdown = outline.markdown(title: "T", tableOverrides: overrides)
+        #expect(!markdown.contains("Old projection"))
+        #expect(markdown.contains("| Complete \\| heading | Value |"))
+        #expect(markdown.contains("| Data | 42 |"))
+        #expect(markdown.contains("Unchanged table") && markdown.contains("Keep these notes."))
+        #expect(markdown == outline.markdown(title: "T", tableOverrides: overrides))
+        #expect(!outline.markdown(tableOverrides: [1: []]).contains("Old projection"))
+        #expect(outline.markdown().contains("Old projection"))
+        #expect(try deck.serializedData() == before)
+    }
+
     /// A table on a slide is a table in the Markdown, not a run-on of cells.
     ///
     /// The exact bytes are asserted rather than "contains a pipe": a GitHub
