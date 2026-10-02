@@ -17,9 +17,9 @@ enum DrawingLabRecipes {
               operations: ["TextFrame.clear", "TextFrame.addParagraph", "TextFrame.setMargins", "TextFrame.wordWrap", "TextFrame.verticalAnchor", "Paragraph.setSpacing", "Paragraph.setLineSpacing", "Paragraph.indentLevel", "Paragraph.setBullet", "Paragraph.setNumbered", "Paragraph.setNoBullet", "Paragraph.alignment", "Paragraph.addRun", "Run.fontName", "Run.fontSize", "Run.bold", "Run.italic", "Run.underline", "Run.strikethrough", "Run.letterSpacing", "Run.color", "Run.setSuperscript", "Run.setSubscript", "Run.setHyperlink", "Run.setSlideLink", "Presentation.showSlideNumbers", "Presentation.showDate"],
               limitations: ["Office evaluates live fields; previews show stored field text. Font availability and text shaping can affect layout."],
               inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Right-align paragraphs"),
-        .init(.pictures, title: "Pictures and image fills", summary: "Cover/stretch, source crop, rotation, independent replacement, deduplication and stretch/tile fills.",
-              operations: ["ShapeCollection.addPicture", "Picture.setCrop", "Picture.replaceImage", "Picture.imageData", "Picture.imagePart", "Shape.rotation", "Fill.image", "Presentation.renderSVG"],
-              limitations: ["Only owned PNG/GIF pixels are used. Tiling belongs to image fills, not picture fit. Unsupported replacement bytes and empty crop regions are refused."],
+        .init(.pictures, title: "Pictures and image fills", summary: "PNG/JPEG/GIF metadata, crop, independent replacement, retained ellipse/flips, SVG alternate refusal and image fills.",
+              operations: ["ShapeCollection.addPicture", "Picture.setCrop", "Picture.replaceImage", "Picture.imageData", "Picture.imagePart", "ImageSniffer.sniff", "ImageInfo.nativeSize", "Shape.rotation", "Fill.image", "Part.dom", "Presentation.renderSVG"],
+              limitations: ["Owned PNG/JPEG/GIF bytes are used. Retained ellipse, flips and SVG alternate are preservation fixtures authored through public XML, not new typed setters. Tiling belongs to fills; alternate-source replacement is refused."],
               inputs: [.text, .accent, .alternative], alternativeLabel: "Use asymmetric crop and negative rotation"),
         .init(.tableStructure, title: "Edit a table grid", summary: "Merge, expand, split, insert, delete, move and reorder rows and columns with atomic refusal checks.",
               operations: ["ShapeCollection.addTable", "Table.setContents", "Table.columnWidths", "Table.rowHeights", "Table.setColumnWidth", "Table.setRowHeight", "Table.merge", "Table.mergeInfo", "Table.mergedRegions", "Table.unmerge", "Table.insertRow", "Table.insertColumn", "Table.removeRow", "Table.removeColumn", "Table.moveRow", "Table.moveColumn", "Table.reorderRows", "Table.reorderColumns"],
@@ -29,9 +29,9 @@ enum DrawingLabRecipes {
               operations: ["BuiltInTableStyle.allCases", "Table.applyBuiltInStyle", "Table.builtInStyle", "Table.firstRowHeader", "Table.lastRowFooter", "Table.firstColumnHeader", "Table.lastColumnFooter", "Table.bandedRows", "Table.bandedColumns", "Table.rightToLeft"],
               limitations: ["Native styles use theme colors. SVG is a preview; PowerPoint remains the document rendering authority."],
               inputs: [.text, .sampleSize, .alternative], alternativeLabel: "Column bands, footers and RTL"),
-        .init(.tableAppearance, title: "Cell appearance", summary: "All six border edges, stroke styles, fill types, padding, vertical text and style inheritance.",
-              operations: ["Table.clearBuiltInStyle", "Table.cellPadding", "TableCell.setFill", "TableCell.setPadding", "TableCell.setText", "TableCell.applyTextStyle", "TableCell.setBorders", "TableCell.setBorder", "TableCell.clearBorder", "TableCell.verticalAnchor", "TableCell.textDirection", "Table.rightToLeft"],
-              limitations: ["Vertical text and gradient fills can be approximated by previews. Explicit no-border and inherited border are verified separately."],
+        .init(.tableAppearance, title: "Cell appearance", summary: "All six borders, fills, padding, vertical text and custom style transfer with opaque dependency preservation.",
+              operations: ["Table.clearBuiltInStyle", "Table.cellPadding", "TableCell.setFill", "TableCell.setPadding", "TableCell.setText", "TableCell.applyTextStyle", "TableCell.setBorders", "TableCell.setBorder", "TableCell.clearBorder", "TableCell.verticalAnchor", "TableCell.textDirection", "Table.rightToLeft", "Table.setStyleDefinition", "Table.setStyleDefinition(_:from:in:)"],
+              limitations: ["Vertical text and gradient fills can be approximated by previews. Custom style extensions are preserved as opaque data; previewing their proprietary meaning is unsupported."],
               inputs: [.text, .accent, .alternative], alternativeLabel: "RTL table and vertical-270 text")
     ]
 
@@ -211,18 +211,23 @@ enum DrawingLabRecipes {
     }
 
     private static func pictures(_ o: LibraryLabOptions) throws -> LibraryLabDraft {
-        let deck = try LibraryLabSupport.deck(title: "Picture edits")
-        let slide = try page(deck, o.text)
+        let fixture = try LibraryLabSupport.deck(title: "Picture edits")
+        let initial = try page(fixture, o.text)
         let original = LibraryLabSupport.pixels
         // An owned, complete 1×1 GIF; changing media format also exercises content types.
         let replacement = Data(base64Encoded: "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")!
-        let first = try slide.shapes.addPicture(original, frame: LibraryLabSupport.frame(0.5, 1, 3, 2), fit: .fill)
-        let second = try slide.shapes.addPicture(original, frame: LibraryLabSupport.frame(4.5, 1, 3, 2), fit: .stretch)
-        first.name = "Edited picture"; second.name = "Shared original"
-        let natural = try slide.shapes.addPicture(original, x: .inches(12), y: .inches(1))
-        natural.name = "Natural size"
-        let before = try deck.serializedData()
+        try initial.shapes.addPicture(original, frame: LibraryLabSupport.frame(0.5, 1, 3, 2), fit: .fill).name = "Edited picture"
+        try initial.shapes.addPicture(original, frame: LibraryLabSupport.frame(4.5, 1, 3, 2), fit: .stretch).name = "Shared original"
+        try initial.shapes.addPicture(original, x: .inches(12), y: .inches(1)).name = "Natural size"
+        try DrawingLabFixtures.addPictureFixtures(to: fixture)
+        let before = try fixture.serializedData()
+        // Read back the owned fixture before exercising typed editing APIs.
+        let deck = try Presentation(data: before)
+        let slide = try deck.slides[0]
+        let originals = slide.shapes.all.compactMap { $0 as? Picture }
+        let first = originals[0], second = originals[1], natural = originals[2]
         var checks = [LibraryLabCheck("Identical pictures share a media part", first.imagePart?.uri == second.imagePart?.uri && second.imagePart?.uri == natural.imagePart?.uri, "All three pictures initially reference the same PNG.")]
+        checks.append(.init("Cover fit crops the source without changing frame", first.crop == PictureCrop(top: 0.16667, bottom: 0.16667) && first.frame == LibraryLabSupport.frame(0.5, 1, 3, 2) && second.crop == nil, "A square source covers a 3:2 destination using symmetric vertical crop; stretch retains the whole source."))
         let crop = o.alternative ? PictureCrop(left: 0.1, top: 0.2, right: 0.3, bottom: 0.1) : PictureCrop(left: 0.2, top: 0.1, right: 0.2, bottom: 0.1)
         try first.setCrop(nil)
         try first.setCrop(crop)
@@ -230,6 +235,17 @@ enum DrawingLabRecipes {
         try first.replaceImage(replacement)
         checks.append(try refused("Invalid replacement is atomic", deck: deck) { try first.replaceImage(Data("unsupported".utf8)) })
         checks.append(try refused("Empty source crop is atomic", deck: deck) { try first.setCrop(PictureCrop(left: 0.6, right: 0.6)) })
+        let retainedSlide = try deck.slides[1]
+        let retainedPictures = retainedSlide.shapes.all.compactMap { $0 as? Picture }
+        let retained = retainedPictures[1], alternate = retainedPictures[2]
+        try retained.setCrop(crop)
+        try retained.replaceImage(DrawingLabFixtures.jpeg)
+        checks.append(try refused("SVG alternate replacement is atomic", deck: deck) { try alternate.replaceImage(replacement) })
+        let formats: [(Data, ImageInfo.Format, Int)] = [(original, .png, 4), (DrawingLabFixtures.jpeg, .jpeg, 4), (replacement, .gif, 1)]
+        checks.append(.init("Image metadata and native sizes decoded", formats.allSatisfy { bytes, format, dimension in
+            guard let info = ImageSniffer.sniff(bytes) else { return false }
+            return info.format == format && info.pixelWidth == dimension && info.pixelHeight == dimension && info.dpiX > 0 && info.dpiY > 0 && info.nativeSize.width == .inches(Double(dimension) / info.dpiX) && info.nativeSize.height == .inches(Double(dimension) / info.dpiY)
+        }, "PNG, JPEG and GIF report expected pixels, format, DPI and native dimensions."))
         for (i, mode) in [ImageFillMode.stretch, .tile(scale: 16)].enumerated() {
             let shape = try slide.shapes.addShape(.ellipse, frame: LibraryLabSupport.frame(0.5 + Double(i) * 4, 4, 3, 2), fill: .image(original, fit: mode), line: Line(color: Color(o.accentHex)))
             shape.name = i == 0 ? "Stretch image fill" : "Tile image fill"
@@ -239,11 +255,22 @@ enum DrawingLabRecipes {
             guard images.count == 3 else { return [.init("Picture specimens survive", false, "Expected three independent picture shapes.")] }
             let svg = try reopened.renderSVG(slideAt: 0)
             let xml = try reopened.slides[0].part.dom()
+            let retainedSlide = try reopened.slides[1]
+            let retainedImages = retainedSlide.shapes.all.compactMap { $0 as? Picture }
+            let retainedXML = try DrawingLabFixtures.shapeXML("Retained ellipse and flips", slide: retainedSlide)
+            let alternateXML = try DrawingLabFixtures.shapeXML("Office SVG alternate", slide: retainedSlide)
+            let alternateID = nodes(alternateXML, "asvg:svgBlip").first?[attribute: "r:embed"]
+            let alternateRelation = alternateID.flatMap { retainedSlide.part.rels.relationship(withId: $0) }
+            let alternateURI = alternateRelation.map { PackURI.resolve(target: $0.target, relativeTo: retainedSlide.part.uri.baseURI) }
+            let originalAlternate = fixture.package.parts[PackURI("/ppt/media/owned-alternate.svg")]?.blob
             return [
                 .init("Replacement is independent", images.count == 3 && images[0].imageData == replacement && images[0].imageFormat == "gif" && images[1].imageData == original && images[2].imageData == original && images[0].imagePart?.uri != images[1].imagePart?.uri, "Only the edited picture changed; shared original pixels survive."),
                 .init("Crop, frame and rotation persist", images[0].crop == crop && images[0].frame == LibraryLabSupport.frame(0.5, 1, 3, 2) && images[0].rotation == (o.alternative ? -20 : 20) && images[1].crop == nil, "Replacement keeps crop and transforms, while stretch has no source crop."),
-                .init("Image media remain deduplicated", reopened.package.parts.values.filter { $0.uri.description.hasPrefix("/ppt/media/") }.count == 2, "One original PNG and one replacement GIF serve all uses."),
-                .init("Image fills and clipping render", nodes(xml, "a:tile").contains { $0[attribute: "sx"] == "1600000" } && svg.contains("clipPath") && svg.contains("rotate(") && svg.contains("data:image/gif"), "SVG contains crop clipping, transformed image and replacement media.")
+                .init("Image media remain deduplicated", reopened.package.parts.values.filter { $0.uri.description.hasPrefix("/ppt/media/") }.count == 4, "One PNG, JPEG, GIF and retained SVG alternate serve all uses."),
+                .init("Edited picture clipping and transform render", try DrawingLabFixtures.mappingMatches(svg: svg, bytes: replacement, mime: "image/gif", frame: images[0].frame, crop: crop, geometry: "rect", rotation: o.alternative ? -20 : 20, flipped: false) && nodes(xml, "a:tile").contains { $0[attribute: "sx"] == "1600000" }, "The GIF picture's own pattern, source offsets, clipping rectangle and transform match the edited crop."),
+                .init("JPEG and retained ellipse/flips survive", retainedImages.count == 3 && retainedImages[0].imageData == DrawingLabFixtures.jpeg && retainedImages[1].imageData == DrawingLabFixtures.jpeg && retainedImages[1].crop == crop && nodes(retainedXML, "a:prstGeom").first?[attribute: "prst"] == "ellipse" && nodes(retainedXML, "a:xfrm").first?[attribute: "flipH"] == "1" && nodes(retainedXML, "a:xfrm").first?[attribute: "flipV"] == "1", "JPEG replacement retains the fixture's nonrectangular geometry and both flips."),
+                .init("Retained picture geometry renders", try DrawingLabFixtures.mappingMatches(svg: reopened.renderSVG(slideAt: 1), bytes: DrawingLabFixtures.jpeg, mime: "image/jpeg", frame: LibraryLabSupport.frame(4.5, 1, 3, 2), crop: crop, geometry: "ellipse", rotation: 30, flipped: true), "The retained picture's own image pattern paints an ellipse inside a 30-degree, double-flipped group."),
+                .init("SVG alternate survives refusal", retainedImages.last?.imageData == original && alternateURI.flatMap { reopened.package.parts[$0]?.blob } == originalAlternate && originalAlternate != nil, "Alternate Office SVG and original raster fallback remain reachable.")
             ]
         })
     }
@@ -350,7 +377,8 @@ enum DrawingLabRecipes {
         try t.cell(2, 0).textDirection = o.alternative ? .vertical270 : .vertical
         try t.cell(2, 1).setFill(.themeColor(.accent2))
         try t.cell(2, 2).setFill(Fill.none)
-        return LibraryLabDraft(deck: deck, before: before, verify: { reopened in
+        let custom = try DrawingLabFixtures.addCustomStyles(to: deck, accent: accent)
+        return LibraryLabDraft(deck: deck, before: before, checks: custom.checks, verify: { reopened in
             let table = try self.table(in: reopened)
             let cell = try table.cell(0, 0)
             let root = try reopened.slides[0].part.dom()
@@ -359,7 +387,7 @@ enum DrawingLabRecipes {
                 .init("Suppressed and inherited borders remain distinct", try table.cell(0, 1).border(.top)?.isNone == true && table.cell(0, 2).border(.top) == nil, "Explicit no-fill differs from absent/inherited line."),
                 .init("Cell fills persist", try cell.fill == .solid(accent, alpha: 1) && table.cell(1, 2).fill == .solid(accent, alpha: 0.3) && table.cell(2, 1).fill == .themeScheme("accent2") && table.cell(2, 2).fill == .noFill, "Solid, alpha, theme and no-fill retain their semantics."),
                 .init("Cell layout and text persist", try cell.text == o.text && cell.verticalAnchor == .middle && table.cell(2, 0).textDirection == (o.alternative ? .vertical270 : .vertical) && table.rightToLeft == o.alternative && table.builtInStyle == .noStyleNoGrid && nodes(root, "a:tcPr").contains { $0[attribute: "marL"] == "152400" && $0[attribute: "marT"] == "114300" }, "Text, padding, anchor, direction and No Style, No Grid identity survive.")
-            ]
+            ] + (try custom.verify(reopened))
         })
     }
 }

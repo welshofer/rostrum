@@ -41,6 +41,20 @@ struct DrawingLabRecipesTests {
                 let images = try reopened.slides[0].shapes.all.compactMap { $0 as? Picture }
                 #expect(images[0].imageData != images[1].imageData)
                 #expect(images[1].imageData == LibraryLabSupport.pixels)
+                let retainedSlide = try reopened.slides[1]
+                let retained = retainedSlide.shapes.all.compactMap { $0 as? Picture }
+                #expect(retained.count == 3)
+                #expect(retained[1].imageData == DrawingLabFixtures.jpeg)
+                #expect(retained[1].rotation == 30)
+                let metadata = try #require(ImageSniffer.sniff(DrawingLabFixtures.jpeg))
+                #expect(metadata.format == .jpeg && metadata.pixelWidth == 4 && metadata.pixelHeight == 4)
+                let source = try Presentation(data: before)
+                let beforeImages = try source.slides[1].shapes.all.compactMap { $0 as? Picture }
+                #expect(beforeImages[1].imageData == LibraryLabSupport.pixels)
+                let beforeXML = try DrawingLabFixtures.shapeXML("Retained ellipse and flips", slide: source.slides[1])
+                let afterXML = try DrawingLabFixtures.shapeXML("Retained ellipse and flips", slide: retainedSlide)
+                #expect(DrawingLabFixtures.nodes(beforeXML, "a:xfrm").first?.serialized() == DrawingLabFixtures.nodes(afterXML, "a:xfrm").first?.serialized())
+                #expect(try !DrawingLabFixtures.mappingMatches(svg: reopened.renderSVG(slideAt: 0), bytes: images[0].imageData!, mime: "image/gif", frame: images[0].frame, crop: PictureCrop(left: 0.45), geometry: "rect", rotation: alternative ? -20 : 20, flipped: false))
             case .text:
                 let body = try #require(reopened.slides[0].shapes.all.first { $0.name == "Rich text specimen" }?.textFrame)
                 #expect(body.paragraphs.first?.runs.first?.text == options.text)
@@ -50,6 +64,11 @@ struct DrawingLabRecipesTests {
                 let table = try #require(tables.first)
                 #expect(try table.cell(0, 0).text == options.text)
                 #expect(try table.cell(0, 0).border(.diagonalDown)?.width == .points(5))
+                let custom = try reopened.slides[1].shapes.all.compactMap { ($0 as? TableFrame)?.table }
+                #expect(custom.count == 3)
+                #expect(custom[0].styleID == DrawingLabFixtures.styleID)
+                #expect(custom[1].styleID != custom[0].styleID && custom[1].styleID == custom[2].styleID)
+                #expect(reopened.package.parts.values.contains { $0.blob == DrawingLabFixtures.opaque })
             case .fillsAndLines:
                 #expect(try reopened.slides[0].shapes[2].fill == .solid(Color("A54263"), alpha: 0.4))
             default: Issue.record("Unexpected drawing recipe")
