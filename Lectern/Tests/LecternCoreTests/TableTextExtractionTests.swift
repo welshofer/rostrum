@@ -111,7 +111,7 @@ import Rostrum
         }
     }
 
-    @Test func partiallyReadableTableExportIncludesCorrectTextAndReportsBaseProjectionMismatch() throws {
+    @Test func partiallyReadableTableExportReplacesConflictingProjectionWithExactSemanticText() throws {
         let deck = try Presentation(), slide = try deck.slides[0]
         _ = try slide.shapes.addTable(rows: 1, columns: 1, frame: Rect(x: .inches(0), y: .inches(0), width: .inches(2), height: .inches(1))).setContents([["KNOWN TEXT"]])
         let dom = try slide.part.dom()
@@ -125,7 +125,26 @@ import Rostrum
             let outcome = try DeckExporter.export(deckAt: source, into: output)
             let markdown = try String(contentsOf: outcome.markdownFile, encoding: .utf8)
             #expect(markdown.contains("KNOWN TEXT ALIASED FIELD"))
-            #expect(outcome.warnings.contains { $0.contains("ordinary table outline differs") })
+            #expect(markdown.components(separatedBy: "KNOWN TEXT").count == 2)
+            #expect(!markdown.contains("FOREIGN LOOKALIKE"))
+            #expect(outcome.warnings.isEmpty)
+            #expect(try Data(contentsOf: source) == bytes)
+        }
+    }
+
+    @Test func foreignNamespaceTableProjectionIsRemovedAndReportedWithoutChangingSource() throws {
+        let deck = try Presentation(), slide = try deck.slides[0]
+        _ = try slide.shapes.addTable(rows: 1, columns: 1, frame: Rect(x: .inches(0), y: .inches(0), width: .inches(2), height: .inches(1))).setContents([["FOREIGN TABLE VALUE"]])
+        let table = try #require(try slide.part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")?.firstChild(named: "p:graphicFrame")?.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?.firstChild(named: "a:tbl"))
+        table[attribute: "xmlns:a"] = "urn:foreign"
+        slide.part.markDirty()
+        try withFile(try deck.serializedData()) { source, output, bytes in
+            let inspection = try DeckInspector.inspect(deckAt: source, renderPreviews: false)
+            #expect(inspection.slides[0].tables.isEmpty && inspection.slides[0].tableCount == 0)
+            let outcome = try DeckExporter.export(deckAt: source, into: output)
+            let markdown = try String(contentsOf: outcome.markdownFile, encoding: .utf8)
+            #expect(!markdown.contains("FOREIGN TABLE VALUE"))
+            #expect(outcome.warnings.contains { $0.contains("could not be resolved in the DrawingML namespace") })
             #expect(try Data(contentsOf: source) == bytes)
         }
     }
