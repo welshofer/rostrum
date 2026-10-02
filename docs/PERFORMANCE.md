@@ -1,6 +1,7 @@
 # Performance measurements — 2026-10-01
 
-Bulk table edits are substantially faster. The richer renderer remains slower
+The initial measurements below are retained unchanged; see the follow-up section
+for later renderer optimizations. Bulk table edits are substantially faster. The richer renderer remains slower
 and whole-scenario peak memory is higher. Cold saves, image insertion and eager
 opening show little change in this run; they are not advertised as speedups.
 
@@ -89,3 +90,63 @@ Collect phase-isolated memory measurements and Linux/iOS baselines before
 setting regression thresholds. The new save/loading paths were executed on
 macOS in this run; Linux runtime validation remains open. No runtime dependencies
 were added to the Swift library.
+
+
+## Renderer follow-up
+
+[Raw follow-up samples](benchmarks/2026-10-01-render-followup.json) retain stage
+commits, fixture/output hashes, selected sample indices and caveats. These are
+warm renders in one optimized process, a different method from the fresh-process
+scenario timings above; do not compare the absolute numbers across methods.
+
+| Stage, same input/output within stage unless stated | Before median | After median |
+| --- | ---: | ---: |
+| Lazy diagnostic paths/image cache, 10,000 cells | 254.469 ms | 214.984 ms |
+| Lazy diagnostic paths/image cache, 250 unique images | 3.372 ms | 2.577 ms |
+| Bounded resolved-style cache, 10,000 No Grid cells | 271.578 ms | 216.420 ms |
+| Bounded resolved-style cache, 10,000 Grid cells | 381.966 ms | 244.342 ms |
+| Office border ownership, 10,000 No Grid cells | 211.565 ms | 207.397 ms |
+| Office border ownership, 10,000 Grid cells | 233.825 ms | 225.452 ms |
+
+The diagnostic-path baseline included profiling; its reported table median uses
+the final five samples, so treat that percentage as directional. The style-cache
+stage checks byte-identical SVG and ordered diagnostics across 888 native
+style/flag cases plus large/custom merged tables. The border stage intentionally
+changes SVG geometry to match Office ownership; its diagnostic hashes match.
+Correcting the historical No Grid GUID and native color/style fidelity changes
+render semantics, so a single cumulative speedup would be misleading.
+
+Resolved style templates are bounded per render (64 variants, approximately
+1 MiB); media and diagnostic caches also live only for the current render.
+They do not retain stale state across edits. No cross-platform speed claim or
+net memory reduction is inferred from these warm render timings.
+
+
+## Final integrated scenario run
+
+[The complete final report](benchmarks/2026-10-01-final-macos.json) records
+revision `2783ea38616cfd7c30ad2358c1056b9dc3f19481`, the same local Arial hash,
+one warmup and five fresh-process samples for all 12 scenarios. Each output
+reopened with python-pptx and table traversal. Every synthetic scenario repeats
+an identical output hash. Non-table synthetic output hashes match the earlier
+pass; table hashes change with the corrected No Grid GUID. Those table timings
+measure the final behavior, not byte-identical work against the earlier pass.
+
+| Final scenario / phase | Median / observed p95 |
+| --- | ---: |
+| 10,000 cells: populate | 2.785 / 2.838 ms |
+| 10,000 cells: style | 15.467 / 16.895 ms |
+| 10,000 cells: render | 217.752 / 219.974 ms |
+| 10,000 cells: cold unchanged save | 19.262 / 20.589 ms |
+| 10,000 cells: warm unchanged save | 0.145 / 0.151 ms |
+| 1,000 slides: traversal | 58.923 / 59.365 ms |
+| 1,000 slides: eager reopen | 41.556 / 42.594 ms |
+| 250 unique images: render | 2.940 / 2.951 ms |
+
+The earlier pass measured table rendering at 259.671 ms and unique-image
+rendering at 3.827 ms. Final table peak process RSS is 199.375 MiB, essentially
+unchanged from 199.12 MiB in that pass and still above the initial baseline's
+175.08 MiB. The 1,000-slide scenario is 41.031 MiB. These results show renderer
+latency improvement, not a return to the simpler baseline renderer's speed or
+a process-memory reduction. Cross-platform performance and thresholds remain
+open.

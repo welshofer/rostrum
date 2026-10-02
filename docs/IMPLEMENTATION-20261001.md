@@ -1,5 +1,8 @@
 # Performance and fidelity implementation record — 2026-10-01
 
+This is the preserved initial-pass record. See the [follow-up](IMPLEMENTATION-FOLLOWUP-20261001.md)
+for subsequent implementation, Office references and current verification.
+
 Work is committed locally on `codex/burndown/20261001`. No PR, push, merge or
 deployment was performed. This is a substantial implementation with explicit
 acceptance gaps, not a claim of complete or perfect feature support.

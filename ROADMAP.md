@@ -445,7 +445,7 @@ Each is a judgement about leverage, not a doubt about the finding.
   bidi and Unicode line breaking remain open under the Foundation-only rule.
 - **SVG visual regression coverage** — revisited 2026-10-01: independent
   image raster probes pass and a pinned PowerPoint table reference exists.
-  Office visual equivalence and notes-page references remain open; see
+  Notes-page references now exist; whole-slide equivalence remains open; see
   [conformance evidence](docs/CONFORMANCE.md).
 - `DeckRenderer`, `KeychainStore` and `SlideRasterizer` have **no tests at
   all** — distinct from tests that existed but never ran, which is closed.
@@ -489,16 +489,21 @@ The current implementation expands tables, typography, annotations and package
 performance. [CONFORMANCE.md](docs/CONFORMANCE.md) is the per-operation evidence
 ledger. These gates remain open and must not be relabeled complete:
 
-- [ ] Exhaustive native table style catalog where the file contains only a GUID;
-  advanced vertical cell typography and pattern/compound-border preview support.
-- [ ] Full contextual Arabic/Indic shaping, mark positioning, language features
-  and complete Unicode bidirectional/line-break conformance.
+- [x] All 74 native GUID-only styles, independently checked with 1,480 Office
+  fill probes. Shared borders have 737 probes across 42 Office cases.
+- [ ] Advanced vertical cell typography, pattern/compound-border/effect preview
+  and whole-slide Office equivalence.
+- [ ] Complete Arabic/Indic shaping, mark positioning, language features
+  and complete Unicode bidirectional/line-break conformance. Bounded Arabic
+  joining/contextual GSUB, GDEF filtering and Calibri compatibility are implemented.
 - [ ] Pinned PowerPoint slide and notes-page equivalence after edits, duplication
-  and import. An earlier table comparison failed and the final preview still
-  reports fidelity issues; preservation and semantic tests do not close this gate.
+  and import. Authored notes print correctly and one imported notes page matches
+  its source exactly. Table whole-image equivalence remains a separate gate.
 - [ ] Broader images/crop and annotation lifecycle Office fixture coverage.
-- [ ] Namespace-aliased section mutation, relationship-bearing author imports,
-  and conflicting notes-master reconciliation. These currently refuse atomically.
+- [x] Namespace-aliased section mutation with inherited compatibility/XML context.
+- [ ] Broader author dependency interoperability and conflicting notes-master
+  reconciliation. Custom author graphs transfer within bounded contracts;
+  defined Office semantic dependencies and conflicting masters refuse atomically.
 - [ ] Reduce the richer table/image renderer's measured latency regressions while
   retaining layout and fidelity diagnostics; see [performance results](docs/PERFORMANCE.md).
 - [ ] Execute the new package save/loading paths on Linux and collect Linux/iOS

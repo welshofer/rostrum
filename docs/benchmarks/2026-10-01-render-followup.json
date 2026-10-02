@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 1,
+  "collectedDate": "2026-10-01",
+  "platform": "Apple Silicon arm64, macOS 27.0.1 (26A434)",
+  "measurement": "Swift release -O; ContinuousClock around renderSVGReportingProblems only; first render excluded. Times exclude PPTX opening and output export. Per-stage before/after are meaningful; stage-to-stage wall times are separate runs, not a single continuous benchmark.",
+  "driver": {
+    "source": "Tools/render-profile/main.swift",
+    "sha256": "187333e215d1763da918d8c90cd06fe5a901ff2b45ca83675056528c5317a9ca",
+    "compileCommand": "swiftc -O -I .build/out/Products/Release Tools/render-profile/main.swift .build/out/Products/Release/Rostrum.o -o PROFILE",
+    "runCommand": "PROFILE FIXTURE.pptx COUNT [OUTPUT_PREFIX]",
+    "originalSource": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/Profile.swift"
+  },
+  "fixtures": {
+    "table10000HistoricalGUID": {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/table.pptx",
+      "sha256": "429b635347b5c16a0bfe37ff4f6a5124e06f6334b04800e539e8ea61a95543a5"
+    },
+    "table10000NoGrid": {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/native-perf/no-grid.pptx",
+      "sha256": "557d0a00f6f452d9ffb176309198e419be0a1a2bdc724a103dcc03a5cb758f29"
+    },
+    "images250Unique": {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/images.pptx",
+      "sha256": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52"
+    },
+    "customMerged": {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/native-perf/custom.pptx",
+      "sha256": "0068e39ddba967cc782415d4cca1b09a72e6888bdc882e43c347873fd11ba549"
+    }
+  },
+  "stages": [
+    {
+      "name": "render redundant work",
+      "beforeCommit": "0bbec14",
+      "afterCommit": "7801c6ef22c4d88782c9d0aca60dc2f099250e63",
+      "results": [
+        {
+          "fixture": "table",
+          "rawSamplesMs": {
+            "before": [
+              495.621,
+              270.767834,
+              263.486,
+              264.911375,
+              270.335459,
+              273.326208,
+              267.357458,
+              265.513792,
+              264.765708,
+              256.513125,
+              254.278167,
+              248.923083,
+              252.477583,
+              252.580958,
+              249.179208,
+              253.69875,
+              251.054625,
+              254.524708,
+              252.175209,
+              252.367584,
+              250.8405,
+              254.522167,
+              253.9515,
+              254.713375,
+              260.180125,
+              255.783667,
+              255.432125,
+              254.469459,
+              253.780875,
+              254.335417
+            ],
+            "after": [
+              414.401083,
+              213.557541,
+              214.983917,
+              216.944041,
+              215.582708,
+              213.289209
+            ]
+          },
+          "selectedBeforeIndicesZeroBased": [
+            25,
+            26,
+            27,
+            28,
+            29
+          ],
+          "selectedAfterIndicesZeroBased": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "warmMedianBeforeMs": 254.469459,
+          "warmMedianAfterMs": 214.983917,
+          "beforeOutputSHA256": {
+            "svg": "cf9a7c5f797d22cf0ae379c0aca38e3184bf88b5f627f62af241ed9295440207",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "afterOutputSHA256": {
+            "svg": "cf9a7c5f797d22cf0ae379c0aca38e3184bf88b5f627f62af241ed9295440207",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "byteIdenticalSVGAndOrderedIssues": true,
+          "caveat": "Before process was sampled for its first 3 seconds. This summary selects the final five of 30 renders, well after sampling; their median reproduces the previously recorded tail median. All raw samples retained."
+        },
+        {
+          "fixture": "images",
+          "rawSamplesMs": {
+            "before": [
+              8.330583,
+              3.339,
+              3.37225,
+              3.478666,
+              3.366958,
+              3.4885
+            ],
+            "after": [
+              7.764291,
+              2.607458,
+              2.549708,
+              2.577125,
+              2.618125,
+              2.487
+            ]
+          },
+          "selectedBeforeIndicesZeroBased": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "selectedAfterIndicesZeroBased": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "warmMedianBeforeMs": 3.37225,
+          "warmMedianAfterMs": 2.577125,
+          "beforeOutputSHA256": {
+            "svg": "735cff82565981ab56eb0e1568f3b203832ac6df40892c8717f80106c5a68eee",
+            "issues.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "afterOutputSHA256": {
+            "svg": "735cff82565981ab56eb0e1568f3b203832ac6df40892c8717f80106c5a68eee",
+            "issues.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "byteIdenticalSVGAndOrderedIssues": true,
+          "caveat": "250 distinct image media parts; same input, SVG and ordered issues before/after."
+        },
+        {
+          "fixture": "foreign",
+          "rawSamplesMs": {
+            "before": [
+              2.2845,
+              0.475875
+            ],
+            "after": [
+              2.395292,
+              0.4265
+            ]
+          },
+          "selectedBeforeIndicesZeroBased": [
+            1
+          ],
+          "selectedAfterIndicesZeroBased": [
+            1
+          ],
+          "warmMedianBeforeMs": 0.475875,
+          "warmMedianAfterMs": 0.4265,
+          "beforeOutputSHA256": {
+            "svg": "cf9aec501ebff54be110257a5d31a9940cd14144ef7ad8cef56d5d7c43785aaf",
+            "issues.json": "f36e5589ebdc5a497a291ea8345b864dad7dc61c3574670caf24f0fb6dcf8ae8"
+          },
+          "afterOutputSHA256": {
+            "svg": "cf9aec501ebff54be110257a5d31a9940cd14144ef7ad8cef56d5d7c43785aaf",
+            "issues.json": "f36e5589ebdc5a497a291ea8345b864dad7dc61c3574670caf24f0fb6dcf8ae8"
+          },
+          "byteIdenticalSVGAndOrderedIssues": true,
+          "caveat": "Only one warm sample each; exploratory, not a robust performance acceptance claim."
+        }
+      ],
+      "sourceEvidence": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/evidence.json"
+    },
+    {
+      "name": "native table style operation-local templates",
+      "beforeCommit": "310633b (own cherry-pick d9240c8)",
+      "afterCommit": "007b81097557e2ffca192617d8e40c7d48cb2c33",
+      "rootIntegratedCommit": "616ad60",
+      "timings": {
+        "no-grid-timing-before": {
+          "samples": [
+            470.604792,
+            269.311,
+            273.297875,
+            272.137625,
+            271.5775,
+            273.416709,
+            269.494584,
+            270.213791
+          ],
+          "warmMedianMs": 271.5775
+        },
+        "no-grid-timing-after": {
+          "samples": [
+            416.4065,
+            215.204917,
+            216.063959,
+            216.897666,
+            217.045625,
+            215.378917,
+            216.42025,
+            216.87825
+          ],
+          "warmMedianMs": 216.42025
+        },
+        "timing-before": {
+          "samples": [
+            588.848,
+            381.4225,
+            380.763875,
+            379.702958,
+            383.185,
+            382.2645,
+            381.965666,
+            382.295292
+          ],
+          "warmMedianMs": 381.965666
+        },
+        "timing-after": {
+          "samples": [
+            448.160666,
+            243.548125,
+            245.752041,
+            244.580875,
+            243.123667,
+            243.638292,
+            244.341667,
+            245.107583
+          ],
+          "warmMedianMs": 244.341667
+        },
+        "prior-perf-timing": {
+          "samples": [
+            430.4495,
+            215.445584,
+            216.087125,
+            215.071042,
+            215.212541,
+            214.894125,
+            213.29275,
+            212.849292
+          ],
+          "warmMedianMs": 215.071042
+        }
+      },
+      "outputs": {
+        "no-grid": {
+          "beforeOutputSHA256": {
+            "svg": "cf9a7c5f797d22cf0ae379c0aca38e3184bf88b5f627f62af241ed9295440207",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "afterOutputSHA256": {
+            "svg": "cf9a7c5f797d22cf0ae379c0aca38e3184bf88b5f627f62af241ed9295440207",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "byteIdenticalSVGAndOrderedIssues": true
+        },
+        "table": {
+          "beforeOutputSHA256": {
+            "svg": "b91893bb0c21a25b6ae8b208f1d56b1abcf4e02b3cc5d7909bdbb921f522c829",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "afterOutputSHA256": {
+            "svg": "b91893bb0c21a25b6ae8b208f1d56b1abcf4e02b3cc5d7909bdbb921f522c829",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "byteIdenticalSVGAndOrderedIssues": true
+        },
+        "custom": {
+          "beforeOutputSHA256": {
+            "svg": "31b5832499db7a28a1770a27d74f6dfcba5a4beb10dd92f23477b10c33463de9",
+            "issues.json": "ff1043e36ef8df58fedfcf853c37726b05b7653af3427e3dcffe70570d122c86"
+          },
+          "afterOutputSHA256": {
+            "svg": "31b5832499db7a28a1770a27d74f6dfcba5a4beb10dd92f23477b10c33463de9",
+            "issues.json": "ff1043e36ef8df58fedfcf853c37726b05b7653af3427e3dcffe70570d122c86"
+          },
+          "byteIdenticalSVGAndOrderedIssues": true
+        },
+        "native888": {
+          "beforeSHA256": "4d132705a280853e49436141f4194866fffdfaf90743230a14348398d205405c",
+          "afterSHA256": "4d132705a280853e49436141f4194866fffdfaf90743230a14348398d205405c",
+          "byteIdentical": true
+        }
+      },
+      "comparability": [
+        "Within 310633b\u2192007b810, the same fixtures have byte-identical SVG and ordered diagnostics, including 888 native-style/flag combinations.",
+        "The historical fixture GUID5940675A actually means No Style, Table Grid. Before the native catalog it was unresolved, rendering without native grid borders. Native support intentionally changes its appearance.",
+        "The No Grid comparison fixture changes only that GUID to2D5ABB26. Its output SHA cf9a7c5f... matches the prior unresolved historical fixture output; inputs differ semantically despite matching appearance.",
+        "prior-perf-timing uses the saved7801c release binary with the historical fixture and is separate contextual evidence; do not treat all native-stage timings as one unchanged-input optimization."
+      ],
+      "sourceEvidence": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/native-perf/evidence.json"
+    },
+    {
+      "name": "Office shared border ownership accuracy",
+      "beforeCommit": "007b81097557e2ffca192617d8e40c7d48cb2c33",
+      "afterCommit": "d4a3423fe0244f13994896f7f9487219509f9ed7",
+      "rootIntegratedCommit": "69f616b",
+      "timings": {
+        "no-grid-before": {
+          "samples": [
+            404.708833,
+            211.583166,
+            209.091375,
+            221.266042,
+            212.420167,
+            211.347083,
+            210.101125,
+            211.565333
+          ],
+          "warmMedianMs": 211.565333
+        },
+        "no-grid-after": {
+          "samples": [
+            408.721792,
+            207.4605,
+            206.44675,
+            208.12225,
+            206.883083,
+            207.397334,
+            205.555792,
+            207.947667
+          ],
+          "warmMedianMs": 207.397334
+        },
+        "grid-before": {
+          "samples": [
+            431.351375,
+            233.283375,
+            234.517542,
+            233.825375,
+            233.177625,
+            232.8875,
+            234.015166,
+            234.562417
+          ],
+          "warmMedianMs": 233.825375
+        },
+        "grid-after": {
+          "samples": [
+            425.510583,
+            225.452292,
+            224.427042,
+            226.396333,
+            225.527375,
+            225.623917,
+            223.129958,
+            222.403166
+          ],
+          "warmMedianMs": 225.452292
+        }
+      },
+      "outputs": {
+        "no-grid": {
+          "beforeOutputSHA256": {
+            "svg": "cf9a7c5f797d22cf0ae379c0aca38e3184bf88b5f627f62af241ed9295440207",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "afterOutputSHA256": {
+            "svg": "906c4143d53535a0cf5e77b72d6724a6d81a96c896adc96f84b055da7ddcf26b",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "byteIdenticalSVG": false,
+          "byteIdenticalOrderedIssues": true
+        },
+        "grid": {
+          "beforeOutputSHA256": {
+            "svg": "b91893bb0c21a25b6ae8b208f1d56b1abcf4e02b3cc5d7909bdbb921f522c829",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "afterOutputSHA256": {
+            "svg": "faad1b67fec190f832ee2e93f609ddc87530be077f96539869bf5d2989e9e525",
+            "issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962"
+          },
+          "byteIdenticalSVG": false,
+          "byteIdenticalOrderedIssues": true
+        }
+      },
+      "comparability": [
+        "Same input fixtures and same public rendering work, with intentional SVG ordering and table-border appearance corrections. This is an accuracy change; do not label it byte-equivalent performance optimization.",
+        "8 renders per fixture per process; first excluded; measured after release build/full test completion and coordination with other agents to avoid concurrent heavy builds.",
+        "NoGrid retains no border candidate entries; TableGrid avoids duplicate shared edges. There is no global DOM cache."
+      ],
+      "sourceEvidence": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-borders/timings.json"
+    }
+  ]
+}

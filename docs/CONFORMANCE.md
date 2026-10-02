@@ -9,13 +9,13 @@ imply the renderer understands it. Animation is outside this program.
 | Feature | Implemented operations and regression suites | Remaining acceptance work |
 | --- | --- | --- |
 | Tables | Merge topology, atomic overlap refusal, unmerge, row/column insert/remove/reorder, dimension synchronization; `TableContractTests`, `TableConformanceTests` | PowerPoint visual equivalence, advanced vertical cell text |
-| Table appearance | Explicit edge/diagonal borders, margins, image/gradient fills, embedded/custom style regions and theme colors, custom-style dependency graphs and GUID remapping; `TableStyleContractTests`, `TableStyleImportTests`, `TableFillAtomicityTests` | Native style GUID catalog when definitions are absent; pattern fills and compound borders in preview |
+| Table appearance | Shared-edge ownership, merged-continuation/RTL borders, margins, image/gradient fills, embedded/custom regions and all 74 native style definitions, theme-owned image references, correct tint/shade/saturation and Office interpolation for endpoint-pair/mirrored-three-stop gradients; `BuiltInTableStyleTests`, `TableStyleContractTests`, `TableStyleImportTests`, `TableFillAtomicityTests` | Whole-slide Office equivalence; pattern fills, effects and compound borders in preview |
 | Typography | Exact regular/bold/italic face selection, mixed-run shared fit/render layout, fields, breaks, tabs, spacing, bullets, autofit; `FontFaceTests`, `RichTextLayoutTests` | Full paragraph bidi, justification, text decorations/warps/columns, language-specific typography |
-| Shaping | Bounded Latin kerning/ligatures, NFC clusters, restricted Hebrew bidi and horizontal CJK breaks; `TextShaperTests` and pinned HarfBuzz oracle | Contextual Arabic/Indic shaping, mark positioning, full Unicode bidi/line-breaking |
+| Shaping | Bounded Latin kerning/ligatures, Arabic joining/contextual GSUB, GDEF filtering, Calibri compatibility, NFC clusters, restricted Hebrew bidi and horizontal CJK breaks; `TextShaperTests`, `ArabicShapingTests`, `FontCompatibilityTests`, `FontLookupFilteringTests` and pinned HarfBuzz oracles | Complete Arabic/Indic shaping, mark/cursive attachment, full Unicode bidi/line-breaking |
 | Pictures/crops | Source/destination crops, stretch/tile, transforms/clipping, isolated replacement; `PictureMappingTests`; resvg quadrant/transparency pixel checks | Pinned Office comparisons; alternate SVG/layer/linked image replacement refuses atomically |
-| Speaker notes | Rich notes, independent duplicates, source master/theme/media import, exact-master reuse; `NotesTests`, annotation lifecycle/import suites | Conflicting masters/pagesizes are refused atomically; Office notes-page references |
-| Comments | Modern edit/reopen/delete, replies, slide/shape/text anchors; legacy read/create/edit/delete; author identity and slide-anchor remapping; `CommentEditingTests`, `CommentsTests`, `DeckMergeTests` | Office thread lifecycle acceptance, richer unknown author dependency graphs |
-| Sections | Slide add/remove/move/duplicate/import and section remove/move keep membership coherent; `SectionsTests`, `MetadataPreservationTests` | Namespace aliases currently refuse mutation; Office membership acceptance across foreign producers |
+| Speaker notes | Rich notes, printable default page geometry, foreign placeholder inheritance, independent duplicates, source master/theme/media import, exact-master reuse; `NotesTests`, `NotesPageLayoutTests`, annotation lifecycle/import suites | Conflicting masters/page sizes are refused atomically; broader Office notes lifecycle coverage |
+| Comments | Modern edit/reopen/delete, replies, slide/shape/text anchors; legacy read/create/edit/delete; author identity, slide-anchor remapping and bounded custom dependency graph transfer; `CommentEditingTests`, `CommentsTests`, `DeckMergeTests`, `AuthorDependencyImportTests` | Office thread lifecycle acceptance and broader custom author dependency interoperability |
+| Sections | Slide add/remove/move/duplicate/import and section remove/move keep membership coherent; `SectionsTests`, `MetadataPreservationTests`, `SectionCompatibilityContextTests`; namespace aliases and inherited compatibility/XML contexts are preserved | Office membership acceptance across foreign producers |
 | Package performance | Operation-local traversal, collision-checked media index, bounded compression reuse, streaming save, read-only lazy inspection | Cross-platform timing baselines and Linux execution for this change |
 
 The test suite names are evidence pointers, not certification labels. A supported
@@ -54,13 +54,34 @@ python-pptx 1.0.2. The manifest pins hashes, producer, fonts and provenance.
 It accepts a new `--id` and refuses to overwrite existing fixtures/references.
 
 The original `python-tables` reference was exported by PowerPoint 16.113.3 at
-1200×700. Its generator originally emitted table borders in reverse schema
-order. The original remains unchanged as evidence. `python-tables-v2` corrects
-border ordering and needs its own Office export; it does not replace a failing
-reference. The earlier preview comparison failed with native-style/text
-differences; it predates the final SVG font-embedding changes and is not a
-measurement of the final render. The final preview still reports unresolved
-native-style and font/shaping issues. Notes-page references remain missing.
+1200×700. Its generator emitted table borders in reverse schema order.
+`python-tables-v2` corrects ordering; `python-tables-v3` also registers the notes
+master in presentation.xml, correcting a python-pptx 1.0.2 omission. Earlier
+fixtures and failing references remain unchanged. Both v2/v3 now have Office
+slide and notes-page references; v2's unpositioned notes are retained as a
+producer defect. V3's notes print correctly. No repair dialog was observed.
+
+The [notes corpus](../Tests/RostrumTests/Fixtures/NotesPages/manifest.json)
+contains newly authored notes and a v3 import at the same slide size. Office
+print-to-PDF output confirms the default slide image/body geometry. The imported
+notes PNG matches its independent source reference exactly (0 differing pixels
+at the existing channel-16 / fraction-0.005 limits). This is one successful
+notes import, not evidence for conflicting-master reconciliation.
+
+Font-aware comparisons must resolve SVG embedded aliases to the exact registered
+font files. resvg-py 0.5.0 ignores CSS @font-face data URLs; an unconfigured resvg
+run silently substitutes fonts and is not a typography oracle. No font binaries
+from Office or the operating system are redistributed with these fixtures.
+
+The final [v3 comparison](../Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-comparison.json)
+uses four hash-verified Arial/Calibri faces. It reports **18,145 / 840,000 pixels
+(2.1601%)** over the channel-16 limit, exceeding the unchanged 0.5% gate. Shared
+border centers match; stroke antialiasing and small text offsets remain. The
+failing candidate is retained, separately named from the Office reference.
+
+```sh
+python Tools/conformance/check_text_rendering.py --svg /path/to/slide.svg --reference Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-office.png --fonts /path/to/local-fonts.json --width 1200 --height 700 --output /tmp/text-comparison
+```
 
 Development checks:
 
@@ -116,4 +137,56 @@ Compare like-for-like platforms, corpora, fonts and build configuration; measure
 variance before setting regression limits.
 
 See [PERFORMANCE.md](PERFORMANCE.md) for the 2026-10-01 measurements, including
-the table rendering regression and remaining cross-platform validation.
+the historical renderer regression, follow-up improvements and remaining
+cross-platform validation.
+
+## Native table-style fill references
+
+The separate [74-style corpus](../Tests/RostrumTests/Fixtures/NativeTableStyles/manifest.json)
+was authored with python-pptx 1.0.2, saved by PowerPoint Mac 16.113.3 and exported
+through its PNG exporter at 1200x700. The saved fixture has no embedded style
+definitions. Its original slide/notes content is project-authored; last-modified
+author metadata is normalized to the project test identity. The catalog's
+source/license provenance is independent and documented in
+[the catalog README](../Tools/table-style-catalog/README.md).
+
+All **1,480 sampled cell fills** pass, across all 74 native styles, with the
+first-row header and horizontal banding enabled. The pinned initial report and [post-border follow-up](../Tests/RostrumTests/Fixtures/NativeTableStyles/fill-probe-followup.json) contain
+candidate/reference hashes, viewport and a three-level per-channel tolerance.
+This is fill-only evidence; it does not certify borders, text, effects, every
+flag combination or complete Office equivalence. Theme effects remain visible
+fidelity issues. No tolerance was changed to obtain this result.
+
+```sh
+swift run pptx-tool render Tests/RostrumTests/Fixtures/NativeTableStyles/native-styles.pptx .build/native-style-oracles/svg
+python Tools/conformance/check_native_styles.py .build/native-style-oracles/svg --report .build/native-style-oracles/report.json
+```
+
+## Author dependency consumer check
+
+The [pinned customXML import](../Tests/RostrumTests/Fixtures/AuthorDependencyImport/manifest.json)
+and its augmented PowerPoint source open without repair in PowerPoint 16.113.3.
+Accessibility reports one comment on imported slide 2; its body was not verified
+in the Office pane. The manifest records the exact hashes and the earlier
+synthetic arbitrary-URN relationship that failed before import. This verifies
+one standard customXml relationship combination, not arbitrary Office extension
+semantics. Conflicting author-list language/space/QName context and dependencies
+on defined Office semantic parts refuse atomically.
+
+## Shared table-border references
+
+The independent [42-case corpus](../Tests/RostrumTests/Fixtures/TableBorders/manifest.json)
+uses python-pptx 1.0.2 source geometry and PowerPoint 16.113.3 PNG exports.
+All **737 probes** pass at a maximum one-channel rounding difference: ordinary
+shared-edge ownership, noFill/absent edges, widths, alpha, dash gaps, RTL sides,
+and merged continuations. The checker normalizes the SVG pixel viewport to
+1200×700 while preserving its EMU viewBox. It separately reports neighborhood
+residuals: Office and resvg stroke antialiasing are not pixel-identical.
+
+```sh
+python Tools/conformance/make_table_border_fixture.py /tmp/new-border-fixture.pptx
+python Tools/conformance/check_table_borders.py Tests/RostrumTests/Fixtures/TableBorders/manifest.json Tests/RostrumTests/Fixtures/TableBorders/powerpoint-16.113.3-png.zip /path/to/SlideN-svgs
+```
+
+References are immutable evidence, not adjusted to match library output. The
+74-style fill oracle and border oracle do not certify all table features.

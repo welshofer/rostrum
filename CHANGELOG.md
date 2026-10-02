@@ -8,6 +8,20 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Added
 
+- All 74 native table-style definitions through `BuiltInTableStyle` and
+  `Table.applyBuiltInStyle`, with fallback resolution for GUID-only decks and
+  a pinned PowerPoint corpus covering 1,480 sampled cell fills.
+- Bounded GDEF classification and OpenType lookup filtering, checked against
+  35 pinned HarfBuzz cases and additional independent comparison cases.
+- Staged Arabic joining/contextual substitution with owned Unicode data and
+  HarfBuzz oracles; full RTL paragraph geometry and mark attachment remain
+  diagnosed. Calibri single-component substitutions and wrapped legacy kerning
+  tables are supported with bounded validation and local-font comparisons.
+- Printable default notes-page slide-image/body geometry and inheritance from
+  foreign notes-master placeholder IDs, with pinned Office PDF/PNG examples.
+- Namespace-aware section editing preserves prefix aliases, markup-compatibility
+  policy and inherited XML context through moves and imports.
+
 - Table merge inspection/unmerge, row and column insertion/removal/reordering,
   frame synchronization, individual edge/diagonal borders, package-aware image
   fills, and embedded/custom table-style resolution. Overlapping merges and
@@ -35,6 +49,18 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Fixed
 
+- DrawingML tint/shade use linear light, saturation clips after RGB conversion,
+  and two-stop/mirrored gradients follow PowerPoint's interpolation. Public
+  design color mixing retains its existing encoded-channel behavior.
+- Clearing a table style now selects the correct No Style, No Grid GUID and
+  removes an inline style choice. Theme image fills use theme-owned relations.
+- Renderer diagnostics construct paths only when needed; render-local image
+  resource and bounded table-style caches reduce repeated work.
+- Shared table borders follow logical cell ownership, merged continuations and
+  RTL sides. Invisible edges and dash gaps no longer reveal a losing neighbor,
+  and adjacent fills no longer cover half an edge. A 42-case Office corpus
+  checks ownership while reporting remaining antialias differences.
+
 - Rejected table fills preserve the original XML and dirty state.
 - Background resolution shares color transforms, color-map overrides and
   indexed theme paints with SVG, including per-slide master themes.
@@ -54,9 +80,8 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Fidelity status
 
-See [the operation-level conformance matrix](docs/CONFORMANCE.md). Native table
-styles without definitions, full complex-script shaping, advanced text layout
-and Office visual equivalence remain acceptance gaps. New inspection APIs or
+See [the operation-level conformance matrix](docs/CONFORMANCE.md). Full complex-script shaping, advanced text layout, table patterns/effects/
+compound borders and whole-slide Office visual equivalence remain acceptance gaps. New inspection APIs or
 passing round-trip tests do not certify those capabilities.
 
 ## [0.4.0] — 2026-08-17
