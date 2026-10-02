@@ -254,12 +254,19 @@ final class RenderDiagnosticCollector {
                 }
             default: break
             }
-            let children = element.childElements
-            if children.count == 1, let child = children.first {
-                if element.name != "a:tblPr" || child.name != "a:tableStyle" {
+            // Runs contain many leaves and single-child wrappers. Inspect
+            // those directly instead of materializing a child-element array.
+            let nodes = element.children
+            if nodes.isEmpty { continue }
+            if nodes.count == 1 {
+                if case .element(let child) = nodes[0],
+                   element.name != "a:tblPr" || child.name != "a:tableStyle" {
                     stack.append((child, 1, components.count, element.name))
                 }
-            } else if !children.isEmpty {
+                continue
+            }
+            let children = element.childElements
+            if !children.isEmpty {
                 var counts: [String: Int] = [:]
                 for child in children { counts[child.name, default: 0] += 1 }
                 for child in children.reversed() {
