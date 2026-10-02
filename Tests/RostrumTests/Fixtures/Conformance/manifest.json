@@ -28,8 +28,19 @@
         "date": "2026-10-01",
         "status": "captured; pixel comparison not yet passing"
       },
-      "notesPageReference": null,
-      "referenceStatus": "Slide reference captured, notes-page and visual match still pending",
+      "notesPageReference": {
+        "file": "python-tables-notes-office.png",
+        "sha256": "05d793716005f20b7623b7fdfab69ccac2e59e3f7c90fa77ca87f0ea016751f4",
+        "producer": "Microsoft PowerPoint 16.113.3 for Mac",
+        "export": "Local Print > Notes > Save as PDF; US Letter; rendered with PyMuPDF 1.27.2.3 at 1200 pixels wide",
+        "date": "2026-10-02",
+        "status": "producer defect retained: omitted notesMasterIdLst yields unpositioned notes; no slide image; v3 independently corrects registration",
+        "sourcePDF": {
+          "file": "python-tables-notes-office.pdf",
+          "sha256": "c2cfb7d9ef32ff9f57afbf700c9da2d4570d127803e1935d339aa3426acee4f5"
+        }
+      },
+      "referenceStatus": "Slide and notes references captured via normal Office UI; no repair dialog observed; whole-slide and notes candidate equivalence pending",
       "fontHashes": {
         "Arial.ttf": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
         "Arial Bold.ttf": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
