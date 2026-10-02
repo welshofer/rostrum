@@ -44,6 +44,7 @@ public struct StrictRenderingError: Error, Sendable, CustomStringConvertible {
 /// One render owns one collector. It never retains or mutates source XML.
 final class RenderDiagnosticCollector {
     let images = RenderImageResources()
+    let textAttributes = RenderTextAttributes()
     var location = FidelityLocation(slideIndex: 0, partURI: "", path: "/")
     private(set) var issues: [FidelityIssue] = []
     private var seen: Set<FidelityIssue> = []
@@ -70,7 +71,7 @@ final class RenderDiagnosticCollector {
     private var embeddedFaces: [EmbeddedFace] = []
     private var resolvedFaces: [FontFaceKey: String] = [:]
     private var unavailableFaces: [FontFaceKey: (FidelityIssueCode, FidelityImpact, String)] = [:]
-    func reset() { images.reset(); recentLocation = nil; recentIssues = []; issues = []; seen = []; embeddedFaces = []; resolvedFaces = [:]; unavailableFaces = [:] }
+    func reset() { images.reset(); textAttributes.reset(); recentLocation = nil; recentIssues = []; issues = []; seen = []; embeddedFaces = []; resolvedFaces = [:]; unavailableFaces = [:] }
 
     /// Names point at renderer-owned CSS faces, so aliases use one resource and
     /// the SVG does not accidentally pick a similarly named platform font.

@@ -267,11 +267,8 @@ struct SVGRenderer {
                 let embedded = run.fontFamily.flatMap {
                     diagnostics.embeddedFamily(for: FontFaceKey(family: $0, bold: run.bold, italic: run.italic), fonts: fonts)
                 }
-                result += "<tspan x=\"\(decimal(span.x))\" font-size=\"\(decimal(run.fontSize))\" fill=\"\(run.color)\""
-                    + fontFamilyAttr(embedded ?? run.fontFamily)
-                    + (run.bold ? " font-weight=\"bold\"" : "")
-                    + (run.italic ? " font-style=\"italic\"" : "")
-                    + (run.tracking == 0 ? "" : " letter-spacing=\"\(decimal(run.tracking))\"")
+                result += "<tspan x=\"\(decimal(span.x))\""
+                result += diagnostics.textAttributes.attributes(for: run, family: embedded ?? run.fontFamily)
                 if span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
                 result += ">" + escape(run.text) + "</tspan>"
             }
@@ -1085,17 +1082,7 @@ struct SVGRenderer {
     }
 
     private func escape(_ s: String) -> String {
-        var out = ""
-        for c in s {
-            switch c {
-            case "&": out += "&amp;"
-            case "<": out += "&lt;"
-            case ">": out += "&gt;"
-            case "\"": out += "&quot;"
-            default: out.append(c)
-            }
-        }
-        return out
+        SVGMarkup.escape(s)
     }
 }
 
