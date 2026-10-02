@@ -24,15 +24,15 @@ struct SlidePreview {
 
     /// The SVG carries the slide's own background and aspect ratio (an explicit
     /// `viewBox`), so the wrapper only has to stop the web view adding chrome,
-    /// margins or a scrollbar around it. Width 100% with `height: auto`
-    /// overrides the SVG's pixel width and scales it by the viewBox instead.
+    /// margins or a scrollbar around it. A full-viewport SVG uses its viewBox
+    /// to contain the slide even in a differently proportioned app panel.
     private var document: String {
         """
         <!doctype html><html><head><meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
-          html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
-          svg { display: block; width: 100%; height: auto; }
+          html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+          svg { display: block; width: 100%; height: 100%; }
         </style></head><body>\(svg)</body></html>
         """
     }
@@ -150,7 +150,7 @@ struct SlideContactSheet: View {
             LazyVGrid(columns: columns, spacing: 14) {
                 ForEach(Array(previews.enumerated()), id: \.offset) { index, svg in
                     SlideTile(svg: svg)
-                        .aspectRatio(16.0 / 9.0, contentMode: .fit)
+                        .aspectRatio(SlidePreviewGeometry(svg: svg)?.aspectRatio ?? 16.0 / 9.0, contentMode: .fit)
                         .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                         .overlay(
@@ -192,7 +192,7 @@ struct SlideFilmstrip: View {
             LazyHStack(spacing: 12) {
                 ForEach(Array(previews.enumerated()), id: \.offset) { index, svg in
                     SlideTile(svg: svg)
-                        .frame(width: 240, height: 135)   // 16:9
+                        .frame(width: min(240, 135 * (SlidePreviewGeometry(svg: svg)?.aspectRatio ?? 16.0 / 9.0)), height: 135)
                         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                         .overlay(
                             RoundedRectangle(cornerRadius: 10, style: .continuous)

@@ -122,30 +122,30 @@ import Testing
     @Test func rasterizerStaysWithinItsCap() {
         let rasterizer = SlideRasterizer(capacity: 3)
         for index in 0..<8 {
-            rasterizer.remember(Image(systemName: "\(index).square"), forKey: "slide-\(index)")
+            rasterizer.remember(Image(systemName: "\(index).square"), forKey: .init(svg: "slide-\(index)", width: 1, height: 1))
             #expect(rasterizer.cacheCount <= 3)
         }
         #expect(rasterizer.cacheCount == 3)
-        #expect(rasterizer.cached("slide-0") == nil)
-        #expect(rasterizer.cached("slide-7") != nil)
+        #expect(rasterizer.cached(.init(svg: "slide-0", width: 1, height: 1)) == nil)
+        #expect(rasterizer.cached(.init(svg: "slide-7", width: 1, height: 1)) != nil)
     }
 
     @MainActor
     @Test func rasterizerEvictsLeastRecentlyUsed() {
         let rasterizer = SlideRasterizer(capacity: 3)
-        rasterizer.remember(Image(systemName: "a.square"), forKey: "a")
-        rasterizer.remember(Image(systemName: "b.square"), forKey: "b")
-        rasterizer.remember(Image(systemName: "c.square"), forKey: "c")
+        rasterizer.remember(Image(systemName: "a.square"), forKey: .init(svg: "a", width: 1, height: 1))
+        rasterizer.remember(Image(systemName: "b.square"), forKey: .init(svg: "b", width: 1, height: 1))
+        rasterizer.remember(Image(systemName: "c.square"), forKey: .init(svg: "c", width: 1, height: 1))
 
-        #expect(rasterizer.cached("a") != nil)   // touch "a"
+        #expect(rasterizer.cached(.init(svg: "a", width: 1, height: 1)) != nil)   // touch "a"
 
-        rasterizer.remember(Image(systemName: "d.square"), forKey: "d")
+        rasterizer.remember(Image(systemName: "d.square"), forKey: .init(svg: "d", width: 1, height: 1))
 
         #expect(rasterizer.cacheCount == 3)
-        #expect(rasterizer.cached("b") == nil)   // least-recently-used, evicted
-        #expect(rasterizer.cached("a") != nil)   // recently used, survived
-        #expect(rasterizer.cached("c") != nil)
-        #expect(rasterizer.cached("d") != nil)
+        #expect(rasterizer.cached(.init(svg: "b", width: 1, height: 1)) == nil)   // least-recently-used, evicted
+        #expect(rasterizer.cached(.init(svg: "a", width: 1, height: 1)) != nil)   // recently used, survived
+        #expect(rasterizer.cached(.init(svg: "c", width: 1, height: 1)) != nil)
+        #expect(rasterizer.cached(.init(svg: "d", width: 1, height: 1)) != nil)
     }
     #endif
 }

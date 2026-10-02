@@ -30,69 +30,128 @@ final class SlideRasterizer {
 
     /// Keyed by the markup itself — the same slide re-inspected is the same
     /// picture, and two slides that happen to be identical cost one render.
-    private var cache: BoundedCache<String, Image>
+    struct CacheKey: Hashable {
+        let svg: String
+        let width: Int
+        let height: Int
+    }
+    private var cache: BoundedCache<CacheKey, Image>
     private var host: SnapshotHost?
 
     // One web view means one render at a time. The gate is what makes that a
     // queue rather than a race.
     private var busy = false
-    private var waiting: [CheckedContinuation<Void, Never>] = []
+    private var waiting: [(id: UUID, continuation: CheckedContinuation<Bool, Never>)] = []
+    private let snapshotOverride: (@MainActor (String, CGSize) async -> Image?)?
+    static let maximumPendingRequests = 64
 
-    /// Custom-capacity initialiser: production uses the default; tests pass a
-    /// small cap to assert the cache stays bounded without the shared singleton.
-    init(capacity: Int = SlideRasterizer.defaultCapacity) {
+    /// Tests can supply a snapshot operation without creating a window.
+    init(capacity: Int = SlideRasterizer.defaultCapacity,
+         snapshot: (@MainActor (String, CGSize) async -> Image?)? = nil) {
         cache = BoundedCache(capacity: capacity)
+        snapshotOverride = snapshot
     }
 
-    /// A cached render, marked most-recently-used on a hit. Synchronous, so the
-    /// gate below is only ever taken for a slide that genuinely needs drawing.
-    func cached(_ key: String) -> Image? { cache.value(forKey: key) }
-
-    /// Live entry count. Exposed so tests can assert the cache never grows past
-    /// its cap.
+    func cached(_ key: CacheKey) -> Image? { cache.value(forKey: key) }
     var cacheCount: Int { cache.count }
+    var pendingCount: Int { waiting.count }
 
     func image(for svg: String, pixelWidth: CGFloat = 640) async -> Image? {
-        let key = Self.key(for: svg)
+        guard !Task.isCancelled,
+              let size = SlidePreviewGeometry(svg: svg)?.snapshotSize(pixelWidth: pixelWidth) else { return nil }
+        let key = Self.key(for: svg, size: size)
         if let hit = cached(key) { return hit }
-
-        await acquire()
+        guard await acquire() else { return nil }
         defer { release() }
-        // A queued caller may have rendered this very slide while we waited.
+        guard !Task.isCancelled else { return nil }
         if let hit = cached(key) { return hit }
 
-        let host = host ?? SnapshotHost()
-        self.host = host
-        guard let image = await host.snapshot(svg: svg, pixelWidth: pixelWidth) else { return nil }
+        let image: Image?
+        if let snapshotOverride { image = await snapshotOverride(svg, size) }
+        else {
+            let host = host ?? SnapshotHost()
+            self.host = host
+            image = await host.snapshot(svg: svg, size: size)
+        }
+        guard !Task.isCancelled, let image else { return nil }
         remember(image, forKey: key)
         return image
     }
 
-    /// Records a finished render, evicting the least-recently-used entry once
-    /// the cache is full. Internal so a test can seed the cache without standing
-    /// up the off-screen web view.
-    func remember(_ image: Image, forKey key: String) {
-        cache.insert(image, forKey: key)
+    func remember(_ image: Image, forKey key: CacheKey) { cache.insert(image, forKey: key) }
+
+    /// Full content equality avoids hash collisions; normalized dimensions keep
+    /// a small thumbnail from satisfying a later high-resolution request.
+    static func key(for svg: String, size: CGSize) -> CacheKey {
+        CacheKey(svg: svg, width: Int(size.width), height: Int(size.height))
     }
 
-    /// FNV-1a over the markup: stable within a run and cheap on strings this
-    /// size, where `hashValue` would also work but says less about intent.
-    private static func key(for svg: String) -> String {
-        var hash: UInt64 = 0xcbf2_9ce4_8422_2325
-        for byte in svg.utf8 {
-            hash ^= UInt64(byte)
-            hash = hash &* 0x1000_0000_01b3
+    private func acquire() async -> Bool {
+        guard !Task.isCancelled else { return false }
+        if !busy { busy = true; return true }
+        guard waiting.count < Self.maximumPendingRequests else { return false }
+        let id = UUID()
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                guard !Task.isCancelled else { continuation.resume(returning: false); return }
+                waiting.append((id, continuation))
+            }
+        } onCancel: {
+            Task { @MainActor [weak self] in
+                guard let self, let index = self.waiting.firstIndex(where: { $0.id == id }) else { return }
+                self.waiting.remove(at: index).continuation.resume(returning: false)
+            }
         }
-        return String(hash, radix: 16)
-    }
-
-    private func acquire() async {
-        if !busy { busy = true; return }
-        await withCheckedContinuation { waiting.append($0) }
     }
 
     private func release() {
-        if waiting.isEmpty { busy = false } else { waiting.removeFirst().resume() }
+        if waiting.isEmpty { busy = false }
+        else { waiting.removeFirst().continuation.resume(returning: true) }
+    }
+
+}
+
+/// Completes exactly once, even if WebKit never replies or replies after a
+/// timeout/cancellation. One instance belongs to one snapshot, so a stale
+/// callback can never complete a subsequent slide's request.
+@MainActor
+final class SlideSnapshotRequest<Value: Sendable> {
+    private var continuation: CheckedContinuation<Value?, Never>?
+    private var timer: Task<Void, Never>?
+    private var stop: (() -> Void)?
+    private var started = false
+    private var finished = false
+
+    func value(timeout: Duration, start: () -> Void, stop: @escaping () -> Void) async -> Value? {
+        guard !started else { return nil }
+        started = true
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                guard !finished else { continuation.resume(returning: nil); return }
+                self.continuation = continuation
+                self.stop = stop
+                guard !Task.isCancelled else { finish(nil); return }
+                timer = Task { @MainActor [weak self] in
+                    do { try await Task.sleep(for: timeout) } catch { return }
+                    self?.finish(nil)
+                }
+                start()
+            }
+        } onCancel: {
+            Task { @MainActor [weak self] in self?.finish(nil) }
+        }
+    }
+
+    func finish(_ value: Value?) {
+        guard !finished else { return }
+        finished = true
+        timer?.cancel(); timer = nil
+        let continuation = continuation
+        self.continuation = nil
+        let stop = stop
+        self.stop = nil
+        if value == nil { stop?() }
+        continuation?.resume(returning: value)
     }
 }
 
@@ -105,7 +164,9 @@ final class SlideRasterizer {
 private final class SnapshotHost: NSObject, WKNavigationDelegate {
     private let window: NSWindow
     private let webView: WKWebView
-    private var loaded: CheckedContinuation<Void, Never>?
+    private var request: SlideSnapshotRequest<Image>?
+    private var navigation: WKNavigation?
+    private var snapshotSize: CGSize = .zero
 
     override init() {
         let config = WKWebViewConfiguration()
@@ -136,35 +197,39 @@ private final class SnapshotHost: NSObject, WKNavigationDelegate {
         window.orderBack(nil)
     }
 
-    func snapshot(svg: String, pixelWidth: CGFloat) async -> Image? {
-        let height = (pixelWidth * 9 / 16).rounded()
-        let size = NSSize(width: pixelWidth, height: height)
+    func snapshot(svg: String, size: CGSize) async -> Image? {
+        let request = SlideSnapshotRequest<Image>()
+        self.request = request
+        snapshotSize = size
         window.setContentSize(size)
         webView.frame = NSRect(origin: .zero, size: size)
-
-        await withCheckedContinuation { continuation in
-            loaded = continuation
-            webView.loadHTMLString(Self.document(svg: svg), baseURL: nil)
-        }
-
-        let config = WKSnapshotConfiguration()
-        config.rect = NSRect(origin: .zero, size: size)
-        guard let image = try? await webView.takeSnapshot(configuration: config) else { return nil }
-        return Image(nsImage: image)
+        let image = await request.value(timeout: .seconds(10), start: {
+            navigation = webView.loadHTMLString(Self.document(svg: svg), baseURL: nil)
+        }, stop: { [weak self] in self?.webView.stopLoading() })
+        if self.request === request { self.request = nil; navigation = nil }
+        return image
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        loaded?.resume(); loaded = nil
+        guard navigation === self.navigation, let request else { return }
+        let config = WKSnapshotConfiguration()
+        config.rect = NSRect(origin: .zero, size: snapshotSize)
+        config.snapshotWidth = NSNumber(value: Double(snapshotSize.width))
+        webView.takeSnapshot(with: config) { image, _ in
+            request.finish(image.map { Image(nsImage: $0) })
+        }
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        loaded?.resume(); loaded = nil
+        if navigation === self.navigation { request?.finish(nil) }
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
                  withError error: Error) {
-        loaded?.resume(); loaded = nil
+        if navigation === self.navigation { request?.finish(nil) }
     }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { request?.finish(nil) }
 
     /// The SVG carries its own background and aspect ratio; this only stops the
     /// web view adding chrome around it.
@@ -172,8 +237,8 @@ private final class SnapshotHost: NSObject, WKNavigationDelegate {
         """
         <!doctype html><html><head><meta charset="utf-8">
         <style>
-          html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
-          svg { display: block; width: 100%; height: auto; }
+          html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+          svg { display: block; width: 100%; height: 100%; }
         </style></head><body>\(svg)</body></html>
         """
     }
@@ -196,7 +261,10 @@ struct SlideTile: View {
             }
         }
         .task(id: svg) {
-            image = await SlideRasterizer.shared.image(for: svg)
+            image = nil
+            let rendered = await SlideRasterizer.shared.image(for: svg)
+            guard !Task.isCancelled else { return }
+            image = rendered
         }
     }
     #else
