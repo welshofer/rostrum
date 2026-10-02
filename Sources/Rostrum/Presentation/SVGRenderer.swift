@@ -207,9 +207,8 @@ struct SVGRenderer {
         let prst = spPr.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
         let fill = paint(for: spPr, box: f, defs: &defs, ownedBy: owner)
         let stroke = strokeAttrs(spPr)
-        if let fill { out += geometry(prst, f, fill: fill, stroke: stroke) }
-        else if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
         if let notesContext, NotesPageRenderContext.placeholderType(sp) == "sldImg" {
+            if NotesPageRenderContext.suppressesSlideImage(spPr) { return out }
             // Native Office notes images keep slide proportions and paint the
             // unused image frame white, even when its shape has a:noFill.
             out += geometry(prst, f, fill: fill ?? "#FFFFFF", stroke: "")
@@ -217,9 +216,13 @@ struct SVGRenderer {
             out += "<image x=\"\(f.0)\" y=\"\(f.1)\" width=\"\(f.2)\" height=\"\(f.3)\" preserveAspectRatio=\"xMidYMid meet\" href=\"\(notesContext.thumbnail)\"/>"
             // Draw the inherited/local image frame above the thumbnail.
             if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
-        } else if let txBody = sp.firstChild(named: "p:txBody") {
-            out += renderText(txBody, box: f,
-                              inheriting: inheritedRunDefaults(for: sp, ownedBy: owner))
+        } else {
+            if let fill { out += geometry(prst, f, fill: fill, stroke: stroke) }
+            else if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
+            if let txBody = sp.firstChild(named: "p:txBody") {
+                out += renderText(txBody, box: f,
+                                  inheriting: inheritedRunDefaults(for: sp, ownedBy: owner))
+            }
         }
         return out
     }

@@ -72,13 +72,16 @@ struct NotesPageRenderContext {
             for key in matches.keys.sorted() { matches[key] = Self.retarget(matches[key]!, from: master, to: notes) }
         }
         ancestors = matches
-        var seen: Set<String> = []
+        var seen: Set<String> = [], imageNeeded = false
         for shape in Slide.existingSpTree(of: notes)?.childElements ?? [] {
             if let type = Self.placeholderType(shape) {
                 if !seen.insert(type).inserted { issue("Multiple notes-page placeholders have type \(type); ancestry is ambiguous.") }
                 if shape.name != "p:sp" { issue("Notes inheritance on \(shape.name) placeholders is not supported.") }
                 if !["body", "sldImg"].contains(type) {
                     issue("Notes placeholder type \(type) needs header/footer or other placeholder semantics not supported by this preview.", code: .omittedShape)
+                }
+                if type == "sldImg", !Self.suppressesSlideImage(Self.merged(shape.firstChild(named: "p:spPr"), matches[type]?.firstChild(named: "p:spPr"))) {
+                    imageNeeded = true
                 }
                 let local = shape.firstChild(named: "p:spPr")?.firstChild(named: "a:xfrm")
                 let inherited = matches[type]?.firstChild(named: "p:spPr")?.firstChild(named: "a:xfrm")
@@ -96,7 +99,7 @@ struct NotesPageRenderContext {
         // Image documents isolate CSS font aliases and SVG definition IDs from
         // the outer notes document, even when slide and notes themes differ.
         var thumbnailProblems = SlideRenderProblems()
-        if seen.contains("sldImg") {
+        if imageNeeded {
             let slideResult = try presentation.renderSVGReportingProblems(slideAt: index, pixelWidth: pixelWidth)
             thumbnail = "data:image/svg+xml;base64," + Data(slideResult.svg.utf8).base64EncodedString()
             thumbnailProblems = slideResult.problems
@@ -104,6 +107,13 @@ struct NotesPageRenderContext {
         issues += thumbnailProblems.fidelityIssues
         problems = SlideRenderProblems(layoutUnresolved: thumbnailProblems.layoutUnresolved,
             masterUnresolved: master == nil || thumbnailProblems.masterUnresolved, fidelityIssues: issues)
+    }
+
+    /// The pinned native notes fixtures established that Office suppresses the
+    /// slide image when its effective placeholder has neither fill nor line.
+    static func suppressesSlideImage(_ properties: XML.Element?) -> Bool {
+        properties?.firstChild(named: "a:noFill") != nil
+            && properties?.firstChild(named: "a:ln")?.firstChild(named: "a:noFill") != nil
     }
 
     static func placeholderType(_ shape: XML.Element) -> String? {
@@ -180,29 +190,39 @@ struct NotesPageRenderContext {
     /// Resolve expanded names before mapping to the renderer's conventional
     /// prefixes. Foreign lookalikes never acquire DrawingML/PML semantics.
     static func canonical(_ root: XML.Element, scope inherited: [String: String] = [:]) -> XML.Element {
-        var scope = inherited
-        for attribute in root.attributes {
-            if attribute.name == "xmlns" { scope[""] = attribute.value }
-            else if attribute.name.hasPrefix("xmlns:") { scope[String(attribute.name.dropFirst(6))] = attribute.value }
+        func shallow(_ source: XML.Element, inherited: [String: String]) -> (XML.Element, [String: String]) {
+            var scope = inherited
+            for attribute in source.attributes {
+                if attribute.name == "xmlns" { scope[""] = attribute.value }
+                else if attribute.name.hasPrefix("xmlns:") { scope[String(attribute.name.dropFirst(6))] = attribute.value }
+            }
+            func name(_ value: String, attribute: Bool = false) -> String {
+                let pieces = value.split(separator: ":", maxSplits: 1).map(String.init)
+                if attribute && pieces.count == 1 { return value }
+                let namespace = scope[pieces.count == 2 ? pieces[0] : ""]
+                let prefix: String?
+                switch namespace { case MinimalTemplate.nsP: prefix = "p"; case MinimalTemplate.nsA: prefix = "a"; case MinimalTemplate.nsR: prefix = "r"; default: prefix = nil }
+                if let prefix { return prefix + ":" + pieces.last! }
+                return value.replacingOccurrences(of: ":", with: "_")
+            }
+            let copy = XML.Element(name(source.name))
+            copy.attributes = source.attributes.filter { $0.name != "xmlns" && !$0.name.hasPrefix("xmlns:") }.map { (name($0.name, attribute: true), $0.value) }
+            copy[attribute: "xmlns:p"] = MinimalTemplate.nsP
+            copy[attribute: "xmlns:a"] = MinimalTemplate.nsA
+            copy[attribute: "xmlns:r"] = MinimalTemplate.nsR
+            return (copy, scope)
         }
-        func name(_ value: String, attribute: Bool = false) -> String {
-            let pieces = value.split(separator: ":", maxSplits: 1).map(String.init)
-            if attribute && pieces.count == 1 { return value }
-            let namespace = scope[pieces.count == 2 ? pieces[0] : ""]
-            let prefix: String?
-            switch namespace { case MinimalTemplate.nsP: prefix = "p"; case MinimalTemplate.nsA: prefix = "a"; case MinimalTemplate.nsR: prefix = "r"; default: prefix = nil }
-            if let prefix { return prefix + ":" + pieces.last! }
-            return value.replacingOccurrences(of: ":", with: "_")
+        let (copy, scope) = shallow(root, inherited: inherited)
+        var pending = [(root, copy, scope)]
+        while let (source, target, bindings) = pending.popLast() {
+            for node in source.children {
+                if case .element(let child) = node {
+                    let (childCopy, childScope) = shallow(child, inherited: bindings)
+                    target.appendElement(childCopy)
+                    pending.append((child, childCopy, childScope))
+                } else { target.append(node) }
+            }
         }
-        let copy = XML.Element(name(root.name))
-        copy.attributes = root.attributes.filter { $0.name != "xmlns" && !$0.name.hasPrefix("xmlns:") }.map { (name($0.name, attribute: true), $0.value) }
-        copy.children = root.children.map { node in
-            if case .element(let child) = node { return .element(canonical(child, scope: scope)) }
-            return node
-        }
-        copy[attribute: "xmlns:p"] = MinimalTemplate.nsP
-        copy[attribute: "xmlns:a"] = MinimalTemplate.nsA
-        copy[attribute: "xmlns:r"] = MinimalTemplate.nsR
         return copy
     }
 }

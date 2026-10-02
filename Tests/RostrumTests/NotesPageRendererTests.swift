@@ -148,4 +148,75 @@ import Testing
         #expect(thumbnail.contains("RostrumEmbeddedFace1") && result.svg.contains("RostrumEmbeddedFace1"))
         #expect(notes.isDirty == dirty)
     }
+
+    @Test func noFillAndNoLineSuppressThumbnailWithoutInspectingHiddenSlide() throws {
+        let deck = try Presentation()
+        try deck.slides[0].setNotes("")
+        let (notes, master) = try parts(deck)
+        try shape(notes, type: "body").removeChildren(named: "p:txBody"); notes.markDirty()
+        let image = try shape(master, type: "sldImg")
+        let properties = try #require(image.firstChild(named: "p:spPr"))
+        let line = try #require(properties.firstChild(named: "a:ln"))
+        line.children = [.element(XML.Element("a:noFill"))]; master.markDirty()
+        // An unsupported slide shape must not poison a suppressed thumbnail.
+        let slideTree = try #require(Slide.existingSpTree(of: deck.slides[0].part))
+        slideTree.appendElement(XML.Element("p:grpSp")); try deck.slides[0].part.markDirty()
+        let result = try deck.renderNotesSVGReportingProblems(slideAt: 0, strictRendering: true)
+        #expect(result.problems.isEmpty)
+        #expect(!result.svg.contains("<image"))
+        // A local visible line restores the image and its own diagnostics.
+        let local = try #require(shape(notes, type: "sldImg").firstChild(named: "p:spPr"))
+        local.appendElement(try XML.parse(Data("<a:ln xmlns:a=\"\(MinimalTemplate.nsA)\" w=\"12700\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:ln>".utf8)))
+        notes.markDirty()
+        let visible = try deck.renderNotesSVGReportingProblems(slideAt: 0)
+        #expect(visible.svg.contains("<image"))
+        #expect(visible.problems.fidelityIssues.contains { $0.code == .omittedShape })
+    }
+
+    @Test func inheritedGroupsAndConnectorsAreDiagnosedAndStrictRefused() throws {
+        let deck = try Presentation()
+        try deck.slides[0].setNotes("")
+        let (_, master) = try parts(deck)
+        let tree = try #require(Slide.existingSpTree(of: master))
+        tree.appendElement(XML.Element("p:grpSp")); tree.appendElement(XML.Element("p:cxnSp")); master.markDirty()
+        let result = try deck.renderNotesSVGReportingProblems(slideAt: 0)
+        for kind in ["p:grpSp", "p:cxnSp"] {
+            #expect(result.problems.fidelityIssues.contains {
+                $0.code == .omittedShape && $0.location.partURI == master.uri.description && $0.message.contains(kind)
+            })
+        }
+        #expect(throws: StrictRenderingError.self) { try deck.renderNotesSVG(slideAt: 0, strictRendering: true) }
+    }
+
+    @Test func namespaceCanonicalizationHandlesDeepProgrammaticTreesIteratively() {
+        let root = XML.Element("q:notes", attributes: [("xmlns:q", MinimalTemplate.nsP)])
+        var cursor = root
+        for _ in 0..<100_000 {
+            let child = XML.Element("q:node"); cursor.appendElement(child); cursor = child
+        }
+        let copy = NotesPageRenderContext.canonical(root)
+        #expect(copy.name == "p:notes" && root.name == "q:notes")
+        var count = 0, current = copy
+        while let child = current.childElements.first { count += 1; current = child }
+        #expect(count == 100_000 && current.name == "p:node")
+    }
+
+
+    @Test func translucentSlideImageBackingAndFrameArePaintedExactlyOnce() throws {
+        let deck = try Presentation()
+        try deck.slides[0].setNotes("")
+        let (notes, master) = try parts(deck)
+        try shape(notes, type: "body").removeChildren(named: "p:txBody"); notes.markDirty()
+        let properties = try #require(shape(master, type: "sldImg").firstChild(named: "p:spPr"))
+        properties.removeChildren(named: "a:noFill"); properties.removeChildren(named: "a:ln")
+        properties.appendElement(try XML.parse(Data("<a:solidFill xmlns:a=\"\(MinimalTemplate.nsA)\"><a:srgbClr val=\"FF0000\"><a:alpha val=\"50000\"/></a:srgbClr></a:solidFill>".utf8)))
+        properties.appendElement(try XML.parse(Data("<a:ln xmlns:a=\"\(MinimalTemplate.nsA)\" w=\"12700\"><a:solidFill><a:srgbClr val=\"0000FF\"><a:alpha val=\"50000\"/></a:srgbClr></a:solidFill></a:ln>".utf8)))
+        master.markDirty()
+        let result = try deck.renderNotesSVGReportingProblems(slideAt: 0, strictRendering: true)
+        let root = try XML.parse(Data(result.svg.utf8))
+        #expect(root.children(named: "rect").filter { $0[attribute: "fill"] == "rgba(255,0,0,0.5)" }.count == 1)
+        #expect(root.children(named: "rect").filter { $0[attribute: "stroke"] == "rgba(0,0,255,0.5)" }.count == 1)
+        #expect(root.children(named: "image").count == 1)
+    }
+
 }
