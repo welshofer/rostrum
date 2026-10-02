@@ -4,9 +4,12 @@ import Foundation
 /// slide-image placeholders. Everything else, including opaque XML and actual
 /// dependency payloads, must agree. Text/styles/fills remain inherited intact.
 struct NotesImportGeometry {
+    /// Notes placeholders inherit from the master by type, unlike slide
+    /// placeholders whose layout ancestor is selected by index. Repeated types
+    /// are refused because selecting only one would leave another inheriting
+    /// destination geometry, even if their ph indexes differ.
     private struct Key: Hashable {
         let type: String
-        let index: String
     }
     private struct Placeholder {
         let properties: XML.Element
@@ -106,9 +109,9 @@ struct NotesImportGeometry {
             let nvPropertiesScope = bindings(nv, inherited: nvScope)
             guard let placeholder = try onlyChild(nv, "ph", MinimalTemplate.nsP, nvPropertiesScope) else { continue }
             guard let properties = try onlyChild(shape, "spPr", MinimalTemplate.nsP, shapeScope) else { throw unsupported() }
-            let key = Key(type: placeholder[attribute: "type"] ?? "obj", index: placeholder[attribute: "idx"] ?? "0")
+            let key = Key(type: placeholder[attribute: "type"] ?? "obj")
             guard result.updateValue(Placeholder(properties: properties, scope: bindings(properties, inherited: shapeScope)), forKey: key) == nil else {
-                throw unsupported("ambiguous notes placeholder identity")
+                throw unsupported("ambiguous notes placeholder type")
             }
         }
         return result

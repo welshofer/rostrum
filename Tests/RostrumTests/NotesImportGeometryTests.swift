@@ -157,6 +157,67 @@ import Testing
         #expect(try source.serializedData() == sourceBefore)
     }
 
+    @Test(arguments: [false, true])
+    func notesPlaceholderMatchesMasterByTypeEvenWhenIndexDiffers(localOverride: Bool) throws {
+        let (source, target) = try fixture()
+        let sourceNotes = try notes(source.slides[0], in: source)
+        let body = try shape("body", in: sourceNotes)
+        let placeholder = try #require(body.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:nvPr")?.firstChild(named: "p:ph"))
+        placeholder[attribute: "idx"] = "17"
+        let expected = try transform("body", in: master(in: source)).deepCopy()
+        if localOverride {
+            expected.firstChild(named: "a:off")?[attribute: "x"] = "2000000"
+            body.firstChild(named: "p:spPr")?.appendElement(expected.deepCopy())
+        }
+        sourceNotes.markDirty()
+        let sourceBefore = try source.serializedData()
+        let imported = try target.slides.import(from: source, at: 0)
+        let importedNotes = try notes(imported, in: target)
+        #expect(try transform("body", in: importedNotes).serialized() == expected.serialized())
+        #expect(try shape("body", in: importedNotes).firstChild(named: "p:nvSpPr")?.firstChild(named: "p:nvPr")?.firstChild(named: "p:ph")?[attribute: "idx"] == "17")
+        #expect(try source.serializedData() == sourceBefore)
+        let saved = try target.serializedData()
+        #expect(try Presentation(data: saved).serializedData() == saved)
+        if let folder = ProcessInfo.processInfo.environment["ROSTRUM_NOTES_TYPE_ORACLE_OUTPUT"] {
+            let url = URL(fileURLWithPath: folder)
+            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+            let suffix = localOverride ? "local" : "inherited"
+            try sourceBefore.write(to: url.appendingPathComponent("type-index-\(suffix)-source.pptx"))
+            try saved.write(to: url.appendingPathComponent("type-index-\(suffix)-imported.pptx"))
+        }
+    }
+
+    @Test(arguments: ["notes", "master"])
+    func duplicatePlaceholderTypesWithDistinctIndexesRefuseWholeBatchAtomically(_ owner: String) throws {
+        let (source, target) = try fixture()
+        let second = try source.slides.add()
+        try second.setNotes("Ambiguous second page")
+        let ownerPart = try owner == "notes" ? notes(second, in: source) : master(in: source)
+        let body = try shape("body", in: ownerPart).deepCopy()
+        let nonvisual = try #require(body.firstChild(named: "p:nvSpPr"))
+        nonvisual.firstChild(named: "p:cNvPr")?[attribute: "id"] = "4"
+        nonvisual.firstChild(named: "p:cNvPr")?[attribute: "name"] = "Distinct index body"
+        nonvisual.firstChild(named: "p:nvPr")?.firstChild(named: "p:ph")?[attribute: "idx"] = "17"
+        try ownerPart.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")?.appendElement(body)
+        ownerPart.markDirty()
+        let before = try target.serializedData()
+        let sourceBefore = try source.serializedData()
+        // Retain an independent baseline reproduction if the buggy importer
+        // silently accepts this ambiguous page. Correct code emits no candidate.
+        if let folder = ProcessInfo.processInfo.environment["ROSTRUM_NOTES_TYPE_ORACLE_OUTPUT"] {
+            let url = URL(fileURLWithPath: folder)
+            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+            try sourceBefore.write(to: url.appendingPathComponent("duplicate-\(owner)-source.pptx"))
+            let reproduction = try Presentation(data: before)
+            if (try? reproduction.slides.importAll(from: source)) != nil {
+                try reproduction.serializedData().write(to: url.appendingPathComponent("duplicate-\(owner)-accepted.pptx"))
+            }
+        }
+        #expect(throws: NotesImportError.self) { try target.slides.importAll(from: source) }
+        #expect(try target.serializedData() == before)
+        #expect(try source.serializedData() == sourceBefore)
+    }
+
     @Test(arguments: ["missing", "partial", "duplicate", "namespace", "extended"])
     func malformedOrUnmodeledLocalGeometryRefusesWholeBatchAtomically(_ failure: String) throws {
         let (source, target) = try fixture()
