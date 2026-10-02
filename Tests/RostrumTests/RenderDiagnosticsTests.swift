@@ -199,4 +199,136 @@ import Testing
         #expect(svg.contains("A&quot;B &amp; C"))
         _ = try XML.parse(Data(svg.utf8))
     }
+
+    @Test(arguments: [false, true])
+    func referencedThemeEffectsAreReportedAtEachShape(_ picture: Bool) throws {
+        let deck = try Presentation()
+        let slide = try deck.slides[0]
+        let frame = Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1))
+        let image = Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=")!
+        let shapes: [Shape] = try (0..<2).map { _ in
+            if picture { return try slide.shapes.addPicture(image, frame: frame) }
+            return try slide.shapes.addShape(.rectangle, frame: frame, fill: .solid(Color("AA4400")))
+        }
+        let theme = try #require(deck.package.parts.values.first { $0.contentType == ContentType.theme })
+        let styles = try #require(theme.dom().firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme")?.firstChild(named: "a:effectStyleLst"))
+        styles.children = [.element(try XML.parse(Data("<a:effectStyle><a:effectLst><a:outerShdw blurRad=\"40000\"/></a:effectLst></a:effectStyle>".utf8)))]
+        theme.markDirty()
+        for shape in shapes {
+            shape.element.appendElement(try XML.parse(Data("<p:style><a:effectRef idx=\"1\"><a:schemeClr val=\"accent1\"/></a:effectRef></p:style>".utf8)))
+        }
+        slide.part.markDirty()
+        let before = try deck.serializedData()
+        let result = try deck.renderSVGReportingProblems(slideAt: 0)
+        let effects = result.problems.fidelityIssues.filter { $0.code == .omittedEffect }
+        #expect(effects.count == 2)
+        #expect(Set(effects.compactMap { $0.location.shapeID }).count == 2)
+        #expect(effects.allSatisfy { $0.location.partURI == slide.part.uri.description && $0.location.path.hasSuffix("/p:style/a:effectRef") })
+        #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+        #expect(try deck.serializedData() == before)
+
+        // Direct empty effects are an explicit override; they are not a reason
+        // to reject a shape whose referenced style contains a shadow.
+        for shape in shapes { shape.element.firstChild(named: "p:spPr")?.appendElement(XML.Element("a:effectLst")) }
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true).problems.isEmpty)
+        for shape in shapes {
+            shape.element.firstChild(named: "p:spPr")?.removeChildren(named: "a:effectLst")
+            shape.element.firstChild(named: "p:style")?.firstChild(named: "a:effectRef")?[attribute: "idx"] = "0"
+        }
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true).problems.isEmpty)
+        shapes[0].element.firstChild(named: "p:style")?.firstChild(named: "a:effectRef")?[attribute: "idx"] = "999"
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0).problems.fidelityIssues.contains { $0.code == .unresolvedInheritance })
+    }
+
+    @Test(arguments: ["a:effectLst", "a:effectDag", "a:scene3d", "a:sp3d"])
+    func namespaceDeclarationsAloneDoNotCreateAnEffect(_ component: String) throws {
+        let deck = try Presentation()
+        let shape = try deck.slides[0].shapes.addShape(.rectangle,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)), fill: .solid(Color("AA4400")))
+        let empty = XML.Element(component, attributes: [("xmlns:a", MinimalTemplate.nsA), ("xmlns", MinimalTemplate.nsA)])
+        let properties = try #require(shape.element.firstChild(named: "p:spPr"))
+        properties.appendElement(empty)
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true).problems.isEmpty)
+        properties.removeChildren(named: component)
+        let theme = try #require(deck.package.parts.values.first { $0.contentType == ContentType.theme })
+        let styles = try #require(theme.dom().firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme")?.firstChild(named: "a:effectStyleLst"))
+        styles.children = [.element(XML.Element("a:effectStyle", children: [.element(empty)]))]
+        shape.element.appendElement(try XML.parse(Data("<p:style><a:effectRef idx=\"1\"/></p:style>".utf8)))
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true).problems.isEmpty)
+    }
+
+    @Test func independentImageFixturesDistinguishMappingFromThemeEffects() throws {
+        let fixtures = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("Fixtures/ImageOffice")
+        for version in ["v1", "v2"] {
+            let deck = try Presentation(contentsOf: fixtures.appendingPathComponent("image-mapping-\(version).pptx"))
+            let before = try deck.serializedData()
+            #expect(deck.slides.count == 12)
+            for index in 0..<12 {
+                let issues = try deck.renderSVGReportingProblems(slideAt: index).problems.fidelityIssues
+                if version == "v1" && (7...9).contains(index) {
+                    #expect(issues.count == 1 && issues[0].code == .omittedEffect)
+                    #expect(issues[0].location.path.hasSuffix("/p:style/a:effectRef"))
+                } else {
+                    #expect(issues.isEmpty)
+                }
+            }
+            #expect(try deck.serializedData() == before)
+        }
+    }
+
+    @Test(arguments: [false, true], [false, true])
+    func themeOverrideEffectsCannotBeCertifiedFromTheMaster(_ onLayout: Bool, _ masterHasShadow: Bool) throws {
+        let deck = try Presentation(), slide = try deck.slides[0]
+        let shape = try slide.shapes.addShape(.rectangle,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)), fill: .solid(Color("AA4400")))
+        shape.element.appendElement(try XML.parse(Data("<p:style><a:effectRef idx=\"1\"/></p:style>".utf8)))
+        let theme = slide.resolvedTheme.part
+        let styles = try #require(theme.dom().firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme")?.firstChild(named: "a:effectStyleLst"))
+        let shadow = "<a:outerShdw blurRad=\"40000\"/>"
+        styles.children = [.element(try XML.parse(Data("<a:effectStyle><a:effectLst>\(masterHasShadow ? shadow : "")</a:effectLst></a:effectStyle>".utf8)))]
+        theme.markDirty()
+        let owner = onLayout ? try #require(slide.inheritanceParts.dropFirst().first) : slide.part
+        let override = deck.package.addPart(uri: PackURI("/ppt/theme/override-test.xml"),
+            contentType: "application/vnd.openxmlformats-officedocument.themeOverride+xml",
+            blob: Data("<a:themeOverride xmlns:a=\"\(MinimalTemplate.nsA)\"><a:fmtScheme name=\"Override\"><a:effectStyleLst><a:effectStyle><a:effectLst>\(masterHasShadow ? "" : shadow)</a:effectLst></a:effectStyle></a:effectStyleLst></a:fmtScheme></a:themeOverride>".utf8))
+        let relationType = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/themeOverride"
+        let overrideID = owner.rels.add(type: relationType, target: owner.uri.relativeReference(to: override.uri))
+        slide.part.markDirty()
+        let before = try deck.serializedData()
+        let issues = try deck.renderSVGReportingProblems(slideAt: 0).problems.fidelityIssues
+        #expect(issues.count == 1 && issues[0].code == .unresolvedInheritance)
+        #expect(issues[0].location.partURI == slide.part.uri.description)
+        #expect(issues[0].location.path.hasSuffix("/p:style/a:effectRef"))
+        #expect(!issues.contains { $0.code == .omittedEffect })
+        #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+        #expect(try deck.serializedData() == before)
+
+        // An empty override has no format scheme to replace the master effects.
+        override.replaceBlob(Data("<a:themeOverride xmlns:a=\"\(MinimalTemplate.nsA)\"/>".utf8))
+        let inherited = try deck.renderSVGReportingProblems(slideAt: 0).problems.fidelityIssues
+        #expect(inherited.count == (masterHasShadow ? 1 : 0))
+        #expect(inherited.allSatisfy { $0.code == .omittedEffect })
+        for xml in [
+            "<x:themeOverride xmlns:x=\"urn:foreign\"/>",
+            "<d:themeOverride xmlns:d=\"\(MinimalTemplate.nsA)\"><d:fmtScheme/></d:themeOverride>",
+            "<themeOverride xmlns=\"\(MinimalTemplate.nsA)\"><fmtScheme/></themeOverride>"
+        ] {
+            override.replaceBlob(Data(xml.utf8))
+            #expect(try deck.renderSVGReportingProblems(slideAt: 0).problems.fidelityIssues.contains { $0.code == .unresolvedInheritance })
+        }
+        for xml in [
+            "<a:themeOverride xmlns:a=\"\(MinimalTemplate.nsA)\" xmlns:x=\"urn:foreign\"><x:fmtScheme/></a:themeOverride>",
+            "<a:themeOverride xmlns:a=\"\(MinimalTemplate.nsA)\"><a:fmtScheme xmlns:a=\"urn:foreign\"/></a:themeOverride>"
+        ] {
+            override.replaceBlob(Data(xml.utf8))
+            #expect(try deck.renderSVGReportingProblems(slideAt: 0).problems.fidelityIssues == inherited)
+        }
+        override.replaceBlob(Data("malformed".utf8))
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0).problems.fidelityIssues.contains { $0.code == .unresolvedInheritance })
+        deck.package.removePart(at: override.uri)
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0).problems.fidelityIssues.contains { $0.code == .unresolvedInheritance })
+        owner.rels.remove(rId: overrideID)
+        owner.rels.add(type: relationType, target: "https://example.invalid/theme.xml", isExternal: true)
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0).problems.fidelityIssues.contains { $0.code == .unresolvedInheritance })
+    }
 }

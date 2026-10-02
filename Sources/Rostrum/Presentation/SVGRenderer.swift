@@ -62,6 +62,7 @@ struct SVGRenderer {
         // the photo panel, the coloured field a brand puts on its layouts all
         // live on the layout and the master, not on the slide.
         let (chain, inheritedProblems) = inheritanceChain()
+        diagnostics.themeEffectOverrideProblem = themeEffectOverrideProblem(in: [slidePart, chain.layout].compactMap { $0 })
         if inheritedProblems.layoutUnresolved || inheritedProblems.masterUnresolved {
             diagnostics.record(.unresolvedInheritance, .missingResource, "The slide layout/master inheritance chain is incomplete.")
         }
@@ -185,6 +186,7 @@ struct SVGRenderer {
     private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
                              defs: inout String) -> String {
         guard let spPr = sp.firstChild(named: "p:spPr") else { return "" }
+        diagnoseReferencedEffects(of: sp, properties: spPr)
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
         let prst = spPr.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
@@ -197,6 +199,79 @@ struct SVGRenderer {
                               inheriting: inheritedRunDefaults(for: sp, ownedBy: owner))
         }
         return out
+    }
+
+    /// Theme effects are not descendants of the shape inspected by the
+    /// diagnostic scanner. Report the active reference at the referring shape,
+    /// including inherited layout/master furniture. Direct effect properties
+    /// override the corresponding theme component, even when explicitly empty.
+    private func diagnoseReferencedEffects(of shape: XML.Element, properties: XML.Element) {
+        guard let reference = shape.firstChild(named: "p:style")?.firstChild(named: "a:effectRef") else { return }
+        let here = diagnostics.location
+        let location = FidelityLocation(slideIndex: here.slideIndex, partURI: here.partURI,
+            shapeID: here.shapeID, path: here.path + "/p:style/a:effectRef")
+        guard let index = reference[attribute: "idx"].flatMap(Int.init), index >= 0 else {
+            diagnostics.record(.unresolvedInheritance, .missingResource, "The shape's theme effect reference is invalid.", at: location)
+            return
+        }
+        guard index > 0 else { return }
+        if let problem = diagnostics.themeEffectOverrideProblem {
+            diagnostics.record(.unresolvedInheritance, .approximation, problem, at: location)
+            return
+        }
+        guard let styles = (try? theme.part.dom())?.firstChild(named: "a:themeElements")?
+                .firstChild(named: "a:fmtScheme")?.firstChild(named: "a:effectStyleLst")?.children(named: "a:effectStyle"),
+              styles.indices.contains(index - 1) else {
+            diagnostics.record(.unresolvedInheritance, .missingResource, "The shape's theme effect style could not be resolved.", at: location)
+            return
+        }
+        for component in styles[index - 1].childElements {
+            guard ["a:effectLst", "a:effectDag", "a:scene3d", "a:sp3d"].contains(component.name) else { continue }
+            let alternatives = ["a:effectLst", "a:effectDag"].contains(component.name)
+                ? ["a:effectLst", "a:effectDag"] : [component.name]
+            guard !alternatives.contains(where: { properties.firstChild(named: $0) != nil }),
+                  RenderDiagnosticCollector.hasEffectContent(component) else { continue }
+            diagnostics.record(.omittedEffect, .omission,
+                "Referenced theme effect style \(index) in \(theme.part.uri) is not rendered.", at: location)
+            break
+        }
+    }
+
+    /// This renderer does not yet apply themeOverride format schemes. Check
+    /// them once per render, so a shape cannot be certified from an inactive
+    /// master effect style. Color/font-only overrides do not replace effects.
+    private func themeEffectOverrideProblem(in owners: [Part]) -> String? {
+        let type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/themeOverride"
+        let drawingNamespace = "http://schemas.openxmlformats.org/drawingml/2006/main"
+        func scope(of element: XML.Element, inheriting parent: [String: String] = [:]) -> [String: String] {
+            var scope = parent
+            for attribute in element.attributes {
+                if attribute.name == "xmlns" { scope[""] = attribute.value }
+                else if attribute.name.hasPrefix("xmlns:") { scope[String(attribute.name.dropFirst(6))] = attribute.value }
+            }
+            return scope
+        }
+        func drawingName(_ element: XML.Element, in scope: [String: String]) -> String? {
+            let pieces = element.name.split(separator: ":", omittingEmptySubsequences: false)
+            guard pieces.count == 1 || pieces.count == 2 else { return nil }
+            let prefix = pieces.count == 2 ? String(pieces[0]) : ""
+            return scope[prefix] == drawingNamespace ? String(pieces.last!) : nil
+        }
+        for owner in owners {
+            let relationships = owner.rels.items.filter { $0.type == type }
+            guard !relationships.isEmpty else { continue }
+            guard relationships.count == 1, let reference = relationships.first,
+                  !reference.isExternal,
+                  let part = try? package.part(at: PackURI.resolve(target: reference.target, relativeTo: owner.uri.baseURI)),
+                  let root = try? part.dom(), drawingName(root, in: scope(of: root)) == "themeOverride" else {
+                return "The theme override referenced by \(owner.uri) cannot be resolved for shape effects."
+            }
+            let rootScope = scope(of: root)
+            if root.childElements.contains(where: { drawingName($0, in: scope(of: $0, inheriting: rootScope)) == "fmtScheme" }) {
+                return "The format-scheme theme override in \(part.uri) is not applied to shape effects by this preview."
+            }
+        }
+        return nil
     }
 
     /// A shape's frame, resolving placeholder inheritance when it carries no
@@ -427,6 +502,7 @@ struct SVGRenderer {
     private func renderPicture(_ pic: XML.Element, ownedBy owner: Part, defs: inout String) -> String {
         guard let spPr = pic.firstChild(named: "p:spPr"),
               let fill = pic.firstChild(named: "p:blipFill") else { return "" }
+        diagnoseReferencedEffects(of: pic, properties: spPr)
         let frame = resolvedFrame(of: pic, spPr: spPr, ownedBy: owner)
         guard let pattern = imagePattern(fill, ownedBy: owner, box: frame, defs: &defs) else { return "" }
         let preset = spPr.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"

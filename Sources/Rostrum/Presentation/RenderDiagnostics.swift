@@ -43,8 +43,16 @@ public struct StrictRenderingError: Error, Sendable, CustomStringConvertible {
 
 /// One render owns one collector. It never retains or mutates source XML.
 final class RenderDiagnosticCollector {
+    /// Namespace declarations locate an effect element; they do not add an
+    /// effect to an otherwise empty override or theme component.
+    static func hasEffectContent(_ element: XML.Element) -> Bool {
+        !element.childElements.isEmpty || element.attributes.contains {
+            $0.name != "xmlns" && !$0.name.hasPrefix("xmlns:")
+        }
+    }
     let images = RenderImageResources()
     let textAttributes = RenderTextAttributes()
+    var themeEffectOverrideProblem: String?
     var location = FidelityLocation(slideIndex: 0, partURI: "", path: "/")
     private(set) var issues: [FidelityIssue] = []
     private var seen: Set<FidelityIssue> = []
@@ -71,7 +79,7 @@ final class RenderDiagnosticCollector {
     private var embeddedFaces: [EmbeddedFace] = []
     private var resolvedFaces: [FontFaceKey: String] = [:]
     private var unavailableFaces: [FontFaceKey: (FidelityIssueCode, FidelityImpact, String)] = [:]
-    func reset() { images.reset(); textAttributes.reset(); recentLocation = nil; recentIssues = []; issues = []; seen = []; embeddedFaces = []; resolvedFaces = [:]; unavailableFaces = [:] }
+    func reset() { images.reset(); textAttributes.reset(); themeEffectOverrideProblem = nil; recentLocation = nil; recentIssues = []; issues = []; seen = []; embeddedFaces = []; resolvedFaces = [:]; unavailableFaces = [:] }
 
     /// Names point at renderer-owned CSS faces, so aliases use one resource and
     /// the SVG does not accidentally pick a similarly named platform font.
@@ -181,7 +189,7 @@ final class RenderDiagnosticCollector {
                     issue(.ignoredTransform, .approximation, "Authored rotation or reflection is not applied by this preview path.")
                 }
             case "a:effectLst", "a:effectDag", "a:scene3d", "a:sp3d":
-                if !element.childElements.isEmpty || !element.attributes.isEmpty { issue(.omittedEffect, .omission, "\(element.name) effects are not rendered.") }
+                if Self.hasEffectContent(element) { issue(.omittedEffect, .omission, "\(element.name) effects are not rendered.") }
             case "a:gradFill":
                 if (!tableStyle && parent != "a:tcPr") || element.firstChild(named: "a:path") != nil {
                     issue(.gradientApproximation, .approximation, "Gradient geometry is approximated by the preview.")
