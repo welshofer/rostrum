@@ -32,6 +32,12 @@ enum InstalledFonts {
             + (!face.bold && !face.italic ? " Regular" : "")
     }
 
+    struct Candidate {
+        let url: URL
+        let postScriptName: String?
+        init(url: URL, postScriptName: String? = nil) { self.url = url; self.postScriptName = postScriptName }
+    }
+
     final class Session {
         struct Limits {
             var files = 128
@@ -42,9 +48,9 @@ enum InstalledFonts {
         }
         private struct ParsedFile {
             let data: Data
-            let faces: [(index: Int, metrics: FontMetrics)]
+            let faces: [(index: Int, metrics: FontMetrics, postScriptNames: [String], styles: [String])]
         }
-        private let candidates: ((FontFaceKey) -> [URL])?
+        private let candidates: ((FontFaceKey) -> [Candidate])?
         private let directories: [URL]
         private let limits: Limits
         private var listings: [URL: [URL]] = [:]
@@ -56,7 +62,7 @@ enum InstalledFonts {
         private var lookupCount = 0
 
         /// Injectable paths exercise refusals without relying on installed fonts.
-        init(candidates: ((FontFaceKey) -> [URL])? = nil,
+        init(candidates: ((FontFaceKey) -> [Candidate])? = nil,
              officeDirectories: [URL] = InstalledFonts.officeDirectories, limits: Limits = Limits()) {
             self.candidates = candidates; directories = officeDirectories; self.limits = limits
         }
@@ -74,10 +80,12 @@ enum InstalledFonts {
                     let families = allowFoundryAliases ? InstalledFonts.familyCandidates(for: name) : [name]
                     for family in families {
                         let face = FontFaceKey(family: family, bold: style.bold, italic: style.italic)
-                        for url in candidateFiles(for: face) {
-                            guard let file = parsed(url), let entry = file.faces.first(where: {
-                                $0.metrics.isBold == face.bold && $0.metrics.isItalic == face.italic
-                                    && $0.metrics.familyNames.contains { $0.caseInsensitiveCompare(face.family) == .orderedSame }
+                        for candidate in candidateFiles(for: face) {
+                            guard let file = parsed(candidate.url), let entry = file.faces.first(where: { entry in
+                                entry.metrics.isBold == face.bold && entry.metrics.isItalic == face.italic
+                                    && InstalledFonts.matchesStandardStyle(entry.styles, face: face)
+                                    && (candidate.postScriptName.map { entry.postScriptNames.contains($0) } ?? true)
+                                    && entry.metrics.familyNames.contains { $0.caseInsensitiveCompare(face.family) == .orderedSame }
                             }) else { continue }
                             // FontLibrary also installs the file's secondary names.
                             // Do not overwrite an embedded face through such an alias.
@@ -104,7 +112,7 @@ enum InstalledFonts {
             return report
         }
 
-        private func candidateFiles(for face: FontFaceKey) -> [URL] {
+        private func candidateFiles(for face: FontFaceKey) -> [Candidate] {
             guard lookupCount < limits.lookups else { return [] }
             lookupCount += 1
             if let candidates { return Array(candidates(face).prefix(128)) }
@@ -130,7 +138,7 @@ enum InstalledFonts {
                     let ar = rank(a), br = rank(b)
                     return ar == br ? a.path < b.path : ar < br
                 }
-                result.append(contentsOf: ranked.prefix(8))
+                result.append(contentsOf: ranked.prefix(8).map { Candidate(url: $0) })
             }
             return result
         }
@@ -148,11 +156,13 @@ enum InstalledFonts {
             defer { try? handle.close() }
             guard let data = try? handle.read(upToCount: available + 1), !data.isEmpty, data.count <= available else { return nil }
             bytesRead += data.count
-            var faces: [(Int, FontMetrics)] = []
+            var faces: [(Int, FontMetrics, [String], [String])] = []
             for index in 0..<64 where parsedFaces < limits.faces {
                 guard let metrics = try? FontMetrics(data: data, fontIndex: index) else { break }
                 parsedFaces += 1
-                faces.append((index, metrics))
+                let preferred = InstalledFonts.names(in: data, fontIndex: index, nameID: 17)
+                let styles = preferred.isEmpty ? InstalledFonts.names(in: data, fontIndex: index, nameID: 2) : preferred
+                faces.append((index, metrics, InstalledFonts.postScriptNames(in: data, fontIndex: index), styles))
             }
             guard !faces.isEmpty else { return nil }
             let file = ParsedFile(data: data, faces: faces)
@@ -164,16 +174,16 @@ enum InstalledFonts {
             for family in InstalledFonts.familyCandidates(for: name) {
                 let face = FontFaceKey(family: family)
                 let urls = system ? InstalledFonts.systemFile(for: face).map { [$0] } ?? [] : candidateFiles(for: face)
-                for url in urls where parsed(url)?.faces.contains(where: {
+                for candidate in urls where parsed(candidate.url)?.faces.contains(where: {
                     !$0.metrics.isBold && !$0.metrics.isItalic
                         && $0.metrics.familyNames.contains { $0.caseInsensitiveCompare(family) == .orderedSame }
-                }) == true { return url }
+                }) == true { return candidate.url }
             }
             return nil
         }
     }
 
-    private static func systemFile(for face: FontFaceKey) -> URL? {
+    private static func systemFile(for face: FontFaceKey) -> Candidate? {
         #if canImport(CoreText)
         let base = CTFontCreateWithName(face.family as CFString, 12, nil)
         let mask: CTFontSymbolicTraits = [.traitBold, .traitItalic]
@@ -182,10 +192,85 @@ enum InstalledFonts {
         if face.italic { traits.insert(.traitItalic) }
         guard let font = CTFontCreateCopyWithSymbolicTraits(base, 12, nil, traits, mask),
               (CTFontCopyFamilyName(font) as String).caseInsensitiveCompare(face.family) == .orderedSame else { return nil }
-        return CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL
+        guard let url = CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL else { return nil }
+        return Candidate(url: url, postScriptName: CTFontCopyPostScriptName(font) as String)
         #else
         return nil
         #endif
+    }
+
+    /// A bold flag also occurs on Black/ExtraBold. Only explicit standard
+    /// subfamilies qualify, even with a resolved CoreText identity: registration
+    /// also installs the typographic family alias, so a legacy Light/Regular
+    /// family must not become the broader typographic family's Regular face.
+    private static func matchesStandardStyle(_ names: [String], face: FontFaceKey) -> Bool {
+        let accepted: Set<String>
+        switch (face.bold, face.italic) {
+        case (false, false): accepted = ["regular", "normal", "roman", "book"]
+        case (true, false): accepted = ["bold"]
+        case (false, true): accepted = ["italic", "oblique"]
+        case (true, true): accepted = ["bolditalic", "boldoblique"]
+        }
+        return names.contains { accepted.contains($0.lowercased().filter { !$0.isWhitespace && $0 != "-" }) }
+    }
+
+    /// PostScript identity disambiguates faces in collections when Light/Book/
+    /// Regular share family names and the same bold/italic bits. Offsets and
+    /// record counts remain bounded independently of CoreText's descriptor.
+    static func postScriptNames(in data: Data, fontIndex: Int) -> [String] {
+        // OpenType recommends a 127-character maximum; name ID 6 uses printable
+        // ASCII except [](){}<>/%. Bound decoding before allocating each string.
+        // https://learn.microsoft.com/en-us/typography/opentype/spec/name
+        names(in: data, fontIndex: fontIndex, nameID: 6).filter {
+            $0.utf8.count <= 127 && $0.utf8.allSatisfy { byte in
+                byte >= 33 && byte <= 126 && ![91, 93, 40, 41, 123, 125, 60, 62, 47, 37].contains(byte)
+            }
+        }
+    }
+
+    private static func names(in data: Data, fontIndex: Int, nameID: Int) -> [String] {
+        func u16(_ p: Int) -> Int? {
+            guard p >= 0, p <= data.count - 2 else { return nil }
+            return Int(data[p]) << 8 | Int(data[p + 1])
+        }
+        func u32(_ p: Int) -> Int? {
+            guard let high = u16(p), let low = u16(p + 2) else { return nil }
+            return high << 16 | low
+        }
+        let base: Int
+        if data.starts(with: [0x74, 0x74, 0x63, 0x66]) {
+            guard let count = u32(8), fontIndex >= 0, fontIndex < min(count, 64),
+                  let offset = u32(12 + fontIndex * 4) else { return [] }
+            base = offset
+        } else { guard fontIndex == 0 else { return [] }; base = 0 }
+        guard let count = u16(base + 4), count <= 4096 else { return [] }
+        for index in 0..<count {
+            let record = base + 12 + index * 16
+            guard record >= 0, record <= data.count - 16 else { return [] }
+            guard data[record..<record + 4].elementsEqual([0x6E, 0x61, 0x6D, 0x65]) else { continue }
+            guard let offset = u32(record + 8), let length = u32(record + 12),
+                  length >= 6, offset <= data.count, length <= data.count - offset,
+                  let records = u16(offset + 2), records <= 4096, records <= (length - 6) / 12,
+                  let storage = u16(offset + 4), storage <= length else { return [] }
+            var names: [String] = []
+            for n in 0..<records {
+                let p = offset + 6 + n * 12
+                guard u16(p + 6) == nameID, let platform = u16(p),
+                      let bytes = u16(p + 8), bytes <= (nameID == 6 ? 254 : 1024), let start = u16(p + 10),
+                      start <= length - storage, bytes <= length - storage - start else { continue }
+                let encoding: String.Encoding
+                if platform == 0 || platform == 3 { encoding = .utf16BigEndian }
+                else if platform == 1 { encoding = .macOSRoman }
+                else { continue }
+                let begin = offset + storage + start
+                if let name = String(data: data[begin..<begin + bytes], encoding: encoding), !name.isEmpty, !names.contains(name) {
+                    guard names.count < 32 else { return [] }
+                    names.append(name)
+                }
+            }
+            return names
+        }
+        return []
     }
 
     static func familyCandidates(for name: String) -> [String] {
