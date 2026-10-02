@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "sourceManifest": "../../../../Tools/render-regression/fixtures/text-baseline-v1.manifest.json",
+  "sourceProducer": "python-pptx 1.0.2",
+  "license": "CC0-1.0 for original project-authored fixture content and generator",
+  "officeVersion": "Microsoft PowerPoint 16.113.3 for Mac",
+  "date": "2026-10-02",
+  "sourceOpenWithoutRepair": true,
+  "sourceSavedByOffice": false,
+  "route": {
+    "PDF": "File > Export > PDF > Best for printing (local export); 3 pages, each 864x504pt",
+    "PNG": "File > Export > PNG > Save Every Slide; 1200x700 and 2400x1400"
+  },
+  "fontFiles": [
+    {
+      "family": "Arial",
+      "bold": false,
+      "fileName": "Arial.ttf",
+      "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+    },
+    {
+      "family": "Arial",
+      "bold": true,
+      "fileName": "Arial Bold.ttf",
+      "sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
+    },
+    {
+      "family": "Calibri",
+      "bold": false,
+      "fileName": "Calibri.ttf",
+      "sha256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53"
+    },
+    {
+      "family": "Calibri",
+      "bold": true,
+      "fileName": "Calibrib.ttf",
+      "sha256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2"
+    }
+  ],
+  "files": {
+    "powerpoint-16.113.3-png.zip": "b132733edf8647119301fb99ea2051e0015737c5e8bd585f2d7963919d5c071d",
+    "text-baseline-v1-office.pdf": "1ecd600ebbed746667c5fecdb622b52b62dab98f0126657fc1818df9861945b3",
+    "text-baseline-v1.pptx": "e6ae71b1228c362eb9d1917df413e49d6850a92ffcb5416f2b9efdcc02393079"
+  },
+  "pngMembers": [
+    {
+      "file": "1200x700/Slide1.png",
+      "sha256": "921217595741e25c1e6392e989371214372214c7bd293c91521d8ebb48730ea4",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "file": "1200x700/Slide2.png",
+      "sha256": "9cfc00e56ccb59fe5d83d3bdf296bcef152133fa9760d6a102fbe6571bcce07e",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "file": "1200x700/Slide3.png",
+      "sha256": "925f3c6c14fe0f0e5d13637ffec14a17cdceaf39641474697d515f5924ad3d6d",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "file": "2400x1400/Slide1.png",
+      "sha256": "aa840b371adedad77307176a00db76b3380905b38369fa31d6fd45482126ad51",
+      "width": 2400,
+      "height": 1400
+    },
+    {
+      "file": "2400x1400/Slide2.png",
+      "sha256": "4e510498ec5c97a2f5b316c5c33c3334cee0bd06736effba293b18113b2bfbd6",
+      "width": 2400,
+      "height": 1400
+    },
+    {
+      "file": "2400x1400/Slide3.png",
+      "sha256": "41d8ebb6422069751258aac6120683ea2f11847ad089c9dc4c560fd66284f4ab",
+      "width": 2400,
+      "height": 1400
+    }
+  ],
+  "scope": "30 independent single-cell typography cases, including size/weight, explicit breaks, transitions and wrapping. Capture evidence only; candidate equivalence and font identity analysis are separate."
+}
