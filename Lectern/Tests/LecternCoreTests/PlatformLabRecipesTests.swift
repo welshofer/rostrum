@@ -30,6 +30,27 @@ import Rostrum
         }
     }
 
+    @Test func embeddedWorkbookHasResolvableNativePreview() throws {
+        let draft = try PlatformLabRecipes.make(.mediaAndAttachments, options: .init())
+        let deck = try Presentation(data: draft.deck.serializedData())
+        let slide = try deck.slides[1]
+        let frame = try #require(slide.shapes.all.compactMap { $0 as? GraphicFrame }.first)
+        let object = try #require(frame.graphicData?.firstChild(named: "p:oleObj"))
+        #expect(object.firstChild(named: "p:embed") != nil)
+        let preview = try #require(object.firstChild(named: "p:pic"))
+        let imageID = try #require(preview.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip")?[attribute: "r:embed"])
+        let relation = try #require(slide.part.rels.relationship(withId: imageID))
+        #expect(relation.type == RelType.image)
+        let imageURI = PackURI.resolve(target: relation.target, relativeTo: slide.part.uri.baseURI)
+        let image = try deck.package.part(at: imageURI)
+        #expect(image.contentType == "image/png")
+        #expect(image.blob == LibraryLabSupport.pixels)
+        let frameSize = frame.frame
+        let previewSize = try #require(preview.firstChild(named: "p:spPr")?.firstChild(named: "a:xfrm")?.firstChild(named: "a:ext"))
+        #expect(previewSize[attribute: "cx"] == String(frameSize.width.rawValue))
+        #expect(previewSize[attribute: "cy"] == String(frameSize.height.rawValue))
+    }
+
     @Test func catalogIsCompleteAndInputsAreBounded() throws {
         #expect(Set(PlatformLabRecipes.catalog.map(\.id)) == Set(Self.ids))
         #expect(PlatformLabRecipes.catalog.allSatisfy { !$0.operations.isEmpty && !$0.summary.isEmpty })

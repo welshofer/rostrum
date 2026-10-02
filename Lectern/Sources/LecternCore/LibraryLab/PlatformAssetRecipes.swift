@@ -18,6 +18,11 @@ extension PlatformLabRecipes {
         let attachmentURI = PackURI("/ppt/embeddings/PlatformSample.xlsx")
         deck.package.addPart(uri: attachmentURI, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", blob: workbook)
         let attachmentID = taxonomy.part.rels.add(type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/package", target: taxonomy.part.uri.relativeReference(to: attachmentURI))
+        // PowerPoint requires a preview picture for this embedded workbook.
+        // Without it, 16.113.3 repairs the slide even though schema lint passes.
+        let previewURI = PackURI("/ppt/media/PlatformOLEPreview.png")
+        deck.package.addPart(uri: previewURI, contentType: "image/png", blob: LibraryLabSupport.pixels)
+        let previewID = taxonomy.part.rels.add(type: RelType.image, target: taxonomy.part.uri.relativeReference(to: previewURI))
         let root = try taxonomy.part.dom()
         let tree = try require(root.firstChild(named: "p:cSld")?.firstChild(named: "p:spTree"), "Shape tree missing")
         // Owned fixture XML, deliberately separate from public shape authoring.
@@ -27,7 +32,7 @@ extension PlatformLabRecipes {
             <p:sp><p:nvSpPr><p:cNvPr id="101" name="Owned child"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="914400" cy="914400"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="276D89"/></a:solidFill></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>Owned group child</a:t></a:r></a:p></p:txBody></p:sp>
           </p:grpSp>
           <p:cxnSp><p:nvCxnSpPr><p:cNvPr id="102" name="Owned connector"/><p:cNvCxnSpPr><a:stCxn id="101" idx="1"/><a:endCxn id="103" idx="0"/></p:cNvCxnSpPr><p:nvPr/></p:nvCxnSpPr><p:spPr><a:xfrm><a:off x="2743200" y="1828800"/><a:ext cx="3657600" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="12700"><a:solidFill><a:srgbClr val="276D89"/></a:solidFill></a:ln></p:spPr></p:cxnSp>
-          <p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="103" name="Owned OLE package"/><p:cNvGraphicFramePr/><p:nvPr/></p:nvGraphicFramePr><p:xfrm><a:off x="6400800" y="914400"/><a:ext cx="2743200" cy="1828800"/></p:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/presentationml/2006/ole"><p:oleObj name="Owned workbook" r:id="\(attachmentID)" progId="Excel.Sheet.12" imgW="2743200" imgH="1828800"><p:embed/></p:oleObj></a:graphicData></a:graphic></p:graphicFrame>
+          <p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="103" name="Owned OLE package"/><p:cNvGraphicFramePr/><p:nvPr/></p:nvGraphicFramePr><p:xfrm><a:off x="6400800" y="914400"/><a:ext cx="2743200" cy="1828800"/></p:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/presentationml/2006/ole"><p:oleObj name="Owned workbook" r:id="\(attachmentID)" progId="Excel.Sheet.12" imgW="2743200" imgH="1828800"><p:embed/><p:pic><p:nvPicPr><p:cNvPr id="104" name="Owned OLE preview"/><p:cNvPicPr/><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="\(previewID)"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="6400800" y="914400"/><a:ext cx="2743200" cy="1828800"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic></p:oleObj></a:graphicData></a:graphic></p:graphicFrame>
         </p:spTree>
         """.utf8))
         for element in wrapper.childElements { tree.appendElement(element) }
@@ -54,7 +59,7 @@ extension PlatformLabRecipes {
             return [
                 .init("Media read back", pictures.count == 3 && pictures.filter { $0.mediaData == video }.count == 2 && pictures.contains { $0.isAudio && $0.mediaData == audio }, "Clip identity and audio/video classification survive reopening."),
                 .init("Owned group and connector read back", group?.shapes.count == 1 && converted?.width == .inches(2) && connector?.startConnection?.shapeID == 101 && connector?.endConnection?.shapeID == 103, "Group child coordinates convert at 2×; connection target IDs remain intact."),
-                .init("OLE taxonomy and opaque package preserved", ole?.graphicData?[attribute: "uri"] == GraphicDataURI.ole && reopened.package.parts[attachmentURI]?.blob == workbook, "An unsupported graphic-frame payload and valid spreadsheet bytes survive without being interpreted."),
+                .init("OLE taxonomy and opaque package preserved", ole?.graphicData?[attribute: "uri"] == GraphicDataURI.ole && reopened.package.parts[attachmentURI]?.blob == workbook && reopened.package.parts[previewURI]?.blob == LibraryLabSupport.pixels, "An unsupported graphic-frame payload and valid spreadsheet bytes survive without being interpreted."),
                 .init("Foreign shape XML preserved", try XML.document(reopened.slides[1].part.dom()) == taxonomyBytes, "Reading foreign shape facades does not rewrite their XML.")
             ]
         })

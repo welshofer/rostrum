@@ -230,8 +230,7 @@ import Testing
         #expect(timing.contains("togglePause"))
         #expect(timing.contains("presetClass=\"mediacall\""))
 
-        // And it does NOT put an end condition on the media node itself,
-        // where Rostrum writes `evt="onStopped"`.
+        // Native media nodes do not carry an invented onStopped end event.
         #expect(!timing.contains("onStopped"))
     }
 
@@ -255,7 +254,39 @@ import Testing
         #expect(!timing.contains("interactiveSeq"))
         #expect(!timing.contains("togglePause"))
 
-        // Ours carries an end condition PowerPoint's does not.
-        #expect(timing.contains("onStopped"))
+        // Match native media nodes: no invented end condition and no invalid
+        // event token that causes PowerPoint to repair the presentation.
+        #expect(!timing.contains("onStopped"))
+        #expect(!timing.contains("endCondLst"))
     }
+
+    @Test func authoredAudioAndVideoMediaNodesMatchNativeOracleAfterReopen() throws {
+        let nativeURL = try #require(Self.realDeck)
+        let native = try Presentation(data: Data(contentsOf: nativeURL))
+        func mediaNodes(_ root: XML.Element) -> [XML.Element] {
+            (root.name == "p:cMediaNode" ? [root] : []) + root.childElements.flatMap(mediaNodes)
+        }
+        let reference = try #require(mediaNodes(native.slides[1].part.dom()).first)
+        func normalized(_ node: XML.Element) throws -> Data {
+            let copy = try XML.parse(XML.document(node))
+            copy.firstChild(named: "p:cTn")?[attribute: "id"] = "1"
+            copy.firstChild(named: "p:tgtEl")?.firstChild(named: "p:spTgt")?[attribute: "spid"] = "1"
+            return XML.document(copy)
+        }
+        let deck = try Presentation()
+        let frame = Rect(x: .inches(1), y: .inches(1), width: .inches(3), height: .inches(2))
+        try deck.slides[0].shapes.addMedia(Data("video".utf8), format: .mp4, frame: frame)
+        try deck.slides[0].shapes.addMedia(Data("audio".utf8), format: .wav, frame: frame)
+        let bytes = try deck.serializedData()
+        let reopened = try Presentation(data: bytes)
+        let nodes = try mediaNodes(reopened.slides[0].part.dom())
+        #expect(nodes.count == 2)
+        for node in nodes {
+            #expect(try normalized(node) == normalized(reference))
+        }
+        let targets = nodes.compactMap { $0.firstChild(named: "p:tgtEl")?.firstChild(named: "p:spTgt")?[attribute: "spid"] }
+        #expect(Set(targets).count == 2)
+        #expect(try reopened.serializedData() == bytes)
+    }
+
 }
