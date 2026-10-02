@@ -250,13 +250,15 @@ struct SVGRenderer {
     // else on a character-width estimate)
 
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
-                            inheriting defaults: XML.Element? = nil) -> String {
+                            inheriting defaults: XML.Element? = nil,
+                            insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
+                            verticalAnchor: String? = nil) -> String {
         let layout = RichTextLayout(textBody: txBody,
             width: Double(f.2) / Double(emuPerPoint), height: Double(f.3) / Double(emuPerPoint),
             fonts: fonts, theme: theme, inheritedStyles: defaults.map {
                 $0.name == "rostrum:inheritedStyles" ? $0.childElements : [$0]
             } ?? [],
-            slideNumber: slideNumber, maxLines: 64)
+            slideNumber: slideNumber, maxLines: 64, insets: insets, verticalAnchor: verticalAnchor)
         diagnostics.text(layout)
         let decimal = SVGNumber.decimal
         return layout.lines.map { line in
@@ -977,30 +979,24 @@ struct SVGRenderer {
                 }
 
                 if let body = grid.cells[r][c].firstChild(named: "a:txBody") {
-                    // Layout reads paragraphs without modifying them. Only
-                    // bodyPr needs a private copy for the cell overrides.
-                    let text = XML.Element(body.name, attributes: body.attributes, children: body.children)
-                    if let index = text.children.firstIndex(where: {
-                        if case .element(let node) = $0 { return node.name == "a:bodyPr" }
-                        return false
-                    }), case .element(let original) = text.children[index] {
-                        text.children[index] = .element(original.deepCopy())
+                    // Cell geometry overrides bodyPr without copying XML or
+                    // serializing margins only to parse them again in layout.
+                    func inset(_ margin: String, _ fallback: Int) -> Double {
+                        Double(properties.coordinate(margin) ?? fallback) / Double(emuPerPoint)
                     }
-                    let bodyPr = text.getOrAddChild("a:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
-                    for (margin, inset, fallback) in [("marL", "lIns", 91440), ("marR", "rIns", 91440), ("marT", "tIns", 45720), ("marB", "bIns", 45720)] {
-                        bodyPr[attribute: inset] = String(properties.coordinate(margin) ?? fallback)
-                    }
-                    bodyPr[attribute: "anchor"] = properties[attribute: "anchor"] ?? "t"
+                    let insets = (left: inset("marL", 91440), top: inset("marT", 45720),
+                                  right: inset("marR", 91440), bottom: inset("marB", 45720))
+                    let anchor = properties[attribute: "anchor"] ?? "t"
                     let direction = properties[attribute: "vert"] ?? "horz"
                     // Rotation belongs to the cell, while text layout uses a
                     // horizontal box with swapped dimensions.
                     if direction == "vert" || direction == "vert270" {
-                        bodyPr[attribute: "vert"] = "horz"
                         let transform = direction == "vert" ? "translate(\(cx + cw) \(cy)) rotate(90)" : "translate(\(cx) \(cy + rh)) rotate(-90)"
-                        textContent += "<g transform=\"\(transform)\">" + renderText(text, box: (0, 0, rh, cw), inheriting: effective.text) + "</g>"
+                        textContent += "<g transform=\"\(transform)\">" + renderText(body, box: (0, 0, rh, cw), inheriting: effective.text,
+                            insets: insets, verticalAnchor: anchor) + "</g>"
                     } else {
-                        bodyPr[attribute: "vert"] = direction
-                        textContent += renderText(text, box: frame, inheriting: effective.text)
+                        textContent += renderText(body, box: frame, inheriting: effective.text,
+                            insets: insets, verticalAnchor: anchor)
                     }
                 }
             }

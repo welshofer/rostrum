@@ -34,14 +34,16 @@ public struct RichTextLayout: Sendable {
     public let truncated: Bool
     public let diagnostics: [ShapingDiagnostic]
 
-    /// Insets can override bodyPr for DrawingML table cells (left/top/right/bottom).
+    /// Insets and verticalAnchor can override bodyPr for DrawingML table cells.
+    /// Insets are ordered left/top/right/bottom; nil preserves the body value.
     public init(textBody: XML.Element, width: Double, height: Double,
                 fonts: FontLibrary? = nil, fallbackMetrics: FontMetrics? = nil,
                 theme: Theme? = nil, inheritedStyles: [XML.Element] = [],
                 defaultPointSize: Double = 18, lineSpacing: Double = 1,
                 fontScale: Double? = nil, lineSpacingReduction: Double? = nil,
                 slideNumber: Int? = nil, maxLines: Int = 4096,
-                insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil) {
+                insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
+                verticalAnchor: String? = nil) {
         let body = textBody.firstChild(named: "a:bodyPr")
         func inset(_ key: String, _ value: Double) -> Double {
             body?.coordinate(key).map { Double($0) / Double(EMU.perPoint) } ?? value
@@ -58,6 +60,7 @@ public struct RichTextLayout: Sendable {
         let useEdgeParagraphSpacing = ["1", "true"].contains(body?[attribute: "spcFirstLastPara"] ?? "0")
         let paragraphs = textBody.children(named: "a:p")
         let lineLimit = max(1, min(maxLines, 65536))
+        let hasRegisteredFonts = fonts?.isEmpty == false
         var output: [RichTextLine] = [], warnings: [ShapingDiagnostic] = []
         var cursor = 0.0, didTruncate = false, overflowWidth = false
         var numberByLevel: [Int: Int] = [:]
@@ -98,7 +101,8 @@ public struct RichTextLayout: Sendable {
             let baseStyle = Self.resolve(text: "", properties: defaults,
                 theme: theme, defaultSize: defaultPointSize, scale: scale)
             func face(_ style: ResolvedTextRun) -> FontMetrics? {
-                if let name = style.fontFamily, let font = fonts?.metrics(for: name, bold: style.bold, italic: style.italic) { return font }
+                if hasRegisteredFonts, let name = style.fontFamily,
+                   let font = fonts?.metrics(for: name, bold: style.bold, italic: style.italic) { return font }
                 return fallbackMetrics
             }
             let baseMetrics = face(baseStyle)
@@ -196,6 +200,18 @@ public struct RichTextLayout: Sendable {
                 face(run)?.width(of: run.text + " ", pointSize: run.fontSize)
                     ?? Double(run.text.count + 1) * run.fontSize * 0.42
             } ?? 0
+            // These properties belong to the paragraph, not each wrapped line.
+            // Preserve the arithmetic order for percentage spacing so repeated
+            // lines remain byte-identical when their coordinates are serialized.
+            let declaredSpacing = child("a:lnSpc")
+            let fixedSpacing = declaredSpacing?.firstChild(named: "a:spcPts").map {
+                Self.bounded(Self.number($0, "val", 0), 0...1e8) / 100
+            }
+            let percentageSpacing = declaredSpacing?.firstChild(named: "a:spcPct").map {
+                Self.bounded(Self.number($0, "val", 0), 0...1e7)
+            }
+            let defaultSpacing = Self.bounded(lineSpacing, 0...100)
+            let align = attribute("algn") ?? "l"
             var lineAtoms: [Atom] = [], lineWidth = 0.0, firstLine = true, index = 0
             func startX() -> Double {
                 left + (bullet != nil ? max(0, indent + bulletAdvance) : (firstLine ? indent : 0))
@@ -221,11 +237,13 @@ public struct RichTextLayout: Sendable {
                     }
                     fragmentStart = end
                 }
-                let naturalHeight = lineAtoms.map(\.height).max() ?? emptyHeight
-                let ascent = lineAtoms.map(\.ascent).max() ?? emptyAscent
-                let declared = child("a:lnSpc")
-                let advance = (declared == nil ? naturalHeight * Self.bounded(lineSpacing, 0...100) : spacing(declared, relativeTo: naturalHeight)) * (1 - reduction)
-                let align = attribute("algn") ?? "l"
+                let naturalHeight = lineAtoms.lazy.map(\.height).max() ?? emptyHeight
+                let ascent = lineAtoms.lazy.map(\.ascent).max() ?? emptyAscent
+                let spacingAdvance: Double
+                if let fixedSpacing { spacingAdvance = fixedSpacing }
+                else if let percentageSpacing { spacingAdvance = naturalHeight * percentageSpacing / 100000 }
+                else { spacingAdvance = declaredSpacing == nil ? naturalHeight * defaultSpacing : 0 }
+                let advance = spacingAdvance * (1 - reduction)
                 let extra = align == "ctr" ? (limit() - lineWidth) / 2 : align == "r" ? limit() - lineWidth : 0
                 var spans: [RichTextSpan] = [], x = margins.0 + startX() + max(0, extra)
                 if firstLine, var run = bullet {
@@ -280,7 +298,7 @@ public struct RichTextLayout: Sendable {
             if !output[output.count - 1].spans.isEmpty { output[output.count - 1].spans[output[output.count - 1].spans.count - 1].run.text += "…" }
         }
         let offset: Double
-        switch body?[attribute: "anchor"] {
+        switch verticalAnchor ?? body?[attribute: "anchor"] {
         case "ctr": offset = margins.1 + (availableHeight - cursor) / 2
         case "b": offset = margins.1 + availableHeight - cursor
         default: offset = margins.1
