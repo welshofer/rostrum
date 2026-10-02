@@ -51,4 +51,12 @@ import Rostrum
         #expect(metrics.unitsPerEm == 2048)
         #expect(TextShaper(metrics).shape("AV office x́", pointSize: 24).isSupported)
     }
+
+    @Test(arguments: ["Hello\nWorld", "Hello\r\nWorld\tAgain", String(repeating: "x", count: 240)])
+    func fontWrappingAcceptsMultilineAndLongInput(_ text: String) throws {
+        let draft = try PlatformLabRecipes.make(.fontsAndFitting, options: .init(text: text))
+        for check in draft.checks { #expect(check.passed, "\(check.name): \(check.detail)") }
+        let reopened = try Presentation(data: draft.deck.serializedData())
+        for check in try draft.verify(reopened) { #expect(check.passed, "\(check.name): \(check.detail)") }
+    }
 }

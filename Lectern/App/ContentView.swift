@@ -11,6 +11,7 @@ struct ContentView: View {
     @Environment(AppState.self) private var app
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var section: LibrarySection = .recent
+    @State private var labModel = LibraryLabModel()
     @State private var query = ""
     @State private var preferredColumns: NavigationSplitViewVisibility = .all
     @State private var windowWidth: CGFloat = 1200
@@ -127,10 +128,14 @@ struct ContentView: View {
         Group {
             switch app.phase {
             case .home:
-                DeckGridView(section: section, query: $query, layout: layout,
-                             columnCount: deckColumnCount)
-                    .searchable(text: $query, placement: .toolbar, prompt: "Search")
-                    .transition(phaseTransition)
+                if section == .lab {
+                    LibraryLabView(model: labModel)
+                } else {
+                    DeckGridView(section: section, query: $query, layout: layout,
+                                 columnCount: deckColumnCount)
+                        .searchable(text: $query, placement: .toolbar, prompt: "Search")
+                        .transition(phaseTransition)
+                }
             case .compose: ComposeView().transition(phaseTransition)
             case .generating: GeneratingView().transition(phaseTransition)
             case .result(let r): ResultView(result: r).transition(phaseTransition)
@@ -206,7 +211,7 @@ struct ContentView: View {
                 }
                 .help("Back to your decks")
             }
-        } else {
+        } else if section != .lab {
             ToolbarItem {
                 // A segmented picker rather than a single toggle: with one
                 // button the icon has to mean either "what you have" or "what

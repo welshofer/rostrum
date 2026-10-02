@@ -23,7 +23,9 @@ extension PlatformLabRecipes {
         """
         let design = Design.parse(spec)
         deck.applyDesign(design)
-        try deck.fonts.register(resource("DejaVuSans", "ttf"))
+        let regularFont = try resource("DejaVuSans", "ttf")
+        try deck.fonts.register(regularFont)
+        try deck.embedFont("DejaVu Sans", faces: .init(regular: regularFont))
         let style = deck.style, n = options.sampleSize
         let items = (1...n).map { "Item \($0)" }
         let heading = label(options)
@@ -73,9 +75,11 @@ extension PlatformLabRecipes {
             .init("Design parser and tokens", design.headingFont == "DejaVu Sans" && design.space("md") == .pixels(16) && design.cornerRadius("lg") == .pixels(12), "Font, spacing and radius tokens parsed from the exported design.md."),
             .init("Automatic contrast and geometry", contrast.contrastRatio(with: style.primary) >= 4.5 && imagePanel.width.rawValue > 0 && card.content.width < card.bounds.width, "Button ink is selected by contrast; grid/card/image-panel geometry is concrete.")
         ], extraFiles: ["design.md": Data(spec.utf8)], verify: { reopened in
+            let recovered = reopened.registerEmbeddedFonts()
             let reopenedXML = try (0..<reopened.slides.count).map { try XML.document(reopened.slides[$0].part.dom()) }
             let outline = reopened.outline()
             return [
+                .init("Portable regular font", recovered.contains("DejaVu Sans") && reopened.fonts.data(for: .init(family: "DejaVu Sans")) == regularFont, "The bundled regular face survives transfer and reopening; unavailable bold/italic faces remain diagnostics."),
                 .init("All authored slide content reopened", reopened.slides.count == expectedSlides && reopenedXML == emitted, "Every builder's shape/text XML is preserved, comparing normalized attribute order."),
                 .init("Builder chart and table semantics", outline.chartCount == 1 && outline.slides.flatMap(\.tables).first?.rows.count == min(n + 1, SlideCapacity.tableRows), "Actual chart and capped table data are readable."),
                 .init("Theme and component text reopened", reopened.theme.majorFont == "DejaVu Sans" && outline.markdown().contains("Components share"), "Theme fonts and component copy survived; in-memory design tokens are not claimed as stored metadata.")

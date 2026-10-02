@@ -34,6 +34,12 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
   open decks Rostrum produces. A deck isn't "valid" until python-pptx and
   PowerPoint both open it without repair.
 - Run `swift test` before declaring anything done.
+- **Demonstrate public capabilities in Lectern.** A new or expanded library
+  capability must have a runnable offline Library Lab recipe, meaningful
+  saved-file/reopen checks, visible support boundaries and an updated coverage
+  record. Keep catalog operations executable; a screenshot or a passing preview
+  alone does not establish support. Exercise the app inspector/export path too.
+  See `docs/LIBRARY-LAB-20261002.md` and `LecternCore/LibraryLab` under Lectern.
 
 ## Naming
 

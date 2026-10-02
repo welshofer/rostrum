@@ -8,12 +8,13 @@ import LecternCore
 
 /// Which set of decks the detail column is showing.
 enum LibrarySection: Hashable, CaseIterable {
-    case recent, all
+    case recent, all, lab
 
     var title: String {
         switch self {
         case .recent: "Recent"
         case .all: "All Decks"
+        case .lab: "Library Lab"
         }
     }
 
@@ -21,6 +22,7 @@ enum LibrarySection: Hashable, CaseIterable {
         switch self {
         case .recent: "Recent Decks"
         case .all: "All Decks"
+        case .lab: "Library Lab"
         }
     }
 
@@ -28,6 +30,7 @@ enum LibrarySection: Hashable, CaseIterable {
         switch self {
         case .recent: "clock"
         case .all: "folder"
+        case .lab: "testtube.2"
         }
     }
 }

@@ -15,6 +15,7 @@ Lectern/
 │   ├── DeckIR/              # lectern.deck/1 IR + validation + repair prompt
 │   ├── Export/              # deck → folder: Markdown + media + chart CSVs
 │   ├── Inspection/          # deck → counts, findings, digests, previews
+│   ├── LibraryLab/          # offline executable catalog + saved-file verification
 │   ├── Providers/           # LLMProvider protocol, DeckGenerator, image providers, errors
 │   ├── Rendering/           # DeckRenderer actor → Rostrum builders
 │   └── StyleCatalog/        # design.md catalog loader
@@ -22,6 +23,19 @@ Lectern/
 ```
 
 Rostrum is a **local path dependency** (`../`), resolving OQ-4.
+
+## Library Lab
+
+Choose **Library Lab** in the sidebar to exercise the library offline. Its 23
+configurable demonstrations cover drawing, text/fonts, tables, charts, SmartArt,
+notes, comments, sections, imports, layouts/themes/templates, design builders,
+media, packages and extraction. **Run All** saves and reopens every example,
+checks its content, renders previews and extracts its files. Use **Inspect Result**,
+**Inspect Before** and **All Files** to examine the real artifacts on macOS or iOS.
+No provider key is required. File checks and preview limitations are reported
+separately; passing a demo is not a claim of perfect PowerPoint rendering.
+
+See the [coverage and verification record](../docs/LIBRARY-LAB-20261002.md).
 
 ## Feature integration and regression checks
 
