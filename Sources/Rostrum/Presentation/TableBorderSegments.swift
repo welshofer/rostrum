@@ -94,4 +94,20 @@ struct TableBorderSegments<Paint> {
                 neighbors(segment.range.upperBound, preceding: false))
     }
 
+    /// Inspect every grid vertex touched by a surviving segment, including
+    /// crossings hidden by collinear continuations. Each query uses two owner
+    /// lookups; total work over segments remains linear in physical cell edges.
+    func containsIntersection(_ segment: Segment, matching predicate: (Paint?, Paint?) -> Bool) -> Bool {
+        let vertical = segment.edge.axis == .vertical
+        let boundary = segment.edge.boundary
+        for position in segment.range.lowerBound...segment.range.upperBound {
+            func paint(_ neighbor: Int) -> Paint? {
+                guard let index = owners[Key(vertical: !vertical, boundary: position, position: neighbor)] else { return nil }
+                return edges[index].paint
+            }
+            if predicate(paint(boundary - 1), paint(boundary)) { return true }
+        }
+        return false
+    }
+
 }

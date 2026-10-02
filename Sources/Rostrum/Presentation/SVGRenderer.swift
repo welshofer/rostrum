@@ -1132,6 +1132,17 @@ struct SVGRenderer {
             let end = edge.axis == .horizontal && rtl ? joins.lower : joins.upper
             var startExtension = start ? halfWidth : 0, endExtension = end ? halfWidth : 0
             if segment.paint.double {
+                // Collinear continuations suppress terminal extensions, but
+                // cannot suppress diagnostics at an interior crossing.
+                if !reportedDoubleJunction, borders.containsIntersection(segment, matching: { first, second in
+                    guard let paint = first ?? second else { return false }
+                    func plain(_ value: BorderPaint) -> Bool { value.simpleSolid && value.color.hasPrefix("#") }
+                    return !plain(paint) || second.map { !plain($0) || $0.width != paint.width } == true
+                }) {
+                    diagnostics.record(.unsupportedBorder, .approximation,
+                        "Double-border junctions with compound, dashed, translucent or unequal neighboring strokes are approximated.")
+                    reportedDoubleJunction = true
+                }
                 let neighbors = borders.terminalPaints(segment)
                 func extent(_ paints: [BorderPaint]) -> Double {
                     guard let first = paints.first else { return 0 }

@@ -156,4 +156,32 @@ import Testing
         #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
     }
 
+    @Test(arguments: ["double", "dash", "alpha", "unequal", "plain"])
+    func interiorCrossingWithoutOuterBordersIsInspected(_ variant: String) throws {
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(rows: 2, columns: 2,
+            frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(2)))
+        table.clearBuiltInStyle()
+        for row in 0..<2 { for column in 0..<2 { try table.cell(row, column).setBorders(nil) } }
+        for column in 0..<2 { _ = try doubleEdge(table.cell(0, column), .bottom) }
+        for row in 0..<2 {
+            let cell = try table.cell(row, 0)
+            let line = try doubleEdge(cell, .right, width: variant == "unequal" && row == 1 ? 180000 : 90000)
+            if variant != "double" { line[attribute: "cmpd"] = "sng" }
+            if variant == "dash" {
+                line.appendElement(XML.Element("a:prstDash", attributes: [("val", "dash")]))
+            } else if variant == "alpha" {
+                line.firstChild(named: "a:solidFill")?.firstChild(named: "a:srgbClr")?
+                    .appendElement(XML.Element("a:alpha", attributes: [("val", "50000")]))
+            }
+        }
+        let before = try deck.serializedData()
+        let report = try deck.renderSVGReportingProblems(slideAt: 0)
+        #expect(report.problems.fidelityIssues.filter { $0.code == .unsupportedBorder }.count == (variant == "plain" ? 0 : 1))
+        if variant != "plain" {
+            #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+        }
+        #expect(try deck.serializedData() == before)
+    }
+
 }
