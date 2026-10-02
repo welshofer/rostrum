@@ -9,7 +9,7 @@ import Testing
         Relationship(rId: id, type: RelType.image, target: target, isExternal: external)
     }
 
-    private func owner(_ name: String, package: OPCPackage, count: Int = 20) -> Part {
+    private func owner(_ name: String, package: OPCPackage, count: Int = 512) -> Part {
         let part = package.addPart(uri: PackURI("/ppt/slides/\(name).xml"), contentType: ContentType.slide, blob: Data())
         part.rels.setItems((0..<count).map { relationship("image\($0)") })
         return part
@@ -78,12 +78,59 @@ import Testing
                 #expect(resources.resolve("image1", owner: sparse, package: package)?.data == png)
             }
             #expect(resources.relationshipIndexEntryCount == 0 && resources.relationshipIndexBytes == 0)
+            #expect(resources.relationshipOwnerCount == 0)
         }
-        let dense = owner("dense", package: package, count: 250)
-        for index in 0..<20 { #expect(resources.resolve("image\(index)", owner: dense, package: package)?.data == png) }
+        let dense = owner("dense", package: package, count: 1024)
+        for index in 0..<40 { #expect(resources.resolve("image\(index)", owner: dense, package: package)?.data == png) }
         #expect(resources.relationshipIndexEntryCount == 0)
-        for index in 20..<40 { #expect(resources.resolve("image\(index)", owner: dense, package: package)?.data == png) }
-        #expect(resources.relationshipIndexEntryCount == 250)
+        for index in 40..<80 { #expect(resources.resolve("image\(index)", owner: dense, package: package)?.data == png) }
+        #expect(resources.relationshipIndexEntryCount == 1024)
+    }
+
+    @Test func thresholdAndIntermediateSizesPreserveResultsWithoutIndexingSmallOwners() throws {
+        let package = OPCPackage()
+        _ = package.addPart(uri: PackURI("/ppt/media/good.png"), contentType: ContentType.png, blob: png)
+        for count in [250, 511, 512, 768, 1024] {
+            let resources = RenderImageResources()
+            let part = owner("threshold\(count)", package: package, count: count)
+            #expect(resources.resolve("image0", owner: part, package: package)?.data == png)
+            #expect(resources.resolve("missing-first", owner: part, package: package) == nil)
+            #expect(resources.resolve("missing-second", owner: part, package: package) == nil)
+            #expect(resources.resolve("image\(count / 2)", owner: part, package: package)?.data == png)
+            #expect(resources.resolve("image\(count - 1)", owner: part, package: package)?.data == png)
+            if count < 512 {
+                #expect(resources.relationshipOwnerCount == 0)
+                #expect(resources.relationshipIndexEntryCount == 0 && resources.relationshipIndexBytes == 0)
+            } else {
+                #expect(resources.relationshipIndexEntryCount == count)
+                #expect(resources.relationshipOwnerCount == 1)
+            }
+        }
+    }
+
+    @Test func prefixUsesFirstMatchForDuplicateUnicodeAndExternalRelationships() throws {
+        let package = OPCPackage()
+        _ = package.addPart(uri: PackURI("/ppt/media/good.png"), contentType: ContentType.png, blob: png)
+        _ = package.addPart(uri: PackURI("/ppt/media/bad.png"), contentType: ContentType.png, blob: Data([1, 2, 3]))
+        let part = owner("prefix", package: package)
+        part.rels.setItems([
+            relationship("caf\u{00E9}"), relationship("cafe\u{0301}", target: "../media/bad.png"),
+            relationship("external", target: "https://example.com/image.png", external: true),
+            relationship("duplicate"),
+        ] + part.rels.items + [relationship("external"), relationship("duplicate", target: "../media/bad.png")])
+        let resources = RenderImageResources()
+        #expect(resources.resolve("cafe\u{0301}", owner: part, package: package)?.data == png)
+        #expect(resources.resolve("external", owner: part, package: package) == nil)
+        #expect(resources.resolve("duplicate", owner: part, package: package)?.data == png)
+        #expect(resources.relationshipOwnerCount == 0)
+        _ = resources.resolve("missing-first", owner: part, package: package)
+        _ = resources.resolve("missing-second", owner: part, package: package)
+        #expect(resources.relationshipIndexEntryCount > 0)
+        // Reset also clears the per-reference cache for prefix results.
+        part.rels.setItems([relationship("caf\u{00E9}", target: "../media/bad.png")] + part.rels.items)
+        resources.reset()
+        #expect(resources.resolve("cafe\u{0301}", owner: part, package: package)?.data == Data([1, 2, 3]))
+        #expect(resources.relationshipOwnerCount == 0)
     }
 
     @Test func oversizedMetadataDiscardsPartialIndexAndDoesNotRetryBeforeReset() throws {
@@ -149,6 +196,10 @@ import Testing
         let frame = Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1))
         var pictures: [Picture] = []
         for _ in 0..<20 { pictures.append(try slide.shapes.addPicture(png, frame: frame)) }
+        // Late, actively used image IDs earn an index even though there are
+        // only twenty pictures; unused arcs have no shape diagnostics.
+        let part = slide.part
+        part.rels.setItems((0..<512).map { relationship("unused\($0)") } + part.rels.items)
         let renderer = SVGRenderer(slidePart: slide.part, slideSize: deck.slideSize,
                                    theme: slide.resolvedTheme, package: deck.package, fonts: deck.fonts, slideNumber: 1)
         let original = try renderer.render(pixelWidth: 640)

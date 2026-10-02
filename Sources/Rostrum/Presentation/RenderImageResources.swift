@@ -26,6 +26,11 @@ final class RenderImageResources {
     private let relationshipOwnerLimit = 16
     private let relationshipEntryLimit = 4096
     private let relationshipByteLimit = 512 * 1024
+    // Performance policy: small lists avoid index setup, while a short prefix
+    // handles sparse owners without retaining any owner state. These do not
+    // change lookup semantics or the independent index admission bounds.
+    private let relationshipIndexMinimum = 512
+    private let relationshipPrefixCount = 4
 
     private var encodedBytes = 0
     private let encodedByteLimit = 4 * 1024 * 1024
@@ -36,32 +41,40 @@ final class RenderImageResources {
     }
 
     private func relationship(_ id: String, owner: Part) -> Relationship? {
+        let relationships = owner.rels.items
+        guard relationships.count >= relationshipIndexMinimum else {
+            return owner.rels.relationship(withId: id)
+        }
+        for relationship in relationships.prefix(relationshipPrefixCount) {
+            if relationship.rId == id { return relationship }
+        }
+        // The prefix has already been checked, including duplicate IDs.
+        let remaining = relationships.dropFirst(relationshipPrefixCount)
+        func linearRemainder() -> Relationship? { remaining.first { $0.rId == id } }
         let identity = ObjectIdentifier(owner)
         let previousVisits: Int
         if let cached = ownerRelationships[identity] {
             switch cached {
             case .indexed(let index): return index[id]
-            case .linear: return owner.rels.relationship(withId: id)
+            case .linear: return linearRemainder()
             case .observing(let visited): previousVisits = visited
             }
         } else {
             guard ownerRelationships.count < relationshipOwnerLimit else {
-                return owner.rels.relationship(withId: id)
+                return linearRemainder()
             }
             previousVisits = 0
         }
 
-        let relationships = owner.rels.items
-        guard relationships.count >= 16,
-              relationships.count <= relationshipEntryLimit - relationshipIndexEntryCount else {
+        guard relationships.count <= relationshipEntryLimit - relationshipIndexEntryCount else {
             ownerRelationships[identity] = .linear
-            return owner.rels.relationship(withId: id)
+            return linearRemainder()
         }
         // Count only the work needed for this actual lookup, stopping at the
         // first match. A few early references in a large list must stay cheap.
-        var visited = 0
+        var visited = relationshipPrefixCount
         var found: Relationship?
-        for relationship in relationships {
+        for relationship in remaining {
             visited += 1
             if relationship.rId == id { found = relationship; break }
         }
