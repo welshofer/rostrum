@@ -152,7 +152,7 @@ struct InspectorView: View {
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         Text(section.name).font(.callout)
                         Spacer(minLength: 12)
-                        Text("\(section.slideCount) slide\(section.slideCount == 1 ? "" : "s")")
+                        Text("Slides " + section.slideIndices.map { String($0 + 1) }.joined(separator: ", "))
                             .font(.caption.monospacedDigit()).foregroundStyle(.tertiary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -322,13 +322,26 @@ struct InspectorView: View {
                             Text(cargo(of: slide)).font(.caption).foregroundStyle(.tertiary)
                         }
                         Text(slide.layoutName).font(.caption2).foregroundStyle(.tertiary)
+                        ForEach(slide.tables) { table in
+                            InspectionTableView(table: table)
+                        }
                         ForEach(slide.comments) { comment in
-                            Label("\(comment.author): \(comment.text)"
-                                  + (comment.replyCount > 0 ? " (+\(comment.replyCount))" : ""),
-                                  systemImage: comment.resolved
-                                    ? "checkmark.bubble" : "bubble.left.and.bubble.right")
-                                .font(.caption).foregroundStyle(.tertiary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            VStack(alignment: .leading, spacing: 5) {
+                                Label("\(comment.author): \(comment.text)",
+                                      systemImage: comment.resolved ? "checkmark.bubble" : "bubble.left.and.bubble.right")
+                                if comment.kind == "legacy" {
+                                    Text("Legacy comment").font(.caption2).foregroundStyle(.tertiary)
+                                } else if comment.resolved {
+                                    Text("Resolved").font(.caption2).foregroundStyle(.tertiary)
+                                }
+                                ForEach(comment.replies) { reply in
+                                    Text("\(reply.author): \(reply.text)")
+                                        .padding(.leading, 20)
+                                }
+                            }
+                            .font(.caption).foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .textSelection(.enabled)
                         }
                         ForEach(Array(slide.notes.enumerated()), id: \.offset) { _, note in
                             Label(note, systemImage: "text.bubble")
@@ -539,5 +552,53 @@ private struct ChartRow: View {
             return String(format: "%g", value)
         }
         return parts.joined(separator: ", ")
+    }
+}
+
+
+/// Table text remains available even when a preview has visual limitations.
+/// Rows are lazy and the horizontal viewport keeps wide tables readable.
+private struct InspectionTableView: View {
+    let table: TableInspection
+    @State private var columnPage = 0
+    private let pageSize = 6
+    private var page: Int { min(columnPage, max(0, (table.columnCount - 1) / pageSize)) }
+    private var firstColumn: Int { page * pageSize }
+    private var lastColumn: Int { min(firstColumn + pageSize, table.columnCount) }
+
+    var body: some View {
+        DisclosureGroup("Table \(table.index + 1) · \(table.rows.count) × \(table.columnCount)") {
+            if table.columnCount > pageSize {
+                HStack {
+                    Text("Columns \(firstColumn + 1)–\(lastColumn) of \(table.columnCount)")
+                    Spacer()
+                    Button("Previous columns") { columnPage = max(0, page - 1) }
+                        .disabled(page == 0)
+                    Button("Next columns") { columnPage = page + 1 }
+                        .disabled(lastColumn == table.columnCount)
+                }
+            }
+            ScrollView([.horizontal, .vertical]) {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    ForEach(table.rows.indices, id: \.self) { rowIndex in
+                        HStack(alignment: .top, spacing: 0) {
+                            ForEach(firstColumn..<lastColumn, id: \.self) { columnIndex in
+                                let row = table.rows[rowIndex]
+                                let cell = row.indices.contains(columnIndex) ? row[columnIndex] : ""
+                                Text(cell.isEmpty ? "—" : cell)
+                                    .font(.callout)
+                                    .frame(width: 160, alignment: .leading)
+                                    .padding(8)
+                                    .background(rowIndex.isMultiple(of: 2) ? Color.secondary.opacity(0.06) : .clear)
+                                    .border(Color.secondary.opacity(0.15), width: 0.5)
+                            }
+                        }
+                    }
+                }
+                .textSelection(.enabled)
+            }
+            .frame(height: min(300, CGFloat(max(1, table.rows.count)) * 52))
+        }
+        .font(.caption)
     }
 }

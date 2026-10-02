@@ -80,7 +80,11 @@ import Rostrum
         let old = try #require(app.exportInspected(into: output) { deck, parent in
             await order.beginOld()
             await oldGate.run() // Intentionally ignores cancellation, like synchronous export.
-            let result = try DeckExporter.export(deckAt: deck, into: parent)
+            // Model an I/O job already past its cancellation checkpoint. The
+            // detached worker intentionally completes even after UI cancellation.
+            let result = try await Task.detached {
+                try DeckExporter.export(deckAt: deck, into: parent)
+            }.value
             await order.finishOld()
             return result
         })

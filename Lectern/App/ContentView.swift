@@ -737,12 +737,10 @@ struct ResultView: View {
                     .frame(maxWidth: 420)
             }
             if !result.unmeasuredFonts.isEmpty {
-                // Not a warning: the deck is fine, its text was just sized by
-                // estimate because these faces aren't installed on this Mac.
-                DisclosureGroup("\(result.unmeasuredFonts.count) font(s) not installed") {
-                    Text("Text in \(result.unmeasuredFonts.joined(separator: ", ")) was fitted "
-                        + "by estimate. Install the font and re-render to size it from real "
-                        + "glyph metrics.")
+                DisclosureGroup("\(result.unmeasuredFonts.count) font face(s) unavailable for measurement") {
+                    Text("Lectern could not load exact metrics for \(result.unmeasuredFonts.joined(separator: ", ")). "
+                        + "Text using these faces may use estimated sizing. Make the exact "
+                        + "font faces available and re-render to measure them.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: 420)
