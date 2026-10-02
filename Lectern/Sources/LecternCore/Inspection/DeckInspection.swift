@@ -183,6 +183,9 @@ public enum DeckInspector {
 
         var previews = DeckPreviews()
         if renderPreviews {
+            let families = try InspectionFonts.families(in: deck, explicit: detail.explicitFonts)
+            _ = InstalledFonts.register(in: deck, families: families)
+            try Task.checkCancellation()
             let total = deck.slides.count
             onEvent(.rendering(done: 0, total: total))
             for index in 0..<total {
