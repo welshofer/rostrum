@@ -878,7 +878,30 @@ struct SVGRenderer {
         for width in widths { xs.append(xs.last! + width) }
         for height in heights { ys.append(ys.last! + height) }
         let rtl = table.rightToLeft
-        var out = ""
+        var out = "", diagonals = "", textContent = ""
+        struct BorderPaint { let color: String; let width: Int; let pattern: String }
+        var borders = TableBorderSegments<BorderPaint>()
+        func borderPaint(_ line: XML.Element?) -> BorderPaint? {
+            guard let line, line.firstChild(named: "a:noFill") == nil,
+                  let color = colorHex(in: line.firstChild(named: "a:solidFill")) else { return nil }
+            let width = max(0, line.coordinate("w") ?? 12700)
+            guard width > 0 else { return nil }
+            let pattern: String
+            switch line.firstChild(named: "a:prstDash")?[attribute: "val"] {
+            case "dot", "sysDot": pattern = "\(width) \(width * 2)"
+            case "dash": pattern = "\(width * 4) \(width * 3)"
+            case "sysDash": pattern = "\(width * 3) \(width * 2)"
+            case "lgDash": pattern = "\(width * 6) \(width * 2)"
+            case "dashDot", "sysDashDot": pattern = "\(width * 3) \(width * 2) \(width) \(width * 2)"
+            default: pattern = ""
+            }
+            return BorderPaint(color: color, width: width, pattern: pattern)
+        }
+        func lineSVG(_ paint: BorderPaint, _ endpoints: (Int, Int, Int, Int), offset: Int = 0) -> String {
+            let dash = paint.pattern.isEmpty ? "" : " stroke-dasharray=\"\(paint.pattern)\""
+                + (offset == 0 ? "" : " stroke-dashoffset=\"\(offset)\"")
+            return "<line x1=\"\(endpoints.0)\" y1=\"\(endpoints.1)\" x2=\"\(endpoints.2)\" y2=\"\(endpoints.3)\" stroke=\"\(paint.color)\" stroke-width=\"\(paint.width)\"\(dash)/>"
+        }
         let background = resolver.background()
         let tableFrame = (x, y, xs.last!, ys.last!)
         let backgroundPaint: String?
@@ -909,40 +932,34 @@ struct SVGRenderer {
                 if let fill {
                     out += box(cx, cy, cw, rh, fill: fill, stroke: "")
                 }
-                // Borders are independent authored edges, never a synthetic
-                // grid. Use the far physical cell for a merge's outer edge,
-                // unless the origin explicitly overrides that edge.
+                // PowerPoint assigns a shared edge to the earlier logical
+                // cell, including noFill and dash gaps. A merge continuation
+                // perpendicular to the edge does not donate it. Keep borders
+                // above every cell fill so a neighbor cannot erase half a line.
                 for edge in TableCellBorder.allCases {
+                    if edge == .left, c > 0,
+                       topology == nil || !TableMergeTopology.flag(grid.cells[r][c - 1], "vMerge") { continue }
+                    if edge == .top, r > 0, grid.cells[r - 1].indices.contains(c),
+                       topology == nil || !TableMergeTopology.flag(grid.cells[r - 1][c], "hMerge") { continue }
                     let edgeRow = edge == .bottom ? rowEnd - 1 : r
-                    let edgeColumn = edge == .left ? (rtl ? columnEnd - 1 : c) : edge == .right ? (rtl ? c : columnEnd - 1) : c
+                    let edgeColumn = edge == .right ? columnEnd - 1 : c
                     let direct = grid.cells[r][c].firstChild(named: "a:tcPr")?.firstChild(named: edge.rawValue)
                     let edgeProperties = direct != nil || (edgeRow == r && edgeColumn == c) ? properties : styles.effective(row: edgeRow, column: edgeColumn).properties
-                    guard let line = edgeProperties.firstChild(named: edge.rawValue),
-                          line.firstChild(named: "a:noFill") == nil,
-                          let color = colorHex(in: line.firstChild(named: "a:solidFill")) else { continue }
-                    let width = max(0, line.coordinate("w") ?? 12700)
-                    if width == 0 { continue }
-                    let endpoints: (Int, Int, Int, Int)
+                    let paint = borderPaint(edgeProperties.firstChild(named: edge.rawValue))
                     switch edge {
-                    case .left: endpoints = (cx, cy, cx, cy + rh)
-                    case .right: endpoints = (cx + cw, cy, cx + cw, cy + rh)
-                    case .top: endpoints = (cx, cy, cx + cw, cy)
-                    case .bottom: endpoints = (cx, cy + rh, cx + cw, cy + rh)
-                    case .diagonalDown: endpoints = (cx, cy, cx + cw, cy + rh)
-                    case .diagonalUp: endpoints = (cx, cy + rh, cx + cw, cy)
+                    case .left, .right:
+                        borders.append(axis: .vertical, boundary: edge == .left ? c : columnEnd,
+                            range: r..<rowEnd, paint: paint)
+                    case .top, .bottom:
+                        borders.append(axis: .horizontal, boundary: edge == .top ? r : rowEnd,
+                            range: c..<columnEnd, paint: paint)
+                    case .diagonalDown:
+                        if let paint { diagonals += lineSVG(paint, (cx, cy, cx + cw, cy + rh)) }
+                    case .diagonalUp:
+                        if let paint { diagonals += lineSVG(paint, (cx, cy + rh, cx + cw, cy)) }
                     }
-                    let dash = line.firstChild(named: "a:prstDash")?[attribute: "val"]
-                    let pattern: String
-                    switch dash {
-                    case "dot", "sysDot": pattern = "\(width) \(width * 2)"
-                    case "dash", "sysDash": pattern = "\(width * 3) \(width * 2)"
-                    case "lgDash": pattern = "\(width * 6) \(width * 2)"
-                    case "dashDot", "sysDashDot": pattern = "\(width * 3) \(width * 2) \(width) \(width * 2)"
-                    default: pattern = ""
-                    }
-                    let dashAttribute = pattern.isEmpty ? "" : " stroke-dasharray=\"\(pattern)\""
-                    out += "<line x1=\"\(endpoints.0)\" y1=\"\(endpoints.1)\" x2=\"\(endpoints.2)\" y2=\"\(endpoints.3)\" stroke=\"\(color)\" stroke-width=\"\(width)\"\(dashAttribute)/>"
                 }
+
                 if let body = grid.cells[r][c].firstChild(named: "a:txBody") {
                     // Layout reads paragraphs without modifying them. Only
                     // bodyPr needs a private copy for the cell overrides.
@@ -964,15 +981,32 @@ struct SVGRenderer {
                     if direction == "vert" || direction == "vert270" {
                         bodyPr[attribute: "vert"] = "horz"
                         let transform = direction == "vert" ? "translate(\(cx + cw) \(cy)) rotate(90)" : "translate(\(cx) \(cy + rh)) rotate(-90)"
-                        out += "<g transform=\"\(transform)\">" + renderText(text, box: (0, 0, rh, cw), inheriting: effective.text) + "</g>"
+                        textContent += "<g transform=\"\(transform)\">" + renderText(text, box: (0, 0, rh, cw), inheriting: effective.text) + "</g>"
                     } else {
                         bodyPr[attribute: "vert"] = direction
-                        out += renderText(text, box: frame, inheriting: effective.text)
+                        textContent += renderText(text, box: frame, inheriting: effective.text)
                     }
                 }
             }
         }
-        return out
+        for segment in borders.resolved() {
+            let edge = segment.edge, lower = segment.range.lowerBound, upper = segment.range.upperBound
+            let endpoints: (Int, Int, Int, Int)
+            let offset: Int
+            if edge.axis == .vertical {
+                let px = x + (rtl ? xs.last! - xs[edge.boundary] : xs[edge.boundary])
+                endpoints = (px, y + ys[lower], px, y + ys[upper])
+                offset = ys[lower] - ys[edge.range.lowerBound]
+            } else {
+                let py = y + ys[edge.boundary]
+                let left = rtl ? xs.last! - xs[upper] : xs[lower]
+                let right = rtl ? xs.last! - xs[lower] : xs[upper]
+                endpoints = (x + left, py, x + right, py)
+                offset = rtl ? xs[edge.range.upperBound] - xs[upper] : xs[lower] - xs[edge.range.lowerBound]
+            }
+            out += lineSVG(segment.paint, endpoints, offset: offset)
+        }
+        return out + diagonals + textContent
     }
 
     private func tableGradient(_ gradient: XML.Element, box frame: (Int, Int, Int, Int), defs: inout String) -> String {
