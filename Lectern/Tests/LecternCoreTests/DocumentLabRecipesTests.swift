@@ -48,9 +48,14 @@ import Rostrum
         #expect(chart.categories == ["Revised Sample 1", "Revised Sample 2", "Revised Sample 3"])
         #expect(chart.series.map(\.name) == ["Updated Revenue", "Added"])
         #expect(chart.series.map(\.values) == [[13, 16, 19], [7, 14, 21]])
+        #expect(reopened.charts.count == 4)
+        #expect(reopened.charts[1].plotTypes == ["barChart", "lineChart"])
+        #expect(reopened.charts[1].series.map(\.values) == [[13, 16, 19], [14, 15, 16]])
+        #expect(reopened.charts[2].series.map(\.values) == [[3, 6, 9]])
+        #expect(reopened.charts[3].xySeries.first?.points == [.init(x: 1, y: 2), .init(x: 2, y: 4), .init(x: 3, y: 6)])
         let original = try Presentation(data: #require(draft.before))
         #expect(original.charts.first?.series.map(\.values) == [[3, 6, 9], [4, 5, 6]])
-        #expect(draft.checks.filter { $0.name.contains("atomic") }.count == 3)
+        #expect(draft.checks.filter { $0.name.contains("atomic") }.count == 9)
         #expect(draft.checks.allSatisfy { $0.passed })
     }
 
@@ -66,6 +71,32 @@ import Rostrum
         #expect(combo.series.count == 2)
         #expect(reopened.charts[9].xySeries.first?.points == [.init(x: 1, y: 1), .init(x: 2, y: 4), .init(x: 3, y: 9)])
         #expect(reopened.charts[10].xySeries.first?.points.last?.size == 15)
+    }
+
+    @Test(arguments: [false, true])
+    func smartArtGalleryIncludesEveryLayoutAndWarnsAboutPyramid(alternative: Bool) throws {
+        let draft = try DocumentLabRecipes.make(.smartArt, options: .init(text: "Stage", sampleSize: 3, alternative: alternative))
+        let reopened = try Presentation(data: draft.deck.serializedData())
+        #expect(reopened.slides.count == 4)
+        let expectedURNs = ["urn:rostrum/basicBlockList", "urn:rostrum/basicProcess", "urn:rostrum/basicCycle", "urn:rostrum/basicPyramid"]
+        let baseLabels = ["Stage · Step 1", "Stage · Step 2", "Stage · Step 3"]
+        let labels = alternative ? Array(baseLabels.reversed()) : baseLabels
+        for (index, urn) in expectedURNs.enumerated() {
+            let layout = try reopened.package.part(at: PackURI("/ppt/diagrams/layout\(index + 1).xml")).dom()
+            #expect(layout[attribute: "uniqueId"] == urn)
+            #expect(try reopened.slides[index].smartArtTexts == [labels])
+        }
+        #expect(Set(expectedURNs) == Set(SmartArt.Layout.allCases.map(\.urn)))
+        let cycle = try reopened.package.part(at: PackURI("/ppt/diagrams/layout3.xml")).dom().serialized()
+        #expect(cycle.contains("type=\"cycle\""))
+        let pyramid = try reopened.package.part(at: PackURI("/ppt/diagrams/layout4.xml")).dom().serialized()
+        #expect(pyramid.contains("type=\"pyra\""))
+        let lastSlideText = try reopened.slides[3].shapes.all.compactMap { $0.textFrame?.text }.joined(separator: "\n")
+        #expect(lastSlideText.contains("experimental"))
+        #expect(lastSlideText.contains("block grid"))
+        let recipe = try #require(DocumentLabRecipes.catalog.first { $0.id == .smartArt })
+        #expect(recipe.limitations.contains { $0.contains("Pyramid is experimental") })
+        #expect(draft.extraFiles["smartart-labels.txt"] == Data(labels.joined(separator: "\n").utf8))
     }
 
     @Test func notesImportsAndCopiesCannotMutateTheirSources() throws {

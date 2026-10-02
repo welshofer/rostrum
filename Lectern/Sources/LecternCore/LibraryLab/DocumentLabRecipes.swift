@@ -11,13 +11,14 @@ enum DocumentLabRecipes {
               operations: ["addChart", "addScatterChart", "addBubbleChart", "addComboChart", "Chart.series", "Chart.xySeries", "Chart.workbookPart"],
               limitations: ["Preview support varies by chart kind; the saved file retains native charts and embedded workbooks."],
               inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Include gaps in category data"),
-        .init(.chartEditing, title: "Chart editing", summary: "Replace data, append and remove series, and prove invalid edits are atomic.",
+        .init(.chartEditing, title: "Chart editing", summary: "Edit single-plot and combo data, then exercise atomic refusals for combo, pie and XY series edits.",
               operations: ["Chart.replaceData", "Chart.addSeries", "Chart.removeSeries", "Chart.replacementProblem", "Chart.addSeriesProblem", "Chart.removeSeriesProblem"],
               inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Edit a line chart"),
-        .init(.smartArt, title: "SmartArt", summary: "Create a native Basic Block List and extract its labels.",
+        .init(.smartArt, title: "SmartArt gallery", summary: "Create Basic Block List, Process, Cycle and experimental Pyramid diagrams, then extract their labels.",
               operations: ["addSmartArt", "Slide.smartArtTexts"],
-              limitations: ["The local preview does not run PowerPoint’s SmartArt layout engine. Open the PPTX in PowerPoint to see the native diagram; extracted labels are verified here."],
-              inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Also create a Process diagram"),
+              limitations: ["The local preview does not run PowerPoint’s SmartArt layout engine. Open the PPTX in PowerPoint to see the native diagram; extracted labels are verified here.",
+                             "Pyramid is experimental: its current native layout renders as a block grid in PowerPoint. The saved layout identity and labels are verified; a pyramid-shaped PowerPoint rendering is not promised."],
+              inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Reverse node order"),
         .init(.notes, title: "Rich speaker notes", summary: "Format, duplicate, import and independently edit speaker notes.",
               operations: ["setNotes", "appendNote", "notesTextFrame", "notesParagraphs", "slides.duplicate", "slides.import"],
               inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Replace the copied notes"),
@@ -128,7 +129,11 @@ enum DocumentLabRecipes {
         for (index, kind) in kinds.enumerated() {
             let slide = index == 0 ? try deck.slides[0] : try deck.slides.add()
             try LibraryLabSupport.text("\(kind) · \(options.text)", on: slide)
-            try slide.shapes.addChart(kind, data: data, frame: LibraryLabSupport.frame(), colors: palette, options: styles)
+            var kindOptions = styles
+            if kind == .pie || kind == .doughnut {
+                kindOptions.dataLabels = .init(showCategory: true, showPercent: true, numberFormat: "0%")
+            }
+            try slide.shapes.addChart(kind, data: data, frame: LibraryLabSupport.frame(), colors: palette, options: kindOptions)
         }
         let xy = try deck.slides.add()
         try LibraryLabSupport.text("Scatter · \(options.text)", on: xy)
@@ -151,6 +156,25 @@ enum DocumentLabRecipes {
                 let chart = try firstChart(reopened.slides[index])
                 let expected = (kind == .pie || kind == .doughnut) ? [data.series[0]] : data.series
                 checks.append(.init("\(kind) data readback", chart.categories == data.categories && chart.series.map(\.name) == expected.map(\.name) && chart.series.map(\.values) == expected.map(\.values), "Categories, series names, values and gaps match the authored dataset."))
+                let plotType: String
+                let setting: (name: String, value: String)?
+                switch kind {
+                case .barClustered: (plotType, setting) = ("barChart", ("grouping", "clustered"))
+                case .barStacked: (plotType, setting) = ("barChart", ("grouping", "stacked"))
+                case .barPercentStacked: (plotType, setting) = ("barChart", ("grouping", "percentStacked"))
+                case .line: (plotType, setting) = ("lineChart", nil)
+                case .area: (plotType, setting) = ("areaChart", nil)
+                case .pie: (plotType, setting) = ("pieChart", nil)
+                case .doughnut: (plotType, setting) = ("doughnutChart", nil)
+                case .radar: (plotType, setting) = ("radarChart", ("radarStyle", "marker"))
+                case .radarFilled: (plotType, setting) = ("radarChart", ("radarStyle", "filled"))
+                }
+                let plot = try chart.part.dom().firstChild(named: "c:chart")?.firstChild(named: "c:plotArea")?.firstChild(named: "c:\(plotType)")
+                let settingMatches = setting.map { plot?.firstChild(named: "c:\($0.name)")?[attribute: "val"] == $0.value } ?? true
+                checks.append(.init("\(kind) plot identity survives", chart.plotType == plotType && settingMatches, "Native plot type, stacking mode or radar style matches the requested kind."))
+                if kind == .pie || kind == .doughnut {
+                    checks.append(.init("\(kind) percent labels survive", plot?.firstChild(named: "c:dLbls")?.firstChild(named: "c:showPercent")?[attribute: "val"] == "1", "Pie and doughnut show percentages alongside category labels."))
+                }
             }
             let scatter = try firstChart(reopened.slides[kinds.count])
             let bubble = try firstChart(reopened.slides[kinds.count + 1])
@@ -172,12 +196,30 @@ enum DocumentLabRecipes {
         try slide.shapes.addChart(options.alternative ? .line : .barClustered, data: initial,
                                   frame: LibraryLabSupport.frame(), colors: [color(options)], options: .init(title: options.text))
         let chart = try firstChart(slide)
+        let comboSlide = try deck.slides.add()
+        try LibraryLabSupport.text("Combo: replace both groups; series edits are refused", on: comboSlide)
+        try comboSlide.shapes.addComboChart(.init(categories: initial.categories, groups: [
+            .init(kind: .barClustered, series: [initial.series[0]], colors: [color(options)]),
+            .init(kind: .line, series: [initial.series[1]], axis: .secondary)
+        ]), frame: LibraryLabSupport.frame(), options: .init(title: options.text))
+        let combo = try firstChart(comboSlide)
+        let pieSlide = try deck.slides.add()
+        try LibraryLabSupport.text("Pie: a second series or removing the last is refused", on: pieSlide)
+        try pieSlide.shapes.addChart(.pie, data: initial, frame: LibraryLabSupport.frame(), colors: [color(options)])
+        let pie = try firstChart(pieSlide)
+        let xySlide = try deck.slides.add()
+        try LibraryLabSupport.text("Scatter: category-data edits are refused", on: xySlide)
+        let xyPoints = (1...count(options)).map { (x: Double($0), y: Double($0 * 2)) }
+        try xySlide.shapes.addScatterChart(.init(name: options.text, points: xyPoints), frame: LibraryLabSupport.frame(), colors: [color(options)])
+        let xy = try firstChart(xySlide)
         let before = try deck.serializedData()
         let replacement = ChartData(categories: initial.categories.map { "Revised \($0)" }, series: initial.series.map {
             .init(name: "Updated \($0.name)", values: $0.values.map { $0.map { $0 + 10 } })
         })
         let problem = chart.replacementProblem(for: replacement)
         try chart.replaceData(replacement)
+        let comboWorkbookBefore = combo.workbookPart?.blob
+        try combo.replaceData(replacement)
         let workbookBeforeAdd = chart.workbookPart?.blob
         let appended = (1...count(options)).map { Double($0 * 7) as Double? }
         let addProblem = chart.addSeriesProblem(name: "Added", values: appended)
@@ -195,26 +237,65 @@ enum DocumentLabRecipes {
         checks.append(try refusal("Replacement refusal is atomic", deck: deck) { try chart.replaceData(bad) })
         checks.append(try refusal("Add-series refusal is atomic", deck: deck) { try chart.addSeries(name: "Rejected", values: [1]) })
         checks.append(try refusal("Remove-series refusal is atomic", deck: deck) { try chart.removeSeries(at: 99) })
+        checks.append(.init("Combo replacement updates workbook", combo.workbookPart?.blob != comboWorkbookBefore && combo.series.map(\.values) == replacement.series.map(\.values), "Replacement changes both plot groups and their shared editable workbook."))
+        let comboProblem = Chart.SeriesEditProblem.comboChartNotSupported(plotTypes: ["barChart", "lineChart"])
+        checks.append(.init("Structural refusals diagnosed", combo.addSeriesProblem(name: "Rejected", values: appended) == comboProblem && combo.removeSeriesProblem(at: 0) == comboProblem && pie.addSeriesProblem(name: "Rejected", values: appended) == .chartTypePlotsOneSeries(plotType: "pieChart") && pie.removeSeriesProblem(at: 0) == .wouldLeaveNoSeries && xy.addSeriesProblem(name: "Rejected", values: appended) == .notACategoryChart,
+                            "Preflight names the combo, single-series pie, final series and XY restrictions."))
+        checks.append(try refusal("Combo addition refusal is atomic", deck: deck) { try combo.addSeries(name: "Rejected", values: appended) })
+        checks.append(try refusal("Combo removal refusal is atomic", deck: deck) { try combo.removeSeries(at: 0) })
+        checks.append(try refusal("Pie addition refusal is atomic", deck: deck) { try pie.addSeries(name: "Rejected", values: appended) })
+        checks.append(try refusal("Final series removal refusal is atomic", deck: deck) { try pie.removeSeries(at: 0) })
+        checks.append(try refusal("XY addition refusal is atomic", deck: deck) { try xy.addSeries(name: "Rejected", values: appended) })
+        let categoryReplacement = ChartData(categories: initial.categories, series: [initial.series[0]])
+        checks.append(try refusal("XY replacement refusal is atomic", deck: deck) { try xy.replaceData(categoryReplacement) })
         return LibraryLabDraft(deck: deck, before: before, checks: checks, verify: { reopened in
             let saved = try firstChart(reopened.slides[0])
-            return [.init("Edited categories and series survive", saved.categories == replacement.categories && saved.series.map(\.name) == [replacement.series[0].name, "Added"] && saved.series.map(\.values) == [replacement.series[0].values, appended], "Updated first series and appended series remain; comparison is absent."),
+            let savedCombo = try firstChart(reopened.slides[1])
+            let savedPie = try firstChart(reopened.slides[2])
+            let savedXY = try firstChart(reopened.slides[3])
+            return [.init("Combo replacement survives", savedCombo.plotTypes == ["barChart", "lineChart"] && savedCombo.categories == replacement.categories && savedCombo.series.map(\.name) == replacement.series.map(\.name) && savedCombo.series.map(\.values) == replacement.series.map(\.values), "Both groups retain the replacement values, names and shared categories after refused structural edits."),
+                    .init("Refused pie and XY edits preserve their data", savedPie.series.map(\.values) == [initial.series[0].values] && savedXY.xySeries.first?.points == xyPoints.map { Chart.XYPoint(x: $0.x, y: $0.y) }, "All originally authored pie and scatter values survive the rejected edits."),
+                    .init("Edited categories and series survive", saved.categories == replacement.categories && saved.series.map(\.name) == [replacement.series[0].name, "Added"] && saved.series.map(\.values) == [replacement.series[0].values, appended], "Updated first series and appended series remain; comparison is absent."),
                     .init("Chart formatting survives edits", try saved.title == options.text && saved.part.dom().serialized().contains(color(options).hex), "Title and original series color remain after data edits.")]
         })
     }
 
     private static func smartArt(_ options: LibraryLabOptions) throws -> LibraryLabDraft {
-        let deck = try LibraryLabSupport.deck(title: "SmartArt and text extraction")
-        let labels = (1...count(options)).map { "\(options.text) · Step \($0)" }
-        let layouts: [SmartArt.Layout] = options.alternative ? [.blockList, .process] : [.blockList]
+        let deck = try LibraryLabSupport.deck(title: "SmartArt layout gallery")
+        let authoredLabels = (1...count(options)).map { "\(options.text) · Step \($0)" }
+        let labels = options.alternative ? Array(authoredLabels.reversed()) : authoredLabels
+        let layouts = SmartArt.Layout.allCases
         for (index, layout) in layouts.enumerated() {
             let slide = index == 0 ? try deck.slides[0] : try deck.slides.add()
-            try LibraryLabSupport.text("SmartArt \(layout) — native diagram in PPTX", on: slide)
+            let title: String
+            switch layout {
+            case .blockList: title = "Basic Block List"
+            case .process: title = "Process"
+            case .cycle: title = "Cycle"
+            case .pyramid: title = "Pyramid · experimental"
+            }
+            try LibraryLabSupport.text("SmartArt · \(title)", on: slide)
             try slide.shapes.addSmartArt(items: labels, frame: LibraryLabSupport.frame(0.7, 1.1, 8, 4.4), colors: [color(options)], layout: layout)
-            try LibraryLabSupport.text("Preview: labels verified; PowerPoint runs the diagram layout.", on: slide, frame: LibraryLabSupport.frame(0.6, 6, 12, 0.5))
+            let note = layout == .pyramid
+                ? "Experimental: PowerPoint renders this Pyramid layout as a block grid."
+                : "Preview: labels verified; PowerPoint runs the diagram layout."
+            try LibraryLabSupport.text(note, on: slide, frame: LibraryLabSupport.frame(0.6, 6, 12, 0.7))
         }
         return LibraryLabDraft(deck: deck, extraFiles: ["smartart-labels.txt": Data(labels.joined(separator: "\n").utf8)], verify: { reopened in
-            [.init("Native SmartArt labels survive", Array(reopened.slides).map(\.smartArtTexts) == layouts.map { _ in [labels] }, "Every item is extracted in order from the saved diagram data."),
-             .init("SmartArt dependency parts survive", reopened.package.parts.values.filter { $0.contentType.contains("drawingml.diagram") }.count == layouts.count * 4, "Each diagram retains data, layout, quick style and colors.")]
+            var checks = [LibraryLabCheck("Every public SmartArt layout authored", reopened.slides.count == layouts.count,
+                                          "Basic Block List, Process, Cycle and experimental Pyramid each have a native diagram.")]
+            for (index, expected) in layouts.enumerated() {
+                let slide = try reopened.slides[index]
+                let layout = try slide.part.related(by: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramLayout", in: reopened.package).dom()
+                let model = try slide.part.related(by: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramData", in: reopened.package).dom()
+                let modelLayout = model.firstChild(named: "dgm:ptLst")?.children(named: "dgm:pt")
+                    .first { $0[attribute: "type"] == "doc" }?.firstChild(named: "dgm:prSet")?[attribute: "loTypeId"]
+                checks.append(.init("\(expected.rawValue) layout and labels survive", layout[attribute: "uniqueId"] == expected.urn && modelLayout == expected.urn && slide.smartArtTexts == [labels],
+                                    "The slide’s layout and data relationships resolve to \(expected.urn), with every label in the selected order."))
+            }
+            checks.append(.init("SmartArt dependency parts survive", reopened.package.parts.values.filter { $0.contentType.contains("drawingml.diagram") }.count == layouts.count * 4,
+                                "Each diagram retains data, layout, quick style and colors."))
+            return checks
         })
     }
 
