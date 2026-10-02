@@ -129,6 +129,11 @@ public struct TableStyleResolver {
     }
 
     func effective(row: Int, column: Int) -> Effective {
+        let base = styleProperties(row: row, column: column)
+        return applyingCell(row: row, column: column, to: base)
+    }
+
+    private func styleProperties(row: Int, column: Int) -> Effective {
         let properties = XML.Element("a:tcPr"), text = XML.Element("a:defRPr")
         var fillOwner = stylePart ?? table.part
         func enabled(_ flag: String) -> Bool { enabledFlags.contains(flag) }
@@ -162,20 +167,94 @@ public struct TableStyleResolver {
             }
             if let tx = region.firstChild(named: "a:tcTxStyle") { mergeText(tx, into: text) }
         }
+        return Effective(properties: properties, text: text, fillOwner: fillOwner)
+    }
+
+    private func applyingCell(row: Int, column: Int, to base: Effective, resolvedBase: Bool = false) -> Effective {
+        let properties = base.properties, text = base.text
+        var fillOwner = base.fillOwner
         if grid.cells.indices.contains(row), grid.cells[row].indices.contains(column),
            let direct = grid.cells[row][column].firstChild(named: "a:tcPr") {
             for attribute in direct.attributes { properties[attribute: attribute.name] = attribute.value }
             for child in direct.childElements {
+                let copy = child.deepCopy()
+                if resolvedBase { resolveColors(in: copy) }
                 if Fill.choiceNames.contains(child.name) {
-                    setFill(child, on: properties); fillOwner = table.part
+                    for name in Fill.choiceNames { properties.removeChildren(named: name) }
+                    properties.appendElement(copy); fillOwner = table.part
                 } else {
-                    properties.removeChildren(named: child.name); properties.appendElement(child.deepCopy())
+                    properties.removeChildren(named: child.name); properties.appendElement(copy)
                 }
             }
         }
-        resolveColors(in: properties)
-        resolveColors(in: text)
+        if !resolvedBase {
+            resolveColors(in: properties)
+            resolveColors(in: text)
+        }
         return Effective(properties: properties, text: text, fillOwner: fillOwner)
+    }
+
+    /// A single synchronous table render may reuse style-only templates. Public
+    /// resolution remains uncached because callers can edit exposed XML/themes.
+    /// Entries are read-only to the renderer and expire at the end of renderTable.
+    struct RenderSession {
+        private let resolver: TableStyleResolver
+        private var templates: [Int: Effective] = [:]
+        private var remainingCost = 1_048_576
+
+        init(_ resolver: TableStyleResolver) { self.resolver = resolver }
+
+        mutating func effective(row: Int, column: Int) -> Effective {
+            // Region membership and whole-table edge selection depend only on
+            // first/last position and parity: at most 8 x 8 variants, regardless
+            // of table size. Flags, theme and style are constant in this session.
+            func category(_ index: Int, _ count: Int) -> Int {
+                (index == 0 ? 1 : 0) | (index == count - 1 ? 2 : 0) | ((index & 1) << 2)
+            }
+            let key = category(row, resolver.grid.rows.count) | (category(column, resolver.grid.columns.count) << 3)
+            let base: Effective
+            if let cached = templates[key] { base = cached }
+            else {
+                base = resolver.styleProperties(row: row, column: column)
+                resolver.resolveColors(in: base.properties)
+                resolver.resolveColors(in: base.text)
+                // Bound estimated retained nodes/strings as well as the variant count.
+                // A large custom style still renders normally without caching.
+                if let cost = Self.cost(of: [base.properties, base.text], limit: remainingCost) {
+                    templates[key] = base; remainingCost -= cost
+                }
+            }
+            if let direct = resolver.grid.cells[row][column].firstChild(named: "a:tcPr"),
+               !direct.attributes.isEmpty || !direct.childElements.isEmpty {
+                // Overlay only replaces root attributes/children. Resolve copied
+                // direct children separately; cached descendants stay read-only.
+                return resolver.applyingCell(row: row, column: column,
+                    to: Effective(properties: XML.Element(base.properties.name,
+                        attributes: base.properties.attributes, children: base.properties.children),
+                        text: base.text, fillOwner: base.fillOwner), resolvedBase: true)
+            }
+            return base
+        }
+
+        private static func cost(of roots: [XML.Element], limit: Int) -> Int? {
+            var pending = roots, total = 0
+            while let node = pending.popLast() {
+                total += 128 + node.name.utf8.count
+                for attribute in node.attributes { total += 64 + attribute.name.utf8.count + attribute.value.utf8.count }
+                // Serialized non-element content is uncommon in style templates;
+                // count it too without constructing a second full XML string.
+                for child in node.children {
+                    total += 32
+                    switch child {
+                    case .element(let element): pending.append(element)
+                    case .text(let value), .comment(let value): total += value.utf8.count
+                    case .processingInstruction(let target, let data): total += 64 + target.utf8.count + (data?.utf8.count ?? 0)
+                    }
+                }
+                if total > limit { return nil }
+            }
+            return total
+        }
     }
 
     private func setFill(_ fill: XML.Element, on properties: XML.Element) {
