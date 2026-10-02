@@ -12,9 +12,9 @@ Values are font design units (2048 units/em), default OpenType features.
 The engine is a development-only oracle; production and tests have no runtime dependency.
 
 Supported cases exercise GPOS class kerning, GSUB ligatures, NFC composition and
-unpointed Hebrew reversal. Arabic and residual combining-mark records are negative
-oracles: they demonstrate different glyphs/positioning that this implementation
-explicitly diagnoses instead of claiming conformance. Indic contextual substitution,
+unpointed Hebrew reversal. The original Arabic joining case is now a positive
+oracle; residual combining-mark positioning remains a negative oracle, explicitly
+diagnosed instead of claimed as conformant. Indic contextual substitution,
 mark attachment, language selection, full UAX #9 and full UAX #14 remain unsupported.
 Basic CJK break tests exercise an explicitly bounded punctuation/grapheme profile;
 there is no CJK shaping or complete Unicode conformance claim.
@@ -56,8 +56,62 @@ GDEF versions 1.0, 1.2 and 1.3 class definitions and mark glyph sets are support
 within the same byte-derived work budget as the other layout tables. Missing
 required classification/filtering data, malformed data, reserved flag bits and
 budget exhaustion are diagnosed. This adds filtering, not mark attachment,
-Arabic joining, contextual substitutions or full script shaping.
+mark positioning or full script shaping. The additional Arabic stage below
+uses the same filtering rules.
 
 Primary specifications:
 https://learn.microsoft.com/en-us/typography/opentype/spec/chapter2#lookup-table
 https://learn.microsoft.com/en-us/typography/opentype/spec/gdef
+
+## Bounded Arabic contextual shaping
+
+`arabic-harfbuzz-14.4.0.json` contains 30 positive and 10 negative DejaVu cases.
+Positive cases cover default-language Arabic, Persian and Urdu letter sequences,
+joining forms, required/optional ligatures, normalization, spaces, ZWJ and ZWNJ.
+The reference invocation fixes `--direction=rtl --script=arab --language=und`.
+All positive glyph IDs, cluster starts, advances and x/y offsets are checked.
+Negative cases pin actual mark placement and mixed-script/bidi output; they must
+remain diagnosed while that geometry is unimplemented.
+
+The Arabic program applies `ccmp`, `locl`, joining forms, `rlig`, `rclt`, `calt`,
+`liga` and `mset` in stages. It implements single substitutions (formats 1/2),
+ligature substitution, chained contexts (formats 1/2/3) and extension lookups.
+Other lookup types, malformed graphs, parse-budget exhaustion and execution
+limits produce diagnostics. Execution has a maximum depth of 16 and at most
+262144 work units, including scans for nested targets. This is a bounded profile,
+not full OpenType or Unicode conformance.
+
+`ArabicContexts.ttf` is an owned outline-free font under the repository license;
+its 12 HarfBuzz cases exercise actual context matches/misses, all three context
+formats, nested extension lookups, pair placement and contextual records following
+ligatures that consume input positions. Both font hashes are pinned in their
+oracle JSON files. Regenerate using:
+
+```sh
+python3 Tools/typography/make_arabic_oracle.py
+python3 Tools/typography/make_arabic_context_oracle.py
+swift test --filter ArabicShapingTests
+```
+
+To compare a local font without redistributing it:
+
+```sh
+python3 Tools/typography/make_arabic_oracle.py --font /path/to/font.ttf --output /tmp/arabic-oracle.json
+ROSTRUM_ARABIC_ORACLE=/tmp/arabic-oracle.json ROSTRUM_ARABIC_FONT=/path/to/font.ttf swift test --filter suppliedLocalArabicOracle
+```
+
+Joining data is generated from the SHA-pinned Unicode 17.0.0
+`extracted/DerivedJoiningType.txt` by `Tools/typography/make_joining_data.py`.
+Its Unicode license is retained as `LICENSE-Unicode.txt`. The runtime uses owned
+Swift data and code; no platform text stack or external shaping library is added.
+
+Mark/cursive positioning, language-system selection and mixed Arabic paragraph
+bidi remain unsupported. Arabic digits and punctuation outside this narrow RTL
+letter/space/control profile remain diagnosed. RichTextLayout still diagnoses
+RTL span ordering, so strict slide rendering does not claim complete Arabic
+paragraph geometry merely because TextShaper can produce contextual glyphs.
+
+Primary references:
+https://learn.microsoft.com/en-us/typography/script-development/arabic
+https://learn.microsoft.com/en-us/typography/opentype/spec/gsub
+https://www.unicode.org/Public/17.0.0/ucd/extracted/DerivedJoiningType.txt

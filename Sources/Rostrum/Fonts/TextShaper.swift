@@ -5,8 +5,10 @@ import Foundation
 /// kern); NFC-composable graphemes; unpointed Hebrew letters mixed with Latin,
 /// spaces and ASCII digits; and basic horizontal CJK break opportunities.
 ///
-/// Arabic joining, Indic reordering, residual combining marks, emoji sequences,
-/// bidi controls/bracket mirroring and language-specific features are diagnosed.
+/// Default-language Arabic joining forms and GSUB single/ligature/chained-context
+/// substitutions are also supported in isolated RTL runs. Arabic mark/cursive
+/// attachment, mixed Arabic bidi, Indic reordering, residual combining marks,
+/// emoji sequences and language-specific features remain diagnosed.
 /// Neither a platform font fallback nor an implicit font substitution is used.
 /// Shape each physical line separately: line breaks are reported, not wrapped.
 public struct TextShaper: Sendable {
@@ -15,6 +17,9 @@ public struct TextShaper: Sendable {
 
     public func shape(_ text: String, pointSize: Double,
                       direction: TextDirection = .automatic) -> ShapedGlyphRun {
+        if text.unicodeScalars.contains(where: { ArabicJoining.isArabic($0.value) }) {
+            return ArabicTextShaper(metrics: metrics).shape(text, pointSize: pointSize, direction: direction)
+        }
         let tables = metrics.layoutTables
         var diagnostics = tables.diagnostics.map { ShapingDiagnostic.unsupportedLayoutFeature($0) }
         guard pointSize.isFinite, pointSize >= 0 else {

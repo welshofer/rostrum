@@ -39,6 +39,7 @@ public struct FontMetrics: Sendable {
     /// Advance width per glyph id, in font units, resolved to `numGlyphs`
     /// entries (the trailing `hmtx` run repeats the last explicit advance).
     private let advances: [Int]
+    var glyphCount: Int { advances.count }
     private let characterMap: CharacterMap
     let layoutTables: FontLayoutTables
     let hasOutlines: Bool

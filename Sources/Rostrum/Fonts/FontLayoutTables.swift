@@ -7,7 +7,7 @@ struct FontLayoutTables: Sendable {
     /// Ordinary tables get sixteen work units per input byte; the floor permits
     /// small valid tables and the hard ceiling bounds one font's layout table.
     /// Unsupported tables are diagnosed instead of allocating partial graphs.
-    private struct Budget {
+    struct Budget {
         static let maximumWork = 262_144
         private var remaining: Int
         init(bytes: Int) {
@@ -18,7 +18,7 @@ struct FontLayoutTables: Sendable {
             remaining -= count
         }
     }
-    private struct BudgetExceeded: Error {}
+    struct BudgetExceeded: Error {}
     struct Ligature: Sendable { let components: [Int]; let replacement: Int }
     struct Adjustment: Sendable {
         var x = 0, y = 0, advance = 0
@@ -103,6 +103,11 @@ struct FontLayoutTables: Sendable {
     private var definitions = GlyphDefinitions()
     func isNonspacingMark(_ glyph: Int) -> Bool { definitions.classes?[glyph] == 3 }
 
+    var arabic: ArabicLayoutTables?
+    var arabicPairs: [Lookup<[PairTable]>] = []
+    var arabicPositioningDiagnostics: [String] = []
+    private init() {}
+
     var legacyPairs: [Int: Int] = [:]
     var diagnostics: [String] = []
 
@@ -131,6 +136,18 @@ struct FontLayoutTables: Sendable {
                 diagnostics.append("\(tag) layout expansion exceeds the parsing budget")
             }
             catch { diagnostics.append("Malformed or unsupported \(tag) Latin layout table") }
+        }
+        if let bytes = tables["GSUB"] {
+            arabic = ArabicLayoutTables(bytes: bytes, definitions: definitions)
+        }
+        if let bytes = tables["GPOS"] {
+            var positioning = FontLayoutTables()
+            positioning.definitions = definitions
+            var budget = Budget(bytes: bytes.count)
+            do { try positioning.readLayout(SFNTReader(bytes: bytes), substitution: false, budget: &budget, scriptTag: "arab") }
+            catch { positioning.pairLookups = []; positioning.diagnostics.append("Malformed or over-budget Arabic GPOS table") }
+            arabicPairs = positioning.pairLookups
+            arabicPositioningDiagnostics = positioning.diagnostics
         }
         if tables["fvar"] != nil { diagnostics.append("Variable-font shaping is unsupported") }
     }
@@ -195,7 +212,7 @@ struct FontLayoutTables: Sendable {
         }
     }
 
-    private mutating func readLayout(_ r: SFNTReader, substitution: Bool, budget: inout Budget) throws {
+    private mutating func readLayout(_ r: SFNTReader, substitution: Bool, budget: inout Budget, scriptTag: String = "latn") throws {
         guard try r.u16(0) == 1 else { throw corrupt() }
         if try r.u16(2) > 0, try r.u32(10) != 0 {
             diagnostics.append("OpenType feature variations are unsupported")
@@ -206,8 +223,8 @@ struct FontLayoutTables: Sendable {
         try budget.consume(scriptCount)
         for i in 0..<scriptCount {
             let p = scripts + 2 + i * 6, tag = try r.tag(p)
-            if tag == "latn" { script = scripts + (try r.u16(p + 4)) }
-            if tag == "DFLT" { fallback = scripts + (try r.u16(p + 4)) }
+            if tag == scriptTag { script = scripts + (try r.u16(p + 4)) }
+            if tag == "DFLT", scriptTag == "latn" { fallback = scripts + (try r.u16(p + 4)) }
         }
         guard let selected = script ?? fallback else { return }
         let languageOffset = try r.u16(selected)
@@ -225,6 +242,7 @@ struct FontLayoutTables: Sendable {
             let p = features + 2 + index * 6, tag = try r.tag(p)
             guard tag == (substitution ? "liga" : "kern") else {
                 if index == required { diagnostics.append("Unsupported required feature \(tag)") }
+                if scriptTag == "arab", tag == "curs" { diagnostics.append("Arabic cursive positioning is unsupported") }
                 continue
             }
             let feature = features + (try r.u16(p + 4))
@@ -311,7 +329,7 @@ struct FontLayoutTables: Sendable {
         }
     }
 
-    private static func coverage(_ r: SFNTReader, _ p: Int, budget: inout Budget, ordered: Bool = false) throws -> [Int: Int] {
+    static func coverage(_ r: SFNTReader, _ p: Int, budget: inout Budget, ordered: Bool = false) throws -> [Int: Int] {
         let format = try r.u16(p), count = try r.u16(p + 2)
         try budget.consume(count)
         var result: [Int: Int] = [:]
@@ -336,7 +354,7 @@ struct FontLayoutTables: Sendable {
         return result
     }
 
-    private static func classes(_ r: SFNTReader, _ p: Int, budget: inout Budget, ordered: Bool = false) throws -> [Int: Int] {
+    static func classes(_ r: SFNTReader, _ p: Int, budget: inout Budget, ordered: Bool = false) throws -> [Int: Int] {
         let format = try r.u16(p)
         var result: [Int: Int] = [:]
         if format == 1 {
