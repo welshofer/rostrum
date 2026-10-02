@@ -8,6 +8,18 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Added
 
+- Existing notes pages can be rendered with `renderNotesSVG` and
+  `renderNotesSVGReportingProblems`, or `pptx-tool render --notes`. The bounded
+  preview resolves notes geometry, master/theme and placeholder ancestry on
+  detached copies, with strict refusal for known gaps. Lectern loads these
+  previews on demand and retains their fidelity diagnostics.
+- Bounded GPOS mark-to-base and mark-to-mark attachment, including extension
+  lookups and GDEF filtering, verified against independent HarfBuzz glyph
+  positions. Ligature, cursive, composition and other unsupported cases remain
+  diagnosed; full complex-script layout is still incomplete.
+- Measured ASCII fallback text-layout fast path: about 3% lower median render
+  time on the paired large-table workloads, with byte-identical output across
+  574 slide renders. No general speedup or memory-reduction claim.
 - Bounded notes-master geometry reconciliation during slide import. Complete
   body/slide-image placeholder positions and sizes survive compatible master
   changes; ambiguous or broader appearance conflicts still refuse atomically.
@@ -24,7 +36,7 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 - Bounded GDEF classification and OpenType lookup filtering, checked against
   35 pinned HarfBuzz cases and additional independent comparison cases.
 - Staged Arabic joining/contextual substitution with owned Unicode data and
-  HarfBuzz oracles; full RTL paragraph geometry and mark attachment remain
+  HarfBuzz oracles; full RTL paragraph geometry and unsupported mark attachment remain
   diagnosed. Calibri single-component substitutions and wrapped legacy kerning
   tables are supported with bounded validation and local-font comparisons.
 - Printable default notes-page slide-image/body geometry and inheritance from

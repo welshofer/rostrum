@@ -502,10 +502,14 @@ ledger. These gates remain open and must not be relabeled complete:
   Table and typography PNG failures remain at unchanged thresholds.
 - [ ] Complete Arabic/Indic shaping, mark positioning, language features
   and complete Unicode bidirectional/line-break conformance. Bounded Arabic
-  joining/contextual GSUB, GDEF filtering and Calibri compatibility are implemented.
+  joining/contextual GSUB, GDEF filtering, mark-to-base/mark-to-mark attachment
+  and Calibri compatibility are implemented. Unsupported composition and
+  ligature/cursive attachment remain diagnosed.
 - [ ] Pinned PowerPoint slide and notes-page equivalence after edits, duplication
   and import. Authored notes print correctly and one imported notes page matches
   its source exactly. Table whole-image equivalence remains a separate gate.
+  A bounded notes-page SVG renderer and Lectern preview now exist; native notes
+  print-image comparisons still exceed the unchanged tolerance.
 - [ ] Broader image/effect and annotation lifecycle Office fixture coverage beyond
   the twelve image cases and the existing notes/customXML examples.
 - [x] Namespace-aliased section mutation with inherited compatibility/XML context.

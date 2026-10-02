@@ -1,5 +1,9 @@
 # Fidelity continuation — 2026-10-02
 
+This is a retained checkpoint. See the [subsequent notes and shaping
+pass](NOTES-AND-MARKS-20261002.md) for the new notes renderer, Lectern preview,
+mark attachment, matched layout measurements and latest combined verification.
+
 The local integration through `0cdf66b` adds bounded table shadows, DrawingML
 kerning thresholds, compatible notes-master geometry imports, and Lectern
 end-to-end coverage. Animation remains excluded. No push, PR, merge or release

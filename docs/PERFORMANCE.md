@@ -1,8 +1,11 @@
 # Performance measurements
 
-Latest checkpoint: the [continued fidelity pass](FIDELITY-FOLLOWUP-20261002.md)
-records 174.422 ms median large-table rendering and 199.375 MiB median process
-peak RSS. The earlier measurements below remain historical evidence.
+Latest matched optimization: the [ASCII fallback layout pass](LAYOUT-PERFORMANCE-20261002.md)
+measures 171.582 → 165.875 ms median large-table rendering over ten alternating
+fresh-process pairs, with identical output across 574 slide renders. It establishes
+a 3.33% median improvement on that workload, with no memory improvement. The
+[preceding integrated checkpoint](FIDELITY-FOLLOWUP-20261002.md) and measurements
+below remain historical evidence; their timings are not matched speedup baselines.
 
 The initial measurements below are retained unchanged; see the follow-up section
 for later renderer optimizations. Bulk table edits are substantially faster. The richer renderer remains slower

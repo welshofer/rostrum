@@ -88,7 +88,7 @@ then add `"Rostrum"` to your target's dependencies.
 | **Rendering** | `renderSVG(slideAt:)` / `exportSVG` — deterministic SVG previews with shared rich-text layout and master/layout inheritance; structured fidelity reports and opt-in `strictRendering` reject known gaps |
 | **SmartArt** | Basic Block List creation; **text extraction from any diagram** |
 | **Comments** | modern threads/replies, text editing, resolve/reopen/delete, slide/shape/text anchors; legacy comment read/create/edit/delete |
-| **Notes** | rich speaker notes, independent duplicates, source notes-master preservation on import; incompatible masters are refused atomically |
+| **Notes** | rich speaker notes, independent duplicates, source notes-master preservation on import; bounded notes-page SVG previews with fidelity diagnostics; incompatible masters are refused atomically |
 | **Fonts** | distinct regular/bold/italic faces, TTF/OTF embedding, bounded Swift kerning/ligature shaping with diagnostics for unsupported scripts; permitted registered fonts are embedded in SVG |
 | **Text fitting** | `shape.fitText(fonts: deck.fonts)` — shared mixed-run layout measures registered faces and writes computed `normAutofit`; inspect `renderSVGReportingProblems` for unsupported script/layout cases |
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
