@@ -1,0 +1,35 @@
+{
+  "allPartPayloadsPreserved" : true,
+  "deterministicSave" : true,
+  "input" : "large-100.pptx",
+  "inputBytes" : 393773,
+  "median" : {
+    "firstSVGPassMS" : 23.74925001640804,
+    "openMS" : 8.537416666513309,
+    "repeatSVGPassMS" : 3.67054165690206,
+    "serializeMS" : 5.775500001618639
+  },
+  "pixelWidth" : 640,
+  "reopenedSVGsMatch" : true,
+  "samples" : [
+    {
+      "firstSVGPassMS" : 24.462541652610525,
+      "openMS" : 9.464208327699453,
+      "repeatSVGPassMS" : 3.6001666740048677,
+      "serializeMS" : 5.998833337798715
+    },
+    {
+      "firstSVGPassMS" : 23.531374987214804,
+      "openMS" : 8.444625011179596,
+      "repeatSVGPassMS" : 3.6798333167098463,
+      "serializeMS" : 5.746375012677163
+    },
+    {
+      "firstSVGPassMS" : 23.74925001640804,
+      "openMS" : 8.537416666513309,
+      "repeatSVGPassMS" : 3.67054165690206,
+      "serializeMS" : 5.775500001618639
+    }
+  ],
+  "slides" : 100
+}

@@ -658,7 +658,7 @@ import Rostrum
         #expect(persuade.contains("call to action"))
         #expect(persuade.contains(DeckIR.currentVersion))
         let noNotes = PromptTemplates.deck(for: DeckRequest(prompt: "x", slideCount: 8, notes: false))
-        #expect(noNotes.contains("exactly 8 slides"))
+        #expect(noNotes.contains("Target 8 slides, within one"))
         #expect(noNotes.contains("Omit the"))
         let grounded = PromptTemplates.deck(for: DeckRequest(prompt: "x", groundingText: "FACTS HERE"))
         // Fenced and labelled as data now, rather than pasted under a plain

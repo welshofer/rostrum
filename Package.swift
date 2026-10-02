@@ -36,6 +36,10 @@ let package = Package(
             dependencies: ["Rostrum"],
             path: "Tools/design-audit"),
         .executableTarget(
+            name: "rostrum-benchmark",
+            dependencies: ["Rostrum"],
+            path: "Tools/rostrum-benchmark"),
+        .executableTarget(
             name: "pptx-tool",
             dependencies: ["Rostrum"],
             path: "Tools/pptx-tool"),

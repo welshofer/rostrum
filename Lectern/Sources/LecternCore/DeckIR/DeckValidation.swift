@@ -250,10 +250,9 @@ public enum RepairPrompt {
         return the corrected JSON object with no prose, no code fences, and the same \
         \(DeckIR.currentVersion) shape:
 
-        \(numbered)
+        \(PromptTemplates.dataBlock(numbered, label: "VALIDATION-ERRORS"))
 
-        --- invalid JSON ---
-        \(invalidJSON)
+        \(PromptTemplates.dataBlock(invalidJSON, label: "DRAFT"))
         """
     }
 }

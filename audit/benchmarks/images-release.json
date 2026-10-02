@@ -1,0 +1,35 @@
+{
+  "allPartPayloadsPreserved" : true,
+  "deterministicSave" : true,
+  "input" : "sunflower-synthetic.pptx",
+  "inputBytes" : 15751323,
+  "median" : {
+    "firstSVGPassMS" : 29.594416671898216,
+    "openMS" : 33.244583348277956,
+    "repeatSVGPassMS" : 10.012583312345669,
+    "serializeMS" : 31.776083342265338
+  },
+  "pixelWidth" : 640,
+  "reopenedSVGsMatch" : true,
+  "samples" : [
+    {
+      "firstSVGPassMS" : 31.385041656903923,
+      "openMS" : 36.73304166295566,
+      "repeatSVGPassMS" : 10.747583321062848,
+      "serializeMS" : 31.776083342265338
+    },
+    {
+      "firstSVGPassMS" : 27.98312497907318,
+      "openMS" : 33.244583348277956,
+      "repeatSVGPassMS" : 9.99533332651481,
+      "serializeMS" : 32.14049999951385
+    },
+    {
+      "firstSVGPassMS" : 29.594416671898216,
+      "openMS" : 31.356416671769693,
+      "repeatSVGPassMS" : 10.012583312345669,
+      "serializeMS" : 31.24483334249817
+    }
+  ],
+  "slides" : 30
+}

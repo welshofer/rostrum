@@ -72,8 +72,8 @@ struct InspectorView: View {
                     if inspection.hasFindings { findingsCard(inspection) }
                     if !inspection.previews.isEmpty {
                         Card(title: "SLIDES", systemImage: "rectangle.on.rectangle") {
-                            SlideContactSheet(previews: inspection.previews,
-                                              titles: inspection.previewTitles)
+                            SlideContactSheet(records: inspection.previewRecords,
+                                              total: inspection.slideCount)
                                 .frame(minHeight: 260)
                         }
                     }

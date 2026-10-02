@@ -3,7 +3,7 @@ import Rostrum
 
 // pptx-tool — a machine-checkable inspector/validator for .pptx files, built on
 // Rostrum. `inspect` prints a structured report + exit code; `validate` is a
-// terse pass/fail gate (the "PowerPoint will accept this" check for CI/tools).
+// modeled structural lint. Success does not establish PowerPoint acceptance.
 
 let defaultBudget = 1 << 30
 

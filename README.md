@@ -19,22 +19,25 @@ Rostrum adds capabilities outside python-pptx's current scope: slide
 creation and text extraction, **deck merge**, **theme / brand-kit editing**,
 and lossless byte-identical round-trips of the parts you don't touch.
 
+<!-- snippet:quickStart -->
 ```swift
 import Foundation
 import Rostrum
 
 let deck = try Presentation()                       // starts with one blank 16:9 slide
-let slide = try deck.slides.add(layout: deck.layout(type: "title")!)
+let slide = try deck.slides.add(clonedFrom: deck.layout(type: "title")!)
 slide.title?.textFrame?.text = "Hello, Rostrum"
 try deck.slides.remove(at: 0)                       // drop the blank starter slide
 try deck.save(to: URL(filePath: "hello.pptx"))
 ```
+<!-- /snippet:quickStart -->
 
 ### …or the design-authoring layer
 
 Open a brand template, apply a `design.md`, and build a whole deck from one-call,
 auto-laid-out builders — on-brand, no placeholder plumbing:
 
+<!-- snippet:designAuthoring -->
 ```swift
 import Foundation
 import Rostrum
@@ -53,6 +56,7 @@ try deck.footer("Confidential").showSlideNumbers()
 try deck.slides.remove(at: 0)   // drop the blank starter slide
 try deck.save(to: URL(filePath: "review.pptx"))
 ```
+<!-- /snippet:designAuthoring -->
 
 (A ready-made `sunflower.md` ships in `Lectern/App/Resources/Styles/`, along
 with 149 more.)
@@ -97,7 +101,7 @@ then add `"Rostrum"` to your target's dependencies.
 | **Templates** | open a `.potx`/`.ppsx` directly and round-trip it as one; `documentKind` converts when you want a deck out of a template; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
 | **Sections** | native PowerPoint sections; footers, slide numbers, dates via live fields |
 | **Extraction** | `deck.outline()` — every slide's text (title, subtitle, bullets with outline level, table cells, SmartArt, notes) as a value type; `DeckExport.write` unpacks a deck to a folder: one Markdown file plus per-slide media and one CSV per chart |
-| **Tooling** | `pptx-tool inspect`/`validate` — machine-checkable "PowerPoint will accept this" gate; `pptx-tool extract` — a deck to Markdown + media + chart CSVs |
+| **Tooling** | `pptx-tool inspect`/`validate` — modeled structural lint, not proof of PowerPoint acceptance; `pptx-tool extract` — a deck to Markdown + media + chart CSVs |
 
 ## Design
 

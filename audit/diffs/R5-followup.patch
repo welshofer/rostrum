@@ -1,0 +1,10 @@
+--- a/Tools/ppt-check.py
++++ b/Tools/ppt-check.py
+@@ -30,7 +30,6 @@
+                         try
+                             if (value of attribute "AXDocument" of w) is ("file://" & targetPath) then return "REJECTED-DIALOG"
+                         end try
+-                        return "AMBIGUOUS-DIALOG"
+                     end if
+                     if windowName contains targetName or windowName is "" or windowName is "Microsoft PowerPoint" then
+                       if exists button "Repair" of w then

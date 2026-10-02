@@ -62,7 +62,7 @@ public struct AnthropicProvider: LLMProvider {
         emit(.outlining)
 
         let system = PromptTemplates.system(for: request)
-        let user = repairing.map { RepairPrompt.make(invalidJSON: $0.invalidJSON, errors: $0.errors) }
+        let user = repairing.map { PromptTemplates.repair(for: request, context: $0) }
             ?? PromptTemplates.deck(for: request)
 
         // Force tool-use so the response is a deck object matching the schema —

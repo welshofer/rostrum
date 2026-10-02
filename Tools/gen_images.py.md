@@ -1,8 +1,54 @@
-# gen_images.py
+# Images for SunflowerDeck
 
-The image generator used by SunflowerDeck lives in the session scratchpad
-(not committed). It reads a JSON manifest of {name, prompt, size} and calls
-OpenAI gpt-image-1, caching by prompt hash so re-runs are free. It expects
-OPENAI_API_KEY in the environment and uses /etc/ssl/cert.pem for TLS (system
-Python has no bundled CA roots). SunflowerDeck reads the resulting PNGs from
-an images directory passed as its second argument.
+SunflowerDeck accepts existing PNG files. No image generator, API key, or
+scratchpad helper is required:
+
+```sh
+swift run SunflowerDeck /tmp/sunflower.pptx /absolute/path/to/images
+```
+
+The second argument is a directory containing the filenames below. Any valid
+PNG dimensions work; these are display proportions and suggested working
+sizes, not input requirements. Pictures fill their frames and are cropped
+without stretching, so leave room around important subjects.
+
+| Filename | Frame proportions | Suggested pixels |
+| --- | --- | --- |
+| `title-hero.png` | 16:9 background | 1920 × 1080 |
+| `div-botany.png` | 16:9 background | 1920 × 1080 |
+| `div-numbers.png` | 16:9 background | 1920 × 1080 |
+| `div-ecology.png` | 16:9 background | 1920 × 1080 |
+| `div-culture.png` | 16:9 background and 4.8:4.2 panel | 1920 × 1080; keep subject central |
+| `div-grow.png` | 16:9 background | 1920 × 1080 |
+| `closing.png` | 16:9 background | 1920 × 1080 |
+| `anatomy.png` | 1:1 panel | 1000 × 1000 |
+| `fibonacci.png` | 5.1:4.75 panel | 1020 × 950 |
+| `pollinator.png` | 3.7:4.3 panel | 740 × 860 |
+| `phytoremediation.png` | 4.7:4.1 panel | 940 × 820 |
+| `records.png` | 3.6:4.9 panel | 720 × 980 |
+| `harvest.png` | 4.7:4.2 panel | 940 × 840 |
+
+Missing images use palette fallbacks; an unreadable file is treated as missing.
+A readable but invalid PNG can fail generation. The example's historical image
+credits describe its original generated artwork; update those credits to match
+your supplied images before distributing the deck. Synthetic images are useful
+for testing placement but do not substantiate its botanical content.
+
+Inspect the resulting deck in PowerPoint, including crops, text contrast and
+font substitution (`Roobert PRO` is the example's typeface). For structural and
+native-open checks:
+
+```sh
+swift run pptx-tool validate /tmp/sunflower.pptx
+Tools/ppt-check.sh /tmp/sunflower.pptx
+```
+
+The second command requires macOS, PowerPoint and automation access. Structural
+lint and successful opening do not replace visual inspection.
+
+## Historical generator
+
+The old `gen_images.py` was a session-local helper and is not included in this
+repository. It called an image API and cached by prompt hash. Matching cache
+hits avoided new calls; new or changed requests could incur charges. These
+instructions do not depend on that helper, its credentials, or its TLS setup.

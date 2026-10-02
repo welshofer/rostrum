@@ -95,6 +95,25 @@ import Rostrum
         #expect(rendered == [0, 1, 2])
     }
 
+    @Test func failedMiddlePreviewPreservesOriginalSlideIdentity() throws {
+        let deck = try Presentation()
+        try deck.titleSlide("First")
+        try deck.titleSlide("Missing middle")
+        try deck.titleSlide("Third")
+        try deck.slides.remove(at: 0)
+        let middle = try deck.slides[1]
+        deck.package.removePart(at: middle.part.uri)
+        let url = try write(deck, named: "Missing-middle.pptx")
+        defer { try? FileManager.default.removeItem(at: url.deletingLastPathComponent()) }
+        let inspection = try DeckInspector.inspect(deckAt: url)
+        #expect(inspection.previewRecords.map(\.number) == [1, 2, 3])
+        #expect(inspection.previewRecords[1].svg == nil)
+        #expect(inspection.previews[1].contains("Preview unavailable"))
+        #expect(inspection.previewRecords[1].accessibilityLabel(total: 3) == "Slide 2 of 3. Preview unavailable")
+        #expect(inspection.previewRecords[2].accessibilityLabel(total: 3) == "Slide 3 of 3: Third")
+        #expect(inspection.previewRecords[2].svg != nil)
+    }
+
     @Test func aFileThatIsNotADeckFailsRatherThanReturningNonsense() throws {
         let root = URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent("lectern-inspect-\(UUID().uuidString)", isDirectory: true)

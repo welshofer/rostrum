@@ -45,7 +45,7 @@ public struct OpenAIProvider: LLMProvider {
         emit(.preparingSource)
         emit(.outlining)
 
-        let user = repairing.map { RepairPrompt.make(invalidJSON: $0.invalidJSON, errors: $0.errors) }
+        let user = repairing.map { PromptTemplates.repair(for: request, context: $0) }
             ?? PromptTemplates.deck(for: request)
 
         emit(.drafting(completed: 0, total: request.slideCount))

@@ -89,11 +89,11 @@ public struct DeckInspection: Sendable {
 
     public let slides: [SlideDigest]
 
-    /// One self-contained SVG per slide, index-aligned with `previewTitles`.
-    /// Empty when previews were skipped or every slide failed to render; a
-    /// missing picture is never a reason to fail an inspection.
-    public let previews: [String]
-    public let previewTitles: [String]
+    /// One record per original slide; a failed render remains an explicit slot.
+    /// Empty only when preview generation was skipped.
+    public let previewRecords: [SlidePreviewRecord]
+    public var previews: [String] { previewRecords.map(\.displaySVG) }
+    public var previewTitles: [String] { previewRecords.map(\.title) }
 
     public var hasFindings: Bool {
         !schemaIssues.isEmpty || !readWarnings.isEmpty || !outlineWarnings.isEmpty
@@ -173,20 +173,18 @@ public enum DeckInspector {
             digest(of: slide, detail: detail.slideDetails[slide.number - 1])
         }
 
-        var previews: [String] = []
-        var titles: [String] = []
+        var previews: [SlidePreviewRecord] = []
         if renderPreviews {
             let total = deck.slides.count
             onEvent(.rendering(done: 0, total: total))
             for index in 0..<total {
                 try Task.checkCancellation()
-                // Best-effort per slide, matching the write side: a slide that
-                // will not render costs its own thumbnail and nothing else.
-                // Both arrays are appended together so they stay aligned.
-                if let svg = try? deck.renderSVG(slideAt: index, pixelWidth: 640) {
-                    previews.append(svg)
-                    titles.append((try? deck.slides[index].title?.textFrame?.text) ?? "")
-                }
+                previews.append(SlidePreviewRecord(
+                    number: index + 1,
+                    title: (try? deck.slides[index].title?.textFrame?.text) ?? "",
+                    svg: try? deck.renderSVG(slideAt: index, pixelWidth: 640),
+                    geometry: SlidePreviewGeometry(width: deck.slideSize.width.inches,
+                                                   height: deck.slideSize.height.inches)))
                 onEvent(.rendering(done: index + 1, total: total))
             }
         }
@@ -220,8 +218,7 @@ public enum DeckInspector {
             readWarnings: deck.package.readWarnings,
             outlineWarnings: outline.warnings + detail.issues,
             slides: digests,
-            previews: previews,
-            previewTitles: titles)
+            previewRecords: previews)
     }
 
     private static func digest(of slide: SlideOutline,

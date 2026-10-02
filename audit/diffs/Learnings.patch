@@ -1,0 +1,87 @@
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -52,6 +52,24 @@
+ - Keys stay in Keychain; never log them or put them in defaults. Treat source
+   documents and model drafts as data, not instructions, at every model stage.
+ 
++## Performance and fidelity
++
++- Preserve request intent through Lectern's draft, repair and editor stages:
++  topic, audience, goal, slide-count target, notes preference and source material.
++  Keep the shared contract and goal-aware editorial guidance in PromptTemplates.
++  Grounded requests use supported facts only. Delimiters label untrusted data;
++  they do not guarantee model compliance.
++- Inspection previews keep one record per original slide, including failures.
++  Keep original numbering, failure labels and the deck's aspect ratio through
++  layout and rasterization. Bitmap cache keys include output dimensions.
++- Measure performance in Release on fixed inputs before changing algorithms.
++  Use Tools/rostrum-benchmark/README.md for timings, memory measurements and
++  payload/SVG preservation checks. Compare visual output in PowerPoint as well
++  as Lectern; passing structural lint alone does not prove fidelity.
++- README runnable blocks come from Examples/ReadmeSnippets/main.swift. After
++  changing an example, run `python3 scripts/readme-snippets.py --write`; the
++  default check and local gate detect drift.
++
+ ## Naming
+ 
+ - OOXML element names stay qualified as in the spec (`p:sldMasterIdLst`) in
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -81,6 +81,11 @@
+ Keychain items remain readable across builds. Simulator builds use
+ `Lectern/scripts/build-ios.sh` and its ad-hoc entitlement shim.
+ 
++The gate also runs offline acceptance-helper and project-wrapper regressions.
++For performance changes, use the [Release benchmark](Tools/rostrum-benchmark/README.md)
++with fixed decks and compare both timing and preservation results. Inspect
++representative output in Lectern and PowerPoint before claiming visual fidelity.
++
+ ## Style
+ 
+ The two runnable README examples are generated from
+--- a/Lectern/README.md
++++ b/Lectern/README.md
+@@ -122,6 +122,13 @@
+ 
+ ## The macOS app
+ 
++Inspection keeps every original slide position, showing a numbered placeholder
++when a preview fails. Contact sheets and filmstrips retain the deck's aspect
++ratio, including 4:3 and portrait. macOS bitmap previews share one WebKit host
++and a bounded cache whose keys include rendering dimensions. See the
++[preview and performance checks](../Tools/rostrum-benchmark/README.md) for
++reproducible snapshots and timing measurements.
++
+ The SwiftUI shell (`App/`) is a real macOS app. Its Xcode project is **generated
+ from `project.yml`** with [xcodegen] — `project.yml` is the checked-in source of
+ truth; the `.xcodeproj` is a build artifact (gitignored, like `.build/`). No
+--- a/scripts/verify.sh
++++ b/scripts/verify.sh
+@@ -8,7 +8,7 @@
+ # against the real toolchain before you push.
+ #
+ #   ./scripts/verify.sh            everything
+-#   ./scripts/verify.sh --fast     skip the app builds (the slow part)
++#   ./scripts/verify.sh --fast     skip app builds and app-hosted tests
+ #
+ # Install scripts/hooks/pre-push once (./scripts/install-hooks.sh) to have
+ # `git push` run this automatically and refuse the push if it fails.
+@@ -36,6 +36,9 @@
+ }
+ trap report EXIT
+ 
++step "Offline workflow checks"
++PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests
++
+ step "Rostrum build + tests"
+ swift build
+ swift test
+@@ -48,7 +51,7 @@
+ swift run ReadmeSnippets "$(mktemp -d)"
+ 
+ if [ "$fast" = true ]; then
+-  printf '\n\033[1mSkipped the app builds (--fast).\033[0m\n'
++  printf '\n\033[1mSkipped app builds and app-hosted tests (--fast).\033[0m\n'
+   exit 0
+ fi
+ 

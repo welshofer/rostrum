@@ -1,11 +1,7 @@
-// The README's two code snippets, compiled and run by CI so the documentation
-// can never rot: if a README example stops building or stops producing the
-// deck it promises, this target breaks the build.
-//
-// KEEP IN SYNC WITH README.md — the bodies of `quickStart()` and
-// `designAuthoring()` must match the snippets verbatim (only the output
-// paths and the sunflower.md location are parameterized, since a README
-// reader runs from their own directory).
+// Source of truth for the README's two runnable examples. After editing,
+// run `python3 scripts/readme-snippets.py --write`. The local and CI gates
+// check that the published blocks match, then compile and run this target.
+// Only output paths and the sunflower.md location differ in the README.
 //
 // Run:  swift run ReadmeSnippets [output-directory]
 

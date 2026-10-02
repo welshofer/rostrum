@@ -3,7 +3,7 @@
 The demo application for **Rostrum** — prove the full loop in one window: a
 prompt, optional PDF grounding, a few intent parameters, and one of many bundled
 `design.md` styles go in; a native `.pptx` written entirely by Rostrum comes out.
-Everything runs on-device except the LLM call. (Section references like §8.3
+Everything runs on-device except text and optional image-provider calls. (Section references like §8.3
 below cite the internal Lectern spec, which is not part of this repository.)
 
 ## Layout
@@ -33,11 +33,11 @@ flowchart LR
         KC["KeychainStore<br/>keys live only here"]
     end
     subgraph Core["LecternCore (UI-free, tested headless)"]
-        GEN["DeckGenerator<br/>draft → decode → validate<br/>→ one repair → render"]
+        GEN["DeckGenerator<br/>draft → validate → optional repair<br/>→ QA → normalize → illustrate → render"]
         IR["DeckIR lectern.deck/1<br/>structural + soft validation<br/>unknown layouts downgrade"]
         REN["DeckRenderer (actor)<br/>IR layout → Rostrum builder"]
         CAT["StyleCatalog<br/>150 bundled design.md"]
-        PROV["LLMProvider<br/>Anthropic · image providers"]
+        PROV["LLMProvider<br/>Anthropic · OpenAI<br/>optional image providers"]
     end
     R["Rostrum<br/>design-authoring builders<br/>→ native .pptx"]
     OUT[("deck.pptx<br/>opens clean in PowerPoint,<br/>Keynote, python-pptx")]
@@ -61,14 +61,17 @@ and unknown layouts downgrade to bullets rather than crash).
 
 ## What's built and proven (headless)
 
-`LecternCore` is complete and tested end-to-end against a fixture provider —
-the spec's fixture-first M1–M2: *the whole pipeline is proven before a single
-real network call*.
+`LecternCore` has fixture-backed pipeline tests. They verify deterministic
+behavior without paid calls; they do not establish live provider quality or
+PowerPoint acceptance for every output. The source and tests below are the
+repository's executable contract; internal spec references are historical context.
 
 - **DeckIR** (`lectern.deck/1`): `Codable` models, structural + soft validation
   (§8.3–8.4), unknown-layout downgrade (§8.5), and the one-shot repair prompt
   (§8.7). Nothing reaches the renderer unvalidated (invariant I3).
-- **DeckGenerator**: `draft → decode+validate → one repair → render`.
+- **DeckGenerator**: draft → decode/validate → at most one repair if needed →
+  optional QA revision → normalize/revalidate → optional illustrations → render.
+  A failed or structurally invalid QA revision keeps the validated draft.
 - **DeckInspector / DeckExporter**: the other direction. The app opens on a
   fork — **Create** or **Inspect** — and Inspect (⌘I) takes any `.pptx`, one
   Lectern made or one that arrived by email, and shows what it is made of:
@@ -119,6 +122,13 @@ cd Lectern && swift test
 
 ## The macOS app
 
+Inspection keeps every original slide position, showing a numbered placeholder
+when a preview fails. Contact sheets and filmstrips retain the deck's aspect
+ratio, including 4:3 and portrait. macOS bitmap previews share one WebKit host
+and a bounded cache whose keys include rendering dimensions. See the
+[preview and performance checks](../Tools/rostrum-benchmark/README.md) for
+reproducible snapshots and timing measurements.
+
 The SwiftUI shell (`App/`) is a real macOS app. Its Xcode project is **generated
 from `project.yml`** with [xcodegen] — `project.yml` is the checked-in source of
 truth; the `.xcodeproj` is a build artifact (gitignored, like `.build/`). No
@@ -126,8 +136,8 @@ manual project bookkeeping, no merge conflicts in a pbxproj.
 
 ```sh
 cd Lectern
-xcodegen generate                                              # project.yml → Lectern.xcodeproj
-xcodebuild -project Lectern.xcodeproj -scheme Lectern build     # or just open it in Xcode
+scripts/build.sh       # generates the project as needed; honors .signing.local
+scripts/test-app.sh    # app-hosted tests, with the same signing configuration
 ```
 
 ## The iOS/iPadOS app
@@ -220,19 +230,20 @@ Keys and provider choice are wired end-to-end (§10 / invariant I1):
   non-secret choice (provider/model) and reads key *presence* from the
   Keychain.
 
-## What remains (M3–M5)
+## Implemented behavior and remaining work
 
-- **Live providers** (§7.2): `AnthropicProvider` is written (URLSession, no vendor
-  SDK) and selected automatically once a key is stored; OpenAI / Gemini / Custom
-  follow the same `LLMProvider` shape. The two-stage outline→deck pipeline and the
-  PDF grounding ladder (§7.4) live here. *(The live round-trip needs a real key to
-  smoke-test — not exercisable in headless CI.)*
-- **History** (SwiftData, §11): persist past decks in the sidebar (currently a
-  stub).
-- **PriceTable** cost estimate (§10.3) and **Liquid Glass** polish (§3).
-
-The `LLMProvider` protocol, `GenerationEvent` stream, and `LecternError` taxonomy
-(§12) are defined, so a new live provider is a drop-in conformance.
+- Anthropic and OpenAI text providers are wired through
+  `Sources/LecternCore/Providers/ProviderFactory.swift`; Gemini and Custom text
+  providers remain unwired. Gemini/OpenAI image providers are separate.
+- `Storage/DeckLibrary.swift` and `App/AppState.swift` load, rename and delete
+  saved deck files. This is a file-backed library, not a pending SwiftData store.
+- `Providers/PriceTable.swift` supplies estimates displayed by AppState. These
+  are estimates, not a provider billing reconciliation.
+- Generation cancellation is available in ContentView and invalidates the
+  active RunGate before cancelling its task. Tests cover stale run rejection.
+- Live model quality and PowerPoint fidelity still need sample-based inspection;
+  fixture tests cannot substitute for those checks. See ROADMAP.md for other
+  deliberate deferrals rather than treating the original M3–M5 plan as current.
 
 ## Open items
 

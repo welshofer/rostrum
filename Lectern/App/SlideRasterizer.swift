@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import LecternCore
 #if os(macOS)
 import AppKit
 
@@ -53,7 +54,8 @@ final class SlideRasterizer {
     var cacheCount: Int { cache.count }
 
     func image(for svg: String, pixelWidth: CGFloat = 640) async -> Image? {
-        let key = Self.key(for: svg)
+        let size = Self.size(for: svg, pixelWidth: pixelWidth)
+        let key = Self.key(for: svg, size: size)
         if let hit = cached(key) { return hit }
 
         await acquire()
@@ -63,7 +65,8 @@ final class SlideRasterizer {
 
         let host = host ?? SnapshotHost()
         self.host = host
-        guard let image = await host.snapshot(svg: svg, pixelWidth: pixelWidth) else { return nil }
+        guard let bitmap = await host.snapshot(svg: svg, size: size) else { return nil }
+        let image = Image(nsImage: bitmap)
         remember(image, forKey: key)
         return image
     }
@@ -75,15 +78,19 @@ final class SlideRasterizer {
         cache.insert(image, forKey: key)
     }
 
-    /// FNV-1a over the markup: stable within a run and cheap on strings this
-    /// size, where `hashValue` would also work but says less about intent.
-    private static func key(for svg: String) -> String {
-        var hash: UInt64 = 0xcbf2_9ce4_8422_2325
-        for byte in svg.utf8 {
-            hash ^= UInt64(byte)
-            hash = hash &* 0x1000_0000_01b3
-        }
-        return String(hash, radix: 16)
+    static func size(for svg: String, pixelWidth: CGFloat = 640) -> NSSize {
+        let geometry = SlidePreviewGeometry(svg: svg).fitted(toWidth: Double(pixelWidth))
+        return NSSize(width: geometry.width, height: geometry.height)
+    }
+
+    /// The cache is process-local. Swift's string hashing avoids a per-byte Swift
+    /// loop over embedded image payloads; dimensions separate different resolutions.
+    static func key(for svg: String, size: NSSize) -> String {
+        var hasher = Hasher()
+        hasher.combine(svg)
+        hasher.combine(size.width)
+        hasher.combine(size.height)
+        return String(hasher.finalize())
     }
 
     private func acquire() async {
@@ -102,7 +109,7 @@ final class SlideRasterizer {
 /// nothing. An ordinary borderless `NSWindow` placed far off any display is the
 /// documented way to give it one without showing anything.
 @MainActor
-private final class SnapshotHost: NSObject, WKNavigationDelegate {
+final class SnapshotHost: NSObject, WKNavigationDelegate {
     private let window: NSWindow
     private let webView: WKWebView
     private var loaded: CheckedContinuation<Void, Never>?
@@ -136,9 +143,8 @@ private final class SnapshotHost: NSObject, WKNavigationDelegate {
         window.orderBack(nil)
     }
 
-    func snapshot(svg: String, pixelWidth: CGFloat) async -> Image? {
-        let height = (pixelWidth * 9 / 16).rounded()
-        let size = NSSize(width: pixelWidth, height: height)
+    func snapshot(svg: String, size: NSSize) async -> NSImage? {
+        guard size.width >= 1, size.height >= 1 else { return nil }
         window.setContentSize(size)
         webView.frame = NSRect(origin: .zero, size: size)
 
@@ -150,7 +156,7 @@ private final class SnapshotHost: NSObject, WKNavigationDelegate {
         let config = WKSnapshotConfiguration()
         config.rect = NSRect(origin: .zero, size: size)
         guard let image = try? await webView.takeSnapshot(configuration: config) else { return nil }
-        return Image(nsImage: image)
+        return image
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

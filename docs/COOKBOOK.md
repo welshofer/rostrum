@@ -119,8 +119,12 @@ try dest.slides.importAll(from: source)   // brings images, charts, layouts, rel
 
 ```sh
 swift run pptx-tool inspect out.pptx     # structured report
-swift run pptx-tool validate out.pptx    # exit 0 if PowerPoint will accept it
+swift run pptx-tool validate out.pptx    # modeled structural lint; exit 1 on reported issues
 ```
+
+A successful lint is not proof of PowerPoint acceptance: it checks modeled
+required attributes, not every relationship or consumer requirement. For
+packaging/XML changes also run `Tools/ppt-check.sh out.pptx` on macOS.
 
 ## Determinism
 

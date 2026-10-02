@@ -1,0 +1,241 @@
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -43,6 +43,15 @@
+ integrity check — and reports whether it opens clean or triggers the repair
+ dialog. This catches format bugs that `xmllint`, python-pptx, and LibreOffice
+ all tolerate. If you touch the packaging or a part's XML, run it.
++
++The helper opens a uniquely named private copy, matches its absolute path,
++and closes only that copy after a clean open. It never closes unrelated work.
++Exit codes are 0 for accepted, 1 for repair or a target rejection dialog, 2 for invalid input, 3 for timeout,
++and 4 for automation failure or an ambiguous dialog. Failed checks retain the
++copy and print its path; inspect and close that disposable presentation yourself.
++PowerPoint and macOS Automation/Accessibility access must be available. An
++automation failure is not evidence that the deck is valid or invalid.
++Run the helper's offline checks with `python3 -m unittest discover -s scripts/tests`.
+ 
+ ## Testing conventions
+ 
+--- a/Tools/ppt-check.py
++++ b/Tools/ppt-check.py
+@@ -0,0 +1,108 @@
++#!/usr/bin/env python3
++"""Check a private copy without closing or modifying the user's presentations.
++
++Exit codes: 0 accepted, 1 repair/rejected dialog, 2 invalid input, 3 timeout, 4 automation error.
++Ambiguous dialogs fail closed and remain untouched. An unsuccessful check retains
++its private copy so PowerPoint never refers to a file we deleted underneath it.
++"""
++import argparse
++from pathlib import Path
++import shutil
++import subprocess
++import tempfile
++import zipfile
++
++OBSERVE = r'''
++on run argv
++    set targetPath to item 1 of argv
++    set targetName to item 2 of argv
++    set acceptedSamples to 0
++    repeat 25 times
++        delay 1
++        tell application "System Events"
++            tell process "Microsoft PowerPoint"
++                repeat with w in windows
++                    set windowName to name of w
++                    if windowName contains targetName and windowName contains "Repaired" then return "REPAIR"
++                    -- Newer Office presents repair as a document-backed AXDialog
++                    -- with nested buttons, not the older top-level modal button.
++                    if role of w is "AXDialog" or subrole of w is "AXDialog" then
++                        try
++                            if (value of attribute "AXDocument" of w) is ("file://" & targetPath) then return "REJECTED-DIALOG"
++                        end try
++                        return "AMBIGUOUS-DIALOG"
++                    end if
++                    if windowName contains targetName or windowName is "" or windowName is "Microsoft PowerPoint" then
++                      if exists button "Repair" of w then
++                        -- A modal dialog can belong to unrelated user work. Do not click it.
++                        set dialogText to windowName
++                        repeat with t in static texts of w
++                            set dialogText to dialogText & " " & value of t
++                        end repeat
++                        if dialogText contains targetName then return "REPAIR"
++                        return "AMBIGUOUS-DIALOG"
++                      end if
++                    end if
++                end repeat
++            end tell
++        end tell
++        set foundTarget to false
++        tell application "Microsoft PowerPoint"
++            set expectedName to targetName & ".pptx"
++            if exists presentation expectedName then
++                set targetPresentation to presentation expectedName
++                if (full name of targetPresentation as text) is targetPath then
++                    set foundTarget to true
++                    set acceptedSamples to acceptedSamples + 1
++                    if acceptedSamples >= 2 then
++                        if not saved of targetPresentation then return "UNSAVED-COPY"
++                        close targetPresentation saving no
++                        return "OK"
++                    end if
++                end if
++            end if
++        end tell
++        if not foundTarget then set acceptedSamples to 0
++    end repeat
++    return "TIMEOUT"
++end run
++'''
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("file", type=Path)
++    args = parser.parse_args()
++    source = args.file.expanduser().resolve()
++    if not source.is_file() or source.suffix.lower() != ".pptx" or not zipfile.is_zipfile(source):
++        parser.error("expected an existing .pptx ZIP file")
++    folder = Path(tempfile.mkdtemp(prefix="rostrum-ppt-check-"))
++    target = folder / (folder.name + ".pptx")
++    try:
++        shutil.copy2(source, target)
++        opened = subprocess.run(["open", "-a", "Microsoft PowerPoint", str(target)],
++                                capture_output=True, text=True, timeout=15)
++        if opened.returncode:
++            raise RuntimeError("LaunchServices could not open the copy")
++        observed = subprocess.run(["osascript", "-", str(target), target.stem],
++                                  input=OBSERVE, capture_output=True, text=True, timeout=90)
++        if observed.returncode:
++            raise RuntimeError("PowerPoint observation failed: " + observed.stderr.strip())
++        result = observed.stdout.strip()
++        code = {"OK": 0, "REPAIR": 1, "REJECTED-DIALOG": 1, "TIMEOUT": 3}.get(result, 4)
++        print(f"{result if code != 4 else 'AUTOMATION: ' + result}  {source.name}")
++        if code == 0:
++            shutil.rmtree(folder)
++        else:
++            print(f"Private copy retained for inspection: {target}")
++        return code
++    except subprocess.TimeoutExpired:
++        print(f"TIMEOUT  {source.name}; private copy retained: {target}")
++        return 3
++    except (OSError, RuntimeError) as error:
++        print(f"AUTOMATION  {error}; private copy retained: {target}")
++        return 4
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+--- a/Tools/ppt-check.sh
++++ b/Tools/ppt-check.sh
+@@ -1,46 +1,3 @@
+ #!/bin/zsh
+-# PowerPoint acceptance oracle. Opens via LaunchServices (the double-click
+-# path that runs the strict integrity check), then detects BOTH failure
+-# surfaces: the modal Repair dialog AND the "<name> - Repaired" title bar
+-# that newer PowerPoint uses when it silently repairs on open.
+-f="$1"
+-osascript -e 'tell application "Microsoft PowerPoint" to close every presentation saving no' >/dev/null 2>&1
+-open -a "Microsoft PowerPoint" "$f"
+-result=$(osascript - <<'APPLESCRIPT' 2>&1
+-with timeout of 40 seconds
+-    repeat with i from 1 to 25
+-        delay 1
+-        tell application "System Events"
+-            if exists process "Microsoft PowerPoint" then
+-                tell process "Microsoft PowerPoint"
+-                    repeat with w in windows
+-                        set wname to name of w
+-                        try
+-                            if exists button "Repair" of w then
+-                                click button "Cancel" of w
+-                                return "REPAIR-DIALOG"
+-                            end if
+-                        end try
+-                        if wname contains "Repaired" then return "REPAIRED-TITLE"
+-                    end repeat
+-                end tell
+-            end if
+-        end tell
+-        tell application "Microsoft PowerPoint"
+-            if (count of presentations) > 0 then
+-                set nm to name of presentation 1
+-                close presentation 1 saving no
+-                return "OK:" & nm
+-            end if
+-        end tell
+-    end repeat
+-    return "TIMEOUT"
+-end timeout
+-APPLESCRIPT
+-)
+-case "$result" in
+-    OK:*)              echo "OK      $(basename $f)";;
+-    REPAIR-DIALOG)     echo "REPAIR  $(basename $f)  (modal dialog)";;
+-    REPAIRED-TITLE)    echo "REPAIR  $(basename $f)  (silent, title-bar)";;
+-    *)                 echo "STUCK   $(basename $f)  [$result]";;
+-esac
++# LaunchServices acceptance check; see ppt-check.py for ownership and exit codes.
++exec python3 "${0:A:h}/ppt-check.py" "$@"
+--- a/scripts/tests/test_ppt_check.py
++++ b/scripts/tests/test_ppt_check.py
+@@ -0,0 +1,58 @@
++"""Acceptance-helper process contract, without launching Office."""
++import importlib.util
++import io
++from pathlib import Path
++import subprocess
++import tempfile
++import unittest
++from unittest.mock import patch
++import zipfile
++
++spec = importlib.util.spec_from_file_location('ppt_check', Path(__file__).resolve().parents[2] / 'Tools/ppt-check.py')
++module = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(module)
++
++class AcceptanceTests(unittest.TestCase):
++    def test_status_and_owned_copy(self):
++        for status, code in [('OK', 0), ('REPAIR', 1), ('REJECTED-DIALOG', 1), ('TIMEOUT', 3), ('AMBIGUOUS-DIALOG', 4), ('UNSAVED-COPY', 4)]:
++            with self.subTest(status=status), tempfile.TemporaryDirectory() as folder:
++                source = Path(folder) / 'user source.pptx'
++                with zipfile.ZipFile(source, 'w') as archive:
++                    archive.writestr('sentinel', 'unchanged')
++                original = source.read_bytes()
++                owned = Path(folder) / 'owned'
++                owned.mkdir()
++                calls = []
++                def run(args, **kwargs):
++                    calls.append(args)
++                    if args[0] == 'open':
++                        self.assertNotEqual(Path(args[-1]), source)
++                        self.assertEqual(Path(args[-1]).read_bytes(), original)
++                        return subprocess.CompletedProcess(args, 0, '')
++                    self.assertEqual(args[2], calls[0][-1])
++                    self.assertNotIn('close every', kwargs['input'])
++                    return subprocess.CompletedProcess(args, 0, status)
++                with patch.object(module.tempfile, 'mkdtemp', return_value=str(owned)), patch.object(module.subprocess, 'run', side_effect=run), patch('sys.argv', ['ppt-check', str(source)]), patch('sys.stdout', new_callable=io.StringIO):
++                    self.assertEqual(module.main(), code)
++                self.assertEqual(source.read_bytes(), original)
++                self.assertEqual(owned.exists(), code != 0)
++
++    def test_automation_failure(self):
++        with tempfile.TemporaryDirectory() as folder:
++            source = Path(folder) / 'test.pptx'
++            with zipfile.ZipFile(source, 'w') as archive:
++                archive.writestr('test', 'test')
++            for failure, expected in [(OSError('no automation'), 4), (subprocess.TimeoutExpired('osascript', 40), 3)]:
++                owned = Path(folder) / str(expected)
++                owned.mkdir()
++                with patch.object(module.tempfile, 'mkdtemp', return_value=str(owned)), patch.object(module.subprocess, 'run', side_effect=failure), patch('sys.argv', ['ppt-check', str(source)]), patch('sys.stdout', new_callable=io.StringIO):
++                    self.assertEqual(module.main(), expected)
++
++    def test_missing_input(self):
++        with patch('sys.argv', ['ppt-check', '/missing/never.pptx']), patch('sys.stderr', new_callable=io.StringIO):
++            with self.assertRaises(SystemExit) as error:
++                module.main()
++            self.assertEqual(error.exception.code, 2)
++
++if __name__ == '__main__':
++    unittest.main()
