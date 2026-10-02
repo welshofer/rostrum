@@ -17,7 +17,7 @@ let commands = ["inspect", "validate", "extract", "render"]
 guard args.count >= 3, commands.contains(args[1]) else {
     print("usage: pptx-tool <inspect|validate> <file.pptx> [--max-uncompressed BYTES]")
     print("       pptx-tool extract <file.pptx> <directory> [--max-uncompressed BYTES]")
-    print("       pptx-tool render <file.pptx> <directory> [--font FONT_PATH ...] [--strict]")
+    print("       pptx-tool render <file.pptx> <directory> [--font FONT_PATH ...] [--strict] [--notes]")
     print("  inspect   structured report of the deck's parts + schema check (exit 1 on issues)")
     print("  validate  required-attribute/schema lint (does not certify Office or rendering)")
     print("  extract   write the deck's text as Markdown, plus per-slide media and chart CSVs")
@@ -86,11 +86,15 @@ if command == "render" {
         let directory = URL(fileURLWithPath: args[3], isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         for index in 0..<deck.slides.count {
-            let result = try deck.renderSVGReportingProblems(slideAt: index, strictRendering: args.contains("--strict"))
+            let notes = args.contains("--notes")
+            if notes, try !deck.slides[index].hasNotes { continue }
+            let result = try notes
+                ? deck.renderNotesSVGReportingProblems(slideAt: index, strictRendering: args.contains("--strict"))
+                : deck.renderSVGReportingProblems(slideAt: index, strictRendering: args.contains("--strict"))
             for issue in result.problems.fidelityIssues {
                 FileHandle.standardError.write(Data("pptx-tool: slide \(index + 1) \(issue.code.rawValue) \(issue.location.path): \(issue.message)\n".utf8))
             }
-            let url = directory.appendingPathComponent(String(format: "slide-%02d.svg", index + 1))
+            let url = directory.appendingPathComponent(String(format: notes ? "notes-%02d.svg" : "slide-%02d.svg", index + 1))
             try result.svg.write(to: url, atomically: true, encoding: .utf8)
             print(url.path)
         }

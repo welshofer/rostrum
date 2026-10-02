@@ -33,6 +33,7 @@ struct SVGRenderer {
     let fonts: FontLibrary
     /// 1-based position of this slide, substituted into `slidenum` fields.
     let slideNumber: Int
+    var notesContext: NotesPageRenderContext? = nil
 
     private let emuPerPoint = 12700
     private let diagnostics = RenderDiagnosticCollector()
@@ -45,7 +46,7 @@ struct SVGRenderer {
         _ = try slidePart.dom()
         diagnostics.reset()
         diagnostics.location = FidelityLocation(slideIndex: slideNumber - 1,
-            partURI: slidePart.uri.description, path: "/p:sld")
+            partURI: slidePart.uri.description, path: notesContext == nil ? "/p:sld" : "/p:notes")
         // p:sldSz comes from the file too, and the aspect-ratio conversion below
         // goes through Int(_: Double), which traps when the double is out of
         // range — so bound the dimensions before dividing by them.
@@ -63,7 +64,7 @@ struct SVGRenderer {
         // live on the layout and the master, not on the slide.
         let (chain, inheritedProblems) = inheritanceChain()
         diagnostics.themeEffectOverrideProblem = themeEffectOverrideProblem(in: [slidePart, chain.layout].compactMap { $0 })
-        if inheritedProblems.layoutUnresolved || inheritedProblems.masterUnresolved {
+        if notesContext == nil && (inheritedProblems.layoutUnresolved || inheritedProblems.masterUnresolved) {
             diagnostics.record(.unresolvedInheritance, .missingResource, "The slide layout/master inheritance chain is incomplete.")
         }
         for owner in [slidePart, chain.layout, chain.master].compactMap({ $0 }) {
@@ -108,7 +109,7 @@ struct SVGRenderer {
         let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\(pixelWidth)\" height=\"\(pxH)\" "
             + "viewBox=\"0 0 \(w) \(h)\"><defs>\(defs)</defs>\(body)</svg>"
         var problems = inheritedProblems
-        problems.fidelityIssues = diagnostics.issues
+        problems.fidelityIssues += diagnostics.issues
         return (svg, problems)
     }
 
@@ -125,6 +126,7 @@ struct SVGRenderer {
     /// can tell a damaged deck apart from one we rendered wrong.
     private func inheritanceChain()
         -> (chain: (layout: Part?, master: Part?), problems: SlideRenderProblems) {
+        if let notesContext { return ((nil, notesContext.master), notesContext.problems) }
         guard let rel = slidePart.rels.first(ofType: RelType.slideLayout),
               let layout = try? package.part(
                 at: PackURI.resolve(target: rel.target, relativeTo: slidePart.uri.baseURI))
@@ -155,7 +157,8 @@ struct SVGRenderer {
     /// the master's furniture.
     private func showsMasterShapes(chain: (layout: Part?, master: Part?)) -> Bool {
         for part in [slidePart, chain.layout].compactMap({ $0 }) {
-            if (try? part.dom())?[attribute: "showMasterSp"] == "0" { return false }
+            let visibility = (try? part.dom())?[attribute: "showMasterSp"]
+            if visibility == "0" || (notesContext != nil && visibility == "false") { return false }
         }
         return true
     }
@@ -185,6 +188,18 @@ struct SVGRenderer {
 
     private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
                              defs: inout String) -> String {
+        let sp = owner === slidePart ? notesContext?.effectiveShape(sp) ?? sp : sp
+        if notesContext != nil {
+            let location = diagnostics.location
+            if let context = notesContext, owner === slidePart, let master = context.master {
+                for style in context.styles(for: sp) {
+                    let wrapper = XML.Element("p:sp", children: [.element(style)])
+                    diagnostics.inspect(wrapper, owner: master, slideIndex: slideNumber - 1,
+                        path: "/p:notesMaster/" + style.name, package: package)
+                }
+            }
+            diagnostics.inspect(sp, owner: owner, slideIndex: slideNumber - 1, path: location.path, package: package)
+        }
         guard let spPr = sp.firstChild(named: "p:spPr") else { return "" }
         diagnoseReferencedEffects(of: sp, properties: spPr)
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
@@ -194,7 +209,15 @@ struct SVGRenderer {
         let stroke = strokeAttrs(spPr)
         if let fill { out += geometry(prst, f, fill: fill, stroke: stroke) }
         else if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
-        if let txBody = sp.firstChild(named: "p:txBody") {
+        if let notesContext, NotesPageRenderContext.placeholderType(sp) == "sldImg" {
+            // Native Office notes images keep slide proportions and paint the
+            // unused image frame white, even when its shape has a:noFill.
+            out += geometry(prst, f, fill: fill ?? "#FFFFFF", stroke: "")
+            if prst != "rect" { diagnostics.record(.unsupportedGeometry, .approximation, "Slide-image placeholder clipping to non-rectangular geometry is not rendered.") }
+            out += "<image x=\"\(f.0)\" y=\"\(f.1)\" width=\"\(f.2)\" height=\"\(f.3)\" preserveAspectRatio=\"xMidYMid meet\" href=\"\(notesContext.thumbnail)\"/>"
+            // Draw the inherited/local image frame above the thumbnail.
+            if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
+        } else if let txBody = sp.firstChild(named: "p:txBody") {
             out += renderText(txBody, box: f,
                               inheriting: inheritedRunDefaults(for: sp, ownedBy: owner))
         }
@@ -301,7 +324,7 @@ struct SVGRenderer {
     /// applying a template is supposed to change.
     private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
         guard owner === slidePart else { return nil }
-        let styles = RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
+        let styles = notesContext?.styles(for: sp) ?? RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
         guard !styles.isEmpty else { return nil }
         let resolved = XML.Element("rostrum:inheritedStyles")
         for style in styles { resolved.appendElement(style) }
