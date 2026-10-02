@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "license": "CC0; original project test text and geometry",
+  "producer": "NotesPageLayoutTests using Rostrum; Office print output is an independent consumer oracle",
+  "officeVersion": "Microsoft PowerPoint 16.113.3 for Mac",
+  "date": "2026-10-01",
+  "export": "Local File > Print > Notes > Save as PDF; US Letter; no repair dialog observed",
+  "rasterizer": "PyMuPDF 1.27.2.3, RGB 1200 pixel width",
+  "files": {
+    "authored-notes.pptx": "f8bb014675913a26e5fe9fa86368ff7976f24010f31d74a4d21c110b04f5ba5e",
+    "authored-notes-office.pdf": "3d2884d759a0286409f5ece7a03ba0ef436a133fdd869c30de92391c5ad625c3",
+    "authored-notes-office.png": "9ba1c4ca601465224c4b6731ce16227020fe0109eb0aaae05ed5aa99b9b60444",
+    "imported-notes.pptx": "2a8801e2c07358955ac1385c30b862d9709fdbf51ed08649c9d415bc954a2229",
+    "imported-notes-office.pdf": "bcf71efea2247af527a25dca31ee7008afef99623349c726ec8bf3ce88aba1fb",
+    "imported-notes-office.png": "d5943cac6c7b4029ec63369a27b8f60adc9436fb07cc7087f31561b33506df51"
+  },
+  "importReference": "../Conformance/python-tables-v3-notes-office.png",
+  "comparison": {
+    "differingPixelFraction": 0.0,
+    "channelTolerance": 16,
+    "fractionTolerance": 0.005,
+    "passed": true
+  },
+  "scope": "Authored default slide-image/body layout visibly confirmed; import into destination of same slide size matches one independent source notes-page PNG exactly. Conflicting notes masters remain unsupported."
+}

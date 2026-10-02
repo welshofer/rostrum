@@ -12,7 +12,7 @@ assert pptx.__version__ == '1.0.2', 'fixture producer version changed; review an
 root = Path(__file__).resolve().parents[2] / 'Tests/RostrumTests/Fixtures/Conformance'
 root.mkdir(exist_ok=True)
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--id', default='python-tables-v2', help='new fixture ID; existing fixtures are never overwritten')
+parser.add_argument('--id', default='python-tables-v3', help='new fixture ID; existing fixtures are never overwritten')
 args = parser.parse_args()
 if not re.fullmatch(r'[a-z0-9-]+', args.id): parser.error('fixture ID must use lowercase letters, digits and hyphens')
 path = root / (args.id + '.pptx')
@@ -46,6 +46,17 @@ for text, bold, size in [('Mixed ',False,18), ('bold',True,24), (' text',False,1
     run.font.name = 'Arial'; run.font.bold = bold; run.font.size = Pt(size)
 t.columns[0].width = Inches(3); t.columns[1].width = Inches(2)
 s.notes_slide.notes_text_frame.text = 'Independent table fixture notes.'
+# python-pptx 1.0.2 creates the notes-master relationship but omits the
+# presentation's explicit registration. PowerPoint opens the package, yet
+# cannot inherit notes placeholder positions without this element.
+from pptx.opc.constants import RELATIONSHIP_TYPE as RT
+from pptx.oxml.ns import qn
+notes_rel = next(rel for rel in p.part.rels.values() if rel.reltype == RT.NOTES_MASTER)
+notes_list = OxmlElement('p:notesMasterIdLst')
+notes_id = OxmlElement('p:notesMasterId'); notes_id.set(qn('r:id'), notes_rel.rId)
+notes_list.append(notes_id)
+master_list = p._element.find(qn('p:sldMasterIdLst'))
+p._element.insert(p._element.index(master_list) + 1, notes_list)
 p.save(path)
 manifest['fixtures'].append({
     'id': args.id, 'file': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),

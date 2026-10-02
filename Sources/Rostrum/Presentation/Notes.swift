@@ -70,7 +70,9 @@ extension Slide {
     }
 
     private func createNotesPart() throws -> Part {
+        let size = try NotesPageTemplate.pageSize(in: package.mainDocumentPart().dom())
         let master = try ensureNotesMaster()
+        let content = try NotesPageTemplate.slide(master: master.dom(), size: size)
 
         var n = 1
         while package.parts[PackURI("/ppt/notesSlides/notesSlide\(n).xml")] != nil { n += 1 }
@@ -78,7 +80,7 @@ extension Slide {
 
         let notes = package.addPart(
             uri: uri, contentType: ContentType.notesSlide,
-            blob: Data(Self.notesSlideXML.utf8))
+            blob: content)
         notes.rels.add(type: RelType.notesMaster, target: uri.relativeReference(to: master.uri))
         notes.rels.add(type: RelType.slide, target: uri.relativeReference(to: part.uri))
         part.rels.add(type: RelType.notesSlide, target: part.uri.relativeReference(to: uri))
@@ -98,9 +100,10 @@ extension Slide {
         while package.parts[PackURI("/ppt/notesMasters/notesMaster\(n).xml")] != nil { n += 1 }
         let uri = PackURI("/ppt/notesMasters/notesMaster\(n).xml")
 
+        let size = try NotesPageTemplate.pageSize(in: presentation.dom())
         let master = package.addPart(
             uri: uri, contentType: ContentType.notesMaster,
-            blob: Data(Self.notesMasterXML.utf8))
+            blob: NotesPageTemplate.master(size: size))
         // Office invariant: every master owns a DISTINCT theme part — sharing
         // the slide master's theme1 trips PowerPoint's repair dialog.
         var themeN = 1
@@ -138,13 +141,4 @@ extension Slide {
         return nil
     }
 
-    static let notesSlideXML = """
-        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <p:notes xmlns:a="\(MinimalTemplate.nsA)" xmlns:r="\(MinimalTemplate.nsR)" xmlns:p="\(MinimalTemplate.nsP)"><p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Notes Placeholder 1"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr><p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp></p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:notes>
-        """
-
-    static let notesMasterXML = """
-        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <p:notesMaster xmlns:a="\(MinimalTemplate.nsA)" xmlns:r="\(MinimalTemplate.nsR)" xmlns:p="\(MinimalTemplate.nsP)"><p:cSld><p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree></p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/></p:notesMaster>
-        """
 }

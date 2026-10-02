@@ -12,7 +12,7 @@ import Testing
         let tables = try deck.slides[index].shapes.compactMap { ($0 as? TableFrame)?.table }
         return try #require(tables.first)
     }
-    @Test(arguments: ["python-tables", "python-tables-v2"])
+    @Test(arguments: ["python-tables", "python-tables-v2", "python-tables-v3"])
     func independentTableReadEditAndReopen(_ name: String) throws {
         let deck = try fixture(name)
         let t = try table(deck)
@@ -31,7 +31,7 @@ import Testing
         #expect(try table(reopened).cell(2, 1).tc.firstChild(named: "a:tcPr")?[attribute: "marR"] == "210312")
         #expect(try reopened.serializedData() == Presentation(data: reopened.serializedData()).serializedData())
     }
-    @Test(arguments: ["python-tables", "python-tables-v2"])
+    @Test(arguments: ["python-tables", "python-tables-v2", "python-tables-v3"])
     func tableSurvivesDuplicateAndImport(_ name: String) throws {
         let source = try fixture(name)
         _ = try source.slides.duplicate(at: 0)
