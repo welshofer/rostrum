@@ -149,6 +149,88 @@ import Rostrum
         #expect(try Presentation(contentsOf: file).serializedData() == saved)
     }
 
+    @Test func tableShadowAndKerningSurviveFileBackedPreviewAndExport() throws {
+        let deck = try Presentation()
+        let slide = try deck.slides[0]
+        let authoredTable = try slide.shapes.addTable(rows: 1, columns: 2,
+            frame: Rect(x: .points(40), y: .points(40), width: .points(400), height: .points(80)))
+        let styleID = "{73295817-8F61-41B6-8476-55A03F993E02}"
+        try authoredTable.setStyleDefinition(XML.parse(Data("""
+        <a:tblStyle xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" styleId="\(styleID)" styleName="Pipeline shadow">
+        <a:tblBg><a:fill><a:solidFill><a:srgbClr val="EEEEEE"/></a:solidFill></a:fill>
+        <a:effect><a:effectLst><a:outerShdw blurRad="50800" dist="25400" dir="5400000"><a:srgbClr val="123456"><a:alpha val="25000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effect></a:tblBg>
+        <a:wholeTbl><a:tcStyle><a:tcBdr/><a:fill><a:noFill/></a:fill></a:tcStyle></a:wholeTbl>
+        </a:tblStyle>
+        """.utf8)))
+        for (column, text) in ["AV office", "AV retained"].enumerated() {
+            let cell = try authoredTable.cell(0, column)
+            cell.text = text
+            cell.textFrame.paragraphs[0].runs[0].fontSize = 12
+        }
+        // Author the DrawingML attribute through the public package DOM; the
+        // saved file is what the inspector and exporter independently reopen.
+        func cells(in slide: Slide) throws -> [XML.Element] {
+            let row = try #require(slide.part.dom().firstChild(named: "p:cSld")?
+                .firstChild(named: "p:spTree")?.firstChild(named: "p:graphicFrame")?
+                .firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
+                .firstChild(named: "a:tbl")?.firstChild(named: "a:tr"))
+            return row.children(named: "a:tc")
+        }
+        let authoredCells = try cells(in: slide)
+        #expect(authoredCells.count == 2)
+        for (cell, threshold) in zip(authoredCells, ["2400", "0"]) {
+            let properties = try #require(cell.firstChild(named: "a:txBody")?
+                .firstChild(named: "a:p")?.firstChild(named: "a:r")?.firstChild(named: "a:rPr"))
+            properties[attribute: "kern"] = threshold
+        }
+        slide.part.markDirty()
+        try slide.setNotes("The table shadow is a preview approximation; retain the original formatting.")
+
+        let directory = try scratch()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let file = directory.appendingPathComponent("ShadowAndKerning.pptx")
+        try deck.save(to: file)
+        let sourceBytes = try Data(contentsOf: file)
+        let inspection = try DeckInspector.inspect(deckAt: file)
+        #expect(inspection.slideCount == 1 && inspection.previewSlideNumbers == [1])
+        #expect(inspection.slides[0].tables[0].rows == [["AV office", "AV retained"]])
+        let preview = try #require(inspection.previews.first)
+        let previewRoot = try XML.parse(Data(preview.utf8))
+        let filter = try #require(previewRoot.firstChild(named: "defs")?.firstChild(named: "filter"))
+        #expect(filter.firstChild(named: "feGaussianBlur") != nil)
+        let spans = previewRoot.children(named: "text").flatMap { $0.children(named: "tspan") }
+        let disabled = try #require(spans.first { $0.textContent == "AV office" })
+        let enabled = try #require(spans.first { $0.textContent == "AV retained" })
+        #expect(disabled[attribute: "kerning"] == "0")
+        #expect(enabled[attribute: "kerning"] == nil)
+        let diagnostic = try #require(inspection.previewDiagnostics.first { $0.slideNumber == 1 })
+        let shadowIssue = try #require(diagnostic.issues.first {
+            $0.code == "omittedEffect" && $0.impact == "approximation" && $0.path.contains("/a:tblBg[")
+        })
+        #expect(shadowIssue.partURI == "/ppt/tableStyles.xml")
+        #expect(diagnostic.messages.contains(shadowIssue.message))
+        #expect(diagnostic.failure == nil && inspection.hasFindings)
+        #expect(try Data(contentsOf: file) == sourceBytes)
+
+        let outcome = try DeckExporter.export(deckAt: file, into: directory)
+        #expect(outcome.slideCount == 1 && outcome.warnings.isEmpty)
+        let markdown = try String(contentsOf: outcome.markdownFile, encoding: .utf8)
+        for text in ["AV office", "AV retained", "retain the original formatting."] {
+            #expect(markdown.contains(text))
+        }
+        #expect(try Data(contentsOf: file) == sourceBytes)
+        let reopened = try Presentation(contentsOf: file)
+        #expect(try table(on: reopened.slides[0]).styleID == styleID)
+        let retainedCells = try cells(in: reopened.slides[0])
+        #expect(retainedCells.map { $0.firstChild(named: "a:txBody")?.firstChild(named: "a:p")?
+            .firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "kern"] } == ["2400", "0"])
+        let retainedStyle = try reopened.package.part(at: PackURI("/ppt/tableStyles.xml")).dom()
+            .children(named: "a:tblStyle").first { $0[attribute: "styleId"] == styleID }
+        #expect(retainedStyle?.firstChild(named: "a:tblBg")?.firstChild(named: "a:effect")?
+            .firstChild(named: "a:effectLst")?.firstChild(named: "a:outerShdw")?[attribute: "blurRad"] == "50800")
+        #expect(try reopened.serializedData() == sourceBytes)
+    }
+
     @Test func unsupportedPreviewFormattingRemainsDiagnosedWithoutLosingExportedContent() throws {
         let deck = try FeaturePipelineFixture.make()
         let first = try table(on: deck.slides[0])
