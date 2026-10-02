@@ -77,3 +77,23 @@ Both opt-in local-font tests passed. Exact local font hashes were Arial
 and Calibri `ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53`.
 Two fixture generations were byte-identical; owned font SHA-256 is
 `07c11a0555fe32015b1af4701570a5ca0db5e3ace2d760701c7199e66c80def9`.
+
+## Review correction: active Latin ccmp
+
+An owned `MarkComposition.ttf` counterexample adds optional `ccmp` composition
+`x acute -> xacute`. Unicode NFC does not compose this input. HarfBuzz emits one
+composed glyph, while the mark-only pipeline emits two successfully positioned
+glyphs. The pre-fix regression reproduced a false `isSupported == true`.
+
+Residual-mark runs now probe the selected Latin/DFLT default-language `ccmp`
+program before `liga`, using the existing bounded GSUB reader/executor. The probe
+compares glyph count, IDs, source ranges, origin provenance and ligature state.
+Any change retains an explicit unsupported-composition diagnostic; unsupported
+parsing or execution-budget exhaustion also remains diagnosed. Probe results
+never change production glyphs. Removed breaks remain matching barriers.
+Unaffected DejaVu, Arial and Calibri mark cases retain their supported geometry;
+owned `q+acute` and `x+grave` cases prove the ccmp feature is not a blanket refusal.
+
+Correction validation: `swift test --jobs 2` passed 980 tests in 133 suites;
+all seven focused mark tests and both five-case local-font comparisons passed.
+Regenerating all owned mark fixtures and oracle JSON was byte-identical.

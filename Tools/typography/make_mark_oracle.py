@@ -19,10 +19,10 @@ POSITIVE = ['بَ', 'بِ', 'بُ', 'بْ', 'بَبِ', 'بَ بُ', 'بَ\u200d
             'x\u0301', 'x\u0301\u0300', 'q\u0301\u0323', 'x\u0302\u0301', 'x\u0301 x\u0300']
 NEGATIVE = ['لَا', 'سَلَام', '\u0301', 'ff\u0301', 'i\u030B', 'שָׁ']
 
-def owned_font(path):
+def owned_font(path, composition=False):
     cmap = {32:'space', 65:'A', 86:'V', 102:'f', 105:'i', 113:'q', 120:'x',
             0x0301:'acute', 0x0300:'grave', 0x0323:'below', 0x0302:'circumflex'}
-    order = ['.notdef'] + list(cmap.values()) + ['fi']
+    order = ['.notdef'] + list(cmap.values()) + ['fi'] + (['xacute'] if composition else [])
     fb = FontBuilder(1000, isTTF=True)
     fb.setupGlyphOrder(order); fb.setupCharacterMap(cmap)
     fb.setupGlyf({name:TTGlyphPen(None).glyph() for name in order})
@@ -32,7 +32,7 @@ def owned_font(path):
     fb.setupNameTable({'familyName':'Rostrum Mark Oracle', 'styleName':'Regular'})
     fb.setupOS2(sTypoAscender=800, sTypoDescender=-200, usWinAscent=800, usWinDescent=200)
     fb.setupPost(); fb.setupMaxp()
-    addOpenTypeFeaturesFromString(fb.font, '''
+    features = '''
         languagesystem latn dflt;
         @Bases = [A V f i q x space];
         @Marks = [acute grave below circumflex];
@@ -55,7 +55,9 @@ def owned_font(path):
         } Stack;
         feature mkmk { lookup Stack; } mkmk;
         feature mark { lookup Base; } mark;
-    ''')
+    '''
+    if composition: features += 'feature ccmp { sub x acute by xacute; } ccmp;'
+    addOpenTypeFeaturesFromString(fb.font, features)
     fb.font['head'].created = fb.font['head'].modified = 2082844800
     fb.font.recalcTimestamp = False
     fb.save(path)
@@ -88,8 +90,10 @@ def main():
         args.local_output.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
         return
     font=FIXTURE/'MarkAttachments.ttf'; owned_font(font)
+    composition=FIXTURE/'MarkComposition.ttf'; owned_font(composition, composition=True)
     data={'engine':version,'fonts':{
         'DejaVuSans.ttf':record(FIXTURE/'DejaVuSans.ttf',POSITIVE,NEGATIVE),
-        'MarkAttachments.ttf':record(font,['x́','x́̀','q̣́','x̂́','x́ x̀','AVx́'],['fí','́'])}}
+        'MarkAttachments.ttf':record(font,['x́','x́̀','q̣́','x̂́','x́ x̀','AVx́'],['fí','́']),
+        'MarkComposition.ttf':record(composition,['q́','x̀'],['x́'])}}
     (FIXTURE/'marks-harfbuzz-14.4.0.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
 if __name__=='__main__':main()

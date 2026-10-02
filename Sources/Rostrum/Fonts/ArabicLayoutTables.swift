@@ -33,28 +33,36 @@ struct ArabicLayoutTables: Sendable {
     var hasScript = false
     private static let order = ["ccmp", "locl", "isol", "fina", "medi", "init", "rlig", "rclt", "calt", "liga", "mset"]
 
-    init(bytes: [UInt8], definitions: FontLayoutTables.GlyphDefinitions) {
+    // The same bounded reader also probes Latin ccmp without applying its
+    // result; Arabic remains the only production contextual shaping program.
+    init(bytes: [UInt8], definitions: FontLayoutTables.GlyphDefinitions,
+         scriptTag: String = "arab", featureOrder: [String]? = nil) {
         var budget = Budget(bytes: bytes.count)
-        do { try parse(SFNTReader(bytes: bytes), definitions: definitions, budget: &budget) }
+        do { try parse(SFNTReader(bytes: bytes), definitions: definitions, budget: &budget, scriptTag: scriptTag, featureOrder: featureOrder ?? Self.order) }
         catch is FontLayoutTables.BudgetExceeded {
             stages = []; lookups = [:]; diagnostics.append("Arabic GSUB expansion exceeds the parsing budget")
         } catch {
             stages = []; lookups = [:]; diagnostics.append("Malformed or unsupported Arabic GSUB table")
         }
+        if scriptTag != "arab" {
+            diagnostics = diagnostics.map { $0.replacingOccurrences(of: "Arabic", with: "Latin ccmp") }
+        }
     }
     private static func invalid() -> RostrumError { .fontCorrupt("invalid Arabic OpenType layout") }
 
-    private mutating func parse(_ r: SFNTReader, definitions: FontLayoutTables.GlyphDefinitions, budget: inout Budget) throws {
+    private mutating func parse(_ r: SFNTReader, definitions: FontLayoutTables.GlyphDefinitions, budget: inout Budget, scriptTag: String, featureOrder: [String]) throws {
         guard try r.u16(0) == 1 else { throw Self.invalid() }
         let scripts = try r.u16(4), features = try r.u16(6), list = try r.u16(8)
         let scriptCount = try r.u16(scripts)
         try budget.consume(scriptCount)
-        var selected: Int?
+        var selected: Int?, fallback: Int?
         for i in 0..<scriptCount {
             let p = scripts + 2 + 6 * i
-            if try r.tag(p) == "arab" { selected = scripts + (try r.u16(p + 4)) }
+            let tag = try r.tag(p)
+            if tag == scriptTag { selected = scripts + (try r.u16(p + 4)) }
+            if tag == "DFLT", scriptTag == "latn" { fallback = scripts + (try r.u16(p + 4)) }
         }
-        guard let selected else { return }
+        guard let selected = selected ?? fallback else { return }
         hasScript = true
         let languageOffset = try r.u16(selected)
         guard languageOffset != 0 else { diagnostics.append("Arabic default language system is missing"); return }
@@ -68,7 +76,7 @@ struct ArabicLayoutTables: Sendable {
         for index in featureIndices {
             guard index < featureCount else { throw Self.invalid() }
             let p = features + 2 + 6 * index, tag = try r.tag(p)
-            guard Self.order.contains(tag) else {
+            guard featureOrder.contains(tag) else {
                 if index == required { diagnostics.append("Unsupported required Arabic feature \(tag)") }
                 continue
             }
@@ -76,7 +84,7 @@ struct ArabicLayoutTables: Sendable {
             try budget.consume(n)
             for i in 0..<n { featureLookups[tag, default: []].insert(try r.u16(feature + 4 + 2 * i)) }
         }
-        stages = Self.order.compactMap { tag in
+        stages = featureOrder.compactMap { tag in
             featureLookups[tag].map { Stage(feature: tag, lookups: $0.sorted()) }
         }
         var pending = Array(Set(stages.flatMap(\.lookups))).sorted(), seen: Set<Int> = []

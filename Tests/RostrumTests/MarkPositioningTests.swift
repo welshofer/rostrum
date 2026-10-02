@@ -39,8 +39,8 @@ import Testing
         let oracle = try JSONDecoder().decode(Local.self, from: Data(contentsOf: URL(fileURLWithPath: path)))
         try compare(URL(fileURLWithPath: oracle.fontPath), oracle.cases)
     }
-    private func tables() throws -> [String: [UInt8]] {
-        let r = SFNTReader(bytes: Array(try Data(contentsOf: directory.appendingPathComponent("MarkAttachments.ttf"))))
+    private func tables(_ name: String = "MarkAttachments.ttf") throws -> [String: [UInt8]] {
+        let r = SFNTReader(bytes: Array(try Data(contentsOf: directory.appendingPathComponent(name))))
         var tables: [String: [UInt8]] = [:]
         for i in 0..<(try r.u16(4)) {
             let p = 12 + 16 * i, offset = try r.u32(p + 8), count = try r.u32(p + 12)
@@ -50,6 +50,33 @@ import Testing
     }
     private func shaper(_ tables: [String: [UInt8]]) throws -> TextShaper {
         TextShaper(try FontMetrics(data: Data(TestFont.assemble(tables: tables.keys.sorted().map { ($0, tables[$0]!) }))))
+    }
+    @Test func activeLatinCompositionRetainsDiagnosticAndUnrelatedMarksRemainSupported() throws {
+        let source = try tables("MarkComposition.ttf"), shaper = try shaper(source)
+        let run = shaper.shape("x́", pointSize: 1000)
+        #expect(run.diagnostics.contains(.unsupportedLayoutFeature("Latin ccmp changes this residual combining sequence; composition shaping is unsupported")))
+        // The diagnostic probe never changes production glyphs or clusters.
+        #expect(run.glyphs.map(\.glyphID) == [7, 8])
+        #expect(run.glyphs.map(\.scalarRange) == [0..<2, 0..<2])
+        let oracle = try JSONDecoder().decode(Oracle.self, from: Data(contentsOf: directory.appendingPathComponent("marks-harfbuzz-14.4.0.json")))
+        let reference = try #require(oracle.fonts["MarkComposition.ttf"]?.cases.first { $0.text == "x́" })
+        #expect(run.glyphs.map(\.glyphID) != reference.glyphs.map(\.g))
+        #expect(reference.glyphs.count == 1)
+        #expect(shaper.shape("q́", pointSize: 1000).isSupported)
+        #expect(shaper.shape("x̀", pointSize: 1000).isSupported)
+        #expect(!shaper.shape("x\ń", pointSize: 1000).diagnostics.contains(.unsupportedLayoutFeature("Latin ccmp changes this residual combining sequence; composition shaping is unsupported")))
+
+        var copy = source, bytes = try #require(source["GSUB"])
+        let r = SFNTReader(bytes: bytes), features = try r.u16(6), list = try r.u16(8)
+        // Find the ccmp feature rather than depending on fixture lookup order.
+        let featureRecord = try #require((0..<(try r.u16(features))).first { try r.tag(features + 2 + 6 * $0) == "ccmp" })
+        let feature = features + (try r.u16(features + 6 + 6 * featureRecord))
+        let index = try r.u16(feature + 4), lookup = list + (try r.u16(list + 2 + 2 * index))
+        bytes.replaceSubrange(lookup..<(lookup + 2), with: TestFont.be16(2))
+        copy["GSUB"] = bytes
+        let unsupported = try self.shaper(copy).shape("x́", pointSize: 1000)
+        #expect(unsupported.diagnostics.contains(.unsupportedLayoutFeature("Unsupported Latin ccmp GSUB lookup 2")))
+        #expect(!unsupported.isSupported)
     }
     @Test func truncationInvalidClassesNullAnchorsAndMissingGDEFRefuse() throws {
         let source = try tables(), original = try #require(source["GPOS"])

@@ -111,14 +111,40 @@ public struct TextShaper: Sendable {
             clusters[i].level = base
         }
         var glyphs: [ShapedGlyph] = []
+        var compositionInput: [ArabicTextShaper.Glyph] = []
         for cluster in clusters {
             for scalar in cluster.scalars {
-                if [0xA, 0xD, 0x200B].contains(scalar.value) { continue }
+                if [0xA, 0xD, 0x200B].contains(scalar.value) {
+                    if !combining.isEmpty {
+                        compositionInput.append(.init(id: 0, range: cluster.range, scalar: 10, origins: [compositionInput.count]))
+                    }
+                    continue
+                }
                 let glyph = metrics.glyphID(for: scalar)
                 if glyph == 0 { diagnostics.append(.missingGlyph(scalar: scalar.value)) }
+                if !combining.isEmpty {
+                    compositionInput.append(.init(id: glyph, range: cluster.range, scalar: scalar.value, origins: [compositionInput.count]))
+                }
                 glyphs.append(ShapedGlyph(glyphID: glyph, scalarRange: cluster.range,
                     advance: Double(metrics.advance(ofGlyph: glyph)) * scale,
                     xOffset: 0, yOffset: 0, bidiLevel: cluster.level))
+            }
+        }
+        if !combining.isEmpty, let program = tables.latinComposition {
+            diagnostics += program.diagnostics.map(ShapingDiagnostic.unsupportedLayoutFeature)
+            // Probe the actual pre-liga sequence. Optional ccmp may compose a
+            // non-NFC base/mark, decompose glyphs or select contextual forms;
+            // successful attachment alone cannot establish complete shaping.
+            var probe = ArabicTextShaper.Executor(program: program, glyphs: compositionInput)
+            do {
+                try probe.run()
+                if probe.glyphs.count != compositionInput.count || zip(probe.glyphs, compositionInput).contains(where: {
+                    $0.id != $1.id || $0.range != $1.range || $0.origins != $1.origins || $0.ligature != $1.ligature
+                }) {
+                    diagnostics.append(.unsupportedLayoutFeature("Latin ccmp changes this residual combining sequence; composition shaping is unsupported"))
+                }
+            } catch {
+                diagnostics.append(.unsupportedLayoutFeature("Latin ccmp checking exceeds the bounded execution profile"))
             }
         }
         // Build successor links once per lookup. Long ignored-mark runs stay

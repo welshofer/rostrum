@@ -107,6 +107,7 @@ struct FontLayoutTables: Sendable {
     func isNonspacingMark(_ glyph: Int) -> Bool { definitions.classes?[glyph] == 3 }
 
     var arabic: ArabicLayoutTables?
+    var latinComposition: ArabicLayoutTables?
     var arabicPairs: [Lookup<[PairTable]>] = []
     var arabicMarks: [Lookup<[MarkTable]>] = []
     var arabicMarkDiagnostics: [String] = []
@@ -147,6 +148,7 @@ struct FontLayoutTables: Sendable {
         }
         if let bytes = tables["GSUB"] {
             arabic = ArabicLayoutTables(bytes: bytes, definitions: definitions)
+            latinComposition = ArabicLayoutTables(bytes: bytes, definitions: definitions, scriptTag: "latn", featureOrder: ["ccmp"])
         }
         if let bytes = tables["GPOS"] {
             var positioning = FontLayoutTables()

@@ -815,6 +815,72 @@
           ]
         }
       ]
+    },
+    "MarkComposition.ttf": {
+      "fontSHA256": "7b2647c3d174ad78b1e4e270d7382326802d72425645096123cd2c7fd1ca3be4",
+      "cases": [
+        {
+          "text": "q́",
+          "direction": "ltr",
+          "supported": true,
+          "glyphs": [
+            {
+              "g": 6,
+              "cl": 0,
+              "dx": 0,
+              "dy": 0,
+              "ax": 600,
+              "ay": 0
+            },
+            {
+              "g": 8,
+              "cl": 0,
+              "dx": -340,
+              "dy": 600,
+              "ax": 0,
+              "ay": 0
+            }
+          ]
+        },
+        {
+          "text": "x̀",
+          "direction": "ltr",
+          "supported": true,
+          "glyphs": [
+            {
+              "g": 7,
+              "cl": 0,
+              "dx": 0,
+              "dy": 0,
+              "ax": 600,
+              "ay": 0
+            },
+            {
+              "g": 9,
+              "cl": 0,
+              "dx": -360,
+              "dy": 620,
+              "ax": 0,
+              "ay": 0
+            }
+          ]
+        },
+        {
+          "text": "x́",
+          "direction": "ltr",
+          "supported": false,
+          "glyphs": [
+            {
+              "g": 13,
+              "cl": 0,
+              "dx": 0,
+              "dy": 0,
+              "ax": 600,
+              "ay": 0
+            }
+          ]
+        }
+      ]
     }
   }
 }
