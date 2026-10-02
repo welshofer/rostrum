@@ -16,6 +16,7 @@ import importlib.metadata
 import io
 import json
 from pathlib import Path
+import re
 import sys
 import zipfile
 
@@ -60,7 +61,20 @@ def main():
         reference = Image.open(io.BytesIO(reference_bytes)).convert("RGB")
         if reference.size != (1200, 700):
             parser.error(f"{stem}: reference must be 1200x700")
-        png = resvg_py.svg_to_bytes(svg_path=str(args.svg_directory / (stem + ".svg")), width=1200, height=700)
+        svg = (args.svg_directory / (stem + ".svg")).read_text(encoding="utf-8")
+        # CLI output can round the intrinsic pixel height (e.g. 1280x747).
+        # resvg's width/height options preserve that rounded ratio. Normalize
+        # only the root pixel dimensions, retaining the original EMU viewBox.
+        match = re.search(r"<svg\b[^>]*>", svg)
+        if match is None:
+            parser.error(f"{stem}: missing root SVG element")
+        root = match.group()
+        for attribute, value in [("width", "1200"), ("height", "700")]:
+            root, count = re.subn(rf'\b{attribute}="[^"]*"', f'{attribute}="{value}"', root, count=1)
+            if count != 1:
+                parser.error(f"{stem}: missing root {attribute}")
+        svg = svg[:match.start()] + root + svg[match.end():]
+        png = resvg_py.svg_to_bytes(svg_string=svg, width=1200, height=700)
         (args.svg_directory / (stem + ".png")).write_bytes(png)
         actual = Image.open(io.BytesIO(png)).convert("RGB")
         horizontal = case["direction"] in ("horizontal", "merge-top")
