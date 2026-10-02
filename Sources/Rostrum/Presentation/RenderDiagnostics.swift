@@ -154,7 +154,8 @@ final class RenderDiagnosticCollector {
 
     /// Inspect only the shapes selected for rendering, not hidden placeholders.
     /// Traversal is iterative and document ordered; paths include same-name indices.
-    func inspect(_ shape: XML.Element, owner: Part, slideIndex: Int, path: String, package: OPCPackage, tableStyleReference: Bool = false) {
+    func inspect(_ shape: XML.Element, owner: Part, slideIndex: Int, path: String, package: OPCPackage,
+                 tableStyleReference: Bool = false, approximatedTableEffect: XML.Element? = nil) {
         let id = shape.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"]
         location = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: id, path: path)
         if !["p:sp", "p:pic", "p:graphicFrame", "p:bg", "p:bgPr", "a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:tblStyle", "a:tableStyle", "a:ln", "a:effectStyle"].contains(shape.name) {
@@ -189,7 +190,11 @@ final class RenderDiagnosticCollector {
                     issue(.ignoredTransform, .approximation, "Authored rotation or reflection is not applied by this preview path.")
                 }
             case "a:effectLst", "a:effectDag", "a:scene3d", "a:sp3d":
-                if Self.hasEffectContent(element) { issue(.omittedEffect, .omission, "\(element.name) effects are not rendered.") }
+                if element === approximatedTableEffect {
+                    issue(.omittedEffect, .approximation, "Table background outer shadow is approximated with an SVG Gaussian blur.")
+                } else if Self.hasEffectContent(element) {
+                    issue(.omittedEffect, .omission, "\(element.name) effects are not rendered.")
+                }
             case "a:gradFill":
                 if (!tableStyle && parent != "a:tcPr") || element.firstChild(named: "a:path") != nil {
                     issue(.gradientApproximation, .approximation, "Gradient geometry is approximated by the preview.")

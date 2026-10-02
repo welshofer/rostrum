@@ -51,6 +51,54 @@ public struct TableStyleResolver {
         return (properties, owner)
     }
 
+    /// A bounded approximation of a table-background outer shadow. The source
+    /// XML stays untouched; unsupported effect chains retain omission reports.
+    struct BackgroundShadow {
+        let color: Color
+        let alpha: Double
+        let blurRadius: Double
+        let dx: Double
+        let dy: Double
+        let fromTheme: Bool
+    }
+
+    func backgroundShadow() -> BackgroundShadow? {
+        guard let background = definition?.firstChild(named: "a:tblBg") else { return nil }
+        let effect: XML.Element
+        let fromTheme: Bool
+        if let direct = background.firstChild(named: "a:effect") {
+            effect = direct; fromTheme = false
+        } else {
+            guard let reference = background.firstChild(named: "a:effectRef"),
+                  let index = reference[attribute: "idx"].flatMap(Int.init), index > 0,
+                  let definitions = try? theme.part.dom().firstChild(named: "a:themeElements")?
+                    .firstChild(named: "a:fmtScheme")?.firstChild(named: "a:effectStyleLst")?.childElements,
+                  definitions.indices.contains(index - 1) else { return nil }
+            effect = definitions[index - 1].deepCopy(); fromTheme = true
+            replacePlaceholderColors(effect, reference: reference)
+        }
+        guard effect.childElements.count == 1,
+              let list = effect.firstChild(named: "a:effectLst"), list.childElements.count == 1,
+              let shadow = list.firstChild(named: "a:outerShdw") else { return nil }
+        // Scaling, skew and multi-effect composition need independent geometry
+        // evidence. With unit scale and zero skew the alignment origin cancels.
+        let allowed: Set<String> = ["blurRad", "dist", "dir", "sx", "sy", "kx", "ky", "algn", "rotWithShape"]
+        guard shadow.attributes.allSatisfy({ allowed.contains($0.name) || $0.name == "xmlns" || $0.name.hasPrefix("xmlns:") }),
+              ["sx", "sy"].allSatisfy({ shadow[attribute: $0] == nil || ["100000", "100%"].contains(shadow[attribute: $0]!) }),
+              ["kx", "ky"].allSatisfy({ shadow[attribute: $0] == nil || shadow[attribute: $0] == "0" }) else { return nil }
+        func nonnegative(_ name: String) -> Int? {
+            guard shadow[attribute: name] != nil else { return 0 }
+            guard let value = shadow.coordinate(name), value >= 0 else { return nil }
+            return value
+        }
+        guard let blur = nonnegative("blurRad"), let distance = nonnegative("dist"),
+              let direction = shadow[attribute: "dir"] == nil ? 0 : shadow.boundedInt("dir", in: 0...21_599_999),
+              let color = DrawingColor.resolve(in: shadow, theme: theme) else { return nil }
+        let angle = Double(direction) / 60_000 * .pi / 180
+        return BackgroundShadow(color: color.color, alpha: color.alpha, blurRadius: Double(blur),
+            dx: cos(angle) * Double(distance), dy: sin(angle) * Double(distance), fromTheme: fromTheme)
+    }
+
     struct Effective {
         let properties: XML.Element
         let text: XML.Element
@@ -106,9 +154,9 @@ public struct TableStyleResolver {
 
     /// Diagnostic views retain the owning theme part for relationship lookup.
     /// The source style and its direct resources keep their own owner.
-    func themeReferences(in active: XML.Element) -> [(root: XML.Element, path: String)] {
+    func themeReferences(in active: XML.Element) -> [(root: XML.Element, path: String, backgroundEffect: Bool)] {
         guard let scheme = try? theme.part.dom().firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme") else { return [] }
-        var result: [(XML.Element, String)] = []
+        var result: [(XML.Element, String, Bool)] = []
         var pending = [active]
         while let node = pending.popLast() {
             pending.append(contentsOf: node.childElements.reversed())
@@ -122,7 +170,8 @@ public struct TableStyleResolver {
                 let copy = definitions[offset].deepCopy()
                 replacePlaceholderColors(copy, reference: reference)
                 let occurrence = definitions.prefix(offset + 1).filter { $0.name == copy.name }.count
-                result.append((copy, "/a:theme/a:themeElements/a:fmtScheme/\(actualList)/\(copy.name)[\(occurrence)]"))
+                result.append((copy, "/a:theme/a:themeElements/a:fmtScheme/\(actualList)/\(copy.name)[\(occurrence)]",
+                    name == "a:effectRef" && node === active.firstChild(named: "a:tblBg")))
             }
         }
         return result

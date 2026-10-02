@@ -934,13 +934,18 @@ struct SVGRenderer {
         let topology = try? grid.topology()
         let resolver = TableStyleResolver(table: table, theme: theme)
         var styles = TableStyleResolver.RenderSession(resolver)
+        let shadow = grid.columns.isEmpty || grid.rows.isEmpty ? nil : resolver.backgroundShadow()
         if let definition = resolver.activeDefinition() {
             let location = diagnostics.location
             diagnostics.inspect(definition, owner: resolver.stylePart ?? owner, slideIndex: slideNumber - 1,
-                path: "/a:tblStyleLst/a:tblStyle[@styleId='\(table.styleID ?? "default")']", package: package)
+                path: "/a:tblStyleLst/a:tblStyle[@styleId='\(table.styleID ?? "default")']", package: package,
+                approximatedTableEffect: shadow?.fromTheme == false
+                    ? definition.firstChild(named: "a:tblBg")?.firstChild(named: "a:effect")?.firstChild(named: "a:effectLst") : nil)
             for reference in resolver.themeReferences(in: definition) {
                 diagnostics.inspect(reference.root, owner: theme.part, slideIndex: slideNumber - 1,
-                    path: reference.path, package: package, tableStyleReference: true)
+                    path: reference.path, package: package, tableStyleReference: true,
+                    approximatedTableEffect: shadow?.fromTheme == true && reference.backgroundEffect
+                        ? reference.root.firstChild(named: "a:effectLst") : nil)
             }
             diagnostics.location = location
         }
@@ -961,11 +966,13 @@ struct SVGRenderer {
             let double: Bool
         }
         var borders = TableBorderSegments<BorderPaint>()
+        var maximumBorderWidth = 0
         func borderPaint(_ line: XML.Element?) -> BorderPaint? {
             guard let line, line.firstChild(named: "a:noFill") == nil,
                   let color = colorHex(in: line.firstChild(named: "a:solidFill")) else { return nil }
             let width = max(0, line.coordinate("w") ?? 12700)
             guard width > 0 else { return nil }
+            maximumBorderWidth = max(maximumBorderWidth, width)
             let pattern: String
             switch line.firstChild(named: "a:prstDash")?[attribute: "val"] {
             case "dot", "sysDot": pattern = "\(width) \(width * 2)"
@@ -1166,6 +1173,23 @@ struct SVGRenderer {
             out += lineSVG(segment.paint, endpoints, offset: offset,
                            startExtension: startExtension, endExtension: endExtension)
           }
+        }
+        if let shadow {
+            // Table background effects apply to the combined fills and borders,
+            // before text. SourceAlpha preserves holes and translucent paint;
+            // an opaque rectangular substitute would invent a shadow there.
+            let id = "ts\(defs.utf8.count)"
+            let sigma = shadow.blurRadius / 2
+            let borderPad = Double(maximumBorderWidth) / 2
+            let pad = 3 * sigma + max(abs(shadow.dx), abs(shadow.dy)) + borderPad
+            func number(_ value: Double) -> String { SVGNumber.decimal(value) }
+            defs += "<filter id=\"\(id)\" filterUnits=\"userSpaceOnUse\" x=\"\(number(Double(x) - pad))\" y=\"\(number(Double(y) - pad))\" width=\"\(number(Double(tableFrame.2) + 2 * pad))\" height=\"\(number(Double(tableFrame.3) + 2 * pad))\" color-interpolation-filters=\"sRGB\">"
+                + "<feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"\(number(sigma))\" result=\"blur\"/>"
+                + "<feOffset in=\"blur\" dx=\"\(number(shadow.dx))\" dy=\"\(number(shadow.dy))\" result=\"offset\"/>"
+                + "<feFlood flood-color=\"#\(shadow.color.hex)\" flood-opacity=\"\(number(shadow.alpha))\" result=\"color\"/>"
+                + "<feComposite in=\"color\" in2=\"offset\" operator=\"in\" result=\"shadow\"/>"
+                + "<feMerge><feMergeNode in=\"shadow\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter>"
+            return "<g filter=\"url(#\(id))\">" + out + diagonals + "</g>" + textContent
         }
         return out + diagonals + textContent
     }

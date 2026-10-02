@@ -1,0 +1,1280 @@
+{
+  "item": "FUNC-1 / REL-1",
+  "baselineRevision": "189250a4d52f9b0a7bd38c1b5beeb74fe925ae87",
+  "scope": "Bounded table-background outer shadow approximation; no whole-table fidelity claim",
+  "rasterizer": "resvg-py 0.5.0",
+  "imageReader": "Pillow 12.3.0",
+  "pdfReader": "PyMuPDF 1.27.2.3",
+  "dimensions": [
+    1200,
+    700
+  ],
+  "channelTolerance": 16,
+  "pixelFractionGate": 0.005,
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "6e307b1f7a26ae3afbd786d136ffddb6f9471901db91e2c62bba34098271e985",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "81cd14cbe5d7c139490ce5671a6bc7eec9c3a2e25e63454b104e2c3609ecb494",
+    "Sources/Rostrum/Presentation/RenderDiagnostics.swift": "e89fd53f96c4e8c9f5c0b69c6f59f13ba19f48a2dbddb29940fb2dc389a2f1e7",
+    "Tests/RostrumTests/TableBackgroundShadowTests.swift": "1e71fd0fc4b0da15320834fa3a5f195eaa237f768cde0519d519af82d91efec1",
+    "Tools/conformance/check_double_table_borders.py": "101d2712e87bfcc82a03362e620d1745c04a9666c68ee0d3845fb17d93d9b5d3",
+    "Tools/conformance/check_text_rendering.py": "d0e5a432c2efbf134559a728c63f39df1c5d751fce91270223c9a3c13c749a57",
+    "Tools/conformance/render_table_oracle.swift": "dd424d681d3809b9424dfe53192ca0672df1200c1765505bb8803714ac11f678"
+  },
+  "referenceSHA256": {
+    "Tests/RostrumTests/Fixtures/DoubleTableBorders/double-borders.pptx": "0aa0fab8a89bef4e40eec910dc02d4a2b95acfdb8b564aa7c2f291b2b3ed2834",
+    "Tests/RostrumTests/Fixtures/DoubleTableBorders/powerpoint-16.113.3-png.zip": "f92b33d7f6164eff5a136fe5ba5e1c7f4026e5b291cb0e76434156b8d61f136c",
+    "Tests/RostrumTests/Fixtures/DoubleTableBorders/powerpoint-16.113.3.pdf": "1ca39aa8fdaff455aec21cd98fc0f7a6fc7ea4daa18a4ea3c84acf1cce7458a5",
+    "Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence.pptx": "58446fe12b21fe075f088c4655e4415466419e8f3b4cdf212d28fe436e8f8d30",
+    "Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence-png.zip": "1cca54af6a41cafbe0db550abeac8de1550f6310640fd83ec71b0da3c1c170c2",
+    "Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence-rtl.pptx": "6d2be07ce538a5bddff9906b77d2d815b82cd0685d5e6752975a1360b54ea836",
+    "Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence-rtl-png.zip": "b9b577ecaf0d2130b44bc33422933d293e35c1c4aae1af1baf2084879a33cf30",
+    "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3.pptx": "3f7d5427de26934424329ef6e739b6fe92db26c0c23f260fa9bea1adf6dcd7dd",
+    "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-office.png": "118605ddc801546321cca798c59f9c894e46b96e0770f4d232bec4cae94b2c01"
+  },
+  "corpora": {
+    "double": {
+      "beforePassed": 26,
+      "afterPassed": 26,
+      "count": 29,
+      "cases": [
+        {
+          "slide": 1,
+          "beforePixels": 0,
+          "afterPixels": 0,
+          "afterFraction": 0.0,
+          "beforeSVGSHA256": "7f47f2b14b901cf6678f16f057d5dd9c487a4d95f3c0ff2c544739fd0dc9de11",
+          "afterSVGSHA256": "7f47f2b14b901cf6678f16f057d5dd9c487a4d95f3c0ff2c544739fd0dc9de11",
+          "passed": true
+        },
+        {
+          "slide": 2,
+          "beforePixels": 800,
+          "afterPixels": 800,
+          "afterFraction": 0.0009523809523809524,
+          "beforeSVGSHA256": "217f3dfc363a27f5d68884cad30fcfff1e61b090c57b44fd93abb4d61aed355d",
+          "afterSVGSHA256": "217f3dfc363a27f5d68884cad30fcfff1e61b090c57b44fd93abb4d61aed355d",
+          "passed": true
+        },
+        {
+          "slide": 3,
+          "beforePixels": 800,
+          "afterPixels": 800,
+          "afterFraction": 0.0009523809523809524,
+          "beforeSVGSHA256": "710fa107610d552a1f2a59fc52de4d53eb34ac02ba9c96072290cbae85588ee9",
+          "afterSVGSHA256": "710fa107610d552a1f2a59fc52de4d53eb34ac02ba9c96072290cbae85588ee9",
+          "passed": true
+        },
+        {
+          "slide": 4,
+          "beforePixels": 0,
+          "afterPixels": 0,
+          "afterFraction": 0.0,
+          "beforeSVGSHA256": "113a78503743628e9305c01340a64d594937d47b532effb82e438e6fd86d965d",
+          "afterSVGSHA256": "113a78503743628e9305c01340a64d594937d47b532effb82e438e6fd86d965d",
+          "passed": true
+        },
+        {
+          "slide": 5,
+          "beforePixels": 2000,
+          "afterPixels": 2000,
+          "afterFraction": 0.002380952380952381,
+          "beforeSVGSHA256": "37be360c71663eb9c99f8d7ed615c5b0a83a687f2dabea60a5c6bcba0d1c2ad8",
+          "afterSVGSHA256": "37be360c71663eb9c99f8d7ed615c5b0a83a687f2dabea60a5c6bcba0d1c2ad8",
+          "passed": true
+        },
+        {
+          "slide": 6,
+          "beforePixels": 2000,
+          "afterPixels": 2000,
+          "afterFraction": 0.002380952380952381,
+          "beforeSVGSHA256": "b03e612a30da665c6dac859d93ad4f47c5c42c72b9400e3894789661fe1c6d67",
+          "afterSVGSHA256": "b03e612a30da665c6dac859d93ad4f47c5c42c72b9400e3894789661fe1c6d67",
+          "passed": true
+        },
+        {
+          "slide": 7,
+          "beforePixels": 0,
+          "afterPixels": 0,
+          "afterFraction": 0.0,
+          "beforeSVGSHA256": "bec0ea925f1e717d22c1a2261fb83e8c67aaa7dc733b603df04d5f39ef45a814",
+          "afterSVGSHA256": "bec0ea925f1e717d22c1a2261fb83e8c67aaa7dc733b603df04d5f39ef45a814",
+          "passed": true
+        },
+        {
+          "slide": 8,
+          "beforePixels": 800,
+          "afterPixels": 800,
+          "afterFraction": 0.0009523809523809524,
+          "beforeSVGSHA256": "45d598ef504a543abfb514b7f39404447737ea87ac3203f93f6407bc2894b4ad",
+          "afterSVGSHA256": "45d598ef504a543abfb514b7f39404447737ea87ac3203f93f6407bc2894b4ad",
+          "passed": true
+        },
+        {
+          "slide": 9,
+          "beforePixels": 800,
+          "afterPixels": 800,
+          "afterFraction": 0.0009523809523809524,
+          "beforeSVGSHA256": "64a492a93b430e16f86cac8e1af0d8c62c65d69f3d095f2a09ba916e1264c181",
+          "afterSVGSHA256": "64a492a93b430e16f86cac8e1af0d8c62c65d69f3d095f2a09ba916e1264c181",
+          "passed": true
+        },
+        {
+          "slide": 10,
+          "beforePixels": 0,
+          "afterPixels": 0,
+          "afterFraction": 0.0,
+          "beforeSVGSHA256": "7f47f2b14b901cf6678f16f057d5dd9c487a4d95f3c0ff2c544739fd0dc9de11",
+          "afterSVGSHA256": "7f47f2b14b901cf6678f16f057d5dd9c487a4d95f3c0ff2c544739fd0dc9de11",
+          "passed": true
+        },
+        {
+          "slide": 11,
+          "beforePixels": 800,
+          "afterPixels": 800,
+          "afterFraction": 0.0009523809523809524,
+          "beforeSVGSHA256": "217f3dfc363a27f5d68884cad30fcfff1e61b090c57b44fd93abb4d61aed355d",
+          "afterSVGSHA256": "217f3dfc363a27f5d68884cad30fcfff1e61b090c57b44fd93abb4d61aed355d",
+          "passed": true
+        },
+        {
+          "slide": 12,
+          "beforePixels": 800,
+          "afterPixels": 800,
+          "afterFraction": 0.0009523809523809524,
+          "beforeSVGSHA256": "710fa107610d552a1f2a59fc52de4d53eb34ac02ba9c96072290cbae85588ee9",
+          "afterSVGSHA256": "710fa107610d552a1f2a59fc52de4d53eb34ac02ba9c96072290cbae85588ee9",
+          "passed": true
+        },
+        {
+          "slide": 13,
+          "beforePixels": 400,
+          "afterPixels": 400,
+          "afterFraction": 0.0004761904761904762,
+          "beforeSVGSHA256": "67ebe5d146be7ee30345e6812b0230a6c05e211d9fadd162b607ec54de88c135",
+          "afterSVGSHA256": "67ebe5d146be7ee30345e6812b0230a6c05e211d9fadd162b607ec54de88c135",
+          "passed": true
+        },
+        {
+          "slide": 14,
+          "beforePixels": 800,
+          "afterPixels": 800,
+          "afterFraction": 0.0009523809523809524,
+          "beforeSVGSHA256": "cc7612859b1907a62a99905bfabb82c98e9d7466b48bdb02cab8c64b473ab6f0",
+          "afterSVGSHA256": "cc7612859b1907a62a99905bfabb82c98e9d7466b48bdb02cab8c64b473ab6f0",
+          "passed": true
+        },
+        {
+          "slide": 15,
+          "beforePixels": 800,
+          "afterPixels": 800,
+          "afterFraction": 0.0009523809523809524,
+          "beforeSVGSHA256": "d9132d78fcd9c7a5e046d94209229cedce5258ef2ef4bc6860d96b21f9d396dd",
+          "afterSVGSHA256": "d9132d78fcd9c7a5e046d94209229cedce5258ef2ef4bc6860d96b21f9d396dd",
+          "passed": true
+        },
+        {
+          "slide": 16,
+          "beforePixels": 1000,
+          "afterPixels": 1000,
+          "afterFraction": 0.0011904761904761906,
+          "beforeSVGSHA256": "9d0a8362e927c0bb692edc4934ddcdebfd5ca77302000a4aaf0d669974252096",
+          "afterSVGSHA256": "9d0a8362e927c0bb692edc4934ddcdebfd5ca77302000a4aaf0d669974252096",
+          "passed": true
+        },
+        {
+          "slide": 17,
+          "beforePixels": 2000,
+          "afterPixels": 2000,
+          "afterFraction": 0.002380952380952381,
+          "beforeSVGSHA256": "0396fab3800e03fe17495ae8e52eadc023d8db600653bfb0855715ee30b07068",
+          "afterSVGSHA256": "0396fab3800e03fe17495ae8e52eadc023d8db600653bfb0855715ee30b07068",
+          "passed": true
+        },
+        {
+          "slide": 18,
+          "beforePixels": 2000,
+          "afterPixels": 2000,
+          "afterFraction": 0.002380952380952381,
+          "beforeSVGSHA256": "419d226a766c0d2989bcdcce699e1c44700f6a1f18b4cab007566213190ded6d",
+          "afterSVGSHA256": "419d226a766c0d2989bcdcce699e1c44700f6a1f18b4cab007566213190ded6d",
+          "passed": true
+        },
+        {
+          "slide": 19,
+          "beforePixels": 2002,
+          "afterPixels": 2002,
+          "afterFraction": 0.0023833333333333332,
+          "beforeSVGSHA256": "4123fe6557bc19d2633d7f23b5091974e541e5f3b1b0956c0cdfa0be538f639c",
+          "afterSVGSHA256": "4123fe6557bc19d2633d7f23b5091974e541e5f3b1b0956c0cdfa0be538f639c",
+          "passed": true
+        },
+        {
+          "slide": 20,
+          "beforePixels": 2202,
+          "afterPixels": 2202,
+          "afterFraction": 0.0026214285714285714,
+          "beforeSVGSHA256": "ed16be3d8c6bf09518956422236986ca20ad04c78edc0fe026d85144c2f6a8c8",
+          "afterSVGSHA256": "ed16be3d8c6bf09518956422236986ca20ad04c78edc0fe026d85144c2f6a8c8",
+          "passed": true
+        },
+        {
+          "slide": 21,
+          "beforePixels": 4623,
+          "afterPixels": 4623,
+          "afterFraction": 0.005503571428571429,
+          "beforeSVGSHA256": "bbba886658b1706d86a4bf682319baddc2edee8ef94c2f3a8cc81678986aaad4",
+          "afterSVGSHA256": "bbba886658b1706d86a4bf682319baddc2edee8ef94c2f3a8cc81678986aaad4",
+          "passed": false
+        },
+        {
+          "slide": 22,
+          "beforePixels": 2202,
+          "afterPixels": 2202,
+          "afterFraction": 0.0026214285714285714,
+          "beforeSVGSHA256": "a6cbdd14de3837d7ae9fe6b3e1d84f357a7e8cd6a64f95492937d285cdfd9af7",
+          "afterSVGSHA256": "a6cbdd14de3837d7ae9fe6b3e1d84f357a7e8cd6a64f95492937d285cdfd9af7",
+          "passed": true
+        },
+        {
+          "slide": 23,
+          "beforePixels": 2401,
+          "afterPixels": 2401,
+          "afterFraction": 0.0028583333333333334,
+          "beforeSVGSHA256": "7c88305a20a6b72987cc3aa88085fb9b61e2e34275313decf9af1e0cdc532cd7",
+          "afterSVGSHA256": "7c88305a20a6b72987cc3aa88085fb9b61e2e34275313decf9af1e0cdc532cd7",
+          "passed": true
+        },
+        {
+          "slide": 24,
+          "beforePixels": 5814,
+          "afterPixels": 5814,
+          "afterFraction": 0.006921428571428571,
+          "beforeSVGSHA256": "0a58a7894ce5f9a7da826bd1247b1193e6c36ca58e5a62f7cbb101ecde362998",
+          "afterSVGSHA256": "0a58a7894ce5f9a7da826bd1247b1193e6c36ca58e5a62f7cbb101ecde362998",
+          "passed": false
+        },
+        {
+          "slide": 25,
+          "beforePixels": 2010,
+          "afterPixels": 2010,
+          "afterFraction": 0.0023928571428571428,
+          "beforeSVGSHA256": "93f379b2dc598a7f9632baad0dc3ec6ba17b3c70e7fc9bdb834ae102c64bb45a",
+          "afterSVGSHA256": "93f379b2dc598a7f9632baad0dc3ec6ba17b3c70e7fc9bdb834ae102c64bb45a",
+          "passed": true
+        },
+        {
+          "slide": 26,
+          "beforePixels": 3992,
+          "afterPixels": 3992,
+          "afterFraction": 0.004752380952380952,
+          "beforeSVGSHA256": "dc8681fe759dab75b0cd9ff00547114cf10cd7b944e2013d4849d2318b5d8321",
+          "afterSVGSHA256": "dc8681fe759dab75b0cd9ff00547114cf10cd7b944e2013d4849d2318b5d8321",
+          "passed": true
+        },
+        {
+          "slide": 27,
+          "beforePixels": 2009,
+          "afterPixels": 2009,
+          "afterFraction": 0.0023916666666666665,
+          "beforeSVGSHA256": "812095380cad2c9e765b87a2dcd3d239bb7595fe381662cfb7d7fa7cf623a6b1",
+          "afterSVGSHA256": "812095380cad2c9e765b87a2dcd3d239bb7595fe381662cfb7d7fa7cf623a6b1",
+          "passed": true
+        },
+        {
+          "slide": 28,
+          "beforePixels": 8000,
+          "afterPixels": 8000,
+          "afterFraction": 0.009523809523809525,
+          "beforeSVGSHA256": "47c46a2b0b85775f38855d47abf9370062681d3fd1608e1c7c8215ae29f8af41",
+          "afterSVGSHA256": "47c46a2b0b85775f38855d47abf9370062681d3fd1608e1c7c8215ae29f8af41",
+          "passed": false
+        },
+        {
+          "slide": 29,
+          "beforePixels": 2000,
+          "afterPixels": 2000,
+          "afterFraction": 0.002380952380952381,
+          "beforeSVGSHA256": "bcdf3de3d513c7f2adbc61724f516ca145bb22adacd573647743e870c0cf2997",
+          "afterSVGSHA256": "bcdf3de3d513c7f2adbc61724f516ca145bb22adacd573647743e870c0cf2997",
+          "passed": true
+        }
+      ]
+    },
+    "style": {
+      "beforePassed": 24,
+      "afterPassed": 36,
+      "count": 36,
+      "cases": [
+        {
+          "slide": 1,
+          "beforePixels": 2010,
+          "afterPixels": 2010,
+          "afterFraction": 0.0023928571428571428,
+          "beforeSVGSHA256": "2632b4e83bde20345af824fcb8229a02a79e0864839c7bc5d09d921076ffca54",
+          "afterSVGSHA256": "2632b4e83bde20345af824fcb8229a02a79e0864839c7bc5d09d921076ffca54",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 2,
+          "beforePixels": 16,
+          "afterPixels": 16,
+          "afterFraction": 1.9047619047619046e-05,
+          "beforeSVGSHA256": "0e35929f66d9373ae64ebe793f22260684efb84342ce04644023c5d7c3f0f8f1",
+          "afterSVGSHA256": "0e35929f66d9373ae64ebe793f22260684efb84342ce04644023c5d7c3f0f8f1",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 3,
+          "beforePixels": 12,
+          "afterPixels": 12,
+          "afterFraction": 1.4285714285714285e-05,
+          "beforeSVGSHA256": "3d40e7efc054c85e424c48ae363ac3a35cbacf4788f4122def63d24367a1ab4d",
+          "afterSVGSHA256": "3d40e7efc054c85e424c48ae363ac3a35cbacf4788f4122def63d24367a1ab4d",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 4,
+          "beforePixels": 2010,
+          "afterPixels": 2010,
+          "afterFraction": 0.0023928571428571428,
+          "beforeSVGSHA256": "2632b4e83bde20345af824fcb8229a02a79e0864839c7bc5d09d921076ffca54",
+          "afterSVGSHA256": "2632b4e83bde20345af824fcb8229a02a79e0864839c7bc5d09d921076ffca54",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 5,
+          "beforePixels": 2010,
+          "afterPixels": 2010,
+          "afterFraction": 0.0023928571428571428,
+          "beforeSVGSHA256": "2632b4e83bde20345af824fcb8229a02a79e0864839c7bc5d09d921076ffca54",
+          "afterSVGSHA256": "2632b4e83bde20345af824fcb8229a02a79e0864839c7bc5d09d921076ffca54",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 6,
+          "beforePixels": 16,
+          "afterPixels": 16,
+          "afterFraction": 1.9047619047619046e-05,
+          "beforeSVGSHA256": "0e35929f66d9373ae64ebe793f22260684efb84342ce04644023c5d7c3f0f8f1",
+          "afterSVGSHA256": "0e35929f66d9373ae64ebe793f22260684efb84342ce04644023c5d7c3f0f8f1",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 7,
+          "beforePixels": 2009,
+          "afterPixels": 2009,
+          "afterFraction": 0.0023916666666666665,
+          "beforeSVGSHA256": "f163f747e2a6e6c5a864e7083b979fff45cae325a83d48e0c3d2e0ffa0bcbc6b",
+          "afterSVGSHA256": "f163f747e2a6e6c5a864e7083b979fff45cae325a83d48e0c3d2e0ffa0bcbc6b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 8,
+          "beforePixels": 18,
+          "afterPixels": 18,
+          "afterFraction": 2.1428571428571428e-05,
+          "beforeSVGSHA256": "a017d4f10789268af7dec32d68143b2368ec24c557540c752a5650c79be5bbd9",
+          "afterSVGSHA256": "a017d4f10789268af7dec32d68143b2368ec24c557540c752a5650c79be5bbd9",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 9,
+          "beforePixels": 24,
+          "afterPixels": 24,
+          "afterFraction": 2.857142857142857e-05,
+          "beforeSVGSHA256": "841ff902086640ba223f611ed199ce19474df2de9e542e0bc11f14a559579250",
+          "afterSVGSHA256": "841ff902086640ba223f611ed199ce19474df2de9e542e0bc11f14a559579250",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 10,
+          "beforePixels": 2009,
+          "afterPixels": 2009,
+          "afterFraction": 0.0023916666666666665,
+          "beforeSVGSHA256": "f163f747e2a6e6c5a864e7083b979fff45cae325a83d48e0c3d2e0ffa0bcbc6b",
+          "afterSVGSHA256": "f163f747e2a6e6c5a864e7083b979fff45cae325a83d48e0c3d2e0ffa0bcbc6b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 11,
+          "beforePixels": 2009,
+          "afterPixels": 2009,
+          "afterFraction": 0.0023916666666666665,
+          "beforeSVGSHA256": "f163f747e2a6e6c5a864e7083b979fff45cae325a83d48e0c3d2e0ffa0bcbc6b",
+          "afterSVGSHA256": "f163f747e2a6e6c5a864e7083b979fff45cae325a83d48e0c3d2e0ffa0bcbc6b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 12,
+          "beforePixels": 18,
+          "afterPixels": 18,
+          "afterFraction": 2.1428571428571428e-05,
+          "beforeSVGSHA256": "a017d4f10789268af7dec32d68143b2368ec24c557540c752a5650c79be5bbd9",
+          "afterSVGSHA256": "a017d4f10789268af7dec32d68143b2368ec24c557540c752a5650c79be5bbd9",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 13,
+          "beforePixels": 1996,
+          "afterPixels": 1996,
+          "afterFraction": 0.002376190476190476,
+          "beforeSVGSHA256": "26a405ae92ffede64d3de50ecb7b2b3f8d46286c6a4c49b07a1101001aa04fce",
+          "afterSVGSHA256": "26a405ae92ffede64d3de50ecb7b2b3f8d46286c6a4c49b07a1101001aa04fce",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 14,
+          "beforePixels": 60,
+          "afterPixels": 60,
+          "afterFraction": 7.142857142857143e-05,
+          "beforeSVGSHA256": "e389cb12b731444b93c6165538782379948f328538a813c81ebb8bb16719de6c",
+          "afterSVGSHA256": "e389cb12b731444b93c6165538782379948f328538a813c81ebb8bb16719de6c",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 15,
+          "beforePixels": 36,
+          "afterPixels": 36,
+          "afterFraction": 4.2857142857142856e-05,
+          "beforeSVGSHA256": "b6227fcbb4c2a9edb56d631ef18255afecd603cf46c49b116252fc34b60348c0",
+          "afterSVGSHA256": "b6227fcbb4c2a9edb56d631ef18255afecd603cf46c49b116252fc34b60348c0",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 16,
+          "beforePixels": 1996,
+          "afterPixels": 1996,
+          "afterFraction": 0.002376190476190476,
+          "beforeSVGSHA256": "26a405ae92ffede64d3de50ecb7b2b3f8d46286c6a4c49b07a1101001aa04fce",
+          "afterSVGSHA256": "26a405ae92ffede64d3de50ecb7b2b3f8d46286c6a4c49b07a1101001aa04fce",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 17,
+          "beforePixels": 1996,
+          "afterPixels": 1996,
+          "afterFraction": 0.002376190476190476,
+          "beforeSVGSHA256": "26a405ae92ffede64d3de50ecb7b2b3f8d46286c6a4c49b07a1101001aa04fce",
+          "afterSVGSHA256": "26a405ae92ffede64d3de50ecb7b2b3f8d46286c6a4c49b07a1101001aa04fce",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 18,
+          "beforePixels": 60,
+          "afterPixels": 60,
+          "afterFraction": 7.142857142857143e-05,
+          "beforeSVGSHA256": "e389cb12b731444b93c6165538782379948f328538a813c81ebb8bb16719de6c",
+          "afterSVGSHA256": "e389cb12b731444b93c6165538782379948f328538a813c81ebb8bb16719de6c",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 19,
+          "beforePixels": 28,
+          "afterPixels": 28,
+          "afterFraction": 3.3333333333333335e-05,
+          "beforeSVGSHA256": "eefbf7bf1dc004cf32fae979592664ad1dd9f1c29cdf5d98dabc2731727c5193",
+          "afterSVGSHA256": "eefbf7bf1dc004cf32fae979592664ad1dd9f1c29cdf5d98dabc2731727c5193",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 1
+        },
+        {
+          "slide": 20,
+          "beforePixels": 16,
+          "afterPixels": 16,
+          "afterFraction": 1.9047619047619046e-05,
+          "beforeSVGSHA256": "7f09f805a777d735eb6cc4edd0f436fc168e2866d1716138a3f5d1bef4b05abe",
+          "afterSVGSHA256": "7f09f805a777d735eb6cc4edd0f436fc168e2866d1716138a3f5d1bef4b05abe",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 21,
+          "beforePixels": 24,
+          "afterPixels": 24,
+          "afterFraction": 2.857142857142857e-05,
+          "beforeSVGSHA256": "4d0ef63a5b664f61627168a1407cf43883ccb74026d5c5b1f69e457599a7eac2",
+          "afterSVGSHA256": "4d0ef63a5b664f61627168a1407cf43883ccb74026d5c5b1f69e457599a7eac2",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 22,
+          "beforePixels": 28,
+          "afterPixels": 28,
+          "afterFraction": 3.3333333333333335e-05,
+          "beforeSVGSHA256": "eefbf7bf1dc004cf32fae979592664ad1dd9f1c29cdf5d98dabc2731727c5193",
+          "afterSVGSHA256": "eefbf7bf1dc004cf32fae979592664ad1dd9f1c29cdf5d98dabc2731727c5193",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 1
+        },
+        {
+          "slide": 23,
+          "beforePixels": 28,
+          "afterPixels": 28,
+          "afterFraction": 3.3333333333333335e-05,
+          "beforeSVGSHA256": "eefbf7bf1dc004cf32fae979592664ad1dd9f1c29cdf5d98dabc2731727c5193",
+          "afterSVGSHA256": "eefbf7bf1dc004cf32fae979592664ad1dd9f1c29cdf5d98dabc2731727c5193",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 1
+        },
+        {
+          "slide": 24,
+          "beforePixels": 16,
+          "afterPixels": 16,
+          "afterFraction": 1.9047619047619046e-05,
+          "beforeSVGSHA256": "7f09f805a777d735eb6cc4edd0f436fc168e2866d1716138a3f5d1bef4b05abe",
+          "afterSVGSHA256": "7f09f805a777d735eb6cc4edd0f436fc168e2866d1716138a3f5d1bef4b05abe",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 25,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "791c6c73789b72f0942072614ae4c85b882e19acf3c03fd6f9301de15b592ecf",
+          "afterSVGSHA256": "f0da588bb9dca38f5e508e727c46e306f124345fc2146a6ef97266d5de59e2f2",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 26,
+          "beforePixels": 5660,
+          "afterPixels": 62,
+          "afterFraction": 7.380952380952382e-05,
+          "beforeSVGSHA256": "3a2bc66df59b5326d7e1571888b503fa0b61743573afd8f2a446605891781f54",
+          "afterSVGSHA256": "904e79e3c1f475204fe75cfa9292d726b4c535fc3884a6d7e39016dbbafdb95c",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 27,
+          "beforePixels": 5594,
+          "afterPixels": 12,
+          "afterFraction": 1.4285714285714285e-05,
+          "beforeSVGSHA256": "4f88e0cf6ca07663ccc08da98a38eefdeb8f8b724b30c3f4fb1f18534d12c1ff",
+          "afterSVGSHA256": "264cae6c27450a5c64cffab72dc1df2257c824d376c64097185f59befddbfedf",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 28,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "791c6c73789b72f0942072614ae4c85b882e19acf3c03fd6f9301de15b592ecf",
+          "afterSVGSHA256": "f0da588bb9dca38f5e508e727c46e306f124345fc2146a6ef97266d5de59e2f2",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 29,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "791c6c73789b72f0942072614ae4c85b882e19acf3c03fd6f9301de15b592ecf",
+          "afterSVGSHA256": "f0da588bb9dca38f5e508e727c46e306f124345fc2146a6ef97266d5de59e2f2",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 30,
+          "beforePixels": 5660,
+          "afterPixels": 62,
+          "afterFraction": 7.380952380952382e-05,
+          "beforeSVGSHA256": "3a2bc66df59b5326d7e1571888b503fa0b61743573afd8f2a446605891781f54",
+          "afterSVGSHA256": "904e79e3c1f475204fe75cfa9292d726b4c535fc3884a6d7e39016dbbafdb95c",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 31,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "81c09717e9bc56c41418d217c19d38a508b1280f63127dbd48c3de3f801cb585",
+          "afterSVGSHA256": "6ff3f1c50e9e436c3655bdd33ddea3486c610f7346b9c0109a9c6a8b56476c53",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 32,
+          "beforePixels": 5660,
+          "afterPixels": 62,
+          "afterFraction": 7.380952380952382e-05,
+          "beforeSVGSHA256": "3832b5cf79ca2980a9430fefb06a72d789f6f1e6681fecc3712b3a353312494b",
+          "afterSVGSHA256": "6e7c3886429c69123927b80d2a99088ecefd97f909aef909ea094bdb246d039f",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 33,
+          "beforePixels": 5594,
+          "afterPixels": 12,
+          "afterFraction": 1.4285714285714285e-05,
+          "beforeSVGSHA256": "03ae58bbe38f7fb4a21deac095ff2623527014c2cf426e055267a522ff992bf9",
+          "afterSVGSHA256": "0663ec735199e2b69a4dd53c6a2e801ad793c397bac5565a041acc475ec40021",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 34,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "81c09717e9bc56c41418d217c19d38a508b1280f63127dbd48c3de3f801cb585",
+          "afterSVGSHA256": "6ff3f1c50e9e436c3655bdd33ddea3486c610f7346b9c0109a9c6a8b56476c53",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 35,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "81c09717e9bc56c41418d217c19d38a508b1280f63127dbd48c3de3f801cb585",
+          "afterSVGSHA256": "6ff3f1c50e9e436c3655bdd33ddea3486c610f7346b9c0109a9c6a8b56476c53",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 36,
+          "beforePixels": 5660,
+          "afterPixels": 62,
+          "afterFraction": 7.380952380952382e-05,
+          "beforeSVGSHA256": "3832b5cf79ca2980a9430fefb06a72d789f6f1e6681fecc3712b3a353312494b",
+          "afterSVGSHA256": "6e7c3886429c69123927b80d2a99088ecefd97f909aef909ea094bdb246d039f",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        }
+      ]
+    },
+    "style-rtl": {
+      "beforePassed": 24,
+      "afterPassed": 36,
+      "count": 36,
+      "cases": [
+        {
+          "slide": 1,
+          "beforePixels": 2010,
+          "afterPixels": 2010,
+          "afterFraction": 0.0023928571428571428,
+          "beforeSVGSHA256": "6787010355d9e7cae27d91d17f8a26f9409e5f64ef902abe070ac05bfdece421",
+          "afterSVGSHA256": "6787010355d9e7cae27d91d17f8a26f9409e5f64ef902abe070ac05bfdece421",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 2,
+          "beforePixels": 16,
+          "afterPixels": 16,
+          "afterFraction": 1.9047619047619046e-05,
+          "beforeSVGSHA256": "bdba89e44e5f9cbf5970faa70ac543ad21c1173963d48b5ed52a499794614e9b",
+          "afterSVGSHA256": "bdba89e44e5f9cbf5970faa70ac543ad21c1173963d48b5ed52a499794614e9b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 3,
+          "beforePixels": 12,
+          "afterPixels": 12,
+          "afterFraction": 1.4285714285714285e-05,
+          "beforeSVGSHA256": "497cee9940c47021e56fc4e1636daa0a32bbf9e618f6c6ac166ac558469dfc33",
+          "afterSVGSHA256": "497cee9940c47021e56fc4e1636daa0a32bbf9e618f6c6ac166ac558469dfc33",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 4,
+          "beforePixels": 2010,
+          "afterPixels": 2010,
+          "afterFraction": 0.0023928571428571428,
+          "beforeSVGSHA256": "6787010355d9e7cae27d91d17f8a26f9409e5f64ef902abe070ac05bfdece421",
+          "afterSVGSHA256": "6787010355d9e7cae27d91d17f8a26f9409e5f64ef902abe070ac05bfdece421",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 5,
+          "beforePixels": 2010,
+          "afterPixels": 2010,
+          "afterFraction": 0.0023928571428571428,
+          "beforeSVGSHA256": "6787010355d9e7cae27d91d17f8a26f9409e5f64ef902abe070ac05bfdece421",
+          "afterSVGSHA256": "6787010355d9e7cae27d91d17f8a26f9409e5f64ef902abe070ac05bfdece421",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 6,
+          "beforePixels": 16,
+          "afterPixels": 16,
+          "afterFraction": 1.9047619047619046e-05,
+          "beforeSVGSHA256": "bdba89e44e5f9cbf5970faa70ac543ad21c1173963d48b5ed52a499794614e9b",
+          "afterSVGSHA256": "bdba89e44e5f9cbf5970faa70ac543ad21c1173963d48b5ed52a499794614e9b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 7,
+          "beforePixels": 2009,
+          "afterPixels": 2009,
+          "afterFraction": 0.0023916666666666665,
+          "beforeSVGSHA256": "87e4ef0c91339d2895febf4310974cbcf377843f8a39b9ec3c4c73eb387b590b",
+          "afterSVGSHA256": "87e4ef0c91339d2895febf4310974cbcf377843f8a39b9ec3c4c73eb387b590b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 8,
+          "beforePixels": 18,
+          "afterPixels": 18,
+          "afterFraction": 2.1428571428571428e-05,
+          "beforeSVGSHA256": "80f56f63cc230aee1bdd946674ccdd2e26d27b7ac41253a6ed0d411e835833c4",
+          "afterSVGSHA256": "80f56f63cc230aee1bdd946674ccdd2e26d27b7ac41253a6ed0d411e835833c4",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 9,
+          "beforePixels": 24,
+          "afterPixels": 24,
+          "afterFraction": 2.857142857142857e-05,
+          "beforeSVGSHA256": "b698f96b5e1d1bf4ddc48c4fdddbedf4d04a136c6d666a061e1634b86b0f61ed",
+          "afterSVGSHA256": "b698f96b5e1d1bf4ddc48c4fdddbedf4d04a136c6d666a061e1634b86b0f61ed",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 10,
+          "beforePixels": 2009,
+          "afterPixels": 2009,
+          "afterFraction": 0.0023916666666666665,
+          "beforeSVGSHA256": "87e4ef0c91339d2895febf4310974cbcf377843f8a39b9ec3c4c73eb387b590b",
+          "afterSVGSHA256": "87e4ef0c91339d2895febf4310974cbcf377843f8a39b9ec3c4c73eb387b590b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 11,
+          "beforePixels": 2009,
+          "afterPixels": 2009,
+          "afterFraction": 0.0023916666666666665,
+          "beforeSVGSHA256": "87e4ef0c91339d2895febf4310974cbcf377843f8a39b9ec3c4c73eb387b590b",
+          "afterSVGSHA256": "87e4ef0c91339d2895febf4310974cbcf377843f8a39b9ec3c4c73eb387b590b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 12,
+          "beforePixels": 18,
+          "afterPixels": 18,
+          "afterFraction": 2.1428571428571428e-05,
+          "beforeSVGSHA256": "80f56f63cc230aee1bdd946674ccdd2e26d27b7ac41253a6ed0d411e835833c4",
+          "afterSVGSHA256": "80f56f63cc230aee1bdd946674ccdd2e26d27b7ac41253a6ed0d411e835833c4",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 13,
+          "beforePixels": 1996,
+          "afterPixels": 1996,
+          "afterFraction": 0.002376190476190476,
+          "beforeSVGSHA256": "40e9926f0b29183378e32cd48153702aeddd8de9eb9ee8b4fd88041e9ff24ce7",
+          "afterSVGSHA256": "40e9926f0b29183378e32cd48153702aeddd8de9eb9ee8b4fd88041e9ff24ce7",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 14,
+          "beforePixels": 60,
+          "afterPixels": 60,
+          "afterFraction": 7.142857142857143e-05,
+          "beforeSVGSHA256": "77a4a52d92fbeb8eba5e93a61b18d04f673be6254b879648aa89f499ed086743",
+          "afterSVGSHA256": "77a4a52d92fbeb8eba5e93a61b18d04f673be6254b879648aa89f499ed086743",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 15,
+          "beforePixels": 36,
+          "afterPixels": 36,
+          "afterFraction": 4.2857142857142856e-05,
+          "beforeSVGSHA256": "d84aa0e21e73f278756ad346e7f6cf481e708e5b4734c46a8c65df2da9cf1cf3",
+          "afterSVGSHA256": "d84aa0e21e73f278756ad346e7f6cf481e708e5b4734c46a8c65df2da9cf1cf3",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 16,
+          "beforePixels": 1996,
+          "afterPixels": 1996,
+          "afterFraction": 0.002376190476190476,
+          "beforeSVGSHA256": "40e9926f0b29183378e32cd48153702aeddd8de9eb9ee8b4fd88041e9ff24ce7",
+          "afterSVGSHA256": "40e9926f0b29183378e32cd48153702aeddd8de9eb9ee8b4fd88041e9ff24ce7",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 17,
+          "beforePixels": 1996,
+          "afterPixels": 1996,
+          "afterFraction": 0.002376190476190476,
+          "beforeSVGSHA256": "40e9926f0b29183378e32cd48153702aeddd8de9eb9ee8b4fd88041e9ff24ce7",
+          "afterSVGSHA256": "40e9926f0b29183378e32cd48153702aeddd8de9eb9ee8b4fd88041e9ff24ce7",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 18,
+          "beforePixels": 60,
+          "afterPixels": 60,
+          "afterFraction": 7.142857142857143e-05,
+          "beforeSVGSHA256": "77a4a52d92fbeb8eba5e93a61b18d04f673be6254b879648aa89f499ed086743",
+          "afterSVGSHA256": "77a4a52d92fbeb8eba5e93a61b18d04f673be6254b879648aa89f499ed086743",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 19,
+          "beforePixels": 28,
+          "afterPixels": 28,
+          "afterFraction": 3.3333333333333335e-05,
+          "beforeSVGSHA256": "dd600643da37d83a31252cfcb19fa97498d9f2184cd5d3667dd229b2c21ed34b",
+          "afterSVGSHA256": "dd600643da37d83a31252cfcb19fa97498d9f2184cd5d3667dd229b2c21ed34b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 1
+        },
+        {
+          "slide": 20,
+          "beforePixels": 16,
+          "afterPixels": 16,
+          "afterFraction": 1.9047619047619046e-05,
+          "beforeSVGSHA256": "0cafe9145249432e00549bcbfce7a2bdfaf6d58f2fd34a898bc0108e7f5f093d",
+          "afterSVGSHA256": "0cafe9145249432e00549bcbfce7a2bdfaf6d58f2fd34a898bc0108e7f5f093d",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 21,
+          "beforePixels": 24,
+          "afterPixels": 24,
+          "afterFraction": 2.857142857142857e-05,
+          "beforeSVGSHA256": "3eba3695f863399d6b402e1ec0360e09d4db81b0af0a1c4b6145cef5e9240ec3",
+          "afterSVGSHA256": "3eba3695f863399d6b402e1ec0360e09d4db81b0af0a1c4b6145cef5e9240ec3",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 22,
+          "beforePixels": 28,
+          "afterPixels": 28,
+          "afterFraction": 3.3333333333333335e-05,
+          "beforeSVGSHA256": "dd600643da37d83a31252cfcb19fa97498d9f2184cd5d3667dd229b2c21ed34b",
+          "afterSVGSHA256": "dd600643da37d83a31252cfcb19fa97498d9f2184cd5d3667dd229b2c21ed34b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 1
+        },
+        {
+          "slide": 23,
+          "beforePixels": 28,
+          "afterPixels": 28,
+          "afterFraction": 3.3333333333333335e-05,
+          "beforeSVGSHA256": "dd600643da37d83a31252cfcb19fa97498d9f2184cd5d3667dd229b2c21ed34b",
+          "afterSVGSHA256": "dd600643da37d83a31252cfcb19fa97498d9f2184cd5d3667dd229b2c21ed34b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 1
+        },
+        {
+          "slide": 24,
+          "beforePixels": 16,
+          "afterPixels": 16,
+          "afterFraction": 1.9047619047619046e-05,
+          "beforeSVGSHA256": "0cafe9145249432e00549bcbfce7a2bdfaf6d58f2fd34a898bc0108e7f5f093d",
+          "afterSVGSHA256": "0cafe9145249432e00549bcbfce7a2bdfaf6d58f2fd34a898bc0108e7f5f093d",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 25,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "f5225c4917790943ee817e3aabd5b2262d0791e313169a55c17be08f14162b86",
+          "afterSVGSHA256": "f74daca408b9b0c57370a2aa932ee61de73916869f7674c94cb41ad70f0a7108",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 26,
+          "beforePixels": 5660,
+          "afterPixels": 62,
+          "afterFraction": 7.380952380952382e-05,
+          "beforeSVGSHA256": "b8c13f40a540b7726bdfb5d3767ecce8782403c6d76c87f31dfdb5ec5e5f6252",
+          "afterSVGSHA256": "9a58c0162a8c252f9b53d88a46c35fe18e43165cde18ad6d6a232c766df0435b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 27,
+          "beforePixels": 5594,
+          "afterPixels": 12,
+          "afterFraction": 1.4285714285714285e-05,
+          "beforeSVGSHA256": "8f8b1bc721d05ab7beb6762ddfd3d95d929c442d78601bf2825c4d9ed44cdeae",
+          "afterSVGSHA256": "698d3ea799aae2a9ca1c86560518ba8cd65e53cc2be543a328d5b8039253bc43",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 28,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "f5225c4917790943ee817e3aabd5b2262d0791e313169a55c17be08f14162b86",
+          "afterSVGSHA256": "f74daca408b9b0c57370a2aa932ee61de73916869f7674c94cb41ad70f0a7108",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 29,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "f5225c4917790943ee817e3aabd5b2262d0791e313169a55c17be08f14162b86",
+          "afterSVGSHA256": "f74daca408b9b0c57370a2aa932ee61de73916869f7674c94cb41ad70f0a7108",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 30,
+          "beforePixels": 5660,
+          "afterPixels": 62,
+          "afterFraction": 7.380952380952382e-05,
+          "beforeSVGSHA256": "b8c13f40a540b7726bdfb5d3767ecce8782403c6d76c87f31dfdb5ec5e5f6252",
+          "afterSVGSHA256": "9a58c0162a8c252f9b53d88a46c35fe18e43165cde18ad6d6a232c766df0435b",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 31,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "5b17bac991801c7022f15c765cdf7d0022532f5ea4d9c39cff92d1296855d08e",
+          "afterSVGSHA256": "c5a3c0ee58f49aef5d11a9c4294e803e086424724962b8017ba192ec9643fdf5",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 32,
+          "beforePixels": 5660,
+          "afterPixels": 62,
+          "afterFraction": 7.380952380952382e-05,
+          "beforeSVGSHA256": "63ebb56db1e6c55a32145e225f45ba701c6641766530f0cf659035cbe5d5e092",
+          "afterSVGSHA256": "b8f4ec313511d158f67f0efb45919424ca8406e1b7b7fa7b10bfa0eb69908b08",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 33,
+          "beforePixels": 5594,
+          "afterPixels": 12,
+          "afterFraction": 1.4285714285714285e-05,
+          "beforeSVGSHA256": "c6b5815f13dc0e8ac7e633ed21049b4b5e5d74e195bfca72051054f53db28ae6",
+          "afterSVGSHA256": "5b0b6f3e2664932cfa787b0989e1a1eaddd97113f56a1bbdc40b82bb333b6f5a",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 34,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "5b17bac991801c7022f15c765cdf7d0022532f5ea4d9c39cff92d1296855d08e",
+          "afterSVGSHA256": "c5a3c0ee58f49aef5d11a9c4294e803e086424724962b8017ba192ec9643fdf5",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 35,
+          "beforePixels": 5878,
+          "afterPixels": 280,
+          "afterFraction": 0.0003333333333333333,
+          "beforeSVGSHA256": "5b17bac991801c7022f15c765cdf7d0022532f5ea4d9c39cff92d1296855d08e",
+          "afterSVGSHA256": "c5a3c0ee58f49aef5d11a9c4294e803e086424724962b8017ba192ec9643fdf5",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        },
+        {
+          "slide": 36,
+          "beforePixels": 5660,
+          "afterPixels": 62,
+          "afterFraction": 7.380952380952382e-05,
+          "beforeSVGSHA256": "63ebb56db1e6c55a32145e225f45ba701c6641766530f0cf659035cbe5d5e092",
+          "afterSVGSHA256": "b8f4ec313511d158f67f0efb45919424ca8406e1b7b7fa7b10bfa0eb69908b08",
+          "passed": true,
+          "boundaryPassed": true,
+          "maxBoundaryDelta": 0
+        }
+      ]
+    }
+  },
+  "independentV3": {
+    "before": {
+      "differingPixels": 17314,
+      "fraction": 0.020611904761904762
+    },
+    "after": {
+      "differingPixels": 17314,
+      "fraction": 0.020611904761904762
+    },
+    "passed": false,
+    "beforeSVGSHA256": "6ed3b9a8745d3b72a69e59c6b1b8c0da1bad4cd0de155436e7a669c9ddb020b1",
+    "afterSVGSHA256": "6ed3b9a8745d3b72a69e59c6b1b8c0da1bad4cd0de155436e7a669c9ddb020b1",
+    "fontAliases": {
+      "RostrumEmbeddedFace1": {
+        "family": "Calibri",
+        "path": "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibrib.ttf",
+        "sha256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+        "style": "normal",
+        "weight": 700
+      },
+      "RostrumEmbeddedFace2": {
+        "family": "Calibri",
+        "path": "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibri.ttf",
+        "sha256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+        "style": "normal",
+        "weight": 400
+      },
+      "RostrumEmbeddedFace3": {
+        "family": "Arial",
+        "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+        "style": "normal",
+        "weight": 400
+      },
+      "RostrumEmbeddedFace4": {
+        "family": "Arial",
+        "path": "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+        "sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0",
+        "style": "normal",
+        "weight": 700
+      }
+    }
+  },
+  "doublePDF": {
+    "count": 29,
+    "passed": 29,
+    "maxErrorPt": 0.0001220703125,
+    "gatePt": 0.001,
+    "beforeAfterReportsIdentical": true
+  },
+  "nativeFillProbes": {
+    "probes": 1480,
+    "passed": 1480,
+    "failures": [],
+    "scope": "Sampled cell fills with first-row header and horizontal banding. Not text, borders, effects or whole-slide equivalence.",
+    "candidateSHA256": {
+      "slide-01.svg": "b3ecaefedb7b30f27d8b748b4b77c1c9113c3c852c9ac70ac139e1b092ad7524",
+      "slide-02.svg": "3330f45266e5e1447e17dcd94a37063b3e9fb64bc48568157cf9defbfeac9a45",
+      "slide-03.svg": "3776965d5fcfa32073fa4f3af6a8c8bc22e9801f3ccc0f7c9818ad2abb759407",
+      "slide-04.svg": "2711b6c754c8298af9b2b26382e2575f0cb4bc7bc9b0ac353c27f63a94f76d9c",
+      "slide-05.svg": "dae72e7fa67b65c32ba6225e70f1bcd0f98afaf7c7fd7c1bafa557320872f5c6",
+      "slide-06.svg": "8ffb3c3a8640ad0da0e40971719bd44333fc7954bf9dac10c25a9085fc902513",
+      "slide-07.svg": "653d53c33938f4813d0fd9f4f0f6a31f5c107445b67f2a56fc877d26d432f7bc",
+      "slide-08.svg": "b38e19ae55e18a9e6927dd5d7c283b1678b92450860dbfa3a6da7c399fb57ef8",
+      "slide-09.svg": "7962a91ad4ebe20a6e0a88e50be39e20bb5396490364682f5e5a1375b8df3723",
+      "slide-10.svg": "6e49e4dc3094e25fd7abca5e634e2c91a6d93f1ca08c11ae0e913e3b54f98220",
+      "slide-11.svg": "d7326b821b6e8993ff62cd31da58e1f3146fbe134aa8d39c21ec538d8a30e52a",
+      "slide-12.svg": "2df5cbcf7b197ec5f1a58d22c50153588f5f44820356a761357d011b9a12887c",
+      "slide-13.svg": "bdc583304a2b37da4159a1fd047a929147e870883644bc37292fb171e3dbcb15",
+      "slide-14.svg": "b33452d2e87528ed94fb344a884c0aaee40c9d55f94ee522b932a78f83c31faf",
+      "slide-15.svg": "88ff3ff0cc512698146dd1b655fd3f3620c84134747aa50ad8774bf476676f3a",
+      "slide-16.svg": "015a7d6e00aa2e3f2f7a616c1a4dae7660b878251e53c96335ab0df5edf6d089",
+      "slide-17.svg": "ceb1b950b59fe85b27fb58ea247b1654dcd996d53a552de5d05d720164340f96",
+      "slide-18.svg": "78f9efca9750870c325b712a92d211a4837be280ef2d7da6f5073a91c850b5c1",
+      "slide-19.svg": "2d24cb2edc1483069b91208e54c0c37c805b27e33d277bd79d74bfded9b1a230",
+      "slide-20.svg": "b4de427f517be92929dc89e6147c63c96bcdd8d5b014c404083366a2b940b75b",
+      "slide-21.svg": "ec00a1565b8c491c06eaf9aad34b763be6bf1dd64f50ab47878457f2f8ae2114",
+      "slide-22.svg": "7ebcd6c696b9b43a30c285117fb8c42b402b7387f9ee866c6660eae94fb28c16",
+      "slide-23.svg": "7fcf052009bbb51d761c43174cc6e61fe9a047cf29ff72237edc0706e45748a6",
+      "slide-24.svg": "82c8929a7414f2bd1bb104f68277bb43165e4a7c5d21248ad8c3d17d16a12e69",
+      "slide-25.svg": "9296602ae1951e13a50a479118f1251f18881e571f6a7503deba4a4dafb90aa1",
+      "slide-26.svg": "6139e03e6cae5916aebf84e8a268b7dad3fd85ce5352fb118b1da2797c3a68b4",
+      "slide-27.svg": "53851d88d0442aa50b5d8d6cb0f6a04eafe8fdb1b4e392ca74351c1e68e992dd",
+      "slide-28.svg": "176759b4c8d2dd4726382346d446d6af7b7c957dca49ece0539ba518955ba287",
+      "slide-29.svg": "c20bb59b8adc1add2c8459ee41e85e56b4811f83c39dc0b9816161306f367d26",
+      "slide-30.svg": "35d34238f2d27ba949bceefe8be077fc508970946455ab13012dbf22492fb62f",
+      "slide-31.svg": "5ca237e48a0e5b19d3ffdda3ead4ccef9c8625e67d61e5416064391e8061cd84",
+      "slide-32.svg": "c78ecbce2379fcaba668d7d78b1ead7b0af39651d30da6f0701c512a611679e5",
+      "slide-33.svg": "2ef6318333ee91e201433bf99bc0cbc38abb78501a47315d5ab7c57cc0fe3a31",
+      "slide-34.svg": "067fcc87e12a7b35e856c7bea08e1cd07f38825cee8c791cd2f9e2471ef49fb8",
+      "slide-35.svg": "c62ac10c70852f4ad54e75c07e4efb5cf998073c16d40a9bc10ceb4ec07504ad",
+      "slide-36.svg": "efeb757959e68fc901ddaa7c4bddd0b04412b52528ba0b62f9e86c727ea48f7c",
+      "slide-37.svg": "bae529c865d7e8d58f5b2f0b38d7594b0cb791c3b155d0fb59abc2d4e46b12e5",
+      "slide-38.svg": "a4fe3dd855e1f23bfb3d0e69a98a8b433ffe73f922815329370ab280aa6bee9f",
+      "slide-39.svg": "49ef4a57f6d7a731abc77e5ff090897585ea2794b63607007ec5803aaf4a76af",
+      "slide-40.svg": "54fe17f7794c0c00a23d3ead1bee72192765c572edb49996bb0a8e79825b375a",
+      "slide-41.svg": "1e9f4c00fce8edd08ab51d75065a39a57b2f620aabb99ae5c74336341bdb759f",
+      "slide-42.svg": "03589c7d8323ab8de54b268a9eefe468c49ae77ef0cd9063daaf5197675d86c6",
+      "slide-43.svg": "a568f2df54c340163d620942c1f871de741d049c24ab0e736f33a90059e35a9a",
+      "slide-44.svg": "f3d90651720552f5999a0dd0611dd233682d78c51594115e0cac74f0c2bde7fe",
+      "slide-45.svg": "c3a5cf8d2eef60af694508334b9ab62ee63e4319b92b33ea4fc4c2b8d9a1118a",
+      "slide-46.svg": "3dd3d38fee068ca110c2258b551012c6579035b94cb18ae108286f53ef78f959",
+      "slide-47.svg": "e85d7c931a43a444f130be696b3e980106b0ae2cacbe523eb6680776e9a3de3d",
+      "slide-48.svg": "d25916d01f6b16a91ff0d27cb438a86aa3e47a18ca41ee550c24e0fbaa62d8c7",
+      "slide-49.svg": "2144ac150e2437bafd3919f28f8586772f174c060a88fdcddafd6e90d54e9f6b",
+      "slide-50.svg": "52d62ca0e13c87951dca5755fe32a2bdb0d9c8777fe0fe6801684dfd1d67b524",
+      "slide-51.svg": "846c31d15b235d0ba6e545d5aad5e2e2ab15a05460e1bbab8bb9d5043b69d432",
+      "slide-52.svg": "b3917402157ed31046e8dc4f6b42b9c6ef8c7ea4b5d3261ac25602421fef799e",
+      "slide-53.svg": "3fb16bdd12e6579e54c64968eade8e302f903f47fd4042a687aaea686669a3fc",
+      "slide-54.svg": "6b5668c6f476e7a8001cc36037dc715b76c68bdcee6dd82d1c86f51b0276cae1",
+      "slide-55.svg": "e6174e97975734e7eb132d6ee13238673c1ba197a695d6a1345d636a45bfcef7",
+      "slide-56.svg": "f48f51aa6bcdad26c732e58ea9fed92802e9ca1ab750fd5c0872051a2d8db19a",
+      "slide-57.svg": "99dbee887f6cf2625e9d6b065a2f1e2a953ede3764ee3156b7e307bfee673d97",
+      "slide-58.svg": "3e8fe6d0908ebed46ec8b4ba21d37bb98213ec61f40138b38d81db7aac81078f",
+      "slide-59.svg": "d0e316f48416b8ef122fb7f770e8b26ad6b75de075497ff5e83b2c38aaf9b2f1",
+      "slide-60.svg": "38859a623be35bb66ba1024546f60b524f5b5c10ea8a13a84824d0b8bef21725",
+      "slide-61.svg": "451ca4859455f321b2ea855f2fed43ff57e8ef9682ee1ec8c572b6d08184d414",
+      "slide-62.svg": "41ff182582361fdd2ee060fedff37481338bbaa9923366afcbd6161801f7a5cc",
+      "slide-63.svg": "5fd5d5e6ae3aa5da0c64aa529d43897aa4b504454589a3b867c92f9a2c4e3d34",
+      "slide-64.svg": "14ed61ac04894308feb9d60a48d149b8555a41424a3a8a8f3a07328af013fde0",
+      "slide-65.svg": "5d9f822b1965a0b614667bac27c7ec1c7be66a9b7d79548c59f3262118f66957",
+      "slide-66.svg": "1c2b2b8494d1f64502f1498ec27e84f09d9df60ec28880fde315d3c237476e41",
+      "slide-67.svg": "c0b63fb4c9d8135b0490cdd0d9a428828b2bbdcc6c51a4de22e38aa584f66209",
+      "slide-68.svg": "deca7d2f7b2ee83da62716e27790f133d2b7eebe2e02adadbe09edd44994c1cf",
+      "slide-69.svg": "e17e2b610a278b1df07b8374d45b4de5311dca5b3b4712f350168e4a66cf6f2d",
+      "slide-70.svg": "2b6d23ab091562ab9abd82ae4300d6eda185a202ac0ead006bb8f85af18d4432",
+      "slide-71.svg": "74d345ddb4081b310f137f06378a10731a44563066166742c6fa5fcfedfdc50c",
+      "slide-72.svg": "4478be0828f54738eba9ff2c8a92774b7a5059bd0c67ff4255b8b5a5ec90158e",
+      "slide-73.svg": "cb73e94ce1accd68a3b33e31ec4431af91bbdd497465a97bae759e1467837541",
+      "slide-74.svg": "e3c5ba2a40eeb85dde386b5e01fe54e621afc3fae7cadde1632e418bd24bb08b"
+    },
+    "fixtureSHA256": {
+      "native-styles.pptx": "b55368f1c7ebfb28444da93d912858afd6afe08781ca8fd9a95cde87124011c9",
+      "powerpoint-16.113.3-png.zip": "557b4fac356e61e75ea446bb57d84f67e7539b46e0f5a7b695ab3f5e46740e54"
+    },
+    "rasterizer": "resvg-py 0.5.0",
+    "imageReader": "Pillow 12.3.0",
+    "viewport": [
+      1200,
+      700
+    ],
+    "channelTolerance": 3
+  },
+  "verification": [
+    {
+      "command": "swift test --jobs 2 --filter 'TableBackgroundShadowTests|TableDoubleBorderTests|TableBorderJoinTests|BuiltInTableStyleTests|RenderDiagnosticsTests'",
+      "exitCode": 0,
+      "outputTail": "\udbc4\udc5b  Test run with 39 tests in 5 suites passed after 1.786 seconds.",
+      "logSHA256": "a3a62a50f037ca01f4b7472c1aff124577b52c6bb49e0233a0ab7e3f1d9f4f88"
+    },
+    {
+      "command": "swift test --jobs 2",
+      "exitCode": 0,
+      "outputTail": "\udbc4\udc5b  Test run with 958 tests in 130 suites passed after 38.671 seconds.",
+      "logSHA256": "dc805524d66b8bf36e449076c378b4ddfa8a7d15d50ad0055386f74bed0825c6"
+    },
+    {
+      "command": "swift build --jobs 2",
+      "exitCode": 0,
+      "outputTail": "Build complete! (0.43 sec)",
+      "logSHA256": "827098344008ef70195770c3be93f9404c73d530fedb8803f2d5eb656edfef26"
+    }
+  ],
+  "remainingGaps": [
+    "Independent v3 remains above the 0.5% pixel gate.",
+    "Double slides 21,24,28 remain above the 0.5% pixel gate.",
+    "Shadow kernel is an approximation; strict rendering still refuses it.",
+    "Scaled/skewed shadows, effect chains and 3D effects remain omitted.",
+    "Style PNG controls do not qualify text shadows or every custom table background effect."
+  ]
+}
