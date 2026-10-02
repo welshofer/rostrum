@@ -162,6 +162,8 @@ import Testing
         let second = try deck.slides.add()
         try second.shapes.addTable(rows: 1, columns: 1, frame: frame).setContents([["Unchanged table"]])
         let before = try deck.serializedData(), outline = deck.outline()
+        let originalSignature: (String?) -> String = outline.markdown(title:)
+        #expect(originalSignature("T") == outline.markdown(title: "T"))
         let overrides = [1: [OutlineTable(rows: [["Complete | heading", "Value"], ["Data", "42"]])]]
         let markdown = outline.markdown(title: "T", tableOverrides: overrides)
         #expect(!markdown.contains("Old projection"))
