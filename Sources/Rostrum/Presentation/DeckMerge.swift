@@ -26,6 +26,7 @@ final class SlideCopier {
     private var reservedStyleURIs: Set<PackURI> = []
     private var newNotesMaster: PackURI?
     private var sourceNotesSize: XML.Element?
+    private var notesGeometryImports: [PackURI: NotesImportGeometry] = [:]
     /// Running allocator for the shared sldMasterId/sldLayoutId id namespace
     /// (2147483648+), which must be globally unique across the presentation.
     private var _nextBigId: Int?
@@ -104,6 +105,12 @@ final class SlideCopier {
                 destPart.rels.add(rId: rel.rId, type: rel.type,
                                   target: destURI.relativeReference(to: targetDest))
             }
+        }
+
+        if sourcePart.contentType == ContentType.notesSlide,
+           let relationship = sourcePart.rels.first(ofType: RelType.notesMaster), !relationship.isExternal {
+            let masterURI = PackURI.resolve(target: relationship.target, relativeTo: sourceURI.baseURI)
+            if let geometry = notesGeometryImports[masterURI] { try geometry.materialize(in: destPart) }
         }
 
         if [ContentType.slide, ContentType.slideLayout, ContentType.slideMaster].contains(sourcePart.contentType) {
@@ -334,7 +341,8 @@ final class SlideCopier {
 
     /// Notes masters are presentation singletons. Preserve the first source
     /// master and its actual dependency graph; reuse only an exact compatible
-    /// appearance. Conflicts are rejected while all imports are still staged.
+    /// appearance. Position/size-only placeholder conflicts can be materialized
+    /// locally; other conflicts are rejected while imports are still staged.
     private func ensureDestNotesMaster(from sourceMaster: Part) throws -> PackURI {
         let sourcePresentation = try source.mainDocumentPart()
         guard let size = try sourcePresentation.dom().firstChild(named: "p:notesSz") else {
@@ -353,8 +361,13 @@ final class SlideCopier {
                 throw NotesImportError.incompatibleAppearance("notes-page dimensions conflict; import would change notes appearance")
             }
             var visited: Set<String> = []
-            guard try notesGraphsMatch(sourceMaster, existing, visited: &visited) else {
-                throw NotesImportError.incompatibleAppearance("notes masters or their themes/images conflict; appearance reconciliation is unsupported")
+            if try !notesGraphsMatch(sourceMaster, existing, visited: &visited) {
+                let geometry = try NotesImportGeometry(source: sourceMaster, destination: existing)
+                visited.removeAll()
+                guard try notesGraphsMatch(sourceMaster, existing, visited: &visited, comparePayload: false) else {
+                    throw NotesImportError.incompatibleAppearance("notes master themes/images conflict; appearance reconciliation is unsupported")
+                }
+                notesGeometryImports[sourceMaster.uri] = geometry
             }
             destNotesMaster = existing.uri
             return existing.uri
@@ -383,13 +396,13 @@ final class SlideCopier {
     /// different part filenames. Unknown master/theme/image data must match,
     /// otherwise reuse would silently change inherited notes-page appearance.
     private func notesGraphsMatch(_ sourcePart: Part, _ destinationPart: Part,
-                                  visited: inout Set<String>) throws -> Bool {
+                                  visited: inout Set<String>, comparePayload: Bool = true) throws -> Bool {
         let pair = "\(sourcePart.uri.value)\u{1}\(destinationPart.uri.value)"
         guard visited.insert(pair).inserted else { return true }
         sourcePart.flushIfDirty()
         destinationPart.flushIfDirty()
         guard sourcePart.contentType == destinationPart.contentType,
-              sourcePart.blob == destinationPart.blob,
+              (!comparePayload || sourcePart.blob == destinationPart.blob),
               sourcePart.rels.items.count == destinationPart.rels.items.count else { return false }
         for rel in sourcePart.rels.items {
             guard let other = destinationPart.rels.relationship(withId: rel.rId),
