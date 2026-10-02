@@ -218,3 +218,35 @@ comparisons still fail. This baseline result is limited to the captured styles,
 sizes, transitions, wrapping and breaks; it does not qualify all scripts or text
 layout. Root repeated the vector check and verified unchanged candidate SVG
 hashes on the final integrated code.
+
+## Continued fidelity work — October 2
+
+The [continued implementation record](FIDELITY-FOLLOWUP-20261002.md) supersedes
+the style-image counts above. Bounded table-background shadows bring **both
+LTR and RTL style corpora to 36/36 passing**, at the original PNG tolerance.
+The shadow remains a diagnosed approximation. V3 table, three double-border
+and four typography image failures remain; no reference or gate was relaxed.
+
+DrawingML kerning thresholds now govern shaping, wrapping, fitting and SVG.
+The [horizontal-position diagnostic](../Tools/typography/KERNING-AND-POSITIONS.md)
+retains the failing native PNG evidence separately from the 46 passing baselines.
+
+The [notes geometry corpus](../Tests/RostrumTests/Fixtures/NotesGeometry/manifest.json)
+qualifies imports between otherwise identical masters with different complete
+body/slide-image placeholder positions and sizes. Four native PDF page pairs
+are pixel-identical at 1224×1584: original source/imported, existing target/imported,
+and both imported pages before/after a PowerPoint save/reopen. A public
+python-pptx geometry oracle independently covers differing placeholder indices.
+Duplicate types and broader master/theme/page-size conflicts refuse atomically.
+
+```sh
+python3 Tools/conformance/check_notes_geometry.py --output /tmp/notes-geometry.json
+```
+
+Use `--candidates` and `--type-candidates` to check freshly generated outputs
+from the environment-controlled `NotesImportGeometryTests` fixtures. The checker
+pins original bytes and captured PDFs; it does not launch Office. Original v1
+conformance notes now have a native reference too, retaining their producer
+defect. The general release gate still fails for missing candidate renders,
+including notes pages; these bounded native tests do not certify universal
+notes-page rendering.

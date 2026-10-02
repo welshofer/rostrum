@@ -1,5 +1,9 @@
 # Performance measurements
 
+Latest checkpoint: the [continued fidelity pass](FIDELITY-FOLLOWUP-20261002.md)
+records 174.422 ms median large-table rendering and 199.375 MiB median process
+peak RSS. The earlier measurements below remain historical evidence.
+
 The initial measurements below are retained unchanged; see the follow-up section
 for later renderer optimizations. Bulk table edits are substantially faster. The richer renderer remains slower
 and whole-scenario peak memory is higher. Cold saves, image insertion and eager

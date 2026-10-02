@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "scope": "Pinned bounded notes geometry imports; not a universal fidelity certification",
+  "pythonPptx": "1.0.2",
+  "pymupdf": "1.27.2.3",
+  "freshCandidatesChecked": true,
+  "freshTypeCandidatesChecked": true,
+  "semantic": [
+    {
+      "importedSlide": 1,
+      "geometry": [
+        {
+          "type": "SLIDE_IMAGE (101)",
+          "idx": 2,
+          "rect": [
+            685800,
+            685800,
+            5486400,
+            3429000
+          ]
+        },
+        {
+          "type": "BODY (2)",
+          "idx": 1,
+          "rect": [
+            685800,
+            4343400,
+            5486400,
+            4114800
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "importedSlide": 2,
+      "geometry": [
+        {
+          "type": "SLIDE_IMAGE (101)",
+          "idx": 2,
+          "rect": [
+            1371600,
+            914400,
+            4114800,
+            2743200
+          ]
+        },
+        {
+          "type": "BODY (2)",
+          "idx": 1,
+          "rect": [
+            1028700,
+            5029200,
+            4800600,
+            3200400
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "distinctIndex": 17,
+      "kind": "inherited",
+      "geometry": [
+        {
+          "type": "SLIDE_IMAGE (101)",
+          "idx": 2,
+          "rect": [
+            1371600,
+            914400,
+            4114800,
+            2743200
+          ]
+        },
+        {
+          "type": "BODY (2)",
+          "idx": 17,
+          "rect": [
+            1028700,
+            5029200,
+            4800600,
+            3200400
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "distinctIndex": 17,
+      "kind": "local",
+      "geometry": [
+        {
+          "type": "SLIDE_IMAGE (101)",
+          "idx": 2,
+          "rect": [
+            1371600,
+            914400,
+            4114800,
+            2743200
+          ]
+        },
+        {
+          "type": "BODY (2)",
+          "idx": 17,
+          "rect": [
+            2000000,
+            5029200,
+            4800600,
+            3200400
+          ]
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "native": [
+    {
+      "control": "geometry-source-office.pdf",
+      "controlPage": 0,
+      "candidate": "geometry-imported-office.pdf",
+      "candidatePage": 1,
+      "width": 1224,
+      "height": 1584,
+      "differingPixels": 0,
+      "passed": true
+    },
+    {
+      "control": "geometry-target-before-office.pdf",
+      "controlPage": 0,
+      "candidate": "geometry-imported-office.pdf",
+      "candidatePage": 0,
+      "width": 1224,
+      "height": 1584,
+      "differingPixels": 0,
+      "passed": true
+    },
+    {
+      "control": "geometry-imported-office.pdf",
+      "controlPage": 0,
+      "candidate": "geometry-imported-reopened-office.pdf",
+      "candidatePage": 0,
+      "width": 1224,
+      "height": 1584,
+      "differingPixels": 0,
+      "passed": true
+    },
+    {
+      "control": "geometry-imported-office.pdf",
+      "controlPage": 1,
+      "candidate": "geometry-imported-reopened-office.pdf",
+      "candidatePage": 1,
+      "width": 1224,
+      "height": 1584,
+      "differingPixels": 0,
+      "passed": true
+    }
+  ],
+  "files": {
+    "geometry-imported-office.pdf": "d52a10a1107c5daa328af12243ba91ab7943278b06d1dd98bdd5248a83dafe04",
+    "geometry-imported-reopened-office.pdf": "d45a39fe5514354fa732bb0ffc999f4ba3a64234cf2d7a4969c03013b0222a5f",
+    "geometry-imported.pptx": "29cae94851e547795595088eba2b9f5f5dcc90e9b8395aaeab714b6761d489fd",
+    "geometry-source-office.pdf": "02fd63003062a4fecc03a5439b82fb508fc80cadf04b7169d7984a2b826ee05a",
+    "geometry-source.pptx": "f984bd9e651541626e835e029b3f310513aee150957a91b62bf1f2ffc310fe3b",
+    "geometry-target-before-office.pdf": "a8e484d92c82ef88e7176b3fbaf684b45ee7cd19dc5e51237752e5de5e09c238",
+    "geometry-target-before.pptx": "b2a0e253990bf44402340ec5fbc68b1317f01d2d2e9e7e561a320cbe791ef0f8",
+    "type-index-inherited-imported.pptx": "73e590c283a4e1541a768caac19410789043264a1886dd245eec59b5152166de",
+    "type-index-inherited-source.pptx": "6d6785dba27b98593090ea0b2cb9946c1f416d59aadc5a3c46a5d79cfee1aac1",
+    "type-index-local-imported.pptx": "c6d87e77f86b91003684fccbd190e2cc4a10d2c99bc053f585af1d95392f44fe",
+    "type-index-local-source.pptx": "bc0334e2ffbed42cd2a5e89e3a1f11e6389f0e61fc204b9ee9da88601c590d2c"
+  },
+  "passed": true
+}

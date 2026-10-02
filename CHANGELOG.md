@@ -8,6 +8,11 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Added
 
+- Bounded notes-master geometry reconciliation during slide import. Complete
+  body/slide-image placeholder positions and sizes survive compatible master
+  changes; ambiguous or broader appearance conflicts still refuse atomically.
+- Pinned native notes import/save/reopen PDFs and an independent geometry/pixel
+  checker, plus Lectern inspection/export coverage for shadows and kerning.
 - Typed `LineCompound` / `LineDash` settings and raw compound-style inspection;
   table edits preserve unspecified settings and opaque line XML.
 - Pinned native Office image/crop, typography-baseline and double-border corpora,
@@ -54,6 +59,10 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Fixed
 
+- DrawingML kerning thresholds now apply consistently to shaping, wrapping,
+  fitting and SVG output without disabling ligatures.
+- Single table-background outer shadows render as a diagnosed approximation;
+  both 36-case LTR/RTL Office style-image suites now pass their unchanged gates.
 - Solid flat centered double table borders, diagonal offsets and qualified joins;
   native style-boundary precedence now applies before direct logical-donor edges.
   Unverified compound/junction combinations remain diagnosed.

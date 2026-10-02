@@ -493,6 +493,8 @@ ledger. These gates remain open and must not be relabeled complete:
   fill probes. Shared borders have 737 probes across 42 Office cases.
 - [x] Typed compound/dash line settings, qualified solid double-border geometry
   (29 Office PDF cases) and native style-boundary precedence (216 LTR/RTL probes).
+- [x] Bounded table-background outer shadows bring both native style-image
+  corpora to 36/36 passing; approximation diagnostics and strict refusal remain.
 - [x] Twelve native Office image-mapping cases and 46 native text baselines pass
   their scoped checks; [current evidence](docs/IMPLEMENTATION-20261002.md).
 - [ ] Advanced vertical cell typography, pattern/effect preview, unsupported
@@ -509,7 +511,9 @@ ledger. These gates remain open and must not be relabeled complete:
 - [x] Namespace-aliased section mutation with inherited compatibility/XML context.
 - [ ] Broader author dependency interoperability and conflicting notes-master
   reconciliation. Custom author graphs transfer within bounded contracts;
-  defined Office semantic dependencies and conflicting masters refuse atomically.
+  compatible notes placeholder position/size changes now retain native appearance.
+  Defined Office semantic dependencies, ambiguous placeholders and broader
+  master/theme/page-size conflicts refuse atomically.
 - [ ] Reduce the richer table/image renderer's measured latency regressions while
   retaining layout and fidelity diagnostics; see [performance results](docs/PERFORMANCE.md).
 - [ ] Execute the new package save/loading paths on Linux and collect Linux/iOS
