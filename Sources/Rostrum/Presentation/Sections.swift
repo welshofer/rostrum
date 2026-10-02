@@ -230,6 +230,20 @@ public final class Sections: Sequence {
 
     private func sectionListElement(creatingIfMissing create: Bool) throws -> XML.Element? {
         let dom = try presentationPart.dom()
+        // Most decks have no sections. Avoid indexing the growing slide list
+        // just to discover that absence on every slide edit. This conservative
+        // local-name check admits aliases and namespace lookalikes; every
+        // potential match still goes through the complete validator below.
+        if !create {
+            let potentialExtension = dom.childElements.contains { list in
+                list.name.split(separator: ":").last == "extLst"
+                    && list.childElements.contains { ext in
+                        ext.name.split(separator: ":").last == "ext"
+                            && ext[attribute: "uri"] == SectionExt.uri
+                    }
+            }
+            guard potentialExtension else { return nil }
+        }
         let names = SectionNamespaces(dom)
         let extLists = names.children(dom, "extLst", namespace: MinimalTemplate.nsP)
         let extensions = extLists.flatMap { names.children($0, "ext", namespace: MinimalTemplate.nsP) }
