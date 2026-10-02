@@ -211,8 +211,8 @@ final class AppState {
     /// - Parameter skipKeychain: pass `true` from tests. Reading the login
     ///   keychain from a test process is slow at best and a modal prompt at
     ///   worst, and no test here is about whether a key is stored.
-    init(skipKeychain: Bool = false) {
-        let d = UserDefaults.standard
+    init(skipKeychain: Bool = false, defaults: UserDefaults = .standard) {
+        let d = defaults
         if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
         // A selection stored before Settings started excluding unwired
         // providers (or `.custom`, never wired) — land on the default rather
@@ -525,6 +525,7 @@ final class AppState {
 
     /// Back to the first screen — the fork between the app's two errands.
     func goHome() {
+        cancelInspection()
         stage = ""; drafted = 0; total = 0; lastFailure = nil
         inspection = nil
         clearExportReport()
@@ -533,6 +534,7 @@ final class AppState {
 
     /// Into the compose form, keeping whatever is already typed in it.
     func startCreate() {
+        cancelInspection()
         stage = ""; drafted = 0; total = 0; lastFailure = nil
         phase = .compose
     }
@@ -555,6 +557,7 @@ final class AppState {
     private(set) var inspectDone = 0
     private(set) var inspectTotal = 0
     private var inspectTask: Task<Void, Never>?
+    private var inspectionRuns = RunGate()
 
     private(set) var isExporting = false
     private(set) var exportedDirectory: URL?
@@ -572,7 +575,25 @@ final class AppState {
     /// All of it runs off the main actor: opening a large package, walking
     /// every shape and rendering a picture of every slide is exactly the work
     /// that freezes a window if it is done where the window is drawn (I6).
-    func inspect(deckAt url: URL) {
+    @discardableResult
+    func inspect(deckAt url: URL) -> Task<Void, Never> {
+        inspect(deckAt: url) { url, report in
+            try DeckInspector.inspect(deckAt: url) { event in
+                Task { await report(event) }
+            }
+        }
+    }
+
+    /// The operation and its completion handle let tests control overlapping
+    /// inspections without relying on rendering speed or cooperative cancellation.
+    @discardableResult
+    func inspect(
+        deckAt url: URL,
+        inspecting operation: @escaping @Sendable (
+            URL, @escaping @Sendable (DeckInspector.Event) async -> Void
+        ) async throws -> DeckInspection
+    ) -> Task<Void, Never> {
+        let run = inspectionRuns.begin()
         inspectTask?.cancel()
         inspection = nil
         clearExportReport()
@@ -585,41 +606,69 @@ final class AppState {
         // structured one: unstructured work does not inherit cancellation, so
         // wrapping it would have left Cancel dismissing the screen while the
         // deck kept being parsed behind it.
-        inspectTask = Task.detached(priority: .userInitiated) { [self] in
+        let work = Task.detached(priority: .userInitiated) { [self] in
             do {
+                try Task.checkCancellation()
                 // A file the user picked arrives security-scoped; without this
                 // the read fails outside the sandbox for no visible reason.
                 let scoped = url.startAccessingSecurityScopedResource()
                 defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-                let result = try DeckInspector.inspect(deckAt: url) { event in
-                    Task { @MainActor in self.applyInspect(event) }
+                let result = try await operation(url) { event in
+                    await self.applyInspect(event, run: run)
                 }
                 await MainActor.run {
+                    guard self.inspectionRuns.isCurrent(run) else { return }
+                    let cancelled = self.inspectTask?.isCancelled ?? true
+                    self.inspectionRuns.abandon()
+                    self.inspectTask = nil
+                    guard !cancelled else { self.phase = .home; return }
+                    // Retiring the run also rejects progress queued before
+                    // completion, so publish the final progress here.
+                    self.inspectStage = "Done"
+                    self.inspectDone = result.slideCount
+                    self.inspectTotal = result.slideCount
                     self.inspection = result
                     self.phase = .inspected
                 }
             } catch is CancellationError {
-                // `cancelInspection` already moved the screen; don't move it back.
-                return
+                await MainActor.run {
+                    // A replacement or navigation already owns the screen.
+                    // Direct task cancellation still needs to retire this run.
+                    guard self.inspectionRuns.isCurrent(run) else { return }
+                    self.inspectionRuns.abandon()
+                    self.inspectTask = nil
+                    self.phase = .home
+                }
             } catch {
                 // Rendered here, where the error still exists: `describe` is
                 // main-actor isolated and an `Error` is not `Sendable`, so what
                 // crosses back is the `String`.
                 let message = String(describing: error)
                 await MainActor.run {
+                    guard self.inspectionRuns.isCurrent(run) else { return }
+                    let cancelled = self.inspectTask?.isCancelled ?? true
+                    self.inspectionRuns.abandon()
+                    self.inspectTask = nil
+                    guard !cancelled else { self.phase = .home; return }
                     self.phase = .failed("Couldn't open that deck: \(message)")
                 }
             }
         }
+        inspectTask = work
+        return work
     }
 
     func cancelInspection() {
+        // Invalidate first: work past its last cancellation check can still
+        // complete, fail, or have progress already queued on the main actor.
+        inspectionRuns.abandon()
         inspectTask?.cancel()
         inspectTask = nil
         phase = .home
     }
 
-    private func applyInspect(_ event: DeckInspector.Event) {
+    private func applyInspect(_ event: DeckInspector.Event, run: Int) {
+        guard inspectionRuns.isCurrent(run), inspectTask?.isCancelled == false else { return }
         switch event {
         case .opening: inspectStage = "Opening the deck"
         case .validating: inspectStage = "Checking it against the schema"

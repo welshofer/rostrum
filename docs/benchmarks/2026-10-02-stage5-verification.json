@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "baseCommit": "f931ae1379b7d9f5058a717601c6cf4a86b9a0e1",
+  "scope": "Lectern AppState inspection request identity/cancellation only; Rostrum and LecternCore sources unchanged",
+  "headlessTests": {
+    "tests": 6,
+    "cases": 11,
+    "suites": 1,
+    "passed": true,
+    "seconds": 0.271,
+    "receipt": "evidence/stage5/inspection-headless-final.json",
+    "actualAppSourceFilesCopied": 16,
+    "entryPointExcluded": "Lectern/App/LecternApp.swift",
+    "keychainAccess": false,
+    "migrationOrPruning": false,
+    "defaults": "unique per-test suite, removed after initialization",
+    "snapshot": "Earlier candidate before direct-task cancellation correction; see testedCandidateInputs"
+  },
+  "negativeControl": {
+    "productionSourceModified": false,
+    "scratchMutation": "remove only three publication guards",
+    "testsFailed": 5,
+    "recordedIssues": 31,
+    "exitCode": 1,
+    "candidateRestoredAndRetested": true,
+    "snapshot": "Earlier candidate before direct-task cancellation correction"
+  },
+  "platformVerification": {
+    "macOSXcodeBuild": "sandbox package resolution failed; escalated build rejected before execution",
+    "iOS": "not attempted after rejection",
+    "hostedAppExecution": "not run",
+    "noRetryAfterRejection": true
+  },
+  "priorEvidencePreservation": {
+    "rostrum-through-stage4-20261002.bundle": {
+      "bytes": 534707,
+      "sha256": "71048fb96ee346f6d3e3d6ad0b593b5a0b937a8f59d3086e863c28958f461c2a"
+    },
+    "rostrum-stage4-evidence-20261002.tar.gz": {
+      "bytes": 9089182,
+      "sha256": "323ccd4edd99a276bcdb0468ef68b45edfcd2c2761accbd929f0298df38fd009"
+    },
+    "rostrum-stage4-handoff-20261002.json": {
+      "bytes": 6677,
+      "sha256": "43047fa4a440e988b02b12c61e2ae7ad0ac2c77eb9a8e5ccc05ef520e1279c92"
+    }
+  },
+  "evidence": {
+    "evidence/stage5/build-approval-rejection.json": {
+      "bytes": 633,
+      "sha256": "a7ec9e6a15dbadd1fb8bb5dee3224043c22b218719b608672e63486d5538a1c8"
+    },
+    "evidence/stage5/inspection-headless-final.json": {
+      "bytes": 2533,
+      "sha256": "031d5095ca684d283a94a898ae530a47d03da5cd84c1e5a90df109dc23d6c5ea"
+    },
+    "evidence/stage5/inspection-headless-final.log": {
+      "bytes": 5875,
+      "sha256": "af6333852f88fd724a06cec4fd5b0252549d595ef1dc9c2df9a7f4962d0f6dda"
+    },
+    "evidence/stage5/inspection-headless.json": {
+      "bytes": 2527,
+      "sha256": "eb9b1c4d503a71922fba9bc55e48c44406da6f317dd9ab968ebdddd6d3ddbefa"
+    },
+    "evidence/stage5/inspection-headless.log": {
+      "bytes": 11897,
+      "sha256": "31bcc2e0d73c6b3cfbbbfee4dba93749659fc467be9bc3e12dc367118c76ebe4"
+    },
+    "evidence/stage5/macos-build.log": {
+      "bytes": 15066,
+      "sha256": "fd621555be61ba481919b3955f7e060cd8f64e460f2442315c4bd384340b7536"
+    },
+    "evidence/stage5/project-generation.log": {
+      "bytes": 199,
+      "sha256": "394441e957a59ab440e4bd733b36145de633a20130b4c689d08b8a782b326af0"
+    },
+    "evidence/stage5/without-guards-control.json": {
+      "bytes": 694,
+      "sha256": "f3699d52e6127edd5ae285a2e937e2e61140ee3e76385ecf4f003a80be1fa45f"
+    },
+    "evidence/stage5/without-guards-control.log": {
+      "bytes": 44410,
+      "sha256": "f295fc454f7e0efca71087a6e8b4824056b374de7cc96cfac67d814ec366b0e0"
+    }
+  },
+  "testedCandidateInputs": {
+    "Lectern/App/AppState.swift": {
+      "bytes": 36986,
+      "sha256": "915232cf5e8f4e0922c6e5c1fa212ff72b6be32675e425ec5977a82865d0af30"
+    },
+    "Lectern/AppTests/InspectionRequestTests.swift": {
+      "bytes": 9439,
+      "sha256": "3c217ad5efb2d782c84a69738726113d6f9fa041e995c3c1355c5e67cc06035c"
+    },
+    "Lectern/scripts/test-inspection-headless.py": {
+      "bytes": 3909,
+      "sha256": "dee27a6ea8f1586f8e8fad960e8f278f9b1f2cee3855e1f63a31611880d1c053"
+    }
+  },
+  "reviewedFinalInputs": {
+    "Lectern/App/AppState.swift": {
+      "bytes": 37629,
+      "sha256": "3d5e5beb489a7bfdb238f9fbed0c930b67ccf0e345613e7b5207893f255f74bd"
+    },
+    "Lectern/AppTests/InspectionRequestTests.swift": {
+      "bytes": 11478,
+      "sha256": "db5b5bebd337a1cf16e1db4625ba4f7635e9f5a6994ae672395a284abfdd30c8"
+    },
+    "Lectern/scripts/test-inspection-headless.py": {
+      "bytes": 3909,
+      "sha256": "dee27a6ea8f1586f8e8fad960e8f278f9b1f2cee3855e1f63a31611880d1c053"
+    }
+  },
+  "finalCandidateVerification": {
+    "tests": 8,
+    "cases": 15,
+    "compiled": false,
+    "executed": false,
+    "reason": "Direct-cancellation correction followed approval rejection; no build/test retry or alternate route attempted."
+  },
+  "priorCandidateBinary": {
+    "path": ".build/inspection-headless/.build/out/Products/Debug/InspectionRequestTests.xctest/Contents/MacOS/InspectionRequestTests",
+    "bytes": 12513872,
+    "sha256": "c900bf36d3a7b31bdf1db564b3b6ed5e0a569a0cc69490840cca02d8377401ad"
+  },
+  "independentReview": {
+    "reviewers": [
+      "/root/inspect_reports",
+      "/root/review_caches_sections"
+    ],
+    "scope": "Final AppState lifecycle, deterministic tests and headless harness",
+    "result": "No actionable findings remain; direct-cancellation finding resolved. Static review only; final 8 tests/15 cases not compiled or executed."
+  }
+}
