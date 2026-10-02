@@ -31,6 +31,10 @@ public struct FontMetrics: Sendable {
     /// bit 7), matching modern rasterizers.
     let typoMetrics: (ascender: Int, descender: Int, lineGap: Int, useTypo: Bool)?
 
+    /// DrawingML uses the Windows ascent/descent share of a 1.2 em line box.
+    /// Keep this separate from the general-purpose hhea/typographic metrics.
+    let drawingMLAscentShare: Double?
+
     /// Family names from the `name` table (IDs 1 and 16), in table order —
     /// the names a deck's `a:latin@typeface` refers to this font by. Empty
     /// when the font has no parseable name table.
@@ -207,6 +211,14 @@ public struct FontMetrics: Sendable {
                 useTypo: fsSelection & 0x80 != 0)
         } else {
             typoMetrics = nil
+        }
+        if let os2 = tables["OS/2"], os2.length >= 78 {
+            let ascent = try reader.u16(os2.offset + 74)
+            let descent = try reader.u16(os2.offset + 76)
+            drawingMLAscentShare = ascent > 0
+                ? Double(ascent) / Double(ascent + descent) : nil
+        } else {
+            drawingMLAscentShare = nil
         }
     }
 

@@ -63,6 +63,7 @@ public struct RichTextLayout: Sendable {
         let hasRegisteredFonts = fonts?.isEmpty == false
         var output: [RichTextLine] = [], warnings: [ShapingDiagnostic] = []
         var cursor = 0.0, didTruncate = false, overflowWidth = false
+        var measuredBottom = 0.0
         var numberByLevel: [Int: Int] = [:]
 
         struct Atom {
@@ -71,6 +72,7 @@ public struct RichTextLayout: Sendable {
             var width: Double
             let ascent: Double
             let height: Double
+            let drawingML: Bool
             let source: Int
             let breakAfter: Bool
             var tab = false
@@ -106,8 +108,16 @@ public struct RichTextLayout: Sendable {
                 return fallbackMetrics
             }
             let baseMetrics = face(baseStyle)
-            let emptyHeight = baseMetrics?.lineHeight(pointSize: baseStyle.fontSize) ?? baseStyle.fontSize * 4 / 3
-            let emptyAscent = baseMetrics?.ascent(pointSize: baseStyle.fontSize) ?? baseStyle.fontSize
+            func lineMetrics(_ metrics: FontMetrics?, size: Double) -> (ascent: Double, height: Double, drawingML: Bool) {
+                if let share = metrics?.drawingMLAscentShare {
+                    let height = size * 1.2
+                    return (height * share, height, true)
+                }
+                return (metrics?.ascent(pointSize: size) ?? size,
+                        metrics?.lineHeight(pointSize: size) ?? size * 4 / 3, false)
+            }
+            let empty = lineMetrics(baseMetrics, size: baseStyle.fontSize)
+            let emptyHeight = empty.height, emptyAscent = empty.ascent
             func spacing(_ element: XML.Element?, relativeTo height: Double) -> Double {
                 guard let element else { return 0 }
                 if let pts = element.firstChild(named: "a:spcPts") { return Self.bounded(Self.number(pts, "val", 0), 0...1e8) / 100 }
@@ -130,8 +140,8 @@ public struct RichTextLayout: Sendable {
                 if metrics == nil {
                     warnings.append(.unsupportedLayoutFeature("Unregistered font face: " + (style.fontFamily ?? "unspecified")))
                 }
-                let ascent = metrics?.ascent(pointSize: style.fontSize) ?? style.fontSize
-                let lineHeight = metrics?.lineHeight(pointSize: style.fontSize) ?? style.fontSize * 4 / 3
+                let vertical = lineMetrics(metrics, size: style.fontSize)
+                let ascent = vertical.ascent, lineHeight = vertical.height
                 // Segment control characters before shaping: tabs are paragraph geometry.
                 var segment = ""
                 func appendSegment() {
@@ -153,7 +163,8 @@ public struct RichTextLayout: Sendable {
                             let value = String(String.UnicodeScalarView(scalars[range]))
                             atoms.append(Atom(text: value, style: style,
                                 width: (grouped[range] ?? 0) + style.tracking * Double(value.count),
-                                ascent: ascent, height: lineHeight, source: source, breakAfter: breaks.contains(range.upperBound)))
+                                ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
+                                source: source, breakAfter: breaks.contains(range.upperBound)))
                         }
                     } else {
                         var scalarOffset = 0
@@ -161,7 +172,8 @@ public struct RichTextLayout: Sendable {
                             let value = String(character); scalarOffset += value.unicodeScalars.count
                             atoms.append(Atom(text: value, style: style,
                                 width: style.fontSize * (character == " " ? 0.25 : 0.42) + style.tracking,
-                                ascent: ascent, height: lineHeight, source: source, breakAfter: breaks.contains(scalarOffset)))
+                                ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
+                                source: source, breakAfter: breaks.contains(scalarOffset)))
                         }
                     }
                     segment = ""
@@ -170,7 +182,7 @@ public struct RichTextLayout: Sendable {
                     if character == "\t" || character == "\n" || character == "\r" || character == "\r\n" {
                         appendSegment()
                         atoms.append(Atom(text: character == "\t" ? "\t" : "", style: style,
-                            width: 0, ascent: ascent, height: lineHeight, source: source,
+                            width: 0, ascent: ascent, height: lineHeight, drawingML: vertical.drawingML, source: source,
                             breakAfter: false, tab: character == "\t", hard: character != "\t"))
                     } else { segment.append(character) }
                 }
@@ -238,7 +250,18 @@ public struct RichTextLayout: Sendable {
                     fragmentStart = end
                 }
                 let naturalHeight = lineAtoms.lazy.map(\.height).max() ?? emptyHeight
-                let ascent = lineAtoms.lazy.map(\.ascent).max() ?? emptyAscent
+                let drawingML = lineAtoms.isEmpty ? empty.drawingML : lineAtoms.allSatisfy(\.drawingML)
+                let ascent: Double
+                if drawingML, !lineAtoms.isEmpty {
+                    // Share the line box between the participating faces. Sizes
+                    // determine the box height; each face supplies its normalized
+                    // ascent/descent, rather than bringing its hhea line gap.
+                    let above = lineAtoms.lazy.map { $0.ascent / $0.height }.max() ?? 0
+                    let below = lineAtoms.lazy.map { 1 - $0.ascent / $0.height }.max() ?? 0
+                    ascent = naturalHeight * above / (above + below)
+                } else {
+                    ascent = lineAtoms.lazy.map(\.ascent).max() ?? emptyAscent
+                }
                 let spacingAdvance: Double
                 if let fixedSpacing { spacingAdvance = fixedSpacing }
                 else if let percentageSpacing { spacingAdvance = naturalHeight * percentageSpacing / 100000 }
@@ -265,7 +288,18 @@ public struct RichTextLayout: Sendable {
                 }
                 let trailingSpace = lineAtoms.reversed().prefix(while: { $0.text == " " }).reduce(0) { $0 + $1.width }
                 overflowWidth = overflowWidth || lineWidth - trailingSpace > limit() + 0.01
-                output.append(RichTextLine(spans: spans, baseline: cursor + ascent,
+                // PowerPoint's content-relative baseline is rounded after the
+                // unrounded line advances accumulate. Rounding the ascent first
+                // gives incorrect mixed-size and repeated-line spacing. This is
+                // point geometry, independent of SVG pixel size or rasterizer.
+                let baseline = drawingML ? (cursor + ascent).rounded() : cursor + ascent
+                if drawingML {
+                    // Rounding and reduced/exact line spacing can place the last
+                    // descent beyond the flow advance. Fitting must include that
+                    // extent, without feeding it back into subsequent line pitch.
+                    measuredBottom = max(measuredBottom, baseline + naturalHeight - ascent)
+                }
+                output.append(RichTextLine(spans: spans, baseline: baseline,
                                            height: advance, width: lineWidth))
                 cursor += advance; lineAtoms = []; lineWidth = 0; firstLine = false
             }
@@ -297,6 +331,7 @@ public struct RichTextLayout: Sendable {
         if didTruncate, !output.isEmpty {
             if !output[output.count - 1].spans.isEmpty { output[output.count - 1].spans[output[output.count - 1].spans.count - 1].run.text += "…" }
         }
+        cursor = max(cursor, measuredBottom)
         let offset: Double
         switch verticalAnchor ?? body?[attribute: "anchor"] {
         case "ctr": offset = margins.1 + (availableHeight - cursor) / 2
