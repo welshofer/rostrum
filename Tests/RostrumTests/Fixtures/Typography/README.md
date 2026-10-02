@@ -115,3 +115,45 @@ Primary references:
 https://learn.microsoft.com/en-us/typography/script-development/arabic
 https://learn.microsoft.com/en-us/typography/opentype/spec/gsub
 https://www.unicode.org/Public/17.0.0/ucd/extracted/DerivedJoiningType.txt
+
+## Calibri compatibility cases
+
+`SingleComponentLigature.ttf` is an owned, outline-free MIT test font. Its
+single-component GSUB4 replacement (`f` to `F`) and identity (`g` to `g`) rules
+verify that one input glyph is consumed without revisiting the replacement.
+The Arabic executor has matching identity/replacement regression coverage.
+`WrappedKern.ttf` is another owned, outline-free MIT fixture with 11,000 sorted
+legacy pairs and a wrapped subtable length; five HarfBuzz cases verify the actual
+legacy kerning fallback when GPOS is absent.
+
+`calibri-harfbuzz-14.4.0.json` pins ten owned-font cases and 18 cases each for
+local Office Calibri and Calibri Bold. It contains numeric shaping results and
+font hashes; proprietary font bytes are not included. The Calibri and GSUB cases compare glyph
+IDs, scalar clusters, advances and x/y offsets. Legacy kerning compares absolute
+glyph origins and total advance: HarfBuzz distributes a pair adjustment across
+two advances and the second offset, while Rostrum assigns it to the first advance;
+these representations produce identical geometry. To verify the exact local font
+hashes and replay HarfBuzz before running the optional local-font tests:
+
+```sh
+python3 Tools/typography/make_calibri_oracle.py --verify
+ROSTRUM_CALIBRI_FONT_DIRECTORY='/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts' swift test --filter FontCompatibilityTests
+```
+
+`--font-directory` selects another directory containing the exact pinned font
+versions. Without the environment variable, portable tests use only owned fonts.
+Regeneration without `--verify` still requires the pinned proprietary-font hashes
+and HarfBuzz 14.4.0. The local files used are `Calibri.ttf` (SHA-256
+`ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53`) and
+`Calibrib.ttf` (`ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2`).
+
+These fonts have legacy format-0 `kern` subtable lengths that wrap their uint16
+field. Rostrum accepts that compatibility case only when there is one complete
+subtable, the count-derived byte size exactly reaches the table boundary, all
+wrapped length/search fields agree, and pair keys are strictly increasing.
+Truncation, extra bytes, duplicate or unordered pairs, inconsistent counts/search
+fields, or multiple subtables retain an explicit refusal. Parsing stays bounded
+by the existing layout budget. This is a narrow deployed-font compatibility
+exception to the [OpenType kern length field](https://learn.microsoft.com/en-us/typography/opentype/spec/kern),
+not a relaxation of arbitrary font-table bounds. Calibri's remaining Arabic
+GSUB2 and GPOS1/8 requirements are still diagnosed.

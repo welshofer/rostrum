@@ -198,8 +198,10 @@ struct ArabicTextShaper {
                         replacement.id = ligature.replacement; replacement.range = range; replacement.origins = origins
                         let consumed = Set(positions)
                         var output = [replacement]
-                        for p in (position + 1)...last where !consumed.contains(p) {
-                            var skipped = glyphs[p]; skipped.range = range; output.append(skipped)
+                        if last > position {
+                            for p in (position + 1)...last where !consumed.contains(p) {
+                                var skipped = glyphs[p]; skipped.range = range; output.append(skipped)
+                            }
                         }
                         glyphs.replaceSubrange(position...last, with: output)
                         return position + output.count

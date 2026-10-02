@@ -192,24 +192,48 @@ struct FontLayoutTables: Sendable {
     private mutating func readKern(_ r: SFNTReader, budget: inout Budget) throws {
         guard try r.u16(0) == 0 else { throw corrupt() }
         var p = 4
+        var parsed: [Int: Int] = [:]
         let subtableCount = try r.u16(2)
         try budget.consume(subtableCount)
         for _ in 0..<subtableCount {
-            let length = try r.u16(p + 2), flags = try r.u16(p + 4)
-            guard length >= 6, p + length <= r.count else { throw corrupt() }
+            var length = try r.u16(p + 2)
+            let flags = try r.u16(p + 4)
+            guard try r.u16(p) == 0, p + length <= r.count else { throw corrupt() }
             if flags == 1 || flags == 9 { // format 0, horizontal, optional override
                 let count = try r.u16(p + 6)
                 try budget.consume(count)
-                guard 14 + 6 * count <= length else { throw corrupt() }
+                let required = 14 + 6 * count
+                let wrapped = required > 65535 && required > length
+                if wrapped {
+                    // Compatibility for deployed fonts whose v0 uint16 length
+                    // wrapped. Accept only one exact, complete format-0 subtable:
+                    // no ambiguous following table, padding, or hidden bytes.
+                    guard subtableCount == 1, p == 4, p + required == r.count,
+                          length == (required & 65535) else { throw corrupt() }
+                    var power = 1, selector = 0
+                    while power <= count / 2 { power *= 2; selector += 1 }
+                    guard try r.u16(p + 8) == ((power * 6) & 65535),
+                          try r.u16(p + 10) == selector,
+                          try r.u16(p + 12) == (((count - power) * 6) & 65535) else { throw corrupt() }
+                    length = required
+                }
+                guard length >= 6, required <= length else { throw corrupt() }
+                var previous = -1
                 for i in 0..<count {
                     let q = p + 14 + 6 * i
                     let key = try r.u16(q) * 65536 + r.u16(q + 2)
+                    if wrapped, key <= previous { throw corrupt() }
+                    previous = key
                     let value = try r.s16(q + 4)
-                    legacyPairs[key] = flags & 8 != 0 ? value : (legacyPairs[key] ?? 0) + value
+                    parsed[key] = flags & 8 != 0 ? value : (parsed[key] ?? 0) + value
                 }
-            } else { diagnostics.append("Unsupported kern subtable flags \(flags)") }
+            } else {
+                guard length >= 6 else { throw corrupt() }
+                diagnostics.append("Unsupported kern subtable flags \(flags)")
+            }
             p += length
         }
+        legacyPairs = parsed
     }
 
     private mutating func readLayout(_ r: SFNTReader, substitution: Bool, budget: inout Budget, scriptTag: String = "latn") throws {
@@ -288,7 +312,7 @@ struct FontLayoutTables: Sendable {
                         for j in 0..<ligatureCount {
                             let lig = set + (try r.u16(set + 2 + 2 * j))
                             let replacement = try r.u16(lig), count = try r.u16(lig + 2)
-                            guard count >= 2 else { throw corrupt() }
+                            guard count >= 1 else { throw corrupt() }
                             try budget.consume(count - 1)
                             let components = try (0..<(count - 1)).map { try r.u16(lig + 4 + 2 * $0) }
                             ligatures[glyph, default: []].append(Ligature(components: components, replacement: replacement))

@@ -126,7 +126,7 @@ struct ArabicLayoutTables: Sendable {
                         try budget.consume(count)
                         for k in 0..<count {
                             let ligature = set + (try r.u16(set + 2 + 2 * k)), n = try r.u16(ligature + 2)
-                            guard n >= 2 else { throw Self.invalid() }
+                            guard n >= 1 else { throw Self.invalid() }
                             try budget.consume(n - 1)
                             let components = try (0..<(n - 1)).map { try r.u16(ligature + 4 + 2 * $0) }
                             ligatures[glyph, default: []].append(.init(components: components, replacement: try r.u16(ligature)))
