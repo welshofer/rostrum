@@ -48,7 +48,7 @@ import Testing
     @Test func spacingInsetsVerticalAnchorAndAutofitShareGeometry() throws {
         let xml = try body("""
         <a:p><a:pPr><a:spcBef><a:spcPts val="300"/></a:spcBef><a:spcAft><a:spcPts val="400"/></a:spcAft><a:defRPr sz="2000"/></a:pPr><a:r><a:t>AA</a:t></a:r></a:p>
-        """, attributes: "anchor=\"ctr\"", autofit: "<a:normAutofit fontScale=\"50000\" lnSpcReduction=\"20000\"/>")
+        """, attributes: "anchor=\"ctr\" spcFirstLastPara=\"1\"", autofit: "<a:normAutofit fontScale=\"50000\" lnSpcReduction=\"20000\"/>")
         let bodyPr = try #require(xml.firstChild(named: "a:bodyPr"))
         for (key, value) in [("lIns", 10), ("tIns", 2), ("rIns", 20), ("bIns", 8)] {
             bodyPr[attribute: key] = String(value * EMU.perPoint)
@@ -58,6 +58,56 @@ import Testing
         #expect(layout.lines[0].spans[0].x == 10)
         #expect(layout.lines[0].spans[0].run.fontSize == 10)
         #expect(layout.lines[0].baseline == 50.5) // 2 + (90-15)/2 + 3 + 8
+    }
+
+    @Test func edgeParagraphSpacingDefaultsOffAndAcceptsBothBooleanSpellings() throws {
+        let paragraph = """
+        <a:p><a:pPr><a:spcBef><a:spcPts val="300"/></a:spcBef><a:spcAft><a:spcPts val="400"/></a:spcAft><a:defRPr sz="1000"/></a:pPr><a:r><a:t>A</a:t></a:r></a:p>
+        """
+        for (attribute, enabled) in [("", false), ("spcFirstLastPara=\"0\"", false),
+                                     ("spcFirstLastPara=\"false\"", false), ("spcFirstLastPara=\"1\"", true),
+                                     ("spcFirstLastPara=\"true\"", true)] {
+            let xml = try body(paragraph, attributes: attribute)
+            let layout = RichTextLayout(textBody: xml, width: 100, height: 12, fallbackMetrics: try metrics())
+            #expect(layout.contentHeight == (enabled ? 17 : 10), "\(attribute)")
+            #expect(layout.lines[0].baseline == (enabled ? 11 : 8), "\(attribute)")
+            #expect(layout.fits == !enabled, "\(attribute)")
+        }
+    }
+
+    @Test func suppressingOuterSpacingPreservesInteriorAndEmptyParagraphs() throws {
+        func paragraph(_ text: String?) -> String {
+            let run = text.map { "<a:r><a:t>\($0)</a:t></a:r>" } ?? ""
+            return """
+            <a:p><a:pPr><a:spcBef><a:spcPts val="300"/></a:spcBef><a:spcAft><a:spcPts val="400"/></a:spcAft><a:defRPr sz="1000"/></a:pPr>\(run)</a:p>
+            """
+        }
+        for emptyEdges in [false, true] {
+            let content = paragraph(emptyEdges ? nil : "First") + paragraph("Middle")
+                + paragraph(emptyEdges ? nil : "Last")
+            for enabled in [false, true] {
+                let xml = try body(content, attributes: "spcFirstLastPara=\"\(enabled ? 1 : 0)\"")
+                let layout = RichTextLayout(textBody: xml, width: 100, height: 100, fallbackMetrics: try metrics())
+                #expect(layout.lines.count == 3)
+                // Two internal boundaries retain 4pt after + 3pt before.
+                #expect(layout.contentHeight == (enabled ? 51 : 44))
+                #expect(layout.lines.map(\.baseline) == (enabled ? [11, 28, 45] : [8, 25, 42]))
+                #expect(layout.lines[0].spans.isEmpty == emptyEdges)
+                #expect(layout.lines[2].spans.isEmpty == emptyEdges)
+            }
+        }
+    }
+
+    @Test func verticalAnchorsUseHeightWithoutSuppressedOuterSpacing() throws {
+        let paragraph = """
+        <a:p><a:pPr><a:spcBef><a:spcPts val="300"/></a:spcBef><a:spcAft><a:spcPts val="400"/></a:spcAft><a:defRPr sz="1000"/></a:pPr><a:r><a:t>A</a:t></a:r></a:p>
+        """
+        for (anchor, baseline) in [("t", 8.0), ("ctr", 53.0), ("b", 98.0)] {
+            let xml = try body(paragraph, attributes: "anchor=\"\(anchor)\"")
+            let layout = RichTextLayout(textBody: xml, width: 100, height: 100, fallbackMetrics: try metrics())
+            #expect(layout.lines[0].baseline == baseline)
+            #expect(layout.contentHeight == 10)
+        }
     }
 
     @Test func localParagraphAndRunOverridesMergeWithEveryInheritedLevel() throws {

@@ -53,6 +53,10 @@ public struct RichTextLayout: Sendable {
         let scale = Self.bounded(fontScale ?? Self.number(autofit, "fontScale", 100_000) / 1000, 0.1...100) / 100
         let reduction = Self.bounded(lineSpacingReduction ?? Self.number(autofit, "lnSpcReduction", 0) / 1000, 0...100) / 100
         let wrap = body?[attribute: "wrap"] != "none"
+        // DrawingML suppresses spacing at the text body's outer edges unless
+        // explicitly requested. Interior paragraph spacing is unaffected.
+        let useEdgeParagraphSpacing = ["1", "true"].contains(body?[attribute: "spcFirstLastPara"] ?? "0")
+        let paragraphs = textBody.children(named: "a:p")
         let lineLimit = max(1, min(maxLines, 65536))
         var output: [RichTextLine] = [], warnings: [ShapingDiagnostic] = []
         var cursor = 0.0, didTruncate = false, overflowWidth = false
@@ -69,7 +73,7 @@ public struct RichTextLayout: Sendable {
             var tab = false
             var hard = false
         }
-        for paragraph in textBody.children(named: "a:p") {
+        for (paragraphIndex, paragraph) in paragraphs.enumerated() {
             if output.count >= lineLimit { didTruncate = true; break }
             let own = paragraph.firstChild(named: "a:pPr")
             let level = Int(Self.bounded(Self.number(own, "lvl", 0), 0...8))
@@ -106,7 +110,9 @@ public struct RichTextLayout: Sendable {
                 if let pct = element.firstChild(named: "a:spcPct") { return height * Self.bounded(Self.number(pct, "val", 0), 0...1e7) / 100000 }
                 return 0
             }
-            cursor += spacing(child("a:spcBef"), relativeTo: emptyHeight)
+            if paragraphIndex > 0 || useEdgeParagraphSpacing {
+                cursor += spacing(child("a:spcBef"), relativeTo: emptyHeight)
+            }
             var atoms: [Atom] = [], source = 0
             let pieces = paragraph.childElements.filter { ["a:r", "a:fld", "a:br"].contains($0.name) }
             for piece in pieces {
@@ -266,7 +272,9 @@ public struct RichTextLayout: Sendable {
                 lineAtoms.append(atom); lineWidth += atom.width; index += 1
             }
             if !lineAtoms.isEmpty || atoms.isEmpty || atoms.last?.hard == true { emit() }
-            cursor += spacing(child("a:spcAft"), relativeTo: emptyHeight)
+            if paragraphIndex < paragraphs.count - 1 || useEdgeParagraphSpacing {
+                cursor += spacing(child("a:spcAft"), relativeTo: emptyHeight)
+            }
         }
         if didTruncate, !output.isEmpty {
             if !output[output.count - 1].spans.isEmpty { output[output.count - 1].spans[output[output.count - 1].spans.count - 1].run.text += "…" }
