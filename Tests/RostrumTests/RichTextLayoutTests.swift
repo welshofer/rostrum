@@ -150,6 +150,19 @@ import Testing
         #expect(!layout.fits) // the unkerned A is wider than 8pt
     }
 
+    @Test func fallbackASCIIKeepsBreaksTrackingControlsAndLiveDOMChanges() throws {
+        let xml = try body("<a:p><a:pPr><a:tabLst><a:tab pos=\"228600\"/></a:tabLst></a:pPr><a:r><a:rPr sz=\"1000\" spc=\"100\"/><a:t>AB-CD EF\tGH\r\nIJ</a:t></a:r></a:p>")
+        let layout = RichTextLayout(textBody: xml, width: 18, height: 200)
+        #expect(layout.lines.map { $0.spans.map(\.run.text).joined() } == ["AB-", "CD ", "EF", "GH", "IJ"])
+        #expect(layout.lines[0].spans[0].width == 15.600000000000001)
+        #expect(layout.diagnostics == [.unsupportedLayoutFeature("Unregistered font face: unspecified")])
+        let run = try #require(xml.firstChild(named: "a:p")?.firstChild(named: "a:r"))
+        try #require(run.firstChild(named: "a:t")).children = [.text("é 中 X")]
+        let changed = RichTextLayout(textBody: xml, width: 18, height: 200)
+        #expect(changed.lines.map { $0.spans.map(\.run.text).joined() } == ["é ", "中 X"])
+        #expect(changed.contentHeight == 2 * (10.0 * 4 / 3))
+    }
+
     @Test func fittingAndSVGUseTheStoredRichLayoutAndRenderingIsPure() throws {
         let deck = try Presentation()
         try deck.fonts.register(TestFont.standard(), aliases: ["First"])

@@ -150,6 +150,21 @@ public struct RichTextLayout: Sendable {
                 var segment = ""
                 func appendSegment() {
                     guard !segment.isEmpty else { return }
+                    // ASCII fallback text has one scalar per grapheme and only
+                    // space/hyphen break opportunities after control splitting.
+                    // Keep the same atom arithmetic without rescanning it through
+                    // the Unicode breaker and materializing an offset set.
+                    if metrics == nil, segment.utf8.allSatisfy({ $0 < 128 }) {
+                        for byte in segment.utf8 {
+                            let value = String(Unicode.Scalar(byte))
+                            atoms.append(Atom(text: value, style: style,
+                                width: style.fontSize * (byte == 32 ? 0.25 : 0.42) + style.tracking,
+                                ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
+                                source: source, breakAfter: byte == 32 || byte == 45))
+                        }
+                        segment = ""
+                        return
+                    }
                     let breaks = Set(TextShaper.lineBreaks(in: segment).map(\.scalarOffset))
                     if let metrics {
                         let shaped = TextShaper(metrics).shape(segment, pointSize: style.fontSize, kerning: style.usesKerning)

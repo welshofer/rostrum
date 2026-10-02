@@ -12,6 +12,35 @@ struct Sample: Codable {
 }
 let args = Array(CommandLine.arguments.dropFirst())
 let scenario = args.first ?? "slides-10"
+// Output identity helper, outside the timed scenario path. Compile this same
+// driver against each release object to compare every slide and ordered issue
+// array, including renders after direct DOM edits in the unit-test suite.
+if scenario == "proof", args.count == 3 {
+    let deck = try Presentation(contentsOf: URL(fileURLWithPath: args[1]))
+    if let paths = ProcessInfo.processInfo.environment["ROSTRUM_PROFILE_FONTS"] {
+        for path in paths.split(separator: "|") {
+            try deck.fonts.register(Data(contentsOf: URL(fileURLWithPath: String(path))))
+        }
+    }
+    let directory = URL(fileURLWithPath: args[2], isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    let saved = try deck.serializedData()
+    let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+    for index in 0..<deck.slideCount {
+        let result = try deck.renderSVGReportingProblems(slideAt: index)
+        try Data(result.svg.utf8).write(to: directory.appendingPathComponent("slide-\(index).svg"))
+        try encoder.encode(result.problems.fidelityIssues)
+            .write(to: directory.appendingPathComponent("slide-\(index)-issues.json"))
+        let inheritance = ["layoutUnresolved": result.problems.layoutUnresolved,
+                           "masterUnresolved": result.problems.masterUnresolved]
+        try JSONSerialization.data(withJSONObject: inheritance, options: [.sortedKeys])
+            .write(to: directory.appendingPathComponent("slide-\(index)-inheritance.json"))
+    }
+    guard try deck.serializedData() == saved else { fatalError("render changed saved bytes") }
+    try saved.write(to: directory.appendingPathComponent("saved.pptx"))
+    FileHandle.standardOutput.write(Data("{\"slideCount\":\(deck.slideCount)}\n".utf8))
+    exit(0)
+}
 var sample = Sample(scenario: scenario)
 let clock = ContinuousClock()
 @MainActor func measure<T>(_ name: String, _ body: () throws -> T) rethrows -> T {
