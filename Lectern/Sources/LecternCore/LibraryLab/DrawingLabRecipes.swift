@@ -10,8 +10,8 @@ enum DrawingLabRecipes {
               limitations: ["The document stores every preset; SVG approximates unsupported geometries and shape rotations. Group/connector creation and flip setters are not public APIs."],
               inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Rotate presets 15 degrees"),
         .init(.fillsAndLines, title: "Fills, outlines and shadows", summary: "Solid, alpha, theme, linear/radial gradient and image fills; every dash and compound stroke.",
-              operations: ["Shape.setFill", "Shape.setLine", "Shape.enableSoftShadow", "Fill.themeColor", "GradientFill.radial", "LineDash.allCases", "LineCompound.allCases"],
-              limitations: ["Preview gradient geometry and compound strokes may be approximated; the authored document retains their settings."],
+              operations: ["Slide.setBackground", "Slide.background", "Slide.effectiveBackground", "Slide.effectiveBackgroundColor", "Shape.setFill", "Shape.setLine", "Shape.enableSoftShadow", "Fill.themeColor", "GradientFill.radial", "LineDash.allCases", "LineCompound.allCases"],
+              limitations: ["Preview gradient geometry and compound strokes may be approximated. Slide.background reads authored paint; effectiveBackground follows slide → layout → master. An explicit no-fill stops inheritance, while an absent slide background inherits."],
               inputs: [.text, .accent, .alternative], alternativeLabel: "Reverse gradient colors"),
         .init(.text, title: "Rich text and live fields", summary: "Paragraphs, lists, formatted runs, external/internal links, slide numbers and dates.",
               operations: ["TextFrame.clear", "TextFrame.addParagraph", "TextFrame.setMargins", "TextFrame.wordWrap", "TextFrame.verticalAnchor", "Paragraph.setSpacing", "Paragraph.setLineSpacing", "Paragraph.indentLevel", "Paragraph.setBullet", "Paragraph.setNumbered", "Paragraph.setNoBullet", "Paragraph.alignment", "Paragraph.addRun", "Run.fontName", "Run.fontSize", "Run.bold", "Run.italic", "Run.underline", "Run.strikethrough", "Run.letterSpacing", "Run.color", "Run.setSuperscript", "Run.setSubscript", "Run.setHyperlink", "Run.setSlideLink", "Presentation.showSlideNumbers", "Presentation.showDate"],
@@ -134,17 +134,49 @@ enum DrawingLabRecipes {
             shape.textFrame?.text = compound.rawValue
             shape.setLine(Line(color: accent, width: .points(5), compound: compound))
         }
+        for entry in choices {
+            let backgroundSlide = try deck.slides.add()
+            try backgroundSlide.setBackground(entry.1)
+            let panel = try backgroundSlide.shapes.addShape(.roundedRectangle,
+                frame: LibraryLabSupport.frame(0.6, 0.6, 8, 1.4), fill: .solidAlpha(.white, 0.9))
+            panel.textFrame?.text = "Background: \(entry.0)\n\(o.text)"
+        }
         return LibraryLabDraft(deck: deck, before: before, verify: { reopened in
             let first = try reopened.slides[0].shapes.all
             let outline = try reopened.slides[1].shapes.all
             guard first.count == 9 else { return [.init("Fill specimens survive", false, "Expected title and eight fill specimens.")] }
+            let priorToBackgroundReads = try reopened.serializedData()
+            let expected: [ReadFill] = [.solid(accent, alpha: 1), .solid(accent, alpha: 0.4), .themeScheme("accent1"), .noFill, .gradient(stops), .gradient(stops)]
+            var backgroundChecks: [LibraryLabCheck] = []
+            for (index, choice) in choices.enumerated() {
+                let page = try reopened.slides[index + 2]
+                let svg = try reopened.renderSVG(slideAt: index + 2)
+                let background = try page.part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:bg")
+                var correct: Bool
+                if index < expected.count {
+                    correct = page.background == expected[index]
+                } else if case .image(let relationID) = page.background,
+                          let relationID, let relation = page.part.rels.relationship(withId: relationID) {
+                    let media = try reopened.package.part(at: PackURI.resolve(target: relation.target, relativeTo: page.part.uri.baseURI))
+                    correct = media.blob == LibraryLabSupport.pixels && page.effectiveBackground == .picture && svg.contains("data:image/png;base64,")
+                } else { correct = false }
+                if index == 4 { correct = correct && background.map { nodes($0, "a:lin").first?[attribute: "ang"] == "2100000" } == true }
+                if index == 5 { correct = correct && background.map { nodes($0, "a:path").first?[attribute: "path"] == "circle" } == true }
+                if index == 6 { correct = correct && background.map { !nodes($0, "a:stretch").isEmpty && nodes($0, "a:tile").isEmpty } == true }
+                if index == 7 { correct = correct && background.map { nodes($0, "a:tile").first?[attribute: "sx"] == "1200000" } == true }
+                backgroundChecks.append(.init("Background \(choice.0) persists and renders", correct && !svg.isEmpty, "Checked the reopened slide's own background paint, geometry or image relationship and produced its SVG."))
+            }
+            let inherited = try reopened.slides[0]
+            let explicitNone = try reopened.slides[5]
+            backgroundChecks.append(.init("Absent background inherits; explicit no-fill stops inheritance", inherited.background == nil && inherited.effectiveBackground == .solid(.white) && inherited.effectiveBackgroundColor == .white && explicitNone.background == .noFill && explicitNone.effectiveBackground == .none, "Gallery inherits white through its blank layout from the template master; the no-fill slide carries an explicit override."))
+            backgroundChecks.append(.init("Background reads and rendering do not mutate the document", try reopened.serializedData() == priorToBackgroundReads, "All eight background previews and inherited-background reads leave serialized package bytes unchanged."))
             return [
                 .init("Solid, alpha, theme and no-fill read back", first[1].fill == .solid(accent, alpha: 1) && first[2].fill == .solid(accent, alpha: 0.4) && first[3].fill == .themeScheme("accent1") && first[4].fill == .noFill, "Four distinct fill semantics survive."),
                 .init("Both gradients preserve stops", first[5].fill == .gradient(stops) && first[6].fill == .gradient(stops), "Stop positions and colors match the selected variant."),
                 .init("Radial path and tiling persist", try nodes(reopened.slides[0].part.dom(), "a:path").contains { $0[attribute: "path"] == "circle" } && nodes(reopened.slides[0].part.dom(), "a:tile").contains { $0[attribute: "sx"] == "1200000" }, "Verified radial gradient and image tile settings in document XML."),
                 .init("Shadow survives", first[1].hasShadow, "Outer shadow is present."),
                 .init("Every dash and compound survives", Set(outline.compactMap { $0.line?.dashStyle }) == Set(LineDash.allCases.map(\.rawValue)) && Set(outline.compactMap { $0.line?.compoundStyle }) == Set(LineCompound.allCases.map(\.rawValue)), "Compared every public dash and compound token.")
-            ]
+            ] + backgroundChecks
         })
     }
 

@@ -5,11 +5,11 @@ import Rostrum
 
 @Suite("Drawing Library Lab recipes")
 struct DrawingLabRecipesTests {
-    @Test("Every recipe reopens and checks both variants", arguments: DrawingLabRecipes.catalog.map(\.id))
-    func everyRecipe(_ id: LibraryDemoID) throws {
+    @Test("Every recipe reopens and checks both variants", arguments: DrawingLabRecipes.catalog.map(\.id), ["Independent specimen <&>", "First line <&>\nSecond line — Ω"])
+    func everyRecipe(_ id: LibraryDemoID, sample: String) throws {
         var variants: [Data] = []
         for alternative in [false, true] {
-            let options = LibraryLabOptions(text: "Independent specimen <&>", accentHex: "A54263", sampleSize: 3, alternative: alternative)
+            let options = LibraryLabOptions(text: sample, accentHex: "A54263", sampleSize: 3, alternative: alternative)
             let draft = try DrawingLabRecipes.make(id, options: options)
             let before = try #require(draft.before)
             let after = try draft.deck.serializedData()
@@ -71,6 +71,12 @@ struct DrawingLabRecipesTests {
                 #expect(reopened.package.parts.values.contains { $0.blob == DrawingLabFixtures.opaque })
             case .fillsAndLines:
                 #expect(try reopened.slides[0].shapes[2].fill == .solid(Color("A54263"), alpha: 0.4))
+                #expect(reopened.slides.count == 10)
+                #expect(try reopened.slides[3].background == .solid(Color("A54263"), alpha: 0.4))
+                #expect(try reopened.slides[0].background == nil)
+                #expect(try reopened.slides[0].effectiveBackgroundColor == .white)
+                #expect(try reopened.slides[5].effectiveBackground == .none)
+                #expect(try reopened.slides[8].effectiveBackground == .picture)
             default: Issue.record("Unexpected drawing recipe")
             }
         }
