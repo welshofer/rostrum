@@ -4,7 +4,12 @@ import Foundation
 /// are never rewritten. New notes bind to an existing master's placeholder IDs.
 enum NotesPageTemplate {
     static func pageSize(in presentation: XML.Element) throws -> (Int, Int) {
-        guard let size = presentation.firstChild(named: "p:notesSz"),
+        let scope = namespaceScope(of: presentation, inherited: [:])
+        guard let size = presentation.childElements.first(where: {
+            let name = $0.name.split(separator: ":", maxSplits: 1).map(String.init)
+            return name.last == "notesSz"
+                && namespaceScope(of: $0, inherited: scope)[name.count == 2 ? name[0] : ""] == MinimalTemplate.nsP
+        }),
               let width = Int(size[attribute: "cx"] ?? ""),
               let height = Int(size[attribute: "cy"] ?? ""),
               width > 0, height > 0, width <= Int32.max, height <= Int32.max else {
@@ -29,11 +34,7 @@ enum NotesPageTemplate {
         let path = ["notesMaster", "cSld", "spTree", "sp", "nvSpPr", "nvPr", "ph"]
         var pending: [(XML.Element, [String: String], Int)] = [(master, [:], 0)]
         while let (node, inherited, depth) = pending.popLast() {
-            var scope = inherited
-            for attribute in node.attributes {
-                if attribute.name == "xmlns" { scope[""] = attribute.value }
-                else if attribute.name.hasPrefix("xmlns:") { scope[String(attribute.name.dropFirst(6))] = attribute.value }
-            }
+            let scope = namespaceScope(of: node, inherited: inherited)
             let pieces = node.name.split(separator: ":", maxSplits: 1).map(String.init)
             guard pieces.last == path[depth], scope[pieces.count == 2 ? pieces[0] : ""] == MinimalTemplate.nsP else { continue }
             if depth == path.count - 1,
@@ -77,9 +78,19 @@ enum NotesPageTemplate {
             + "<p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>"
     }
 
+    private static func namespaceScope(of node: XML.Element, inherited: [String: String]) -> [String: String] {
+        var scope = inherited
+        for attribute in node.attributes {
+            if attribute.name == "xmlns" { scope[""] = attribute.value }
+            else if attribute.name.hasPrefix("xmlns:") { scope[String(attribute.name.dropFirst(6))] = attribute.value }
+        }
+        return scope
+    }
+
     private static func document(_ root: String, content: String, tail: String) -> Data {
-        Data(("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-            + "<p:\(root) xmlns:a=\"\(MinimalTemplate.nsA)\" xmlns:r=\"\(MinimalTemplate.nsR)\" xmlns:p=\"\(MinimalTemplate.nsP)\"><p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id=\"1\" name=\"\"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x=\"0\" y=\"0\"/><a:ext cx=\"0\" cy=\"0\"/><a:chOff x=\"0\" y=\"0\"/><a:chExt cx=\"0\" cy=\"0\"/></a:xfrm></p:grpSpPr>"
+        let background = root == "notesMaster" ? "<p:bg><p:bgRef idx=\"1001\"><a:schemeClr val=\"bg1\"/></p:bgRef></p:bg>" : ""
+        return Data(("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+            + "<p:\(root) xmlns:a=\"\(MinimalTemplate.nsA)\" xmlns:r=\"\(MinimalTemplate.nsR)\" xmlns:p=\"\(MinimalTemplate.nsP)\"><p:cSld>" + background + "<p:spTree><p:nvGrpSpPr><p:cNvPr id=\"1\" name=\"\"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x=\"0\" y=\"0\"/><a:ext cx=\"0\" cy=\"0\"/><a:chOff x=\"0\" y=\"0\"/><a:chExt cx=\"0\" cy=\"0\"/></a:xfrm></p:grpSpPr>"
             + content + "</p:spTree></p:cSld>" + tail + "</p:\(root)>").utf8)
     }
 }

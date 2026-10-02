@@ -91,6 +91,17 @@ import Testing
         #expect(try deck.serializedData() == before)
     }
 
+    @Test(arguments: ["q:notesSz xmlns:q", "notesSz xmlns"])
+    func pageSizeRecognizesAliasedAndDefaultNamespaces(_ declaration: String) throws {
+        let root = try XML.parse(Data("""
+        <p:presentation xmlns:p="\(MinimalTemplate.nsP)" xmlns:fake="urn:foreign">
+        <fake:notesSz cx="1" cy="2"/><\(declaration)="\(MinimalTemplate.nsP)" cx="6858000" cy="9144000"/>
+        </p:presentation>
+        """.utf8))
+        let size = try NotesPageTemplate.pageSize(in: root)
+        #expect(size.0 == 6_858_000 && size.1 == 9_144_000)
+    }
+
     @Test func aliasedMasterBindsOnlyRealPresentationPlaceholders() throws {
         let master = try XML.parse(Data("""
         <q:notesMaster xmlns:q="\(MinimalTemplate.nsP)" xmlns:fake="urn:foreign"><q:cSld><q:spTree>
