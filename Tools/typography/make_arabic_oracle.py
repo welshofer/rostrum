@@ -7,8 +7,8 @@ from pathlib import Path
 import subprocess
 ROOT=Path(__file__).resolve().parents[2]
 FIXTURE=ROOT/'Tests/RostrumTests/Fixtures/Typography'
-SUPPORTED=['ب','بب','ببب','اب','با','باب','سلام','لا','لأ','لإ','لآ','لله','الله','مرحبا بالعالم','العربية','فارسی','پاکستان','اردو','كـتاب','ب\u200dب','ب\u200cب','ب\u200c\u200dب','ب\u200d\u200cب','ل\u200dا','ل\u200cا','ب\u200d','\u200dب','سلام ','  سلام','ا\u0654']
-NEGATIVE=['بَ','سَلَام','مِّ','بَ\u200dب','سلام ABC','سلام אבג','سلام 123','سلام ١٢٣','(سلام)','سلام\u2067ABC\u2069']
+SUPPORTED=['ب','بب','ببب','اب','با','باب','سلام','لا','لأ','لإ','لآ','لله','الله','مرحبا بالعالم','العربية','فارسی','پاکستان','اردو','كـتاب','ب\u200dب','ب\u200cب','ب\u200c\u200dب','ب\u200d\u200cب','ل\u200dا','ل\u200cا','ب\u200d','\u200dب','سلام ','  سلام','ا\u0654','بَ','مِّ','بَ\u200dب']
+NEGATIVE=['سَلَام','سلام ABC','سلام אבג','سلام 123','سلام ١٢٣','(سلام)','سلام\u2067ABC\u2069']
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--font',type=Path,default=FIXTURE/'DejaVuSans.ttf')

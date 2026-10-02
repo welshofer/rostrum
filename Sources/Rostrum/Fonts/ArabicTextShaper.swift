@@ -1,7 +1,7 @@
 import Foundation
 
 /// Default-language Arabic joining and bounded GSUB 1/4/6/7, in logical order
-/// until the final RTL reversal. Mark/cursive attachment and mixed bidi remain
+/// until the final RTL reversal. Cursive/ligature attachment and mixed bidi remain
 /// diagnosed rather than being implied by contextual-form support.
 struct ArabicTextShaper {
     struct Glyph {
@@ -11,6 +11,8 @@ struct ArabicTextShaper {
         var form: String?
         var origins: [Int]
         var x = 0, y = 0, advance = 0
+        var ligature = false
+        var mark: Bool { Unicode.Scalar(scalar).map { [.nonspacingMark, .spacingMark, .enclosingMark].contains($0.properties.generalCategory) } ?? false }
         var control: Bool { scalar == 0x200C || scalar == 0x200D }
         var boundary: Bool { scalar == 10 || scalar == 13 }
     }
@@ -52,7 +54,6 @@ struct ArabicTextShaper {
             }
             offset += count
         }
-        if hasMarks { diagnostics.append(.unsupportedLayoutFeature("Arabic mark attachment positioning is unsupported")) }
         if mixed || direction == .leftToRight {
             diagnostics.append(.unsupportedLayoutFeature("Mixed Arabic paragraph bidi and explicit LTR Arabic shaping are unsupported"))
         }
@@ -99,14 +100,26 @@ struct ArabicTextShaper {
             if glyphs[i].control { glyphs[i].id = space; glyphs[i].advance = 0 }
             if tables.isNonspacingMark(glyphs[i].id) { glyphs[i].advance = 0 }
         }
-        if rtl { glyphs.reverse() }
         let scale = pointSize / Double(metrics.unitsPerEm)
-        var seen: Set<ShapingDiagnostic> = []
-        let unique = diagnostics.filter { seen.insert($0).inserted }
-        return ShapedGlyphRun(glyphs: glyphs.filter { !$0.boundary }.map {
+        var positioned = glyphs.map {
             ShapedGlyph(glyphID: $0.id, scalarRange: $0.range, advance: Double($0.advance) * scale,
                         xOffset: Double($0.x) * scale, yOffset: Double($0.y) * scale, bidiLevel: rtl ? 1 : 0)
-        }, breaks: TextShaper.lineBreaks(in: text), diagnostics: unique, direction: rtl ? .rightToLeft : .leftToRight)
+        }
+        if hasMarks {
+            diagnostics += tables.arabicMarkDiagnostics.map(ShapingDiagnostic.unsupportedLayoutFeature)
+            let result = MarkPositioning.apply(&positioned, lookups: tables.arabicMarks, tables: tables,
+                ligatures: Set(glyphs.indices.filter { glyphs[$0].ligature }),
+                barriers: Set(glyphs.indices.filter { glyphs[$0].control || glyphs[$0].boundary }), rtl: rtl, scale: scale)
+            if result.exhausted { diagnostics.append(.unsupportedLayoutFeature("Mark attachment execution exceeds the bounded profile")) }
+            if glyphs.indices.contains(where: { glyphs[$0].mark && !result.attached.contains($0) }) {
+                diagnostics.append(.unsupportedLayoutFeature("Arabic mark attachment positioning is unsupported for unattached marks or ligature components"))
+            }
+        }
+        positioned = positioned.enumerated().filter { !glyphs[$0.offset].boundary }.map(\.element)
+        if rtl { positioned.reverse() }
+        var seen: Set<ShapingDiagnostic> = []
+        let unique = diagnostics.filter { seen.insert($0).inserted }
+        return ShapedGlyphRun(glyphs: positioned, breaks: TextShaper.lineBreaks(in: text), diagnostics: unique, direction: rtl ? .rightToLeft : .leftToRight)
     }
 
     private func assignForms(_ glyphs: inout [Glyph]) {
@@ -196,6 +209,7 @@ struct ArabicTextShaper {
                         let origins = positions.flatMap { glyphs[$0].origins }
                         var replacement = first
                         replacement.id = ligature.replacement; replacement.range = range; replacement.origins = origins
+                        replacement.ligature = positions.count > 1 && positions.contains { !glyphs[$0].mark }
                         let consumed = Set(positions)
                         var output = [replacement]
                         if last > position {

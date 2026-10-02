@@ -6,8 +6,9 @@ import Foundation
 /// spaces and ASCII digits; and basic horizontal CJK break opportunities.
 ///
 /// Default-language Arabic joining forms and GSUB single/ligature/chained-context
-/// substitutions are also supported in isolated RTL runs. Arabic mark/cursive
-/// attachment, mixed Arabic bidi, Indic reordering, residual combining marks,
+/// substitutions are also supported in isolated RTL runs. Bounded GPOS base/mark
+/// attachment supports residual Latin and Arabic marks. Cursive/ligature attachment,
+/// mixed Arabic bidi, Indic reordering, unattached combining marks,
 /// emoji sequences and language-specific features remain diagnosed.
 /// Neither a platform font fallback nor an implicit font substitution is used.
 /// Shape each physical line separately: line breaks are reported, not wrapped.
@@ -40,6 +41,7 @@ public struct TextShaper: Sendable {
             var level = 0
         }
         var clusters: [Cluster] = [], offset = 0
+        var combining: [Range<Int>] = []
         for character in text {
             let original = String(character), count = original.unicodeScalars.count
             let range = offset..<(offset + count); offset += count
@@ -53,12 +55,12 @@ public struct TextShaper: Sendable {
                 else if value == 0x200E || value == 0x200F || (0x202A...0x202E).contains(value)
                             || (0x2066...0x2069).contains(value) {
                     diagnostics.append(.unsupportedBidirectionalControl(scalar: value))
-                } else if !Self.isCommon(value) {
+                } else if !Self.isCommon(value) && ![.nonspacingMark, .spacingMark, .enclosingMark].contains(scalar.properties.generalCategory) {
                     diagnostics.append(.unsupportedScript(scalar: value))
                 }
             }
-            if normalized.count > 1 && original != "\r\n" {
-                diagnostics.append(.unsupportedCombiningSequence(scalarRange: range))
+            if (normalized.count > 1 || normalized.first.map { [.nonspacingMark, .spacingMark, .enclosingMark].contains($0.properties.generalCategory) } == true) && original != "\r\n" {
+                combining.append(range)
             }
             clusters.append(Cluster(range: range, scalars: normalized, kind: kind))
         }
@@ -213,6 +215,31 @@ public struct TextShaper: Sendable {
         // the pen, including when a pair ValueRecord supplied an advance.
         for i in glyphs.indices where tables.isNonspacingMark(glyphs[i].glyphID) {
             glyphs[i].advance = 0
+        }
+        if !combining.isEmpty {
+            diagnostics += tables.markDiagnostics.map(ShapingDiagnostic.unsupportedLayoutFeature)
+            let originalRanges = Set(clusters.map(\.range))
+            let result = MarkPositioning.apply(&glyphs, lookups: tables.markLookups, tables: tables,
+                ligatures: Set(glyphs.indices.filter { !originalRanges.contains(glyphs[$0].scalarRange) }),
+                barriers: [], rtl: false, scale: scale)
+            if result.exhausted { diagnostics.append(.unsupportedLayoutFeature("Mark attachment execution exceeds the bounded profile")) }
+            var attachedCounts: [Range<Int>: Int] = [:]
+            for index in result.attached { attachedCounts[glyphs[index].scalarRange, default: 0] += 1 }
+            let combiningRanges = Set(combining)
+            for cluster in clusters where combiningRanges.contains(cluster.range) {
+                let safeScalars = cluster.scalars.dropFirst().allSatisfy {
+                    [.nonspacingMark, .spacingMark, .enclosingMark].contains($0.properties.generalCategory)
+                }
+                // Soft-dotted and non-ASCII bases can need Latin ccmp/reordering
+                // stages beyond this residual ASCII attachment contract.
+                let baseScalar = cluster.scalars.first?.value ?? 0
+                let safeBase = ((0x41...0x5A).contains(baseScalar) || (0x61...0x7A).contains(baseScalar))
+                    && baseScalar != 0x69 && baseScalar != 0x6A
+                if hasRTL || !safeBase || cluster.kind != 0 || !safeScalars || cluster.scalars.count < 2
+                    || attachedCounts[cluster.range, default: 0] != cluster.scalars.count - 1 {
+                    diagnostics.append(.unsupportedCombiningSequence(scalarRange: cluster.range))
+                }
+            }
         }
         // Reverse maximal runs at each embedding level, retaining source clusters.
         let maximum = glyphs.map(\.bidiLevel).max() ?? 0

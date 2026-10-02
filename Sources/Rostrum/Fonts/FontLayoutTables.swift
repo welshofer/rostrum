@@ -100,11 +100,16 @@ struct FontLayoutTables: Sendable {
     }
     var ligatureLookups: [Lookup<[Int: [Ligature]]>] = []
     var pairLookups: [Lookup<[PairTable]>] = []
+    var markLookups: [Lookup<[MarkTable]>] = []
+    var markDiagnostics: [String] = []
     private var definitions = GlyphDefinitions()
+    func isLigature(_ glyph: Int) -> Bool { definitions.classes?[glyph] == 2 }
     func isNonspacingMark(_ glyph: Int) -> Bool { definitions.classes?[glyph] == 3 }
 
     var arabic: ArabicLayoutTables?
     var arabicPairs: [Lookup<[PairTable]>] = []
+    var arabicMarks: [Lookup<[MarkTable]>] = []
+    var arabicMarkDiagnostics: [String] = []
     var arabicPositioningDiagnostics: [String] = []
     private init() {}
 
@@ -132,10 +137,13 @@ struct FontLayoutTables: Sendable {
             var budget = Budget(bytes: bytes.count)
             do { try readLayout(SFNTReader(bytes: bytes), substitution: tag == "GSUB", budget: &budget) }
             catch is BudgetExceeded {
-                if tag == "GSUB" { ligatureLookups = [] } else { pairLookups = [] }
+                if tag == "GSUB" { ligatureLookups = [] } else { pairLookups = []; markLookups = [] }
                 diagnostics.append("\(tag) layout expansion exceeds the parsing budget")
             }
-            catch { diagnostics.append("Malformed or unsupported \(tag) Latin layout table") }
+            catch {
+                if tag == "GPOS" { pairLookups = []; markLookups = [] }
+                diagnostics.append("Malformed or unsupported \(tag) Latin layout table")
+            }
         }
         if let bytes = tables["GSUB"] {
             arabic = ArabicLayoutTables(bytes: bytes, definitions: definitions)
@@ -145,8 +153,10 @@ struct FontLayoutTables: Sendable {
             positioning.definitions = definitions
             var budget = Budget(bytes: bytes.count)
             do { try positioning.readLayout(SFNTReader(bytes: bytes), substitution: false, budget: &budget, scriptTag: "arab") }
-            catch { positioning.pairLookups = []; positioning.diagnostics.append("Malformed or over-budget Arabic GPOS table") }
+            catch { positioning.pairLookups = []; positioning.markLookups = []; positioning.diagnostics.append("Malformed or over-budget Arabic GPOS table") }
             arabicPairs = positioning.pairLookups
+            arabicMarks = positioning.markLookups
+            arabicMarkDiagnostics = positioning.markDiagnostics
             arabicPositioningDiagnostics = positioning.diagnostics
         }
         if tables["fvar"] != nil { diagnostics.append("Variable-font shaping is unsupported") }
@@ -260,11 +270,11 @@ struct FontLayoutTables: Sendable {
         var indices = try (0..<featureIndexCount).map { try r.u16(language + 6 + 2 * $0) }
         if required != 0xFFFF { indices.append(required) }
         let featureCount = try r.u16(features)
-        var lookupIndices: Set<Int> = []
+        var lookupIndices: Set<Int> = [], markIndices: Set<Int> = []
         for index in indices {
             guard index < featureCount else { throw corrupt() }
             let p = features + 2 + index * 6, tag = try r.tag(p)
-            guard tag == (substitution ? "liga" : "kern") else {
+            guard substitution ? tag == "liga" : ["kern", "mark", "mkmk"].contains(tag) else {
                 if index == required { diagnostics.append("Unsupported required feature \(tag)") }
                 if scriptTag == "arab", tag == "curs" { diagnostics.append("Arabic cursive positioning is unsupported") }
                 continue
@@ -273,7 +283,9 @@ struct FontLayoutTables: Sendable {
             let count = try r.u16(feature + 2)
             try budget.consume(count)
             for i in 0..<count {
-                lookupIndices.insert(try r.u16(feature + 4 + i * 2))
+                let lookupIndex = try r.u16(feature + 4 + i * 2)
+                lookupIndices.insert(lookupIndex)
+                if tag == "mark" || tag == "mkmk" { markIndices.insert(lookupIndex) }
             }
         }
         let lookupCount = try r.u16(lookups)
@@ -282,6 +294,7 @@ struct FontLayoutTables: Sendable {
             let lookup = lookups + (try r.u16(lookups + 2 + 2 * index))
             let type = try r.u16(lookup), flags = try r.u16(lookup + 2)
             var ligatures: [Int: [Ligature]] = [:], pairs: [PairTable] = []
+            var marks: [MarkTable] = []
             let subtableCount = try r.u16(lookup + 4)
             try budget.consume(subtableCount)
             guard flags & 0xE0 == 0 else { diagnostics.append("Unsupported lookup flags \(flags)"); continue }
@@ -344,12 +357,29 @@ struct FontLayoutTables: Sendable {
                             else { throw corrupt() }
                         }
                     }
+                    if (v1 | v2) & 3 != 0 {
+                        markDiagnostics.append("Pair placement combined with mark attachment is outside the bounded profile")
+                    }
                     pairs.append(PairTable(reader: r, offset: sub, coverage: coverage, format: format,
                                            value1: v1, value2: v2, classes1: c1, classes2: c2, classCount2: count2))
-                } else { diagnostics.append("Unsupported \(substitution ? "GSUB" : "GPOS") lookup \(kind)") }
+                } else if !substitution, kind == 4 || kind == 6 {
+                    do { marks.append(try MarkTable.read(r, sub, kind: kind, budget: &budget)) }
+                    catch is MarkTable.UnsupportedAnchor {
+                        markDiagnostics.append("GPOS mark device or variation anchors are unsupported")
+                    }
+                } else if !substitution, kind == 5 {
+                    // Refusal is per affected ligature cluster at execution: a
+                    // font may also have fully supported mark-to-base lookups.
+                    continue
+                } else {
+                    let diagnostic = "Unsupported \(substitution ? "GSUB" : "GPOS") lookup \(kind)"
+                    if markIndices.contains(index) { markDiagnostics.append(diagnostic) }
+                    else { diagnostics.append(diagnostic) }
+                }
             }
             if !ligatures.isEmpty { ligatureLookups.append(Lookup(filter: filter, content: ligatures)) }
             if !pairs.isEmpty { pairLookups.append(Lookup(filter: filter, content: pairs)) }
+            if !marks.isEmpty { markLookups.append(Lookup(filter: filter, content: marks)) }
         }
     }
 

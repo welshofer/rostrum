@@ -64,7 +64,7 @@ import Testing
 
     @Test func unsupportedScriptsAndMarksNeverSilentlyClaimAccuracy() throws {
         let shaper = try shaper()
-        for text in ["سَلَام", "क्षि", "x\u{301}", "👩‍👧", "שָׁ"] {
+        for text in ["سَلَام", "क्षि", "ff\u{301}", "👩‍👧", "שָׁ"] {
             #expect(!shaper.shape(text, pointSize: 12).diagnostics.isEmpty)
         }
         #expect(shaper.shape("a", pointSize: .nan).diagnostics == [.invalidPointSize])

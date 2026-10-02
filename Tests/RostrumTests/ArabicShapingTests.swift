@@ -45,11 +45,13 @@ import Testing
         shape.textFrame!.paragraphs[0].runs[0].fontName = "Arabic Oracle"
         #expect(throws: StrictRenderingError.self) { _ = try deck.renderSVG(slideAt: 0, strictRendering: true) }
         let run = TextShaper(try FontMetrics(contentsOf: fixture.appendingPathComponent("DejaVuSans.ttf"))).shape("بَ", pointSize: 2048)
-        #expect(run.diagnostics.contains(.unsupportedLayoutFeature("Arabic mark attachment positioning is unsupported")))
+        #expect(run.isSupported)
+        let unattached = TextShaper(try FontMetrics(contentsOf: fixture.appendingPathComponent("DejaVuSans.ttf"))).shape("لَا", pointSize: 2048)
+        #expect(unattached.diagnostics.contains(.unsupportedLayoutFeature("Arabic mark attachment positioning is unsupported for unattached marks or ligature components")))
         let oracle = try JSONDecoder().decode(Oracle.self, from: Data(contentsOf: fixture.appendingPathComponent("arabic-harfbuzz-14.4.0.json")))
         let reference = try #require(oracle.cases.first { $0.text == "بَ" })
-        #expect(run.glyphs.map(\.xOffset) != reference.glyphs.map { Double($0.dx) })
-        #expect(run.glyphs.map(\.yOffset) != reference.glyphs.map { Double($0.dy) })
+        #expect(run.glyphs.map(\.xOffset) == reference.glyphs.map { Double($0.dx) })
+        #expect(run.glyphs.map(\.yOffset) == reference.glyphs.map { Double($0.dy) })
     }
     private func contextTables() throws -> [String: [UInt8]] {
         let r = SFNTReader(bytes: Array(try Data(contentsOf: fixture.appendingPathComponent("ArabicContexts.ttf"))))

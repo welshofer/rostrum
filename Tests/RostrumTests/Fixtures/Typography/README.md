@@ -13,9 +13,8 @@ The engine is a development-only oracle; production and tests have no runtime de
 
 Supported cases exercise GPOS class kerning, GSUB ligatures, NFC composition and
 unpointed Hebrew reversal. The original Arabic joining case is now a positive
-oracle; residual combining-mark positioning remains a negative oracle, explicitly
-diagnosed instead of claimed as conformant. Indic contextual substitution,
-mark attachment, language selection, full UAX #9 and full UAX #14 remain unsupported.
+oracle; selected residual mark sequences now have positive attachment oracles. Indic contextual substitution,
+ligature/cursive attachment, language selection, full UAX #9 and full UAX #14 remain unsupported.
 Basic CJK break tests exercise an explicitly bounded punctuation/grapheme profile;
 there is no CJK shaping or complete Unicode conformance claim.
 
@@ -65,12 +64,12 @@ https://learn.microsoft.com/en-us/typography/opentype/spec/gdef
 
 ## Bounded Arabic contextual shaping
 
-`arabic-harfbuzz-14.4.0.json` contains 30 positive and 10 negative DejaVu cases.
+`arabic-harfbuzz-14.4.0.json` contains 33 positive and 7 negative DejaVu cases.
 Positive cases cover default-language Arabic, Persian and Urdu letter sequences,
 joining forms, required/optional ligatures, normalization, spaces, ZWJ and ZWNJ.
 The reference invocation fixes `--direction=rtl --script=arab --language=und`.
 All positive glyph IDs, cluster starts, advances and x/y offsets are checked.
-Negative cases pin actual mark placement and mixed-script/bidi output; they must
+Negative cases pin ligature-component marks and mixed-script/bidi output; they
 remain diagnosed while that geometry is unimplemented.
 
 The Arabic program applies `ccmp`, `locl`, joining forms, `rlig`, `rclt`, `calt`,
@@ -105,7 +104,7 @@ Joining data is generated from the SHA-pinned Unicode 17.0.0
 Its Unicode license is retained as `LICENSE-Unicode.txt`. The runtime uses owned
 Swift data and code; no platform text stack or external shaping library is added.
 
-Mark/cursive positioning, language-system selection and mixed Arabic paragraph
+Ligature/cursive positioning, language-system selection and mixed Arabic paragraph
 bidi remain unsupported. Arabic digits and punctuation outside this narrow RTL
 letter/space/control profile remain diagnosed. RichTextLayout still diagnoses
 RTL span ordering, so strict slide rendering does not claim complete Arabic
@@ -157,3 +156,9 @@ by the existing layout budget. This is a narrow deployed-font compatibility
 exception to the [OpenType kern length field](https://learn.microsoft.com/en-us/typography/opentype/spec/kern),
 not a relaxation of arbitrary font-table bounds. Calibri's remaining Arabic
 GSUB2 and GPOS1/8 requirements are still diagnosed.
+
+## Bounded mark attachment
+
+See [MARK-POSITIONING.md](../../../../Tools/typography/MARK-POSITIONING.md) for the
+GPOS 4/6/9 contract, positive and negative HarfBuzz cases, owned fixture provenance,
+local-font reproduction commands, and parsing/execution limits.
