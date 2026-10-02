@@ -60,4 +60,21 @@ struct TableBorderSegments<Paint> {
         }
         return result
     }
+
+    /// A terminal meets a perpendicular painted edge only when no collinear
+    /// owner continues beyond it. Query physical ownership so an intersection
+    /// inside a merged edge works without splitting that edge or scanning it.
+    func terminalJoins(_ segment: Segment) -> (lower: Bool, upper: Bool) {
+        let vertical = segment.edge.axis == .vertical
+        let boundary = segment.edge.boundary
+        func joins(_ position: Int, preceding: Bool) -> Bool {
+            let continuation = Key(vertical: vertical, boundary: boundary,
+                                   position: preceding ? position - 1 : position)
+            guard owners[continuation] == nil else { return false }
+            return owners[Key(vertical: !vertical, boundary: position, position: boundary - 1)] != nil
+                || owners[Key(vertical: !vertical, boundary: position, position: boundary)] != nil
+        }
+        return (joins(segment.range.lowerBound, preceding: true),
+                joins(segment.range.upperBound, preceding: false))
+    }
 }

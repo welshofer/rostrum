@@ -876,7 +876,10 @@ struct SVGRenderer {
         for height in heights { ys.append(ys.last! + height) }
         let rtl = table.rightToLeft
         var out = "", diagonals = "", textContent = ""
-        struct BorderPaint { let color: String; let width: Int; let pattern: String }
+        struct BorderPaint {
+            let color: String; let width: Int; let pattern: String
+            let simpleSolid: Bool
+        }
         var borders = TableBorderSegments<BorderPaint>()
         func borderPaint(_ line: XML.Element?) -> BorderPaint? {
             guard let line, line.firstChild(named: "a:noFill") == nil,
@@ -892,12 +895,28 @@ struct SVGRenderer {
             case "dashDot", "sysDashDot": pattern = "\(width * 3) \(width * 2) \(width) \(width * 2)"
             default: pattern = ""
             }
-            return BorderPaint(color: color, width: width, pattern: pattern)
+            let simpleSolid = (line.firstChild(named: "a:prstDash")?[attribute: "val"] ?? "solid") == "solid"
+                && (line[attribute: "cmpd"] ?? "sng") == "sng"
+                && (line[attribute: "cap"] ?? "flat") == "flat"
+                && (line[attribute: "algn"] ?? "ctr") == "ctr"
+                && ["a:custDash", "a:headEnd", "a:tailEnd", "a:round", "a:bevel"].allSatisfy {
+                    line.firstChild(named: $0) == nil
+                }
+            return BorderPaint(color: color, width: width, pattern: pattern, simpleSolid: simpleSolid)
         }
-        func lineSVG(_ paint: BorderPaint, _ endpoints: (Int, Int, Int, Int), offset: Int = 0) -> String {
+        func lineSVG(_ paint: BorderPaint, _ endpoints: (Int, Int, Int, Int), offset: Int = 0,
+                     startExtension: Double = 0, endExtension: Double = 0) -> String {
             let dash = paint.pattern.isEmpty ? "" : " stroke-dasharray=\"\(paint.pattern)\""
                 + (offset == 0 ? "" : " stroke-dashoffset=\"\(offset)\"")
-            return "<line x1=\"\(endpoints.0)\" y1=\"\(endpoints.1)\" x2=\"\(endpoints.2)\" y2=\"\(endpoints.3)\" stroke=\"\(paint.color)\" stroke-width=\"\(paint.width)\"\(dash)/>"
+            let coordinates: String
+            if startExtension == 0, endExtension == 0 {
+                coordinates = "x1=\"\(endpoints.0)\" y1=\"\(endpoints.1)\" x2=\"\(endpoints.2)\" y2=\"\(endpoints.3)\""
+            } else if endpoints.0 == endpoints.2 {
+                coordinates = "x1=\"\(endpoints.0)\" y1=\"\(SVGNumber.decimal(Double(endpoints.1) - startExtension))\" x2=\"\(endpoints.2)\" y2=\"\(SVGNumber.decimal(Double(endpoints.3) + endExtension))\""
+            } else {
+                coordinates = "x1=\"\(SVGNumber.decimal(Double(endpoints.0) - startExtension))\" y1=\"\(endpoints.1)\" x2=\"\(SVGNumber.decimal(Double(endpoints.2) + endExtension))\" y2=\"\(endpoints.3)\""
+            }
+            return "<line \(coordinates) stroke=\"\(paint.color)\" stroke-width=\"\(paint.width)\"\(dash)/>"
         }
         let background = resolver.background()
         let tableFrame = (x, y, xs.last!, ys.last!)
@@ -986,7 +1005,25 @@ struct SVGRenderer {
                 }
             }
         }
-        for segment in borders.resolved() {
+        let segments = borders.resolved()
+        // The pinned Office v3 vector reference establishes this geometry and
+        // paint order for uniform-width, opaque solid grids. Keep the previous
+        // path for dashes, alpha, mixed widths and diagonals until comparable
+        // independent references establish their intersection behavior.
+        let uniformWidth = segments.first?.paint.width
+        let joinedGrid = topology != nil && widths.allSatisfy { $0 > 0 } && heights.allSatisfy { $0 > 0 }
+            && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
+            $0.paint.width == uniformWidth && $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
+        }
+        func paintGroup(_ segment: TableBorderSegments<BorderPaint>.Segment) -> Int {
+            let edge = segment.edge
+            let outer = edge.boundary == 0 || edge.boundary == (edge.axis == .vertical ? widths.count : heights.count)
+            return (outer ? 2 : 0) + (edge.axis == .vertical ? 0 : 1)
+        }
+        // Linear passes avoid sorting the potentially large grid. Interior
+        // verticals precede horizontals, then the outer vertical/horizontal rim.
+        for group in 0..<(joinedGrid ? 4 : 1) {
+          for segment in segments where !joinedGrid || paintGroup(segment) == group {
             let edge = segment.edge, lower = segment.range.lowerBound, upper = segment.range.upperBound
             let endpoints: (Int, Int, Int, Int)
             let offset: Int
@@ -1001,7 +1038,13 @@ struct SVGRenderer {
                 endpoints = (x + left, py, x + right, py)
                 offset = rtl ? xs[edge.range.upperBound] - xs[upper] : xs[lower] - xs[edge.range.lowerBound]
             }
-            out += lineSVG(segment.paint, endpoints, offset: offset)
+            let joins = joinedGrid ? borders.terminalJoins(segment) : (lower: false, upper: false)
+            let halfWidth = Double(segment.paint.width) / 2
+            let start = edge.axis == .horizontal && rtl ? joins.upper : joins.lower
+            let end = edge.axis == .horizontal && rtl ? joins.lower : joins.upper
+            out += lineSVG(segment.paint, endpoints, offset: offset,
+                           startExtension: start ? halfWidth : 0, endExtension: end ? halfWidth : 0)
+          }
         }
         return out + diagonals + textContent
     }
