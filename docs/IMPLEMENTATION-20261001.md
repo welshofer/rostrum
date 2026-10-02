@@ -1,5 +1,8 @@
 # Performance and fidelity implementation record — 2026-10-01
 
+Current integrated status: [October 2 implementation and verification](IMPLEMENTATION-20261002.md).
+The checkpoint details below remain historical evidence.
+
 This is the preserved initial-pass record. See the [follow-up](IMPLEMENTATION-FOLLOWUP-20261001.md)
 for subsequent implementation, Office references and current verification.
 

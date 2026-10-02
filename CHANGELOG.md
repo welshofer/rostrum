@@ -8,6 +8,11 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Added
 
+- Typed `LineCompound` / `LineDash` settings and raw compound-style inspection;
+  table edits preserve unspecified settings and opaque line XML.
+- Pinned native Office image/crop, typography-baseline and double-border corpora,
+  retaining both passing scoped evidence and failing whole-image comparisons.
+
 - All 74 native table-style definitions through `BuiltInTableStyle` and
   `Table.applyBuiltInStyle`, with fallback resolution for GUID-only decks and
   a pinned PowerPoint corpus covering 1,480 sampled cell fills.
@@ -49,6 +54,18 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ### Fixed
 
+- Solid flat centered double table borders, diagonal offsets and qualified joins;
+  native style-boundary precedence now applies before direct logical-donor edges.
+  Unverified compound/junction combinations remain diagnosed.
+- DrawingML baseline proportions and accumulated rounding, shared by fit/render;
+  native Arial/Calibri PDF baselines improve within the documented corpus.
+- Active inherited theme effects now report omissions, and unsupported
+  format-scheme theme overrides report unresolved inheritance.
+- Operation-local text/style/geometry/media caches and a sectionless construction
+  fast path reduce measured latency; whole-process memory remains unchanged.
+- Lectern ignores stale/cancelled inspection callbacks and exposes preview
+  diagnostics; isolated app dependencies allow all AppTests to run headlessly.
+
 - DrawingML tint/shade use linear light, saturation clips after RGB conversion,
   and two-stop/mirrored gradients follow PowerPoint's interpolation. Public
   design color mixing retains its existing encoded-channel behavior.
@@ -81,7 +98,7 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 ### Fidelity status
 
 See [the operation-level conformance matrix](docs/CONFORMANCE.md). Full complex-script shaping, advanced text layout, table patterns/effects/
-compound borders and whole-slide Office visual equivalence remain acceptance gaps. New inspection APIs or
+unsupported compound-border variants and whole-slide Office visual equivalence remain acceptance gaps. New inspection APIs or
 passing round-trip tests do not certify those capabilities.
 
 ## [0.4.0] — 2026-08-17

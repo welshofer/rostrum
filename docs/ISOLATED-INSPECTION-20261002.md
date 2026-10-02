@@ -1,5 +1,8 @@
 # Isolated Lectern inspection race correction — 2026-10-02
 
+Current integrated status: [October 2 implementation and verification](IMPLEMENTATION-20261002.md).
+The checkpoint details below remain historical evidence.
+
 This is an additive follow-up to the clean, preserved stage-four commit
 `f931ae1379b7d9f5058a717601c6cf4a86b9a0e1`. Its existing reports, archives and
 handoff manifest remain unchanged. The original checkout and PowerPoint session

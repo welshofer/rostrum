@@ -1,5 +1,8 @@
 # Isolated fidelity and image follow-up — 2026-10-02
 
+Current integrated status: [October 2 implementation and verification](IMPLEMENTATION-20261002.md).
+The checkpoint details below remain historical evidence.
+
 This continues [the first isolated handoff](ISOLATED-FOLLOWUP-20261002.md) at
 `1284af1145baef8ab0e89e78a673ba0dfae0b98a`. Those commits remain intact. New
 production source ends at `80f07da36539b2dc7fc600248fc8baef83fbe043`; later

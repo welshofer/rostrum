@@ -1,4 +1,4 @@
-# Performance measurements — 2026-10-01
+# Performance measurements
 
 The initial measurements below are retained unchanged; see the follow-up section
 for later renderer optimizations. Bulk table edits are substantially faster. The richer renderer remains slower
@@ -25,6 +25,8 @@ changes. This is not a comparison against an unchanged release tag.
   SHA-256 is `525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9`.
   The baseline driver did not record a font digest, so its byte identity cannot
   be independently established from that report.
+  The benchmark registers this font only for the separate text-fitting phase,
+  after rendering. The timed render phase does not register fonts.
 - Every scenario output was reopened by python-pptx, including traversal of
   table cells. Synthetic PPTX hashes agree across all five repetitions and
   across the two revisions. That proves neither SVG equivalence nor Office
@@ -116,13 +118,13 @@ changes SVG geometry to match Office ownership; its diagnostic hashes match.
 Correcting the historical No Grid GUID and native color/style fidelity changes
 render semantics, so a single cumulative speedup would be misleading.
 
-Resolved style templates are bounded per render (64 variants, approximately
+At this checkpoint, resolved style templates are bounded per render (64 variants, approximately
 1 MiB); media and diagnostic caches also live only for the current render.
 They do not retain stale state across edits. No cross-platform speed claim or
 net memory reduction is inferred from these warm render timings.
 
 
-## Final integrated scenario run
+## October 1 integrated scenario run
 
 [The complete final report](benchmarks/2026-10-01-final-macos.json) records
 revision `2783ea38616cfd7c30ad2358c1056b9dc3f19481`, the same local Arial hash,
@@ -150,3 +152,68 @@ unchanged from 199.12 MiB in that pass and still above the initial baseline's
 latency improvement, not a return to the simpler baseline renderer's speed or
 a process-memory reduction. Cross-platform performance and thresholds remain
 open.
+
+## October 2 matched follow-ups
+
+The isolated follow-ups are integrated locally. Their source, executable,
+input/output and log hashes remain in the linked records. These comparisons
+use distinct methods and should not be combined into a single speedup figure.
+
+- [Renderer work](ISOLATED-PERFORMANCE-20261002.md) removes repeated text-style
+  serialization, paragraph DOM copying and numeric geometry round trips. Stage
+  three's paired warm 10,000-cell renders improve from 161.549 to 141.646 ms
+  for the banded table and from 146.847 to 131.870 ms for the grid table. Its
+  fresh-process large-table scenario improves from 196.723 to 175.184 ms;
+  peak RSS remains essentially unchanged (199.391 versus 199.5 MiB).
+- [Image lookup](ISOLATED-FIDELITY-20261002.md) builds a bounded index only
+  after sufficient measured work, retaining a cheap path for sparse/small
+  relationship collections. The dense 2,000-image case improves from 22.449
+  to 20.133 ms in its matched measurement. This is not a claim for every image
+  workload.
+- [Sectionless construction](ISOLATED-CONSTRUCTION-20261002.md) skips namespace
+  and compatibility-context scans when no section extension can exist. The
+  1,000-slide median falls from 310.843 to 112.877 ms (63.69%); an independent
+  replication measures 311.292 to 111.809 ms. All paired saved outputs are
+  byte-identical. Existing ID/URI scans remain, so construction is not claimed
+  to have linear complexity.
+
+The richer renderer remains slower than the historical simpler renderer. A
+separate frozen-input historical comparison measures 70.893 versus 171.288 ms
+(2.416×), with intentionally different output semantics. Neither the measured
+improvements nor bounded caches establish lower whole-process memory or
+cross-platform performance.
+
+
+## October 2 final integrated scenario run
+
+[The final report](benchmarks/2026-10-02-final-macos.json) measures combined code
+`00a3231` after the table, line API, typography and diagnostics changes. The
+[receipt](benchmarks/2026-10-02-final-verification.json) pins the source inputs,
+release executable, driver and logs. No build or test jobs ran concurrently.
+The same Mac/compiler/font and fresh-process method were used: one warmup plus
+five measured repetitions, all 12 outputs independently reopened by python-pptx.
+All five saved hashes agree in each scenario; all eight synthetic hashes match
+the October 1 final checkpoint. This verifies saved PPTX determinism, not SVG
+identity or whole-slide equivalence.
+
+| Scenario / phase | Median / observed p95 |
+| --- | ---: |
+| 10,000 cells: populate | 2.823 / 2.870 ms |
+| 10,000 cells: style | 15.550 / 16.324 ms |
+| 10,000 cells: render | 169.529 / 174.626 ms |
+| 10,000 cells: cold unchanged save | 18.293 / 18.491 ms |
+| 10,000 cells: warm unchanged save | 0.139 / 0.159 ms |
+| 1,000 slides: construction | 111.517 / 113.304 ms |
+| 1,000 slides: traversal | 58.675 / 60.286 ms |
+| 1,000 slides: eager reopen | 41.614 / 41.828 ms |
+| 250 unique images: render | 2.954 / 3.064 ms |
+
+The table render median is 22.15% below the previous integrated checkpoint's
+217.752 ms, with a 3.95% observed min-to-max spread in the final samples. This
+comparison spans correctness changes and is not a claim of identical renderer
+semantics. Unique-image rendering is essentially unchanged from 2.940 ms.
+The richer table renderer remains about 2.39 times the initial 70.805-ms
+baseline. Median table process peak RSS is 199.578 MiB versus 199.375 MiB at the
+previous checkpoint; 1,000-slide RSS is 41.0 MiB. There is no measured net memory
+reduction. The current style cache retains at most 36 templates and approximately
+1 MiB per render. Linux/iOS timings and regression thresholds remain open.

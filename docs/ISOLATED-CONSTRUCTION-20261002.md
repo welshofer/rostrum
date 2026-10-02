@@ -1,5 +1,8 @@
 # Isolated slide-construction performance — 2026-10-02
 
+Current integrated status: [October 2 implementation and verification](IMPLEMENTATION-20261002.md).
+The checkpoint details below remain historical evidence.
+
 Production commit **`6dd6eb6c14712bb40d22e9c92126fc93001ec424`** removes a
 reproduced slide-construction regression without changing serialized output.
 This work continues stage-three production `ca522e8be30dfff9ac4c5bc17b74d4128008c9e9`.

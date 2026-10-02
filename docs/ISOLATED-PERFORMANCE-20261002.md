@@ -1,5 +1,8 @@
 # Isolated renderer performance pass — 2026-10-02
 
+Current integrated status: [October 2 implementation and verification](IMPLEMENTATION-20261002.md).
+The checkpoint details below remain historical evidence.
+
 This continues the immutable [stage-two handoff](ISOLATED-FIDELITY-20261002.md)
 at `af5a011db7eb63f47c2cde0f48a38eae83237973`. Production source ends at
 `ca522e8be30dfff9ac4c5bc17b74d4128008c9e9`. The original task remains the sole

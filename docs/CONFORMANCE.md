@@ -2,17 +2,17 @@
 
 Support is evaluated separately for reading, authoring, editing, duplication,
 import, round-trip preservation and rendering. Preserving unknown XML does not
-imply the renderer understands it. Animation is outside this program.
+imply the renderer understands it. Animation is outside this program. The [October 2 integrated record](IMPLEMENTATION-20261002.md) contains the current combined checks and acceptance failures.
 
 ## Operation-level evidence
 
 | Feature | Implemented operations and regression suites | Remaining acceptance work |
 | --- | --- | --- |
 | Tables | Merge topology, atomic overlap refusal, unmerge, row/column insert/remove/reorder, dimension synchronization; `TableContractTests`, `TableConformanceTests` | PowerPoint visual equivalence, advanced vertical cell text |
-| Table appearance | Shared-edge ownership, merged-continuation/RTL borders, margins, image/gradient fills, embedded/custom regions and all 74 native style definitions, theme-owned image references, correct tint/shade/saturation and Office interpolation for endpoint-pair/mirrored-three-stop gradients; `BuiltInTableStyleTests`, `TableStyleContractTests`, `TableStyleImportTests`, `TableFillAtomicityTests` | Whole-slide Office equivalence; pattern fills, effects and compound borders in preview |
-| Typography | Exact regular/bold/italic face selection, mixed-run shared fit/render layout, fields, breaks, tabs, spacing, bullets, autofit; `FontFaceTests`, `RichTextLayoutTests` | Full paragraph bidi, justification, text decorations/warps/columns, language-specific typography |
+| Table appearance | Typed compound/dash line settings, qualified solid double-border geometry, native style-boundary precedence, shared-edge ownership, merged-continuation/RTL borders, margins, image/gradient fills, embedded/custom regions and all 74 native style definitions, theme-owned image references, correct tint/shade/saturation and Office interpolation for endpoint-pair/mirrored-three-stop gradients; `BuiltInTableStyleTests`, `TableStyleContractTests`, `TableStyleImportTests`, `TableFillAtomicityTests` | Whole-slide Office equivalence; pattern fills, effects, unsupported compound/dashed-double/junction variants in preview |
+| Typography | Exact regular/bold/italic face selection, mixed-run shared fit/render layout, Office-verified baseline subset, fields, breaks, tabs, spacing, bullets, autofit; `FontFaceTests`, `RichTextLayoutTests` | Whole-image typography equivalence, full paragraph bidi, justification, text decorations/warps/columns, language-specific typography |
 | Shaping | Bounded Latin kerning/ligatures, Arabic joining/contextual GSUB, GDEF filtering, Calibri compatibility, NFC clusters, restricted Hebrew bidi and horizontal CJK breaks; `TextShaperTests`, `ArabicShapingTests`, `FontCompatibilityTests`, `FontLookupFilteringTests` and pinned HarfBuzz oracles | Complete Arabic/Indic shaping, mark/cursive attachment, full Unicode bidi/line-breaking |
-| Pictures/crops | Source/destination crops, stretch/tile, transforms/clipping, isolated replacement; `PictureMappingTests`; resvg quadrant/transparency pixel checks | Pinned Office comparisons; alternate SVG/layer/linked image replacement refuses atomically |
+| Pictures/crops | Source/destination crops, stretch/tile, transforms/clipping, isolated replacement; `PictureMappingTests`; resvg quadrant/transparency checks and 12 passing Office mapping cases | Broader native image/effect coverage; alternate SVG/layer/linked image replacement refuses atomically |
 | Speaker notes | Rich notes, printable default page geometry, foreign placeholder inheritance, independent duplicates, source master/theme/media import, exact-master reuse; `NotesTests`, `NotesPageLayoutTests`, annotation lifecycle/import suites | Conflicting masters/page sizes are refused atomically; broader Office notes lifecycle coverage |
 | Comments | Modern edit/reopen/delete, replies, slide/shape/text anchors; legacy read/create/edit/delete; author identity, slide-anchor remapping and bounded custom dependency graph transfer; `CommentEditingTests`, `CommentsTests`, `DeckMergeTests`, `AuthorDependencyImportTests` | Office thread lifecycle acceptance and broader custom author dependency interoperability |
 | Sections | Slide add/remove/move/duplicate/import and section remove/move keep membership coherent; `SectionsTests`, `MetadataPreservationTests`, `SectionCompatibilityContextTests`; namespace aliases and inherited compatibility/XML contexts are preserved | Office membership acceptance across foreign producers |
@@ -73,11 +73,13 @@ font files. resvg-py 0.5.0 ignores CSS @font-face data URLs; an unconfigured res
 run silently substitutes fonts and is not a typography oracle. No font binaries
 from Office or the operating system are redistributed with these fixtures.
 
-The final [v3 comparison](../Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-comparison.json)
-uses four hash-verified Arial/Calibri faces. It reports **18,145 / 840,000 pixels
-(2.1601%)** over the channel-16 limit, exceeding the unchanged 0.5% gate. Shared
-border centers match; stroke antialiasing and small text offsets remain. The
-failing candidate is retained, separately named from the Office reference.
+The preserved [October 1 v3 comparison](../Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-comparison.json)
+reports 18,145 / 840,000 pixels (2.1601%) above channel tolerance 16. The
+[current integrated comparison](benchmarks/2026-10-02-integrated-table-comparison.json)
+uses the same four hash-verified Arial/Calibri faces and reports **17,314 /
+840,000 pixels (2.06119%)**, still exceeding the unchanged 0.5% gate. Shared
+border centers match; stroke antialiasing and text residuals remain. Earlier
+failing candidates and immutable Office references are retained separately.
 
 ```sh
 python Tools/conformance/check_text_rendering.py --svg /path/to/slide.svg --reference Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-office.png --fonts /path/to/local-fonts.json --width 1200 --height 700 --output /tmp/text-comparison
@@ -136,7 +138,7 @@ python-pptx parsing. Cold unchanged save and warm cached save are separate phase
 Compare like-for-like platforms, corpora, fonts and build configuration; measure
 variance before setting regression limits.
 
-See [PERFORMANCE.md](PERFORMANCE.md) for the 2026-10-01 measurements, including
+See [PERFORMANCE.md](PERFORMANCE.md) for the October 1 and 2 measurements, including
 the historical renderer regression, follow-up improvements and remaining
 cross-platform validation.
 
@@ -190,3 +192,29 @@ python Tools/conformance/check_table_borders.py Tests/RostrumTests/Fixtures/Tabl
 
 References are immutable evidence, not adjusted to match library output. The
 74-style fill oracle and border oracle do not certify all table features.
+
+
+## Additional native evidence — October 2
+
+The [image corpus](IMAGE-OFFICE-20261002.md) has 12 independent, text-free cases
+covering pictures and shape/table fills. All v2 mapping cases pass the unchanged
+whole-PNG gate; three original v1 cases remain failing because their inherited
+shadows are omitted. Strict diagnostics now expose those active effects and
+unsupported format-scheme theme overrides. Empty direct overrides and namespace
+aliases do not create false effect reports. Broader effects remain unsupported.
+
+The [double-border corpus](../Tests/RostrumTests/Fixtures/DoubleTableBorders/README.md)
+verifies 29 PDF geometry cases and 216 stable style-boundary PNG probes across
+LTR and RTL. Whole-PNG results are separate: 26/29 double cases and 24/36 cases in
+each style corpus pass. Solid flat centered double borders are a qualified
+preview subset; unsupported compound/dash/cap/junction combinations report
+fidelity issues. [Typed line settings](LINE-STYLES.md) support reading and writing
+more styles than the renderer can accurately preview.
+
+The [typography corpus](../Tools/typography/OFFICE-BASELINES.md) verifies 46 line
+baselines across 30 Arial/Calibri cases against native PDF geometry. Exact local
+font identities and PDF glyph outlines are checked first. Four of six native PNG
+comparisons still fail. This baseline result is limited to the captured styles,
+sizes, transitions, wrapping and breaks; it does not qualify all scripts or text
+layout. Root repeated the vector check and verified unchanged candidate SVG
+hashes on the final integrated code.

@@ -1,5 +1,8 @@
 # Headless AppTests isolation — 2026-10-02
 
+Current integrated status: [October 2 implementation and verification](IMPLEMENTATION-20261002.md).
+The checkpoint details below remain historical evidence.
+
 Base: `630ee31f6d66ffcad632b69191c3fefc0b76b3b1`. All verification ran in the
 isolated metadata worktree. No app/GUI launch or project/signing changes were
 performed.

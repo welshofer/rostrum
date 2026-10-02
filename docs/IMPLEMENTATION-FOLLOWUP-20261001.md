@@ -1,5 +1,8 @@
 # Performance and fidelity follow-up — 2026-10-01
 
+Current integrated status: [October 2 implementation and verification](IMPLEMENTATION-20261002.md).
+The checkpoint details below remain historical evidence.
+
 This record follows [the initial implementation](IMPLEMENTATION-20261001.md).
 This preserves the October 1 follow-up checkpoint. Work remains local on
 `codex/burndown/20261001`. The pull was already current;

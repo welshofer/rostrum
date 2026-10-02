@@ -1,5 +1,8 @@
 # Isolated performance and fidelity follow-up — 2026-10-02
 
+Current integrated status: [October 2 implementation and verification](IMPLEMENTATION-20261002.md).
+The checkpoint details below remain historical evidence.
+
 This work is local on `codex/isolated-performance-20261002`, based on
 `2783ea38616cfd7c30ad2358c1056b9dc3f19481`. The original checkout and its active
 task remain the integration owner. No merge, push, publication, PowerPoint

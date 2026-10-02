@@ -483,7 +483,7 @@ Each is a judgement about leverage, not a doubt about the finding.
 - Zero SwiftPM dependencies, forever
 
 
-## Accuracy acceptance work (2026-10-01)
+## Accuracy acceptance work (updated 2026-10-02)
 
 The current implementation expands tables, typography, annotations and package
 performance. [CONFORMANCE.md](docs/CONFORMANCE.md) is the per-operation evidence
@@ -491,15 +491,21 @@ ledger. These gates remain open and must not be relabeled complete:
 
 - [x] All 74 native GUID-only styles, independently checked with 1,480 Office
   fill probes. Shared borders have 737 probes across 42 Office cases.
-- [ ] Advanced vertical cell typography, pattern/compound-border/effect preview
-  and whole-slide Office equivalence.
+- [x] Typed compound/dash line settings, qualified solid double-border geometry
+  (29 Office PDF cases) and native style-boundary precedence (216 LTR/RTL probes).
+- [x] Twelve native Office image-mapping cases and 46 native text baselines pass
+  their scoped checks; [current evidence](docs/IMPLEMENTATION-20261002.md).
+- [ ] Advanced vertical cell typography, pattern/effect preview, unsupported
+  compound/dashed-double/junction variants and whole-slide Office equivalence.
+  Table and typography PNG failures remain at unchanged thresholds.
 - [ ] Complete Arabic/Indic shaping, mark positioning, language features
   and complete Unicode bidirectional/line-break conformance. Bounded Arabic
   joining/contextual GSUB, GDEF filtering and Calibri compatibility are implemented.
 - [ ] Pinned PowerPoint slide and notes-page equivalence after edits, duplication
   and import. Authored notes print correctly and one imported notes page matches
   its source exactly. Table whole-image equivalence remains a separate gate.
-- [ ] Broader images/crop and annotation lifecycle Office fixture coverage.
+- [ ] Broader image/effect and annotation lifecycle Office fixture coverage beyond
+  the twelve image cases and the existing notes/customXML examples.
 - [x] Namespace-aliased section mutation with inherited compatibility/XML context.
 - [ ] Broader author dependency interoperability and conflicting notes-master
   reconciliation. Custom author graphs transfer within bounded contracts;
