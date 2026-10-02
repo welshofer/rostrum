@@ -9,20 +9,16 @@ import Foundation
 public enum ProviderFactory {
     /// - Throws: `.noKey` when no key is stored; `.providerError` for a provider
     ///   that isn't wired up yet.
-    public static func make(id: ProviderID, apiKey: String?, model: String) throws -> any LLMProvider {
+    public static func make(id: ProviderID, apiKey: String?, model: String, effort: ReasoningEffort = .medium) throws -> any LLMProvider {
         guard let key = apiKey?.trimmingCharacters(in: .whitespacesAndNewlines), !key.isEmpty else {
             throw LecternError.noKey
         }
-        switch id {
-        case .anthropic:
-            return AnthropicProvider(apiKey: key, model: model)
-        case .openAI:
-            return OpenAIProvider(apiKey: key, model: model)
-        case .gemini, .custom:
-            throw LecternError.providerError(status: 0, message: "\(id.rawValue) isn't wired up yet — use Anthropic or OpenAI.")
+        guard id == .openAI else {
+            throw LecternError.providerError(status: 0, message: "Lectern now uses OpenAI only.")
         }
+        return OpenAIProvider(apiKey: key, model: model, effort: effort)
     }
 
     /// Whether `id` currently has a live implementation (independent of any key).
-    public static func isWired(_ id: ProviderID) -> Bool { id == .anthropic || id == .openAI }
+    public static func isWired(_ id: ProviderID) -> Bool { id == .openAI }
 }

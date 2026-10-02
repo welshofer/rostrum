@@ -13,6 +13,9 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
 
 - `Sources/Rostrum` is the portable library. It has no external package
   dependencies and uses Foundation (FoundationXML on Linux).
+- `Sources/RostrumLayout` owns template-aware composition and text fitting; it
+  depends on Rostrum and accepts a platform measurement adapter. Keep document
+  I/O and native master/layout/theme authoring in Rostrum.
 - `Lectern/Sources/LecternCore` depends on local Rostrum and may use Apple
   frameworks behind availability/import guards. Keep its headless Linux path.
 - `Lectern/App` is the macOS/iOS SwiftUI app; Xcode builds it separately from
@@ -59,6 +62,9 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
   Keep the shared contract and goal-aware editorial guidance in PromptTemplates.
   Grounded requests use supported facts only. Delimiters label untrusted data;
   they do not guarantee model compliance.
+- Lectern generation is OpenAI-only. Keep model IDs and supported efforts in
+  `OpenAIModelCatalog.swift`; text uses Responses function calls, images use the
+  Images API. Preserve saved OpenAI Keychain entries when migrating preferences.
 - Inspection previews keep one record per original slide, including failures.
   Keep original numbering, failure labels and the deck's aspect ratio through
   layout and rasterization. Bitmap cache keys include output dimensions.
@@ -76,3 +82,18 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
   string literals; Swift API names are Swift-native (`slideMasters`, not
   `sldMasterLst`). python-pptx's class names are precedent but not law.
 - EMU is the canonical length type (`Sources/Rostrum/Core/Units.swift`).
+
+## Template authoring
+
+- A POTX input owns its slide size, masters, layouts, theme and artwork. Fill native
+  placeholders and retain their inheritance; do not apply a design.md over it.
+- Use `Presentation.fromTemplate(data:)` for new decks. It intentionally removes
+  starter content; ordinary open/save must remain lossless. Exported slides must
+  retain a valid layout → master → theme chain.
+- For design.md generation, compile the master and publish subordinate layouts after
+  measured composition. Keep actual slide text out of reusable layout prototypes.
+- Treat font substitution and native rendering as separate acceptance checks.
+  LibreOffice and SVG previews do not establish PowerPoint fidelity. Use the user's
+  exported PowerPoint images as authoritative visual evidence.
+- Do not restart or replace an app while the user is generating a presentation.
+  Use isolated build/test products; wait for an idle client before visual checks.

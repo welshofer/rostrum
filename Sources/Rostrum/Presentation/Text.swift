@@ -87,6 +87,22 @@ public final class TextFrame {
         return Paragraph(p: p, part: part)
     }
 
+    /// Apply a foreground to both ordinary text and native fields such as the
+    /// slide number. Useful when a photographic background changes contrast.
+    public func setColor(_ color: Color) {
+        for paragraph in txBody.children(named: "a:p") {
+            for item in paragraph.childElements where item.name == "a:r" || item.name == "a:fld" {
+                let properties = item.getOrAddChild("a:rPr", beforeAnyOf: ["a:pPr", "a:t"])
+                for name in ["a:noFill", "a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:grpFill"] {
+                    properties.removeChildren(named: name)
+                }
+                let fill = properties.getOrAddChild("a:solidFill")
+                fill.appendElement(color.srgbElement())
+            }
+        }
+        part.markDirty()
+    }
+
     /// Ensure the body is schema-valid (at least one `a:p`).
     func ensureNonEmpty() {
         if txBody.firstChild(named: "a:p") == nil {
@@ -154,6 +170,13 @@ public final class Paragraph {
     }
 
     // MARK: - Bullets & indentation
+
+    /// Paragraph indentation, independent of the outline level.
+    public func setIndentation(left: EMU, hanging: EMU = .zero) {
+        pPr[attribute: "marL"] = String(left.rawValue)
+        pPr[attribute: "indent"] = String(-hanging.rawValue)
+        part.markDirty()
+    }
 
     /// Outline/indent level, 0…8 (`a:pPr@lvl`).
     public var indentLevel: Int {

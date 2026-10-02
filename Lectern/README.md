@@ -37,7 +37,7 @@ flowchart LR
         IR["DeckIR lectern.deck/1<br/>structural + soft validation<br/>unknown layouts downgrade"]
         REN["DeckRenderer (actor)<br/>IR layout → Rostrum builder"]
         CAT["StyleCatalog<br/>150 bundled design.md"]
-        PROV["LLMProvider<br/>Anthropic · OpenAI<br/>optional image providers"]
+        PROV["LLMProvider<br/>OpenAI Responses<br/>optional image providers"]
     end
     R["Rostrum<br/>design-authoring builders<br/>→ native .pptx"]
     OUT[("deck.pptx<br/>opens clean in PowerPoint,<br/>Keynote, python-pptx")]
@@ -219,8 +219,9 @@ Keys and provider choice are wired end-to-end (§10 / invariant I1):
 - **`KeychainStore`** — API keys live *only* in the login keychain (a
   generic-password item per provider). Never UserDefaults, never logged; the
   `SecureField` is write-only, so a stored key never round-trips through the UI.
-- **`SettingsView`** — provider picker + model + key entry, plus optional
-  image-provider keys (OpenAI Images / Gemini) for on-brand slide art. The
+- **`SettingsView`** — OpenAI text strength (Astra, Sol, Luna), reasoning effort,
+  image model (Sunburst, Flare), and image quality dropdowns. Optional image
+  generation has its own OpenAI key entry; it may use the same key as text. The
   field is write-only; a saved key shows a masked "saved" prompt and a green
   Keychain badge instead of ever echoing the secret.
 - **`ProviderFactory`** (LecternCore, unit-tested) — the one UI-free place the
@@ -232,13 +233,29 @@ Keys and provider choice are wired end-to-end (§10 / invariant I1):
 
 ## Implemented behavior and remaining work
 
-- Anthropic and OpenAI text providers are wired through
-  `Sources/LecternCore/Providers/ProviderFactory.swift`; Gemini and Custom text
-  providers remain unwired. Gemini/OpenAI image providers are separate.
+- Generation uses OpenAI only: Astra (`gpt-6-astra`), Sol (`gpt-6.1-sol`), and
+  Luna (`gpt-6-luna`) through `/v1/responses`; Sunburst
+  (`gpt-image-2.5-sunburst`) and Flare (`gpt-image-2.5-flare`) through the Images API.
+  Defaults are Sol / medium reasoning and Flare / automatic image quality.
+  Text supports low, medium, high, extra high, and maximum effort; Luna also
+  supports none. Switching from Luna / none to another model selects low.
+  All choices persist and apply to draft, repair, and editorial passes.
+- Old provider/model preferences migrate to these defaults. Existing OpenAI
+  Keychain entries are reused; other vendors' keys are never copied or deleted.
+  Legacy provider enum values remain for decoding existing records.
+- OpenAI requests use `store: false`, the existing untrusted-input contract,
+  forced `emit_deck` function calls, validation and repair. Output budgets reserve
+  additional room for reasoning. Higher effort can take longer and cost more.
+- Image sizes preserve each requested aspect ratio, including exact 16:9 slide
+  backgrounds. Style and background/panel art direction remain shared.
+- Model capabilities were checked against the [OpenAI model catalog](https://developers.openai.com/api/docs/models)
+  on October 2, 2026. Model availability still depends on the API project.
 - `Storage/DeckLibrary.swift` and `App/AppState.swift` load, rename and delete
   saved deck files. This is a file-backed library, not a pending SwiftData store.
 - `Providers/PriceTable.swift` supplies estimates displayed by AppState. These
-  are estimates, not a provider billing reconciliation.
+  are historical estimates, not a provider billing reconciliation. The new
+  reasoning models have no preflight dollar estimate: reasoning and image usage
+  vary, and Lectern does not substitute a legacy model's price.
 - Generation cancellation is available in ContentView and invalidates the
   active RunGate before cancelling its task. Tests cover stale run rejection.
 - Live model quality and PowerPoint fidelity still need sample-based inspection;
@@ -260,3 +277,33 @@ Keys and provider choice are wired end-to-end (§10 / invariant I1):
   what lets login-keychain API keys survive rebuilds — see the note in
   `project.yml`); the iOS simulator target signs ad hoc; device builds use
   Xcode automatic signing. Bundle id `com.lectern.app` on both platforms.
+
+## PowerPoint templates and layout composition
+
+In Compose, choose **Use PowerPoint template** in the Design card and select a
+`.potx`. Lectern snapshots the file, lists its masters/layout counts, and lets you
+select a master or use all masters. **Use theme instead** returns to the design.md
+catalog. Template generation uses the template's page size, layout geometry,
+typography, colors and artwork; the selected design.md does not override it.
+Exports retain the template library, including every used master and layout.
+
+The generator supplies concise content to `RostrumLayout`. Text occupies inherited
+placeholders; charts and tables are native editable objects. Generated images are
+inserted only when the selected layout offers a picture placeholder. Missing picture
+slots and conversion of structured content to template text produce warnings. Metrics,
+diagrams, timelines, quadrants and bands currently become text within native template
+content regions; they are not reconstructed as native diagrams. Fit failure stops
+export with a useful error instead of overflowing the slide. Missing or unmeasured
+fonts remain visible in the result's diagnostics.
+
+Theme-based generation compiles design.md into the master/theme and publishes a
+subordinate layout for each authored composition. Header dividers follow the measured
+title band, body text gets the remaining region, and photo backgrounds use contrasting
+text including footers. The final fit pass can compact spacing and reduce body type
+to 17pt; it rejects text that still cannot fit.
+
+Local acceptance evidence and the supplied-template test deck are recorded in
+`audit/template-acceptance/`. Structural success is separate from PowerPoint visual
+acceptance. To isolate a build from a running app, the macOS build and test wrappers
+accept `LECTERN_DERIVED_DATA_PATH`; app-hosted tests also need a distinct bundle ID
+when the original Lectern must stay running.

@@ -322,10 +322,22 @@ struct Card<Content: View>: View {
 
 // MARK: - Compose
 
+private enum ComposeImportKind {
+    case pdf, template
+
+    var contentTypes: [UTType] {
+        switch self {
+        case .pdf: [.pdf]
+        case .template: [UTType(filenameExtension: "potx") ?? .data]
+        }
+    }
+}
+
 struct ComposeView: View {
     @Environment(AppState.self) private var app
     @State private var showStyles = false
     @State private var importing = false
+    @State private var importKind = ComposeImportKind.pdf
     @State private var dropTargeted = false
     /// A PDF-picker failure worth a word — the same transient, view-local shape
     /// the deck picker uses. Nil unless a `.failure` just came back.
@@ -424,8 +436,29 @@ struct ComposeView: View {
                     }
                 }
 
-                Card(title: "STYLE", systemImage: "paintpalette") {
-                    StyleButton(style: app.selectedStyle) { showStyles = true }
+                Card(title: "DESIGN", systemImage: "paintpalette") {
+                    if let template = app.selectedTemplate {
+                        Label(template.name, systemImage: "doc.richtext").font(.headline)
+                        Text("PowerPoint template · \(template.masters.reduce(0) { $0 + $1.layoutNames.count }) layouts")
+                            .font(.caption).foregroundStyle(.secondary)
+                        if template.masters.count > 1 {
+                            Picker("Master", selection: Binding(
+                                get: { app.selectedTemplate?.selectedMasterID ?? "" },
+                                set: { app.selectedTemplate?.selectedMasterID = $0.isEmpty ? nil : $0 })) {
+                                Text("All masters").tag("")
+                                ForEach(template.masters) { Text($0.name).tag($0.id) }
+                            }
+                        }
+                        Button("Use a theme instead") { app.clearTemplate(); showStyles = true }
+                    } else {
+                        StyleButton(style: app.selectedStyle) { showStyles = true }
+                    }
+                    Button { importKind = .template; importing = true } label: {
+                        Label(app.selectedTemplate == nil ? "Use PowerPoint template…" : "Choose another template…", systemImage: "folder")
+                    }
+                    .disabled(app.templateLoading)
+                    if app.templateLoading { ProgressView("Reading template…") }
+                    if let error = app.templateError { Text(error).font(.caption).foregroundStyle(.red) }
                 }
 
                 groundingCard
@@ -437,12 +470,20 @@ struct ComposeView: View {
         .safeAreaInset(edge: .bottom) { generateBar }
         .sheet(isPresented: $showStyles) { StylePickerSheet().environment(app) }
         .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
-        .fileImporter(isPresented: $importing, allowedContentTypes: [.pdf]) { result in
+        // Multiple fileImporter modifiers on this view compete for the same
+        // presentation host. Use one host and retain its purpose through dismiss.
+        .fileImporter(isPresented: $importing, allowedContentTypes: importKind.contentTypes) { result in
             importError = FileImportOutcome.handle(result) { url in
-                Task { await app.attachPDF(url) }
+                let kind = importKind
+                Task {
+                    switch kind {
+                    case .template: await app.attachTemplate(url)
+                    case .pdf: await app.attachPDF(url)
+                    }
+                }
             }
         }
-        .alert("Couldn't open that PDF",
+        .alert("Couldn't open that file",
                isPresented: Binding(get: { importError != nil },
                                     set: { if !$0 { importError = nil } })) {
             Button("OK", role: .cancel) { importError = nil }
@@ -474,7 +515,7 @@ struct ComposeView: View {
                     Image(systemName: "arrow.down.doc").font(.largeTitle).foregroundStyle(.secondary)
                     Text("Drop a PDF here to ground the deck on real facts")
                         .font(.callout).foregroundStyle(.secondary)
-                    Button("Choose PDF…") { importing = true }.buttonStyle(.glass)
+                    Button("Choose PDF…") { importKind = .pdf; importing = true }.buttonStyle(.glass)
                 }
                 .frame(maxWidth: .infinity).padding(.vertical, 22)
                 .background(dropTargeted ? AnyShapeStyle(Color.accentColor.opacity(0.12)) : AnyShapeStyle(.clear),
@@ -503,7 +544,7 @@ struct ComposeView: View {
                     Label("Add an API key in \(AppState.settingsHint) to generate", systemImage: "key")
                         .font(.callout).foregroundStyle(.secondary)
                 } else {
-                    Text("\(app.slideCount) slides · \(app.providerID.label)"
+                    Text("\(app.slideCount) slides · \(modelLabel(app.model)) · \(app.reasoningEffort.label) effort"
                          + (app.costEstimate.map { " · ~\($0) est." } ?? ""))
                         .font(.callout).foregroundStyle(.secondary)
                 }

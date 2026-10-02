@@ -87,3 +87,40 @@ harness corrections, not reasons to weaken production requirements.
 No approved product change was left with a known failing regression test. No
 library algorithm was changed merely to chase an unmeasured optimization.
 Generated Python bytecode from these checks was removed; user work was preserved.
+
+## 2026-10-02 — Template-aware composition implementation
+
+Added Rostrum POTX instantiation, placeholder filling/replacement, relationship-chain
+validation and design.md master/layout publishing. Added the separate RostrumLayout
+product for inherited-template fitting and authored-slide fit/publishing. Lectern now
+imports template snapshots, selects masters, carries template constraints through its
+generation stages and uses native content regions. Header spacing, bullet indents and
+photo-background text contrast were corrected for authored decks.
+
+Used the supplied welshofer.potx in offline end-to-end generation and enrolled an
+unchanged copy in the ignored local corpus. Its custom body-placeholder cover and
+subtitle conventions produced two additional regression tests. See
+`template-acceptance/README.md` for exact evidence and unresolved acceptance.
+
+Native PowerPoint and live picker inspection remain blocked by the locked Mac.
+No current generation was interrupted, no original deck/template was overwritten,
+and no commit/push was performed. Diagram-style template fallback and missing fonts
+are disclosed; this entry does not claim complete visual fidelity or full feature parity.
+
+## 2026-10-02 — Fix the inert template picker
+
+Reproduced the live failure: Use PowerPoint template produced no picker, while
+Choose PDF opened one. ComposeView attached two fileImporter modifiers to the same
+view; the later PDF presenter suppressed the template presenter. Replaced them
+with one presenter and an explicit template/PDF purpose retained through completion.
+
+Rebuilt and launched the signed macOS app. In the actual running app, clicked the
+template button, selected Desktop/welshofer.potx, clicked Open, and observed
+“welshofer PowerPoint template · 34 layouts”. Then opened/cancelled the PDF picker,
+reopened/cancelled the template picker, and verified the selection remained intact.
+Both macOS and iOS simulator builds passed. No presentation generation was started.
+The app remains open with the Welshofer template selected.
+
+The earlier check proved only button visibility, not its action. Picker acceptance
+must exercise click → open dialog → select file → confirm loaded state, plus cancel
+and reopening after a different picker purpose.

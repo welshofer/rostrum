@@ -3,24 +3,27 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// OpenAI image generation (gpt-image-1). Returns the base64 image. No vendor
+/// OpenAI image generation (Sunburst and Flare). Returns the base64 image. No vendor
 /// SDK; key never logged (I1).
 public struct OpenAIImageProvider: ImageProvider {
     public let id: ImageProviderID = .openAI
     private let apiKey: String
     private let model: String
+    private let quality: ImageQuality
     private let send: HTTPRequestSender
 
-    public init(apiKey: String, model: String = "gpt-image-1", session: URLSession = ProviderNetworking.session) {
+    public init(apiKey: String, model: String = ImageModel.flare.rawValue, quality: ImageQuality = .auto, session: URLSession = ProviderNetworking.session) {
         self.apiKey = apiKey
         self.model = model
+        self.quality = quality
         self.send = { request in try await session.data(for: request) }
     }
 
-    init(apiKey: String, model: String = "gpt-image-1",
+    init(apiKey: String, model: String = ImageModel.flare.rawValue, quality: ImageQuality = .auto,
          send: @escaping HTTPRequestSender) {
         self.apiKey = apiKey
         self.model = model
+        self.quality = quality
         self.send = send
     }
 
@@ -60,9 +63,9 @@ public struct OpenAIImageProvider: ImageProvider {
     public func image(prompt: String, style: String?, aspect: ImageAspect, role: ImageRole) async throws -> Data {
         guard !apiKey.isEmpty else { throw LecternError.noKey }
         let full = ImageStyleDirective.compose(style: style, role: role, subject: prompt, aspect: aspect)
-        let body: [String: Any] = ["model": model, "prompt": full, "size": aspect.openAISize, "n": 1]
+        let body: [String: Any] = ["model": model, "prompt": full, "size": aspect.openAISize, "n": 1, "quality": quality.rawValue, "output_format": "png"]
 
-        var req = URLRequest(url: URL(string: "https://api.openai.com/v1/images/generations")!, timeoutInterval: 120)
+        var req = URLRequest(url: URL(string: "https://api.openai.com/v1/images/generations")!, timeoutInterval: 600)
         req.httpMethod = "POST"
         req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")   // never logged (I1)
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")

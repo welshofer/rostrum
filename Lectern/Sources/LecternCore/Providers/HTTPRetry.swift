@@ -90,8 +90,8 @@ enum HTTPRetry {
     /// - Returns: the timeout to use, or `nil` when there is no useful time
     ///   left and the caller should give up rather than start a request that
     ///   cannot finish.
-    static func timeout(startedAt: Date, cap: TimeInterval, now: Date = Date()) -> TimeInterval? {
-        let remaining = overallDeadline - now.timeIntervalSince(startedAt)
+    static func timeout(startedAt: Date, cap: TimeInterval, deadline: TimeInterval = overallDeadline, now: Date = Date()) -> TimeInterval? {
+        let remaining = deadline - now.timeIntervalSince(startedAt)
         // Under a second is not worth a round trip; it would fail on the wire
         // and read as a network fault rather than as running out of time.
         guard remaining > 1 else { return nil }
@@ -101,8 +101,8 @@ enum HTTPRetry {
     /// Whether there is still time to try again, given when the call started
     /// and how long the next wait would be. Checked before sleeping, so the
     /// backoff itself cannot carry the call past the deadline.
-    static func hasTimeToRetry(startedAt: Date, nextWait: Int, now: Date = Date()) -> Bool {
-        now.addingTimeInterval(TimeInterval(nextWait)).timeIntervalSince(startedAt) < overallDeadline
+    static func hasTimeToRetry(startedAt: Date, nextWait: Int, deadline: TimeInterval = overallDeadline, now: Date = Date()) -> Bool {
+        now.addingTimeInterval(TimeInterval(nextWait)).timeIntervalSince(startedAt) < deadline
     }
 
     /// Sleep between attempts. Cancellation propagates: a user who pressed

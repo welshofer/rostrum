@@ -80,6 +80,7 @@ public enum PromptTemplates {
         parts.append(stance(for: request.goal))
         parts.append(lengthDirective(for: request))
         parts.append(notesDirective(for: request))
+        if let constraints = request.templateConstraints { parts.append(constraints) }
         if let grounding = request.groundingText, !grounding.isEmpty {
             parts.append(Self.groundingBlock(grounding))
         }

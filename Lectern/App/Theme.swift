@@ -37,6 +37,9 @@ extension ProviderID {
 /// A concise label for a model id, e.g. `claude-opus-5` → "Opus 5",
 /// `claude-haiku-4-5-20251001` → "Haiku 4.5".
 func modelLabel(_ id: String) -> String {
+    if let strength = TextStrength.allCases.first(where: { $0.modelID == id }) {
+        return strength.rawValue.capitalized
+    }
     var s = id
     if s.hasPrefix("claude-") { s.removeFirst("claude-".count) }
     if let r = s.range(of: #"-\d{6,8}$"#, options: .regularExpression) { s.removeSubrange(r) }  // drop date stamp

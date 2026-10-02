@@ -130,7 +130,7 @@ public extension Shape {
     ///   - type: `"title"`, `"ctrTitle"`, `"subTitle"`, `"body"`, …
     ///   - idx: the layout placeholder index, for the types that carry one.
     func markAsPlaceholder(type: String, idx: Int? = nil) {
-        guard let nvSpPr = element.firstChild(named: "p:nvSpPr"),
+        guard let nvSpPr = element.childElements.first,
               let nvPr = nvSpPr.firstChild(named: "p:nvPr") else { return }
         // Never two of them: a second p:ph on one shape is invalid, and a
         // rebuild that marked twice would produce it.

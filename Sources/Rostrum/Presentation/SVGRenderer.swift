@@ -1039,7 +1039,7 @@ public extension Presentation {
     func renderSVGReportingProblems(slideAt index: Int, pixelWidth: Int = 1280)
         throws -> (svg: String, problems: SlideRenderProblems) {
         try SVGRenderer(slidePart: slides[index].part, slideSize: slideSize,
-                        theme: theme, package: package, fonts: fonts,
+                        theme: slides[index].master?.theme ?? theme, package: package, fonts: fonts,
                         slideNumber: index + 1).render(pixelWidth: pixelWidth)
     }
 

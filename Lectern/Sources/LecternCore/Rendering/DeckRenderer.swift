@@ -1,5 +1,6 @@
 import Foundation
 import Rostrum
+import RostrumLayout
 #if canImport(CoreGraphics)
 import CoreGraphics
 import ImageIO
@@ -180,6 +181,15 @@ public actor DeckRenderer {
         let style = presentation.style
         var wanted: Set<String> = [style.headingFont, style.bodyFont]
         for role in TypeRole.allCases { wanted.insert(style.type(role).font) }
+        for master in presentation.slideMasters {
+            if let font = master.theme?.majorFont { wanted.insert(font) }
+            if let font = master.theme?.minorFont { wanted.insert(font) }
+            for layout in master.layouts {
+                for slot in layout.placeholders {
+                    if let font = layout.textDefaults(for: slot.index).paragraph.firstChild(named: "a:defRPr")?.firstChild(named: "a:latin")?[attribute: "typeface"], !font.hasPrefix("+") { wanted.insert(font) }
+                }
+            }
+        }
 
         var unmeasured: [String] = []
         for name in wanted.sorted() where !name.isEmpty {
@@ -335,7 +345,8 @@ public actor DeckRenderer {
     /// `directory`. `warnings` from validation are passed through to the result.
     public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool,
                        into directory: URL, warnings: [String] = [],
-                       images: [String: Data] = [:], useSmartArt: Bool = false) throws -> DeckResult {
+                       images: [String: Data] = [:], useSmartArt: Bool = false,
+                       template: PowerPointTemplate? = nil) throws -> DeckResult {
         do {
             // Rendering is now the slowest phase — font registration, package
             // deflate, the schema lint, N SVG renders — so Cancel has to reach
@@ -343,13 +354,15 @@ public actor DeckRenderer {
             // seconds later, thrown into a Result screen for the deck they just
             // cancelled, with the file already written.
             try Task.checkCancellation()
-            let presentation = try Presentation()
-            if let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
+            let presentation = try template.map { try Presentation.fromTemplate(data: $0.data) } ?? Presentation()
+            if template == nil, let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
+            if template == nil { try presentation.compileThemeMaster() }
             // After applyDesign: the style is what decides which typefaces the
             // builders will be measuring with.
             let unmeasured = Self.registerInstalledFonts(for: presentation)
 
             var dropped: [String] = []
+            var layoutWarnings: [String] = []
             var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {
                 try Task.checkCancellation()
@@ -361,24 +374,35 @@ public actor DeckRenderer {
                     imageSide = side
                 }
                 let sideImage = imageSide != nil
-                let built = try build(slide, in: presentation, useSmartArt: useSmartArt,
+                let built: Slide
+                if let template {
+                    built = try TemplateRendering.build(slide, in: presentation, template: template,
+                                                        image: images[slide.id], warnings: &layoutWarnings)
+                } else {
+                    built = try build(slide, in: presentation, useSmartArt: useSmartArt,
                                       hasSideImage: sideImage, dropped: &dropped)
+                }
                 builtSlides[slide.id] = built
                 // Provenance is additive and position-independent, so every
                 // layout can carry it without threading it through a builder.
-                if let source = slide.body?.source, !source.isEmpty {
+                if template == nil, let source = slide.body?.source, !source.isEmpty {
                     _ = try? presentation.addSource(source, to: built)
                 }
-                if let data = images[slide.id] {
+                if template == nil, let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
                     case .fullBleed:
                         // Edge-to-edge background behind the text, dimmed only
                         // as much as this image needs to keep the ink legible.
-                        let dark = Self.paintsADarkBackground(slide.kind, presentation.style)
+                        let foreground = built.title?.textFrame?.paragraphs.first?.runs.first?.color
+                            ?? presentation.style.ink
+                        let dark = foreground.relativeLuminance > 0.5
                         // At working strength the field reads as the scrim
                         // colour, so the ink Rostrum picks against that colour
                         // is the ink the scrim has to serve.
-                        let ink = presentation.style.textColor(on: dark ? .black : .white)
+                        let ink: Color = dark ? .white : .black
+                        for shape in built.shapes.all {
+                            shape.textFrame?.setColor(ink)
+                        }
                         let scrimmed = Self.scrimmed(data, dark: dark,
                                                      textLuminance: ink.relativeLuminance)
                         // No alt text: a background fill is not a shape, and a
@@ -415,7 +439,23 @@ public actor DeckRenderer {
             applySections(deck, to: presentation)
             Self.linkAgenda(deck, builtSlides)
             Self.stampProperties(of: deck, on: presentation)
-            Self.addFurniture(deck, to: presentation)
+            if template == nil {
+                Self.addFurniture(deck, to: presentation)
+                // Full-bleed furniture uses the same foreground as the content.
+                for slide in presentation.slides {
+                    if (try? slide.part.dom())?.firstChild(named: "p:cSld")?.firstChild(named: "p:bg")?.firstChild(named: "p:bgPr")?.firstChild(named: "a:blipFill") != nil {
+                        let ink = slide.title?.textFrame?.paragraphs.first?.runs.first?.color ?? presentation.style.ink
+                        for shape in slide.shapes.all {
+                            shape.textFrame?.setColor(ink)
+                        }
+                    }
+                }
+                let engine = AuthoredLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
+                for (index, slide) in presentation.slides.enumerated() {
+                    try engine.finish(slide, layoutName: "Lectern — \(deck.slides[index].layout) \(index + 1)")
+                }
+            }
+            try presentation.validateTemplateBindings()
 
             // Rostrum's schema lint, run on what we are about to write rather
             // than on a deck someone opens later. It reads the DOM and mutates
@@ -432,7 +472,7 @@ public actor DeckRenderer {
             // already saved, so a cancel here skips them rather than undoing it.
             let (previews, previewTitles) = Task.isCancelled ? ([], []) : Self.previews(of: presentation)
             return DeckResult(url: url, slideCount: presentation.slides.count,
-                              warnings: warnings, schemaIssues: schemaIssues,
+                              warnings: warnings + layoutWarnings, schemaIssues: schemaIssues,
                               unmeasuredFonts: unmeasured,
                               previews: previews, previewTitles: previewTitles,
                               droppedContent: dropped)
@@ -828,9 +868,9 @@ public actor DeckRenderer {
                                   bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return data }
         let rect = CGRect(x: 0, y: 0, width: img.width, height: img.height)
         ctx.draw(img, in: rect)
-        let alpha = scrimAlpha(luminances: sampledLuminances(of: img),
+        let alpha = max(0.6, scrimAlpha(luminances: sampledLuminances(of: img),
                                scrimIsBlack: dark,
-                               textLuminance: textLuminance)
+                               textLuminance: textLuminance))
         ctx.setFillColor(dark ? CGColor(red: 0, green: 0, blue: 0, alpha: alpha)
                               : CGColor(red: 1, green: 1, blue: 1, alpha: alpha))
         ctx.fill(rect)
@@ -844,8 +884,8 @@ public actor DeckRenderer {
                                                           UTType.jpeg.identifier as CFString, 1, nil) else { return data }
         CGImageDestinationAddImage(dest, out, [kCGImageDestinationLossyCompressionQuality: scrimJPEGQuality] as CFDictionary)
         guard CGImageDestinationFinalize(dest) else { return data }
-        // Never hand back something larger than we were given.
-        return buffer.length < data.count ? buffer as Data : data
+        // Readability is required even when the corrected image is larger.
+        return buffer as Data
         #else
         return data
         #endif

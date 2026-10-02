@@ -22,7 +22,8 @@ let package = Package(
     targets: [
         .target(
             name: "LecternCore",
-            dependencies: [.product(name: "Rostrum", package: "Rostrum")]),
+            dependencies: [.product(name: "Rostrum", package: "Rostrum"),
+                           .product(name: "RostrumLayout", package: "Rostrum")]),
         .testTarget(
             name: "LecternCoreTests",
             dependencies: ["LecternCore"],

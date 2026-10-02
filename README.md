@@ -98,7 +98,7 @@ then add `"Rostrum"` to your target's dependencies.
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import a slide from another deck with its images, charts and layout intact |
 | **Design layer** | `DeckStyle` (type scale, WCAG auto-contrast, tokens); one-call slide builders; cards/buttons/kickers/stat tiles; a Grid DSL |
-| **Templates** | open a `.potx`/`.ppsx` directly and round-trip it as one; `documentKind` converts when you want a deck out of a template; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
+| **Templates** | lossless `.potx`/`.ppsx` round-trip; `Presentation.fromTemplate(data:)` creates a new deck retaining masters, layouts, themes and their assets; `RostrumLayout` fills inherited placeholders and checks fit; `design.md` can compile into a native master and subordinate layouts |
 | **Sections** | native PowerPoint sections; footers, slide numbers, dates via live fields |
 | **Extraction** | `deck.outline()` — every slide's text (title, subtitle, bullets with outline level, table cells, SmartArt, notes) as a value type; `DeckExport.write` unpacks a deck to a folder: one Markdown file plus per-slide media and one CSV per chart |
 | **Tooling** | `pptx-tool inspect`/`validate` — modeled structural lint, not proof of PowerPoint acceptance; `pptx-tool extract` — a deck to Markdown + media + chart CSVs |
@@ -208,3 +208,31 @@ mature, battle-tested, and excellent.
 [MIT](LICENSE). Portions derived from python-pptx (MIT, © Steve Canny) — see
 [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md). Contributions welcome —
 see [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+## Template-aware composition
+
+`Rostrum` owns the PowerPoint document model and lossless package I/O.
+The separate `RostrumLayout` product owns composition and measured fit. It is
+portable and accepts a text-measurement adapter; Lectern supplies CoreText on Apple
+platforms. Font discovery remains outside the document library.
+
+Use `Presentation.fromTemplate(data:)` to create a new presentation from a POTX.
+This explicit authoring operation removes starter slides and their unused parts,
+retains the template's master/layout/theme library and linked resources, and changes
+the output document type to PPTX. Normal open/save continues to preserve the original
+file. A template resource linking to a removed starter slide is rejected with an
+explanation rather than producing a broken relationship.
+
+`TemplateLayoutEngine.plan` selects actual placeholders, optionally restricted to
+one master. `compose` fills text and paragraph levels without overriding template
+geometry or typography. It supports title/subtitle levels within a single custom
+cover placeholder, as well as separate native title/body placeholders. Content that
+cannot fit is rejected so the caller can shorten it or choose another layout.
+`validateTemplateBindings()` verifies each slide's layout/master/theme chain.
+
+For authored design systems, apply the design, call `compileThemeMaster()`, compose
+slides, then call `AuthoredLayoutEngine.finish(_:layoutName:)`. This measures text
+and publishes real layouts carrying geometry and inherited styles. Native charts,
+tables and pictures remain editable and bound to insertion placeholders. PowerPoint
+visual acceptance remains necessary: structural checks and SVG previews do not
+prove final-client font substitution, spacing or rendering fidelity.

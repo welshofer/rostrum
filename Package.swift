@@ -8,10 +8,13 @@ let package = Package(
         .iOS(.v16),
     ],
     products: [
-        .library(name: "Rostrum", targets: ["Rostrum"])
+        .library(name: "Rostrum", targets: ["Rostrum"]),
+        .library(name: "RostrumLayout", targets: ["RostrumLayout"])
     ],
     targets: [
         .target(name: "Rostrum"),
+        .target(name: "RostrumLayout", dependencies: ["Rostrum"]),
+        .testTarget(name: "RostrumLayoutTests", dependencies: ["RostrumLayout", "Rostrum"]),
         .executableTarget(
             name: "ClimateDeck",
             dependencies: ["Rostrum"],

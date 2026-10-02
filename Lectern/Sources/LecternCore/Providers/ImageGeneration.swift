@@ -9,8 +9,8 @@ typealias HTTPRequestSender = @Sendable (URLRequest) async throws -> (Data, URLR
 /// supplies an image key, slides whose model added an `ImageBrief` get an on-brand
 /// illustration (invariant I1: the key lives only in the Keychain).
 public enum ImageProviderID: String, Sendable, CaseIterable, Codable {
-    case gemini      // Gemini 3.1 Flash Image ("Nano Banana 2")
-    case openAI      // gpt-image-1
+    case gemini      // Legacy persisted value; no live implementation.
+    case openAI
 
     public var label: String {
         switch self {
@@ -21,7 +21,7 @@ public enum ImageProviderID: String, Sendable, CaseIterable, Codable {
     public var defaultModel: String {
         switch self {
         case .gemini: "gemini-3.1-flash-image"
-        case .openAI: "gpt-image-1"
+        case .openAI: ImageModel.flare.rawValue
         }
     }
 
@@ -41,12 +41,14 @@ public enum ImageAspect: String, Sendable, Codable {
 
     public init(brief: String?) { self = brief.flatMap { ImageAspect(rawValue: $0) } ?? .standard }
 
-    /// Nearest gpt-image-1 size.
+    /// Exact supported aspect ratios for Sunburst and Flare.
     var openAISize: String {
         switch self {
-        case .wide: "1536x1024"
-        case .tall, .portrait: "1024x1536"
-        case .standard, .square: "1024x1024"
+        case .wide: "1536x864"
+        case .tall: "1152x1536"
+        case .portrait: "864x1536"
+        case .standard: "1536x1152"
+        case .square: "1024x1024"
         }
     }
 }
@@ -105,11 +107,11 @@ public protocol ImageProvider: Sendable {
 }
 
 public enum ImageProviderFactory {
-    public static func make(id: ImageProviderID, apiKey: String?, model: String? = nil) throws -> any ImageProvider {
+    public static func make(id: ImageProviderID, apiKey: String?, model: String? = nil, quality: ImageQuality = .auto) throws -> any ImageProvider {
         let key = try normalizedKey(apiKey)
         switch id {
-        case .gemini: return GeminiImageProvider(apiKey: key, model: model ?? id.defaultModel)
-        case .openAI: return OpenAIImageProvider(apiKey: key, model: model ?? id.defaultModel)
+        case .gemini: throw LecternError.providerError(status: 0, message: "Lectern now uses OpenAI images only.")
+        case .openAI: return OpenAIImageProvider(apiKey: key, model: model ?? id.defaultModel, quality: quality)
         }
     }
 
@@ -118,7 +120,7 @@ public enum ImageProviderFactory {
         let key = try normalizedKey(apiKey)
         switch id {
         case .gemini:
-            try await GeminiImageProvider(apiKey: key, model: model ?? id.defaultModel).validate()
+            throw LecternError.providerError(status: 0, message: "Lectern now uses OpenAI images only.")
         case .openAI:
             try await OpenAIImageProvider(apiKey: key, model: model ?? id.defaultModel).validate()
         }
