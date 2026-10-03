@@ -48,7 +48,7 @@ import Rostrum
         #expect(result.checks.contains { $0.name == "Paragraph positions survive reopening" && $0.passed })
         await context.app.inspect(deckAt: result.afterURL).value
         #expect(context.app.phase == .inspected)
-        #expect(context.app.inspection?.previews.count == 2)
+        #expect(context.app.inspection?.previews.count == 3)
         let exportRoot = root.appendingPathComponent("Export")
         let task = try #require(context.app.exportInspected(into: exportRoot))
         await task.value
@@ -59,9 +59,9 @@ import Rostrum
         let markdown = try String(contentsOf: markdownURL, encoding: .utf8)
         #expect(markdown.contains("App paragraph demonstration"))
         #expect(markdown.contains("The last line remains natural."))
-        #expect(context.app.exportSummary == "2 slides · 0 media files · 0 chart CSVs")
+        #expect(context.app.exportSummary == "3 slides · 0 media files · 0 chart CSVs")
         let deck = try Presentation(contentsOf: result.afterURL)
-        #expect(deck.slides.count == 2)
+        #expect(deck.slides.count == 3)
         #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
         let shape = try #require(deck.slides[0].shapes.all.first { $0.name == "Justified paragraph" })
         #expect(shape.textFrame?.paragraphs.first?.alignment == .justified)
@@ -77,6 +77,34 @@ import Rostrum
         #expect(layout.lines.first?.spans.contains {
             $0.run.text == " " && $0.width > metrics.width(of: " ", pointSize: $0.run.fontSize) + 0.1
         } == true)
+        #expect(markdown.contains("Small width changes move line breaks"))
+        #expect(markdown.contains("Computed scale:"))
+        for (stem, count) in [("dejavu-18-", narrow ? 11 : 12), ("dejavu-mixed-size-", narrow ? 7 : 8)] {
+            let caseID = stem + (narrow ? "1" : "2")
+            #expect(result.checks.contains { $0.name == "Saved native boundary: " + caseID && $0.passed })
+            let boundaryTree = try #require(deck.slides[2].part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree"))
+            var layouts: [RichTextLayout] = []
+            for role in ["original", "shape fit", "frame fit"] {
+                let name = caseID + " " + role
+                let box = try #require(deck.slides[2].shapes.all.first { $0.name == name })
+                let node = try #require(boundaryTree.children(named: "p:sp").first {
+                    $0.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "name"] == name
+                })
+                let body = try #require(node.firstChild(named: "p:txBody"))
+                let measured = RichTextLayout(textBody: body, width: box.frame.width.points,
+                    height: box.frame.height.points, fonts: deck.fonts, theme: deck.theme)
+                #expect(measured.fits && measured.diagnostics.isEmpty)
+                layouts.append(measured)
+                if stem.contains("mixed") { #expect(box.textFrame?.paragraphs.first?.runs.compactMap(\.fontSize) == [18, 10]) }
+                if role != "original" {
+                    let norm = try #require(body.firstChild(named: "a:bodyPr")?.firstChild(named: "a:normAutofit"))
+                    let scale = try #require(Double(norm[attribute: "fontScale"] ?? ""))
+                    #expect(scale > 0 && scale < 100_000)
+                }
+            }
+            #expect(layouts[0].lines.map { $0.spans.map(\.run.text).joined() } == [String(repeating: "m", count: count), narrow ? "mZ" : "Z"])
+            #expect(layouts[1].lines == layouts[2].lines && layouts[1].lines.count == 1)
+        }
         #expect(model.results[.paragraphLayout]?.directory == result.directory)
     }
 

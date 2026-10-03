@@ -4,7 +4,7 @@ import Rostrum
 extension PlatformLabRecipes {
     static let tabSamples = ["12.50", "7.125", "123.4", "8", "45.67", "901.2", "3.141", "62.5", "104.75", "9.8", "27", "314.16"]
     static let tabModes: [(String, TextTabAlignment)] = [("Left", .left), ("Center", .center), ("Right", .right), ("Decimal", .decimal)]
-    static let tabSentence = "\tCareful spacing keeps each field readable while ordinary spaces expand across wrapped Latin lines. The last line remains natural."
+    static let tabSentence = "\tCareful spacing keeps each column readable while ordinary spaces expand across wrapped Latin lines. The last line remains natural."
 
     static func tabLayout(_ options: LibraryLabOptions) throws -> LibraryLabDraft {
         let deck = try LibraryLabSupport.deck(title: "Tab stops and justified fields")
@@ -128,7 +128,7 @@ extension PlatformLabRecipes {
     }
 
     static func tabAnchorsMatch(_ layouts: [RichTextLayout], count: Int, stop: Double, fonts: FontLibrary) throws -> Bool {
-        let metrics = try require(fonts.metrics(for: "DejaVu Sans"), "Numeric font metrics missing")
+        _ = try require(fonts.metrics(for: "DejaVu Sans"), "Numeric font metrics missing")
         guard layouts.count == 4, layouts.allSatisfy({ $0.lines.count == count }) else { return false }
         return layouts.enumerated().allSatisfy { index, layout in
             layout.lines.enumerated().allSatisfy { row, line in
@@ -142,11 +142,31 @@ extension PlatformLabRecipes {
                 case 2: anchor = end
                 default:
                     let prefix = String(tabSamples[row].prefix { $0 != "." })
-                    anchor = first.x + metrics.width(of: prefix, pointSize: 16)
+                    anchor = first.x + tabPrefixWidth(prefix, fonts: fonts)
                 }
                 return abs(anchor - stop * 72) < 0.01
             }
         }
+    }
+
+    /// Measure the numeric prefix through the shared paragraph engine rather
+    /// than assuming raw font advances match its native-calibrated placement.
+    /// This detached read-only probe matches the recipe's regular 16 pt face,
+    /// zero tracking and omitted kerning; it never changes the saved document.
+    static func tabPrefixWidth(_ prefix: String, fonts: FontLibrary) -> Double {
+        let body = XML.Element("a:txBody", children: [
+            .element(XML.Element("a:bodyPr", attributes: [("lIns", "0"), ("rIns", "0"), ("tIns", "0"), ("bIns", "0"), ("wrap", "none")])),
+            .element(XML.Element("a:p", children: [
+                .element(XML.Element("a:pPr", attributes: [("algn", "l")])),
+                .element(XML.Element("a:r", children: [
+                    .element(XML.Element("a:rPr", attributes: [("sz", "1600"), ("spc", "0")], children: [
+                        .element(XML.Element("a:latin", attributes: [("typeface", "DejaVu Sans")]))
+                    ])),
+                    .element(XML.Element("a:t", children: [.text(prefix)]))
+                ]))
+            ]))
+        ])
+        return RichTextLayout(textBody: body, width: 1_000, height: 100, fonts: fonts).lines.first?.visibleWidth ?? .infinity
     }
 
     static func tabJustificationMatches(natural: RichTextLayout, justified: RichTextLayout, stop: Double) -> Bool {

@@ -118,7 +118,9 @@ extension PlatformLabRecipes {
         let clean = try deck.slides[0]
         // Known text is intentionally fixed so strict success does not depend on
         // arbitrary user-entered Unicode. User copy appears on the content page.
-        try text("AV office", on: clean)
+        // Multi-scalar ligatures remain diagnosed; keep the strict-success
+        // specimen within the native-calibrated single-scalar ASCII profile.
+        try text("AV sample", on: clean)
         let strict = try deck.renderSVG(slideAt: 0, strictRendering: true)
         let ordinary = try deck.renderSVG(slideAt: 0)
         let content = try deck.slides.add()
@@ -142,7 +144,7 @@ extension PlatformLabRecipes {
         files["diagnostic-slide.svg"] = Data(rendered.svg.utf8)
         files["outline.md"] = Data(markdown.utf8)
         return LibraryLabDraft(deck: deck, before: before, checks: [
-            .init("Strict supported geometry", strict == ordinary && strict.contains("@font-face"), "Known Latin text uses the same font-embedded SVG in ordinary and strict modes."),
+            .init("Strict supported geometry", strict == ordinary && strict.contains("@font-face"), "Known single-scalar ASCII text uses the same font-embedded SVG in ordinary and strict modes."),
             .init("Strict refusal is distinct from rendering", refused && !rendered.problems.isEmpty && rendered.svg.contains("<svg"), "An ordinary diagnostic preview exists; strict mode refuses its known limitations."),
             .init("Actual extracted content", outline.chartCount == 1 && outline.assetCount >= 1 && markdown.contains(label(options)) && exports.assets >= 1 && exports.charts == 1, "Markdown, PNG bytes and one chart CSV were exported."),
             .init("Notes preview uses page geometry", notes.svg.contains("<svg") && notes.svg.contains("Notes:"), "Notes preview produced; \(notes.problems.fidelityIssues.count) known fidelity issue(s) are kept separate from extraction.")

@@ -11,7 +11,6 @@ import Rostrum
         let deck = try Presentation(data: bytes)
         #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
         let expectedStop = (moved ? 1.8 : 1.4) * 72
-        let metrics = try #require(deck.fonts.metrics(for: "DejaVu Sans"))
         for (name, mode) in PlatformLabRecipes.tabModes {
             let box = try #require(deck.slides[0].shapes.all.first { $0.name == name + " tab fields" })
             let paragraphs = try #require(box.textFrame?.paragraphs)
@@ -32,7 +31,7 @@ import Rostrum
                 case .right: #expect(abs(end.x + end.width - expectedStop) < 0.01)
                 case .decimal:
                     let beforePeriod = String(value.prefix { $0 != "." })
-                    #expect(abs(start + metrics.width(of: beforePeriod, pointSize: 16) - expectedStop) < 0.01)
+                    #expect(abs(start + PlatformLabRecipes.tabPrefixWidth(beforePeriod, fonts: deck.fonts) - expectedStop) < 0.01)
                 }
             }
         }

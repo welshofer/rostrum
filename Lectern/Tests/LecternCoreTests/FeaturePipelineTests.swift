@@ -149,7 +149,8 @@ import Rostrum
         #expect(try Presentation(contentsOf: file).serializedData() == saved)
     }
 
-    @Test func tableShadowAndKerningSurviveFileBackedPreviewAndExport() throws {
+    @Test(arguments: [nil, "0", "1200"] as [String?])
+    func tableShadowAndKerningSurviveFileBackedPreviewAndExport(threshold: String?) throws {
         let deck = try Presentation()
         let slide = try deck.slides[0]
         let authoredTable = try slide.shapes.addTable(rows: 1, columns: 2,
@@ -178,7 +179,9 @@ import Rostrum
         }
         let authoredCells = try cells(in: slide)
         #expect(authoredCells.count == 2)
-        for (cell, threshold) in zip(authoredCells, ["2400", "0"]) {
+        // Native PowerPoint distinguishes explicit zero (off) from omission
+        // and a positive threshold reached by the rendered 12 pt run.
+        for (cell, threshold) in zip(authoredCells, [Optional("2400"), threshold]) {
             let properties = try #require(cell.firstChild(named: "a:txBody")?
                 .firstChild(named: "a:p")?.firstChild(named: "a:r")?.firstChild(named: "a:rPr"))
             properties[attribute: "kern"] = threshold
@@ -200,9 +203,9 @@ import Rostrum
         #expect(filter.firstChild(named: "feGaussianBlur") != nil)
         let spans = previewRoot.children(named: "text").flatMap { $0.children(named: "tspan") }
         let disabled = try #require(spans.first { $0.textContent == "AV office" })
-        let enabled = try #require(spans.first { $0.textContent == "AV retained" })
+        let comparison = try #require(spans.first { $0.textContent == "AV retained" })
         #expect(disabled[attribute: "kerning"] == "0")
-        #expect(enabled[attribute: "kerning"] == nil)
+        #expect(comparison[attribute: "kerning"] == (threshold == "0" ? "0" : nil))
         let diagnostic = try #require(inspection.previewDiagnostics.first { $0.slideNumber == 1 })
         let shadowIssue = try #require(diagnostic.issues.first {
             $0.code == "omittedEffect" && $0.impact == "approximation" && $0.path.contains("/a:tblBg[")
@@ -223,7 +226,7 @@ import Rostrum
         #expect(try table(on: reopened.slides[0]).styleID == styleID)
         let retainedCells = try cells(in: reopened.slides[0])
         #expect(retainedCells.map { $0.firstChild(named: "a:txBody")?.firstChild(named: "a:p")?
-            .firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "kern"] } == ["2400", "0"])
+            .firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "kern"] } == [Optional("2400"), threshold])
         let retainedStyle = try reopened.package.part(at: PackURI("/ppt/tableStyles.xml")).dom()
             .children(named: "a:tblStyle").first { $0[attribute: "styleId"] == styleID }
         #expect(retainedStyle?.firstChild(named: "a:tblBg")?.firstChild(named: "a:effect")?

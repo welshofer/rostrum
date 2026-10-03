@@ -41,6 +41,11 @@ Its bounded controls change the title, guide color, numeric row count and stop
 positions. The bundled regular DejaVu Sans face keeps measurements reproducible;
 RTL and locale-specific decimal behavior remain outside the demonstrated profile.
 
+The paragraph demo also reproduces two native-measured wrapping boundaries:
+a 0.02-point width change moves a character between lines, including across
+mixed-size runs. Its shorter fitted copies display the scale computed through
+both public fit paths; they do not claim PowerPoint chose that same scale.
+
 See the [coverage and verification record](../docs/LIBRARY-LAB-20261002.md).
 
 ## Choose a PowerPoint template

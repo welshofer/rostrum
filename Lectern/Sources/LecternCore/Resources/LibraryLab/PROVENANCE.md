@@ -71,3 +71,20 @@ sample-size bounds 2 and 12, actual serialization, reopening, semantic checks,
 unchanged-save identity, required-attribute validation, and extra-file checks.
 No existing tests were weakened or skipped. Asset-header and pure Swift font
 checks and invalid-input tests also passed.
+
+## Native paragraph boundary reference subset — 2026-10-03
+
+`ParagraphBoundaryReferences.json` copies four measured cases from
+`Tests/RostrumTests/Fixtures/LineBreakBoundaries/cases.json` and
+`native-geometry.json`: `dejavu-18-1`, `dejavu-18-2`,
+`dejavu-mixed-size-1` and `dejavu-mixed-size-2`. The source deck was independently
+authored with python-pptx; PowerPoint 16.113.3 exported the native PDF. The JSON
+retains both hashes, the exact bundled DejaVu Sans font hash and expected line
+strings. The full fixture README records native provenance and font-outline
+identity verification. No Rostrum result was used as an expected line string.
+
+The native source disables kerning explicitly. Independent HarfBuzz shaping
+confirmed identical output for the demonstrated `m/m` and `m/Z` pairs with
+kerning enabled and disabled, allowing the public recipe to omit that setting.
+Only the unfitted native boundaries are oracle expectations; displayed fitting
+scales are computed by the public APIs and checked for persistence and fit.

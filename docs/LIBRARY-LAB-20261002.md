@@ -31,7 +31,7 @@ visible in Lectern and in its JSON report.
 | Fills, outlines and shadows | Solid/alpha/theme/none/linear/radial/image fills; every dash and compound line; shadow | Drawing |
 | Rich text and live fields | Runs, paragraphs, list numbering/bullets, margins, alignment, spacing, tracking, superscript/subscript, links and fields | Drawing |
 | Fonts, shaping and fitting | Licensed bundled font; exact face lookup, measure/wrap/shape/fit; embed and recover bytes | Platform document |
-| Paragraph spacing and justification | Side-by-side mixed-size left/justified paragraphs; adjustable sentence count and width; both fit APIs; embedded-font recovery; exact span positions after reopening; shared table-cell layout | [Platform paragraphs](../Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphRecipe.swift) |
+| Paragraph spacing and justification | Side-by-side mixed-size left/justified paragraphs; adjustable sentence count and width; both fit APIs; embedded-font recovery; exact span positions after reopening; shared table-cell layout; native-captured narrow wrap boundaries and public fitting across styled runs | [Platform paragraphs](../Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphRecipe.swift) |
 | Tab stops and justified fields | Four standard tab alignments with visible guides; adjustable numeric rows and stop positions; tab-aware Latin justification and a shared table cell; public tab properties and exact spans after reopening | [Platform tabs](../Lectern/Sources/LecternCore/LibraryLab/PlatformTabRecipe.swift) |
 | Pictures and image fills | Image formats and metadata, crop, rotation, deduplication, independent replacement, image fills and retained geometry | Drawing |
 | Edit a table grid | Merge topology, unmerge, insert/delete/move/reorder rows and columns; independent permutations and atomic refusals | Drawing |
@@ -134,6 +134,61 @@ space against registered font metrics, and checks exported title/table text and
 the two-slide export summary. Native hosted execution of that new test and
 interactive UI acceptance are recorded by the integrating task, not inferred
 from these core results.
+
+## Native paragraph boundaries — 2026-10-03
+
+The existing paragraph demo now includes a third slide with two specific
+counterexamples to raw-font-advance wrapping: twelve `m` characters followed
+by `Z` at 18 pt, and four `m` characters at 18 pt followed by `mmmmZ` at 10 pt.
+At widths 210.01 and 109.01 pt, native PowerPoint keeps twelve and eight `m`
+characters respectively on the first line. The alternative selects widths
+209.99 and 108.99 pt, moving one more `m` onto the second line. These exact line
+strings come from independent PowerPoint PDF captures, not the current layout
+implementation. The original title and sentence-count controls still change the
+actual deck; the alternative also narrows the original paragraph columns.
+
+The same slide shows each specimen fitted into shorter boxes through both
+`Shape.fitText` and `TextFrame.fitText`. Captions expose the computed scale.
+The checks distinguish externally observed unfitted line contents from computed
+fit behavior: they require identical public-fit results, character/style
+preservation, persisted autofit attributes, exact reopened spans and deterministic
+SVG. They do **not** claim PowerPoint selected the same autofit step.
+
+The bundled [reference subset](../Lectern/Sources/LecternCore/Resources/LibraryLab/ParagraphBoundaryReferences.json)
+retains native case IDs, source/PDF SHA-256s, font identity and explicit scope.
+The full independent source and measurements live in
+[LineBreakBoundaries](../Tests/RostrumTests/Fixtures/LineBreakBoundaries/README.md).
+The bounded examples use ASCII `m`/`Z`, regular DejaVu Sans, left alignment,
+zero insets, zero paragraph margins and no indent. Their two kerning pairs have
+identical independent shaping results with kerning enabled and disabled, so the
+public authoring API can leave kerning omitted. Templates, inherited styles,
+complex scripts and general Office pixel parity are not established by this
+boundary demonstration.
+
+The calibration requires one scalar per shaped glyph; it does not cover every
+ASCII sequence. Existing fixed paragraph/tab wording changes `final` to `last`
+and `field` to `column` to keep those specimens inside the demonstrated profile.
+The strict-success extraction specimen similarly changes `AV office` to
+`AV sample`. The engine's explicit unsupported `fi`/`ffi` coverage remains;
+ordinary previews keep such diagnostics visible rather than silently claiming
+calibration. Paragraph visible-width checks and numeric decimal-prefix checks
+now use the shared layout's measured advances instead of raw font widths.
+
+To retain the exact two alternative decks for native review:
+
+```sh
+LECTERN_PARAGRAPH_ARTIFACTS=/tmp/lectern-paragraph-boundaries \
+  swift test --package-path Lectern --jobs 2 --filter ParagraphBoundaryRecipeTests
+```
+
+With the calibrated engine integrated, the final LecternCore run passed 236
+tests in 27 suites. All 25 Lab pipelines passed 319 saved-file checks; the expanded
+paragraph demo passed 22 checks with no findings. The inspector/export app test
+covers both boundary alternatives and all three slide previews. A file-backed
+kerning regression now distinguishes omitted, explicit zero and a reached
+positive threshold, retaining the disabled-threshold comparison and exact saved
+attributes. Native app, headless, iOS and interactive acceptance are recorded
+separately by the integrating task.
 
 ## Tab-layout extension — 2026-10-03
 
