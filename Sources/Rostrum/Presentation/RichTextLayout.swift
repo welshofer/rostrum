@@ -72,7 +72,7 @@ public struct RichTextLayout: Sendable {
 
         struct Atom {
             var text: String
-            let style: ResolvedTextRun
+            let styleIndex: Int
             var width: Double
             let ascent: Double
             let height: Double
@@ -136,6 +136,9 @@ public struct RichTextLayout: Sendable {
                 cursor += spacing(child("a:spcBef"), relativeTo: emptyHeight)
             }
             var atoms: [Atom] = [], source = 0, hasTabs = false
+            // Each nonempty piece owns one resolved style for this paragraph.
+            // Atoms share its index instead of retaining all style strings per glyph.
+            var runStyles: [ResolvedTextRun] = []
             let pieces = paragraph.childElements.filter { ["a:r", "a:fld", "a:br"].contains($0.name) }
             for piece in pieces {
                 source += 1
@@ -144,6 +147,8 @@ public struct RichTextLayout: Sendable {
                 let style = Self.resolve(text: text,
                     properties: [piece.firstChild(named: "a:rPr")].compactMap { $0 } + defaults,
                     theme: theme, defaultSize: defaultPointSize, scale: scale)
+                let styleIndex = runStyles.count
+                if !text.isEmpty { runStyles.append(style) }
                 let metrics = face(style)
                 if metrics == nil {
                     warnings.append(.unsupportedLayoutFeature("Unregistered font face: " + (style.fontFamily ?? "unspecified")))
@@ -161,7 +166,7 @@ public struct RichTextLayout: Sendable {
                     if metrics == nil, segment.utf8.allSatisfy({ $0 < 128 }) {
                         for byte in segment.utf8 {
                             let value = String(Unicode.Scalar(byte))
-                            atoms.append(Atom(text: value, style: style,
+                            atoms.append(Atom(text: value, styleIndex: styleIndex,
                                 width: style.fontSize * (byte == 32 ? 0.25 : 0.42) + style.tracking,
                                 ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
                                 source: source, breakAfter: byte == 32 || byte == 45))
@@ -184,7 +189,7 @@ public struct RichTextLayout: Sendable {
                         for glyph in shaped.glyphs { grouped[glyph.scalarRange, default: 0] += glyph.advance }
                         for range in grouped.keys.sorted(by: { $0.lowerBound < $1.lowerBound }) {
                             let value = String(String.UnicodeScalarView(scalars[range]))
-                            atoms.append(Atom(text: value, style: style,
+                            atoms.append(Atom(text: value, styleIndex: styleIndex,
                                 width: (grouped[range] ?? 0) + style.tracking * Double(value.count),
                                 ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
                                 source: source, breakAfter: breaks.contains(range.upperBound)))
@@ -193,7 +198,7 @@ public struct RichTextLayout: Sendable {
                         var scalarOffset = 0
                         for character in segment {
                             let value = String(character); scalarOffset += value.unicodeScalars.count
-                            atoms.append(Atom(text: value, style: style,
+                            atoms.append(Atom(text: value, styleIndex: styleIndex,
                                 width: style.fontSize * (character == " " ? 0.25 : 0.42) + style.tracking,
                                 ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
                                 source: source, breakAfter: breaks.contains(scalarOffset)))
@@ -205,7 +210,7 @@ public struct RichTextLayout: Sendable {
                     if character == "\t" || character == "\n" || character == "\r" || character == "\r\n" {
                         appendSegment()
                         if character == "\t" { hasTabs = true }
-                        atoms.append(Atom(text: character == "\t" ? "\t" : "", style: style,
+                        atoms.append(Atom(text: character == "\t" ? "\t" : "", styleIndex: styleIndex,
                             width: 0, ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
                             source: character == "\t" ? atoms.count : source,
                             breakAfter: false, tab: character == "\t", hard: character != "\t"))
@@ -358,21 +363,26 @@ public struct RichTextLayout: Sendable {
                 let lastTab = hasTabs ? lineAtoms.lastIndex(where: \.tab) ?? -1 : -1
                 // Re-shape complete line fragments: a kerning pair that crossed
                 // an automatic break must not squeeze the final glyph of a line.
-                var fragmentStart = 0
-                while fragmentStart < lineAtoms.count {
-                    if lineAtoms[fragmentStart].tab { fragmentStart += 1; continue }
-                    var end = fragmentStart + 1
-                    while end < lineAtoms.count && !lineAtoms[end].tab
-                        && lineAtoms[end].source == lineAtoms[fragmentStart].source { end += 1 }
-                    let fragment = lineAtoms[fragmentStart..<end]
-                    if let font = face(lineAtoms[fragmentStart].style) {
-                        let value = fragment.map(\.text).joined(), style = lineAtoms[fragmentStart].style
-                        let exact = TextShaper(font).shape(value, pointSize: style.fontSize, kerning: style.usesKerning).width
-                            + Double(value.count) * style.tracking
-                        let adjustment = exact - fragment.reduce(0) { $0 + $1.width }
-                        lineAtoms[end - 1].width += adjustment; lineWidth += adjustment
+                // With neither registered faces nor fallback metrics, face()
+                // always returns nil and this traversal cannot change any width.
+                if hasRegisteredFonts || fallbackMetrics != nil {
+                    var fragmentStart = 0
+                    while fragmentStart < lineAtoms.count {
+                        if lineAtoms[fragmentStart].tab { fragmentStart += 1; continue }
+                        var end = fragmentStart + 1
+                        while end < lineAtoms.count && !lineAtoms[end].tab
+                            && lineAtoms[end].source == lineAtoms[fragmentStart].source { end += 1 }
+                        let fragment = lineAtoms[fragmentStart..<end]
+                        let style = runStyles[lineAtoms[fragmentStart].styleIndex]
+                        if let font = face(style) {
+                            let value = fragment.map(\.text).joined()
+                            let exact = TextShaper(font).shape(value, pointSize: style.fontSize, kerning: style.usesKerning).width
+                                + Double(value.count) * style.tracking
+                            let adjustment = exact - fragment.reduce(0) { $0 + $1.width }
+                            lineAtoms[end - 1].width += adjustment; lineWidth += adjustment
+                        }
+                        fragmentStart = end
                     }
-                    fragmentStart = end
                 }
                 // Re-anchor tabs after fragment shaping without remeasuring the
                 // complete fields. Prefix kerning changes must not move a stop.
@@ -403,18 +413,38 @@ public struct RichTextLayout: Sendable {
                         }
                     }
                 }
-                let naturalHeight = lineAtoms.lazy.map(\.height).max() ?? emptyHeight
-                let drawingML = lineAtoms.isEmpty ? empty.drawingML : lineAtoms.allSatisfy(\.drawingML)
+                // Read numeric fields directly instead of copying the complete
+                // styled Atom through separate lazy-map reductions. Initialize
+                // from the first element and keep max()'s strict comparison order.
+                var naturalHeight = emptyHeight, maximumAscent = emptyAscent
+                var drawingML = empty.drawingML
+                if !lineAtoms.isEmpty {
+                    naturalHeight = lineAtoms[0].height
+                    maximumAscent = lineAtoms[0].ascent
+                    drawingML = lineAtoms[0].drawingML
+                    for i in lineAtoms.indices.dropFirst() {
+                        let height = lineAtoms[i].height, ascent = lineAtoms[i].ascent
+                        if naturalHeight < height { naturalHeight = height }
+                        if maximumAscent < ascent { maximumAscent = ascent }
+                        drawingML = drawingML && lineAtoms[i].drawingML
+                    }
+                }
                 let ascent: Double
                 if drawingML, !lineAtoms.isEmpty {
                     // Share the line box between the participating faces. Sizes
                     // determine the box height; each face supplies its normalized
                     // ascent/descent, rather than bringing its hhea line gap.
-                    let above = lineAtoms.lazy.map { $0.ascent / $0.height }.max() ?? 0
-                    let below = lineAtoms.lazy.map { 1 - $0.ascent / $0.height }.max() ?? 0
+                    var above = lineAtoms[0].ascent / lineAtoms[0].height
+                    var below = 1 - lineAtoms[0].ascent / lineAtoms[0].height
+                    for i in lineAtoms.indices.dropFirst() {
+                        let nextAbove = lineAtoms[i].ascent / lineAtoms[i].height
+                        let nextBelow = 1 - lineAtoms[i].ascent / lineAtoms[i].height
+                        if above < nextAbove { above = nextAbove }
+                        if below < nextBelow { below = nextBelow }
+                    }
                     ascent = naturalHeight * above / (above + below)
                 } else {
-                    ascent = lineAtoms.lazy.map(\.ascent).max() ?? emptyAscent
+                    ascent = maximumAscent
                 }
                 let spacingAdvance: Double
                 if let fixedSpacing { spacingAdvance = fixedSpacing }
@@ -438,7 +468,7 @@ public struct RichTextLayout: Sendable {
                         spans[spans.count - 1].run.text += atom.text
                         spans[spans.count - 1].width += atom.width
                     } else {
-                        var run = atom.style; run.text = atom.text
+                        var run = runStyles[atom.styleIndex]; run.text = atom.text
                         spans.append(RichTextSpan(run: run, x: x, width: atom.width))
                     }
                     previousSource = expanded ? nil : atom.source; x += atom.width
