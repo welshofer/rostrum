@@ -145,7 +145,8 @@ final class RenderDiagnosticCollector {
                 record(.missingGlyph, .missingResource, "No glyph for U+\(String(scalar, radix: 16, uppercase: true)) in the explicit face.")
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Unregistered font face:"):
                 record(.missingFont, .missingResource, reason)
-            case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Paragraph alignment") || reason.hasPrefix("Justification"):
+            case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Paragraph alignment") || reason.hasPrefix("Justification")
+                || reason.hasPrefix("Tab alignment") || reason.hasPrefix("Unknown tab alignment"):
                 record(.unsupportedTextProperty, .approximation, reason)
             default:
                 record(.unsupportedShaping, .approximation, String(describing: diagnostic))
@@ -256,7 +257,7 @@ final class RenderDiagnosticCollector {
                     issue(.unsupportedTextProperty, .approximation, "Baseline shift, decoration or character transforms are not rendered.")
                 }
             case "a:tab":
-                if let alignment = element[attribute: "algn"], alignment != "l" { issue(.unsupportedTextProperty, .approximation, "Only left-aligned tab stops are supported.") }
+                if let alignment = element[attribute: "algn"], !["l", "ctr", "r", "dec"].contains(alignment) { issue(.unsupportedTextProperty, .approximation, "Unknown tab alignment is approximated as a left tab.") }
             case "a:buBlip": issue(.unsupportedTextProperty, .omission, "Picture bullets are not rendered.")
             case "a:ln":
                 if (element[attribute: "cmpd"].map({ $0 != "sng" }) == true

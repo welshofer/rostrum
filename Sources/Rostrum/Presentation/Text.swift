@@ -7,6 +7,21 @@ public enum TextAlignment: String, Sendable {
     case justified = "just"
 }
 
+/// DrawingML tab alignment. Decimal preview alignment currently uses a period.
+public enum TextTabAlignment: String, Sendable {
+    case left = "l", center = "ctr", right = "r", decimal = "dec"
+}
+
+public struct TextTabStop: Equatable, Sendable {
+    public var position: EMU
+    public var alignment: TextTabAlignment
+
+    public init(position: EMU, alignment: TextTabAlignment = .left) {
+        self.position = position
+        self.alignment = alignment
+    }
+}
+
 public enum VerticalAnchor: String, Sendable {
     case top = "t"
     case middle = "ctr"
@@ -117,6 +132,49 @@ public final class Paragraph {
         get { p.firstChild(named: "a:pPr")?[attribute: "algn"].flatMap(TextAlignment.init(rawValue:)) }
         set {
             pPr[attribute: "algn"] = newValue?.rawValue
+            part.markDirty()
+        }
+    }
+
+    /// Explicit stops in increasing position order. Nil inherits; an empty list
+    /// overrides inherited custom stops. Reading never modifies unknown XML.
+    /// Setting replaces the owned tab entries, preserving extension children.
+    /// Positions are clamped to the nonnegative DrawingML coordinate32 range.
+    public var tabStops: [TextTabStop]? {
+        get {
+            guard let list = p.firstChild(named: "a:pPr")?.firstChild(named: "a:tabLst") else { return nil }
+            return list.children(named: "a:tab").compactMap { tab in
+                guard let position = tab.coordinate("pos"),
+                      let alignment = TextTabAlignment(rawValue: tab[attribute: "algn"] ?? "l") else { return nil }
+                return TextTabStop(position: EMU(position), alignment: alignment)
+            }.sorted { $0.position < $1.position }
+        }
+        set {
+            guard let newValue else {
+                p.firstChild(named: "a:pPr")?.removeChildren(named: "a:tabLst")
+                part.markDirty()
+                return
+            }
+            let list = pPr.getOrAddChild("a:tabLst")
+            list.removeChildren(named: "a:tab")
+            for stop in newValue.sorted(by: { $0.position < $1.position }) {
+                list.insertChild(XML.Element("a:tab", attributes: [
+                    ("pos", String(max(0, min(Int(Int32.max), stop.position.rawValue)))),
+                    ("algn", stop.alignment.rawValue)
+                ]), beforeAnyOf: ["a:extLst"])
+            }
+            part.markDirty()
+        }
+    }
+
+    /// Explicit default interval; nil inherits. Set values are clamped to
+    /// 1…Int32.max EMU so malformed input cannot introduce a zero interval.
+    public var defaultTabInterval: EMU? {
+        get { p.firstChild(named: "a:pPr")?.coordinate("defTabSz").map { EMU($0) } }
+        set {
+            if let newValue {
+                pPr[attribute: "defTabSz"] = String(max(1, min(Int(Int32.max), newValue.rawValue)))
+            } else { p.firstChild(named: "a:pPr")?[attribute: "defTabSz"] = nil }
             part.markDirty()
         }
     }

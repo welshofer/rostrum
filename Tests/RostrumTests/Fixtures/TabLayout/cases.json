@@ -1,0 +1,407 @@
+[
+  {
+    "name": "default",
+    "text": "A\tB\tC",
+    "tabs": [],
+    "options": {},
+    "page": 0,
+    "x": 30,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "left",
+    "text": "A\tBeta",
+    "tabs": [
+      [
+        120,
+        "l"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 380,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center",
+    "text": "A\tBeta",
+    "tabs": [
+      [
+        120,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 30,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "right",
+    "text": "A\tBeta",
+    "tabs": [
+      [
+        120,
+        "r"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 380,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "decimal",
+    "text": "A\t123.45",
+    "tabs": [
+      [
+        120,
+        "dec"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 30,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "decimal-integer",
+    "text": "A\t123",
+    "tabs": [
+      [
+        120,
+        "dec"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 380,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "multiple",
+    "text": "A\tBeta\t123.45",
+    "tabs": [
+      [
+        100,
+        "ctr"
+      ],
+      [
+        210,
+        "dec"
+      ]
+    ],
+    "options": {},
+    "page": 1,
+    "x": 30,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "mixed",
+    "text": "A\tBeta Z",
+    "tabs": [
+      [
+        120,
+        "r"
+      ]
+    ],
+    "options": {
+      "mixed": true
+    },
+    "page": 1,
+    "x": 380,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "indent",
+    "text": "A\tBeta",
+    "tabs": [
+      [
+        120,
+        "l"
+      ]
+    ],
+    "options": {
+      "marL": 24,
+      "indent": 12
+    },
+    "page": 1,
+    "x": 30,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "bullet",
+    "text": "A\tBeta",
+    "tabs": [
+      [
+        120,
+        "r"
+      ]
+    ],
+    "options": {
+      "marL": 24,
+      "indent": -18,
+      "bullet": true
+    },
+    "page": 1,
+    "x": 380,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "default-interval",
+    "text": "A\tB\tC",
+    "tabs": [],
+    "options": {
+      "interval": 48
+    },
+    "page": 1,
+    "x": 30,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "custom-then-default",
+    "text": "A\tB\tC\tD",
+    "tabs": [
+      [
+        50,
+        "l"
+      ]
+    ],
+    "options": {
+      "interval": 48
+    },
+    "page": 1,
+    "x": 380,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "justify-left",
+    "text": "Alpha beta\tgamma delta epsilon zeta eta theta iota kappa lambda mu.",
+    "tabs": [
+      [
+        120,
+        "l"
+      ]
+    ],
+    "options": {
+      "justify": true
+    },
+    "page": 2,
+    "x": 30,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "justify-right",
+    "text": "Alpha beta\tgamma delta epsilon zeta eta theta iota kappa lambda mu.",
+    "tabs": [
+      [
+        180,
+        "r"
+      ]
+    ],
+    "options": {
+      "justify": true
+    },
+    "page": 2,
+    "x": 380,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "justify-multiple",
+    "text": "A B\tC D\tE F G H I J K L M N O P Q R S T U V W X Y Z",
+    "tabs": [
+      [
+        70,
+        "l"
+      ],
+      [
+        140,
+        "l"
+      ]
+    ],
+    "options": {
+      "justify": true
+    },
+    "page": 2,
+    "x": 30,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "wrap-left",
+    "text": "A\tBeta gamma delta epsilon zeta eta theta iota kappa",
+    "tabs": [
+      [
+        220,
+        "l"
+      ]
+    ],
+    "options": {},
+    "page": 2,
+    "x": 380,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "wrap-center",
+    "text": "A\tBeta gamma delta epsilon zeta eta theta iota kappa",
+    "tabs": [
+      [
+        220,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 2,
+    "x": 30,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "wrap-right",
+    "text": "A\tBeta gamma delta epsilon zeta eta theta iota kappa",
+    "tabs": [
+      [
+        220,
+        "r"
+      ]
+    ],
+    "options": {},
+    "page": 2,
+    "x": 380,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "collision-right",
+    "text": "Alpha beta gamma\tBeta",
+    "tabs": [
+      [
+        120,
+        "r"
+      ]
+    ],
+    "options": {},
+    "page": 3,
+    "x": 30,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "hard-break",
+    "text": "A B\tC D\u000bE F",
+    "tabs": [
+      [
+        120,
+        "l"
+      ]
+    ],
+    "options": {
+      "justify": true
+    },
+    "page": 3,
+    "x": 380,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "decimal-comma",
+    "text": "A\t123,45",
+    "tabs": [
+      [
+        120,
+        "dec"
+      ]
+    ],
+    "options": {},
+    "page": 3,
+    "x": 30,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "decimal-suffix",
+    "text": "A\t123.45 USD",
+    "tabs": [
+      [
+        120,
+        "dec"
+      ]
+    ],
+    "options": {},
+    "page": 3,
+    "x": 380,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "trailing-spaces",
+    "text": "A\tBeta  ",
+    "tabs": [
+      [
+        120,
+        "r"
+      ]
+    ],
+    "options": {},
+    "page": 3,
+    "x": 30,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "nowrap",
+    "text": "A\tBeta gamma delta epsilon zeta eta theta iota kappa",
+    "tabs": [
+      [
+        220,
+        "r"
+      ]
+    ],
+    "options": {
+      "nowrap": true
+    },
+    "page": 3,
+    "x": 380,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  }
+]

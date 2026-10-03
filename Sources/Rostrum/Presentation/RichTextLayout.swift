@@ -77,6 +77,7 @@ public struct RichTextLayout: Sendable {
             let ascent: Double
             let height: Double
             let drawingML: Bool
+            // Run identity for text; original atom index for tab metadata.
             let source: Int
             let breakAfter: Bool
             var tab = false
@@ -102,8 +103,11 @@ public struct RichTextLayout: Sendable {
             let indent = Self.bounded(attribute("indent").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
             let left = Self.bounded(attribute("marL").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
             let right = Self.bounded(attribute("marR").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
-            let defaultTab = max(1, Self.bounded(attribute("defTabSz").flatMap(Double.init) ?? 914400, 1...1e9) / Double(EMU.perPoint))
-            let tabs = child("a:tabLst")?.children(named: "a:tab").compactMap { $0.coordinate("pos").map { Double($0) / Double(EMU.perPoint) } }.sorted() ?? []
+            let defaultTab = Self.bounded(attribute("defTabSz").flatMap(Double.init) ?? 914400, 1...Double(Int32.max)) / Double(EMU.perPoint)
+            let tabs = child("a:tabLst")?.children(named: "a:tab").compactMap { tab -> (position: Double, alignment: String)? in
+                guard let position = tab.coordinate("pos") else { return nil }
+                return (Double(position) / Double(EMU.perPoint), tab[attribute: "algn"] ?? "l")
+            }.sorted { $0.position < $1.position } ?? []
             let baseStyle = Self.resolve(text: "", properties: defaults,
                 theme: theme, defaultSize: defaultPointSize, scale: scale)
             func face(_ style: ResolvedTextRun) -> FontMetrics? {
@@ -131,7 +135,7 @@ public struct RichTextLayout: Sendable {
             if paragraphIndex > 0 || useEdgeParagraphSpacing {
                 cursor += spacing(child("a:spcBef"), relativeTo: emptyHeight)
             }
-            var atoms: [Atom] = [], source = 0
+            var atoms: [Atom] = [], source = 0, hasTabs = false
             let pieces = paragraph.childElements.filter { ["a:r", "a:fld", "a:br"].contains($0.name) }
             for piece in pieces {
                 source += 1
@@ -200,12 +204,48 @@ public struct RichTextLayout: Sendable {
                 for character in text {
                     if character == "\t" || character == "\n" || character == "\r" || character == "\r\n" {
                         appendSegment()
+                        if character == "\t" { hasTabs = true }
                         atoms.append(Atom(text: character == "\t" ? "\t" : "", style: style,
-                            width: 0, ascent: ascent, height: lineHeight, drawingML: vertical.drawingML, source: source,
+                            width: 0, ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
+                            source: character == "\t" ? atoms.count : source,
                             breakAfter: false, tab: character == "\t", hard: character != "\t"))
                     } else { segment.append(character) }
                 }
                 appendSegment()
+            }
+            // Measure each complete tab field once. Native PowerPoint anchors
+            // the whole field even when its later words wrap to another line.
+            // Trailing spaces do not contribute to center/right alignment.
+            struct TabField {
+                let width: Double
+                let decimalWidth: Double
+                let breakWidths: [Double]
+            }
+            // Sparse field metadata leaves the ordinary per-glyph atom small.
+            var tabFields: [Int: TabField] = [:]
+            if hasTabs {
+                var tabIndex: Int?
+                var fieldWidth = 0.0, decimalWidth: Double?, trailingWidth = 0.0
+                var fieldBreakWidths: [Double] = []
+                func finishField() {
+                    guard let tabIndex else { return }
+                    tabFields[atoms[tabIndex].source] = TabField(width: fieldWidth - trailingWidth,
+                        decimalWidth: decimalWidth ?? (fieldWidth - trailingWidth),
+                        breakWidths: fieldBreakWidths + [fieldWidth - trailingWidth])
+                }
+                for i in atoms.indices {
+                    if atoms[i].tab || atoms[i].hard {
+                        finishField()
+                        tabIndex = atoms[i].tab ? i : nil
+                        fieldWidth = 0; decimalWidth = nil; trailingWidth = 0; fieldBreakWidths = []
+                    } else if tabIndex != nil {
+                        if decimalWidth == nil, atoms[i].text == "." { decimalWidth = fieldWidth }
+                        fieldWidth += atoms[i].width
+                        trailingWidth = atoms[i].text == " " ? trailingWidth + atoms[i].width : 0
+                        if atoms[i].breakAfter { fieldBreakWidths.append(fieldWidth - trailingWidth) }
+                    }
+                }
+                finishField()
             }
             // A local buNone/choice suppresses inherited bullets as a group.
             let bulletProperties = properties.first { p in
@@ -250,6 +290,55 @@ public struct RichTextLayout: Sendable {
             func limit() -> Double { max(0, availableWidth - right - startX()) }
             // Word-space justification is verified for left-to-right Latin text.
             // Other scripts may require inter-character spacing or kashidas.
+            let latinParagraph = !(hasTabs || align == "just") || !atoms.contains(where: { atom in
+                    atom.text.unicodeScalars.contains { scalar in
+                        let value = scalar.value
+                        return !(value <= 0x024F || (0x0300...0x036F).contains(value)
+                            || ((0x2000...0x206F).contains(value)
+                                && !(0x202A...0x202E).contains(value)
+                                && !(0x2066...0x2069).contains(value)
+                                && value != 0x200F))
+                    }
+                })
+            let standardTabs = latinParagraph && !["1", "true"].contains(attribute("rtl") ?? "0")
+            if hasTabs, !standardTabs {
+                warnings.append(.unsupportedLayoutFeature("Tab alignment outside left-to-right Latin text is not verified; using left tab alignment"))
+            }
+            if tabs.contains(where: { !["l", "ctr", "r", "dec"].contains($0.alignment) }) {
+                warnings.append(.unsupportedLayoutFeature("Unknown tab alignment; using left tab alignment"))
+            }
+            func tabAdvance(_ atom: Atom, at position: Double) -> Double {
+                var low = 0, high = tabs.count
+                while low < high {
+                    let middle = low + (high - low) / 2
+                    if tabs[middle].position > position + 0.001 { high = middle }
+                    else { low = middle + 1 }
+                }
+                let custom = low < tabs.count ? tabs[low] : nil
+                let stop = custom?.position ?? (floor(position / defaultTab) + 1) * defaultTab
+                let alignment = standardTabs ? custom?.alignment ?? "l" : "l"
+                let field = tabFields[atom.source]
+                let fieldWidth = field?.width ?? 0
+                let offset: Double
+                switch alignment {
+                case "ctr":
+                    let centeredStart = stop - fieldWidth / 2
+                    let rightEdge = availableWidth - right
+                    if wrap, centeredStart > position, stop + fieldWidth / 2 > rightEdge,
+                       let visibleWidth = field?.breakWidths.last(where: { $0 <= rightEdge - position }) {
+                        // Office fits the longest word-boundary prefix into the
+                        // remaining line, then pins its right edge to the box.
+                        // A center field already colliding with its prefix keeps
+                        // zero tab advance; noWrap keeps the full-field center.
+                        return max(0, rightEdge - visibleWidth - position)
+                    }
+                    offset = fieldWidth / 2
+                case "r": offset = fieldWidth
+                case "dec": offset = (field?.decimalWidth ?? 0)
+                default: offset = 0
+                }
+                return max(0, stop - position - offset)
+            }
             var canJustify = align == "just"
             if !["l", "ctr", "r", "just"].contains(align) {
                 warnings.append(.unsupportedLayoutFeature("Paragraph alignment '\(align)' is not implemented; using left alignment"))
@@ -259,26 +348,14 @@ public struct RichTextLayout: Sendable {
                     warnings.append(.unsupportedLayoutFeature("Justification of RTL paragraphs is not verified; using left alignment"))
                     canJustify = false
                 }
-                if atoms.contains(where: \.tab) {
-                    warnings.append(.unsupportedLayoutFeature("Justification with tabs is not verified; using left alignment"))
-                    canJustify = false
-                }
-                if atoms.contains(where: { atom in
-                    atom.text.unicodeScalars.contains { scalar in
-                        let value = scalar.value
-                        return !(value <= 0x024F || (0x0300...0x036F).contains(value)
-                            || ((0x2000...0x206F).contains(value)
-                                && !(0x202A...0x202E).contains(value)
-                                && !(0x2066...0x2069).contains(value)
-                                && value != 0x200F))
-                    }
-                }) {
+                if !latinParagraph {
                     warnings.append(.unsupportedLayoutFeature("Justification outside left-to-right Latin text is not verified; using left alignment"))
                     canJustify = false
                 }
             }
             func emit(justify: Bool = false) {
                 guard output.count < lineLimit else { didTruncate = true; return }
+                let lastTab = hasTabs ? lineAtoms.lastIndex(where: \.tab) ?? -1 : -1
                 // Re-shape complete line fragments: a kerning pair that crossed
                 // an automatic break must not squeeze the final glyph of a line.
                 var fragmentStart = 0
@@ -297,12 +374,23 @@ public struct RichTextLayout: Sendable {
                     }
                     fragmentStart = end
                 }
-                // Only interior word spaces receive the remaining width. Keep
+                // Re-anchor tabs after fragment shaping without remeasuring the
+                // complete fields. Prefix kerning changes must not move a stop.
+                if lastTab >= 0 {
+                    lineWidth = 0
+                    for i in lineAtoms.indices {
+                        if lineAtoms[i].tab { lineAtoms[i].width = tabAdvance(lineAtoms[i], at: startX() + lineWidth) }
+                        lineWidth += lineAtoms[i].width
+                    }
+                }
+                // Only interior word spaces after the last tab receive the remaining width. Keep
                 // edge spaces in the text, but exclude trailing whitespace from
                 // the visible right edge, just as the overflow test does.
                 var expandedSpaces: Set<Int> = []
                 if canJustify && justify,
-                   let first = lineAtoms.firstIndex(where: { $0.text != " " }),
+                   let first = lineAtoms.indices.first(where: {
+                       $0 > lastTab && lineAtoms[$0].text != " "
+                   }),
                    let last = lineAtoms.lastIndex(where: { $0.text != " " }), first < last {
                     let trailing = lineAtoms[(last + 1)...].reduce(0) { $0 + $1.width }
                     let remaining = max(0, limit() - (lineWidth - trailing))
@@ -382,15 +470,34 @@ public struct RichTextLayout: Sendable {
                 }
                 if atom.tab {
                     let position = startX() + lineWidth
-                    let stop = tabs.first { $0 > position + 0.001 } ?? (floor(position / defaultTab) + 1) * defaultTab
-                    atom.width = max(0, stop - position)
+                    atom.width = tabAdvance(atom, at: position)
                 }
                 if wrap && atom.text != " " && !lineAtoms.isEmpty && lineWidth + atom.width > limit() + 0.001 {
-                    if let split = lineAtoms.lastIndex(where: \.breakAfter), split + 1 < lineAtoms.count {
+                    let tabBoundary = hasTabs ? lineAtoms.lastIndex(where: \.tab) : nil
+                    let wordBoundary = lineAtoms.lastIndex(where: \.breakAfter)
+                    if let tabBoundary, tabBoundary > 0, tabBoundary > (wordBoundary ?? -1),
+                       lineAtoms[...tabBoundary].reduce(0, { $0 + $1.width }) < limit() - 0.001 {
+                        // If the first word after a tab does not fit, the tab
+                        // travels with that field and selects a stop on its new
+                        // line. A tab exactly at the right edge ends its current
+                        // line; a tab-only line beyond the box still overflows.
+                        let carry = Array(lineAtoms[tabBoundary...])
+                        lineAtoms.removeSubrange(tabBoundary...)
+                        lineWidth = lineAtoms.reduce(0) { $0 + $1.width }; emit(justify: true)
+                        lineAtoms = carry; lineWidth = 0
+                        for i in lineAtoms.indices {
+                            if lineAtoms[i].tab { lineAtoms[i].width = tabAdvance(lineAtoms[i], at: startX() + lineWidth) }
+                            lineWidth += lineAtoms[i].width
+                        }
+                    } else if let split = wordBoundary, split + 1 < lineAtoms.count {
                         let carry = Array(lineAtoms[(split + 1)...])
                         lineAtoms.removeSubrange((split + 1)...)
                         lineWidth = lineAtoms.reduce(0) { $0 + $1.width }; emit(justify: true)
-                        lineAtoms = carry; lineWidth = carry.reduce(0) { $0 + $1.width }
+                        lineAtoms = carry; lineWidth = 0
+                        for i in lineAtoms.indices {
+                            if lineAtoms[i].tab { lineAtoms[i].width = tabAdvance(lineAtoms[i], at: startX() + lineWidth) }
+                            lineWidth += lineAtoms[i].width
+                        }
                     } else { emit(justify: true) }
                     continue
                 }

@@ -99,14 +99,14 @@ import Testing
         #expect(result.lines[1].spans[0].x == 10)
     }
 
-    @Test func unsupportedModesTabsAndScriptsAreDiagnosed() throws {
+    @Test func unsupportedModesAndScriptsAreDiagnosed() throws {
         for mode in ["dist", "justLow", "thaiDist"] {
             let result = try layout(body(text("AA BB CC"), attributes: "algn=\"\(mode)\""))
             #expect(result.lines[0].width == 25)
             #expect(result.diagnostics.contains(.unsupportedLayoutFeature("Paragraph alignment '\(mode)' is not implemented; using left alignment")))
         }
         for (runs, attributes, reason) in [
-            (text("AA\tBB CC"), "algn=\"just\"", "Justification with tabs"),
+            (text("AA\tאב גד"), "algn=\"just\"", "Tab alignment outside"),
             (text("AA BB CC"), "algn=\"just\" rtl=\"true\"", "Justification of RTL"),
             (text("אב גד הו"), "algn=\"just\"", "Justification outside"),
             (text("中文 中文 中文"), "algn=\"just\"", "Justification outside")

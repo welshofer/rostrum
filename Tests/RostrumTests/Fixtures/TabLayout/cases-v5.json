@@ -1,0 +1,100 @@
+[
+  {
+    "name": "edge-exact",
+    "text": "A\tB",
+    "tabs": [
+      [
+        18,
+        "l"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 30,
+    "y": 45,
+    "width": 18,
+    "height": 125
+  },
+  {
+    "name": "edge-inside",
+    "text": "A\tB",
+    "tabs": [
+      [
+        16,
+        "l"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 380,
+    "y": 45,
+    "width": 18,
+    "height": 125
+  },
+  {
+    "name": "edge-outside",
+    "text": "A\tB",
+    "tabs": [
+      [
+        20,
+        "l"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 30,
+    "y": 215,
+    "width": 18,
+    "height": 125
+  },
+  {
+    "name": "edge-prefixed",
+    "text": "AB-CD EF\tGH\u000bIJ",
+    "tabs": [
+      [
+        18,
+        "l"
+      ]
+    ],
+    "options": {
+      "tracking": true
+    },
+    "page": 0,
+    "x": 380,
+    "y": 215,
+    "width": 18,
+    "height": 125
+  },
+  {
+    "name": "edge-right",
+    "text": "A\tB",
+    "tabs": [
+      [
+        18,
+        "r"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 30,
+    "y": 385,
+    "width": 18,
+    "height": 125
+  },
+  {
+    "name": "edge-center",
+    "text": "A\tB",
+    "tabs": [
+      [
+        18,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 380,
+    "y": 385,
+    "width": 18,
+    "height": 125
+  }
+]
