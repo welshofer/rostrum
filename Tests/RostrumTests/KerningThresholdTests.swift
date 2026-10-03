@@ -45,14 +45,18 @@ import Testing
         }
     }
 
-    @Test func explicitThresholdIsInclusiveAndZeroEnablesAllSizes() throws {
+    @Test func explicitThresholdIsInclusiveAndZeroDisablesNativeKerning() throws {
         let font = try metrics()
-        for (threshold, enabled) in [("0", true), ("1199", true), ("1200", true), ("1201", false), ("400000", false)] {
-            let layout = RichTextLayout(textBody: try body(run: "kern=\"\(threshold)\""),
+        for (threshold, enabled) in [("", true), ("0", false), ("1199", true), ("1200", true), ("1201", false), ("400000", false)] {
+            let attribute = threshold.isEmpty ? "" : "kern=\"\(threshold)\""
+            let layout = RichTextLayout(textBody: try body(run: attribute),
                 width: 100, height: 100, fallbackMetrics: font)
             let span = try #require(layout.lines.first?.spans.first)
             #expect(span.run.usesKerning == enabled)
-            #expect(span.width == TextShaper(font).shape("AV", pointSize: 12, kerning: enabled).width)
+            // Native LineBreakBoundaries final probes: rounded bases 8.25 each,
+            // with the font's -131-unit pair adjustment only when enabled.
+            let adjustment: Double = enabled ? 131.0 * 12 / 2048 : 0
+            #expect(span.width == 16.5 - adjustment)
         }
     }
 
@@ -69,19 +73,19 @@ import Testing
                 width: 100, height: 100, fallbackMetrics: font, inheritedStyles: [inherited])
             let span = try #require(layout.lines.first?.spans.first)
             #expect(span.run.kerningThreshold == expected)
-            #expect(span.run.usesKerning == (expected <= 12))
+            #expect(span.run.usesKerning == (expected > 0 && expected <= 12))
         }
     }
 
     @Test func disabledKerningChangesWrappingAndFitAtTheMeasuredBoundary() throws {
-        let font = try metrics(), shaper = TextShaper(font)
-        let width = (shaper.shape("AV", pointSize: 12).width + shaper.shape("AV", pointSize: 12, kerning: false).width) / 2
-        let enabled = RichTextLayout(textBody: try body(run: "kern=\"0\""), width: width, height: 16, fallbackMetrics: font)
+        let font = try metrics()
+        let width = 16.0
+        let enabled = RichTextLayout(textBody: try body(run: "kern=\"1200\""), width: width, height: 16, fallbackMetrics: font)
         let disabled = RichTextLayout(textBody: try body(run: "kern=\"2400\""), width: width, height: 16, fallbackMetrics: font)
         #expect(enabled.lines.count == 1 && enabled.fits)
         #expect(disabled.lines.count == 2 && !disabled.fits)
         #expect(disabled.lines.map { $0.spans.map(\.run.text).joined() } == ["A", "V"])
-        #expect(disabled.lines[0].width == shaper.shape("A", pointSize: 12, kerning: false).width)
+        #expect(disabled.lines[0].width == 8.25)
     }
 
     @Test func autofitComparesTheRenderedSizeWithTheUnscaledThreshold() throws {
@@ -89,7 +93,8 @@ import Testing
             width: 100, height: 100, fallbackMetrics: try metrics())
         let span = try #require(layout.lines.first?.spans.first)
         #expect(span.run.fontSize == 6 && span.run.kerningThreshold == 12 && !span.run.usesKerning)
-        let expectedWidth: Double = 2 * 1401.0 * 6 / 2048
+        // Native final probe renders two 4.125 pt advances at the effective 6 pt size.
+        let expectedWidth = 8.25
         #expect(span.width == expectedWidth)
     }
 

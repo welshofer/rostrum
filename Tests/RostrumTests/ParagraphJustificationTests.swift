@@ -35,13 +35,14 @@ import Testing
             .appendingPathComponent("Fixtures/Typography/DejaVuSans.ttf"))
         let tracking = Double(trackingHundredths) / 100
         let xml = try body("""
-        <a:r><a:rPr sz="1200" spc="\(trackingHundredths)" kern="\(kerning ? 0 : 2400)"/><a:t>AV AV AV</a:t></a:r>
+        <a:r><a:rPr sz="1200" spc="\(trackingHundredths)" kern="\(kerning ? 1200 : 2400)"/><a:t>AV AV AV</a:t></a:r>
         """)
         let result = RichTextLayout(textBody: xml, width: 45, height: 100, fallbackMetrics: font)
-        // Pinned DejaVuSans: A/V advances 1401 each, AV pair adjustment -131,
-        // space advance 651, unitsPerEm 2048 (independent HarfBuzz fixture).
-        let word = Double(2802 - (kerning ? 131 : 0)) * 12 / 2048 + 2 * tracking
-        let space = 651.0 * 12 / 2048 + tracking
+        // Native LineBreakBoundaries probes establish rounded 8.25 pt A/V bases;
+        // the pinned -131-unit pair adjustment and tracking remain separate.
+        let adjustment: Double = kerning ? 131.0 * 12 / 2048 : 0
+        let word = 16.5 - adjustment + 2 * tracking
+        let space = 3.875 + tracking
         #expect(result.lines.count == 2 && result.fits)
         let first = result.lines[0].spans
         #expect(first.map(\.run.text) == ["AV", " ", "AV "])

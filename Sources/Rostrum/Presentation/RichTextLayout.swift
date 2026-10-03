@@ -10,9 +10,12 @@ public struct ResolvedTextRun: Equatable, Sendable {
     public var color: String
     public var tracking: Double
     /// Minimum rendered point size at which DrawingML enables kerning.
-    /// Zero preserves the default of kerning at every size.
+    /// An omitted DrawingML value preserves kerning at every size.
     public var kerningThreshold: Double = 0
-    public var usesKerning: Bool { fontSize >= kerningThreshold }
+    /// Native PowerPoint treats an explicit DrawingML `kern="0"` as disabled,
+    /// independently of the inherited/default threshold. XML remains unchanged.
+    public var explicitlyDisablesKerning = false
+    public var usesKerning: Bool { !explicitlyDisablesKerning && fontSize >= kerningThreshold }
 }
 
 public struct RichTextSpan: Equatable, Sendable {
@@ -26,6 +29,10 @@ public struct RichTextLine: Equatable, Sendable {
     public var baseline: Double
     public var height: Double
     public var width: Double
+    /// Advance width excluding trailing ordinary (U+0020) spaces, not glyph
+    /// ink bounds. Includes tab advances; excludes the separate bullet span,
+    /// paragraph indentation, body insets and alignment offset.
+    public let visibleWidth: Double
 }
 
 /// Shared, read-only paragraph layout used by fitting and SVG previews.
@@ -100,9 +107,9 @@ public struct RichTextLayout: Sendable {
             }
             let defaults = properties.compactMap { $0.firstChild(named: "a:defRPr") }
                 + inheritedStyles.filter { $0.name == "a:defRPr" }
-            let indent = Self.bounded(attribute("indent").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
-            let left = Self.bounded(attribute("marL").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
-            let right = Self.bounded(attribute("marR").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
+            var indent = Self.bounded(attribute("indent").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
+            var left = Self.bounded(attribute("marL").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
+            var right = Self.bounded(attribute("marR").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
             let defaultTab = Self.bounded(attribute("defTabSz").flatMap(Double.init) ?? 914400, 1...Double(Int32.max)) / Double(EMU.perPoint)
             let tabs = child("a:tabLst")?.children(named: "a:tab").compactMap { tab -> (position: Double, alignment: String)? in
                 guard let position = tab.coordinate("pos") else { return nil }
@@ -136,6 +143,8 @@ public struct RichTextLayout: Sendable {
                 cursor += spacing(child("a:spcBef"), relativeTo: emptyHeight)
             }
             var atoms: [Atom] = [], source = 0, hasTabs = false
+            let nativeLeftToRight = !["1", "true"].contains(attribute("rtl") ?? "0")
+            var usesNativeAdvanceGrid = nativeLeftToRight
             // Each nonempty piece owns one resolved style for this paragraph.
             // Atoms share its index instead of retaining all style strings per glyph.
             var runStyles: [ResolvedTextRun] = []
@@ -159,6 +168,7 @@ public struct RichTextLayout: Sendable {
                 var segment = ""
                 func appendSegment() {
                     guard !segment.isEmpty else { return }
+                    if metrics == nil { usesNativeAdvanceGrid = false }
                     // ASCII fallback text has one scalar per grapheme and only
                     // space/hyphen break opportunities after control splitting.
                     // Keep the same atom arithmetic without rescanning it through
@@ -182,11 +192,19 @@ public struct RichTextLayout: Sendable {
                             warnings.append(.unsupportedLayoutFeature("Rich-text bidirectional span ordering requires a verified paragraph renderer"))
                         }
                         let scalars = Array(segment.unicodeScalars)
+                        let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: segment)
+                        if !nativeGrid {
+                            usesNativeAdvanceGrid = false
+                            warnings.append(.unsupportedLayoutFeature("Native advance rounding outside single-scalar left-to-right ASCII glyphs is not verified"))
+                        }
                         // Logical cluster order makes line breaking independent of bidi.
                         // SVG delegates glyph drawing to its viewer; unsupported
                         // mixed-direction paragraph ordering is diagnosed above.
                         var grouped: [Range<Int>: Double] = [:]
-                        for glyph in shaped.glyphs { grouped[glyph.scalarRange, default: 0] += glyph.advance }
+                        for glyph in shaped.glyphs {
+                            grouped[glyph.scalarRange, default: 0] += nativeGrid
+                                ? Self.nativeAdvance(glyph, font: metrics, pointSize: style.fontSize) : glyph.advance
+                        }
                         for range in grouped.keys.sorted(by: { $0.lowerBound < $1.lowerBound }) {
                             let value = String(String.UnicodeScalarView(scalars[range]))
                             atoms.append(Atom(text: value, styleIndex: styleIndex,
@@ -217,6 +235,13 @@ public struct RichTextLayout: Sendable {
                     } else { segment.append(character) }
                 }
                 appendSegment()
+            }
+            if usesNativeAdvanceGrid {
+                // Paragraph coordinates use a twentieth-point conversion;
+                // fractional body insets retain their original precision.
+                indent = (indent * 20).rounded() / 20
+                left = (left * 20).rounded() / 20
+                right = (right * 20).rounded() / 20
             }
             // Measure each complete tab field once. Native PowerPoint anchors
             // the whole field even when its later words wrap to another line.
@@ -290,9 +315,16 @@ public struct RichTextLayout: Sendable {
             let align = attribute("algn") ?? "l"
             var lineAtoms: [Atom] = [], lineWidth = 0.0, firstLine = true, index = 0
             func startX() -> Double {
-                left + (bullet != nil ? max(0, indent + bulletAdvance) : (firstLine ? indent : 0))
+                let value = left + (bullet != nil ? max(0, indent + bulletAdvance) : (firstLine ? indent : 0))
+                return usesNativeAdvanceGrid ? max(0, value) : value
             }
             func limit() -> Double { max(0, availableWidth - right - startX()) }
+            // Native wrap decisions use an eighth-point capacity grid. Keep the
+            // original extent for center alignment and paragraph geometry.
+            func breakLimit() -> Double {
+                usesNativeAdvanceGrid
+                    ? max(0, floor(availableWidth * 8) / 8 - right - startX()) : limit()
+            }
             // Word-space justification is verified for left-to-right Latin text.
             // Other scripts may require inter-character spacing or kashidas.
             let latinParagraph = !(hasTabs || align == "just") || !atoms.contains(where: { atom in
@@ -376,8 +408,12 @@ public struct RichTextLayout: Sendable {
                         let style = runStyles[lineAtoms[fragmentStart].styleIndex]
                         if let font = face(style) {
                             let value = fragment.map(\.text).joined()
-                            let exact = TextShaper(font).shape(value, pointSize: style.fontSize, kerning: style.usesKerning).width
-                                + Double(value.count) * style.tracking
+                            let shaped = TextShaper(font).shape(value, pointSize: style.fontSize, kerning: style.usesKerning)
+                            let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: value)
+                            let advance = nativeGrid ? shaped.glyphs.reduce(0) {
+                                $0 + Self.nativeAdvance($1, font: font, pointSize: style.fontSize)
+                            } : shaped.width
+                            let exact = advance + Double(value.count) * style.tracking
                             let adjustment = exact - fragment.reduce(0) { $0 + $1.width }
                             lineAtoms[end - 1].width += adjustment; lineWidth += adjustment
                         }
@@ -451,7 +487,7 @@ public struct RichTextLayout: Sendable {
                 else if let percentageSpacing { spacingAdvance = naturalHeight * percentageSpacing / 100000 }
                 else { spacingAdvance = declaredSpacing == nil ? naturalHeight * defaultSpacing : 0 }
                 let advance = spacingAdvance * (1 - reduction)
-                let extra = align == "ctr" ? (limit() - lineWidth) / 2 : align == "r" ? limit() - lineWidth : 0
+                let extra = align == "ctr" ? (limit() - lineWidth) / 2 : align == "r" ? breakLimit() - lineWidth : 0
                 var spans: [RichTextSpan] = [], x = margins.0 + startX() + max(0, extra)
                 if firstLine, var run = bullet {
                     run.text += " "
@@ -487,7 +523,8 @@ public struct RichTextLayout: Sendable {
                     measuredBottom = max(measuredBottom, baseline + naturalHeight - ascent)
                 }
                 output.append(RichTextLine(spans: spans, baseline: baseline,
-                                           height: advance, width: lineWidth))
+                                           height: advance, width: lineWidth,
+                                           visibleWidth: lineWidth - trailingSpace))
                 cursor += advance; lineAtoms = []; lineWidth = 0; firstLine = false
             }
             while index < atoms.count {
@@ -502,7 +539,7 @@ public struct RichTextLayout: Sendable {
                     let position = startX() + lineWidth
                     atom.width = tabAdvance(atom, at: position)
                 }
-                if wrap && atom.text != " " && !lineAtoms.isEmpty && lineWidth + atom.width > limit() + 0.001 {
+                if wrap && atom.text != " " && !lineAtoms.isEmpty && lineWidth + atom.width > breakLimit() + 0.001 {
                     let tabBoundary = hasTabs ? lineAtoms.lastIndex(where: \.tab) : nil
                     let wordBoundary = lineAtoms.lastIndex(where: \.breakAfter)
                     if let tabBoundary, tabBoundary > 0, tabBoundary > (wordBoundary ?? -1),
@@ -584,6 +621,19 @@ public struct RichTextLayout: Sendable {
         return result
     }
 
+    private static func supportsNativeAdvanceGrid(_ shaped: ShapedGlyphRun, text: String) -> Bool {
+        text.utf8.allSatisfy { (32...126).contains($0) }
+            && shaped.glyphs.count == text.utf8.count
+            && shaped.glyphs.allSatisfy { $0.bidiLevel == 0 && $0.scalarRange.count == 1 && $0.glyphID != 0 }
+    }
+
+    private static func nativeAdvance(_ glyph: ShapedGlyph, font: FontMetrics, pointSize: Double) -> Double {
+        // Native threshold probes establish rounding after autofit scaling.
+        // Preserve pair positioning separately from the rounded hmtx base.
+        let base = Double(font.advance(ofGlyph: glyph.glyphID)) * pointSize / Double(font.unitsPerEm)
+        return (base * 8).rounded() / 8 + (glyph.advance - base)
+    }
+
     private static func number(_ element: XML.Element?, _ attribute: String, _ fallback: Double) -> Double {
         element?[attribute: attribute].flatMap(Double.init).flatMap { $0.isFinite ? $0 : nil } ?? fallback
     }
@@ -613,7 +663,8 @@ public struct RichTextLayout: Sendable {
             fontSize: bounded(attr("sz").flatMap(Double.init) ?? defaultSize * 100, 100...400000) / 100 * scale,
             bold: ["1", "true"].contains(attr("b") ?? "0"), italic: ["1", "true"].contains(attr("i") ?? "0"), color: color,
             tracking: bounded(attr("spc").flatMap(Double.init) ?? 0, -400000...400000) / 100 * scale,
-            kerningThreshold: bounded(attr("kern").flatMap(Double.init) ?? 0, 0...400000) / 100)
+            kerningThreshold: bounded(attr("kern").flatMap(Double.init) ?? 0, 0...400000) / 100,
+            explicitlyDisablesKerning: attr("kern").flatMap(Double.init) == 0)
     }
     private static func numberLabel(_ number: Int, type: String) -> String {
         var value = String(number)

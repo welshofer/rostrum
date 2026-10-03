@@ -8,7 +8,7 @@ import Testing
             .appendingPathComponent("Fixtures/Typography/DejaVuSans.ttf"))
     }
 
-    @Test func strictRegisteredLatinEmbedsOneDeterministicFontForAliases() throws {
+    @Test func registeredLatinAliasesEmbedOnceAndStrictModeDiagnosesLigatureBoundary() throws {
         let deck = try Presentation()
         let bytes = try realFont()
         try deck.fonts.register(bytes, aliases: ["Alias One", "Alias Two"])
@@ -16,13 +16,17 @@ import Testing
         shape.textFrame!.text = "AV "
         shape.textFrame!.paragraphs[0].runs[0].fontName = "Alias One"
         let second = shape.textFrame!.paragraphs[0].addRun("office"); second.fontName = "Alias Two"
-        let result = try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true)
-        #expect(result.problems.isEmpty)
+        let result = try deck.renderSVGReportingProblems(slideAt: 0)
+        #expect(result.problems.fidelityIssues.count == 1)
+        #expect(result.problems.fidelityIssues.first?.code == .unsupportedShaping)
+        #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
         #expect(result.svg.components(separatedBy: "@font-face").count - 1 == 1)
         #expect(result.svg.contains(bytes.base64EncodedString()))
         #expect(result.svg.components(separatedBy: "font-family=\"RostrumEmbeddedFace1").count - 1 == 2)
-        #expect(result.svg == (try deck.renderSVG(slideAt: 0, strictRendering: true)))
+        #expect(result.svg == (try deck.renderSVG(slideAt: 0)))
         _ = try XML.parse(Data(result.svg.utf8))
+        second.text = "plain"
+        #expect(try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true).problems.isEmpty)
     }
 
     @Test func restrictedFontsRemainMeasuredButAreNotEmbedded() throws {

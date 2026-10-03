@@ -146,7 +146,9 @@ import Testing
         let xml = try body("<a:p><a:r><a:rPr sz=\"1200\"/><a:t>AV</a:t></a:r></a:p>")
         let layout = RichTextLayout(textBody: xml, width: 8, height: 100, fallbackMetrics: font)
         #expect(layout.lines.count == 2)
-        #expect(layout.lines[0].spans[0].width == TextShaper(font).shape("A", pointSize: 12).width)
+        // Native DejaVu 12pt base advance is 8.25pt after rounding; no pair
+        // adjustment may survive when V moves to the next line.
+        #expect(layout.lines[0].spans[0].width == 8.25)
         #expect(!layout.fits) // the unkerned A is wider than 8pt
     }
 
