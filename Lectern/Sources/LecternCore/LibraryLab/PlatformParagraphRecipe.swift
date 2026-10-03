@@ -43,7 +43,7 @@ extension PlatformLabRecipes {
         cell.setPadding(left: .zero, top: .zero, right: .zero, bottom: .zero)
         cell.setBorders(Line(color: Color("276D89")))
         paragraphContent(cell.textFrame, body: paragraphSentence + "The last line remains natural.", alignment: .justified)
-        let note = try text("Supported sample: Latin words, ordinary spaces, mixed sizes and colors.\n\nTabs, right-to-left and non-Latin justification remain diagnosed limitations. Distributed and low justification are not demonstrated as supported.\n\nSave/reopen checks compare exact measured span positions; this is not a general Office pixel-parity claim.",
+        let note = try text("Supported sample: Latin words, ordinary spaces, mixed sizes and colors.\n\nRight-to-left and non-Latin justification remain diagnosed limitations. See the tab-stop demo for supported tab-aware fields. Distributed and low justification are not demonstrated as supported.\n\nSave/reopen checks compare exact measured span positions; this is not a general Office pixel-parity claim.",
             on: tableSlide, in: LibraryLabSupport.frame(7, 1.7, 5.4, 4.5))
         note.textFrame?.paragraphs.first?.runs.first?.fontSize = 18
         note.fitText(fonts: deck.fonts)

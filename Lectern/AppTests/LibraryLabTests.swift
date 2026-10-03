@@ -80,6 +80,56 @@ import Rostrum
         #expect(model.results[.paragraphLayout]?.directory == result.directory)
     }
 
+    @Test(arguments: [false, true])
+    func tabDemoReachesInspectorAndExport(moved: Bool) async throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("LabTabs-" + UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let model = LibraryLabModel()
+        model.options = .init(text: "App tab demonstration", accentHex: "963D61", sampleSize: 12, alternative: moved)
+        await model.run([.tabLayout], in: root).value
+        let result = try #require(model.results[.tabLayout])
+        #expect(result.passed && model.failures.isEmpty && model.completed == 1)
+        #expect(result.checks.contains { $0.name == "Tab positions survive reopening" && $0.passed })
+        await context.app.inspect(deckAt: result.afterURL).value
+        #expect(context.app.phase == .inspected)
+        #expect(context.app.inspection?.previews.count == 2)
+        let task = try #require(context.app.exportInspected(into: root.appendingPathComponent("Export")))
+        await task.value
+        #expect(context.app.exportProblem == nil)
+        let directory = try #require(context.app.exportedDirectory)
+        let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        let markdownURL = try #require(files.first { $0.pathExtension == "md" })
+        let markdown = try String(contentsOf: markdownURL, encoding: .utf8)
+        #expect(markdown.contains("App tab demonstration") && markdown.contains("314.16"))
+        #expect(markdown.contains("The last line remains natural."))
+        #expect(context.app.exportSummary == "2 slides · 0 media files · 0 chart CSVs")
+        let deck = try Presentation(contentsOf: result.afterURL)
+        #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
+        let shape = try #require(deck.slides[0].shapes.all.first { $0.name == "Decimal tab fields" })
+        #expect(shape.textFrame?.paragraphs.count == 12)
+        #expect(shape.textFrame?.paragraphs.first?.tabStops == [TextTabStop(position: .inches(moved ? 1.8 : 1.4), alignment: .decimal)])
+        let paragraphShape = try #require(deck.slides[1].shapes.all.first { $0.name == "Justified tab paragraph" })
+        #expect(paragraphShape.textFrame?.paragraphs.first?.alignment == .justified)
+        #expect(paragraphShape.textFrame?.paragraphs.first?.tabStops == [TextTabStop(position: .inches(moved ? 1.25 : 0.75))])
+        let tree = try #require(deck.slides[1].part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree"))
+        let node = try #require(tree.children(named: "p:sp").first {
+            $0.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "name"] == "Justified tab paragraph"
+        })
+        let body = try #require(node.firstChild(named: "p:txBody"))
+        let layout = RichTextLayout(textBody: body, width: paragraphShape.frame.width.points,
+                                    height: paragraphShape.frame.height.points, fonts: deck.fonts, theme: deck.theme)
+        let metrics = try #require(deck.fonts.metrics(for: "DejaVu Sans"))
+        #expect(layout.fits && layout.diagnostics.isEmpty)
+        let first = try #require(layout.lines.first)
+        let visible = try #require(first.spans.first { !$0.run.text.isEmpty && $0.run.text != "\t" })
+        #expect(abs(visible.x - (moved ? 1.25 : 0.75) * 72) < 0.01)
+        #expect(first.spans.contains { $0.run.text == " " && $0.width > metrics.width(of: " ", pointSize: 16) + 0.1 })
+        context.app.goHome()
+        #expect(model.results[.tabLayout]?.directory == result.directory)
+    }
+
     @Test func aFailureDoesNotPreventRemainingDemos() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("LabFailure-" + UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }

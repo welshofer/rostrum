@@ -26,14 +26,20 @@ Rostrum is a **local path dependency** (`../`), resolving OQ-4.
 
 ## Library Lab
 
-Choose **Library Lab** in the sidebar to exercise the library offline. Its 24
-configurable demonstrations cover drawing, text/fonts, paragraph justification, tables, charts, SmartArt,
+Choose **Library Lab** in the sidebar to exercise the library offline. Its 25
+configurable demonstrations cover drawing, text/fonts, paragraph justification, standard tab stops, tables, charts, SmartArt,
 notes, comments, sections, imports, layouts/themes/templates, design builders,
 media, packages and extraction. **Run All** saves and reopens every example,
 checks its content, renders previews and extracts its files. Use **Inspect Result**,
 **Inspect Before** and **All Files** to examine the real artifacts on macOS or iOS.
 No provider key is required. File checks and preview limitations are reported
 separately; passing a demo is not a claim of perfect PowerPoint rendering.
+
+The tab-stop demo shows left, center, right and period-decimal fields against
+visible guides, plus tab-aware Latin justification in text boxes and a table cell.
+Its bounded controls change the title, guide color, numeric row count and stop
+positions. The bundled regular DejaVu Sans face keeps measurements reproducible;
+RTL and locale-specific decimal behavior remain outside the demonstrated profile.
 
 See the [coverage and verification record](../docs/LIBRARY-LAB-20261002.md).
 

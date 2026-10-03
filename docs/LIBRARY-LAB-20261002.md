@@ -32,6 +32,7 @@ visible in Lectern and in its JSON report.
 | Rich text and live fields | Runs, paragraphs, list numbering/bullets, margins, alignment, spacing, tracking, superscript/subscript, links and fields | Drawing |
 | Fonts, shaping and fitting | Licensed bundled font; exact face lookup, measure/wrap/shape/fit; embed and recover bytes | Platform document |
 | Paragraph spacing and justification | Side-by-side mixed-size left/justified paragraphs; adjustable sentence count and width; both fit APIs; embedded-font recovery; exact span positions after reopening; shared table-cell layout | [Platform paragraphs](../Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphRecipe.swift) |
+| Tab stops and justified fields | Four standard tab alignments with visible guides; adjustable numeric rows and stop positions; tab-aware Latin justification and a shared table cell; public tab properties and exact spans after reopening | [Platform tabs](../Lectern/Sources/LecternCore/LibraryLab/PlatformTabRecipe.swift) |
 | Pictures and image fills | Image formats and metadata, crop, rotation, deduplication, independent replacement, image fills and retained geometry | Drawing |
 | Edit a table grid | Merge topology, unmerge, insert/delete/move/reorder rows and columns; independent permutations and atomic refusals | Drawing |
 | 74 native table styles | Complete native enum gallery, headers/footers/banding/RTL | Drawing |
@@ -115,15 +116,16 @@ justified table cell with explicit zero padding. Both public fit entry points,
 owned-DOM `RichTextLayout` measurement, embedding, SVG and extraction are invoked.
 Saved-file checks compare all spans, baselines, widths and styles after reopening.
 
-The catalog and Run All action derive their count from the enum. Tabs, RTL,
-non-Latin, distributed and low justification remain visible support boundaries.
+The catalog and Run All action derive their count from the enum. RTL, non-Latin,
+distributed and low justification remain visible support boundaries. The tab
+profile is covered by the subsequent extension below.
 Explicit hard line breaks can expand, while paragraph-final lines stay natural.
 These layout checks do not establish general Office pixel parity. The historical
 verification counts below belong to the original 23-demo implementation.
 
 With the paragraph engine and ASCII-normalization optimization integrated,
 `swift test --package-path Lectern --jobs 2` passed 231 tests in 25 suites.
-The current 24-demo pipeline passed 297 saved-file checks; the paragraph demo
+That 24-demo pipeline passed 297 saved-file checks; the paragraph demo
 passed 13 checks with no findings. Its focused tests cover both widths and
 sentence-count bounds, actual expansion, natural final lines, unchanged-save
 identity and exact reopened geometry. The added app test exercises
@@ -132,6 +134,49 @@ space against registered font metrics, and checks exported title/table text and
 the two-slide export summary. Native hosted execution of that new test and
 interactive UI acceptance are recorded by the integrating task, not inferred
 from these core results.
+
+## Tab-layout extension — 2026-10-03
+
+The 25th catalog entry authors standard left, center, right and period-decimal
+stops through `Paragraph.tabStops` and `Paragraph.defaultTabInterval`. It uses
+four numeric columns with visible guides, including an integer without a decimal
+period. Sample size controls 2–12 rows per column; the alternative moves the
+stops; accent changes guide and table-border color; user text changes the title.
+All controls affect the actual saved artifact.
+
+A second slide compares natural and justified Latin text following a left tab,
+then repeats the justified content in a zero-padding table cell. Ordinary spaces
+after the last tab expand on wrapped lines while the tab anchor remains fixed;
+the paragraph's final line retains natural spacing. The body uses fixed English
+and numeric text with the licensed regular DejaVu Sans face. RTL, non-Latin,
+locale-specific decimal separators, distributed and low justification remain
+outside the demonstrated profile. These checks do not establish general Office
+pixel parity.
+
+The recipe verifies each numeric alignment against its stop, shared table/text
+geometry, diagnostic-free fitting, embedded-font recovery, public tab property
+readback, exact reopened spans and byte-identical SVG for both slides. Focused
+core tests exercise both row-count bounds and stop configurations; app tests run
+both alternatives through `LibraryLabModel → AppState.inspect → exportInspected`
+and check retained results, exported text and the two-slide summary. Native and
+GUI acceptance are recorded by the integrating task rather than inferred from
+core execution.
+
+To retain the four exact bounded tab specimens for native review:
+
+```sh
+LECTERN_TAB_ARTIFACTS=/tmp/lectern-tab-artifacts \
+  swift test --package-path Lectern --jobs 2 --filter PlatformTabRecipeTests
+```
+
+Each specimen receives a fresh directory; ordinary tests leave no output behind.
+
+With the final tab engine integrated, `swift test --package-path Lectern --jobs 2`
+passed 234 tests in 26 suites. A separate `--filter PlatformTabRecipeTests` run
+passed all three focused tests, including both stop positions and row-count
+bounds. The 25-demo file pipeline passed 310 saved-file checks; the tab demo
+passed 13 checks with no findings. Native hosted app, headless, iOS and interactive
+acceptance remain the integrating task's separate evidence.
 
 ## Verification record
 
