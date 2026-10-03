@@ -37,8 +37,9 @@ tracking/kerning coverage was added and passed; no source correction was needed.
 - `swift test --package-path Lectern --jobs 2`: 231 tests in 25 suites passed.
 - Native `Lectern/scripts/test-app.sh -parallel-testing-enabled NO`: 77 tests,
   zero failures and zero skips, including both paragraph inspector/export cases.
-- `test-inspection-headless.py --all-app-tests`: 77 tests in 18 suites passed
-  with a source-hash receipt.
+- `test-inspection-headless.py --all-app-tests`: 77 reported tests in 18 suites,
+  with three native WebKit tests explicitly skipped and covered by the hosted
+  native run above; the source-hash receipt passed.
 - Release benchmark product built. iOS simulator app built for both arm64 and
   x86_64; architectures were checked on the produced debug dylib.
 - Native Lectern: selected paragraph demo, enabled narrow columns, ran it
