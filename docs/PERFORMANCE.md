@@ -1,10 +1,19 @@
 # Performance measurements
 
-Latest matched optimization: the [ASCII break-opportunity scan](LAYOUT-PERFORMANCE-20261003-2.md)
+The latest [combined layout checkpoint](INTEGRATED-LAYOUT-PERFORMANCE-20261003.md)
+finds **2.26% slower fallback table rendering and 3.01% slower rich-text fitting**
+against `cf1b8a0`, with both slower in all ten matched pairs. Registered-font
+table rendering is 0.75% faster with overlapping ranges; there is no meaningful
+net speedup claim. One [bounded fast-path attempt](INTEGRATED-LAYOUT-PERFORMANCE-20261003-ATTEMPT.md)
+failed to remove these regressions and was discarded. Profiling common layout
+overhead is the next performance target.
+
+The preceding isolated [ASCII break-opportunity scan](LAYOUT-PERFORMANCE-20261003-2.md)
 measures 83.159 → 79.867 ms for registered-font 2,000-cell table rendering over
 ten alternating fresh-process pairs (3.96%), with identical output across 580
 slide renders. Smaller fitting/fallback changes have overlapping observed
-ranges; no broad speed, memory or cross-platform improvement is claimed.
+ranges. This isolated result does not describe the combined tab-layout batch;
+no broad speed, memory or cross-platform improvement is claimed.
 
 The preceding [registered-font shaping pass](LAYOUT-PERFORMANCE-20261003.md)
 measures 95.177 → 83.413 ms for 2,000-cell table rendering and 19.260 → 14.623 ms
