@@ -1,6 +1,13 @@
 # Performance measurements
 
-Latest matched optimization: the [ASCII fallback layout pass](LAYOUT-PERFORMANCE-20261002.md)
+Latest matched optimization: the [registered-font shaping pass](LAYOUT-PERFORMANCE-20261003.md)
+measures 95.177 → 83.413 ms for 2,000-cell table rendering and 19.260 → 14.623 ms
+for rich-text fitting over ten alternating fresh-process pairs. Skipping redundant
+ASCII normalization improves these workloads by 12.36% and 24.08%, respectively,
+with identical output across 576 slide renders. Fallback workloads show no
+improvement; no memory or cross-platform speed claim is made.
+
+The preceding [ASCII fallback layout pass](LAYOUT-PERFORMANCE-20261002.md)
 measures 171.582 → 165.875 ms median large-table rendering over ten alternating
 fresh-process pairs, with identical output across 574 slide renders. It establishes
 a 3.33% median improvement on that workload, with no memory improvement. The
