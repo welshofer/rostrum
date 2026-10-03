@@ -145,6 +145,8 @@ final class RenderDiagnosticCollector {
                 record(.missingGlyph, .missingResource, "No glyph for U+\(String(scalar, radix: 16, uppercase: true)) in the explicit face.")
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Unregistered font face:"):
                 record(.missingFont, .missingResource, reason)
+            case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Paragraph alignment") || reason.hasPrefix("Justification"):
+                record(.unsupportedTextProperty, .approximation, reason)
             default:
                 record(.unsupportedShaping, .approximation, String(describing: diagnostic))
             }
@@ -246,7 +248,8 @@ final class RenderDiagnosticCollector {
                 if let columns = element[attribute: "numCol"], columns != "1" { issue(.unsupportedTextProperty, .approximation, "Text columns are not implemented.") }
                 if element.firstChild(named: "a:prstTxWarp") != nil { issue(.unsupportedTextProperty, .approximation, "Text warp is not implemented.") }
             case "a:pPr":
-                if ["just", "justLow", "dist", "thaiDist"].contains(element[attribute: "algn"] ?? "") { issue(.unsupportedTextProperty, .approximation, "Justified/distributed text is not implemented.") }
+                // Resolved paragraph alignment is diagnosed by RichTextLayout,
+                // including inherited modes and unsupported justification cases.
                 if element[attribute: "rtl"] == "1" { issue(.unsupportedTextProperty, .approximation, "Paragraph RTL layout is not verified.") }
             case "a:rPr", "a:defRPr", "a:endParaRPr":
                 if ["baseline", "u", "strike", "cap", "kumimoji", "normalizeH"].contains(where: { element[attribute: $0].map { $0 != "0" && $0 != "none" && $0 != "noStrike" } ?? false }) {

@@ -248,7 +248,36 @@ public struct RichTextLayout: Sendable {
                 left + (bullet != nil ? max(0, indent + bulletAdvance) : (firstLine ? indent : 0))
             }
             func limit() -> Double { max(0, availableWidth - right - startX()) }
-            func emit() {
+            // Word-space justification is verified for left-to-right Latin text.
+            // Other scripts may require inter-character spacing or kashidas.
+            var canJustify = align == "just"
+            if !["l", "ctr", "r", "just"].contains(align) {
+                warnings.append(.unsupportedLayoutFeature("Paragraph alignment '\(align)' is not implemented; using left alignment"))
+            }
+            if canJustify {
+                if ["1", "true"].contains(attribute("rtl") ?? "0") {
+                    warnings.append(.unsupportedLayoutFeature("Justification of RTL paragraphs is not verified; using left alignment"))
+                    canJustify = false
+                }
+                if atoms.contains(where: \.tab) {
+                    warnings.append(.unsupportedLayoutFeature("Justification with tabs is not verified; using left alignment"))
+                    canJustify = false
+                }
+                if atoms.contains(where: { atom in
+                    atom.text.unicodeScalars.contains { scalar in
+                        let value = scalar.value
+                        return !(value <= 0x024F || (0x0300...0x036F).contains(value)
+                            || ((0x2000...0x206F).contains(value)
+                                && !(0x202A...0x202E).contains(value)
+                                && !(0x2066...0x2069).contains(value)
+                                && value != 0x200F))
+                    }
+                }) {
+                    warnings.append(.unsupportedLayoutFeature("Justification outside left-to-right Latin text is not verified; using left alignment"))
+                    canJustify = false
+                }
+            }
+            func emit(justify: Bool = false) {
                 guard output.count < lineLimit else { didTruncate = true; return }
                 // Re-shape complete line fragments: a kerning pair that crossed
                 // an automatic break must not squeeze the final glyph of a line.
@@ -267,6 +296,24 @@ public struct RichTextLayout: Sendable {
                         lineAtoms[end - 1].width += adjustment; lineWidth += adjustment
                     }
                     fragmentStart = end
+                }
+                // Only interior word spaces receive the remaining width. Keep
+                // edge spaces in the text, but exclude trailing whitespace from
+                // the visible right edge, just as the overflow test does.
+                var expandedSpaces: Set<Int> = []
+                if canJustify && justify,
+                   let first = lineAtoms.firstIndex(where: { $0.text != " " }),
+                   let last = lineAtoms.lastIndex(where: { $0.text != " " }), first < last {
+                    let trailing = lineAtoms[(last + 1)...].reduce(0) { $0 + $1.width }
+                    let remaining = max(0, limit() - (lineWidth - trailing))
+                    if remaining > 0 {
+                        for i in first..<last where lineAtoms[i].text == " " { expandedSpaces.insert(i) }
+                        if !expandedSpaces.isEmpty {
+                            let added = remaining / Double(expandedSpaces.count)
+                            for i in expandedSpaces { lineAtoms[i].width += added }
+                            lineWidth += remaining
+                        }
+                    }
                 }
                 let naturalHeight = lineAtoms.lazy.map(\.height).max() ?? emptyHeight
                 let drawingML = lineAtoms.isEmpty ? empty.drawingML : lineAtoms.allSatisfy(\.drawingML)
@@ -294,16 +341,19 @@ public struct RichTextLayout: Sendable {
                     spans.append(RichTextSpan(run: run, x: margins.0 + left + indent, width: width))
                 }
                 var previousSource: Int?
-                for atom in lineAtoms {
+                for (atomIndex, atom) in lineAtoms.enumerated() {
                     if atom.tab { x += atom.width; previousSource = nil; continue }
-                    if previousSource == atom.source, !spans.isEmpty {
+                    // Isolate expanded spaces so SVG's textLength never scales
+                    // the letters of a justified word along with its whitespace.
+                    let expanded = expandedSpaces.contains(atomIndex)
+                    if previousSource == atom.source, !spans.isEmpty, !expanded {
                         spans[spans.count - 1].run.text += atom.text
                         spans[spans.count - 1].width += atom.width
                     } else {
                         var run = atom.style; run.text = atom.text
                         spans.append(RichTextSpan(run: run, x: x, width: atom.width))
                     }
-                    previousSource = atom.source; x += atom.width
+                    previousSource = expanded ? nil : atom.source; x += atom.width
                 }
                 let trailingSpace = lineAtoms.reversed().prefix(while: { $0.text == " " }).reduce(0) { $0 + $1.width }
                 overflowWidth = overflowWidth || lineWidth - trailingSpace > limit() + 0.01
@@ -325,7 +375,11 @@ public struct RichTextLayout: Sendable {
             while index < atoms.count {
                 if output.count >= lineLimit { didTruncate = true; break }
                 var atom = atoms[index]
-                if atom.hard { emit(); index += 1; continue }
+                if atom.hard {
+                    // a:br ends a line, not the paragraph. PowerPoint also
+                    // justifies this line; only the final paragraph line is exempt.
+                    emit(justify: true); index += 1; continue
+                }
                 if atom.tab {
                     let position = startX() + lineWidth
                     let stop = tabs.first { $0 > position + 0.001 } ?? (floor(position / defaultTab) + 1) * defaultTab
@@ -335,9 +389,9 @@ public struct RichTextLayout: Sendable {
                     if let split = lineAtoms.lastIndex(where: \.breakAfter), split + 1 < lineAtoms.count {
                         let carry = Array(lineAtoms[(split + 1)...])
                         lineAtoms.removeSubrange((split + 1)...)
-                        lineWidth = lineAtoms.reduce(0) { $0 + $1.width }; emit()
+                        lineWidth = lineAtoms.reduce(0) { $0 + $1.width }; emit(justify: true)
                         lineAtoms = carry; lineWidth = carry.reduce(0) { $0 + $1.width }
-                    } else { emit() }
+                    } else { emit(justify: true) }
                     continue
                 }
                 lineAtoms.append(atom); lineWidth += atom.width; index += 1
