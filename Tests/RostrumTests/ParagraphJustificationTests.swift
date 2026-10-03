@@ -29,6 +29,34 @@ import Testing
         #expect(result.diagnostics.isEmpty)
     }
 
+    @Test(arguments: [75, -25], [true, false])
+    func trackingAndKerningPreserveNaturalWordsAcrossJustification(trackingHundredths: Int, kerning: Bool) throws {
+        let font = try FontMetrics(contentsOf: URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+            .appendingPathComponent("Fixtures/Typography/DejaVuSans.ttf"))
+        let tracking = Double(trackingHundredths) / 100
+        let xml = try body("""
+        <a:r><a:rPr sz="1200" spc="\(trackingHundredths)" kern="\(kerning ? 0 : 2400)"/><a:t>AV AV AV</a:t></a:r>
+        """)
+        let result = RichTextLayout(textBody: xml, width: 45, height: 100, fallbackMetrics: font)
+        // Pinned DejaVuSans: A/V advances 1401 each, AV pair adjustment -131,
+        // space advance 651, unitsPerEm 2048 (independent HarfBuzz fixture).
+        let word = Double(2802 - (kerning ? 131 : 0)) * 12 / 2048 + 2 * tracking
+        let space = 651.0 * 12 / 2048 + tracking
+        #expect(result.lines.count == 2 && result.fits)
+        let first = result.lines[0].spans
+        #expect(first.map(\.run.text) == ["AV", " ", "AV "])
+        #expect(abs(first[0].width - word) < 0.000001)
+        #expect(abs(first[1].width - (45 - 2 * word)) < 0.000001)
+        #expect(first[1].width > space)
+        #expect(abs(first[2].width - (word + space)) < 0.000001)
+        #expect(abs(first[2].x + word - 45) < 0.000001)
+        #expect(first.allSatisfy { $0.run.tracking == tracking && $0.run.usesKerning == kerning })
+        let last = try #require(result.lines.last?.spans.first)
+        #expect(last.run.text == "AV" && last.x == 0)
+        #expect(abs(last.width - word) < 0.000001)
+        #expect(result.diagnostics.isEmpty)
+    }
+
     @Test func inheritedAlignmentMixedRunsAndMarginsKeepWordGeometry() throws {
         let inherited = try XML.parse(Data("<a:lstStyle><a:lvl1pPr algn=\"just\"/></a:lstStyle>".utf8))
         let xml = try body(text("AA ") + "<a:r><a:rPr b=\"1\" i=\"1\"><a:solidFill><a:srgbClr val=\"FF0000\"/></a:solidFill></a:rPr><a:t>BB CC</a:t></a:r>", attributes: "marL=\"127000\" marR=\"63500\" indent=\"63500\"")
