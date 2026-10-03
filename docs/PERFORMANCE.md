@@ -1,12 +1,27 @@
 # Performance measurements
 
-The latest [combined layout checkpoint](INTEGRATED-LAYOUT-PERFORMANCE-20261003.md)
+The latest [combined fidelity and performance checkpoint](INTEGRATED-LAYOUT-PERFORMANCE-20261003-3.md)
+measures **4.44% faster registered-font table rendering and 5.92% faster fitting**
+against this pass's `5654d1b` baseline. Both improve in all ten matched pairs with
+nonoverlapping observed ranges, including the new native-calibrated geometry.
+Fallback rendering has overlapping ranges. Against the older `cf1b8a0` baseline,
+registered rendering improves 5.94%; fitting's 3.73% lower median has overlapping
+ranges and one slower pair. Fallback recovery remains unproven. These are local
+workload results, with no general speed, memory or cross-platform claim.
+
+The [isolated preserving change](LAYOUT-PERFORMANCE-20261003-3.md) measured larger
+registered/fitting gains before the fidelity rules were integrated. It retains
+three separately measured cycles and 628-slide output identity; those results
+do not replace the combined checkpoint above.
+
+The preceding [combined layout checkpoint](INTEGRATED-LAYOUT-PERFORMANCE-20261003.md)
 finds **2.26% slower fallback table rendering and 3.01% slower rich-text fitting**
 against `cf1b8a0`, with both slower in all ten matched pairs. Registered-font
 table rendering is 0.75% faster with overlapping ranges; there is no meaningful
 net speedup claim. One [bounded fast-path attempt](INTEGRATED-LAYOUT-PERFORMANCE-20261003-ATTEMPT.md)
-failed to remove these regressions and was discarded. Profiling common layout
-overhead is the next performance target.
+failed to remove these regressions and was discarded. The latest pass above
+profiles and reduces common layout copying while separately measuring the
+additional fidelity work.
 
 The preceding isolated [ASCII break-opportunity scan](LAYOUT-PERFORMANCE-20261003-2.md)
 measures 83.159 → 79.867 ms for registered-font 2,000-cell table rendering over

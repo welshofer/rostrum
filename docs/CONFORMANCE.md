@@ -13,7 +13,7 @@ combined checks and acceptance failures; the
 | --- | --- | --- |
 | Tables | Merge topology, atomic overlap refusal, unmerge, row/column insert/remove/reorder, dimension synchronization; `TableContractTests`, `TableConformanceTests` | PowerPoint visual equivalence, advanced vertical cell text |
 | Table appearance | Typed compound/dash line settings, qualified solid double-border geometry, native style-boundary precedence, shared-edge ownership, merged-continuation/RTL borders, margins, image/gradient fills, embedded/custom regions and all 74 native style definitions, theme-owned image references, correct tint/shade/saturation and Office interpolation for endpoint-pair/mirrored-three-stop gradients; `BuiltInTableStyleTests`, `TableStyleContractTests`, `TableStyleImportTests`, `TableFillAtomicityTests` | Whole-slide Office equivalence; pattern fills, effects, unsupported compound/dashed-double/junction variants in preview |
-| Typography | Exact regular/bold/italic face selection, mixed-run shared fit/render layout, Office-verified baseline subset, fields, breaks, standard LTR Latin tab stops, word-space justification, spacing, bullets, autofit; `FontFaceTests`, `RichTextLayoutTests`, `ParagraphJustificationTests`, `TabLayoutTests` | Whole-image typography equivalence, full paragraph bidi, non-Latin/distributed justification, locale-specific decimal tabs, text decorations/warps/columns, language-specific typography |
+| Typography | Exact regular/bold/italic face selection, mixed-run shared fit/render layout, Office-verified baseline and bounded line-break subsets, fields, breaks, standard LTR Latin tab stops, word-space justification, spacing, bullets, autofit; `FontFaceTests`, `RichTextLayoutTests`, `ParagraphJustificationTests`, `TabLayoutTests`, `LineBreakBoundaryTests` | Whole-image typography equivalence, full paragraph bidi, non-Latin/distributed justification, locale-specific decimal tabs, text decorations/warps/columns, language-specific typography |
 | Shaping | Bounded Latin kerning/ligatures, Arabic joining/contextual GSUB, GDEF filtering, mark-to-base/mark-to-mark attachment, Calibri compatibility, NFC clusters, restricted Hebrew bidi and horizontal CJK breaks; `TextShaperTests`, `ArabicShapingTests`, `FontCompatibilityTests`, `FontLookupFilteringTests` and pinned HarfBuzz oracles | Complete Arabic/Indic shaping, unsupported composition and mark-to-ligature/cursive attachment, full Unicode bidi/line-breaking |
 | Pictures/crops | Source/destination crops, stretch/tile, transforms/clipping, isolated replacement; `PictureMappingTests`; resvg quadrant/transparency checks and 12 passing Office mapping cases | Broader native image/effect coverage; alternate SVG/layer/linked image replacement refuses atomically |
 | Speaker notes | Rich notes, bounded read-only notes-page SVG previews with diagnostics, printable default page geometry, foreign placeholder inheritance, independent duplicates, source master/theme/media import, exact-master reuse; `NotesTests`, `NotesPageLayoutTests`, annotation lifecycle/import suites | Conflicting masters/page sizes are refused atomically; broader Office notes lifecycle coverage |
@@ -253,3 +253,20 @@ conformance notes now have a native reference too, retaining their producer
 defect. The general release gate still fails for missing candidate renders,
 including notes pages; these bounded native tests do not certify universal
 notes-page rendering.
+
+## Native text boundary calibration — October 3
+
+The [latest layout record](LAYOUT-FIDELITY-20261003-3.md) adds 175 independently
+captured PowerPoint line-break cases, with 174 bounded horizontal geometry
+calibrations and one explicitly diagnosed ligature control. It verifies base
+advance rounding after autofit scaling, tracking/kerning distinctions, body
+capacity and paragraph-coordinate conversion. Explicit `kern="0"` disables
+native pair positioning; omission remains distinct. Existing 60-case tab and
+paragraph native oracles retain their original assertions and tolerances.
+
+This profile covers left-to-right ASCII segments with one scalar per shaped
+glyph, using the tested Arial regular/bold and DejaVu metrics. It does not
+certify complex clusters, native-selected autofit scales, every font or general
+typography raster parity. Unsupported boundaries remain diagnosed, and the
+standalone shaping contract remains unchanged. Earlier raster failures above
+have not been reclassified as passing by these numeric checks.
