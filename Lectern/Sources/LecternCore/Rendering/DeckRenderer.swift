@@ -363,6 +363,7 @@ public actor DeckRenderer {
 
             var dropped: [String] = []
             var layoutWarnings: [String] = []
+            let deck = try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings) } ?? deck
             var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {
                 try Task.checkCancellation()

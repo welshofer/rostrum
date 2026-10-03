@@ -35,6 +35,16 @@ public final class TextFrame {
         }
     }
 
+    /// Native PowerPoint text autofit. Scale is relative to the inherited font
+    /// sizes; it does not replace those sizes or detach text from its theme.
+    public func setAutoFit(fontScale: Double = 1) {
+        guard fontScale.isFinite else { return }
+        for name in ["a:noAutofit", "a:normAutofit", "a:spAutoFit"] { bodyPr.removeChildren(named: name) }
+        let fit = bodyPr.getOrAddChild("a:normAutofit", beforeAnyOf: ["a:scene3d", "a:sp3d", "a:flatTx", "a:extLst"])
+        fit[attribute: "fontScale"] = String(Int((min(1, max(0.01, fontScale)) * 100000).rounded()))
+        part.markDirty()
+    }
+
     public var verticalAnchor: VerticalAnchor {
         get { bodyPr[attribute: "anchor"].flatMap(VerticalAnchor.init(rawValue:)) ?? .top }
         set {

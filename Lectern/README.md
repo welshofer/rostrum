@@ -292,9 +292,26 @@ placeholders; charts and tables are native editable objects. Generated images ar
 inserted only when the selected layout offers a picture placeholder. Missing picture
 slots and conversion of structured content to template text produce warnings. Metrics,
 diagrams, timelines, quadrants and bands currently become text within native template
-content regions; they are not reconstructed as native diagrams. Fit failure stops
-export with a useful error instead of overflowing the slide. Missing or unmeasured
+content regions; they are not reconstructed as native diagrams. Wrapped text uses safe
+space below its placeholder when the template allows flow. Template shrink-to-fit
+settings use native font scaling without replacing inherited fonts. Neither operation
+changes the template's master or layout parts. Content that still cannot fit stops
+export with an error instead of overflowing the slide. Missing or unmeasured
 fonts remain visible in the result's diagnostics.
+
+Chart and table explanations and sources reserve their measured wrapped height before
+layout selection; they are not squeezed into a fixed caption strip. If no layout can
+fit both a readable object and its explanation, the full text continues on following
+template slides. Section membership and speaker notes are retained, and the result
+reports the added slides. Export failures
+retain the final normalized draft in the protected diagnostics folder, using the same
+seven-day retention policy as rejected drafts, so it can be replayed without another
+model request.
+
+Template selection prefers layouts with the appropriate number of content regions
+and enough usable area. Table rows are measured with their cell padding before
+placing captions; generated diagrams fit wholly inside picture placeholders instead
+of being cropped. Imported master/layout/theme parts remain unchanged.
 
 Theme-based generation compiles design.md into the master/theme and publishes a
 subordinate layout for each authored composition. Header dividers follow the measured

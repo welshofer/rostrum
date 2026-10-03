@@ -12,6 +12,16 @@ public struct TemplatePlaceholder {
 }
 
 public extension SlideLayout {
+    /// Fixed layout/master artwork used to bound new text flow. Placeholder
+    /// geometry is available separately so callers can distinguish content slots.
+    var artworkFrames: [Rect] {
+        ([part] + [master?.part].compactMap { $0 }).flatMap { source in
+            ShapeCollection(part: source, package: package).all.compactMap {
+                $0.placeholder == nil ? $0.explicitFrame : nil
+            }
+        }
+    }
+
     var placeholders: [TemplatePlaceholder] {
         ShapeCollection(part: part, package: package).all.compactMap { shape in
             guard let ph = shape.placeholder else { return nil }

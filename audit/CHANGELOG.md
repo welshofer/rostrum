@@ -124,3 +124,52 @@ The app remains open with the Welshofer template selected.
 The earlier check proved only button visibility, not its action. Picker acceptance
 must exercise click → open dialog → select file → confirm loaded state, plus cancel
 and reopening after a different picker purpose.
+
+## 2026-10-02 — Respect template text wrapping and autofit
+
+Fixed RostrumLayout's hard cutoff at the original placeholder height. Wrapped text
+now uses free space below a placeholder when vertical flow is allowed, with collision
+and slide-edge limits. Native shrink-to-fit is emitted as a computed font scale,
+preserving inherited typography. Master/layout parts remain unchanged. Comparison
+layouts prefer actual content placeholders over their small heading slots.
+
+Verified the exact rejected title from the user's screenshot through Lectern's
+DeckRenderer and inspected both resulting slides in Microsoft PowerPoint. It wraps
+fully without overlapping body text. The Contoso test copy's 46 master/layout/theme
+XML parts match the Desktop template byte for byte. python-pptx also opens the deck.
+Evidence and the offline reproduction are in ignored `text-flow/`.
+
+Passed 704 Rostrum tests, 8 layout tests, 175 Lectern core tests, the offline workflow
+checks, README examples, macOS/iOS builds and isolated app-hosted tests. Relaunched
+Lectern after confirming the failed generation was idle; restored the prompt and
+Contoso selection with the existing generation choices. No full climate deck was
+regenerated and no model calls were made for verification.
+
+## 2026-10-02 — Fix template object captions and layout selection
+
+The next live climate generation completed, but all 13 PowerPoint exports exposed
+remaining composition failures: first-fit narrow charts, mismatched body slots,
+cropped diagram labels, and native table growth over its caption. Reproduced the
+whole deck offline from its actual text/chart/table/image content rather than treating
+a successful export as acceptance.
+
+RostrumLayout ranks native layouts by content-region count and area, permits bounded
+horizontal title flow, and reserves measured caption/object height before selecting a
+layout. Lectern measures wrapped table cells and assigns consistent row heights, fits
+generated images without cropping, and carries oversized explanations onto following
+native slides without losing words, section membership or speaker notes. Failed
+exports retain the final accepted normalized draft under protected seven-day retention.
+
+Inspected all 13 slides of audit/caption-flow/climate-layout-acceptance.pptx in Microsoft
+PowerPoint: full-width charts, aligned paired columns, complete diagram, table separated
+from caption/footer. The 46 Contoso master/layout/theme XML parts remain byte-identical.
+python-pptx opens all 13 slides. Both slides of the supplied Welshofer template's caption
+regression were also inspected in PowerPoint. Original decks/templates were unchanged.
+
+The full scripts/verify.sh gate passed, including both package suites, workflow checks,
+README snippets, signed macOS build, iOS simulator build and 27 app-hosted tests.
+Relaunched the canonical Lectern build after confirming generation had finished.
+Detailed reproduction and limits are in ignored audit/caption-flow/README.md. This
+fixes composition failures; text-heavy layouts, sparse closing design, native chart
+styling and missing-font substitutions are not certified as polished design. No commit
+or push was made.

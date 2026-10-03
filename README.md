@@ -224,10 +224,20 @@ file. A template resource linking to a removed starter slide is rejected with an
 explanation rather than producing a broken relationship.
 
 `TemplateLayoutEngine.plan` selects actual placeholders, optionally restricted to
-one master. `compose` fills text and paragraph levels without overriding template
-geometry or typography. It supports title/subtitle levels within a single custom
-cover placeholder, as well as separate native title/body placeholders. Content that
-cannot fit is rejected so the caller can shorten it or choose another layout.
+one master. `compose` fills text and paragraph levels with inherited typography.
+Wrapped text can extend a slide's placeholder downward into free space when the
+template permits text flow, stopping before other placeholders, artwork or the slide
+edge. Native shrink-to-fit uses a computed font scale with a readability floor.
+The template's master and layout parts remain unchanged. It supports title/subtitle
+levels within a single custom cover placeholder, as well as separate native title/body
+placeholders. Content that still cannot fit is rejected so the caller can shorten it
+or choose another layout.
+For charts and tables, pass `objectCaption` to `plan`: it reserves the measured text
+height alongside a minimum object height before selecting a compatible layout.
+`measureObjectHeight` lets the caller account for wrapped table rows at each candidate
+width. Layout ranking considers the number of content regions and their available
+area, rather than accepting the first narrow variant. A title can extend horizontally
+over the content span when vertical wrapping cannot fit and no artwork blocks it.
 `validateTemplateBindings()` verifies each slide's layout/master/theme chain.
 
 For authored design systems, apply the design, call `compileThemeMaster()`, compose

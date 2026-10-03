@@ -10,6 +10,41 @@ import Testing
 /// code path was taken.
 @Suite struct RejectedDraftProtectionTests {
 
+    @Test func exportFailureKeepsTheAcceptedRevisionForOfflineRecovery() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let output = root.appendingPathComponent("blocked-output")
+        try Data("a file cannot be used as an output directory".utf8).write(to: output)
+        let diagnostics = root.appendingPathComponent("diagnostics")
+        let original = DeckIR(meta: Meta(title: "Original draft"), slides: [
+            IRSlide(id: "title", layout: "title", title: "Original"),
+            IRSlide(id: "body", layout: "bullets", title: "Evidence", body: Body(bullets: [Bullet(text: "Retain this fact")])),
+            IRSlide(id: "end", layout: "closing", title: "Next step", body: Body(callToAction: "Act"))
+        ])
+        var revised = original
+        revised.meta.title = "Accepted revision"
+        let encoder = JSONEncoder()
+        let provider = FixtureProvider(validJSON: String(decoding: try encoder.encode(original), as: UTF8.self),
+            revisedJSON: String(decoding: try encoder.encode(revised), as: UTF8.self))
+        do {
+            _ = try await DeckGenerator(provider: provider).generate(
+                DeckRequest(prompt: "Explain the evidence", slideCount: 3, notes: false),
+                designURL: nil, into: output, diagnostics: diagnostics) { _ in }
+            Issue.record("The blocked output should fail")
+        } catch let LecternError.renderFailed(message) {
+            #expect(message.contains("saved for recovery"))
+        }
+        let files = try FileManager.default.contentsOfDirectory(at: diagnostics, includingPropertiesForKeys: nil)
+        let saved = try #require(files.first)
+        let recovered = try JSONDecoder().decode(DeckIR.self, from: Data(contentsOf: saved))
+        #expect(recovered.meta.title == "Accepted revision")
+        #expect(recovered.slides[1].body?.bullets?.first?.text == "Retain this fact")
+        #if !os(iOS)
+        #expect((try FileManager.default.attributesOfItem(atPath: saved.path)[.posixPermissions] as? NSNumber)?.intValue == 0o600)
+        #endif
+    }
+
     @Test func rejectedDraftOnDiskIsOwnerReadableOnly() async throws {
         let dir = URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent("lectern-sec1-\(ProcessInfo.processInfo.globallyUniqueString)")

@@ -37,7 +37,7 @@ public actor DeckGenerator {
         emit(.validating)
         do {
             let result = try decodeAndValidate(first.json, request)
-            return try await qaThenFinish(result, draftJSON: first.json, request, designURL, directory, template: template, usage: first.usage, emit: emit)
+            return try await qaThenFinish(result, draftJSON: first.json, request, designURL, directory, diagnostics: diagnostics, template: template, usage: first.usage, emit: emit)
         } catch let failure as DraftErrors {
             // §8.7 — exactly one repair attempt.
             emit(.repairing)
@@ -46,7 +46,7 @@ public actor DeckGenerator {
             emit(.validating)
             do {
                 let result = try decodeAndValidate(repaired.json, request)
-                return try await qaThenFinish(result, draftJSON: repaired.json, request, designURL, directory, template: template, usage: repaired.usage, emit: emit)
+                return try await qaThenFinish(result, draftJSON: repaired.json, request, designURL, directory, diagnostics: diagnostics, template: template, usage: repaired.usage, emit: emit)
             } catch let second as DraftErrors {
                 // Keep the draft that failed. Without it the only record of
                 // what the model actually sent is an error string, which is not
@@ -116,7 +116,7 @@ public actor DeckGenerator {
     /// revision when it also validates. A failed or invalid revision is ignored
     /// (never worse than the draft).
     private func qaThenFinish(_ result: ValidationResult, draftJSON: String, _ request: DeckRequest,
-                              _ designURL: URL?, _ directory: URL, template: PowerPointTemplate?, usage: Usage,
+                              _ designURL: URL?, _ directory: URL, diagnostics: URL?, template: PowerPointTemplate?, usage: Usage,
                               emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         var final = result
         if quality {
@@ -138,7 +138,7 @@ public actor DeckGenerator {
             }
         }
         try Task.checkCancellation()
-        return try await finish(final, request, designURL, directory, template: template, usage: usage, emit: emit)
+        return try await finish(final, request, designURL, directory, diagnostics: diagnostics, template: template, usage: usage, emit: emit)
     }
 
     /// Generate an image for each slide that carries an `ImageBrief`, concurrently.
@@ -309,7 +309,7 @@ public actor DeckGenerator {
     }
 
     private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?,
-                        _ directory: URL, template: PowerPointTemplate?, usage: Usage,
+                        _ directory: URL, diagnostics: URL?, template: PowerPointTemplate?, usage: Usage,
                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         // A cancel must land before `illustrate` starts spending: image calls
         // are the priciest thing this pipeline does after the draft itself.
@@ -324,7 +324,15 @@ public actor DeckGenerator {
                 into: directory, warnings: shaped.warnings + imageWarnings, images: images,
                 useSmartArt: useSmartArt, template: template)
         } catch let RenderError.renderFailed(underlying) {
-            throw LecternError.renderFailed(message: underlying)
+            var message = underlying
+            // Keep the final normalized deck, including accepted QA edits, so
+            // layout failures can be replayed without another model request.
+            if let data = try? JSONEncoder().encode(shaped.deck),
+               let json = String(data: data, encoding: .utf8),
+               let kept = Self.keepRejectedDraft(json, in: diagnostics ?? directory) {
+                message += " The draft was saved for recovery at \(kept.path)."
+            }
+            throw LecternError.renderFailed(message: message)
         }
         emit(.finished(deckResult))
         return deckResult

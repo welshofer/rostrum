@@ -4,6 +4,19 @@ import Testing
 @testable import RostrumLayout
 
 @Suite struct TemplateLayoutEngineTests {
+    @Test func prefersFullContentAreaOverFirstNarrowVariant() throws {
+        let deck = try Presentation()
+        let narrow = try #require(deck.layout(type: "obj"))
+        let narrowBody = try #require(ShapeCollection(part: narrow.part, package: deck.package).all.first { $0.placeholder?.idx == 1 })
+        narrowBody.frame = Rect(x: .points(40), y: .points(180), width: .points(250), height: .points(180))
+        let second = try Presentation()
+        _ = try second.bulletSlide("Seed", ["Text"])
+        try deck.slides.importAll(from: second)
+        let plan = try TemplateLayoutEngine(presentation: deck).plan(title: "Evidence", columns: [], preferredTypes: ["obj"], object: "chart")
+        #expect(plan.objectFrame!.width.points > 250)
+        #expect(plan.layout.part.uri != narrow.part.uri)
+    }
+
     @Test func choosesRealLayoutAndPreservesInheritance() throws {
         let source = try Presentation()
         source.documentKind = .template
@@ -96,6 +109,88 @@ import Testing
         let plan = try engine.plan(title: "Title", columns: [[LayoutParagraph("Body")]], preferredTypes: ["obj"])
         #expect(plan.layout.part.uri == layout.part.uri)
         #expect(plan.textSlots.map(\.index) == [1])
+    }
+
+    private func flowFixture(autofit: Bool = false, clipped: Bool = false) throws -> (Presentation, SlideLayout) {
+        let deck = try Presentation()
+        let layout = try #require(deck.layout(type: "obj"))
+        let shapes = ShapeCollection(part: layout.part, package: deck.package)
+        let title = try #require(shapes.all.first { $0.placeholder?.type == "title" })
+        title.frame = Rect(x: .points(40), y: .points(30), width: .points(300), height: .points(autofit ? 50 : 30))
+        title.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
+        let tx = try #require(title.element.firstChild(named: "p:txBody"))
+        let body = try #require(tx.firstChild(named: "a:bodyPr"))
+        for name in ["a:noAutofit", "a:normAutofit", "a:spAutoFit"] { body.removeChildren(named: name) }
+        body.appendElement(XML.Element(autofit ? "a:normAutofit" : "a:noAutofit"))
+        if clipped { body[attribute: "vertOverflow"] = "clip" }
+        let list = tx.getOrAddChild("a:lstStyle", beforeAnyOf: ["a:p"])
+        let defaults = list.getOrAddChild("a:lvl1pPr").getOrAddChild("a:defRPr")
+        defaults[attribute: "sz"] = "2400"
+        let content = try #require(shapes.all.first { $0.placeholder?.idx == 1 })
+        content.frame = Rect(x: .points(40), y: .points(180), width: .points(640), height: .points(280))
+        return (deck, layout)
+    }
+
+    @Test func wrappedTitleFlowsIntoSafeSpaceAndPreservesTemplate() throws {
+        let (deck, layout) = try flowFixture()
+        let before = try layout.part.dom().serialized()
+        let engine = TemplateLayoutEngine(presentation: deck, measure: { $0.text == "Body" ? 20 : 72 })
+        let title = "Human-caused warming is clear; future harm is not fixed"
+        let columns = [[LayoutParagraph("Body")]]
+        let plan = try engine.plan(title: title, columns: columns, preferredTypes: ["obj"])
+        #expect(plan.layout.part.uri == layout.part.uri)
+        let slide = try engine.compose(plan, title: title, columns: columns)
+        #expect(slide.title?.frame.height == .points(72))
+        #expect(slide.title?.textFrame?.text == title)
+        #expect(try layout.part.dom().serialized() == before)
+        let reopened = try Presentation(data: deck.serializedData())
+        let saved = try reopened.slides[reopened.slides.count - 1]
+        #expect(saved.title?.frame.height == .points(72))
+        #expect(saved.title?.textFrame?.paragraphs.first?.runs.first?.fontSize == nil)
+        #expect(try reopened.validate().isEmpty)
+    }
+
+    @Test func nativeAutoFitShrinksWithoutFlatteningInheritedFonts() throws {
+        let (deck, layout) = try flowFixture(autofit: true)
+        let engine = TemplateLayoutEngine(presentation: deck, measure: { $0.text == "Body" ? 10 : $0.size * 2.5 })
+        let columns = [[LayoutParagraph("Body")]]
+        let plan = try engine.plan(title: "Wrapped title", columns: columns, preferredTypes: ["obj"])
+        let fit = try #require(plan.textFits[0])
+        #expect(fit.fontScale < 1 && fit.fontScale >= 0.75)
+        let slide = try engine.compose(plan, title: "Wrapped title", columns: columns)
+        #expect(slide.title?.explicitFrame == nil)
+        let scale = slide.title?.element.firstChild(named: "p:txBody")?.firstChild(named: "a:bodyPr")?.firstChild(named: "a:normAutofit")?[attribute: "fontScale"]
+        #expect(scale != nil)
+        #expect(slide.title?.textFrame?.paragraphs.first?.runs.first?.fontSize == nil)
+        #expect(plan.layout.part.uri == layout.part.uri)
+        #expect(try Presentation(data: deck.serializedData()).validate().isEmpty)
+    }
+
+    @Test func narrowTitleCanUseFullWidthContentSpanWithoutEditingLayout() throws {
+        let (deck, layout) = try flowFixture()
+        let content = try #require(ShapeCollection(part: layout.part, package: deck.package).all.first { $0.placeholder?.idx == 1 })
+        content.frame = Rect(x: .points(40), y: .points(70), width: .points(640), height: .points(280))
+        let before = try layout.part.dom().serialized()
+        let engine = TemplateLayoutEngine(presentation: deck, measure: {
+            $0.text == "Body" ? 20 : ($0.width < 500 ? 72 : 24)
+        })
+        let columns = [[LayoutParagraph("Body")]]
+        let plan = try engine.plan(title: "A long title", columns: columns, preferredTypes: ["obj"])
+        #expect(plan.layout.part.uri == layout.part.uri)
+        let slide = try engine.compose(plan, title: "A long title", columns: columns)
+        #expect(slide.title?.frame.width == .points(640))
+        #expect(slide.title!.frame.maxY < content.frame.y)
+        #expect(try layout.part.dom().serialized() == before)
+    }
+
+    @Test func textFlowCannotCrossContentOrExplicitClipping() throws {
+        let (deck, layout) = try flowFixture()
+        let slot = try #require(layout.placeholders.first { $0.isTitle })
+        let blocked = TemplateLayoutEngine(presentation: deck, measure: { _ in 200 })
+        #expect(!blocked.fits([LayoutParagraph("Too tall")], in: try #require(slot.frame), layout: layout, slot: slot.index))
+        let (clippedDeck, clippedLayout) = try flowFixture(clipped: true)
+        let clipped = TemplateLayoutEngine(presentation: clippedDeck, measure: { _ in 72 })
+        #expect(!clipped.fits([LayoutParagraph("Clipped")], in: try #require(slot.frame), layout: clippedLayout, slot: slot.index))
     }
 
 }

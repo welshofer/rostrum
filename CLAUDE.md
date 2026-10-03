@@ -87,6 +87,9 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
 
 - A POTX input owns its slide size, masters, layouts, theme and artwork. Fill native
   placeholders and retain their inheritance; do not apply a design.md over it.
+- Measure wrapped text with inherited body settings before rejecting a placeholder.
+  Honor native autofit and permitted vertical flow into free space; prevent new
+  collisions and slide overflow without editing the template's master/layout parts.
 - Use `Presentation.fromTemplate(data:)` for new decks. It intentionally removes
   starter content; ordinary open/save must remain lossless. Exported slides must
   retain a valid layout → master → theme chain.
@@ -95,5 +98,8 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
 - Treat font substitution and native rendering as separate acceptance checks.
   LibreOffice and SVG previews do not establish PowerPoint fidelity. Use the user's
   exported PowerPoint images as authoritative visual evidence.
+- Template regressions should include a complete mixed-content deck in PowerPoint.
+  Check layout choice and unused columns as well as overflow. Measure wrapped table
+  rows and captions together; keep generated diagrams fully visible in image slots.
 - Do not restart or replace an app while the user is generating a presentation.
   Use isolated build/test products; wait for an idle client before visual checks.
