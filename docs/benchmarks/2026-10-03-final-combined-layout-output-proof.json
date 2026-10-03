@@ -1,0 +1,303 @@
+{
+  "currentBaselineRevision": "5654d1b09e43d26f93a195270f8832b6be3a21e4",
+  "preTabBaselineRevision": "cf1b8a0cec2cf680383cb683603785aeaa0f2011",
+  "integratedRevision": "301a6c27de03fdc13d4b2617724de40c861a71e9",
+  "workerRevision": "f839c8951ca2fdaf20b4ac8ada106483238011a7",
+  "binarySHA256": {
+    "current-baseline": "d5d85a51b80de125e2b5edb2f7222918a604127322b9a73542b616007a3f8b10",
+    "pre-tab-baseline": "39455d6d17672947c0af314581aa4adaa43e548bee0900fbba1d9c7629a54782",
+    "candidate-1": "d9c10a4b10666e71fef104cfc7bcc7fcd549502c69f88ba1baced3041268d31d",
+    "candidate-2": "d9c10a4b10666e71fef104cfc7bcc7fcd549502c69f88ba1baced3041268d31d"
+  },
+  "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+  "cases": [
+    {
+      "scenario": "table-200x50",
+      "registeredFont": false,
+      "savedPPTXSHA256": {
+        "current-baseline": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+        "pre-tab-baseline": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+        "candidate-1": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+        "candidate-2": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03"
+      },
+      "slideCount": 1,
+      "artifacts": {
+        "current-baseline": {
+          "saved.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962",
+          "slide-0.svg": "906c4143d53535a0cf5e77b72d6724a6d81a96c896adc96f84b055da7ddcf26b"
+        },
+        "pre-tab-baseline": {
+          "saved.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962",
+          "slide-0.svg": "906c4143d53535a0cf5e77b72d6724a6d81a96c896adc96f84b055da7ddcf26b"
+        },
+        "candidate-1": {
+          "saved.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962",
+          "slide-0.svg": "906c4143d53535a0cf5e77b72d6724a6d81a96c896adc96f84b055da7ddcf26b"
+        },
+        "candidate-2": {
+          "saved.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962",
+          "slide-0.svg": "906c4143d53535a0cf5e77b72d6724a6d81a96c896adc96f84b055da7ddcf26b"
+        }
+      },
+      "candidateArtifactsDeterministic": true,
+      "changedArtifactsAgainstBaseline": {
+        "current-baseline": [],
+        "pre-tab-baseline": []
+      }
+    },
+    {
+      "scenario": "shaped-table-100x20",
+      "registeredFont": true,
+      "savedPPTXSHA256": {
+        "current-baseline": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+        "pre-tab-baseline": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+        "candidate-1": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+        "candidate-2": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657"
+      },
+      "slideCount": 1,
+      "artifacts": {
+        "current-baseline": {
+          "saved.pptx": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "slide-0.svg": "7af31c1562244ec063b12fc4aa893b1d1ee1a9cd8e45998032acd288e3aafe42"
+        },
+        "pre-tab-baseline": {
+          "saved.pptx": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "slide-0.svg": "7af31c1562244ec063b12fc4aa893b1d1ee1a9cd8e45998032acd288e3aafe42"
+        },
+        "candidate-1": {
+          "saved.pptx": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "slide-0.svg": "9a1fd232c17b5f1c73e8c089860b32319242aaf7125451b8fc6e7f39f8195f9e"
+        },
+        "candidate-2": {
+          "saved.pptx": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "slide-0.svg": "9a1fd232c17b5f1c73e8c089860b32319242aaf7125451b8fc6e7f39f8195f9e"
+        }
+      },
+      "candidateArtifactsDeterministic": true,
+      "changedArtifactsAgainstBaseline": {
+        "current-baseline": [
+          "slide-0.svg"
+        ],
+        "pre-tab-baseline": [
+          "slide-0.svg"
+        ]
+      }
+    },
+    {
+      "scenario": "richtext-fit",
+      "registeredFont": true,
+      "savedPPTXSHA256": {
+        "current-baseline": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+        "pre-tab-baseline": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+        "candidate-1": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+        "candidate-2": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296"
+      },
+      "slideCount": 1,
+      "artifacts": {
+        "current-baseline": {
+          "saved.pptx": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "slide-0.svg": "f32752bddaf85d3213a200c2468139e0243df7534d644c2d41d22c72563a2367"
+        },
+        "pre-tab-baseline": {
+          "saved.pptx": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "slide-0.svg": "f32752bddaf85d3213a200c2468139e0243df7534d644c2d41d22c72563a2367"
+        },
+        "candidate-1": {
+          "saved.pptx": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "0c4f945cac7ae6c028501f148150c11665a95ca9704694eb88abbb00d660e155",
+          "slide-0.svg": "f32752bddaf85d3213a200c2468139e0243df7534d644c2d41d22c72563a2367"
+        },
+        "candidate-2": {
+          "saved.pptx": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "0c4f945cac7ae6c028501f148150c11665a95ca9704694eb88abbb00d660e155",
+          "slide-0.svg": "f32752bddaf85d3213a200c2468139e0243df7534d644c2d41d22c72563a2367"
+        }
+      },
+      "candidateArtifactsDeterministic": true,
+      "changedArtifactsAgainstBaseline": {
+        "current-baseline": [
+          "slide-0-issues.json"
+        ],
+        "pre-tab-baseline": [
+          "slide-0-issues.json"
+        ]
+      }
+    },
+    {
+      "scenario": "slides-10",
+      "registeredFont": false,
+      "savedPPTXSHA256": {
+        "current-baseline": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+        "pre-tab-baseline": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+        "candidate-1": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+        "candidate-2": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557"
+      },
+      "slideCount": 10,
+      "artifacts": {
+        "current-baseline": {
+          "saved.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "fb36a23c3d64bbf5321dcfd6ee50addc2a1da99dc3ae80f8ef855e92b7763a30",
+          "slide-0.svg": "7c3e471d4da3379ba5f864682256e55ae6a652f776b820531bbd6f2c1b1ea162",
+          "slide-1-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-1-issues.json": "214b27a6830107657e45e9082119faa38c6ea5a0741054bcf83d418546fff3bd",
+          "slide-1.svg": "77b4b6759c188dff1c21191d28f4b0c3a8f48f8c2ae297466f639a32b1868039",
+          "slide-2-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-2-issues.json": "d4dd23a56b9624aca058121885fc0d9d267f6479269d51bc84cf560e576056d9",
+          "slide-2.svg": "bdc51a4349adf9536dfaa995aac54dd703cc1679b1e5c42465618b18cbd11ade",
+          "slide-3-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-3-issues.json": "f1590b8a4a628fe8bddeddc4f1fd982721b6928a5696ea12b1afdf8bca0cd9c0",
+          "slide-3.svg": "8f28d620b5e5add7574ecc9b406a64845915dbe94f1903922103f2a9dc3f9147",
+          "slide-4-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-4-issues.json": "47f6bb6a77a6f760586a047ccc36cb25496c2db56c5792bf4b71a4c22c5c3868",
+          "slide-4.svg": "d548f3cbfaa57ea0f5986d90b6aa628619f0ff2f923ff97dcbabadba86379308",
+          "slide-5-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-5-issues.json": "9889ff64b4b56d633142c7ff4ea373eb464637abc35223024abe02ae3110f23b",
+          "slide-5.svg": "a8abf9afa238bd1036d490788b79acbe182b63b0ff7d445ea6a4fb60b44f4082",
+          "slide-6-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-6-issues.json": "16060d21d4d912303fbd7801f04f222c0adb8a2589fc8613347e8d83fcb20ea7",
+          "slide-6.svg": "464f5f64dd89e5ef1a73e0ebf72ff8c34d967538e313073489b65aa355c4208e",
+          "slide-7-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-7-issues.json": "d830d933c76436cafd5cefa51e71a4b50b606d378855c6eacf967611417f0c3f",
+          "slide-7.svg": "333bf932b9f8197e11106cdde6aaba09e7a9801290f03c66d38cfe8d21ffa5c1",
+          "slide-8-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-8-issues.json": "8c5073dac6f09559230c37182b9a882c99a79b7a54de85aab57df4e03084115c",
+          "slide-8.svg": "f1d87a71f775a593d201092772c65e48d3578ad5d5452e765982c5616a802984",
+          "slide-9-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-9-issues.json": "d936f6dabcc3c6b59079c0b89ec0443cd31d634a94f1e5a16d7f1233e8c1c74b",
+          "slide-9.svg": "f38c60e991c9df9a48d250d24819476d6ffbbddcbebc402ecf224fec78ef901d"
+        },
+        "pre-tab-baseline": {
+          "saved.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "fb36a23c3d64bbf5321dcfd6ee50addc2a1da99dc3ae80f8ef855e92b7763a30",
+          "slide-0.svg": "7c3e471d4da3379ba5f864682256e55ae6a652f776b820531bbd6f2c1b1ea162",
+          "slide-1-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-1-issues.json": "214b27a6830107657e45e9082119faa38c6ea5a0741054bcf83d418546fff3bd",
+          "slide-1.svg": "77b4b6759c188dff1c21191d28f4b0c3a8f48f8c2ae297466f639a32b1868039",
+          "slide-2-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-2-issues.json": "d4dd23a56b9624aca058121885fc0d9d267f6479269d51bc84cf560e576056d9",
+          "slide-2.svg": "bdc51a4349adf9536dfaa995aac54dd703cc1679b1e5c42465618b18cbd11ade",
+          "slide-3-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-3-issues.json": "f1590b8a4a628fe8bddeddc4f1fd982721b6928a5696ea12b1afdf8bca0cd9c0",
+          "slide-3.svg": "8f28d620b5e5add7574ecc9b406a64845915dbe94f1903922103f2a9dc3f9147",
+          "slide-4-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-4-issues.json": "47f6bb6a77a6f760586a047ccc36cb25496c2db56c5792bf4b71a4c22c5c3868",
+          "slide-4.svg": "d548f3cbfaa57ea0f5986d90b6aa628619f0ff2f923ff97dcbabadba86379308",
+          "slide-5-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-5-issues.json": "9889ff64b4b56d633142c7ff4ea373eb464637abc35223024abe02ae3110f23b",
+          "slide-5.svg": "a8abf9afa238bd1036d490788b79acbe182b63b0ff7d445ea6a4fb60b44f4082",
+          "slide-6-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-6-issues.json": "16060d21d4d912303fbd7801f04f222c0adb8a2589fc8613347e8d83fcb20ea7",
+          "slide-6.svg": "464f5f64dd89e5ef1a73e0ebf72ff8c34d967538e313073489b65aa355c4208e",
+          "slide-7-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-7-issues.json": "d830d933c76436cafd5cefa51e71a4b50b606d378855c6eacf967611417f0c3f",
+          "slide-7.svg": "333bf932b9f8197e11106cdde6aaba09e7a9801290f03c66d38cfe8d21ffa5c1",
+          "slide-8-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-8-issues.json": "8c5073dac6f09559230c37182b9a882c99a79b7a54de85aab57df4e03084115c",
+          "slide-8.svg": "f1d87a71f775a593d201092772c65e48d3578ad5d5452e765982c5616a802984",
+          "slide-9-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-9-issues.json": "d936f6dabcc3c6b59079c0b89ec0443cd31d634a94f1e5a16d7f1233e8c1c74b",
+          "slide-9.svg": "f38c60e991c9df9a48d250d24819476d6ffbbddcbebc402ecf224fec78ef901d"
+        },
+        "candidate-1": {
+          "saved.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "fb36a23c3d64bbf5321dcfd6ee50addc2a1da99dc3ae80f8ef855e92b7763a30",
+          "slide-0.svg": "7c3e471d4da3379ba5f864682256e55ae6a652f776b820531bbd6f2c1b1ea162",
+          "slide-1-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-1-issues.json": "214b27a6830107657e45e9082119faa38c6ea5a0741054bcf83d418546fff3bd",
+          "slide-1.svg": "77b4b6759c188dff1c21191d28f4b0c3a8f48f8c2ae297466f639a32b1868039",
+          "slide-2-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-2-issues.json": "d4dd23a56b9624aca058121885fc0d9d267f6479269d51bc84cf560e576056d9",
+          "slide-2.svg": "bdc51a4349adf9536dfaa995aac54dd703cc1679b1e5c42465618b18cbd11ade",
+          "slide-3-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-3-issues.json": "f1590b8a4a628fe8bddeddc4f1fd982721b6928a5696ea12b1afdf8bca0cd9c0",
+          "slide-3.svg": "8f28d620b5e5add7574ecc9b406a64845915dbe94f1903922103f2a9dc3f9147",
+          "slide-4-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-4-issues.json": "47f6bb6a77a6f760586a047ccc36cb25496c2db56c5792bf4b71a4c22c5c3868",
+          "slide-4.svg": "d548f3cbfaa57ea0f5986d90b6aa628619f0ff2f923ff97dcbabadba86379308",
+          "slide-5-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-5-issues.json": "9889ff64b4b56d633142c7ff4ea373eb464637abc35223024abe02ae3110f23b",
+          "slide-5.svg": "a8abf9afa238bd1036d490788b79acbe182b63b0ff7d445ea6a4fb60b44f4082",
+          "slide-6-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-6-issues.json": "16060d21d4d912303fbd7801f04f222c0adb8a2589fc8613347e8d83fcb20ea7",
+          "slide-6.svg": "464f5f64dd89e5ef1a73e0ebf72ff8c34d967538e313073489b65aa355c4208e",
+          "slide-7-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-7-issues.json": "d830d933c76436cafd5cefa51e71a4b50b606d378855c6eacf967611417f0c3f",
+          "slide-7.svg": "333bf932b9f8197e11106cdde6aaba09e7a9801290f03c66d38cfe8d21ffa5c1",
+          "slide-8-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-8-issues.json": "8c5073dac6f09559230c37182b9a882c99a79b7a54de85aab57df4e03084115c",
+          "slide-8.svg": "f1d87a71f775a593d201092772c65e48d3578ad5d5452e765982c5616a802984",
+          "slide-9-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-9-issues.json": "d936f6dabcc3c6b59079c0b89ec0443cd31d634a94f1e5a16d7f1233e8c1c74b",
+          "slide-9.svg": "f38c60e991c9df9a48d250d24819476d6ffbbddcbebc402ecf224fec78ef901d"
+        },
+        "candidate-2": {
+          "saved.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0-issues.json": "fb36a23c3d64bbf5321dcfd6ee50addc2a1da99dc3ae80f8ef855e92b7763a30",
+          "slide-0.svg": "7c3e471d4da3379ba5f864682256e55ae6a652f776b820531bbd6f2c1b1ea162",
+          "slide-1-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-1-issues.json": "214b27a6830107657e45e9082119faa38c6ea5a0741054bcf83d418546fff3bd",
+          "slide-1.svg": "77b4b6759c188dff1c21191d28f4b0c3a8f48f8c2ae297466f639a32b1868039",
+          "slide-2-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-2-issues.json": "d4dd23a56b9624aca058121885fc0d9d267f6479269d51bc84cf560e576056d9",
+          "slide-2.svg": "bdc51a4349adf9536dfaa995aac54dd703cc1679b1e5c42465618b18cbd11ade",
+          "slide-3-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-3-issues.json": "f1590b8a4a628fe8bddeddc4f1fd982721b6928a5696ea12b1afdf8bca0cd9c0",
+          "slide-3.svg": "8f28d620b5e5add7574ecc9b406a64845915dbe94f1903922103f2a9dc3f9147",
+          "slide-4-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-4-issues.json": "47f6bb6a77a6f760586a047ccc36cb25496c2db56c5792bf4b71a4c22c5c3868",
+          "slide-4.svg": "d548f3cbfaa57ea0f5986d90b6aa628619f0ff2f923ff97dcbabadba86379308",
+          "slide-5-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-5-issues.json": "9889ff64b4b56d633142c7ff4ea373eb464637abc35223024abe02ae3110f23b",
+          "slide-5.svg": "a8abf9afa238bd1036d490788b79acbe182b63b0ff7d445ea6a4fb60b44f4082",
+          "slide-6-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-6-issues.json": "16060d21d4d912303fbd7801f04f222c0adb8a2589fc8613347e8d83fcb20ea7",
+          "slide-6.svg": "464f5f64dd89e5ef1a73e0ebf72ff8c34d967538e313073489b65aa355c4208e",
+          "slide-7-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-7-issues.json": "d830d933c76436cafd5cefa51e71a4b50b606d378855c6eacf967611417f0c3f",
+          "slide-7.svg": "333bf932b9f8197e11106cdde6aaba09e7a9801290f03c66d38cfe8d21ffa5c1",
+          "slide-8-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-8-issues.json": "8c5073dac6f09559230c37182b9a882c99a79b7a54de85aab57df4e03084115c",
+          "slide-8.svg": "f1d87a71f775a593d201092772c65e48d3578ad5d5452e765982c5616a802984",
+          "slide-9-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-9-issues.json": "d936f6dabcc3c6b59079c0b89ec0443cd31d634a94f1e5a16d7f1233e8c1c74b",
+          "slide-9.svg": "f38c60e991c9df9a48d250d24819476d6ffbbddcbebc402ecf224fec78ef901d"
+        }
+      },
+      "candidateArtifactsDeterministic": true,
+      "changedArtifactsAgainstBaseline": {
+        "current-baseline": [],
+        "pre-tab-baseline": []
+      }
+    }
+  ],
+  "slideCount": 13,
+  "candidateArtifactsDeterministic": true,
+  "pythonPptxReopenCount": 32,
+  "note": "Fidelity intentionally changes geometry. Each variant renders its own scenario-produced saved deck; rich fitting can change that saved input. Candidate repetitions must agree, cross-version differences are retained rather than rejected."
+}
