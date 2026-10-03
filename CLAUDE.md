@@ -115,3 +115,10 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
   stable slide identity, notes and comments; never send snapshots to a model.
 - A regression manifest starts unreviewed. Record PowerPoint visual acceptance
   separately from schema checks, test success and missing-font diagnostics.
+- Authored text/image slides may paginate when measured content exceeds the
+  readable area. Preserve exact words, images, sources, notes, ordering and
+  section membership; report the expanded slide count. Long sources that cannot
+  fit the footer flow onto source-note slides. Do not summarize to force a fit.
+- Recovery treats continuation/source-note pages as one group. Keep existing
+  page identities and review annotations. If a shorter alternative would remove
+  pages, leave the copy intact and require a whole-deck rebuild from saved content.

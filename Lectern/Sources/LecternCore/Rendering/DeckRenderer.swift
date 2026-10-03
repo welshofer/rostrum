@@ -102,24 +102,27 @@ public actor DeckRenderer {
         try Task.checkCancellation()
         let original = try presentation.slides[index]
         var warnings: [String] = [], dropped: [String] = []
-        let replacement: Slide
         if let template {
-            replacement = try TemplateRendering.build(input, in: presentation, template: template,
+            let replacement = try TemplateRendering.build(input, in: presentation, template: template,
                 image: saved.images[slideID], warnings: &warnings, variant: variant)
+            try original.replaceVisualContents(with: replacement)
+            try presentation.slides.remove(at: presentation.slides.count - 1)
         } else {
-            // Reuse the production renderer so image placement, sources and
-            // design styles stay identical. Import its single slide natively.
             var one = saved.deck; one.slides = [input]; one.sections = nil
+            // Keep the running footer on a recovered slide that is not the
+            // opener. The production renderer omits furniture on page one.
+            if index > 0 { one.slides.insert(IRSlide(id: "recovery-opener", layout: "title", title: ""), at: 0) }
             let result = try render(one, designURL: designURL, notesEnabled: saved.notesEnabled,
                 into: temporary, images: saved.images, useSmartArt: saved.useSmartArt)
             let rendered = try Presentation(data: Data(contentsOf: result.url))
-            replacement = try presentation.slides.import(from: rendered, at: 0)
+            if index > 0 { try rendered.slides.remove(at: 0) }
+            try Self.replaceAuthoredPages(in: presentation, startingAt: index, with: rendered,
+                input: input, savedIDs: Set(saved.deck.slides.map(\.id)))
             dropped = result.droppedContent
+            warnings = result.warnings
         }
-        try original.replaceVisualContents(with: replacement)
         try original.part.dom().firstChild(named: "p:cSld")?[attribute: "name"] = "Lectern:" + slideID
         original.part.markDirty()
-        try presentation.slides.remove(at: presentation.slides.count - 1)
         try presentation.validateTemplateBindings()
         let issues = try presentation.validate().map(\.description)
         try Task.checkCancellation()
@@ -435,7 +438,12 @@ public actor DeckRenderer {
             var dropped: [String] = []
             var layoutWarnings: [String] = []
             let templateEngine = TemplateLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
-            let deck = try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings, engine: templateEngine) } ?? deck
+            var deck = try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings, engine: templateEngine) } ?? deck
+            var images = images
+            if template == nil {
+                let prepared = try Self.paginate(deck, images: images, in: presentation, useSmartArt: useSmartArt)
+                deck = prepared.deck; images = prepared.images; layoutWarnings += prepared.warnings
+            }
             var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {
                 try Task.checkCancellation()
@@ -452,7 +460,7 @@ public actor DeckRenderer {
                     built = try TemplateRendering.build(slide, in: presentation, template: template,
                                                         image: images[slide.id], warnings: &layoutWarnings, engine: templateEngine, variant: layoutVariants[slide.id] ?? 0)
                 } else {
-                    built = try build(slide, in: presentation, useSmartArt: useSmartArt,
+                    built = try Self.build(slide, in: presentation, useSmartArt: useSmartArt,
                                       hasSideImage: sideImage, dropped: &dropped)
                 }
                 let content = try built.part.dom().firstChild(named: "p:cSld")
@@ -489,7 +497,7 @@ public actor DeckRenderer {
                     case .sidePanel(let side):
                         // A framed panel on the right (title/content sit left).
                         if let picture = try? built.shapes.addPicture(
-                            data, frame: presentation.sideImagePanel(side), fit: .fill) {
+                            data, frame: TemplateRendering.containedImageFrame(data, in: presentation.sideImagePanel(side))) {
                             // The brief that generated this image *is* its
                             // description — exactly what a screen reader needs,
                             // and the app has been holding it all along.
@@ -564,6 +572,69 @@ public actor DeckRenderer {
         }
     }
 
+    private static func paginate(_ deck: DeckIR, images: [String: Data],
+                                 in presentation: Presentation, useSmartArt: Bool) throws -> AuthoredPagination.Result {
+        let fitter = AuthoredLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
+        var preparedDeck = deck
+        var sourceWarnings: [String] = []
+        var sourceIDs: [String: String] = [:]
+        var usedIDs = Set(deck.slides.map(\.id))
+        preparedDeck.slides = []
+        for var input in deck.slides {
+            try Task.checkCancellation()
+            if let source = input.body?.source, !source.isEmpty {
+                let probe = try presentation.slides.add()
+                var sourceFits = true
+                do {
+                    _ = try presentation.addSource(source, to: probe)
+                    try fitter.fitText(in: probe)
+                } catch is LayoutError { sourceFits = false }
+                catch { try presentation.slides.remove(at: presentation.slides.count - 1); throw error }
+                try presentation.slides.remove(at: presentation.slides.count - 1)
+                if !sourceFits {
+                    var id = input.id + "-source-notes"
+                    while usedIDs.contains(id) { id += "-next" }
+                    usedIDs.insert(id); sourceIDs[input.id] = id
+                    input.body?.source = "Source notes follow."
+                    preparedDeck.slides.append(input)
+                    preparedDeck.slides.append(IRSlide(id: id, layout: "bullets", title: "Source notes",
+                        body: Body(bullets: [Bullet(text: source)]), notes: input.notes))
+                    sourceWarnings.append("\(input.title ?? input.id): extended source notes follow the slide at a readable size.")
+                    continue
+                }
+            }
+            preparedDeck.slides.append(input)
+        }
+        preparedDeck.sections = deck.sections?.map { section in
+            var section = section
+            section.slideIds = section.slideIds.flatMap { id in [id] + (sourceIDs[id].map { [$0] } ?? []) }
+            return section
+        }
+        var lastFailure = ""
+        do {
+            var result = try AuthoredPagination.prepare(preparedDeck, images: images) { candidate, hasImage in
+                let count = presentation.slides.count
+                var discarded: [String] = []
+                do {
+                    let probe = try Self.build(candidate, in: presentation, useSmartArt: useSmartArt,
+                                          hasSideImage: hasImage, dropped: &discarded)
+                    if let source = candidate.body?.source, !source.isEmpty { _ = try presentation.addSource(source, to: probe) }
+                    try fitter.fitText(in: probe)
+                    try presentation.slides.remove(at: count)
+                    return true
+                } catch {
+                    while presentation.slides.count > count { try presentation.slides.remove(at: count) }
+                    if error is LayoutError { lastFailure = "\(candidate.title ?? candidate.id): \(error)"; return false }
+                    throw error
+                }
+            }
+            result.warnings += sourceWarnings
+            return result
+        } catch let error as LayoutError {
+            throw LayoutError.cannotFit(lastFailure.isEmpty ? "\(error)" : lastFailure)
+        }
+    }
+
     // MARK: - Builder capacity
 
     /// Record content a builder is about to discard.
@@ -616,7 +687,7 @@ public actor DeckRenderer {
 
     // MARK: - IR layout → Rostrum builder
 
-    private func build(_ slide: IRSlide, in deck: Presentation, useSmartArt: Bool,
+    private static func build(_ slide: IRSlide, in deck: Presentation, useSmartArt: Bool,
                        hasSideImage: Bool, dropped: inout [String]) throws -> Slide {
         let title = slide.title ?? ""
         let body = slide.body
@@ -805,7 +876,7 @@ public actor DeckRenderer {
     }
 
     /// Flatten a bullet tree to strings, sub-bullets prefixed with an en dash.
-    private func flatten(_ bullets: [Bullet]) -> [String] {
+    private static func flatten(_ bullets: [Bullet]) -> [String] {
         bullets.flatMap { [$0.text] + ($0.subBullets ?? []).map { "– \($0)" } }
     }
 

@@ -64,3 +64,19 @@ Dense authored text-and-image slides can still exceed the readable fitting limit
 They fail explicitly instead of dropping text; measured continuation-slide pagination
 is the next work item. The climate replay succeeds with both supplied templates, but
 its serif-theme version still exposes this limit. Missing fonts are reported separately.
+# Dense authored-content acceptance
+
+The renderer can expand dense authored text, comparison and image slides into
+continuation pages. Source notes that exceed footer space follow their supporting
+slide at body-text size. This intentionally permits more output slides than the
+input IR; warnings explain each expansion. Template output retains its separate
+template-aware composition path.
+
+For saved-content replay, check every original fact, chart label, image and source
+in the output, and check that continuation pages stay in the correct section.
+Recovery must retain all pages and existing comments. Page-count reduction during
+single-slide recovery is rejected to avoid deleting review work or breaking links;
+import the saved content for a whole-deck rebuild instead.
+
+Passing schema checks and content comparisons does not establish visual quality.
+Inspect the final exports in PowerPoint before marking a manifest reviewed.

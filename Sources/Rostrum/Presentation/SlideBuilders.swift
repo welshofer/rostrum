@@ -209,13 +209,23 @@ public extension Presentation {
         let cardRow = headerInfo.contentRow
         let content = deckGrid(s).cell(column: 0, row: cardRow, columnSpan: 12, rowSpan: 12 - cardRow)
         let cols = content.split(.horizontal, count: 2, gutter: s.gutter)
-        // Header gets its own top band (room for two lines) and the bullets fill
-        // the rest, top-anchored — so a two-line header never overlaps them.
-        let headStyle = s.with(.heading) { $0.sizePt = 24 }
+        // Reserve measured header height before assigning the remaining body
+        // space. A fixed percentage cannot accommodate real wrapped headings.
+        let headStyle = s.with(.heading) { $0.sizePt = 24; $0.lineHeight = min($0.lineHeight, 1.15) }
         for (col, headerText, items) in [(cols[0], leftHeader, left), (cols[1], rightHeader, right)] {
             let card = try slide.addCard(in: col, style: s, padding: min(s.spacing.lg, .points(16)))
-            let (head, body) = card.content.split(.vertical, ratio: 0.16, gutter: s.spacing.sm)
-            try slide.addText(headerText, in: head, role: .heading, style: headStyle, anchor: .top)
+            let heading = headStyle.type(.heading)
+            let lines = estimatedLines(headerText, style: heading, width: card.content.width - .points(14.4))
+            let headHeight = headerText.isEmpty ? EMU.zero : EMU.points(
+                Double(max(1, lines)) * heading.sizePt * max(1.25, heading.lineHeight * 1.25) + 7.2)
+            let gap = headerText.isEmpty ? EMU.zero : s.spacing.sm
+            let bodyHeight = card.content.height - headHeight - gap
+            guard bodyHeight > .points(20) else {
+                throw RostrumError.packageInvalid("Comparison heading leaves no readable body area.")
+            }
+            let head = Rect(x: card.content.x, y: card.content.y, width: card.content.width, height: headHeight)
+            let body = Rect(x: card.content.x, y: head.maxY + gap, width: card.content.width, height: bodyHeight)
+            if !headerText.isEmpty { try slide.addText(headerText, in: head, role: .heading, style: headStyle, anchor: .top) }
             // Cards are narrower than a full slide; a smaller body, tighter gaps,
             // AND tighter leading keep the bullets inside the card. At the body's
             // airy 150% line height, three two-line bullets need ~275pt in a
