@@ -89,7 +89,8 @@ import Testing
             width: 100, height: 100, fallbackMetrics: try metrics())
         let span = try #require(layout.lines.first?.spans.first)
         #expect(span.run.fontSize == 6 && span.run.kerningThreshold == 12 && !span.run.usesKerning)
-        #expect(span.width == 2 * 1401.0 * 6 / 2048)
+        let expectedWidth: Double = 2 * 1401.0 * 6 / 2048
+        #expect(span.width == expectedWidth)
     }
 
     @Test func cachedSVGAttributesDistinguishKerningWithoutDisablingLigatures() throws {

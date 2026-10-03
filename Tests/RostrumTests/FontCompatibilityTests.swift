@@ -124,7 +124,8 @@ import Testing
         for replacement in [input, 75] {
             let scripts = u(1) + Array("arab".utf8) + u(8) + u(4) + u(0) + u(0) + u(65535) + u(1) + u(0)
             let features = u(1) + Array("liga".utf8) + u(8) + u(0) + u(1) + u(0)
-            let sub = u(1) + u(8) + u(1) + u(14) + u(1) + u(1) + u(input) + u(1) + u(4) + u(replacement) + u(1)
+            let subFields: [Int] = [1, 8, 1, 14, 1, 1, input, 1, 4, replacement, 1]
+            let sub = subFields.flatMap(u)
             let lookup = u(1) + u(4) + u(4) + u(0) + u(1) + u(8) + sub
             tables["GSUB"] = u(1) + u(0) + u(10) + u(10 + scripts.count) + u(10 + scripts.count + features.count) + scripts + features + lookup
             let shaper = TextShaper(try FontMetrics(data: Data(TestFont.assemble(tables: tables.keys.sorted().map { ($0, tables[$0]!) }))))
