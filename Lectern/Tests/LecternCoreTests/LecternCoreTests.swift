@@ -1393,8 +1393,20 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let result = try await DeckRenderer().render(validated.deck, designURL: nil,
                                                      notesEnabled: false, into: dir)
-        #expect(result.slideCount == 3)
-        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)
+        let output = try Presentation(contentsOf: result.url)
+        // Font fallback can move the source into a readable continuation on
+        // Linux. Verify the permitted structure and every word, not one
+        // platform's pagination count.
+        let names = try output.slides.map {
+            try $0.part.dom().firstChild(named: "p:cSld")?[attribute: "name"] ?? ""
+        }
+        let originals = ["Lectern:s1", "Lectern:s2", "Lectern:s3"]
+        #expect(names == originals || names == originals + ["Lectern:s3-source-notes"])
+        #expect(result.slideCount == names.count)
+        #expect(result.droppedContent.isEmpty)
+        #expect(try output.validate().isEmpty)
+        let content = try RenderContentCheck.inspect(result.url, expected: validated.deck, notesEnabled: false)
+        #expect(content.issues.isEmpty)
     }
 
     @Test func statementWithoutAClaimIsRejected() throws {
