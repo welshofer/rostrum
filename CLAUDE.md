@@ -103,3 +103,15 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
   rows and captions together; keep generated diagrams fully visible in image slots.
 - Do not restart or replace an app while the user is generating a presentation.
   Use isolated build/test products; wait for an idle client before visual checks.
+
+## Composition recovery and regression
+
+- Use `Lectern/Tools/CompositionRegression` for fixed offline fixtures and saved
+  content replay. Keep private templates, snapshots and PowerPoint exports outside
+  version control. Native PDF exports are also valid visual evidence.
+- Normalize generated object typography to the template canvas size. Preserve
+  inherited text styles, and measure the same explicit role sizes that are written.
+- Recomposition is local and saves a new copy. Preserve untouched slide parts,
+  stable slide identity, notes and comments; never send snapshots to a model.
+- A regression manifest starts unreviewed. Record PowerPoint visual acceptance
+  separately from schema checks, test success and missing-font diagnostics.

@@ -30,8 +30,8 @@ enum TemplateRendering {
     /// a readable chart/table in any supplied layout. Retain all text visibly on
     /// following template slides instead of discarding it or failing the deck.
     static func prepare(_ input: DeckIR, in deck: Presentation, template: PowerPointTemplate,
-                        warnings: inout [String]) throws -> DeckIR {
-        let engine = TemplateLayoutEngine(presentation: deck, measure: measurer)
+                        warnings: inout [String], engine: TemplateLayoutEngine? = nil) throws -> DeckIR {
+        let engine = engine ?? TemplateLayoutEngine(presentation: deck, measure: measurer)
         var output = input
         output.slides = []
         var usedIDs = Set(input.slides.map(\.id))
@@ -106,13 +106,14 @@ enum TemplateRendering {
     }
 
     static func build(_ input: IRSlide, in deck: Presentation, template: PowerPointTemplate,
-                      image: Data?, warnings: inout [String]) throws -> Slide {
-        let engine = TemplateLayoutEngine(presentation: deck, measure: measurer)
+                      image: Data?, warnings: inout [String], engine: TemplateLayoutEngine? = nil, variant: Int = 0) throws -> Slide {
+        let engine = engine ?? TemplateLayoutEngine(presentation: deck, measure: measurer)
         let body = input.body
         var columns = textColumns(input)
-        let object: String? = input.kind == .chart ? "chart" : (input.kind == .table ? "tbl" : nil)
+        let structure = structuredContent(input)
+        let object: String? = input.kind == .chart ? "chart" : (input.kind == .table ? "tbl" : (structure == nil ? nil : "obj"))
         if object != nil { columns = [] }
-        let source = object == nil ? "" : [body?.kicker, body?.lead, body?.source]
+        let source = object == nil ? "" : [body?.kicker, body?.lead, body?.source, input.kind == .quadrant ? body?.xAxis : nil, input.kind == .quadrant ? body?.yAxis : nil]
             .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
         let minimumObjectHeight = input.kind == .table ? max(144, Double(body?.table?.grid.count ?? 0) * 24) : 144
         let preferred: [String]
@@ -128,23 +129,30 @@ enum TemplateRendering {
         let plan: TemplateSlidePlan
         do {
             plan = try engine.plan(title: title, columns: columns, preferredTypes: preferred, object: object,
-                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, measureObjectHeight: tableMeasurer(body?.table, engine: engine))
+                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, measureObjectHeight: tableMeasurer(body?.table, engine: engine), imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, validateObject: structure.map { structure in
+                                       { frame, style in try StructuredLayout.validate(kind: structure.0, items: structure.1,
+                                           in: frame, style: style, engine: engine) }
+                                   })
         } catch {
             // A single-body corporate layout can still express two columns as
             // two headed sections. Preserve every paragraph and report the change.
             guard columns.count > 1 else { throw error }
             columns = [columns.flatMap { $0 }]
             plan = try engine.plan(title: title, columns: columns, preferredTypes: preferred, object: object,
-                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, measureObjectHeight: tableMeasurer(body?.table, engine: engine))
+                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, measureObjectHeight: tableMeasurer(body?.table, engine: engine), imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, validateObject: structure.map { structure in
+                                       { frame, style in try StructuredLayout.validate(kind: structure.0, items: structure.1,
+                                           in: frame, style: style, engine: engine) }
+                                   })
             warnings.append("\(title): the template uses one content region; columns were arranged as headed sections.")
-        }
-        if [.metrics, .diagram, .timeline, .quadrant, .bands].contains(input.kind) {
-            warnings.append("\(title): structured content was arranged as text within the template's content placeholders.")
         }
         let slide = try engine.compose(plan, title: title, columns: columns)
         if let slot = plan.objectSlot, let objectFrame = plan.objectFrame {
-            let style = plan.layout.master?.theme.map { DeckStyle(theme: $0) } ?? deck.style
-            if let chart = body?.chart, input.kind == .chart {
+            let style = engine.objectStyle(layout: plan.layout, slot: slot.index)
+            if let structure {
+                let shape = try StructuredLayout.compose(kind: structure.0, items: structure.1,
+                    in: objectFrame, on: slide, style: style, engine: engine)
+                try slide.replacePlaceholder(index: slot.index, with: shape)
+            } else if let chart = body?.chart, input.kind == .chart {
                 let kind: ChartKind
                 switch chart.kind.lowercased() {
                 case "line": kind = .line
@@ -162,19 +170,26 @@ enum TemplateRendering {
                 }
                 let shape = try slide.shapes.addChart(kind,
                     data: ChartData(categories: chart.categories, series: chart.series.map { .init(name: $0.name, values: $0.values) }),
-                    frame: objectFrame)
+                    frame: objectFrame, options: ChartOptions(
+                        title: chart.series.count == 1 ? chart.series[0].name : nil,
+                        legend: chart.series.count > 1 || ["pie", "doughnut"].contains(chart.kind.lowercased()) ? .bottom : .none,
+                        dataLabels: chart.kind == "bar" && chart.categories.count <= 8 ? DataLabelOptions(showValue: true) : nil,
+                        valueAxis: AxisOptions(gridlines: false),
+                        text: ChartTextStyle(font: style.bodyFont, color: style.ink, sizePt: 16 * engine.objectScale)))
                 try slide.replacePlaceholder(index: slot.index, with: shape)
             } else if let table = body?.table, input.kind == .table {
                 guard !table.headers.isEmpty else { throw LayoutError.cannotFit("\(title): table has no columns.") }
-                let native = try slide.shapes.addTable(rows: table.grid.count, columns: table.headers.count, frame: objectFrame)
-                native.setContents(table.grid)
                 let heights = tableRowHeights(table, width: objectFrame.width.points, style: style, engine: engine)
-                let extra = max(0, objectFrame.height.points - heights.reduce(0, +)) / Double(max(1, heights.count))
-                native.rowHeights(heights.map { .points($0 + extra) })
+                let tableFrame = Rect(x: objectFrame.x, y: objectFrame.y, width: objectFrame.width,
+                    height: .points(heights.reduce(0, +)))
+                let native = try slide.shapes.addTable(rows: table.grid.count, columns: table.headers.count, frame: tableFrame)
+                native.setContents(table.grid)
+                native.columnWidths(tableColumnWidths(table, width: objectFrame.width.points).map { .points($0) })
+                native.rowHeights(heights.map { .points($0) })
                 for r in 0..<native.rowCount {
                     for c in 0..<native.columnCount {
                         for p in try native.cell(r, c).textFrame.paragraphs {
-                            for run in p.runs { run.fontSize = 18; run.fontName = "+mn-lt" }
+                            for run in p.runs { run.fontSize = 18 * engine.objectScale; run.fontName = style.bodyFont }
                         }
                     }
                 }
@@ -218,17 +233,43 @@ enum TemplateRendering {
     }
 
     static func tableRowHeights(_ table: IRTable, width: Double, style: DeckStyle, engine: TemplateLayoutEngine) -> [Double] {
-        let columnWidth = width / Double(max(1, table.headers.count))
+        let widths = tableColumnWidths(table, width: width)
         return table.grid.enumerated().map { index, row in
             var textStyle = style.type(.body)
-            textStyle.sizePt = 18
+            textStyle.sizePt = 18 * engine.objectScale
             textStyle.weight = index == 0 ? 700 : 400
             textStyle.lineHeight = 1.2
             // PowerPoint's default table-cell margins: 7.2pt horizontally,
             // 3.6pt vertically. Leave additional rounding/font fallback slack.
-            return max(30, row.map {
-                engine.measuredHeight($0, style: textStyle, width: max(1, columnWidth - 14.4)) + 10
+            return max(30, row.enumerated().map { column, text in
+                engine.measuredHeight(text, style: textStyle, width: max(1, widths[min(column, widths.count - 1)] - 14.4)) + 10
             }.max() ?? 30)
+        }
+    }
+
+    static func tableColumnWidths(_ table: IRTable, width: Double) -> [Double] {
+        guard !table.headers.isEmpty else { return [] }
+        let weights = table.headers.indices.map { column in
+            let lengths = table.grid.map { column < $0.count ? $0[column].count : 0 }
+            return sqrt(Double(max(4, min(160, lengths.max() ?? 4))))
+        }
+        let total = weights.reduce(0, +)
+        // Half equal share keeps short headers legible; half content-weighted
+        // gives explanatory columns room without starving numeric columns.
+        return weights.map { width * (0.5 / Double(weights.count) + 0.5 * $0 / total) }
+    }
+
+    static func structuredContent(_ slide: IRSlide) -> (StructuredKind, [StructuredItem])? {
+        guard let b = slide.body else { return nil }
+        switch slide.kind {
+        case .metrics: return (.metrics, (b.stats ?? []).map { StructuredItem($0.value, detail: $0.label) })
+        case .bigNumber: return (.metrics, [StructuredItem(b.value ?? "", detail: b.label ?? "")])
+        case .timeline: return (.timeline, (b.milestones ?? []).map { StructuredItem($0.label, detail: $0.detail) })
+        case .quadrant: return (.quadrant, (b.quadrants ?? []).map { StructuredItem($0.heading, detail: $0.detail) })
+        case .diagram: return (StructuredKind(rawValue: b.diagram?.kind ?? "process") ?? .process,
+                              (b.diagram?.items ?? []).map { StructuredItem($0) })
+        case .bands: return (.bands, (b.items ?? b.bullets?.map(\.text) ?? []).map { StructuredItem($0) })
+        default: return nil
         }
     }
 
@@ -238,10 +279,10 @@ enum TemplateRendering {
             (values ?? []).flatMap { [LayoutParagraph($0.text)] + ($0.subBullets ?? []).map { LayoutParagraph($0, level: 1) } }
         }
         var before = [b.kicker, b.lead].compactMap { $0 }.filter { !$0.isEmpty }.map { LayoutParagraph($0) }
-        var after = b.source.map { [LayoutParagraph($0)] } ?? []
+        var after = b.source.map { [LayoutParagraph($0, role: .caption)] } ?? []
         if slide.kind == .twoColumn || slide.kind == .comparison {
-            let left = b.left.map { [LayoutParagraph($0.heading)] + $0.bullets.map { LayoutParagraph($0) } } ?? []
-            let right = b.right.map { [LayoutParagraph($0.heading)] + $0.bullets.map { LayoutParagraph($0) } } ?? []
+            let left = b.left.map { [LayoutParagraph($0.heading, role: .heading)] + $0.bullets.map { LayoutParagraph($0) } } ?? []
+            let right = b.right.map { [LayoutParagraph($0.heading, role: .heading)] + $0.bullets.map { LayoutParagraph($0) } } ?? []
             return [before + left, right + after].filter { !$0.isEmpty }
         }
         switch slide.kind {

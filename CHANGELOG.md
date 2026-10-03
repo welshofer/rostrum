@@ -6,7 +6,26 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- Template-aware editable metrics, timelines, processes, cycles, pyramids,
+  quadrants and bands, with measured text and native shapes.
+- Candidate layout scoring, bounded measurement caching and slide-size-aware
+  object typography. Imported masters, layouts and themes remain intact.
+- Lectern saves protected rendering snapshots for seven days. Recover an export
+  or preview and save a different layout for one slide without another model call.
+  Revised copies preserve the original deck, other slides, notes and comments.
+- An offline mixed-content regression runner and PowerPoint export comparison
+  tool in `Lectern/Tools/CompositionRegression`.
+
+### Fixed
+
+- Template charts and tables inherit the content typeface; table columns and
+  rows account for wrapped content without stretching short rows to fill a slide.
+- Layout selection avoids inverted headline/subtitle hierarchy. Comparison
+  headings remain larger than their inherited body text.
+- Authored comparison cards leave more room for dense content, and text fitting
+  reaches its exact readable-size floor without floating-point early rejection.
 
 ## [0.4.0] — 2026-08-17
 

@@ -36,7 +36,7 @@ import Testing
             #expect(message.contains("saved for recovery"))
         }
         let files = try FileManager.default.contentsOfDirectory(at: diagnostics, includingPropertiesForKeys: nil)
-        let saved = try #require(files.first)
+        let saved = try #require(files.first { $0.lastPathComponent.hasPrefix("rejected-draft") })
         let recovered = try JSONDecoder().decode(DeckIR.self, from: Data(contentsOf: saved))
         #expect(recovered.meta.title == "Accepted revision")
         #expect(recovered.slides[1].body?.bullets?.first?.text == "Retain this fact")

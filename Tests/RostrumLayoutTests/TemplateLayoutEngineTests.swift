@@ -17,6 +17,37 @@ import Testing
         #expect(plan.layout.part.uri != narrow.part.uri)
     }
 
+    @Test func rejectsInvertedHeadlineHierarchyWhenChoosingCover() throws {
+        let deck = try Presentation()
+        let layout = try #require(deck.layout(type: "title"))
+        let subtitle = try #require(ShapeCollection(part: layout.part, package: deck.package).all.first { $0.placeholder?.type == "subTitle" })
+        let tx = try #require(subtitle.element.firstChild(named: "p:txBody"))
+        tx.getOrAddChild("a:lstStyle", beforeAnyOf: ["a:p"]).getOrAddChild("a:lvl1pPr")
+            .getOrAddChild("a:defRPr")[attribute: "sz"] = "8800"
+        let alternative = try Presentation()
+        _ = try alternative.bulletSlide("Seed", ["Body"])
+        try deck.slides.importAll(from: alternative)
+        let engine = TemplateLayoutEngine(presentation: deck, measure: { _ in 10 })
+        let plan = try engine.plan(title: "Headline", columns: [[LayoutParagraph("Supporting line")]], preferredTypes: ["title", "obj"])
+        #expect(plan.layout.part.uri != layout.part.uri)
+    }
+
+    @Test func sectionHeadingRespectsLargerInheritedBodySize() throws {
+        let deck = try Presentation()
+        let layout = try #require(deck.layout(type: "obj"))
+        let body = try #require(ShapeCollection(part: layout.part, package: deck.package).all.first { $0.placeholder?.idx == 1 })
+        let tx = try #require(body.element.firstChild(named: "p:txBody"))
+        tx.getOrAddChild("a:lstStyle", beforeAnyOf: ["a:p"]).getOrAddChild("a:lvl1pPr")
+            .getOrAddChild("a:defRPr")[attribute: "sz"] = "3200"
+        let engine = TemplateLayoutEngine(presentation: deck, measure: { _ in 10 })
+        let content = [[LayoutParagraph("Section", role: .heading), LayoutParagraph("Supporting point")]]
+        let plan = try engine.plan(title: "Headline", columns: content, preferredTypes: ["obj"], layoutURI: layout.part.uri.value)
+        let slide = try engine.compose(plan, title: "Headline", columns: content)
+        let paragraphs = try #require(slide.placeholder(idx: 1)?.textFrame?.paragraphs)
+        #expect((paragraphs[0].runs.first?.fontSize ?? 0) > 32)
+        #expect(paragraphs[1].runs.first?.fontSize == nil)
+    }
+
     @Test func choosesRealLayoutAndPreservesInheritance() throws {
         let source = try Presentation()
         source.documentKind = .template
@@ -154,7 +185,7 @@ import Testing
         let (deck, layout) = try flowFixture(autofit: true)
         let engine = TemplateLayoutEngine(presentation: deck, measure: { $0.text == "Body" ? 10 : $0.size * 2.5 })
         let columns = [[LayoutParagraph("Body")]]
-        let plan = try engine.plan(title: "Wrapped title", columns: columns, preferredTypes: ["obj"])
+        let plan = try engine.plan(title: "Wrapped title", columns: columns, preferredTypes: ["obj"], layoutURI: layout.part.uri.value)
         let fit = try #require(plan.textFits[0])
         #expect(fit.fontScale < 1 && fit.fontScale >= 0.75)
         let slide = try engine.compose(plan, title: "Wrapped title", columns: columns)
@@ -193,4 +224,28 @@ import Testing
         #expect(!clipped.fits([LayoutParagraph("Clipped")], in: try #require(slot.frame), layout: clippedLayout, slot: slot.index))
     }
 
+}
+
+@Suite struct CompositionSelectionTests {
+    @Test func measurementCacheIsBoundedToAnEngineAndDoesNotChangeChoice() throws {
+        let deck = try Presentation()
+        var calls = 0
+        let engine = TemplateLayoutEngine(presentation: deck, measure: { _ in calls += 1; return 20 })
+        let columns = [[LayoutParagraph("An evidence statement")]]
+        let first = try engine.plan(title: "A title", columns: columns, preferredTypes: ["obj"])
+        let initial = calls
+        let second = try engine.plan(title: "A title", columns: columns, preferredTypes: ["obj"])
+        #expect(first.layout.part.uri == second.layout.part.uri)
+        #expect(calls == initial)
+        #expect(engine.measurementCacheHits > 0)
+        #expect(!second.score.reasons.isEmpty)
+    }
+    @Test func structuredFramesAreBoundedAndKeepAllItems() throws {
+        let region = Rect(x: .points(40), y: .points(100), width: .points(640), height: .points(300))
+        for kind in [StructuredKind.metrics, .timeline, .quadrant, .pyramid, .cycle, .bands] {
+            let frames = try StructuredLayout.frames(kind: kind, count: 4, in: region)
+            #expect(frames.count == 4)
+            #expect(frames.allSatisfy { $0.x >= region.x && $0.y >= region.y && $0.maxX <= region.maxX && $0.maxY <= region.maxY })
+        }
+    }
 }

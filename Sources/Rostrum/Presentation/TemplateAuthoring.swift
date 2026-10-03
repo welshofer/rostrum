@@ -170,3 +170,46 @@ public extension Slide {
         part.markDirty()
     }
 }
+
+public extension Slide {
+    /// Replace the selected slide's visual contents using a slide built in this
+    /// same package. Keep the destination URI/slide ID, notes and incoming links;
+    /// callers may then remove the temporary source slide from the collection.
+    func replaceVisualContents(with source: Slide) throws {
+        guard package === source.package, part !== source.part,
+              part.uri.baseURI == source.part.uri.baseURI else {
+            throw RostrumError.packageInvalid("Replacement must be a different slide in the same package directory.")
+        }
+        let oldRoot = try part.dom()
+        let oldExtensions = oldRoot.firstChild(named: "p:extLst")?.deepCopy()
+        var extensionIDs = Set<String>()
+        func collectIDs(_ node: XML.Element) {
+            for attribute in node.attributes where attribute.name.hasPrefix("r:") { extensionIDs.insert(attribute.value) }
+            for child in node.childElements { collectIDs(child) }
+        }
+        if let oldExtensions { collectIDs(oldExtensions) }
+        let preserved = part.rels.items.filter {
+            $0.type == RelType.notesSlide || $0.type == ModernComments.commentsRelType
+                || $0.type == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"
+                || extensionIDs.contains($0.rId)
+        }
+        let root = try source.part.dom().deepCopy()
+        for attribute in oldRoot.attributes where attribute.name.hasPrefix("xmlns:") && root[attribute: attribute.name] == nil {
+            root[attribute: attribute.name] = attribute.value
+        }
+        if let oldExtensions { root.removeChildren(named: "p:extLst"); root.appendElement(oldExtensions) }
+        part.replaceBlob(XML.document(root))
+        part.rels.setItems(source.part.rels.items.filter { $0.type != RelType.notesSlide && $0.type != ModernComments.commentsRelType })
+        var remapped: [String: String] = [:]
+        for rel in preserved {
+            remapped[rel.rId] = part.rels.add(type: rel.type, target: rel.target, isExternal: rel.isExternal)
+        }
+        func remap(_ node: XML.Element) {
+            for attribute in node.attributes where attribute.name.hasPrefix("r:") {
+                if let id = remapped[attribute.value] { node[attribute: attribute.name] = id }
+            }
+            for child in node.childElements { remap(child) }
+        }
+        if let ext = try part.dom().firstChild(named: "p:extLst") { remap(ext); part.markDirty() }
+    }
+}

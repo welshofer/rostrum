@@ -68,7 +68,7 @@ import RostrumLayout
         let result = try await DeckRenderer().render(input, designURL: nil, notesEnabled: false, into: dir, template: template)
         let deck = try Presentation(contentsOf: result.url)
         #expect(deck.slides.count == 2)
-        for slide in deck.slides {
+        for (index, slide) in deck.slides.enumerated() {
             let text = try #require(slide.shapes.all.first { $0.textFrame?.text == caption })
             let frame = try #require(slide.effectiveFrame(of: text))
             let object = try #require(slide.shapes.all.first { $0 is GraphicFrame })
@@ -76,7 +76,7 @@ import RostrumLayout
             #expect(frame.height.points > 72)
             #expect(frame.y.points >= objectFrame.maxY.points + 8)
             #expect(frame.maxY <= deck.bounds.maxY)
-            #expect(objectFrame.height.points >= 144)
+            #expect(objectFrame.height.points >= (index == 0 ? 144 : 3 * 36))
             #expect(text.textFrame?.paragraphs.first?.runs.first?.fontSize == 13)
         }
         #expect(result.schemaIssues.isEmpty)

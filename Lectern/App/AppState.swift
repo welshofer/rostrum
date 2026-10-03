@@ -30,6 +30,8 @@ final class AppState {
         case inspecting, inspected
     }
     var phase: Phase = .home
+    private(set) var recoveryURL: URL?
+    private(set) var recoverySourceURL: URL?
 
     // MARK: Compose form
     var prompt = ""
@@ -91,6 +93,28 @@ final class AppState {
 
     func dismissMigrationNotice() { migrationNotice = nil }
 
+    func acceptRecoveredDeck(_ result: DeckResult) {
+        phase = .result(result)
+        recoveryURL = result.recoveryURL; recoverySourceURL = result.url
+        preferences.set(result.recoveryURL?.path, forKey: "renderRecoverySnapshot")
+        preferences.set(result.url.path, forKey: "renderRecoverySource")
+        refreshLibrary()
+    }
+
+    /// Import a previously saved render session without touching model settings.
+    func importRenderSnapshot(_ url: URL) async throws {
+        let directory = Self.diagnosticsDirectory()
+        let copied = try await Task.detached {
+            let access = url.startAccessingSecurityScopedResource()
+            defer { if access { url.stopAccessingSecurityScopedResource() } }
+            let saved = try RenderSnapshot.load(url)
+            return try saved.save(in: directory)
+        }.value
+        recoveryURL = copied; recoverySourceURL = nil
+        preferences.set(copied.path, forKey: "renderRecoverySnapshot")
+        preferences.removeObject(forKey: "renderRecoverySource")
+    }
+
     /// Launch work that has no business on the launch path.
     ///
     /// Called from the first `.task`, not `init`. The migration is a directory
@@ -109,6 +133,12 @@ final class AppState {
         // once it is not.
         let diagnostics = Self.diagnosticsDirectory()
         await Task.detached { DeckStorage.pruneDiagnostics(in: diagnostics) }.value
+        if let path = preferences.string(forKey: "renderRecoverySnapshot"), FileManager.default.fileExists(atPath: path) {
+            recoveryURL = URL(fileURLWithPath: path)
+            if let source = preferences.string(forKey: "renderRecoverySource"), FileManager.default.fileExists(atPath: source) {
+                recoverySourceURL = URL(fileURLWithPath: source)
+            }
+        }
         refreshLibrary()
     }
 
@@ -451,6 +481,9 @@ final class AppState {
             return
         }
 
+        recoveryURL = nil; recoverySourceURL = nil
+        preferences.removeObject(forKey: "renderRecoverySnapshot")
+        preferences.removeObject(forKey: "renderRecoverySource")
         phase = .generating; stage = "Starting"; drafted = 0; total = slideCount
         let run = runs.begin()
         let request = DeckRequest(prompt: prompt, audience: audience, goal: goal,
@@ -707,7 +740,8 @@ final class AppState {
         case .auditing: stage = "Polishing (QA pass)"
         case .illustrating(let c, let t): stage = "Generating images"; drafted = c; total = t; progressNoun = "images"
         case .rendering: stage = "Rendering .pptx"
-        case .finished: stage = "Done"
+        case .recoveryAvailable(let url): recoveryURL = url; preferences.set(url.path, forKey: "renderRecoverySnapshot")
+        case .finished(let result): stage = "Done"; recoverySourceURL = result.url; preferences.set(result.url.path, forKey: "renderRecoverySource")
         }
     }
 

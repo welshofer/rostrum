@@ -687,12 +687,14 @@ private struct DraftingTile: View {
 // MARK: - Result
 
 struct ResultView: View {
+    @State private var showingRecovery = false
     @Environment(AppState.self) private var app
     let result: DeckResult
     #if os(iOS)
     @State private var previewURL: URL?
     #endif
     var body: some View {
+        @Bindable var app = app
         VStack(spacing: 0) {
             // Title band, then the sheet takes the room, then the actions sit
             // where the hand already is.
@@ -744,6 +746,12 @@ struct ResultView: View {
             }
             .controlSize(.large)
             #endif
+            if let snapshot = result.recoveryURL {
+                Button("Recompose a Slide…") { showingRecovery = true }
+                    .sheet(isPresented: $showingRecovery) {
+                        RecoveryView(snapshotURL: snapshot, sourceURL: result.url)
+                    }
+            }
             if !result.warnings.isEmpty {
                 DisclosureGroup("\(result.warnings.count) validation warning(s)") {
                     ForEach(result.warnings, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
@@ -793,11 +801,13 @@ struct ResultView: View {
 // MARK: - Failed
 
 struct FailedView: View {
+    @State private var showingRecovery = false
     @Environment(AppState.self) private var app
     @ScaledMetric(relativeTo: .largeTitle) private var failGlyph: CGFloat = 44
     let message: String
 
     var body: some View {
+        @Bindable var app = app
         VStack(spacing: 16) {
             Image(systemName: "exclamationmark.triangle.fill").font(.system(size: failGlyph)).foregroundStyle(.orange)
             Text(message).font(.title3).multilineTextAlignment(.center).frame(maxWidth: 420)
@@ -807,6 +817,12 @@ struct FailedView: View {
             // reason.
             HStack(spacing: 12) {
                 recovery
+                if let snapshot = app.recoveryURL {
+                    Button("Recover Saved Content…") { showingRecovery = true }
+                        .sheet(isPresented: $showingRecovery) {
+                            RecoveryView(snapshotURL: snapshot, sourceURL: nil)
+                        }
+                }
                 // "Start over" rather than "back to compose": a failure now
                 // arrives from opening a deck as well as from writing one, and
                 // the compose form is the wrong place to land after the first.

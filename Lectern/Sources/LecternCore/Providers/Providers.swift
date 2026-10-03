@@ -82,6 +82,7 @@ public enum GenerationEvent: Sendable {
     case auditing               // the QA editor pass
     case illustrating(completed: Int, total: Int)   // optional image generation
     case rendering
+    case recoveryAvailable(URL)
     case finished(DeckResult)
 }
 

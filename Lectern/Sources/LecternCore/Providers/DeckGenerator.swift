@@ -317,7 +317,12 @@ public actor DeckGenerator {
         let shaped = normalizeIfValid(result, request)
         let (images, imageWarnings) = await illustrate(shaped.deck, template: template, emit: emit)   // no-op without an image provider
         emit(.rendering)
-        let deckResult: DeckResult
+        let snapshot = RenderSnapshot(deck: shaped.deck, images: images,
+            design: try designURL.map { try String(contentsOf: $0, encoding: .utf8) },
+            template: template, notesEnabled: request.notes, useSmartArt: useSmartArt)
+        let recoveryURL = diagnostics.flatMap { try? snapshot.save(in: $0) }
+        if let recoveryURL { emit(.recoveryAvailable(recoveryURL)) }
+        var deckResult: DeckResult
         do {
             deckResult = try await renderer.render(
                 shaped.deck, designURL: designURL, notesEnabled: request.notes,
@@ -334,6 +339,7 @@ public actor DeckGenerator {
             }
             throw LecternError.renderFailed(message: message)
         }
+        deckResult.recoveryURL = recoveryURL
         emit(.finished(deckResult))
         return deckResult
     }

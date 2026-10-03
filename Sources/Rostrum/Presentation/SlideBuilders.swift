@@ -213,7 +213,7 @@ public extension Presentation {
         // the rest, top-anchored — so a two-line header never overlaps them.
         let headStyle = s.with(.heading) { $0.sizePt = 24 }
         for (col, headerText, items) in [(cols[0], leftHeader, left), (cols[1], rightHeader, right)] {
-            let card = try slide.addCard(in: col, style: s)
+            let card = try slide.addCard(in: col, style: s, padding: min(s.spacing.lg, .points(16)))
             let (head, body) = card.content.split(.vertical, ratio: 0.16, gutter: s.spacing.sm)
             try slide.addText(headerText, in: head, role: .heading, style: headStyle, anchor: .top)
             // Cards are narrower than a full slide; a smaller body, tighter gaps,

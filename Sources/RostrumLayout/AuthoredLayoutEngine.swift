@@ -73,7 +73,10 @@ public final class AuthoredLayoutEngine {
             }
             if needed(1, compact: false) <= height { continue }
             var scale = 1.0
-            while needed(scale, compact: true) > height, minimum * (scale - 0.025) >= floor { scale -= 0.025 }
+            let minimumScale = min(1, floor / minimum)
+            while needed(scale, compact: true) > height, scale > minimumScale {
+                scale = max(minimumScale, scale - 0.025)
+            }
             guard needed(scale, compact: true) <= height else {
                 throw LayoutError.cannotFit("‘\(shape.textFrame?.text.prefix(70) ?? "")’ does not fit at a readable size. Use a roomier layout or split this slide.")
             }

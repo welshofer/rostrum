@@ -1526,6 +1526,7 @@ private final class EventBox: @unchecked Sendable {
         case .auditing: events.append("auditing")
         case .illustrating: events.append("illustrating")
         case .rendering: events.append("rendering")
+        case .recoveryAvailable: events.append("recoveryAvailable")
         case .finished: events.append("finished")
         }
     }

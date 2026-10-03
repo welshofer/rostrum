@@ -11,6 +11,7 @@ import CoreText
 #endif
 
 public struct DeckResult: Sendable, Equatable {
+    public var recoveryURL: URL? = nil
     public let url: URL
     public let slideCount: Int
     /// `var`, not `let`: the app appends run-level notes — "images were
@@ -60,6 +61,76 @@ public enum RenderError: Error {
 public actor DeckRenderer {
     public init() {}
 
+    /// Recompose only the requested slide in a copy of the existing package.
+    /// Its URI remains stable, so navigation, sections and notes keep working.
+    public func retrySlide(snapshotURL: URL, sourceURL: URL?, slideID: String,
+                           variant: Int, into directory: URL) throws -> DeckResult {
+        try Task.checkCancellation()
+        var saved = try RenderSnapshot.load(snapshotURL)
+        guard var input = saved.deck.slides.first(where: { $0.id == slideID }) else {
+            throw RenderError.renderFailed(underlying: "This slide is not in the saved content.")
+        }
+        let temporary = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: temporary, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+        defer { try? FileManager.default.removeItem(at: temporary) }
+        let designURL = try saved.design.map { design -> URL in
+            let url = temporary.appendingPathComponent("design.md")
+            try Data(design.utf8).write(to: url); return url
+        }
+        let template = try saved.template()
+        if template == nil, variant > 0, input.kind == .bullets, let bullets = input.body?.bullets, bullets.count > 1 {
+            let lines = bullets.map { ([$0.text] + ($0.subBullets ?? [])).joined(separator: "\n") }
+            let split = (lines.count + 1) / 2
+            input.layout = "twoColumn"
+            input.body?.left = Column(heading: "", bullets: Array(lines.prefix(split)))
+            input.body?.right = Column(heading: "", bullets: Array(lines.dropFirst(split)))
+            input.body?.bullets = nil
+        }
+        if let position = saved.deck.slides.firstIndex(where: { $0.id == slideID }) { saved.deck.slides[position] = input }
+        guard let sourceURL else {
+            var result = try render(saved.deck, designURL: designURL, notesEnabled: saved.notesEnabled,
+                into: directory, images: saved.images, useSmartArt: saved.useSmartArt, template: template,
+                layoutVariants: [slideID: variant])
+            result.recoveryURL = snapshotURL
+            return result
+        }
+        let presentation = try Presentation(data: Data(contentsOf: sourceURL))
+        let missingFonts = Self.registerInstalledFonts(for: presentation)
+        guard let index = (0..<presentation.slides.count).first(where: { (try? presentation.slides[$0].part.dom().firstChild(named: "p:cSld")?[attribute: "name"]) == "Lectern:" + slideID }) else {
+            throw RenderError.renderFailed(underlying: "This deck no longer contains the saved slide. The original was left unchanged.")
+        }
+        try Task.checkCancellation()
+        let original = try presentation.slides[index]
+        var warnings: [String] = [], dropped: [String] = []
+        let replacement: Slide
+        if let template {
+            replacement = try TemplateRendering.build(input, in: presentation, template: template,
+                image: saved.images[slideID], warnings: &warnings, variant: variant)
+        } else {
+            // Reuse the production renderer so image placement, sources and
+            // design styles stay identical. Import its single slide natively.
+            var one = saved.deck; one.slides = [input]; one.sections = nil
+            let result = try render(one, designURL: designURL, notesEnabled: saved.notesEnabled,
+                into: temporary, images: saved.images, useSmartArt: saved.useSmartArt)
+            let rendered = try Presentation(data: Data(contentsOf: result.url))
+            replacement = try presentation.slides.import(from: rendered, at: 0)
+            dropped = result.droppedContent
+        }
+        try original.replaceVisualContents(with: replacement)
+        try original.part.dom().firstChild(named: "p:cSld")?[attribute: "name"] = "Lectern:" + slideID
+        original.part.markDirty()
+        try presentation.slides.remove(at: presentation.slides.count - 1)
+        try presentation.validateTemplateBindings()
+        let issues = try presentation.validate().map(\.description)
+        try Task.checkCancellation()
+        let url = try outputURL(title: saved.deck.meta.title + " revised", in: directory)
+        try presentation.save(to: url)
+        let previews = Self.previews(of: presentation)
+        return DeckResult(recoveryURL: snapshotURL, url: url, slideCount: presentation.slides.count,
+            warnings: warnings, schemaIssues: issues, unmeasuredFonts: missingFonts,
+            previews: previews.svgs, previewTitles: previews.titles, droppedContent: dropped)
+    }
+
     // MARK: - Previews
 
     /// Render every slide to SVG with Rostrum's own renderer.
@@ -83,8 +154,8 @@ public actor DeckRenderer {
         var svgs: [String] = []
         var titles: [String] = []
         for index in 0..<presentation.slides.count {
-            guard let svg = try? presentation.renderSVG(slideAt: index, pixelWidth: 640) else { continue }
-            svgs.append(svg)
+            let svg = try? presentation.renderSVG(slideAt: index, pixelWidth: 640)
+            svgs.append(SlidePreviewRecord(number: index + 1, title: "", svg: svg).displaySVG)
             titles.append((try? presentation.slides[index].title?.textFrame?.text) ?? "")
         }
         return (svgs, titles)
@@ -346,7 +417,7 @@ public actor DeckRenderer {
     public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool,
                        into directory: URL, warnings: [String] = [],
                        images: [String: Data] = [:], useSmartArt: Bool = false,
-                       template: PowerPointTemplate? = nil) throws -> DeckResult {
+                       template: PowerPointTemplate? = nil, layoutVariants: [String: Int] = [:]) throws -> DeckResult {
         do {
             // Rendering is now the slowest phase — font registration, package
             // deflate, the schema lint, N SVG renders — so Cancel has to reach
@@ -363,7 +434,8 @@ public actor DeckRenderer {
 
             var dropped: [String] = []
             var layoutWarnings: [String] = []
-            let deck = try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings) } ?? deck
+            let templateEngine = TemplateLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
+            let deck = try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings, engine: templateEngine) } ?? deck
             var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {
                 try Task.checkCancellation()
@@ -378,11 +450,14 @@ public actor DeckRenderer {
                 let built: Slide
                 if let template {
                     built = try TemplateRendering.build(slide, in: presentation, template: template,
-                                                        image: images[slide.id], warnings: &layoutWarnings)
+                                                        image: images[slide.id], warnings: &layoutWarnings, engine: templateEngine, variant: layoutVariants[slide.id] ?? 0)
                 } else {
                     built = try build(slide, in: presentation, useSmartArt: useSmartArt,
                                       hasSideImage: sideImage, dropped: &dropped)
                 }
+                let content = try built.part.dom().firstChild(named: "p:cSld")
+                content?[attribute: "name"] = "Lectern:" + slide.id
+                built.part.markDirty()
                 builtSlides[slide.id] = built
                 // Provenance is additive and position-independent, so every
                 // layout can carry it without threading it through a builder.
@@ -599,7 +674,7 @@ public actor DeckRenderer {
                 // Make the chart carry its own values (positions kept valid per
                 // kind so PowerPoint never repairs): bars/lines show values, pies
                 // show a percentage with a legend.
-                let options: ChartOptions
+                var options: ChartOptions
                 switch kind {
                 case .pie, .doughnut:
                     // Slices are categories, not series: the legend names
@@ -632,6 +707,7 @@ public actor DeckRenderer {
                                            dataLabels: DataLabelOptions(showValue: true, position: "outEnd"),
                                            valueAxis: Self.labelledAxis)
                 }
+                options.text = ChartTextStyle(font: deck.style.bodyFont, color: deck.style.ink, sizePt: 16)
                 return try deck.chartSlide(title, kind, data, options: options)
             }
             // Falling back is right — a series whose length disagrees with the
@@ -960,5 +1036,13 @@ public actor DeckRenderer {
         }
         let trimmed = out.trimmingCharacters(in: CharacterSet(charactersIn: "-"))
         return trimmed.isEmpty ? "deck" : String(trimmed.prefix(60))
+    }
+}
+
+public extension DeckResult {
+    static func savedCopy(of result: DeckResult, at url: URL) -> DeckResult {
+        DeckResult(recoveryURL: result.recoveryURL, url: url, slideCount: result.slideCount,
+            warnings: result.warnings, schemaIssues: result.schemaIssues, unmeasuredFonts: result.unmeasuredFonts,
+            previews: result.previews, previewTitles: result.previewTitles, droppedContent: result.droppedContent)
     }
 }
