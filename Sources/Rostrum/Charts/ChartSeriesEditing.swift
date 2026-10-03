@@ -18,7 +18,7 @@ public extension Chart {
     }
 
     /// A scatter or bubble series: a name and a list of points, read from the
-    /// caches in the chart XML.
+    /// chart caches, or stored embedded-workbook values when caches are absent.
     struct XYSeries: Sendable {
         public let name: String
         public let points: [XYPoint]
@@ -56,16 +56,16 @@ public extension Chart {
         seriesElements.compactMap { element in
             guard let yWrapper = element.firstChild(named: "c:yVal") else { return nil }
             let name = element.firstChild(named: "c:tx")
-                .map { Chart.strings(in: $0).first ?? "" } ?? ""
+                .map { readStrings(in: $0).first ?? "" } ?? ""
             let xWrapper = element.firstChild(named: "c:xVal")
             // A c:xVal is a choice: numeric (the usual case) or text. Only one
             // of the two reads back, and which one it was must stay visible.
-            let xValues = xWrapper.map { Chart.numbers(in: $0) } ?? []
+            let xValues = xWrapper.map { readNumbers(in: $0) } ?? []
             let xLabels = xValues.isEmpty
-                ? (xWrapper.map { Chart.strings(in: $0) } ?? []) : []
-            let yValues = Chart.numbers(in: yWrapper)
+                ? (xWrapper.map { readStrings(in: $0) } ?? []) : []
+            let yValues = readNumbers(in: yWrapper)
             let sizes = element.firstChild(named: "c:bubbleSize")
-                .map { Chart.numbers(in: $0) } ?? []
+                .map { readNumbers(in: $0) } ?? []
             let count = max(max(xValues.count, xLabels.count), max(yValues.count, sizes.count))
             let points = (0..<count).map { index in
                 XYPoint(x: index < xValues.count ? xValues[index] : nil,

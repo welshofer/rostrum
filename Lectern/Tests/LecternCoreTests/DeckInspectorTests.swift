@@ -4,6 +4,35 @@ import Rostrum
 @testable import LecternCore
 
 @Suite struct DeckInspectorTests {
+    @Test func workbookOnlyChartDataReachesInspectionAndPreviewWithoutEditingTheFile() throws {
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addChart(.barClustered,
+            data: ChartData(categories: ["North", "South"], series: [.init(name: "Revenue", values: [12, 24])]),
+            frame: Rect(x: .inches(1), y: .inches(1), width: .inches(7), height: .inches(4)))
+        let expectedPreview = try deck.renderSVG(slideAt: 0, pixelWidth: 640)
+        let chart = try #require(deck.charts.first)
+        var stack = [try chart.part.dom()]
+        while let element = stack.popLast() {
+            element.children.removeAll {
+                if case .element(let child) = $0 { return ["c:strCache", "c:numCache"].contains(child.name) }
+                return false
+            }
+            stack.append(contentsOf: element.childElements)
+        }
+        chart.part.markDirty()
+        let url = try write(deck, named: "Workbook-only.pptx")
+        defer { try? FileManager.default.removeItem(at: url.deletingLastPathComponent()) }
+        let before = try Data(contentsOf: url)
+        let result = try DeckInspector.inspect(deckAt: url)
+        let inspected = try #require(result.charts.first)
+        #expect(inspected.categories == ["North", "South"])
+        #expect(inspected.series.first?.name == "Revenue")
+        #expect(inspected.series.first?.values == [12, 24])
+        #expect(!inspected.canReplaceData)
+        #expect(result.previews == [expectedPreview])
+        #expect(try Data(contentsOf: url) == before)
+    }
+
     @Test func previewLimitationsAreDistinctFromFileDamageAndReachAccessibility() throws {
         let deck = try Presentation()
         try deck.slides[0].shapes.addShape(.star5Point,

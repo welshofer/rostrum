@@ -13,6 +13,10 @@ public final class Chart {
     /// The chart part (`/ppt/charts/chartN.xml`).
     public let part: Part
     let package: OPCPackage
+    // Workbook snapshots are parsed lazily, only for absent chart caches, and
+    // invalidated when an edit replaces the embedded bytes.
+    private var workbookSnapshot: Data?
+    private var workbookReader: ChartWorkbookReader?
 
     init(part: Part, package: OPCPackage) {
         self.part = part
@@ -58,7 +62,7 @@ public final class Chart {
                 .joined(separator: "\n")
             return text.isEmpty ? nil : text
         }
-        let linked = Self.strings(in: tx).first
+        let linked = readStrings(in: tx).first
         return (linked?.isEmpty ?? true) ? nil : linked
     }
 
@@ -71,18 +75,19 @@ public final class Chart {
     public var categories: [String] {
         for element in seriesElements {
             guard let cat = element.firstChild(named: "c:cat") else { continue }
-            let strings = Self.strings(in: cat)
+            let strings = readStrings(in: cat)
             if !strings.isEmpty { return strings }
         }
         return []
     }
 
     /// The series across every plot group: name and values, read from the
-    /// caches PowerPoint keeps in the chart XML (so no workbook parsing).
+    /// caches PowerPoint keeps in the chart XML. When a cache is absent, local
+    /// one-dimensional references can read the embedded workbook's stored values.
     public var series: [ChartData.Series] {
         seriesElements.map { element in
-            let name = element.firstChild(named: "c:tx").map { Self.strings(in: $0).first ?? "" } ?? ""
-            let values = element.firstChild(named: "c:val").map(Self.numbers(in:)) ?? []
+            let name = element.firstChild(named: "c:tx").map { readStrings(in: $0).first ?? "" } ?? ""
+            let values = element.firstChild(named: "c:val").map { readNumbers(in: $0) } ?? []
             return ChartData.Series(name: name, values: values)
         }
     }
@@ -105,9 +110,36 @@ public final class Chart {
     /// The embedded Edit-Data workbook, when the chart has one.
     public var workbookPart: Part? {
         guard let rId = root?.firstChild(named: "c:externalData")?[attribute: "r:id"],
-              let rel = part.rels.relationship(withId: rId) else { return nil }
+              let rel = part.rels.relationship(withId: rId), !rel.isExternal else { return nil }
         return try? package.part(
             at: PackURI.resolve(target: rel.target, relativeTo: part.uri.baseURI))
+    }
+
+    /// Existing caches, including empty and sparse caches, remain authoritative.
+    /// Never fill cache gaps from a possibly newer workbook or evaluate formulas.
+    func readStrings(in wrapper: XML.Element) -> [String] {
+        if wrapper.firstChild(named: "c:v") != nil || Self.textCache(in: wrapper) != nil || Self.numberCache(in: wrapper) != nil {
+            return Self.strings(in: wrapper)
+        }
+        return workbookCells(in: wrapper)?.map { $0?.text ?? "" } ?? []
+    }
+
+    func readNumbers(in wrapper: XML.Element) -> [Double?] {
+        if Self.numberCache(in: wrapper) != nil { return Self.numbers(in: wrapper) }
+        guard wrapper.firstChild(named: "c:numRef") != nil else { return [] }
+        return workbookCells(in: wrapper)?.map { $0?.number } ?? []
+    }
+
+    private func workbookCells(in wrapper: XML.Element) -> [ChartWorkbookReader.Cell?]? {
+        guard let reference = wrapper.firstChild(named: "c:strRef") ?? wrapper.firstChild(named: "c:numRef"),
+              let formula = reference.firstChild(named: "c:f")?.textContent,
+              ChartWorkbookReader.Range(formula) != nil,
+              let workbook = workbookPart else { return nil }
+        if workbookSnapshot != workbook.blob {
+            workbookSnapshot = workbook.blob
+            workbookReader = try? ChartWorkbookReader(data: workbook.blob)
+        }
+        return workbookReader?.cells(for: formula)
     }
 
     // MARK: - Replacing data
