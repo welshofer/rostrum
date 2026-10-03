@@ -4,6 +4,22 @@ import Rostrum
 @testable import LecternCore
 
 @Suite struct DeckInspectorTests {
+    @Test func previewLimitationsAreDistinctFromFileDamageAndReachAccessibility() throws {
+        let deck = try Presentation()
+        try deck.slides[0].shapes.addShape(.star5Point,
+            frame: Rect(x: .inches(1), y: .inches(1), width: .inches(2), height: .inches(2)), fill: .solid(Color("0055AA")))
+        let url = try write(deck, named: "Unsupported-preview.pptx")
+        defer { try? FileManager.default.removeItem(at: url.deletingLastPathComponent()) }
+        let before = try Data(contentsOf: url)
+        let result = try DeckInspector.inspect(deckAt: url)
+        #expect(result.schemaIssues.isEmpty)
+        #expect(result.outlineWarnings.isEmpty)
+        #expect(result.previewWarnings.contains { $0.contains("Slide 1:") && $0.contains("geometry") })
+        #expect(result.hasFindings)
+        #expect(result.previewRecords[0].accessibilityLabel(total: 1).contains("Preview has limitations"))
+        #expect(try Data(contentsOf: url) == before)
+    }
+
     private func write(_ deck: Presentation, named name: String) throws -> URL {
         let root = URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent("lectern-inspect-\(UUID().uuidString)", isDirectory: true)

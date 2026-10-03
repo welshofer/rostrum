@@ -95,8 +95,12 @@ public struct DeckInspection: Sendable {
     public var previews: [String] { previewRecords.map(\.displaySVG) }
     public var previewTitles: [String] { previewRecords.map(\.title) }
 
+    public var previewWarnings: [String] {
+        previewRecords.flatMap { record in record.warnings.map { "Slide \(record.number): \($0)" } }
+    }
+
     public var hasFindings: Bool {
-        !schemaIssues.isEmpty || !readWarnings.isEmpty || !outlineWarnings.isEmpty
+        !schemaIssues.isEmpty || !readWarnings.isEmpty || !outlineWarnings.isEmpty || !previewWarnings.isEmpty
     }
 
     /// A size a person can read, computed the same way every time.
@@ -179,12 +183,14 @@ public enum DeckInspector {
             onEvent(.rendering(done: 0, total: total))
             for index in 0..<total {
                 try Task.checkCancellation()
+                let rendered = try? deck.renderSVGReportingProblems(slideAt: index, pixelWidth: 640)
                 previews.append(SlidePreviewRecord(
                     number: index + 1,
                     title: (try? deck.slides[index].title?.textFrame?.text) ?? "",
-                    svg: try? deck.renderSVG(slideAt: index, pixelWidth: 640),
+                    svg: rendered?.svg,
                     geometry: SlidePreviewGeometry(width: deck.slideSize.width.inches,
-                                                   height: deck.slideSize.height.inches)))
+                                                   height: deck.slideSize.height.inches),
+                    warnings: rendered?.problems.messages ?? ["Preview unavailable."]))
                 onEvent(.rendering(done: index + 1, total: total))
             }
         }

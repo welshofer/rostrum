@@ -246,3 +246,6 @@ and publishes real layouts carrying geometry and inherited styles. Native charts
 tables and pictures remain editable and bound to insertion placeholders. PowerPoint
 visual acceptance remains necessary: structural checks and SVG previews do not
 prove final-client font substitution, spacing or rendering fidelity.
+
+For preservation, editing, authoring and preview limitations, see the
+[PowerPoint support matrix](docs/FORMAT_SUPPORT.md).

@@ -28,6 +28,8 @@ public struct DeckResult: Sendable, Equatable {
     /// real advance widths. Kept out of `warnings` on purpose: whether a font
     /// is present is a fact about this machine, not about the deck.
     public let unmeasuredFonts: [String]
+    /// Preview approximations, separate from problems in the exported deck.
+    public var previewWarnings: [String] = []
     /// One self-contained SVG per slide, rendered by Rostrum from the deck it
     /// just wrote — not a reconstruction from the IR. Empty if rendering
     /// failed, which is never fatal: the `.pptx` on disk is the deliverable
@@ -130,7 +132,7 @@ public actor DeckRenderer {
         try presentation.save(to: url)
         let previews = Self.previews(of: presentation)
         return DeckResult(recoveryURL: snapshotURL, url: url, slideCount: presentation.slides.count,
-            warnings: warnings, schemaIssues: issues, unmeasuredFonts: missingFonts,
+            warnings: warnings, schemaIssues: issues, unmeasuredFonts: missingFonts, previewWarnings: previews.warnings,
             previews: previews.svgs, previewTitles: previews.titles, droppedContent: dropped)
     }
 
@@ -151,17 +153,20 @@ public actor DeckRenderer {
     /// Best-effort per slide: one slide that fails to render costs its own
     /// preview and nothing else, because a missing thumbnail is not a reason
     /// to fail a deck that saved correctly.
-    private static func previews(of presentation: Presentation) -> (svgs: [String], titles: [String]) {
+    private static func previews(of presentation: Presentation) -> (svgs: [String], titles: [String], warnings: [String]) {
         // One pass building both, so a slide whose render fails drops its
         // title too and the two arrays stay index-aligned.
         var svgs: [String] = []
         var titles: [String] = []
+        var warnings: [String] = []
         for index in 0..<presentation.slides.count {
-            let svg = try? presentation.renderSVG(slideAt: index, pixelWidth: 640)
+            let rendered = try? presentation.renderSVGReportingProblems(slideAt: index, pixelWidth: 640)
+            let svg = rendered?.svg
+            warnings += (rendered?.problems.messages ?? ["Preview unavailable."]).map { "Slide \(index + 1): \($0)" }
             svgs.append(SlidePreviewRecord(number: index + 1, title: "", svg: svg).displaySVG)
             titles.append((try? presentation.slides[index].title?.textFrame?.text) ?? "")
         }
-        return (svgs, titles)
+        return (svgs, titles, warnings)
     }
 
     // MARK: - Document metadata
@@ -554,10 +559,10 @@ public actor DeckRenderer {
             try presentation.save(to: url)
             // Previews are the tail cost and pure convenience; the deck is
             // already saved, so a cancel here skips them rather than undoing it.
-            let (previews, previewTitles) = Task.isCancelled ? ([], []) : Self.previews(of: presentation)
+            let (previews, previewTitles, previewWarnings) = Task.isCancelled ? ([], [], []) : Self.previews(of: presentation)
             return DeckResult(url: url, slideCount: presentation.slides.count,
                               warnings: warnings + layoutWarnings, schemaIssues: schemaIssues,
-                              unmeasuredFonts: unmeasured,
+                              unmeasuredFonts: unmeasured, previewWarnings: previewWarnings,
                               previews: previews, previewTitles: previewTitles,
                               droppedContent: dropped)
         } catch is CancellationError {
@@ -1114,7 +1119,7 @@ public actor DeckRenderer {
 public extension DeckResult {
     static func savedCopy(of result: DeckResult, at url: URL) -> DeckResult {
         DeckResult(recoveryURL: result.recoveryURL, url: url, slideCount: result.slideCount,
-            warnings: result.warnings, schemaIssues: result.schemaIssues, unmeasuredFonts: result.unmeasuredFonts,
+            warnings: result.warnings, schemaIssues: result.schemaIssues, unmeasuredFonts: result.unmeasuredFonts, previewWarnings: result.previewWarnings,
             previews: result.previews, previewTitles: result.previewTitles, droppedContent: result.droppedContent)
     }
 }

@@ -5,8 +5,8 @@ import Foundation
 // zero-dependency. Coordinates are EMU (the viewBox is in EMU); font sizes are
 // points × 12700 EMU/pt. Not pixel-perfect — paragraphs whose typeface has no
 // registered metrics are wrapped on a character-width estimate, so breaks land
-// near, not exactly where, PowerPoint puts them — but recognizable, complete
-// (no text is dropped short of a hostile-input bound) and byte-deterministic.
+// near, not exactly where, PowerPoint puts them. Unsupported shape-tree content
+// is reported separately; SVG output is deterministic, not a fidelity certificate.
 struct SVGRenderer {
     let slidePart: Part
     let slideSize: (width: EMU, height: EMU)
@@ -42,25 +42,21 @@ struct SVGRenderer {
         // look like whatever it was before a template was applied: the logo,
         // the photo panel, the coloured field a brand puts on its layouts all
         // live on the layout and the master, not on the slide.
-        let (chain, problems) = inheritanceChain()
+        let (chain, inheritedProblems) = inheritanceChain()
+        var problems = inheritedProblems
         body += box(0, 0, w, h,
                     fill: backgroundFill(chain: chain, box: (0, 0, w, h), defs: &defs) ?? "#FFFFFF")
 
         if showsMasterShapes(chain: chain), let master = chain.master {
-            body += renderInherited(master, defs: &defs)
+            body += renderInherited(master, defs: &defs, problems: &problems)
         }
         if let layout = chain.layout {
-            body += renderInherited(layout, defs: &defs)
+            body += renderInherited(layout, defs: &defs, problems: &problems)
         }
 
         if let spTree = Slide.existingSpTree(of: slidePart) {
             for child in spTree.childElements {
-                switch child.name {
-                case "p:sp": body += renderShape(child, ownedBy: slidePart, defs: &defs)
-                case "p:pic": body += renderPicture(child, ownedBy: slidePart)
-                case "p:graphicFrame": body += renderGraphicFrame(child, ownedBy: slidePart, defs: &defs)
-                default: break
-                }
+                body += renderNode(child, ownedBy: slidePart, defs: &defs, problems: &problems)
             }
         }
 
@@ -128,25 +124,132 @@ struct SVGRenderer {
     ///
     /// Placeholders are skipped: on a layout or a master they are prompts
     /// ("Click to add title"), and PowerPoint never draws them on a slide.
-    private func renderInherited(_ part: Part, defs: inout String) -> String {
+    private func renderInherited(_ part: Part, defs: inout String, problems: inout SlideRenderProblems) -> String {
         guard let tree = Slide.existingSpTree(of: part) else { return "" }
         var out = ""
         for child in tree.childElements {
             if Placeholders.phElement(of: child) != nil { continue }
-            switch child.name {
-            case "p:sp": out += renderShape(child, ownedBy: part, defs: &defs)
-            case "p:pic": out += renderPicture(child, ownedBy: part)
-            case "p:graphicFrame": out += renderGraphicFrame(child, ownedBy: part, defs: &defs)
-            default: break
-            }
+            out += renderNode(child, ownedBy: part, defs: &defs, problems: &problems, inherited: true)
         }
         return out
+    }
+
+    // MARK: - Shape tree and transforms
+
+    private func renderNode(_ node: XML.Element, ownedBy owner: Part, defs: inout String,
+                            problems: inout SlideRenderProblems, inherited: Bool = false,
+                            depth: Int = 0, flippedTextH: Bool = false, flippedTextV: Bool = false) -> String {
+        guard depth < 64 else {
+            problems.record("Preview omitted shapes nested more than 64 levels deep.")
+            return ""
+        }
+        if inherited && Placeholders.phElement(of: node) != nil { return "" }
+        let nodeTransform = ShapeTransform.element(of: node)
+        let localFlipH = ["1", "true"].contains(nodeTransform?[attribute: "flipH"] ?? "")
+        let localFlipV = ["1", "true"].contains(nodeTransform?[attribute: "flipV"] ?? "")
+        let textFlipH = flippedTextH != localFlipH, textFlipV = flippedTextV != localFlipV
+        let content: String
+        switch node.name {
+        case "p:nvGrpSpPr", "p:grpSpPr", "p:extLst": return ""
+        case "p:grpSp":
+            let children = node.childElements.map {
+                renderNode($0, ownedBy: owner, defs: &defs, problems: &problems,
+                           inherited: inherited, depth: depth + 1, flippedTextH: textFlipH, flippedTextV: textFlipV)
+            }.joined()
+            let transform = ShapeTransform.element(of: node)
+            guard let outer = ShapeTransform.rect(transform),
+                  let child = ShapeTransform.childSpace(transform),
+                  outer.width.rawValue > 0, outer.height.rawValue > 0,
+                  child.width.rawValue > 0, child.height.rawValue > 0 else {
+                problems.record("Preview could not map a group's coordinate space.")
+                return children
+            }
+            let sx = Double(outer.width.rawValue) / Double(child.width.rawValue)
+            let sy = Double(outer.height.rawValue) / Double(child.height.rawValue)
+            let mapping = "translate(\(outer.x.rawValue) \(outer.y.rawValue)) scale(\(sx) \(sy)) translate(\(-child.x.rawValue) \(-child.y.rawValue))"
+            content = "<g transform=\"\(mapping)\">\(children)</g>"
+        case "p:sp":
+            let properties = node.firstChild(named: "p:spPr")
+            let preset = properties?.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
+            if properties?.firstChild(named: "a:custGeom") != nil || !["rect", "ellipse", "roundRect"].contains(preset) {
+                problems.record("Preview approximates custom or unsupported shape geometry as a rectangle.")
+            }
+            if (flippedTextH || flippedTextV) && ShapeTransform.rotation(of: node) != 0 {
+                problems.record("Preview may differ for rotated text inside a flipped group.")
+            }
+            content = renderShape(node, ownedBy: owner, defs: &defs, textFlipH: textFlipH, textFlipV: textFlipV)
+        case "p:pic": content = renderPicture(node, ownedBy: owner)
+        case "p:cxnSp": content = renderConnector(node, defs: &defs, problems: &problems)
+        case "p:graphicFrame": content = renderGraphicFrame(node, ownedBy: owner, defs: &defs, problems: &problems)
+        default:
+            problems.record("Preview omitted an unsupported shape-tree element.")
+            return ""
+        }
+        guard let transform = ShapeTransform.element(of: node),
+              let bounds = ShapeTransform.rect(transform) else { return content }
+        // DrawingML flips about the shape/group center, then rotates clockwise.
+        let rotation = ShapeTransform.rotation(of: node).truncatingRemainder(dividingBy: 360)
+        let flipH = ["1", "true"].contains(transform[attribute: "flipH"] ?? "")
+        let flipV = ["1", "true"].contains(transform[attribute: "flipV"] ?? "")
+        guard rotation != 0 || flipH || flipV else { return content }
+        let cx = Double(bounds.x.rawValue) + Double(bounds.width.rawValue) / 2
+        let cy = Double(bounds.y.rawValue) + Double(bounds.height.rawValue) / 2
+        return "<g transform=\"translate(\(cx) \(cy)) rotate(\(rotation)) scale(\(flipH ? -1 : 1) \(flipV ? -1 : 1)) translate(\(-cx) \(-cy))\">\(content)</g>"
+    }
+
+    private func renderConnector(_ node: XML.Element, defs: inout String,
+                                 problems: inout SlideRenderProblems) -> String {
+        guard let properties = node.firstChild(named: "p:spPr") else { return "" }
+        let (x, y, w, h) = frame(of: properties)
+        let line = properties.firstChild(named: "a:ln")
+        if line?.firstChild(named: "a:noFill") != nil { return "" }
+        let color = colorHex(in: line?.firstChild(named: "a:solidFill"))
+            ?? colorHex(in: node.firstChild(named: "p:style")?.firstChild(named: "a:lnRef")) ?? "#000000"
+        let width = max(1, line?.coordinate("w") ?? 12700)
+        let preset = properties.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "line"
+        if preset != "line" && preset != "straightConnector1" {
+            problems.record("Preview approximates bent or curved connectors with straight lines.")
+        }
+        var attrs = "stroke=\"\(color)\" stroke-width=\"\(width)\" fill=\"none\""
+        if let dash = line?.firstChild(named: "a:prstDash")?[attribute: "val"], dash != "solid" {
+            let pattern: String
+            switch dash {
+            case "dot", "sysDot": pattern = "\(width) \(width * 2)"
+            case "dash", "sysDash": pattern = "\(width * 4) \(width * 3)"
+            default:
+                pattern = "\(width * 4) \(width * 3)"
+                problems.record("Preview approximates an unsupported connector dash pattern.")
+            }
+            attrs += " stroke-dasharray=\"\(pattern)\""
+        }
+        for (element, attribute, start) in [("a:headEnd", "marker-start", true), ("a:tailEnd", "marker-end", false)] {
+            guard let end = line?.firstChild(named: element), let type = end[attribute: "type"], type != "none" else { continue }
+            guard ["triangle", "arrow", "diamond", "oval"].contains(type) else {
+                problems.record("Preview omitted an unsupported connector arrowhead."); continue
+            }
+            let id = "arrow\(defs.utf8.count)"
+            func size(_ value: String?) -> Int { value == "lg" ? 5 : value == "sm" ? 2 : 3 }
+            let markerWidth = size(end[attribute: "len"]), markerHeight = size(end[attribute: "w"])
+            let shape: String
+            switch type {
+            case "oval": shape = "<ellipse cx=\"5\" cy=\"5\" rx=\"5\" ry=\"5\" fill=\"\(color)\"/>"
+            case "diamond": shape = "<path d=\"M0 5 L5 0 L10 5 L5 10 Z\" fill=\"\(color)\"/>"
+            case "arrow": shape = "<path d=\"M0 0 L10 5 L0 10\" fill=\"none\" stroke=\"\(color)\" stroke-width=\"2\"/>"
+            default: shape = "<path d=\"M0 0 L10 5 L0 10 Z\" fill=\"\(color)\"/>"
+            }
+            // Explicitly reverse the start marker rather than relying on SVG 2
+            // auto-start-reverse, which older viewers may not implement.
+            let marker = start ? "<g transform=\"rotate(180 5 5)\">\(shape)</g>" : shape
+            defs += "<marker id=\"\(id)\" viewBox=\"0 0 10 10\" refX=\"\(start ? 0 : 10)\" refY=\"5\" markerWidth=\"\(markerWidth)\" markerHeight=\"\(markerHeight)\" orient=\"auto\" overflow=\"visible\">\(marker)</marker>"
+            attrs += " \(attribute)=\"url(#\(id))\""
+        }
+        return "<line x1=\"\(x)\" y1=\"\(y)\" x2=\"\(x + w)\" y2=\"\(y + h)\" \(attrs)/>"
     }
 
     // MARK: - Shapes
 
     private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
-                             defs: inout String) -> String {
+                             defs: inout String, textFlipH: Bool = false, textFlipV: Bool = false) -> String {
         guard let spPr = sp.firstChild(named: "p:spPr") else { return "" }
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
@@ -156,8 +259,14 @@ struct SVGRenderer {
         if let fill { out += geometry(prst, f, fill: fill, stroke: stroke) }
         else if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
         if let txBody = sp.firstChild(named: "p:txBody") {
-            out += renderText(txBody, box: f,
-                              inheriting: inheritedRunDefaults(for: sp, ownedBy: owner))
+            let text = renderText(txBody, box: f,
+                                  inheriting: inheritedRunDefaults(for: sp, ownedBy: owner))
+            // PowerPoint flips the shape and its placement, not the glyphs.
+            // Counter-reflect text locally before the enclosing SVG transforms.
+            if textFlipH || textFlipV {
+                let cx = Double(f.0) + Double(f.2) / 2, cy = Double(f.1) + Double(f.3) / 2
+                out += "<g data-text-unflip=\"true\" transform=\"translate(\(cx) \(cy)) scale(\(textFlipH ? -1 : 1) \(textFlipV ? -1 : 1)) translate(\(-cx) \(-cy))\">\(text)</g>"
+            } else { out += text }
         }
         return out
     }
@@ -531,7 +640,7 @@ struct SVGRenderer {
     // MARK: - Tables / charts
 
     private func renderGraphicFrame(_ gf: XML.Element, ownedBy owner: Part,
-                                    defs: inout String) -> String {
+                                    defs: inout String, problems: inout SlideRenderProblems) -> String {
         guard let xfrm = gf.firstChild(named: "p:xfrm"),
               let off = xfrm.firstChild(named: "a:off"), let ext = xfrm.firstChild(named: "a:ext") else { return "" }
         let x = intAttr(off, "x"), y = intAttr(off, "y")
@@ -552,6 +661,7 @@ struct SVGRenderer {
         else if uri == GraphicDataURI.diagram { label = "[SmartArt]" }
         else if uri == GraphicDataURI.ole { label = "[embedded object]" }
         else { label = "[object]" }
+        problems.record("Preview uses a placeholder for \(label).")
         return box(x, y, w, h, fill: "#F2F2F2", stroke: " stroke=\"#CCCCCC\" stroke-width=\"6350\"")
             + textElement(label, x: x + w / 2, baseline: y + h / 2,
                           sizeEMU: 18 * emuPerPoint, fill: "#999999", anchor: "middle",
@@ -994,7 +1104,7 @@ struct SVGRenderer {
     }
 }
 
-/// What a slide could not resolve while rendering it to SVG.
+/// Broken inheritance and detected content approximations in an SVG preview.
 ///
 /// `renderSVG(slideAt:pixelWidth:)` always produces an SVG, even from a deck
 /// whose inheritance is broken — but a broken link means everything the slide
@@ -1002,7 +1112,7 @@ struct SVGRenderer {
 /// missing from that SVG, with nothing in the output to say so. To a viewer the
 /// slide then looks like Rostrum rendered it wrong, when really the deck is
 /// damaged. These flags let a caller tell the two apart. An empty value
-/// (`isEmpty`) means every link resolved and nothing was left out.
+/// (`isEmpty`) means no supported diagnostic fired, not pixel-perfect fidelity.
 public struct SlideRenderProblems: Sendable, Equatable {
     /// The slide names no layout, or the layout part it names could not be
     /// loaded. Nothing the layout would have contributed was drawn.
@@ -1012,12 +1122,26 @@ public struct SlideRenderProblems: Sendable, Equatable {
     /// could not be loaded. Nothing the master would have contributed was drawn.
     public var masterUnresolved: Bool
 
-    /// No link in the slide → layout → master chain was broken.
-    public var isEmpty: Bool { !layoutUnresolved && !masterUnresolved }
+    /// Content the preview omitted or approximated. The original file is unchanged.
+    public var unsupportedContent: [String]
 
-    public init(layoutUnresolved: Bool = false, masterUnresolved: Bool = false) {
+    public var messages: [String] {
+        (layoutUnresolved ? ["Preview could not load the slide layout."] : [])
+        + (masterUnresolved ? ["Preview could not load the slide master."] : [])
+        + unsupportedContent
+    }
+
+    /// No detected problems; not a guarantee of PowerPoint rendering equivalence.
+    public var isEmpty: Bool { messages.isEmpty }
+
+    fileprivate mutating func record(_ message: String) {
+        if !unsupportedContent.contains(message) { unsupportedContent.append(message) }
+    }
+
+    public init(layoutUnresolved: Bool = false, masterUnresolved: Bool = false, unsupportedContent: [String] = []) {
         self.layoutUnresolved = layoutUnresolved
         self.masterUnresolved = masterUnresolved
+        self.unsupportedContent = unsupportedContent
     }
 }
 
@@ -1027,8 +1151,7 @@ public extension Presentation {
         try renderSVGReportingProblems(slideAt: index, pixelWidth: pixelWidth).svg
     }
 
-    /// Render one slide, and report anything its inheritance chain could not
-    /// resolve.
+    /// Render one slide, reporting broken inheritance and detected preview limits.
     ///
     /// The `svg` is exactly what `renderSVG(slideAt:pixelWidth:)` returns —
     /// this is the same render, with the diagnostics kept instead of dropped.

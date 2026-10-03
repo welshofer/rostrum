@@ -68,6 +68,10 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
 - Inspection previews keep one record per original slide, including failures.
   Keep original numbering, failure labels and the deck's aspect ratio through
   layout and rasterization. Bitmap cache keys include output dimensions.
+- Use preview diagnostics separately from file-validation issues. Unsupported
+  shapes can survive in the PPTX even when the preview cannot draw them. Preserve
+  each group's child coordinates and owning part; PowerPoint group flips keep
+  text readable rather than mirroring its glyphs.
 - Measure performance in Release on fixed inputs before changing algorithms.
   Use Tools/rostrum-benchmark/README.md for timings, memory measurements and
   payload/SVG preservation checks. Compare visual output in PowerPoint as well

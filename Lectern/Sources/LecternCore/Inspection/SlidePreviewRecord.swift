@@ -6,19 +6,21 @@ public struct SlidePreviewRecord: Sendable, Identifiable {
     public let number: Int
     public let title: String
     public let svg: String?
+    public let warnings: [String]
     public let geometry: SlidePreviewGeometry
 
-    public init(number: Int, title: String, svg: String?, geometry: SlidePreviewGeometry? = nil) {
+    public init(number: Int, title: String, svg: String?, geometry: SlidePreviewGeometry? = nil, warnings: [String] = []) {
         self.number = number
         self.title = title
         self.svg = svg
+        self.warnings = warnings
         self.geometry = geometry ?? svg.map { SlidePreviewGeometry(svg: $0) } ?? .widescreen
     }
 
     public func accessibilityLabel(total: Int) -> String {
         let base = "Slide \(number) of \(total)"
         let titled = title.isEmpty ? base : "\(base): \(title)"
-        return svg == nil ? "\(titled). Preview unavailable" : titled
+        return svg == nil ? "\(titled). Preview unavailable" : titled + (warnings.isEmpty ? "" : ". Preview has limitations: " + warnings.joined(separator: " "))
     }
 
     /// Compatibility surface for SVG consumers: failed slides still occupy a slot.

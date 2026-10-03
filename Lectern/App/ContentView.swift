@@ -752,6 +752,13 @@ struct ResultView: View {
                         RecoveryView(snapshotURL: snapshot, sourceURL: result.url)
                     }
             }
+            if !result.previewWarnings.isEmpty {
+                DisclosureGroup("Preview limitations (\(result.previewWarnings.count))") {
+                    Text("These affect the preview, not the saved PowerPoint content.").font(.caption)
+                    ForEach(result.previewWarnings, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
+                }
+                .frame(maxWidth: 420)
+            }
             if !result.warnings.isEmpty {
                 DisclosureGroup("\(result.warnings.count) validation warning(s)") {
                     ForEach(result.warnings, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
