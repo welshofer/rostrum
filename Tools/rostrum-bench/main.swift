@@ -67,12 +67,25 @@ if scenario == "file", args.count > 1 {
                 run.bold = true; run.fontSize = 24; run.fontName = "Arial"
             }
         }
-    } else if scenario.hasPrefix("table-") {
-        let size = scenario.dropFirst(6).split(separator: "x").compactMap { Int($0) }
+    } else if scenario == "richtext-fit" {
+        let text = try deck.slides[0].shapes.addTextBox(frame).textFrame!
+        text.text = String(repeating: "office AV typed text café. ", count: 100)
+        for run in text.paragraphs[0].runs { run.fontName = "Arial"; run.fontSize = 24 }
+    } else if scenario.hasPrefix("table-") || scenario.hasPrefix("shaped-table-") {
+        let size = scenario.dropFirst(scenario.hasPrefix("shaped-") ? 13 : 6).split(separator: "x").compactMap { Int($0) }
         guard size.count == 2 else { fatalError("table-ROWSxCOLS required") }
         let table = try deck.slides[0].shapes.addTable(rows: size[0], columns: size[1], frame: frame)
         measure("table-populate") { _ = table.setContents((0..<size[0]).map { r in (0..<size[1]).map { "R\(r) C\($0)" } }) }
         measure("table-style") { _ = table.styleBanded(style: deck.style).cellPadding(.points(4)) }
+        if scenario.hasPrefix("shaped-") {
+            for r in 0..<size[0] {
+                for c in 0..<size[1] {
+                    let text = try table.cell(r, c).textFrame
+                    text.text = "R\(r) C\(c) office AV text"
+                    for run in text.paragraphs[0].runs { run.fontName = "Arial" }
+                }
+            }
+        }
     } else if scenario.hasPrefix("images-") {
         let png = Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=")!
         let slide = try deck.slides[0]
@@ -95,6 +108,17 @@ if let uri = archive.mainPartURI { _ = try measure("lazy-first-part") { try arch
 let reopened = try measure("reopen") { try Presentation(data: bytes) }
 try measure("first-slide") { sample.checksum += try reopened.slides[0].shapes.count }
 measure("traversal") { for slide in reopened.slides { sample.checksum += slide.shapes.count } }
+if scenario.hasPrefix("shaped-") || scenario == "richtext-fit" {
+    guard let fontPath = ProcessInfo.processInfo.environment["ROSTRUM_BENCH_FONT"] else {
+        fatalError("registered-font scenarios require ROSTRUM_BENCH_FONT")
+    }
+    try reopened.fonts.register(Data(contentsOf: URL(fileURLWithPath: fontPath)))
+    if scenario == "richtext-fit", let text = try reopened.slides[0].shapes.first(where: { $0.textFrame != nil })?.textFrame {
+        measure("richtext-fitting") {
+            sample.checksum += Int(text.fitText(in: frame, fonts: reopened.fonts).fontScale)
+        }
+    }
+}
 let svg = try measure("render") { try reopened.renderSVG(slideAt: 0) }
 sample.checksum += svg.utf8.count
 let saved = try measure("unchanged-save") { try reopened.serializedData() }

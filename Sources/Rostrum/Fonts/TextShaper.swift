@@ -45,7 +45,12 @@ public struct TextShaper: Sendable {
         for character in text {
             let original = String(character), count = original.unicodeScalars.count
             let range = offset..<(offset + count); offset += count
-            let normalized = Array(original.precomposedStringWithCanonicalMapping.unicodeScalars)
+            // ASCII is already NFC, including the CR/LF grapheme. Avoid a
+            // Foundation normalization/bridging round trip for these clusters;
+            // any non-ASCII scalar still takes the full normalization path.
+            let normalized = original.utf8.allSatisfy { $0 < 0x80 }
+                ? Array(original.unicodeScalars)
+                : Array(original.precomposedStringWithCanonicalMapping.unicodeScalars)
             var kind = -1
             for scalar in normalized {
                 let value = scalar.value
