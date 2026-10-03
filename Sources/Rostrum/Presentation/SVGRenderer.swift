@@ -34,7 +34,7 @@ struct SVGRenderer {
         let w = bound.contains(slideSize.width.rawValue) ? slideSize.width.rawValue : 0
         let h = bound.contains(slideSize.height.rawValue) ? slideSize.height.rawValue : 0
         let pxH = w > 0 ? Int((Double(pixelWidth) * Double(h) / Double(w)).rounded()) : pixelWidth
-        var defs = ""
+        var defs = SVGDefinitions()
         var body = ""
 
         // A slide inherits its background and its furniture. Rendering only the
@@ -94,7 +94,7 @@ struct SVGRenderer {
     /// `bgFillStyleLst`; its colour child is the one that fill is built from,
     /// which is close enough for a thumbnail and far closer than white.
     private func backgroundFill(chain: (layout: Part?, master: Part?),
-                                box f: (Int, Int, Int, Int), defs: inout String) -> String? {
+                                box f: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String? {
         for part in [slidePart, chain.layout, chain.master].compactMap({ $0 }) {
             guard let bg = (try? part.dom())?
                 .firstChild(named: "p:cSld")?.firstChild(named: "p:bg") else { continue }
@@ -124,7 +124,7 @@ struct SVGRenderer {
     ///
     /// Placeholders are skipped: on a layout or a master they are prompts
     /// ("Click to add title"), and PowerPoint never draws them on a slide.
-    private func renderInherited(_ part: Part, defs: inout String, problems: inout SlideRenderProblems) -> String {
+    private func renderInherited(_ part: Part, defs: inout SVGDefinitions, problems: inout SlideRenderProblems) -> String {
         guard let tree = Slide.existingSpTree(of: part) else { return "" }
         var out = ""
         for child in tree.childElements {
@@ -136,7 +136,7 @@ struct SVGRenderer {
 
     // MARK: - Shape tree and transforms
 
-    private func renderNode(_ node: XML.Element, ownedBy owner: Part, defs: inout String,
+    private func renderNode(_ node: XML.Element, ownedBy owner: Part, defs: inout SVGDefinitions,
                             problems: inout SlideRenderProblems, inherited: Bool = false,
                             depth: Int = 0, flippedTextH: Bool = false, flippedTextV: Bool = false) -> String {
         guard depth < 64 else {
@@ -204,7 +204,7 @@ struct SVGRenderer {
         return "<g transform=\"translate(\(cx) \(cy)) rotate(\(rotation)) scale(\(flipH ? -1 : 1) \(flipV ? -1 : 1)) translate(\(-cx) \(-cy))\">\(content)</g>"
     }
 
-    private func renderConnector(_ node: XML.Element, defs: inout String,
+    private func renderConnector(_ node: XML.Element, defs: inout SVGDefinitions,
                                  problems: inout SlideRenderProblems) -> String {
         guard let properties = node.firstChild(named: "p:spPr") else { return "" }
         let (x, y, w, h) = frame(of: properties)
@@ -235,7 +235,7 @@ struct SVGRenderer {
             guard ["triangle", "arrow", "diamond", "oval"].contains(type) else {
                 problems.record("Preview omitted an unsupported connector arrowhead."); continue
             }
-            let id = "arrow\(defs.utf8.count)"
+            let id = defs.nextID("arrow")
             func size(_ value: String?) -> Int { value == "lg" ? 5 : value == "sm" ? 2 : 3 }
             let markerWidth = size(end[attribute: "len"]), markerHeight = size(end[attribute: "w"])
             let shape: String
@@ -257,7 +257,7 @@ struct SVGRenderer {
     // MARK: - Shapes
 
     private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
-                             defs: inout String, textFlipH: Bool = false, textFlipV: Bool = false) -> String {
+                             defs: inout SVGDefinitions, textFlipH: Bool = false, textFlipV: Bool = false) -> String {
         guard let spPr = sp.firstChild(named: "p:spPr") else { return "" }
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
@@ -653,10 +653,10 @@ struct SVGRenderer {
     /// An `a:blipFill` as an SVG pattern, so a photographic background renders
     /// as the photograph rather than as a neutral grey box.
     private func imagePattern(_ blip: XML.Element, ownedBy owner: Part,
-                              box f: (Int, Int, Int, Int), defs: inout String) -> String? {
+                              box f: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String? {
         guard let rId = blip.firstChild(named: "a:blip")?[attribute: "r:embed"],
               let data = imageData(rId: rId, ownedBy: owner), f.2 > 0, f.3 > 0 else { return nil }
-        let id = "bg\(defs.count)"
+        let id = defs.nextID("bg")
         defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" "
             + "x=\"\(f.0)\" y=\"\(f.1)\" width=\"\(f.2)\" height=\"\(f.3)\">"
             + "<image width=\"\(f.2)\" height=\"\(f.3)\" preserveAspectRatio=\"xMidYMid slice\" "
@@ -667,7 +667,7 @@ struct SVGRenderer {
     // MARK: - Tables / charts
 
     private func renderGraphicFrame(_ gf: XML.Element, ownedBy owner: Part,
-                                    defs: inout String, problems: inout SlideRenderProblems) -> String {
+                                    defs: inout SVGDefinitions, problems: inout SlideRenderProblems) -> String {
         guard let xfrm = gf.firstChild(named: "p:xfrm"),
               let off = xfrm.firstChild(named: "a:off"), let ext = xfrm.firstChild(named: "a:ext") else { return "" }
         let x = intAttr(off, "x"), y = intAttr(off, "y")
@@ -1024,7 +1024,7 @@ struct SVGRenderer {
         return Int(Swift.min(Swift.max(value.rounded(), -bound), bound))
     }
 
-    private func renderTable(_ tbl: XML.Element, x: Int, y: Int, defs: inout String) -> String {
+    private func renderTable(_ tbl: XML.Element, x: Int, y: Int, defs: inout SVGDefinitions) -> String {
         let cols = tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol").map { intAttr($0, "w") } ?? []
         let rows = tbl.children(named: "a:tr")
         var out = ""
@@ -1059,13 +1059,13 @@ struct SVGRenderer {
         let entries = formatScheme?.firstChild(named: background ? (backgroundList ?? list) : list)?.childElements ?? []
         guard entries.indices.contains(offset) else { return nil }
         let copy = entries[offset].deepCopy()
-        if let color = colorHex(in: reference) {
+        if let color = reference?.childElements.first(where: { SVGPaint.colorElements.contains($0.name) }) {
             var stack = [copy]
             while let element = stack.popLast() {
                 for child in element.childElements {
                     if child.name == "a:schemeClr", child[attribute: "val"] == "phClr" {
-                        let replacement = XML.Element("a:srgbClr", attributes: [("val", String(color.dropFirst()))],
-                            children: child.children)
+                        let replacement = color.deepCopy()
+                        for transform in child.childElements { replacement.appendElement(transform.deepCopy()) }
                         if let index = element.children.firstIndex(where: { if case .element(let e) = $0 { return e === child }; return false }) {
                             element.children[index] = .element(replacement)
                         }
@@ -1105,7 +1105,7 @@ struct SVGRenderer {
 
     // MARK: - Paint / helpers
 
-    private func paint(for pr: XML.Element, box f: (Int, Int, Int, Int), defs: inout String) -> String? {
+    private func paint(for pr: XML.Element, box f: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String? {
         if let solid = pr.firstChild(named: "a:solidFill") { return colorHex(in: solid) }
         if let grad = pr.firstChild(named: "a:gradFill") { return gradientRef(grad, box: f, defs: &defs) }
         if pr.firstChild(named: "a:blipFill") != nil { return "#DDDDDD" }   // image fill → neutral
@@ -1113,34 +1113,28 @@ struct SVGRenderer {
         return nil
     }
 
-    private func gradientRef(_ grad: XML.Element, box f: (Int, Int, Int, Int), defs: inout String) -> String {
+    private func gradientRef(_ grad: XML.Element, box f: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String {
         let stops = grad.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? []
-        let id = "g\(f.0)_\(f.1)_\(defs.count)"
+        let id = defs.nextID("g")
         let isRadial = grad.firstChild(named: "a:path") != nil
         var stopSVG = ""
         for gs in stops {
-            let pos = (Double(gs.boundedInt("pos", in: 0...100_000) ?? 0) / 1000).rounded() / 100
-            let color = colorHex(in: gs) ?? "#000000"
-            stopSVG += "<stop offset=\"\(pos)\" stop-color=\"\(color)\"/>"
+            let pos = Double(gs.boundedInt("pos", in: 0...100_000) ?? 0) / 100_000
+            let color = SVGPaint.resolve(in: gs, theme: theme)
+            stopSVG += "<stop offset=\"\(pos)\" stop-color=\"\(color?.hex ?? "#000000")\" stop-opacity=\"\(color?.opacity ?? 1)\"/>"
         }
         if isRadial {
             defs += "<radialGradient id=\"\(id)\">\(stopSVG)</radialGradient>"
         } else {
-            defs += "<linearGradient id=\"\(id)\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\(stopSVG)</linearGradient>"
+            let line = grad.firstChild(named: "a:lin")
+            let vector = SVGPaint.gradientVector(line, frame: f)
+            defs += "<linearGradient id=\"\(id)\" gradientUnits=\"userSpaceOnUse\" x1=\"\(vector.0)\" y1=\"\(vector.1)\" x2=\"\(vector.2)\" y2=\"\(vector.3)\">\(stopSVG)</linearGradient>"
         }
         return "url(#\(id))"
     }
 
     private func colorHex(in container: XML.Element?) -> String? {
-        guard let container else { return nil }
-        // Validated, not interpolated raw: this string lands unescaped inside
-        // an SVG attribute, so a file-supplied `val="x&quot; onload=…"` would
-        // otherwise inject markup into the rendered output.
-        if let srgb = container.firstChild(named: "a:srgbClr")?[attribute: "val"],
-           let color = Color(validating: srgb) { return "#" + color.hex }
-        if let raw = container.firstChild(named: "a:schemeClr")?[attribute: "val"],
-           let scheme = SchemeColor(rawValue: raw), let color = theme.resolve(scheme) { return "#" + color.hex }
-        return nil
+        SVGPaint.resolve(in: container, theme: theme)?.css
     }
 
     private func strokeAttrs(_ spPr: XML.Element) -> String {

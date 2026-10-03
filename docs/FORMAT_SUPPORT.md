@@ -59,6 +59,14 @@ original file. An empty diagnostic list does not certify full visual fidelity: t
 layout, font substitution, image cropping, effects and chart appearance still have
 approximation limits.
 
+Gradient previews retain stop precision, clockwise linear direction and the
+`scaled` aspect-ratio setting. RGB, scheme and system fallback colors apply tint,
+shade, saturation modulation and alpha transforms in XML order, including style
+reference and placeholder transforms. Luminance/hue/channel transforms, shadows,
+path-gradient geometry, tile rectangles and rotation-independent fills remain
+approximate. SVG definitions use a per-render counter for deterministic IDs,
+avoiding repeated scans of accumulated gradient or embedded-image data.
+
 ## Acceptance priorities
 
 1. Complete PowerPoint-rendered baselines for nested groups, flips, rotation, text
