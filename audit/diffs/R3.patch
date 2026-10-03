@@ -1,0 +1,154 @@
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -66,7 +66,9 @@
+       # anywhere the library builds — and losing it would let the README's
+       # snippets rot silently.
+       - name: Run README snippets (docs can't rot)
+-        run: swift run ReadmeSnippets "$RUNNER_TEMP"
++        run: |
++          python3 scripts/readme-snippets.py
++          swift run ReadmeSnippets "$RUNNER_TEMP"
+ 
+   # The one thing "Linux only" genuinely could not see: Apple platforms are
+   # what the library primarily ships on, and Linux compiles neither the
+@@ -92,4 +94,3 @@
+         run: |
+           brew install xcodegen
+           Lectern/scripts/build.sh -quiet
+-
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -74,6 +74,12 @@
+ 
+ ## Style
+ 
++The two runnable README examples are generated from
++`Examples/ReadmeSnippets/main.swift`. Edit that source, then run
++`python3 scripts/readme-snippets.py --write`. The local and CI gates reject
++drift before compiling and running the examples. Installation fragments and
++illustrative cookbook fragments are not part of this executable set.
++
+ - Match the surrounding code's naming and idiom. OOXML element names stay
+   qualified as in the spec (`p:sldMasterIdLst`) in string literals; Swift API
+   names are Swift-native.
+--- a/Examples/ReadmeSnippets/main.swift
++++ b/Examples/ReadmeSnippets/main.swift
+@@ -1,11 +1,7 @@
+-// The README's two code snippets, compiled and run by CI so the documentation
+-// can never rot: if a README example stops building or stops producing the
+-// deck it promises, this target breaks the build.
+-//
+-// KEEP IN SYNC WITH README.md — the bodies of `quickStart()` and
+-// `designAuthoring()` must match the snippets verbatim (only the output
+-// paths and the sunflower.md location are parameterized, since a README
+-// reader runs from their own directory).
++// Source of truth for the README's two runnable examples. After editing,
++// run `python3 scripts/readme-snippets.py --write`. The local and CI gates
++// check that the published blocks match, then compile and run this target.
++// Only output paths and the sunflower.md location differ in the README.
+ //
+ // Run:  swift run ReadmeSnippets [output-directory]
+ 
+--- a/README.md
++++ b/README.md
+@@ -19,22 +19,25 @@
+ creation and text extraction, **deck merge**, **theme / brand-kit editing**,
+ and lossless byte-identical round-trips of the parts you don't touch.
+ 
++<!-- snippet:quickStart -->
+ ```swift
+ import Foundation
+ import Rostrum
+ 
+ let deck = try Presentation()                       // starts with one blank 16:9 slide
+-let slide = try deck.slides.add(layout: deck.layout(type: "title")!)
++let slide = try deck.slides.add(clonedFrom: deck.layout(type: "title")!)
+ slide.title?.textFrame?.text = "Hello, Rostrum"
+ try deck.slides.remove(at: 0)                       // drop the blank starter slide
+ try deck.save(to: URL(filePath: "hello.pptx"))
+ ```
++<!-- /snippet:quickStart -->
+ 
+ ### …or the design-authoring layer
+ 
+ Open a brand template, apply a `design.md`, and build a whole deck from one-call,
+ auto-laid-out builders — on-brand, no placeholder plumbing:
+ 
++<!-- snippet:designAuthoring -->
+ ```swift
+ import Foundation
+ import Rostrum
+@@ -53,6 +56,7 @@
+ try deck.slides.remove(at: 0)   // drop the blank starter slide
+ try deck.save(to: URL(filePath: "review.pptx"))
+ ```
++<!-- /snippet:designAuthoring -->
+ 
+ (A ready-made `sunflower.md` ships in `Lectern/App/Resources/Styles/`, along
+ with 149 more.)
+--- a/scripts/readme-snippets.py
++++ b/scripts/readme-snippets.py
+@@ -0,0 +1,53 @@
++#!/usr/bin/env python3
++"""Render marked README examples from the executable source; check by default."""
++import argparse
++from pathlib import Path
++import re
++import sys
++import textwrap
++
++
++def rendered(source: str, name: str) -> str:
++    # Functions are top-level; their closing brace is unindented.
++    match = re.search(r'^func ' + re.escape(name) + r'\(\) throws \{\n(.*?)^\}', source, re.M | re.S)
++    if match is None:
++        raise ValueError(f'missing executable snippet {name}')
++    body = textwrap.dedent(match.group(1)).rstrip()
++    body = body.replace('outDir.appending(path: "hello.pptx")', 'URL(filePath: "hello.pptx")')
++    body = body.replace('outDir.appending(path: "review.pptx")', 'URL(filePath: "review.pptx")')
++    body = body.replace('Design(contentsOf: sunflowerMD)', 'Design(contentsOf: URL(filePath: "sunflower.md"))')
++    return '```swift\nimport Foundation\nimport Rostrum\n\n' + body + '\n```'
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--write', action='store_true', help='update only marked README blocks')
++    parser.add_argument('--readme', type=Path, help='alternate README for isolated verification')
++    args = parser.parse_args()
++    root = Path(__file__).resolve().parent.parent
++    path = args.readme or root / 'README.md'
++    source = (root / 'Examples/ReadmeSnippets/main.swift').read_text()
++    original = path.read_text()
++    updated = original
++    for name in ['quickStart', 'designAuthoring']:
++        pattern = re.compile(r'(<!-- snippet:' + name + r' -->\n).*?(\n<!-- /snippet:' + name + r' -->)', re.S)
++        if len(pattern.findall(updated)) != 1:
++            raise ValueError(f'expected one README block for {name}')
++        updated = pattern.sub(lambda m: m[1] + rendered(source, name) + m[2], updated)
++    if updated == original:
++        print('README executable snippets match their source.')
++        return 0
++    if args.write:
++        path.write_text(updated)
++        print('Updated README executable snippets.')
++        return 0
++    print('README snippets differ from executable source. Run python3 scripts/readme-snippets.py --write.', file=sys.stderr)
++    return 1
++
++
++if __name__ == '__main__':
++    try:
++        sys.exit(main())
++    except (OSError, ValueError) as error:
++        print(f'readme-snippets: {error}', file=sys.stderr)
++        sys.exit(2)
+--- a/scripts/verify.sh
++++ b/scripts/verify.sh
+@@ -44,6 +44,7 @@
+ (cd Lectern && swift build && swift test)
+ 
+ step "README snippets (docs can't rot)"
++python3 scripts/readme-snippets.py
+ swift run ReadmeSnippets "$(mktemp -d)"
+ 
+ if [ "$fast" = true ]; then

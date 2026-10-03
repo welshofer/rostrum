@@ -153,6 +153,45 @@ public extension Slide {
     }
 }
 
+public extension SlideLayout {
+    /// The background this layout paints, following inheritance to its master.
+    ///
+    /// The companion to `Slide.effectiveBackground`, and needed for the same
+    /// reason from the other end: before binding a new slide to a layout, a
+    /// caller has to know whether that layout is *representative* of the deck.
+    /// Many decks paint their look on every slide while the layouts and theme
+    /// stay at the Office defaults, and a slide bound to one of those comes out
+    /// white in a deck that is emphatically not.
+    var effectiveBackground: SlideBackground {
+        BackgroundResolver.resolve(chain: inheritanceParts, theme: resolvedTheme)
+    }
+
+    var effectiveBackgroundColor: Color? { effectiveBackground.color }
+
+    /// The layout, then its master.
+    internal var inheritanceParts: [Part] {
+        var chain = [part]
+        if let rel = part.rels.first(ofType: RelType.slideMaster),
+           let master = try? package.part(
+            at: PackURI.resolve(target: rel.target, relativeTo: part.uri.baseURI)) {
+            chain.append(master)
+        }
+        return chain
+    }
+
+    internal var resolvedTheme: Theme {
+        let master = inheritanceParts.count > 1 ? inheritanceParts[1] : nil
+        let themePart: Part? = {
+            if let master, let rel = master.rels.first(ofType: RelType.theme) {
+                return try? package.part(
+                    at: PackURI.resolve(target: rel.target, relativeTo: master.uri.baseURI))
+            }
+            return package.parts[PackURI("/ppt/theme/theme1.xml")]
+        }()
+        return Theme(part: themePart ?? part, master: master)
+    }
+}
+
 public extension Presentation {
     /// The ground this deck mostly paints on.
     ///

@@ -436,8 +436,9 @@ Each is a judgement about leverage, not a doubt about the finding.
 - **No snapshot or golden-file tests for `SVGRenderer`** —
   `SVGRendererTests.swift` asserts structure, so a *visual* regression in the
   preview path would pass silently.
-- `DeckRenderer`, `KeychainStore` and `SlideRasterizer` have **no tests at
-  all** — distinct from tests that existed but never ran, which is closed.
+- `DeckRenderer` has fixture-backed rendering and title tests. Dedicated
+  Keychain integration and rasterizer visual coverage still need assessment;
+  this is distinct from app tests that existed but never ran.
 - **`Examples/` and `Tools/` have never been audited** — four executable
   targets plus `extract-schema.py` sit outside every surveyed set so far.
 
@@ -445,8 +446,9 @@ Each is a judgement about leverage, not a doubt about the finding.
 
 - Only one image failure is reported when several fail — the collapse is in a
   warning path the user rarely sees.
-- No cancel affordance *during* a long generation — needs a cancellation
-  token threaded through `DeckGenerator` and the provider.
+- Generation cancellation is implemented: ContentView invokes AppState.cancel,
+  which abandons the RunGate and cancels the task. Retain cancellation regression
+  coverage when changing the generation pipeline.
 - **The decks already written remain headless.** The title-placeholder fix
   applies to newly written decks only; repairing the existing library is a
   migration, not a lift-up item.

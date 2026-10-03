@@ -27,6 +27,7 @@ public extension ShapeCollection {
         p.alignment = align
         p.addRun(ts.uppercase ? text.uppercased() : text)
         p.apply(ts)
+        p.setNoBullet()
         return box
     }
 
@@ -45,6 +46,7 @@ public extension ShapeCollection {
             if i > 0 && spacingPt > 0 { p.setSpacing(beforePoints: spacingPt) }
             p.addRun(ts.uppercase ? line.uppercased() : line)
             p.apply(ts)
+            p.setNoBullet()
         }
         if lines.isEmpty { tf.addParagraph() }   // a txBody must have >= 1 a:p
         return box
@@ -72,6 +74,7 @@ public extension ShapeCollection {
             let p = tf.addParagraph()
             p.indentLevel = 0
             p.setBullet()
+            p.setIndentation(left: .points(ts.sizePt), hanging: .points(ts.sizePt * 0.75))
             if i > 0 { p.setSpacing(beforePoints: gap) }
             p.addRun(item)
             p.apply(ts)

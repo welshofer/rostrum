@@ -72,8 +72,8 @@ struct InspectorView: View {
                     if inspection.hasFindings { findingsCard(inspection) }
                     if !inspection.previews.isEmpty {
                         Card(title: "SLIDES", systemImage: "rectangle.on.rectangle") {
-                            SlideContactSheet(previews: inspection.previews,
-                                              titles: inspection.previewTitles)
+                            SlideContactSheet(records: inspection.previewRecords,
+                                              total: inspection.slideCount)
                                 .frame(minHeight: 260)
                         }
                     }
@@ -266,6 +266,16 @@ struct InspectorView: View {
     private func findingsCard(_ inspection: DeckInspection) -> some View {
         Card(title: "FINDINGS", systemImage: "exclamationmark.triangle") {
             VStack(alignment: .leading, spacing: 10) {
+                if !inspection.previewWarnings.isEmpty {
+                    DisclosureGroup("Preview limitations (\(inspection.previewWarnings.count))") {
+                        Text("These affect Lectern’s preview. The original PowerPoint content is preserved.")
+                            .font(.caption).foregroundStyle(.secondary)
+                        ForEach(inspection.previewWarnings, id: \.self) {
+                            Text($0).font(.caption).foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                }
                 if !inspection.schemaIssues.isEmpty {
                     DisclosureGroup("\(inspection.schemaIssues.count) schema issue(s)") {
                         ForEach(inspection.schemaIssues, id: \.self) {

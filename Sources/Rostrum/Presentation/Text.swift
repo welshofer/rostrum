@@ -35,6 +35,16 @@ public final class TextFrame {
         }
     }
 
+    /// Native PowerPoint text autofit. Scale is relative to the inherited font
+    /// sizes; it does not replace those sizes or detach text from its theme.
+    public func setAutoFit(fontScale: Double = 1) {
+        guard fontScale.isFinite else { return }
+        for name in ["a:noAutofit", "a:normAutofit", "a:spAutoFit"] { bodyPr.removeChildren(named: name) }
+        let fit = bodyPr.getOrAddChild("a:normAutofit", beforeAnyOf: ["a:scene3d", "a:sp3d", "a:flatTx", "a:extLst"])
+        fit[attribute: "fontScale"] = String(Int((min(1, max(0.01, fontScale)) * 100000).rounded()))
+        part.markDirty()
+    }
+
     public var verticalAnchor: VerticalAnchor {
         get { bodyPr[attribute: "anchor"].flatMap(VerticalAnchor.init(rawValue:)) ?? .top }
         set {
@@ -85,6 +95,22 @@ public final class TextFrame {
         txBody.appendElement(p)
         part.markDirty()
         return Paragraph(p: p, part: part)
+    }
+
+    /// Apply a foreground to both ordinary text and native fields such as the
+    /// slide number. Useful when a photographic background changes contrast.
+    public func setColor(_ color: Color) {
+        for paragraph in txBody.children(named: "a:p") {
+            for item in paragraph.childElements where item.name == "a:r" || item.name == "a:fld" {
+                let properties = item.getOrAddChild("a:rPr", beforeAnyOf: ["a:pPr", "a:t"])
+                for name in ["a:noFill", "a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:grpFill"] {
+                    properties.removeChildren(named: name)
+                }
+                let fill = properties.getOrAddChild("a:solidFill")
+                fill.appendElement(color.srgbElement())
+            }
+        }
+        part.markDirty()
     }
 
     /// Ensure the body is schema-valid (at least one `a:p`).
@@ -154,6 +180,13 @@ public final class Paragraph {
     }
 
     // MARK: - Bullets & indentation
+
+    /// Paragraph indentation, independent of the outline level.
+    public func setIndentation(left: EMU, hanging: EMU = .zero) {
+        pPr[attribute: "marL"] = String(left.rawValue)
+        pPr[attribute: "indent"] = String(-hanging.rawValue)
+        part.markDirty()
+    }
 
     /// Outline/indent level, 0…8 (`a:pPr@lvl`).
     public var indentLevel: Int {

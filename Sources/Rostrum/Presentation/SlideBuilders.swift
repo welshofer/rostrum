@@ -209,13 +209,23 @@ public extension Presentation {
         let cardRow = headerInfo.contentRow
         let content = deckGrid(s).cell(column: 0, row: cardRow, columnSpan: 12, rowSpan: 12 - cardRow)
         let cols = content.split(.horizontal, count: 2, gutter: s.gutter)
-        // Header gets its own top band (room for two lines) and the bullets fill
-        // the rest, top-anchored — so a two-line header never overlaps them.
-        let headStyle = s.with(.heading) { $0.sizePt = 24 }
+        // Reserve measured header height before assigning the remaining body
+        // space. A fixed percentage cannot accommodate real wrapped headings.
+        let headStyle = s.with(.heading) { $0.sizePt = 24; $0.lineHeight = min($0.lineHeight, 1.15) }
         for (col, headerText, items) in [(cols[0], leftHeader, left), (cols[1], rightHeader, right)] {
-            let card = try slide.addCard(in: col, style: s)
-            let (head, body) = card.content.split(.vertical, ratio: 0.16, gutter: s.spacing.sm)
-            try slide.addText(headerText, in: head, role: .heading, style: headStyle, anchor: .top)
+            let card = try slide.addCard(in: col, style: s, padding: min(s.spacing.lg, .points(16)))
+            let heading = headStyle.type(.heading)
+            let lines = estimatedLines(headerText, style: heading, width: card.content.width - .points(14.4))
+            let headHeight = headerText.isEmpty ? EMU.zero : EMU.points(
+                Double(max(1, lines)) * heading.sizePt * max(1.25, heading.lineHeight * 1.25) + 7.2)
+            let gap = headerText.isEmpty ? EMU.zero : s.spacing.sm
+            let bodyHeight = card.content.height - headHeight - gap
+            guard bodyHeight > .points(20) else {
+                throw RostrumError.packageInvalid("Comparison heading leaves no readable body area.")
+            }
+            let head = Rect(x: card.content.x, y: card.content.y, width: card.content.width, height: headHeight)
+            let body = Rect(x: card.content.x, y: head.maxY + gap, width: card.content.width, height: bodyHeight)
+            if !headerText.isEmpty { try slide.addText(headerText, in: head, role: .heading, style: headStyle, anchor: .top) }
             // Cards are narrower than a full slide; a smaller body, tighter gaps,
             // AND tighter leading keep the bullets inside the card. At the body's
             // airy 150% line height, three two-line bullets need ~275pt in a
@@ -861,102 +871,55 @@ public extension Presentation {
                         lead: String? = nil,
                         reservingSideImage: Bool = false,
                         imageSide: SideImage = .right) throws -> Rect {
-        var head = try placeHeader(on: slide, kicker: kicker, title: title, style: style,
+        let head = try placeHeader(on: slide, kicker: kicker, title: title, style: style,
                                    reservingSideImage: reservingSideImage, imageSide: imageSide)
-        if let lead, !lead.isEmpty {
-            head.contentRow = try placeLead(lead, on: slide, from: head.contentRow, style: style,
-                                            reservingSideImage: reservingSideImage,
-                                            imageSide: imageSide)
-        }
         let grid = deckGrid(style)
-        // Stop at the image column when one is reserved, so the picture the
-        // caller places into `sideImagePanel()` cannot land on the text.
         let span = reservingSideImage ? Self.sideImageColumn : 12
         let column = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
-        return grid.cell(column: column, row: head.contentRow, columnSpan: span,
-                         rowSpan: 12 - head.contentRow)
-    }
-
-    /// A standfirst: the one sentence under the title that says what the slide
-    /// is about before the reader reaches the detail.
-    ///
-    /// Quiet and italic so it reads as an editor's line rather than a second
-    /// heading, and it *consumes* rows — a lead that overlapped the content it
-    /// introduces would be worse than not having one.
-    private func placeLead(_ text: String, on slide: Slide, from contentRow: Int,
-                           style: DeckStyle, reservingSideImage: Bool,
-                           imageSide: SideImage) throws -> Int {
-        let grid = deckGrid(style)
-        let span = reservingSideImage ? Self.sideImageColumn : 11
-        let column = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
-        let band = grid.cell(column: column, row: contentRow, columnSpan: span, rowSpan: 2)
-        // No italic in the run model, so the quiet comes from size and colour.
-        let leadStyle = style.with(.subhead) {
-            $0.sizePt = Swift.min($0.sizePt, 17)
-            $0.lineHeight = Swift.min($0.lineHeight, 1.3)
+        let region = grid.cell(column: column, row: 0, columnSpan: span, rowSpan: 12)
+        var y = head.contentY
+        if let lead, !lead.isEmpty {
+            let leadStyle = style.with(.subhead) { $0.sizePt = Swift.min($0.sizePt, 17); $0.lineHeight = Swift.min($0.lineHeight, 1.2) }
+            let ts = leadStyle.type(.subhead)
+            let height = Double(estimatedLines(lead, style: ts, width: region.width)) * ts.sizePt * 1.3 + 6
+            let band = Rect(x: region.x, y: y, width: region.width, height: .points(height))
+            try slide.addText(lead, in: band, role: .subhead, style: leadStyle, color: style.mutedInk, anchor: .top)
+            y = band.maxY + .points(14)
         }
-        try slide.addText(text, in: band, role: .subhead, style: leadStyle,
-                          color: style.mutedInk, anchor: .top)
-        // Two rows when it wraps, one when it doesn't, plus a row of air.
-        let lines = estimatedLines(text, style: leadStyle.type(TypeRole.subhead), width: band.width)
-        return contentRow + (lines >= 2 ? 3 : 2)
+        return Rect(x: region.x, y: y, width: region.width, height: Swift.max(.zero, region.maxY - y))
     }
 
-    /// Draw the kicker + title and report where content may start.
-    ///
-    /// The title band is two rows but `addText` sizes the box to its text, so a
-    /// one-line title fills about half of it. Content therefore starts one row
-    /// below the band, not two: reserving the full two rows *plus* a gap left
-    /// 1.18in of dead air under every single-line title — 16% of the slide —
-    /// while the body ran correspondingly close to the bottom edge.
-    ///
-    /// A long title is fitted down AND, when it still wraps, `contentRow` moves
-    /// one row lower: the band is sized for a single line, so a wrapped title
-    /// otherwise prints straight over the cards/bullets below (PowerPoint
-    /// renders bare `normAutofit` text at full size until the box is edited).
+    /// Reserve the title's measured height before positioning its divider or
+    /// body. A three-line title requires three lines of space, not a wrap flag.
     private func placeHeader(on slide: Slide, kicker: String?, title: String,
                              style: DeckStyle,
                              reservingSideImage: Bool = false,
-                             imageSide: SideImage = .right) throws -> (contentRow: Int, titleWraps: Bool) {
+                             imageSide: SideImage = .right) throws -> (contentRow: Int, titleWraps: Bool, contentY: EMU) {
         let grid = deckGrid(style)
-        // The title clears the image too — a headline running under the panel
-        // is the same defect as a bullet doing it.
-        let textColumns = reservingSideImage ? Self.sideImageColumn : 11
-        let textColumn = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
+        let columns = reservingSideImage ? Self.sideImageColumn : 11
+        let column = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
         var titleRow = 0
         if let kicker {
-            try slide.addKicker(kicker,
-                                in: grid.cell(column: textColumn, row: 0, columnSpan: textColumns),
-                                style: style)
+            try slide.addKicker(kicker, in: grid.cell(column: column, row: 0, columnSpan: columns), style: style)
             titleRow = 1
         }
-        let band = grid.cell(column: textColumn, row: titleRow, columnSpan: textColumns, rowSpan: 2)
-        // maxLines 1: the band is sized for a single line, so with metrics we
-        // prefer the largest size that avoids wrapping at all.
+        let original = grid.cell(column: column, row: titleRow, columnSpan: columns, rowSpan: 2)
         let fitted = fitSize([title], font: style.type(.title).font,
                              candidates: [style.type(.title).sizePt, 34, 30],
-                             maxLines: 1, lineWidth: band.width,
+                             maxLines: 2, lineWidth: original.width,
                              fallback: title.count > 60 ? 30.0 : (title.count > 36 ? 34.0 : style.type(.title).sizePt))
         let titleStyle = style.with(.title) { $0.sizePt = Swift.min($0.sizePt, fitted) }
-        try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top)
-            .markAsPlaceholder(type: "title")
-        let wraps = estimatedLines(title, style: titleStyle.type(.title), width: band.width) >= 2
-        // A hairline under the title, the width of the text column.
-        //
-        // The one piece of furniture that reads as typesetting rather than
-        // decoration: it gives the title a baseline to sit on and separates it
-        // from the content without a gap wide enough to waste a slide. Derived
-        // from the palette — muted ink most of the way to the background — so a
-        // design that is already quiet stays quiet and a dark deck gets a light
-        // rule rather than an invisible one.
+        let ts = titleStyle.type(.title)
+        let lines = estimatedLines(title, style: ts, width: original.width)
+        let height = Double(Swift.max(1, lines)) * ts.sizePt * Swift.max(1.2, ts.lineHeight * 1.2) + 6
+        let band = Rect(x: original.x, y: original.y, width: original.width, height: .points(height))
+        try slide.addText(title, in: band, role: .title, style: titleStyle, anchor: .top).markAsPlaceholder(type: "title")
         let rule = style.mutedInk.mixed(with: style.background, amount: 0.72)
-        try slide.shapes.addShape(
-            .rectangle,
-            frame: Rect(x: band.x, y: band.maxY, width: band.width, height: .points(1)),
-            fill: .solid(rule))
-        // One row of gap after the space the title actually occupies: a
-        // single-line title fills roughly one row, a wrapped one both.
-        return (titleRow + (wraps ? 3 : 2), wraps)
+        try slide.shapes.addShape(.rectangle,
+            frame: Rect(x: band.x, y: band.maxY + .points(4), width: band.width, height: .points(1)), fill: .solid(rule))
+        let y = band.maxY + .points(20)
+        let row = (0...11).first { grid.cell(column: column, row: $0).y >= y } ?? 11
+        return (row, lines > 1, y)
     }
 
     /// Deterministic wrap estimate. With the style's font registered in
@@ -967,7 +930,7 @@ public extension Presentation {
     private func estimatedLines(_ text: String, style: TextStyle, width: EMU) -> Int {
         let widthPt = Double(width.rawValue) / Double(EMU.perPoint)
         if let metrics = fonts.metrics(for: style.font) {
-            return TextMeasurer(metrics).wrap(text, pointSize: style.sizePt, width: widthPt).count
+            return TextMeasurer(metrics).wrap(text, pointSize: style.sizePt, width: widthPt * (style.bold ? 0.92 : 1)).count
         }
         let charsPerLine = Swift.max(1.0, widthPt / (0.52 * style.sizePt))
         return Int((Double(text.count) / charsPerLine).rounded(.up))

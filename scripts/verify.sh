@@ -8,7 +8,7 @@
 # against the real toolchain before you push.
 #
 #   ./scripts/verify.sh            everything
-#   ./scripts/verify.sh --fast     skip the app builds (the slow part)
+#   ./scripts/verify.sh --fast     skip app builds and app-hosted tests
 #
 # Install scripts/hooks/pre-push once (./scripts/install-hooks.sh) to have
 # `git push` run this automatically and refuse the push if it fails.
@@ -36,6 +36,9 @@ report() {
 }
 trap report EXIT
 
+step "Offline workflow checks"
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests
+
 step "Rostrum build + tests"
 swift build
 swift test
@@ -44,10 +47,11 @@ step "LecternCore build + tests"
 (cd Lectern && swift build && swift test)
 
 step "README snippets (docs can't rot)"
+python3 scripts/readme-snippets.py
 swift run ReadmeSnippets "$(mktemp -d)"
 
 if [ "$fast" = true ]; then
-  printf '\n\033[1mSkipped the app builds (--fast).\033[0m\n'
+  printf '\n\033[1mSkipped app builds and app-hosted tests (--fast).\033[0m\n'
   exit 0
 fi
 

@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 #if os(macOS)
 import AppKit
 #else
@@ -39,6 +40,9 @@ enum LibrarySection: Hashable, CaseIterable {
 /// The verbs sit above the navigation rather than inside it because they are
 /// actions, not places: pressing New Deck does not select anything.
 struct LibrarySidebar: View {
+    @State private var showingRecovery = false
+    @State private var importingRecovery = false
+    @State private var recoveryError: String?
     @Environment(AppState.self) private var app
     @Binding var section: LibrarySection
     var onSettings: () -> Void
@@ -53,6 +57,7 @@ struct LibrarySidebar: View {
     }
 
     var body: some View {
+        @Bindable var app = app
         VStack(alignment: .leading, spacing: 0) {
             Label {
                 Text("Lectern").font(.title2.weight(.semibold))
@@ -70,6 +75,15 @@ struct LibrarySidebar: View {
                 }
                 SidebarAction(title: "Inspect Deck…", systemImage: "doc.viewfinder") {
                     app.chooseDeckToInspect()
+                }
+                SidebarAction(title: "Recover Saved Content…", systemImage: "doc.badge.clock") {
+                    importingRecovery = true
+                }
+                if let snapshot = app.recoveryURL {
+                    SidebarAction(title: "Last Saved Content…", systemImage: "arrow.counterclockwise") { showingRecovery = true }
+                        .sheet(isPresented: $showingRecovery) {
+                            RecoveryView(snapshotURL: snapshot, sourceURL: app.recoverySourceURL)
+                        }
                 }
             }
             .padding(.horizontal, 16)
@@ -116,6 +130,15 @@ struct LibrarySidebar: View {
             #endif
         }
         .frame(maxHeight: .infinity, alignment: .top)
+        .fileImporter(isPresented: $importingRecovery, allowedContentTypes: [.json]) { result in
+            Task {
+                do { try await app.importRenderSnapshot(result.get()); showingRecovery = true }
+                catch { recoveryError = String(describing: error) }
+            }
+        }
+        .alert("Couldn’t recover saved content", isPresented: Binding(get: { recoveryError != nil }, set: { if !$0 { recoveryError = nil } })) {
+            Button("OK") { recoveryError = nil }
+        } message: { Text(recoveryError ?? "") }
     }
 }
 

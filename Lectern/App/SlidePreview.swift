@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import LecternCore
 
 /// One slide, as Rostrum rendered it.
 ///
@@ -129,37 +130,46 @@ extension SlidePreview: UIViewRepresentable {
 /// and scrolling down — the sheet a designer lays out to read a deck's rhythm
 /// rather than its words.
 struct SlideContactSheet: View {
-    let previews: [String]
-    /// Index-aligned slide titles; when present, VoiceOver hears what a tile
-    /// says, not just where it sits in the grid.
-    var titles: [String] = []
+    let records: [SlidePreviewRecord]
+    let total: Int
+
+    init(records: [SlidePreviewRecord], total: Int) {
+        self.records = records
+        self.total = total
+    }
+
+    init(previews: [String], titles: [String] = []) {
+        records = previews.enumerated().map { index, svg in
+            SlidePreviewRecord(number: index + 1,
+                               title: titles.indices.contains(index) ? titles[index] : "",
+                               svg: svg)
+        }
+        total = previews.count
+    }
+
     /// Fixed at three so the grid reads as a contact sheet at any window size;
     /// the tiles resize, the column count does not.
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 3)
 
-    fileprivate func label(_ index: Int) -> String {
-        slideLabel(index, of: previews.count, titles: titles)
-    }
-
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 14) {
-                ForEach(Array(previews.enumerated()), id: \.offset) { index, svg in
-                    SlideTile(svg: svg)
-                        .aspectRatio(16.0 / 9.0, contentMode: .fit)
+                ForEach(records) { record in
+                    SlideTile(svg: record.displaySVG)
+                        .aspectRatio(record.geometry.aspectRatio, contentMode: .fit)
                         .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                         .overlay(
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
                                 .strokeBorder(.primary.opacity(0.12)))
                         .overlay(alignment: .bottomTrailing) {
-                            Text("\(index + 1)")
+                            Text("\(record.number)")
                                 .font(.caption2.monospacedDigit())
                                 .padding(.horizontal, 6).padding(.vertical, 2)
                                 .background(.thinMaterial, in: Capsule())
                                 .padding(5)
                         }
-                        .accessibilityLabel(label(index))
+                        .accessibilityLabel(record.accessibilityLabel(total: total))
                 }
             }
             .padding(.horizontal, 24)
@@ -168,39 +178,30 @@ struct SlideContactSheet: View {
     }
 }
 
-/// "Slide 3 of 12: Why now" — position always, the slide's own words when the
-/// deck has them. The webview beneath is opaque to VoiceOver, so this label is
-/// the payoff screen's entire accessible surface.
-private func slideLabel(_ index: Int, of count: Int, titles: [String]) -> String {
-    let base = "Slide \(index + 1) of \(count)"
-    guard titles.indices.contains(index), !titles[index].isEmpty else { return base }
-    return "\(base): \(titles[index])"
-}
-
 /// The filmstrip under a finished deck: every slide, in order, at a glance.
 struct SlideFilmstrip: View {
-    let previews: [String]
-    var titles: [String] = []
+    let records: [SlidePreviewRecord]
+    let total: Int
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 12) {
-                ForEach(Array(previews.enumerated()), id: \.offset) { index, svg in
-                    SlideTile(svg: svg)
-                        .frame(width: 240, height: 135)   // 16:9
+                ForEach(records) { record in
+                    SlideTile(svg: record.displaySVG)
+                        .frame(width: 135 * record.geometry.aspectRatio, height: 135)
                         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                         .overlay(
                             RoundedRectangle(cornerRadius: 10, style: .continuous)
                                 .strokeBorder(.primary.opacity(0.12)))
                         .overlay(alignment: .bottomTrailing) {
-                            Text("\(index + 1)")
+                            Text("\(record.number)")
                                 .font(.caption2.monospacedDigit())
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
                                 .background(.thinMaterial, in: Capsule())
                                 .padding(6)
                         }
-                        .accessibilityLabel(slideLabel(index, of: previews.count, titles: titles))
+                        .accessibilityLabel(record.accessibilityLabel(total: total))
                 }
             }
             .padding(.horizontal, 2)

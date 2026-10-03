@@ -1,4 +1,5 @@
 import Foundation
+import Rostrum
 
 /// The generation pipeline: draft → decode + validate → (one repair) → render.
 /// Ties a provider to the validator (I3) and the renderer (I2). Emits UI events
@@ -26,13 +27,17 @@ public actor DeckGenerator {
     private struct DraftErrors: Error { var errors: [String] }
 
     public func generate(_ request: DeckRequest, designURL: URL?, into directory: URL,
-                         diagnostics: URL? = nil,
+                         diagnostics: URL? = nil, template: PowerPointTemplate? = nil,
                          emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
+        var request = request
+        if template != nil {
+            request.templateConstraints = "Use concise titles and short paragraphs: this deck will fill the placeholders of a supplied PowerPoint template. Preserve all requested facts. Prefer title, bullets, twoColumn, chart, table and closing layouts. Template artwork and formatting are fixed; do not rely on a generated background image or invent template branding."
+        }
         let first = try await provider.draft(request, repairing: nil, emit: emit)
         emit(.validating)
         do {
             let result = try decodeAndValidate(first.json, request)
-            return try await qaThenFinish(result, draftJSON: first.json, request, designURL, directory, usage: first.usage, emit: emit)
+            return try await qaThenFinish(result, draftJSON: first.json, request, designURL, directory, diagnostics: diagnostics, template: template, usage: first.usage, emit: emit)
         } catch let failure as DraftErrors {
             // §8.7 — exactly one repair attempt.
             emit(.repairing)
@@ -41,7 +46,7 @@ public actor DeckGenerator {
             emit(.validating)
             do {
                 let result = try decodeAndValidate(repaired.json, request)
-                return try await qaThenFinish(result, draftJSON: repaired.json, request, designURL, directory, usage: repaired.usage, emit: emit)
+                return try await qaThenFinish(result, draftJSON: repaired.json, request, designURL, directory, diagnostics: diagnostics, template: template, usage: repaired.usage, emit: emit)
             } catch let second as DraftErrors {
                 // Keep the draft that failed. Without it the only record of
                 // what the model actually sent is an error string, which is not
@@ -111,7 +116,7 @@ public actor DeckGenerator {
     /// revision when it also validates. A failed or invalid revision is ignored
     /// (never worse than the draft).
     private func qaThenFinish(_ result: ValidationResult, draftJSON: String, _ request: DeckRequest,
-                              _ designURL: URL?, _ directory: URL, usage: Usage,
+                              _ designURL: URL?, _ directory: URL, diagnostics: URL?, template: PowerPointTemplate?, usage: Usage,
                               emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         var final = result
         if quality {
@@ -133,15 +138,23 @@ public actor DeckGenerator {
             }
         }
         try Task.checkCancellation()
-        return try await finish(final, request, designURL, directory, usage: usage, emit: emit)
+        return try await finish(final, request, designURL, directory, diagnostics: diagnostics, template: template, usage: usage, emit: emit)
     }
 
     /// Generate an image for each slide that carries an `ImageBrief`, concurrently.
     /// Images are an enhancement: a failed one is skipped (not fatal), but the
     /// failure is reported as a warning so "0 images" is never silent.
-    private func illustrate(_ deck: DeckIR,
+    private func illustrate(_ deck: DeckIR, template: PowerPointTemplate?,
                             emit: @Sendable @escaping (GenerationEvent) -> Void) async -> (images: [String: Data], warnings: [String]) {
         guard let imageProvider else { return ([:], []) }
+        if let template {
+            let source = try? Presentation.fromTemplate(data: template.data)
+            let supportsPictures = source?.allLayouts.contains { layout in
+                (template.selectedMasterID == nil || layout.master?.part.uri.value == template.selectedMasterID)
+                    && layout.placeholders.contains { $0.type == "pic" }
+            } ?? false
+            if !supportsPictures { return ([:], ["Images were not generated: the selected template has no picture placeholders."]) }
+        }
         // Only slides whose layout can actually show an image (skip text-dense ones,
         // so we never waste an API call or clip text). Full-bleed layouts get a wide
         // image so the background barely stretches.
@@ -296,23 +309,37 @@ public actor DeckGenerator {
     }
 
     private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?,
-                        _ directory: URL, usage: Usage,
+                        _ directory: URL, diagnostics: URL?, template: PowerPointTemplate?, usage: Usage,
                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         // A cancel must land before `illustrate` starts spending: image calls
         // are the priciest thing this pipeline does after the draft itself.
         try Task.checkCancellation()
         let shaped = normalizeIfValid(result, request)
-        let (images, imageWarnings) = await illustrate(shaped.deck, emit: emit)   // no-op without an image provider
+        let (images, imageWarnings) = await illustrate(shaped.deck, template: template, emit: emit)   // no-op without an image provider
         emit(.rendering)
-        let deckResult: DeckResult
+        let snapshot = RenderSnapshot(deck: shaped.deck, images: images,
+            design: try designURL.map { try String(contentsOf: $0, encoding: .utf8) },
+            template: template, notesEnabled: request.notes, useSmartArt: useSmartArt)
+        let recoveryURL = diagnostics.flatMap { try? snapshot.save(in: $0) }
+        if let recoveryURL { emit(.recoveryAvailable(recoveryURL)) }
+        var deckResult: DeckResult
         do {
             deckResult = try await renderer.render(
                 shaped.deck, designURL: designURL, notesEnabled: request.notes,
                 into: directory, warnings: shaped.warnings + imageWarnings, images: images,
-                useSmartArt: useSmartArt)
+                useSmartArt: useSmartArt, template: template)
         } catch let RenderError.renderFailed(underlying) {
-            throw LecternError.renderFailed(message: underlying)
+            var message = underlying
+            // Keep the final normalized deck, including accepted QA edits, so
+            // layout failures can be replayed without another model request.
+            if let data = try? JSONEncoder().encode(shaped.deck),
+               let json = String(data: data, encoding: .utf8),
+               let kept = Self.keepRejectedDraft(json, in: diagnostics ?? directory) {
+                message += " The draft was saved for recovery at \(kept.path)."
+            }
+            throw LecternError.renderFailed(message: message)
         }
+        deckResult.recoveryURL = recoveryURL
         emit(.finished(deckResult))
         return deckResult
     }

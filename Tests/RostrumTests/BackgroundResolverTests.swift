@@ -228,3 +228,53 @@ import Testing
         #expect(deck.prevailingBackground == nil)
     }
 }
+
+/// What a layout paints, from the other end of the same question.
+///
+/// Before binding a new slide to a layout, a caller has to know whether that
+/// layout is representative of the deck it came from. Many decks paint their
+/// look on every slide while the layouts stay at the Office defaults, and a
+/// slide bound to one of those comes out white in a deck that is not.
+@Suite struct LayoutBackgroundTests {
+    @Test func aLayoutReportsTheGroundItPaints() throws {
+        let deck = try Presentation()
+        let layout = try #require(deck.layouts.first)
+        let cSld = try layout.part.dom()
+            .getOrAddChild("p:cSld", beforeAnyOf: ["p:clrMapOvr", "p:timing"])
+        cSld.removeChildren(named: "p:bg")
+        let bg = XML.Element("p:bg")
+        let bgPr = XML.Element("p:bgPr")
+        let fill = XML.Element("a:solidFill")
+        let clr = XML.Element("a:srgbClr")
+        clr[attribute: "val"] = "1B1B22"
+        fill.appendElement(clr)
+        bgPr.appendElement(fill)
+        bg.appendElement(bgPr)
+        cSld.children.insert(.element(bg), at: 0)
+
+        #expect(layout.effectiveBackgroundColor == Color("1B1B22"))
+    }
+
+    /// And follows through to the master, which is where most templates put it.
+    @Test func aLayoutInheritsItsMastersGround() throws {
+        let deck = try Presentation()
+        let layout = try #require(deck.layouts.first)
+        guard layout.inheritanceParts.count > 1 else { Issue.record("no master"); return }
+
+        let master = layout.inheritanceParts[1]
+        let cSld = try master.dom()
+            .getOrAddChild("p:cSld", beforeAnyOf: ["p:clrMapOvr", "p:timing"])
+        cSld.removeChildren(named: "p:bg")
+        let bg = XML.Element("p:bg")
+        let bgPr = XML.Element("p:bgPr")
+        let fill = XML.Element("a:solidFill")
+        let clr = XML.Element("a:srgbClr")
+        clr[attribute: "val"] = "2A0E3F"
+        fill.appendElement(clr)
+        bgPr.appendElement(fill)
+        bg.appendElement(bgPr)
+        cSld.children.insert(.element(bg), at: 0)
+
+        #expect(layout.effectiveBackgroundColor == Color("2A0E3F"))
+    }
+}

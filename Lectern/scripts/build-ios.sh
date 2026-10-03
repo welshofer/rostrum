@@ -8,6 +8,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+bash scripts/generate-project.sh
+
 xcodebuild -project Lectern.xcodeproj -scheme Lectern-iOS -configuration Debug \
   -destination 'generic/platform=iOS Simulator' -derivedDataPath .build-xcode-ios \
   CODE_SIGN_IDENTITY=- CODE_SIGN_ENTITLEMENTS=App/Lectern-iOS-Sim.entitlements \

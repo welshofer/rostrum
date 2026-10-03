@@ -3,7 +3,7 @@
 The demo application for **Rostrum** — prove the full loop in one window: a
 prompt, optional PDF grounding, a few intent parameters, and one of many bundled
 `design.md` styles go in; a native `.pptx` written entirely by Rostrum comes out.
-Everything runs on-device except the LLM call. (Section references like §8.3
+Everything runs on-device except text and optional image-provider calls. (Section references like §8.3
 below cite the internal Lectern spec, which is not part of this repository.)
 
 ## Layout
@@ -33,11 +33,11 @@ flowchart LR
         KC["KeychainStore<br/>keys live only here"]
     end
     subgraph Core["LecternCore (UI-free, tested headless)"]
-        GEN["DeckGenerator<br/>draft → decode → validate<br/>→ one repair → render"]
+        GEN["DeckGenerator<br/>draft → validate → optional repair<br/>→ QA → normalize → illustrate → render"]
         IR["DeckIR lectern.deck/1<br/>structural + soft validation<br/>unknown layouts downgrade"]
         REN["DeckRenderer (actor)<br/>IR layout → Rostrum builder"]
         CAT["StyleCatalog<br/>150 bundled design.md"]
-        PROV["LLMProvider<br/>Anthropic · image providers"]
+        PROV["LLMProvider<br/>OpenAI Responses<br/>optional image providers"]
     end
     R["Rostrum<br/>design-authoring builders<br/>→ native .pptx"]
     OUT[("deck.pptx<br/>opens clean in PowerPoint,<br/>Keynote, python-pptx")]
@@ -61,14 +61,17 @@ and unknown layouts downgrade to bullets rather than crash).
 
 ## What's built and proven (headless)
 
-`LecternCore` is complete and tested end-to-end against a fixture provider —
-the spec's fixture-first M1–M2: *the whole pipeline is proven before a single
-real network call*.
+`LecternCore` has fixture-backed pipeline tests. They verify deterministic
+behavior without paid calls; they do not establish live provider quality or
+PowerPoint acceptance for every output. The source and tests below are the
+repository's executable contract; internal spec references are historical context.
 
 - **DeckIR** (`lectern.deck/1`): `Codable` models, structural + soft validation
   (§8.3–8.4), unknown-layout downgrade (§8.5), and the one-shot repair prompt
   (§8.7). Nothing reaches the renderer unvalidated (invariant I3).
-- **DeckGenerator**: `draft → decode+validate → one repair → render`.
+- **DeckGenerator**: draft → decode/validate → at most one repair if needed →
+  optional QA revision → normalize/revalidate → optional illustrations → render.
+  A failed or structurally invalid QA revision keeps the validated draft.
 - **DeckInspector / DeckExporter**: the other direction. The app opens on a
   fork — **Create** or **Inspect** — and Inspect (⌘I) takes any `.pptx`, one
   Lectern made or one that arrived by email, and shows what it is made of:
@@ -119,6 +122,13 @@ cd Lectern && swift test
 
 ## The macOS app
 
+Inspection keeps every original slide position, showing a numbered placeholder
+when a preview fails. Contact sheets and filmstrips retain the deck's aspect
+ratio, including 4:3 and portrait. macOS bitmap previews share one WebKit host
+and a bounded cache whose keys include rendering dimensions. See the
+[preview and performance checks](../Tools/rostrum-benchmark/README.md) for
+reproducible snapshots and timing measurements.
+
 The SwiftUI shell (`App/`) is a real macOS app. Its Xcode project is **generated
 from `project.yml`** with [xcodegen] — `project.yml` is the checked-in source of
 truth; the `.xcodeproj` is a build artifact (gitignored, like `.build/`). No
@@ -126,8 +136,8 @@ manual project bookkeeping, no merge conflicts in a pbxproj.
 
 ```sh
 cd Lectern
-xcodegen generate                                              # project.yml → Lectern.xcodeproj
-xcodebuild -project Lectern.xcodeproj -scheme Lectern build     # or just open it in Xcode
+scripts/build.sh       # generates the project as needed; honors .signing.local
+scripts/test-app.sh    # app-hosted tests, with the same signing configuration
 ```
 
 ## The iOS/iPadOS app
@@ -209,8 +219,9 @@ Keys and provider choice are wired end-to-end (§10 / invariant I1):
 - **`KeychainStore`** — API keys live *only* in the login keychain (a
   generic-password item per provider). Never UserDefaults, never logged; the
   `SecureField` is write-only, so a stored key never round-trips through the UI.
-- **`SettingsView`** — provider picker + model + key entry, plus optional
-  image-provider keys (OpenAI Images / Gemini) for on-brand slide art. The
+- **`SettingsView`** — OpenAI text strength (Astra, Sol, Luna), reasoning effort,
+  image model (Sunburst, Flare), and image quality dropdowns. Optional image
+  generation has its own OpenAI key entry; it may use the same key as text. The
   field is write-only; a saved key shows a masked "saved" prompt and a green
   Keychain badge instead of ever echoing the secret.
 - **`ProviderFactory`** (LecternCore, unit-tested) — the one UI-free place the
@@ -220,19 +231,36 @@ Keys and provider choice are wired end-to-end (§10 / invariant I1):
   non-secret choice (provider/model) and reads key *presence* from the
   Keychain.
 
-## What remains (M3–M5)
+## Implemented behavior and remaining work
 
-- **Live providers** (§7.2): `AnthropicProvider` is written (URLSession, no vendor
-  SDK) and selected automatically once a key is stored; OpenAI / Gemini / Custom
-  follow the same `LLMProvider` shape. The two-stage outline→deck pipeline and the
-  PDF grounding ladder (§7.4) live here. *(The live round-trip needs a real key to
-  smoke-test — not exercisable in headless CI.)*
-- **History** (SwiftData, §11): persist past decks in the sidebar (currently a
-  stub).
-- **PriceTable** cost estimate (§10.3) and **Liquid Glass** polish (§3).
-
-The `LLMProvider` protocol, `GenerationEvent` stream, and `LecternError` taxonomy
-(§12) are defined, so a new live provider is a drop-in conformance.
+- Generation uses OpenAI only: Astra (`gpt-6-astra`), Sol (`gpt-6.1-sol`), and
+  Luna (`gpt-6-luna`) through `/v1/responses`; Sunburst
+  (`gpt-image-2.5-sunburst`) and Flare (`gpt-image-2.5-flare`) through the Images API.
+  Defaults are Sol / medium reasoning and Flare / automatic image quality.
+  Text supports low, medium, high, extra high, and maximum effort; Luna also
+  supports none. Switching from Luna / none to another model selects low.
+  All choices persist and apply to draft, repair, and editorial passes.
+- Old provider/model preferences migrate to these defaults. Existing OpenAI
+  Keychain entries are reused; other vendors' keys are never copied or deleted.
+  Legacy provider enum values remain for decoding existing records.
+- OpenAI requests use `store: false`, the existing untrusted-input contract,
+  forced `emit_deck` function calls, validation and repair. Output budgets reserve
+  additional room for reasoning. Higher effort can take longer and cost more.
+- Image sizes preserve each requested aspect ratio, including exact 16:9 slide
+  backgrounds. Style and background/panel art direction remain shared.
+- Model capabilities were checked against the [OpenAI model catalog](https://developers.openai.com/api/docs/models)
+  on October 2, 2026. Model availability still depends on the API project.
+- `Storage/DeckLibrary.swift` and `App/AppState.swift` load, rename and delete
+  saved deck files. This is a file-backed library, not a pending SwiftData store.
+- `Providers/PriceTable.swift` supplies estimates displayed by AppState. These
+  are historical estimates, not a provider billing reconciliation. The new
+  reasoning models have no preflight dollar estimate: reasoning and image usage
+  vary, and Lectern does not substitute a legacy model's price.
+- Generation cancellation is available in ContentView and invalidates the
+  active RunGate before cancelling its task. Tests cover stale run rejection.
+- Live model quality and PowerPoint fidelity still need sample-based inspection;
+  fixture tests cannot substitute for those checks. See ROADMAP.md for other
+  deliberate deferrals rather than treating the original M3–M5 plan as current.
 
 ## Open items
 
@@ -249,3 +277,57 @@ The `LLMProvider` protocol, `GenerationEvent` stream, and `LecternError` taxonom
   what lets login-keychain API keys survive rebuilds — see the note in
   `project.yml`); the iOS simulator target signs ad hoc; device builds use
   Xcode automatic signing. Bundle id `com.lectern.app` on both platforms.
+
+## PowerPoint templates and layout composition
+
+In Compose, choose **Use PowerPoint template** in the Design card and select a
+`.potx`. Lectern snapshots the file, lists its masters/layout counts, and lets you
+select a master or use all masters. **Use theme instead** returns to the design.md
+catalog. Template generation uses the template's page size, layout geometry,
+typography, colors and artwork; the selected design.md does not override it.
+Exports retain the template library, including every used master and layout.
+
+The generator supplies concise content to `RostrumLayout`. Text occupies inherited
+placeholders; charts and tables are native editable objects. Generated images are
+inserted only when the selected layout offers a picture placeholder. Missing picture
+slots and conversion of structured content to template text produce warnings. Metrics,
+diagrams, timelines, quadrants and bands currently become text within native template
+content regions; they are not reconstructed as native diagrams. Wrapped text uses safe
+space below its placeholder when the template allows flow. Template shrink-to-fit
+settings use native font scaling without replacing inherited fonts. Neither operation
+changes the template's master or layout parts. Content that still cannot fit stops
+export with an error instead of overflowing the slide. Missing or unmeasured
+fonts remain visible in the result's diagnostics.
+
+Chart and table explanations and sources reserve their measured wrapped height before
+layout selection; they are not squeezed into a fixed caption strip. If no layout can
+fit both a readable object and its explanation, the full text continues on following
+template slides. Section membership and speaker notes are retained, and the result
+reports the added slides. Export failures
+retain the final normalized draft in the protected diagnostics folder, using the same
+seven-day retention policy as rejected drafts, so it can be replayed without another
+model request.
+
+Template selection prefers layouts with the appropriate number of content regions
+and enough usable area. Table rows are measured with their cell padding before
+placing captions; generated diagrams fit wholly inside picture placeholders instead
+of being cropped. Imported master/layout/theme parts remain unchanged.
+
+Theme-based generation compiles design.md into the master/theme and publishes a
+subordinate layout for each authored composition. Header dividers follow the measured
+title band, body text gets the remaining region, and photo backgrounds use contrasting
+text including footers. Dense text, image and comparison slides continue onto additional
+pages at readable sizes. Long sources flow onto source-note pages. The final fit pass
+can compact spacing and reduce body type to 17pt; unsupported content that still cannot
+fit produces an explicit error.
+
+Recovery previews show the revised slide count and layout adjustments. Recomposition
+preserves other slides and existing review comments. **Rebuild the entire deck from
+saved content** allows the page count to change freely in a new copy; later manual
+edits and comments remain only in the original file.
+
+Local acceptance evidence and the supplied-template test deck are recorded in
+`audit/template-acceptance/`. Structural success is separate from PowerPoint visual
+acceptance. To isolate a build from a running app, the macOS build and test wrappers
+accept `LECTERN_DERIVED_DATA_PATH`; app-hosted tests also need a distinct bundle ID
+when the original Lectern must stay running.

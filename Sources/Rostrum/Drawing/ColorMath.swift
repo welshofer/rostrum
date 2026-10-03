@@ -111,42 +111,56 @@ struct RGB {
         switch t {
         case .tint:   return map { $0 * f + 255 * (1 - f) }      // mix toward white
         case .shade:  return map { $0 * f }                       // mix toward black
-        case .lumMod: return map { $0 * f }
-        case .lumOff: return map { $0 + 255 * f }
+        case .lumMod: return adjustingHSL { ($0, $1, $2 * f) }
+        case .lumOff: return adjustingHSL { ($0, $1, $2 + f) }
         case .satMod: return scalingSaturation(by: f)            // HSL saturation × f
         case .alpha:  return self                                // opacity: no RGB effect
         }
     }
 
-    private func map(_ fn: (Double) -> Double) -> RGB {
+    func map(_ fn: (Double) -> Double) -> RGB {
         RGB(r: fn(r), g: fn(g), b: fn(b))
     }
 
-    /// Multiply HSL saturation by `factor` (DrawingML `a:satMod`), clamping the
-    /// result to [0, 1]. Grayscale colors (saturation 0) are unaffected.
     private func scalingSaturation(by factor: Double) -> RGB {
-        let rn = r / 255, gn = g / 255, bn = b / 255
-        let maxc = Swift.max(rn, gn, bn), minc = Swift.min(rn, gn, bn)
-        let lum = (maxc + minc) / 2
-        let delta = maxc - minc
-        guard delta != 0 else { return self }
-        var hue: Double
-        if maxc == rn { hue = (gn - bn) / delta + (gn < bn ? 6 : 0) }
-        else if maxc == gn { hue = (bn - rn) / delta + 2 }
-        else { hue = (rn - gn) / delta + 4 }
-        hue /= 6
-        let sat0 = lum > 0.5 ? delta / (2 - maxc - minc) : delta / (maxc + minc)
-        let sat = Swift.max(0, Swift.min(1, sat0 * factor))
-        let q = lum < 0.5 ? lum * (1 + sat) : lum + sat - lum * sat
-        let p = 2 * lum - q
-        func channel(_ offset: Double) -> Double {
-            var t = hue + offset
-            if t < 0 { t += 1 } else if t > 1 { t -= 1 }
-            if t < 1.0 / 6 { return p + (q - p) * 6 * t }
-            if t < 1.0 / 2 { return q }
-            if t < 2.0 / 3 { return p + (q - p) * (2.0 / 3 - t) * 6 }
-            return p
+        adjustingHSL { ($0, $1 * factor, $2) }
+    }
+
+    /// HSL operations preserve the other two components, unlike per-channel
+    /// multiplication. Keep floating point precision until final serialization.
+    func adjustingHSL(_ operation: (Double, Double, Double) -> (Double, Double, Double)) -> RGB {
+        let rn = min(1, max(0, r / 255)), gn = min(1, max(0, g / 255)), bn = min(1, max(0, b / 255))
+        let high = max(rn, gn, bn), low = min(rn, gn, bn)
+        let lightness = (high + low) / 2, delta = high - low
+        var hue = 0.0, saturation = 0.0
+        if delta > 0 {
+            saturation = delta / (1 - abs(2 * lightness - 1))
+            if high == rn { hue = ((gn - bn) / delta).truncatingRemainder(dividingBy: 6) }
+            else if high == gn { hue = (bn - rn) / delta + 2 }
+            else { hue = (rn - gn) / delta + 4 }
+            hue /= 6
+            if hue < 0 { hue += 1 }
         }
-        return RGB(r: channel(1.0 / 3) * 255, g: channel(0) * 255, b: channel(-1.0 / 3) * 255)
+        let result = operation(hue, saturation, lightness)
+        return Self(hue: result.0, saturation: result.1, lightness: result.2)
+    }
+
+    init(hue: Double, saturation: Double, lightness: Double) {
+        var h = hue.truncatingRemainder(dividingBy: 1)
+        if h < 0 { h += 1 }
+        let s = min(1, max(0, saturation)), l = min(1, max(0, lightness))
+        let chroma = (1 - abs(2 * l - 1)) * s
+        let x = chroma * (1 - abs((h * 6).truncatingRemainder(dividingBy: 2) - 1))
+        let m = l - chroma / 2
+        let channels: (Double, Double, Double)
+        switch h * 6 {
+        case ..<1: channels = (chroma, x, 0)
+        case ..<2: channels = (x, chroma, 0)
+        case ..<3: channels = (0, chroma, x)
+        case ..<4: channels = (0, x, chroma)
+        case ..<5: channels = (x, 0, chroma)
+        default: channels = (chroma, 0, x)
+        }
+        self.init(r: (channels.0 + m) * 255, g: (channels.1 + m) * 255, b: (channels.2 + m) * 255)
     }
 }

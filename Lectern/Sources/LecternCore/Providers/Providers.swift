@@ -12,6 +12,7 @@ public enum ProviderNetworking {
     public static let session = URLSession(configuration: .ephemeral)
 }
 
+/// Legacy cases remain decodable for saved history; only OpenAI can generate.
 public enum ProviderID: String, Sendable, CaseIterable, Codable {
     case anthropic, openAI, gemini, custom
 }
@@ -33,14 +34,16 @@ public struct DeckRequest: Sendable {
     public var slideCount: Int
     public var notes: Bool
     public var groundingText: String?
+    public var templateConstraints: String?
     public var styleSlug: String
 
     public init(prompt: String, audience: String = "General", goal: String = "inform",
                 slideCount: Int = 12, notes: Bool = true, groundingText: String? = nil,
-                styleSlug: String = "default") {
+                styleSlug: String = "default", templateConstraints: String? = nil) {
         self.prompt = prompt; self.audience = audience; self.goal = goal
         self.slideCount = slideCount; self.notes = notes
         self.groundingText = groundingText; self.styleSlug = styleSlug
+        self.templateConstraints = templateConstraints
     }
 }
 
@@ -79,6 +82,7 @@ public enum GenerationEvent: Sendable {
     case auditing               // the QA editor pass
     case illustrating(completed: Int, total: Int)   // optional image generation
     case rendering
+    case recoveryAvailable(URL)
     case finished(DeckResult)
 }
 

@@ -107,8 +107,8 @@ targets:
         # the sandbox.
         INFOPLIST_KEY_UIFileSharingEnabled: "YES"
         INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace: "YES"
-        # Simulator builds need no signing (scripts/build-ios.sh passes
-        # CODE_SIGNING_ALLOWED=NO). To run on a real iPhone/iPad, set your team
+        # Simulator builds use ad-hoc signing and the entitlement shim through
+        # scripts/build-ios.sh so Keychain works. For a real iPhone/iPad, set your team
         # here or in Xcode's Signing & Capabilities tab.
         CODE_SIGN_STYLE: Automatic
 

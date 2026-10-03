@@ -48,7 +48,7 @@ public enum DeckStorage {
         for url in entries {
             // Only our own drafts. Anything else in there was not put there by
             // us and is not ours to delete.
-            guard url.lastPathComponent.hasPrefix("rejected-draft"),
+            guard (url.lastPathComponent.hasPrefix("rejected-draft") || url.lastPathComponent.hasPrefix("render-session-")),
                   url.pathExtension.lowercased() == "json" else { continue }
             let modified = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?
                 .contentModificationDate ?? now

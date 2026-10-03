@@ -3,38 +3,34 @@ import Foundation
 import FoundationNetworking   // URLSession/URLRequest/HTTPURLResponse live here on Linux
 #endif
 
-/// Deck generation through OpenAI's chat completions API.
-///
-/// Structurally the same bargain as `AnthropicProvider`: the deck comes back
-/// through a forced function call rather than as prose, so there is no fence
-/// stripping, no "the model wrote a preamble" branch, and no shape drift. Only
-/// the wire format differs — `tools`/`tool_choice` in OpenAI's spelling, a
-/// bearer token instead of `x-api-key`, and `finish_reason` where Anthropic
-/// says `stop_reason`.
-///
-/// The picker has offered this provider since the first release and it threw
-/// `"openAI isn't wired up yet"` on every press.
+/// Deck generation through the Responses API, using a forced emit_deck call.
+/// The selected model and reasoning effort are shared by draft, repair and QA.
 public struct OpenAIProvider: LLMProvider {
     public let id: ProviderID = .openAI
     public let displayName = "OpenAI"
 
     private let apiKey: String
     private let model: String
+    private let effort: ReasoningEffort
     private let http: HTTPRequestSender
-    private let endpoint = URL(string: "https://api.openai.com/v1/chat/completions")!
+    private let endpoint = URL(string: "https://api.openai.com/v1/responses")!
 
     public init(apiKey: String,
-                model: String = "gpt-5.2",
+                model: String = TextStrength.sol.modelID,
+                effort: ReasoningEffort = .medium,
                 session: URLSession = ProviderNetworking.session) {
         self.apiKey = apiKey
         self.model = model
+        self.effort = TextStrength.resolve(modelID: model).supported(effort)
         self.http = { request in try await session.data(for: request) }
     }
 
     /// Test seam, matching the other providers: exercises real request-building,
     /// retry and truncation handling without a key or a network.
-    init(apiKey: String, model: String = "gpt-5.2", send: @escaping HTTPRequestSender) {
+    init(apiKey: String, model: String = TextStrength.sol.modelID,
+                effort: ReasoningEffort = .medium, send: @escaping HTTPRequestSender) {
         self.apiKey = apiKey; self.model = model; self.http = send
+        self.effort = TextStrength.resolve(modelID: model).supported(effort)
     }
 
     // MARK: - Drafting
@@ -45,7 +41,7 @@ public struct OpenAIProvider: LLMProvider {
         emit(.preparingSource)
         emit(.outlining)
 
-        let user = repairing.map { RepairPrompt.make(invalidJSON: $0.invalidJSON, errors: $0.errors) }
+        let user = repairing.map { PromptTemplates.repair(for: request, context: $0) }
             ?? PromptTemplates.deck(for: request)
 
         emit(.drafting(completed: 0, total: request.slideCount))
@@ -79,67 +75,61 @@ public struct OpenAIProvider: LLMProvider {
                          request: DeckRequest, toolDescription: String) -> [String: Any] {
         [
             "model": model,
-            // OpenAI renamed this; the older `max_tokens` is rejected outright
-            // by current models rather than ignored.
-            "max_completion_tokens": DeckOutputBudget.tokens(for: request),
-            "messages": [
-                ["role": "system", "content": system],
-                ["role": "user", "content": user],
-            ],
+            "store": false,
+            "max_output_tokens": DeckOutputBudget.tokens(for: request) + effort.tokenAllowance,
+            "reasoning": ["effort": effort.rawValue],
+            "instructions": system,
+            "input": [["role": "user", "content": user]],
             "tools": [[
-                "type": "function",
-                "function": [
-                    "name": "emit_deck",
-                    "description": toolDescription,
-                    "parameters": DeckSchema.inputSchema(),
-                ],
+                "type": "function", "name": "emit_deck",
+                "description": toolDescription,
+                "parameters": DeckSchema.inputSchema(),
+                // Keep the existing optional-field IR. The validator and one-shot
+                // repair remain the authority for structural correctness.
+                "strict": false,
             ]],
-            "tool_choice": ["type": "function", "function": ["name": "emit_deck"]],
+            "parallel_tool_calls": false,
+            "tool_choice": ["type": "function", "name": "emit_deck"],
         ]
     }
 
-    // MARK: - Reading the answer
-
-    /// Refuse a response the model stopped writing because it ran out of room.
-    ///
-    /// The same trap as Anthropic's: with the call forced, a cut-off answer
-    /// still arrives as a well-formed object, just one with fewer slides than
-    /// were asked for. OpenAI spells it `finish_reason: "length"`.
     static func rejectIfTruncated(_ data: Data, request: DeckRequest) throws {
-        guard let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let choices = obj["choices"] as? [[String: Any]],
-              choices.first?["finish_reason"] as? String == "length" else { return }
-        throw LecternError.responseTruncated(slideCount: request.slideCount)
+        guard let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+        if obj["status"] as? String == "incomplete" {
+            let reason = (obj["incomplete_details"] as? [String: Any])?["reason"] as? String
+            if reason == "max_output_tokens" {
+                throw LecternError.responseTruncated(slideCount: request.slideCount)
+            }
+            throw LecternError.providerError(status: 200, message: "OpenAI could not complete the deck (\(reason ?? "incomplete response")).")
+        }
     }
 
-    /// The deck is the function call's `arguments`, which is a JSON *string*
-    /// rather than an object — the one real difference from Anthropic's shape.
     private func extractDeckJSON(from data: Data) throws -> String {
         guard let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let choices = obj["choices"] as? [[String: Any]],
-              let message = choices.first?["message"] as? [String: Any] else {
-            throw LecternError.providerError(status: 200, message: "unexpected response shape")
+              obj["status"] as? String == "completed",
+              let output = obj["output"] as? [[String: Any]] else {
+            throw LecternError.providerError(status: 200, message: "OpenAI did not return a completed response")
         }
-        if let calls = message["tool_calls"] as? [[String: Any]],
-           let function = calls.first?["function"] as? [String: Any],
-           let arguments = function["arguments"] as? String, !arguments.isEmpty {
-            return arguments
+        // Reasoning and message items may precede the function call.
+        let calls = output.filter { $0["type"] as? String == "function_call" }
+        guard calls.count == 1, let call = calls.first, call["name"] as? String == "emit_deck",
+              call["status"] as? String == "completed",
+              let arguments = call["arguments"] as? String, !arguments.isEmpty else {
+            let refused = output.contains { item in
+                (item["content"] as? [[String: Any]])?.contains { $0["type"] as? String == "refusal" } == true
+            }
+            throw LecternError.providerError(status: 200, message: refused
+                ? "OpenAI declined this deck request."
+                : "OpenAI did not return the requested deck function call.")
         }
-        // Forced tool choice makes this the abnormal path, but a model that
-        // answers in prose anyway should say so in words rather than surface as
-        // "unexpected response shape".
-        if let content = message["content"] as? String, !content.isEmpty {
-            throw LecternError.providerError(
-                status: 200, message: "the model replied with text instead of a deck")
-        }
-        throw LecternError.providerError(status: 200, message: "no deck in the response")
+        return arguments
     }
 
     private func parseUsage(_ data: Data) -> Usage {
         guard let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let usage = obj["usage"] as? [String: Any] else { return Usage() }
-        return Usage(inputTokens: usage["prompt_tokens"] as? Int ?? 0,
-                     outputTokens: usage["completion_tokens"] as? Int ?? 0)
+        return Usage(inputTokens: usage["input_tokens"] as? Int ?? 0,
+                     outputTokens: usage["output_tokens"] as? Int ?? 0)
     }
 
     private func message(_ data: Data) -> String {
@@ -160,7 +150,8 @@ public struct OpenAIProvider: LLMProvider {
         var attempt = 0
         let startedAt = Date()
         while true {
-            guard let timeout = HTTPRetry.timeout(startedAt: startedAt, cap: 120) else {
+            try Task.checkCancellation()
+            guard let timeout = HTTPRetry.timeout(startedAt: startedAt, cap: effort.timeout, deadline: effort.timeout) else {
                 throw LecternError.providerError(
                     status: 0, message: "the request ran out of time before it could finish")
             }
@@ -178,7 +169,7 @@ public struct OpenAIProvider: LLMProvider {
             } catch let error as URLError where HTTPRetry.isRetriable(error) {
                 let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: nil)
                 guard attempt + 1 < HTTPRetry.maxAttempts,
-                      HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait) else {
+                      HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait, deadline: effort.timeout) else {
                     throw LecternError.providerError(status: 0, message: error.localizedDescription)
                 }
                 try await HTTPRetry.wait(seconds: wait)
@@ -198,7 +189,7 @@ public struct OpenAIProvider: LLMProvider {
                 let retryAfter = HTTPRetry.retryAfterSeconds(http)
                 let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter)
                 if attempt + 1 < HTTPRetry.maxAttempts,
-                   HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait) {
+                   HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait, deadline: effort.timeout) {
                     try await HTTPRetry.wait(seconds: wait)
                     attempt += 1
                     continue

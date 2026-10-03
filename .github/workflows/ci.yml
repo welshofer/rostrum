@@ -66,7 +66,9 @@ jobs:
       # anywhere the library builds — and losing it would let the README's
       # snippets rot silently.
       - name: Run README snippets (docs can't rot)
-        run: swift run ReadmeSnippets "$RUNNER_TEMP"
+        run: |
+          python3 scripts/readme-snippets.py
+          swift run ReadmeSnippets "$RUNNER_TEMP"
 
   # The one thing "Linux only" genuinely could not see: Apple platforms are
   # what the library primarily ships on, and Linux compiles neither the
@@ -92,4 +94,3 @@ jobs:
         run: |
           brew install xcodegen
           Lectern/scripts/build.sh -quiet
-

@@ -5,38 +5,29 @@ import FoundationNetworking   // URLSession/URLRequest/HTTPURLResponse live here
 import Testing
 @testable import LecternCore
 
-/// The provider the Settings picker has offered since the first release while
-/// throwing "isn't wired up yet" on every press.
-///
-/// Exercised through the same seam as the Anthropic one: real request-building,
-/// real retry and truncation handling, a stubbed wire.
+/// Responses API wire contract and failure handling.
 @Suite struct OpenAIProviderTests {
     private static func http(_ status: Int, headers: [String: String]? = nil) -> HTTPURLResponse {
-        HTTPURLResponse(url: URL(string: "https://api.openai.com/v1/chat/completions")!,
+        HTTPURLResponse(url: URL(string: "https://api.openai.com/v1/responses")!,
                         statusCode: status, httpVersion: nil, headerFields: headers)!
     }
 
-    /// A chat-completions answer carrying `deck` as the forced call's arguments.
-    ///
-    /// `arguments` is a JSON *string* containing the deck, not an object — the
-    /// one real difference from Anthropic's shape, so the helper has to encode
-    /// it as a fragment rather than hand JSONSerialization a bare String.
     private func response(finish: String = "tool_calls", deck: String) -> String {
-        let encoded = try! JSONSerialization.data(withJSONObject: deck,
-                                                  options: [.fragmentsAllowed])
-        let arguments = String(data: encoded, encoding: .utf8)!
-        return """
-        {"choices":[{"finish_reason":"\(finish)","message":{"tool_calls":[
-          {"type":"function","function":{"name":"emit_deck","arguments":\(arguments)}}]}}],
-         "usage":{"prompt_tokens":120,"completion_tokens":340}}
-        """
+        let body: [String: Any] = [
+            "status": finish == "length" ? "incomplete" : "completed",
+            "incomplete_details": ["reason": "max_output_tokens"],
+            "output": [["type": "reasoning"],
+                       ["type": "function_call", "name": "emit_deck", "status": "completed", "arguments": deck]],
+            "usage": ["input_tokens": 120, "output_tokens": 340],
+        ]
+        return String(decoding: try! JSONSerialization.data(withJSONObject: body), as: UTF8.self)
     }
 
     private let deck = #"{"meta":{"title":"T"},"slides":[]}"#
 
     @Test func theFactoryNowBuildsIt() throws {
         #expect(ProviderFactory.isWired(.openAI))
-        let provider = try ProviderFactory.make(id: .openAI, apiKey: "sk-test", model: "gpt-5.2")
+        let provider = try ProviderFactory.make(id: .openAI, apiKey: "sk-test", model: TextStrength.sol.modelID)
         #expect(provider.id == .openAI)
         #expect(provider.displayName == "OpenAI")
     }
@@ -62,7 +53,7 @@ import Testing
     /// first to tell us about.
     @Test func theRequestIsShapedForOpenAI() async throws {
         let seen = SentRequest()
-        let provider = OpenAIProvider(apiKey: "sk-secret", model: "gpt-5.2", send: { request in
+        let provider = OpenAIProvider(apiKey: "sk-secret", model: TextStrength.sol.modelID, send: { request in
             seen.record(request)
             return (Data(self.response(deck: self.deck).utf8), Self.http(200))
         })
@@ -74,15 +65,23 @@ import Testing
         #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer sk-secret")
         let httpBody = try #require(request.httpBody)
         let body = try #require(try JSONSerialization.jsonObject(with: httpBody) as? [String: Any])
-        #expect(body["model"] as? String == "gpt-5.2")
+        #expect(body["model"] as? String == TextStrength.sol.modelID)
         // `max_tokens` is rejected outright by current models rather than ignored.
-        #expect(body["max_completion_tokens"] != nil)
+        #expect(body["max_output_tokens"] != nil)
         #expect(body["max_tokens"] == nil)
-        let messages = try #require(body["messages"] as? [[String: String]])
-        #expect(messages.first?["role"] == "system")
-        #expect(messages.last?["role"] == "user")
+        #expect(request.url?.path == "/v1/responses")
+        #expect(body["store"] as? Bool == false)
+        #expect(body["instructions"] is String)
+        let input = try #require(body["input"] as? [[String: String]])
+        #expect(input.first?["role"] == "user")
+        #expect(body["messages"] == nil)
+        #expect(body["temperature"] == nil)
+        #expect((body["reasoning"] as? [String: String])?["effort"] == "medium")
         let choice = try #require(body["tool_choice"] as? [String: Any])
-        #expect((choice["function"] as? [String: Any])?["name"] as? String == "emit_deck")
+        #expect(choice["name"] as? String == "emit_deck")
+        #expect((body["tools"] as? [[String: Any]])?.first?["strict"] as? Bool == false)
+        #expect(body["parallel_tool_calls"] as? Bool == false)
+
     }
 
     /// Same trap as Anthropic's: a cut-off answer still decodes, so a short
@@ -112,12 +111,12 @@ import Testing
     /// rather than surfacing as "unexpected response shape".
     @Test func proseInsteadOfADeckIsNamed() async {
         let provider = OpenAIProvider(apiKey: "k", send: { _ in
-            let body = #"{"choices":[{"finish_reason":"stop","message":{"content":"Here is a deck!"}}]}"#
+            let body = #"{"status":"completed","output":[{"type":"message","content":[{"type":"output_text","text":"Here is a deck!"}]}]}"#
             return (Data(body.utf8), Self.http(200))
         })
 
         await #expect(throws: LecternError.providerError(
-            status: 200, message: "the model replied with text instead of a deck")) {
+            status: 200, message: "OpenAI did not return the requested deck function call.")) {
             _ = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
         }
     }

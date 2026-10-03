@@ -1,34 +1,7 @@
 import SwiftUI
 import LecternCore
 
-/// What the Settings provider picker offers, and what to do about a stored
-/// selection that no longer belongs there.
-///
-/// A "(soon)" label warns; it doesn't stop a tap. Left merely labelled, a
-/// user can select Gemini, paste a real key, save it, and only discover the
-/// provider can't run when Generate throws. Excluding unwired providers from
-/// the picker's own option list — rather than listing and disabling them —
-/// is what actually makes them unselectable, regardless of which control
-/// style `Picker` resolves to on a given platform.
-enum ProviderPicker {
-    /// The picker's option list: wired providers only, in `ProviderID`'s
-    /// declared order. See `ProviderFactory.isWired`.
-    static var selectable: [ProviderID] { ProviderID.allCases.filter(ProviderFactory.isWired) }
-
-    /// A provider persisted before this gate existed — or `.custom`, which
-    /// has never had a live implementation — is no longer one of
-    /// `selectable`'s options. Binding a `Picker` to a tag it doesn't offer
-    /// renders blank, so on load this steers a stored-but-unwired selection
-    /// back to `fallback` instead.
-    static func resolveStoredSelection(_ stored: ProviderID, fallback: ProviderID = .anthropic) -> ProviderID {
-        ProviderFactory.isWired(stored) ? stored : fallback
-    }
-}
-
-/// Providers, keys, and model — the Settings scene (§10 / §294). The key goes
-/// straight to the Keychain (I1); the SecureField is write-only, so a stored key
-/// never round-trips through the UI. Validate confirms the key and populates the
-/// live model list.
+/// OpenAI generation choices. Stored keys never round-trip through the UI.
 struct SettingsView: View {
     @Environment(AppState.self) private var app
     @Environment(\.dismiss) private var dismiss
@@ -54,28 +27,28 @@ struct SettingsView: View {
         }
         #else
         form
-            .frame(width: 520, height: 620)
+            .frame(width: 520, height: 740)
         #endif
     }
 
     private var form: some View {
         Form {
-            Section("Provider") {
-                Picker("Provider", selection: Binding(
-                    get: { app.providerID },
-                    set: { app.selectProvider($0); keyInput = "" }
-                )) {
-                    ForEach(ProviderPicker.selectable, id: \.self) { id in
-                        Text(id.label).tag(id)
-                    }
+            Section("Text generation · OpenAI") {
+                Picker("Model strength", selection: Binding(
+                    get: { app.textStrength }, set: { app.setModel($0.modelID) })) {
+                    ForEach(TextStrength.allCases, id: \.self) { Text($0.label).tag($0) }
                 }
-                Picker("Model", selection: Binding(get: { app.model }, set: { app.setModel($0) })) {
-                    ForEach(app.modelOptions, id: \.self) { Text(modelLabel($0)).tag($0) }
+                .pickerStyle(.menu)
+                Picker("Reasoning effort", selection: Binding(
+                    get: { app.reasoningEffort }, set: { app.setReasoningEffort($0) })) {
+                    ForEach(app.textStrength.efforts, id: \.self) { Text($0.label).tag($0) }
                 }
-                .disabled(app.modelOptions.isEmpty)
+                .pickerStyle(.menu)
+                Text("Higher effort gives the model more time to reason and can increase cost. Applies to drafting, repair, and polish.")
+                    .font(.caption).foregroundStyle(.secondary)
             }
 
-            Section("API key") {
+            Section("OpenAI API key") {
                 // The field is write-only (I1: a stored key never round-trips
                 // through the UI), so after a relaunch it is always empty. The
                 // prompt must carry the stored-state truth — a bare "Paste your
@@ -95,12 +68,16 @@ struct SettingsView: View {
             }
 
             Section("Images (optional)") {
-                Picker("Image provider", selection: Binding(
-                    get: { app.imageProviderID },
-                    set: { app.selectImageProvider($0); imageKeyInput = "" }
-                )) {
-                    ForEach(ImageProviderID.allCases, id: \.self) { Text($0.label).tag($0) }
+                Picker("Image model", selection: Binding(
+                    get: { app.imageModel }, set: { app.setImageModel($0) })) {
+                    ForEach(ImageModel.allCases, id: \.self) { Text($0.label).tag($0) }
                 }
+                .pickerStyle(.menu)
+                Picker("Image quality", selection: Binding(
+                    get: { app.imageQuality }, set: { app.setImageQuality($0) })) {
+                    ForEach(ImageQuality.allCases, id: \.self) { Text($0.label).tag($0) }
+                }
+                .pickerStyle(.menu)
                 SecureField(text: $imageKeyInput, prompt: Text(
                     app.hasImageKey ? "••••••••••••••••••••  saved — paste to replace"
                                     : "Paste your \(app.imageProviderID.label) key")) { EmptyView() }
@@ -134,7 +111,7 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .task(id: app.imageProviderID) {
+        .task(id: app.imageModel) {
             if app.hasImageKey { await app.validateImageKey() }
         }
     }
@@ -172,13 +149,13 @@ struct SettingsView: View {
         case .valid:
             return "Slides the model marks for a visual get an on-brand image in the selected style."
         case .validating:
-            return "Checking that the key can access \(app.imageProviderID.defaultModel)…"
+            return "Checking that the key can access \(app.imageModel.label)…"
         case .invalid:
             return "Fix or remove this key before generating; Lectern won't silently omit failed images."
         case .unknown:
             return app.hasImageKey
                 ? "The key is saved but has not been accepted by the provider yet."
-                : "Optional — add a key and Lectern illustrates suitable slides in your chosen design's style."
+                : "Optional — save an OpenAI key here to illustrate suitable slides. You can use the same key as text generation. Higher quality may take longer."
         }
     }
 
@@ -200,9 +177,6 @@ struct SettingsView: View {
     }
 
     private var footerText: String {
-        if !ProviderFactory.isWired(app.providerID) {
-            return "\(app.providerID.label) isn't wired up yet — choose Anthropic."
-        }
         return app.hasKey
             ? "Live \(app.providerID.label) generation is on. Keys are stored only in your Keychain."
             : "Add a key to generate — Lectern never runs on fake data."

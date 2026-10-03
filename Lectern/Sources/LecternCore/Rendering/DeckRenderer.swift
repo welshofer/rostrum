@@ -1,5 +1,6 @@
 import Foundation
 import Rostrum
+import RostrumLayout
 #if canImport(CoreGraphics)
 import CoreGraphics
 import ImageIO
@@ -10,6 +11,7 @@ import CoreText
 #endif
 
 public struct DeckResult: Sendable, Equatable {
+    public var recoveryURL: URL? = nil
     public let url: URL
     public let slideCount: Int
     /// `var`, not `let`: the app appends run-level notes — "images were
@@ -26,6 +28,8 @@ public struct DeckResult: Sendable, Equatable {
     /// real advance widths. Kept out of `warnings` on purpose: whether a font
     /// is present is a fact about this machine, not about the deck.
     public let unmeasuredFonts: [String]
+    /// Preview approximations, separate from problems in the exported deck.
+    public var previewWarnings: [String] = []
     /// One self-contained SVG per slide, rendered by Rostrum from the deck it
     /// just wrote — not a reconstruction from the IR. Empty if rendering
     /// failed, which is never fatal: the `.pptx` on disk is the deliverable
@@ -59,6 +63,79 @@ public enum RenderError: Error {
 public actor DeckRenderer {
     public init() {}
 
+    /// Recompose only the requested slide in a copy of the existing package.
+    /// Its URI remains stable, so navigation, sections and notes keep working.
+    public func retrySlide(snapshotURL: URL, sourceURL: URL?, slideID: String,
+                           variant: Int, into directory: URL) throws -> DeckResult {
+        try Task.checkCancellation()
+        var saved = try RenderSnapshot.load(snapshotURL)
+        guard var input = saved.deck.slides.first(where: { $0.id == slideID }) else {
+            throw RenderError.renderFailed(underlying: "This slide is not in the saved content.")
+        }
+        let temporary = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: temporary, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+        defer { try? FileManager.default.removeItem(at: temporary) }
+        let designURL = try saved.design.map { design -> URL in
+            let url = temporary.appendingPathComponent("design.md")
+            try Data(design.utf8).write(to: url); return url
+        }
+        let template = try saved.template()
+        if template == nil, variant > 0, input.kind == .bullets, let bullets = input.body?.bullets, bullets.count > 1 {
+            let lines = bullets.map { ([$0.text] + ($0.subBullets ?? [])).joined(separator: "\n") }
+            let split = (lines.count + 1) / 2
+            input.layout = "twoColumn"
+            input.body?.left = Column(heading: "", bullets: Array(lines.prefix(split)))
+            input.body?.right = Column(heading: "", bullets: Array(lines.dropFirst(split)))
+            input.body?.bullets = nil
+        }
+        if let position = saved.deck.slides.firstIndex(where: { $0.id == slideID }) { saved.deck.slides[position] = input }
+        guard let sourceURL else {
+            var result = try render(saved.deck, designURL: designURL, notesEnabled: saved.notesEnabled,
+                into: directory, images: saved.images, useSmartArt: saved.useSmartArt, template: template,
+                layoutVariants: [slideID: variant])
+            result.recoveryURL = snapshotURL
+            return result
+        }
+        let presentation = try Presentation(data: Data(contentsOf: sourceURL))
+        let missingFonts = Self.registerInstalledFonts(for: presentation)
+        guard let index = (0..<presentation.slides.count).first(where: { (try? presentation.slides[$0].part.dom().firstChild(named: "p:cSld")?[attribute: "name"]) == "Lectern:" + slideID }) else {
+            throw RenderError.renderFailed(underlying: "This deck no longer contains the saved slide. The original was left unchanged.")
+        }
+        try Task.checkCancellation()
+        let original = try presentation.slides[index]
+        var warnings: [String] = [], dropped: [String] = []
+        if let template {
+            let replacement = try TemplateRendering.build(input, in: presentation, template: template,
+                image: saved.images[slideID], warnings: &warnings, variant: variant)
+            try original.replaceVisualContents(with: replacement)
+            try presentation.slides.remove(at: presentation.slides.count - 1)
+        } else {
+            var one = saved.deck; one.slides = [input]; one.sections = nil
+            // Keep the running footer on a recovered slide that is not the
+            // opener. The production renderer omits furniture on page one.
+            if index > 0 { one.slides.insert(IRSlide(id: "recovery-opener", layout: "title", title: ""), at: 0) }
+            let result = try render(one, designURL: designURL, notesEnabled: saved.notesEnabled,
+                into: temporary, images: saved.images, useSmartArt: saved.useSmartArt)
+            let rendered = try Presentation(data: Data(contentsOf: result.url))
+            if index > 0 { try rendered.slides.remove(at: 0) }
+            try Self.replaceAuthoredPages(in: presentation, startingAt: index, with: rendered,
+                input: input, savedIDs: Set(saved.deck.slides.map(\.id)))
+            dropped = result.droppedContent
+            warnings = result.warnings
+        }
+        try original.part.dom().firstChild(named: "p:cSld")?[attribute: "name"] = "Lectern:" + slideID
+        original.part.markDirty()
+        try presentation.validateTemplateBindings()
+        let issues = try presentation.validate().map(\.description)
+        try Task.checkCancellation()
+        let url = try outputURL(title: saved.deck.meta.title + " revised", in: directory)
+        try presentation.save(to: url)
+        let previews = Self.previews(of: presentation)
+        return DeckResult(recoveryURL: snapshotURL, url: url, slideCount: presentation.slides.count,
+            warnings: warnings, schemaIssues: issues, unmeasuredFonts: missingFonts, previewWarnings: previews.warnings,
+            previews: previews.svgs, previewTitles: previews.titles, droppedContent: dropped)
+    }
+
     // MARK: - Previews
 
     /// Render every slide to SVG with Rostrum's own renderer.
@@ -76,17 +153,21 @@ public actor DeckRenderer {
     /// Best-effort per slide: one slide that fails to render costs its own
     /// preview and nothing else, because a missing thumbnail is not a reason
     /// to fail a deck that saved correctly.
-    private static func previews(of presentation: Presentation) -> (svgs: [String], titles: [String]) {
+    private static func previews(of presentation: Presentation) -> (svgs: [String], titles: [String], warnings: [String]) {
+        PreviewFontMeasurement.install(on: presentation.fonts)
         // One pass building both, so a slide whose render fails drops its
         // title too and the two arrays stay index-aligned.
         var svgs: [String] = []
         var titles: [String] = []
+        var warnings: [String] = []
         for index in 0..<presentation.slides.count {
-            guard let svg = try? presentation.renderSVG(slideAt: index, pixelWidth: 640) else { continue }
-            svgs.append(svg)
+            let rendered = try? presentation.renderSVGReportingProblems(slideAt: index, pixelWidth: 640)
+            let svg = rendered?.svg
+            warnings += (rendered?.problems.messages ?? ["Preview unavailable."]).map { "Slide \(index + 1): \($0)" }
+            svgs.append(SlidePreviewRecord(number: index + 1, title: "", svg: svg).displaySVG)
             titles.append((try? presentation.slides[index].title?.textFrame?.text) ?? "")
         }
-        return (svgs, titles)
+        return (svgs, titles, warnings)
     }
 
     // MARK: - Document metadata
@@ -180,6 +261,15 @@ public actor DeckRenderer {
         let style = presentation.style
         var wanted: Set<String> = [style.headingFont, style.bodyFont]
         for role in TypeRole.allCases { wanted.insert(style.type(role).font) }
+        for master in presentation.slideMasters {
+            if let font = master.theme?.majorFont { wanted.insert(font) }
+            if let font = master.theme?.minorFont { wanted.insert(font) }
+            for layout in master.layouts {
+                for slot in layout.placeholders {
+                    if let font = layout.textDefaults(for: slot.index).paragraph.firstChild(named: "a:defRPr")?.firstChild(named: "a:latin")?[attribute: "typeface"], !font.hasPrefix("+") { wanted.insert(font) }
+                }
+            }
+        }
 
         var unmeasured: [String] = []
         for name in wanted.sorted() where !name.isEmpty {
@@ -335,7 +425,8 @@ public actor DeckRenderer {
     /// `directory`. `warnings` from validation are passed through to the result.
     public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool,
                        into directory: URL, warnings: [String] = [],
-                       images: [String: Data] = [:], useSmartArt: Bool = false) throws -> DeckResult {
+                       images: [String: Data] = [:], useSmartArt: Bool = false,
+                       template: PowerPointTemplate? = nil, layoutVariants: [String: Int] = [:]) throws -> DeckResult {
         do {
             // Rendering is now the slowest phase — font registration, package
             // deflate, the schema lint, N SVG renders — so Cancel has to reach
@@ -343,13 +434,22 @@ public actor DeckRenderer {
             // seconds later, thrown into a Result screen for the deck they just
             // cancelled, with the file already written.
             try Task.checkCancellation()
-            let presentation = try Presentation()
-            if let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
+            let presentation = try template.map { try Presentation.fromTemplate(data: $0.data) } ?? Presentation()
+            if template == nil, let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
+            if template == nil { try presentation.compileThemeMaster() }
             // After applyDesign: the style is what decides which typefaces the
             // builders will be measuring with.
             let unmeasured = Self.registerInstalledFonts(for: presentation)
 
             var dropped: [String] = []
+            var layoutWarnings: [String] = []
+            let templateEngine = TemplateLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
+            var deck = try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings, engine: templateEngine) } ?? deck
+            var images = images
+            if template == nil {
+                let prepared = try Self.paginate(deck, images: images, in: presentation, useSmartArt: useSmartArt)
+                deck = prepared.deck; images = prepared.images; layoutWarnings += prepared.warnings
+            }
             var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {
                 try Task.checkCancellation()
@@ -361,24 +461,38 @@ public actor DeckRenderer {
                     imageSide = side
                 }
                 let sideImage = imageSide != nil
-                let built = try build(slide, in: presentation, useSmartArt: useSmartArt,
+                let built: Slide
+                if let template {
+                    built = try TemplateRendering.build(slide, in: presentation, template: template,
+                                                        image: images[slide.id], warnings: &layoutWarnings, engine: templateEngine, variant: layoutVariants[slide.id] ?? 0)
+                } else {
+                    built = try Self.build(slide, in: presentation, useSmartArt: useSmartArt,
                                       hasSideImage: sideImage, dropped: &dropped)
+                }
+                let content = try built.part.dom().firstChild(named: "p:cSld")
+                content?[attribute: "name"] = "Lectern:" + slide.id
+                built.part.markDirty()
                 builtSlides[slide.id] = built
                 // Provenance is additive and position-independent, so every
                 // layout can carry it without threading it through a builder.
-                if let source = slide.body?.source, !source.isEmpty {
+                if template == nil, let source = slide.body?.source, !source.isEmpty {
                     _ = try? presentation.addSource(source, to: built)
                 }
-                if let data = images[slide.id] {
+                if template == nil, let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
                     case .fullBleed:
                         // Edge-to-edge background behind the text, dimmed only
                         // as much as this image needs to keep the ink legible.
-                        let dark = Self.paintsADarkBackground(slide.kind, presentation.style)
+                        let foreground = built.title?.textFrame?.paragraphs.first?.runs.first?.color
+                            ?? presentation.style.ink
+                        let dark = foreground.relativeLuminance > 0.5
                         // At working strength the field reads as the scrim
                         // colour, so the ink Rostrum picks against that colour
                         // is the ink the scrim has to serve.
-                        let ink = presentation.style.textColor(on: dark ? .black : .white)
+                        let ink: Color = dark ? .white : .black
+                        for shape in built.shapes.all {
+                            shape.textFrame?.setColor(ink)
+                        }
                         let scrimmed = Self.scrimmed(data, dark: dark,
                                                      textLuminance: ink.relativeLuminance)
                         // No alt text: a background fill is not a shape, and a
@@ -389,7 +503,7 @@ public actor DeckRenderer {
                     case .sidePanel(let side):
                         // A framed panel on the right (title/content sit left).
                         if let picture = try? built.shapes.addPicture(
-                            data, frame: presentation.sideImagePanel(side), fit: .fill) {
+                            data, frame: TemplateRendering.containedImageFrame(data, in: presentation.sideImagePanel(side))) {
                             // The brief that generated this image *is* its
                             // description — exactly what a screen reader needs,
                             // and the app has been holding it all along.
@@ -415,7 +529,23 @@ public actor DeckRenderer {
             applySections(deck, to: presentation)
             Self.linkAgenda(deck, builtSlides)
             Self.stampProperties(of: deck, on: presentation)
-            Self.addFurniture(deck, to: presentation)
+            if template == nil {
+                Self.addFurniture(deck, to: presentation)
+                // Full-bleed furniture uses the same foreground as the content.
+                for slide in presentation.slides {
+                    if (try? slide.part.dom())?.firstChild(named: "p:cSld")?.firstChild(named: "p:bg")?.firstChild(named: "p:bgPr")?.firstChild(named: "a:blipFill") != nil {
+                        let ink = slide.title?.textFrame?.paragraphs.first?.runs.first?.color ?? presentation.style.ink
+                        for shape in slide.shapes.all {
+                            shape.textFrame?.setColor(ink)
+                        }
+                    }
+                }
+                let engine = AuthoredLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
+                for (index, slide) in presentation.slides.enumerated() {
+                    try engine.finish(slide, layoutName: "Lectern — \(deck.slides[index].layout) \(index + 1)")
+                }
+            }
+            try presentation.validateTemplateBindings()
 
             // Rostrum's schema lint, run on what we are about to write rather
             // than on a deck someone opens later. It reads the DOM and mutates
@@ -430,10 +560,10 @@ public actor DeckRenderer {
             try presentation.save(to: url)
             // Previews are the tail cost and pure convenience; the deck is
             // already saved, so a cancel here skips them rather than undoing it.
-            let (previews, previewTitles) = Task.isCancelled ? ([], []) : Self.previews(of: presentation)
+            let (previews, previewTitles, previewWarnings) = Task.isCancelled ? ([], [], []) : Self.previews(of: presentation)
             return DeckResult(url: url, slideCount: presentation.slides.count,
-                              warnings: warnings, schemaIssues: schemaIssues,
-                              unmeasuredFonts: unmeasured,
+                              warnings: warnings + layoutWarnings, schemaIssues: schemaIssues,
+                              unmeasuredFonts: unmeasured, previewWarnings: previewWarnings,
                               previews: previews, previewTitles: previewTitles,
                               droppedContent: dropped)
         } catch is CancellationError {
@@ -445,6 +575,69 @@ public actor DeckRenderer {
             throw error
         } catch {
             throw RenderError.renderFailed(underlying: "\(error)")
+        }
+    }
+
+    private static func paginate(_ deck: DeckIR, images: [String: Data],
+                                 in presentation: Presentation, useSmartArt: Bool) throws -> AuthoredPagination.Result {
+        let fitter = AuthoredLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
+        var preparedDeck = deck
+        var sourceWarnings: [String] = []
+        var sourceIDs: [String: String] = [:]
+        var usedIDs = Set(deck.slides.map(\.id))
+        preparedDeck.slides = []
+        for var input in deck.slides {
+            try Task.checkCancellation()
+            if let source = input.body?.source, !source.isEmpty {
+                let probe = try presentation.slides.add()
+                var sourceFits = true
+                do {
+                    _ = try presentation.addSource(source, to: probe)
+                    try fitter.fitText(in: probe)
+                } catch is LayoutError { sourceFits = false }
+                catch { try presentation.slides.remove(at: presentation.slides.count - 1); throw error }
+                try presentation.slides.remove(at: presentation.slides.count - 1)
+                if !sourceFits {
+                    var id = input.id + "-source-notes"
+                    while usedIDs.contains(id) { id += "-next" }
+                    usedIDs.insert(id); sourceIDs[input.id] = id
+                    input.body?.source = "Source notes follow."
+                    preparedDeck.slides.append(input)
+                    preparedDeck.slides.append(IRSlide(id: id, layout: "bullets", title: "Source notes",
+                        body: Body(bullets: [Bullet(text: source)]), notes: input.notes))
+                    sourceWarnings.append("\(input.title ?? input.id): extended source notes follow the slide at a readable size.")
+                    continue
+                }
+            }
+            preparedDeck.slides.append(input)
+        }
+        preparedDeck.sections = deck.sections?.map { section in
+            var section = section
+            section.slideIds = section.slideIds.flatMap { id in [id] + (sourceIDs[id].map { [$0] } ?? []) }
+            return section
+        }
+        var lastFailure = ""
+        do {
+            var result = try AuthoredPagination.prepare(preparedDeck, images: images) { candidate, hasImage in
+                let count = presentation.slides.count
+                var discarded: [String] = []
+                do {
+                    let probe = try Self.build(candidate, in: presentation, useSmartArt: useSmartArt,
+                                          hasSideImage: hasImage, dropped: &discarded)
+                    if let source = candidate.body?.source, !source.isEmpty { _ = try presentation.addSource(source, to: probe) }
+                    try fitter.fitText(in: probe)
+                    try presentation.slides.remove(at: count)
+                    return true
+                } catch {
+                    while presentation.slides.count > count { try presentation.slides.remove(at: count) }
+                    if error is LayoutError { lastFailure = "\(candidate.title ?? candidate.id): \(error)"; return false }
+                    throw error
+                }
+            }
+            result.warnings += sourceWarnings
+            return result
+        } catch let error as LayoutError {
+            throw LayoutError.cannotFit(lastFailure.isEmpty ? "\(error)" : lastFailure)
         }
     }
 
@@ -500,7 +693,7 @@ public actor DeckRenderer {
 
     // MARK: - IR layout → Rostrum builder
 
-    private func build(_ slide: IRSlide, in deck: Presentation, useSmartArt: Bool,
+    private static func build(_ slide: IRSlide, in deck: Presentation, useSmartArt: Bool,
                        hasSideImage: Bool, dropped: inout [String]) throws -> Slide {
         let title = slide.title ?? ""
         let body = slide.body
@@ -527,7 +720,8 @@ public actor DeckRenderer {
         case .twoColumn, .comparison:
             let left = body?.left ?? Column(heading: "", bullets: [])
             let right = body?.right ?? Column(heading: "", bullets: [])
-            return try deck.comparisonSlide(title, leftHeader: left.heading, left: left.bullets,
+            let lead = [body?.lead].compactMap { $0 }.filter { !$0.isEmpty }
+            return try deck.comparisonSlide(title, leftHeader: left.heading, left: lead + left.bullets,
                                             rightHeader: right.heading, right: right.bullets)
         case .quote:
             return try deck.quoteSlide(body?.quote ?? title, attribution: body?.attribution)
@@ -558,7 +752,7 @@ public actor DeckRenderer {
                 // Make the chart carry its own values (positions kept valid per
                 // kind so PowerPoint never repairs): bars/lines show values, pies
                 // show a percentage with a legend.
-                let options: ChartOptions
+                var options: ChartOptions
                 switch kind {
                 case .pie, .doughnut:
                     // Slices are categories, not series: the legend names
@@ -591,6 +785,7 @@ public actor DeckRenderer {
                                            dataLabels: DataLabelOptions(showValue: true, position: "outEnd"),
                                            valueAxis: Self.labelledAxis)
                 }
+                options.text = ChartTextStyle(font: deck.style.bodyFont, color: deck.style.ink, sizePt: 16)
                 return try deck.chartSlide(title, kind, data, options: options)
             }
             // Falling back is right — a series whose length disagrees with the
@@ -688,7 +883,7 @@ public actor DeckRenderer {
     }
 
     /// Flatten a bullet tree to strings, sub-bullets prefixed with an en dash.
-    private func flatten(_ bullets: [Bullet]) -> [String] {
+    private static func flatten(_ bullets: [Bullet]) -> [String] {
         bullets.flatMap { [$0.text] + ($0.subBullets ?? []).map { "– \($0)" } }
     }
 
@@ -828,9 +1023,9 @@ public actor DeckRenderer {
                                   bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return data }
         let rect = CGRect(x: 0, y: 0, width: img.width, height: img.height)
         ctx.draw(img, in: rect)
-        let alpha = scrimAlpha(luminances: sampledLuminances(of: img),
+        let alpha = max(0.6, scrimAlpha(luminances: sampledLuminances(of: img),
                                scrimIsBlack: dark,
-                               textLuminance: textLuminance)
+                               textLuminance: textLuminance))
         ctx.setFillColor(dark ? CGColor(red: 0, green: 0, blue: 0, alpha: alpha)
                               : CGColor(red: 1, green: 1, blue: 1, alpha: alpha))
         ctx.fill(rect)
@@ -844,8 +1039,8 @@ public actor DeckRenderer {
                                                           UTType.jpeg.identifier as CFString, 1, nil) else { return data }
         CGImageDestinationAddImage(dest, out, [kCGImageDestinationLossyCompressionQuality: scrimJPEGQuality] as CFDictionary)
         guard CGImageDestinationFinalize(dest) else { return data }
-        // Never hand back something larger than we were given.
-        return buffer.length < data.count ? buffer as Data : data
+        // Readability is required even when the corrected image is larger.
+        return buffer as Data
         #else
         return data
         #endif
@@ -919,5 +1114,13 @@ public actor DeckRenderer {
         }
         let trimmed = out.trimmingCharacters(in: CharacterSet(charactersIn: "-"))
         return trimmed.isEmpty ? "deck" : String(trimmed.prefix(60))
+    }
+}
+
+public extension DeckResult {
+    static func savedCopy(of result: DeckResult, at url: URL) -> DeckResult {
+        DeckResult(recoveryURL: result.recoveryURL, url: url, slideCount: result.slideCount,
+            warnings: result.warnings, schemaIssues: result.schemaIssues, unmeasuredFonts: result.unmeasuredFonts, previewWarnings: result.previewWarnings,
+            previews: result.previews, previewTitles: result.previewTitles, droppedContent: result.droppedContent)
     }
 }

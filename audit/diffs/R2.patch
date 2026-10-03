@@ -1,0 +1,231 @@
+--- a/Lectern/README.md
++++ b/Lectern/README.md
+@@ -3,7 +3,7 @@
+ The demo application for **Rostrum** — prove the full loop in one window: a
+ prompt, optional PDF grounding, a few intent parameters, and one of many bundled
+ `design.md` styles go in; a native `.pptx` written entirely by Rostrum comes out.
+-Everything runs on-device except the LLM call. (Section references like §8.3
++Everything runs on-device except text and optional image-provider calls. (Section references like §8.3
+ below cite the internal Lectern spec, which is not part of this repository.)
+ 
+ ## Layout
+@@ -33,11 +33,11 @@
+         KC["KeychainStore<br/>keys live only here"]
+     end
+     subgraph Core["LecternCore (UI-free, tested headless)"]
+-        GEN["DeckGenerator<br/>draft → decode → validate<br/>→ one repair → render"]
++        GEN["DeckGenerator<br/>draft → validate → optional repair<br/>→ QA → normalize → illustrate → render"]
+         IR["DeckIR lectern.deck/1<br/>structural + soft validation<br/>unknown layouts downgrade"]
+         REN["DeckRenderer (actor)<br/>IR layout → Rostrum builder"]
+         CAT["StyleCatalog<br/>150 bundled design.md"]
+-        PROV["LLMProvider<br/>Anthropic · image providers"]
++        PROV["LLMProvider<br/>Anthropic · OpenAI<br/>optional image providers"]
+     end
+     R["Rostrum<br/>design-authoring builders<br/>→ native .pptx"]
+     OUT[("deck.pptx<br/>opens clean in PowerPoint,<br/>Keynote, python-pptx")]
+@@ -61,14 +61,17 @@
+ 
+ ## What's built and proven (headless)
+ 
+-`LecternCore` is complete and tested end-to-end against a fixture provider —
+-the spec's fixture-first M1–M2: *the whole pipeline is proven before a single
+-real network call*.
++`LecternCore` has fixture-backed pipeline tests. They verify deterministic
++behavior without paid calls; they do not establish live provider quality or
++PowerPoint acceptance for every output. The source and tests below are the
++repository's executable contract; internal spec references are historical context.
+ 
+ - **DeckIR** (`lectern.deck/1`): `Codable` models, structural + soft validation
+   (§8.3–8.4), unknown-layout downgrade (§8.5), and the one-shot repair prompt
+   (§8.7). Nothing reaches the renderer unvalidated (invariant I3).
+-- **DeckGenerator**: `draft → decode+validate → one repair → render`.
++- **DeckGenerator**: draft → decode/validate → at most one repair if needed →
++  optional QA revision → normalize/revalidate → optional illustrations → render.
++  A failed or structurally invalid QA revision keeps the validated draft.
+ - **DeckInspector / DeckExporter**: the other direction. The app opens on a
+   fork — **Create** or **Inspect** — and Inspect (⌘I) takes any `.pptx`, one
+   Lectern made or one that arrived by email, and shows what it is made of:
+@@ -220,19 +223,20 @@
+   non-secret choice (provider/model) and reads key *presence* from the
+   Keychain.
+ 
+-## What remains (M3–M5)
+-
+-- **Live providers** (§7.2): `AnthropicProvider` is written (URLSession, no vendor
+-  SDK) and selected automatically once a key is stored; OpenAI / Gemini / Custom
+-  follow the same `LLMProvider` shape. The two-stage outline→deck pipeline and the
+-  PDF grounding ladder (§7.4) live here. *(The live round-trip needs a real key to
+-  smoke-test — not exercisable in headless CI.)*
+-- **History** (SwiftData, §11): persist past decks in the sidebar (currently a
+-  stub).
+-- **PriceTable** cost estimate (§10.3) and **Liquid Glass** polish (§3).
+-
+-The `LLMProvider` protocol, `GenerationEvent` stream, and `LecternError` taxonomy
+-(§12) are defined, so a new live provider is a drop-in conformance.
++## Implemented behavior and remaining work
++
++- Anthropic and OpenAI text providers are wired through
++  `Sources/LecternCore/Providers/ProviderFactory.swift`; Gemini and Custom text
++  providers remain unwired. Gemini/OpenAI image providers are separate.
++- `Storage/DeckLibrary.swift` and `App/AppState.swift` load, rename and delete
++  saved deck files. This is a file-backed library, not a pending SwiftData store.
++- `Providers/PriceTable.swift` supplies estimates displayed by AppState. These
++  are estimates, not a provider billing reconciliation.
++- Generation cancellation is available in ContentView and invalidates the
++  active RunGate before cancelling its task. Tests cover stale run rejection.
++- Live model quality and PowerPoint fidelity still need sample-based inspection;
++  fixture tests cannot substitute for those checks. See ROADMAP.md for other
++  deliberate deferrals rather than treating the original M3–M5 plan as current.
+ 
+ ## Open items
+ 
+--- a/Lectern/project.yml
++++ b/Lectern/project.yml
+@@ -107,8 +107,8 @@
+         # the sandbox.
+         INFOPLIST_KEY_UIFileSharingEnabled: "YES"
+         INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace: "YES"
+-        # Simulator builds need no signing (scripts/build-ios.sh passes
+-        # CODE_SIGNING_ALLOWED=NO). To run on a real iPhone/iPad, set your team
++        # Simulator builds use ad-hoc signing and the entitlement shim through
++        # scripts/build-ios.sh so Keychain works. For a real iPhone/iPad, set your team
+         # here or in Xcode's Signing & Capabilities tab.
+         CODE_SIGN_STYLE: Automatic
+ 
+--- a/README.md
++++ b/README.md
+@@ -97,7 +97,7 @@
+ | **Templates** | open a `.potx`/`.ppsx` directly and round-trip it as one; `documentKind` converts when you want a deck out of a template; drive styling from a `design.md` (fonts, palette, spacing/radius/type tokens) |
+ | **Sections** | native PowerPoint sections; footers, slide numbers, dates via live fields |
+ | **Extraction** | `deck.outline()` — every slide's text (title, subtitle, bullets with outline level, table cells, SmartArt, notes) as a value type; `DeckExport.write` unpacks a deck to a folder: one Markdown file plus per-slide media and one CSV per chart |
+-| **Tooling** | `pptx-tool inspect`/`validate` — machine-checkable "PowerPoint will accept this" gate; `pptx-tool extract` — a deck to Markdown + media + chart CSVs |
++| **Tooling** | `pptx-tool inspect`/`validate` — modeled structural lint, not proof of PowerPoint acceptance; `pptx-tool extract` — a deck to Markdown + media + chart CSVs |
+ 
+ ## Design
+ 
+--- a/ROADMAP.md
++++ b/ROADMAP.md
+@@ -436,8 +436,9 @@
+ - **No snapshot or golden-file tests for `SVGRenderer`** —
+   `SVGRendererTests.swift` asserts structure, so a *visual* regression in the
+   preview path would pass silently.
+-- `DeckRenderer`, `KeychainStore` and `SlideRasterizer` have **no tests at
+-  all** — distinct from tests that existed but never ran, which is closed.
++- `DeckRenderer` has fixture-backed rendering and title tests. Dedicated
++  Keychain integration and rasterizer visual coverage still need assessment;
++  this is distinct from app tests that existed but never ran.
+ - **`Examples/` and `Tools/` have never been audited** — four executable
+   targets plus `extract-schema.py` sit outside every surveyed set so far.
+ 
+@@ -445,8 +446,9 @@
+ 
+ - Only one image failure is reported when several fail — the collapse is in a
+   warning path the user rarely sees.
+-- No cancel affordance *during* a long generation — needs a cancellation
+-  token threaded through `DeckGenerator` and the provider.
++- Generation cancellation is implemented: ContentView invokes AppState.cancel,
++  which abandons the RunGate and cancels the task. Retain cancellation regression
++  coverage when changing the generation pipeline.
+ - **The decks already written remain headless.** The title-placeholder fix
+   applies to newly written decks only; repairing the existing library is a
+   migration, not a lift-up item.
+--- a/Tools/pptx-tool/main.swift
++++ b/Tools/pptx-tool/main.swift
+@@ -3,7 +3,7 @@
+ 
+ // pptx-tool — a machine-checkable inspector/validator for .pptx files, built on
+ // Rostrum. `inspect` prints a structured report + exit code; `validate` is a
+-// terse pass/fail gate (the "PowerPoint will accept this" check for CI/tools).
++// modeled structural lint. Success does not establish PowerPoint acceptance.
+ 
+ let defaultBudget = 1 << 30
+ 
+--- a/docs/ARCHITECTURE.md
++++ b/docs/ARCHITECTURE.md
+@@ -32,11 +32,10 @@
+ 
+ ```
+ Rostrum          public API: Presentation, Slide, shapes, text, charts…
+-RostrumSchema    generated typed wrappers over DOM nodes (the ONLY layer
+-                 allowed to interpret PresentationML/DrawingML structure)
++RostrumSchema    generated ordering/attribute tables and shared DOM helpers
+ RostrumOPC       parts, content types, relationship graph, pristine blobs
+ RostrumXML       DOM: ordered attrs, prefix-preserving, deterministic serializer
+-RostrumZip       reader (STORED+DEFLATE, own inflate), deterministic STORED writer
++RostrumZip       reader and deterministic writer (STORED+DEFLATE)
+ ```
+ 
+ Today all five live as directories inside the single `Rostrum` target; they
+@@ -57,22 +56,22 @@
+ successors:…)`, choice groups). Swift can't do runtime synthesis; the
+ equivalent is `rostrum-gen`, a standalone generator (not a macro, not a build
+ plugin — consumers see zero deps, generated code is diffable) whose input
+-tables are **mechanically extracted from python-pptx's own descriptor
+-declarations, spec tables (184 autoshapes, 73 chart types), and chart
+-template XML** — never retyped by hand. Semantics to preserve exactly:
++tables are mechanically extracted from python-pptx's descriptor declarations
++by Tools/extract-schema.py. Semantics to preserve exactly:
+ get-or-add for optional children, successor-list insertion order, choice-group
+-replacement, typed attribute conversion with default-elision. Hand-written
+-members live in `CT_Foo+Manual.swift` files under a checked-in exclusions
+-manifest the generator respects.
++replacement, typed attribute conversion with default-elision. The generator
++currently emits tables, not per-element typed accessors. Typed accessors and
++an exclusions manifest for manual extensions remain future architecture;
++there are no CT_Foo+Manual.swift files today.
+ 
+ **Accessors are plain computed properties** over shared generic runtime
+ primitives — not property wrappers (they need stored properties), not
+ keypaths. Boring and greppable.
+ 
+-**Lenient read, strict write.** A generated accessor never throws on alien
+-content: anything unrecognized stays an inert DOM node; structurally broken
+-parts degrade to raw access surfaced with a diagnostic. Strictness lives only
+-on the write path.
++**Preserve unknown content, report malformed input.** Unmodeled XML remains
++in the DOM or pristine part bytes. Malformed input may throw; best-effort
++inspection records failures. Write helpers preserve schema ordering and
++refuse edits they cannot perform safely.
+ 
+ **Lexical attribute discipline.** The DOM keeps the original source token for
+ every attribute; typed getters parse on read, and only a genuine set replaces
+@@ -86,9 +85,10 @@
+ dropped, rather than letting it vanish silently. A general orphan-audit API
+ and an opt-in `prune()` are intended but **not yet implemented**.
+ 
+-**Stable identity handles.** `deck.slides[slideID]` subscripts keyed on the
+-`sldId`/`spid` values already in the XML, alongside positional access, so user
+-references survive reorder and delete.
++**Slide access.** `deck.slides[index]` and `slide(at:)` use zero-based positions
++and throw if the position or relationship is invalid. Positions change after
++reordering/deletion. Stable handles keyed by OOXML IDs remain a planned API;
++do not pass an OOXML slide ID to the positional subscript.
+ 
+ ## Relationship graph semantics (ported from python-pptx, kept)
+ 
+@@ -119,7 +119,7 @@
+ 
+ - Default new deck is 16:9 built from inspectable XML constants (theirs: 4:3
+   bundled binary `default.pptx`).
+-- STORED zip entries on write until pure-Swift deflate lands (correctness
+-  first; ~3× file size is acceptable, PowerPoint doesn't care).
++- Pure-Swift fixed-Huffman/LZ77 DEFLATE on write when it saves space;
++  already-compressed media can remain STORED. Both paths are deterministic.
+ - Unreachable parts survive save (see orphan preservation).
+ - `Presentation.package` is public — the OPC escape hatch is a feature.
+--- a/docs/COOKBOOK.md
++++ b/docs/COOKBOOK.md
+@@ -119,8 +119,12 @@
+ 
+ ```sh
+ swift run pptx-tool inspect out.pptx     # structured report
+-swift run pptx-tool validate out.pptx    # exit 0 if PowerPoint will accept it
++swift run pptx-tool validate out.pptx    # modeled structural lint; exit 1 on reported issues
+ ```
++
++A successful lint is not proof of PowerPoint acceptance: it checks modeled
++required attributes, not every relationship or consumer requirement. For
++packaging/XML changes also run `Tools/ppt-check.sh out.pptx` on macOS.
+ 
+ ## Determinism
+ 

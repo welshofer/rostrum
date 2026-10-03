@@ -1,0 +1,367 @@
+--- a/Lectern/App/SlidePreview.swift
++++ b/Lectern/App/SlidePreview.swift
+@@ -156,7 +156,7 @@
+             LazyVGrid(columns: columns, spacing: 14) {
+                 ForEach(records) { record in
+                     SlideTile(svg: record.displaySVG)
+-                        .aspectRatio(16.0 / 9.0, contentMode: .fit)
++                        .aspectRatio(record.geometry.aspectRatio, contentMode: .fit)
+                         .frame(maxWidth: .infinity)
+                         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                         .overlay(
+@@ -188,7 +188,7 @@
+             LazyHStack(spacing: 12) {
+                 ForEach(records) { record in
+                     SlideTile(svg: record.displaySVG)
+-                        .frame(width: 240, height: 135)   // 16:9
++                        .frame(width: 135 * record.geometry.aspectRatio, height: 135)
+                         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                         .overlay(
+                             RoundedRectangle(cornerRadius: 10, style: .continuous)
+--- a/Lectern/App/SlideRasterizer.swift
++++ b/Lectern/App/SlideRasterizer.swift
+@@ -1,5 +1,6 @@
+ import SwiftUI
+ import WebKit
++import LecternCore
+ #if os(macOS)
+ import AppKit
+ 
+@@ -53,7 +54,8 @@
+     var cacheCount: Int { cache.count }
+ 
+     func image(for svg: String, pixelWidth: CGFloat = 640) async -> Image? {
+-        let key = Self.key(for: svg)
++        let size = Self.size(for: svg, pixelWidth: pixelWidth)
++        let key = Self.key(for: svg, size: size)
+         if let hit = cached(key) { return hit }
+ 
+         await acquire()
+@@ -63,7 +65,8 @@
+ 
+         let host = host ?? SnapshotHost()
+         self.host = host
+-        guard let image = await host.snapshot(svg: svg, pixelWidth: pixelWidth) else { return nil }
++        guard let bitmap = await host.snapshot(svg: svg, size: size) else { return nil }
++        let image = Image(nsImage: bitmap)
+         remember(image, forKey: key)
+         return image
+     }
+@@ -75,15 +78,19 @@
+         cache.insert(image, forKey: key)
+     }
+ 
+-    /// FNV-1a over the markup: stable within a run and cheap on strings this
+-    /// size, where `hashValue` would also work but says less about intent.
+-    private static func key(for svg: String) -> String {
+-        var hash: UInt64 = 0xcbf2_9ce4_8422_2325
+-        for byte in svg.utf8 {
+-            hash ^= UInt64(byte)
+-            hash = hash &* 0x1000_0000_01b3
+-        }
+-        return String(hash, radix: 16)
++    static func size(for svg: String, pixelWidth: CGFloat = 640) -> NSSize {
++        let geometry = SlidePreviewGeometry(svg: svg).fitted(toWidth: Double(pixelWidth))
++        return NSSize(width: geometry.width, height: geometry.height)
++    }
++
++    /// The cache is process-local. Swift's string hashing avoids a per-byte Swift
++    /// loop over embedded image payloads; dimensions separate different resolutions.
++    static func key(for svg: String, size: NSSize) -> String {
++        var hasher = Hasher()
++        hasher.combine(svg)
++        hasher.combine(size.width)
++        hasher.combine(size.height)
++        return String(hasher.finalize())
+     }
+ 
+     private func acquire() async {
+@@ -102,7 +109,7 @@
+ /// nothing. An ordinary borderless `NSWindow` placed far off any display is the
+ /// documented way to give it one without showing anything.
+ @MainActor
+-private final class SnapshotHost: NSObject, WKNavigationDelegate {
++final class SnapshotHost: NSObject, WKNavigationDelegate {
+     private let window: NSWindow
+     private let webView: WKWebView
+     private var loaded: CheckedContinuation<Void, Never>?
+@@ -136,9 +143,8 @@
+         window.orderBack(nil)
+     }
+ 
+-    func snapshot(svg: String, pixelWidth: CGFloat) async -> Image? {
+-        let height = (pixelWidth * 9 / 16).rounded()
+-        let size = NSSize(width: pixelWidth, height: height)
++    func snapshot(svg: String, size: NSSize) async -> NSImage? {
++        guard size.width >= 1, size.height >= 1 else { return nil }
+         window.setContentSize(size)
+         webView.frame = NSRect(origin: .zero, size: size)
+ 
+@@ -150,7 +156,7 @@
+         let config = WKSnapshotConfiguration()
+         config.rect = NSRect(origin: .zero, size: size)
+         guard let image = try? await webView.takeSnapshot(configuration: config) else { return nil }
+-        return Image(nsImage: image)
++        return image
+     }
+ 
+     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+--- a/Lectern/AppTests/PreviewGeometryTests.swift
++++ b/Lectern/AppTests/PreviewGeometryTests.swift
+@@ -0,0 +1,101 @@
++import AppKit
++import SwiftUI
++import Testing
++import LecternCore
++@testable import Lectern
++
++@Suite struct PreviewGeometryTests {
++    @MainActor
++    @Test func snapshotsPreserveAllCornersAndCacheResolution() async throws {
++        let host = SnapshotHost()
++        let rasterizer = SlideRasterizer(capacity: 8)
++        var records: [SlidePreviewRecord] = []
++        var timings: [[String: Double]] = []
++        let directory = ProcessInfo.processInfo.environment["LECTERN_AUDIT_OUTPUT"]
++        for (index, ratio) in [16.0 / 9, 4.0 / 3, 9.0 / 16].enumerated() {
++            let height = 640 / ratio
++            let svg = Self.svg(height: height)
++            records.append(SlidePreviewRecord(number: index + 1, title: "Aspect \(index + 1)", svg: svg))
++            for width: CGFloat in [320, 640] {
++                let size = SlideRasterizer.size(for: svg, pixelWidth: width)
++                let image = try #require(await host.snapshot(svg: svg, size: size))
++                #expect(abs(image.size.width - size.width) <= 1)
++                #expect(abs(image.size.height - size.height) <= 1)
++                let tiff = try #require(image.tiffRepresentation)
++                let bitmap = try #require(NSBitmapImageRep(data: tiff))
++                let x = bitmap.pixelsWide / 100, y = bitmap.pixelsHigh / 100
++                let points = [(x, y), (bitmap.pixelsWide - x - 1, y),
++                              (x, bitmap.pixelsHigh - y - 1),
++                              (bitmap.pixelsWide - x - 1, bitmap.pixelsHigh - y - 1)]
++                let colors = points.compactMap { x, y -> String? in
++                    guard let c = bitmap.colorAt(x: x, y: y)?.usingColorSpace(.deviceRGB) else { return nil }
++                    if c.redComponent > 0.8, c.greenComponent < 0.2, c.blueComponent < 0.2 { return "red" }
++                    if c.redComponent < 0.2, c.greenComponent > 0.8, c.blueComponent < 0.2 { return "green" }
++                    if c.redComponent < 0.2, c.greenComponent < 0.2, c.blueComponent > 0.8 { return "blue" }
++                    if c.redComponent > 0.8, c.greenComponent > 0.8, c.blueComponent < 0.2 { return "yellow" }
++                    return "missing"
++                }
++                #expect(Set(colors) == Set(["red", "green", "blue", "yellow"]))
++                if let directory {
++                    try bitmap.representation(using: .png, properties: [:])?.write(
++                        to: URL(fileURLWithPath: directory).appendingPathComponent("aspect-\(index)-\(Int(width)).png"))
++                }
++            }
++            let small = SlideRasterizer.size(for: svg, pixelWidth: 320)
++            let large = SlideRasterizer.size(for: svg, pixelWidth: 640)
++            #expect(SlideRasterizer.key(for: svg, size: small) != SlideRasterizer.key(for: svg, size: large))
++            let start = ProcessInfo.processInfo.systemUptime
++            #expect(await rasterizer.image(for: svg) != nil)
++            let cold = ProcessInfo.processInfo.systemUptime - start
++            let warmStart = ProcessInfo.processInfo.systemUptime
++            for _ in 0..<100 { #expect(await rasterizer.image(for: svg) != nil) }
++            let warm = (ProcessInfo.processInfo.systemUptime - warmStart) / 100
++            #expect(await rasterizer.image(for: svg, pixelWidth: 320) != nil)
++            #expect(rasterizer.cacheCount == (index + 1) * 2)
++            timings.append(["aspectRatio": ratio, "coldMS": cold * 1000, "cachedMS": warm * 1000])
++        }
++        if let directory {
++            let data = try JSONSerialization.data(withJSONObject: timings, options: [.prettyPrinted, .sortedKeys])
++            try data.write(to: URL(fileURLWithPath: directory).appendingPathComponent("preview-timings.json"))
++            for width in [720.0, 1000.0] {
++                try await Self.capture(records: records, width: width, directory: directory)
++            }
++        }
++    }
++
++    static func svg(height: Double) -> String {
++        """
++        <svg xmlns="http://www.w3.org/2000/svg" width="640" height="\(height)" viewBox="0 0 640 \(height)">
++          <rect width="640" height="\(height)" fill="white"/>
++          <rect x="0" y="0" width="32" height="32" fill="#ff0000"/>
++          <rect x="608" y="0" width="32" height="32" fill="#00ff00"/>
++          <rect x="0" y="\(height - 32)" width="32" height="32" fill="#0000ff"/>
++          <rect x="608" y="\(height - 32)" width="32" height="32" fill="#ffff00"/>
++          <text x="320" y="\(height / 2)" text-anchor="middle" font-family="sans-serif" font-size="32" fill="#111111">640 × \(Int(height.rounded()))</text>
++        </svg>
++        """
++    }
++
++    @MainActor
++    private static func capture(records: [SlidePreviewRecord], width: Double, directory: String) async throws {
++        let height = width / 3 * 16 / 9 + 230
++        let content = VStack {
++            SlideContactSheet(records: records, total: 3)
++            SlideFilmstrip(records: records, total: 3)
++        }.frame(width: width, height: height).background(Color.white).environment(\.colorScheme, .light)
++        let view = NSHostingView(rootView: content)
++        let window = NSWindow(contentRect: NSRect(x: 100, y: 100, width: width, height: height),
++                              styleMask: [.titled], backing: .buffered, defer: false)
++        window.isReleasedWhenClosed = false
++        window.contentView = view
++        window.setContentSize(NSSize(width: width, height: height))
++        window.orderBack(nil)
++        defer { window.orderOut(nil) }
++        for record in records { _ = await SlideRasterizer.shared.image(for: record.displaySVG) }
++        try await Task.sleep(for: .milliseconds(200))
++        let bitmap = try #require(view.bitmapImageRepForCachingDisplay(in: view.bounds))
++        view.cacheDisplay(in: view.bounds, to: bitmap)
++        let png = try #require(bitmap.representation(using: .png, properties: [:]))
++        try png.write(to: URL(fileURLWithPath: directory).appendingPathComponent("preview-layout-\(Int(width)).png"))
++    }
++}
+--- a/Lectern/Sources/LecternCore/Inspection/DeckInspection.swift
++++ b/Lectern/Sources/LecternCore/Inspection/DeckInspection.swift
+@@ -182,7 +182,9 @@
+                 previews.append(SlidePreviewRecord(
+                     number: index + 1,
+                     title: (try? deck.slides[index].title?.textFrame?.text) ?? "",
+-                    svg: try? deck.renderSVG(slideAt: index, pixelWidth: 640)))
++                    svg: try? deck.renderSVG(slideAt: index, pixelWidth: 640),
++                    geometry: SlidePreviewGeometry(width: deck.slideSize.width.inches,
++                                                   height: deck.slideSize.height.inches)))
+                 onEvent(.rendering(done: index + 1, total: total))
+             }
+         }
+--- a/Lectern/Sources/LecternCore/Inspection/SlidePreviewGeometry.swift
++++ b/Lectern/Sources/LecternCore/Inspection/SlidePreviewGeometry.swift
+@@ -0,0 +1,71 @@
++import Foundation
++#if canImport(FoundationXML)
++import FoundationXML
++#endif
++
++/// Validated dimensions shared by preview records, layout, and rasterization.
++public struct SlidePreviewGeometry: Sendable, Equatable {
++    public let width: Double
++    public let height: Double
++    public var aspectRatio: Double { width / height }
++    public static let widescreen = SlidePreviewGeometry(width: 16, height: 9)
++
++    public init(width: Double, height: Double) {
++        if width.isFinite, height.isFinite, width > 0, height > 0,
++           (width / height).isFinite, width / height > 0 {
++            self.width = width
++            self.height = height
++        } else {
++            self.width = 16
++            self.height = 9
++        }
++    }
++
++    public init(svg: String) {
++        let reader = SVGRootSizeReader()
++        // Only the root is needed; embedded image payloads need not be copied or parsed.
++        let parser = XMLParser(data: Data(svg.prefix(4096).utf8))
++        parser.shouldResolveExternalEntities = false
++        parser.delegate = reader
++        _ = parser.parse()
++        self = reader.geometry ?? .widescreen
++    }
++
++    /// Bound bitmap allocation while preserving the original ratio.
++    public func fitted(toWidth requested: Double, maximumDimension: Double = 4096) -> Self {
++        let limit = maximumDimension.isFinite && maximumDimension >= 1 ? maximumDimension : 4096
++        var width = min(max(1, requested.isFinite ? requested : 640), limit)
++        var height = width / aspectRatio
++        if height > limit {
++            height = limit
++            width = height * aspectRatio
++        }
++        return Self(width: width, height: height)
++    }
++}
++
++private final class SVGRootSizeReader: NSObject, XMLParserDelegate {
++    var geometry: SlidePreviewGeometry?
++
++    func parser(_ parser: XMLParser, didStartElement name: String, namespaceURI: String?,
++                qualifiedName: String?, attributes: [String: String]) {
++        defer { parser.abortParsing() }
++        guard name == "svg" else { return }
++        if let viewBox = attributes["viewBox"] {
++            let fields = viewBox.split { $0.isWhitespace || $0 == "," }
++            let values = fields.compactMap { Double($0) }
++            if fields.count == 4, values.count == 4, values.allSatisfy(\.isFinite), values[2] > 0, values[3] > 0 {
++                geometry = SlidePreviewGeometry(width: values[2], height: values[3])
++                return
++            }
++        }
++        func pixels(_ value: String?) -> Double? {
++            guard let value else { return nil }
++            let text = value.trimmingCharacters(in: .whitespacesAndNewlines)
++            return Double(text.hasSuffix("px") ? String(text.dropLast(2)) : text)
++        }
++        if let width = pixels(attributes["width"]), let height = pixels(attributes["height"]) {
++            geometry = SlidePreviewGeometry(width: width, height: height)
++        }
++    }
++}
+--- a/Lectern/Sources/LecternCore/Inspection/SlidePreviewRecord.swift
++++ b/Lectern/Sources/LecternCore/Inspection/SlidePreviewRecord.swift
+@@ -6,11 +6,13 @@
+     public let number: Int
+     public let title: String
+     public let svg: String?
++    public let geometry: SlidePreviewGeometry
+ 
+-    public init(number: Int, title: String, svg: String?) {
++    public init(number: Int, title: String, svg: String?, geometry: SlidePreviewGeometry? = nil) {
+         self.number = number
+         self.title = title
+         self.svg = svg
++        self.geometry = geometry ?? svg.map { SlidePreviewGeometry(svg: $0) } ?? .widescreen
+     }
+ 
+     public func accessibilityLabel(total: Int) -> String {
+@@ -21,10 +23,12 @@
+ 
+     /// Compatibility surface for SVG consumers: failed slides still occupy a slot.
+     public var displaySVG: String {
+-        svg ?? """
+-        <svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+-          <rect width="640" height="360" fill="#EEEEEE"/>
+-          <text x="320" y="180" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#444444">Preview unavailable</text>
++        if let svg { return svg }
++        let size = geometry.fitted(toWidth: 640)
++        return """
++        <svg xmlns="http://www.w3.org/2000/svg" width="\(size.width)" height="\(size.height)" viewBox="0 0 \(size.width) \(size.height)">
++          <rect width="100%" height="100%" fill="#EEEEEE"/>
++          <text x="50%" y="50%" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#444444">Preview unavailable</text>
+         </svg>
+         """
+     }
+--- a/Lectern/Tests/LecternCoreTests/SlidePreviewGeometryTests.swift
++++ b/Lectern/Tests/LecternCoreTests/SlidePreviewGeometryTests.swift
+@@ -0,0 +1,31 @@
++import Foundation
++import Testing
++@testable import LecternCore
++
++@Suite struct SlidePreviewGeometryTests {
++    @Test(arguments: [(16.0, 9.0), (4.0, 3.0), (9.0, 16.0)])
++    func dimensionsSurviveSVGAndPlaceholder(_ dimensions: (Double, Double)) {
++        let (width, height) = dimensions
++        let geometry = SlidePreviewGeometry(svg: "<svg viewBox='0 0 \(width) \(height)'><rect/></svg>")
++        #expect(geometry.aspectRatio == width / height)
++        let size = geometry.fitted(toWidth: 640)
++        #expect(abs(size.height - 640 * height / width) < 0.001)
++        let failed = SlidePreviewRecord(number: 2, title: "", svg: nil, geometry: geometry)
++        #expect(abs(SlidePreviewGeometry(svg: failed.displaySVG).aspectRatio - geometry.aspectRatio) < 0.001)
++    }
++
++    @Test func malformedDimensionsUseSafeFallback() {
++        for svg in ["", "<svg viewBox='0 0 0 3'/>", "<svg viewBox='0 0 nan 4'/>", "<svg viewBox='0 bad 0 4 3'/>", "<svg width='-1' height='2'/>", "<not-svg width='4' height='3'/>"] {
++            #expect(SlidePreviewGeometry(svg: svg) == .widescreen)
++        }
++        #expect(SlidePreviewGeometry(svg: "<svg width='640px' height='480px'/>").aspectRatio == 4.0 / 3)
++        #expect(SlidePreviewGeometry(svg: "<svg viewBox='1,2,4,3'/>").aspectRatio == 4.0 / 3)
++    }
++
++    @Test func allocationIsBoundedWithoutChangingAspectRatio() {
++        let size = SlidePreviewGeometry(width: 1, height: 100).fitted(toWidth: 10000)
++        #expect(size.height == 4096)
++        #expect(size.width <= 4096)
++        #expect(size.aspectRatio == 0.01)
++    }
++}

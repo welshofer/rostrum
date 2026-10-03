@@ -253,6 +253,9 @@ import Rostrum
                                                        notesEnabled: false, into: dir,
                                                        useSmartArt: false)
 
+        var withPreviewWarning = rendered
+        withPreviewWarning.previewWarnings = ["Slide 1: unsupported preview feature"]
+        #expect(DeckResult.savedCopy(of: withPreviewWarning, at: rendered.url).previewWarnings == withPreviewWarning.previewWarnings)
         #expect(rendered.droppedContent.count == 2)
         #expect(rendered.droppedContent.contains { $0.contains("2 of 6 metrics") })
         #expect(rendered.droppedContent.contains { $0.contains("2 of 7 process steps") })
@@ -658,7 +661,7 @@ import Rostrum
         #expect(persuade.contains("call to action"))
         #expect(persuade.contains(DeckIR.currentVersion))
         let noNotes = PromptTemplates.deck(for: DeckRequest(prompt: "x", slideCount: 8, notes: false))
-        #expect(noNotes.contains("exactly 8 slides"))
+        #expect(noNotes.contains("Target 8 slides, within one"))
         #expect(noNotes.contains("Omit the"))
         let grounded = PromptTemplates.deck(for: DeckRequest(prompt: "x", groundingText: "FACTS HERE"))
         // Fenced and labelled as data now, rather than pasted under a plain
@@ -696,8 +699,8 @@ import Rostrum
             SlideLayoutKind.imageEligibleLayoutNames.joined(separator: "/")))
     }
 
-    @Test func anthropicProviderWithoutKeyThrowsNoKey() async throws {
-        let provider = AnthropicProvider(apiKey: "")
+    @Test func openAIProviderWithoutKeyThrowsNoKey() async throws {
+        let provider = OpenAIProvider(apiKey: "")
         await #expect(throws: LecternError.self) {
             _ = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
         }
@@ -710,9 +713,9 @@ import Rostrum
     @Test func aTruncatedDraftIsReportedNotReturnedShort() async throws {
         // A well-formed tool_use answer that happens to be cut off: exactly what
         // the API returns when the deck outgrows the output ceiling.
-        let body = anthropicResponse(stopReason: "max_tokens",
+        let body = openAIResponse(stopReason: "max_tokens",
                                      deck: #"{"meta":{"title":"T"},"slides":[]}"#)
-        let provider = AnthropicProvider(apiKey: "k", send: stubSender(200, body))
+        let provider = OpenAIProvider(apiKey: "k", send: stubSender(200, body))
         let request = DeckRequest(prompt: "x", slideCount: 40, notes: true)
 
         await #expect(throws: LecternError.responseTruncated(slideCount: 40)) {
@@ -720,55 +723,28 @@ import Rostrum
         }
         // The same body with a normal stop reason must still come back fine —
         // otherwise this is just rejecting everything.
-        let ok = AnthropicProvider(apiKey: "k",
-                                   send: stubSender(200, anthropicResponse(stopReason: "tool_use",
+        let ok = OpenAIProvider(apiKey: "k",
+                                   send: stubSender(200, openAIResponse(stopReason: "tool_use",
                                                                            deck: #"{"meta":{"title":"T"},"slides":[]}"#)))
         let draft = try await ok.draft(request, repairing: nil) { _ in }
         #expect(draft.json.contains("\"title\""))
     }
 
     @Test func theOutputBudgetGrowsWithTheDeckAndStaysInBounds() {
-        let floor = AnthropicProvider.floorOutputTokens
+        let floor = DeckOutputBudget.floor
         // A small deck must never get *less* room than the old constant.
-        #expect(AnthropicProvider.outputTokenBudget(
+        #expect(DeckOutputBudget.tokens(
             for: DeckRequest(prompt: "x", slideCount: 3, notes: false)) == floor)
         // The old constant was a flat 8,192, so a 40-slide deck with notes —
         // what the UI's stepper allows — asked for the same room as a 3-slide
         // one and came back short. It has to ask for more now.
-        let big = AnthropicProvider.outputTokenBudget(
+        let big = DeckOutputBudget.tokens(
             for: DeckRequest(prompt: "x", slideCount: 40, notes: true))
         #expect(big > floor, "a 40-slide deck with notes still asks for only \(big)")
-        #expect(big <= AnthropicProvider.maxOutputTokens)
+        #expect(big <= DeckOutputBudget.ceiling)
         // Notes are extra writing, so they cost extra room.
-        #expect(AnthropicProvider.outputTokenBudget(for: DeckRequest(prompt: "x", slideCount: 40, notes: true))
-                > AnthropicProvider.outputTokenBudget(for: DeckRequest(prompt: "x", slideCount: 40, notes: false)))
-    }
-
-    /// A model whose ceiling is below the budget rejects the whole call, so
-    /// asking for more room must not become a new way to fail.
-    @Test func aRefusedOutputBudgetRetriesAtTheFloorInsteadOfFailing() async throws {
-        let sent = SentBox()
-        let good = anthropicResponse(stopReason: "tool_use", deck: #"{"meta":{"title":"T"},"slides":[]}"#)
-        let provider = AnthropicProvider(apiKey: "k", send: { request in
-            let budget = (try? JSONSerialization.jsonObject(with: request.httpBody ?? Data()))
-                .flatMap { ($0 as? [String: Any])?["max_tokens"] as? Int } ?? 0
-            sent.record(budget)
-            if budget > AnthropicProvider.floorOutputTokens {
-                let error = #"{"error":{"message":"max_tokens: 19200 > 8192, which is the maximum for this model"}}"#
-                return (Data(error.utf8), Self.http(400))
-            }
-            return (Data(good.utf8), Self.http(200))
-        })
-
-        let draft = try await provider.draft(
-            DeckRequest(prompt: "x", slideCount: 40, notes: true), repairing: nil) { _ in }
-        #expect(draft.json.contains("\"title\""))
-        // It asked for the larger budget first, then dropped to the floor —
-        // rather than giving up, or never trying for more in the first place.
-        let budgets = sent.values
-        #expect(budgets.count == 2, "expected one retry, saw budgets \(budgets)")
-        #expect(budgets.first! > AnthropicProvider.floorOutputTokens)
-        #expect(budgets.last == AnthropicProvider.floorOutputTokens)
+        #expect(DeckOutputBudget.tokens(for: DeckRequest(prompt: "x", slideCount: 40, notes: true))
+                > DeckOutputBudget.tokens(for: DeckRequest(prompt: "x", slideCount: 40, notes: false)))
     }
 
     // MARK: - Retry policy
@@ -815,7 +791,7 @@ import Rostrum
     @Test func listingModelsRetriesADroppedConnection() async throws {
         let attempts = SentBox()
         let models = #"{"data":[{"id":"claude-sonnet-5"},{"id":"claude-opus-5"}]}"#
-        let ids = try await AnthropicModels.list(apiKey: "k", send: { _ in
+        let ids = try await OpenAIModels.list(apiKey: "k", send: { _ in
             attempts.record(1)
             if attempts.values.count < 3 { throw URLError(.networkConnectionLost) }
             return (Data(models.utf8), Self.http(200))
@@ -826,8 +802,8 @@ import Rostrum
 
     @Test func listingModelsStillFailsFastOnARejectedKey() async throws {
         let attempts = SentBox()
-        await #expect(throws: LecternError.authFailed(provider: "Anthropic")) {
-            _ = try await AnthropicModels.list(apiKey: "k", send: { _ in
+        await #expect(throws: LecternError.authFailed(provider: "OpenAI")) {
+            _ = try await OpenAIModels.list(apiKey: "k", send: { _ in
                 attempts.record(1)
                 return (Data(#"{"error":{"message":"invalid"}}"#.utf8), Self.http(401))
             })
@@ -854,8 +830,8 @@ import Rostrum
     /// generation without ever asking again.
     @Test func aDroppedConnectionIsRetriedRatherThanEndingTheDraft() async throws {
         let attempts = SentBox()
-        let good = anthropicResponse(stopReason: "tool_use", deck: #"{"meta":{"title":"T"},"slides":[]}"#)
-        let provider = AnthropicProvider(apiKey: "k", send: { _ in
+        let good = openAIResponse(stopReason: "tool_use", deck: #"{"meta":{"title":"T"},"slides":[]}"#)
+        let provider = OpenAIProvider(apiKey: "k", send: { _ in
             attempts.record(1)
             if attempts.values.count < 3 { throw URLError(.networkConnectionLost) }
             return (Data(good.utf8), Self.http(200))
@@ -869,7 +845,7 @@ import Rostrum
     /// message they can act on instead of three silent retries.
     @Test func beingOfflineFailsImmediatelyWithoutRetrying() async throws {
         let attempts = SentBox()
-        let provider = AnthropicProvider(apiKey: "k", send: { _ in
+        let provider = OpenAIProvider(apiKey: "k", send: { _ in
             attempts.record(1)
             throw URLError(.notConnectedToInternet)
         })
@@ -883,19 +859,19 @@ import Rostrum
     /// is another round-trip the user waits through.
     @Test func aRejectedKeyIsNotRetried() async throws {
         let attempts = SentBox()
-        let provider = AnthropicProvider(apiKey: "k", send: { _ in
+        let provider = OpenAIProvider(apiKey: "k", send: { _ in
             attempts.record(1)
             return (Data(#"{"error":{"message":"invalid x-api-key"}}"#.utf8), Self.http(401))
         })
-        await #expect(throws: LecternError.authFailed(provider: "Anthropic")) {
+        await #expect(throws: LecternError.authFailed(provider: "OpenAI")) {
             _ = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
         }
         #expect(attempts.values.count == 1)
     }
 
-    // MARK: Anthropic stub helpers
+    // MARK: OpenAI stub helpers
 
-    private static func http(_ status: Int) -> HTTPURLResponse {        HTTPURLResponse(url: URL(string: "https://api.anthropic.com/v1/messages")!,
+    private static func http(_ status: Int) -> HTTPURLResponse {        HTTPURLResponse(url: URL(string: "https://api.openai.com/v1/responses")!,
                         statusCode: status, httpVersion: nil, headerFields: nil)!
     }
 
@@ -903,13 +879,12 @@ import Rostrum
         { _ in (Data(body.utf8), Self.http(status)) }
     }
 
-    /// A Messages API response carrying `deck` in a forced `tool_use` block.
-    private func anthropicResponse(stopReason: String, deck: String) -> String {
-        let input = (try? JSONSerialization.jsonObject(with: Data(deck.utf8))) ?? [:]
+    private func openAIResponse(stopReason: String, deck: String) -> String {
         let obj: [String: Any] = [
-            "stop_reason": stopReason,
+            "status": stopReason == "max_tokens" ? "incomplete" : "completed",
+            "incomplete_details": ["reason": "max_output_tokens"],
             "usage": ["input_tokens": 10, "output_tokens": 20],
-            "content": [["type": "tool_use", "name": "emit_deck", "input": input]],
+            "output": [["type": "function_call", "status": "completed", "name": "emit_deck", "arguments": deck]],
         ]
         return String(decoding: try! JSONSerialization.data(withJSONObject: obj), as: UTF8.self)
     }
@@ -919,22 +894,22 @@ import Rostrum
     @Test func factoryThrowsWithoutAKey() throws {
         for key in [nil, "", "   ", "\n"] as [String?] {
             #expect(throws: LecternError.noKey) {
-                _ = try ProviderFactory.make(id: .anthropic, apiKey: key, model: "claude-sonnet-5")
+                _ = try ProviderFactory.make(id: .openAI, apiKey: key, model: TextStrength.sol.modelID)
             }
         }
     }
 
-    @Test func factoryBuildsAnthropicWithAKey() throws {
-        let provider = try ProviderFactory.make(id: .anthropic, apiKey: "sk-ant-xyz", model: "claude-opus-5")
-        #expect(provider.id == .anthropic)
-        #expect(provider.displayName == "Anthropic")
-        #expect(ProviderFactory.isWired(.anthropic))
+    @Test func factoryBuildsOpenAIWithAKey() throws {
+        let provider = try ProviderFactory.make(id: .openAI, apiKey: "test", model: TextStrength.astra.modelID)
+        #expect(provider.id == .openAI)
+        #expect(provider.displayName == "OpenAI")
+        #expect(ProviderFactory.isWired(.openAI))
     }
 
     @Test func factoryThrowsForUnwiredProviders() throws {
         // Gemini and Custom aren't wired for text — throw rather than fake a
         // deck. OpenAI is wired now and has its own suite.
-        for id in [ProviderID.gemini, .custom] {
+        for id in [ProviderID.anthropic, .gemini, .custom] {
             #expect(!ProviderFactory.isWired(id))
             #expect(throws: LecternError.self) {
                 _ = try ProviderFactory.make(id: id, apiKey: "some-key", model: "m")
@@ -988,7 +963,7 @@ import Rostrum
     }
 
     @Test func imageFactoryBuildsEachProvider() throws {
-        #expect(try ImageProviderFactory.make(id: .gemini, apiKey: "k").id == .gemini)
+        #expect(throws: LecternError.self) { _ = try ImageProviderFactory.make(id: .gemini, apiKey: "k") }
         #expect(try ImageProviderFactory.make(id: .openAI, apiKey: "k").id == .openAI)
     }
 
@@ -1298,7 +1273,7 @@ import Rostrum
             let title = try #require(slide.shapes.all.first {
                 ($0.textFrame?.text ?? "").contains("Findings")
             })
-            return (title.frame, picture.frame)
+            return (try #require(slide.effectiveFrame(of: title)), try #require(slide.effectiveFrame(of: picture)))
         }
 
         let right = try await render("imageRight")
@@ -1418,8 +1393,20 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let result = try await DeckRenderer().render(validated.deck, designURL: nil,
                                                      notesEnabled: false, into: dir)
-        #expect(result.slideCount == 3)
-        #expect(try Presentation(contentsOf: result.url).validate().isEmpty)
+        let output = try Presentation(contentsOf: result.url)
+        // Font fallback can move the source into a readable continuation on
+        // Linux. Verify the permitted structure and every word, not one
+        // platform's pagination count.
+        let names = try output.slides.map {
+            try $0.part.dom().firstChild(named: "p:cSld")?[attribute: "name"] ?? ""
+        }
+        let originals = ["Lectern:s1", "Lectern:s2", "Lectern:s3"]
+        #expect(names == originals || names == originals + ["Lectern:s3-source-notes"])
+        #expect(result.slideCount == names.count)
+        #expect(result.droppedContent.isEmpty)
+        #expect(try output.validate().isEmpty)
+        let content = try RenderContentCheck.inspect(result.url, expected: validated.deck, notesEnabled: false)
+        #expect(content.issues.isEmpty)
     }
 
     @Test func statementWithoutAClaimIsRejected() throws {
@@ -1497,8 +1484,6 @@ import Rostrum
         // `model` is public API surface headed for user-editability; a space
         // or `#` in a raw interpolation made `URL(string:)` nil — and the
         // force-unwrap on it a crash.
-        #expect(try GeminiImageProvider.endpoint(model: "gemini-3.1-flash-image").absoluteString
-            == "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image")
         #expect(try OpenAIImageProvider.endpoint(model: "weird model#1").absoluteString
             == "https://api.openai.com/v1/models/weird%20model%231")
         #expect(throws: LecternError.self) {
@@ -1556,6 +1541,7 @@ private final class EventBox: @unchecked Sendable {
         case .auditing: events.append("auditing")
         case .illustrating: events.append("illustrating")
         case .rendering: events.append("rendering")
+        case .recoveryAvailable: events.append("recoveryAvailable")
         case .finished: events.append("finished")
         }
     }

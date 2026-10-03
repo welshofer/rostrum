@@ -32,11 +32,10 @@ reasonable design; byte-identity is simply a different goal.)
 
 ```
 Rostrum          public API: Presentation, Slide, shapes, text, charts…
-RostrumSchema    generated typed wrappers over DOM nodes (the ONLY layer
-                 allowed to interpret PresentationML/DrawingML structure)
+RostrumSchema    generated ordering/attribute tables and shared DOM helpers
 RostrumOPC       parts, content types, relationship graph, pristine blobs
 RostrumXML       DOM: ordered attrs, prefix-preserving, deterministic serializer
-RostrumZip       reader (STORED+DEFLATE, own inflate), deterministic STORED writer
+RostrumZip       reader and deterministic writer (STORED+DEFLATE)
 ```
 
 Today all five live as directories inside the single `Rostrum` target; they
@@ -57,22 +56,22 @@ at class-creation time (`RequiredAttribute`, `ZeroOrOne("p:sldSz",
 successors:…)`, choice groups). Swift can't do runtime synthesis; the
 equivalent is `rostrum-gen`, a standalone generator (not a macro, not a build
 plugin — consumers see zero deps, generated code is diffable) whose input
-tables are **mechanically extracted from python-pptx's own descriptor
-declarations, spec tables (184 autoshapes, 73 chart types), and chart
-template XML** — never retyped by hand. Semantics to preserve exactly:
+tables are mechanically extracted from python-pptx's descriptor declarations
+by Tools/extract-schema.py. Semantics to preserve exactly:
 get-or-add for optional children, successor-list insertion order, choice-group
-replacement, typed attribute conversion with default-elision. Hand-written
-members live in `CT_Foo+Manual.swift` files under a checked-in exclusions
-manifest the generator respects.
+replacement, typed attribute conversion with default-elision. The generator
+currently emits tables, not per-element typed accessors. Typed accessors and
+an exclusions manifest for manual extensions remain future architecture;
+there are no CT_Foo+Manual.swift files today.
 
 **Accessors are plain computed properties** over shared generic runtime
 primitives — not property wrappers (they need stored properties), not
 keypaths. Boring and greppable.
 
-**Lenient read, strict write.** A generated accessor never throws on alien
-content: anything unrecognized stays an inert DOM node; structurally broken
-parts degrade to raw access surfaced with a diagnostic. Strictness lives only
-on the write path.
+**Preserve unknown content, report malformed input.** Unmodeled XML remains
+in the DOM or pristine part bytes. Malformed input may throw; best-effort
+inspection records failures. Write helpers preserve schema ordering and
+refuse edits they cannot perform safely.
 
 **Lexical attribute discipline.** The DOM keeps the original source token for
 every attribute; typed getters parse on read, and only a genuine set replaces
@@ -86,9 +85,10 @@ re-packages only reachable parts). What a read could *not* keep is reported:
 dropped, rather than letting it vanish silently. A general orphan-audit API
 and an opt-in `prune()` are intended but **not yet implemented**.
 
-**Stable identity handles.** `deck.slides[slideID]` subscripts keyed on the
-`sldId`/`spid` values already in the XML, alongside positional access, so user
-references survive reorder and delete.
+**Slide access.** `deck.slides[index]` and `slide(at:)` use zero-based positions
+and throw if the position or relationship is invalid. Positions change after
+reordering/deletion. Stable handles keyed by OOXML IDs remain a planned API;
+do not pass an OOXML slide ID to the positional subscript.
 
 ## Relationship graph semantics (ported from python-pptx, kept)
 
@@ -119,7 +119,7 @@ references survive reorder and delete.
 
 - Default new deck is 16:9 built from inspectable XML constants (theirs: 4:3
   bundled binary `default.pptx`).
-- STORED zip entries on write until pure-Swift deflate lands (correctness
-  first; ~3× file size is acceptable, PowerPoint doesn't care).
+- Pure-Swift fixed-Huffman/LZ77 DEFLATE on write when it saves space;
+  already-compressed media can remain STORED. Both paths are deterministic.
 - Unreachable parts survive save (see orphan preservation).
 - `Presentation.package` is public — the OPC escape hatch is a feature.

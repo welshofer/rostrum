@@ -3,14 +3,11 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// Live model discovery + key validation against the Anthropic Messages API
-/// (§294 Validate button / §130 availableModels). A successful call both proves
-/// the key works and returns the current model ids — so the model Picker reflects
-/// reality instead of a hardcoded guess.
-public enum AnthropicModels {
-    private static let endpoint = URL(string: "https://api.anthropic.com/v1/models")!
+/// OpenAI model access checks without a generation request.
+public enum OpenAIModels {
+    private static let endpoint = URL(string: "https://api.openai.com/v1/models")!
 
-    /// GET /v1/models. Returns model ids newest-first (the API's order).
+    /// GET /v1/models. Returns the model identifiers available to this key.
     /// - Throws: `.noKey`, `.authFailed`, `.rateLimited`, `.networkOffline`, or
     ///   `.providerError` — the same taxonomy the UI already renders.
     public static func list(apiKey: String, session: URLSession = ProviderNetworking.session) async throws -> [String] {
@@ -22,8 +19,7 @@ public enum AnthropicModels {
     static func list(apiKey: String, send: HTTPRequestSender) async throws -> [String] {
         guard !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { throw LecternError.noKey }
         var req = URLRequest(url: endpoint, timeoutInterval: 30)
-        req.setValue(apiKey, forHTTPHeaderField: "x-api-key")           // never logged (I1)
-        req.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+        req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")           // never logged (I1)
 
         // Retried on the shared schedule. This was the one network call in the
         // target that HTTPRetry did not reach, which meant a dropped
@@ -51,7 +47,7 @@ public enum AnthropicModels {
                 let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
                 return (obj?["data"] as? [[String: Any]])?.compactMap { $0["id"] as? String } ?? []
             case 401, 403:
-                throw LecternError.authFailed(provider: "Anthropic")
+                throw LecternError.authFailed(provider: "OpenAI")
             case let status where HTTPRetry.isRetriable(status: status):
                 let retryAfter = HTTPRetry.retryAfterSeconds(http)
                 if attempt + 1 < HTTPRetry.maxAttempts {

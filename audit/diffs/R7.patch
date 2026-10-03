@@ -1,0 +1,302 @@
+--- a/Lectern/App/InspectorView.swift
++++ b/Lectern/App/InspectorView.swift
+@@ -72,8 +72,8 @@
+                     if inspection.hasFindings { findingsCard(inspection) }
+                     if !inspection.previews.isEmpty {
+                         Card(title: "SLIDES", systemImage: "rectangle.on.rectangle") {
+-                            SlideContactSheet(previews: inspection.previews,
+-                                              titles: inspection.previewTitles)
++                            SlideContactSheet(records: inspection.previewRecords,
++                                              total: inspection.slideCount)
+                                 .frame(minHeight: 260)
+                         }
+                     }
+--- a/Lectern/App/SlidePreview.swift
++++ b/Lectern/App/SlidePreview.swift
+@@ -1,5 +1,6 @@
+ import SwiftUI
+ import WebKit
++import LecternCore
+ 
+ /// One slide, as Rostrum rendered it.
+ ///
+@@ -129,23 +130,32 @@
+ /// and scrolling down — the sheet a designer lays out to read a deck's rhythm
+ /// rather than its words.
+ struct SlideContactSheet: View {
+-    let previews: [String]
+-    /// Index-aligned slide titles; when present, VoiceOver hears what a tile
+-    /// says, not just where it sits in the grid.
+-    var titles: [String] = []
++    let records: [SlidePreviewRecord]
++    let total: Int
++
++    init(records: [SlidePreviewRecord], total: Int) {
++        self.records = records
++        self.total = total
++    }
++
++    init(previews: [String], titles: [String] = []) {
++        records = previews.enumerated().map { index, svg in
++            SlidePreviewRecord(number: index + 1,
++                               title: titles.indices.contains(index) ? titles[index] : "",
++                               svg: svg)
++        }
++        total = previews.count
++    }
++
+     /// Fixed at three so the grid reads as a contact sheet at any window size;
+     /// the tiles resize, the column count does not.
+     private let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 3)
+ 
+-    fileprivate func label(_ index: Int) -> String {
+-        slideLabel(index, of: previews.count, titles: titles)
+-    }
+-
+     var body: some View {
+         ScrollView {
+             LazyVGrid(columns: columns, spacing: 14) {
+-                ForEach(Array(previews.enumerated()), id: \.offset) { index, svg in
+-                    SlideTile(svg: svg)
++                ForEach(records) { record in
++                    SlideTile(svg: record.displaySVG)
+                         .aspectRatio(16.0 / 9.0, contentMode: .fit)
+                         .frame(maxWidth: .infinity)
+                         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+@@ -153,13 +163,13 @@
+                             RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                 .strokeBorder(.primary.opacity(0.12)))
+                         .overlay(alignment: .bottomTrailing) {
+-                            Text("\(index + 1)")
++                            Text("\(record.number)")
+                                 .font(.caption2.monospacedDigit())
+                                 .padding(.horizontal, 6).padding(.vertical, 2)
+                                 .background(.thinMaterial, in: Capsule())
+                                 .padding(5)
+                         }
+-                        .accessibilityLabel(label(index))
++                        .accessibilityLabel(record.accessibilityLabel(total: total))
+                 }
+             }
+             .padding(.horizontal, 24)
+@@ -168,39 +178,30 @@
+     }
+ }
+ 
+-/// "Slide 3 of 12: Why now" — position always, the slide's own words when the
+-/// deck has them. The webview beneath is opaque to VoiceOver, so this label is
+-/// the payoff screen's entire accessible surface.
+-private func slideLabel(_ index: Int, of count: Int, titles: [String]) -> String {
+-    let base = "Slide \(index + 1) of \(count)"
+-    guard titles.indices.contains(index), !titles[index].isEmpty else { return base }
+-    return "\(base): \(titles[index])"
+-}
+-
+ /// The filmstrip under a finished deck: every slide, in order, at a glance.
+ struct SlideFilmstrip: View {
+-    let previews: [String]
+-    var titles: [String] = []
++    let records: [SlidePreviewRecord]
++    let total: Int
+ 
+     var body: some View {
+         ScrollView(.horizontal, showsIndicators: false) {
+             LazyHStack(spacing: 12) {
+-                ForEach(Array(previews.enumerated()), id: \.offset) { index, svg in
+-                    SlideTile(svg: svg)
++                ForEach(records) { record in
++                    SlideTile(svg: record.displaySVG)
+                         .frame(width: 240, height: 135)   // 16:9
+                         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                         .overlay(
+                             RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                 .strokeBorder(.primary.opacity(0.12)))
+                         .overlay(alignment: .bottomTrailing) {
+-                            Text("\(index + 1)")
++                            Text("\(record.number)")
+                                 .font(.caption2.monospacedDigit())
+                                 .padding(.horizontal, 6)
+                                 .padding(.vertical, 2)
+                                 .background(.thinMaterial, in: Capsule())
+                                 .padding(6)
+                         }
+-                        .accessibilityLabel(slideLabel(index, of: previews.count, titles: titles))
++                        .accessibilityLabel(record.accessibilityLabel(total: total))
+                 }
+             }
+             .padding(.horizontal, 2)
+--- a/Lectern/AppTests/PreviewIdentityTests.swift
++++ b/Lectern/AppTests/PreviewIdentityTests.swift
+@@ -0,0 +1,55 @@
++import AppKit
++import SwiftUI
++import Testing
++import Rostrum
++import LecternCore
++@testable import Lectern
++
++@Suite struct PreviewIdentityTests {
++    @MainActor
++    @Test func damagedDeckReachesInspectorWithOriginalPreviewSlots() async throws {
++        let deck = try Presentation()
++        try deck.titleSlide("First")
++        try deck.titleSlide("Missing middle")
++        try deck.titleSlide("Third")
++        try deck.slides.remove(at: 0)
++        let middle = try deck.slides[1]
++        deck.package.removePart(at: middle.part.uri)
++        let url = FileManager.default.temporaryDirectory.appendingPathComponent("preview-\(UUID()).pptx")
++        try deck.save(to: url)
++        defer { try? FileManager.default.removeItem(at: url) }
++        let app = AppState(skipKeychain: true)
++        app.inspect(deckAt: url)
++        for _ in 0..<250 {
++            if app.phase == .inspected { break }
++            try await Task.sleep(for: .milliseconds(20))
++        }
++        let inspection = try #require(app.inspection)
++        let labels = inspection.previewRecords.map { $0.accessibilityLabel(total: inspection.slideCount) }
++        #expect(labels.contains("Slide 2 of 3. Preview unavailable"))
++        #expect(labels.contains("Slide 3 of 3: Third"))
++        #expect(inspection.previewRecords[1].svg == nil)
++        #expect(inspection.previewRecords[2].svg != nil)
++        // Optional snapshot exercises the production contact sheet without UI automation
++        // changing the lifetime of the app-hosted test runner.
++        if let directory = ProcessInfo.processInfo.environment["LECTERN_AUDIT_OUTPUT"] {
++            let view = NSHostingView(rootView: SlideContactSheet(records: inspection.previewRecords, total: 3)
++                .frame(width: 1000, height: 300).background(Color.white).environment(\.colorScheme, .light))
++            let window = NSWindow(contentRect: NSRect(x: 100, y: 100, width: 1000, height: 300),
++                                  styleMask: [.titled], backing: .buffered, defer: false)
++            window.isReleasedWhenClosed = false
++            window.contentView = view
++            window.setContentSize(NSSize(width: 1000, height: 300))
++            window.orderBack(nil)
++            defer { window.orderOut(nil) }
++            for record in inspection.previewRecords {
++                _ = await SlideRasterizer.shared.image(for: record.displaySVG)
++            }
++            try await Task.sleep(for: .milliseconds(200))
++            let bitmap = try #require(view.bitmapImageRepForCachingDisplay(in: view.bounds))
++            view.cacheDisplay(in: view.bounds, to: bitmap)
++            let png = try #require(bitmap.representation(using: .png, properties: [:]))
++            try png.write(to: URL(fileURLWithPath: directory).appendingPathComponent("preview-identity.png"))
++        }
++    }
++}
+--- a/Lectern/Sources/LecternCore/Inspection/DeckInspection.swift
++++ b/Lectern/Sources/LecternCore/Inspection/DeckInspection.swift
+@@ -89,11 +89,11 @@
+ 
+     public let slides: [SlideDigest]
+ 
+-    /// One self-contained SVG per slide, index-aligned with `previewTitles`.
+-    /// Empty when previews were skipped or every slide failed to render; a
+-    /// missing picture is never a reason to fail an inspection.
+-    public let previews: [String]
+-    public let previewTitles: [String]
++    /// One record per original slide; a failed render remains an explicit slot.
++    /// Empty only when preview generation was skipped.
++    public let previewRecords: [SlidePreviewRecord]
++    public var previews: [String] { previewRecords.map(\.displaySVG) }
++    public var previewTitles: [String] { previewRecords.map(\.title) }
+ 
+     public var hasFindings: Bool {
+         !schemaIssues.isEmpty || !readWarnings.isEmpty || !outlineWarnings.isEmpty
+@@ -173,20 +173,16 @@
+             digest(of: slide, detail: detail.slideDetails[slide.number - 1])
+         }
+ 
+-        var previews: [String] = []
+-        var titles: [String] = []
++        var previews: [SlidePreviewRecord] = []
+         if renderPreviews {
+             let total = deck.slides.count
+             onEvent(.rendering(done: 0, total: total))
+             for index in 0..<total {
+                 try Task.checkCancellation()
+-                // Best-effort per slide, matching the write side: a slide that
+-                // will not render costs its own thumbnail and nothing else.
+-                // Both arrays are appended together so they stay aligned.
+-                if let svg = try? deck.renderSVG(slideAt: index, pixelWidth: 640) {
+-                    previews.append(svg)
+-                    titles.append((try? deck.slides[index].title?.textFrame?.text) ?? "")
+-                }
++                previews.append(SlidePreviewRecord(
++                    number: index + 1,
++                    title: (try? deck.slides[index].title?.textFrame?.text) ?? "",
++                    svg: try? deck.renderSVG(slideAt: index, pixelWidth: 640)))
+                 onEvent(.rendering(done: index + 1, total: total))
+             }
+         }
+@@ -220,8 +216,7 @@
+             readWarnings: deck.package.readWarnings,
+             outlineWarnings: outline.warnings + detail.issues,
+             slides: digests,
+-            previews: previews,
+-            previewTitles: titles)
++            previewRecords: previews)
+     }
+ 
+     private static func digest(of slide: SlideOutline,
+--- a/Lectern/Sources/LecternCore/Inspection/SlidePreviewRecord.swift
++++ b/Lectern/Sources/LecternCore/Inspection/SlidePreviewRecord.swift
+@@ -0,0 +1,31 @@
++import Foundation
++
++/// A preview keeps its original one-based slide number even if rendering fails.
++public struct SlidePreviewRecord: Sendable, Identifiable {
++    public var id: Int { number }
++    public let number: Int
++    public let title: String
++    public let svg: String?
++
++    public init(number: Int, title: String, svg: String?) {
++        self.number = number
++        self.title = title
++        self.svg = svg
++    }
++
++    public func accessibilityLabel(total: Int) -> String {
++        let base = "Slide \(number) of \(total)"
++        let titled = title.isEmpty ? base : "\(base): \(title)"
++        return svg == nil ? "\(titled). Preview unavailable" : titled
++    }
++
++    /// Compatibility surface for SVG consumers: failed slides still occupy a slot.
++    public var displaySVG: String {
++        svg ?? """
++        <svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
++          <rect width="640" height="360" fill="#EEEEEE"/>
++          <text x="320" y="180" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#444444">Preview unavailable</text>
++        </svg>
++        """
++    }
++}
+--- a/Lectern/Tests/LecternCoreTests/DeckInspectorTests.swift
++++ b/Lectern/Tests/LecternCoreTests/DeckInspectorTests.swift
+@@ -95,6 +95,25 @@
+         #expect(rendered == [0, 1, 2])
+     }
+ 
++    @Test func failedMiddlePreviewPreservesOriginalSlideIdentity() throws {
++        let deck = try Presentation()
++        try deck.titleSlide("First")
++        try deck.titleSlide("Missing middle")
++        try deck.titleSlide("Third")
++        try deck.slides.remove(at: 0)
++        let middle = try deck.slides[1]
++        deck.package.removePart(at: middle.part.uri)
++        let url = try write(deck, named: "Missing-middle.pptx")
++        defer { try? FileManager.default.removeItem(at: url.deletingLastPathComponent()) }
++        let inspection = try DeckInspector.inspect(deckAt: url)
++        #expect(inspection.previewRecords.map(\.number) == [1, 2, 3])
++        #expect(inspection.previewRecords[1].svg == nil)
++        #expect(inspection.previews[1].contains("Preview unavailable"))
++        #expect(inspection.previewRecords[1].accessibilityLabel(total: 3) == "Slide 2 of 3. Preview unavailable")
++        #expect(inspection.previewRecords[2].accessibilityLabel(total: 3) == "Slide 3 of 3: Third")
++        #expect(inspection.previewRecords[2].svg != nil)
++    }
++
+     @Test func aFileThatIsNotADeckFailsRatherThanReturningNonsense() throws {
+         let root = URL(fileURLWithPath: NSTemporaryDirectory())
+             .appendingPathComponent("lectern-inspect-\(UUID().uuidString)", isDirectory: true)

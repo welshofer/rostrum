@@ -30,6 +30,8 @@ final class AppState {
         case inspecting, inspected
     }
     var phase: Phase = .home
+    private(set) var recoveryURL: URL?
+    private(set) var recoverySourceURL: URL?
 
     // MARK: Compose form
     var prompt = ""
@@ -43,8 +45,13 @@ final class AppState {
     private(set) var useSmartArt = false
 
     // MARK: Provider + model (non-secret prefs persisted; key stays in Keychain)
-    private(set) var providerID: ProviderID = .anthropic
-    var model = "claude-sonnet-5"
+    private(set) var providerID: ProviderID = .openAI
+    private(set) var model = TextStrength.sol.modelID
+    private(set) var reasoningEffort: ReasoningEffort = .medium
+    var textStrength: TextStrength { TextStrength.resolve(modelID: model) }
+    private let preferences: UserDefaults
+    private var keyRevision = UUID()
+    private var imageKeyRevision = UUID()
     private(set) var hasKey = false
 
     enum KeyStatus: Equatable { case unknown, validating, valid(Int), invalid(String) }
@@ -53,25 +60,18 @@ final class AppState {
     enum ImageKeyStatus: Equatable { case unknown, validating, valid, invalid(String) }
     private(set) var imageKeyStatus: ImageKeyStatus = .unknown
 
-    /// A curated, clean model list — NOT the provider's raw /v1/models dump
-    /// (which is full of point-releases and internal EAP builds). Validate only
-    /// confirms the key; it never rewrites this list.
-    static func defaultModels(for id: ProviderID) -> [String] {
-        switch id {
-        case .anthropic: return ["claude-opus-5", "claude-sonnet-5", "claude-fable-5", "claude-haiku-4-5-20251001"]
-        case .openAI: return ["gpt-5.2", "gpt-5.2-mini", "gpt-5.1"]
-        default: return []
-        }
-    }
-    var modelOptions: [String] { Self.defaultModels(for: providerID) }
-
     // MARK: Optional image provider (§image grounding)
-    private(set) var imageProviderID: ImageProviderID = .gemini
+    private(set) var imageProviderID: ImageProviderID = .openAI
+    private(set) var imageModel: ImageModel = .flare
+    private(set) var imageQuality: ImageQuality = .auto
     private(set) var hasImageKey = false
 
     // MARK: Style catalog
     var styles: [Style] = []
     var selectedStyleSlug: String?
+    var selectedTemplate: PowerPointTemplate?
+    private(set) var templateLoading = false
+    private(set) var templateError: String?
     var favorites: Set<String> = []
     private(set) var recents: [String] = []
     var selectedStyle: Style? { styles.first { $0.slug == selectedStyleSlug } }
@@ -93,6 +93,28 @@ final class AppState {
 
     func dismissMigrationNotice() { migrationNotice = nil }
 
+    func acceptRecoveredDeck(_ result: DeckResult) {
+        phase = .result(result)
+        recoveryURL = result.recoveryURL; recoverySourceURL = result.url
+        preferences.set(result.recoveryURL?.path, forKey: "renderRecoverySnapshot")
+        preferences.set(result.url.path, forKey: "renderRecoverySource")
+        refreshLibrary()
+    }
+
+    /// Import a previously saved render session without touching model settings.
+    func importRenderSnapshot(_ url: URL) async throws {
+        let directory = Self.diagnosticsDirectory()
+        let copied = try await Task.detached {
+            let access = url.startAccessingSecurityScopedResource()
+            defer { if access { url.stopAccessingSecurityScopedResource() } }
+            let saved = try RenderSnapshot.load(url)
+            return try saved.save(in: directory)
+        }.value
+        recoveryURL = copied; recoverySourceURL = nil
+        preferences.set(copied.path, forKey: "renderRecoverySnapshot")
+        preferences.removeObject(forKey: "renderRecoverySource")
+    }
+
     /// Launch work that has no business on the launch path.
     ///
     /// Called from the first `.task`, not `init`. The migration is a directory
@@ -111,6 +133,12 @@ final class AppState {
         // once it is not.
         let diagnostics = Self.diagnosticsDirectory()
         await Task.detached { DeckStorage.pruneDiagnostics(in: diagnostics) }.value
+        if let path = preferences.string(forKey: "renderRecoverySnapshot"), FileManager.default.fileExists(atPath: path) {
+            recoveryURL = URL(fileURLWithPath: path)
+            if let source = preferences.string(forKey: "renderRecoverySource"), FileManager.default.fileExists(atPath: source) {
+                recoverySourceURL = URL(fileURLWithPath: source)
+            }
+        }
         refreshLibrary()
     }
 
@@ -206,32 +234,28 @@ final class AppState {
         static let provider = "providerID", model = "model", favorites = "favoriteStyles"
         static let recents = "recentStyles", imageProvider = "imageProviderID"
         static let useSmartArt = "useSmartArt"
+        static let effort = "reasoningEffort", imageModel = "imageModel", imageQuality = "imageQuality"
     }
 
     /// - Parameter skipKeychain: pass `true` from tests. Reading the login
     ///   keychain from a test process is slow at best and a modal prompt at
     ///   worst, and no test here is about whether a key is stored.
-    init(skipKeychain: Bool = false) {
-        let d = UserDefaults.standard
-        if let raw = d.string(forKey: Keys.provider), let id = ProviderID(rawValue: raw) { providerID = id }
-        // A selection stored before Settings started excluding unwired
-        // providers (or `.custom`, never wired) — land on the default rather
-        // than one the picker no longer offers.
-        providerID = ProviderPicker.resolveStoredSelection(providerID)
+    init(skipKeychain: Bool = false, defaults: UserDefaults? = nil) {
+        // Tests never migrate or overwrite the running app's preferences.
+        let d = defaults ?? (skipKeychain
+            ? UserDefaults(suiteName: "LecternTests.\(UUID().uuidString)")! : .standard)
+        preferences = d
+        model = TextStrength.resolve(modelID: d.string(forKey: Keys.model)).modelID
+        reasoningEffort = textStrength.supported(
+            ReasoningEffort(rawValue: d.string(forKey: Keys.effort) ?? "") ?? .medium)
+        imageModel = ImageModel(rawValue: d.string(forKey: Keys.imageModel) ?? "") ?? .flare
+        imageQuality = ImageQuality(rawValue: d.string(forKey: Keys.imageQuality) ?? "") ?? .auto
         d.set(providerID.rawValue, forKey: Keys.provider)
-        // The model has to agree with the provider. A stored pair can disagree
-        // — the provider was just migrated, or the model list moved on — and a
-        // mismatch is not cosmetic: it sends one vendor's model name to
-        // another vendor's API, and leaves the Model picker with no matching
-        // tag. Land on the provider's first model and write that back, so the
-        // stored pair is consistent from here on.
-        if let m = d.string(forKey: Keys.model), Self.defaultModels(for: providerID).contains(m) {
-            model = m
-        } else if let first = Self.defaultModels(for: providerID).first {
-            model = first
-        }
         d.set(model, forKey: Keys.model)
-        if let raw = d.string(forKey: Keys.imageProvider), let id = ImageProviderID(rawValue: raw) { imageProviderID = id }
+        d.set(reasoningEffort.rawValue, forKey: Keys.effort)
+        d.set(imageProviderID.rawValue, forKey: Keys.imageProvider)
+        d.set(imageModel.rawValue, forKey: Keys.imageModel)
+        d.set(imageQuality.rawValue, forKey: Keys.imageQuality)
         favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])
         recents = d.stringArray(forKey: Keys.recents) ?? []
         useSmartArt = d.bool(forKey: Keys.useSmartArt)
@@ -250,71 +274,77 @@ final class AppState {
     }
 
     func selectStyle(_ slug: String) {
+        selectedTemplate = nil
         selectedStyleSlug = slug
         recents.removeAll { $0 == slug }
         recents.insert(slug, at: 0)
         recents = Array(recents.prefix(8))
-        UserDefaults.standard.set(recents, forKey: Keys.recents)
+        preferences.set(recents, forKey: Keys.recents)
     }
 
     func isFavorite(_ slug: String) -> Bool { favorites.contains(slug) }
 
     func toggleFavorite(_ slug: String) {
         if favorites.contains(slug) { favorites.remove(slug) } else { favorites.insert(slug) }
-        UserDefaults.standard.set(Array(favorites), forKey: Keys.favorites)
+        preferences.set(Array(favorites), forKey: Keys.favorites)
     }
 
     // MARK: - Provider / key
 
-    func selectProvider(_ id: ProviderID) {
-        providerID = id
+    func setModel(_ value: String) {
+        model = TextStrength.resolve(modelID: value).modelID
+        setReasoningEffort(reasoningEffort)
+        preferences.set(model, forKey: Keys.model)
+        keyRevision = UUID()
         keyStatus = .unknown
-        if !Self.defaultModels(for: id).contains(model) { model = Self.defaultModels(for: id).first ?? model }
-        UserDefaults.standard.set(id.rawValue, forKey: Keys.provider)
-        // Persist the model too. Without this the pair on disk disagrees the
-        // moment the provider changes, and the next launch reads a model that
-        // belongs to the previous vendor.
-        UserDefaults.standard.set(model, forKey: Keys.model)
-        hasKey = KeychainStore.hasKey(for: id)
     }
 
-    func setModel(_ value: String) {
-        model = value
-        UserDefaults.standard.set(value, forKey: Keys.model)
+    func setReasoningEffort(_ value: ReasoningEffort) {
+        reasoningEffort = textStrength.supported(value)
+        preferences.set(reasoningEffort.rawValue, forKey: Keys.effort)
     }
 
     func setUseSmartArt(_ value: Bool) {
         useSmartArt = value
-        UserDefaults.standard.set(value, forKey: Keys.useSmartArt)
+        preferences.set(value, forKey: Keys.useSmartArt)
     }
 
     func saveKey(_ key: String) {
+        keyRevision = UUID()
         let ok = KeychainStore.save(key, for: providerID)
         hasKey = KeychainStore.hasKey(for: providerID)
         keyStatus = ok && hasKey ? .unknown : .invalid("Couldn't write to the Keychain.")
     }
 
     func clearKey() {
+        keyRevision = UUID()
         KeychainStore.delete(for: providerID)
         hasKey = false; keyStatus = .unknown
     }
 
     // MARK: - Image provider (optional)
 
-    func selectImageProvider(_ id: ImageProviderID) {
-        imageProviderID = id
+    func setImageModel(_ value: ImageModel) {
+        imageModel = value
+        preferences.set(value.rawValue, forKey: Keys.imageModel)
+        imageKeyRevision = UUID()
         imageKeyStatus = .unknown
-        UserDefaults.standard.set(id.rawValue, forKey: Keys.imageProvider)
-        hasImageKey = KeychainStore.hasKey(forImage: id)
+    }
+
+    func setImageQuality(_ value: ImageQuality) {
+        imageQuality = value
+        preferences.set(value.rawValue, forKey: Keys.imageQuality)
     }
 
     func saveImageKey(_ key: String) {
+        imageKeyRevision = UUID()
         let ok = KeychainStore.save(key, forImage: imageProviderID)
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
         imageKeyStatus = ok && hasImageKey ? .unknown : .invalid("Couldn't write to the Keychain.")
     }
 
     func clearImageKey() {
+        imageKeyRevision = UUID()
         KeychainStore.delete(forImage: imageProviderID)
         hasImageKey = false
         imageKeyStatus = .unknown
@@ -340,6 +370,8 @@ final class AppState {
 
     /// Validate authentication and access to the exact image model Lectern uses.
     func validateImageKey() async {
+        let revision = imageKeyRevision
+        let chosenImageModel = imageModel
         let id = imageProviderID
         let key: String
         do {
@@ -357,23 +389,20 @@ final class AppState {
         }
         imageKeyStatus = .validating
         do {
-            try await ImageProviderFactory.validate(id: id, apiKey: key)
-            guard imageProviderID == id else { return }
+            try await ImageProviderFactory.validate(id: id, apiKey: key, model: chosenImageModel.rawValue)
+            guard imageKeyRevision == revision else { return }
             imageKeyStatus = .valid
         } catch {
-            guard imageProviderID == id else { return }
+            guard imageKeyRevision == revision else { return }
             imageKeyStatus = .invalid(Self.describe(error))
         }
     }
 
-    /// Validate the stored key by pinging the provider's models endpoint (§294).
-    /// This ONLY confirms the key works — it never touches the curated model list
-    /// or the current selection.
+    /// Check authentication and access to the selected text model without generating.
     func validateKey() async {
-        // Capture and re-check the provider, exactly as validateImageKey does:
-        // switching provider mid-flight would otherwise paint this verdict
-        // against the wrong key — and selectProvider has already reset the
-        // status to .unknown by then, so the stale write undoes a correct one.
+        let revision = keyRevision
+        let chosenModel = model
+        // Ignore a result if the key or selected model changed during the request.
         let id = providerID
         let key: String
         do {
@@ -387,14 +416,33 @@ final class AppState {
         }
         keyStatus = .validating
         do {
-            let models = try await AnthropicModels.list(apiKey: key)
-            guard providerID == id else { return }
-            keyStatus = .valid(models.count)
+            let models = try await OpenAIModels.list(apiKey: key)
+            guard keyRevision == revision else { return }
+            keyStatus = models.contains(chosenModel) ? .valid(models.count)
+                : .invalid("This key cannot access \(modelLabel(chosenModel)).")
         } catch {
-            guard providerID == id else { return }
+            guard keyRevision == revision else { return }
             keyStatus = .invalid(Self.describe(error))
         }
     }
+
+    // MARK: - PowerPoint templates
+
+    func attachTemplate(_ url: URL) async {
+        guard !templateLoading else { return }
+        templateLoading = true; templateError = nil
+        defer { templateLoading = false }
+        let scoped = url.startAccessingSecurityScopedResource()
+        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+        do {
+            let snapshot = try await Task.detached {
+                try PowerPointTemplate(data: Data(contentsOf: url), name: url.deletingPathExtension().lastPathComponent)
+            }.value
+            selectedTemplate = snapshot
+        } catch { templateError = String(describing: error) }
+    }
+
+    func clearTemplate() { selectedTemplate = nil; templateError = nil }
 
     // MARK: - PDF grounding
 
@@ -415,7 +463,7 @@ final class AppState {
     // MARK: - Generate
 
     var canGenerate: Bool {
-        phase != .generating && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        phase != .generating && !templateLoading && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     /// Where Settings lives on this platform, for user-facing hints.
@@ -433,20 +481,27 @@ final class AppState {
             return
         }
 
+        recoveryURL = nil; recoverySourceURL = nil
+        preferences.removeObject(forKey: "renderRecoverySnapshot")
+        preferences.removeObject(forKey: "renderRecoverySource")
         phase = .generating; stage = "Starting"; drafted = 0; total = slideCount
         let run = runs.begin()
         let request = DeckRequest(prompt: prompt, audience: audience, goal: goal,
                                   slideCount: slideCount, notes: includeNotes,
                                   groundingText: grounding?.text,
                                   styleSlug: selectedStyleSlug ?? "default")
-        let designURL = selectedStyle?.designURL
+        let template = selectedTemplate
+        let designURL = template == nil ? selectedStyle?.designURL : nil
         let directory = Self.decksDirectory()
         let diagnostics = Self.diagnosticsDirectory()
         let keyRead = Result { try KeychainStore.readOrFail(for: providerID) }
         let id = providerID, chosenModel = model
-        let style = selectedStyle
+        let chosenEffort = reasoningEffort
+        let style = template == nil ? selectedStyle : nil
         let smartArt = useSmartArt
         let imageID = imageProviderID
+        let chosenImageModel = imageModel, chosenImageQuality = imageQuality
+        let imageRevision = imageKeyRevision
         let imageKeyRead = Result { try KeychainStore.readOrFail(forImage: imageProviderID) }
         // An unreadable key is not a missing one. Treated as missing, the text
         // key fails the run as "no key" while one sits in the keychain, and the
@@ -460,7 +515,7 @@ final class AppState {
         task = Task {
             do {
                 guard !unreadableKey else { throw LecternError.keyUnreadable }
-                let provider = try ProviderFactory.make(id: id, apiKey: key, model: chosenModel)
+                let provider = try ProviderFactory.make(id: id, apiKey: key, model: chosenModel, effort: chosenEffort)
                 // Optional imagery: only when an image key exists. Art direction
                 // comes from the chosen style's design.md so images stay on-brand.
                 var imageProvider: (any ImageProvider)?
@@ -474,9 +529,9 @@ final class AppState {
                 if let imageKey {
                     if self.runs.isCurrent(run) { self.stage = "Checking image provider" }
                     do {
-                        try await ImageProviderFactory.validate(id: imageID, apiKey: imageKey)
-                        if self.imageProviderID == imageID { self.imageKeyStatus = .valid }
-                        imageProvider = try ImageProviderFactory.make(id: imageID, apiKey: imageKey)
+                        try await ImageProviderFactory.validate(id: imageID, apiKey: imageKey, model: chosenImageModel.rawValue)
+                        if self.imageKeyRevision == imageRevision { self.imageKeyStatus = .valid }
+                        imageProvider = try ImageProviderFactory.make(id: imageID, apiKey: imageKey, model: chosenImageModel.rawValue, quality: chosenImageQuality)
                         if let style {
                             imageStyle = ImageStyleDirective.from(style: style)
                         }
@@ -486,7 +541,7 @@ final class AppState {
                         // An image key failing its check used to abort the
                         // whole generation; now it costs the pictures, not the
                         // deck, and says so on the result.
-                        if self.imageProviderID == imageID {
+                        if self.imageKeyRevision == imageRevision {
                             self.imageKeyStatus = .invalid(Self.describe(error))
                         }
                         imageSkipNote = "Images were skipped — the image key failed its check: "
@@ -495,7 +550,7 @@ final class AppState {
                 }
                 var result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
                     .generate(request, designURL: designURL, into: directory,
-                              diagnostics: diagnostics) { [weak self] event in
+                              diagnostics: diagnostics, template: template) { [weak self] event in
                         Task { @MainActor in self?.apply(event, run: run) }
                     }
                 if let imageSkipNote { result.warnings.append(imageSkipNote) }
@@ -685,7 +740,8 @@ final class AppState {
         case .auditing: stage = "Polishing (QA pass)"
         case .illustrating(let c, let t): stage = "Generating images"; drafted = c; total = t; progressNoun = "images"
         case .rendering: stage = "Rendering .pptx"
-        case .finished: stage = "Done"
+        case .recoveryAvailable(let url): recoveryURL = url; preferences.set(url.path, forKey: "renderRecoverySnapshot")
+        case .finished(let result): stage = "Done"; recoverySourceURL = result.url; preferences.set(result.url.path, forKey: "renderRecoverySource")
         }
     }
 
