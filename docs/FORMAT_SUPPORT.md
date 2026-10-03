@@ -29,6 +29,13 @@ authoritative, including intentional gaps and empty caches. Lectern inspection a
 previews use the same reader. Reading does not modify the deck or make a cacheless
 chart eligible for guarded data replacement.
 
+Read fallback is not a PowerPoint repair operation. In the native comparison on
+2026-10-03, PowerPoint displayed the cached control chart, but left both the
+original cacheless fixture and its Rostrum round-trip blank. All three opened
+without repair prompts. Lectern displayed the embedded values and chart preview
+for the cacheless fixture. An explicit operation to rebuild missing chart caches
+is still needed; ordinary open/save must keep preserving the source package.
+
 The fallback accepts local A1 cells and horizontal or vertical ranges of up to
 100,000 cells, quoted sheet names, shared/inline strings and cached formula results.
 It never evaluates formulas or follows external links. Named ranges, multi-area
@@ -57,7 +64,8 @@ approximation limits.
 1. Complete PowerPoint-rendered baselines for nested groups, flips, rotation, text
    and connector arrowheads; extend common geometry and rich text previews.
 2. Extend content checks to images, hyperlinks, sections and template relationships.
-3. Extend workbook-backed chart reading to date categories and formatted labels.
+3. Add explicit missing-chart-cache repair with native PowerPoint acceptance;
+   extend workbook-backed reading to date categories and formatted labels.
 4. Add group/connector/freeform authoring APIs.
 5. Add verified media playback and a bounded animation/transition set.
 6. Expand document-kind and SmartArt support with representative fixtures.
