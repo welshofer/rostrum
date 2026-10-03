@@ -160,7 +160,8 @@ import Testing
         try #require(run.firstChild(named: "a:t")).children = [.text("é 中 X")]
         let changed = RichTextLayout(textBody: xml, width: 18, height: 200)
         #expect(changed.lines.map { $0.spans.map(\.run.text).joined() } == ["é ", "中 X"])
-        #expect(changed.contentHeight == 2 * (10.0 * 4 / 3))
+        let expectedHeight: Double = 2 * (10.0 * 4 / 3)
+        #expect(changed.contentHeight == expectedHeight)
     }
 
     @Test func fittingAndSVGUseTheStoredRichLayoutAndRenderingIsPure() throws {

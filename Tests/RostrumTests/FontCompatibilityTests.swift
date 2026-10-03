@@ -126,8 +126,14 @@ import Testing
             let features = u(1) + Array("liga".utf8) + u(8) + u(0) + u(1) + u(0)
             let subFields: [Int] = [1, 8, 1, 14, 1, 1, input, 1, 4, replacement, 1]
             let sub = subFields.flatMap(u)
-            let lookup = u(1) + u(4) + u(4) + u(0) + u(1) + u(8) + sub
-            tables["GSUB"] = u(1) + u(0) + u(10) + u(10 + scripts.count) + u(10 + scripts.count + features.count) + scripts + features + lookup
+            let lookupFields: [Int] = [1, 4, 4, 0, 1, 8]
+            let lookup = lookupFields.flatMap(u) + sub
+            let headerFields: [Int] = [1, 0, 10, 10 + scripts.count, 10 + scripts.count + features.count]
+            var gsub = headerFields.flatMap(u)
+            gsub.append(contentsOf: scripts)
+            gsub.append(contentsOf: features)
+            gsub.append(contentsOf: lookup)
+            tables["GSUB"] = gsub
             let shaper = TextShaper(try FontMetrics(data: Data(TestFont.assemble(tables: tables.keys.sorted().map { ($0, tables[$0]!) }))))
             let run = shaper.shape("ببب", pointSize: 1000)
             #expect(run.isSupported)
