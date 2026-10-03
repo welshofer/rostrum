@@ -61,9 +61,14 @@ approximation limits.
 
 Gradient previews retain stop precision, clockwise linear direction and the
 `scaled` aspect-ratio setting. RGB, scheme and system fallback colors apply tint,
-shade, saturation modulation and alpha transforms in XML order, including style
-reference and placeholder transforms. Luminance/hue/channel transforms, shadows,
-path-gradient geometry, tile rectangles and rotation-independent fills remain
+shade, hue, saturation, HSL luminance, RGB channel, complement, inverse, grayscale,
+gamma and alpha transforms in XML order, including style reference and placeholder
+transforms. Ordinary outer shadows resolve direct or theme effects, color, opacity,
+blur and offset; an explicit empty effect list suppresses theme effects. Scaled or
+skewed shadows are diagnosed. Text inherits presentation, master and matched
+placeholder run defaults per paragraph level, with local overrides merged by property.
+Missing explicit typefaces fall back to theme fonts and then sans-serif.
+Path-gradient geometry, tile rectangles and rotation-independent fills remain
 approximate. SVG definitions use a per-render counter for deterministic IDs,
 avoiding repeated scans of accumulated gradient or embedded-image data.
 

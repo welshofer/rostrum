@@ -184,7 +184,7 @@ struct SVGRenderer {
             if (flippedTextH || flippedTextV) && ShapeTransform.rotation(of: node) != 0 {
                 problems.record("Preview may differ for rotated text inside a flipped group.")
             }
-            content = renderShape(node, ownedBy: owner, defs: &defs, textFlipH: textFlipH, textFlipV: textFlipV)
+            content = renderShape(node, ownedBy: owner, defs: &defs, problems: &problems, textFlipH: textFlipH, textFlipV: textFlipV)
         case "p:pic": content = renderPicture(node, ownedBy: owner)
         case "p:cxnSp": content = renderConnector(node, defs: &defs, problems: &problems)
         case "p:graphicFrame": content = renderGraphicFrame(node, ownedBy: owner, defs: &defs, problems: &problems)
@@ -257,7 +257,7 @@ struct SVGRenderer {
     // MARK: - Shapes
 
     private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
-                             defs: inout SVGDefinitions, textFlipH: Bool = false, textFlipV: Bool = false) -> String {
+                             defs: inout SVGDefinitions, problems: inout SlideRenderProblems, textFlipH: Bool = false, textFlipV: Bool = false) -> String {
         guard let spPr = sp.firstChild(named: "p:spPr") else { return "" }
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
@@ -284,6 +284,21 @@ struct SVGRenderer {
                 out += "<g data-text-unflip=\"true\" transform=\"translate(\(cx) \(cy)) scale(\(textFlipH ? -1 : 1) \(textFlipV ? -1 : 1)) translate(\(-cx) \(-cy))\">\(text)</g>"
             } else { out += text }
         }
+        // An explicit empty effect list suppresses the theme's shadow.
+        let effects = spPr.firstChild(named: "a:effectLst")
+            ?? (spPr.firstChild(named: "a:effectDag") == nil
+                ? styleEntry(style?.firstChild(named: "a:effectRef"), list: "a:effectStyleLst")?.firstChild(named: "a:effectLst") : nil)
+        if let shadow = effects?.firstChild(named: "a:outerShdw") {
+            let ordinary = ["sx", "sy"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "100000" }
+                && ["kx", "ky"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "0" }
+            if ordinary {
+                let transform = spPr.firstChild(named: "a:xfrm")
+                out = SVGShadow.wrap(out, shadow: shadow, frame: f, theme: theme,
+                    rotation: ShapeTransform.rotation(of: sp),
+                    flipH: ["1", "true"].contains(transform?[attribute: "flipH"] ?? ""),
+                    flipV: ["1", "true"].contains(transform?[attribute: "flipV"] ?? ""), defs: &defs)
+            } else { problems.record("Preview omitted a scaled or skewed outer shadow.") }
+        }
         return out
     }
 
@@ -304,53 +319,41 @@ struct SVGRenderer {
                 Int(r.width.rawValue), Int(r.height.rawValue))
     }
 
-    /// The default run properties a placeholder's text inherits.
-    ///
-    /// Resolution order is PowerPoint's: the layout's matching placeholder
-    /// `a:lstStyle`, then the master's `p:txStyles` entry for that class of
-    /// placeholder. Without this every inherited run falls back to 18pt dark
-    /// grey, which is why a deck rebuilt on a template's layouts renders in the
-    /// renderer's defaults instead of the template's typography — the one thing
-    /// applying a template is supposed to change.
-    private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
-        guard owner === slidePart, let ph = Placeholders.phElement(of: sp) else { return nil }
-        let idx = ph[attribute: "idx"].flatMap { Int($0) } ?? 0
+    /// Ordered inherited list styles, merged per paragraph level. Partial
+    /// layout overrides must not discard the master's font or other defaults.
+    private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> [XML.Element] {
         let chain = inheritanceChain().chain
-
-        func level1(_ lstStyle: XML.Element?) -> XML.Element? {
-            lstStyle?.firstChild(named: "a:lvl1pPr")?.firstChild(named: "a:defRPr")
+        let ph = Placeholders.phElement(of: sp)
+        let idx = ph?[attribute: "idx"].flatMap(Int.init) ?? 0
+        var type = ph?[attribute: "type"] ?? "obj"
+        var layoutShape: XML.Element?
+        if owner === slidePart, ph != nil, let layout = chain.layout {
+            layoutShape = Slide.existingSpTree(of: layout)?.childElements.first {
+                guard let candidate = Placeholders.phElement(of: $0) else { return false }
+                return (candidate[attribute: "idx"].flatMap(Int.init) ?? 0) == idx
+            }
+            type = layoutShape.flatMap { Placeholders.phElement(of: $0)?[attribute: "type"] } ?? type
         }
-
-        var layoutType = ph[attribute: "type"] ?? "obj"
-        if let layout = chain.layout, let tree = Slide.existingSpTree(of: layout) {
-            for element in tree.childElements {
-                guard let lph = Placeholders.phElement(of: element),
-                      (lph[attribute: "idx"].flatMap { Int($0) } ?? 0) == idx else { continue }
-                layoutType = lph[attribute: "type"] ?? layoutType
-                if let defaults = level1(element.firstChild(named: "p:txBody")?
-                    .firstChild(named: "a:lstStyle")) {
-                    return defaults
-                }
-                break
+        let reduced = Slide.masterTypeReduction[type] ?? "body"
+        let bucket = ph == nil ? "p:otherStyle" : reduced == "title" ? "p:titleStyle" : reduced == "body" ? "p:bodyStyle" : "p:otherStyle"
+        let masterDOM = try? chain.master?.dom()
+        let masterShape = ph == nil ? nil : chain.master.flatMap { master in
+            Slide.existingSpTree(of: master)?.childElements.first {
+                guard let candidate = Placeholders.phElement(of: $0) else { return false }
+                return (Slide.masterTypeReduction[candidate[attribute: "type"] ?? "obj"] ?? "body") == reduced
             }
         }
-
-        guard let master = chain.master, let dom = try? master.dom(),
-              let styles = dom.firstChild(named: "p:txStyles") else { return nil }
-        let bucket: String
-        switch Slide.masterTypeReduction[layoutType] ?? "body" {
-        case "title": bucket = "p:titleStyle"
-        case "body": bucket = "p:bodyStyle"
-        default: bucket = "p:otherStyle"
-        }
-        return level1(styles.firstChild(named: bucket))
+        return [(try? package.mainDocumentPart().dom())?.firstChild(named: "p:defaultTextStyle"),
+                masterDOM?.firstChild(named: "p:txStyles")?.firstChild(named: bucket),
+                masterShape?.firstChild(named: "p:txBody")?.firstChild(named: "a:lstStyle"),
+                layoutShape?.firstChild(named: "p:txBody")?.firstChild(named: "a:lstStyle")].compactMap { $0 }
     }
 
     // MARK: - Text (wrapped on real metrics when the typeface is registered,
     // else on a character-width estimate)
 
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
-                            inheriting defaults: XML.Element? = nil, fontReference: XML.Element? = nil, respectInsets: Bool = false) -> String {
+                            inheriting inheritedStyles: [XML.Element] = [], fontReference: XML.Element? = nil, respectInsets: Bool = false) -> String {
         let (x, y, w, h) = f
         let bodyPr = txBody.firstChild(named: "a:bodyPr")
         // Bounded like every other coordinate here: `x + inset(…)` traps.
@@ -369,6 +372,15 @@ struct SVGRenderer {
             let bold: Bool
             let typeface: String?
         }
+        // A shape's font style reference overrides presentation/master defaults,
+        // while explicit text-body, paragraph and run formatting remains stronger.
+        let referenceDefaults = XML.Element("a:rPr")
+        if let color = fontReference?.childElements.first(where: { SVGPaint.colorElements.contains($0.name) }) {
+            referenceDefaults.appendElement(XML.Element("a:solidFill", children: [.element(color.deepCopy())]))
+        }
+        if let index = fontReference?[attribute: "idx"], ["major", "minor"].contains(index) {
+            referenceDefaults.appendElement(XML.Element("a:latin", attributes: [("typeface", index == "major" ? "+mj-lt" : "+mn-lt")]))
+        }
         var lines: [Line] = []
         var cursorY = 0
         for p in paragraphs {
@@ -386,19 +398,26 @@ struct SVGRenderer {
             }.joined()
             guard !text.isEmpty else { cursorY += emuPerPoint * 18; continue }
             let level = p.firstChild(named: "a:pPr")?.boundedInt("lvl", in: 0...8) ?? 0
-            let localDefaults = txBody.firstChild(named: "a:lstStyle")?.firstChild(named: "a:lvl\(level + 1)pPr")?.firstChild(named: "a:defRPr")
-            let rPr: XML.Element? = mergedRunProperties([defaults, localDefaults,
+            let defaults = mergedRunProperties(inheritedStyles.flatMap { style in
+                [style.firstChild(named: "a:defPPr")?.firstChild(named: "a:defRPr"),
+                 style.firstChild(named: "a:lvl\(level + 1)pPr")?.firstChild(named: "a:defRPr")]
+            })
+            let localStyle = txBody.firstChild(named: "a:lstStyle")
+            let localDefaults = mergedRunProperties([
+                localStyle?.firstChild(named: "a:defPPr")?.firstChild(named: "a:defRPr"),
+                localStyle?.firstChild(named: "a:lvl\(level + 1)pPr")?.firstChild(named: "a:defRPr")])
+            let rPr: XML.Element? = mergedRunProperties([defaults, referenceDefaults, localDefaults,
                 p.firstChild(named: "a:pPr")?.firstChild(named: "a:defRPr"), pieces.first?.firstChild(named: "a:rPr")])
             // ST_TextFontSize is 1pt–4000pt in hundredths. The file can say
             // anything, and `sz * 12700` on a large Int is an overflow crash.
             let sizeHundredths = min(max(rPr?[attribute: "sz"].flatMap { Int($0) }
-                ?? defaults?[attribute: "sz"].flatMap { Int($0) } ?? 1800, 100),
+                ?? defaults[attribute: "sz"].flatMap { Int($0) } ?? 1800, 100),
                                      400_000)
             let sizeEMU = sizeHundredths * emuPerPoint / 100
             let bold = rPr?[attribute: "b"] == "1"
-                || (rPr?[attribute: "b"] == nil && defaults?[attribute: "b"] == "1")
+                || (rPr?[attribute: "b"] == nil && defaults[attribute: "b"] == "1")
             let color = rPr.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) }
-                ?? defaults.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) }
+                ?? colorHex(in: defaults.firstChild(named: "a:solidFill"))
                 ?? colorHex(in: fontReference) ?? "#1A1A1A"
             let align = p.firstChild(named: "a:pPr")?[attribute: "algn"]
                 ?? txBody.firstChild(named: "a:lstStyle")?.firstChild(named: "a:lvl\(level + 1)pPr")?[attribute: "algn"] ?? "l"
@@ -499,7 +518,7 @@ struct SVGRenderer {
     /// wrapping metrics, it just never said so in the markup. A generic
     /// fallback keeps a missing font from landing back on serif by accident.
     private func fontFamilyAttr(_ typeface: String?) -> String {
-        guard let typeface, !typeface.isEmpty else { return "" }
+        guard let typeface, !typeface.isEmpty else { return " font-family=\"sans-serif\"" }
         return " font-family=\"\(escape(typeface)), sans-serif\""
     }
 
@@ -546,7 +565,7 @@ struct SVGRenderer {
             for candidate in [theme.majorFont, theme.minorFont] {
                 if let candidate, fonts.metrics(for: candidate) != nil { return candidate }
             }
-            return nil
+            return theme.minorFont ?? theme.majorFont
         }
     }
 
