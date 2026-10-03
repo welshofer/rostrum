@@ -1,6 +1,12 @@
 # Performance measurements
 
-Latest matched optimization: the [registered-font shaping pass](LAYOUT-PERFORMANCE-20261003.md)
+Latest matched optimization: the [ASCII break-opportunity scan](LAYOUT-PERFORMANCE-20261003-2.md)
+measures 83.159 → 79.867 ms for registered-font 2,000-cell table rendering over
+ten alternating fresh-process pairs (3.96%), with identical output across 580
+slide renders. Smaller fitting/fallback changes have overlapping observed
+ranges; no broad speed, memory or cross-platform improvement is claimed.
+
+The preceding [registered-font shaping pass](LAYOUT-PERFORMANCE-20261003.md)
 measures 95.177 → 83.413 ms for 2,000-cell table rendering and 19.260 → 14.623 ms
 for rich-text fitting over ten alternating fresh-process pairs. Skipping redundant
 ASCII normalization improves these workloads by 12.36% and 24.08%, respectively,

@@ -295,6 +295,23 @@ public struct TextShaper: Sendable {
     /// spaces and ideographs with common CJK opening/closing punctuation.
     /// This is a basic horizontal profile, not the complete UAX #14 algorithm.
     public static func lineBreaks(in text: String) -> [TextBreakOpportunity] {
+        // ASCII has one scalar per byte and no CJK opportunities. CR/LF is
+        // its only multi-scalar grapheme: emit one break after the pair.
+        if text.utf8.allSatisfy({ $0 < 0x80 }) {
+            var result: [TextBreakOpportunity] = [], offset = 0
+            var previousCR = false
+            for byte in text.utf8 {
+                offset += 1
+                if byte == 0x0A && previousCR {
+                    result[result.count - 1] = TextBreakOpportunity(scalarOffset: offset, mandatory: true)
+                } else if byte == 0x0D || byte == 0x0A || byte == 0x20 || byte == 0x2D {
+                    result.append(TextBreakOpportunity(scalarOffset: offset,
+                        mandatory: byte == 0x0D || byte == 0x0A))
+                }
+                previousCR = byte == 0x0D
+            }
+            return result
+        }
         let characters = Array(text)
         var result: [TextBreakOpportunity] = [], offset = 0
         let opening = "（［｛〈《「『【〔〖〘〚"
