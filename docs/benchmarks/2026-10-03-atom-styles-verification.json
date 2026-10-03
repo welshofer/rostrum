@@ -1,0 +1,53 @@
+{
+  "baselineRevision": "5654d1b09e43d26f93a195270f8832b6be3a21e4",
+  "cycle": 2,
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf6",
+  "files": {
+    "candidate-Rostrum.o": "d2e4383696dd04553f207bfc4a2402bba0a20ae359e8835e3a06db2d1986c100",
+    "candidate-bench": "3761da0dc0b94a2baeb39bc19359cc0e8d65eb260d1c6fde066872d736870543",
+    "candidate-extended-bench": "933db085532cda1887acf502c30e3939a23ae0f419b2f614dd17d2a769b541bd",
+    "candidate-build.log": "c4bf66a0690e19d122fa2df0dded17da5d7e059778f9d477e806eec3ea5c3694",
+    "candidate-RichTextLayout.swift": "bdaf17e5417a7536d346523e105de4c8481649f2bd2457986d2a3acb067d9b0f",
+    "candidate.patch": "8910f0ae98addedb5cf8848ee159ca39e3e40cf7ec73e59d37cb5b1f438d8774",
+    "precursor-profile": "c69c45f5a919f69c57ad24cd09b2e56a4229692abbcda52514593efeb5cb02b4",
+    "fallback-profile.txt": "73ffaa313f3013b2ea86bd540c9d909a28033d045e946ffef56a79b37e09f64c",
+    "registered-profile.txt": "23f40b87bd8db7373c76b48f9d7142ab97a17fc7ca0faa34a947b8f2a8a1c8d8",
+    "fit-profile.txt": "926623f05baf20703f23b6110a3d9dac7709a59321a44d6682750b166d392f80",
+    "focused-initial-compile.log": "3b9538de9b08383aff267ebcb9192875854745e30f9726e7e94b03509f2f3cb4",
+    "focused-initial-expectation.log": "9ec825cb927ff42ee28d12c802728ce1400986b1fa5f2b30730dd4568b86dc66",
+    "focused-tests.log": "50df010db4ba53c928f71ef45dcdbf7078f31df8cb448e976a3d6ecabb1dcae2",
+    "full-tests.log": "f8578f171a82abf10539df35381949a53f1c574be9d2082a8ed180b2e19662db",
+    "identity.py": "fdf14041b296316bc027cdeb9eb71312be059e276db2565ae71f38bde6c8aba3",
+    "identity.log": "55e01cfae13ee2b24b2196406ec52417d4bda089b4d55467d0edb10073b3ccbb",
+    "paired.log": "4039fff30f2bb49bc7b7ce2f8006f312d96d5de297118fd17a7954f436b08cd9",
+    "recovery-paired.log": "61aed57b69f64450e7b5df409bc24dc91a65000575178b316eb96d01b1ba13df"
+  },
+  "baselineFiles": {
+    "baseline-Rostrum.o": "d1c58102341eb35012580f71b239c4f63c925c8b5d930bd65896698e38bd913c",
+    "baseline-extended-bench": "d5d85a51b80de125e2b5edb2f7222918a604127322b9a73542b616007a3f8b10"
+  },
+  "recoveryBaselineRevision": "cf1b8a0cec2cf680383cb683603785aeaa0f2011",
+  "recoveryBaselineFiles": {
+    "baseline-Rostrum.o": "4e54243c71c0fba80a251195c1224cbbf417f1bf694441e9a6637b52dcb9df75",
+    "baseline-extended-bench": "39455d6d17672947c0af314581aa4adaa43e548bee0900fbba1d9c7629a54782"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "bdaf17e5417a7536d346523e105de4c8481649f2bd2457986d2a3acb067d9b0f",
+    "Tests/RostrumTests/LayoutAtomStyleTests.swift": "aef37c492e97eb2c8c117950141d15af860ccbe58df1c22b779fa43ef9cdf2e0",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792"
+  },
+  "buildCommand": "swift build -c release --product rostrum-bench --jobs 2",
+  "buildResult": "Build complete! (46.85 sec)",
+  "matchedDriverCompileCommand": "swiftc -swift-version 6 -O -I .build/perf6 Tools/rostrum-bench/main.swift .build/perf6/candidate-Rostrum.o -o .build/perf6/candidate-extended-bench",
+  "testCommand": "swift test --jobs 2",
+  "testResult": "1021 tests in 141 suites passed after 38.914 seconds",
+  "focusedCommand": "swift test --jobs 2 --filter 'LayoutAtomStyleTests|RichTextLayoutTests|TabLayoutTests'",
+  "focusedResult": "22 tests in 3 suites passed after 0.400 seconds",
+  "nativeOracleResult": "All 60 native tab geometry cases passed",
+  "identityResult": "76 cases, 628 slides identical against 5654d1b; 152 saved outputs reopened/table-traversed",
+  "testRepairs": "New test initially used dictionary attributes where XML.Element requires tuples, then assumed pure black rather than the unchanged #1A1A1A default. Both test setup/expectation errors were corrected from the existing constructor/resolve code. No library behavior or existing assertions changed. Failed logs retained.",
+  "measurementQuietWindow": "Root explicitly granted after GUI finished, engine confirmed paused/no jobs, Lectern idle and reviewer doing only light git reads. Both comparisons ran sequentially before release.",
+  "performanceScope": "Strong registered table/fitting improvement against current baseline with nonoverlapping ranges. Registered table also improves against cf1b8a0 with nonoverlap. Fallback ranges overlap and recovery is not established. No net memory or cross-platform speed claim.",
+  "sourceReview": "Root reported independent review APPROVE for numeric scans and paragraph-local style indexing before measurement."
+}
