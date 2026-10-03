@@ -15,6 +15,18 @@ checking private content, artwork, or commercial templates into Git.
 
 Each run emits one deck per style and a JSON manifest. `renderSeconds` measures the
 production renderer including package writing/previews, excluding snapshot storage.
+It also excludes the subsequent exported-content check. `structuralStatus` passes
+only when schema checks, dropped-content diagnostics and `contentCheck.issues` are
+empty. A failure exits nonzero after writing the manifest.
+
+`RenderContentCheck` opens the saved PPTX through Rostrum and checks visible text
+within each original slide's continuation/source-note group. Text on another slide
+or in speaker notes cannot hide a missing visible fragment. Speaker notes are checked
+separately; native chart categories, series and values and native table cells must
+match the input. Text uses ordered word matching to allow repeated headlines between
+continuations; it does not prove exact formatting, duplicate counts or fragment
+placement. Images and visual fit still require the native review below.
+
 Use Release, the same machine/fonts and identical inputs when comparing performance.
 Each manifest starts at `needs-powerpoint-review`; no structural test can mark it
 visually accepted.
@@ -52,19 +64,7 @@ Keep both the baseline manifest and its referenced exports together. Pixel chang
 require inspection, even when the numerical difference is small. Identical pixels mean
 only that the slide matches the reviewed baseline, not that the original design is good.
 
-## Current acceptance limits
-
-The October 2026 pass exercised the supplied templates and a generated serif theme,
-including live Lectern import, preview and revised-copy saving. PowerPoint review
-identified and drove fixes to cycle routing, table row heights and headline hierarchy.
-Final canvas-scale refinements still require PowerPoint review; the review machine
-locked before that pass could finish. Generated manifests remain unreviewed.
-
-Dense authored text-and-image slides can still exceed the readable fitting limit.
-They fail explicitly instead of dropping text; measured continuation-slide pagination
-is the next work item. The climate replay succeeds with both supplied templates, but
-its serif-theme version still exposes this limit. Missing fonts are reported separately.
-# Dense authored-content acceptance
+## Dense authored-content acceptance
 
 The renderer can expand dense authored text, comparison and image slides into
 continuation pages. Source notes that exceed footer space follow their supporting
@@ -75,8 +75,10 @@ template-aware composition path.
 For saved-content replay, check every original fact, chart label, image and source
 in the output, and check that continuation pages stay in the correct section.
 Recovery must retain all pages and existing comments. Page-count reduction during
-single-slide recovery is rejected to avoid deleting review work or breaking links;
-import the saved content for a whole-deck rebuild instead.
+single-slide recovery is rejected to avoid deleting review work or breaking links.
+Select **Rebuild the entire deck from saved content** to create a fresh copy with
+a different page count. Edits and comments made after generation remain only in the
+original deck. The recovery preview shows the resulting count and layout adjustments.
 
 Passing schema checks and content comparisons does not establish visual quality.
 Inspect the final exports in PowerPoint before marking a manifest reviewed.

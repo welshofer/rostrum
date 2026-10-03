@@ -115,6 +115,9 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
   stable slide identity, notes and comments; never send snapshots to a model.
 - A regression manifest starts unreviewed. Record PowerPoint visual acceptance
   separately from schema checks, test success and missing-font diagnostics.
+- Offline acceptance reads the exported deck back with `RenderContentCheck`.
+  Check visible text within its original slide group, speaker notes separately,
+  and native chart values/table cells. These checks do not prove visual fit.
 - Authored text/image slides may paginate when measured content exceeds the
   readable area. Preserve exact words, images, sources, notes, ordering and
   section membership; report the expanded slide count. Long sources that cannot
@@ -122,3 +125,6 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
 - Recovery treats continuation/source-note pages as one group. Keep existing
   page identities and review annotations. If a shorter alternative would remove
   pages, leave the copy intact and require a whole-deck rebuild from saved content.
+- Recovery offers an explicit whole-deck rebuild. Explain that edits and comments
+  added after generation remain only in the original; the rebuilt copy uses the
+  saved snapshot and may have a different page count.

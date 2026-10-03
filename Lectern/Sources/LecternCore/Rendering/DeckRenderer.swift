@@ -714,7 +714,8 @@ public actor DeckRenderer {
         case .twoColumn, .comparison:
             let left = body?.left ?? Column(heading: "", bullets: [])
             let right = body?.right ?? Column(heading: "", bullets: [])
-            return try deck.comparisonSlide(title, leftHeader: left.heading, left: left.bullets,
+            let lead = [body?.lead].compactMap { $0 }.filter { !$0.isEmpty }
+            return try deck.comparisonSlide(title, leftHeader: left.heading, left: lead + left.bullets,
                                             rightHeader: right.heading, right: right.bullets)
         case .quote:
             return try deck.quoteSlide(body?.quote ?? title, attribution: body?.attribution)

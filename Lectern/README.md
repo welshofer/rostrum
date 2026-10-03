@@ -316,8 +316,15 @@ of being cropped. Imported master/layout/theme parts remain unchanged.
 Theme-based generation compiles design.md into the master/theme and publishes a
 subordinate layout for each authored composition. Header dividers follow the measured
 title band, body text gets the remaining region, and photo backgrounds use contrasting
-text including footers. The final fit pass can compact spacing and reduce body type
-to 17pt; it rejects text that still cannot fit.
+text including footers. Dense text, image and comparison slides continue onto additional
+pages at readable sizes. Long sources flow onto source-note pages. The final fit pass
+can compact spacing and reduce body type to 17pt; unsupported content that still cannot
+fit produces an explicit error.
+
+Recovery previews show the revised slide count and layout adjustments. Recomposition
+preserves other slides and existing review comments. **Rebuild the entire deck from
+saved content** allows the page count to change freely in a new copy; later manual
+edits and comments remain only in the original file.
 
 Local acceptance evidence and the supplied-template test deck are recorded in
 `audit/template-acceptance/`. Structural success is separate from PowerPoint visual

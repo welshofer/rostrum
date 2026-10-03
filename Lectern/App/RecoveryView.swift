@@ -15,12 +15,22 @@ struct RecoveryView: View {
     @State private var busy = false
     @State private var task: Task<Void, Never>?
     @State private var scratch: URL?
+    @State private var rebuildDeck = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(sourceURL == nil ? "Recover saved content" : "Recompose a slide").font(.title2.bold())
             Text("Uses your saved text, images and design. No generation cost. Your original deck stays intact.")
                 .foregroundStyle(.secondary)
+            if sourceURL != nil {
+                Toggle("Rebuild the entire deck from saved content", isOn: $rebuildDeck)
+                    .disabled(busy)
+                    .onChange(of: rebuildDeck) { candidate = nil; problem = nil }
+                Text(rebuildDeck
+                     ? "Creates a new deck and allows the page count to change. Edits and review comments added after generation are kept only in your original file."
+                     : "Changes the selected slide and its continuation pages. Other slides, notes and review comments are preserved.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
             Picker("Slide", selection: $selected) {
                 ForEach(slides) { Text($0.title ?? $0.id).tag($0.id) }
             }.disabled(busy).onChange(of: selected) { candidate = nil }
@@ -33,6 +43,14 @@ struct RecoveryView: View {
                 .font(.caption).foregroundStyle(.secondary)
             if busy { ProgressView("Composing saved content…") }
             if let candidate {
+                Text("\(candidate.slideCount) slides in the revised copy").font(.headline)
+                if !candidate.warnings.isEmpty {
+                    DisclosureGroup("Layout adjustments (\(candidate.warnings.count))") {
+                        ForEach(Array(candidate.warnings.enumerated()), id: \.offset) { _, warning in
+                            Text(warning).font(.caption)
+                        }
+                    }
+                }
                 SlideContactSheet(previews: candidate.previews, titles: candidate.previewTitles)
                     .frame(minHeight: 280)
             }
@@ -67,11 +85,11 @@ struct RecoveryView: View {
     private func preview() {
         guard let scratch else { return }
         candidate = nil; problem = nil; busy = true
-        let id = selected, choice = variant
+        let id = selected, choice = variant, source = rebuildDeck ? nil : sourceURL
         task = Task {
             defer { busy = false }
             do {
-                let result = try await DeckRenderer().retrySlide(snapshotURL: snapshotURL, sourceURL: sourceURL,
+                let result = try await DeckRenderer().retrySlide(snapshotURL: snapshotURL, sourceURL: source,
                     slideID: id, variant: choice, into: scratch)
                 try Task.checkCancellation()
                 candidate = result

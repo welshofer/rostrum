@@ -63,11 +63,16 @@ import LecternCore
                 let renderSeconds = Date().timeIntervalSince(start)
                 let snapshot = RenderSnapshot(deck: deck, images: images, design: isTemplate || path.isEmpty ? nil : try String(contentsOf: file, encoding: .utf8), template: template)
                 let saved = try snapshot.save(in: directory)
+                let content = try RenderContentCheck.inspect(result.url, expected: deck)
+                let contentRecord = try JSONSerialization.jsonObject(with: JSONEncoder().encode(content))
+                let accepted = result.schemaIssues.isEmpty && result.droppedContent.isEmpty && content.issues.isEmpty
                 records.append(["deck": result.url.path, "snapshot": saved.path, "slides": result.slideCount,
                     "renderSeconds": renderSeconds, "schemaIssues": result.schemaIssues,
                     "warnings": result.warnings, "missingFonts": result.unmeasuredFonts,
+                    "droppedContent": result.droppedContent, "contentCheck": contentRecord,
+                    "structuralStatus": accepted ? "passed" : "failed",
                     "visualStatus": "needs-powerpoint-review"])
-                print("Wrote \(result.slideCount) slides: \(result.url.path)")
+                print("\(accepted ? "Wrote" : "CHECK FAILED for") \(result.slideCount) slides: \(result.url.path)")
             } catch {
                 records.append(["style": path, "error": String(describing: error), "visualStatus": "render-failed"])
                 print("FAILED \(path): \(error)")
@@ -75,6 +80,8 @@ import LecternCore
         }
         let data = try JSONSerialization.data(withJSONObject: records, options: [.prettyPrinted, .sortedKeys])
         try data.write(to: root.appendingPathComponent("manifest.json"))
-        if records.contains(where: { $0["error"] != nil }) { throw Failure.usage("One or more styles failed; see manifest.json for the rendering error") }
+        if records.contains(where: { $0["error"] != nil || $0["structuralStatus"] as? String == "failed" }) {
+            throw Failure.usage("One or more styles failed rendering or content checks; see manifest.json")
+        }
     }
 }
