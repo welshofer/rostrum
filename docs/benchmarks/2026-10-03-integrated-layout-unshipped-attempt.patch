@@ -1,0 +1,35 @@
+diff --git a/Sources/Rostrum/Presentation/RichTextLayout.swift b/Sources/Rostrum/Presentation/RichTextLayout.swift
+index 6b43823..9bc56ea 100644
+--- a/Sources/Rostrum/Presentation/RichTextLayout.swift
++++ b/Sources/Rostrum/Presentation/RichTextLayout.swift
+@@ -300,7 +300,7 @@ public struct RichTextLayout: Sendable {
+                                 && value != 0x200F))
+                     }
+                 })
+-            let standardTabs = latinParagraph && !["1", "true"].contains(attribute("rtl") ?? "0")
++            let standardTabs = hasTabs && latinParagraph && !["1", "true"].contains(attribute("rtl") ?? "0")
+             if hasTabs, !standardTabs {
+                 warnings.append(.unsupportedLayoutFeature("Tab alignment outside left-to-right Latin text is not verified; using left tab alignment"))
+             }
+@@ -493,10 +493,17 @@ public struct RichTextLayout: Sendable {
+                         let carry = Array(lineAtoms[(split + 1)...])
+                         lineAtoms.removeSubrange((split + 1)...)
+                         lineWidth = lineAtoms.reduce(0) { $0 + $1.width }; emit(justify: true)
+-                        lineAtoms = carry; lineWidth = 0
+-                        for i in lineAtoms.indices {
+-                            if lineAtoms[i].tab { lineAtoms[i].width = tabAdvance(lineAtoms[i], at: startX() + lineWidth) }
+-                            lineWidth += lineAtoms[i].width
++                        lineAtoms = carry
++                        if hasTabs {
++                            lineWidth = 0
++                            for i in lineAtoms.indices {
++                                if lineAtoms[i].tab { lineAtoms[i].width = tabAdvance(lineAtoms[i], at: startX() + lineWidth) }
++                                lineWidth += lineAtoms[i].width
++                            }
++                        } else {
++                            // Preserve the original ordered sum for ordinary
++                            // word carry; only tab fields need re-anchoring.
++                            lineWidth = carry.reduce(0) { $0 + $1.width }
+                         }
+                     } else { emit(justify: true) }
+                     continue
