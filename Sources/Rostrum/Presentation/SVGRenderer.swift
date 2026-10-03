@@ -171,8 +171,15 @@ struct SVGRenderer {
         case "p:sp":
             let properties = node.firstChild(named: "p:spPr")
             let preset = properties?.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
-            if properties?.firstChild(named: "a:custGeom") != nil || !["rect", "ellipse", "roundRect"].contains(preset) {
+            if properties?.firstChild(named: "a:custGeom") != nil || !SVGPresetGeometry.supported.contains(preset) {
                 problems.record("Preview approximates custom or unsupported shape geometry as a rectangle.")
+            }
+            if let guides = properties?.firstChild(named: "a:prstGeom")?.firstChild(named: "a:avLst"),
+               guides.children(named: "a:gd").contains(where: { guide in
+                   let parts = (guide[attribute: "fmla"] ?? "").split(whereSeparator: { $0.isWhitespace })
+                   return parts.count != 2 || parts.first != "val" || Double(parts.last ?? "")?.isFinite != true
+               }) {
+                problems.record("Preview uses default shape adjustments for unsupported guide formulas.")
             }
             if (flippedTextH || flippedTextV) && ShapeTransform.rotation(of: node) != 0 {
                 problems.record("Preview may differ for rotated text inside a flipped group.")
@@ -201,7 +208,8 @@ struct SVGRenderer {
                                  problems: inout SlideRenderProblems) -> String {
         guard let properties = node.firstChild(named: "p:spPr") else { return "" }
         let (x, y, w, h) = frame(of: properties)
-        let line = properties.firstChild(named: "a:ln")
+        let styled = effectiveLine(properties, reference: node.firstChild(named: "p:style")?.firstChild(named: "a:lnRef"))
+        let line = styled.firstChild(named: "a:ln")
         if line?.firstChild(named: "a:noFill") != nil { return "" }
         let color = colorHex(in: line?.firstChild(named: "a:solidFill"))
             ?? colorHex(in: node.firstChild(named: "p:style")?.firstChild(named: "a:lnRef")) ?? "#000000"
@@ -253,14 +261,22 @@ struct SVGRenderer {
         guard let spPr = sp.firstChild(named: "p:spPr") else { return "" }
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
-        let prst = spPr.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
-        let fill = paint(for: spPr, box: f, defs: &defs)
-        let stroke = strokeAttrs(spPr)
-        if let fill { out += geometry(prst, f, fill: fill, stroke: stroke) }
-        else if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
+        let preset = spPr.firstChild(named: "a:prstGeom")
+        let prst = spPr.firstChild(named: "a:custGeom") != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
+        let style = sp.firstChild(named: "p:style")
+        let fillProperties = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"))
+        let fill = paint(for: fillProperties, box: f, defs: &defs)
+        let lineProperties = effectiveLine(spPr, reference: style?.firstChild(named: "a:lnRef"))
+        let stroke = strokeAttrs(lineProperties)
+        if fill != nil || !stroke.isEmpty {
+            out += SVGPresetGeometry.render(prst, adjustments: preset?.firstChild(named: "a:avLst"),
+                                           frame: f, fill: fill ?? "none", stroke: stroke)
+        }
         if let txBody = sp.firstChild(named: "p:txBody") {
-            let text = renderText(txBody, box: f,
-                                  inheriting: inheritedRunDefaults(for: sp, ownedBy: owner))
+            let textFrame = SVGPresetGeometry.textFrame(prst, adjustments: preset?.firstChild(named: "a:avLst"), frame: f)
+            let text = renderText(txBody, box: textFrame,
+                                  inheriting: inheritedRunDefaults(for: sp, ownedBy: owner),
+                                  fontReference: style?.firstChild(named: "a:fontRef"), respectInsets: true)
             // PowerPoint flips the shape and its placement, not the glyphs.
             // Counter-reflect text locally before the enclosing SVG transforms.
             if textFlipH || textFlipV {
@@ -330,24 +346,11 @@ struct SVGRenderer {
         return level1(styles.firstChild(named: bucket))
     }
 
-    private func geometry(_ prst: String, _ f: (Int, Int, Int, Int), fill: String, stroke: String) -> String {
-        let (x, y, w, h) = f
-        switch prst {
-        case "ellipse":
-            return "<ellipse cx=\"\(x + w / 2)\" cy=\"\(y + h / 2)\" rx=\"\(w / 2)\" ry=\"\(h / 2)\" fill=\"\(fill)\"\(stroke)/>"
-        case "roundRect":
-            let r = Swift.min(w, h) / 8
-            return "<rect x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\" rx=\"\(r)\" fill=\"\(fill)\"\(stroke)/>"
-        default:
-            return box(x, y, w, h, fill: fill, stroke: stroke)
-        }
-    }
-
     // MARK: - Text (wrapped on real metrics when the typeface is registered,
     // else on a character-width estimate)
 
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
-                            inheriting defaults: XML.Element? = nil) -> String {
+                            inheriting defaults: XML.Element? = nil, fontReference: XML.Element? = nil, respectInsets: Bool = false) -> String {
         let (x, y, w, h) = f
         let bodyPr = txBody.firstChild(named: "a:bodyPr")
         // Bounded like every other coordinate here: `x + inset(…)` traps.
@@ -382,7 +385,10 @@ struct SVGRenderer {
                 return piece.firstChild(named: "a:t")?.textContent ?? ""
             }.joined()
             guard !text.isEmpty else { cursorY += emuPerPoint * 18; continue }
-            let rPr = pieces.first?.firstChild(named: "a:rPr")
+            let level = p.firstChild(named: "a:pPr")?.boundedInt("lvl", in: 0...8) ?? 0
+            let localDefaults = txBody.firstChild(named: "a:lstStyle")?.firstChild(named: "a:lvl\(level + 1)pPr")?.firstChild(named: "a:defRPr")
+            let rPr: XML.Element? = mergedRunProperties([defaults, localDefaults,
+                p.firstChild(named: "a:pPr")?.firstChild(named: "a:defRPr"), pieces.first?.firstChild(named: "a:rPr")])
             // ST_TextFontSize is 1pt–4000pt in hundredths. The file can say
             // anything, and `sz * 12700` on a large Int is an overflow crash.
             let sizeHundredths = min(max(rPr?[attribute: "sz"].flatMap { Int($0) }
@@ -392,25 +398,30 @@ struct SVGRenderer {
             let bold = rPr?[attribute: "b"] == "1"
                 || (rPr?[attribute: "b"] == nil && defaults?[attribute: "b"] == "1")
             let color = rPr.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) }
-                ?? defaults.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) } ?? "#1A1A1A"
-            let align = p.firstChild(named: "a:pPr")?[attribute: "algn"] ?? "l"
-            let (anchorX, textAnchor) = align == "ctr" ? (x + w / 2, "middle")
-                : align == "r" ? (x + w, "end") : (x, "start")
+                ?? defaults.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) }
+                ?? colorHex(in: fontReference) ?? "#1A1A1A"
+            let align = p.firstChild(named: "a:pPr")?[attribute: "algn"]
+                ?? txBody.firstChild(named: "a:lstStyle")?.firstChild(named: "a:lvl\(level + 1)pPr")?[attribute: "algn"] ?? "l"
+            let alignX = respectInsets ? contentX : x, alignW = respectInsets ? contentW : w
+            let (anchorX, textAnchor) = align == "ctr" ? (alignX + alignW / 2, "middle")
+                : align == "r" ? (alignX + alignW, "end") : (alignX, "start")
 
             // A run usually inherits its typeface from the theme rather than
             // naming one, and `+mj-lt`/`+mn-lt` name it indirectly. Resolving
             // both is what lets a deck with registered fonts take the measured
             // path for the text it actually renders, not just for runs that
             // happen to carry an explicit `a:latin`.
-            let typeface = resolvedTypeface(rPr) ?? resolvedTypeface(defaults)
+            let typeface = explicitTypeface(rPr) ?? explicitTypeface(defaults)
+                ?? (fontReference?[attribute: "idx"] == "major" ? theme.majorFont
+                    : fontReference?[attribute: "idx"] == "minor" ? theme.minorFont : nil)
+                ?? resolvedTypeface(nil)
             if pieces.count == 1, let typeface, let metrics = fonts.metrics(for: typeface) {
                 // Measured path: real word wrap and baseline placement —
                 // single-run paragraphs only, since a mixed-size/font
                 // paragraph measured at the first run's metrics would wrap
                 // wrong; those keep the estimated path below.
-                // (Left-aligned text starts at the body inset; the estimated
-                // branch below keeps its historical `x` so existing output is
-                // byte-identical for decks without registered fonts.)
+                // Both shape-text paths use the same preset text region and
+                // body insets; measured metrics refine wrapping and baselines.
                 let lineX = textAnchor == "start" ? contentX : anchorX
                 let sizePt = Double(sizeEMU) / Double(emuPerPoint)
                 let wrapped = TextMeasurer(metrics).wrap(
@@ -425,10 +436,9 @@ struct SVGRenderer {
                 }
             } else {
                 // No metrics for this typeface (or a mixed paragraph): estimate
-                // a character width from the font size and wrap on it. Line
-                // advance stays exactly as the estimated path always had it, so
-                // a paragraph that already fit emits byte-identical markup.
-                for line in wrapEstimated(text, width: w, sizeEMU: sizeEMU) {
+                // a character width from the font size and wrap within the
+                // available text region. This remains approximate typography.
+                for line in wrapEstimated(text, width: respectInsets ? contentW : w, sizeEMU: sizeEMU) {
                     cursorY += sizeEMU
                     lines.append(Line(x: anchorX, baseline: cursorY, size: sizeEMU,
                                       fill: color, anchor: textAnchor, text: line, bold: bold,
@@ -509,6 +519,23 @@ struct SVGRenderer {
     /// The typeface a run renders in: its own `a:latin`, the theme font it
     /// names indirectly (`+mj-lt`/`+mn-lt`), or — when it names none — the
     /// first theme font the deck has metrics for.
+    private func mergedRunProperties(_ sources: [XML.Element?]) -> XML.Element {
+        let result = XML.Element("a:rPr")
+        for source in sources.compactMap({ $0 }) {
+            for attribute in source.attributes { result[attribute: attribute.name] = attribute.value }
+            for child in source.childElements {
+                result.children.removeAll { if case .element(let e) = $0 { return e.name == child.name }; return false }
+                result.appendElement(child.deepCopy())
+            }
+        }
+        return result
+    }
+
+    private func explicitTypeface(_ properties: XML.Element?) -> String? {
+        guard let name = properties?.firstChild(named: "a:latin")?[attribute: "typeface"], !name.isEmpty else { return nil }
+        return name == "+mj-lt" ? theme.majorFont : name == "+mn-lt" ? theme.minorFont : name
+    }
+
     private func resolvedTypeface(_ rPr: XML.Element?) -> String? {
         let named = rPr?.firstChild(named: "a:latin")?[attribute: "typeface"]
         switch named {
@@ -1017,6 +1044,63 @@ struct SVGRenderer {
             cy += rh
         }
         return out
+    }
+
+    // Style references are one-based theme matrix indices. Resolve into a detached
+    // preview-only tree so phClr substitution never dirties the source package.
+    private var formatScheme: XML.Element? {
+        try? theme.part.dom().firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme")
+    }
+
+    private func styleEntry(_ reference: XML.Element?, list: String, backgroundList: String? = nil) -> XML.Element? {
+        guard let index = reference?[attribute: "idx"].flatMap(Int.init), index > 0, index != 1000 else { return nil }
+        let background = index >= 1001 && backgroundList != nil
+        let offset = background ? index - 1001 : index - 1
+        let entries = formatScheme?.firstChild(named: background ? (backgroundList ?? list) : list)?.childElements ?? []
+        guard entries.indices.contains(offset) else { return nil }
+        let copy = entries[offset].deepCopy()
+        if let color = colorHex(in: reference) {
+            var stack = [copy]
+            while let element = stack.popLast() {
+                for child in element.childElements {
+                    if child.name == "a:schemeClr", child[attribute: "val"] == "phClr" {
+                        let replacement = XML.Element("a:srgbClr", attributes: [("val", String(color.dropFirst()))],
+                            children: child.children)
+                        if let index = element.children.firstIndex(where: { if case .element(let e) = $0 { return e === child }; return false }) {
+                            element.children[index] = .element(replacement)
+                        }
+                    } else { stack.append(child) }
+                }
+            }
+        }
+        return copy
+    }
+
+    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?) -> XML.Element {
+        let fills = ["a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:grpFill", "a:noFill"]
+        guard !properties.childElements.contains(where: { fills.contains($0.name) }),
+              let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return properties }
+        return XML.Element("p:spPr", children: [.element(fill)])
+    }
+
+    private func effectiveLine(_ properties: XML.Element, reference: XML.Element?) -> XML.Element {
+        guard let inherited = styleEntry(reference, list: "a:lnStyleLst") else { return properties }
+        if let direct = properties.firstChild(named: "a:ln") {
+            // Direct attributes/children override the theme property by property.
+            for attribute in direct.attributes { inherited[attribute: attribute.name] = attribute.value }
+            for child in direct.childElements {
+                if ["a:noFill", "a:solidFill", "a:gradFill", "a:pattFill"].contains(child.name) {
+                    inherited.children.removeAll { node in
+                        if case .element(let e) = node { return ["a:noFill", "a:solidFill", "a:gradFill", "a:pattFill"].contains(e.name) }
+                        return false
+                    }
+                } else {
+                    inherited.children.removeAll { if case .element(let e) = $0 { return e.name == child.name }; return false }
+                }
+                inherited.appendElement(child.deepCopy())
+            }
+        }
+        return XML.Element("p:spPr", children: [.element(inherited)])
     }
 
     // MARK: - Paint / helpers

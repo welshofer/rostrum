@@ -8,10 +8,10 @@ objects are safe. PowerPoint remains the visual acceptance client.
 | Feature | Current support | Remaining work |
 | --- | --- | --- |
 | PPTX / POTX / PPSX | Recognized document kinds; templates retain native master/layout/theme relationships | Macro-enabled document kinds are not recognized; legacy binary PPT is outside the OPC reader |
-| Masters, layouts, themes | Import, preserve and author; template-aware composition and inherited text settings | Broader real-template corpus; full text/rendering equivalence is not certified |
+| Masters, layouts, themes | Import, preserve and author; template-aware composition; preview resolves shape fill/line/font style references and paragraph run defaults | Broader real-template corpus; full effects, color-transform and text/rendering equivalence is not certified |
 | Groups | Read children and transforms; preview nested coordinate spaces, rotation and flips | Creation/ungroup APIs; native visual baselines for all transform/text combinations |
 | Connectors | Read connections; preview straight lines, flips, direct/theme-reference colors, basic dashes and arrowheads | Attached-connector authoring/routing; bent and curved previews currently use straight lines with warnings |
-| Shape geometry | Preset geometry authoring; preview rectangles, rounded rectangles and ellipses | Other presets/custom geometry currently use rectangles with warnings; editable freeform API |
+| Shape geometry | Preset geometry authoring; preview 13 common outlines including diamonds, triangles, chevrons and directional arrows; literal adjustments and preset text regions | Other presets/custom geometry use rectangles with warnings; formula-based adjustments, effects and additional shape text rules remain; editable freeform API |
 | Text | Runs, paragraphs, fonts, bullets, spacing and autofit; CoreText measurement adapter in Lectern | Full rich-run shaping/measurement parity; portable metrics do not apply kerning, ligatures or complex-script shaping |
 | Charts | Native classic chart APIs, chart-cache extraction and guarded replacement; editable workbooks | Read embedded workbook data when caches are missing; broader date-category editing, stock and ChartEx |
 | Tables | Native cells, formatting and merges; measured layout in Lectern | Broader native rendering baselines |

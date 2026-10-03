@@ -253,8 +253,9 @@ import Rostrum
                                                        notesEnabled: false, into: dir,
                                                        useSmartArt: false)
 
-        #expect(!rendered.previewWarnings.isEmpty)
-        #expect(DeckResult.savedCopy(of: rendered, at: rendered.url).previewWarnings == rendered.previewWarnings)
+        var withPreviewWarning = rendered
+        withPreviewWarning.previewWarnings = ["Slide 1: unsupported preview feature"]
+        #expect(DeckResult.savedCopy(of: withPreviewWarning, at: rendered.url).previewWarnings == withPreviewWarning.previewWarnings)
         #expect(rendered.droppedContent.count == 2)
         #expect(rendered.droppedContent.contains { $0.contains("2 of 6 metrics") })
         #expect(rendered.droppedContent.contains { $0.contains("2 of 7 process steps") })

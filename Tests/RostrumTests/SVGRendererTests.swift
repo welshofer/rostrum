@@ -71,10 +71,13 @@ import Testing
     /// the same silent rewriting the wrap replaced.
     @Test func exactlyFillingTheLineBoundIsNotTreatedAsTruncation() throws {
         let deck = try Presentation()
-        // 1.25in at 18pt: approxCharWidth 114300 EMU, so maxChars is exactly 10.
+        // 1.25in at 18pt with zero insets: estimated width permits exactly 10 characters.
         let box = try deck.slides[0].shapes.addTextBox(
             Rect(x: .inches(1), y: .inches(1), width: .inches(1.25), height: .inches(6)))
         let frame = try #require(box.textFrame)
+        let body = try #require(box.element.firstChild(named: "p:txBody")?.firstChild(named: "a:bodyPr"))
+        body[attribute: "lIns"] = "0"
+        body[attribute: "rIns"] = "0"
         // 64 ten-character words: one per line, filling the bound precisely.
         frame.text = Array(repeating: String(repeating: "A", count: 10), count: 64)
             .joined(separator: " ")
