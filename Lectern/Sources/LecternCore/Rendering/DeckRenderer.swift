@@ -154,6 +154,7 @@ public actor DeckRenderer {
     /// preview and nothing else, because a missing thumbnail is not a reason
     /// to fail a deck that saved correctly.
     private static func previews(of presentation: Presentation) -> (svgs: [String], titles: [String], warnings: [String]) {
+        PreviewFontMeasurement.install(on: presentation.fonts)
         // One pass building both, so a slide whose render fails drops its
         // title too and the two arrays stay index-aligned.
         var svgs: [String] = []

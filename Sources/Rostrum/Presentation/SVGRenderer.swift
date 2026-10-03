@@ -185,7 +185,7 @@ struct SVGRenderer {
                 problems.record("Preview may differ for rotated text inside a flipped group.")
             }
             content = renderShape(node, ownedBy: owner, defs: &defs, problems: &problems, textFlipH: textFlipH, textFlipV: textFlipV)
-        case "p:pic": content = renderPicture(node, ownedBy: owner)
+        case "p:pic": content = renderPicture(node, ownedBy: owner, defs: &defs, problems: &problems)
         case "p:cxnSp": content = renderConnector(node, defs: &defs, problems: &problems)
         case "p:graphicFrame": content = renderGraphicFrame(node, ownedBy: owner, defs: &defs, problems: &problems)
         default:
@@ -265,7 +265,9 @@ struct SVGRenderer {
         let prst = spPr.firstChild(named: "a:custGeom") != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
         let style = sp.firstChild(named: "p:style")
         let fillProperties = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"))
-        let fill = paint(for: fillProperties, box: f, defs: &defs)
+        let fill = fillProperties.firstChild(named: "a:blipFill").flatMap {
+            imagePattern($0, ownedBy: owner, box: f, defs: &defs)
+        } ?? paint(for: fillProperties, box: f, defs: &defs)
         let lineProperties = effectiveLine(spPr, reference: style?.firstChild(named: "a:lnRef"))
         let stroke = strokeAttrs(lineProperties)
         if fill != nil || !stroke.isEmpty {
@@ -354,6 +356,10 @@ struct SVGRenderer {
 
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
                             inheriting inheritedStyles: [XML.Element] = [], fontReference: XML.Element? = nil, respectInsets: Bool = false) -> String {
+        if SVGRichText.needsLayout(txBody, inherited: inheritedStyles) {
+            return SVGRichText(theme: theme, fonts: fonts, slideNumber: slideNumber)
+                .render(txBody, frame: f, inherited: inheritedStyles, reference: fontReference)
+        }
         let (x, y, w, h) = f
         let bodyPr = txBody.firstChild(named: "a:bodyPr")
         // Bounded like every other coordinate here: `x + inset(…)` traps.
@@ -648,13 +654,15 @@ struct SVGRenderer {
 
     // MARK: - Pictures
 
-    private func renderPicture(_ pic: XML.Element, ownedBy owner: Part) -> String {
-        guard let spPr = pic.firstChild(named: "p:spPr") else { return "" }
-        let (x, y, w, h) = frame(of: spPr)
-        guard let rId = pic.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip")?[attribute: "r:embed"],
-              let data = imageData(rId: rId, ownedBy: owner) else { return "" }
-        return "<image x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\" "
-            + "preserveAspectRatio=\"xMidYMid slice\" href=\"\(data)\"/>"
+    private func renderPicture(_ pic: XML.Element, ownedBy owner: Part, defs: inout SVGDefinitions,
+                               problems: inout SlideRenderProblems) -> String {
+        guard let spPr = pic.firstChild(named: "p:spPr"), let blip = pic.firstChild(named: "p:blipFill") else { return "" }
+        let f = frame(of: spPr)
+        guard let fill = imagePattern(blip, ownedBy: owner, box: f, defs: &defs) else {
+            problems.record("Preview could not resolve a picture or its crop bounds."); return ""
+        }
+        let geom = spPr.firstChild(named: "a:prstGeom")
+        return SVGPresetGeometry.render(geom?[attribute: "prst"] ?? "rect", adjustments: geom?.firstChild(named: "a:avLst"), frame: f, fill: fill, stroke: strokeAttrs(spPr))
     }
 
     /// A `data:` URL for an embedded image, resolved against the part that owns
@@ -676,10 +684,32 @@ struct SVGRenderer {
         guard let rId = blip.firstChild(named: "a:blip")?[attribute: "r:embed"],
               let data = imageData(rId: rId, ownedBy: owner), f.2 > 0, f.3 > 0 else { return nil }
         let id = defs.nextID("bg")
-        defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" "
-            + "x=\"\(f.0)\" y=\"\(f.1)\" width=\"\(f.2)\" height=\"\(f.3)\">"
-            + "<image width=\"\(f.2)\" height=\"\(f.3)\" preserveAspectRatio=\"xMidYMid slice\" "
-            + "href=\"\(data)\"/></pattern>"
+        var pw = Double(f.2), ph = Double(f.3), ox = Double(f.0), oy = Double(f.1)
+        var content: String
+        if let tile = blip.firstChild(named: "a:tile"),
+           let rel = owner.rels.relationship(withId: rId),
+           let media = package.parts[PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)],
+           let info = ImageSniffer.sniff(media.blob) {
+            let sx = Double(tile.boundedInt("sx", in: 1...10_000_000) ?? 100_000) / 100_000
+            let sy = Double(tile.boundedInt("sy", in: 1...10_000_000) ?? 100_000) / 100_000
+            pw = min(Double(f.2) * 100, max(1, Double(info.pixelWidth) / info.dpiX * 914_400 * sx))
+            ph = min(Double(f.3) * 100, max(1, Double(info.pixelHeight) / info.dpiY * 914_400 * sy))
+            let align = tile[attribute: "algn"] ?? "tl"
+            if ["t", "ctr", "b"].contains(align) { ox += (Double(f.2) - pw) / 2 }
+            if ["tr", "r", "br"].contains(align) { ox += Double(f.2) - pw }
+            if ["l", "ctr", "r"].contains(align) { oy += (Double(f.3) - ph) / 2 }
+            if ["bl", "b", "br"].contains(align) { oy += Double(f.3) - ph }
+            ox += Double(tile.coordinate("tx") ?? 0); oy += Double(tile.coordinate("ty") ?? 0)
+            guard let image = SVGImagePlacement.render(blip, data: data, width: pw, height: ph) else { return nil }
+            content = image
+            let flip = tile[attribute: "flip"] ?? "none"
+            if flip == "x" || flip == "xy" { content += "<g transform=\"translate(\(2 * pw) 0) scale(-1 1)\">\(image)</g>"; pw *= 2 }
+            if flip == "y" || flip == "xy" { content += "<g transform=\"translate(0 \(2 * ph)) scale(1 -1)\">\(content)</g>"; ph *= 2 }
+        } else {
+            guard let image = SVGImagePlacement.render(blip, data: data, width: pw, height: ph) else { return nil }
+            content = image
+        }
+        defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(ox)\" y=\"\(oy)\" width=\"\(pw)\" height=\"\(ph)\" viewBox=\"0 0 \(pw) \(ph)\">\(content)</pattern>"
         return "url(#\(id))"
     }
 
@@ -694,7 +724,7 @@ struct SVGRenderer {
         let uri = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?[attribute: "uri"] ?? ""
         if uri.hasSuffix("/table"),
            let tbl = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?.firstChild(named: "a:tbl") {
-            return renderTable(tbl, x: x, y: y, defs: &defs)
+            return renderTable(tbl, x: x, y: y, width: w, height: h, defs: &defs)
         }
         if uri.hasSuffix("/chart"), let plot = renderChart(gf, ownedBy: owner, x: x, y: y, w: w, h: h) {
             return plot
@@ -740,7 +770,30 @@ struct SVGRenderer {
         guard let kind = chart.plotType else { return nil }
         // A fuzzed file can declare any number of series/points; bound both
         // rather than loop over whatever it claims.
-        let series = Array(chart.series.filter { !$0.values.isEmpty }.prefix(32))
+        let entries = Array(zip(chart.series, chart.seriesElements).filter { !$0.0.values.isEmpty }.prefix(32))
+        let series = entries.map { $0.0 }
+        let styles = entries.map { $0.1 }
+        let chartNode = chart.root?.firstChild(named: "c:chart")
+        let legendNode = chartNode?.firstChild(named: "c:legend")
+        let pointStyles: [[Int: XML.Element]] = styles.map { node in
+            var result: [Int: XML.Element] = [:]
+            for point in node.children(named: "c:dPt") {
+                if let index = point.firstChild(named: "c:idx")?.boundedInt("val", in: 0...511), result[index] == nil,
+                   let properties = point.firstChild(named: "c:spPr") { result[index] = properties }
+            }
+            return result
+        }
+        func color(_ seriesIndex: Int, _ point: Int?) -> String {
+            guard styles.indices.contains(seriesIndex) else { return seriesColor(seriesIndex) }
+            let properties = styles[seriesIndex].firstChild(named: "c:spPr")
+            let override = point.flatMap { pointStyles[seriesIndex][$0] }
+            if override?.firstChild(named: "a:noFill") != nil { return "none" }
+            if let fill = colorHex(in: override?.firstChild(named: "a:solidFill")) { return fill }
+            if kind == "lineChart", let fill = colorHex(in: properties?.firstChild(named: "a:ln")?.firstChild(named: "a:solidFill")) { return fill }
+            if properties?.firstChild(named: "a:noFill") != nil { return "none" }
+            if let fill = colorHex(in: properties?.firstChild(named: "a:solidFill")) { return fill }
+            return seriesColor(point != nil && ["pieChart", "doughnutChart"].contains(kind) ? point! : seriesIndex)
+        }
         guard !series.isEmpty else { return nil }
         let categories = chart.categories
         let pointCount = series.map(\.values.count).max() ?? 0
@@ -749,49 +802,59 @@ struct SVGRenderer {
 
         let fx = Double(x), fy = Double(y), fw = Double(w), fh = Double(h)
         let title = chart.title
-        let hasLegend = series.count > 1
+        let hasLegend = legendNode != nil
+        let legendPosition = legendNode?.firstChild(named: "c:legendPos")?[attribute: "val"] ?? "r"
+        let sideLegend = hasLegend && ["l", "r", "tr"].contains(legendPosition)
         let padX = fw * 0.06
-        let padTop = fh * (title == nil ? 0.07 : 0.17)
-        let padBottom = fh * (hasLegend ? 0.22 : 0.13)
-        let plotX = fx + padX
+        let padTop = fh * (title == nil ? 0.07 : 0.17) + (hasLegend && legendPosition == "t" ? fh * 0.10 : 0)
+        let padBottom = fh * (hasLegend && legendPosition == "b" ? 0.22 : 0.13)
+        let plotX = fx + padX + (sideLegend && legendPosition == "l" ? fw * 0.22 : 0)
         let plotY = fy + padTop
-        let plotW = Swift.max(1, fw - padX * 2)
+        let plotW = Swift.max(1, fw - padX * 2 - (sideLegend ? fw * 0.22 : 0))
         let plotH = Swift.max(1, fh - padTop - padBottom)
 
         var out = ""
         if let title {
-            out += textElement(clipLabel(title, width: w, sizeEMU: 13 * emuPerPoint),
+            let titlePr = chartNode?.firstChild(named: "c:title")?.firstChild(named: "c:tx")?.firstChild(named: "c:rich")?.firstChild(named: "a:p")
+            let titleStyle = titlePr?.firstChild(named: "a:r")?.firstChild(named: "a:rPr") ?? titlePr?.firstChild(named: "a:pPr")?.firstChild(named: "a:defRPr")
+            let titleSize = (titleStyle?.boundedInt("sz", in: 100...40_000) ?? 1300) * 127
+            out += textElement(clipLabel(title, width: w, sizeEMU: titleSize),
                                x: coord(fx + fw / 2), baseline: coord(fy + fh * 0.11),
-                               sizeEMU: 13 * emuPerPoint, fill: "#666666", anchor: "middle",
-                               bold: false, typeface: nil)
+                               sizeEMU: titleSize, fill: colorHex(in: titleStyle?.firstChild(named: "a:solidFill")) ?? "#666666", anchor: "middle",
+                               bold: ["1", "true"].contains(titleStyle?[attribute: "b"] ?? ""), typeface: titleStyle?.firstChild(named: "a:latin")?[attribute: "typeface"])
         }
 
         switch kind {
         case "pieChart", "doughnutChart":
-            out += pieBody(series[0], kind: kind, cx: fx + fw / 2, cy: plotY + plotH / 2,
-                           radius: Swift.min(fw, plotH) / 2 * 0.88)
-            out += legend(series, x: fx, y: plotY + plotH, width: fw, height: fh, labels: categories)
+            out += pieBody(series[0], kind: kind, cx: plotX + plotW / 2, cy: plotY + plotH / 2,
+                           radius: Swift.min(plotW, plotH) / 2 * 0.88, color: { color(0, $0) })
         case "barChart", "lineChart", "areaChart":
             let plot = chart.plots.first
             let grouping = plot?.firstChild(named: "c:grouping")?[attribute: "val"] ?? "clustered"
-            let scale = ValueScale(series: series, catCount: catCount, grouping: grouping)
-            out += axes(plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, scale: scale)
+            let axis = chartNode?.firstChild(named: "c:plotArea")?.firstChild(named: "c:valAx")
+            let scale = ValueScale(series: series, catCount: catCount, grouping: grouping, axis: axis?.firstChild(named: "c:scaling"))
             let horizontal = kind == "barChart"
                 && plot?.firstChild(named: "c:barDir")?[attribute: "val"] == "bar"
+            out += axes(plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, scale: scale, axis: axis, horizontal: horizontal)
             if kind == "barChart" {
                 out += barBody(series, catCount: catCount, scale: scale, horizontal: horizontal,
-                               plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH)
+                               plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, color: color)
             } else {
-                out += lineBody(series, catCount: catCount, scale: scale, filled: kind == "areaChart",
-                                plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH)
+                let body = lineBody(series, catCount: catCount, scale: scale, filled: kind == "areaChart",
+                                plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, styles: styles, color: { color($0, nil) })
+                out += "<svg x=\"\(plotX)\" y=\"\(plotY)\" width=\"\(plotW)\" height=\"\(plotH)\" viewBox=\"\(plotX) \(plotY) \(plotW) \(plotH)\" overflow=\"hidden\">\(body)</svg>"
             }
             out += categoryLabels(categories, catCount: catCount, plotX: plotX, plotW: plotW,
-                                  baseY: plotY + plotH, height: fh)
-            if hasLegend {
-                out += legend(series, x: fx, y: plotY + plotH + fh * 0.08, width: fw, height: fh, labels: nil)
-            }
+                                  baseY: plotY + plotH, height: fh, horizontal: horizontal, plotY: plotY, plotH: plotH)
         default:
             return nil          // radar/scatter/bubble/surface → placeholder
+        }
+        if hasLegend {
+            let lx = sideLegend ? (legendPosition == "l" ? fx : plotX + plotW + fw * 0.02) : fx
+            let ly = sideLegend ? plotY : legendPosition == "t" ? plotY - fh * 0.11 : plotY + plotH + fh * 0.08
+            out += legend(series, x: lx, y: ly, width: sideLegend ? fw * 0.21 : fw, height: fh,
+                labels: ["pieChart", "doughnutChart"].contains(kind) ? categories : nil, vertical: sideLegend,
+                color: { ["pieChart", "doughnutChart"].contains(kind) ? color(0, $0) : color($0, nil) })
         }
         return out
     }
@@ -810,7 +873,7 @@ struct SVGRenderer {
         let stacked: Bool
         let percent: Bool
 
-        init(series: [ChartData.Series], catCount: Int, grouping: String) {
+        init(series: [ChartData.Series], catCount: Int, grouping: String, axis: XML.Element? = nil) {
             percent = grouping == "percentStacked"
             stacked = percent || grouping == "stacked"
             var high = 0.0, low = 0.0
@@ -834,7 +897,9 @@ struct SVGRenderer {
                     }
                 }
             }
-            guard high.isFinite, low.isFinite, high - low > 0 else {
+            if let v = axis?.firstChild(named: "c:min")?[attribute: "val"].flatMap(Double.init), v.isFinite { low = v }
+            if let v = axis?.firstChild(named: "c:max")?[attribute: "val"].flatMap(Double.init), v.isFinite { high = v }
+            guard high.isFinite, low.isFinite, (high - low).isFinite, high - low > 0 else {
                 minimum = 0; range = 1; return
             }
             minimum = low
@@ -850,15 +915,55 @@ struct SVGRenderer {
     }
 
     private func axes(plotX: Double, plotY: Double, plotW: Double, plotH: Double,
-                      scale: ValueScale) -> String {
-        let zeroY = plotY + plotH * (1 - scale.zeroFraction)
-        return "<line x1=\"\(coord(plotX))\" y1=\"\(coord(zeroY))\" x2=\"\(coord(plotX + plotW))\" "
-            + "y2=\"\(coord(zeroY))\" stroke=\"#BFBFBF\" stroke-width=\"6350\"/>"
+                      scale: ValueScale, axis: XML.Element?, horizontal: Bool) -> String {
+        guard axis?.firstChild(named: "c:delete")?[attribute: "val"] != "1" else { return "" }
+        let zero = horizontal ? plotX + plotW * scale.zeroFraction : plotY + plotH * (1 - scale.zeroFraction)
+        var out = horizontal
+            ? "<line x1=\"\(coord(zero))\" y1=\"\(coord(plotY))\" x2=\"\(coord(zero))\" y2=\"\(coord(plotY + plotH))\" stroke=\"#BFBFBF\" stroke-width=\"6350\"/>"
+            : "<line x1=\"\(coord(plotX))\" y1=\"\(coord(zero))\" x2=\"\(coord(plotX + plotW))\" y2=\"\(coord(zero))\" stroke=\"#BFBFBF\" stroke-width=\"6350\"/>"
+        guard let axis else { return out }
+        let exponent = pow(10, floor(log10(scale.range / 5)))
+        guard exponent.isFinite, exponent > 0 else { return out }
+        let unit = [1.0, 2, 5, 10].first { $0 * exponent >= scale.range / 5 }! * exponent
+        let requested = axis.firstChild(named: "c:majorUnit")?[attribute: "val"].flatMap(Double.init)
+        let step = requested.flatMap { $0.isFinite && $0 > 0 ? $0 : nil } ?? unit
+        let start = ceil(scale.minimum / step) * step
+        let grid = axis.firstChild(named: "c:majorGridlines")
+        let gridStyle = grid?.firstChild(named: "c:spPr")
+        let gridLine = gridStyle?.firstChild(named: "a:ln")
+        let gridColor = gridLine?.firstChild(named: "a:noFill") != nil ? "none" : colorHex(in: gridLine?.firstChild(named: "a:solidFill")) ?? "#D9D9D9"
+        let gridWidth = max(0, gridLine?.coordinate("w") ?? 6350)
+        let stroke = " stroke=\"\(gridColor)\" stroke-width=\"\(gridWidth)\"" + dashAttributes(gridLine, width: gridWidth)
+        let format = axis.firstChild(named: "c:numFmt")?[attribute: "formatCode"] ?? "General"
+        let formatter = NumberFormatter(); formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.numberStyle = format.contains("%") ? .percent : .decimal
+        let decimals = format.split(separator: ".", maxSplits: 1).dropFirst().first?.prefix { $0 == "0" || $0 == "#" }.count ?? 0
+        formatter.minimumFractionDigits = min(decimals, 8); formatter.maximumFractionDigits = format == "General" ? 6 : min(decimals, 8)
+        formatter.usesGroupingSeparator = format.contains(",")
+        if format.contains("$") { formatter.positivePrefix = "$"; formatter.negativePrefix = "-$" }
+        for i in 0..<128 {
+            let value = start + Double(i) * step
+            guard value.isFinite, value <= scale.minimum + scale.range + step * 1e-8 else { break }
+            let fraction = scale.fraction(value)
+            let position = horizontal ? plotX + fraction * plotW : plotY + (1 - fraction) * plotH
+            if grid != nil {
+                out += horizontal
+                    ? "<line x1=\"\(coord(position))\" y1=\"\(coord(plotY))\" x2=\"\(coord(position))\" y2=\"\(coord(plotY + plotH))\"\(stroke)/>"
+                    : "<line x1=\"\(coord(plotX))\" y1=\"\(coord(position))\" x2=\"\(coord(plotX + plotW))\" y2=\"\(coord(position))\"\(stroke)/>"
+            }
+            if axis.firstChild(named: "c:tickLblPos")?[attribute: "val"] != "none" {
+                let label = formatter.string(from: NSNumber(value: value)) ?? String(value)
+                out += textElement(label, x: coord(horizontal ? position : plotX - 45_720),
+                    baseline: coord(horizontal ? plotY + plotH + 152_400 : position + 38_100), sizeEMU: 10 * emuPerPoint,
+                    fill: "#666666", anchor: horizontal ? "middle" : "end", bold: false, typeface: nil)
+            }
+        }
+        return out
     }
 
     private func barBody(_ series: [ChartData.Series], catCount: Int, scale: ValueScale,
                          horizontal: Bool, plotX: Double, plotY: Double,
-                         plotW: Double, plotH: Double) -> String {
+                         plotW: Double, plotH: Double, color: (Int, Int?) -> String) -> String {
         let along = horizontal ? plotH : plotW
         let slot = along / Double(catCount)
         let inset = slot * 0.16
@@ -870,7 +975,7 @@ struct SVGRenderer {
         var negativeTops = [Double](repeating: 0, count: catCount)
 
         for index in 0..<catCount {
-            let bandStart = (horizontal ? plotY : plotX) + Double(index) * slot + inset
+            let bandStart = (horizontal ? plotY : plotX) + Double(horizontal ? catCount - index - 1 : index) * slot + inset
             for (s, entry) in series.enumerated() {
                 guard var value = Self.finite(entry, index) else { continue }
                 if scale.percent {
@@ -894,9 +999,9 @@ struct SVGRenderer {
                 }
                 let startFraction = scale.stacked ? scale.fraction(start) : zero
                 let endFraction = scale.fraction(end)
-                let lo = Swift.min(startFraction, endFraction), hi = Swift.max(startFraction, endFraction)
+                let lo = max(0, min(1, Swift.min(startFraction, endFraction))), hi = max(0, min(1, Swift.max(startFraction, endFraction)))
                 let offset = scale.stacked ? 0 : Double(s) * barWidth
-                let fill = seriesColor(s)
+                let fill = color(s, index)
                 if horizontal {
                     out += box(coord(plotX + plotW * lo), coord(bandStart + offset),
                                coord(plotW * (hi - lo)), coord(barWidth), fill: fill)
@@ -911,7 +1016,7 @@ struct SVGRenderer {
 
     private func lineBody(_ series: [ChartData.Series], catCount: Int, scale: ValueScale,
                           filled: Bool, plotX: Double, plotY: Double,
-                          plotW: Double, plotH: Double) -> String {
+                          plotW: Double, plotH: Double, styles: [XML.Element], color: (Int) -> String) -> String {
         // Points sit at category centers, matching where bars are drawn.
         let step = plotW / Double(catCount)
         var out = ""
@@ -924,25 +1029,32 @@ struct SVGRenderer {
             }
             guard points.count > 1 else { continue }
             let path = points.map { "\(coord($0.0)),\(coord($0.1))" }.joined(separator: " ")
-            let color = seriesColor(s)
+            let color = color(s)
             if filled {
                 let baseY = plotY + plotH * (1 - scale.zeroFraction)
                 out += "<polygon points=\"\(coord(points[0].0)),\(coord(baseY)) \(path) "
                     + "\(coord(points[points.count - 1].0)),\(coord(baseY))\" fill=\"\(color)\" "
                     + "fill-opacity=\"0.55\"/>"
             }
-            out += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(color)\" "
-                + "stroke-width=\"25400\" stroke-linejoin=\"round\"/>"
+            let properties = styles[s].firstChild(named: "c:spPr")
+            let ln = properties?.firstChild(named: "a:ln")
+            let stroke = ln?.firstChild(named: "a:noFill") != nil ? "none" : colorHex(in: ln?.firstChild(named: "a:solidFill")) ?? color
+            let lineWidth = ln?.coordinate("w") ?? 25400
+            let dash = dashAttributes(ln, width: lineWidth)
+            out += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(stroke)\" "
+                + "stroke-width=\"\(lineWidth)\"\(dash) stroke-linejoin=\"round\"/>"
         }
         return out
     }
 
     private func pieBody(_ entry: ChartData.Series, kind: String,
-                         cx: Double, cy: Double, radius: Double) -> String {
+                         cx: Double, cy: Double, radius: Double, color: (Int) -> String) -> String {
         guard radius > 0 else { return "" }
-        let values = entry.values.compactMap { $0 }.filter { $0.isFinite && $0 > 0 }
-        let total = values.reduce(0, +)
-        guard total > 0 else { return "" }
+        let values = entry.values.enumerated().compactMap { index, value -> (Int, Double)? in
+            guard let value, value.isFinite, value > 0 else { return nil }; return (index, value)
+        }
+        let total = values.reduce(0) { $0 + $1.1 }
+        guard total.isFinite, total > 0 else { return "" }
         let doughnut = kind == "doughnutChart"
         // Doughnuts are stroked arcs rather than a pie with a punched hole, so
         // they don't need to know the slide background color.
@@ -950,10 +1062,10 @@ struct SVGRenderer {
         let ringRadius = radius - ringWidth / 2
         var out = ""
         var angle = -Double.pi / 2
-        for (index, value) in values.enumerated() {
+        for (index, value) in values {
             let sweep = value / total * 2 * Double.pi
             let end = angle + sweep
-            let color = seriesColor(index)
+            let color = color(index)
             let r = doughnut ? ringRadius : radius
             if values.count == 1 || sweep >= 2 * Double.pi - 1e-9 {
                 // A single full-circle slice degenerates as an arc path.
@@ -981,34 +1093,35 @@ struct SVGRenderer {
     }
 
     private func categoryLabels(_ categories: [String], catCount: Int, plotX: Double,
-                                plotW: Double, baseY: Double, height: Double) -> String {
+                                plotW: Double, baseY: Double, height: Double, horizontal: Bool, plotY: Double, plotH: Double) -> String {
         guard !categories.isEmpty, catCount <= 12 else { return "" }
         let step = plotW / Double(catCount)
         let size = 10 * emuPerPoint
         var out = ""
         for (index, label) in categories.prefix(catCount).enumerated() {
             out += textElement(clipLabel(label, width: coord(step), sizeEMU: size),
-                               x: coord(plotX + step * (Double(index) + 0.5)),
-                               baseline: coord(baseY + height * 0.06),
-                               sizeEMU: size, fill: "#808080", anchor: "middle",
+                               x: coord(horizontal ? plotX - 45_720 : plotX + step * (Double(index) + 0.5)),
+                               baseline: coord(horizontal ? plotY + plotH / Double(catCount) * (Double(catCount - index) - 0.5) + 38_100 : baseY + height * 0.06),
+                               sizeEMU: size, fill: "#808080", anchor: horizontal ? "end" : "middle",
                                bold: false, typeface: nil)
         }
         return out
     }
 
     private func legend(_ series: [ChartData.Series], x: Double, y: Double, width: Double,
-                        height: Double, labels: [String]?) -> String {
+                        height: Double, labels: [String]?, vertical: Bool, color: (Int) -> String) -> String {
         let names = labels ?? series.map(\.name)
         let entries = Array(names.prefix(6)).enumerated().filter { !$0.element.isEmpty }
         guard !entries.isEmpty else { return "" }
         let size = 10 * emuPerPoint
-        let slot = width / Double(entries.count)
+        let slot = vertical ? width : width / Double(entries.count)
         let swatch = height * 0.035
         var out = ""
         for (slotIndex, entry) in entries.enumerated() {
-            let left = x + slot * Double(slotIndex) + slot * 0.1
+            let left = x + (vertical ? 0 : slot * Double(slotIndex)) + slot * 0.1
+            let y = y + (vertical ? Double(slotIndex) * max(height * 0.08, Double(size) * 1.5) : 0)
             out += box(coord(left), coord(y + height * 0.02), coord(swatch), coord(swatch),
-                       fill: seriesColor(entry.offset))
+                       fill: color(entry.offset))
             out += textElement(clipLabel(entry.element, width: coord(slot * 0.75), sizeEMU: size),
                                x: coord(left + swatch * 1.5),
                                baseline: coord(y + height * 0.02 + swatch * 0.85),
@@ -1043,26 +1156,106 @@ struct SVGRenderer {
         return Int(Swift.min(Swift.max(value.rounded(), -bound), bound))
     }
 
-    private func renderTable(_ tbl: XML.Element, x: Int, y: Int, defs: inout SVGDefinitions) -> String {
-        let cols = tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol").map { intAttr($0, "w") } ?? []
-        let rows = tbl.children(named: "a:tr")
-        var out = ""
-        var cy = y
-        for tr in rows {
-            let rh = intAttr(tr, "h")
-            var cx = x
-            for (c, tc) in tr.children(named: "a:tc").enumerated() {
-                let cw = c < cols.count ? cols[c] : 0
-                let fill = colorHex(in: tc.firstChild(named: "a:tcPr")?.firstChild(named: "a:solidFill")) ?? "#FFFFFF"
-                out += box(cx, cy, cw, rh, fill: fill, stroke: " stroke=\"#DDDDDD\" stroke-width=\"3175\"")
-                if let txBody = tc.firstChild(named: "a:txBody") {
-                    out += renderText(txBody, box: (cx + cw / 20, cy, cw, rh))
+    private func renderTable(_ tbl: XML.Element, x: Int, y: Int, width: Int, height: Int,
+                             defs: inout SVGDefinitions) -> String {
+        let cols = Array((tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol") ?? []).prefix(2048)).map { max(0, intAttr($0, "w")) }
+        let rows = Array(tbl.children(named: "a:tr").prefix(2048))
+        let heights = rows.map { max(0, intAttr($0, "h")) }
+        let totalW = cols.reduce(0, +), totalH = heights.reduce(0, +)
+        guard totalW > 0, totalH > 0, width > 0, height > 0 else { return "" }
+        let properties = tbl.firstChild(named: "a:tblPr")
+        let styleID = properties?.firstChild(named: "a:tableStyleId")?.textContent
+        let styleRoot = (try? package.mainDocumentPart().related(by: RelType.tableStyles, in: package).dom())
+            ?? package.parts.values.filter { $0.contentType == ContentType.tableStyles }.sorted { $0.uri.value < $1.uri.value }.first.flatMap { try? $0.dom() }
+        let style = styleRoot?.children(named: "a:tblStyle").first { $0[attribute: "styleId"] == styleID }
+        func enabled(_ key: String) -> Bool { ["1", "true"].contains(properties?[attribute: key] ?? "") }
+        var out = "", cy = 0
+        for (r, tr) in rows.enumerated() {
+            var cx = 0
+            for (c, tc) in tr.children(named: "a:tc").prefix(cols.count).enumerated() {
+                defer { cx += cols[c] }
+                if ["1", "true"].contains(tc[attribute: "hMerge"] ?? "") || ["1", "true"].contains(tc[attribute: "vMerge"] ?? "") { continue }
+                let cs = min(cols.count - c, tc.boundedInt("gridSpan", in: 1...2048) ?? 1)
+                let rs = min(rows.count - r, tc.boundedInt("rowSpan", in: 1...2048) ?? 1)
+                let cw = cols[c..<(c + cs)].reduce(0, +), rh = heights[r..<(r + rs)].reduce(0, +)
+                var regions = ["wholeTbl"]
+                if enabled("bandRow") { regions.append((r - (enabled("firstRow") ? 1 : 0)) % 2 == 0 ? "band1H" : "band2H") }
+                if enabled("bandCol") { regions.append((c - (enabled("firstCol") ? 1 : 0)) % 2 == 0 ? "band1V" : "band2V") }
+                if c == 0 && enabled("firstCol") { regions.append("firstCol") }
+                if c + cs == cols.count && enabled("lastCol") { regions.append("lastCol") }
+                if r == 0 && enabled("firstRow") { regions.append("firstRow") }
+                if r + rs == rows.count && enabled("lastRow") { regions.append("lastRow") }
+                let pr = XML.Element("a:tcPr"), defaults = XML.Element("a:defRPr")
+                let edges = [("lnL", "left"), ("lnR", "right"), ("lnT", "top"), ("lnB", "bottom")]
+                for region in regions {
+                    guard let block = style?.firstChild(named: "a:" + region) else { continue }
+                    if let cellStyle = block.firstChild(named: "a:tcStyle") {
+                        if let fill = cellStyle.firstChild(named: "a:fill")?.childElements.first {
+                            for name in ["a:solidFill", "a:noFill", "a:gradFill"] { pr.removeChildren(named: name) }
+                            pr.appendElement(fill.deepCopy())
+                        }
+                        for (edge, name) in edges {
+                            let borders = cellStyle.firstChild(named: "a:tcBdr")
+                            let inside = edge == "lnL" && c > 0 || edge == "lnR" && c + cs < cols.count ? "insideV" :
+                                edge == "lnT" && r > 0 || edge == "lnB" && r + rs < rows.count ? "insideH" : name
+                            if let ln = borders?.firstChild(named: "a:" + inside)?.firstChild(named: "a:ln") {
+                                pr.removeChildren(named: "a:" + edge)
+                                let copy = XML.Element("a:" + edge, attributes: ln.attributes.map { ($0.name, $0.value) }, children: ln.childElements.map { .element($0.deepCopy()) })
+                                pr.appendElement(copy)
+                            }
+                        }
+                    }
+                    if let tx = block.firstChild(named: "a:tcTxStyle") {
+                        for attr in tx.attributes {
+                            if ["b", "i"].contains(attr.name) {
+                                if attr.value != "def" { defaults[attribute: attr.name] = attr.value == "on" ? "1" : "0" }
+                            } else { defaults[attribute: attr.name] = attr.value }
+                        }
+                        if let color = tx.childElements.first(where: { SVGPaint.colorElements.contains($0.name) }) {
+                            defaults.removeChildren(named: "a:solidFill")
+                            defaults.appendElement(XML.Element("a:solidFill", children: [.element(color.deepCopy())]))
+                        }
+                        if let ref = tx.firstChild(named: "a:fontRef"), let idx = ref[attribute: "idx"] {
+                            defaults.removeChildren(named: "a:latin")
+                            defaults.appendElement(XML.Element("a:latin", attributes: [("typeface", idx == "major" ? "+mj-lt" : "+mn-lt")]))
+                        }
+                    }
                 }
-                cx += cw
+                if let direct = tc.firstChild(named: "a:tcPr") {
+                    for attr in direct.attributes { pr[attribute: attr.name] = attr.value }
+                    for child in direct.childElements {
+                        if ["a:solidFill", "a:noFill", "a:gradFill"].contains(child.name) {
+                            for name in ["a:solidFill", "a:noFill", "a:gradFill"] { pr.removeChildren(named: name) }
+                        } else { pr.removeChildren(named: child.name) }
+                        pr.appendElement(child.deepCopy())
+                    }
+                }
+                let fill = paint(for: pr, box: (cx, cy, cw, rh), defs: &defs) ?? "none"
+                out += box(cx, cy, cw, rh, fill: fill)
+                for (index, edge) in edges.enumerated() {
+                    guard let ln = pr.firstChild(named: "a:" + edge.0) else { continue }
+                    let wrapper = XML.Element("p:spPr", children: [.element(XML.Element("a:ln", attributes: ln.attributes.map { ($0.name, $0.value) }, children: ln.childElements.map { .element($0.deepCopy()) }))])
+                    let stroke = strokeAttrs(wrapper)
+                    guard !stroke.isEmpty else { continue }
+                    let x1 = index == 1 ? cx + cw : cx, y1 = index == 3 ? cy + rh : cy
+                    let x2 = index < 2 ? x1 : cx + cw, y2 = index < 2 ? cy + rh : y1
+                    out += "<line x1=\"\(x1)\" y1=\"\(y1)\" x2=\"\(x2)\" y2=\"\(y2)\"\(stroke)/>"
+                }
+                if let source = tc.firstChild(named: "a:txBody") {
+                    let body = source.deepCopy()
+                    let bp = body.firstChild(named: "a:bodyPr") ?? XML.Element("a:bodyPr")
+                    if body.firstChild(named: "a:bodyPr") == nil { body.appendElement(bp) }
+                    for (margin, inset, fallback) in [("marL", "lIns", 91440), ("marR", "rIns", 91440), ("marT", "tIns", 45720), ("marB", "bIns", 45720)] {
+                        bp[attribute: inset] = String(pr.coordinate(margin) ?? fallback)
+                    }
+                    bp[attribute: "anchor"] = pr[attribute: "anchor"] ?? "t"
+                    let inherited = XML.Element("a:lstStyle", children: [.element(XML.Element("a:defPPr", children: [.element(defaults)]))])
+                    out += renderText(body, box: (cx, cy, cw, rh), inheriting: [inherited], respectInsets: true)
+                }
             }
-            cy += rh
+            cy += heights[r]
         }
-        return out
+        return "<g transform=\"translate(\(x) \(y)) scale(\(Double(width) / Double(totalW)) \(Double(height) / Double(totalH)))\">\(out)</g>"
     }
 
     // Style references are one-based theme matrix indices. Resolve into a detached
@@ -1160,7 +1353,13 @@ struct SVGRenderer {
         guard let ln = spPr.firstChild(named: "a:ln"), ln.firstChild(named: "a:noFill") == nil,
               let color = colorHex(in: ln.firstChild(named: "a:solidFill")) else { return "" }
         let width = ln.coordinate("w") ?? 12700
-        return " stroke=\"\(color)\" stroke-width=\"\(width)\""
+        return " stroke=\"\(color)\" stroke-width=\"\(max(0, width))\"" + dashAttributes(ln, width: width)
+    }
+
+    private func dashAttributes(_ line: XML.Element?, width: Int) -> String {
+        let patterns: [String: [Int]] = ["dot": [1, 3], "sysDot": [1, 1], "dash": [4, 3], "sysDash": [3, 1], "lgDash": [8, 3], "dashDot": [4, 3, 1, 3], "lgDashDot": [8, 3, 1, 3], "lgDashDotDot": [8, 3, 1, 3, 1, 3]]
+        guard let name = line?.firstChild(named: "a:prstDash")?[attribute: "val"], let pattern = patterns[name] else { return "" }
+        return " stroke-dasharray=\"" + pattern.map { String($0 * max(1, width)) }.joined(separator: " ") + "\""
     }
 
     private func frame(of spPr: XML.Element) -> (Int, Int, Int, Int) {

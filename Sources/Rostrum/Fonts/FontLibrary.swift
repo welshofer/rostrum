@@ -12,6 +12,11 @@ public final class FontLibrary {
     /// Lowercased typeface name → metrics.
     private var byName: [String: FontMetrics] = [:]
 
+    /// Optional host-provided glyph measurement for previews. It is never used
+    /// to alter document XML or serialized bytes. Hosts must install the same
+    /// adapter for deterministic previews; nil retains portable font metrics.
+    public var previewAdvance: ((String, String, Double, Bool, Bool) -> Double?)?
+
     public init() {}
 
     /// Register a font from raw bytes under its own family names (`name`

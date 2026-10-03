@@ -72,6 +72,23 @@ Path-gradient geometry, tile rectangles and rotation-independent fills remain
 approximate. SVG definitions use a per-render counter for deterministic IDs,
 avoiding repeated scans of accumulated gradient or embedded-image data.
 
+Rich-text previews retain per-run size, color, bold, italic, underline, strike,
+baseline shift and tracking through wrapping; hard breaks, hanging character or
+Arabic/alphabetic bullets, paragraph spacing, alignment and saved normal-autofit
+scale are applied. Lectern supplies CoreText advances for preview wrapping;
+portable callers can provide `FontLibrary.previewAdvance` or register font metrics.
+This does not modify document bytes. Full complex-script and PowerPoint line-layout
+parity is not certified.
+
+Picture and picture-fill previews use saved asymmetric source crops, destination
+stretch rectangles and tile transforms instead of automatic center-cropping.
+Table previews resolve merged cells, direct padding/fills/edge borders and embedded
+table-style regions. Office built-in style IDs without an embedded style definition
+are not reconstructed. Classic chart previews honor explicit series/point colors,
+line width/dashes, legend presence/position, linear value-axis bounds, major gridlines
+and basic decimal/percent/currency tick formats. Advanced chart layouts and number
+format expressions remain approximate. Source parts are preserved unchanged.
+
 ## Acceptance priorities
 
 1. Complete PowerPoint-rendered baselines for nested groups, flips, rotation, text

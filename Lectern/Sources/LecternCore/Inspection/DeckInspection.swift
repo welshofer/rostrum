@@ -179,6 +179,7 @@ public enum DeckInspector {
 
         var previews: [SlidePreviewRecord] = []
         if renderPreviews {
+            PreviewFontMeasurement.install(on: deck.fonts)
             let total = deck.slides.count
             onEvent(.rendering(done: 0, total: total))
             for index in 0..<total {
