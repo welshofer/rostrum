@@ -4,7 +4,7 @@ import Rostrum
 /// Stable entry points for exercising Rostrum without a provider account.
 /// Each entry creates real document artifacts and verifies the reopened file.
 public enum LibraryDemoID: String, CaseIterable, Codable, Sendable, Identifiable {
-    case slides, layouts, shapes, fillsAndLines, text, fontsAndFitting, pictures
+    case slides, layouts, shapes, fillsAndLines, text, fontsAndFitting, paragraphLayout, pictures
     case tableStructure, tableStyles, tableAppearance, charts, chartEditing, smartArt
     case notes, comments, sections, slideImport, theme, templates, design
     case mediaAndAttachments, package, extractionAndRendering

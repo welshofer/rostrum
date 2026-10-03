@@ -1,6 +1,7 @@
 import Foundation
 import Testing
 import LecternCore
+import Rostrum
 @testable import Lectern
 
 @Suite @MainActor struct LibraryLabAppTests {
@@ -31,6 +32,52 @@ import LecternCore
             context.app.goHome()
         }
         #expect(model.results.count == 3)
+    }
+
+    @Test(arguments: [false, true])
+    func paragraphDemoReachesInspectorAndExport(narrow: Bool) async throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("LabParagraph-" + UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let model = LibraryLabModel()
+        model.options = .init(text: "App paragraph demonstration", sampleSize: 6, alternative: narrow)
+        await model.run([.paragraphLayout], in: root).value
+        let result = try #require(model.results[.paragraphLayout])
+        #expect(result.passed && model.failures.isEmpty && model.completed == 1)
+        #expect(result.checks.contains { $0.name == "Paragraph positions survive reopening" && $0.passed })
+        await context.app.inspect(deckAt: result.afterURL).value
+        #expect(context.app.phase == .inspected)
+        #expect(context.app.inspection?.previews.count == 2)
+        let exportRoot = root.appendingPathComponent("Export")
+        let task = try #require(context.app.exportInspected(into: exportRoot))
+        await task.value
+        #expect(context.app.exportProblem == nil)
+        let directory = try #require(context.app.exportedDirectory)
+        let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        let markdownURL = try #require(files.first { $0.pathExtension == "md" })
+        let markdown = try String(contentsOf: markdownURL, encoding: .utf8)
+        #expect(markdown.contains("App paragraph demonstration"))
+        #expect(markdown.contains("The last line remains natural."))
+        #expect(context.app.exportSummary == "2 slides · 0 media files · 0 chart CSVs")
+        let deck = try Presentation(contentsOf: result.afterURL)
+        #expect(deck.slides.count == 2)
+        #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
+        let shape = try #require(deck.slides[0].shapes.all.first { $0.name == "Justified paragraph" })
+        #expect(shape.textFrame?.paragraphs.first?.alignment == .justified)
+        let tree = try #require(deck.slides[0].part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree"))
+        let node = try #require(tree.children(named: "p:sp").first {
+            $0.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "name"] == "Justified paragraph"
+        })
+        let body = try #require(node.firstChild(named: "p:txBody"))
+        let layout = RichTextLayout(textBody: body, width: shape.frame.width.points,
+                                    height: shape.frame.height.points, fonts: deck.fonts, theme: deck.theme)
+        let metrics = try #require(deck.fonts.metrics(for: "DejaVu Sans"))
+        #expect(layout.fits && layout.diagnostics.isEmpty)
+        #expect(layout.lines.first?.spans.contains {
+            $0.run.text == " " && $0.width > metrics.width(of: " ", pointSize: $0.run.fontSize) + 0.1
+        } == true)
+        #expect(model.results[.paragraphLayout]?.directory == result.directory)
     }
 
     @Test func aFailureDoesNotPreventRemainingDemos() async throws {

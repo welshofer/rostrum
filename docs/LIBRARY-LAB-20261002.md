@@ -3,7 +3,7 @@
 Library Lab makes Rostrum's shipped capability families runnable in Lectern
 without a provider, account, network request or external document. Open the
 **Library Lab** sidebar item, choose a demonstration, change its declared inputs,
-and select **Run Demo** or **Run All 23 Demos**. Inspect the saved result or the
+and select **Run Demo** or **Run All Demos**. Inspect the saved result or the
 before document, share the deck/report, or use **All Files** to access every
 source, template, SVG, notes page, extracted image, media file and chart dataset.
 
@@ -31,6 +31,7 @@ visible in Lectern and in its JSON report.
 | Fills, outlines and shadows | Solid/alpha/theme/none/linear/radial/image fills; every dash and compound line; shadow | Drawing |
 | Rich text and live fields | Runs, paragraphs, list numbering/bullets, margins, alignment, spacing, tracking, superscript/subscript, links and fields | Drawing |
 | Fonts, shaping and fitting | Licensed bundled font; exact face lookup, measure/wrap/shape/fit; embed and recover bytes | Platform document |
+| Paragraph spacing and justification | Side-by-side mixed-size left/justified paragraphs; adjustable sentence count and width; both fit APIs; embedded-font recovery; exact span positions after reopening; shared table-cell layout | [Platform paragraphs](../Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphRecipe.swift) |
 | Pictures and image fills | Image formats and metadata, crop, rotation, deduplication, independent replacement, image fills and retained geometry | Drawing |
 | Edit a table grid | Merge topology, unmerge, insert/delete/move/reorder rows and columns; independent permutations and atomic refusals | Drawing |
 | 74 native table styles | Complete native enum gallery, headers/footers/banding/RTL | Drawing |
@@ -103,6 +104,34 @@ LECTERN_LAB_ARTIFACTS=/tmp/lectern-lab-artifacts \
 The optional output directory receives unique run folders. Ordinary tests use and
 remove their own temporary directories. Tests do not read provider credentials or
 modify the user's deck library.
+
+## Paragraph-layout extension — 2026-10-03
+
+The paragraph demo uses fixed English body text and the licensed regular DejaVu
+font. User text becomes its title; sample size controls sentence count and the
+alternative narrows both columns. Interior word spaces expand on wrapped lines;
+final paragraph lines retain natural spacing. The second slide exercises a
+justified table cell with explicit zero padding. Both public fit entry points,
+owned-DOM `RichTextLayout` measurement, embedding, SVG and extraction are invoked.
+Saved-file checks compare all spans, baselines, widths and styles after reopening.
+
+The catalog and Run All action derive their count from the enum. Tabs, RTL,
+non-Latin, distributed and low justification remain visible support boundaries.
+Explicit hard line breaks can expand, while paragraph-final lines stay natural.
+These layout checks do not establish general Office pixel parity. The historical
+verification counts below belong to the original 23-demo implementation.
+
+With the paragraph engine and ASCII-normalization optimization integrated,
+`swift test --package-path Lectern --jobs 2` passed 231 tests in 25 suites.
+The current 24-demo pipeline passed 297 saved-file checks; the paragraph demo
+passed 13 checks with no findings. Its focused tests cover both widths and
+sentence-count bounds, actual expansion, natural final lines, unchanged-save
+identity and exact reopened geometry. The added app test exercises
+`LibraryLabModel → AppState.inspect → exportInspected`, verifies an expanded
+space against registered font metrics, and checks exported title/table text and
+the two-slide export summary. Native hosted execution of that new test and
+interactive UI acceptance are recorded by the integrating task, not inferred
+from these core results.
 
 ## Verification record
 

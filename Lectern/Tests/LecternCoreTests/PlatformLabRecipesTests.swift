@@ -4,7 +4,7 @@ import Rostrum
 @testable import LecternCore
 
 @Suite struct PlatformLabRecipesTests {
-    private static let ids: [LibraryDemoID] = [.layouts, .fontsAndFitting, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering]
+    private static let ids: [LibraryDemoID] = [.layouts, .fontsAndFitting, .paragraphLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering]
 
     @Test(arguments: ids, [false, true])
     func everyRecipeExecutesSerializesAndVerifies(id: LibraryDemoID, alternative: Bool) throws {
@@ -28,6 +28,28 @@ import Rostrum
             if name.hasSuffix(".ppsx") { #expect(try Presentation(data: data).documentKind == .slideShow) }
             if name.hasSuffix(".xlsx") { #expect(try ZipReader(data: data).contains("[Content_Types].xml")) }
         }
+    }
+
+    @Test(arguments: [false, true])
+    func paragraphControlsChangeGeometryAndSurviveSaving(narrow: Bool) throws {
+        let short = try PlatformLabRecipes.make(.paragraphLayout, options: .init(sampleSize: 2, alternative: narrow))
+        let long = try PlatformLabRecipes.make(.paragraphLayout, options: .init(sampleSize: 12, alternative: narrow))
+        let shortLayout = try PlatformLabRecipes.paragraphGeometry(short.deck, named: "Justified paragraph")
+        let longLayout = try PlatformLabRecipes.paragraphGeometry(long.deck, named: "Justified paragraph")
+        #expect(shortLayout.lines != longLayout.lines)
+        let expectedWidth = (narrow ? 4.5 : 5.7) * 72
+        #expect(abs(PlatformLabRecipes.paragraphVisibleWidth(shortLayout.lines[0], fonts: short.deck.fonts) - expectedWidth) < 0.01)
+        #expect(shortLayout.lines.dropLast().allSatisfy { abs(PlatformLabRecipes.paragraphVisibleWidth($0, fonts: short.deck.fonts) - expectedWidth) < 0.01 })
+        #expect(shortLayout.lines.last!.width < expectedWidth)
+        #expect(shortLayout.diagnostics.isEmpty && longLayout.diagnostics.isEmpty)
+        let first = try long.deck.serializedData()
+        #expect(try long.deck.serializedData() == first)
+        let reopened = try Presentation(data: first)
+        reopened.registerEmbeddedFonts()
+        let recovered = try PlatformLabRecipes.paragraphGeometry(reopened, named: "Justified paragraph")
+        #expect(recovered.lines == longLayout.lines)
+        #expect(try reopened.serializedData() == first)
+        #expect(try PlatformLabRecipes.paragraphGeometry(short.deck, named: "Left paragraph").lines[0].width < expectedWidth)
     }
 
     @Test func embeddedWorkbookHasResolvableNativePreview() throws {
