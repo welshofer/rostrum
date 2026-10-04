@@ -515,3 +515,15 @@ proofs transfer by exact specimen identity. Other manual workflows and the
 separate new bullet correction remain pending. See the
 [integration report](LAYOUT-FIDELITY-20261004-11.md) for retained diagnostics,
 comment-metadata differences and bounded fitting-performance evidence.
+
+## October 4 fidelity13 manual paragraph completion
+
+Both paragraph options now complete the actual Run Demo → inspector → native
+folder-export workflow: 74 checks, zero findings, seven loaded previews and seven
+exported slides each. All 165/169 source text nodes survive narrowly specified
+Markdown unescaping. Sources remain unchanged from after inspection through
+export. Comparison with the gate retains four slide-one text changes and, on
+slide seven, the root viewport plus 18 empty-text transforms; painting nodes and
+remaining XML are exact, without a raw SVG identity claim. The
+[manual addendum](LAYOUT-FIDELITY-20261004-11-MANUAL.md) pins the independently
+approved evidence and completed hosted checks. Marker correction remains separate.

@@ -317,3 +317,19 @@ The [receipt](docs/benchmarks/2026-10-04-cell-fitting-integration-verification.j
 retains the recovered automation pipe and initial viewport assertion. Other
 manual workflows and the new bullet correction remain separate pending work.
 No merge or deployment is claimed.
+
+## Fidelity13 manual paragraph completion — October 4
+
+Both real paragraph Lab → inspect → native folder-export workflows now pass,
+with 74 checks, zero findings and seven loaded/exported slides each. The
+[manual addendum](docs/LAYOUT-FIDELITY-20261004-11-MANUAL.md) retains 38 artifact
+pins, all 165/169 source text nodes, exact timing of source-hash observations,
+four slide-one text changes and the viewport plus 18 empty-text SVG differences.
+Painting nodes and remaining XML match; raw identity is not claimed.
+
+At published `8d1714b`, hosted macOS, Linux Swift 6.0 build/README and Linux
+Swift 6.1 tests pass. GitGuardian still fails two historical occurrences of an
+independently recomputed source SHA-256, not credentials; no dismissal is claimed.
+Earlier performance evidence is unchanged. The separate marker correction
+remains future work; no build, GUI operation or publication occurred in this
+addendum lane.
