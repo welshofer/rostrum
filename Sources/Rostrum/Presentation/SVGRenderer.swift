@@ -543,12 +543,18 @@ struct SVGRenderer {
             let baseline = Double(f.1) + line.baseline * Double(emuPerPoint)
             var result = "<text transform=\"translate(\(f.0),\(decimal(baseline))) scale(\(emuPerPoint))\" xml:space=\"preserve\""
                 + (lineDisablesLigatures ? ligatureStyle : "") + ">"
+            var usesViewerAdvances = false
             for span in line.spans {
                 let run = span.run
                 let embedded = run.fontFamily.flatMap {
                     diagnostics.embeddedFamily(for: FontFaceKey(family: $0, bold: run.bold, italic: run.italic), fonts: fonts)
                 }
-                result += "<tspan x=\"\(decimal(span.x))\""
+                if !span.followsPreviousRun { usesViewerAdvances = false }
+                result += "<tspan"
+                // Once a run uses an unregistered viewer font, let adjacent
+                // runs follow its actual advance. An estimated absolute x can
+                // overlap the preceding glyphs. Tabs and bullets reset flow.
+                if !usesViewerAdvances { result += " x=\"\(decimal(span.x))\"" }
                 result += diagnostics.textAttributes.attributes(for: run, family: embedded ?? run.fontFamily, inheritsDisabledStandardLigatures: inheritsDisabled)
                 // An estimated width is useful for wrapping, but must not
                 // squeeze the viewer's real glyphs into that estimate.
@@ -556,6 +562,7 @@ struct SVGRenderer {
                     fonts.previewFace(for: FontFaceKey(family: $0, bold: run.bold, italic: run.italic))
                 } != nil
                 if measured, span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
+                usesViewerAdvances = usesViewerAdvances || !measured
                 result += ">" + escape(run.text) + "</tspan>"
             }
             return result + "</text>"

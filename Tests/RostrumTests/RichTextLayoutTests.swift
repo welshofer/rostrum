@@ -160,6 +160,29 @@ import Testing
         }
     }
 
+    @Test func automaticNumbersFollowTextFontWhileCharacterBulletsUseBulletFont() throws {
+        // Native PowerPoint renders automatic numbers in the text face even
+        // when buFont names a different explicit or theme face. Character
+        // bullets honor that face. Keep schema order in the oracle fixture.
+        for font in ["Arial Black", "+mj-lt"] {
+            let inherited = try XML.parse(Data("""
+            <a:lstStyle><a:lvl1pPr><a:buFont typeface="\(font)"/></a:lvl1pPr></a:lstStyle>
+            """.utf8))
+            for localFont in ["", "<a:buFont typeface=\"\(font)\"/>"] {
+                let xml = try body("""
+                <a:p><a:pPr>\(localFont)<a:buAutoNum type="arabicPeriod"/></a:pPr><a:r><a:rPr sz="2800"><a:latin typeface="Times New Roman"/></a:rPr><a:t>Number</a:t></a:r></a:p>
+                <a:p><a:pPr>\(localFont)<a:buChar char="1."/></a:pPr><a:r><a:rPr sz="2800"><a:latin typeface="Times New Roman"/></a:rPr><a:t>Character</a:t></a:r></a:p>
+                """)
+                let theme = try Presentation().theme
+                let layout = RichTextLayout(textBody: xml, width: 500, height: 200,
+                    fallbackMetrics: try metrics(), theme: theme, inheritedStyles: [inherited])
+                #expect(layout.lines[0].spans[0].run.fontFamily == "Times New Roman")
+                #expect(layout.lines[1].spans[0].run.fontFamily == (font == "+mj-lt" ? theme.majorFont : font))
+                #expect(layout.lines.allSatisfy { $0.spans[0].run.fontSize == 28 })
+            }
+        }
+    }
+
     @Test func wrappingOffIsMeasuredAsOverflowAndNeverSplits() throws {
         let xml = try body("<a:p><a:r><a:rPr sz=\"1000\"/><a:t>AAAA AAAA</a:t></a:r></a:p>", attributes: "wrap=\"none\"")
         let layout = RichTextLayout(textBody: xml, width: 20, height: 100, fallbackMetrics: try metrics())

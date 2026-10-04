@@ -26,6 +26,9 @@ public struct RichTextSpan: Equatable, Sendable {
     public var run: ResolvedTextRun
     public var x: Double
     public var width: Double
+    // Preserve the distinction between adjacent text runs and explicit tab or
+    // list-marker positioning when viewer font advances are unavailable.
+    var followsPreviousRun = false
 }
 
 public struct RichTextLine: Equatable, Sendable {
@@ -353,7 +356,10 @@ public struct RichTextLayout: Sendable {
                     bullet?.baselineShift = 0
                     // Each schema choice inherits as a unit. Follow-text is an
                     // explicit override; a farther font/point size must not win.
-                    if let font = choice(["a:buFontTx", "a:buFont"])?[attribute: "typeface"] {
+                    // PowerPoint uses the text face for automatic numbering;
+                    // the separate bullet face applies only to characters.
+                    if bulletProperties?.firstChild(named: "a:buChar") != nil,
+                       let font = choice(["a:buFontTx", "a:buFont"])?[attribute: "typeface"] {
                         bullet?.fontFamily = font == "+mj-lt" ? theme?.majorFont : font == "+mn-lt" ? theme?.minorFont : font
                     }
                     if let size = choice(["a:buSzTx", "a:buSzPct", "a:buSzPts"]) {
@@ -577,7 +583,8 @@ public struct RichTextLayout: Sendable {
                         spans[spans.count - 1].width += atom.width
                     } else {
                         var run = runStyles[atom.styleIndex]; run.text = atom.text
-                        spans.append(RichTextSpan(run: run, x: x, width: atom.width))
+                        spans.append(RichTextSpan(run: run, x: x, width: atom.width,
+                            followsPreviousRun: previousSource != nil && !expanded))
                     }
                     previousSource = expanded ? nil : atom.source; x += atom.width
                 }
