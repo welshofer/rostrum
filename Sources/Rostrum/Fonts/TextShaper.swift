@@ -41,9 +41,44 @@ public struct TextShaper: Sendable {
             return ShapedGlyphRun(glyphs: [], breaks: [], diagnostics: [.invalidPointSize], direction: direction)
         }
         let scale = pointSize / Double(metrics.unitsPerEm)
+        // Normalized singletons need no heap allocation. Complex clusters keep
+        // decoded arrays so repeated shaping passes do not decode UTF-8 again.
+        enum Scalars: RandomAccessCollection {
+            typealias Index = Int
+            case single(Unicode.Scalar)
+            case multiple([Unicode.Scalar])
+
+            init(_ view: String.UnicodeScalarView) {
+                let start = view.startIndex
+                if start != view.endIndex, view.index(after: start) == view.endIndex {
+                    self = .single(view[start])
+                } else {
+                    self = .multiple(Array(view))
+                }
+            }
+            var startIndex: Int { 0 }
+            var endIndex: Int {
+                switch self {
+                case .single: return 1
+                case .multiple(let values): return values.count
+                }
+            }
+            func index(after i: Int) -> Int { i + 1 }
+            func index(before i: Int) -> Int { i - 1 }
+            func index(_ i: Int, offsetBy distance: Int) -> Int { i + distance }
+            func distance(from start: Int, to end: Int) -> Int { end - start }
+            subscript(index: Int) -> Unicode.Scalar {
+                switch self {
+                case .single(let scalar):
+                    precondition(index == 0)
+                    return scalar
+                case .multiple(let values): return values[index]
+                }
+            }
+        }
         struct Cluster {
             let range: Range<Int>
-            let scalars: [Unicode.Scalar]
+            let scalars: Scalars
             var kind: Int // 0 Latin/CJK, 1 Hebrew, 2 digit, -1 neutral
             var level = 0
         }
@@ -56,8 +91,8 @@ public struct TextShaper: Sendable {
             // Foundation normalization/bridging round trip for these clusters;
             // any non-ASCII scalar still takes the full normalization path.
             let normalized = original.utf8.allSatisfy { $0 < 0x80 }
-                ? Array(original.unicodeScalars)
-                : Array(original.precomposedStringWithCanonicalMapping.unicodeScalars)
+                ? Scalars(original.unicodeScalars)
+                : Scalars(original.precomposedStringWithCanonicalMapping.unicodeScalars)
             var kind = -1
             for scalar in normalized {
                 let value = scalar.value
