@@ -1,0 +1,86 @@
+{
+  "snapshots": [
+    {
+      "snapshot": ".build/perf21-native-paint/process-canonical-during-15.txt",
+      "cpuPercent": {
+        "WindowServer": 99.6,
+        "backupd": 0.0,
+        "photolibraryd": 103.1,
+        "managedcorespotlightd": 34.3
+      }
+    },
+    {
+      "snapshot": ".build/perf21-native-paint/process-canonical-end.txt",
+      "cpuPercent": {
+        "WindowServer": 98.0,
+        "backupd": 0.0,
+        "photolibraryd": 93.4,
+        "managedcorespotlightd": 7.8
+      }
+    },
+    {
+      "snapshot": ".build/perf21-native-paint/process-end.txt",
+      "cpuPercent": {
+        "WindowServer": 96.5,
+        "backupd": 0.0,
+        "photolibraryd": 88.4,
+        "managedcorespotlightd": 12.5
+      }
+    },
+    {
+      "snapshot": ".build/perf21-native-paint/process-native-end.txt",
+      "cpuPercent": {
+        "WindowServer": 96.5,
+        "backupd": 0.0,
+        "photolibraryd": 88.4,
+        "managedcorespotlightd": 12.5
+      }
+    },
+    {
+      "snapshot": ".build/perf21-native-paint/process-start.txt",
+      "cpuPercent": {
+        "WindowServer": 98.7,
+        "backupd": 0.0,
+        "photolibraryd": 84.6,
+        "managedcorespotlightd": 2.1
+      }
+    },
+    {
+      "snapshot": ".build/perf21-native-paint/process-supplement-during-15.txt",
+      "cpuPercent": {
+        "WindowServer": 96.7,
+        "backupd": 0.0,
+        "photolibraryd": 89.3,
+        "managedcorespotlightd": 21.3
+      }
+    },
+    {
+      "snapshot": ".build/perf21-native-paint/process-supplement-end.txt",
+      "cpuPercent": {
+        "WindowServer": 97.9,
+        "backupd": 0.0,
+        "photolibraryd": 89.3,
+        "managedcorespotlightd": 2.2
+      }
+    }
+  ],
+  "ranges": {
+    "WindowServer": [
+      96.5,
+      99.6
+    ],
+    "photolibraryd": [
+      84.6,
+      103.1
+    ],
+    "managedcorespotlightd": [
+      2.1,
+      34.3
+    ],
+    "backupd": [
+      0.0,
+      0.0
+    ]
+  },
+  "scope": "Seven retained start/during/end snapshots; no agent builds/GUI by coordination. Background load substantial; snapshots do not establish clean-host isolation or remove load bias."
+}

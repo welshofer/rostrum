@@ -1,0 +1,85 @@
+{
+  "helperUnchanged": true,
+  "manifest": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopen-inputs.json",
+  "cases": [
+    {
+      "name": "primary",
+      "command": [
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
+        "proof",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/primary/candidate-1/saved.pptx",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/primary"
+      ],
+      "savedReopenAllArtifactsIdentical": true,
+      "artifacts": {
+        "slide-0-issues.json": "ab59a401f7873a0f7b3739d93911b1386e85e570aef7284a859f470d6cbfbeec",
+        "slide-1-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+        "saved.pptx": "09f2b4aa1bb3eca33fdf94d066b1355c929b5326b420c1e9551de9d78f617684",
+        "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+        "slide-0.svg": "fffbe475236c255c51afea872e85fc0532c8c4bcca22ddac055f97402d2d9310",
+        "slide-1-issues.json": "8153da682e180f1a01a47cc2eb9eaeea2bdd9ce6a3320f3580933913009efbb6",
+        "slide-1.svg": "eea386c605021d8fd7a0bf676381271125c49c24f7f6c0e4c6ae9af53f006db5",
+        "slide-2.svg": "fbbac45776f13f13112daf807669d7f7fea2ae5674ceafbdeb279d01472011cc",
+        "slide-2-issues.json": "b856b457c1be517a219c7c9b9f6b9bd8176fa248777ad96057aeca66dc80b04b",
+        "slide-2-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+      }
+    },
+    {
+      "name": "autofit",
+      "command": [
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
+        "proof",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/autofit/candidate-1/saved.pptx",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/autofit"
+      ],
+      "savedReopenAllArtifactsIdentical": true,
+      "artifacts": {
+        "slide-0-issues.json": "ab59a401f7873a0f7b3739d93911b1386e85e570aef7284a859f470d6cbfbeec",
+        "slide-1-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+        "saved.pptx": "59d5acb1d25e0b93db0794b964f37fc2b744751eb704533a493e881e1beec995",
+        "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+        "slide-0.svg": "109e03d418ea882f4068b9160de34d43abe940b1421c84151fff09a440a7e97a",
+        "slide-1-issues.json": "9c765d54fa6fcb4241aad588c2b73e5c1d15e99da7a9022b0fca64cad57fc9ff",
+        "slide-1.svg": "5330dbb14f537ab20741b598c1dd064164b56228532c9bebfecfd288cd299e8e"
+      }
+    },
+    {
+      "name": "eligibility",
+      "command": [
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
+        "proof",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/eligibility/candidate-1/saved.pptx",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/eligibility"
+      ],
+      "savedReopenAllArtifactsIdentical": true,
+      "artifacts": {
+        "slide-0-issues.json": "ab59a401f7873a0f7b3739d93911b1386e85e570aef7284a859f470d6cbfbeec",
+        "slide-1-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+        "saved.pptx": "47dc045dbf5854700dfddfeec7f22827d72e5cb5cc3b5d0b4995dfbc5655fb0f",
+        "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+        "slide-0.svg": "9ba93c4dfaccce7bc3da2cc523ab5205033d3ac97010ecf2c032503db347d760",
+        "slide-1-issues.json": "8153da682e180f1a01a47cc2eb9eaeea2bdd9ce6a3320f3580933913009efbb6",
+        "slide-1.svg": "374edc49a24df0870c210bc24ea384612a3f047ea137be6d941bacb155fb6ae2",
+        "slide-2.svg": "9ca9049bb815241ea6e17b2e02c47ec3ee9ebfab8469909f5fa7baf130bed577",
+        "slide-2-issues.json": "c6e2d0c28837d53fa2000a0e4b23799107c74dc4551fe936cf6ca56255b0492a",
+        "slide-2-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded"
+      }
+    },
+    {
+      "name": "kern-v2",
+      "command": [
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
+        "proof",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/kern-v2/candidate-1/saved.pptx",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/kern-v2"
+      ],
+      "savedReopenAllArtifactsIdentical": true,
+      "artifacts": {
+        "slide-0-issues.json": "bee4d6c5c81db9724755ecfdc3c33cdf45a0b5ba5f40f063c845e528d5e1497f",
+        "saved.pptx": "b268b32c6d67680961af0665410f6c541d67dc293700bdb67626f87d6d7f5201",
+        "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+        "slide-0.svg": "bb48650e3a7db51f03717b430836056710ca39277125bac50f5eda70ae233d28"
+      }
+    }
+  ]
+}
