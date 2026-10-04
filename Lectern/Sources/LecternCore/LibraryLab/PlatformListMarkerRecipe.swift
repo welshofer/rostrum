@@ -132,9 +132,15 @@ extension PlatformLabRecipes {
         let before = try deck.serializedData()
         let rendered = try (0..<4).map { try deck.renderSVGReportingProblems(slideAt: $0) }
         let aliases = rendered.map { markerFaceAliases(svg: $0.svg, fonts: deck.fonts) }
+        // Each page contains several independent specimens and large embedded
+        // font payloads. Parse the actual render once for this check operation;
+        // every specimen still audits its own glyphs against the native data.
+        let textNodes = rendered.map { page in
+            (try? XML.parse(Data(page.svg.utf8))).map { DrawingLabFixtures.nodes($0, "text") }
+        }
         var checks = reference.cases.map { sample in
             LibraryLabCheck(prefix + "Native list marker: " + sample.id,
-                markerGlyphsMatch(svg: rendered[sample.slide].svg, sample: sample, aliases: aliases[sample.slide]),
+                markerGlyphsMatch(textNodes: textNodes[sample.slide], sample: sample, aliases: aliases[sample.slide]),
                 "All marker/body glyphs and explicit omissions: x within 0.06 pt, baseline within 0.121 pt, paint and outline dimensions within 0.002 pt; no glyph stretching.")
         }
         let after = try deck.serializedData()
@@ -162,9 +168,15 @@ extension PlatformLabRecipes {
 
     static func markerGlyphsMatch(svg: String, sample: ListMarkerReferences.Sample, aliases: [String: String]) -> Bool {
         guard let root = try? XML.parse(Data(svg.utf8)) else { return false }
+        return markerGlyphsMatch(textNodes: DrawingLabFixtures.nodes(root, "text"), sample: sample, aliases: aliases)
+    }
+
+    private static func markerGlyphsMatch(textNodes: [XML.Element]?, sample: ListMarkerReferences.Sample,
+                                        aliases: [String: String]) -> Bool {
+        guard let textNodes else { return false }
         var consumed = 0
         var bodyLines: [String] = []
-        for node in DrawingLabFixtures.nodes(root, "text") {
+        for node in textNodes {
             guard let transform = node[attribute: "transform"], transform.hasPrefix("translate(") else { continue }
             let values = transform.components(separatedBy: CharacterSet(charactersIn: "(), ")).compactMap(Double.init)
             guard values.count == 3, values[2] == Double(EMU.perPoint), abs(values[0] / Double(EMU.perPoint) - sample.x) < 0.001 else { continue }
