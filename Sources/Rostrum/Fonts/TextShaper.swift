@@ -71,7 +71,7 @@ public struct TextShaper: Sendable {
                     diagnostics.append(.unsupportedScript(scalar: value))
                 }
             }
-            if (normalized.count > 1 || normalized.first.map { [.nonspacingMark, .spacingMark, .enclosingMark].contains($0.properties.generalCategory) } == true) && original != "\r\n" {
+            if (normalized.count > 1 || normalized.first.map { $0.value >= 0x80 && [.nonspacingMark, .spacingMark, .enclosingMark].contains($0.properties.generalCategory) } == true) && original != "\r\n" {
                 combining.append(range)
             }
             clusters.append(Cluster(range: range, scalars: normalized, kind: kind))
