@@ -201,3 +201,18 @@ are pinned in the [receipt](docs/benchmarks/2026-10-04-empty-lines-shaping-integ
 This remains an ongoing draft PR. Exact/percentage spacing calibration and the
 next allocation experiment continue; no general fidelity or cumulative historical
 performance claim is made.
+
+## Continued explicit-spacing fidelity and allocation performance — October 4
+
+The [explicit-spacing integration report](docs/LAYOUT-FIDELITY-20261004-6.md)
+records 103 strict native cases, removal of the four earlier known-issue
+assertions, six-slide Lectern demonstrations for both options, and the accepted
+singleton scalar-storage optimization. At `d338c42`, the full gate passes
+1,133 library, 18 layout, 281 Core and 76 native app tests with no known issues.
+All 362 Lab checks and 56 independent reopens pass. Both manual app variants
+pass 54 checks without preview findings and export six slides. Native geometry
+and all source/data pins are in the
+[receipt](docs/benchmarks/2026-10-04-explicit-spacing-integration-verification.json).
+The scalar-storage result is workload-specific; its possible small combining
+cost and mixed RSS remain disclosed. Glyph reservation and painted glyph-size
+research continue in separate experiments. No merge or deployment occurred.

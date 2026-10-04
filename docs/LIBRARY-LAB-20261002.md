@@ -430,3 +430,14 @@ local gate passes 1,123 library tests (four known spacing assertions), 18 layout
 tests, 279 Core tests and 76 native app tests with zero native failures or skips.
 The catalog remains 26 recipes; the current evidence is recorded in the
 [integration report](LAYOUT-FIDELITY-20261004-5.md).
+
+## Explicit spacing and anchors — October 4
+
+The paragraph demo now includes six slides. The final slide selects six of 12
+independent native specimens: exact/percentage spacing and compatibility modes
+by default, stored font-scale/reduction and anchors in the alternative. Both
+options pass 54 checks with no preview findings, retain exact imported text-body
+properties, and pass the actual inspector/export flow. The complete catalog now
+passes 362 checks across 26 recipes. Native PDF geometry, both manual app runs,
+56 external reopens, and all support limits are recorded in the
+[explicit-spacing integration report](LAYOUT-FIDELITY-20261004-6.md).
