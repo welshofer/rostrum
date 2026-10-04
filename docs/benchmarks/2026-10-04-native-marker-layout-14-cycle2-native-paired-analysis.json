@@ -1,0 +1,285 @@
+{
+  "status": "Cycle2 pending independent evidence review",
+  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/native-paired.json",
+  "sourceSHA256": "1dca788a086887e3a6bd1ef660bbdf7864197fc442a06530221b59dacbd53c38",
+  "bootstrapResamples": 100000,
+  "seed": 20261004,
+  "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
+  "results": {
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx/render": {
+      "pairedPercentDeltas": [
+        1.194614630550439,
+        0.07028230057397611,
+        -4.605493157104434,
+        3.0670471653935882,
+        -0.10242123429110572,
+        -0.2029453299625672,
+        1.57620475625031,
+        1.287467919418006,
+        -1.8467464618503682,
+        4.602753690453043
+      ],
+      "medianPairedPercentDelta": 0.6324484655622076,
+      "percentileBootstrapMedian95PercentInterval": [
+        -0.974583848070737,
+        2.177257542405797
+      ],
+      "fasterPairs": 4,
+      "slowerPairs": 6,
+      "twoSidedExactSignTestP": 0.75390625,
+      "baselineMedianMS": 3.205083,
+      "candidateMedianMS": 3.2270000000000003,
+      "ratioOfMediansPercentDelta": 0.6838200445979048
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx/render": {
+      "pairedPercentDeltas": [
+        5.233787918071053,
+        -0.6619516747900178,
+        0.07495295572712557,
+        -11.432676534364106,
+        5.245678857607894,
+        -1.9346550356859504,
+        -0.9300552649859517,
+        -2.226612806861472,
+        -2.922958382522256,
+        -1.443081597956919
+      ],
+      "medianPairedPercentDelta": -1.1865684314714353,
+      "percentileBootstrapMedian95PercentInterval": [
+        -2.4288067091041032,
+        2.2859181216405178
+      ],
+      "fasterPairs": 7,
+      "slowerPairs": 3,
+      "twoSidedExactSignTestP": 0.34375,
+      "baselineMedianMS": 2.4223540000000003,
+      "candidateMedianMS": 2.396813,
+      "ratioOfMediansPercentDelta": -1.0543875915741685
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx/render": {
+      "pairedPercentDeltas": [
+        6.285686517481848,
+        6.839138892177488,
+        5.280214754424328,
+        -0.747918374291856,
+        1.5627299936215033,
+        0.17512351480972743,
+        -2.0309099974510914,
+        4.371826010156754,
+        2.5641302642082753,
+        -2.0731919118612385
+      ],
+      "medianPairedPercentDelta": 2.0634301289148893,
+      "percentileBootstrapMedian95PercentInterval": [
+        -0.927893241320682,
+        5.328756263819301
+      ],
+      "fasterPairs": 3,
+      "slowerPairs": 7,
+      "twoSidedExactSignTestP": 0.34375,
+      "baselineMedianMS": 5.1655835,
+      "candidateMedianMS": 5.248875,
+      "ratioOfMediansPercentDelta": 1.6124315868671912
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx/render": {
+      "pairedPercentDeltas": [
+        3.9866554884332883,
+        5.476492679374911,
+        -4.514471481460847,
+        1.1528141107374879,
+        -7.749205260148639,
+        -1.3935021279308346,
+        1.0351374328412932,
+        -3.4081853758438863,
+        -2.1142220449209215,
+        -2.361075698099524
+      ],
+      "medianPairedPercentDelta": -1.753862086425878,
+      "percentileBootstrapMedian95PercentInterval": [
+        -3.4377735897801855,
+        2.5108964606372908
+      ],
+      "fasterPairs": 6,
+      "slowerPairs": 4,
+      "twoSidedExactSignTestP": 0.75390625,
+      "baselineMedianMS": 2.0730205,
+      "candidateMedianMS": 2.0362289999999996,
+      "ratioOfMediansPercentDelta": -1.774777432254071
+    },
+    "file:/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx/render": {
+      "pairedPercentDeltas": [
+        -9.346999533108136,
+        -5.193130366900867,
+        -5.816265927977837,
+        -17.717498283616074,
+        -9.787927216238412,
+        -7.888419832795302,
+        -8.91806665414605,
+        -8.366055846422338,
+        -7.042266206894698,
+        -5.668486355260738
+      ],
+      "medianPairedPercentDelta": -8.12723783960882,
+      "percentileBootstrapMedian95PercentInterval": [
+        -9.35299693519223,
+        -5.816265927977837
+      ],
+      "fasterPairs": 10,
+      "slowerPairs": 0,
+      "twoSidedExactSignTestP": 0.001953125,
+      "baselineMedianMS": 4.536271,
+      "candidateMedianMS": 4.196375,
+      "ratioOfMediansPercentDelta": -7.4928504051014695
+    },
+    "file:/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx/render": {
+      "pairedPercentDeltas": [
+        0.7587885301907793,
+        1.185431389800029,
+        0.6610526315789622,
+        -1.8272839078878222,
+        4.385145470314589,
+        0.44797818305273296,
+        3.1357088183814996,
+        -0.5787425757998399,
+        1.3345413714329846,
+        2.570166682668873
+      ],
+      "medianPairedPercentDelta": 0.9721099599954042,
+      "percentileBootstrapMedian95PercentInterval": [
+        0.04115502788956116,
+        2.570166682668873
+      ],
+      "fasterPairs": 2,
+      "slowerPairs": 8,
+      "twoSidedExactSignTestP": 0.109375,
+      "baselineMedianMS": 3.2724795,
+      "candidateMedianMS": 3.3044789999999997,
+      "ratioOfMediansPercentDelta": 0.9778365303739767
+    },
+    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-200.pptx/render": {
+      "pairedPercentDeltas": [
+        4.926311242681347,
+        0.19780387432797308,
+        7.851457070566981,
+        4.844196940261414,
+        1.3731628791444628,
+        -0.9904432081936476,
+        1.7764188330687603,
+        1.6380548080203283,
+        4.734148650183623,
+        3.776877003576362
+      ],
+      "medianPairedPercentDelta": 2.776647918322561,
+      "percentileBootstrapMedian95PercentInterval": [
+        0.9179293411741507,
+        4.844196940261414
+      ],
+      "fasterPairs": 1,
+      "slowerPairs": 9,
+      "twoSidedExactSignTestP": 0.021484375,
+      "baselineMedianMS": 6.6345624999999995,
+      "candidateMedianMS": 6.823979,
+      "ratioOfMediansPercentDelta": 2.854996090548556
+    },
+    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-large-style-200.pptx/render": {
+      "pairedPercentDeltas": [
+        2.5565116707455093,
+        0.3651324247878618,
+        2.8471812687679954,
+        0.6604148179436331,
+        1.854957985342831,
+        5.130826646737274,
+        4.49242169798747,
+        1.4010207653092799,
+        5.9171859063045895,
+        4.390799977665183
+      ],
+      "medianPairedPercentDelta": 2.7018464697567524,
+      "percentileBootstrapMedian95PercentInterval": [
+        1.257686401643232,
+        4.760813312201229
+      ],
+      "fasterPairs": 0,
+      "slowerPairs": 10,
+      "twoSidedExactSignTestP": 0.001953125,
+      "baselineMedianMS": 9.5576875,
+      "candidateMedianMS": 9.811937,
+      "ratioOfMediansPercentDelta": 2.6601570725136137
+    },
+    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-ascii-200.pptx/render": {
+      "pairedPercentDeltas": [
+        -5.050212496035533,
+        -0.09176295237236509,
+        -2.0496733115920818,
+        -6.899319446050245,
+        -3.554491220503364,
+        -5.86967400574575,
+        -6.819807701568237,
+        -4.84636176629345,
+        -2.9422179438798546,
+        -5.450589290883223
+      ],
+      "medianPairedPercentDelta": -4.948287131164491,
+      "percentileBootstrapMedian95PercentInterval": [
+        -6.13519849622573,
+        -2.802082266047723
+      ],
+      "fasterPairs": 10,
+      "slowerPairs": 0,
+      "twoSidedExactSignTestP": 0.001953125,
+      "baselineMedianMS": 7.8389165,
+      "candidateMedianMS": 7.4745205,
+      "ratioOfMediansPercentDelta": -4.6485506000733645
+    },
+    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-unicode-200.pptx/render": {
+      "pairedPercentDeltas": [
+        -2.759658236740492,
+        -3.480306075794304,
+        -4.27155549572592,
+        -5.940469886940747,
+        -1.1752543559461093,
+        -3.3909472008519015,
+        -6.261703621522541,
+        -4.665607082516743,
+        -4.1222445472345,
+        -2.0222347473131785
+      ],
+      "medianPairedPercentDelta": -3.801275311514402,
+      "percentileBootstrapMedian95PercentInterval": [
+        -5.1060126913333335,
+        -2.7065909740825402
+      ],
+      "fasterPairs": 10,
+      "slowerPairs": 0,
+      "twoSidedExactSignTestP": 0.001953125,
+      "baselineMedianMS": 14.599083,
+      "candidateMedianMS": 14.091562499999998,
+      "ratioOfMediansPercentDelta": -3.476386153842692
+    },
+    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/placeholder-inherited-bullet-200.pptx/render": {
+      "pairedPercentDeltas": [
+        -3.9503925021639907,
+        0.3189784342867652,
+        1.1515515885862193,
+        12.063134188118019,
+        1.8921113259801725,
+        0.9634103710594477,
+        1.120762806160669,
+        1.3594742968044526,
+        1.0121199265707759,
+        3.2484358493610532
+      ],
+      "medianPairedPercentDelta": 1.1361571973734441,
+      "percentileBootstrapMedian95PercentInterval": [
+        0.6655491804287705,
+        2.303955073082753
+      ],
+      "fasterPairs": 1,
+      "slowerPairs": 9,
+      "twoSidedExactSignTestP": 0.021484375,
+      "baselineMedianMS": 8.179124999999999,
+      "candidateMedianMS": 8.284249500000001,
+      "ratioOfMediansPercentDelta": 1.2852780706982925
+    }
+  }
+}

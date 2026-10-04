@@ -1,0 +1,160 @@
+{
+  "status": "WITHHELD cycle1",
+  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf25-marker-cycle1/retained/canonical-paired.json",
+  "sourceSHA256": "54d78ae1c5252fba4f302e91064dcecef85062815a0315d9ada40d65128d9376",
+  "bootstrapResamples": 100000,
+  "seed": 20261004,
+  "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
+  "results": {
+    "table-200x50/render": {
+      "pairedPercentDeltas": [
+        -0.5692564853521209,
+        7.221249192716006,
+        0.6632146982103793,
+        5.903834341720926,
+        -0.11156264014458017,
+        -0.8088867471302774,
+        1.082486203947397,
+        0.6540640572600287,
+        0.8906567110496422,
+        1.1482996212286434
+      ],
+      "medianPairedPercentDelta": 0.7769357046300107,
+      "percentileBootstrapMedian95PercentInterval": [
+        -0.11156264014458017,
+        3.4931602728341615
+      ],
+      "fasterPairs": 3,
+      "slowerPairs": 7,
+      "twoSidedExactSignTestP": 0.34375,
+      "baselineMedianMS": 178.57104199999998,
+      "candidateMedianMS": 180.728625,
+      "ratioOfMediansPercentDelta": 1.2082490956176528
+    },
+    "table-20x10/render": {
+      "pairedPercentDeltas": [
+        -1.0376664065700703,
+        0.15337384523517184,
+        -1.8071398533853644,
+        -0.28548267719310516,
+        1.4146628072555956,
+        0.24896333716788455,
+        -2.668867220810256,
+        -2.383777104070095,
+        -2.6164317484595134,
+        -4.996088219098615
+      ],
+      "medianPairedPercentDelta": -1.4224031299777173,
+      "percentileBootstrapMedian95PercentInterval": [
+        -2.6164317484595134,
+        0.15337384523517184
+      ],
+      "fasterPairs": 7,
+      "slowerPairs": 3,
+      "twoSidedExactSignTestP": 0.34375,
+      "baselineMedianMS": 3.561604,
+      "candidateMedianMS": 3.5282295,
+      "ratioOfMediansPercentDelta": -0.9370637499284018
+    },
+    "shaped-table-100x20/render": {
+      "pairedPercentDeltas": [
+        2.410496230766479,
+        1.0433139411985204,
+        2.1133488339613926,
+        -2.150201939568297,
+        1.150224213568074,
+        0.6967942898875368,
+        0.999308330244264,
+        0.3098412750278223,
+        1.0100937327697013,
+        -1.1470148329693952
+      ],
+      "medianPairedPercentDelta": 1.0047010315069826,
+      "percentileBootstrapMedian95PercentInterval": [
+        -0.22511027154092922,
+        1.5783313875799565
+      ],
+      "fasterPairs": 2,
+      "slowerPairs": 8,
+      "twoSidedExactSignTestP": 0.109375,
+      "baselineMedianMS": 61.569084000000004,
+      "candidateMedianMS": 62.098042,
+      "ratioOfMediansPercentDelta": 0.8591292344060086
+    },
+    "richtext-fit/render": {
+      "pairedPercentDeltas": [
+        -5.165766309058418,
+        -3.3884435797665313,
+        -0.32061657893101003,
+        1.5673493328119736,
+        -1.4504994551653327,
+        -0.773907430023979,
+        1.048569523365872,
+        -4.338828605254674,
+        -4.845848080629612,
+        -0.0015743248354294082
+      ],
+      "medianPairedPercentDelta": -1.1122034425946559,
+      "percentileBootstrapMedian95PercentInterval": [
+        -4.338828605254674,
+        0.363976472217431
+      ],
+      "fasterPairs": 8,
+      "slowerPairs": 2,
+      "twoSidedExactSignTestP": 0.109375,
+      "baselineMedianMS": 2.5636875,
+      "candidateMedianMS": 2.5034585,
+      "ratioOfMediansPercentDelta": -2.3493112947658434
+    },
+    "richtext-fit/richtext-fitting": {
+      "pairedPercentDeltas": [
+        -5.263076691879986,
+        -2.088560385163085,
+        -1.229944408605943,
+        3.6432584120932976,
+        0.4830061132091279,
+        0.041497713065030695,
+        -1.1367057704909644,
+        -1.4837069175317574,
+        -1.4239286015329422,
+        -0.1582046112972746
+      ],
+      "medianPairedPercentDelta": -1.1833250895484537,
+      "percentileBootstrapMedian95PercentInterval": [
+        -1.7562444933480137,
+        0.16240075095592665
+      ],
+      "fasterPairs": 7,
+      "slowerPairs": 3,
+      "twoSidedExactSignTestP": 0.34375,
+      "baselineMedianMS": 9.630479000000001,
+      "candidateMedianMS": 9.527270999999999,
+      "ratioOfMediansPercentDelta": -1.0716808582418635
+    },
+    "slides-10/render": {
+      "pairedPercentDeltas": [
+        -1.7009668161838354,
+        3.4098586918427154,
+        -2.265222248055654,
+        6.2859004570453125,
+        0.5771663792380588,
+        2.177098197700844,
+        -3.435448577680522,
+        7.87365529869537,
+        3.7438223917069413,
+        6.709971706292217
+      ],
+      "medianPairedPercentDelta": 2.7934784447717798,
+      "percentileBootstrapMedian95PercentInterval": [
+        -1.7009668161838354,
+        6.2859004570453125
+      ],
+      "fasterPairs": 3,
+      "slowerPairs": 7,
+      "twoSidedExactSignTestP": 0.34375,
+      "baselineMedianMS": 0.551042,
+      "candidateMedianMS": 0.5690625,
+      "ratioOfMediansPercentDelta": 3.270258891336786
+    }
+  }
+}

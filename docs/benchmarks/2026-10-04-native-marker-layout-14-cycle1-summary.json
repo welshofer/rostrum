@@ -1,0 +1,1177 @@
+{
+  "status": "WITHHELD pending optimization; no acceptance or net gain claim",
+  "primaryComparisons": 20,
+  "children": 418,
+  "measurements": {
+    "canonical": {
+      "table-200x50": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -0.5692564853521209,
+              7.221249192716006,
+              0.6632146982103793,
+              5.903834341720926,
+              -0.11156264014458017,
+              -0.8088867471302774,
+              1.082486203947397,
+              0.6540640572600287,
+              0.8906567110496422,
+              1.1482996212286434
+            ],
+            "medianPairedPercentDelta": 0.7769357046300107,
+            "percentileBootstrapMedian95PercentInterval": [
+              -0.11156264014458017,
+              3.4931602728341615
+            ],
+            "fasterPairs": 3,
+            "slowerPairs": 7,
+            "twoSidedExactSignTestP": 0.34375,
+            "baselineMedianMS": 178.57104199999998,
+            "candidateMedianMS": 180.728625,
+            "ratioOfMediansPercentDelta": 1.2082490956176528
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 189595648.0,
+          "candidate": 189595648.0
+        },
+        "peakRSSMedianDeltaBytes": 0.0
+      },
+      "table-20x10": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -1.0376664065700703,
+              0.15337384523517184,
+              -1.8071398533853644,
+              -0.28548267719310516,
+              1.4146628072555956,
+              0.24896333716788455,
+              -2.668867220810256,
+              -2.383777104070095,
+              -2.6164317484595134,
+              -4.996088219098615
+            ],
+            "medianPairedPercentDelta": -1.4224031299777173,
+            "percentileBootstrapMedian95PercentInterval": [
+              -2.6164317484595134,
+              0.15337384523517184
+            ],
+            "fasterPairs": 7,
+            "slowerPairs": 3,
+            "twoSidedExactSignTestP": 0.34375,
+            "baselineMedianMS": 3.561604,
+            "candidateMedianMS": 3.5282295,
+            "ratioOfMediansPercentDelta": -0.9370637499284018
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 18202624.0,
+          "candidate": 18153472.0
+        },
+        "peakRSSMedianDeltaBytes": -49152.0
+      },
+      "shaped-table-100x20": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              2.410496230766479,
+              1.0433139411985204,
+              2.1133488339613926,
+              -2.150201939568297,
+              1.150224213568074,
+              0.6967942898875368,
+              0.999308330244264,
+              0.3098412750278223,
+              1.0100937327697013,
+              -1.1470148329693952
+            ],
+            "medianPairedPercentDelta": 1.0047010315069826,
+            "percentileBootstrapMedian95PercentInterval": [
+              -0.22511027154092922,
+              1.5783313875799565
+            ],
+            "fasterPairs": 2,
+            "slowerPairs": 8,
+            "twoSidedExactSignTestP": 0.109375,
+            "baselineMedianMS": 61.569084000000004,
+            "candidateMedianMS": 62.098042,
+            "ratioOfMediansPercentDelta": 0.8591292344060086
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 53903360.0,
+          "candidate": 53592064.0
+        },
+        "peakRSSMedianDeltaBytes": -311296.0
+      },
+      "richtext-fit": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -5.165766309058418,
+              -3.3884435797665313,
+              -0.32061657893101003,
+              1.5673493328119736,
+              -1.4504994551653327,
+              -0.773907430023979,
+              1.048569523365872,
+              -4.338828605254674,
+              -4.845848080629612,
+              -0.0015743248354294082
+            ],
+            "medianPairedPercentDelta": -1.1122034425946559,
+            "percentileBootstrapMedian95PercentInterval": [
+              -4.338828605254674,
+              0.363976472217431
+            ],
+            "fasterPairs": 8,
+            "slowerPairs": 2,
+            "twoSidedExactSignTestP": 0.109375,
+            "baselineMedianMS": 2.5636875,
+            "candidateMedianMS": 2.5034585,
+            "ratioOfMediansPercentDelta": -2.3493112947658434
+          },
+          "richtext-fitting": {
+            "pairedPercentDeltas": [
+              -5.263076691879986,
+              -2.088560385163085,
+              -1.229944408605943,
+              3.6432584120932976,
+              0.4830061132091279,
+              0.041497713065030695,
+              -1.1367057704909644,
+              -1.4837069175317574,
+              -1.4239286015329422,
+              -0.1582046112972746
+            ],
+            "medianPairedPercentDelta": -1.1833250895484537,
+            "percentileBootstrapMedian95PercentInterval": [
+              -1.7562444933480137,
+              0.16240075095592665
+            ],
+            "fasterPairs": 7,
+            "slowerPairs": 3,
+            "twoSidedExactSignTestP": 0.34375,
+            "baselineMedianMS": 9.630479000000001,
+            "candidateMedianMS": 9.527270999999999,
+            "ratioOfMediansPercentDelta": -1.0716808582418635
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 22200320.0,
+          "candidate": 22183936.0
+        },
+        "peakRSSMedianDeltaBytes": -16384.0
+      },
+      "slides-10": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -1.7009668161838354,
+              3.4098586918427154,
+              -2.265222248055654,
+              6.2859004570453125,
+              0.5771663792380588,
+              2.177098197700844,
+              -3.435448577680522,
+              7.87365529869537,
+              3.7438223917069413,
+              6.709971706292217
+            ],
+            "medianPairedPercentDelta": 2.7934784447717798,
+            "percentileBootstrapMedian95PercentInterval": [
+              -1.7009668161838354,
+              6.2859004570453125
+            ],
+            "fasterPairs": 3,
+            "slowerPairs": 7,
+            "twoSidedExactSignTestP": 0.34375,
+            "baselineMedianMS": 0.551042,
+            "candidateMedianMS": 0.5690625,
+            "ratioOfMediansPercentDelta": 3.270258891336786
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 16121856.0,
+          "candidate": 16097280.0
+        },
+        "peakRSSMedianDeltaBytes": -24576.0
+      }
+    },
+    "supplement": {
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -0.39920513199824814,
+              0.9413934184618,
+              0.9861167122864556,
+              0.6687270629212483,
+              0.8826011055570904,
+              -1.0583619716750592,
+              1.1776063642467305,
+              1.2464685273827047,
+              3.0777160221788558,
+              0.979453769496641
+            ],
+            "medianPairedPercentDelta": 0.9604235939792205,
+            "percentileBootstrapMedian95PercentInterval": [
+              0.24169798677942111,
+              1.1776063642467305
+            ],
+            "fasterPairs": 2,
+            "slowerPairs": 8,
+            "twoSidedExactSignTestP": 0.109375,
+            "baselineMedianMS": 117.128875,
+            "candidateMedianMS": 117.881729,
+            "ratioOfMediansPercentDelta": 0.6427569632168062
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 52183040.0,
+          "candidate": 51773440.0
+        },
+        "peakRSSMedianDeltaBytes": -409600.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -0.6512207760193234,
+              1.1295652520121768,
+              1.5320811508296783,
+              0.2340640020076723,
+              1.7790025515931562,
+              0.8112208011925803,
+              5.415416135952267,
+              -11.12291283314557,
+              1.1148314674640947,
+              0.27382443990284777
+            ],
+            "medianPairedPercentDelta": 0.9630261343283375,
+            "percentileBootstrapMedian95PercentInterval": [
+              -0.1886981680582378,
+              1.5320811508296783
+            ],
+            "fasterPairs": 2,
+            "slowerPairs": 8,
+            "twoSidedExactSignTestP": 0.109375,
+            "baselineMedianMS": 119.320375,
+            "candidateMedianMS": 121.18633299999999,
+            "ratioOfMediansPercentDelta": 1.5638217697522272
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 50511872.0,
+          "candidate": 50405376.0
+        },
+        "peakRSSMedianDeltaBytes": -106496.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -2.6365282674898904,
+              0.20197321060915208,
+              0.05596588293583782,
+              -1.7310165845218828,
+              1.0267083793439546,
+              -3.411355489995227,
+              -0.7801619479103739,
+              -0.05063896942404389,
+              0.6718833105616717,
+              1.357007261220966
+            ],
+            "medianPairedPercentDelta": 0.0026634567558969646,
+            "percentileBootstrapMedian95PercentInterval": [
+              -1.7310165845218828,
+              0.6718833105616717
+            ],
+            "fasterPairs": 5,
+            "slowerPairs": 5,
+            "twoSidedExactSignTestP": 1,
+            "baselineMedianMS": 385.132604,
+            "candidateMedianMS": 385.811979,
+            "ratioOfMediansPercentDelta": 0.17640028212204673
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 43253760.0,
+          "candidate": 42795008.0
+        },
+        "peakRSSMedianDeltaBytes": -458752.0
+      }
+    },
+    "native": {
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              10.85401718716179,
+              -1.7828632481218243,
+              2.790546219175871,
+              2.9365739830301107,
+              0.1478232873120211,
+              0.6563245823389074,
+              2.15102468242927,
+              -0.8787268301816087,
+              0.7192172002612018,
+              2.72191591748423
+            ],
+            "medianPairedPercentDelta": 1.435120941345236,
+            "percentileBootstrapMedian95PercentInterval": [
+              -0.11120112392135062,
+              2.8292449502571704
+            ],
+            "fasterPairs": 2,
+            "slowerPairs": 8,
+            "twoSidedExactSignTestP": 0.109375,
+            "baselineMedianMS": 3.3514375,
+            "candidateMedianMS": 3.396396,
+            "ratioOfMediansPercentDelta": 1.341469145702412
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 32063488.0,
+          "candidate": 31719424.0
+        },
+        "peakRSSMedianDeltaBytes": -344064.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -3.1853141779132232,
+              -1.5561248207309308,
+              -4.09030419185219,
+              0.9510844889272674,
+              1.4041992989855645,
+              4.0921738778781025,
+              -0.5947182567618614,
+              -0.15300223524471468,
+              -0.5388487637583039,
+              3.556442334714194
+            ],
+            "medianPairedPercentDelta": -0.3459254995015093,
+            "percentileBootstrapMedian95PercentInterval": [
+              -1.8900162173375423,
+              2.2537634118207306
+            ],
+            "fasterPairs": 6,
+            "slowerPairs": 4,
+            "twoSidedExactSignTestP": 0.75390625,
+            "baselineMedianMS": 2.481062,
+            "candidateMedianMS": 2.4669999999999996,
+            "ratioOfMediansPercentDelta": -0.5667734220265563
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 30416896.0,
+          "candidate": 30146560.0
+        },
+        "peakRSSMedianDeltaBytes": -270336.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -1.0588202480923625,
+              -1.4235366412376105,
+              -2.5894398248583084,
+              1.115702599000934,
+              -2.4151110461397285,
+              -4.889814961610761,
+              -0.7984984800412653,
+              1.0180314070654006,
+              0.10103647164649843,
+              0.41489462979955594
+            ],
+            "medianPairedPercentDelta": -0.9286593640668139,
+            "percentileBootstrapMedian95PercentInterval": [
+              -2.4151110461397285,
+              0.5595339393559495
+            ],
+            "fasterPairs": 6,
+            "slowerPairs": 4,
+            "twoSidedExactSignTestP": 0.75390625,
+            "baselineMedianMS": 5.235875,
+            "candidateMedianMS": 5.217396,
+            "ratioOfMediansPercentDelta": -0.3529305034975061
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 58032128.0,
+          "candidate": 57851904.0
+        },
+        "peakRSSMedianDeltaBytes": -180224.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -0.4313210953957203,
+              -3.6464083853088747,
+              0.4961937752670176,
+              -0.21321537311269623,
+              -1.5239781246521922,
+              -3.3205597299714285,
+              -2.5065680378561828,
+              -8.042898131984998,
+              -4.184485488126654,
+              4.971232442627138
+            ],
+            "medianPairedPercentDelta": -2.0152730812541875,
+            "percentileBootstrapMedian95PercentInterval": [
+              -3.7525226090490413,
+              0.03243633993564865
+            ],
+            "fasterPairs": 8,
+            "slowerPairs": 2,
+            "twoSidedExactSignTestP": 0.109375,
+            "baselineMedianMS": 2.1100000000000003,
+            "candidateMedianMS": 2.069167,
+            "ratioOfMediansPercentDelta": -1.9352132701421887
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 28835840.0,
+          "candidate": 28590080.0
+        },
+        "peakRSSMedianDeltaBytes": -245760.0
+      },
+      "file:/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              -0.649580870955413,
+              -7.108149695594824,
+              -7.208203657643708,
+              -4.89717331249826,
+              -4.331185095544987,
+              -3.4541007440348936,
+              -2.546717498479223,
+              -6.274032475477654,
+              -3.7435887374846932,
+              -3.085287798258507
+            ],
+            "medianPairedPercentDelta": -4.03738691651484,
+            "percentileBootstrapMedian95PercentInterval": [
+              -6.274032475477654,
+              -3.000409121257058
+            ],
+            "fasterPairs": 10,
+            "slowerPairs": 0,
+            "twoSidedExactSignTestP": 0.001953125,
+            "baselineMedianMS": 4.482896,
+            "candidateMedianMS": 4.2747295,
+            "ratioOfMediansPercentDelta": -4.643571923149681
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 54779904.0,
+          "candidate": 51445760.0
+        },
+        "peakRSSMedianDeltaBytes": -3334144.0
+      },
+      "file:/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              0.60433145169414,
+              -1.7994891618326347,
+              5.0915118451608565,
+              1.5236848541677173,
+              2.9637315386613627,
+              1.9738333852140855,
+              1.5266970409419711,
+              -1.2633186829022258,
+              1.8601161426265556,
+              9.097568609692242
+            ],
+            "medianPairedPercentDelta": 1.6934065917842633,
+            "percentileBootstrapMedian95PercentInterval": [
+              0.13018308563274572,
+              3.532672615187471
+            ],
+            "fasterPairs": 2,
+            "slowerPairs": 8,
+            "twoSidedExactSignTestP": 0.109375,
+            "baselineMedianMS": 3.324833,
+            "candidateMedianMS": 3.3976040000000003,
+            "ratioOfMediansPercentDelta": 2.18871143302537
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 53428224.0,
+          "candidate": 53215232.0
+        },
+        "peakRSSMedianDeltaBytes": -212992.0
+      },
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-200.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              10.20539008436021,
+              9.89726886579303,
+              9.22187385431923,
+              7.9955284024437745,
+              10.047673582365512,
+              9.579778051787912,
+              7.389444823162017,
+              9.642791042013688,
+              9.271760754966119,
+              12.892940205566795
+            ],
+            "medianPairedPercentDelta": 9.6112845469008,
+            "percentileBootstrapMedian95PercentInterval": [
+              8.633644578704946,
+              10.05132947507662
+            ],
+            "fasterPairs": 0,
+            "slowerPairs": 10,
+            "twoSidedExactSignTestP": 0.001953125,
+            "baselineMedianMS": 6.763729,
+            "candidateMedianMS": 7.4130625000000006,
+            "ratioOfMediansPercentDelta": 9.600229400083894
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 45604864.0,
+          "candidate": 45400064.0
+        },
+        "peakRSSMedianDeltaBytes": -204800.0
+      },
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-large-style-200.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              129.4787058335641,
+              132.71706757163048,
+              131.34753716903106,
+              144.6368895871018,
+              127.38322262007658,
+              144.00440899954611,
+              135.368463183507,
+              147.57788375479234,
+              123.74145748040432,
+              143.8289952404205
+            ],
+            "medianPairedPercentDelta": 134.04276537756874,
+            "percentileBootstrapMedian95PercentInterval": [
+              129.36537989455383,
+              144.23294241376115
+            ],
+            "fasterPairs": 0,
+            "slowerPairs": 10,
+            "twoSidedExactSignTestP": 0.001953125,
+            "baselineMedianMS": 9.6711665,
+            "candidateMedianMS": 22.9832085,
+            "ratioOfMediansPercentDelta": 137.64670476927475
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 46284800.0,
+          "candidate": 46137344.0
+        },
+        "peakRSSMedianDeltaBytes": -147456.0
+      },
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-ascii-200.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              2.4016354162272213,
+              11.543060233471936,
+              12.433087946523557,
+              6.803585583168337,
+              9.011979221487287,
+              12.201290187970004,
+              8.933149564427545,
+              14.206531044116112,
+              6.80121749824294,
+              14.65690612179229
+            ],
+            "medianPairedPercentDelta": 10.27751972747961,
+            "percentileBootstrapMedian95PercentInterval": [
+              6.803585583168337,
+              13.203910616043057
+            ],
+            "fasterPairs": 0,
+            "slowerPairs": 10,
+            "twoSidedExactSignTestP": 0.001953125,
+            "baselineMedianMS": 8.0115,
+            "candidateMedianMS": 8.8042295,
+            "ratioOfMediansPercentDelta": 9.89489483866941
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 46628864.0,
+          "candidate": 45531136.0
+        },
+        "peakRSSMedianDeltaBytes": -1097728.0
+      },
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-unicode-200.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              4.012370321733427,
+              4.248074876656971,
+              5.400422816376493,
+              3.240048296310616,
+              3.375850322268237,
+              7.206935691401695,
+              5.172908486441918,
+              12.061699455114061,
+              3.210859015944467,
+              6.5312469715406385
+            ],
+            "medianPairedPercentDelta": 4.710491681549445,
+            "percentileBootstrapMedian95PercentInterval": [
+              3.375850322268237,
+              6.5312469715406385
+            ],
+            "fasterPairs": 0,
+            "slowerPairs": 10,
+            "twoSidedExactSignTestP": 0.001953125,
+            "baselineMedianMS": 14.636604,
+            "candidateMedianMS": 15.385458499999999,
+            "ratioOfMediansPercentDelta": 5.116313183030696
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 46972928.0,
+          "candidate": 45744128.0
+        },
+        "peakRSSMedianDeltaBytes": -1228800.0
+      },
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/placeholder-inherited-bullet-200.pptx": {
+        "phases": {
+          "render": {
+            "pairedPercentDeltas": [
+              0.8094079674845434,
+              -1.3655172955643557,
+              -0.05179137216669849,
+              0.655308618416206,
+              -1.2955599993985878,
+              -1.1506298051203179,
+              0.9497881559248578,
+              1.9606447516738346,
+              12.651430116703978,
+              -0.2403939685008183
+            ],
+            "medianPairedPercentDelta": 0.30175862312475377,
+            "percentileBootstrapMedian95PercentInterval": [
+              -1.1506298051203179,
+              1.385026359579189
+            ],
+            "fasterPairs": 5,
+            "slowerPairs": 5,
+            "twoSidedExactSignTestP": 1,
+            "baselineMedianMS": 8.258333,
+            "candidateMedianMS": 8.2503745,
+            "ratioOfMediansPercentDelta": -0.09636932780502372
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 46440448.0,
+          "candidate": 46235648.0
+        },
+        "peakRSSMedianDeltaBytes": -204800.0
+      }
+    }
+  },
+  "hostLoad": {
+    "snapshots": [
+      {
+        "snapshot": "process-canonical-during-15.txt",
+        "timestamp": "2026-10-04T14:13:49.736978-07:00",
+        "cpuPercent": {
+          "WindowServer": 15.1,
+          "backupd": 100.0,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        },
+        "topCPU": [
+          {
+            "process": "backupd",
+            "cpuPercent": 100.0,
+            "pid": 718
+          },
+          {
+            "process": "baseline-extended-bench",
+            "cpuPercent": 76.1,
+            "pid": 3048
+          },
+          {
+            "process": "WindowServer",
+            "cpuPercent": 15.1,
+            "pid": 619
+          },
+          {
+            "process": "fseventsd",
+            "cpuPercent": 5.5,
+            "pid": 551
+          },
+          {
+            "process": "corebrightnessd",
+            "cpuPercent": 5.5,
+            "pid": 615
+          },
+          {
+            "process": "bluetoothd",
+            "cpuPercent": 3.6,
+            "pid": 612
+          },
+          {
+            "process": "Google",
+            "cpuPercent": 3.2,
+            "pid": 77787
+          },
+          {
+            "process": "cfprefsd",
+            "cpuPercent": 2.1,
+            "pid": 622
+          }
+        ]
+      },
+      {
+        "snapshot": "process-canonical-end.txt",
+        "timestamp": "2026-10-04T14:13:57.360649-07:00",
+        "cpuPercent": {
+          "WindowServer": 21.3,
+          "backupd": 134.1,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        },
+        "topCPU": [
+          {
+            "process": "backupd",
+            "cpuPercent": 134.1,
+            "pid": 718
+          },
+          {
+            "process": "fseventsd",
+            "cpuPercent": 32.8,
+            "pid": 551
+          },
+          {
+            "process": "(mlhostd)",
+            "cpuPercent": 23.8,
+            "pid": 3144
+          },
+          {
+            "process": "WindowServer",
+            "cpuPercent": 21.3,
+            "pid": 619
+          },
+          {
+            "process": "corebrightnessd",
+            "cpuPercent": 5.0,
+            "pid": 615
+          },
+          {
+            "process": "iOS",
+            "cpuPercent": 3.9,
+            "pid": 80838
+          },
+          {
+            "process": "bluetoothd",
+            "cpuPercent": 3.5,
+            "pid": 612
+          },
+          {
+            "process": "Codex",
+            "cpuPercent": 2.8,
+            "pid": 93738
+          }
+        ]
+      },
+      {
+        "snapshot": "process-end.txt",
+        "timestamp": "2026-10-04T14:14:49.726288-07:00",
+        "cpuPercent": {
+          "WindowServer": 28.2,
+          "backupd": 96.8,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        },
+        "topCPU": [
+          {
+            "process": "backupd",
+            "cpuPercent": 96.8,
+            "pid": 718
+          },
+          {
+            "process": "WindowServer",
+            "cpuPercent": 28.2,
+            "pid": 619
+          },
+          {
+            "process": "Activity",
+            "cpuPercent": 8.4,
+            "pid": 1327
+          },
+          {
+            "process": "corebrightnessd",
+            "cpuPercent": 7.6,
+            "pid": 615
+          },
+          {
+            "process": "bluetoothd",
+            "cpuPercent": 7.2,
+            "pid": 612
+          },
+          {
+            "process": "sysmond",
+            "cpuPercent": 6.8,
+            "pid": 847
+          },
+          {
+            "process": "Google",
+            "cpuPercent": 6.2,
+            "pid": 77787
+          },
+          {
+            "process": "Codex",
+            "cpuPercent": 3.8,
+            "pid": 93738
+          }
+        ]
+      },
+      {
+        "snapshot": "process-native-during-15.txt",
+        "timestamp": "2026-10-04T14:14:33.381044-07:00",
+        "cpuPercent": {
+          "WindowServer": 27.4,
+          "backupd": 43.3,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        },
+        "topCPU": [
+          {
+            "process": "backupd",
+            "cpuPercent": 43.3,
+            "pid": 718
+          },
+          {
+            "process": "Activity",
+            "cpuPercent": 28.3,
+            "pid": 1327
+          },
+          {
+            "process": "WindowServer",
+            "cpuPercent": 27.4,
+            "pid": 619
+          },
+          {
+            "process": "sysmond",
+            "cpuPercent": 26.4,
+            "pid": 847
+          },
+          {
+            "process": "baseline-native-bench",
+            "cpuPercent": 10.2,
+            "pid": 3384
+          },
+          {
+            "process": "bluetoothd",
+            "cpuPercent": 7.4,
+            "pid": 612
+          },
+          {
+            "process": "corebrightnessd",
+            "cpuPercent": 7.3,
+            "pid": 615
+          },
+          {
+            "process": "Codex",
+            "cpuPercent": 3.9,
+            "pid": 93738
+          }
+        ]
+      },
+      {
+        "snapshot": "process-native-during-30.txt",
+        "timestamp": "2026-10-04T14:14:48.586184-07:00",
+        "cpuPercent": {
+          "WindowServer": 28.1,
+          "backupd": 99.8,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        },
+        "topCPU": [
+          {
+            "process": "backupd",
+            "cpuPercent": 99.8,
+            "pid": 718
+          },
+          {
+            "process": "WindowServer",
+            "cpuPercent": 28.1,
+            "pid": 619
+          },
+          {
+            "process": "Activity",
+            "cpuPercent": 11.3,
+            "pid": 1327
+          },
+          {
+            "process": "bluetoothd",
+            "cpuPercent": 10.4,
+            "pid": 612
+          },
+          {
+            "process": "corebrightnessd",
+            "cpuPercent": 7.4,
+            "pid": 615
+          },
+          {
+            "process": "baseline-native-bench",
+            "cpuPercent": 7.1,
+            "pid": 3498
+          },
+          {
+            "process": "Google",
+            "cpuPercent": 6.2,
+            "pid": 77787
+          },
+          {
+            "process": "iOS",
+            "cpuPercent": 4.4,
+            "pid": 80838
+          }
+        ]
+      },
+      {
+        "snapshot": "process-native-end.txt",
+        "timestamp": "2026-10-04T14:14:49.644888-07:00",
+        "cpuPercent": {
+          "WindowServer": 28.2,
+          "backupd": 96.8,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        },
+        "topCPU": [
+          {
+            "process": "backupd",
+            "cpuPercent": 96.8,
+            "pid": 718
+          },
+          {
+            "process": "WindowServer",
+            "cpuPercent": 28.2,
+            "pid": 619
+          },
+          {
+            "process": "Google",
+            "cpuPercent": 10.0,
+            "pid": 77787
+          },
+          {
+            "process": "Activity",
+            "cpuPercent": 9.3,
+            "pid": 1327
+          },
+          {
+            "process": "corebrightnessd",
+            "cpuPercent": 7.6,
+            "pid": 615
+          },
+          {
+            "process": "bluetoothd",
+            "cpuPercent": 7.2,
+            "pid": 612
+          },
+          {
+            "process": "sysmond",
+            "cpuPercent": 6.8,
+            "pid": 847
+          },
+          {
+            "process": "Codex",
+            "cpuPercent": 4.0,
+            "pid": 93738
+          }
+        ]
+      },
+      {
+        "snapshot": "process-start.txt",
+        "timestamp": "2026-10-04T14:13:34.543385-07:00",
+        "cpuPercent": {
+          "WindowServer": 29.1,
+          "backupd": 1.6,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        },
+        "topCPU": [
+          {
+            "process": "Codex",
+            "cpuPercent": 29.5,
+            "pid": 1972
+          },
+          {
+            "process": "WindowServer",
+            "cpuPercent": 29.1,
+            "pid": 619
+          },
+          {
+            "process": "Python",
+            "cpuPercent": 16.7,
+            "pid": 3011
+          },
+          {
+            "process": "ChatGPT",
+            "cpuPercent": 11.2,
+            "pid": 1906
+          },
+          {
+            "process": "bluetoothd",
+            "cpuPercent": 9.0,
+            "pid": 612
+          },
+          {
+            "process": "corebrightnessd",
+            "cpuPercent": 7.5,
+            "pid": 615
+          },
+          {
+            "process": "Google",
+            "cpuPercent": 5.3,
+            "pid": 77787
+          },
+          {
+            "process": "iOS",
+            "cpuPercent": 4.6,
+            "pid": 80838
+          }
+        ]
+      },
+      {
+        "snapshot": "process-supplement-during-15.txt",
+        "timestamp": "2026-10-04T14:14:12.577137-07:00",
+        "cpuPercent": {
+          "WindowServer": 20.0,
+          "backupd": 129.5,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        },
+        "topCPU": [
+          {
+            "process": "backupd",
+            "cpuPercent": 129.5,
+            "pid": 718
+          },
+          {
+            "process": "candidate-supplement-bench",
+            "cpuPercent": 76.9,
+            "pid": 3211
+          },
+          {
+            "process": "fseventsd",
+            "cpuPercent": 33.2,
+            "pid": 551
+          },
+          {
+            "process": "WindowServer",
+            "cpuPercent": 20.0,
+            "pid": 619
+          },
+          {
+            "process": "PerfPowerServices",
+            "cpuPercent": 6.6,
+            "pid": 85093
+          },
+          {
+            "process": "Activity",
+            "cpuPercent": 6.2,
+            "pid": 1327
+          },
+          {
+            "process": "sysmond",
+            "cpuPercent": 5.2,
+            "pid": 847
+          },
+          {
+            "process": "corebrightnessd",
+            "cpuPercent": 4.7,
+            "pid": 615
+          }
+        ]
+      },
+      {
+        "snapshot": "process-supplement-end.txt",
+        "timestamp": "2026-10-04T14:14:18.184651-07:00",
+        "cpuPercent": {
+          "WindowServer": 20.6,
+          "backupd": 126.5,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        },
+        "topCPU": [
+          {
+            "process": "backupd",
+            "cpuPercent": 126.5,
+            "pid": 718
+          },
+          {
+            "process": "fseventsd",
+            "cpuPercent": 29.9,
+            "pid": 551
+          },
+          {
+            "process": "WindowServer",
+            "cpuPercent": 20.6,
+            "pid": 619
+          },
+          {
+            "process": "bluetoothd",
+            "cpuPercent": 6.8,
+            "pid": 612
+          },
+          {
+            "process": "Google",
+            "cpuPercent": 5.3,
+            "pid": 77787
+          },
+          {
+            "process": "corebrightnessd",
+            "cpuPercent": 4.9,
+            "pid": 615
+          },
+          {
+            "process": "Activity",
+            "cpuPercent": 3.6,
+            "pid": 1327
+          },
+          {
+            "process": "iOS",
+            "cpuPercent": 3.3,
+            "pid": 80838
+          }
+        ]
+      }
+    ],
+    "ranges": {
+      "WindowServer": [
+        15.1,
+        29.1
+      ],
+      "backupd": [
+        1.6,
+        134.1
+      ],
+      "photolibraryd": [
+        0.0,
+        0.0
+      ],
+      "managedcorespotlightd": [
+        0.0,
+        0.0
+      ]
+    },
+    "qualification": "Root/agent build/test/GUI pause; uncontrolled background load. Snapshots cannot establish continuous isolation or remove bias."
+  },
+  "executionElapsedSeconds": 75.2337566660135,
+  "completionLogElapsedSeconds": 75.23389283299912
+}

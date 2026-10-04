@@ -1,0 +1,14 @@
+{
+  "cycle1PlanSHA256": "17c67ba7ccab5a8ff2d871e459b94d77cb144845ef164e06d97f0fb7110cd1a9",
+  "cycle2PlanSHA256": "aefbef92d9ab5d62bb3ccb17864ac106e9e800f16e091b5e7bfafe2e310d49bb",
+  "baselineBinariesIdentical": true,
+  "scenarioArraysOrderCountsIdentical": true,
+  "inputsFontsDriversIdentical": true,
+  "permittedChanges": [
+    "candidate source/tree/object/module/build/binaries",
+    "local binary/output/manifest paths",
+    "source pin points at frozen candidate snapshot",
+    "status/provenance annotations"
+  ],
+  "children": 418
+}
