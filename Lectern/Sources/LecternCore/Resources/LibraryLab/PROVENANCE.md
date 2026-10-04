@@ -197,3 +197,38 @@ Regenerate this reduced reference with
 `python3 Lectern/scripts/generate-list-marker-references.py`. The development
 script verifies fixed source, PDF and font pins before copying; it never derives
 expected positions from Rostrum.
+
+## Text alignment
+
+`native-body-alignment-v1.pptx` is an exact copy of the independent native input
+under `Tests/RostrumTests/Fixtures/NativeBodyAlignment`, SHA-256
+`98c27b081f8ecb9c297d46e04019b83bcdc969ed3d42113f89491aa0b9d70dac`.
+The PowerPoint reference PDF has SHA-256
+`49b3001cee2777ec1c319c191f40836c4c20391a65224b49f6289d54908b6b66`.
+`TextAlignmentReferences.json` projects all 24 cases and 172 visible glyphs from
+that independent PDF extraction, retaining frames, line strings, exact face
+identities, raw paint scales and source-outline/native-ink bounds. The embedded
+DejaVu Sans regular/bold and Serif regular faces use the existing DejaVu license.
+
+The four 720 pt reference pages retain every native specimen node, frame, table
+property and master link. Only captions outside specimen frames switch from
+Calibri to bundled DejaVu Sans. Each rendered page is parsed once and its actual
+embedded font data is checked. Bounds remain 0.025 pt for each line's first
+scalar x, 0.06 pt for subsequent scalar x, 0.121 pt for baselines and 0.002 pt
+for paint scales and ink dimensions. These are finite captured cases, not a
+claim of universal alignment or pixel parity. The two stored 50% table scales
+remain diagnosed and render at the native full size.
+
+The fifth page uses public text authoring and both public fitting APIs in
+separate copies; the alternative chooses center or right alignment only there.
+Its fitted scales are computed values, not native autofit choices. Core checks
+cover exact source nodes, reopened fit attributes, face bytes and deterministic
+SVGs. App tests exercise the actual inspector and folder export; the opt-in
+WebKit test captures exact saved inspector SVGs after embedded fonts load.
+Capture success alone does not establish native paint parity.
+
+Regenerate the reduced resource with
+`python3 Lectern/scripts/generate-text-alignment-references.py` once the pinned
+native fixtures are present. Retain generated option decks/SVGs with
+`LECTERN_ALIGNMENT_ARTIFACTS`; retain actual WebKit captures with
+`LECTERN_ALIGNMENT_WEBKIT_OUTPUT` and `LECTERN_TEST_WEBKIT=1`.
