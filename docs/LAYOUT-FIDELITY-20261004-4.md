@@ -133,3 +133,25 @@ The [current-main performance report](INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-U
 records the remaining cost: observed large-table +3.97%, registered-table +2.51%,
 and about 2 MiB additional process RSS under substantial background load. This
 pass is a bounded fidelity tradeoff; it does not establish performance recovery.
+
+
+### Final preview-fallback reconciliation
+
+Main advanced again to `40f28e5` with an explicit preview fallback font. Merge
+`a47d94b` preserves that measured/drawn family together with the inherited
+ligature policy. Independent review compared both parents and approved. The
+fresh full gate passes 1,111 Rostrum, 18 layout, 277 Core and 76 native app tests
+(zero native failures/skips), README samples, and macOS/iOS builds. All 26 Lab
+recipes now pass 339 checks; the two additions belong to upstream's fallback
+demo. All 52 decks reopen independently. Four paragraph SVGs and both saved
+width variants remain byte-identical to the native-accepted checkpoints.
+See the [final integration receipt](benchmarks/2026-10-04-fidelity4-preview-fallback-integration-verification.json).
+The earlier supplemental headless run and timing evidence retain their exact
+source scope; this later merge was not retimed. Performance recovery stays open.
+
+Linux Swift 6.0/6.1 and macOS CI passed at the first published head `e1650ae`;
+final-head build status is tracked on PR #39 after this merge. GitGuardian's
+four findings all identify the same verified source-file SHA-256 checksum,
+not a credential. Its incident #37859419 requires authenticated dismissal;
+the security check remains visible and monitoring has not been disabled.
+No merge to main or deployment occurred.

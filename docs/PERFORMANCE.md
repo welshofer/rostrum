@@ -1,13 +1,15 @@
 # Performance measurements
 
 The latest [October 4 comparison](INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-UPSTREAM.md)
-compares integrated source `2953dc1` with current-main baseline `6a1f56f`.
+compares integrated source `2953dc1` with its measured baseline `6a1f56f`.
 Large fallback rendering is **3.97% slower** and registered-table rendering
 **2.51% slower**, each in nine of ten matched pairs, with about 2 MiB additional
 peak process RSS. Substantial background load limits attribution. This is an
 explicit fidelity tradeoff; performance recovery remains open. Inherited SVG
 styling removes 2.03 MB versus the first unhoisted implementation while retaining
 470,000 bytes over the large-table baseline. See the October 4 section below.
+The later `a47d94b` merge incorporates preview fallback work from main `40f28e5`;
+its functional verification is recorded separately, and it was not retimed.
 
 The historical [October 3 combined checkpoint](INTEGRATED-LAYOUT-PERFORMANCE-20261003-3.md)
 measures **4.44% faster registered-font table rendering and 5.92% faster fitting**

@@ -393,3 +393,10 @@ saved width variants remain byte-identical across that merge. See the
 ### Explicit preview fallback (2026-10-04)
 
 Extraction and honest previews now exercises `FontLibrary.previewFallbackFamily` with the bundled licensed DejaVu Sans face. The unavailable family remains in the PPTX and exact registry lookup stays nil. Measurement and SVG drawing use the selected registered fallback, strict rendering still refuses the missing-font issue, and reapplying the choice after reopen reproduces the same preview. This does not claim font substitution matches native PowerPoint.
+
+
+At final merge `a47d94b`, the new fallback recipe raises the total to 339 checks
+across the same 26 recipes. The fresh full gate passes 1,111 library, 277 Core
+and 76 native app tests (zero native skips). All 52 decks reopen independently;
+the four paragraph SVGs and both saved variants remain byte-identical. See the
+[final receipt](benchmarks/2026-10-04-fidelity4-preview-fallback-integration-verification.json).

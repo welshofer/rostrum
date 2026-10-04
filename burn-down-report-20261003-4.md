@@ -142,7 +142,7 @@ native evidence, paired arithmetic and final report received independent review.
 | Test isolation | Delivered | 5860a71 | Injected diagnostics across recovery/restart; native app gate passes |
 | Current-main integration | Verified | 2953dc1 | Both-parent review, full gate and paragraph artifact identity |
 
-The final integrated tree passes 1,109 Rostrum tests, 18 layout tests, 277 Core
+At checkpoint `2953dc1`, the integrated tree passes 1,109 Rostrum tests, 18 layout tests, 277 Core
 tests and 76 native app tests with zero failures/skips, plus README samples and
 macOS/iOS builds (arm64 and x86_64 simulator). The separate headless run reports
 76 tests with three native WebKit exclusions covered by the native gate. All 26
@@ -164,3 +164,25 @@ script/hard-break limits, and fallback performance recovery remain open. Earlier
 rejected experiments and initial integration failures remain documented. The
 optional file-URL viewer was security-blocked and no workaround was attempted.
 Animation, release, deployment and App Store submission remain outside this pass.
+
+
+### Final preview-fallback reconciliation
+
+Main advanced again to `40f28e5` with an explicit preview fallback font. Merge
+`a47d94b` preserves that measured/drawn family together with the inherited
+ligature policy. Independent review compared both parents and approved. The
+fresh full gate passes 1,111 Rostrum, 18 layout, 277 Core and 76 native app tests
+(zero native failures/skips), README samples, and macOS/iOS builds. All 26 Lab
+recipes now pass 339 checks; the two additions belong to upstream's fallback
+demo. All 52 decks reopen independently. Four paragraph SVGs and both saved
+width variants remain byte-identical to the native-accepted checkpoints.
+See the [final integration receipt](docs/benchmarks/2026-10-04-fidelity4-preview-fallback-integration-verification.json).
+The earlier supplemental headless run and timing evidence retain their exact
+source scope; this later merge was not retimed. Performance recovery stays open.
+
+Linux Swift 6.0/6.1 and macOS CI passed at the first published head `e1650ae`;
+final-head build status is tracked on PR #39 after this merge. GitGuardian's
+four findings all identify the same verified source-file SHA-256 checksum,
+not a credential. Its incident #37859419 requires authenticated dismissal;
+the security check remains visible and monitoring has not been disabled.
+No merge to main or deployment occurred.

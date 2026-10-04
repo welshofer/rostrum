@@ -1,0 +1,874 @@
+{
+  "status": "Full local gate and independent external verification passed after second upstream merge; final-head hosted checks are tracked on PR39",
+  "sourceCommit": "a47d94b5a6883ace6ef5f5e5f56eb22851be6642",
+  "upstream": "40f28e5",
+  "sourceTrees": {
+    "Sources": "66b646a5329a67230bb56d4dec26c262a9099bae",
+    "Lectern": "4dec7a100465e2cfc7e234d1dc7a3b9a0efe274a"
+  },
+  "previousCheckpoint": {
+    "path": "docs/benchmarks/2026-10-04-fidelity4-merged-integration-verification.json",
+    "sha256": "7d86001a5926441560a79e6ebcbee8eef82f13097074b06179fddea2cef6248a"
+  },
+  "mergeReview": "Independent both-parent review approved a47d94b. SVGRenderer retains chosen preview fallback family with inherited ligature policy, cache context and viewer adjacency. No additional source findings.",
+  "fullGate": {
+    "command": "LECTERN_DERIVED_DATA_PATH=/tmp/lectern-fidelity4-xcode LECTERN_LIGATURE_ARTIFACTS=/tmp/lectern-fidelity4-ligatures-fallback-merged-20261004 LECTERN_LAB_ARTIFACTS=/tmp/lectern-fidelity4-lab-fallback-merged-20261004 ./scripts/verify.sh",
+    "exitCode": 0,
+    "log": "/tmp/rostrum-fidelity4-verify-fallback-merged-20261004.log",
+    "logSHA256": "d3129137ce2f725e961e26dd714fa781f728f65e645d623b1d4841cb021086a4",
+    "results": {
+      "offlineWorkflowTests": 4,
+      "rostrumTests": 1111,
+      "rostrumSuites": 154,
+      "layoutTests": 18,
+      "layoutSuites": 3,
+      "lecternCoreTests": 277,
+      "lecternCoreSuites": 36,
+      "nativeAppTests": 76,
+      "nativeAppSuites": 21,
+      "nativeFailures": 0,
+      "nativeSkips": 0,
+      "README": "drift and both executable examples passed",
+      "macOS": "canonical signed build passed",
+      "iOSSimulator": "canonical build passed; lipo x86_64 arm64"
+    }
+  },
+  "nativeAppSummary": {
+    "path": "/tmp/lectern-fidelity4-native-fallback-merged-test-summary.json",
+    "sha256": "d0795b983709ddf97b5cb85c6aa3f052ae418726f92f86d0b9d151edd4fea7e5",
+    "result": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "00006050-001E081E3E31401C",
+            "deviceName": "My Mac",
+            "modelName": "MacBook Pro",
+            "osBuildNumber": "26A434",
+            "osVersion": "27.0.1",
+            "platform": "macOS"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 106,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "Lectern \u00b7 Built with macOS 27.0.1",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1791126546.624,
+      "passedTests": 76,
+      "result": "Passed",
+      "runtimeWarnings": [],
+      "skippedTests": 0,
+      "startTime": 1791126491.522,
+      "statistics": [
+        {
+          "subtitle": "49 test runs",
+          "title": "19 tests ran with dynamic parameters"
+        }
+      ],
+      "testFailures": [],
+      "title": "Test - Lectern",
+      "topInsights": [
+        {
+          "category": "Longest Test Runs",
+          "impact": "41% of duration",
+          "text": "5 longest test runs with outlier durations exceeding 3.22s (three standard deviations)"
+        }
+      ],
+      "totalTestCount": 76
+    }
+  },
+  "nativeAppResultPath": "/tmp/lectern-fidelity4-xcode/Logs/Test/Test-Lectern-2026.10.04_08-08-11--0700.xcresult",
+  "externalVerification": {
+    "path": "/tmp/lectern-fidelity4-fallback-merged-external.json",
+    "sha256": "d9d79469abe24c07da39819bc9212a78e209c0652fbe5c9c57d323549ed062ef",
+    "rootVerifiedUniqueFiles": 93,
+    "results": {
+      "verifiedAt": "2026-10-04T15:10:29.663949+00:00",
+      "scope": "Read-only external artifact verification after root confirmed full gate exit0 at a47d94b; no builds, app tests, GUI or source edits.",
+      "pythonPptxVersion": "1.0.2",
+      "priorReceipts": [
+        {
+          "path": "/tmp/lectern-fidelity4-lab-merged-final-external.json",
+          "sha256": "4dac3cb8ea5c67a04b811e7c7e791a6e843ea414958dcd6b40f207532e39c530"
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-merge-variant-identity.json",
+          "sha256": "2f117910e6dc0f1eb1d7d804752439d28e60350b7b24f8020ccc9f7cf76aa6f2"
+        }
+      ],
+      "reports": [
+        {
+          "recipe": "chartEditing",
+          "checks": 24,
+          "findings": 4,
+          "slides": 4,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/chartEditing-EDC9EA37-66E5-4CC0-A3E1-07C47349C3F8/report.json",
+          "reportSHA256": "6a73b3d856871776789ab8a312c864222a059ac8869c0d0cb14eec2c5992c316"
+        },
+        {
+          "recipe": "charts",
+          "checks": 30,
+          "findings": 24,
+          "slides": 12,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/charts-33FD7EFE-0B20-4D5D-ADB2-EC1FEDD4E819/report.json",
+          "reportSHA256": "177e4daaa07f9286e01ffb59a031f965e30f659ffeadf20ccb8ec3b5a9f6e4a6"
+        },
+        {
+          "recipe": "comments",
+          "checks": 12,
+          "findings": 3,
+          "slides": 1,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/comments-C8049622-3C81-4FD1-83C4-6C5B2BCD5A6F/report.json",
+          "reportSHA256": "5c9b5da2b216c621e18e92f3a53bf90a4a859a1c8fbc5dc2146b4cf574b72c8b"
+        },
+        {
+          "recipe": "design",
+          "checks": 11,
+          "findings": 61,
+          "slides": 20,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/design-2182E315-2BD6-4D8E-85F8-CE850E860BCC/report.json",
+          "reportSHA256": "e7e340510797a86a3b15141459fd635bee62a817c2569b80d32937194384ec01"
+        },
+        {
+          "recipe": "extractionAndRendering",
+          "checks": 13,
+          "findings": 3,
+          "slides": 3,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/extractionAndRendering-73719D49-9349-4324-8808-07E1122C0DA4/report.json",
+          "reportSHA256": "0be8967efaf825418d7a2b1f769b262c0764e5c596da8598a2a971a016958859"
+        },
+        {
+          "recipe": "fillsAndLines",
+          "checks": 19,
+          "findings": 19,
+          "slides": 10,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/fillsAndLines-84689F8C-F2B3-4693-8668-FBFE80BD2DF1/report.json",
+          "reportSHA256": "e1c69af2277b5234e69135decfe4ae9fdd00e9c151f3ae2905f6bf31336fdf8d"
+        },
+        {
+          "recipe": "fontsAndFitting",
+          "checks": 11,
+          "findings": 0,
+          "slides": 1,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/fontsAndFitting-6DACCC35-6C62-4674-87FB-26D780CCEB40/report.json",
+          "reportSHA256": "25c0f72b97bd42dc1952c82fbc356f208a019e2d88b1c3d884b84e7ec1ff8888"
+        },
+        {
+          "recipe": "importedFidelity",
+          "checks": 9,
+          "findings": 0,
+          "slides": 1,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/importedFidelity-4311FAB9-0D24-46DD-BDD3-7B33B2759178/report.json",
+          "reportSHA256": "9c894634c80fef1aa56bad12cb9cec79c70cb6a4dc00bf596306ff38eecb0510"
+        },
+        {
+          "recipe": "layouts",
+          "checks": 13,
+          "findings": 0,
+          "slides": 3,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/layouts-4A65B431-7D00-4D1B-A5E0-E8FD608AB8A5/report.json",
+          "reportSHA256": "5345052a7f6c0cbfb5ae07efc5501d980170ae34f15e47abb8613269b5835f5b"
+        },
+        {
+          "recipe": "mediaAndAttachments",
+          "checks": 11,
+          "findings": 2,
+          "slides": 2,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/mediaAndAttachments-74010154-3567-4362-A446-A1925FC8D45E/report.json",
+          "reportSHA256": "8d88269dcc07b32acc679455ddc919a135bed37cedb8448f66353616d23429b6"
+        },
+        {
+          "recipe": "notes",
+          "checks": 8,
+          "findings": 2,
+          "slides": 3,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/notes-9E742D6A-0264-48C2-8D74-D1EC4EC52DF8/report.json",
+          "reportSHA256": "74828b22e5cf4849967290b3ef6683cb72747de1f669b616e7535ac4de200bf4"
+        },
+        {
+          "recipe": "package",
+          "checks": 11,
+          "findings": 1,
+          "slides": 1,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/package-45BB305A-480D-496B-83D2-6F1A27483159/report.json",
+          "reportSHA256": "3736b243931a66fe859426b148b111b253338d6531c7c737e5b9dd3f855c0bde"
+        },
+        {
+          "recipe": "paragraphLayout",
+          "checks": 31,
+          "findings": 0,
+          "slides": 4,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/paragraphLayout-167FC56B-CD92-426D-9E99-6BC2A8D7A9D3/report.json",
+          "reportSHA256": "2fe0fee80dfcfecb7149a6dfb57590fab31c13c1f1fe3116e0b237e77bb0175c"
+        },
+        {
+          "recipe": "pictures",
+          "checks": 17,
+          "findings": 0,
+          "slides": 2,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/pictures-831F54EF-317F-499C-A375-865CB79437FA/report.json",
+          "reportSHA256": "0d8b9945064d098376c33b569002fb6afa86e3c6cc7ce9bf0c2abc541f927fe1"
+        },
+        {
+          "recipe": "sections",
+          "checks": 10,
+          "findings": 6,
+          "slides": 7,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/sections-CBA211D2-A8BB-47BD-B9BB-3AE726801C7B/report.json",
+          "reportSHA256": "2b792a81352795bc617457270f282377d0edb0e9e7f60cb4690af4a3f880602a"
+        },
+        {
+          "recipe": "shapes",
+          "checks": 7,
+          "findings": 179,
+          "slides": 15,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/shapes-22A096A3-65FE-4C82-B81B-CB60176CF5AC/report.json",
+          "reportSHA256": "4dbb5deb251ff566c2e54a8f46f8d5178dd90d84356c7200a97c816bd6b4e0a6"
+        },
+        {
+          "recipe": "slideImport",
+          "checks": 10,
+          "findings": 10,
+          "slides": 6,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/slideImport-D853BE18-3BA6-496A-8A15-0105D3EC6A1A/report.json",
+          "reportSHA256": "f9bb2fb30434e1702497e0b9edfbecf46a4e2bf8df8bedabf2402e56e6bc7c94"
+        },
+        {
+          "recipe": "slides",
+          "checks": 9,
+          "findings": 4,
+          "slides": 4,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/slides-EB3EEA96-FC1C-4CA0-A5E9-E380C3DA985D/report.json",
+          "reportSHA256": "79df7f02312273481724f23a86ac8842e0450ff5526a580067dbdcf017d75094"
+        },
+        {
+          "recipe": "smartArt",
+          "checks": 10,
+          "findings": 8,
+          "slides": 4,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/smartArt-F4323300-A524-489D-A47C-E401F90E2060/report.json",
+          "reportSHA256": "e337784be94e1a71af396cf1e4ad987764a774ab26159e802495f75eb01e6bab"
+        },
+        {
+          "recipe": "tabLayout",
+          "checks": 13,
+          "findings": 1,
+          "slides": 2,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tabLayout-94CC4DA7-22A8-4B2F-B02A-3278819B381E/report.json",
+          "reportSHA256": "c8142ecb25e05743de2502ccfbd96eb53d3b1e584323709ba72311f50410b359"
+        },
+        {
+          "recipe": "tableAppearance",
+          "checks": 15,
+          "findings": 6,
+          "slides": 2,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tableAppearance-15768164-53A0-4A1B-B83C-02F89924FC05/report.json",
+          "reportSHA256": "0d7922da48dbb64e78fd4aa9ef4a422237f8300ca429d879c7a089a8d136b57e"
+        },
+        {
+          "recipe": "tableStructure",
+          "checks": 12,
+          "findings": 0,
+          "slides": 1,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tableStructure-3BF0670A-B7D8-40DC-85C0-4C2C87CCDBD2/report.json",
+          "reportSHA256": "fb85b4a9896d6c94d136d6627e502f9e1762a4ee8a6beed00d1faac92487826d"
+        },
+        {
+          "recipe": "tableStyles",
+          "checks": 7,
+          "findings": 21,
+          "slides": 19,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tableStyles-FE97BF20-7708-4CC1-8DDD-F368A0898484/report.json",
+          "reportSHA256": "31f77e610ef295ce3ae16bdd66663237009541e8134cb52d0852fbdb8f40093d"
+        },
+        {
+          "recipe": "templates",
+          "checks": 8,
+          "findings": 1,
+          "slides": 1,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/templates-DE0C65AF-60C7-4C97-B47A-3BF01B21E9CB/report.json",
+          "reportSHA256": "fedd57f5cac87c8ab8606dc30d00a1156584268e199ec1a98aab145da9982154"
+        },
+        {
+          "recipe": "text",
+          "checks": 10,
+          "findings": 2,
+          "slides": 2,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/text-FC6C69D6-7CF2-474B-BE23-5370E111E83D/report.json",
+          "reportSHA256": "63653211305da74286b8d2a7a324533112c8a96fed8f08c26f0c36e414600334"
+        },
+        {
+          "recipe": "theme",
+          "checks": 8,
+          "findings": 1,
+          "slides": 1,
+          "report": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/theme-9F6667BF-A442-4D4B-8CBB-6F6A3EED34C7/report.json",
+          "reportSHA256": "66d0d3bd3142ae0349d43a5cbc9004ec826f304b9309812be861810f0c1a2189"
+        }
+      ],
+      "totalRecipes": 26,
+      "totalChecks": 339,
+      "failedChecks": 0,
+      "checkCountChanges": [
+        {
+          "recipe": "extractionAndRendering",
+          "prior": 11,
+          "latest": 13
+        }
+      ],
+      "independentReopens": [
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/chartEditing-EDC9EA37-66E5-4CC0-A3E1-07C47349C3F8/chartEditing-before.pptx",
+          "sha256": "3a81b28c762d4074a18463cb3f926e70d1d4ad2985e5f36004ea31fec9065268",
+          "slides": 4,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/chartEditing-EDC9EA37-66E5-4CC0-A3E1-07C47349C3F8/chartEditing.pptx",
+          "sha256": "ea99297096e9d4f20bb11a5e68479095049e10647f29cea32c392bad76eb5cad",
+          "slides": 4,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/charts-33FD7EFE-0B20-4D5D-ADB2-EC1FEDD4E819/charts.pptx",
+          "sha256": "0cf9af74a4b96432b414e9ce35208113c6b1a630de94973ce4e7df0bed62b9f4",
+          "slides": 12,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/comments-C8049622-3C81-4FD1-83C4-6C5B2BCD5A6F/comments-before.pptx",
+          "sha256": "9bf761b35742e50bfcad7b4a6bf57fb701997e478387725a772ba5781c43929b",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/comments-C8049622-3C81-4FD1-83C4-6C5B2BCD5A6F/comments.pptx",
+          "sha256": "3f654507663f809ab2f9a8704d02fbfdad5ef11c1096bc215576913d78bf29e9",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/design-2182E315-2BD6-4D8E-85F8-CE850E860BCC/design-before.pptx",
+          "sha256": "a635c89d415376e2c0759d2498707526603cd4b87e03272e33a917b6b005d58c",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/design-2182E315-2BD6-4D8E-85F8-CE850E860BCC/design.pptx",
+          "sha256": "3ab461124963b4b71f5e5780a9361f11588d16501bc77e6c1484c61e631a87af",
+          "slides": 20,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/extractionAndRendering-73719D49-9349-4324-8808-07E1122C0DA4/extractionAndRendering-before.pptx",
+          "sha256": "55be7cca8370ad9f86339d3e74b7ba31873350e4aaf83ea590e1e6ac34d0e743",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/extractionAndRendering-73719D49-9349-4324-8808-07E1122C0DA4/extractionAndRendering.pptx",
+          "sha256": "29240aa0c68478074ae22c764219e25dfd7bc8fac48b7eaa9eb808678369c531",
+          "slides": 3,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/fillsAndLines-84689F8C-F2B3-4693-8668-FBFE80BD2DF1/fillsAndLines-before.pptx",
+          "sha256": "b97b424855be08e875977db18b59159cfd4b92dbc7bb749c6febac1eecff70d0",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/fillsAndLines-84689F8C-F2B3-4693-8668-FBFE80BD2DF1/fillsAndLines.pptx",
+          "sha256": "d16f544588feb63d21a4ffa68fee266439d80d3bef4b4bdce646cb82043cd8fb",
+          "slides": 10,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/fontsAndFitting-6DACCC35-6C62-4674-87FB-26D780CCEB40/fontsAndFitting-before.pptx",
+          "sha256": "82990dfc35c80b1d46f0da91a511c0c5eb85be4bca17f9eb7f1a7d8ba0901574",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/fontsAndFitting-6DACCC35-6C62-4674-87FB-26D780CCEB40/fontsAndFitting.pptx",
+          "sha256": "d3d7b79dd955f5cfb5b7a1f318326fcbabf602b17f29adab36688d75130e26e4",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/importedFidelity-4311FAB9-0D24-46DD-BDD3-7B33B2759178/importedFidelity-before.pptx",
+          "sha256": "22130531feeb22ebce73c41ab81bbe2f111e3ec98c03c3423d7e926aed7d196a",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/importedFidelity-4311FAB9-0D24-46DD-BDD3-7B33B2759178/importedFidelity.pptx",
+          "sha256": "bd72487e25dfd1aa61a60fbf143880c1f835f5de8874fe42f37d3d74623157e4",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/layouts-4A65B431-7D00-4D1B-A5E0-E8FD608AB8A5/layouts-before.pptx",
+          "sha256": "ee496bd57ae758cf750adb9c2f0f1df159be5fc83714fe42e06bbbefd34e7ad8",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/layouts-4A65B431-7D00-4D1B-A5E0-E8FD608AB8A5/layouts.pptx",
+          "sha256": "6f64dbff97cb66fa7919f779bcbfd41b1e1b7b19baa4c4a3d7d3e5e5d27db978",
+          "slides": 3,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/mediaAndAttachments-74010154-3567-4362-A446-A1925FC8D45E/mediaAndAttachments-before.pptx",
+          "sha256": "35da598b77ae3b1e1801a31849e27192abfc6b7c9030bad354d8e9fe42ada9b8",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/mediaAndAttachments-74010154-3567-4362-A446-A1925FC8D45E/mediaAndAttachments.pptx",
+          "sha256": "44a3e7ac080c338991543570e5032cda2f91b72d82f760d623620d7cdfa3af21",
+          "slides": 2,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/notes-9E742D6A-0264-48C2-8D74-D1EC4EC52DF8/notes-before.pptx",
+          "sha256": "76b1c791c728a153f6d07bc1af365aeb49154546c43696f0a567fac01d786a3e",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/notes-9E742D6A-0264-48C2-8D74-D1EC4EC52DF8/notes-source.pptx",
+          "sha256": "d193258313fcbb8552428b4d58ee3fc0cd93bd949a5f74f40188c692abffa1a3",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/notes-9E742D6A-0264-48C2-8D74-D1EC4EC52DF8/notes.pptx",
+          "sha256": "2f5c2ae22655f8086719144fe6c124ae30498da69e8ba00a9cee8cd4bb3b78dd",
+          "slides": 3,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/package-45BB305A-480D-496B-83D2-6F1A27483159/package-before.pptx",
+          "sha256": "38e0b40b6a5ed68653fedec8af624b69597d66e6cdff481a0dbf1d9d8e9de1e0",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/package-45BB305A-480D-496B-83D2-6F1A27483159/package.pptx",
+          "sha256": "c98d6c673cd92e9d316e1e536ed28a242dad7e8b580b2d072d011c125877ea3a",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/paragraphLayout-167FC56B-CD92-426D-9E99-6BC2A8D7A9D3/paragraphLayout-before.pptx",
+          "sha256": "76cf48e1e1d8be752127dcb86913f0a610da27994d4486881285be42421d7301",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/paragraphLayout-167FC56B-CD92-426D-9E99-6BC2A8D7A9D3/paragraphLayout.pptx",
+          "sha256": "69709120cd0dd8f7d2ea30bc61f4f71fd4b1ea9a8e939720ef5f44b6ba5d37fc",
+          "slides": 4,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/pictures-831F54EF-317F-499C-A375-865CB79437FA/pictures-before.pptx",
+          "sha256": "1013508109a261f5f8371cf12e6dab26e1fbc60eb40d1124ee19ef7f5889c393",
+          "slides": 2,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/pictures-831F54EF-317F-499C-A375-865CB79437FA/pictures.pptx",
+          "sha256": "a0f77e4e6e99f2d3f187bac214cbdabe8c115f817e3b7dcf2a84203ed1858f57",
+          "slides": 2,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/sections-CBA211D2-A8BB-47BD-B9BB-3AE726801C7B/sections-before.pptx",
+          "sha256": "a7aa23a63eba30abfad9c27b61958a4e31f4142f6d25c887f02a0a3dd4237243",
+          "slides": 6,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/sections-CBA211D2-A8BB-47BD-B9BB-3AE726801C7B/sections.pptx",
+          "sha256": "4ccb2b8ff46d15cb08dd167d6bb39f6690e14706488b8d8617b37094c687d4f3",
+          "slides": 7,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/shapes-22A096A3-65FE-4C82-B81B-CB60176CF5AC/shapes-before.pptx",
+          "sha256": "28a56717be882445fb747deb741bfd5ba79226ad380a2bb1828fbbfde00ac01d",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/shapes-22A096A3-65FE-4C82-B81B-CB60176CF5AC/shapes.pptx",
+          "sha256": "8a4e2546af9062b7090799b1d7bc9cf75b176ff6525a19b1ce8d98d7fc132e8f",
+          "slides": 15,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/slideImport-D853BE18-3BA6-496A-8A15-0105D3EC6A1A/import-source.pptx",
+          "sha256": "0947c9fc9c6530a5b0d8a7e8c30288cd13197d6e19ca937ea56144138551fd0e",
+          "slides": 4,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/slideImport-D853BE18-3BA6-496A-8A15-0105D3EC6A1A/slideImport-before.pptx",
+          "sha256": "b3a3552416136d667857335688e005e5bb4ee147a3fe00b73b7f661148c5336a",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/slideImport-D853BE18-3BA6-496A-8A15-0105D3EC6A1A/slideImport.pptx",
+          "sha256": "f927bd636fe2a3278ff7b715ae4fccf45dba1ad4f783b12a3ec8cb293a5d6c97",
+          "slides": 6,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/slides-EB3EEA96-FC1C-4CA0-A5E9-E380C3DA985D/slides-before.pptx",
+          "sha256": "39a8887b5b64e15c01476ee3931e0cc8ff4a1effa6dec52cfc6c8968f8e143c2",
+          "slides": 4,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/slides-EB3EEA96-FC1C-4CA0-A5E9-E380C3DA985D/slides.pptx",
+          "sha256": "a2593a5cfdb28c5758861bf3f4d95d30ef58359c23167090cf1ca379725160a9",
+          "slides": 4,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/smartArt-F4323300-A524-489D-A47C-E401F90E2060/smartArt.pptx",
+          "sha256": "e68b359d176fb1fd9f6c742724f608c25a84e16c11656874d798659f96854768",
+          "slides": 4,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tabLayout-94CC4DA7-22A8-4B2F-B02A-3278819B381E/tabLayout-before.pptx",
+          "sha256": "b0916e8ac00b8dfa143c5d5b7569fc0a2196f9d363d9dd79fa027c39264caf59",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tabLayout-94CC4DA7-22A8-4B2F-B02A-3278819B381E/tabLayout.pptx",
+          "sha256": "eb62682daf2d69620b8111e1c07dba684afdc236edfa7d145681e7f3ff6c87f3",
+          "slides": 2,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tableAppearance-15768164-53A0-4A1B-B83C-02F89924FC05/tableAppearance-before.pptx",
+          "sha256": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tableAppearance-15768164-53A0-4A1B-B83C-02F89924FC05/tableAppearance.pptx",
+          "sha256": "3b989b2d4bf4b398a391e14e2241346421aaed28bc17d79e71d7d5658ec459e2",
+          "slides": 2,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tableStructure-3BF0670A-B7D8-40DC-85C0-4C2C87CCDBD2/tableStructure-before.pptx",
+          "sha256": "a090209dea654ea4753ae51d5b3ae1d441679564b7b0bcf7dc771a1c7d787030",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tableStructure-3BF0670A-B7D8-40DC-85C0-4C2C87CCDBD2/tableStructure.pptx",
+          "sha256": "5616bb415a4e4eed8ec35510c6611f4ab8c9c0e1c21e13b63c6d39dae3851556",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tableStyles-FE97BF20-7708-4CC1-8DDD-F368A0898484/tableStyles-before.pptx",
+          "sha256": "21e97d9f2e74bcaca77786f289691d99d28b281aac5220bbaa2236e0d3a3172f",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/tableStyles-FE97BF20-7708-4CC1-8DDD-F368A0898484/tableStyles.pptx",
+          "sha256": "434031c7380b7c742dadc66d87512d9822561240cb72e4cb70958ca3111c3558",
+          "slides": 19,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/templates-DE0C65AF-60C7-4C97-B47A-3BF01B21E9CB/templates-before.pptx",
+          "sha256": "52047af7d6c258179defe6aac3df8059f02ab2346a27a2828ec4f92f80a0db31",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/templates-DE0C65AF-60C7-4C97-B47A-3BF01B21E9CB/templates.pptx",
+          "sha256": "11ef5debcaeec9280f7f3fc85cdb5c422cd3b889e7938d28d903cc1366affce4",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/text-FC6C69D6-7CF2-474B-BE23-5370E111E83D/text-before.pptx",
+          "sha256": "952bd3f451f773a612f3f181f661a38ac46a209628925c931d2325512c0708fd",
+          "slides": 2,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/text-FC6C69D6-7CF2-474B-BE23-5370E111E83D/text.pptx",
+          "sha256": "2a1a38226487f7b1eea73cbe32b37851dbb78935e1b7733e4073495e9b13223e",
+          "slides": 2,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/theme-9F6667BF-A442-4D4B-8CBB-6F6A3EED34C7/theme-before.pptx",
+          "sha256": "c767a2b1a04c30b76404c64884817f84d85f26712a0f010f2adc3db48a24217e",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/theme-9F6667BF-A442-4D4B-8CBB-6F6A3EED34C7/theme.pptx",
+          "sha256": "cc090f46cb194029bb6e445d42f998bda681fbeeca554cc689481d49ce2ee537",
+          "slides": 1,
+          "unzipExitCode": 0,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "unchangedAfterRead": true
+        }
+      ],
+      "totalLabZipAndPythonPptxReopens": 52,
+      "paragraphSVGByteIdentity": [
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/paragraphLayout-167FC56B-CD92-426D-9E99-6BC2A8D7A9D3/previews/slide-01.svg",
+          "prior": "/tmp/lectern-fidelity4-lab-merged-final-20261004/paragraphLayout-9A04D0BE-0D9E-4BCA-A9EB-23EDF2805CC3/previews/slide-01.svg",
+          "sha256": "c1cc46800e1c8b2862323bb87427a9003abf3cb271bc68aac41a5aac37659f4d",
+          "byteIdentical": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/paragraphLayout-167FC56B-CD92-426D-9E99-6BC2A8D7A9D3/previews/slide-02.svg",
+          "prior": "/tmp/lectern-fidelity4-lab-merged-final-20261004/paragraphLayout-9A04D0BE-0D9E-4BCA-A9EB-23EDF2805CC3/previews/slide-02.svg",
+          "sha256": "37ea330f5b973163c51e236237ba31572c418de48ae11585f0cf8ef5d671d1c5",
+          "byteIdentical": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/paragraphLayout-167FC56B-CD92-426D-9E99-6BC2A8D7A9D3/previews/slide-03.svg",
+          "prior": "/tmp/lectern-fidelity4-lab-merged-final-20261004/paragraphLayout-9A04D0BE-0D9E-4BCA-A9EB-23EDF2805CC3/previews/slide-03.svg",
+          "sha256": "3dfe64099f09a036168739db35e9955539cc498af3b6b610b5781a3b73e45d5a",
+          "byteIdentical": true
+        },
+        {
+          "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/paragraphLayout-167FC56B-CD92-426D-9E99-6BC2A8D7A9D3/previews/slide-04.svg",
+          "prior": "/tmp/lectern-fidelity4-lab-merged-final-20261004/paragraphLayout-9A04D0BE-0D9E-4BCA-A9EB-23EDF2805CC3/previews/slide-04.svg",
+          "sha256": "f7266b99685ab46486f68d33af03ae899c0fddf9ee92fe225c5a1ad3a38e07c5",
+          "byteIdentical": true
+        }
+      ],
+      "paragraphPptxByteIdentity": {
+        "path": "/tmp/lectern-fidelity4-lab-fallback-merged-20261004/paragraphLayout-167FC56B-CD92-426D-9E99-6BC2A8D7A9D3/paragraphLayout.pptx",
+        "prior": "/tmp/lectern-fidelity4-lab-merged-final-20261004/paragraphLayout-9A04D0BE-0D9E-4BCA-A9EB-23EDF2805CC3/paragraphLayout.pptx",
+        "sha256": "69709120cd0dd8f7d2ea30bc61f4f71fd4b1ea9a8e939720ef5f44b6ba5d37fc",
+        "byteIdentical": true
+      },
+      "ligatureVariantByteIdentity": [
+        {
+          "narrow": false,
+          "path": "/tmp/lectern-fidelity4-ligatures-fallback-merged-20261004/narrow-false-532EB53B-4A80-4FC6-8A3C-AB327914CC7B/paragraphLayout.pptx",
+          "prior": "/tmp/lectern-fidelity4-ligatures-merged-final-20261004/narrow-false-9DDCE8C7-4F0D-45B9-BD85-31337138AD27/paragraphLayout.pptx",
+          "sha256": "355c5ea87e140e48a175a04dad7fdeb5e97e39de12a404744f03bc4a718860b8",
+          "byteIdentical": true,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "slides": 4,
+          "unchangedAfterRead": true
+        },
+        {
+          "narrow": true,
+          "path": "/tmp/lectern-fidelity4-ligatures-fallback-merged-20261004/narrow-true-FCBB46FC-F4D4-4944-B7C3-B4ECB404E143/paragraphLayout.pptx",
+          "prior": "/tmp/lectern-fidelity4-ligatures-merged-final-20261004/narrow-true-A572DEFD-DF7F-48A6-A187-6223D774D7BF/paragraphLayout.pptx",
+          "sha256": "ed50583183c8288c975a45d6b8970e2c40a9a248634c34d9061feace3d30d63e",
+          "byteIdentical": true,
+          "zipCRCValid": true,
+          "pythonPptxOpened": true,
+          "slides": 4,
+          "unchangedAfterRead": true
+        }
+      ]
+    }
+  },
+  "headlessScope": "Supplemental headless run remains scoped to prior2953 checkpoint; fresh full native app gate covers all76 tests with zero exclusions at a47.",
+  "nativeAcceptance": "Four paragraph SVGs and both width-variant PPTX files are byte-identical to prior native-accepted checkpoints. No new manual GUI or native PDF capture claimed for this merge.",
+  "performanceScope": "The paired measurements remain scoped to2953dc1 versus6a1f56f. Newa47 source was not retimed. No new-source speed or memory claim. Performance recovery remains open.",
+  "securityCheck": {
+    "classification": "Confirmed false positive: all four GitGuardian findings refer to one source-file SHA-256 checksum, not a credential",
+    "incident": 37859419,
+    "verifiedSource": "Sources/Rostrum/Presentation/TemplateAuthoring.swift",
+    "evidence": "/tmp/rostrum-fidelity4-gitguardian-classification.json",
+    "evidenceSHA256": "bf80002782e60ba16f847dc95b97a13d588185100f0c23d7c81967cae74dc1f8",
+    "status": "Dismissal requires authenticated dashboard access; scan protection remains unchanged"
+  },
+  "delivery": {
+    "url": "https://github.com/welshofer/rostrum/pull/39",
+    "draft": true,
+    "checks": "https://github.com/welshofer/rostrum/pull/39/checks",
+    "mergeToMain": false,
+    "deployment": false
+  }
+}
