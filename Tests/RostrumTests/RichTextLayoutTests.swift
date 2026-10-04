@@ -133,6 +133,33 @@ import Testing
         #expect(layout.lines.map { $0.spans[0].run.text } == ["• ", "iv. ", "v. ", "ii. "])
     }
 
+    @Test func nearestBulletFontAndSizeChoicesOverrideInheritedAlternatives() throws {
+        let master = try XML.parse(Data("""
+        <p:bodyStyle><a:lvl1pPr><a:buSzPts val="4000"/><a:buFont typeface="Master"/><a:buChar char="•"/></a:lvl1pPr></p:bodyStyle>
+        """.utf8))
+        let layoutStyle = try XML.parse(Data("""
+        <a:lstStyle><a:lvl1pPr><a:buSzPct val="150000"/><a:buFontTx/></a:lvl1pPr></a:lstStyle>
+        """.utf8))
+        for (local, expectedFamily, expectedSize) in [
+            ("", "Body", 15.0),
+            ("<a:buSzTx/><a:buFontTx/>", "Body", 10.0),
+            ("<a:buSzPct val=\"50000\"/><a:buFont typeface=\"Local\"/>", "Local", 5.0),
+            ("<a:buSzPts val=\"2400\"/>", "Body", 12.0)
+        ] {
+            let xml = try body("""
+            <a:p><a:pPr>\(local)</a:pPr><a:r><a:rPr sz="2000"><a:latin typeface="Body"/></a:rPr><a:t>Item</a:t></a:r></a:p>
+            """, autofit: "<a:normAutofit fontScale=\"50000\"/>")
+            let result = RichTextLayout(textBody: xml, width: 200, height: 100,
+                fallbackMetrics: try metrics(), inheritedStyles: [layoutStyle, master])
+            let spans = try #require(result.lines.first).spans
+            #expect(spans.count == 2)
+            #expect(spans[0].run.text == "• ")
+            #expect(spans[0].run.fontFamily == expectedFamily, "\(local)")
+            #expect(spans[0].run.fontSize == expectedSize, "\(local)")
+            #expect(spans[1].run.fontFamily == "Body" && spans[1].run.fontSize == 10)
+        }
+    }
+
     @Test func wrappingOffIsMeasuredAsOverflowAndNeverSplits() throws {
         let xml = try body("<a:p><a:r><a:rPr sz=\"1000\"/><a:t>AAAA AAAA</a:t></a:r></a:p>", attributes: "wrap=\"none\"")
         let layout = RichTextLayout(textBody: xml, width: 20, height: 100, fallbackMetrics: try metrics())
