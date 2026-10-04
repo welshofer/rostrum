@@ -27,7 +27,7 @@ public extension ShapeCollection {
         p.alignment = align
         p.addRun(ts.uppercase ? text.uppercased() : text)
         p.apply(ts)
-        p.setNoBullet()
+        p.setNoBullet(); p.setIndentation(left: .zero, hanging: .zero)
         return box
     }
 
@@ -46,7 +46,7 @@ public extension ShapeCollection {
             if i > 0 && spacingPt > 0 { p.setSpacing(beforePoints: spacingPt) }
             p.addRun(ts.uppercase ? line.uppercased() : line)
             p.apply(ts)
-            p.setNoBullet()
+            p.setNoBullet(); p.setIndentation(left: .zero, hanging: .zero)
         }
         if lines.isEmpty { tf.addParagraph() }   // a txBody must have >= 1 a:p
         return box
@@ -100,10 +100,10 @@ public extension ShapeCollection {
         let tf = box.textFrame!
         var vs = style.type(.stat); if let valueColor { vs.color = valueColor }
         var cs = style.type(.caption); if let captionColor { cs.color = captionColor }
-        let v = tf.addParagraph(); v.alignment = align; v.addRun(value); v.apply(vs)
+        let v = tf.addParagraph(); v.alignment = align; v.addRun(value); v.apply(vs); v.setNoBullet(); v.setIndentation(left: .zero, hanging: .zero)
         let c = tf.addParagraph(); c.alignment = align
         c.setSpacing(beforePoints: style.spacing.sm.points)
-        c.addRun(widowProofed(caption)); c.apply(cs)
+        c.addRun(widowProofed(caption)); c.apply(cs); c.setNoBullet(); c.setIndentation(left: .zero, hanging: .zero)
         return box
     }
 

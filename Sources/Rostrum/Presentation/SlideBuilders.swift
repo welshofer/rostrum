@@ -160,8 +160,8 @@ public extension Presentation {
 
     /// A title + bulleted body.
     @discardableResult
-    /// - Parameter reservingSideImage: narrow the title and bullets to the
-    ///   left seven columns, leaving `sideImagePanel()` free for a picture.
+    /// - Parameter reservingSideImage: narrow the body to seven columns.
+    ///   The header spans the slide; use `sideImagePanel(_:belowHeaderOf:)` for the picture.
     ///   Text-only slides keep the full width, so nothing moves unless asked.
     func bulletSlide(_ title: String, _ bullets: [String],
                      kicker: String? = nil, lead: String? = nil,
@@ -847,11 +847,14 @@ public extension Presentation {
     /// fractions is how text and image come to overlap: Lectern's did, at
     /// 55.5% of the slide width, while `sectionSlide`'s subtitle ran nine
     /// columns wide and straight underneath it.
-    func sideImagePanel(_ side: SideImage = .right, style: DeckStyle? = nil) -> Rect {
+    func sideImagePanel(_ side: SideImage = .right, belowHeaderOf slide: Slide? = nil, style: DeckStyle? = nil) -> Rect {
         let s = style ?? self.style
         let span = 12 - Self.sideImageColumn
-        return deckGrid(s).cell(column: side == .right ? Self.sideImageColumn : 0,
-                                row: 2, columnSpan: span, rowSpan: 9)
+        let panel = deckGrid(s).cell(column: side == .right ? Self.sideImageColumn : 0,
+                                    row: 2, columnSpan: span, rowSpan: 9)
+        guard let slide, let title = slide.title, let frame = slide.effectiveFrame(of: title) else { return panel }
+        let top = Swift.max(panel.minY, frame.maxY + .points(20))
+        return Rect(x: panel.x, y: top, width: panel.width, height: Swift.max(.zero, panel.maxY - top))
     }
 
     /// First column belonging to the side image. Text on a reserving slide
@@ -896,8 +899,9 @@ public extension Presentation {
                              reservingSideImage: Bool = false,
                              imageSide: SideImage = .right) throws -> (contentRow: Int, titleWraps: Bool, contentY: EMU) {
         let grid = deckGrid(style)
-        let columns = reservingSideImage ? Self.sideImageColumn : 11
-        let column = reservingSideImage && imageSide == .left ? 12 - Self.sideImageColumn : 0
+        // The headline belongs to the slide, not either body column.
+        let columns = 11
+        let column = 0
         var titleRow = 0
         if let kicker {
             try slide.addKicker(kicker, in: grid.cell(column: column, row: 0, columnSpan: columns), style: style)

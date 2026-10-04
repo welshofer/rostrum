@@ -503,7 +503,7 @@ public actor DeckRenderer {
                     case .sidePanel(let side):
                         // A framed panel on the right (title/content sit left).
                         if let picture = try? built.shapes.addPicture(
-                            data, frame: TemplateRendering.containedImageFrame(data, in: presentation.sideImagePanel(side))) {
+                            data, frame: TemplateRendering.containedImageFrame(data, in: presentation.sideImagePanel(side, belowHeaderOf: built))) {
                             // The brief that generated this image *is* its
                             // description — exactly what a screen reader needs,
                             // and the app has been holding it all along.

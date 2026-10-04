@@ -116,17 +116,21 @@ import Testing
     /// the only way that recurs is if this stops holding.
     @Test func reservedTextNeverEntersTheSideImagePanel() throws {
         let deck = try Presentation()
-        let panel = deck.sideImagePanel()
-        try deck.bulletSlide("A headline long enough that it would want the whole width",
-                             ["first point that is also rather long",
-                              "second point", "third point"],
-                             reservingSideImage: true)
-
-        for shape in try deck.slides[1].shapes {
-            let frame = shape.frame
-            guard frame.width.rawValue > 0 else { continue }
-            #expect(frame.maxX.rawValue <= panel.minX.rawValue,
-                    "\"\(shape.name)\" runs to \(frame.maxX.rawValue), panel starts at \(panel.minX.rawValue)")
+        for side in [SideImage.left, .right] {
+            let slide = try deck.bulletSlide("A headline long enough that it would want the whole width",
+                ["first point that is also rather long", "second point", "third point"],
+                kicker: "A shared header", reservingSideImage: true, imageSide: side)
+            let panel = deck.sideImagePanel(side, belowHeaderOf: slide)
+            let title = try #require(slide.title)
+            #expect(title.frame.minX == deck.style.margin)
+            #expect(title.frame.width > panel.width)
+            #expect(title.frame.maxY < panel.minY)
+            for shape in slide.shapes.all {
+                let frame = shape.frame
+                #expect(frame.maxX <= panel.minX || frame.minX >= panel.maxX
+                    || frame.maxY <= panel.minY || frame.minY >= panel.maxY,
+                    "\(shape.name) overlaps the picture panel")
+            }
         }
     }
 
