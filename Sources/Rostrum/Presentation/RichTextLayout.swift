@@ -85,6 +85,7 @@ public struct RichTextLayout: Sendable {
         var output: [RichTextLine] = [], warnings: [ShapingDiagnostic] = []
         var cursor = 0.0, didTruncate = false, overflowWidth = false
         var measuredBottom = 0.0
+        var trailingLineGap = 0.0
         var numberByLevel: [Int: Int] = [:]
 
         struct Atom {
@@ -522,6 +523,13 @@ public struct RichTextLayout: Sendable {
                 else if let percentageSpacing { spacingAdvance = naturalHeight * percentageSpacing / 100000 }
                 else { spacingAdvance = declaredSpacing == nil ? naturalHeight * defaultSpacing : 0 }
                 let advance = spacingAdvance * (1 - reduction)
+                // Exact line spacing determines the next baseline, not an
+                // extra gap below the final line. Including that gap in the
+                // anchored block moves bottom/center-aligned text upward.
+                // Retain generic fallback metrics until native evidence covers
+                // them; the DrawingML line box has an explicit natural height.
+                trailingLineGap = drawingML && fixedSpacing != nil
+                    ? max(0, advance - naturalHeight) : 0
                 let extra = align == "ctr" ? (limit() - lineWidth) / 2 : align == "r" ? breakLimit() - lineWidth : 0
                 var spans: [RichTextSpan] = [], x = margins.0 + startX() + max(0, extra)
                 if firstLine, var run = bullet {
@@ -613,7 +621,7 @@ public struct RichTextLayout: Sendable {
         if didTruncate, !output.isEmpty {
             if !output[output.count - 1].spans.isEmpty { output[output.count - 1].spans[output[output.count - 1].spans.count - 1].run.text += "…" }
         }
-        cursor = max(cursor, measuredBottom)
+        cursor = max(cursor - trailingLineGap, measuredBottom)
         let offset: Double
         switch verticalAnchor ?? body[attribute: "anchor"] {
         case "ctr": offset = margins.1 + (availableHeight - cursor) / 2
