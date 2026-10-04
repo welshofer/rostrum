@@ -6,9 +6,18 @@ final class RenderImageResources {
     final class Resource {
         let data: Data
         let info: ImageInfo?
+        let svgSize: (width: Double, height: Double)?
+        var supported: Bool { info != nil || svgSize != nil }
+        var nativeSize: (width: Double, height: Double)? {
+            if let info { return (Double(info.nativeSize.width.rawValue), Double(info.nativeSize.height.rawValue)) }
+            return svgSize
+        }
         fileprivate var encodedURL: String?
 
-        init(_ data: Data) { self.data = data; info = ImageSniffer.sniff(data) }
+        init(_ data: Data) {
+            self.data = data; info = ImageSniffer.sniff(data)
+            svgSize = info == nil ? SVGEmbeddedImage.size(data) : nil
+        }
     }
     private struct Reference: Hashable { let owner: ObjectIdentifier; let id: String }
     private enum Resolution { case missing, found(Resource) }
@@ -114,9 +123,9 @@ final class RenderImageResources {
     }
 
     func url(for resource: Resource) -> String? {
-        guard let info = resource.info else { return nil }
+        guard resource.supported else { return nil }
         if let cached = resource.encodedURL { return cached }
-        let result = "data:\(info.format.contentType);base64,\(resource.data.base64EncodedString())"
+        let result = "data:\(resource.info?.format.contentType ?? "image/svg+xml");base64,\(resource.data.base64EncodedString())"
         // Do not retain another unbounded copy of all unique image payloads.
         if result.utf8.count <= encodedByteLimit - encodedBytes {
             resource.encodedURL = result

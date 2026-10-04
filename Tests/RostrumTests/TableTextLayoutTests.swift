@@ -53,7 +53,9 @@ import Testing
                 #expect(span.textContent == content)
                 #expect(span[attribute: "font-size"] == "10")
                 #expect(span[attribute: "x"].flatMap(Double.init) == 3)
-                #expect(span[attribute: "textLength"].flatMap(Double.init) == 126)
+                // Approximate layout advances must not distort the viewer's
+                // actual fallback font by forcing its glyphs into 126 points.
+                #expect(span[attribute: "textLength"] == nil)
                 // 3pt before + 12pt * .75 advance + 4pt after = 16pt.
                 // The 10pt fallback ascent puts the unanchored baseline at 13pt.
                 let localBaseline: Int

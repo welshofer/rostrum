@@ -12,6 +12,22 @@ public final class FontLibrary {
     /// Distinct styles never overwrite one another.
     private var byFace: [FontFaceKey: FontMetrics] = [:]
     private var sourceData: [FontFaceKey: Data] = [:]
+    private var encodedSources: [FontFaceKey: String] = [:]
+    private var encodedBytes = 0
+    private let encodedByteLimit = 4 * 1024 * 1024
+
+    /// Reuse immutable registered bytes across slides, with bounded retention.
+    /// Registration invalidates the cache, including all aliases of a face.
+    func encodedSource(for face: FontFaceKey) -> String? {
+        if let cached = encodedSources[face] { return cached }
+        guard let data = sourceData[face] else { return nil }
+        let encoded = data.base64EncodedString()
+        if encoded.utf8.count <= encodedByteLimit - encodedBytes {
+            encodedSources[face] = encoded
+            encodedBytes += encoded.utf8.count
+        }
+        return encoded
+    }
 
     /// Optional host-provided glyph measurement for previews. It is never used
     /// to alter document XML or serialized bytes. Hosts must install the same
@@ -47,6 +63,7 @@ public final class FontLibrary {
         guard let primary = names.first else {
             throw RostrumError.fontCorrupt("font has no family name; pass aliases: when registering")
         }
+        encodedSources.removeAll(); encodedBytes = 0
         for name in names {
             let key = FontFaceKey(family: name, bold: bold, italic: italic)
             byFace[key] = metrics
@@ -76,6 +93,15 @@ public final class FontLibrary {
     }
 
     public func metrics(for face: FontFaceKey) -> FontMetrics? { byFace[face] }
+
+    /// A registered regular face is the deterministic source for synthetic
+    /// styles when the family has no requested face (for example Arial Black
+    /// with a bold run). The renderer reports this substitution explicitly.
+    func previewFace(for face: FontFaceKey) -> FontFaceKey? {
+        if byFace[face] != nil { return face }
+        let regular = FontFaceKey(family: face.family)
+        return byFace[regular] != nil ? regular : nil
+    }
 
     /// Original explicit font bytes. Aliases share the same value; consumers
     /// must honor the font's OS/2 embedding restrictions when exporting them.

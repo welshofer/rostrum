@@ -66,4 +66,18 @@ import Testing
         }
         #expect(try reopened.serializedData() == bytes)
     }
+    @Test func encodedPreviewResourcesInvalidateOnReregistration() throws {
+        let library = FontLibrary(), regular = FontFaceKey(family: "Family")
+        let first = Self.font(400, bold: false, italic: false)
+        try library.register(first, aliases: ["Alias"])
+        #expect(library.encodedSource(for: regular) == first.base64EncodedString())
+        #expect(library.encodedSource(for: regular) == first.base64EncodedString())
+        let replacement = Self.font(600, bold: false, italic: false)
+        try library.register(replacement, aliases: ["Alias"])
+        #expect(library.encodedSource(for: regular) == replacement.base64EncodedString())
+        #expect(library.encodedSource(for: FontFaceKey(family: "Alias")) == replacement.base64EncodedString())
+        #expect(library.previewFace(for: FontFaceKey(family: "Alias", bold: true)) == FontFaceKey(family: "Alias"))
+        #expect(library.metrics(for: "Alias", bold: true, italic: false) == nil)
+    }
+
 }

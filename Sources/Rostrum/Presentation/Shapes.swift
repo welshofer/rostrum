@@ -66,6 +66,22 @@ public final class ShapeCollection: Sequence {
         }
     }
 
+    /// Hidden shapes remain editable and serialized, but do not contribute to
+    /// preview output. A hidden group suppresses its complete subtree.
+    static func isHidden(_ element: XML.Element) -> Bool {
+        let properties: String
+        switch element.name {
+        case "p:sp": properties = "p:nvSpPr"
+        case "p:pic": properties = "p:nvPicPr"
+        case "p:cxnSp": properties = "p:nvCxnSpPr"
+        case "p:grpSp": properties = "p:nvGrpSpPr"
+        case "p:graphicFrame": properties = "p:nvGraphicFramePr"
+        default: return false
+        }
+        let value = element.firstChild(named: properties)?.firstChild(named: "p:cNvPr")?[attribute: "hidden"]
+        return value == "1" || value == "true"
+    }
+
     /// How many shapes `container` holds, counted in place: no facades, no
     /// intermediate array.
     ///

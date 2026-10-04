@@ -45,7 +45,7 @@ public enum LibraryLabError: Error, LocalizedError {
 
 public enum LibraryLab {
     public static let catalog: [LibraryLabRecipe] = {
-        let recipes = DrawingLabRecipes.catalog + DocumentLabRecipes.catalog + PlatformLabRecipes.catalog
+        let recipes = [ImportedFidelityRecipe.catalog] + DrawingLabRecipes.catalog + DocumentLabRecipes.catalog + PlatformLabRecipes.catalog
         return LibraryDemoID.allCases.compactMap { id in recipes.first { $0.id == id } }
     }()
 
@@ -187,6 +187,7 @@ public enum LibraryLab {
 
     private static func make(_ id: LibraryDemoID, options: LibraryLabOptions) throws -> LibraryLabDraft {
         switch id {
+        case .importedFidelity: try ImportedFidelityRecipe.make(options)
         case .shapes, .fillsAndLines, .text, .pictures, .tableStructure, .tableStyles, .tableAppearance:
             try DrawingLabRecipes.make(id, options: options)
         case .slides, .charts, .chartEditing, .smartArt, .notes, .comments, .sections, .slideImport:

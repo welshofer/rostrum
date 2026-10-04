@@ -21,7 +21,10 @@ fi
 
 bash scripts/generate-project.sh
 
+# Apply manual signing to SwiftPM resource bundles as well as the app.
+# Automatic bundle signing otherwise requests a team even for a local build.
 xcodebuild -project Lectern.xcodeproj -scheme Lectern -configuration Debug \
   -destination 'platform=macOS' -derivedDataPath "${LECTERN_DERIVED_DATA_PATH:-.build-xcode}" \
+  CODE_SIGN_STYLE=Manual \
   ${LECTERN_SIGN_IDENTITY:+CODE_SIGN_IDENTITY="$LECTERN_SIGN_IDENTITY"} \
   test "$@"
