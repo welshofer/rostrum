@@ -7,7 +7,7 @@ import Rostrum
     @Test(arguments: [false, true])
     func nativeEmptyLinesSurviveBothFitsAndSaving(large: Bool) throws {
         let draft = try PlatformLabRecipes.make(.paragraphLayout, options: .init(text: "Styled empty lines", sampleSize: 2, alternative: large))
-        #expect(draft.deck.slides.count == 5)
+        #expect(draft.deck.slides.count == 6)
         #expect(try draft.deck.renderSVGReportingProblems(slideAt: 4).problems.isEmpty)
         let samples = try PlatformLabRecipes.paragraphBreakReferences().cases.filter { $0.large == large }
         #expect(samples.count == 2)

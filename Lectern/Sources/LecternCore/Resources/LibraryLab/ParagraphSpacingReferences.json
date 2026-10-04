@@ -1,0 +1,421 @@
+{
+  "scope": "Owned native PowerPoint 16.113.3 PDF references; bundled regular DejaVu Sans, calibrated LTR ASCII, zero insets, 290 by 160 pt frames. Exact and non-100% percentage spacing, compatibility modes and vertical anchors. No native autofit-choice or general pixel-parity claim.",
+  "cases": [
+    {
+      "id": "exact14p4-three-compat1",
+      "alternative": false,
+      "title": "Exact 14.4 pt, three lines",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/followup/native-spacing-followup-v1.pptx",
+      "sourcePage": 1,
+      "sourceSHA256": "fc460f7a0984230a589daf2535c329e39944d135a13e6a05bbf8dc42a7e74f0d",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/followup/powerpoint.pdf",
+      "nativePDFSHA256": "e2b5b5f580520a50f079165309a58dc473d38b2606a57f55808f94d9cbef4768",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\" compatLnSpc=\"1\"><a:noAutofit/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPts val=\"1440\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>B</a:t></a:r><a:br><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Z</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 10.9599609375,
+          "pdfSize": 12.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        },
+        {
+          "text": "B",
+          "x": 0.0,
+          "baseline": 24.8800048828125,
+          "pdfSize": 12.0,
+          "outlineSHA256": "0f1dccc93304f9f8c71866fe4214e562a2797ee1e8b0d5a49559d22745d94556"
+        },
+        {
+          "text": "Z",
+          "x": 0.0,
+          "baseline": 39.03997802734375,
+          "pdfSize": 12.0,
+          "outlineSHA256": "d42aa50c74c9a015fecfaf27e6991002dbd9493cdf050df8948ffb03d6ad723d"
+        }
+      ]
+    },
+    {
+      "id": "pct150-18-four-compat1",
+      "alternative": false,
+      "title": "150%, standard line height",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/compatibility/native-spacing-final-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "cee93ef0a05ed50b83b7590eb7deef0e976d2527a41108319596f157fc447bf2",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/compatibility/powerpoint.pdf",
+      "nativePDFSHA256": "6fe124b1f68f337c5a1fbf4fd39aa3ef939b203ffc293e177f7c2b212220e767",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\" compatLnSpc=\"1\"><a:noAutofit/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPct val=\"150000\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>B</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Z</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 24.0,
+          "pdfSize": 18.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        },
+        {
+          "text": "B",
+          "x": 0.0,
+          "baseline": 56.8800048828125,
+          "pdfSize": 18.0,
+          "outlineSHA256": "0f1dccc93304f9f8c71866fe4214e562a2797ee1e8b0d5a49559d22745d94556"
+        },
+        {
+          "text": "Z",
+          "x": 0.0,
+          "baseline": 89.0400390625,
+          "pdfSize": 18.0,
+          "outlineSHA256": "d42aa50c74c9a015fecfaf27e6991002dbd9493cdf050df8948ffb03d6ad723d"
+        },
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 121.9200439453125,
+          "pdfSize": 18.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        }
+      ]
+    },
+    {
+      "id": "pct150-18-four-compat0",
+      "alternative": false,
+      "title": "150%, Windows line height",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/compatibility/native-spacing-final-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "cee93ef0a05ed50b83b7590eb7deef0e976d2527a41108319596f157fc447bf2",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/compatibility/powerpoint.pdf",
+      "nativePDFSHA256": "6fe124b1f68f337c5a1fbf4fd39aa3ef939b203ffc293e177f7c2b212220e767",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\" compatLnSpc=\"0\"><a:noAutofit/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPct val=\"150000\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>B</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Z</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 23.91998291015625,
+          "pdfSize": 18.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        },
+        {
+          "text": "B",
+          "x": 0.0,
+          "baseline": 54.8800048828125,
+          "pdfSize": 18.0,
+          "outlineSHA256": "0f1dccc93304f9f8c71866fe4214e562a2797ee1e8b0d5a49559d22745d94556"
+        },
+        {
+          "text": "Z",
+          "x": 0.0,
+          "baseline": 86.08001708984375,
+          "pdfSize": 18.0,
+          "outlineSHA256": "d42aa50c74c9a015fecfaf27e6991002dbd9493cdf050df8948ffb03d6ad723d"
+        },
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 118.0,
+          "pdfSize": 18.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        }
+      ]
+    },
+    {
+      "id": "exact48p75-single30-b",
+      "alternative": false,
+      "title": "Exact 48.75 pt, bottom aligned",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/base/native-spacing-metrics-v1.pptx",
+      "sourcePage": 6,
+      "sourceSHA256": "f2607f1ac458652e9876053e98d9145aa87347455d60691dd7255438dd72a6fe",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/base/powerpoint.pdf",
+      "nativePDFSHA256": "1b8e25158d20f972c879eea17ca5e4c00cbc0e0f83c8120642a494d415afed4f",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"b\"><a:noAutofit/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPts val=\"4875\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"3000\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 153.03997802734375,
+          "pdfSize": 30.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        }
+      ]
+    },
+    {
+      "id": "pct70-size18-ctr",
+      "alternative": false,
+      "title": "70%, centered",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "3aedbb0fe53fd15f36c050817cf8162b1398e142481177104e62ecb941f07d19",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/fractional/powerpoint.pdf",
+      "nativePDFSHA256": "1d1eecfda6e8351acd41a2ac859ad4458d0938185f89afe4976ede049346aa21",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"ctr\"><a:noAutofit/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPct val=\"70000\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 83.1199951171875,
+          "pdfSize": 18.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        }
+      ]
+    },
+    {
+      "id": "pct70-size18-b",
+      "alternative": false,
+      "title": "70%, bottom aligned",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "3aedbb0fe53fd15f36c050817cf8162b1398e142481177104e62ecb941f07d19",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/fractional/powerpoint.pdf",
+      "nativePDFSHA256": "1d1eecfda6e8351acd41a2ac859ad4458d0938185f89afe4976ede049346aa21",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"b\"><a:noAutofit/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPct val=\"70000\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 155.3599853515625,
+          "pdfSize": 18.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        }
+      ]
+    },
+    {
+      "id": "exact18-18-scale75-reduction20",
+      "alternative": true,
+      "title": "Exact 18 pt; 75% font, 20% reduction",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "93bdeb4c0df5249999d2440cad441f361d131891029b598394fdd719776708e3",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/powerpoint.pdf",
+      "nativePDFSHA256": "6b0994c6148aa9eaca7c9eadd2d8502d475f2872fc9dfd300e82cc547a0301eb",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:normAutofit fontScale=\"75000\" lnSpcReduction=\"20000\"/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPts val=\"1800\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>B</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Z</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 13.9200439453125,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        },
+        {
+          "text": "B",
+          "x": 0.0,
+          "baseline": 31.9200439453125,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "0f1dccc93304f9f8c71866fe4214e562a2797ee1e8b0d5a49559d22745d94556"
+        },
+        {
+          "text": "Z",
+          "x": 0.0,
+          "baseline": 49.9200439453125,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "d42aa50c74c9a015fecfaf27e6991002dbd9493cdf050df8948ffb03d6ad723d"
+        }
+      ]
+    },
+    {
+      "id": "pct150-18-reduction10",
+      "alternative": true,
+      "title": "150%; 10% spacing reduction",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "93bdeb4c0df5249999d2440cad441f361d131891029b598394fdd719776708e3",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/powerpoint.pdf",
+      "nativePDFSHA256": "6b0994c6148aa9eaca7c9eadd2d8502d475f2872fc9dfd300e82cc547a0301eb",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"10000\"/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPct val=\"150000\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>B</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Z</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 23.0400390625,
+          "pdfSize": 18.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        },
+        {
+          "text": "B",
+          "x": 0.0,
+          "baseline": 53.0400390625,
+          "pdfSize": 18.0,
+          "outlineSHA256": "0f1dccc93304f9f8c71866fe4214e562a2797ee1e8b0d5a49559d22745d94556"
+        },
+        {
+          "text": "Z",
+          "x": 0.0,
+          "baseline": 83.0400390625,
+          "pdfSize": 18.0,
+          "outlineSHA256": "d42aa50c74c9a015fecfaf27e6991002dbd9493cdf050df8948ffb03d6ad723d"
+        }
+      ]
+    },
+    {
+      "id": "pct150-18-scale75-reduction20",
+      "alternative": true,
+      "title": "150%; 75% font, 20% reduction",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "93bdeb4c0df5249999d2440cad441f361d131891029b598394fdd719776708e3",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/powerpoint.pdf",
+      "nativePDFSHA256": "6b0994c6148aa9eaca7c9eadd2d8502d475f2872fc9dfd300e82cc547a0301eb",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:normAutofit fontScale=\"75000\" lnSpcReduction=\"20000\"/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPct val=\"150000\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>B</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Z</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 15.9200439453125,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        },
+        {
+          "text": "B",
+          "x": 0.0,
+          "baseline": 38.0,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "0f1dccc93304f9f8c71866fe4214e562a2797ee1e8b0d5a49559d22745d94556"
+        },
+        {
+          "text": "Z",
+          "x": 0.0,
+          "baseline": 60.080078125,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "d42aa50c74c9a015fecfaf27e6991002dbd9493cdf050df8948ffb03d6ad723d"
+        }
+      ]
+    },
+    {
+      "id": "exact18-18-scale100-reduction20-b",
+      "alternative": true,
+      "title": "Exact 18 pt; 20% reduction, bottom",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "28c1929e7fab8e63c07cc9dafc28a2036477f5dabf244b3406ee352bda92343f",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/powerpoint.pdf",
+      "nativePDFSHA256": "3737fb6176e26cc01e38dab7a8073d619508cef5f0cc7cf5a525463cd945bc2a",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"b\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"20000\"/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPts val=\"1800\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>B</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Z</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 119.91998291015625,
+          "pdfSize": 18.0,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        },
+        {
+          "text": "B",
+          "x": 0.0,
+          "baseline": 137.91998291015625,
+          "pdfSize": 18.0,
+          "outlineSHA256": "0f1dccc93304f9f8c71866fe4214e562a2797ee1e8b0d5a49559d22745d94556"
+        },
+        {
+          "text": "Z",
+          "x": 0.0,
+          "baseline": 155.91998291015625,
+          "pdfSize": 18.0,
+          "outlineSHA256": "d42aa50c74c9a015fecfaf27e6991002dbd9493cdf050df8948ffb03d6ad723d"
+        }
+      ]
+    },
+    {
+      "id": "pct150-18-scale75-reduction20-ctr",
+      "alternative": true,
+      "title": "150%; 75% font, 20%, centered",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "28c1929e7fab8e63c07cc9dafc28a2036477f5dabf244b3406ee352bda92343f",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/powerpoint.pdf",
+      "nativePDFSHA256": "3737fb6176e26cc01e38dab7a8073d619508cef5f0cc7cf5a525463cd945bc2a",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"ctr\"><a:normAutofit fontScale=\"75000\" lnSpcReduction=\"20000\"/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPct val=\"150000\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>B</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Z</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 64.320068359375,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        },
+        {
+          "text": "B",
+          "x": 0.0,
+          "baseline": 86.1600341796875,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "0f1dccc93304f9f8c71866fe4214e562a2797ee1e8b0d5a49559d22745d94556"
+        },
+        {
+          "text": "Z",
+          "x": 0.0,
+          "baseline": 108.239990234375,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "d42aa50c74c9a015fecfaf27e6991002dbd9493cdf050df8948ffb03d6ad723d"
+        }
+      ]
+    },
+    {
+      "id": "pct150-18-scale75-reduction20-b",
+      "alternative": true,
+      "title": "150%; 75% font, 20%, bottom",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "source": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "28c1929e7fab8e63c07cc9dafc28a2036477f5dabf244b3406ee352bda92343f",
+      "nativePDF": "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/powerpoint.pdf",
+      "nativePDFSHA256": "3737fb6176e26cc01e38dab7a8073d619508cef5f0cc7cf5a525463cd945bc2a",
+      "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"b\"><a:normAutofit fontScale=\"75000\" lnSpcReduction=\"20000\"/></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\"><a:lnSpc><a:spcPct val=\"150000\"/></a:lnSpc></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>B</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Z</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "x": 0.0,
+          "baseline": 112.56005859375,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "c247f48f5f67e987568e2908c15cc0c2d6d94aad013e3819aa9a9caab387c5e4"
+        },
+        {
+          "text": "B",
+          "x": 0.0,
+          "baseline": 134.6400146484375,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "0f1dccc93304f9f8c71866fe4214e562a2797ee1e8b0d5a49559d22745d94556"
+        },
+        {
+          "text": "Z",
+          "x": 0.0,
+          "baseline": 156.47998046875,
+          "pdfSize": 13.999998092651367,
+          "outlineSHA256": "d42aa50c74c9a015fecfaf27e6991002dbd9493cdf050df8948ffb03d6ad723d"
+        }
+      ]
+    }
+  ]
+}

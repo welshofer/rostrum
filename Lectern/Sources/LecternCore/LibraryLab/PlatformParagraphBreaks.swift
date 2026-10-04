@@ -73,7 +73,7 @@ extension PlatformLabRecipes {
                 note.textFrame?.paragraphs.first?.runs.first?.fontSize = 13
             }
         }
-        let note = try text("The alternative selects 36 pt empty lines; the default selects 6 pt empty lines. Authored markers are 12 pt; fitted copies apply the displayed scale.\nOwned DrawingML breaks and paragraph-end properties; regular DejaVu Sans, top alignment, zero insets. Exact/percentage line spacing and native-selected autofit remain separate fidelity work.", on: slide, in: LibraryLabSupport.frame(0.6, 6.85, 12.1, 0.6))
+        let note = try text("The alternative selects 36 pt empty lines; the default selects 6 pt empty lines. Authored markers are 12 pt; fitted copies apply the displayed scale.\nOwned DrawingML breaks and paragraph-end properties; regular DejaVu Sans, top alignment, zero insets. Slide 6 demonstrates bounded exact/percentage spacing. Native-selected autofit remains separate fidelity work.", on: slide, in: LibraryLabSupport.frame(0.6, 6.85, 12.1, 0.6))
         note.textFrame?.paragraphs.first?.runs.first?.fontSize = 12
         note.fitText(fonts: deck.fonts)
         let svg = try deck.renderSVG(slideAt: 4)

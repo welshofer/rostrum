@@ -48,7 +48,7 @@ import Rostrum
         #expect(result.checks.contains { $0.name == "Paragraph positions survive reopening" && $0.passed })
         await context.app.inspect(deckAt: result.afterURL).value
         #expect(context.app.phase == .inspected)
-        #expect(context.app.inspection?.previews.count == 5)
+        #expect(context.app.inspection?.previews.count == 6)
         let exportRoot = root.appendingPathComponent("Export")
         let task = try #require(context.app.exportInspected(into: exportRoot))
         await task.value
@@ -59,9 +59,9 @@ import Rostrum
         let markdown = try String(contentsOf: markdownURL, encoding: .utf8)
         #expect(markdown.contains("App paragraph demonstration"))
         #expect(markdown.contains("The last line remains natural."))
-        #expect(context.app.exportSummary == "5 slides · 0 media files · 0 chart CSVs")
+        #expect(context.app.exportSummary == "6 slides · 0 media files · 0 chart CSVs")
         let deck = try Presentation(contentsOf: result.afterURL)
-        #expect(deck.slides.count == 5)
+        #expect(deck.slides.count == 6)
         #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
         let shape = try #require(deck.slides[0].shapes.all.first { $0.name == "Justified paragraph" })
         #expect(shape.textFrame?.paragraphs.first?.alignment == .justified)
@@ -160,6 +160,41 @@ import Rostrum
             #expect(layouts[1].lines == layouts[2].lines && layouts[1].contentHeight <= 28)
             #expect(paragraphs[0] == paragraphs[1] && paragraphs[1] == paragraphs[2])
         }
+        #expect(markdown.contains("Line spacing keeps its own baseline rules"))
+        #expect(markdown.contains(narrow ? "150%; 75% font, 20% reduction" : "150%, Windows line height"))
+        let spacingTree = try #require(deck.slides[5].part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree"))
+        let referenceData = try Data(contentsOf: result.directory.appendingPathComponent("native-spacing-reference.json"))
+        let reference = try #require(JSONSerialization.jsonObject(with: referenceData) as? [String: Any])
+        let allSpacingCases = try #require(reference["cases"] as? [[String: Any]])
+        let spacingCases = allSpacingCases.filter { ($0["alternative"] as? Bool) == narrow }
+        #expect(spacingCases.count == 6)
+        for sample in spacingCases {
+            let caseID = try #require(sample["id"] as? String)
+            #expect(result.checks.contains { $0.name == "Saved native explicit spacing: " + caseID && $0.passed })
+            let name = caseID + " spacing"
+            let box = try #require(deck.slides[5].shapes.all.first { $0.name == name })
+            #expect(box.frame.width == .points(290) && box.frame.height == .points(160))
+            let node = try #require(spacingTree.children(named: "p:sp").first {
+                $0.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "name"] == name
+            })
+            let body = try #require(node.firstChild(named: "p:txBody"))
+            let sourceXML = try #require(sample["textBodyXML"] as? String)
+            let source = try XML.parse(Data(sourceXML.utf8))
+            #expect(body.childElements.map { $0.serialized() } == source.childElements.map { $0.serialized() })
+            let layout = RichTextLayout(textBody: body, width: 290, height: 160, fonts: deck.fonts, theme: deck.theme)
+            #expect(layout.fits && layout.diagnostics.isEmpty)
+            let markers = try #require(sample["nativeMarkers"] as? [[String: Any]])
+            #expect(layout.lines.count == markers.count)
+            for (line, marker) in zip(layout.lines, markers) {
+                let baseline = try #require(marker["baseline"] as? Double)
+                let x = try #require(marker["x"] as? Double)
+                let text = try #require(marker["text"] as? String)
+                #expect(line.spans.map(\.run.text).joined() == text)
+                #expect(abs(line.baseline - baseline) <= 0.121)
+                #expect(abs((line.spans.first?.x ?? .infinity) - x) <= 0.121)
+            }
+        }
+        #expect(try deck.renderSVGReportingProblems(slideAt: 5).problems.isEmpty)
         #expect(model.results[.paragraphLayout]?.directory == result.directory)
     }
 

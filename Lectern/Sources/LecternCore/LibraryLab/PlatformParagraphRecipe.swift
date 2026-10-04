@@ -51,6 +51,7 @@ extension PlatformLabRecipes {
         let boundary = try paragraphBoundary(deck, narrow: options.alternative)
         let ligatures = try paragraphLigatures(deck, narrow: options.alternative)
         let breaks = try paragraphBreaks(deck, large: options.alternative)
+        let spacing = try paragraphSpacing(deck, alternative: options.alternative)
         let left = try paragraphGeometry(deck, named: "Left paragraph")
         let justified = try paragraphGeometry(deck, named: "Justified paragraph")
         let tableLayout = try paragraphTableGeometry(deck, width: width)
@@ -59,13 +60,14 @@ extension PlatformLabRecipes {
         extraction.files["native-boundary-reference.json"] = try resource("ParagraphBoundaryReferences", "json")
         extraction.files["native-ligature-reference.json"] = try resource("ParagraphLigatureReferences", "json")
         extraction.files["native-break-reference.json"] = try resource("ParagraphBreakReferences", "json")
+        extraction.files["native-spacing-reference.json"] = try resource("ParagraphSpacingReferences", "json")
         return LibraryLabDraft(deck: deck, before: before, checks: [
             .init("Both public fit paths agree", fits.allSatisfy(\.fits) && fits[0] == fits[1], "Shape.fitText and TextFrame.fitText select the same fitting step for equal content."),
             .init("Interior spaces expand", paragraphExpansion(left: left, justified: justified), "Wrapped lines expand; the final paragraph line retains the left-aligned width."),
             .init("Mixed formatting remains measurable", Set(justified.lines.flatMap(\.spans).map { $0.run.color }).count == 2 && Set(justified.lines.flatMap(\.spans).map { $0.run.fontSize }).count == 2 && justified.diagnostics.isEmpty, "Two sizes and colors retain their run styles with the exact regular font."),
             .init("Table uses justified layout", tableLayout.lines.count > 1 && abs(paragraphVisibleWidth(tableLayout.lines[0], fonts: deck.fonts) - width * 72) < 0.01 && tableLayout.diagnostics.isEmpty, "A zero-padding table cell fills the same bounded width."),
             .init("Preview and extraction produced", svg.contains("<svg") && !extraction.files.isEmpty, "Real SVG and DeckExport artifacts accompany the editable PPTX.")
-        ] + boundary.checks + ligatures.checks + breaks.checks, extraFiles: extraction.files, verify: { reopened in
+        ] + boundary.checks + ligatures.checks + breaks.checks + spacing.checks, extraFiles: extraction.files, verify: { reopened in
             let registered = reopened.registerEmbeddedFonts()
             let readLeft = try paragraphGeometry(reopened, named: "Left paragraph")
             let readJustified = try paragraphGeometry(reopened, named: "Justified paragraph")
@@ -75,7 +77,7 @@ extension PlatformLabRecipes {
                 .init("Paragraph positions survive reopening", left.lines == readLeft.lines && justified.lines == readJustified.lines && paragraphExpansion(left: readLeft, justified: readJustified), "Every span, baseline, width and style matches the authored layout."),
                 .init("Table positions survive reopening", tableLayout.lines == readTable.lines, "The table cell reproduces all justified spans."),
                 .init("Saved SVG is deterministic", try reopened.renderSVG(slideAt: 0) == svg, "The reopened preview matches the original byte-for-byte.")
-            ] + (try boundary.verify(reopened)) + (try ligatures.verify(reopened)) + (try breaks.verify(reopened))
+            ] + (try boundary.verify(reopened)) + (try ligatures.verify(reopened)) + (try breaks.verify(reopened)) + (try spacing.verify(reopened))
         })
     }
 
