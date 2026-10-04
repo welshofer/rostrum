@@ -528,3 +528,24 @@ slide seven, the root viewport plus 18 empty-text transforms; painting nodes and
 remaining XML are exact, without a raw SVG identity claim. The
 [manual addendum](LAYOUT-FIDELITY-20261004-11-MANUAL.md) pins the independently
 approved evidence and completed hosted checks. Marker correction remains separate.
+
+## October 4 List markers integration
+
+List markers is the 27th runnable recipe: 24 native specimens occupy four
+preserved slides, with a fifth slide comparing both computed fit APIs. Each
+option passes 58 checks without findings. Both generated decks opened natively
+without repair; independent comparison preserves all 277 glyphs and three
+explicit absent markers per option. The fifth computed-fit page remains outside
+numerical native/autofit-choice acceptance.
+
+The final complete gate passes 83 app tests / 115 executions, plus 1,165 library,
+18 layout and 288 Core tests. All 445 Lab checks and 64 external reopens /
+243 slides pass. Fresh actual inspector WebKit PDFs verify 48 marker cases /
+554 glyphs / six omissions, alongside 14 prior-profile cases / 208 glyphs.
+Both manual demo → inspector → folder-export workflows pass with five loaded
+previews and all 60 source text nodes retained per option. The
+[integration report](LAYOUT-FIDELITY-20261004-14.md) preserves the initial viewport
+assertion failure, corrected exact inspector comparisons, metadata-only comment
+differences and historical app-binary observation. Marker performance is an
+accepted bounded fidelity tradeoff with residual ordinary/placeholder costs;
+cycle one remains withheld. The next alignment probe is separate future work.

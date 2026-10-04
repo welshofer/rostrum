@@ -333,3 +333,28 @@ independently recomputed source SHA-256, not credentials; no dismissal is claime
 Earlier performance evidence is unchanged. The separate marker correction
 remains future work; no build, GUI operation or publication occurred in this
 addendum lane.
+
+## Native list marker integration — October 4
+
+The [integration14 report](docs/LAYOUT-FIDELITY-20261004-14.md) records the 27th
+Lab demo, original 24-case marker profile and separate computed fitting slide.
+Both native variants pass 277-glyph / three-omission comparisons, while fresh
+actual WebKit proof passes 48 cases / 554 glyphs / six omissions and the separate
+14-case / 208-glyph prior profile. Both real manual demo-inspector-export flows
+complete with 58 checks, five loaded previews and 60 preserved text nodes each.
+The final gate at `05613d0` passes 1,165 library, 18 layout, 288 Core and 83 app
+tests / 115 executions. All 445 Lab checks and 64 reopens / 243 slides pass.
+
+The [receipt](docs/benchmarks/2026-10-04-native-markers-integration-verification.json)
+retains ten initial viewport assertions, the test-only correction, an unnecessary
+failed PDF-identity preflight and four classified comment-metadata package
+differences. Final builds have no contradictory quiet exit-zero messages; eight
+clipboard console error lines remain. Historical manual binary hashes are kept
+separate from the later rebuilt binary at the same path.
+
+Cell acquisition has its separately accepted scoped improvement. Marker cycle
+two is accepted as a fidelity tradeoff with +2.777%/+2.702% ordinary `buNone`
+and +1.136% placeholder costs, mixed RSS and host-load limits; cycle one stays
+WITHHELD. No universal nonregression or cumulative recovery is claimed. The
+next 24-case alignment probe remains separate future work. No merge or deployment
+is claimed by this checkpoint.
