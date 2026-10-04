@@ -114,7 +114,7 @@ flags and saved packages across 148 cases / 842 slides. Original packets and all
 207 phase comparisons remain available. No universal nonregression, clean-host,
 cumulative recovery or cross-platform speed claim follows.
 
-The next 24-case marker-alignment probe is separate future work and is not
+The next 24-case body center/right alignment probe is separate future work and is not
 accepted by this checkpoint. No numerical native acceptance is claimed for the
 computed-fit fifth page, no whole-deck raster parity is claimed, and no merge or
 deployment is recorded here. The documentation lane performed no builds,
