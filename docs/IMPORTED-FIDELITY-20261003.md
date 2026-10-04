@@ -28,7 +28,7 @@ Custom arcs, shaded per-path fills, custom geometry text rectangles, nontrivial 
 
 The completion gate is `./scripts/verify.sh`: workflow checks, Rostrum and RostrumLayout tests, LecternCore tests and all Library Lab recipes, README examples, macOS/iOS builds, and app-hosted tests. Mac build/test wrappers explicitly apply their existing manual signing policy to SwiftPM resource bundles too; the configured stable signing identity is retained.
 
-The private Release timing harness loads one fixed deck and four explicit font faces once, then renders all 22 slides 16 times at 960 pixels. Every repeated SVG must be byte-identical. The first pass is excluded from the warm median; file I/O, font registration, and WebKit rasterization are excluded. Interleaved runs compare the implementation before the cache/ASCII optimization with the final implementation. This measures library rendering only, not device scrolling or startup latency.
+The private Release timing harness loads one fixed deck and four explicit font faces once, then renders all 22 slides 16 times at 960 pixels. Every repeated SVG must be byte-identical. The first pass is excluded from the warm median; file I/O, font registration, and WebKit rasterization are excluded. Interleaved runs compare the implementation before and after the cache/ASCII optimization, before the later font and anchoring follow-ups. This measures library rendering only, not device scrolling or startup latency.
 
 ## Measured result
 
@@ -53,3 +53,13 @@ The first scratch probe had its bullet elements after `defRPr`, violating paragr
 ## Viewer-font run positioning
 
 The actual iOS simulator check exposed overlapping mixed-style runs when the requested font is unavailable: each run started at an estimated absolute position, while WebKit drew the preceding run at its real substitute-font width. Adjacent runs now follow the viewer's actual advance after an unregistered face. Explicit line, tab and list-marker boundaries retain absolute positions; fully measured lines retain their existing output. A regression checks mixed registered/unregistered faces, style changes, tab and list boundaries, and unchanged source bytes. Missing-font diagnostics remain; this prevents intra-line overlap without claiming equivalent font substitution or exact wrapping.
+
+### Measured missing-font previews
+
+The final iOS sweep exposed title/image collisions when an unavailable font was measured with generic advances but drawn by WebKit with wider fallback glyphs. Hosts can now explicitly select a registered `FontLibrary.previewFallbackFamily`; the layout and SVG use the same face, while exact lookup and document font names remain unchanged. Lectern inspection and Duo register Arial as their preview fallback. Missing-family diagnostics and strict refusal remain. This improves readable fallback rendering, not native-font equivalence.
+
+## Final consumer acceptance — 2026-10-04
+
+PRs 35–38 and 40 are merged. The final measured-fallback runtime was exercised in a separate Duo iOS Simulator QA bundle, preserving the normal app and using a copy of the private deck. All 22 slides were captured through the native client and visually reviewed. The title/image collisions on slides 4, 7, 8, 14 and 19, off-slide title on 13, touching columns on 17, and mixed-run overlap are resolved. SmartArt, custom artwork, images, numbering and empty-paragraph spacing are visible throughout the deck. Device acceptance is for readable layout with the explicit Arial preview fallback; the unavailable Arial Black and Sabon faces prevent exact native-font equivalence.
+
+Final source verification passed 1,101 Rostrum tests, 18 RostrumLayout tests, 275 LecternCore tests and 76 app-hosted tests, plus README save/reopen examples and macOS/iOS builds. Linux Swift 6.0/6.1 and macOS CI passed. Duo passed 21 tests and an isolated iOS build. Its pre-existing authoring edits are preserved separately from the integration changes; the integration remains in its working tree. The performance figures above describe the measured optimization checkpoint and are not a new benchmark of the final iOS build.

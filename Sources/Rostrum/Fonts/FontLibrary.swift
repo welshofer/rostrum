@@ -34,6 +34,12 @@ public final class FontLibrary {
     /// adapter for deterministic previews; nil retains portable font metrics.
     public var previewAdvance: ((String, String, Double, Bool, Bool) -> Double?)?
 
+    /// Explicit registered family to measure and draw when a requested preview
+    /// family is missing. Nil retains portable estimates and viewer fallback.
+    /// This is preview-only: exact lookup and serialized font names stay intact,
+    /// and rendering reports the substitution as a missing-font fidelity issue.
+    public var previewFallbackFamily: String?
+
     public init() {}
 
     /// Register a font from raw bytes under its own family names (`name`
@@ -100,7 +106,12 @@ public final class FontLibrary {
     func previewFace(for face: FontFaceKey) -> FontFaceKey? {
         if byFace[face] != nil { return face }
         let regular = FontFaceKey(family: face.family)
-        return byFace[regular] != nil ? regular : nil
+        if byFace[regular] != nil { return regular }
+        guard let family = previewFallbackFamily else { return nil }
+        let fallback = FontFaceKey(family: family, bold: face.bold, italic: face.italic)
+        if byFace[fallback] != nil { return fallback }
+        let fallbackRegular = FontFaceKey(family: family)
+        return byFace[fallbackRegular] != nil ? fallbackRegular : nil
     }
 
     /// Original explicit font bytes. Aliases share the same value; consumers

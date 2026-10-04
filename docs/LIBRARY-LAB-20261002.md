@@ -349,6 +349,7 @@ No existing tests or visual thresholds were weakened. No push, pull request,
 merge, release publication or deployment occurred.
 
 
+
 ## October 4 paragraph fidelity continuation
 
 The catalog now contains 26 recipes; this pass adds a fourth slide to the
@@ -387,3 +388,8 @@ passes with 1,109 library tests and unchanged Core/app counts. All 337 Lab check
 and 52 external reopens pass again. The paragraph recipe's four SVGs and both
 saved width variants remain byte-identical across that merge. See the
 [latest integration receipt](benchmarks/2026-10-04-fidelity4-merged-integration-verification.json).
+
+
+### Explicit preview fallback (2026-10-04)
+
+Extraction and honest previews now exercises `FontLibrary.previewFallbackFamily` with the bundled licensed DejaVu Sans face. The unavailable family remains in the PPTX and exact registry lookup stays nil. Measurement and SVG drawing use the selected registered fallback, strict rendering still refuses the missing-font issue, and reapplying the choice after reopen reproduces the same preview. This does not claim font substitution matches native PowerPoint.
