@@ -488,18 +488,22 @@ public struct TableStyleResolver {
                            fittingOnly: Bool = false) -> (XML.Element?, Part?) {
         let properties = table.firstChild(named: "a:tblPr")
         if let inline = properties?.firstChild(named: "a:tableStyle") { return (inline, nil) }
-        var desired = properties?.firstChild(named: "a:tableStyleId")?.textContent
+        // tblStyleLst@def is an insertion preference, not an applied style.
+        // Native absent-ID tables use the transparent grid, before direct cells.
+        guard let desired = properties?.firstChild(named: "a:tableStyleId")?.textContent else {
+            let plain = BuiltInTableStyle.noStyleTableGrid
+            return (fittingOnly ? plain.textDefinition() : plain.definition(), nil)
+        }
         if let package, let presentation = try? package.mainDocumentPart(),
            let styles = try? presentation.related(by: RelType.tableStyles, in: package), let root = try? styles.dom() {
-            desired = desired ?? root[attribute: "def"]
-            if let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired?.lowercased() }) { return (definition, styles) }
+            if let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired.lowercased() }) { return (definition, styles) }
         }
         if let package {
             for part in package.parts.values.sorted(by: { $0.uri.value < $1.uri.value }) where part.contentType == ContentType.tableStyles {
-                if let root = try? part.dom(), let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired?.lowercased() }) { return (definition, part) }
+                if let root = try? part.dom(), let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired.lowercased() }) { return (definition, part) }
             }
         }
-        let builtIn = desired.flatMap(BuiltInTableStyle.init(id:))
+        let builtIn = BuiltInTableStyle(id: desired)
         return (fittingOnly ? builtIn?.textDefinition() : builtIn?.definition(), nil)
     }
 }

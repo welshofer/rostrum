@@ -157,14 +157,16 @@ extension TableStyleImportTests {
         #expect(try destination.serializedData() == before)
     }
 
-    @Test func implicitDefaultStyleBecomesExplicitDestinationReference() throws {
+    // NativeTableDefault proves that def is an insertion preference, not a
+    // style applied to omitted IDs. Preserve omission as well as appearance.
+    @Test func absentAppliedStyleRemainsAbsentAcrossImport() throws {
         let source = try Presentation(), destination = try Presentation()
         let incoming = try table(source)
         try incoming.setStyleDefinition(style(Self.guid, "FF0000"))
         incoming.styleID = nil
         let result = try importedTable(destination.slides.import(from: source, at: 0))
-        #expect(result.styleID == Self.guid)
-        #expect(try TableStyleResolver(table: result, theme: destination.theme).fill(row: 0, column: 0) == .solid(Color("FF0000"), alpha: 1))
+        #expect(result.styleID == nil)
+        #expect(try TableStyleResolver(table: result, theme: destination.theme).fill(row: 0, column: 0) == .noFill)
     }
     @Test func identicalStyleXmlWithDifferentDependencyBytesDoesNotReuseWrongImage() throws {
         let (source, sourceOwner, sourceDefinition) = try relationshipSource()
@@ -187,7 +189,7 @@ extension TableStyleImportTests {
         #expect(try TableStyleXML.definitions(in: styles(destination).dom()).count == 2)
     }
 
-    @Test func omittedTablePropertiesKeepsSourceDefaultAgainstDestinationDefault() throws {
+    @Test func omittedTablePropertiesRemainOmittedAgainstDestinationDefault() throws {
         let source = try Presentation(), destination = try Presentation()
         let incoming = try table(source), existing = try table(destination)
         try incoming.setStyleDefinition(style(Self.guid, "FF0000"))
@@ -195,15 +197,15 @@ extension TableStyleImportTests {
         incoming.tbl.removeChildren(named: "a:tblPr")
         incoming.part.markDirty()
         let result = try importedTable(destination.slides.import(from: source, at: 0))
-        #expect(result.styleID != nil && result.styleID != Self.guid)
-        #expect(result.tbl.childElements.first?.name == "a:tblPr")
-        #expect(try TableStyleResolver(table: result, theme: destination.theme).fill(row: 0, column: 0) == .solid(Color("FF0000"), alpha: 1))
+        #expect(result.styleID == nil)
+        #expect(result.tbl.firstChild(named: "a:tblPr") == nil)
+        #expect(try TableStyleResolver(table: result, theme: destination.theme).fill(row: 0, column: 0) == .noFill)
         let reopened = try Presentation(data: destination.serializedData())
         #expect(try importedTable(reopened.slides[1]).styleID == result.styleID)
         #expect(incoming.tbl.firstChild(named: "a:tblPr") == nil)
     }
 
-    @Test func implicitNativeDefaultWithoutDefinitionKeepsItsGuid() throws {
+    @Test func omittedStyleDoesNotAcquireNativeInsertionDefault() throws {
         let source = try Presentation(), destination = try Presentation()
         let incoming = try table(source)
         try incoming.setStyleDefinition(style(Self.guid, "FF0000"))
@@ -214,7 +216,9 @@ extension TableStyleImportTests {
         incoming.tbl.removeChildren(named: "a:tblPr")
         incoming.part.markDirty()
         let result = try importedTable(destination.slides.import(from: source, at: 0))
-        #expect(result.styleID == native)
+        #expect(result.styleID == nil)
+        #expect(result.tbl.firstChild(named: "a:tblPr") == nil)
+        #expect(try TableStyleResolver(table: result, theme: destination.theme).fill(row: 0, column: 0) == .noFill)
     }
 
     @Test func remappedStyleIdRetainsCommentsAndProcessingInstructions() throws {
@@ -236,15 +240,17 @@ extension TableStyleImportTests {
         #expect(try importedTable(reopened.slides[1]).tbl.serialized().contains("<?keep data?>"))
     }
 
-    @Test func omittedPropertiesWithMissingDefaultDependencyRefusesAtomically() throws {
+    @Test func omittedPropertiesDoNotImportUnusedDefaultDependencies() throws {
         let (source, _, _) = try relationshipSource(missing: true)
         let incoming = try importedTable(source.slides[0])
         incoming.tbl.removeChildren(named: "a:tblPr")
         incoming.part.markDirty()
         let destination = try Presentation()
-        let before = try destination.serializedData()
-        #expect(throws: RostrumError.self) { try destination.slides.import(from: source, at: 0) }
-        #expect(try destination.serializedData() == before)
+        let count = destination.slides.count
+        let result = try importedTable(destination.slides.import(from: source, at: 0))
+        #expect(destination.slides.count == count + 1)
+        #expect(result.styleID == nil && result.tbl.firstChild(named: "a:tblPr") == nil)
+        #expect(try TableStyleResolver(table: result, theme: destination.theme).fill(row: 0, column: 0) == .noFill)
         #expect(incoming.tbl.firstChild(named: "a:tblPr") == nil)
     }
 

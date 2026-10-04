@@ -1504,13 +1504,29 @@ struct SVGRenderer {
         let segments = borders.resolved()
         // The pinned Office v3 vector reference establishes this geometry and
         // paint order for uniform-width, opaque solid grids. Keep the previous
-        // path for dashes, alpha, mixed widths and diagonals until comparable
-        // independent references establish their intersection behavior.
+        // path for dashes, alpha and diagonals. The bounded mixed-width
+        // path below has a separate native reference.
         let uniformWidth = segments.first?.paint.width
         let joinedGrid = topology != nil && widths.allSatisfy { $0 > 0 } && heights.allSatisfy { $0 > 0 }
             && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
             $0.paint.width == uniformWidth && $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
         }
+        // Native mixed-width controls cover opaque solid unmerged LTR grids.
+        // Keep the established uniform path and all other fallbacks unchanged.
+        let mixedJoinedGrid = !joinedGrid && !rtl && topology?.regions.isEmpty == true
+            // A segment cannot contract past its opposite endpoint: each
+            // physical cell dimension exceeds the largest admitted stroke.
+            && widths.allSatisfy { $0 > maximumBorderWidth }
+            && heights.allSatisfy { $0 > maximumBorderWidth }
+            && grid.cells.allSatisfy { $0.count == widths.count }
+            // The single-cell override proves distinct corner colors. Native
+            // multi-cell seam controls use one color, so keep that boundary.
+            && ((widths.count == 1 && heights.count == 1)
+                || segments.allSatisfy { $0.paint.color == segments.first?.paint.color })
+            && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
+                $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
+            }
+        let orderedGrid = joinedGrid || mixedJoinedGrid
         func paintGroup(_ segment: TableBorderSegments<BorderPaint>.Segment) -> Int {
             let edge = segment.edge
             let outer = edge.boundary == 0 || edge.boundary == (edge.axis == .vertical ? widths.count : heights.count)
@@ -1518,8 +1534,8 @@ struct SVGRenderer {
         }
         // Linear passes avoid sorting the potentially large grid. Interior
         // verticals precede horizontals, then the outer vertical/horizontal rim.
-        for group in 0..<(joinedGrid ? 4 : 1) {
-          for segment in segments where !joinedGrid || paintGroup(segment) == group {
+        for group in 0..<(orderedGrid ? 4 : 1) {
+          for segment in segments where !orderedGrid || paintGroup(segment) == group {
             let edge = segment.edge, lower = segment.range.lowerBound, upper = segment.range.upperBound
             let endpoints: (Int, Int, Int, Int)
             let offset: Int
@@ -1539,6 +1555,11 @@ struct SVGRenderer {
             let start = edge.axis == .horizontal && rtl ? joins.upper : joins.lower
             let end = edge.axis == .horizontal && rtl ? joins.lower : joins.upper
             var startExtension = start ? halfWidth : 0, endExtension = end ? halfWidth : 0
+            if mixedJoinedGrid {
+                let extensions = borders.mixedWidthExtensions(segment, width: { $0.width })
+                startExtension = extensions.lower
+                endExtension = extensions.upper
+            }
             if segment.paint.double {
                 // Collinear continuations suppress terminal extensions, but
                 // cannot suppress diagnostics at an interior crossing.

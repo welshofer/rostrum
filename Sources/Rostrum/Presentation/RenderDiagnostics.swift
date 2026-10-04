@@ -325,13 +325,12 @@ final class RenderDiagnosticCollector {
     private static func hasTableStyle(_ table: XML.Element, package: OPCPackage) -> Bool {
         let properties = table.firstChild(named: "a:tblPr")
         if properties?.firstChild(named: "a:tableStyle") != nil { return true }
-        var id = properties?.firstChild(named: "a:tableStyleId")?.textContent
+        guard let id = properties?.firstChild(named: "a:tableStyleId")?.textContent else { return true }
         if let presentation = try? package.mainDocumentPart(),
            let styles = try? presentation.related(by: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles", in: package),
            let root = try? styles.dom() {
-            id = id ?? root[attribute: "def"]
-            if TableStyleXML.definitions(in: root).contains(where: { $0[attribute: "styleId"]?.lowercased() == id?.lowercased() }) { return true }
+            if TableStyleXML.definitions(in: root).contains(where: { $0[attribute: "styleId"]?.lowercased() == id.lowercased() }) { return true }
         }
-        return id == nil || id.flatMap(BuiltInTableStyle.init(id:)) != nil
+        return BuiltInTableStyle(id: id) != nil
     }
 }
