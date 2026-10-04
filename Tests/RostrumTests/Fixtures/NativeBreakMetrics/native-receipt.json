@@ -10,7 +10,7 @@
   "pdfSHA256": "aa98866ab87866e985a7444790ec538b7b050abb5fba08885e9cd2f50e4c0c60",
   "font": "Bundled licensed DejaVu Sans 2.37 regular",
   "baselineCommit": "59efb229c94f484666c9dd2a7e0ea7044f54f94b",
-  "baselineTest": "swift test --jobs 2 --filter NativeBreakMetricsTests: 10 marker-baseline failures in 7 cases",
+  "baselineTest": "swift test --jobs 2 --filter NativeBreakMetricsTests: 10 marker-baseline failures in 8 cases",
   "modelProvenance": {
     "requested": "gpt-6-astra/high",
     "runtime": "unattested"

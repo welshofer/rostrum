@@ -28,7 +28,7 @@ All 16 ordinary-spacing cases match the native marker baselines within the
 existing 0.121 pt bound, including inherited defaults, leading/consecutive/
 trailing breaks, empty paragraphs, centered/bottom anchoring, and a regular
 1-by-1 table cell. Tests use the bundled font on every supported platform.
-Before the correction, seven cases failed with ten marker errors, including
+Before the correction, eight cases failed with ten marker errors, including
 14–22 pt blank-line errors. `baseline-comparison.json` retains that evidence;
 `corrected-comparison.json` records the corrected result. The existing
 unstyled-break missing-font warning in the separate NativeLigatureLayout
