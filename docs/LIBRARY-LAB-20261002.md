@@ -381,3 +381,9 @@ manual variants were regenerated and visually rechecked in the rebuilt app,
 with byte-identical PPTX files to the earlier exported variants. Native
 PowerPoint acceptance remains valid through exact saved-file and effective
 SVG-policy/geometry identity, without claiming a new native autofit oracle.
+
+After incorporating main's font/adjacency fixes in `2953dc1`, the complete gate
+passes with 1,109 library tests and unchanged Core/app counts. All 337 Lab checks
+and 52 external reopens pass again. The paragraph recipe's four SVGs and both
+saved width variants remain byte-identical across that merge. See the
+[latest integration receipt](benchmarks/2026-10-04-fidelity4-merged-integration-verification.json).

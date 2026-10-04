@@ -82,7 +82,7 @@ no injected path remains unchanged.
 
 ## Final SVG serialization and integration
 
-Final source `f8b33ee` inherits optional ligature suppression once within a
+The serialization checkpoint `f8b33ee` inherits optional ligature suppression once within a
 homogeneous text body or line. Mixed policies keep their own span attributes;
 cache identity includes the inherited context. Empty blocks add no policy, and
 a defensive general-policy child restores normal defaults instead of forcing
@@ -115,3 +115,21 @@ The [fallback report](LAYOUT-PERFORMANCE-20261004-4.md) and final integrated
 performance record separate source optimization from fidelity costs. Timing
 remains workload-dependent and load-qualified; primary large-table performance
 recovery and cross-platform performance remain open.
+
+## Latest-main reconciliation
+
+Main advanced to `6a1f56f` during verification. Merge `2953dc1` preserves its
+automatic-number font selection and adjacent-run viewer advances alongside this
+pass's native policy. Independent review compared both parents and approved.
+The [merged integration receipt](benchmarks/2026-10-04-fidelity4-merged-integration-verification.json)
+records a fresh full gate: 1,109 Rostrum tests, 18 layout tests, 277 Core tests,
+76 native app tests with no skips, README and both Apple builds. The separate
+headless run, all 337 Lab checks, and 52 independent deck reopens also pass.
+The paragraph recipe's four SVGs and both saved width variants are byte-identical
+to the prior checkpoint, preserving the recorded manual/native acceptance.
+Performance against the new baseline is recorded separately from older timings.
+
+The [current-main performance report](INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-UPSTREAM.md)
+records the remaining cost: observed large-table +3.97%, registered-table +2.51%,
+and about 2 MiB additional process RSS under substantial background load. This
+pass is a bounded fidelity tradeoff; it does not establish performance recovery.

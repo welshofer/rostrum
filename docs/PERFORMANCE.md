@@ -261,3 +261,23 @@ baseline. Median table process peak RSS is 199.578 MiB versus 199.375 MiB at the
 previous checkpoint; 1,000-slide RSS is 41.0 MiB. There is no measured net memory
 reduction. The current style cache retains at most 36 templates and approximately
 1 MiB per render. Linux/iOS timings and regression thresholds remain open.
+
+
+## October 4 native Latin fidelity tradeoff
+
+The [latest matched comparison](INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-UPSTREAM.md)
+uses fresh current-main `6a1f56f` and integrated source `2953dc1`. It does **not**
+establish performance recovery: large fallback rendering is 3.97% slower and
+registered-table rendering 2.51% slower in the observed run; both are slower in
+nine of ten pairs. Median process RSS increases by 2.01 and 2.23 MiB respectively.
+Substantial variable Time Machine and WindowServer load limits attribution, and
+the directional results remain explicit. No general or clean-host speedup,
+lower-memory or cross-platform performance claim is made.
+
+The native Latin policy fixes independently measured PowerPoint wrap boundaries.
+Its first implementation repeated 2.5 MB of SVG style markup in the large-table
+fixture. Inherited styling removes exactly 2.03 MB of that addition while
+preserving effective policy and geometry, leaving 470,000 bytes over baseline.
+The final pipeline keeps that bounded fidelity cost visible. The fallback-only
+optimization and earlier failed experiment remain documented separately;
+PERF-1 fallback recovery and clean-host confirmation remain open.
