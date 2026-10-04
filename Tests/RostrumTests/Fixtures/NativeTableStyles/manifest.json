@@ -1,0 +1,536 @@
+{
+  "schema": 1,
+  "producer": "python-pptx 1.0.2 authoring, round-tripped by Microsoft PowerPoint for Mac 16.113.3",
+  "referenceProducer": "Microsoft PowerPoint for Mac 16.113.3",
+  "referenceDate": "2026-10-01",
+  "referenceMethod": "Opened original fixture, saved an Office copy, exported every slide as PNG at 1200x700 via the PowerPoint UI; no repair dialog observed.",
+  "provenance": "Original project-authored test content, CC0; native style GUIDs select PowerPoint built-in styles. No upstream raster images or definition XML embedded in the input. Last-modified author metadata was replaced with Rostrum conformance; drawing and notes parts are unchanged.",
+  "scope": "Sampled cell fills with first-row header and horizontal banding. Not text, borders, effects or whole-slide equivalence.",
+  "channelTolerance": 3,
+  "input": "native-styles.pptx",
+  "references": "powerpoint-16.113.3-png.zip",
+  "sha256": {
+    "native-styles.pptx": "b55368f1c7ebfb28444da93d912858afd6afe08781ca8fd9a95cde87124011c9",
+    "powerpoint-16.113.3-png.zip": "557b4fac356e61e75ea446bb57d84f67e7539b46e0f5a7b695ab3f5e46740e54"
+  },
+  "styles": [
+    {
+      "slide": 1,
+      "name": "No Style, No Grid",
+      "id": "{2D5ABB26-0587-4C30-8999-92F81FD0307C}",
+      "reference": "Slide1.png",
+      "sha256": "2c0c8ebcaa33a6253c1616380dc272dd9958d84131bf6958bec79a53bbb82f35"
+    },
+    {
+      "slide": 2,
+      "name": "Themed Style 1 - Accent 1",
+      "id": "{3C2FFA5D-87B4-456A-9821-1D502468CF0F}",
+      "reference": "Slide2.png",
+      "sha256": "59bd2efbf9b8914f169357dcd624aacef78d94584f53b1a23829e95beece14ae"
+    },
+    {
+      "slide": 3,
+      "name": "Themed Style 1 - Accent 2",
+      "id": "{284E427A-3D55-4303-BF80-6455036E1DE7}",
+      "reference": "Slide3.png",
+      "sha256": "055d8cc398c985808ee2640512e5e13122371806a45fee6d0dc083ded5226f61"
+    },
+    {
+      "slide": 4,
+      "name": "Themed Style 1 - Accent 3",
+      "id": "{69C7853C-536D-4A76-A0AE-DD22124D55A5}",
+      "reference": "Slide4.png",
+      "sha256": "0cd74a2aa9c41fffb600c2753317d9a3cadd46849c4612c3cfb3457ccb9b798a"
+    },
+    {
+      "slide": 5,
+      "name": "Themed Style 1 - Accent 4",
+      "id": "{775DCB02-9BB8-47FD-8907-85C794F793BA}",
+      "reference": "Slide5.png",
+      "sha256": "0d7f3495fce7548835aaf947bf56bd54a5203132c005f5ef7759f75d1c4f810a"
+    },
+    {
+      "slide": 6,
+      "name": "Themed Style 1 - Accent 5",
+      "id": "{35758FB7-9AC5-4552-8A53-C91805E547FA}",
+      "reference": "Slide6.png",
+      "sha256": "3aed0b3b9d52064400148c9c1bafc108de811bf97a569501e56f51cddb4ac8b5"
+    },
+    {
+      "slide": 7,
+      "name": "Themed Style 1 - Accent 6",
+      "id": "{08FB837D-C827-4EFA-A057-4D05807E0F7C}",
+      "reference": "Slide7.png",
+      "sha256": "85e2681980875f6d395be36e3d7e3e81cda2852324e9032d435c4bd362f14a58"
+    },
+    {
+      "slide": 8,
+      "name": "No Style, Table Grid",
+      "id": "{5940675A-B579-460E-94D1-54222C63F5DA}",
+      "reference": "Slide8.png",
+      "sha256": "e34d42cfa300fff562a9ac1c5faccb576f4be60259fe80f50f7e381c1d9a3fd7"
+    },
+    {
+      "slide": 9,
+      "name": "Themed Style 2 - Accent 1",
+      "id": "{D113A9D2-9D6B-4929-AA2D-F23B5EE8CBE7}",
+      "reference": "Slide9.png",
+      "sha256": "871ab29c393891b8db6851a76c4cf2277e146e41bfacae0da5f0838d39f9d882"
+    },
+    {
+      "slide": 10,
+      "name": "Themed Style 2 - Accent 2",
+      "id": "{18603FDC-E32A-4AB5-989C-0864C3EAD2B8}",
+      "reference": "Slide10.png",
+      "sha256": "42abd8598e47a19b1d77d46b79f9a5afce6b70671b05e12e5c51a6c5e572cc03"
+    },
+    {
+      "slide": 11,
+      "name": "Themed Style 2 - Accent 3",
+      "id": "{306799F8-075E-4A3A-A7F6-7FBC6576F1A4}",
+      "reference": "Slide11.png",
+      "sha256": "738aa5ceb5aad4292231327bc1c244b16f98745bcb9157146c310601b4cc5b59"
+    },
+    {
+      "slide": 12,
+      "name": "Themed Style 2 - Accent 4",
+      "id": "{E269D01E-BC32-4049-B463-5C60D7B0CCD2}",
+      "reference": "Slide12.png",
+      "sha256": "a77bc2934abd6c05e4283f76d7f397a9ef5e64c0b3b3c935483dad338ee0169b"
+    },
+    {
+      "slide": 13,
+      "name": "Themed Style 2 - Accent 5",
+      "id": "{327F97BB-C833-4FB7-BDE5-3F7075034690}",
+      "reference": "Slide13.png",
+      "sha256": "e67fe2baa66a82d16d1ad0e5e13523a06a8517411243f406007af7dd621c866d"
+    },
+    {
+      "slide": 14,
+      "name": "Themed Style 2 - Accent 6",
+      "id": "{638B1855-1B75-4FBE-930C-398BA8C253C6}",
+      "reference": "Slide14.png",
+      "sha256": "a28c2b58918c12b0976d4fc4836b16ed3409b8bf4982ba87c508b820ee9534f9"
+    },
+    {
+      "slide": 15,
+      "name": "Light Style 1",
+      "id": "{9D7B26C5-4107-4FEC-AEDC-1716B250A1EF}",
+      "reference": "Slide15.png",
+      "sha256": "207eae61bc7bc08a4d84630ddba02000ffc9e4902ebdbe27a314b968b073d2d0"
+    },
+    {
+      "slide": 16,
+      "name": "Light Style 1 - Accent 1",
+      "id": "{3B4B98B0-60AC-42C2-AFA5-B58CD77FA1E5}",
+      "reference": "Slide16.png",
+      "sha256": "ec4b36a6c9c5fcff4c8e5f843c5ca7cf2a1bac79352896c85489891ad8125432"
+    },
+    {
+      "slide": 17,
+      "name": "Light Style 1 - Accent 2",
+      "id": "{0E3FDE45-AF77-4B5C-9715-49D594BDF05E}",
+      "reference": "Slide17.png",
+      "sha256": "6e734bc68ee300b7c165cffe0d47003f3073dcdd7ebcace99296c11b8ce91556"
+    },
+    {
+      "slide": 18,
+      "name": "Light Style 1 - Accent 3",
+      "id": "{C083E6E3-FA7D-4D7B-A595-EF9225AFEA82}",
+      "reference": "Slide18.png",
+      "sha256": "6babb4e1ca3d0e595f3047b271a11bd43499093ddd81162966ad0571774497a6"
+    },
+    {
+      "slide": 19,
+      "name": "Light Style 1 - Accent 4",
+      "id": "{D27102A9-8310-4765-A935-A1911B00CA55}",
+      "reference": "Slide19.png",
+      "sha256": "6c17658eb69781940618500292c8a588df2d17ecdb9773eb43d382df50bdd8f6"
+    },
+    {
+      "slide": 20,
+      "name": "Light Style 1 - Accent 5",
+      "id": "{5FD0F851-EC5A-4D38-B0AD-8093EC10F338}",
+      "reference": "Slide20.png",
+      "sha256": "6c67cab16d63796fabb374087572b1fe44f2a9dc995ea35866da683be52cb36b"
+    },
+    {
+      "slide": 21,
+      "name": "Light Style 1 - Accent 6",
+      "id": "{68D230F3-CF80-4859-8CE7-A43EE81993B5}",
+      "reference": "Slide21.png",
+      "sha256": "27f44fbcc58e333291e0932ab3d34fb90dc3dc1ce007c95a4a2ec7beb176c1e6"
+    },
+    {
+      "slide": 22,
+      "name": "Light Style 2",
+      "id": "{7E9639D4-E3E2-4D34-9284-5A2195B3D0D7}",
+      "reference": "Slide22.png",
+      "sha256": "c1f278ed87c5639af6919ca2c05194ae33797654c3772d0f381a7cf3e3aa325b"
+    },
+    {
+      "slide": 23,
+      "name": "Light Style 2 - Accent 1",
+      "id": "{69012ECD-51FC-41F1-AA8D-1B2483CD663E}",
+      "reference": "Slide23.png",
+      "sha256": "94e83325e7005d0433232a9f8d83072b4fd78de6be1e44301b75506787f36fdb"
+    },
+    {
+      "slide": 24,
+      "name": "Light Style 2 - Accent 2",
+      "id": "{72833802-FEF1-4C79-8D5D-14CF1EAF98D9}",
+      "reference": "Slide24.png",
+      "sha256": "8dd3851eeda4525585cac49d442ea7e180bacc50b5483c0b4608198f933bb4a8"
+    },
+    {
+      "slide": 25,
+      "name": "Light Style 2 - Accent 3",
+      "id": "{F2DE63D5-997A-4646-A377-4702673A728D}",
+      "reference": "Slide25.png",
+      "sha256": "268b9b31eca130a072f66580b8de15ed37dcfbf3a339301f085b91c339355b73"
+    },
+    {
+      "slide": 26,
+      "name": "Light Style 2 - Accent 4",
+      "id": "{17292A2E-F333-43FB-9621-5CBBE7FDCDCB}",
+      "reference": "Slide26.png",
+      "sha256": "36c68cb04f40a68cda2c106caec517d0a2625610d0159df15f9597c11af32180"
+    },
+    {
+      "slide": 27,
+      "name": "Light Style 2 - Accent 5",
+      "id": "{5A111915-BE36-4E01-A7E5-04B1672EAD32}",
+      "reference": "Slide27.png",
+      "sha256": "e3c57b82e94176153a3e7a740d9dbffbd5169ccf0a3e4f0f390fd181f7b99c5b"
+    },
+    {
+      "slide": 28,
+      "name": "Light Style 2 - Accent 6",
+      "id": "{912C8C85-51F0-491E-9774-3900AFEF0FD7}",
+      "reference": "Slide28.png",
+      "sha256": "b4bf336c053aa243a3f670220afab535e08f37114b5d8a2b28a620ff2bd21c88"
+    },
+    {
+      "slide": 29,
+      "name": "Light Style 3",
+      "id": "{616DA210-FB5B-4158-B5E0-FEB733F419BA}",
+      "reference": "Slide29.png",
+      "sha256": "fe65038e6fd4a65892374194a6238c89678a1d1e638ef8484a45d3e1e8ae5991"
+    },
+    {
+      "slide": 30,
+      "name": "Light Style 3 - Accent 1",
+      "id": "{BC89EF96-8CEA-46FF-86C4-4CE0E7609802}",
+      "reference": "Slide30.png",
+      "sha256": "ab0876af9a52677dad677f7bbb993a8fe149bab987bbb724da7fdf52e98493b7"
+    },
+    {
+      "slide": 31,
+      "name": "Light Style 3 - Accent 2",
+      "id": "{5DA37D80-6434-44D0-A028-1B22A696006F}",
+      "reference": "Slide31.png",
+      "sha256": "903c77f955599648ba92e9479b5fb5a6e99345bd2946afb48ae787690291985c"
+    },
+    {
+      "slide": 32,
+      "name": "Light Style 3 - Accent 3",
+      "id": "{8799B23B-EC83-4686-B30A-512413B5E67A}",
+      "reference": "Slide32.png",
+      "sha256": "73671ebbec71bf172cc469ee18506e8e0a4cc51dd344ed5f4fe0b238fbfa0ce0"
+    },
+    {
+      "slide": 33,
+      "name": "Light Style 3 - Accent 4",
+      "id": "{ED083AE6-46FA-4A59-8FB0-9F97EB10719F}",
+      "reference": "Slide33.png",
+      "sha256": "2aa3b1daada05fdedf06eefc527481041c132c94605e7010aef17aeb4197bf52"
+    },
+    {
+      "slide": 34,
+      "name": "Light Style 3 - Accent 5",
+      "id": "{BDBED569-4797-4DF1-A0F4-6AAB3CD982D8}",
+      "reference": "Slide34.png",
+      "sha256": "ba8888bb07adff735b330d75b2b03b1ba1437e1d85e672623c41f3984b6b5e66"
+    },
+    {
+      "slide": 35,
+      "name": "Light Style 3 - Accent 6",
+      "id": "{E8B1032C-EA38-4F05-BA0D-38AFFFC7BED3}",
+      "reference": "Slide35.png",
+      "sha256": "6d5ff0daca566e988f53903867f6695b64979cb9c82a8625cb1ceb31f5623e64"
+    },
+    {
+      "slide": 36,
+      "name": "Medium Style 1",
+      "id": "{793D81CF-94F2-401A-BA57-92F5A7B2D0C5}",
+      "reference": "Slide36.png",
+      "sha256": "f34b9216377ea04fdfd50e1badb9b7701b5e6b88cfe765c25e862fab85f7fe43"
+    },
+    {
+      "slide": 37,
+      "name": "Medium Style 1 - Accent 1",
+      "id": "{B301B821-A1FF-4177-AEE7-76D212191A09}",
+      "reference": "Slide37.png",
+      "sha256": "f4604e04b5aefecc5cb8f238348a1f283f4a7bcf985954b26abdfac74a2a5d0d"
+    },
+    {
+      "slide": 38,
+      "name": "Medium Style 1 - Accent 2",
+      "id": "{9DCAF9ED-07DC-4A11-8D7F-57B35C25682E}",
+      "reference": "Slide38.png",
+      "sha256": "f020f53ae7a60dd4fd6ade671a18f64fc5b63d42265183124bdac05926332978"
+    },
+    {
+      "slide": 39,
+      "name": "Medium Style 1 - Accent 3",
+      "id": "{1FECB4D8-DB02-4DC6-A0A2-4F2EBAE1DC90}",
+      "reference": "Slide39.png",
+      "sha256": "5673622b238d5f13fa5726d172ed72c8c7b5975fe6bd033204ea805c2141cb43"
+    },
+    {
+      "slide": 40,
+      "name": "Medium Style 1 - Accent 4",
+      "id": "{1E171933-4619-4E11-9A3F-F7608DF75F80}",
+      "reference": "Slide40.png",
+      "sha256": "4a77043a89dd42da9f41b7fde67f6df823fc4abbf6e85f88aa328e2263beaee2"
+    },
+    {
+      "slide": 41,
+      "name": "Medium Style 1 - Accent 5",
+      "id": "{FABFCF23-3B69-468F-B69F-88F6DE6A72F2}",
+      "reference": "Slide41.png",
+      "sha256": "20f5942e5e139d4b2bb1cd9cdf64aba8203175d569c6a7091573a249165e8cd6"
+    },
+    {
+      "slide": 42,
+      "name": "Medium Style 1 - Accent 6",
+      "id": "{10A1B5D5-9B99-4C35-A422-299274C87663}",
+      "reference": "Slide42.png",
+      "sha256": "6a5b24a4f558fcaad27b18049c9ded19a2192da7e53218a78ff16a0423502c10"
+    },
+    {
+      "slide": 43,
+      "name": "Medium Style 2",
+      "id": "{073A0DAA-6AF3-43AB-8588-CEC1D06C72B9}",
+      "reference": "Slide43.png",
+      "sha256": "b5a40dceb2258bfdf0b4794fc2c2f094071a235770551df42eb64444585266d1"
+    },
+    {
+      "slide": 44,
+      "name": "Medium Style 2 - Accent 1",
+      "id": "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}",
+      "reference": "Slide44.png",
+      "sha256": "089090eda446d7f50eab09ea5c8580a47dc75601dbc0fef47f9e7487381477a8"
+    },
+    {
+      "slide": 45,
+      "name": "Medium Style 2 - Accent 2",
+      "id": "{21E4AEA4-8DFA-4A89-87EB-49C32662AFE0}",
+      "reference": "Slide45.png",
+      "sha256": "0bd66ac5349f0d6c26d78a38c43814fb912ca414b4a218bef1ea5de2b907e254"
+    },
+    {
+      "slide": 46,
+      "name": "Medium Style 2 - Accent 3",
+      "id": "{F5AB1C69-6EDB-4FF4-983F-18BD219EF322}",
+      "reference": "Slide46.png",
+      "sha256": "3c50903677928730e8eda6ede5c3be785a15fe783e1215273e1fab0d181b2c11"
+    },
+    {
+      "slide": 47,
+      "name": "Medium Style 2 - Accent 4",
+      "id": "{00A15C55-8517-42AA-B614-E9B94910E393}",
+      "reference": "Slide47.png",
+      "sha256": "b819a7b83bf42f81d5fe5ebe637213aa4665576cf4620ca8b024ca88ad7f5124"
+    },
+    {
+      "slide": 48,
+      "name": "Medium Style 2 - Accent 5",
+      "id": "{7DF18680-E054-41AD-8BC1-D1AEF772440D}",
+      "reference": "Slide48.png",
+      "sha256": "f3afb5cdecf5a8c662354b8af5f5b949f40a2331b8c7c64e6504e393a8d77537"
+    },
+    {
+      "slide": 49,
+      "name": "Medium Style 2 - Accent 6",
+      "id": "{93296810-A885-4BE3-A3E7-6D5BEEA58F35}",
+      "reference": "Slide49.png",
+      "sha256": "3b246710e003b70e80bea849bfc2b6140599ec2b559ff8454aaa81ec72925728"
+    },
+    {
+      "slide": 50,
+      "name": "Medium Style 3",
+      "id": "{8EC20E35-A176-4012-BC5E-935CFFF8708E}",
+      "reference": "Slide50.png",
+      "sha256": "a22888868d6f519309c6194ab2307a569b3cbbeb6cebc0da2d15c9e2d4698e40"
+    },
+    {
+      "slide": 51,
+      "name": "Medium Style 3 - Accent 1",
+      "id": "{6E25E649-3F16-4E02-A733-19D2CDBF48F0}",
+      "reference": "Slide51.png",
+      "sha256": "56cacbd36e50cbcb5acdb7551bd8b1db8c115e485405719bc197fde6e39621f7"
+    },
+    {
+      "slide": 52,
+      "name": "Medium Style 3 - Accent 2",
+      "id": "{85BE263C-DBD7-4A20-BB59-AAB30ACAA65A}",
+      "reference": "Slide52.png",
+      "sha256": "188b31f7b3b9a89e21a607baa21230a8d7ec4baf9a9994c38811067d7139cb28"
+    },
+    {
+      "slide": 53,
+      "name": "Medium Style 3 - Accent 3",
+      "id": "{EB344D84-9AFB-497E-A393-DC336BA19D2E}",
+      "reference": "Slide53.png",
+      "sha256": "a944b627ec9cc4a2a96bb7fca1fefb378df959c4aee12cdd553657424b9a85f5"
+    },
+    {
+      "slide": 54,
+      "name": "Medium Style 3 - Accent 4",
+      "id": "{EB9631B5-78F2-41C9-869B-9F39066F8104}",
+      "reference": "Slide54.png",
+      "sha256": "43e521dc1560dc023f2c975dd5a56eb9b0522337b984c6cdfd9d30f7da123d7b"
+    },
+    {
+      "slide": 55,
+      "name": "Medium Style 3 - Accent 5",
+      "id": "{74C1A8A3-306A-4EB7-A6B1-4F7E0EB9C5D6}",
+      "reference": "Slide55.png",
+      "sha256": "dcdc6701c2b9f4d05e3a21865c4078bbad0b561ba8e68339fdcb100cff354fa1"
+    },
+    {
+      "slide": 56,
+      "name": "Medium Style 3 - Accent 6",
+      "id": "{2A488322-F2BA-4B5B-9748-0D474271808F}",
+      "reference": "Slide56.png",
+      "sha256": "d6b882241f43222caf4df114843b57b3459894a9e911bcdf1525de8253e1ebcd"
+    },
+    {
+      "slide": 57,
+      "name": "Medium Style 4",
+      "id": "{D7AC3CCA-C797-4891-BE02-D94E43425B78}",
+      "reference": "Slide57.png",
+      "sha256": "f48d51104311ef4e8cdcaecf797ee4a84039cf545e3bdecc9cccce8eb91b2f57"
+    },
+    {
+      "slide": 58,
+      "name": "Medium Style 4 - Accent 1",
+      "id": "{69CF1AB2-1976-4502-BF36-3FF5EA218861}",
+      "reference": "Slide58.png",
+      "sha256": "72c933ebf19c7d6d27344be8d84874c48456912d6722c76254fcddb47acac77b"
+    },
+    {
+      "slide": 59,
+      "name": "Medium Style 4 - Accent 2",
+      "id": "{8A107856-5554-42FB-B03E-39F5DBC370BA}",
+      "reference": "Slide59.png",
+      "sha256": "3b915cc717e791dc3dd2e10b80dba20e06efa247ab72373ded105f377ffc38a7"
+    },
+    {
+      "slide": 60,
+      "name": "Medium Style 4 - Accent 3",
+      "id": "{0505E3EF-67EA-436B-97B2-0124C06EBD24}",
+      "reference": "Slide60.png",
+      "sha256": "e0f8aa9a59738ee4cdf51c90703b2db66ba39cced702abfd4d76fc9ae1602ee2"
+    },
+    {
+      "slide": 61,
+      "name": "Medium Style 4 - Accent 4",
+      "id": "{C4B1156A-380E-4F78-BDF5-A606A8083BF9}",
+      "reference": "Slide61.png",
+      "sha256": "41fc3e1c9da664f2ca929d7977b80c46278f0fcf69fa763bbd777843984fca87"
+    },
+    {
+      "slide": 62,
+      "name": "Medium Style 4 - Accent 5",
+      "id": "{22838BEF-8BB2-4498-84A7-C5851F593DF1}",
+      "reference": "Slide62.png",
+      "sha256": "68b4fd60d862bfe48f4fe2e10f7f14b65bc835a8a097f42c25f5855ddc2134e0"
+    },
+    {
+      "slide": 63,
+      "name": "Medium Style 4 - Accent 6",
+      "id": "{16D9F66E-5EB9-4882-86FB-DCBF35E3C3E4}",
+      "reference": "Slide63.png",
+      "sha256": "71a3ef7993ff037be4dbddf258cb10594981db709cd1c045a8dc8c7226564feb"
+    },
+    {
+      "slide": 64,
+      "name": "Dark Style 1",
+      "id": "{E8034E78-7F5D-4C2E-B375-FC64B27BC917}",
+      "reference": "Slide64.png",
+      "sha256": "0fc730191a8a86738a45db73059ac4ab9d641189f2d4ece60872addeb01dc805"
+    },
+    {
+      "slide": 65,
+      "name": "Dark Style 1 - Accent 1",
+      "id": "{125E5076-3810-47DD-B79F-674D7AD40C01}",
+      "reference": "Slide65.png",
+      "sha256": "236618efbef90afbf75f10e4276ebacd328958480c184a48b043242868e15beb"
+    },
+    {
+      "slide": 66,
+      "name": "Dark Style 1 - Accent 2",
+      "id": "{37CE84F3-28C3-443E-9E96-99CF82512B78}",
+      "reference": "Slide66.png",
+      "sha256": "509744ad1053fbba3219982a420bf4150e855748877b7cab22513d43727be2a5"
+    },
+    {
+      "slide": 67,
+      "name": "Dark Style 1 - Accent 3",
+      "id": "{D03447BB-5D67-496B-8E87-E561075AD55C}",
+      "reference": "Slide67.png",
+      "sha256": "773993252859da1a75a67cc462eef4f9c9844c0c6216d1644eeab3563b996e8e"
+    },
+    {
+      "slide": 68,
+      "name": "Dark Style 1 - Accent 4",
+      "id": "{E929F9F4-4A8F-4326-A1B4-22849713DDAB}",
+      "reference": "Slide68.png",
+      "sha256": "3206164ee4e179d664ff21fa13bb2065cfbb5b9a5e63c3c510d00ee00ba91362"
+    },
+    {
+      "slide": 69,
+      "name": "Dark Style 1 - Accent 5",
+      "id": "{8FD4443E-F989-4FC4-A0C8-D5A2AF1F390B}",
+      "reference": "Slide69.png",
+      "sha256": "370b44817ae22e1756b7a7b5f6e74abb538e1dea832bd6d3c1199b581d08cbb8"
+    },
+    {
+      "slide": 70,
+      "name": "Dark Style 1 - Accent 6",
+      "id": "{AF606853-7671-496A-8E4F-DF71F8EC918B}",
+      "reference": "Slide70.png",
+      "sha256": "a67b4a2953443256f6b659fb60280cfeffe068d6318a02864787b938923ed534"
+    },
+    {
+      "slide": 71,
+      "name": "Dark Style 2",
+      "id": "{5202B0CA-FC54-4496-8BCA-5EF66A818D29}",
+      "reference": "Slide71.png",
+      "sha256": "d5baac810b9d29102c3cabca90b5da2176b33e7cbd39c979166ff7b0b999eb4f"
+    },
+    {
+      "slide": 72,
+      "name": "Dark Style 2 - Accent 1/Accent 2",
+      "id": "{0660B408-B3CF-4A94-85FC-2B1E0A45F4A2}",
+      "reference": "Slide72.png",
+      "sha256": "a4cfb73f267cbb15e39553bc75a4aef8e31f9a2de7d6ed2f9e0a703aacd0ca84"
+    },
+    {
+      "slide": 73,
+      "name": "Dark Style 2 - Accent 3/Accent 4",
+      "id": "{91EBBBCC-DAD2-459C-BE2E-F6DE35CF9A28}",
+      "reference": "Slide73.png",
+      "sha256": "1e76162d6a2903fd0c864e538400064c0fe8d6df674cc83950276f22f8a21a31"
+    },
+    {
+      "slide": 74,
+      "name": "Dark Style 2 - Accent 5/Accent 6",
+      "id": "{46F890A9-2807-4EBB-B81D-B2AA78EC7F39}",
+      "reference": "Slide74.png",
+      "sha256": "151df525523ecf39ade40556ff215220052c2a5ebbd3840f67ce1211a523d55f"
+    }
+  ]
+}

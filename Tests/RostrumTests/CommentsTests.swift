@@ -84,4 +84,99 @@ import Testing
         let reopened = try Presentation(data: try deck.serializedData())
         #expect(try reopened.slides[0].comments[0].isResolved)
     }
+
+    @Test func duplicatedCommentsRetargetAnchorsAndKeepIndependentThreads() throws {
+        let deck = try Presentation()
+        let original = try deck.slides[0]
+        let resolved = try original.addComment("resolved thread", author: "Reviewer")
+        try resolved.addReply("reply", author: "Editor")
+        resolved.resolve()
+        let open = try original.addComment("open thread", author: "Reviewer")
+        let unknown = XML.Element("foreign:payload", attributes: [
+            ("xmlns:foreign", "urn:foreign"), ("id", "opaque-id"), ("sldId", "opaque-slide"),
+        ], children: [.comment("retain comment"), .processingInstruction(target: "opaque", data: "value")])
+        open.cm.appendElement(unknown)
+        open.part.markDirty()
+        let authors = try deck.package.part(at: PackURI("/ppt/authors.xml"))
+        authors.flushIfDirty()
+        let authorsBefore = authors.blob
+        let originalIDs = Set(original.comments.flatMap { [$0.cm[attribute: "id"]!] + $0.replies.map { $0.cm[attribute: "id"]! } })
+        let copy = try deck.slides.duplicate(at: 0)
+        #expect(copy.comments.count == 2)
+        #expect(copy.comments[0].isResolved)
+        #expect(!copy.comments[1].isResolved)
+        #expect(copy.comments[0].authorName == "Reviewer")
+        #expect(copy.comments[0].replies[0].authorName == "Editor")
+        #expect(copy.comments[1].cm.firstChild(named: "foreign:payload")?.serialized() == unknown.serialized())
+        let copiedIDs = Set(copy.comments.flatMap { [$0.cm[attribute: "id"]!] + $0.replies.map { $0.cm[attribute: "id"]! } })
+        #expect(copiedIDs.count == 3)
+        #expect(originalIDs.isDisjoint(with: copiedIDs))
+        #expect(authors.blob == authorsBefore)
+        #expect(copy.comments[0].part.uri != resolved.part.uri)
+        for comment in copy.comments {
+            let mark = try #require(comment.cm.firstChild(named: "pc:sldMkLst")?.firstChild(named: "pc:sldMk"))
+            #expect(mark[attribute: "sldId"] == String(try copy.slideID()))
+        }
+        copy.comments[1].resolve()
+        try copy.comments[0].addReply("copy reply", author: "Editor")
+        try original.comments[1].addReply("original reply", author: "Reviewer")
+        let reopened = try Presentation(data: try deck.serializedData())
+        #expect(try !reopened.slides[0].comments[1].isResolved)
+        #expect(try reopened.slides[1].comments[1].isResolved)
+        #expect(try reopened.slides[0].comments[0].replies.map(\.text) == ["reply"])
+        #expect(try reopened.slides[1].comments[0].replies.map(\.text) == ["reply", "copy reply"])
+        #expect(try reopened.slides[0].comments[1].replies.map(\.text) == ["original reply"])
+        #expect(try reopened.slides[1].comments[1].replies.isEmpty)
+        for slide in reopened.slides {
+            for comment in slide.comments {
+                #expect(comment.cm.firstChild(named: "pc:sldMkLst")?.firstChild(named: "pc:sldMk")?[attribute: "sldId"]
+                    == String(try slide.slideID()))
+            }
+        }
+    }
+
+    @Test(arguments: [0, 1]) func deletingEitherDuplicatePreservesOtherComments(index: Int) throws {
+        let deck = try Presentation()
+        let comment = try deck.slides[0].addComment("thread", author: "Reviewer")
+        try comment.addReply("reply", author: "Editor")
+        try deck.slides.duplicate(at: 0)
+        let removedURI = try deck.slides[index].comments[0].part.uri
+        let survivingURI = try deck.slides[1 - index].comments[0].part.uri
+        try deck.slides.remove(at: index)
+        #expect(deck.package.parts[removedURI] == nil)
+        #expect(deck.package.parts[survivingURI] != nil)
+        let reopened = try Presentation(data: try deck.serializedData())
+        #expect(try reopened.slides[0].comments[0].text == "thread")
+        #expect(try reopened.slides[0].comments[0].replies[0].text == "reply")
+        #expect(try reopened.slides[0].comments[0].authorName == "Reviewer")
+        #expect(try reopened.validate().isEmpty)
+    }
+
+    @Test func duplicateUsesNamespaceAwareAnchorsAndDeterministicIDs() throws {
+        let seed = try Presentation()
+        let comment = try seed.slides[0].addComment("thread", author: "Reviewer")
+        try comment.addReply("reply", author: "Editor")
+        comment.part.flushIfDirty()
+        let xml = String(decoding: comment.part.blob, as: UTF8.self)
+            .replacingOccurrences(of: "p188", with: "modern")
+            .replacingOccurrences(of: "pc:", with: "anchor:")
+            .replacingOccurrences(of: "xmlns:pc", with: "xmlns:anchor")
+        comment.part.replaceBlob(Data(xml.utf8))
+        let seedBytes = try seed.serializedData()
+        let first = try Presentation(data: seedBytes)
+        let second = try Presentation(data: seedBytes)
+        let duplicated = try first.slides.duplicate(at: 0)
+        try second.slides.duplicate(at: 0)
+        #expect(try first.serializedData() == second.serializedData())
+        let part = try duplicated.part.related(by: ModernComments.commentsRelType, in: first.package)
+        let root = try part.dom()
+        let cm = try #require(root.firstChild(named: "modern:cm"))
+        #expect(cm.firstChild(named: "anchor:sldMkLst")?.firstChild(named: "anchor:sldMk")?[attribute: "sldId"]
+            == String(try duplicated.slideID()))
+        let sourceRoot = try first.slides[0].part.related(by: ModernComments.commentsRelType, in: first.package).dom()
+        #expect(cm[attribute: "id"] != sourceRoot.firstChild(named: "modern:cm")?[attribute: "id"])
+        #expect(cm.firstChild(named: "modern:replyLst")?.firstChild(named: "modern:reply")?[attribute: "id"]
+            != sourceRoot.firstChild(named: "modern:cm")?.firstChild(named: "modern:replyLst")?.firstChild(named: "modern:reply")?[attribute: "id"])
+    }
+
 }

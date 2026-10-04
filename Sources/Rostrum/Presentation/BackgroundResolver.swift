@@ -48,58 +48,64 @@ enum BackgroundResolver {
     /// `parts` is the chain, nearest first. `theme` resolves `a:schemeClr`
     /// through the master's colour map, which is what turns `tx1` into the
     /// deck's near-black rather than into a literal.
-    static func resolve(chain parts: [Part], theme: Theme) -> SlideBackground {
+    /// Preserve the selected paint and its relationship owner for the renderer.
+    static func fill(chain parts: [Part], theme: Theme) -> (paint: XML.Element, owner: Part)? {
         for part in parts {
-            guard let bg = (try? part.dom())?
-                .firstChild(named: "p:cSld")?
-                .firstChild(named: "p:bg") else { continue }
-
-            if let bgPr = bg.firstChild(named: "p:bgPr") {
-                if bgPr.firstChild(named: "a:blipFill") != nil { return .picture }
-                if let solid = bgPr.firstChild(named: "a:solidFill"),
-                   let colour = colour(in: solid, theme: theme) {
-                    return .solid(colour)
-                }
-                if let gradient = bgPr.firstChild(named: "a:gradFill"),
-                   let first = gradient.firstChild(named: "a:gsLst")?
-                       .children(named: "a:gs").first,
-                   let colour = colour(in: first, theme: theme) {
-                    return .gradient(colour)
-                }
-                // A `p:bgPr` that resolves to nothing usable is still an answer:
-                // this part sets the background, so the chain stops here rather
-                // than reporting something further up that PowerPoint would
-                // never draw.
-                if bgPr.firstChild(named: "a:noFill") != nil { return .none }
+            guard let bg = (try? part.dom())?.firstChild(named: "p:cSld")?.firstChild(named: "p:bg") else { continue }
+            if let pr = bg.firstChild(named: "p:bgPr") {
+                // Preserve the established fallback for an invalid colour.
+                if let solid = pr.firstChild(named: "a:solidFill"), colour(in: solid, theme: theme) == nil { continue }
+                return (pr, part)
             }
-
-            // `p:bgRef` names a fill in the theme's `bgFillStyleLst`; its own
-            // colour child is what that fill is built from, which is far closer
-            // than white and is what the SVG renderer has always used.
-            if let bgRef = bg.firstChild(named: "p:bgRef"),
-               let colour = colour(in: bgRef, theme: theme) {
-                return .solid(colour)
+            if let ref = bg.firstChild(named: "p:bgRef") {
+                let wrapper = XML.Element("p:bgPr")
+                guard let index = ref.boundedInt("idx", in: 0...Int(UInt32.max)), index != 0, index != 1000,
+                      let matrix = (try? theme.part.dom())?.firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme") else {
+                    wrapper.appendElement(XML.Element("a:noFill")); return (wrapper, part)
+                }
+                let list = matrix.firstChild(named: index < 1000 ? "a:fillStyleLst" : "a:bgFillStyleLst")?.childElements ?? []
+                let offset = index < 1000 ? index - 1 : index - 1001
+                guard list.indices.contains(offset) else {
+                    wrapper.appendElement(XML.Element("a:noFill")); return (wrapper, part)
+                }
+                let paint = list[offset].deepCopy()
+                // phClr substitutes the fully transformed reference colour;
+                // transforms on the matrix colour then apply in their order.
+                let placeholder = colour(in: ref, theme: theme)
+                var stack = [paint]
+                while let node = stack.popLast() {
+                    for child in node.childElements {
+                        if child.name == "a:schemeClr", child[attribute: "val"] == "phClr", let placeholder {
+                            let replacement = placeholder.srgbElement()
+                            replacement.children = child.children
+                            if let position = node.children.firstIndex(where: { if case .element(let e) = $0 { return e === child }; return false }) {
+                                node.children[position] = .element(replacement)
+                            }
+                        } else { stack.append(child) }
+                    }
+                }
+                wrapper.appendElement(paint)
+                return (wrapper, theme.part)
             }
-        }
-        return .none
-    }
-
-    /// A DrawingML colour child, resolved. `a:schemeClr` goes through the
-    /// theme so the master's `clrMap` is honoured — without that, `tx1` on a
-    /// dark template reads as the Office black rather than the deck's own.
-    static func colour(in container: XML.Element, theme: Theme) -> Color? {
-        if let srgb = container.firstChild(named: "a:srgbClr")?[attribute: "val"] {
-            return Color(validating: srgb)
-        }
-        if let raw = container.firstChild(named: "a:schemeClr")?[attribute: "val"],
-           let scheme = SchemeColor(rawValue: raw) {
-            return theme.resolve(scheme)
-        }
-        if let sys = container.firstChild(named: "a:sysClr")?[attribute: "lastClr"] {
-            return Color(validating: sys)
+            // An explicit unrecognized background ends inheritance too.
+            return (XML.Element("p:bgPr"), part)
         }
         return nil
     }
+
+    static func resolve(chain parts: [Part], theme: Theme) -> SlideBackground {
+        guard let (paint, _) = fill(chain: parts, theme: theme) else { return .none }
+        if paint.firstChild(named: "a:blipFill") != nil { return .picture }
+        if let solid = paint.firstChild(named: "a:solidFill"), let color = colour(in: solid, theme: theme) { return .solid(color) }
+        if let first = paint.firstChild(named: "a:gradFill")?.firstChild(named: "a:gsLst")?.children(named: "a:gs").first,
+           let color = colour(in: first, theme: theme) { return .gradient(color) }
+        return .none
+    }
+
+    static func colour(in container: XML.Element, theme: Theme) -> Color? {
+        DrawingColor.resolve(in: container, theme: theme)?.color
+    }
+
 }
 
 // MARK: - The public questions
@@ -141,7 +147,14 @@ public extension Slide {
     /// package's first theme part. Needed because `a:schemeClr` means nothing
     /// without the `clrMap` of the master it is being read under.
     internal var resolvedTheme: Theme {
-        let master = inheritanceParts.count > 2 ? inheritanceParts[2] : nil
+        let chain = inheritanceParts
+        let master = chain.count > 2 ? chain[2] : nil
+        var colorMap: XML.Element?
+        for part in chain.prefix(2) {
+            guard let override = (try? part.dom())?.firstChild(named: "p:clrMapOvr") else { continue }
+            if let explicit = override.firstChild(named: "a:overrideClrMapping") { colorMap = explicit; break }
+            if override.firstChild(named: "a:masterClrMapping") != nil { break }
+        }
         let themePart: Part? = {
             if let master, let rel = master.rels.first(ofType: RelType.theme) {
                 return try? package.part(
@@ -149,7 +162,7 @@ public extension Slide {
             }
             return package.parts[PackURI("/ppt/theme/theme1.xml")]
         }()
-        return Theme(part: themePart ?? part, master: master)
+        return Theme(part: themePart ?? part, master: master, colorMap: colorMap)
     }
 }
 

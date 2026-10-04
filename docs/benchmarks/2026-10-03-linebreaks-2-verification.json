@@ -1,0 +1,46 @@
+{
+  "baselineRevision": "cf1b8a0cec2cf680383cb683603785aeaa0f2011",
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf4",
+  "files": {
+    "baseline-bench": "d78ac764a64f6d64ecabb13a926e7cd5d8871fb2ce9cd4b0fe4aa1eabf5f59b4",
+    "baseline-Rostrum.o": "4e54243c71c0fba80a251195c1224cbbf417f1bf694441e9a6637b52dcb9df75",
+    "baseline-extended-bench": "39455d6d17672947c0af314581aa4adaa43e548bee0900fbba1d9c7629a54782",
+    "candidate-bench": "dd46204c4d11f845441fee93d3ae8e63df92925c84989eed98bdf51104f0c323",
+    "candidate-Rostrum.o": "fd97fe63c25356abc0c12369cc4665cb9e4cd827debeb184b093e8a9f19db98e",
+    "candidate-extended-bench": "b3650bf529e322b15245084d8b550c01eeb261da94202930d787b095fff50894",
+    "baseline-build.log": "107de0f72d1874cb3b22ee7c030f2fe7a331078ba6179e2be6ed836c907bb226",
+    "candidate-build.log": "c09cf875f913a5d0bdd6a74de941d33bd22b17c80e933ee0eb03183dcf54ec61",
+    "profile.swift": "1163ba3575d8dd047269126a0f578dc9790accaad5b816e5b15ae87ff1481dd4",
+    "baseline-profile": "46ad9b408d2425100565fda93a5998337688a5158cf934f1e7be86963173a2d4",
+    "fallback-profile.txt": "e7ee2974385a67777e6d5ed000dd839802c04d5659629da6ad1bd180cbcaf5f5",
+    "registered-profile.txt": "b84969775759aae894cd61e57d9b61c96a603c3174415513dd2ba3fb65efe33a",
+    "fit-profile.txt": "ff66dbfca5d182abbf645935deac189e1b796f10efe55d462c44efbb83182ace",
+    "break-proof.swift": "8e2a6faa42341df4993a49afabed761ad51ffe34fbe811a9ee0d1627c15b8e49",
+    "baseline-break-proof": "d4bd769a908ad872683d50759812fb9bef23861b67872e85e4284603ce622e93",
+    "focused-tests.log": "6c9eae7d22736fc47c77f5b7b23a39ade5a6b0a3d78cb6a745d78094dabe58b9",
+    "full-tests.log": "30104bda4d0fed99123801f20bb55372c74ab255aaa86e87ff6878d250d05f21",
+    "identity.py": "07652a1cc69e83e3a27f1e0a77883c8c51f9331982b79b3e9e62df09430a4c86",
+    "identity.log": "0290b26174b82447bc2492aaf8158b87e6d5fbefe4dae0533f1103eb87188e38",
+    "paired.log": "9a50ed1a30e3c49d1cc59fcf68d9f1c609d3705fbc5307429bfb574d58b7d86d"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Fonts/TextShaper.swift": "e3545c95b1d100dfe967d5e4426e03d686860c11c56fe1f92b6b5832ee94305d",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+    "Tests/RostrumTests/LineBreakPerformanceTests.swift": "b33e17cb057101cf393b0c83e963293a3a7ddbf0623afb8e232ef00e13c010de",
+    "Tests/RostrumTests/Fixtures/Typography/ascii-breaks-baseline.json": "6fbf6bf062d9521af1eee45c3681ada1e601c07843c31247dfb5ca72bfe8c19f"
+  },
+  "buildCommand": "swift build -c release --product rostrum-bench --jobs 2",
+  "matchedDriverCompileCommand": "swiftc -swift-version 6 -O -I .build/perf4 Tools/rostrum-bench/main.swift .build/perf4/VARIANT-Rostrum.o -o .build/perf4/VARIANT-extended-bench",
+  "profileCommands": [
+    "swiftc -swift-version 6 -O -I .build/perf4 .build/perf4/profile.swift .build/perf4/baseline-Rostrum.o -o .build/perf4/baseline-profile",
+    ".build/perf4/baseline-profile MODE & sample PID 3 -file .build/perf4/MODE-profile.txt (MODE=fallback,registered,fit)"
+  ],
+  "frozenOracleCommand": "swiftc -swift-version 6 -O -I .build/perf4 .build/perf4/break-proof.swift .build/perf4/baseline-Rostrum.o -o .build/perf4/baseline-break-proof; .build/perf4/baseline-break-proof > Tests/RostrumTests/Fixtures/Typography/ascii-breaks-baseline.json",
+  "testCommand": "swift test --jobs 2",
+  "testResult": "1012 tests in 139 suites passed after 39.036 seconds",
+  "focusedTestResult": "12 tests in 3 suites passed after 0.049 seconds",
+  "pythonPptxResult": "116 saved outputs reopened and table cells traversed",
+  "note": "Profiles identify nested inclusive branches, not speed estimates. Baseline object and executables were retained before implementation. The matched report pins both binaries and the runner.",
+  "measurementQuietWindow": "Root explicitly granted the window after all worker checks completed, paused GUI/build/test and notified other workers to hold; released promptly after paired command exited 0."
+}

@@ -1,0 +1,262 @@
+{
+  "schema": 1,
+  "implementationHead": "0cdf66bdb61a56c884c9628b9edbd75eb3bfa5b6",
+  "productionCodeHead": "ea15048",
+  "baseline": "189250a",
+  "scope": "Local fidelity continuation; no universal fidelity or release certification",
+  "checks": [
+    {
+      "name": "Rostrum",
+      "command": "swift test --jobs 2",
+      "exitCode": 0,
+      "result": "973 tests / 132 suites; 37.941 s",
+      "log": {
+        "path": "/tmp/rostrum-fidelity-final-all-resources.log",
+        "sha256": "64943357908cd9dc1e660ddefacfa19a56335b46d5f5e8a0937135e0ba5c8c3a",
+        "bytes": 175506
+      },
+      "observedSummary": "\udbc4\udc5b  Test run with 973 tests in 132 suites passed after 37.941 seconds."
+    },
+    {
+      "name": "LecternCore",
+      "command": "swift test --package-path Lectern --jobs 2",
+      "exitCode": 0,
+      "result": "193 tests / 19 suites; 7.044 s",
+      "log": {
+        "path": "/tmp/rostrum-fidelity-final-lectern.log",
+        "sha256": "8fdc6a6fc84231a1bd46412587bbd27c2c0867c70f4463608683e0c4a71c21ee",
+        "bytes": 30643
+      },
+      "observedSummary": "\udbc4\udc5b  Test run with 193 tests in 19 suites passed after 7.044 seconds."
+    },
+    {
+      "name": "Headless AppTests",
+      "command": "python3 Lectern/scripts/test-inspection-headless.py --all-app-tests --output /tmp/rostrum-fidelity-final-app-headless.json",
+      "exitCode": 0,
+      "result": "59 reported / 15 suites; 9.034 s; one native WebKit test skipped",
+      "log": {
+        "path": "/tmp/rostrum-fidelity-final-app-headless.log",
+        "sha256": "25cce3b3c7346952a066e344b7e3b1146428f3649e29d18ea36f35c82b72e25b",
+        "bytes": 19708
+      },
+      "observedSummary": "\udbc4\udc5b  Test run with 59 tests in 15 suites passed after 9.034 seconds."
+    },
+    {
+      "name": "Hosted AppTests",
+      "command": "Lectern/scripts/test-app.sh -parallel-testing-enabled NO -resultBundlePath /tmp/rostrum-fidelity-final-hosted-20261002.xcresult",
+      "exitCode": 0,
+      "result": "59 passed / 15 suites; 12.534 s; zero failed or skipped",
+      "log": {
+        "path": "/tmp/rostrum-fidelity-final-hosted-20261002.log",
+        "sha256": "70d0393c4205f656c7c3c917ac362dad343c00d2500617bbe6b7811262c10191",
+        "bytes": 134711
+      },
+      "observedSummary": "\udbc4\udc5b Test run with 59 tests in 15 suites passed after 12.534 seconds."
+    },
+    {
+      "name": "iOS build",
+      "command": "cd Lectern && xcodebuild -project Lectern.xcodeproj -scheme Lectern-iOS -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath .build-xcode-ios CODE_SIGNING_ALLOWED=NO 'ARCHS=arm64 x86_64' ONLY_ACTIVE_ARCH=NO build",
+      "exitCode": 0,
+      "result": "Built arm64 and x86_64; independently checked with lipo",
+      "log": {
+        "path": "/tmp/rostrum-fidelity-ios.log",
+        "sha256": "ce49f7663c8f75bcd299117659c99a52923ab9f7d71cf96a3be0171d68e16dc8",
+        "bytes": 277050
+      }
+    },
+    {
+      "name": "Release build",
+      "command": "swift build -c release --jobs 2",
+      "exitCode": 0,
+      "result": "Passed, 46.87 s",
+      "log": {
+        "path": "/tmp/rostrum-fidelity-release-build.log",
+        "sha256": "2cf48787f8146485c3974d2006e6969eebd2deda64d73205cf019ab8d20204a5",
+        "bytes": 3141
+      }
+    },
+    {
+      "name": "Release preflight",
+      "command": "python3 Tools/conformance/release_gate.py",
+      "exitCode": 1,
+      "result": "All references present; six slide/notes candidate renders missing; native gate not launched",
+      "log": {
+        "path": "/tmp/rostrum-fidelity-release-gate.log",
+        "sha256": "0d241f6832de3f0022b444e04b5d0e02d9fc69eade82138fd5dab6d28afb2fbf",
+        "bytes": 537
+      }
+    }
+  ],
+  "sourceInputs": {
+    "Lectern/Package.swift": "69ab688a6fa795db2142797d48583df6a8a25dfade1cf2bf5b33e25c6075f7c3",
+    "Lectern/Tests/LecternCoreTests/FeaturePipelineTests.swift": "3dc771c4f599addf03e1fec013077f8f5a73e42ef1de56153feb0b6d2c82aa41",
+    "Package.swift": "442a87b94c93d41b10c1fee6846399397799ac321866e2e540aeff8bfa9638b2",
+    "Sources/Rostrum/Fonts/ArabicTextShaper.swift": "b453e382f35df84f347a0ea0ddfecaef1c00ddc72e18242c838ea70d3cf43018",
+    "Sources/Rostrum/Fonts/TextShaper.swift": "1e619ebd5bb1055d1599f35f95114b049e13d41050420074932ced0eb47d46c6",
+    "Sources/Rostrum/Presentation/DeckMerge.swift": "db23a96b478abffc6ba638d979987d17dcdde65c6dc44b060440401dbe082763",
+    "Sources/Rostrum/Presentation/NotesImportGeometry.swift": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666",
+    "Sources/Rostrum/Presentation/RenderDiagnostics.swift": "e89fd53f96c4e8c9f5c0b69c6f59f13ba19f48a2dbddb29940fb2dc389a2f1e7",
+    "Sources/Rostrum/Presentation/RenderTextAttributes.swift": "a464dbaa714dd78dbad73fd2d76e865f95bd2d68d9c86ac82a1b961c29b412dc",
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "e81d8a5e905aad8e6e6c3707519565a8f647fef43eb8d8981b48ffb612240aca",
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "6e307b1f7a26ae3afbd786d136ffddb6f9471901db91e2c62bba34098271e985",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "81cd14cbe5d7c139490ce5671a6bc7eec9c3a2e25e63454b104e2c3609ecb494",
+    "Tests/RostrumTests/KerningThresholdTests.swift": "8acc7d5dd58b180bcb14b1ea6d0e38902e12c4d19f87119166897eca0f486176",
+    "Tests/RostrumTests/NotesImportGeometryTests.swift": "c2025cfa49e77f657ec5f9431b78a377d6fe11c17951a25c3eee9cd18c2581c7",
+    "Tests/RostrumTests/TableBackgroundShadowTests.swift": "1e71fd0fc4b0da15320834fa3a5f195eaa237f768cde0519d519af82d91efec1",
+    "Tests/RostrumTests/TextShaperTests.swift": "af8b91c4cf8bf7f0d107ac3162768c35c7626a36cdce0ec8c70efc5cec9afad4",
+    "Tools/conformance/check_double_table_borders.py": "101d2712e87bfcc82a03362e620d1745c04a9666c68ee0d3845fb17d93d9b5d3",
+    "Tools/conformance/check_notes_geometry.py": "20991d7620d0c9c03b654418463204b5b82338e727dbac63501e8e220e185d7e",
+    "Tools/conformance/check_text_rendering.py": "d0e5a432c2efbf134559a728c63f39df1c5d751fce91270223c9a3c13c749a57",
+    "Tools/conformance/render_table_oracle.swift": "dd424d681d3809b9424dfe53192ca0672df1200c1765505bb8803714ac11f678",
+    "Tools/rostrum-bench/main.swift": "d2649fc044ec1e85fbfadfaa718a55fb3394ce61fb5889af4adfa9151c2e6436",
+    "Tools/rostrum-bench/run.py": "568a04f1c98db22db7c887c365748ad2b5bfa4603a38104a889fc2eec360c22d",
+    "Tools/typography/check_office_baselines.py": "5f3061d0546b4624f113a21fa8eb0d105896db0653d72d07f8d611a742b61272",
+    "Tools/typography/check_office_text_positions.py": "f70c1bafaf87492ad1a20e1f8498578529b1482f64a6d15597dfb0c2d101e99a"
+  },
+  "executables": [
+    {
+      "path": ".build/out/Products/Release/rostrum-bench",
+      "sha256": "f7f46b80252d3d3096885c0bbd7d99fe583e91eaeaf10d46806970fc8d7ff5cc",
+      "bytes": 4198400
+    },
+    {
+      "path": ".build/out/Products/Release/pptx-tool",
+      "sha256": "a2a15642ad603d54994f464fd48e483c48aa81b1d8309e31fd71db3a928274f0",
+      "bytes": 4146952
+    },
+    {
+      "path": ".build/notes-fidelity-20261002/render-table-oracle",
+      "sha256": "3f13e7ec67134ecb78c3be2937f1cb3a5c4a6bd11453eb2df8fcb24b312c1abf",
+      "bytes": 4153808
+    },
+    {
+      "path": "Lectern/.build-xcode/Build/Products/Debug/Lectern.app/Contents/MacOS/Lectern.debug.dylib",
+      "sha256": "4f7d26cabb5843f80a238a8cd2e3a263d7c8977c9ef599f4faa71fd151d74162",
+      "bytes": 5601824
+    },
+    {
+      "path": "Lectern/.build-xcode-ios/Build/Products/Debug-iphonesimulator/Lectern.app/Lectern",
+      "sha256": "bd0a52a2aaf25ecec70438581af6fdfcddadd0aed53f493766f737db240e7f6b",
+      "bytes": 72984
+    }
+  ],
+  "testReports": [
+    {
+      "path": "/tmp/rostrum-fidelity-final-app-headless.json",
+      "sha256": "0ff097a987eea3d824969cfed4063661e6adf0c5c353bb6ab0a9c40e623fb70e",
+      "bytes": 21213
+    },
+    {
+      "path": "/tmp/rostrum-fidelity-final-hosted-summary.json",
+      "sha256": "161fa886d335e9c81e2bf96d5805f5a4ad028f9975cb7f8cd9c9687ccdb8e8cd",
+      "bytes": 1074
+    }
+  ],
+  "rootOracleReports": [
+    {
+      "path": ".build/notes-fidelity-20261002/style-ltr.json",
+      "sha256": "1d42d14ccd72695a26e1de5c5c279a71cb1e637287009e4d4d9c17870b5d4817",
+      "bytes": 23922
+    },
+    {
+      "path": ".build/notes-fidelity-20261002/style-rtl.json",
+      "sha256": "0c05c12d280ffb21661d7018f131217dbade8b903cd539115709c4c1b7b6aab9",
+      "bytes": 23922
+    },
+    {
+      "path": ".build/notes-fidelity-20261002/text-positions.json",
+      "sha256": "b7d1c4e8a98274cde54cf15b0c75a3bda8e907ea225fb388b2a0904587592318",
+      "bytes": 111853
+    },
+    {
+      "path": ".build/notes-fidelity-20261002/v3-comparison/comparison.json",
+      "sha256": "12c05d5677afc02a6999672c2d2bb95c09e250e5af37f8e1a13bb5eaf870e082",
+      "bytes": 1784
+    }
+  ],
+  "oracleSummary": {
+    "styleLTR": "36/36",
+    "styleRTL": "36/36",
+    "typographyBaselines": {
+      "passed": true,
+      "lines": 46,
+      "maxDifferencePoints": 0.12001708984375625
+    },
+    "typographyPNG": "4/6 failures unchanged",
+    "v3": {
+      "differingPixels": 17314,
+      "fraction": 0.020611904761904762
+    },
+    "doubleBorders": "Worker evidence: 26/29 PNG and 29/29 PDF; not rerun by root in this continuation"
+  },
+  "notes": {
+    "report": {
+      "path": "docs/benchmarks/2026-10-02-notes-geometry.json",
+      "sha256": "0e4e8bcbc2a52f8ca633a68f3373a7e6d048fb246fbee9e4f7e69c51f90229e9",
+      "bytes": 4423
+    },
+    "manifest": {
+      "path": "Tests/RostrumTests/Fixtures/NotesGeometry/manifest.json",
+      "sha256": "30eeddb1a6365e58ee7b4c97825aa72549da2b58f565d7a2b901899e6219af1a",
+      "bytes": 2533
+    },
+    "freshGenerationCommand": "ROSTRUM_NOTES_ORACLE_OUTPUT=\"$PWD/.build/notes-fidelity-20261002/generated\" ROSTRUM_NOTES_TYPE_ORACLE_OUTPUT=\"$PWD/.build/notes-fidelity-20261002/generated-types\" swift test --jobs 2 --filter NotesImportGeometryTests",
+    "checkCommand": "python3 Tools/conformance/check_notes_geometry.py --candidates .build/notes-fidelity-20261002/generated --type-candidates .build/notes-fidelity-20261002/generated-types --output docs/benchmarks/2026-10-02-notes-geometry.json",
+    "exitCode": 0,
+    "negativeControl": "Appending one byte to generated geometry-source.pptx exits 1 with candidate hash mismatch and writes no success report",
+    "nativeObservation": "PowerPoint UI via cua_repl: three original decks open/save/reopen without repair; imported PDF exported again after native save/reopen; four PDF page pairs are exact"
+  },
+  "benchmark": {
+    "report": {
+      "path": "docs/benchmarks/2026-10-02-fidelity-macos.json",
+      "sha256": "a99331a542eb9da3bf6cbea6d65af23946957747082c7720618e8db907140617",
+      "bytes": 75202
+    },
+    "log": {
+      "path": "/tmp/rostrum-fidelity-benchmark.log",
+      "sha256": "ddd69012fefcefa9e1830a579ad7b09b8ef4ca5fd6667be0dc6043e667db3386",
+      "bytes": 19491
+    },
+    "command": "ROSTRUM_BENCH_FONT='/System/Library/Fonts/Supplemental/Arial.ttf' python3 Tools/rostrum-bench/run.py --runs 5 --warmups 1 --binary .build/out/Products/Release/rostrum-bench --output docs/benchmarks/2026-10-02-fidelity-macos.json",
+    "exitCode": 0,
+    "concurrentBuildOrTestJobs": false,
+    "stableAndPriorMatchingOutputs": 12
+  },
+  "linux": {
+    "status": "not executed",
+    "attempt": "docker desktop start --timeout 45",
+    "exitCode": 1,
+    "result": "Docker Desktop is still starting: context deadline exceeded",
+    "followup": "docker info could not connect; native Docker inspection timed out; no runtime/performance claim"
+  },
+  "reviews": [
+    {
+      "scope": "table shadow",
+      "executor": "gpt-6-astra",
+      "reviewer": "gpt-6.1-sol",
+      "verdict": "APPROVE",
+      "execution": "source and receipt audit"
+    },
+    {
+      "scope": "kerning",
+      "executor": "gpt-6-astra",
+      "reviewer": "gpt-6.1-sol",
+      "verdict": "APPROVE",
+      "execution": "15 focused tests using existing build plus source review"
+    },
+    {
+      "scope": "notes geometry",
+      "executor": "gpt-6.1-sol",
+      "reviewer": "gpt-6-astra",
+      "verdict": "APPROVE after reproduced inheritance fix",
+      "execution": "source/test review; root/implementer execution"
+    },
+    {
+      "scope": "Lectern regression and notes checker",
+      "executor": "gpt-6.1-sol and root inherited/unknown",
+      "reviewer": "gpt-6-astra",
+      "verdict": "APPROVE",
+      "execution": "read-only source/provenance review"
+    }
+  ]
+}

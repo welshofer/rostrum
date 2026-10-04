@@ -1,0 +1,116 @@
+{
+  "channelTolerance": 16,
+  "maximumDifferenceFraction": 0.005,
+  "rasterizer": "resvg-py 0.5.0",
+  "imageReader": "Pillow 12.3.0",
+  "fontHashes": [
+    "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+    "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+    "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+    "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
+  ],
+  "comparisons": [
+    {
+      "slide": 1,
+      "width": 1200,
+      "height": 700,
+      "referenceSHA256": "921217595741e25c1e6392e989371214372214c7bd293c91521d8ebb48730ea4",
+      "beforeSVG": "08e8d189c2d40df0267aac8a0f1179df40d3d3301cfefb87bd1b491ab0bf89c2",
+      "afterSVG": "0afcf1ca7b3d41ac1e39606fbe562beda6e5bcb726ce187964a267a1a0b867bf",
+      "before": {
+        "differingPixels": 6349,
+        "fraction": 0.007558333333333334
+      },
+      "after": {
+        "differingPixels": 5068,
+        "fraction": 0.006033333333333333
+      },
+      "passed": false
+    },
+    {
+      "slide": 2,
+      "width": 1200,
+      "height": 700,
+      "referenceSHA256": "9cfc00e56ccb59fe5d83d3bdf296bcef152133fa9760d6a102fbe6571bcce07e",
+      "beforeSVG": "ba7fc86e29fd0fb9109cd228538d1ffc0e67006db347ac418f79563d6d94ac68",
+      "afterSVG": "544fa752a55eb268dbd1ed9d9741cd764a9e4c1bfc2ad47cc206f5ecfbdeb349",
+      "before": {
+        "differingPixels": 14135,
+        "fraction": 0.01682738095238095
+      },
+      "after": {
+        "differingPixels": 10151,
+        "fraction": 0.012084523809523809
+      },
+      "passed": false
+    },
+    {
+      "slide": 3,
+      "width": 1200,
+      "height": 700,
+      "referenceSHA256": "925f3c6c14fe0f0e5d13637ffec14a17cdceaf39641474697d515f5924ad3d6d",
+      "beforeSVG": "a1d6cfba0c5030404ea87dd08e5fa7080ca1e0a975ec536ca5a93c18e7b4501a",
+      "afterSVG": "febed32fc4f0a20f2a419cf70f5cde64051a6ba95aa3f8febb4264682538b4ec",
+      "before": {
+        "differingPixels": 7468,
+        "fraction": 0.00889047619047619
+      },
+      "after": {
+        "differingPixels": 5679,
+        "fraction": 0.006760714285714286
+      },
+      "passed": false
+    },
+    {
+      "slide": 1,
+      "width": 2400,
+      "height": 1400,
+      "referenceSHA256": "aa840b371adedad77307176a00db76b3380905b38369fa31d6fd45482126ad51",
+      "beforeSVG": "08e8d189c2d40df0267aac8a0f1179df40d3d3301cfefb87bd1b491ab0bf89c2",
+      "afterSVG": "0afcf1ca7b3d41ac1e39606fbe562beda6e5bcb726ce187964a267a1a0b867bf",
+      "before": {
+        "differingPixels": 20051,
+        "fraction": 0.005967559523809523
+      },
+      "after": {
+        "differingPixels": 12601,
+        "fraction": 0.0037502976190476192
+      },
+      "passed": true
+    },
+    {
+      "slide": 2,
+      "width": 2400,
+      "height": 1400,
+      "referenceSHA256": "4e510498ec5c97a2f5b316c5c33c3334cee0bd06736effba293b18113b2bfbd6",
+      "beforeSVG": "ba7fc86e29fd0fb9109cd228538d1ffc0e67006db347ac418f79563d6d94ac68",
+      "afterSVG": "544fa752a55eb268dbd1ed9d9741cd764a9e4c1bfc2ad47cc206f5ecfbdeb349",
+      "before": {
+        "differingPixels": 45003,
+        "fraction": 0.01339375
+      },
+      "after": {
+        "differingPixels": 24844,
+        "fraction": 0.007394047619047619
+      },
+      "passed": false
+    },
+    {
+      "slide": 3,
+      "width": 2400,
+      "height": 1400,
+      "referenceSHA256": "41d8ebb6422069751258aac6120683ea2f11847ad089c9dc4c560fd66284f4ab",
+      "beforeSVG": "a1d6cfba0c5030404ea87dd08e5fa7080ca1e0a975ec536ca5a93c18e7b4501a",
+      "afterSVG": "febed32fc4f0a20f2a419cf70f5cde64051a6ba95aa3f8febb4264682538b4ec",
+      "before": {
+        "differingPixels": 23763,
+        "fraction": 0.007072321428571429
+      },
+      "after": {
+        "differingPixels": 14584,
+        "fraction": 0.004340476190476191
+      },
+      "passed": true
+    }
+  ]
+}

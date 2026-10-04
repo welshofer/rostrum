@@ -183,32 +183,39 @@ extension TextFrame {
         in frame: Rect, using metrics: FontMetrics,
         defaultPointSize: Double = 18, lineSpacing: Double = 1.0
     ) -> Autofit {
-        let bodyPr = txBody.getOrAddChild("a:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
-        // Bounded: an inset read from an opened deck is subtracted from the
-        // frame below, and Int subtraction traps on underflow.
-        func inset(_ name: String, _ fallback: Int) -> Int {
-            bodyPr.coordinate(name) ?? fallback
-        }
-        let insets = Self.defaultInsets
-        // The frame is file-supplied too when this is reached via
-        // `shape.fitText()` on an opened deck.
-        let bound = OOXMLBounds.coordinate
-        let frameWidth = bound.contains(frame.width.rawValue) ? frame.width.rawValue : 0
-        let frameHeight = bound.contains(frame.height.rawValue) ? frame.height.rawValue : 0
-        let contentWidth = frameWidth
-            - inset("lIns", insets.left) - inset("rIns", insets.right)
-        let contentHeight = frameHeight
-            - inset("tIns", insets.top) - inset("bIns", insets.bottom)
+        fitRichText(in: frame, fonts: nil, fallbackMetrics: metrics,
+                    defaultPointSize: defaultPointSize, lineSpacing: lineSpacing)
+    }
 
-        let measured = paragraphs.map { paragraph in
-            (text: paragraph.runs.map(\.text).joined(),
-             pointSize: paragraph.runs.compactMap(\.fontSize).max() ?? defaultPointSize)
+    /// Fit mixed families/styles with the same explicit registry used by SVG.
+    /// Supply the same theme and inherited paragraph styles to resolve placeholders.
+    @discardableResult
+    public func fitText(in frame: Rect, fonts: FontLibrary, theme: Theme? = nil,
+                        inheritedStyles: [XML.Element] = [], defaultPointSize: Double = 18,
+                        lineSpacing: Double = 1) -> Autofit {
+        fitRichText(in: frame, fonts: fonts, fallbackMetrics: nil, theme: theme,
+                    inheritedStyles: inheritedStyles, defaultPointSize: defaultPointSize,
+                    lineSpacing: lineSpacing)
+    }
+
+    fileprivate func fitRichText(in frame: Rect, fonts: FontLibrary?, fallbackMetrics: FontMetrics?,
+                             theme: Theme? = nil, inheritedStyles: [XML.Element] = [],
+                             defaultPointSize: Double, lineSpacing: Double) -> Autofit {
+        let bound = OOXMLBounds.coordinate
+        let width = Double(bound.contains(frame.width.rawValue) ? frame.width.rawValue : 0) / Double(EMU.perPoint)
+        let height = Double(bound.contains(frame.height.rawValue) ? frame.height.rawValue : 0) / Double(EMU.perPoint)
+        var result = Autofit(fontScale: 25, lineSpacingReduction: 20, fits: false)
+        for step in TextMeasurer.autofitLadder {
+            let layout = RichTextLayout(textBody: txBody, width: width, height: height,
+                fonts: fonts, fallbackMetrics: fallbackMetrics, theme: theme,
+                inheritedStyles: inheritedStyles, defaultPointSize: defaultPointSize,
+                lineSpacing: lineSpacing, fontScale: step.scale, lineSpacingReduction: step.reduction, maxLines: 64)
+            if layout.fits {
+                result = Autofit(fontScale: step.scale, lineSpacingReduction: step.reduction, fits: true)
+                break
+            }
         }
-        let result = TextMeasurer(metrics).autofit(
-            paragraphs: measured.isEmpty ? [(text: "", pointSize: defaultPointSize)] : measured,
-            width: Double(Swift.max(0, contentWidth)) / Double(EMU.perPoint),
-            height: Double(Swift.max(0, contentHeight)) / Double(EMU.perPoint),
-            lineSpacing: lineSpacing)
+        let bodyPr = txBody.getOrAddChild("a:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
         apply(result, to: bodyPr)
         return result
     }
@@ -229,6 +236,25 @@ extension TextFrame {
 }
 
 extension Shape {
+    /// Fit with the deck's explicit face registry and resolved theme context.
+    @discardableResult
+    public func fitText(fonts: FontLibrary, theme: Theme? = nil,
+                        inheritedStyles: [XML.Element] = [], defaultPointSize: Double = 18,
+                        lineSpacing: Double = 1) -> Autofit? {
+        let styles = inheritedStyles.isEmpty ? package.map {
+            RichTextLayout.inheritedStyles(for: element, owner: part, package: $0)
+        } ?? [] : inheritedStyles
+        var resolvedTheme = theme
+        if resolvedTheme == nil, let package,
+           let layout = try? part.related(by: RelType.slideLayout, in: package),
+           let master = try? layout.related(by: RelType.slideMaster, in: package),
+           let themePart = try? master.related(by: RelType.theme, in: package) {
+            resolvedTheme = Theme(part: themePart, master: master)
+        }
+        return textFrame?.fitText(in: frame, fonts: fonts, theme: resolvedTheme,
+            inheritedStyles: styles, defaultPointSize: defaultPointSize, lineSpacing: lineSpacing)
+    }
+
     /// Fit this shape's text to its own frame using real font metrics: the
     /// one-call form of `TextFrame.fitText(in:using:)`. Returns nil when the
     /// shape has no text body.
@@ -237,7 +263,8 @@ extension Shape {
         using metrics: FontMetrics,
         defaultPointSize: Double = 18, lineSpacing: Double = 1.0
     ) -> Autofit? {
-        textFrame?.fitText(in: frame, using: metrics,
-                           defaultPointSize: defaultPointSize, lineSpacing: lineSpacing)
+        let styles = package.map { RichTextLayout.inheritedStyles(for: element, owner: part, package: $0) } ?? []
+        return textFrame?.fitRichText(in: frame, fonts: nil, fallbackMetrics: metrics,
+            inheritedStyles: styles, defaultPointSize: defaultPointSize, lineSpacing: lineSpacing)
     }
 }

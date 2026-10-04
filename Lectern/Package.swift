@@ -24,7 +24,8 @@ let package = Package(
         .target(
             name: "LecternCore",
             dependencies: [.product(name: "Rostrum", package: "Rostrum"),
-                           .product(name: "RostrumLayout", package: "Rostrum")]),
+                           .product(name: "RostrumLayout", package: "Rostrum")],
+            resources: [.copy("Resources/LibraryLab")]),
         .executableTarget(name: "CompositionRegression", dependencies: ["LecternCore"], path: "Tools/CompositionRegression", exclude: ["README.md", "compare_exports.py", "test_compare_exports.py"], resources: [.copy("Resources")]),
         .testTarget(
             name: "LecternCoreTests",

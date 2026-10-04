@@ -1,0 +1,219 @@
+{
+  "schema": 1,
+  "date": "2026-10-02",
+  "baselineRevision": "bc9b2f6",
+  "implementationRevision": "d5c4beb",
+  "evidenceToolRevision": "94ab8bfbf4b7913486449f2f18573e7af76f2520",
+  "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "changedInputsSHA256": {
+    "Lectern/App/InspectorView.swift": "d8399cafa890852ad7d2f235c42e75a4f6257318398a9d1f328f2f33d1786713",
+    "Lectern/App/NotesPagePreviewModel.swift": "ebaa8ce8f6b1fd39ad44f91c7f61be3ccefd2760787d053b9cf593259d5363e0",
+    "Lectern/App/NotesPagePreviewView.swift": "d890227e2ac37a1a87fe65a98d68f0ab83d63b5ca86821aafae1dfda6b2d3d5f",
+    "Lectern/App/SlidePreview.swift": "3d4780e678c1a204a478bbbcc8c9e15973917c3e52bc549f5b49c277eaa9cf05",
+    "Lectern/App/SlideRasterizer.swift": "ddab5cb8d703ba414348120689c436e55c51bb21566d0a4d404b37b5e9cb27e8",
+    "Lectern/AppTests/Fixtures/notes-geometry-provenance.json": "abf3c32a4824c8667a73b0700cec3eb2961549cf79ce07f916e8321de85063df",
+    "Lectern/AppTests/Fixtures/notes-geometry.pptx": "f984bd9e651541626e835e029b3f310513aee150957a91b62bf1f2ffc310fe3b",
+    "Lectern/AppTests/NotesPagePreviewTests.swift": "89c35012d4b9543fbf6fcd8c07fc32fc6eebfc5b0360faa3308fd8467bd0c4f0",
+    "Lectern/AppTests/SlideRasterizerTests.swift": "0eb402590965fccb0fe1c24faf190242fbab4b5157c87a21de28156548d6b9ba",
+    "Lectern/Sources/LecternCore/Inspection/DeckDetail.swift": "c45bd5ee121ccb65d5939b83fa3e1fcc089630e19ee263b14aa67254bc716ce7",
+    "Lectern/Sources/LecternCore/Inspection/DeckInspection.swift": "11541cb9d7884bf436d6fef701bb6bacd9ddfb107418421dde9fc200fe30e286",
+    "Lectern/Sources/LecternCore/Inspection/InspectionFonts.swift": "f736b49306a66cfd4e63c046589a20462903e8a173504aee01ed5b608266d779",
+    "Lectern/Sources/LecternCore/Inspection/NotesPageInspection.swift": "ad5dbdbcdafd50874150da7c041db16ceb8ef4e494385a7eb039d7f5bfa99308",
+    "Lectern/Tests/LecternCoreTests/Fixtures/NotesPage/notes-geometry-provenance.json": "abf3c32a4824c8667a73b0700cec3eb2961549cf79ce07f916e8321de85063df",
+    "Lectern/Tests/LecternCoreTests/Fixtures/NotesPage/notes-geometry.pptx": "f984bd9e651541626e835e029b3f310513aee150957a91b62bf1f2ffc310fe3b",
+    "Lectern/Tests/LecternCoreTests/NotesPageInspectionTests.swift": "7f0859881642f8d6aa7e3b66dfc0e5544cc1afe153b91e606e8cc7ce5bc7b6d0",
+    "Sources/Rostrum/Fonts/ArabicLayoutTables.swift": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec",
+    "Sources/Rostrum/Fonts/ArabicTextShaper.swift": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a",
+    "Sources/Rostrum/Fonts/FontLayoutTables.swift": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262",
+    "Sources/Rostrum/Fonts/MarkPositioning.swift": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903",
+    "Sources/Rostrum/Fonts/TextShaper.swift": "8f1a1a4522b4633f1102809b57ea8a315dfbbea5c421fb81ce992438b4ab31b9",
+    "Sources/Rostrum/Presentation/NotesPageRenderer.swift": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b",
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "6fa5c7b36811dbc680e4c9da4edbec369523a06e196c3e5998e86efdaa8d5578",
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "23db5f9e66dbcf29972cda8eb012aa10d52312a3ead5be310199b81cae935b00",
+    "Tests/RostrumTests/ArabicShapingTests.swift": "a62a564d7846863cd6bd7753b1c6ed6a1eef5b067672a29026fbd751baf9fab6",
+    "Tests/RostrumTests/Fixtures/Typography/MarkAttachments.ttf": "07c11a0555fe32015b1af4701570a5ca0db5e3ace2d760701c7199e66c80def9",
+    "Tests/RostrumTests/Fixtures/Typography/MarkComposition.ttf": "7b2647c3d174ad78b1e4e270d7382326802d72425645096123cd2c7fd1ca3be4",
+    "Tests/RostrumTests/Fixtures/Typography/README.md": "e644ae4b085019639f24419104e0f3d35241cc5a2e037f1331f3974390136c71",
+    "Tests/RostrumTests/Fixtures/Typography/arabic-harfbuzz-14.4.0.json": "ef8ff241cf09869d4e870653e9b486068d7329bb9545e586cfc97b8d0b921333",
+    "Tests/RostrumTests/Fixtures/Typography/harfbuzz-14.4.0.json": "0b329459a413aa2f1edc7680feb59e1a39dc4852c20de75036fc3cee97671563",
+    "Tests/RostrumTests/Fixtures/Typography/marks-harfbuzz-14.4.0.json": "1629dc7c0b66d7898660fe7595ca80195dd49cee1f0a46746ed43e1877534121",
+    "Tests/RostrumTests/MarkPositioningTests.swift": "2beee493873b22ab783eff73f6dd8d7d627db85e19344a217048ae3ec99c40a4",
+    "Tests/RostrumTests/NotesPageRendererTests.swift": "376d13a697cedb782c74f7d4e3378fecb7512b4afa63fa613638a8866a33f1fd",
+    "Tests/RostrumTests/RichTextLayoutTests.swift": "caa0cbaeca39479220c1bd959b247db3e9d6b6b94a1f1b948159d82222f92067",
+    "Tests/RostrumTests/TextShaperTests.swift": "043cae6b70763e8d3be45ea2195c8e0e96e3a3256e4a890aef3275319f49a5dc",
+    "Tools/conformance/check_notes_render.py": "788efccc695eb29825d8cfdce47b532b8721c63d4e17953d32667d6fba0eee27",
+    "Tools/pptx-tool/main.swift": "04fb5f137804ed8ac4e7b6dfcca8bc909675b9b54469815b3b8c63419f655a68",
+    "Tools/rostrum-bench/main.swift": "3bda776d7c9e5323b4f5aa7c5722abddf6402869ae09f319fe94c0581a71ed00",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+    "Tools/typography/MARK-POSITIONING.md": "9b896f8d575b415b8a5714d31131df7bc346feac913df315e55bfc64e5ef362d",
+    "Tools/typography/make_arabic_oracle.py": "d50961b700c90d3868c8a9d17a95e5f105e1d14e268c99c9146af5e2b5625e39",
+    "Tools/typography/make_mark_oracle.py": "0460f86197aad11c2e52e3961d9d136f753779473937e12606502e288d2a73d3"
+  },
+  "logs": {
+    "library": {
+      "path": "/tmp/rostrum-ever-forward-verified-library.log",
+      "sha256": "e40d7d189f5139b479c6ff1635032df3669a9204911c615ff1e6a8cc7e2363c7"
+    },
+    "lecternCore": {
+      "path": "/tmp/rostrum-ever-forward-verified-core.log",
+      "sha256": "19be62d84068c690c67f26e9edbe08726ce08a17c2952deafad37de5c24dabb7"
+    },
+    "headless": {
+      "path": "/tmp/rostrum-ever-forward-verified-headless.log",
+      "sha256": "71573807591e51c646dde4c7609f0102a14402a016282a63c1a33c5ef38692f0"
+    },
+    "headlessReceipt": {
+      "path": "/tmp/rostrum-ever-forward-verified-headless.json",
+      "sha256": "03fafba9d970220356c35b8689efb2b2f50f8cf3db9c1dde5dfaf6a0fbd28f5e"
+    },
+    "hosted": {
+      "path": "/tmp/rostrum-ever-forward-verified-hosted.log",
+      "sha256": "faba4a595ac1c89775828415bf84e647a79098414a4fe2c0d41f67b0f3ec09f7"
+    },
+    "hostedSummary": {
+      "path": "/tmp/rostrum-ever-forward-verified-hosted-summary.json",
+      "sha256": "85dc895bcaa537a05d8bb938361a6abec08073b25d80f99e149916e7a3d38cf8"
+    },
+    "ios": {
+      "path": "/tmp/rostrum-ever-forward-verified-ios.log",
+      "sha256": "6ac63cc58bea7bc39bf35a66ead4124f43f60676e213d322e9d395a8383c5170"
+    },
+    "release": {
+      "path": "/tmp/rostrum-ever-forward-verified-release.log",
+      "sha256": "aaae904082bd6db11677be7e64480121f74fd852f418c36df2c84590ec94fe00"
+    },
+    "notesOracle": {
+      "path": "/tmp/rostrum-ever-forward-notes-oracle.log",
+      "sha256": "26a8b3a43f541b9c84d8f7da6f4a958a70f5ee62324539464baa0514c152a4f1"
+    },
+    "notesPreservation": {
+      "path": "/tmp/rostrum-ever-forward-notes-preservation.log",
+      "sha256": "2b4303bb1d3e61b967a2b34d22d44a8a8e3e36b7ba6ca511528f5e3ce0dd8b29"
+    },
+    "notesPreservationReceipt": {
+      "path": "/tmp/rostrum-ever-forward-notes-preservation.json",
+      "sha256": "e356bb6ca77163996149dc9868f23e5098224ba746907fa2f7a50c79ce6c0230"
+    },
+    "semanticPreflight": {
+      "path": "/tmp/rostrum-ever-forward-semantic.log",
+      "sha256": "c618bb62c681dcdcb59061821a93cd51d5a935418bad658322d8827008272533"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/welshofer/Developer/rostrum/.build/out/Products/Release/pptx-tool",
+      "sha256": "e6935d74735307bef64c162754d36954be87e3f50b6d40475e443e1801a955d0"
+    },
+    {
+      "path": "/Users/welshofer/Developer/rostrum/.build/out/Products/Release/rostrum-bench",
+      "sha256": "b4c8f455f0af1e9e44f9f01a8381455400b1bc15f0531cbae951eb32f6b5d071"
+    },
+    {
+      "path": "/Users/welshofer/Developer/rostrum/Lectern/.build-xcode/Build/Products/Debug/Lectern.app/Contents/MacOS/Lectern.debug.dylib",
+      "sha256": "5f95c870a9fed6ea26319eefc328c527878548434a22711222d79c38cf95fa41"
+    },
+    {
+      "path": "/Users/welshofer/Developer/rostrum/Lectern/.build-xcode-ios/Build/Products/Debug-iphonesimulator/Lectern.app/Lectern",
+      "sha256": "bd0a52a2aaf25ecec70438581af6fdfcddadd0aed53f493766f737db240e7f6b"
+    }
+  ],
+  "results": {
+    "library": {
+      "tests": 993,
+      "suites": 134,
+      "seconds": 28.269,
+      "exitCode": 0
+    },
+    "lecternCore": {
+      "tests": 198,
+      "suites": 20,
+      "seconds": 14.582,
+      "exitCode": 0
+    },
+    "headlessApp": {
+      "reportedTests": 65,
+      "suites": 16,
+      "seconds": 16.47,
+      "nativeTestsSkipped": 3,
+      "exitCode": 0
+    },
+    "hostedApp": {
+      "tests": 65,
+      "suites": 16,
+      "seconds": 23.66,
+      "skipped": 0,
+      "failed": 0,
+      "exitCode": 0
+    },
+    "iosBuild": {
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "exitCode": 0
+    },
+    "releaseBuild": {
+      "seconds": 49.42,
+      "exitCode": 0
+    },
+    "semanticPreflight": {
+      "exitCode": 0,
+      "releaseCertification": false
+    },
+    "notesOracle": {
+      "exitCode": 1,
+      "decks": 10,
+      "pages": 13,
+      "exactSourceImportPairs": 4,
+      "nativeCases": 7,
+      "nativeCasesFailed": 7
+    },
+    "notesPreservation": {
+      "exitCode": 0,
+      "semanticPairs": 4,
+      "nativePixelIdenticalPairs": 4
+    }
+  },
+  "reports": {
+    "docs/benchmarks/2026-10-02-notes-rendering.json": "27120d0fde9ebd4520f6db4c995983ded725fd443debdd1b48839311eb25a4a6",
+    "docs/benchmarks/2026-10-02-layout-paired-macos.json": "077b8a2822b7760efa4f621f1df611560359f47fbc5edc7c8c0a720194ab8b8e",
+    "docs/benchmarks/2026-10-02-layout-output-identity.json": "6e81ea73578c9be00a3992f7dab8553f9d5f8c2e31415d9ae80790ad4419d26c"
+  },
+  "nativeUI": {
+    "appImplementationRevision": "c88aea4",
+    "fixtureSHA256": "f984bd9e651541626e835e029b3f310513aee150957a91b62bf1f2ffc310fe3b",
+    "method": "CUA native accessibility and screenshot",
+    "verified": [
+      "Normal rebuilt app launched",
+      "Inspect Deck file picker opened owned fixture",
+      "Notes sheet showed portrait background, thumbnail and wrapped notes",
+      "Done returned to inspector",
+      "Reopened same notes sheet",
+      "Original fixture hash unchanged"
+    ],
+    "settingsChanged": false
+  },
+  "review": {
+    "requestedModels": {
+      "layoutImplementation": "gpt-6.1-sol",
+      "notesAndMarksImplementation": "gpt-6-astra",
+      "notesAndMarksReview": "gpt-6.1-sol",
+      "layoutAndLecternReview": "gpt-6-astra"
+    },
+    "runtimeModelAttestation": "not independently available",
+    "layoutSourceCommit": "3f2c4175821f664becb2d5b0856c286a05264d2d",
+    "notesReviewedSourceCommit": "36e7146634745801e87736cbb39435f7cab81a9a",
+    "marksReviewedSourceCommit": "7d86e085b53061c7531026bebe7c03e67f386509",
+    "lecternReviewedCommit": "c88aea4",
+    "allFinalVerdicts": "approve"
+  },
+  "limitations": [
+    "Native notes pixel gates fail unchanged threshold",
+    "Earlier table/typography/double-border absolute PNG gates remain open; not rerun in this pass",
+    "Linux daemon unavailable; no Linux execution claim",
+    "iOS build only; no iOS runtime or performance claim",
+    "Matched layout benchmark isolates layout change before notes/marks integration",
+    "Animation excluded; no push, PR, merge, release or deployment"
+  ]
+}

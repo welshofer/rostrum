@@ -92,6 +92,12 @@ public extension Presentation {
             throw RostrumError.packageInvalid("The template has no usable masters or layouts.")
         }
         let originalSlides = Set(deck.slides.map { $0.part.uri })
+        var sourceClosure = Set<PackURI>(), sourcePending = Array(originalSlides)
+        while let uri = sourcePending.popLast() {
+            guard sourceClosure.insert(uri).inserted, let part = deck.package.parts[uri] else { continue }
+            sourcePending += part.rels.items.filter { !$0.isExternal }.map { PackURI.resolve(target: $0.target, relativeTo: uri.baseURI) }
+        }
+        let independentRoots = Set(deck.package.parts.keys).subtracting(sourceClosure)
         // Remove slide-based navigation belonging to the starter document.
         let dom = try deck.presentationPart.dom()
         dom.removeChildren(named: "p:custShowLst")
@@ -108,6 +114,7 @@ public extension Presentation {
         var pending = deck.package.rels.items.filter { !$0.isExternal }.map {
             PackURI.resolve(target: $0.target, relativeTo: "/")
         }
+        pending += independentRoots.filter { deck.package.parts[$0] != nil }
         while let uri = pending.popLast() {
             guard seen.insert(uri).inserted else { continue }
             guard let part = deck.package.parts[uri] else {

@@ -1,0 +1,3698 @@
+{
+  "acceptance": "No rendering equivalence, visual conformance, or speedup is asserted",
+  "after": {
+    "binaries": {
+      "baseline": {
+        "bytes": 2959024,
+        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "sha256": "0d576500422a2528dacb909bdb47e93c598c95d9a6f9e1f85104e8a614681bd7"
+      },
+      "candidate": {
+        "bytes": 3564832,
+        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "sha256": "a30b5aa14c6af30389e2dea9f768a47d75c7ed41698b0ed3828ea7f0b69847e3"
+      }
+    },
+    "font": {
+      "bytes": 773236,
+      "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+    },
+    "runner": {
+      "bytes": 16857,
+      "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
+      "sha256": "b7358ce2ca75c67834dfedbeb500a4e3e6ef92fa3364583eaf17722204ea5dc5"
+    },
+    "sources": {
+      "baseline": {
+        "files": {
+          "Package.swift": {
+            "bytes": 1578,
+            "sha256": "442a87b94c93d41b10c1fee6846399397799ac321866e2e540aeff8bfa9638b2"
+          },
+          "Sources/Rostrum/Charts/ChartData.swift": {
+            "bytes": 10882,
+            "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+          },
+          "Sources/Rostrum/Charts/ChartReader.swift": {
+            "bytes": 20245,
+            "sha256": "f2a4b078183745550f11ad74efecfa413a87394b3f07765d3cf9247c45dff981"
+          },
+          "Sources/Rostrum/Charts/ChartSeriesEditing.swift": {
+            "bytes": 24976,
+            "sha256": "984519e8fac02b9879700cc963e90297906e40ff44035b3b5fdda4b9e32dee8e"
+          },
+          "Sources/Rostrum/Charts/ChartWorkbook.swift": {
+            "bytes": 20515,
+            "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+          },
+          "Sources/Rostrum/Charts/ChartXML.swift": {
+            "bytes": 36192,
+            "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+          },
+          "Sources/Rostrum/Charts/Charts.swift": {
+            "bytes": 6673,
+            "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+          },
+          "Sources/Rostrum/Charts/ComboChartData.swift": {
+            "bytes": 6367,
+            "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+          },
+          "Sources/Rostrum/Core/RostrumError.swift": {
+            "bytes": 2638,
+            "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+          },
+          "Sources/Rostrum/Core/Units.swift": {
+            "bytes": 4400,
+            "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+          },
+          "Sources/Rostrum/Drawing/ColorMath.swift": {
+            "bytes": 6973,
+            "sha256": "29430658ae436710e24cd971a79698d207bd8cfef051b3bd4f5acea07f6156f9"
+          },
+          "Sources/Rostrum/Drawing/Drawing.swift": {
+            "bytes": 9190,
+            "sha256": "4c0071c020483df10d2a085f45b7c6e90047b81f17f4964dcc3c89d3a8c2533e"
+          },
+          "Sources/Rostrum/Drawing/DrawingColor.swift": {
+            "bytes": 2644,
+            "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+          },
+          "Sources/Rostrum/Drawing/Geometry.swift": {
+            "bytes": 9764,
+            "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+          },
+          "Sources/Rostrum/Drawing/ImageSniffer.swift": {
+            "bytes": 4980,
+            "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+          },
+          "Sources/Rostrum/Fonts/FontFaceKey.swift": {
+            "bytes": 411,
+            "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+          },
+          "Sources/Rostrum/Fonts/FontLayoutTables.swift": {
+            "bytes": 13970,
+            "sha256": "25f90d83929b145e984401575892575161ff5bce7ea6f8fafbf67c6f260efc75"
+          },
+          "Sources/Rostrum/Fonts/FontLibrary.swift": {
+            "bytes": 3903,
+            "sha256": "8476bb030e432423f16c0edb286f38f04dbae30a0ecd20c378244acc9abe43eb"
+          },
+          "Sources/Rostrum/Fonts/FontMetrics.swift": {
+            "bytes": 19275,
+            "sha256": "8605f94db482722aaa151ff621f4b92a9af752f9d3ad394e9acb5db2f81235b3"
+          },
+          "Sources/Rostrum/Fonts/ShapedGlyphRun.swift": {
+            "bytes": 1790,
+            "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+          },
+          "Sources/Rostrum/Fonts/TextMeasurer.swift": {
+            "bytes": 13069,
+            "sha256": "e710209482959e389c390762138f212e8b4cf613c302e512f98c865a963df477"
+          },
+          "Sources/Rostrum/Fonts/TextShaper.swift": {
+            "bytes": 11434,
+            "sha256": "0935491d66a1f6e6aabfcbc560ae67a356fbf432a9b67595bd6c16306660a8ea"
+          },
+          "Sources/Rostrum/OPC/ContentTypes.swift": {
+            "bytes": 9558,
+            "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+          },
+          "Sources/Rostrum/OPC/OPCArchive.swift": {
+            "bytes": 5031,
+            "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+          },
+          "Sources/Rostrum/OPC/OPCPackage.swift": {
+            "bytes": 25309,
+            "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+          },
+          "Sources/Rostrum/OPC/PackURI.swift": {
+            "bytes": 7837,
+            "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+          },
+          "Sources/Rostrum/OPC/Relationships.swift": {
+            "bytes": 6234,
+            "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+          },
+          "Sources/Rostrum/Presentation/AnnotationImport.swift": {
+            "bytes": 6039,
+            "sha256": "377225e62cd967e8f7e168be2ece66577fec2293431242465f99205afc29ff07"
+          },
+          "Sources/Rostrum/Presentation/BackgroundResolver.swift": {
+            "bytes": 9438,
+            "sha256": "f72fefe032c3de2409d05d87da6176d1b5f498911c8729b0889b214979a54f26"
+          },
+          "Sources/Rostrum/Presentation/CommentEditing.swift": {
+            "bytes": 16323,
+            "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+          },
+          "Sources/Rostrum/Presentation/Comments.swift": {
+            "bytes": 13159,
+            "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+          },
+          "Sources/Rostrum/Presentation/Components.swift": {
+            "bytes": 12979,
+            "sha256": "689490e672547354244f18fd6174d3a3ade7ae22da4a06a491f78e5de04fcbe4"
+          },
+          "Sources/Rostrum/Presentation/DeckExport.swift": {
+            "bytes": 6157,
+            "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+          },
+          "Sources/Rostrum/Presentation/DeckMerge.swift": {
+            "bytes": 26368,
+            "sha256": "0b1fdaff8b68c93de1af730f8c3faff86053feb2b231116860a4519ad331c978"
+          },
+          "Sources/Rostrum/Presentation/DeckOutline.swift": {
+            "bytes": 25678,
+            "sha256": "3f9633d4c30ca5e71844dff168c988f8d4f453f329ef4ce0f90b4bd753fb1c1a"
+          },
+          "Sources/Rostrum/Presentation/DeckStyle.swift": {
+            "bytes": 17952,
+            "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+          },
+          "Sources/Rostrum/Presentation/Design.swift": {
+            "bytes": 24770,
+            "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+          },
+          "Sources/Rostrum/Presentation/DocumentProperties.swift": {
+            "bytes": 13966,
+            "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+          },
+          "Sources/Rostrum/Presentation/FontEmbedding.swift": {
+            "bytes": 10965,
+            "sha256": "3f33d0e06b8f5bcbc8cd5a4685ff02b6189aa37eb278bdd5698f2d593727aa15"
+          },
+          "Sources/Rostrum/Presentation/HeadersFooters.swift": {
+            "bytes": 9042,
+            "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+          },
+          "Sources/Rostrum/Presentation/ImageFill.swift": {
+            "bytes": 2270,
+            "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+          },
+          "Sources/Rostrum/Presentation/Layouts.swift": {
+            "bytes": 13528,
+            "sha256": "998ecc2c1545f2b60a6853b69942f18044f333f20c4fc00f1c196aac52859171"
+          },
+          "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift": {
+            "bytes": 6994,
+            "sha256": "0434c695e1cbb0fec61ea6a3df44ef94c0f3ff739ac259a22ebfb5e24f9bdc31"
+          },
+          "Sources/Rostrum/Presentation/LegacyComments.swift": {
+            "bytes": 11166,
+            "sha256": "0c37dfeb1b16128023eb4bdc7359bdc72a3666844d36d3a35c1c7dbf8baee0bb"
+          },
+          "Sources/Rostrum/Presentation/Media.swift": {
+            "bytes": 15487,
+            "sha256": "7f7d3ae0a6016de86a1ab2284bd4d1fe6bc5c34504075e28077da8b6928a1cb0"
+          },
+          "Sources/Rostrum/Presentation/MinimalTemplate.swift": {
+            "bytes": 17276,
+            "sha256": "b25543ced00747d3ecc8847c90d784e6bc96af8097f4b85ddef95cb8c948f2b5"
+          },
+          "Sources/Rostrum/Presentation/Notes.swift": {
+            "bytes": 7656,
+            "sha256": "70bd08bce56fbe171b04b1adee0a6e684558b536f12cb9b825189d77dd7fe178"
+          },
+          "Sources/Rostrum/Presentation/PictureCrop.swift": {
+            "bytes": 7482,
+            "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+          },
+          "Sources/Rostrum/Presentation/Pictures.swift": {
+            "bytes": 6988,
+            "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+          },
+          "Sources/Rostrum/Presentation/Presentation.swift": {
+            "bytes": 9572,
+            "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+          },
+          "Sources/Rostrum/Presentation/RenderDiagnostics.swift": {
+            "bytes": 17128,
+            "sha256": "f6d4a868aade5c10e30b4312eb00445eae7b245b47a75b4ed1286606e20f93cd"
+          },
+          "Sources/Rostrum/Presentation/RichTextLayout.swift": {
+            "bytes": 22388,
+            "sha256": "5a6301600635c7a7c09693ea15215ff17f89a4f2bda6554e2738d1132f8b4283"
+          },
+          "Sources/Rostrum/Presentation/SVGRenderer.swift": {
+            "bytes": 62769,
+            "sha256": "0691219a84a3fff2580dc393e49da68f09f0d83eedb057e19eba69fbe472d7a3"
+          },
+          "Sources/Rostrum/Presentation/Sections.swift": {
+            "bytes": 24051,
+            "sha256": "6b227bc0315cb6f30e56d7d3f8bdb304b3def7d3da4439497acc850bdd61f9dd"
+          },
+          "Sources/Rostrum/Presentation/ShapeAppearance.swift": {
+            "bytes": 7063,
+            "sha256": "fb1d81b9eb718810de61b3488dc192866564b85bfccd72da236921aa8877484e"
+          },
+          "Sources/Rostrum/Presentation/ShapeKind.swift": {
+            "bytes": 3310,
+            "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+          },
+          "Sources/Rostrum/Presentation/ShapeTransform.swift": {
+            "bytes": 4301,
+            "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+          },
+          "Sources/Rostrum/Presentation/ShapeTypes.swift": {
+            "bytes": 8209,
+            "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+          },
+          "Sources/Rostrum/Presentation/Shapes.swift": {
+            "bytes": 18619,
+            "sha256": "17d4c2dde9f76e4fe609d2beb8a6dce70ac64c098308e306a8273553a3180ffc"
+          },
+          "Sources/Rostrum/Presentation/Slide.swift": {
+            "bytes": 4785,
+            "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+          },
+          "Sources/Rostrum/Presentation/SlideAnnotations.swift": {
+            "bytes": 6725,
+            "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+          },
+          "Sources/Rostrum/Presentation/SlideBuilders.swift": {
+            "bytes": 55901,
+            "sha256": "843336c23a5b45abaaf7ac9e9c8971128da98b40595cf1caa65aa7273cdde0c2"
+          },
+          "Sources/Rostrum/Presentation/SlideMasters.swift": {
+            "bytes": 3637,
+            "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+          },
+          "Sources/Rostrum/Presentation/Slides.swift": {
+            "bytes": 9938,
+            "sha256": "c171f2f8dd2450e2fab9fbd5c46ed0bfd41d22691ccc4e28b35f2e1956789708"
+          },
+          "Sources/Rostrum/Presentation/SmartArt.swift": {
+            "bytes": 30353,
+            "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+          },
+          "Sources/Rostrum/Presentation/TableCellFormatting.swift": {
+            "bytes": 8396,
+            "sha256": "bca56b16d5ca590cc27524bc6b1e957356441ad7915dd5ea48a3d994c70f4427"
+          },
+          "Sources/Rostrum/Presentation/TableEditing.swift": {
+            "bytes": 9142,
+            "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+          },
+          "Sources/Rostrum/Presentation/TableGridSnapshot.swift": {
+            "bytes": 5695,
+            "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+          },
+          "Sources/Rostrum/Presentation/TableStyleImport.swift": {
+            "bytes": 12976,
+            "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+          },
+          "Sources/Rostrum/Presentation/TableStyleResolver.swift": {
+            "bytes": 13319,
+            "sha256": "e15c4d778e4a5d76bbba0c3b9d4ef810c9f2f7f17f9ada3fcfcc74f75daf7c2a"
+          },
+          "Sources/Rostrum/Presentation/TableStyling.swift": {
+            "bytes": 5763,
+            "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+          },
+          "Sources/Rostrum/Presentation/Tables.swift": {
+            "bytes": 13027,
+            "sha256": "abc1e0456b7817bbac75737718c2f1f20e21ed90a3ad02b787df54f22b126a41"
+          },
+          "Sources/Rostrum/Presentation/Text.swift": {
+            "bytes": 14362,
+            "sha256": "86f76d862dcb6b93ab19e4187675961344ef6cf1f1667be0a84271869736a19e"
+          },
+          "Sources/Rostrum/Presentation/Theme.swift": {
+            "bytes": 7043,
+            "sha256": "7c589fe27b359c228b2578f2afea7d12c5515910d6e2e5ed89de467e158d7ceb"
+          },
+          "Sources/Rostrum/Presentation/Validation.swift": {
+            "bytes": 2963,
+            "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+          },
+          "Sources/Rostrum/Schema/GeneratedSchema.swift": {
+            "bytes": 43214,
+            "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+          },
+          "Sources/Rostrum/Schema/OXMLHelpers.swift": {
+            "bytes": 6165,
+            "sha256": "02e6da44560c36e0e509d38d9b357f0b6ed1919b52ace21d2277cbafb7e6be8c"
+          },
+          "Sources/Rostrum/Schema/PresetGeometry.swift": {
+            "bytes": 13640,
+            "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+          },
+          "Sources/Rostrum/XML/XML.swift": {
+            "bytes": 39888,
+            "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+          },
+          "Sources/Rostrum/Zip/CRC32.swift": {
+            "bytes": 1909,
+            "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+          },
+          "Sources/Rostrum/Zip/Deflate.swift": {
+            "bytes": 7019,
+            "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+          },
+          "Sources/Rostrum/Zip/Inflate.swift": {
+            "bytes": 14849,
+            "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+          },
+          "Sources/Rostrum/Zip/ZipReader.swift": {
+            "bytes": 30445,
+            "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+          },
+          "Sources/Rostrum/Zip/ZipWriter.swift": {
+            "bytes": 15644,
+            "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+          },
+          "Tools/rostrum-bench/corpus.json": {
+            "bytes": 742,
+            "sha256": "0cb0b4041b568dd0ef2d0b51b923e761cc616856ccfbd18fb94035403e5863c4"
+          },
+          "Tools/rostrum-bench/main.swift": {
+            "bytes": 5127,
+            "sha256": "d2649fc044ec1e85fbfadfaa718a55fb3394ce61fb5889af4adfa9151c2e6436"
+          },
+          "Tools/rostrum-bench/run.py": {
+            "bytes": 4230,
+            "sha256": "568a04f1c98db22db7c887c365748ad2b5bfa4603a38104a889fc2eec360c22d"
+          }
+        },
+        "manifestSHA256": "bab77ae6c1ffe2ff88656c9173008df3c2efec36ffc3146dc90a442c77b0fba0",
+        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
+      },
+      "candidate": {
+        "files": {
+          "Package.swift": {
+            "bytes": 1578,
+            "sha256": "442a87b94c93d41b10c1fee6846399397799ac321866e2e540aeff8bfa9638b2"
+          },
+          "Sources/Rostrum/Charts/ChartData.swift": {
+            "bytes": 10882,
+            "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+          },
+          "Sources/Rostrum/Charts/ChartReader.swift": {
+            "bytes": 20245,
+            "sha256": "f2a4b078183745550f11ad74efecfa413a87394b3f07765d3cf9247c45dff981"
+          },
+          "Sources/Rostrum/Charts/ChartSeriesEditing.swift": {
+            "bytes": 24976,
+            "sha256": "984519e8fac02b9879700cc963e90297906e40ff44035b3b5fdda4b9e32dee8e"
+          },
+          "Sources/Rostrum/Charts/ChartWorkbook.swift": {
+            "bytes": 20515,
+            "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+          },
+          "Sources/Rostrum/Charts/ChartXML.swift": {
+            "bytes": 36192,
+            "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+          },
+          "Sources/Rostrum/Charts/Charts.swift": {
+            "bytes": 6673,
+            "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+          },
+          "Sources/Rostrum/Charts/ComboChartData.swift": {
+            "bytes": 6367,
+            "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+          },
+          "Sources/Rostrum/Core/RostrumError.swift": {
+            "bytes": 2638,
+            "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+          },
+          "Sources/Rostrum/Core/Units.swift": {
+            "bytes": 4400,
+            "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+          },
+          "Sources/Rostrum/Drawing/ColorMath.swift": {
+            "bytes": 7821,
+            "sha256": "17a94eef58f88da1c73660a8a799a88f96848e9b7a0ab92a54b1d485e3949da0"
+          },
+          "Sources/Rostrum/Drawing/Drawing.swift": {
+            "bytes": 9190,
+            "sha256": "4c0071c020483df10d2a085f45b7c6e90047b81f17f4964dcc3c89d3a8c2533e"
+          },
+          "Sources/Rostrum/Drawing/DrawingColor.swift": {
+            "bytes": 2644,
+            "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+          },
+          "Sources/Rostrum/Drawing/Geometry.swift": {
+            "bytes": 9764,
+            "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+          },
+          "Sources/Rostrum/Drawing/GradientStops.swift": {
+            "bytes": 3049,
+            "sha256": "b19f439e21456d548b28fc6ba88574d681c1f48796975be9a079c017810936b2"
+          },
+          "Sources/Rostrum/Drawing/ImageSniffer.swift": {
+            "bytes": 4980,
+            "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+          },
+          "Sources/Rostrum/Fonts/ArabicJoining.swift": {
+            "bytes": 30446,
+            "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+          },
+          "Sources/Rostrum/Fonts/ArabicLayoutTables.swift": {
+            "bytes": 12199,
+            "sha256": "ef3ee50cd35203f05dd9915487885554a4a497a9363eae38e53b127b965c22a9"
+          },
+          "Sources/Rostrum/Fonts/ArabicTextShaper.swift": {
+            "bytes": 14792,
+            "sha256": "b0a6746efa2d8af574a147f491a4193fbbfb9974c65a2a7579abe2001209583c"
+          },
+          "Sources/Rostrum/Fonts/FontFaceKey.swift": {
+            "bytes": 411,
+            "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+          },
+          "Sources/Rostrum/Fonts/FontLayoutTables.swift": {
+            "bytes": 21038,
+            "sha256": "35d80e5425605015277cf22f292dc9a41fa76efd3742151246fbff18d55f969f"
+          },
+          "Sources/Rostrum/Fonts/FontLibrary.swift": {
+            "bytes": 3903,
+            "sha256": "8476bb030e432423f16c0edb286f38f04dbae30a0ecd20c378244acc9abe43eb"
+          },
+          "Sources/Rostrum/Fonts/FontMetrics.swift": {
+            "bytes": 19326,
+            "sha256": "54e8ee14057c9d8ca74841f8f588bab270a34c9c54167a30c8d85778a86665af"
+          },
+          "Sources/Rostrum/Fonts/ShapedGlyphRun.swift": {
+            "bytes": 1790,
+            "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+          },
+          "Sources/Rostrum/Fonts/TextMeasurer.swift": {
+            "bytes": 13069,
+            "sha256": "e710209482959e389c390762138f212e8b4cf613c302e512f98c865a963df477"
+          },
+          "Sources/Rostrum/Fonts/TextShaper.swift": {
+            "bytes": 14570,
+            "sha256": "62b6ce8c66005119b5afdf5426b94973a67315035f7acea531adb640b9cc45b3"
+          },
+          "Sources/Rostrum/OPC/ContentTypes.swift": {
+            "bytes": 9558,
+            "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+          },
+          "Sources/Rostrum/OPC/OPCArchive.swift": {
+            "bytes": 5031,
+            "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+          },
+          "Sources/Rostrum/OPC/OPCPackage.swift": {
+            "bytes": 25309,
+            "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+          },
+          "Sources/Rostrum/OPC/PackURI.swift": {
+            "bytes": 7837,
+            "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+          },
+          "Sources/Rostrum/OPC/Relationships.swift": {
+            "bytes": 6234,
+            "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+          },
+          "Sources/Rostrum/Presentation/AnnotationDependencies.swift": {
+            "bytes": 22975,
+            "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+          },
+          "Sources/Rostrum/Presentation/AnnotationImport.swift": {
+            "bytes": 7051,
+            "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+          },
+          "Sources/Rostrum/Presentation/BackgroundResolver.swift": {
+            "bytes": 9438,
+            "sha256": "f72fefe032c3de2409d05d87da6176d1b5f498911c8729b0889b214979a54f26"
+          },
+          "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": {
+            "bytes": 184324,
+            "sha256": "06f8e56195e344344d8bee27aad899c410adb077d6e57dff98a745e57c5090a2"
+          },
+          "Sources/Rostrum/Presentation/CommentEditing.swift": {
+            "bytes": 16323,
+            "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+          },
+          "Sources/Rostrum/Presentation/Comments.swift": {
+            "bytes": 13159,
+            "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+          },
+          "Sources/Rostrum/Presentation/Components.swift": {
+            "bytes": 12979,
+            "sha256": "689490e672547354244f18fd6174d3a3ade7ae22da4a06a491f78e5de04fcbe4"
+          },
+          "Sources/Rostrum/Presentation/DeckExport.swift": {
+            "bytes": 6157,
+            "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+          },
+          "Sources/Rostrum/Presentation/DeckMerge.swift": {
+            "bytes": 28553,
+            "sha256": "10ea1c340c8243f47ed97911bec1f075489234e3f4ef471208a6d28a2cd51b2a"
+          },
+          "Sources/Rostrum/Presentation/DeckOutline.swift": {
+            "bytes": 25678,
+            "sha256": "3f9633d4c30ca5e71844dff168c988f8d4f453f329ef4ce0f90b4bd753fb1c1a"
+          },
+          "Sources/Rostrum/Presentation/DeckStyle.swift": {
+            "bytes": 17952,
+            "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+          },
+          "Sources/Rostrum/Presentation/Design.swift": {
+            "bytes": 24770,
+            "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+          },
+          "Sources/Rostrum/Presentation/DocumentProperties.swift": {
+            "bytes": 13966,
+            "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+          },
+          "Sources/Rostrum/Presentation/FontEmbedding.swift": {
+            "bytes": 10965,
+            "sha256": "3f33d0e06b8f5bcbc8cd5a4685ff02b6189aa37eb278bdd5698f2d593727aa15"
+          },
+          "Sources/Rostrum/Presentation/HeadersFooters.swift": {
+            "bytes": 9042,
+            "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+          },
+          "Sources/Rostrum/Presentation/ImageFill.swift": {
+            "bytes": 2270,
+            "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+          },
+          "Sources/Rostrum/Presentation/Layouts.swift": {
+            "bytes": 13528,
+            "sha256": "998ecc2c1545f2b60a6853b69942f18044f333f20c4fc00f1c196aac52859171"
+          },
+          "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift": {
+            "bytes": 8498,
+            "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+          },
+          "Sources/Rostrum/Presentation/LegacyComments.swift": {
+            "bytes": 11421,
+            "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+          },
+          "Sources/Rostrum/Presentation/Media.swift": {
+            "bytes": 15487,
+            "sha256": "7f7d3ae0a6016de86a1ab2284bd4d1fe6bc5c34504075e28077da8b6928a1cb0"
+          },
+          "Sources/Rostrum/Presentation/MinimalTemplate.swift": {
+            "bytes": 17276,
+            "sha256": "b25543ced00747d3ecc8847c90d784e6bc96af8097f4b85ddef95cb8c948f2b5"
+          },
+          "Sources/Rostrum/Presentation/Notes.swift": {
+            "bytes": 6377,
+            "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+          },
+          "Sources/Rostrum/Presentation/NotesPageTemplate.swift": {
+            "bytes": 6555,
+            "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+          },
+          "Sources/Rostrum/Presentation/PictureCrop.swift": {
+            "bytes": 7482,
+            "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+          },
+          "Sources/Rostrum/Presentation/Pictures.swift": {
+            "bytes": 6988,
+            "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+          },
+          "Sources/Rostrum/Presentation/Presentation.swift": {
+            "bytes": 9572,
+            "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+          },
+          "Sources/Rostrum/Presentation/RenderDiagnostics.swift": {
+            "bytes": 19488,
+            "sha256": "ea8f72d7e0ac7efa2160087a75ebf9474204f2219f2ab5b5eb0c6b8f17f040ac"
+          },
+          "Sources/Rostrum/Presentation/RenderImageResources.swift": {
+            "bytes": 6776,
+            "sha256": "4180dbd839c28092562ae8cb11e418bd842f9744be733fe631040d4689e4b1c1"
+          },
+          "Sources/Rostrum/Presentation/RenderTextAttributes.swift": {
+            "bytes": 3289,
+            "sha256": "4e5fb8890ea3f5d36ccbb31629faeb7e06386b82498d2d6feb842801d420eb43"
+          },
+          "Sources/Rostrum/Presentation/RichTextLayout.swift": {
+            "bytes": 24009,
+            "sha256": "946c6d77ee6fbd41298ae9f8cddab00af0ed33a684cc3b2aac07e08770ced2a4"
+          },
+          "Sources/Rostrum/Presentation/SVGRenderer.swift": {
+            "bytes": 67184,
+            "sha256": "d879eb546632cf11e630fbd778f15a09a7b16533f2864279cf31c5bf6a559191"
+          },
+          "Sources/Rostrum/Presentation/Sections.swift": {
+            "bytes": 36663,
+            "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+          },
+          "Sources/Rostrum/Presentation/ShapeAppearance.swift": {
+            "bytes": 7063,
+            "sha256": "fb1d81b9eb718810de61b3488dc192866564b85bfccd72da236921aa8877484e"
+          },
+          "Sources/Rostrum/Presentation/ShapeKind.swift": {
+            "bytes": 3310,
+            "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+          },
+          "Sources/Rostrum/Presentation/ShapeTransform.swift": {
+            "bytes": 4301,
+            "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+          },
+          "Sources/Rostrum/Presentation/ShapeTypes.swift": {
+            "bytes": 8209,
+            "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+          },
+          "Sources/Rostrum/Presentation/Shapes.swift": {
+            "bytes": 18619,
+            "sha256": "17d4c2dde9f76e4fe609d2beb8a6dce70ac64c098308e306a8273553a3180ffc"
+          },
+          "Sources/Rostrum/Presentation/Slide.swift": {
+            "bytes": 4785,
+            "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+          },
+          "Sources/Rostrum/Presentation/SlideAnnotations.swift": {
+            "bytes": 6725,
+            "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+          },
+          "Sources/Rostrum/Presentation/SlideBuilders.swift": {
+            "bytes": 55901,
+            "sha256": "843336c23a5b45abaaf7ac9e9c8971128da98b40595cf1caa65aa7273cdde0c2"
+          },
+          "Sources/Rostrum/Presentation/SlideMasters.swift": {
+            "bytes": 3637,
+            "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+          },
+          "Sources/Rostrum/Presentation/Slides.swift": {
+            "bytes": 9938,
+            "sha256": "c171f2f8dd2450e2fab9fbd5c46ed0bfd41d22691ccc4e28b35f2e1956789708"
+          },
+          "Sources/Rostrum/Presentation/SmartArt.swift": {
+            "bytes": 30353,
+            "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+          },
+          "Sources/Rostrum/Presentation/TableBorderSegments.swift": {
+            "bytes": 3559,
+            "sha256": "b214314d0db933498e29ebb6d5a1126a54ac6f8bcf7e57844d1d4955f0b362de"
+          },
+          "Sources/Rostrum/Presentation/TableCellFormatting.swift": {
+            "bytes": 8396,
+            "sha256": "bca56b16d5ca590cc27524bc6b1e957356441ad7915dd5ea48a3d994c70f4427"
+          },
+          "Sources/Rostrum/Presentation/TableEditing.swift": {
+            "bytes": 9142,
+            "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+          },
+          "Sources/Rostrum/Presentation/TableGridSnapshot.swift": {
+            "bytes": 5695,
+            "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+          },
+          "Sources/Rostrum/Presentation/TableStyleImport.swift": {
+            "bytes": 12976,
+            "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+          },
+          "Sources/Rostrum/Presentation/TableStyleResolver.swift": {
+            "bytes": 19420,
+            "sha256": "15143de0cd5f9cd37408ccc91c80a8a01771f322cdac7d9613d26998b8bcee03"
+          },
+          "Sources/Rostrum/Presentation/TableStyling.swift": {
+            "bytes": 5763,
+            "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+          },
+          "Sources/Rostrum/Presentation/Tables.swift": {
+            "bytes": 12954,
+            "sha256": "42097757eedea4ec20dab76d867b8792327958668856e5d1dd8168a59d855bb5"
+          },
+          "Sources/Rostrum/Presentation/Text.swift": {
+            "bytes": 14362,
+            "sha256": "86f76d862dcb6b93ab19e4187675961344ef6cf1f1667be0a84271869736a19e"
+          },
+          "Sources/Rostrum/Presentation/Theme.swift": {
+            "bytes": 7043,
+            "sha256": "7c589fe27b359c228b2578f2afea7d12c5515910d6e2e5ed89de467e158d7ceb"
+          },
+          "Sources/Rostrum/Presentation/Validation.swift": {
+            "bytes": 2963,
+            "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+          },
+          "Sources/Rostrum/Schema/GeneratedSchema.swift": {
+            "bytes": 43214,
+            "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+          },
+          "Sources/Rostrum/Schema/OXMLHelpers.swift": {
+            "bytes": 6165,
+            "sha256": "02e6da44560c36e0e509d38d9b357f0b6ed1919b52ace21d2277cbafb7e6be8c"
+          },
+          "Sources/Rostrum/Schema/PresetGeometry.swift": {
+            "bytes": 13640,
+            "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+          },
+          "Sources/Rostrum/XML/XML.swift": {
+            "bytes": 39888,
+            "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+          },
+          "Sources/Rostrum/Zip/CRC32.swift": {
+            "bytes": 1909,
+            "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+          },
+          "Sources/Rostrum/Zip/Deflate.swift": {
+            "bytes": 7019,
+            "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+          },
+          "Sources/Rostrum/Zip/Inflate.swift": {
+            "bytes": 14849,
+            "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+          },
+          "Sources/Rostrum/Zip/ZipReader.swift": {
+            "bytes": 30445,
+            "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+          },
+          "Sources/Rostrum/Zip/ZipWriter.swift": {
+            "bytes": 15644,
+            "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+          },
+          "Tools/rostrum-bench/corpus.json": {
+            "bytes": 742,
+            "sha256": "0cb0b4041b568dd0ef2d0b51b923e761cc616856ccfbd18fb94035403e5863c4"
+          },
+          "Tools/rostrum-bench/main.swift": {
+            "bytes": 5127,
+            "sha256": "d2649fc044ec1e85fbfadfaa718a55fb3394ce61fb5889af4adfa9151c2e6436"
+          },
+          "Tools/rostrum-bench/run.py": {
+            "bytes": 4230,
+            "sha256": "568a04f1c98db22db7c887c365748ad2b5bfa4603a38104a889fc2eec360c22d"
+          }
+        },
+        "manifestSHA256": "e4b2e9fba64a885744bf78cb1c84248614297f6903c6aa1619af95b67fad80da",
+        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated"
+      }
+    }
+  },
+  "before": {
+    "binaries": {
+      "baseline": {
+        "bytes": 2959024,
+        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "sha256": "0d576500422a2528dacb909bdb47e93c598c95d9a6f9e1f85104e8a614681bd7"
+      },
+      "candidate": {
+        "bytes": 3564832,
+        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "sha256": "a30b5aa14c6af30389e2dea9f768a47d75c7ed41698b0ed3828ea7f0b69847e3"
+      }
+    },
+    "font": {
+      "bytes": 773236,
+      "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+    },
+    "runner": {
+      "bytes": 16857,
+      "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
+      "sha256": "b7358ce2ca75c67834dfedbeb500a4e3e6ef92fa3364583eaf17722204ea5dc5"
+    },
+    "sources": {
+      "baseline": {
+        "files": {
+          "Package.swift": {
+            "bytes": 1578,
+            "sha256": "442a87b94c93d41b10c1fee6846399397799ac321866e2e540aeff8bfa9638b2"
+          },
+          "Sources/Rostrum/Charts/ChartData.swift": {
+            "bytes": 10882,
+            "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+          },
+          "Sources/Rostrum/Charts/ChartReader.swift": {
+            "bytes": 20245,
+            "sha256": "f2a4b078183745550f11ad74efecfa413a87394b3f07765d3cf9247c45dff981"
+          },
+          "Sources/Rostrum/Charts/ChartSeriesEditing.swift": {
+            "bytes": 24976,
+            "sha256": "984519e8fac02b9879700cc963e90297906e40ff44035b3b5fdda4b9e32dee8e"
+          },
+          "Sources/Rostrum/Charts/ChartWorkbook.swift": {
+            "bytes": 20515,
+            "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+          },
+          "Sources/Rostrum/Charts/ChartXML.swift": {
+            "bytes": 36192,
+            "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+          },
+          "Sources/Rostrum/Charts/Charts.swift": {
+            "bytes": 6673,
+            "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+          },
+          "Sources/Rostrum/Charts/ComboChartData.swift": {
+            "bytes": 6367,
+            "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+          },
+          "Sources/Rostrum/Core/RostrumError.swift": {
+            "bytes": 2638,
+            "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+          },
+          "Sources/Rostrum/Core/Units.swift": {
+            "bytes": 4400,
+            "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+          },
+          "Sources/Rostrum/Drawing/ColorMath.swift": {
+            "bytes": 6973,
+            "sha256": "29430658ae436710e24cd971a79698d207bd8cfef051b3bd4f5acea07f6156f9"
+          },
+          "Sources/Rostrum/Drawing/Drawing.swift": {
+            "bytes": 9190,
+            "sha256": "4c0071c020483df10d2a085f45b7c6e90047b81f17f4964dcc3c89d3a8c2533e"
+          },
+          "Sources/Rostrum/Drawing/DrawingColor.swift": {
+            "bytes": 2644,
+            "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+          },
+          "Sources/Rostrum/Drawing/Geometry.swift": {
+            "bytes": 9764,
+            "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+          },
+          "Sources/Rostrum/Drawing/ImageSniffer.swift": {
+            "bytes": 4980,
+            "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+          },
+          "Sources/Rostrum/Fonts/FontFaceKey.swift": {
+            "bytes": 411,
+            "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+          },
+          "Sources/Rostrum/Fonts/FontLayoutTables.swift": {
+            "bytes": 13970,
+            "sha256": "25f90d83929b145e984401575892575161ff5bce7ea6f8fafbf67c6f260efc75"
+          },
+          "Sources/Rostrum/Fonts/FontLibrary.swift": {
+            "bytes": 3903,
+            "sha256": "8476bb030e432423f16c0edb286f38f04dbae30a0ecd20c378244acc9abe43eb"
+          },
+          "Sources/Rostrum/Fonts/FontMetrics.swift": {
+            "bytes": 19275,
+            "sha256": "8605f94db482722aaa151ff621f4b92a9af752f9d3ad394e9acb5db2f81235b3"
+          },
+          "Sources/Rostrum/Fonts/ShapedGlyphRun.swift": {
+            "bytes": 1790,
+            "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+          },
+          "Sources/Rostrum/Fonts/TextMeasurer.swift": {
+            "bytes": 13069,
+            "sha256": "e710209482959e389c390762138f212e8b4cf613c302e512f98c865a963df477"
+          },
+          "Sources/Rostrum/Fonts/TextShaper.swift": {
+            "bytes": 11434,
+            "sha256": "0935491d66a1f6e6aabfcbc560ae67a356fbf432a9b67595bd6c16306660a8ea"
+          },
+          "Sources/Rostrum/OPC/ContentTypes.swift": {
+            "bytes": 9558,
+            "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+          },
+          "Sources/Rostrum/OPC/OPCArchive.swift": {
+            "bytes": 5031,
+            "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+          },
+          "Sources/Rostrum/OPC/OPCPackage.swift": {
+            "bytes": 25309,
+            "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+          },
+          "Sources/Rostrum/OPC/PackURI.swift": {
+            "bytes": 7837,
+            "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+          },
+          "Sources/Rostrum/OPC/Relationships.swift": {
+            "bytes": 6234,
+            "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+          },
+          "Sources/Rostrum/Presentation/AnnotationImport.swift": {
+            "bytes": 6039,
+            "sha256": "377225e62cd967e8f7e168be2ece66577fec2293431242465f99205afc29ff07"
+          },
+          "Sources/Rostrum/Presentation/BackgroundResolver.swift": {
+            "bytes": 9438,
+            "sha256": "f72fefe032c3de2409d05d87da6176d1b5f498911c8729b0889b214979a54f26"
+          },
+          "Sources/Rostrum/Presentation/CommentEditing.swift": {
+            "bytes": 16323,
+            "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+          },
+          "Sources/Rostrum/Presentation/Comments.swift": {
+            "bytes": 13159,
+            "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+          },
+          "Sources/Rostrum/Presentation/Components.swift": {
+            "bytes": 12979,
+            "sha256": "689490e672547354244f18fd6174d3a3ade7ae22da4a06a491f78e5de04fcbe4"
+          },
+          "Sources/Rostrum/Presentation/DeckExport.swift": {
+            "bytes": 6157,
+            "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+          },
+          "Sources/Rostrum/Presentation/DeckMerge.swift": {
+            "bytes": 26368,
+            "sha256": "0b1fdaff8b68c93de1af730f8c3faff86053feb2b231116860a4519ad331c978"
+          },
+          "Sources/Rostrum/Presentation/DeckOutline.swift": {
+            "bytes": 25678,
+            "sha256": "3f9633d4c30ca5e71844dff168c988f8d4f453f329ef4ce0f90b4bd753fb1c1a"
+          },
+          "Sources/Rostrum/Presentation/DeckStyle.swift": {
+            "bytes": 17952,
+            "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+          },
+          "Sources/Rostrum/Presentation/Design.swift": {
+            "bytes": 24770,
+            "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+          },
+          "Sources/Rostrum/Presentation/DocumentProperties.swift": {
+            "bytes": 13966,
+            "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+          },
+          "Sources/Rostrum/Presentation/FontEmbedding.swift": {
+            "bytes": 10965,
+            "sha256": "3f33d0e06b8f5bcbc8cd5a4685ff02b6189aa37eb278bdd5698f2d593727aa15"
+          },
+          "Sources/Rostrum/Presentation/HeadersFooters.swift": {
+            "bytes": 9042,
+            "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+          },
+          "Sources/Rostrum/Presentation/ImageFill.swift": {
+            "bytes": 2270,
+            "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+          },
+          "Sources/Rostrum/Presentation/Layouts.swift": {
+            "bytes": 13528,
+            "sha256": "998ecc2c1545f2b60a6853b69942f18044f333f20c4fc00f1c196aac52859171"
+          },
+          "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift": {
+            "bytes": 6994,
+            "sha256": "0434c695e1cbb0fec61ea6a3df44ef94c0f3ff739ac259a22ebfb5e24f9bdc31"
+          },
+          "Sources/Rostrum/Presentation/LegacyComments.swift": {
+            "bytes": 11166,
+            "sha256": "0c37dfeb1b16128023eb4bdc7359bdc72a3666844d36d3a35c1c7dbf8baee0bb"
+          },
+          "Sources/Rostrum/Presentation/Media.swift": {
+            "bytes": 15487,
+            "sha256": "7f7d3ae0a6016de86a1ab2284bd4d1fe6bc5c34504075e28077da8b6928a1cb0"
+          },
+          "Sources/Rostrum/Presentation/MinimalTemplate.swift": {
+            "bytes": 17276,
+            "sha256": "b25543ced00747d3ecc8847c90d784e6bc96af8097f4b85ddef95cb8c948f2b5"
+          },
+          "Sources/Rostrum/Presentation/Notes.swift": {
+            "bytes": 7656,
+            "sha256": "70bd08bce56fbe171b04b1adee0a6e684558b536f12cb9b825189d77dd7fe178"
+          },
+          "Sources/Rostrum/Presentation/PictureCrop.swift": {
+            "bytes": 7482,
+            "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+          },
+          "Sources/Rostrum/Presentation/Pictures.swift": {
+            "bytes": 6988,
+            "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+          },
+          "Sources/Rostrum/Presentation/Presentation.swift": {
+            "bytes": 9572,
+            "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+          },
+          "Sources/Rostrum/Presentation/RenderDiagnostics.swift": {
+            "bytes": 17128,
+            "sha256": "f6d4a868aade5c10e30b4312eb00445eae7b245b47a75b4ed1286606e20f93cd"
+          },
+          "Sources/Rostrum/Presentation/RichTextLayout.swift": {
+            "bytes": 22388,
+            "sha256": "5a6301600635c7a7c09693ea15215ff17f89a4f2bda6554e2738d1132f8b4283"
+          },
+          "Sources/Rostrum/Presentation/SVGRenderer.swift": {
+            "bytes": 62769,
+            "sha256": "0691219a84a3fff2580dc393e49da68f09f0d83eedb057e19eba69fbe472d7a3"
+          },
+          "Sources/Rostrum/Presentation/Sections.swift": {
+            "bytes": 24051,
+            "sha256": "6b227bc0315cb6f30e56d7d3f8bdb304b3def7d3da4439497acc850bdd61f9dd"
+          },
+          "Sources/Rostrum/Presentation/ShapeAppearance.swift": {
+            "bytes": 7063,
+            "sha256": "fb1d81b9eb718810de61b3488dc192866564b85bfccd72da236921aa8877484e"
+          },
+          "Sources/Rostrum/Presentation/ShapeKind.swift": {
+            "bytes": 3310,
+            "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+          },
+          "Sources/Rostrum/Presentation/ShapeTransform.swift": {
+            "bytes": 4301,
+            "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+          },
+          "Sources/Rostrum/Presentation/ShapeTypes.swift": {
+            "bytes": 8209,
+            "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+          },
+          "Sources/Rostrum/Presentation/Shapes.swift": {
+            "bytes": 18619,
+            "sha256": "17d4c2dde9f76e4fe609d2beb8a6dce70ac64c098308e306a8273553a3180ffc"
+          },
+          "Sources/Rostrum/Presentation/Slide.swift": {
+            "bytes": 4785,
+            "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+          },
+          "Sources/Rostrum/Presentation/SlideAnnotations.swift": {
+            "bytes": 6725,
+            "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+          },
+          "Sources/Rostrum/Presentation/SlideBuilders.swift": {
+            "bytes": 55901,
+            "sha256": "843336c23a5b45abaaf7ac9e9c8971128da98b40595cf1caa65aa7273cdde0c2"
+          },
+          "Sources/Rostrum/Presentation/SlideMasters.swift": {
+            "bytes": 3637,
+            "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+          },
+          "Sources/Rostrum/Presentation/Slides.swift": {
+            "bytes": 9938,
+            "sha256": "c171f2f8dd2450e2fab9fbd5c46ed0bfd41d22691ccc4e28b35f2e1956789708"
+          },
+          "Sources/Rostrum/Presentation/SmartArt.swift": {
+            "bytes": 30353,
+            "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+          },
+          "Sources/Rostrum/Presentation/TableCellFormatting.swift": {
+            "bytes": 8396,
+            "sha256": "bca56b16d5ca590cc27524bc6b1e957356441ad7915dd5ea48a3d994c70f4427"
+          },
+          "Sources/Rostrum/Presentation/TableEditing.swift": {
+            "bytes": 9142,
+            "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+          },
+          "Sources/Rostrum/Presentation/TableGridSnapshot.swift": {
+            "bytes": 5695,
+            "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+          },
+          "Sources/Rostrum/Presentation/TableStyleImport.swift": {
+            "bytes": 12976,
+            "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+          },
+          "Sources/Rostrum/Presentation/TableStyleResolver.swift": {
+            "bytes": 13319,
+            "sha256": "e15c4d778e4a5d76bbba0c3b9d4ef810c9f2f7f17f9ada3fcfcc74f75daf7c2a"
+          },
+          "Sources/Rostrum/Presentation/TableStyling.swift": {
+            "bytes": 5763,
+            "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+          },
+          "Sources/Rostrum/Presentation/Tables.swift": {
+            "bytes": 13027,
+            "sha256": "abc1e0456b7817bbac75737718c2f1f20e21ed90a3ad02b787df54f22b126a41"
+          },
+          "Sources/Rostrum/Presentation/Text.swift": {
+            "bytes": 14362,
+            "sha256": "86f76d862dcb6b93ab19e4187675961344ef6cf1f1667be0a84271869736a19e"
+          },
+          "Sources/Rostrum/Presentation/Theme.swift": {
+            "bytes": 7043,
+            "sha256": "7c589fe27b359c228b2578f2afea7d12c5515910d6e2e5ed89de467e158d7ceb"
+          },
+          "Sources/Rostrum/Presentation/Validation.swift": {
+            "bytes": 2963,
+            "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+          },
+          "Sources/Rostrum/Schema/GeneratedSchema.swift": {
+            "bytes": 43214,
+            "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+          },
+          "Sources/Rostrum/Schema/OXMLHelpers.swift": {
+            "bytes": 6165,
+            "sha256": "02e6da44560c36e0e509d38d9b357f0b6ed1919b52ace21d2277cbafb7e6be8c"
+          },
+          "Sources/Rostrum/Schema/PresetGeometry.swift": {
+            "bytes": 13640,
+            "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+          },
+          "Sources/Rostrum/XML/XML.swift": {
+            "bytes": 39888,
+            "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+          },
+          "Sources/Rostrum/Zip/CRC32.swift": {
+            "bytes": 1909,
+            "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+          },
+          "Sources/Rostrum/Zip/Deflate.swift": {
+            "bytes": 7019,
+            "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+          },
+          "Sources/Rostrum/Zip/Inflate.swift": {
+            "bytes": 14849,
+            "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+          },
+          "Sources/Rostrum/Zip/ZipReader.swift": {
+            "bytes": 30445,
+            "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+          },
+          "Sources/Rostrum/Zip/ZipWriter.swift": {
+            "bytes": 15644,
+            "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+          },
+          "Tools/rostrum-bench/corpus.json": {
+            "bytes": 742,
+            "sha256": "0cb0b4041b568dd0ef2d0b51b923e761cc616856ccfbd18fb94035403e5863c4"
+          },
+          "Tools/rostrum-bench/main.swift": {
+            "bytes": 5127,
+            "sha256": "d2649fc044ec1e85fbfadfaa718a55fb3394ce61fb5889af4adfa9151c2e6436"
+          },
+          "Tools/rostrum-bench/run.py": {
+            "bytes": 4230,
+            "sha256": "568a04f1c98db22db7c887c365748ad2b5bfa4603a38104a889fc2eec360c22d"
+          }
+        },
+        "manifestSHA256": "bab77ae6c1ffe2ff88656c9173008df3c2efec36ffc3146dc90a442c77b0fba0",
+        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
+      },
+      "candidate": {
+        "files": {
+          "Package.swift": {
+            "bytes": 1578,
+            "sha256": "442a87b94c93d41b10c1fee6846399397799ac321866e2e540aeff8bfa9638b2"
+          },
+          "Sources/Rostrum/Charts/ChartData.swift": {
+            "bytes": 10882,
+            "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+          },
+          "Sources/Rostrum/Charts/ChartReader.swift": {
+            "bytes": 20245,
+            "sha256": "f2a4b078183745550f11ad74efecfa413a87394b3f07765d3cf9247c45dff981"
+          },
+          "Sources/Rostrum/Charts/ChartSeriesEditing.swift": {
+            "bytes": 24976,
+            "sha256": "984519e8fac02b9879700cc963e90297906e40ff44035b3b5fdda4b9e32dee8e"
+          },
+          "Sources/Rostrum/Charts/ChartWorkbook.swift": {
+            "bytes": 20515,
+            "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+          },
+          "Sources/Rostrum/Charts/ChartXML.swift": {
+            "bytes": 36192,
+            "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+          },
+          "Sources/Rostrum/Charts/Charts.swift": {
+            "bytes": 6673,
+            "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+          },
+          "Sources/Rostrum/Charts/ComboChartData.swift": {
+            "bytes": 6367,
+            "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+          },
+          "Sources/Rostrum/Core/RostrumError.swift": {
+            "bytes": 2638,
+            "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+          },
+          "Sources/Rostrum/Core/Units.swift": {
+            "bytes": 4400,
+            "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+          },
+          "Sources/Rostrum/Drawing/ColorMath.swift": {
+            "bytes": 7821,
+            "sha256": "17a94eef58f88da1c73660a8a799a88f96848e9b7a0ab92a54b1d485e3949da0"
+          },
+          "Sources/Rostrum/Drawing/Drawing.swift": {
+            "bytes": 9190,
+            "sha256": "4c0071c020483df10d2a085f45b7c6e90047b81f17f4964dcc3c89d3a8c2533e"
+          },
+          "Sources/Rostrum/Drawing/DrawingColor.swift": {
+            "bytes": 2644,
+            "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+          },
+          "Sources/Rostrum/Drawing/Geometry.swift": {
+            "bytes": 9764,
+            "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+          },
+          "Sources/Rostrum/Drawing/GradientStops.swift": {
+            "bytes": 3049,
+            "sha256": "b19f439e21456d548b28fc6ba88574d681c1f48796975be9a079c017810936b2"
+          },
+          "Sources/Rostrum/Drawing/ImageSniffer.swift": {
+            "bytes": 4980,
+            "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+          },
+          "Sources/Rostrum/Fonts/ArabicJoining.swift": {
+            "bytes": 30446,
+            "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+          },
+          "Sources/Rostrum/Fonts/ArabicLayoutTables.swift": {
+            "bytes": 12199,
+            "sha256": "ef3ee50cd35203f05dd9915487885554a4a497a9363eae38e53b127b965c22a9"
+          },
+          "Sources/Rostrum/Fonts/ArabicTextShaper.swift": {
+            "bytes": 14792,
+            "sha256": "b0a6746efa2d8af574a147f491a4193fbbfb9974c65a2a7579abe2001209583c"
+          },
+          "Sources/Rostrum/Fonts/FontFaceKey.swift": {
+            "bytes": 411,
+            "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+          },
+          "Sources/Rostrum/Fonts/FontLayoutTables.swift": {
+            "bytes": 21038,
+            "sha256": "35d80e5425605015277cf22f292dc9a41fa76efd3742151246fbff18d55f969f"
+          },
+          "Sources/Rostrum/Fonts/FontLibrary.swift": {
+            "bytes": 3903,
+            "sha256": "8476bb030e432423f16c0edb286f38f04dbae30a0ecd20c378244acc9abe43eb"
+          },
+          "Sources/Rostrum/Fonts/FontMetrics.swift": {
+            "bytes": 19326,
+            "sha256": "54e8ee14057c9d8ca74841f8f588bab270a34c9c54167a30c8d85778a86665af"
+          },
+          "Sources/Rostrum/Fonts/ShapedGlyphRun.swift": {
+            "bytes": 1790,
+            "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+          },
+          "Sources/Rostrum/Fonts/TextMeasurer.swift": {
+            "bytes": 13069,
+            "sha256": "e710209482959e389c390762138f212e8b4cf613c302e512f98c865a963df477"
+          },
+          "Sources/Rostrum/Fonts/TextShaper.swift": {
+            "bytes": 14570,
+            "sha256": "62b6ce8c66005119b5afdf5426b94973a67315035f7acea531adb640b9cc45b3"
+          },
+          "Sources/Rostrum/OPC/ContentTypes.swift": {
+            "bytes": 9558,
+            "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+          },
+          "Sources/Rostrum/OPC/OPCArchive.swift": {
+            "bytes": 5031,
+            "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+          },
+          "Sources/Rostrum/OPC/OPCPackage.swift": {
+            "bytes": 25309,
+            "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+          },
+          "Sources/Rostrum/OPC/PackURI.swift": {
+            "bytes": 7837,
+            "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+          },
+          "Sources/Rostrum/OPC/Relationships.swift": {
+            "bytes": 6234,
+            "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+          },
+          "Sources/Rostrum/Presentation/AnnotationDependencies.swift": {
+            "bytes": 22975,
+            "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+          },
+          "Sources/Rostrum/Presentation/AnnotationImport.swift": {
+            "bytes": 7051,
+            "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+          },
+          "Sources/Rostrum/Presentation/BackgroundResolver.swift": {
+            "bytes": 9438,
+            "sha256": "f72fefe032c3de2409d05d87da6176d1b5f498911c8729b0889b214979a54f26"
+          },
+          "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": {
+            "bytes": 184324,
+            "sha256": "06f8e56195e344344d8bee27aad899c410adb077d6e57dff98a745e57c5090a2"
+          },
+          "Sources/Rostrum/Presentation/CommentEditing.swift": {
+            "bytes": 16323,
+            "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+          },
+          "Sources/Rostrum/Presentation/Comments.swift": {
+            "bytes": 13159,
+            "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+          },
+          "Sources/Rostrum/Presentation/Components.swift": {
+            "bytes": 12979,
+            "sha256": "689490e672547354244f18fd6174d3a3ade7ae22da4a06a491f78e5de04fcbe4"
+          },
+          "Sources/Rostrum/Presentation/DeckExport.swift": {
+            "bytes": 6157,
+            "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+          },
+          "Sources/Rostrum/Presentation/DeckMerge.swift": {
+            "bytes": 28553,
+            "sha256": "10ea1c340c8243f47ed97911bec1f075489234e3f4ef471208a6d28a2cd51b2a"
+          },
+          "Sources/Rostrum/Presentation/DeckOutline.swift": {
+            "bytes": 25678,
+            "sha256": "3f9633d4c30ca5e71844dff168c988f8d4f453f329ef4ce0f90b4bd753fb1c1a"
+          },
+          "Sources/Rostrum/Presentation/DeckStyle.swift": {
+            "bytes": 17952,
+            "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+          },
+          "Sources/Rostrum/Presentation/Design.swift": {
+            "bytes": 24770,
+            "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+          },
+          "Sources/Rostrum/Presentation/DocumentProperties.swift": {
+            "bytes": 13966,
+            "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+          },
+          "Sources/Rostrum/Presentation/FontEmbedding.swift": {
+            "bytes": 10965,
+            "sha256": "3f33d0e06b8f5bcbc8cd5a4685ff02b6189aa37eb278bdd5698f2d593727aa15"
+          },
+          "Sources/Rostrum/Presentation/HeadersFooters.swift": {
+            "bytes": 9042,
+            "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+          },
+          "Sources/Rostrum/Presentation/ImageFill.swift": {
+            "bytes": 2270,
+            "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+          },
+          "Sources/Rostrum/Presentation/Layouts.swift": {
+            "bytes": 13528,
+            "sha256": "998ecc2c1545f2b60a6853b69942f18044f333f20c4fc00f1c196aac52859171"
+          },
+          "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift": {
+            "bytes": 8498,
+            "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+          },
+          "Sources/Rostrum/Presentation/LegacyComments.swift": {
+            "bytes": 11421,
+            "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+          },
+          "Sources/Rostrum/Presentation/Media.swift": {
+            "bytes": 15487,
+            "sha256": "7f7d3ae0a6016de86a1ab2284bd4d1fe6bc5c34504075e28077da8b6928a1cb0"
+          },
+          "Sources/Rostrum/Presentation/MinimalTemplate.swift": {
+            "bytes": 17276,
+            "sha256": "b25543ced00747d3ecc8847c90d784e6bc96af8097f4b85ddef95cb8c948f2b5"
+          },
+          "Sources/Rostrum/Presentation/Notes.swift": {
+            "bytes": 6377,
+            "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+          },
+          "Sources/Rostrum/Presentation/NotesPageTemplate.swift": {
+            "bytes": 6555,
+            "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+          },
+          "Sources/Rostrum/Presentation/PictureCrop.swift": {
+            "bytes": 7482,
+            "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+          },
+          "Sources/Rostrum/Presentation/Pictures.swift": {
+            "bytes": 6988,
+            "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+          },
+          "Sources/Rostrum/Presentation/Presentation.swift": {
+            "bytes": 9572,
+            "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+          },
+          "Sources/Rostrum/Presentation/RenderDiagnostics.swift": {
+            "bytes": 19488,
+            "sha256": "ea8f72d7e0ac7efa2160087a75ebf9474204f2219f2ab5b5eb0c6b8f17f040ac"
+          },
+          "Sources/Rostrum/Presentation/RenderImageResources.swift": {
+            "bytes": 6776,
+            "sha256": "4180dbd839c28092562ae8cb11e418bd842f9744be733fe631040d4689e4b1c1"
+          },
+          "Sources/Rostrum/Presentation/RenderTextAttributes.swift": {
+            "bytes": 3289,
+            "sha256": "4e5fb8890ea3f5d36ccbb31629faeb7e06386b82498d2d6feb842801d420eb43"
+          },
+          "Sources/Rostrum/Presentation/RichTextLayout.swift": {
+            "bytes": 24009,
+            "sha256": "946c6d77ee6fbd41298ae9f8cddab00af0ed33a684cc3b2aac07e08770ced2a4"
+          },
+          "Sources/Rostrum/Presentation/SVGRenderer.swift": {
+            "bytes": 67184,
+            "sha256": "d879eb546632cf11e630fbd778f15a09a7b16533f2864279cf31c5bf6a559191"
+          },
+          "Sources/Rostrum/Presentation/Sections.swift": {
+            "bytes": 36663,
+            "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+          },
+          "Sources/Rostrum/Presentation/ShapeAppearance.swift": {
+            "bytes": 7063,
+            "sha256": "fb1d81b9eb718810de61b3488dc192866564b85bfccd72da236921aa8877484e"
+          },
+          "Sources/Rostrum/Presentation/ShapeKind.swift": {
+            "bytes": 3310,
+            "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+          },
+          "Sources/Rostrum/Presentation/ShapeTransform.swift": {
+            "bytes": 4301,
+            "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+          },
+          "Sources/Rostrum/Presentation/ShapeTypes.swift": {
+            "bytes": 8209,
+            "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+          },
+          "Sources/Rostrum/Presentation/Shapes.swift": {
+            "bytes": 18619,
+            "sha256": "17d4c2dde9f76e4fe609d2beb8a6dce70ac64c098308e306a8273553a3180ffc"
+          },
+          "Sources/Rostrum/Presentation/Slide.swift": {
+            "bytes": 4785,
+            "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+          },
+          "Sources/Rostrum/Presentation/SlideAnnotations.swift": {
+            "bytes": 6725,
+            "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+          },
+          "Sources/Rostrum/Presentation/SlideBuilders.swift": {
+            "bytes": 55901,
+            "sha256": "843336c23a5b45abaaf7ac9e9c8971128da98b40595cf1caa65aa7273cdde0c2"
+          },
+          "Sources/Rostrum/Presentation/SlideMasters.swift": {
+            "bytes": 3637,
+            "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+          },
+          "Sources/Rostrum/Presentation/Slides.swift": {
+            "bytes": 9938,
+            "sha256": "c171f2f8dd2450e2fab9fbd5c46ed0bfd41d22691ccc4e28b35f2e1956789708"
+          },
+          "Sources/Rostrum/Presentation/SmartArt.swift": {
+            "bytes": 30353,
+            "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+          },
+          "Sources/Rostrum/Presentation/TableBorderSegments.swift": {
+            "bytes": 3559,
+            "sha256": "b214314d0db933498e29ebb6d5a1126a54ac6f8bcf7e57844d1d4955f0b362de"
+          },
+          "Sources/Rostrum/Presentation/TableCellFormatting.swift": {
+            "bytes": 8396,
+            "sha256": "bca56b16d5ca590cc27524bc6b1e957356441ad7915dd5ea48a3d994c70f4427"
+          },
+          "Sources/Rostrum/Presentation/TableEditing.swift": {
+            "bytes": 9142,
+            "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+          },
+          "Sources/Rostrum/Presentation/TableGridSnapshot.swift": {
+            "bytes": 5695,
+            "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+          },
+          "Sources/Rostrum/Presentation/TableStyleImport.swift": {
+            "bytes": 12976,
+            "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+          },
+          "Sources/Rostrum/Presentation/TableStyleResolver.swift": {
+            "bytes": 19420,
+            "sha256": "15143de0cd5f9cd37408ccc91c80a8a01771f322cdac7d9613d26998b8bcee03"
+          },
+          "Sources/Rostrum/Presentation/TableStyling.swift": {
+            "bytes": 5763,
+            "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+          },
+          "Sources/Rostrum/Presentation/Tables.swift": {
+            "bytes": 12954,
+            "sha256": "42097757eedea4ec20dab76d867b8792327958668856e5d1dd8168a59d855bb5"
+          },
+          "Sources/Rostrum/Presentation/Text.swift": {
+            "bytes": 14362,
+            "sha256": "86f76d862dcb6b93ab19e4187675961344ef6cf1f1667be0a84271869736a19e"
+          },
+          "Sources/Rostrum/Presentation/Theme.swift": {
+            "bytes": 7043,
+            "sha256": "7c589fe27b359c228b2578f2afea7d12c5515910d6e2e5ed89de467e158d7ceb"
+          },
+          "Sources/Rostrum/Presentation/Validation.swift": {
+            "bytes": 2963,
+            "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+          },
+          "Sources/Rostrum/Schema/GeneratedSchema.swift": {
+            "bytes": 43214,
+            "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+          },
+          "Sources/Rostrum/Schema/OXMLHelpers.swift": {
+            "bytes": 6165,
+            "sha256": "02e6da44560c36e0e509d38d9b357f0b6ed1919b52ace21d2277cbafb7e6be8c"
+          },
+          "Sources/Rostrum/Schema/PresetGeometry.swift": {
+            "bytes": 13640,
+            "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+          },
+          "Sources/Rostrum/XML/XML.swift": {
+            "bytes": 39888,
+            "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+          },
+          "Sources/Rostrum/Zip/CRC32.swift": {
+            "bytes": 1909,
+            "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+          },
+          "Sources/Rostrum/Zip/Deflate.swift": {
+            "bytes": 7019,
+            "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+          },
+          "Sources/Rostrum/Zip/Inflate.swift": {
+            "bytes": 14849,
+            "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+          },
+          "Sources/Rostrum/Zip/ZipReader.swift": {
+            "bytes": 30445,
+            "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+          },
+          "Sources/Rostrum/Zip/ZipWriter.swift": {
+            "bytes": 15644,
+            "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+          },
+          "Tools/rostrum-bench/corpus.json": {
+            "bytes": 742,
+            "sha256": "0cb0b4041b568dd0ef2d0b51b923e761cc616856ccfbd18fb94035403e5863c4"
+          },
+          "Tools/rostrum-bench/main.swift": {
+            "bytes": 5127,
+            "sha256": "d2649fc044ec1e85fbfadfaa718a55fb3394ce61fb5889af4adfa9151c2e6436"
+          },
+          "Tools/rostrum-bench/run.py": {
+            "bytes": 4230,
+            "sha256": "568a04f1c98db22db7c887c365748ad2b5bfa4603a38104a889fc2eec360c22d"
+          }
+        },
+        "manifestSHA256": "e4b2e9fba64a885744bf78cb1c84248614297f6903c6aa1619af95b67fad80da",
+        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated"
+      }
+    }
+  },
+  "comparison": "Paired fresh-process construction with identical serialized PPTX output",
+  "declaredBuilds": {
+    "baseline": {
+      "command": "env CLANG_MODULE_CACHE_PATH=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --package-path /Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc --scratch-path .isolated-construction-e3fc-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
+      "flags": "--disable-sandbox -c release -debug-info-format none --product rostrum-bench -j 2; isolated scratch and module caches",
+      "revision": "e3fc99bc790d7d7c23ca2acacd8f5274d3bdf3cd"
+    },
+    "candidate": {
+      "command": "env CLANG_MODULE_CACHE_PATH=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --scratch-path .isolated-stage4-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
+      "flags": "--disable-sandbox -c release -debug-info-format none --product rostrum-bench -j 2; isolated scratch and module caches",
+      "revision": "6dd6eb6c14712bb40d22e9c92126fc93001ec424"
+    }
+  },
+  "finishedUTC": "2026-10-02T05:31:22.974037+00:00",
+  "invocations": [
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": true,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline.pptx",
+      "outputRetained": true,
+      "pair": 0,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 111.573875,
+          "first-slide": 1.609,
+          "initial-save": 39.211083,
+          "lazy-first-part": 1.6395,
+          "lazy-open": 5.563292,
+          "render": 0.591709,
+          "reopen": 43.825083,
+          "text-fitting": 0.608458,
+          "traversal": 60.837125,
+          "unchanged-save": 29.634958,
+          "warm-unchanged-save": 14.956834
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 350,
+        "sha256": "c06408aa1946527ebfc3d5bbc752ff7f1767f9ceb470b526a0da51ab39df558a"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": true,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-candidate.pptx",
+      "outputRetained": false,
+      "pair": 0,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 112.060459,
+          "first-slide": 1.555208,
+          "initial-save": 38.53325,
+          "lazy-first-part": 1.5845,
+          "lazy-open": 5.472208,
+          "render": 0.58725,
+          "reopen": 42.908667,
+          "text-fitting": 0.625959,
+          "traversal": 60.749833,
+          "unchanged-save": 29.121167,
+          "warm-unchanged-save": 14.691709
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 351,
+        "sha256": "dffce0084ffa889f0e45b77b9eac96d37ddeb965e265a7899f2308af7579554f"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline.pptx",
+      "outputRetained": true,
+      "pair": 0,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 110.476958,
+          "first-slide": 1.652333,
+          "initial-save": 39.124959,
+          "lazy-first-part": 1.703292,
+          "lazy-open": 5.427,
+          "render": 0.5945,
+          "reopen": 45.124083,
+          "text-fitting": 0.609542,
+          "traversal": 60.770875,
+          "unchanged-save": 29.247916,
+          "warm-unchanged-save": 14.838541
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 350,
+        "sha256": "6e2625745e318ac391f70b6126d607276eafa5cc70c8226079f01be3da687ca4"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate.pptx",
+      "outputRetained": true,
+      "pair": 0,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 113.423542,
+          "first-slide": 1.628083,
+          "initial-save": 38.644958,
+          "lazy-first-part": 1.937291,
+          "lazy-open": 5.442834,
+          "render": 0.599375,
+          "reopen": 43.470959,
+          "text-fitting": 0.640667,
+          "traversal": 60.065875,
+          "unchanged-save": 28.915291,
+          "warm-unchanged-save": 14.607916
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 355,
+        "sha256": "f3074a65e5dd99c2e502211317294f1a83bc17601a4521970907fc5ed8403359"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-candidate.pptx",
+      "outputRetained": false,
+      "pair": 1,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 110.88675,
+          "first-slide": 1.534,
+          "initial-save": 38.993791,
+          "lazy-first-part": 1.664125,
+          "lazy-open": 5.5845,
+          "render": 0.62425,
+          "reopen": 44.145292,
+          "text-fitting": 0.6095,
+          "traversal": 60.530625,
+          "unchanged-save": 28.766041,
+          "warm-unchanged-save": 14.708917
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 346,
+        "sha256": "4934b5d11e302d15eb1970a75cb337ef0f1c90d94cbc1481be86ed9b98a40460"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-baseline.pptx",
+      "outputRetained": false,
+      "pair": 1,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 110.57125,
+          "first-slide": 1.611917,
+          "initial-save": 39.42075,
+          "lazy-first-part": 1.656667,
+          "lazy-open": 5.600083,
+          "render": 0.61,
+          "reopen": 43.954,
+          "text-fitting": 0.613333,
+          "traversal": 60.822333,
+          "unchanged-save": 30.370333,
+          "warm-unchanged-save": 14.674459
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 346,
+        "sha256": "7431a62d849e5dfa4b20fff47db46ffe554e7ef45a3e157f85db46e0b18e7b66"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-baseline.pptx",
+      "outputRetained": false,
+      "pair": 2,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 110.757459,
+          "first-slide": 1.586834,
+          "initial-save": 39.328292,
+          "lazy-first-part": 1.618666,
+          "lazy-open": 5.467083,
+          "render": 0.830333,
+          "reopen": 43.850708,
+          "text-fitting": 0.607334,
+          "traversal": 61.028584,
+          "unchanged-save": 29.050208,
+          "warm-unchanged-save": 14.939625
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 355,
+        "sha256": "3e577653ff0a34419ff65f97459aba7d00e63452d73d51e8429e8e9939b2d19c"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-candidate.pptx",
+      "outputRetained": false,
+      "pair": 2,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 112.623542,
+          "first-slide": 1.562334,
+          "initial-save": 38.418834,
+          "lazy-first-part": 1.605209,
+          "lazy-open": 5.702458,
+          "render": 0.587084,
+          "reopen": 43.075333,
+          "text-fitting": 0.589125,
+          "traversal": 60.953167,
+          "unchanged-save": 28.90475,
+          "warm-unchanged-save": 14.395708
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 354,
+        "sha256": "341e1c1f626a08a702ea3c9e686cad7b18d4f6ea120fe4328fd1230d8a00e8db"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-candidate.pptx",
+      "outputRetained": false,
+      "pair": 3,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 112.233,
+          "first-slide": 1.753583,
+          "initial-save": 39.289875,
+          "lazy-first-part": 1.603875,
+          "lazy-open": 5.546792,
+          "render": 0.584125,
+          "reopen": 43.429292,
+          "text-fitting": 0.630333,
+          "traversal": 61.918,
+          "unchanged-save": 28.929584,
+          "warm-unchanged-save": 14.799541
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 349,
+        "sha256": "aa7427c487a4081f0b686ef7f57c713a97327d6ee323f88b24ec91ea16d49e71"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-baseline.pptx",
+      "outputRetained": false,
+      "pair": 3,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 109.270708,
+          "first-slide": 1.626833,
+          "initial-save": 38.609084,
+          "lazy-first-part": 1.650542,
+          "lazy-open": 5.595459,
+          "render": 0.588916,
+          "reopen": 43.5375,
+          "text-fitting": 0.651875,
+          "traversal": 62.11675,
+          "unchanged-save": 28.950291,
+          "warm-unchanged-save": 14.51175
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 351,
+        "sha256": "eb2b1185a6f1985a8e5ea42b46d3341a524b2c5936984c6e64bda036d216f96a"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-baseline.pptx",
+      "outputRetained": false,
+      "pair": 4,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 111.210416,
+          "first-slide": 1.56975,
+          "initial-save": 39.849083,
+          "lazy-first-part": 1.631667,
+          "lazy-open": 5.500083,
+          "render": 0.717458,
+          "reopen": 44.799334,
+          "text-fitting": 0.614417,
+          "traversal": 61.310834,
+          "unchanged-save": 29.38025,
+          "warm-unchanged-save": 15.227583
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 353,
+        "sha256": "5eb394c62edf3a84efd1ad4067ee52b7738844b5bce72bff5e78f1752bdcedaa"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-candidate.pptx",
+      "outputRetained": false,
+      "pair": 4,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 112.395334,
+          "first-slide": 1.602917,
+          "initial-save": 38.94575,
+          "lazy-first-part": 1.676208,
+          "lazy-open": 5.561542,
+          "render": 0.593292,
+          "reopen": 43.411459,
+          "text-fitting": 0.576,
+          "traversal": 61.282541,
+          "unchanged-save": 28.7605,
+          "warm-unchanged-save": 14.568541
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 349,
+        "sha256": "1b736aa568f3e5db61784d7c1b8aab0c51ed7dff5c2ba111987442818305bff4"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-candidate.pptx",
+      "outputRetained": false,
+      "pair": 5,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 112.883375,
+          "first-slide": 1.565834,
+          "initial-save": 38.753,
+          "lazy-first-part": 1.782375,
+          "lazy-open": 5.511583,
+          "render": 0.577125,
+          "reopen": 43.109834,
+          "text-fitting": 0.623,
+          "traversal": 60.549334,
+          "unchanged-save": 28.712667,
+          "warm-unchanged-save": 14.29975
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 348,
+        "sha256": "4de7f0ff074da56476fb59f1596d467d13761986507ba9e150df295b1d19a25e"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-baseline.pptx",
+      "outputRetained": false,
+      "pair": 5,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 111.3125,
+          "first-slide": 1.55875,
+          "initial-save": 39.403875,
+          "lazy-first-part": 1.641042,
+          "lazy-open": 5.554834,
+          "render": 0.628125,
+          "reopen": 45.086708,
+          "text-fitting": 0.654834,
+          "traversal": 61.185625,
+          "unchanged-save": 28.918209,
+          "warm-unchanged-save": 14.737541
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 352,
+        "sha256": "4d9e57d14c1b1fc23cc811f1af98c4028c2416afbdf4fbaaf305f900aeb1f5f0"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-baseline.pptx",
+      "outputRetained": false,
+      "pair": 6,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 111.016792,
+          "first-slide": 1.59275,
+          "initial-save": 39.181,
+          "lazy-first-part": 1.631042,
+          "lazy-open": 5.814875,
+          "render": 0.608416,
+          "reopen": 44.505375,
+          "text-fitting": 0.63425,
+          "traversal": 59.774625,
+          "unchanged-save": 29.171458,
+          "warm-unchanged-save": 14.747291
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 350,
+        "sha256": "f1d0bb00636e0557387f6fb744da65c6c1f586209b84705e3db6fa7553a8ce2a"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-candidate.pptx",
+      "outputRetained": false,
+      "pair": 6,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 115.122333,
+          "first-slide": 1.616292,
+          "initial-save": 39.926583,
+          "lazy-first-part": 1.716709,
+          "lazy-open": 5.652375,
+          "render": 0.620583,
+          "reopen": 43.582333,
+          "text-fitting": 0.600208,
+          "traversal": 61.563625,
+          "unchanged-save": 29.5825,
+          "warm-unchanged-save": 14.855417
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 353,
+        "sha256": "bfc3dd94b0e600b851da975e36cc4ffe773836f25bda7dce19d97b06f6c6ec68"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-candidate.pptx",
+      "outputRetained": false,
+      "pair": 7,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 115.644209,
+          "first-slide": 1.680584,
+          "initial-save": 39.204375,
+          "lazy-first-part": 1.707292,
+          "lazy-open": 5.52625,
+          "render": 0.603,
+          "reopen": 44.798958,
+          "text-fitting": 0.596584,
+          "traversal": 61.269916,
+          "unchanged-save": 28.801333,
+          "warm-unchanged-save": 14.860583
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 351,
+        "sha256": "4854ae3b4dbfa24ecc4f2604d81b273508478b7f56a87956ad2dc479a95e3c62"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-baseline.pptx",
+      "outputRetained": false,
+      "pair": 7,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 114.469834,
+          "first-slide": 1.698375,
+          "initial-save": 40.585,
+          "lazy-first-part": 1.806709,
+          "lazy-open": 5.846667,
+          "render": 0.614792,
+          "reopen": 45.830208,
+          "text-fitting": 0.611834,
+          "traversal": 63.071458,
+          "unchanged-save": 29.75525,
+          "warm-unchanged-save": 15.053917
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 351,
+        "sha256": "a228d413c098839eb7d51a0d64ffaf8546ffeb40a01a463688396fb0e6547cc8"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-baseline.pptx",
+      "outputRetained": false,
+      "pair": 8,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 114.5785,
+          "first-slide": 1.616625,
+          "initial-save": 39.691916,
+          "lazy-first-part": 1.62375,
+          "lazy-open": 5.720583,
+          "render": 0.633,
+          "reopen": 44.273625,
+          "text-fitting": 0.607458,
+          "traversal": 60.592917,
+          "unchanged-save": 28.978542,
+          "warm-unchanged-save": 14.704458
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 349,
+        "sha256": "f127647d2785225013ca75b95fb9de9e036d913264b7182f6998aa6fbacaaf18"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-candidate.pptx",
+      "outputRetained": false,
+      "pair": 8,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 111.506917,
+          "first-slide": 1.527625,
+          "initial-save": 38.554708,
+          "lazy-first-part": 1.692792,
+          "lazy-open": 5.463917,
+          "render": 0.599542,
+          "reopen": 43.303958,
+          "text-fitting": 0.616334,
+          "traversal": 60.423042,
+          "unchanged-save": 28.870709,
+          "warm-unchanged-save": 14.896167
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 355,
+        "sha256": "7ff0f5a975c931c653823fc50cbd89ff01389fab9a216740ab08a40ca9128d15"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-candidate.pptx",
+      "outputRetained": false,
+      "pair": 9,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 112.923584,
+          "first-slide": 1.578875,
+          "initial-save": 38.961583,
+          "lazy-first-part": 1.631709,
+          "lazy-open": 5.501458,
+          "render": 0.673667,
+          "reopen": 43.738542,
+          "text-fitting": 0.661334,
+          "traversal": 61.914084,
+          "unchanged-save": 29.158208,
+          "warm-unchanged-save": 14.41775
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 354,
+        "sha256": "d42a48f30a35e05a6c0425db522b3225911f9a5d24a97dc60ed341c7a2abbdec"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-baseline.pptx",
+      "outputRetained": false,
+      "pair": 9,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 111.055916,
+          "first-slide": 1.549917,
+          "initial-save": 39.130917,
+          "lazy-first-part": 1.626625,
+          "lazy-open": 5.449958,
+          "render": 0.619292,
+          "reopen": 43.834917,
+          "text-fitting": 0.62,
+          "traversal": 61.059208,
+          "unchanged-save": 28.911833,
+          "warm-unchanged-save": 14.567625
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 351,
+        "sha256": "edf71418674a83f703424262632b31c35d7d33750fb294d4f5b7fc7c90fe4c61"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-baseline.pptx",
+      "outputRetained": false,
+      "pair": 10,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 111.869459,
+          "first-slide": 1.578875,
+          "initial-save": 39.382584,
+          "lazy-first-part": 1.666292,
+          "lazy-open": 5.450833,
+          "render": 0.580875,
+          "reopen": 44.616333,
+          "text-fitting": 0.621708,
+          "traversal": 60.923125,
+          "unchanged-save": 29.120083,
+          "warm-unchanged-save": 14.660958
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 355,
+        "sha256": "fc0fdf84c6d845289be243e60f8d8d7ee7821b49a7b2d15bbecfe302bb5c0a79"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-baseline-stdout.json",
+      "variant": "baseline"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-candidate.pptx",
+      "outputRetained": false,
+      "pair": 10,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 112.672458,
+          "first-slide": 1.727042,
+          "initial-save": 38.718708,
+          "lazy-first-part": 1.66475,
+          "lazy-open": 5.670084,
+          "render": 0.609541,
+          "reopen": 44.344584,
+          "text-fitting": 0.599708,
+          "traversal": 60.674,
+          "unchanged-save": 28.952,
+          "warm-unchanged-save": 14.56675
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 347,
+        "sha256": "8ced4d17f63c2cd70f746d65d5d16ebad654dc84ad51617cde9f07749073a418"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-candidate.pptx",
+      "outputRetained": false,
+      "pair": 11,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 112.146333,
+          "first-slide": 1.59425,
+          "initial-save": 39.048125,
+          "lazy-first-part": 1.666791,
+          "lazy-open": 5.552292,
+          "render": 0.65,
+          "reopen": 44.635125,
+          "text-fitting": 0.683167,
+          "traversal": 60.928667,
+          "unchanged-save": 29.022,
+          "warm-unchanged-save": 14.510333
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-candidate-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 347,
+        "sha256": "b06236493d1a65a07d6495a789f6374abee0bf4829af50658372492ab37cc49f"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-candidate-stdout.json",
+      "variant": "candidate"
+    },
+    {
+      "command": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "slides-1000"
+      ],
+      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "excludedWarmup": false,
+      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-baseline.pptx",
+      "outputRetained": false,
+      "pair": 11,
+      "returnCode": 0,
+      "sample": {
+        "checksum": 1720,
+        "outputBytes": 1178991,
+        "phases": {
+          "construct": 112.806875,
+          "first-slide": 1.550542,
+          "initial-save": 39.755792,
+          "lazy-first-part": 1.677125,
+          "lazy-open": 5.74725,
+          "render": 0.626792,
+          "reopen": 42.897667,
+          "text-fitting": 0.596916,
+          "traversal": 61.14475,
+          "unchanged-save": 29.249333,
+          "warm-unchanged-save": 14.914416
+        },
+        "scenario": "slides-1000",
+        "slideCount": 1000
+      },
+      "scenario": "slides-1000",
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "stderrIdentity": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-baseline-stderr.log",
+      "stdoutIdentity": {
+        "bytes": 353,
+        "sha256": "0a23de9c90acd4e2dcb3f77af11281c672ca06babb315cb55d0388899a055c4b"
+      },
+      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-baseline-stdout.json",
+      "variant": "baseline"
+    }
+  ],
+  "machine": "arm64",
+  "method": {
+    "environment": "Inherited host environment; ROSTRUM_PROFILE_FONTS removed, ROSTRUM_BENCH_FONT explicit or removed, unique ROSTRUM_BENCH_OUTPUT per process",
+    "excludedWarmupPairsPerScenario": 1,
+    "fontUse": "Optional font affects text-fitting after rendering only",
+    "freshProcessPerSample": true,
+    "measuredPairsPerScenario": 12,
+    "order": "Measured pair 0 AB, pair 1 BA, alternating; warmups alternate separately; never concurrent",
+    "outputCapture": "Original rostrum-bench writes PPTX after all timed phases; capture hash and actual bytes, not render checksum",
+    "primaryPhase": "construct",
+    "registeredRenderingFonts": false,
+    "retention": "All stdout/stderr; initial baseline and first measured PPTX per variant/scenario; mismatching PPTXs retained",
+    "slideCounts": [
+      1000
+    ],
+    "tailLimit": "Observed quantile of a small sample, not a population-tail estimate",
+    "workingDirectory": "Each variant's supplied source root"
+  },
+  "observedSwiftToolchain": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "provenanceLimit": "Actual bytes are hashed; build commands/revisions and binary-to-source linkage remain caller-supplied provenance",
+  "python": "3.12.0 (v3.12.0:0fb18b02c8, Oct  2 2023, 09:45:56) [Clang 13.0.0 (clang-1300.0.29.30)]",
+  "scenarios": {
+    "slides-1000": {
+      "allSampleAndRevisionPPTXIdentitiesEqual": true,
+      "baselineOnlyPhases": [],
+      "candidateOnlyPhases": [],
+      "comparisons": {
+        "construct": {
+          "candidateOverBaselineMedianRatio": 1.0136308003679118,
+          "medianChangePercent": 1.3630800367911755,
+          "medianPairedRatio": 1.0123835179266298,
+          "pairedCandidateMinusBaselineMS": [
+            2.9465840000000014,
+            0.3155000000000001,
+            1.8660830000000033,
+            2.962292000000005,
+            1.1849180000000104,
+            1.570875000000001,
+            4.105541000000002,
+            1.1743749999999977,
+            -3.071583000000004,
+            1.867668000000009,
+            0.8029989999999998,
+            -0.6605420000000066
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            1.0266714802194319,
+            1.0028533637812722,
+            1.0168483731646463,
+            1.0271096623625795,
+            1.0106547393905982,
+            1.0141122964626614,
+            1.0369812613572909,
+            1.0102592531059318,
+            0.9731923266581426,
+            1.0168173661275282,
+            1.0071780002082606,
+            0.9941444880908189
+          ]
+        },
+        "first-slide": {
+          "candidateOverBaselineMedianRatio": 1.0055299687003079,
+          "medianChangePercent": 0.5529968700307863,
+          "medianPairedRatio": 1.009662696181084,
+          "pairedCandidateMinusBaselineMS": [
+            -0.024250000000000105,
+            -0.07791700000000001,
+            -0.02450000000000019,
+            0.12674999999999992,
+            0.033166999999999947,
+            0.007083999999999868,
+            0.023541999999999952,
+            -0.01779099999999989,
+            -0.08899999999999997,
+            0.02895800000000004,
+            0.14816699999999994,
+            0.04370799999999986
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            0.9853237815863993,
+            0.9516619031873229,
+            0.9845604518178964,
+            1.0779121151341287,
+            1.0211288421723204,
+            1.004544667201283,
+            1.0147807251608851,
+            0.9895246927209833,
+            0.9449470347173896,
+            1.0186835811207955,
+            1.0938434011558862,
+            1.0281888526721623
+          ]
+        },
+        "initial-save": {
+          "candidateOverBaselineMedianRatio": 0.9888416612301358,
+          "medianChangePercent": -1.1158338769864162,
+          "medianPairedRatio": 0.98331242924165,
+          "pairedCandidateMinusBaselineMS": [
+            -0.48000099999999435,
+            -0.42695899999999654,
+            -0.9094580000000008,
+            0.6807909999999993,
+            -0.9033330000000035,
+            -0.6508749999999992,
+            0.7455830000000034,
+            -1.380625000000002,
+            -1.137208000000001,
+            -0.1693339999999992,
+            -0.6638760000000019,
+            -0.7076670000000007
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            0.9877315909775141,
+            0.9891691812053298,
+            0.9768752225497105,
+            1.017632922863438,
+            0.977331147118241,
+            0.9834819545032056,
+            1.0190291978254766,
+            0.9659818898607859,
+            0.9713491281196907,
+            0.9956726288831923,
+            0.9831429039800943,
+            0.9821996503050423
+          ]
+        },
+        "lazy-first-part": {
+          "candidateOverBaselineMedianRatio": 1.0156201391184305,
+          "medianChangePercent": 1.562013911843052,
+          "medianPairedRatio": 1.0038136499270576,
+          "pairedCandidateMinusBaselineMS": [
+            0.23399900000000007,
+            0.007458000000000187,
+            -0.01345699999999983,
+            -0.046667000000000014,
+            0.04454099999999994,
+            0.14133300000000015,
+            0.08566699999999994,
+            -0.09941699999999987,
+            0.06904200000000005,
+            0.0050840000000000884,
+            -0.0015420000000001544,
+            -0.010334000000000065
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            1.1373804374117884,
+            1.0045018099593945,
+            0.9916863639564927,
+            0.9717262571930917,
+            1.0272978493773546,
+            1.0861239383269898,
+            1.0525228657508512,
+            0.9449734295893806,
+            1.042520092378753,
+            1.0031254898947206,
+            0.9990745919682744,
+            0.9938382648878288
+          ]
+        },
+        "lazy-open": {
+          "candidateOverBaselineMedianRatio": 0.9954073852588448,
+          "medianChangePercent": -0.4592614741155243,
+          "medianPairedRatio": 0.9947155857003549,
+          "pairedCandidateMinusBaselineMS": [
+            0.015834000000000792,
+            -0.015582999999999458,
+            0.23537500000000033,
+            -0.048667000000000016,
+            0.06145900000000015,
+            -0.043250999999999706,
+            -0.16249999999999964,
+            -0.32041699999999995,
+            -0.25666600000000006,
+            0.05150000000000077,
+            0.21925099999999986,
+            -0.19495800000000063
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            1.0029176340519625,
+            0.997217362671232,
+            1.0430531235761376,
+            0.9913024114733037,
+            1.0111741950076027,
+            0.9922138087294778,
+            0.9720544293729444,
+            0.9451966393844562,
+            0.9551328946717493,
+            1.009449614107118,
+            1.04022339337859,
+            0.9660780373221974
+          ]
+        },
+        "render": {
+          "candidateOverBaselineMedianRatio": 0.9744409618794183,
+          "medianChangePercent": -2.555903812058169,
+          "medianPairedRatio": 1.0000324411806805,
+          "pairedCandidateMinusBaselineMS": [
+            0.004874999999999963,
+            0.014249999999999985,
+            -0.24324899999999994,
+            -0.00479099999999999,
+            -0.124166,
+            -0.051000000000000045,
+            0.012167000000000039,
+            -0.011792000000000025,
+            -0.03345799999999999,
+            0.05437500000000006,
+            0.02866599999999997,
+            0.023208000000000006
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            1.0082001682085786,
+            1.0233606557377048,
+            0.7070464500387195,
+            0.9918647141527824,
+            0.8269362109001502,
+            0.9188059701492537,
+            1.0199978304318098,
+            0.980819529206626,
+            0.9471437598736178,
+            1.0878018769821023,
+            1.0493496879707338,
+            1.0370266372257464
+          ]
+        },
+        "reopen": {
+          "candidateOverBaselineMedianRatio": 0.9805617544689623,
+          "medianChangePercent": -1.943824553103768,
+          "medianPairedRatio": 0.9807889168091184,
+          "pairedCandidateMinusBaselineMS": [
+            -1.6531239999999983,
+            0.19129199999999713,
+            -0.7753749999999968,
+            -0.10820800000000474,
+            -1.387875000000001,
+            -1.9768740000000022,
+            -0.9230420000000024,
+            -1.03125,
+            -0.9696670000000012,
+            -0.09637499999999477,
+            -0.2717489999999998,
+            1.7374580000000037
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            0.9633649286568328,
+            1.0043520953724347,
+            0.982317845358392,
+            0.9975146023542921,
+            0.9690201867733123,
+            0.956153951182242,
+            0.979259988259845,
+            0.977498465640828,
+            0.9780983147415645,
+            0.9978014102319392,
+            0.9939092036093599,
+            1.0405023890926284
+          ]
+        },
+        "text-fitting": {
+          "candidateOverBaselineMedianRatio": 0.9984394217063736,
+          "medianChangePercent": -0.15605782936264356,
+          "medianPairedRatio": 0.9725465417514727,
+          "pairedCandidateMinusBaselineMS": [
+            0.031124999999999958,
+            -0.0038329999999999753,
+            -0.01820900000000003,
+            -0.02154199999999995,
+            -0.038417000000000034,
+            -0.03183400000000003,
+            -0.03404200000000002,
+            -0.015249999999999986,
+            0.008875999999999995,
+            0.04133399999999998,
+            -0.02200000000000002,
+            0.08625099999999997
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            1.051062929215706,
+            0.9937505400818153,
+            0.9700181448758014,
+            0.966953787152445,
+            0.9374740607763131,
+            0.9513861528265178,
+            0.9463271580607016,
+            0.975074938627144,
+            1.0146117097807585,
+            1.0666677419354837,
+            0.9646136128214531,
+            1.1444943677167305
+          ]
+        },
+        "traversal": {
+          "candidateOverBaselineMedianRatio": 0.9983130336241972,
+          "medianChangePercent": -0.16869663758027897,
+          "medianPairedRatio": 0.9966332107884021,
+          "pairedCandidateMinusBaselineMS": [
+            -0.7049999999999983,
+            -0.29170799999999986,
+            -0.07541700000000162,
+            -0.19875000000000398,
+            -0.028292999999997903,
+            -0.6362909999999999,
+            1.7890000000000015,
+            -1.8015419999999978,
+            -0.16987499999999756,
+            0.8548760000000044,
+            -0.24912499999999937,
+            -0.2160830000000047
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            0.9883990480637312,
+            0.9952039327396403,
+            0.9987642348051201,
+            0.996800379929729,
+            0.9995385318033678,
+            0.9896006455764732,
+            1.0299290878027256,
+            0.9714364935086803,
+            0.9971964544964884,
+            1.0140007711858956,
+            0.9959108302471352,
+            0.9964660416470751
+          ]
+        },
+        "unchanged-save": {
+          "candidateOverBaselineMedianRatio": 0.9919113478231774,
+          "medianChangePercent": -0.8088652176822642,
+          "medianPairedRatio": 0.9935601169105501,
+          "pairedCandidateMinusBaselineMS": [
+            -0.33262500000000017,
+            -1.6042919999999974,
+            -0.14545800000000142,
+            -0.020707000000001585,
+            -0.6197499999999998,
+            -0.20554200000000122,
+            0.41104199999999835,
+            -0.9539170000000006,
+            -0.1078329999999994,
+            0.2463749999999969,
+            -0.16808299999999932,
+            -0.22733300000000156
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            0.9886273948543889,
+            0.9471756862198384,
+            0.9949928757825073,
+            0.9992847394867291,
+            0.9789058976693528,
+            0.9928922984130863,
+            1.0140905538557585,
+            0.9679412204568941,
+            0.996278867308093,
+            1.0085215973681088,
+            0.9942279354080138,
+            0.9922277543901599
+          ]
+        },
+        "warm-unchanged-save": {
+          "candidateOverBaselineMedianRatio": 0.9895412325903705,
+          "medianChangePercent": -1.0458767409629477,
+          "medianPairedRatio": 0.9884345024159604,
+          "pairedCandidateMinusBaselineMS": [
+            -0.23062499999999986,
+            0.03445799999999899,
+            -0.5439169999999987,
+            0.28779100000000035,
+            -0.6590419999999995,
+            -0.4377910000000007,
+            0.10812599999999861,
+            -0.19333400000000012,
+            0.19170899999999946,
+            -0.14987499999999976,
+            -0.09420800000000007,
+            -0.40408299999999997
+          ],
+          "pairedCandidateOverBaselineRatios": [
+            0.9844577037594194,
+            1.0023481615233651,
+            0.9635923257779229,
+            1.0198315847502886,
+            0.9567205117187673,
+            0.970294162370778,
+            1.007331922859595,
+            0.9871572295768603,
+            1.0130374747576552,
+            0.9897117752550605,
+            0.9935742261863106,
+            0.9729065489389594
+          ]
+        }
+      },
+      "primaryComparison": {
+        "candidateOverBaselineMedianRatio": 1.0136308003679118,
+        "medianChangePercent": 1.3630800367911755,
+        "medianPairedRatio": 1.0123835179266298,
+        "pairedCandidateMinusBaselineMS": [
+          2.9465840000000014,
+          0.3155000000000001,
+          1.8660830000000033,
+          2.962292000000005,
+          1.1849180000000104,
+          1.570875000000001,
+          4.105541000000002,
+          1.1743749999999977,
+          -3.071583000000004,
+          1.867668000000009,
+          0.8029989999999998,
+          -0.6605420000000066
+        ],
+        "pairedCandidateOverBaselineRatios": [
+          1.0266714802194319,
+          1.0028533637812722,
+          1.0168483731646463,
+          1.0271096623625795,
+          1.0106547393905982,
+          1.0141122964626614,
+          1.0369812613572909,
+          1.0102592531059318,
+          0.9731923266581426,
+          1.0168173661275282,
+          1.0071780002082606,
+          0.9941444880908189
+        ]
+      },
+      "primaryPhase": "construct",
+      "referencePPTX": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline.pptx",
+      "representativePPTXs": [
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline.pptx",
+        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate.pptx"
+      ],
+      "serializedPPTX": {
+        "bytes": 1178991,
+        "sha256": "57a6613b4c9b82aef9045f60125e4524787f8dd82dcb2cc5bcdfd48d52271833"
+      },
+      "timings": {
+        "baseline": {
+          "construct": {
+            "count": 12,
+            "maxMS": 114.5785,
+            "medianMS": 111.13316599999999,
+            "minMS": 109.270708,
+            "observedP95MS": 114.5785,
+            "samplesMS": [
+              110.476958,
+              110.57125,
+              110.757459,
+              109.270708,
+              111.210416,
+              111.3125,
+              111.016792,
+              114.469834,
+              114.5785,
+              111.055916,
+              111.869459,
+              112.806875
+            ]
+          },
+          "first-slide": {
+            "count": 12,
+            "maxMS": 1.698375,
+            "medianMS": 1.589792,
+            "minMS": 1.549917,
+            "observedP95MS": 1.698375,
+            "samplesMS": [
+              1.652333,
+              1.611917,
+              1.586834,
+              1.626833,
+              1.56975,
+              1.55875,
+              1.59275,
+              1.698375,
+              1.616625,
+              1.549917,
+              1.578875,
+              1.550542
+            ]
+          },
+          "initial-save": {
+            "count": 12,
+            "maxMS": 40.585,
+            "medianMS": 39.393229500000004,
+            "minMS": 38.609084,
+            "observedP95MS": 40.585,
+            "samplesMS": [
+              39.124959,
+              39.42075,
+              39.328292,
+              38.609084,
+              39.849083,
+              39.403875,
+              39.181,
+              40.585,
+              39.691916,
+              39.130917,
+              39.382584,
+              39.755792
+            ]
+          },
+          "lazy-first-part": {
+            "count": 12,
+            "maxMS": 1.806709,
+            "medianMS": 1.645792,
+            "minMS": 1.618666,
+            "observedP95MS": 1.806709,
+            "samplesMS": [
+              1.703292,
+              1.656667,
+              1.618666,
+              1.650542,
+              1.631667,
+              1.641042,
+              1.631042,
+              1.806709,
+              1.62375,
+              1.626625,
+              1.666292,
+              1.677125
+            ]
+          },
+          "lazy-open": {
+            "count": 12,
+            "maxMS": 5.846667,
+            "medianMS": 5.5751465,
+            "minMS": 5.427,
+            "observedP95MS": 5.846667,
+            "samplesMS": [
+              5.427,
+              5.600083,
+              5.467083,
+              5.595459,
+              5.500083,
+              5.554834,
+              5.814875,
+              5.846667,
+              5.720583,
+              5.449958,
+              5.450833,
+              5.74725
+            ]
+          },
+          "render": {
+            "count": 12,
+            "maxMS": 0.830333,
+            "medianMS": 0.617042,
+            "minMS": 0.580875,
+            "observedP95MS": 0.830333,
+            "samplesMS": [
+              0.5945,
+              0.61,
+              0.830333,
+              0.588916,
+              0.717458,
+              0.628125,
+              0.608416,
+              0.614792,
+              0.633,
+              0.619292,
+              0.580875,
+              0.626792
+            ]
+          },
+          "reopen": {
+            "count": 12,
+            "maxMS": 45.830208,
+            "medianMS": 44.3895,
+            "minMS": 42.897667,
+            "observedP95MS": 45.830208,
+            "samplesMS": [
+              45.124083,
+              43.954,
+              43.850708,
+              43.5375,
+              44.799334,
+              45.086708,
+              44.505375,
+              45.830208,
+              44.273625,
+              43.834917,
+              44.616333,
+              42.897667
+            ]
+          },
+          "text-fitting": {
+            "count": 12,
+            "maxMS": 0.654834,
+            "medianMS": 0.613875,
+            "minMS": 0.596916,
+            "observedP95MS": 0.654834,
+            "samplesMS": [
+              0.609542,
+              0.613333,
+              0.607334,
+              0.651875,
+              0.614417,
+              0.654834,
+              0.63425,
+              0.611834,
+              0.607458,
+              0.62,
+              0.621708,
+              0.596916
+            ]
+          },
+          "traversal": {
+            "count": 12,
+            "maxMS": 63.071458,
+            "medianMS": 61.043896000000004,
+            "minMS": 59.774625,
+            "observedP95MS": 63.071458,
+            "samplesMS": [
+              60.770875,
+              60.822333,
+              61.028584,
+              62.11675,
+              61.310834,
+              61.185625,
+              59.774625,
+              63.071458,
+              60.592917,
+              61.059208,
+              60.923125,
+              61.14475
+            ]
+          },
+          "unchanged-save": {
+            "count": 12,
+            "maxMS": 30.370333,
+            "medianMS": 29.1457705,
+            "minMS": 28.911833,
+            "observedP95MS": 30.370333,
+            "samplesMS": [
+              29.247916,
+              30.370333,
+              29.050208,
+              28.950291,
+              29.38025,
+              28.918209,
+              29.171458,
+              29.75525,
+              28.978542,
+              28.911833,
+              29.120083,
+              29.249333
+            ]
+          },
+          "warm-unchanged-save": {
+            "count": 12,
+            "maxMS": 15.227583,
+            "medianMS": 14.742416,
+            "minMS": 14.51175,
+            "observedP95MS": 15.227583,
+            "samplesMS": [
+              14.838541,
+              14.674459,
+              14.939625,
+              14.51175,
+              15.227583,
+              14.737541,
+              14.747291,
+              15.053917,
+              14.704458,
+              14.567625,
+              14.660958,
+              14.914416
+            ]
+          }
+        },
+        "candidate": {
+          "construct": {
+            "count": 12,
+            "maxMS": 115.644209,
+            "medianMS": 112.648,
+            "minMS": 110.88675,
+            "observedP95MS": 115.644209,
+            "samplesMS": [
+              113.423542,
+              110.88675,
+              112.623542,
+              112.233,
+              112.395334,
+              112.883375,
+              115.122333,
+              115.644209,
+              111.506917,
+              112.923584,
+              112.672458,
+              112.146333
+            ]
+          },
+          "first-slide": {
+            "count": 12,
+            "maxMS": 1.753583,
+            "medianMS": 1.5985835,
+            "minMS": 1.527625,
+            "observedP95MS": 1.753583,
+            "samplesMS": [
+              1.628083,
+              1.534,
+              1.562334,
+              1.753583,
+              1.602917,
+              1.565834,
+              1.616292,
+              1.680584,
+              1.527625,
+              1.578875,
+              1.727042,
+              1.59425
+            ]
+          },
+          "initial-save": {
+            "count": 12,
+            "maxMS": 39.926583,
+            "medianMS": 38.9536665,
+            "minMS": 38.418834,
+            "observedP95MS": 39.926583,
+            "samplesMS": [
+              38.644958,
+              38.993791,
+              38.418834,
+              39.289875,
+              38.94575,
+              38.753,
+              39.926583,
+              39.204375,
+              38.554708,
+              38.961583,
+              38.718708,
+              39.048125
+            ]
+          },
+          "lazy-first-part": {
+            "count": 12,
+            "maxMS": 1.937291,
+            "medianMS": 1.6714995,
+            "minMS": 1.603875,
+            "observedP95MS": 1.937291,
+            "samplesMS": [
+              1.937291,
+              1.664125,
+              1.605209,
+              1.603875,
+              1.676208,
+              1.782375,
+              1.716709,
+              1.707292,
+              1.692792,
+              1.631709,
+              1.66475,
+              1.666791
+            ]
+          },
+          "lazy-open": {
+            "count": 12,
+            "maxMS": 5.702458,
+            "medianMS": 5.549542,
+            "minMS": 5.442834,
+            "observedP95MS": 5.702458,
+            "samplesMS": [
+              5.442834,
+              5.5845,
+              5.702458,
+              5.546792,
+              5.561542,
+              5.511583,
+              5.652375,
+              5.52625,
+              5.463917,
+              5.501458,
+              5.670084,
+              5.552292
+            ]
+          },
+          "render": {
+            "count": 12,
+            "maxMS": 0.673667,
+            "medianMS": 0.601271,
+            "minMS": 0.577125,
+            "observedP95MS": 0.673667,
+            "samplesMS": [
+              0.599375,
+              0.62425,
+              0.587084,
+              0.584125,
+              0.593292,
+              0.577125,
+              0.620583,
+              0.603,
+              0.599542,
+              0.673667,
+              0.609541,
+              0.65
+            ]
+          },
+          "reopen": {
+            "count": 12,
+            "maxMS": 44.798958,
+            "medianMS": 43.526646,
+            "minMS": 43.075333,
+            "observedP95MS": 44.798958,
+            "samplesMS": [
+              43.470959,
+              44.145292,
+              43.075333,
+              43.429292,
+              43.411459,
+              43.109834,
+              43.582333,
+              44.798958,
+              43.303958,
+              43.738542,
+              44.344584,
+              44.635125
+            ]
+          },
+          "text-fitting": {
+            "count": 12,
+            "maxMS": 0.683167,
+            "medianMS": 0.612917,
+            "minMS": 0.576,
+            "observedP95MS": 0.683167,
+            "samplesMS": [
+              0.640667,
+              0.6095,
+              0.589125,
+              0.630333,
+              0.576,
+              0.623,
+              0.600208,
+              0.596584,
+              0.616334,
+              0.661334,
+              0.599708,
+              0.683167
+            ]
+          },
+          "traversal": {
+            "count": 12,
+            "maxMS": 61.918,
+            "medianMS": 60.940917,
+            "minMS": 60.065875,
+            "observedP95MS": 61.918,
+            "samplesMS": [
+              60.065875,
+              60.530625,
+              60.953167,
+              61.918,
+              61.282541,
+              60.549334,
+              61.563625,
+              61.269916,
+              60.423042,
+              61.914084,
+              60.674,
+              60.928667
+            ]
+          },
+          "unchanged-save": {
+            "count": 12,
+            "maxMS": 29.5825,
+            "medianMS": 28.9100205,
+            "minMS": 28.712667,
+            "observedP95MS": 29.5825,
+            "samplesMS": [
+              28.915291,
+              28.766041,
+              28.90475,
+              28.929584,
+              28.7605,
+              28.712667,
+              29.5825,
+              28.801333,
+              28.870709,
+              29.158208,
+              28.952,
+              29.022
+            ]
+          },
+          "warm-unchanged-save": {
+            "count": 12,
+            "maxMS": 14.896167,
+            "medianMS": 14.5882285,
+            "minMS": 14.29975,
+            "observedP95MS": 14.896167,
+            "samplesMS": [
+              14.607916,
+              14.708917,
+              14.395708,
+              14.799541,
+              14.568541,
+              14.29975,
+              14.855417,
+              14.860583,
+              14.896167,
+              14.41775,
+              14.56675,
+              14.510333
+            ]
+          }
+        }
+      }
+    }
+  },
+  "schema": 1,
+  "sourceBinaryDriverAndFontUnchanged": true,
+  "startedUTC": "2026-10-02T05:31:13.307160+00:00",
+  "status": "completed"
+}

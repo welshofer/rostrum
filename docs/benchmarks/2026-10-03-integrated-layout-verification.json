@@ -1,0 +1,39 @@
+{
+  "baselineRevision": "cf1b8a0cec2cf680383cb683603785aeaa0f2011",
+  "integratedRevision": "7fca2ee746d03c74232a3079e453a5fe3cd7fe6a",
+  "workerRevision": "848628d44ed429ed29100220b9a2c453cdef5893",
+  "librarySourceTree": "1ba6169f2b0b010beea441e04ea8115e9d731cee",
+  "integratedLibrarySourceTree": "1ba6169f2b0b010beea441e04ea8115e9d731cee",
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf4-integrated",
+  "files": {
+    "candidate-Rostrum.o": "d1c58102341eb35012580f71b239c4f63c925c8b5d930bd65896698e38bd913c",
+    "candidate-bench": "3df026f619b567a994b14f9dd043c453e269d4559d28be94572cbe1306fd647e",
+    "candidate-extended-bench": "a89ff3ce997d11140dd350b48e8d059fae1ca784f67498e4253b9b916364c416",
+    "candidate-build.log": "af898a953736dd922523f6e12b597e30fb095ba414f7c628f748f9fdeeb75943",
+    "workload-identity.py": "29de4ad6e645d9f73b64b342e9c3d8c67749912de2f7ebd4c12810ae891399ec",
+    "identity.log": "30842c7cce856e5133ba16beb721ed91f855c6736cd1a256d0cc3c1db2361e48",
+    "paired.log": "532b6111a09c70581f7cebf61762928af71d41309db89942befb667608ac6cbd"
+  },
+  "baselineFiles": {
+    "baseline-Rostrum.o": "4e54243c71c0fba80a251195c1224cbbf417f1bf694441e9a6637b52dcb9df75",
+    "baseline-extended-bench": "39455d6d17672947c0af314581aa4adaa43e548bee0900fbba1d9c7629a54782"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Fonts/TextShaper.swift": "e3545c95b1d100dfe967d5e4426e03d686860c11c56fe1f92b6b5832ee94305d",
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "aab5747fe935b41b94084b07457816f93cdca3ce7bfae02c50661dc1c6d03e2c",
+    "Sources/Rostrum/Presentation/RenderDiagnostics.swift": "170b2789e3170b802753902453a3ff461110579d553cdb65bf33a8f54ab31916"
+  },
+  "driverSHA256": {
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792"
+  },
+  "buildCommand": "swift build -c release --product rostrum-bench --jobs 2",
+  "buildResult": "Build complete! (52.22 sec)",
+  "matchedDriverCompileCommand": "swiftc -swift-version 6 -O -I .build/perf4-integrated Tools/rostrum-bench/main.swift .build/perf4-integrated/candidate-Rostrum.o -o .build/perf4-integrated/candidate-extended-bench",
+  "identityCommand": "python3 .build/perf4-integrated/workload-identity.py",
+  "identityResult": "4 13 all workload artifacts byte-identical",
+  "sourceMatchCommand": "git diff 7fca2ee -- Sources/Rostrum Tools/rostrum-bench",
+  "sourceMatchResult": "Empty diff",
+  "measurementQuietWindow": "Root explicitly granted after library tests, Lectern focused/full tests and engine/reviewer work finished; root paused GUI/build and other worker confirmed docs/git only. Released immediately after paired command exited 0.",
+  "scope": "Measurement-only combined validation of ASCII break scan and tab/justification engine, using the existing four workloads. Small regressions observed; no source repair or new speed claim."
+}

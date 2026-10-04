@@ -1,0 +1,40 @@
+{
+  "baselineRevision": "57dfe35337fb466d14a995ebe1f7ed4f15735ad5",
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf3",
+  "files": {
+    "baseline-bench": "90ebc5ee040290d4359ba3e6e1e8ce81ef171f624e6b1ca8447f0ce62f10aa01",
+    "baseline-Rostrum.o": "4e091c4d93a7c80edef4e5f9fdc5c1637e5a7f02330ffc2f8645ddfb0688585f",
+    "baseline-extended-bench": "75934ce320fb5a81d756ec3c23c7aae874ed65a77b07134791c5f9e383c435a0",
+    "candidate-Rostrum.o": "39c3f4931accf96154261b3dcf28a517ba0c6cb49b9f6f1f95511c4dd39efa93",
+    "candidate-extended-bench": "586dc0a3f4886a259e814ac28357cf4d8453283f74c7848c1060471a24477392",
+    "profile.swift": "1163ba3575d8dd047269126a0f578dc9790accaad5b816e5b15ae87ff1481dd4",
+    "baseline-profile": "703e8c65567a7a4e4437b373d7199e9c7152da8a102e57e0dfc260ca45cae877",
+    "fallback-profile.txt": "7936453d27eafbc372800b74fd8442f13dbc8516c1ffe2319ddcd446e25fbb3c",
+    "registered-profile.txt": "83aaf0e786660eeb533b6cebe43417c82312790ec357e4c843b9fc04d7c73c0e",
+    "fit-profile.txt": "9ee5d96f536cd1168f227e65c5b8f985d0475509407b3f2bfbb25e2c535db14a",
+    "shaping-proof.swift": "ac04f4c9897785ebd20555bd2d571f36f047da8087f2d40087b27762d75bd877",
+    "baseline-shaping-proof": "3c3b0167b130b66cf98cceb0a9f7e49c6e4bd3b5cb722e6f05ec5ebd35337b84",
+    "focused-tests.log": "d33589a66d4323333d28aed5944d4c1985232f634fce08f83604f2d71200d6a4",
+    "full-tests.log": "8e4a0cd5d625670c81b6bc0a6e5e48b4aefa79196b660292f7c1c16b7393cf96",
+    "candidate-build.log": "0613d0abdc5d632ecc1a226da3992c2d7d2506b461ff748e0b2800814932e634",
+    "identity.py": "dc09819d9c1f0f9dd2b192268c9d8c49bc1adbf9a03d0e2480703957fc42efdc",
+    "identity.log": "2ad090a653a1fbc715171535a52ed63400762d8c219cd28ca252a331a92554b5",
+    "paired.log": "0ccd57531267e8812e8b47883b947067a0a3f102b650c2ef1c3610452243bbb1"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Fonts/TextShaper.swift": "931ecb141c6b8b8026b87449ce6f8abbcd6bf62c205a020b722a6b4b5642f6c5",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tests/RostrumTests/NormalizationPerformanceTests.swift": "00cecc0703e14e6b660f127c22067938c91dd4e05013637da745742901adacdf",
+    "Tests/RostrumTests/Fixtures/Typography/normalization-baseline.json": "ee90f8ea70917e6fe0afed84300391e7aeb8f5d88ecd9389608eb4d2a8faa3d2"
+  },
+  "buildCommand": "swift build -c release --product rostrum-bench --jobs 2",
+  "matchedDriverCompileCommand": "swiftc -swift-version 6 -O -I .build/perf3 Tools/rostrum-bench/main.swift .build/perf3/VARIANT-Rostrum.o -o .build/perf3/VARIANT-extended-bench",
+  "profileCommands": [
+    ".build/perf3/baseline-profile MODE & sample PID 3 -file .build/perf3/MODE-profile.txt (MODE=fallback,registered,fit)"
+  ],
+  "testCommand": "swift test --jobs 2",
+  "testResult": "1000 tests in 137 suites passed after 33.220 seconds",
+  "pythonPptxResult": "108 saved outputs reopened and table cells traversed",
+  "note": "Sampling profiles locate work and are not timing measurements. Matched timing receipt is separate.",
+  "measurementQuietWindow": "Root confirmed other worker build/test holds and held GUI work; released after paired command exited 0."
+}

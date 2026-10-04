@@ -1,0 +1,206 @@
+[
+  {
+    "name": "center-short",
+    "text": "A\tBeta gamma delta",
+    "tabs": [
+      [
+        220,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 30,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-overflow",
+    "text": "A\tBeta gamma delta epsilon",
+    "tabs": [
+      [
+        220,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 380,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-long",
+    "text": "A\tBeta gamma delta epsilon zeta eta theta iota kappa",
+    "tabs": [
+      [
+        220,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 30,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-long-nowrap",
+    "text": "A\tBeta gamma delta epsilon zeta eta theta iota kappa",
+    "tabs": [
+      [
+        220,
+        "ctr"
+      ]
+    ],
+    "options": {
+      "nowrap": true
+    },
+    "page": 0,
+    "x": 380,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-middle",
+    "text": "A\tBeta gamma delta epsilon zeta eta theta iota kappa",
+    "tabs": [
+      [
+        150,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 0,
+    "x": 30,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-middle-nowrap",
+    "text": "A\tBeta gamma delta epsilon zeta eta theta iota kappa",
+    "tabs": [
+      [
+        150,
+        "ctr"
+      ]
+    ],
+    "options": {
+      "nowrap": true
+    },
+    "page": 0,
+    "x": 380,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-prefix",
+    "text": "Alpha beta\tBeta gamma delta epsilon",
+    "tabs": [
+      [
+        220,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 1,
+    "x": 30,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-overflow-nowrap",
+    "text": "A\tBeta gamma delta epsilon",
+    "tabs": [
+      [
+        220,
+        "ctr"
+      ]
+    ],
+    "options": {
+      "nowrap": true
+    },
+    "page": 1,
+    "x": 380,
+    "y": 45,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-hard",
+    "text": "A\tBeta gamma delta epsilon\u000bE F",
+    "tabs": [
+      [
+        220,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 1,
+    "x": 30,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-boundary",
+    "text": "A\tBeta gamma delta epsilon zeta",
+    "tabs": [
+      [
+        180,
+        "ctr"
+      ]
+    ],
+    "options": {},
+    "page": 1,
+    "x": 380,
+    "y": 215,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-tabnext",
+    "text": "A\tBeta gamma delta epsilon\tZ",
+    "tabs": [
+      [
+        180,
+        "ctr"
+      ],
+      [
+        290,
+        "l"
+      ]
+    ],
+    "options": {},
+    "page": 1,
+    "x": 30,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  },
+  {
+    "name": "center-kerning",
+    "text": "A\tAVATAR office",
+    "tabs": [
+      [
+        180,
+        "ctr"
+      ]
+    ],
+    "options": {
+      "mixed": false
+    },
+    "page": 1,
+    "x": 380,
+    "y": 385,
+    "width": 300,
+    "height": 125
+  }
+]

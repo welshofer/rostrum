@@ -4,6 +4,8 @@ The demo application for **Rostrum** — prove the full loop in one window: a
 prompt, optional PDF grounding, a few intent parameters, and one of many bundled
 `design.md` styles go in; a native `.pptx` written entirely by Rostrum comes out.
 Everything runs on-device except text and optional image-provider calls. (Section references like §8.3
+`design.md` styles or a PowerPoint template go in; a native `.pptx` written entirely by Rostrum comes out.
+Everything runs on-device except the LLM call. (Section references like §8.3
 below cite the internal Lectern spec, which is not part of this repository.)
 
 ## Layout
@@ -15,6 +17,7 @@ Lectern/
 │   ├── DeckIR/              # lectern.deck/1 IR + validation + repair prompt
 │   ├── Export/              # deck → folder: Markdown + media + chart CSVs
 │   ├── Inspection/          # deck → counts, findings, digests, previews
+│   ├── LibraryLab/          # offline executable catalog + saved-file verification
 │   ├── Providers/           # LLMProvider protocol, DeckGenerator, image providers, errors
 │   ├── Rendering/           # DeckRenderer actor → Rostrum builders
 │   └── StyleCatalog/        # design.md catalog loader
@@ -22,6 +25,82 @@ Lectern/
 ```
 
 Rostrum is a **local path dependency** (`../`), resolving OQ-4.
+
+## Library Lab
+
+Choose **Library Lab** in the sidebar to exercise the library offline. Its 25
+configurable demonstrations cover drawing, text/fonts, paragraph justification, standard tab stops, tables, charts, SmartArt,
+notes, comments, sections, imports, layouts/themes/templates, design builders,
+media, packages and extraction. **Run All** saves and reopens every example,
+checks its content, renders previews and extracts its files. Use **Inspect Result**,
+**Inspect Before** and **All Files** to examine the real artifacts on macOS or iOS.
+No provider key is required. File checks and preview limitations are reported
+separately; passing a demo is not a claim of perfect PowerPoint rendering.
+
+The tab-stop demo shows left, center, right and period-decimal fields against
+visible guides, plus tab-aware Latin justification in text boxes and a table cell.
+Its bounded controls change the title, guide color, numeric row count and stop
+positions. The bundled regular DejaVu Sans face keeps measurements reproducible;
+RTL and locale-specific decimal behavior remain outside the demonstrated profile.
+
+The paragraph demo also reproduces two native-measured wrapping boundaries:
+a 0.02-point width change moves a character between lines, including across
+mixed-size runs. Its shorter fitted copies display the scale computed through
+both public fit paths; they do not claim PowerPoint chose that same scale.
+
+See the [coverage and verification record](../docs/LIBRARY-LAB-20261002.md).
+
+## Choose a PowerPoint template
+
+In **New Deck**, choose **Use PowerPoint template…** and select a `.potx` or `.pptx`.
+Lectern validates a local snapshot and shows its filename and available masters. The snapshot is kept for the current app session; the source file stays
+unchanged. Replace or remove the choice at any time before generation. A failed
+replacement keeps the previous selection, and generation waits for import to finish.
+
+The template takes precedence over the style catalog. New decks retain its theme,
+fonts, slide size, masters and layouts, while replacing its example slides and
+sections with generated content. The output is an editable `.pptx`. Template
+bytes are used locally and are not sent to the text or image provider.
+
+Generated content fills the selected master’s native placeholders and retains its
+background artwork. Content is fitted or split across readable continuation slides;
+a layout that cannot fit is reported instead of flattening the template. Remove the template to return to the selected catalog
+style. For an offline sample, run **Library Lab → Templates and document properties**
+and choose its `template.potx` from **All Files**.
+
+See the [template selection verification record](../docs/TEMPLATE-SELECTION-20261002.md)
+for file limits, regression coverage and native PowerPoint checks.
+
+## Feature integration and regression checks
+
+The inspector exposes table cells, speaker notes, section membership, modern
+comment threads and replies, resolved status, and legacy comments. Wide tables
+page through six columns with lazy rows. Export includes table text, notes,
+sections and complete comment text alongside the original media bytes.
+
+Preview geometry follows each slide's aspect ratio. macOS snapshots have bounded
+dimensions, queue depth and completion time; cache identity includes the full SVG
+and output size. Installed font lookup validates actual families and styles,
+preserves embedded faces, and reports unavailable metrics. Rendering limitations
+remain visible separately from schema findings.
+
+The deterministic [feature pipeline fixture](Tests/LecternCoreTests/Fixtures/FeaturePipeline/README.md)
+combines native/custom tables, rich text, image crops, notes, comments, sections,
+duplication and import. Run the core and app checks from the repository root:
+
+```sh
+swift test --package-path Lectern --jobs 2
+python3 Lectern/scripts/test-inspection-headless.py --all-app-tests
+Lectern/scripts/test-app.sh -parallel-testing-enabled NO
+```
+
+The Xcode Test action isolates defaults, library folders and diagnostics and skips
+keychain reads while exercising the production startup tasks. It also enables
+real WebKit portrait/4:3 snapshot tests. The headless harness exercises app state
+and view compilation; it does not replace native UI or WebKit checks. Normal app
+launches retain their usual storage and keychain behavior. See the
+[October 2 integration record](../docs/LECTERN-INTEGRATION-20261002.md) for exact
+results, live inspection/export evidence and remaining limits.
 
 ## How a deck gets made
 

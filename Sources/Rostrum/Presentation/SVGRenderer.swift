@@ -1,5 +1,20 @@
 import Foundation
 
+/// Locale-independent SVG numbers without invoking a locale/ICU formatter for
+/// every text coordinate. Four fractional digits exceed the layout precision.
+enum SVGNumber {
+    static func decimal(_ value: Double) -> String {
+        guard value.isFinite else { return "0" }
+        if value.rounded() == value, abs(value) < 1e15 { return String(Int64(value)) }
+        guard abs(value) < 9e14 else { return String(value) }
+        let units = Int64((value * 10000).rounded(.toNearestOrEven))
+        let magnitude = units.magnitude
+        let fraction = String(magnitude % 10000)
+        return (value.sign == .minus ? "-" : "") + String(magnitude / 10000)
+            + "." + String(repeating: "0", count: 4 - fraction.count) + fraction
+    }
+}
+
 // Headless slide → SVG rendering, for thumbnails and deterministic visual-diff
 // tests. Glyphs are delegated to the SVG viewer (no rasterizer), so this stays
 // zero-dependency. Coordinates are EMU (the viewBox is in EMU); font sizes are
@@ -18,8 +33,10 @@ struct SVGRenderer {
     let fonts: FontLibrary
     /// 1-based position of this slide, substituted into `slidenum` fields.
     let slideNumber: Int
+    var notesContext: NotesPageRenderContext? = nil
 
     private let emuPerPoint = 12700
+    private let diagnostics = RenderDiagnosticCollector()
 
     func render(pixelWidth: Int) throws -> (svg: String, problems: SlideRenderProblems) {
         // Not for the value: this is the one call that surfaces a malformed
@@ -27,6 +44,9 @@ struct SVGRenderer {
         // through `existingSpTree`, which swallows the parse with `try?` and
         // would render a silently blank slide instead.
         _ = try slidePart.dom()
+        diagnostics.reset()
+        diagnostics.location = FidelityLocation(slideIndex: slideNumber - 1,
+            partURI: slidePart.uri.description, path: notesContext == nil ? "/p:sld" : "/p:notes")
         // p:sldSz comes from the file too, and the aspect-ratio conversion below
         // goes through Int(_: Double), which traps when the double is out of
         // range — so bound the dimensions before dividing by them.
@@ -44,6 +64,25 @@ struct SVGRenderer {
         // live on the layout and the master, not on the slide.
         let (chain, inheritedProblems) = inheritanceChain()
         var problems = inheritedProblems
+        diagnostics.themeEffectOverrideProblem = themeEffectOverrideProblem(in: [slidePart, chain.layout].compactMap { $0 })
+        if notesContext == nil && (inheritedProblems.layoutUnresolved || inheritedProblems.masterUnresolved) {
+            diagnostics.record(.unresolvedInheritance, .missingResource, "The slide layout/master inheritance chain is incomplete.")
+        }
+        for owner in [slidePart, chain.layout, chain.master].compactMap({ $0 }) {
+            guard let background = (try? owner.dom())?.firstChild(named: "p:cSld")?.firstChild(named: "p:bg") else { continue }
+            diagnostics.inspect(background, owner: owner, slideIndex: slideNumber - 1,
+                path: "/p:cSld/p:bg", package: package)
+            if let reference = background.firstChild(named: "p:bgRef"), let index = reference[attribute: "idx"].flatMap(Int.init),
+               let format = (try? theme.part.dom())?.firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme") {
+                let list = index >= 1001 ? "a:bgFillStyleLst" : "a:fillStyleLst"
+                let offset = index >= 1001 ? index - 1001 : index - 1
+                if let fills = format.firstChild(named: list)?.childElements, fills.indices.contains(offset) {
+                    diagnostics.inspect(fills[offset], owner: theme.part, slideIndex: slideNumber - 1,
+                        path: "/a:theme/a:themeElements/a:fmtScheme/\(list)[\(offset + 1)]", package: package)
+                }
+            }
+            break
+        }
         body += box(0, 0, w, h,
                     fill: backgroundFill(chain: chain, box: (0, 0, w, h), defs: &defs) ?? "#FFFFFF")
 
@@ -55,13 +94,17 @@ struct SVGRenderer {
         }
 
         if let spTree = Slide.existingSpTree(of: slidePart) {
-            for child in spTree.childElements {
+            for (index, child) in spTree.childElements.enumerated() {
+                diagnostics.inspect(child, owner: slidePart, slideIndex: slideNumber - 1,
+                    path: "/p:cSld/p:spTree/\(child.name)[\(index + 1)]", package: package)
                 body += renderNode(child, ownedBy: slidePart, defs: &defs, problems: &problems)
             }
         }
 
+        defs += diagnostics.fontDefinitions
         let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\(pixelWidth)\" height=\"\(pxH)\" "
             + "viewBox=\"0 0 \(w) \(h)\"><defs>\(defs)</defs>\(body)</svg>"
+        problems.fidelityIssues += diagnostics.issues
         return (svg, problems)
     }
 
@@ -78,6 +121,7 @@ struct SVGRenderer {
     /// can tell a damaged deck apart from one we rendered wrong.
     private func inheritanceChain()
         -> (chain: (layout: Part?, master: Part?), problems: SlideRenderProblems) {
+        if let notesContext { return ((nil, notesContext.master), notesContext.problems) }
         guard let rel = slidePart.rels.first(ofType: RelType.slideLayout),
               let layout = try? package.part(
                 at: PackURI.resolve(target: rel.target, relativeTo: slidePart.uri.baseURI))
@@ -95,19 +139,12 @@ struct SVGRenderer {
     /// which is close enough for a thumbnail and far closer than white.
     private func backgroundFill(chain: (layout: Part?, master: Part?),
                                 box f: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String? {
-        for part in [slidePart, chain.layout, chain.master].compactMap({ $0 }) {
-            guard let bg = (try? part.dom())?
-                .firstChild(named: "p:cSld")?.firstChild(named: "p:bg") else { continue }
-            if let bgPr = bg.firstChild(named: "p:bgPr") {
-                if let blip = bgPr.firstChild(named: "a:blipFill"),
-                   let pattern = imagePattern(blip, ownedBy: part, box: f, defs: &defs) {
-                    return pattern
-                }
-                if let paint = paint(for: bgPr, box: f, defs: &defs) { return paint }
-            }
-            if let bgRef = bg.firstChild(named: "p:bgRef") { return colorHex(in: bgRef) }
+        let parts = [slidePart, chain.layout, chain.master].compactMap { $0 }
+        guard let selected = BackgroundResolver.fill(chain: parts, theme: theme) else { return nil }
+        if let blip = selected.paint.firstChild(named: "a:blipFill") {
+            return imagePattern(blip, ownedBy: selected.owner, box: f, defs: &defs)
         }
-        return nil
+        return paint(for: selected.paint, box: f, defs: &defs)
     }
 
     /// Whether the master's shapes are drawn — a layout or slide can switch
@@ -115,7 +152,8 @@ struct SVGRenderer {
     /// the master's furniture.
     private func showsMasterShapes(chain: (layout: Part?, master: Part?)) -> Bool {
         for part in [slidePart, chain.layout].compactMap({ $0 }) {
-            if (try? part.dom())?[attribute: "showMasterSp"] == "0" { return false }
+            let visibility = (try? part.dom())?[attribute: "showMasterSp"]
+            if visibility == "0" || (notesContext != nil && visibility == "false") { return false }
         }
         return true
     }
@@ -127,8 +165,10 @@ struct SVGRenderer {
     private func renderInherited(_ part: Part, defs: inout SVGDefinitions, problems: inout SlideRenderProblems) -> String {
         guard let tree = Slide.existingSpTree(of: part) else { return "" }
         var out = ""
-        for child in tree.childElements {
+        for (index, child) in tree.childElements.enumerated() {
             if Placeholders.phElement(of: child) != nil { continue }
+            diagnostics.inspect(child, owner: part, slideIndex: slideNumber - 1,
+                path: "/p:cSld/p:spTree/\(child.name)[\(index + 1)]", package: package)
             out += renderNode(child, ownedBy: part, defs: &defs, problems: &problems, inherited: true)
         }
         return out
@@ -258,7 +298,20 @@ struct SVGRenderer {
 
     private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
                              defs: inout SVGDefinitions, problems: inout SlideRenderProblems, textFlipH: Bool = false, textFlipV: Bool = false) -> String {
+        let sp = owner === slidePart ? notesContext?.effectiveShape(sp) ?? sp : sp
+        if notesContext != nil {
+            let location = diagnostics.location
+            if let context = notesContext, owner === slidePart, let master = context.master {
+                for style in context.styles(for: sp) {
+                    let wrapper = XML.Element("p:sp", children: [.element(style)])
+                    diagnostics.inspect(wrapper, owner: master, slideIndex: slideNumber - 1,
+                        path: "/p:notesMaster/" + style.name, package: package)
+                }
+            }
+            diagnostics.inspect(sp, owner: owner, slideIndex: slideNumber - 1, path: location.path, package: package)
+        }
         guard let spPr = sp.firstChild(named: "p:spPr") else { return "" }
+        diagnoseReferencedEffects(of: sp, properties: spPr)
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
         let preset = spPr.firstChild(named: "a:prstGeom")
@@ -270,6 +323,16 @@ struct SVGRenderer {
         } ?? paint(for: fillProperties, box: f, defs: &defs)
         let lineProperties = effectiveLine(spPr, reference: style?.firstChild(named: "a:lnRef"))
         let stroke = strokeAttrs(lineProperties)
+        if let notesContext, NotesPageRenderContext.placeholderType(sp) == "sldImg" {
+            if NotesPageRenderContext.suppressesSlideImage(spPr) { return out }
+            // Native Office notes images keep slide proportions and paint the
+            // unused image frame white, even when its shape has a:noFill.
+            out += geometry(prst, f, fill: fill ?? "#FFFFFF", stroke: "")
+            if prst != "rect" { diagnostics.record(.unsupportedGeometry, .approximation, "Slide-image placeholder clipping to non-rectangular geometry is not rendered.") }
+            out += "<image x=\"\(f.0)\" y=\"\(f.1)\" width=\"\(f.2)\" height=\"\(f.3)\" preserveAspectRatio=\"xMidYMid meet\" href=\"\(notesContext.thumbnail)\"/>"
+            // Draw the inherited/local image frame above the thumbnail.
+            if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
+        } else {
         if fill != nil || !stroke.isEmpty {
             out += SVGPresetGeometry.render(prst, adjustments: preset?.firstChild(named: "a:avLst"),
                                            frame: f, fill: fill ?? "none", stroke: stroke)
@@ -301,7 +364,81 @@ struct SVGRenderer {
                     flipV: ["1", "true"].contains(transform?[attribute: "flipV"] ?? ""), defs: &defs)
             } else { problems.record("Preview omitted a scaled or skewed outer shadow.") }
         }
+        }
         return out
+    }
+
+    /// Theme effects are not descendants of the shape inspected by the
+    /// diagnostic scanner. Report the active reference at the referring shape,
+    /// including inherited layout/master furniture. Direct effect properties
+    /// override the corresponding theme component, even when explicitly empty.
+    private func diagnoseReferencedEffects(of shape: XML.Element, properties: XML.Element) {
+        guard let reference = shape.firstChild(named: "p:style")?.firstChild(named: "a:effectRef") else { return }
+        let here = diagnostics.location
+        let location = FidelityLocation(slideIndex: here.slideIndex, partURI: here.partURI,
+            shapeID: here.shapeID, path: here.path + "/p:style/a:effectRef")
+        guard let index = reference[attribute: "idx"].flatMap(Int.init), index >= 0 else {
+            diagnostics.record(.unresolvedInheritance, .missingResource, "The shape's theme effect reference is invalid.", at: location)
+            return
+        }
+        guard index > 0 else { return }
+        if let problem = diagnostics.themeEffectOverrideProblem {
+            diagnostics.record(.unresolvedInheritance, .approximation, problem, at: location)
+            return
+        }
+        guard let styles = (try? theme.part.dom())?.firstChild(named: "a:themeElements")?
+                .firstChild(named: "a:fmtScheme")?.firstChild(named: "a:effectStyleLst")?.children(named: "a:effectStyle"),
+              styles.indices.contains(index - 1) else {
+            diagnostics.record(.unresolvedInheritance, .missingResource, "The shape's theme effect style could not be resolved.", at: location)
+            return
+        }
+        for component in styles[index - 1].childElements {
+            guard ["a:effectLst", "a:effectDag", "a:scene3d", "a:sp3d"].contains(component.name) else { continue }
+            let alternatives = ["a:effectLst", "a:effectDag"].contains(component.name)
+                ? ["a:effectLst", "a:effectDag"] : [component.name]
+            guard !alternatives.contains(where: { properties.firstChild(named: $0) != nil }),
+                  RenderDiagnosticCollector.hasEffectContent(component) else { continue }
+            diagnostics.record(.omittedEffect, .omission,
+                "Referenced theme effect style \(index) in \(theme.part.uri) is not rendered.", at: location)
+            break
+        }
+    }
+
+    /// This renderer does not yet apply themeOverride format schemes. Check
+    /// them once per render, so a shape cannot be certified from an inactive
+    /// master effect style. Color/font-only overrides do not replace effects.
+    private func themeEffectOverrideProblem(in owners: [Part]) -> String? {
+        let type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/themeOverride"
+        let drawingNamespace = "http://schemas.openxmlformats.org/drawingml/2006/main"
+        func scope(of element: XML.Element, inheriting parent: [String: String] = [:]) -> [String: String] {
+            var scope = parent
+            for attribute in element.attributes {
+                if attribute.name == "xmlns" { scope[""] = attribute.value }
+                else if attribute.name.hasPrefix("xmlns:") { scope[String(attribute.name.dropFirst(6))] = attribute.value }
+            }
+            return scope
+        }
+        func drawingName(_ element: XML.Element, in scope: [String: String]) -> String? {
+            let pieces = element.name.split(separator: ":", omittingEmptySubsequences: false)
+            guard pieces.count == 1 || pieces.count == 2 else { return nil }
+            let prefix = pieces.count == 2 ? String(pieces[0]) : ""
+            return scope[prefix] == drawingNamespace ? String(pieces.last!) : nil
+        }
+        for owner in owners {
+            let relationships = owner.rels.items.filter { $0.type == type }
+            guard !relationships.isEmpty else { continue }
+            guard relationships.count == 1, let reference = relationships.first,
+                  !reference.isExternal,
+                  let part = try? package.part(at: PackURI.resolve(target: reference.target, relativeTo: owner.uri.baseURI)),
+                  let root = try? part.dom(), drawingName(root, in: scope(of: root)) == "themeOverride" else {
+                return "The theme override referenced by \(owner.uri) cannot be resolved for shape effects."
+            }
+            let rootScope = scope(of: root)
+            if root.childElements.contains(where: { drawingName($0, in: scope(of: $0, inheriting: rootScope)) == "fmtScheme" }) {
+                return "The format-scheme theme override in \(part.uri) is not applied to shape effects by this preview."
+            }
+        }
+        return nil
     }
 
     /// A shape's frame, resolving placeholder inheritance when it carries no
@@ -321,175 +458,78 @@ struct SVGRenderer {
                 Int(r.width.rawValue), Int(r.height.rawValue))
     }
 
-    /// Ordered inherited list styles, merged per paragraph level. Partial
-    /// layout overrides must not discard the master's font or other defaults.
-    private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> [XML.Element] {
-        let chain = inheritanceChain().chain
-        let ph = Placeholders.phElement(of: sp)
-        let idx = ph?[attribute: "idx"].flatMap(Int.init) ?? 0
-        var type = ph?[attribute: "type"] ?? "obj"
-        var layoutShape: XML.Element?
-        if owner === slidePart, ph != nil, let layout = chain.layout {
-            layoutShape = Slide.existingSpTree(of: layout)?.childElements.first {
-                guard let candidate = Placeholders.phElement(of: $0) else { return false }
-                return (candidate[attribute: "idx"].flatMap(Int.init) ?? 0) == idx
-            }
-            type = layoutShape.flatMap { Placeholders.phElement(of: $0)?[attribute: "type"] } ?? type
+    /// The default run properties a placeholder's text inherits.
+    ///
+    /// Resolution order is PowerPoint's: the layout's matching placeholder
+    /// `a:lstStyle`, then the master's `p:txStyles` entry for that class of
+    /// placeholder. Without this every inherited run falls back to 18pt dark
+    /// grey, which is why a deck rebuilt on a template's layouts renders in the
+    /// renderer's defaults instead of the template's typography — the one thing
+    /// applying a template is supposed to change.
+    private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
+        guard owner === slidePart else { return nil }
+        let styles = notesContext?.styles(for: sp) ?? RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
+        guard !styles.isEmpty else { return nil }
+        let resolved = XML.Element("rostrum:inheritedStyles")
+        for style in styles { resolved.appendElement(style) }
+        return resolved
+    }
+
+    private func geometry(_ prst: String, _ f: (Int, Int, Int, Int), fill: String, stroke: String) -> String {
+        let (x, y, w, h) = f
+        switch prst {
+        case "ellipse":
+            return "<ellipse cx=\"\(x + w / 2)\" cy=\"\(y + h / 2)\" rx=\"\(w / 2)\" ry=\"\(h / 2)\" fill=\"\(fill)\"\(stroke)/>"
+        case "roundRect":
+            let r = Swift.min(w, h) / 8
+            return "<rect x=\"\(x)\" y=\"\(y)\" width=\"\(w)\" height=\"\(h)\" rx=\"\(r)\" fill=\"\(fill)\"\(stroke)/>"
+        default:
+            return box(x, y, w, h, fill: fill, stroke: stroke)
         }
-        let reduced = Slide.masterTypeReduction[type] ?? "body"
-        let bucket = ph == nil ? "p:otherStyle" : reduced == "title" ? "p:titleStyle" : reduced == "body" ? "p:bodyStyle" : "p:otherStyle"
-        let masterDOM = try? chain.master?.dom()
-        let masterShape = ph == nil ? nil : chain.master.flatMap { master in
-            Slide.existingSpTree(of: master)?.childElements.first {
-                guard let candidate = Placeholders.phElement(of: $0) else { return false }
-                return (Slide.masterTypeReduction[candidate[attribute: "type"] ?? "obj"] ?? "body") == reduced
-            }
-        }
-        return [(try? package.mainDocumentPart().dom())?.firstChild(named: "p:defaultTextStyle"),
-                masterDOM?.firstChild(named: "p:txStyles")?.firstChild(named: bucket),
-                masterShape?.firstChild(named: "p:txBody")?.firstChild(named: "a:lstStyle"),
-                layoutShape?.firstChild(named: "p:txBody")?.firstChild(named: "a:lstStyle")].compactMap { $0 }
     }
 
     // MARK: - Text (wrapped on real metrics when the typeface is registered,
     // else on a character-width estimate)
 
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
-                            inheriting inheritedStyles: [XML.Element] = [], fontReference: XML.Element? = nil, respectInsets: Bool = false) -> String {
-        if SVGRichText.needsLayout(txBody, inherited: inheritedStyles) {
-            return SVGRichText(theme: theme, fonts: fonts, slideNumber: slideNumber)
-                .render(txBody, frame: f, inherited: inheritedStyles, reference: fontReference)
-        }
-        let (x, y, w, h) = f
-        let bodyPr = txBody.firstChild(named: "a:bodyPr")
-        // Bounded like every other coordinate here: `x + inset(…)` traps.
-        func inset(_ name: String, _ fallback: Int) -> Int {
-            bodyPr?.coordinate(name) ?? fallback
-        }
-        let contentX = x + inset("lIns", 91_440)
-        let contentW = Swift.max(0, w - inset("lIns", 91_440) - inset("rIns", 91_440))
-        let paragraphs = txBody.children(named: "a:p")
-
-        // Laid out relative to the top of the box, so the finished block can be
-        // moved as a unit to honour `a:bodyPr/@anchor` below.
-        struct Line {
-            let x: Int, baseline: Int, size: Int
-            let fill: String, anchor: String, text: String
-            let bold: Bool
-            let typeface: String?
-        }
-        // A shape's font style reference overrides presentation/master defaults,
-        // while explicit text-body, paragraph and run formatting remains stronger.
-        let referenceDefaults = XML.Element("a:rPr")
-        if let color = fontReference?.childElements.first(where: { SVGPaint.colorElements.contains($0.name) }) {
-            referenceDefaults.appendElement(XML.Element("a:solidFill", children: [.element(color.deepCopy())]))
-        }
-        if let index = fontReference?[attribute: "idx"], ["major", "minor"].contains(index) {
-            referenceDefaults.appendElement(XML.Element("a:latin", attributes: [("typeface", index == "major" ? "+mj-lt" : "+mn-lt")]))
-        }
-        var lines: [Line] = []
-        var cursorY = 0
-        for p in paragraphs {
-            // Fields (slide number, date) are siblings of the runs and carry
-            // their own cached text; a renderer that reads only `a:r` silently
-            // drops the deck's furniture.
-            let pieces = p.childElements.filter { $0.name == "a:r" || $0.name == "a:fld" }
-            let text = pieces.map { piece -> String in
-                if piece.name == "a:fld", piece[attribute: "type"] == "slidenum" {
-                    // The cached value is whatever it was when written; the
-                    // real number is the position we're rendering from.
-                    return String(slideNumber)
-                }
-                return piece.firstChild(named: "a:t")?.textContent ?? ""
-            }.joined()
-            guard !text.isEmpty else { cursorY += emuPerPoint * 18; continue }
-            let level = p.firstChild(named: "a:pPr")?.boundedInt("lvl", in: 0...8) ?? 0
-            let defaults = mergedRunProperties(inheritedStyles.flatMap { style in
-                [style.firstChild(named: "a:defPPr")?.firstChild(named: "a:defRPr"),
-                 style.firstChild(named: "a:lvl\(level + 1)pPr")?.firstChild(named: "a:defRPr")]
-            })
-            let localStyle = txBody.firstChild(named: "a:lstStyle")
-            let localDefaults = mergedRunProperties([
-                localStyle?.firstChild(named: "a:defPPr")?.firstChild(named: "a:defRPr"),
-                localStyle?.firstChild(named: "a:lvl\(level + 1)pPr")?.firstChild(named: "a:defRPr")])
-            let rPr: XML.Element? = mergedRunProperties([defaults, referenceDefaults, localDefaults,
-                p.firstChild(named: "a:pPr")?.firstChild(named: "a:defRPr"), pieces.first?.firstChild(named: "a:rPr")])
-            // ST_TextFontSize is 1pt–4000pt in hundredths. The file can say
-            // anything, and `sz * 12700` on a large Int is an overflow crash.
-            let sizeHundredths = min(max(rPr?[attribute: "sz"].flatMap { Int($0) }
-                ?? defaults[attribute: "sz"].flatMap { Int($0) } ?? 1800, 100),
-                                     400_000)
-            let sizeEMU = sizeHundredths * emuPerPoint / 100
-            let bold = rPr?[attribute: "b"] == "1"
-                || (rPr?[attribute: "b"] == nil && defaults[attribute: "b"] == "1")
-            let color = rPr.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) }
-                ?? colorHex(in: defaults.firstChild(named: "a:solidFill"))
-                ?? colorHex(in: fontReference) ?? "#1A1A1A"
-            let align = p.firstChild(named: "a:pPr")?[attribute: "algn"]
-                ?? txBody.firstChild(named: "a:lstStyle")?.firstChild(named: "a:lvl\(level + 1)pPr")?[attribute: "algn"] ?? "l"
-            let alignX = respectInsets ? contentX : x, alignW = respectInsets ? contentW : w
-            let (anchorX, textAnchor) = align == "ctr" ? (alignX + alignW / 2, "middle")
-                : align == "r" ? (alignX + alignW, "end") : (alignX, "start")
-
-            // A run usually inherits its typeface from the theme rather than
-            // naming one, and `+mj-lt`/`+mn-lt` name it indirectly. Resolving
-            // both is what lets a deck with registered fonts take the measured
-            // path for the text it actually renders, not just for runs that
-            // happen to carry an explicit `a:latin`.
-            let typeface = explicitTypeface(rPr) ?? explicitTypeface(defaults)
-                ?? (fontReference?[attribute: "idx"] == "major" ? theme.majorFont
-                    : fontReference?[attribute: "idx"] == "minor" ? theme.minorFont : nil)
-                ?? resolvedTypeface(nil)
-            if pieces.count == 1, let typeface, let metrics = fonts.metrics(for: typeface) {
-                // Measured path: real word wrap and baseline placement —
-                // single-run paragraphs only, since a mixed-size/font
-                // paragraph measured at the first run's metrics would wrap
-                // wrong; those keep the estimated path below.
-                // Both shape-text paths use the same preset text region and
-                // body insets; measured metrics refine wrapping and baselines.
-                let lineX = textAnchor == "start" ? contentX : anchorX
-                let sizePt = Double(sizeEMU) / Double(emuPerPoint)
-                let wrapped = TextMeasurer(metrics).wrap(
-                    text, pointSize: sizePt, width: Double(contentW) / Double(emuPerPoint))
-                let lineH = Int((metrics.lineHeight(pointSize: sizePt) * Double(emuPerPoint)).rounded())
-                let ascent = Int((metrics.ascent(pointSize: sizePt) * Double(emuPerPoint)).rounded())
-                for line in wrapped {
-                    lines.append(Line(x: lineX, baseline: cursorY + ascent, size: sizeEMU,
-                                      fill: color, anchor: textAnchor, text: line, bold: bold,
-                                      typeface: typeface))
-                    cursorY += lineH
-                }
-            } else {
-                // No metrics for this typeface (or a mixed paragraph): estimate
-                // a character width from the font size and wrap within the
-                // available text region. This remains approximate typography.
-                for line in wrapEstimated(text, width: respectInsets ? contentW : w, sizeEMU: sizeEMU) {
-                    cursorY += sizeEMU
-                    lines.append(Line(x: anchorX, baseline: cursorY, size: sizeEMU,
-                                      fill: color, anchor: textAnchor, text: line, bold: bold,
-                                      typeface: typeface))
-                    cursorY += sizeEMU / 3
-                }
+                            inheriting defaults: XML.Element? = nil, fontReference: XML.Element? = nil, respectInsets: Bool = false,
+                            insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
+                            verticalAnchor: String? = nil) -> String {
+        var inherited = defaults.map { $0.name == "rostrum:inheritedStyles" ? $0.childElements : [$0] } ?? []
+        if let reference = fontReference {
+            let properties = XML.Element("a:defRPr")
+            if let color = reference.childElements.first(where: { SVGPaint.colorElements.contains($0.name) }) {
+                properties.appendElement(XML.Element("a:solidFill", children: [.element(color.deepCopy())]))
             }
+            if let index = reference[attribute: "idx"], ["major", "minor"].contains(index) {
+                properties.appendElement(XML.Element("a:latin", attributes: [("typeface", index == "major" ? "+mj-lt" : "+mn-lt")]))
+            }
+            let style = XML.Element("a:lstStyle")
+            for level in 1...9 { style.appendElement(XML.Element("a:lvl\(level)pPr", children: [.element(properties.deepCopy())])) }
+            inherited.insert(style, at: 0)
         }
-
-        // `a:bodyPr/@anchor`: bottom- and center-anchored bodies grow away from
-        // their anchored edge. Ignoring it put a wrapped bottom-anchored title
-        // straight through the content below it instead of up into the space
-        // the layout left for exactly that.
-        let offsetY: Int
-        switch bodyPr?[attribute: "anchor"] {
-        case "b": offsetY = y + h - cursorY
-        case "ctr": offsetY = y + (h - cursorY) / 2
-        default: offsetY = y
-        }
-        return lines.map { line in
-            textElement(line.text, x: line.x, baseline: line.baseline + offsetY,
-                        sizeEMU: line.size, fill: line.fill, anchor: line.anchor,
-                        bold: line.bold, typeface: line.typeface)
+        let layout = RichTextLayout(textBody: txBody,
+            width: Double(f.2) / Double(emuPerPoint), height: Double(f.3) / Double(emuPerPoint),
+            fonts: fonts, theme: theme, inheritedStyles: inherited,
+            slideNumber: slideNumber, maxLines: 64, insets: insets, verticalAnchor: verticalAnchor)
+        diagnostics.text(layout)
+        let decimal = SVGNumber.decimal
+        return layout.lines.map { line in
+            let baseline = Double(f.1) + line.baseline * Double(emuPerPoint)
+            var result = "<text transform=\"translate(\(f.0),\(decimal(baseline))) scale(\(emuPerPoint))\" xml:space=\"preserve\">"
+            for span in line.spans {
+                let run = span.run
+                let embedded = run.fontFamily.flatMap {
+                    diagnostics.embeddedFamily(for: FontFaceKey(family: $0, bold: run.bold, italic: run.italic), fonts: fonts)
+                }
+                result += "<tspan x=\"\(decimal(span.x))\""
+                result += diagnostics.textAttributes.attributes(for: run, family: embedded ?? run.fontFamily)
+                if span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
+                result += ">" + escape(run.text) + "</tspan>"
+            }
+            return result + "</text>"
         }.joined()
     }
-
 
     // MARK: - Text emission
 
@@ -657,6 +697,7 @@ struct SVGRenderer {
     private func renderPicture(_ pic: XML.Element, ownedBy owner: Part, defs: inout SVGDefinitions,
                                problems: inout SlideRenderProblems) -> String {
         guard let spPr = pic.firstChild(named: "p:spPr"), let blip = pic.firstChild(named: "p:blipFill") else { return "" }
+        diagnoseReferencedEffects(of: pic, properties: spPr)
         let f = frame(of: spPr)
         guard let fill = imagePattern(blip, ownedBy: owner, box: f, defs: &defs) else {
             problems.record("Preview could not resolve a picture or its crop bounds."); return ""
@@ -665,51 +706,55 @@ struct SVGRenderer {
         return SVGPresetGeometry.render(geom?[attribute: "prst"] ?? "rect", adjustments: geom?.firstChild(named: "a:avLst"), frame: f, fill: fill, stroke: strokeAttrs(spPr))
     }
 
-    /// A `data:` URL for an embedded image, resolved against the part that owns
-    /// the relationship — a layout's photo lives in the layout's rels, not the
-    /// slide's, so this cannot assume the slide.
-    private func imageData(rId: String, ownedBy owner: Part) -> String? {
-        guard let rel = owner.rels.relationship(withId: rId) else { return nil }
-        let target = PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)
-        guard let media = package.parts[target] else { return nil }
-        let ext = target.ext.lowercased()
-        let mime = ext == "jpg" || ext == "jpeg" ? "image/jpeg" : ext == "gif" ? "image/gif" : "image/png"
-        return "data:\(mime);base64,\(media.blob.base64EncodedString())"
+    /// Read supported embedded raster bytes without recoding. Unsupported
+    /// formats remain preserved in the package, but are not mislabeled PNGs.
+    private func imageResource(rId: String, ownedBy owner: Part) -> (url: String, info: ImageInfo)? {
+        guard let resource = diagnostics.images.resolve(rId, owner: owner, package: package),
+              let info = resource.info, let url = diagnostics.images.url(for: resource) else { return nil }
+        return (url, info)
     }
 
-    /// An `a:blipFill` as an SVG pattern, so a photographic background renders
-    /// as the photograph rather than as a neutral grey box.
+    /// Crop and stretch share ImagePlacement with picture editing. Tile uses
+    /// the image's physical native size, percentage scale, alignment, offsets
+    /// and optional alternating mirror tiles. SVG preserves intrinsic alpha.
     private func imagePattern(_ blip: XML.Element, ownedBy owner: Part,
-                              box f: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String? {
+                              box frame: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String? {
         guard let rId = blip.firstChild(named: "a:blip")?[attribute: "r:embed"],
-              let data = imageData(rId: rId, ownedBy: owner), f.2 > 0, f.3 > 0 else { return nil }
-        let id = defs.nextID("bg")
-        var pw = Double(f.2), ph = Double(f.3), ox = Double(f.0), oy = Double(f.1)
-        var content: String
-        if let tile = blip.firstChild(named: "a:tile"),
-           let rel = owner.rels.relationship(withId: rId),
-           let media = package.parts[PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)],
-           let info = ImageSniffer.sniff(media.blob) {
-            let sx = Double(tile.boundedInt("sx", in: 1...10_000_000) ?? 100_000) / 100_000
-            let sy = Double(tile.boundedInt("sy", in: 1...10_000_000) ?? 100_000) / 100_000
-            pw = min(Double(f.2) * 100, max(1, Double(info.pixelWidth) / info.dpiX * 914_400 * sx))
-            ph = min(Double(f.3) * 100, max(1, Double(info.pixelHeight) / info.dpiY * 914_400 * sy))
-            let align = tile[attribute: "algn"] ?? "tl"
-            if ["t", "ctr", "b"].contains(align) { ox += (Double(f.2) - pw) / 2 }
-            if ["tr", "r", "br"].contains(align) { ox += Double(f.2) - pw }
-            if ["l", "ctr", "r"].contains(align) { oy += (Double(f.3) - ph) / 2 }
-            if ["bl", "b", "br"].contains(align) { oy += Double(f.3) - ph }
-            ox += Double(tile.coordinate("tx") ?? 0); oy += Double(tile.coordinate("ty") ?? 0)
-            guard let image = SVGImagePlacement.render(blip, data: data, width: pw, height: ph) else { return nil }
-            content = image
+              let resource = imageResource(rId: rId, ownedBy: owner), frame.2 > 0, frame.3 > 0 else { return nil }
+        // Definitions only grow; byte count gives unique IDs without rescanning
+        // all preceding base64 image data for extended grapheme clusters.
+        let id = defs.nextID("image")
+        if let tile = blip.firstChild(named: "a:tile") {
+            let crop = PictureCrop.read(blip.firstChild(named: "a:srcRect"))
+            guard crop.valid else { return nil }
+            let sx = Double(tile.boundedInt("sx", in: 1...Int(Int32.max)) ?? 100000) / 100000
+            let sy = Double(tile.boundedInt("sy", in: 1...Int(Int32.max)) ?? 100000) / 100000
+            let width = Double(resource.info.nativeSize.width.rawValue) * sx * (1 - crop.left - crop.right)
+            let height = Double(resource.info.nativeSize.height.rawValue) * sy * (1 - crop.top - crop.bottom)
+            guard width.isFinite, height.isFinite, width >= 1, height >= 1 else { return nil }
             let flip = tile[attribute: "flip"] ?? "none"
-            if flip == "x" || flip == "xy" { content += "<g transform=\"translate(\(2 * pw) 0) scale(-1 1)\">\(image)</g>"; pw *= 2 }
-            if flip == "y" || flip == "xy" { content += "<g transform=\"translate(0 \(2 * ph)) scale(1 -1)\">\(content)</g>"; ph *= 2 }
+            let mirrorX = flip == "x" || flip == "xy", mirrorY = flip == "y" || flip == "xy"
+            let alignment = tile[attribute: "algn"] ?? "tl"
+            let ax: Double = ["t", "ctr", "b"].contains(alignment) ? 0.5 : ["tr", "r", "br"].contains(alignment) ? 1 : 0
+            let ay: Double = ["l", "ctr", "r"].contains(alignment) ? 0.5 : ["bl", "b", "br"].contains(alignment) ? 1 : 0
+            let x = Double(frame.0) + (Double(frame.2) - width) * ax + Double(tile.coordinate("tx") ?? 0)
+            let y = Double(frame.1) + (Double(frame.3) - height) * ay + Double(tile.coordinate("ty") ?? 0)
+            let imageWidth = width / (1 - crop.left - crop.right), imageHeight = height / (1 - crop.top - crop.bottom)
+            let clipID = "\(id)Clip"
+            defs += "<clipPath id=\"\(clipID)\"><rect width=\"\(width)\" height=\"\(height)\"/></clipPath>"
+            let image = "<g clip-path=\"url(#\(clipID))\"><image x=\"\(-crop.left * imageWidth)\" y=\"\(-crop.top * imageHeight)\" width=\"\(imageWidth)\" height=\"\(imageHeight)\" preserveAspectRatio=\"none\" href=\"\(resource.url)\"/></g>"
+            defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(x)\" y=\"\(y)\" width=\"\(width * (mirrorX ? 2 : 1))\" height=\"\(height * (mirrorY ? 2 : 1))\">\(image)"
+            if mirrorX { defs += "<g transform=\"translate(\(2 * width) 0) scale(-1 1)\">\(image)</g>" }
+            if mirrorY { defs += "<g transform=\"translate(0 \(2 * height)) scale(1 -1)\">\(image)</g>" }
+            if mirrorX && mirrorY { defs += "<g transform=\"translate(\(2 * width) \(2 * height)) scale(-1 -1)\">\(image)</g>" }
+            defs += "</pattern>"
         } else {
-            guard let image = SVGImagePlacement.render(blip, data: data, width: pw, height: ph) else { return nil }
-            content = image
+            guard let mapping = ImagePlacement(fill: blip, frame: frame) else { return nil }
+            let clipID = "\(id)Clip"
+            defs += "<clipPath id=\"\(clipID)\"><rect x=\"\(mapping.clip.x - Double(frame.0))\" y=\"\(mapping.clip.y - Double(frame.1))\" width=\"\(mapping.clip.width)\" height=\"\(mapping.clip.height)\"/></clipPath>"
+            defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(frame.0)\" y=\"\(frame.1)\" width=\"\(frame.2)\" height=\"\(frame.3)\">"
+                + "<g clip-path=\"url(#\(clipID))\"><image x=\"\(mapping.image.x - Double(frame.0))\" y=\"\(mapping.image.y - Double(frame.1))\" width=\"\(mapping.image.width)\" height=\"\(mapping.image.height)\" preserveAspectRatio=\"none\" href=\"\(resource.url)\"/></g></pattern>"
         }
-        defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(ox)\" y=\"\(oy)\" width=\"\(pw)\" height=\"\(ph)\" viewBox=\"0 0 \(pw) \(ph)\">\(content)</pattern>"
         return "url(#\(id))"
     }
 
@@ -724,7 +769,7 @@ struct SVGRenderer {
         let uri = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?[attribute: "uri"] ?? ""
         if uri.hasSuffix("/table"),
            let tbl = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?.firstChild(named: "a:tbl") {
-            return renderTable(tbl, x: x, y: y, width: w, height: h, defs: &defs)
+            return renderTable(tbl, ownedBy: owner, x: x, y: y, defs: &defs)
         }
         if uri.hasSuffix("/chart"), let plot = renderChart(gf, ownedBy: owner, x: x, y: y, w: w, h: h) {
             return plot
@@ -1156,110 +1201,288 @@ struct SVGRenderer {
         return Int(Swift.min(Swift.max(value.rounded(), -bound), bound))
     }
 
-    private func renderTable(_ tbl: XML.Element, x: Int, y: Int, width: Int, height: Int,
-                             defs: inout SVGDefinitions) -> String {
-        let cols = Array((tbl.firstChild(named: "a:tblGrid")?.children(named: "a:gridCol") ?? []).prefix(2048)).map { max(0, intAttr($0, "w")) }
-        let rows = Array(tbl.children(named: "a:tr").prefix(2048))
-        let heights = rows.map { max(0, intAttr($0, "h")) }
-        let totalW = cols.reduce(0, +), totalH = heights.reduce(0, +)
-        guard totalW > 0, totalH > 0, width > 0, height > 0 else { return "" }
-        let properties = tbl.firstChild(named: "a:tblPr")
-        let styleID = properties?.firstChild(named: "a:tableStyleId")?.textContent
-        let styleRoot = (try? package.mainDocumentPart().related(by: RelType.tableStyles, in: package).dom())
-            ?? package.parts.values.filter { $0.contentType == ContentType.tableStyles }.sorted { $0.uri.value < $1.uri.value }.first.flatMap { try? $0.dom() }
-        let style = styleRoot?.children(named: "a:tblStyle").first { $0[attribute: "styleId"] == styleID }
-        func enabled(_ key: String) -> Bool { ["1", "true"].contains(properties?[attribute: key] ?? "") }
-        var out = "", cy = 0
-        for (r, tr) in rows.enumerated() {
-            var cx = 0
-            for (c, tc) in tr.children(named: "a:tc").prefix(cols.count).enumerated() {
-                defer { cx += cols[c] }
-                if ["1", "true"].contains(tc[attribute: "hMerge"] ?? "") || ["1", "true"].contains(tc[attribute: "vMerge"] ?? "") { continue }
-                let cs = min(cols.count - c, tc.boundedInt("gridSpan", in: 1...2048) ?? 1)
-                let rs = min(rows.count - r, tc.boundedInt("rowSpan", in: 1...2048) ?? 1)
-                let cw = cols[c..<(c + cs)].reduce(0, +), rh = heights[r..<(r + rs)].reduce(0, +)
-                var regions = ["wholeTbl"]
-                if enabled("bandRow") { regions.append((r - (enabled("firstRow") ? 1 : 0)) % 2 == 0 ? "band1H" : "band2H") }
-                if enabled("bandCol") { regions.append((c - (enabled("firstCol") ? 1 : 0)) % 2 == 0 ? "band1V" : "band2V") }
-                if c == 0 && enabled("firstCol") { regions.append("firstCol") }
-                if c + cs == cols.count && enabled("lastCol") { regions.append("lastCol") }
-                if r == 0 && enabled("firstRow") { regions.append("firstRow") }
-                if r + rs == rows.count && enabled("lastRow") { regions.append("lastRow") }
-                let pr = XML.Element("a:tcPr"), defaults = XML.Element("a:defRPr")
-                let edges = [("lnL", "left"), ("lnR", "right"), ("lnT", "top"), ("lnB", "bottom")]
-                for region in regions {
-                    guard let block = style?.firstChild(named: "a:" + region) else { continue }
-                    if let cellStyle = block.firstChild(named: "a:tcStyle") {
-                        if let fill = cellStyle.firstChild(named: "a:fill")?.childElements.first {
-                            for name in ["a:solidFill", "a:noFill", "a:gradFill"] { pr.removeChildren(named: name) }
-                            pr.appendElement(fill.deepCopy())
-                        }
-                        for (edge, name) in edges {
-                            let borders = cellStyle.firstChild(named: "a:tcBdr")
-                            let inside = edge == "lnL" && c > 0 || edge == "lnR" && c + cs < cols.count ? "insideV" :
-                                edge == "lnT" && r > 0 || edge == "lnB" && r + rs < rows.count ? "insideH" : name
-                            if let ln = borders?.firstChild(named: "a:" + inside)?.firstChild(named: "a:ln") {
-                                pr.removeChildren(named: "a:" + edge)
-                                let copy = XML.Element("a:" + edge, attributes: ln.attributes.map { ($0.name, $0.value) }, children: ln.childElements.map { .element($0.deepCopy()) })
-                                pr.appendElement(copy)
-                            }
-                        }
+    private func renderTable(_ tbl: XML.Element, ownedBy owner: Part, x: Int, y: Int, defs: inout SVGDefinitions) -> String {
+        let table = Table(tbl: tbl, part: owner, package: package)
+        let grid = TableGridSnapshot(tbl)
+        let topology = try? grid.topology()
+        let resolver = TableStyleResolver(table: table, theme: theme)
+        var styles = TableStyleResolver.RenderSession(resolver)
+        let shadow = grid.columns.isEmpty || grid.rows.isEmpty ? nil : resolver.backgroundShadow()
+        if let definition = resolver.activeDefinition() {
+            let location = diagnostics.location
+            diagnostics.inspect(definition, owner: resolver.stylePart ?? owner, slideIndex: slideNumber - 1,
+                path: "/a:tblStyleLst/a:tblStyle[@styleId='\(table.styleID ?? "default")']", package: package,
+                approximatedTableEffect: shadow?.fromTheme == false
+                    ? definition.firstChild(named: "a:tblBg")?.firstChild(named: "a:effect")?.firstChild(named: "a:effectLst") : nil)
+            for reference in resolver.themeReferences(in: definition) {
+                diagnostics.inspect(reference.root, owner: theme.part, slideIndex: slideNumber - 1,
+                    path: reference.path, package: package, tableStyleReference: true,
+                    approximatedTableEffect: shadow?.fromTheme == true && reference.backgroundEffect
+                        ? reference.root.firstChild(named: "a:effectLst") : nil)
+            }
+            diagnostics.location = location
+        }
+        if topology == nil {
+            diagnostics.record(.unsupportedGeometry, .approximation, "Malformed table merges are previewed as separate physical cells.")
+        }
+        let widths = grid.columns.map { max(0, intAttr($0, "w")) }
+        let heights = grid.rows.map { max(0, intAttr($0, "h")) }
+        var xs = [0], ys = [0]
+        for width in widths { xs.append(xs.last! + width) }
+        for height in heights { ys.append(ys.last! + height) }
+        let rtl = table.rightToLeft
+        var out = "", diagonals = "", textContent = ""
+        var reportedDoubleJunction = false
+        struct BorderPaint {
+            let color: String; let width: Int; let pattern: String
+            let simpleSolid: Bool
+            let double: Bool
+        }
+        var borders = TableBorderSegments<BorderPaint>()
+        var maximumBorderWidth = 0
+        func borderPaint(_ line: XML.Element?) -> BorderPaint? {
+            guard let line, line.firstChild(named: "a:noFill") == nil,
+                  let color = colorHex(in: line.firstChild(named: "a:solidFill")) else { return nil }
+            let width = max(0, line.coordinate("w") ?? 12700)
+            guard width > 0 else { return nil }
+            maximumBorderWidth = max(maximumBorderWidth, width)
+            let pattern: String
+            switch line.firstChild(named: "a:prstDash")?[attribute: "val"] {
+            case "dot", "sysDot": pattern = "\(width) \(width * 2)"
+            case "dash": pattern = "\(width * 4) \(width * 3)"
+            case "sysDash": pattern = "\(width * 3) \(width * 2)"
+            case "lgDash": pattern = "\(width * 6) \(width * 2)"
+            case "dashDot", "sysDashDot": pattern = "\(width * 3) \(width * 2) \(width) \(width * 2)"
+            default: pattern = ""
+            }
+            let simpleSolid = (line.firstChild(named: "a:prstDash")?[attribute: "val"] ?? "solid") == "solid"
+                && (line[attribute: "cmpd"] ?? "sng") == "sng"
+                && (line[attribute: "cap"] ?? "flat") == "flat"
+                && (line[attribute: "algn"] ?? "ctr") == "ctr"
+                && ["a:custDash", "a:headEnd", "a:tailEnd", "a:round", "a:bevel"].allSatisfy {
+                    line.firstChild(named: $0) == nil
+                }
+            return BorderPaint(color: color, width: width, pattern: pattern, simpleSolid: simpleSolid,
+                               double: TableDoubleBorder.supports(line))
+        }
+        func lineSVG(_ paint: BorderPaint, _ endpoints: (Int, Int, Int, Int), offset: Int = 0,
+                     startExtension: Double = 0, endExtension: Double = 0) -> String {
+            if paint.double {
+                return TableDoubleBorder.svg(color: paint.color, width: paint.width, endpoints: endpoints,
+                                             startExtension: startExtension, endExtension: endExtension)
+            }
+            let dash = paint.pattern.isEmpty ? "" : " stroke-dasharray=\"\(paint.pattern)\""
+                + (offset == 0 ? "" : " stroke-dashoffset=\"\(offset)\"")
+            let coordinates: String
+            if startExtension == 0, endExtension == 0 {
+                coordinates = "x1=\"\(endpoints.0)\" y1=\"\(endpoints.1)\" x2=\"\(endpoints.2)\" y2=\"\(endpoints.3)\""
+            } else if endpoints.0 == endpoints.2 {
+                coordinates = "x1=\"\(endpoints.0)\" y1=\"\(SVGNumber.decimal(Double(endpoints.1) - startExtension))\" x2=\"\(endpoints.2)\" y2=\"\(SVGNumber.decimal(Double(endpoints.3) + endExtension))\""
+            } else {
+                coordinates = "x1=\"\(SVGNumber.decimal(Double(endpoints.0) - startExtension))\" y1=\"\(endpoints.1)\" x2=\"\(SVGNumber.decimal(Double(endpoints.2) + endExtension))\" y2=\"\(endpoints.3)\""
+            }
+            return "<line \(coordinates) stroke=\"\(paint.color)\" stroke-width=\"\(paint.width)\"\(dash)/>"
+        }
+        let background = resolver.background()
+        let tableFrame = (x, y, xs.last!, ys.last!)
+        let backgroundPaint: String?
+        if let blip = background.properties.firstChild(named: "a:blipFill") {
+            backgroundPaint = imagePattern(blip, ownedBy: background.owner, box: tableFrame, defs: &defs)
+        } else if let gradient = background.properties.firstChild(named: "a:gradFill") {
+            backgroundPaint = tableGradient(gradient, box: tableFrame, defs: &defs)
+        } else { backgroundPaint = paint(for: background.properties, box: tableFrame, defs: &defs) }
+        if let backgroundPaint {
+            out += box(x, y, tableFrame.2, tableFrame.3, fill: backgroundPaint, stroke: "")
+        }
+        for r in grid.rows.indices {
+            for c in grid.cells[r].indices where c < widths.count {
+                let region = topology?.region(row: r, column: c)
+                if let region, region.row != r || region.column != c { continue }
+                let rowEnd = r + (region?.rowSpan ?? 1), columnEnd = c + (region?.columnSpan ?? 1)
+                let cw = xs[columnEnd] - xs[c], rh = ys[rowEnd] - ys[r]
+                let cx = x + (rtl ? xs.last! - xs[columnEnd] : xs[c]), cy = y + ys[r]
+                let frame = (cx, cy, cw, rh)
+                let effective = styles.effective(row: r, column: c)
+                let properties = effective.properties
+                var fill: String?
+                if let blip = properties.firstChild(named: "a:blipFill") {
+                    fill = imagePattern(blip, ownedBy: effective.fillOwner, box: frame, defs: &defs)
+                } else if let gradient = properties.firstChild(named: "a:gradFill") {
+                    fill = tableGradient(gradient, box: frame, defs: &defs)
+                } else { fill = paint(for: properties, box: frame, defs: &defs) }
+                if let fill {
+                    out += box(cx, cy, cw, rh, fill: fill, stroke: "")
+                }
+                // PowerPoint assigns a shared edge to the earlier logical
+                // cell, including noFill and dash gaps. A merge continuation
+                // perpendicular to the edge does not donate it. Keep borders
+                // above every cell fill so a neighbor cannot erase half a line.
+                for edge in TableCellBorder.allCases {
+                    if edge == .left, c > 0,
+                       topology == nil || !TableMergeTopology.flag(grid.cells[r][c - 1], "vMerge") { continue }
+                    if edge == .top, r > 0, grid.cells[r - 1].indices.contains(c),
+                       topology == nil || !TableMergeTopology.flag(grid.cells[r - 1][c], "hMerge") { continue }
+                    let edgeRow = edge == .bottom ? rowEnd - 1 : r
+                    let edgeColumn = edge == .right ? columnEnd - 1 : c
+                    let direct = grid.cells[r][c].firstChild(named: "a:tcPr")?.firstChild(named: edge.rawValue)
+                    let edgeProperties = direct != nil || (edgeRow == r && edgeColumn == c) ? properties : styles.effective(row: edgeRow, column: edgeColumn).properties
+                    let paint = borderPaint(edgeProperties.firstChild(named: edge.rawValue))
+                    if paint?.double == true, edge == .diagonalDown || edge == .diagonalUp,
+                       !reportedDoubleJunction,
+                       [TableCellBorder.left, .right, .top, .bottom].contains(where: {
+                           borderPaint(properties.firstChild(named: $0.rawValue)) != nil
+                       }) {
+                        diagnostics.record(.unsupportedBorder, .approximation,
+                            "Double diagonal junctions with cell borders are approximated.")
+                        reportedDoubleJunction = true
                     }
-                    if let tx = block.firstChild(named: "a:tcTxStyle") {
-                        for attr in tx.attributes {
-                            if ["b", "i"].contains(attr.name) {
-                                if attr.value != "def" { defaults[attribute: attr.name] = attr.value == "on" ? "1" : "0" }
-                            } else { defaults[attribute: attr.name] = attr.value }
-                        }
-                        if let color = tx.childElements.first(where: { SVGPaint.colorElements.contains($0.name) }) {
-                            defaults.removeChildren(named: "a:solidFill")
-                            defaults.appendElement(XML.Element("a:solidFill", children: [.element(color.deepCopy())]))
-                        }
-                        if let ref = tx.firstChild(named: "a:fontRef"), let idx = ref[attribute: "idx"] {
-                            defaults.removeChildren(named: "a:latin")
-                            defaults.appendElement(XML.Element("a:latin", attributes: [("typeface", idx == "major" ? "+mj-lt" : "+mn-lt")]))
-                        }
+                    switch edge {
+                    case .left, .right:
+                        borders.append(axis: .vertical, boundary: edge == .left ? c : columnEnd,
+                            range: r..<rowEnd, paint: paint)
+                    case .top, .bottom:
+                        borders.append(axis: .horizontal, boundary: edge == .top ? r : rowEnd,
+                            range: c..<columnEnd, paint: paint)
+                    case .diagonalDown:
+                        if let paint { diagonals += lineSVG(paint, (cx, cy, cx + cw, cy + rh)) }
+                    case .diagonalUp:
+                        if let paint { diagonals += lineSVG(paint, (cx, cy + rh, cx + cw, cy)) }
                     }
                 }
-                if let direct = tc.firstChild(named: "a:tcPr") {
-                    for attr in direct.attributes { pr[attribute: attr.name] = attr.value }
-                    for child in direct.childElements {
-                        if ["a:solidFill", "a:noFill", "a:gradFill"].contains(child.name) {
-                            for name in ["a:solidFill", "a:noFill", "a:gradFill"] { pr.removeChildren(named: name) }
-                        } else { pr.removeChildren(named: child.name) }
-                        pr.appendElement(child.deepCopy())
+
+                if let body = grid.cells[r][c].firstChild(named: "a:txBody") {
+                    // Cell geometry overrides bodyPr without copying XML or
+                    // serializing margins only to parse them again in layout.
+                    func inset(_ margin: String, _ fallback: Int) -> Double {
+                        Double(properties.coordinate(margin) ?? fallback) / Double(emuPerPoint)
                     }
-                }
-                let fill = paint(for: pr, box: (cx, cy, cw, rh), defs: &defs) ?? "none"
-                out += box(cx, cy, cw, rh, fill: fill)
-                for (index, edge) in edges.enumerated() {
-                    guard let ln = pr.firstChild(named: "a:" + edge.0) else { continue }
-                    let wrapper = XML.Element("p:spPr", children: [.element(XML.Element("a:ln", attributes: ln.attributes.map { ($0.name, $0.value) }, children: ln.childElements.map { .element($0.deepCopy()) }))])
-                    let stroke = strokeAttrs(wrapper)
-                    guard !stroke.isEmpty else { continue }
-                    let x1 = index == 1 ? cx + cw : cx, y1 = index == 3 ? cy + rh : cy
-                    let x2 = index < 2 ? x1 : cx + cw, y2 = index < 2 ? cy + rh : y1
-                    out += "<line x1=\"\(x1)\" y1=\"\(y1)\" x2=\"\(x2)\" y2=\"\(y2)\"\(stroke)/>"
-                }
-                if let source = tc.firstChild(named: "a:txBody") {
-                    let body = source.deepCopy()
-                    let bp = body.firstChild(named: "a:bodyPr") ?? XML.Element("a:bodyPr")
-                    if body.firstChild(named: "a:bodyPr") == nil { body.appendElement(bp) }
-                    for (margin, inset, fallback) in [("marL", "lIns", 91440), ("marR", "rIns", 91440), ("marT", "tIns", 45720), ("marB", "bIns", 45720)] {
-                        bp[attribute: inset] = String(pr.coordinate(margin) ?? fallback)
+                    let insets = (left: inset("marL", 91440), top: inset("marT", 45720),
+                                  right: inset("marR", 91440), bottom: inset("marB", 45720))
+                    let anchor = properties[attribute: "anchor"] ?? "t"
+                    let direction = properties[attribute: "vert"] ?? "horz"
+                    // Rotation belongs to the cell, while text layout uses a
+                    // horizontal box with swapped dimensions.
+                    if direction == "vert" || direction == "vert270" {
+                        let transform = direction == "vert" ? "translate(\(cx + cw) \(cy)) rotate(90)" : "translate(\(cx) \(cy + rh)) rotate(-90)"
+                        textContent += "<g transform=\"\(transform)\">" + renderText(body, box: (0, 0, rh, cw), inheriting: effective.text,
+                            insets: insets, verticalAnchor: anchor) + "</g>"
+                    } else {
+                        textContent += renderText(body, box: frame, inheriting: effective.text,
+                            insets: insets, verticalAnchor: anchor)
                     }
-                    bp[attribute: "anchor"] = pr[attribute: "anchor"] ?? "t"
-                    let inherited = XML.Element("a:lstStyle", children: [.element(XML.Element("a:defPPr", children: [.element(defaults)]))])
-                    out += renderText(body, box: (cx, cy, cw, rh), inheriting: [inherited], respectInsets: true)
                 }
             }
-            cy += heights[r]
         }
-        return "<g transform=\"translate(\(x) \(y)) scale(\(Double(width) / Double(totalW)) \(Double(height) / Double(totalH)))\">\(out)</g>"
+        let segments = borders.resolved()
+        // The pinned Office v3 vector reference establishes this geometry and
+        // paint order for uniform-width, opaque solid grids. Keep the previous
+        // path for dashes, alpha, mixed widths and diagonals until comparable
+        // independent references establish their intersection behavior.
+        let uniformWidth = segments.first?.paint.width
+        let joinedGrid = topology != nil && widths.allSatisfy { $0 > 0 } && heights.allSatisfy { $0 > 0 }
+            && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
+            $0.paint.width == uniformWidth && $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
+        }
+        func paintGroup(_ segment: TableBorderSegments<BorderPaint>.Segment) -> Int {
+            let edge = segment.edge
+            let outer = edge.boundary == 0 || edge.boundary == (edge.axis == .vertical ? widths.count : heights.count)
+            return (outer ? 2 : 0) + (edge.axis == .vertical ? 0 : 1)
+        }
+        // Linear passes avoid sorting the potentially large grid. Interior
+        // verticals precede horizontals, then the outer vertical/horizontal rim.
+        for group in 0..<(joinedGrid ? 4 : 1) {
+          for segment in segments where !joinedGrid || paintGroup(segment) == group {
+            let edge = segment.edge, lower = segment.range.lowerBound, upper = segment.range.upperBound
+            let endpoints: (Int, Int, Int, Int)
+            let offset: Int
+            if edge.axis == .vertical {
+                let px = x + (rtl ? xs.last! - xs[edge.boundary] : xs[edge.boundary])
+                endpoints = (px, y + ys[lower], px, y + ys[upper])
+                offset = ys[lower] - ys[edge.range.lowerBound]
+            } else {
+                let py = y + ys[edge.boundary]
+                let left = rtl ? xs.last! - xs[upper] : xs[lower]
+                let right = rtl ? xs.last! - xs[lower] : xs[upper]
+                endpoints = (x + left, py, x + right, py)
+                offset = rtl ? xs[edge.range.upperBound] - xs[upper] : xs[lower] - xs[edge.range.lowerBound]
+            }
+            let joins = joinedGrid ? borders.terminalJoins(segment) : (lower: false, upper: false)
+            let halfWidth = Double(segment.paint.width) / 2
+            let start = edge.axis == .horizontal && rtl ? joins.upper : joins.lower
+            let end = edge.axis == .horizontal && rtl ? joins.lower : joins.upper
+            var startExtension = start ? halfWidth : 0, endExtension = end ? halfWidth : 0
+            if segment.paint.double {
+                // Collinear continuations suppress terminal extensions, but
+                // cannot suppress diagnostics at an interior crossing.
+                if !reportedDoubleJunction, borders.containsIntersection(segment, matching: { first, second in
+                    guard let paint = first ?? second else { return false }
+                    func plain(_ value: BorderPaint) -> Bool { value.simpleSolid && value.color.hasPrefix("#") }
+                    return !plain(paint) || second.map { !plain($0) || $0.width != paint.width } == true
+                }) {
+                    diagnostics.record(.unsupportedBorder, .approximation,
+                        "Double-border junctions with compound, dashed, translucent or unequal neighboring strokes are approximated.")
+                    reportedDoubleJunction = true
+                }
+                let neighbors = borders.terminalPaints(segment)
+                func extent(_ paints: [BorderPaint]) -> Double {
+                    guard let first = paints.first else { return 0 }
+                    guard paints.allSatisfy({ $0.simpleSolid && $0.color.hasPrefix("#") && $0.width == first.width }) else {
+                        if !reportedDoubleJunction {
+                            diagnostics.record(.unsupportedBorder, .approximation,
+                                "Double-border junctions with compound, dashed, translucent or unequal neighboring strokes are approximated.")
+                            reportedDoubleJunction = true
+                        }
+                        return 0
+                    }
+                    // The native Office PDF extends each component to the
+                    // outside of a perpendicular plain border, not by half
+                    // the double border's own (potentially wider) width.
+                    return Double(first.width) / 2
+                }
+                let lower = extent(neighbors.lower), upper = extent(neighbors.upper)
+                startExtension = edge.axis == .horizontal && rtl ? upper : lower
+                endExtension = edge.axis == .horizontal && rtl ? lower : upper
+            }
+            out += lineSVG(segment.paint, endpoints, offset: offset,
+                           startExtension: startExtension, endExtension: endExtension)
+          }
+        }
+        if let shadow {
+            // Table background effects apply to the combined fills and borders,
+            // before text. SourceAlpha preserves holes and translucent paint;
+            // an opaque rectangular substitute would invent a shadow there.
+            let id = "ts\(defs.description.utf8.count)"
+            let sigma = shadow.blurRadius / 2
+            let borderPad = Double(maximumBorderWidth) / 2
+            let pad = 3 * sigma + max(abs(shadow.dx), abs(shadow.dy)) + borderPad
+            func number(_ value: Double) -> String { SVGNumber.decimal(value) }
+            defs += "<filter id=\"\(id)\" filterUnits=\"userSpaceOnUse\" x=\"\(number(Double(x) - pad))\" y=\"\(number(Double(y) - pad))\" width=\"\(number(Double(tableFrame.2) + 2 * pad))\" height=\"\(number(Double(tableFrame.3) + 2 * pad))\" color-interpolation-filters=\"sRGB\">"
+                + "<feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"\(number(sigma))\" result=\"blur\"/>"
+                + "<feOffset in=\"blur\" dx=\"\(number(shadow.dx))\" dy=\"\(number(shadow.dy))\" result=\"offset\"/>"
+                + "<feFlood flood-color=\"#\(shadow.color.hex)\" flood-opacity=\"\(number(shadow.alpha))\" result=\"color\"/>"
+                + "<feComposite in=\"color\" in2=\"offset\" operator=\"in\" result=\"shadow\"/>"
+                + "<feMerge><feMergeNode in=\"shadow\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter>"
+            return "<g filter=\"url(#\(id))\">" + out + diagonals + "</g>" + textContent
+        }
+        return out + diagonals + textContent
     }
 
-    // Style references are one-based theme matrix indices. Resolve into a detached
-    // preview-only tree so phClr substitution never dirties the source package.
+    private func tableGradient(_ gradient: XML.Element, box frame: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String {
+        let id = defs.nextID("tg")
+        let stops = GradientStops.svg(gradient, theme: theme)
+        if gradient.firstChild(named: "a:path") != nil {
+            defs += "<radialGradient id=\"\(id)\">\(stops)</radialGradient>"
+        } else {
+            let degrees = Double(gradient.firstChild(named: "a:lin")?.boundedInt("ang", in: 0...21600000) ?? 0) / 60000
+            let radians = degrees * .pi / 180
+            let dx = cos(radians), dy = sin(radians)
+            defs += "<linearGradient id=\"\(id)\" x1=\"\((1 - dx) / 2)\" y1=\"\((1 - dy) / 2)\" x2=\"\((1 + dx) / 2)\" y2=\"\((1 + dy) / 2)\">\(stops)</linearGradient>"
+        }
+        return "url(#\(id))"
+    }
+
+    // MARK: - Paint / helpers
+
     private var formatScheme: XML.Element? {
         try? theme.part.dom().firstChild(named: "a:themeElements")?.firstChild(named: "a:fmtScheme")
     }
@@ -1317,24 +1540,18 @@ struct SVGRenderer {
 
     // MARK: - Paint / helpers
 
-    private func paint(for pr: XML.Element, box f: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String? {
+    private func paint(for pr: XML.Element, box f: (Int, Int, Int, Int), defs: inout SVGDefinitions, ownedBy owner: Part? = nil) -> String? {
         if let solid = pr.firstChild(named: "a:solidFill") { return colorHex(in: solid) }
         if let grad = pr.firstChild(named: "a:gradFill") { return gradientRef(grad, box: f, defs: &defs) }
-        if pr.firstChild(named: "a:blipFill") != nil { return "#DDDDDD" }   // image fill → neutral
+        if let blip = pr.firstChild(named: "a:blipFill") { return imagePattern(blip, ownedBy: owner ?? slidePart, box: f, defs: &defs) }
         if pr.firstChild(named: "a:noFill") != nil { return nil }
         return nil
     }
 
     private func gradientRef(_ grad: XML.Element, box f: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String {
-        let stops = grad.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? []
         let id = defs.nextID("g")
         let isRadial = grad.firstChild(named: "a:path") != nil
-        var stopSVG = ""
-        for gs in stops {
-            let pos = Double(gs.boundedInt("pos", in: 0...100_000) ?? 0) / 100_000
-            let color = SVGPaint.resolve(in: gs, theme: theme)
-            stopSVG += "<stop offset=\"\(pos)\" stop-color=\"\(color?.hex ?? "#000000")\" stop-opacity=\"\(color?.opacity ?? 1)\"/>"
-        }
+        let stopSVG = GradientStops.svg(grad, theme: theme)
         if isRadial {
             defs += "<radialGradient id=\"\(id)\">\(stopSVG)</radialGradient>"
         } else {
@@ -1387,16 +1604,7 @@ struct SVGRenderer {
     }
 
     private func escape(_ s: String) -> String {
-        var out = ""
-        for c in s {
-            switch c {
-            case "&": out += "&amp;"
-            case "<": out += "&lt;"
-            case ">": out += "&gt;"
-            default: out.append(c)
-            }
-        }
-        return out
+        SVGMarkup.escape(s)
     }
 }
 
@@ -1420,31 +1628,33 @@ public struct SlideRenderProblems: Sendable, Equatable {
 
     /// Content the preview omitted or approximated. The original file is unchanged.
     public var unsupportedContent: [String]
+    public var fidelityIssues: [FidelityIssue]
 
     public var messages: [String] {
         (layoutUnresolved ? ["Preview could not load the slide layout."] : [])
         + (masterUnresolved ? ["Preview could not load the slide master."] : [])
-        + unsupportedContent
+        + unsupportedContent + Array(Set(fidelityIssues.map(\.message))).sorted()
     }
 
     /// No detected problems; not a guarantee of PowerPoint rendering equivalence.
-    public var isEmpty: Bool { messages.isEmpty }
+    public var isEmpty: Bool { messages.isEmpty && fidelityIssues.isEmpty }
 
     fileprivate mutating func record(_ message: String) {
         if !unsupportedContent.contains(message) { unsupportedContent.append(message) }
     }
 
-    public init(layoutUnresolved: Bool = false, masterUnresolved: Bool = false, unsupportedContent: [String] = []) {
+    public init(layoutUnresolved: Bool = false, masterUnresolved: Bool = false, unsupportedContent: [String] = [], fidelityIssues: [FidelityIssue] = []) {
         self.layoutUnresolved = layoutUnresolved
         self.masterUnresolved = masterUnresolved
         self.unsupportedContent = unsupportedContent
+        self.fidelityIssues = fidelityIssues
     }
 }
 
 public extension Presentation {
     /// Render one slide to a self-contained SVG string (thumbnails / visual diff).
-    func renderSVG(slideAt index: Int, pixelWidth: Int = 1280) throws -> String {
-        try renderSVGReportingProblems(slideAt: index, pixelWidth: pixelWidth).svg
+    func renderSVG(slideAt index: Int, pixelWidth: Int = 1280, strictRendering: Bool = false) throws -> String {
+        try renderSVGReportingProblems(slideAt: index, pixelWidth: pixelWidth, strictRendering: strictRendering).svg
     }
 
     /// Render one slide, reporting broken inheritance and detected preview limits.
@@ -1455,11 +1665,14 @@ public extension Presentation {
     /// caller can tell a damaged deck apart from one rendered wrong. A slide
     /// with a broken chain still renders; it just comes back without whatever
     /// it would have inherited.
-    func renderSVGReportingProblems(slideAt index: Int, pixelWidth: Int = 1280)
+    func renderSVGReportingProblems(slideAt index: Int, pixelWidth: Int = 1280, strictRendering: Bool = false)
         throws -> (svg: String, problems: SlideRenderProblems) {
-        try SVGRenderer(slidePart: slides[index].part, slideSize: slideSize,
-                        theme: slides[index].master?.theme ?? theme, package: package, fonts: fonts,
+        let slide = try slides[index]
+        let result = try SVGRenderer(slidePart: slide.part, slideSize: slideSize,
+                        theme: slide.resolvedTheme, package: package, fonts: fonts,
                         slideNumber: index + 1).render(pixelWidth: pixelWidth)
+        if strictRendering && !result.problems.isEmpty { throw StrictRenderingError(problems: result.problems) }
+        return result
     }
 
     /// Write one `slide-N.svg` per slide into `directory`; returns the URLs.

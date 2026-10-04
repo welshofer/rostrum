@@ -19,6 +19,9 @@ schemes:
       config: Debug
     test:
       config: Debug
+      environmentVariables:
+        LECTERN_TEST_HOST: "1"
+        LECTERN_TEST_WEBKIT: "1"
       targets:
         - LecternAppTests
 targets:

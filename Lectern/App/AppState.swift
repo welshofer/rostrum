@@ -2,6 +2,12 @@ import Foundation
 import Observation
 import LecternCore
 
+struct LibraryStartupPaths: Sendable {
+    let library: URL
+    let legacy: URL?
+    let diagnostics: URL
+}
+
 // The app's single source of truth (@Observable — views observe it directly, no
 // ViewModels). Wired to the tested LecternCore pipeline. There is NO mock
 // provider: generation requires a real key (invariant I1: key lives only in the
@@ -39,6 +45,8 @@ final class AppState {
     var goal = "inform"
     var slideCount = 12
     var includeNotes = true
+    let templateSelection = TemplateSelectionModel()
+    private var templateImportRevision = UUID()
 
     /// Render diagrams (process/cycle/layers) as native PowerPoint SmartArt when
     /// on; as styled shapes when off. Default off — SmartArt is opt-in.
@@ -83,6 +91,12 @@ final class AppState {
 
     // MARK: Library — the decks already on disk
     private(set) var library: [DeckFile] = []
+    private(set) var isRefreshingLibrary = false
+    private var libraryTask: Task<Void, Never>?
+    private var libraryRuns = RunGate()
+    private(set) var libraryRevision = UUID()
+    private var startupWork: Task<Int, Never>?
+    private var publishedStartup = false
     /// Whether the library sheet is up. On `AppState` rather than local view
     /// state so the menu bar can open it from anywhere, which is the whole
     /// point of having a menu item for it.
@@ -122,31 +136,86 @@ final class AppState {
     /// that is filesystem I/O between the user and their first frame, for a
     /// job that is a no-op on every launch after the first.
     func start() async {
-        #if os(macOS)
-        let moved = await Task.detached { Self.migrateLegacyDecks() }.value
-        if moved > 0 {
+        // Share filesystem preparation across overlapping view tasks. Once a
+        // migration has begun it finishes safely; cancellation suppresses this
+        // caller's publication rather than racing another migration against it.
+        if startupWork == nil {
+            let library = injectedLibraryDirectory
+            let legacy = injectedLegacyDirectory
+            let diagnostics = injectedDiagnosticsDirectory
+            let prepare = preparingLibrary
+            startupWork = Task.detached(priority: .utility) {
+                let paths = LibraryStartupPaths(library: library ?? Self.decksDirectory(),
+                    legacy: legacy ?? Self.legacyDecksDirectory(),
+                    diagnostics: diagnostics ?? Self.diagnosticsDirectory())
+                return await prepare(paths)
+            }
+        }
+        let moved = await startupWork!.value
+        guard !Task.isCancelled else { return }
+        if !publishedStartup, moved > 0 {
             migrationNotice = "Moved \(moved) deck\(moved == 1 ? "" : "s") to Documents › Lectern."
         }
-        #endif
+        publishedStartup = true
         // Rejected drafts carry the prompt and whatever was lifted from an
         // attached PDF. Useful while a failure is being looked at; a liability
         // once it is not.
-        let diagnostics = Self.diagnosticsDirectory()
-        await Task.detached { DeckStorage.pruneDiagnostics(in: diagnostics) }.value
         if let path = preferences.string(forKey: "renderRecoverySnapshot"), FileManager.default.fileExists(atPath: path) {
             recoveryURL = URL(fileURLWithPath: path)
             if let source = preferences.string(forKey: "renderRecoverySource"), FileManager.default.fileExists(atPath: source) {
                 recoverySourceURL = URL(fileURLWithPath: source)
             }
         }
-        refreshLibrary()
+        await refreshLibraryAndWait()
     }
 
-    /// Re-read the decks folder. Cheap (one directory listing, no deck is
-    /// opened), so it runs whenever the library is shown rather than being
-    /// cached and going stale when a deck is added or removed in Finder.
-    func refreshLibrary() {
-        library = DeckLibrary.decks(in: Self.decksDirectory())
+    /// Directory enumeration and metadata reads can block on local/cloud
+    /// storage. Run them off-main; only the newest uncancelled scan publishes.
+    @discardableResult
+    func refreshLibrary() -> Task<Void, Never> {
+        libraryTask?.cancel()
+        let run = libraryRuns.begin()
+        let injectedDirectory = injectedLibraryDirectory
+        let read = readingLibrary
+        isRefreshingLibrary = true
+        let work = Task.detached(priority: .userInitiated) { [self] in
+            guard !Task.isCancelled else {
+                await self.finishLibraryRefresh(nil, run: run)
+                return
+            }
+            let directory = injectedDirectory ?? Self.decksDirectory()
+            let decks = await read(directory)
+            await self.finishLibraryRefresh(Task.isCancelled ? nil : decks, run: run)
+        }
+        libraryTask = work
+        return work
+    }
+
+    /// SwiftUI task cancellation also cancels its owned refresh request.
+    func refreshLibraryAndWait() async {
+        guard !Task.isCancelled else { return }
+        let work = refreshLibrary()
+        await withTaskCancellationHandler {
+            await work.value
+        } onCancel: {
+            work.cancel()
+        }
+    }
+
+    private func finishLibraryRefresh(_ decks: [DeckFile]?, run: Int) {
+        guard libraryRuns.isCurrent(run) else { return }
+        let cancelled = libraryTask?.isCancelled ?? true
+        libraryRuns.abandon()
+        libraryTask = nil
+        isRefreshingLibrary = false
+        guard !cancelled, let decks else { return }
+        var prior: [URL: DeckFile] = [:]
+        for deck in library { prior[deck.url] = deck }
+        var current: [URL: DeckFile] = [:]
+        for deck in decks { current[deck.url] = deck }
+        libraryRevision = UUID()
+        library = decks
+        slideCounts = slideCounts.filter { prior[$0.key] == current[$0.key] && current[$0.key] != nil }
     }
 
     /// Slide counts, keyed by deck. The list view shows them in a column, which
@@ -183,6 +252,7 @@ final class AppState {
         for decks: [DeckFile],
         reading count: @Sendable @escaping (DeckFile) async -> Int?
     ) async {
+        let revision = libraryRevision
         let pending = decks.filter { slideCounts[$0.url] == nil }
         guard !pending.isEmpty else { return }
 
@@ -196,12 +266,12 @@ final class AppState {
             }
         }
 
-        guard !counts.isEmpty else { return }
+        guard !Task.isCancelled, libraryRevision == revision, !counts.isEmpty else { return }
         slideCounts.merge(counts) { _, new in new }
     }
 
     func deleteFromLibrary(_ deck: DeckFile) {
-        try? DeckLibrary.delete(deck)
+        try? deletingDeck(deck)
         refreshLibrary()
     }
 
@@ -230,6 +300,17 @@ final class AppState {
     /// checked against this first — see `RunGate`.
     private var runs = RunGate()
 
+    // Explicit dependencies keep tests out of the user's preferences, keychain
+    // and document library; omitted arguments preserve the app's usual behavior.
+    private let skipKeychain: Bool
+    private let injectedLibraryDirectory: URL?
+    private let injectedLegacyDirectory: URL?
+    private let injectedDiagnosticsDirectory: URL?
+    private let deletingDeck: (DeckFile) throws -> Void
+    private let readingLibrary: @Sendable (URL) async -> [DeckFile]
+    private let preparingLibrary: @Sendable (LibraryStartupPaths) async -> Int
+    private var libraryDirectory: URL { injectedLibraryDirectory ?? Self.decksDirectory() }
+
     private enum Keys {
         static let provider = "providerID", model = "model", favorites = "favoriteStyles"
         static let recents = "recentStyles", imageProvider = "imageProviderID"
@@ -240,7 +321,19 @@ final class AppState {
     /// - Parameter skipKeychain: pass `true` from tests. Reading the login
     ///   keychain from a test process is slow at best and a modal prompt at
     ///   worst, and no test here is about whether a key is stored.
-    init(skipKeychain: Bool = false, defaults: UserDefaults? = nil) {
+    init(skipKeychain: Bool = false, defaults: UserDefaults? = nil,
+         libraryDirectory: URL? = nil,
+         deletingDeck: @escaping (DeckFile) throws -> Void = { try DeckLibrary.delete($0) },
+         legacyDirectory: URL? = nil, diagnosticsDirectory: URL? = nil,
+         readingLibrary: @escaping @Sendable (URL) async -> [DeckFile] = { DeckLibrary.decks(in: $0) },
+         preparingLibrary: @escaping @Sendable (LibraryStartupPaths) async -> Int = { AppState.prepareLibrary($0) }) {
+        self.skipKeychain = skipKeychain
+        injectedLibraryDirectory = libraryDirectory
+        self.deletingDeck = deletingDeck
+        injectedLegacyDirectory = legacyDirectory
+        injectedDiagnosticsDirectory = diagnosticsDirectory
+        self.readingLibrary = readingLibrary
+        self.preparingLibrary = preparingLibrary
         // Tests never migrate or overwrite the running app's preferences.
         let d = defaults ?? (skipKeychain
             ? UserDefaults(suiteName: "LecternTests.\(UUID().uuidString)")! : .standard)
@@ -264,6 +357,40 @@ final class AppState {
         hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
     }
 
+    /// The test scheme changes storage/keychain dependencies, not startup
+    /// behavior: it still runs the real migration, pruning and library scan.
+    static func forLaunch(environment: [String: String] = ProcessInfo.processInfo.environment,
+                          testRoot: URL? = nil, testDefaults: UserDefaults? = nil) -> AppState {
+        guard environment["LECTERN_TEST_HOST"] == "1" else { return AppState() }
+        let identity = "Lectern.HostedTests.\(UUID().uuidString)"
+        let root = testRoot ?? FileManager.default.temporaryDirectory.appendingPathComponent(identity, isDirectory: true)
+        let defaults = testDefaults ?? UserDefaults(suiteName: identity)!
+        return AppState(skipKeychain: true, defaults: defaults,
+            libraryDirectory: root.appendingPathComponent("Library", isDirectory: true),
+            deletingDeck: { deck in
+                guard deck.url.deletingLastPathComponent().standardizedFileURL == root.appendingPathComponent("Library", isDirectory: true).standardizedFileURL else {
+                    throw CocoaError(.fileWriteNoPermission)
+                }
+                try FileManager.default.removeItem(at: deck.url)
+            }, legacyDirectory: root.appendingPathComponent("Legacy", isDirectory: true),
+            diagnosticsDirectory: root.appendingPathComponent("Diagnostics", isDirectory: true))
+    }
+
+    nonisolated static func prepareLibrary(_ paths: LibraryStartupPaths) -> Int {
+        let moved = paths.legacy.map { DeckStorage.migrateDecks(from: $0, to: paths.library) } ?? 0
+        DeckStorage.pruneDiagnostics(in: paths.diagnostics)
+        return moved
+    }
+
+    nonisolated static func legacyDecksDirectory() -> URL? {
+        #if os(macOS)
+        return FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("Lectern/Decks", isDirectory: true)
+        #else
+        return nil
+        #endif
+    }
+
     // MARK: - Styles
 
     func loadStyles() async {
@@ -274,7 +401,7 @@ final class AppState {
     }
 
     func selectStyle(_ slug: String) {
-        selectedTemplate = nil
+        clearTemplate()
         selectedStyleSlug = slug
         recents.removeAll { $0 == slug }
         recents.insert(slug, at: 0)
@@ -429,20 +556,29 @@ final class AppState {
     // MARK: - PowerPoint templates
 
     func attachTemplate(_ url: URL) async {
-        guard !templateLoading else { return }
+        let revision = UUID()
+        templateImportRevision = revision
         templateLoading = true; templateError = nil
-        defer { templateLoading = false }
-        let scoped = url.startAccessingSecurityScopedResource()
-        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+        await templateSelection.select(url).value
+        guard templateImportRevision == revision else { return }
+        defer { if templateImportRevision == revision { templateLoading = false } }
+        if let error = templateSelection.problem { templateError = error; return }
+        guard let selected = templateSelection.selected else { return }
         do {
-            let snapshot = try await Task.detached {
-                try PowerPointTemplate(data: Data(contentsOf: url), name: url.deletingPathExtension().lastPathComponent)
-            }.value
-            selectedTemplate = snapshot
-        } catch { templateError = String(describing: error) }
+            let native = try await Task.detached { try selected.nativeTemplate() }.value
+            guard templateImportRevision == revision else { return }
+            selectedTemplate = native
+        } catch {
+            guard templateImportRevision == revision else { return }
+            templateError = String(describing: error)
+        }
     }
 
-    func clearTemplate() { selectedTemplate = nil; templateError = nil }
+    func clearTemplate() {
+        templateImportRevision = UUID()
+        templateSelection.clear()
+        selectedTemplate = nil; templateError = nil; templateLoading = false
+    }
 
     // MARK: - PDF grounding
 
@@ -463,7 +599,7 @@ final class AppState {
     // MARK: - Generate
 
     var canGenerate: Bool {
-        phase != .generating && !templateLoading && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        phase != .generating && !templateLoading && !templateSelection.isLoading && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     /// Where Settings lives on this platform, for user-facing hints.
@@ -474,7 +610,7 @@ final class AppState {
     #endif
 
     func generate() {
-        guard phase != .generating else { return }
+        guard phase != .generating, !templateLoading && !templateSelection.isLoading else { return }
         guard hasKey else {
             lastFailure = .noKey
             phase = .failed("Add your \(providerID.label) API key in \(Self.settingsHint) to generate.")
@@ -580,6 +716,7 @@ final class AppState {
 
     /// Back to the first screen — the fork between the app's two errands.
     func goHome() {
+        cancelInspection()
         stage = ""; drafted = 0; total = 0; lastFailure = nil
         inspection = nil
         clearExportReport()
@@ -588,6 +725,7 @@ final class AppState {
 
     /// Into the compose form, keeping whatever is already typed in it.
     func startCreate() {
+        cancelInspection()
         stage = ""; drafted = 0; total = 0; lastFailure = nil
         phase = .compose
     }
@@ -610,15 +748,26 @@ final class AppState {
     private(set) var inspectDone = 0
     private(set) var inspectTotal = 0
     private var inspectTask: Task<Void, Never>?
+    private var inspectionRuns = RunGate()
 
     private(set) var isExporting = false
     private(set) var exportedDirectory: URL?
     private(set) var exportSummary: String?
     private(set) var exportProblem: String?
+    private var exportTask: Task<Void, Never>?
+    // Cancellation invalidates the UI request, but synchronous filesystem work
+    // can still finish. Keep that physical tail so later exports cannot race its
+    // writes, including when both source decks have the same filename.
+    private var exportTail: Task<Void, Never>?
+    private var exportRuns = RunGate()
 
     func chooseDeckToInspect() { isChoosingDeckToInspect = true }
 
     func clearExportReport() {
+        exportRuns.abandon()
+        exportTask?.cancel()
+        exportTask = nil
+        isExporting = false
         exportedDirectory = nil; exportSummary = nil; exportProblem = nil
     }
 
@@ -627,7 +776,25 @@ final class AppState {
     /// All of it runs off the main actor: opening a large package, walking
     /// every shape and rendering a picture of every slide is exactly the work
     /// that freezes a window if it is done where the window is drawn (I6).
-    func inspect(deckAt url: URL) {
+    @discardableResult
+    func inspect(deckAt url: URL) -> Task<Void, Never> {
+        inspect(deckAt: url) { url, report in
+            try DeckInspector.inspect(deckAt: url) { event in
+                Task { await report(event) }
+            }
+        }
+    }
+
+    /// The operation and its completion handle let tests control overlapping
+    /// inspections without relying on rendering speed or cooperative cancellation.
+    @discardableResult
+    func inspect(
+        deckAt url: URL,
+        inspecting operation: @escaping @Sendable (
+            URL, @escaping @Sendable (DeckInspector.Event) async -> Void
+        ) async throws -> DeckInspection
+    ) -> Task<Void, Never> {
+        let run = inspectionRuns.begin()
         inspectTask?.cancel()
         inspection = nil
         clearExportReport()
@@ -640,41 +807,70 @@ final class AppState {
         // structured one: unstructured work does not inherit cancellation, so
         // wrapping it would have left Cancel dismissing the screen while the
         // deck kept being parsed behind it.
-        inspectTask = Task.detached(priority: .userInitiated) { [self] in
+        let work = Task.detached(priority: .userInitiated) { [self] in
             do {
+                try Task.checkCancellation()
                 // A file the user picked arrives security-scoped; without this
                 // the read fails outside the sandbox for no visible reason.
                 let scoped = url.startAccessingSecurityScopedResource()
                 defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-                let result = try DeckInspector.inspect(deckAt: url) { event in
-                    Task { @MainActor in self.applyInspect(event) }
+                let result = try await operation(url) { event in
+                    await self.applyInspect(event, run: run)
                 }
                 await MainActor.run {
+                    guard self.inspectionRuns.isCurrent(run) else { return }
+                    let cancelled = self.inspectTask?.isCancelled ?? true
+                    self.inspectionRuns.abandon()
+                    self.inspectTask = nil
+                    guard !cancelled else { self.phase = .home; return }
+                    // Retiring the run also rejects progress queued before
+                    // completion, so publish the final progress here.
+                    self.inspectStage = "Done"
+                    self.inspectDone = result.slideCount
+                    self.inspectTotal = result.slideCount
                     self.inspection = result
                     self.phase = .inspected
                 }
             } catch is CancellationError {
-                // `cancelInspection` already moved the screen; don't move it back.
-                return
+                await MainActor.run {
+                    // A replacement or navigation already owns the screen.
+                    // Direct task cancellation still needs to retire this run.
+                    guard self.inspectionRuns.isCurrent(run) else { return }
+                    self.inspectionRuns.abandon()
+                    self.inspectTask = nil
+                    self.phase = .home
+                }
             } catch {
                 // Rendered here, where the error still exists: `describe` is
                 // main-actor isolated and an `Error` is not `Sendable`, so what
                 // crosses back is the `String`.
                 let message = String(describing: error)
                 await MainActor.run {
+                    guard self.inspectionRuns.isCurrent(run) else { return }
+                    let cancelled = self.inspectTask?.isCancelled ?? true
+                    self.inspectionRuns.abandon()
+                    self.inspectTask = nil
+                    guard !cancelled else { self.phase = .home; return }
                     self.phase = .failed("Couldn't open that deck: \(message)")
                 }
             }
         }
+        inspectTask = work
+        return work
     }
 
     func cancelInspection() {
+        // Invalidate first: work past its last cancellation check can still
+        // complete, fail, or have progress already queued on the main actor.
+        inspectionRuns.abandon()
         inspectTask?.cancel()
         inspectTask = nil
+        clearExportReport()
         phase = .home
     }
 
-    private func applyInspect(_ event: DeckInspector.Event) {
+    private func applyInspect(_ event: DeckInspector.Event, run: Int) {
+        guard inspectionRuns.isCurrent(run), inspectTask?.isCancelled == false else { return }
         switch event {
         case .opening: inspectStage = "Opening the deck"
         case .validating: inspectStage = "Checking it against the schema"
@@ -692,18 +888,32 @@ final class AppState {
     /// Copying media out of a deck is I/O measured in megabytes, so it gets
     /// the same treatment as everything else here: off the main actor, with
     /// something on screen saying so.
-    func exportInspected(into parent: URL) {
-        guard let deck = inspection?.fileURL, !isExporting else { return }
-        isExporting = true
-        clearExportReport()
+    @discardableResult
+    func exportInspected(into parent: URL) -> Task<Void, Never>? {
+        exportInspected(into: parent) { deck, parent in
+            try DeckExporter.export(deckAt: deck, into: parent)
+        }
+    }
 
-        Task.detached(priority: .userInitiated) { [self] in
+    @discardableResult
+    func exportInspected(into parent: URL,
+        exporting operation: @escaping @Sendable (URL, URL) async throws -> DeckExporter.Outcome
+    ) -> Task<Void, Never>? {
+        guard phase == .inspected, let deck = inspection?.fileURL, !isExporting else { return nil }
+        clearExportReport()
+        let run = exportRuns.begin()
+        isExporting = true
+
+        let previous = exportTail
+        let work = Task.detached(priority: .userInitiated) { [self] in
             do {
+                await previous?.value
+                try Task.checkCancellation()
                 let scopedDeck = deck.startAccessingSecurityScopedResource()
                 defer { if scopedDeck { deck.stopAccessingSecurityScopedResource() } }
                 let scopedParent = parent.startAccessingSecurityScopedResource()
                 defer { if scopedParent { parent.stopAccessingSecurityScopedResource() } }
-                let outcome = try DeckExporter.export(deckAt: deck, into: parent)
+                let outcome = try await operation(deck, parent)
                 let summary = "\(outcome.slideCount) slide\(outcome.slideCount == 1 ? "" : "s")"
                     + " · \(outcome.assetsWritten) media file\(outcome.assetsWritten == 1 ? "" : "s")"
                     + " · \(outcome.chartsWritten) chart CSV\(outcome.chartsWritten == 1 ? "" : "s")"
@@ -711,19 +921,34 @@ final class AppState {
                 let problem = outcome.warnings.isEmpty
                     ? nil : outcome.warnings.joined(separator: "\n")
                 await MainActor.run {
+                    guard self.exportRuns.isCurrent(run), self.phase == .inspected,
+                          self.inspection?.fileURL == deck else { return }
+                    let cancelled = self.exportTask?.isCancelled ?? true
+                    self.exportRuns.abandon()
+                    self.exportTask = nil
+                    self.isExporting = false
+                    guard !cancelled else { return }
                     self.exportedDirectory = outcome.directory
                     self.exportSummary = summary
                     self.exportProblem = problem
-                    self.isExporting = false
                 }
             } catch {
                 let message = String(describing: error)
                 await MainActor.run {
-                    self.exportProblem = message
+                    guard self.exportRuns.isCurrent(run), self.phase == .inspected,
+                          self.inspection?.fileURL == deck else { return }
+                    let cancelled = self.exportTask?.isCancelled ?? true
+                    self.exportRuns.abandon()
+                    self.exportTask = nil
                     self.isExporting = false
+                    guard !cancelled else { return }
+                    self.exportProblem = message
                 }
             }
         }
+        exportTask = work
+        exportTail = work
+        return work
     }
 
     private func apply(_ event: GenerationEvent, run: Int) {

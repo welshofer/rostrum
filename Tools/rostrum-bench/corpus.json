@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "synthetic": ["slides-10", "slides-100", "slides-1000", "table-20x10", "table-100x20", "table-200x50", "images-repeated", "images-unique"],
+  "foreign": "Tests/RostrumTests/Fixtures/RealDecks/*.pptx",
+  "requiredPhases": ["open/reopen", "first-slide", "traversal", "table-populate", "table-style", "image-insert", "image-import", "text-fitting", "render", "unchanged-save", "one-cell-edit-save"],
+  "font": "Set ROSTRUM_BENCH_FONT to a pinned font file; missing font is recorded as null and text-fitting is not certified.",
+  "thresholdPolicy": "Record at least five samples per machine; compare median and p95 on the same compiler/platform/fixture/font hashes. Set regression limits only after variance is established."
+}

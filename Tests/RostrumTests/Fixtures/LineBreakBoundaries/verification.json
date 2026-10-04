@@ -1,0 +1,17 @@
+{
+  "command": "ROSTRUM_BOUNDARY_SAVED=/tmp/rostrum-line-break-boundaries-written.pptx ROSTRUM_BOUNDARY_OBSERVATIONS=Tests/RostrumTests/Fixtures/LineBreakBoundaries/implemented-observations.json swift test --jobs 2",
+  "exitCode": 0,
+  "log": "/tmp/rostrum-rounding-full-2.log",
+  "logSHA256": "71e04cab49a57065ce8fee0a00e2de6a7da730c0ef345d3b9ae825c644ec5804",
+  "result": "1025 tests in 142 suites passed",
+  "nativeCases": 175,
+  "calibratedCases": 174,
+  "diagnosedLigatureControls": 1,
+  "portableArialNumericCases": 149,
+  "bundledDejaVuCases": 26,
+  "savedArtifact": "rostrum-written.pptx",
+  "savedSHA256": "f504c33cbe50ce73de8ae849b935a15bf7b682c483ddcc0c964dc910aacc3a5d",
+  "nativeWrittenAcceptance": "pending root GUI open",
+  "lint": "No configured lint command",
+  "modelProvenance": "Runtime model not attested; requested frontier role gpt-6-astra/high"
+}

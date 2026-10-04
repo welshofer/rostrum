@@ -1,0 +1,1144 @@
+{
+  "schema": 1,
+  "id": "text-baseline-v1",
+  "file": "text-baseline-v1.pptx",
+  "sha256": "e6ae71b1228c362eb9d1917df413e49d6850a92ffcb5416f2b9efdcc02393079",
+  "producer": "python-pptx 1.0.2",
+  "license": "CC0-1.0 for original project-authored fixture content and generator",
+  "provenance": "Independent producer fixture; standard python-pptx template packaging retained. No Rostrum serialization, font binaries, or reference images used.",
+  "generatorSHA256": "6ede884d13d7e35ccdb8a4f0ef3121a5430c5b7b8a7344eaef1cf1ba367577b1",
+  "reproducibility": "Fixed core timestamps; sorted ZIP_STORED entries with fixed ZIP timestamps/attributes.",
+  "slideDimensionsEMU": [
+    10972800,
+    6400800
+  ],
+  "referenceFonts": [
+    {
+      "family": "Arial",
+      "bold": false,
+      "fileName": "Arial.ttf",
+      "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+    },
+    {
+      "family": "Arial",
+      "bold": true,
+      "fileName": "Arial Bold.ttf",
+      "sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
+    },
+    {
+      "family": "Calibri",
+      "bold": false,
+      "fileName": "Calibri.ttf",
+      "sha256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53"
+    },
+    {
+      "family": "Calibri",
+      "bold": true,
+      "fileName": "Calibrib.ttf",
+      "sha256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2"
+    }
+  ],
+  "common": {
+    "cellMarginsEMU": {
+      "marL": 100584,
+      "marT": 64008,
+      "marR": 210312,
+      "marB": 118872
+    },
+    "bodyInsetsRepeatCellMargins": true,
+    "verticalAnchor": "top",
+    "cellStyle": "{2D5ABB26-0587-4C30-8999-92F81FD0307C}",
+    "borders": "explicit noFill on all six edges",
+    "cellFill": "FFFFFF",
+    "textColor": "000000",
+    "autofit": "noAutofit",
+    "paragraphSpaceBeforeAfterPoints": 0,
+    "paragraphDefaultPointSize": "per case: single-run size, transition first size, mixed 18pt",
+    "paragraphDefaultBold": "per case: first run weight",
+    "trackingPoints": 0,
+    "kerningThresholdPoints": 12,
+    "italic": false,
+    "underline": "none",
+    "language": "en-US",
+    "endParagraphRunProperties": "absent"
+  },
+  "slides": [
+    {
+      "slideIndex": 1,
+      "name": "single-line-metrics",
+      "cases": [
+        {
+          "id": "s1-arial-regular-14",
+          "family": "Arial",
+          "frameEMU": [
+            457200,
+            457200,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 14,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 2,
+          "textOriginXEMU": 557784,
+          "textContentTopEMU": 521208,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-arial-bold-14",
+          "family": "Arial",
+          "frameEMU": [
+            2971800,
+            457200,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 14,
+          "paragraphDefaultBold": true,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": true
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 3,
+          "textOriginXEMU": 3072384,
+          "textContentTopEMU": 521208,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-calibri-regular-14",
+          "family": "Calibri",
+          "frameEMU": [
+            5486400,
+            457200,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 14,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 4,
+          "textOriginXEMU": 5586984,
+          "textContentTopEMU": 521208,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-calibri-bold-14",
+          "family": "Calibri",
+          "frameEMU": [
+            8001000,
+            457200,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 14,
+          "paragraphDefaultBold": true,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": true
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 5,
+          "textOriginXEMU": 8101584,
+          "textContentTopEMU": 521208,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-arial-regular-18",
+          "family": "Arial",
+          "frameEMU": [
+            457200,
+            2286000,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 6,
+          "textOriginXEMU": 557784,
+          "textContentTopEMU": 2350008,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-arial-bold-18",
+          "family": "Arial",
+          "frameEMU": [
+            2971800,
+            2286000,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": true,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": true
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 7,
+          "textOriginXEMU": 3072384,
+          "textContentTopEMU": 2350008,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-calibri-regular-18",
+          "family": "Calibri",
+          "frameEMU": [
+            5486400,
+            2286000,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 8,
+          "textOriginXEMU": 5586984,
+          "textContentTopEMU": 2350008,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-calibri-bold-18",
+          "family": "Calibri",
+          "frameEMU": [
+            8001000,
+            2286000,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": true,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": true
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 9,
+          "textOriginXEMU": 8101584,
+          "textContentTopEMU": 2350008,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-arial-regular-24",
+          "family": "Arial",
+          "frameEMU": [
+            457200,
+            4114800,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 24,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 10,
+          "textOriginXEMU": 557784,
+          "textContentTopEMU": 4178808,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-arial-bold-24",
+          "family": "Arial",
+          "frameEMU": [
+            2971800,
+            4114800,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 24,
+          "paragraphDefaultBold": true,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": true
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 11,
+          "textOriginXEMU": 3072384,
+          "textContentTopEMU": 4178808,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-calibri-regular-24",
+          "family": "Calibri",
+          "frameEMU": [
+            5486400,
+            4114800,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 24,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 12,
+          "textOriginXEMU": 5586984,
+          "textContentTopEMU": 4178808,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s1-calibri-bold-24",
+          "family": "Calibri",
+          "frameEMU": [
+            8001000,
+            4114800,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 24,
+          "paragraphDefaultBold": true,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": true
+            }
+          ],
+          "authoredText": "Hpxgy",
+          "shapeId": 13,
+          "textOriginXEMU": 8101584,
+          "textContentTopEMU": 4178808,
+          "availableTextWidthEMU": 1975104
+        }
+      ]
+    },
+    {
+      "slideIndex": 2,
+      "name": "line-transition-metrics",
+      "cases": [
+        {
+          "id": "s2-arial-24-14-absent",
+          "family": "Arial",
+          "frameEMU": [
+            457200,
+            457200,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 24,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 2,
+          "textOriginXEMU": 557784,
+          "textContentTopEMU": 521208,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-arial-24-14-explicit100percent",
+          "family": "Arial",
+          "frameEMU": [
+            2971800,
+            457200,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "explicit100percent",
+          "paragraphDefaultPointSize": 24,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 3,
+          "textOriginXEMU": 3072384,
+          "textContentTopEMU": 521208,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-calibri-24-14-absent",
+          "family": "Calibri",
+          "frameEMU": [
+            5486400,
+            457200,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 24,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 4,
+          "textOriginXEMU": 5586984,
+          "textContentTopEMU": 521208,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-calibri-24-14-explicit100percent",
+          "family": "Calibri",
+          "frameEMU": [
+            8001000,
+            457200,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "explicit100percent",
+          "paragraphDefaultPointSize": 24,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 5,
+          "textOriginXEMU": 8101584,
+          "textContentTopEMU": 521208,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-arial-14-24-absent",
+          "family": "Arial",
+          "frameEMU": [
+            457200,
+            2286000,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 14,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 24,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 6,
+          "textOriginXEMU": 557784,
+          "textContentTopEMU": 2350008,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-arial-14-24-explicit100percent",
+          "family": "Arial",
+          "frameEMU": [
+            2971800,
+            2286000,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "explicit100percent",
+          "paragraphDefaultPointSize": 14,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 24,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 7,
+          "textOriginXEMU": 3072384,
+          "textContentTopEMU": 2350008,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-calibri-14-24-absent",
+          "family": "Calibri",
+          "frameEMU": [
+            5486400,
+            2286000,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 14,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 24,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 8,
+          "textOriginXEMU": 5586984,
+          "textContentTopEMU": 2350008,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-calibri-14-24-explicit100percent",
+          "family": "Calibri",
+          "frameEMU": [
+            8001000,
+            2286000,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "explicit100percent",
+          "paragraphDefaultPointSize": 14,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 24,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 24,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 9,
+          "textOriginXEMU": 8101584,
+          "textContentTopEMU": 2350008,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-arial-18-18-absent",
+          "family": "Arial",
+          "frameEMU": [
+            457200,
+            4114800,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 10,
+          "textOriginXEMU": 557784,
+          "textContentTopEMU": 4178808,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-arial-18-18-explicit100percent",
+          "family": "Arial",
+          "frameEMU": [
+            2971800,
+            4114800,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "explicit100percent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 11,
+          "textOriginXEMU": 3072384,
+          "textContentTopEMU": 4178808,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-calibri-18-18-absent",
+          "family": "Calibri",
+          "frameEMU": [
+            5486400,
+            4114800,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 12,
+          "textOriginXEMU": 5586984,
+          "textContentTopEMU": 4178808,
+          "availableTextWidthEMU": 1975104
+        },
+        {
+          "id": "s2-calibri-18-18-explicit100percent",
+          "family": "Calibri",
+          "frameEMU": [
+            8001000,
+            4114800,
+            2286000,
+            1371600
+          ],
+          "wrap": "none",
+          "lineSpacing": "explicit100percent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "break",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "Hpxgy",
+              "pointSize": 18,
+              "bold": false
+            }
+          ],
+          "authoredText": "Hpxgy\u000bHpxgy",
+          "shapeId": 13,
+          "textOriginXEMU": 8101584,
+          "textContentTopEMU": 4178808,
+          "availableTextWidthEMU": 1975104
+        }
+      ]
+    },
+    {
+      "slideIndex": 3,
+      "name": "mixed-run-wrap-controls",
+      "cases": [
+        {
+          "id": "s3-arial-mixed-auto",
+          "family": "Arial",
+          "frameEMU": [
+            914400,
+            914400,
+            1828800,
+            1828800
+          ],
+          "wrap": "square",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Mixed ",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "bold",
+              "pointSize": 24,
+              "bold": true
+            },
+            {
+              "kind": "run",
+              "text": " text",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Mixed bold text",
+          "shapeId": 2,
+          "textOriginXEMU": 1014984,
+          "textContentTopEMU": 978408,
+          "availableTextWidthEMU": 1517904
+        },
+        {
+          "id": "s3-arial-mixed-explicit-break",
+          "family": "Arial",
+          "frameEMU": [
+            4114800,
+            914400,
+            1828800,
+            1828800
+          ],
+          "wrap": "square",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Mixed ",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "bold",
+              "pointSize": 24,
+              "bold": true
+            },
+            {
+              "kind": "break",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "text",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Mixed bold\u000btext",
+          "shapeId": 3,
+          "textOriginXEMU": 4215384,
+          "textContentTopEMU": 978408,
+          "availableTextWidthEMU": 1517904
+        },
+        {
+          "id": "s3-arial-all18-auto",
+          "family": "Arial",
+          "frameEMU": [
+            7315200,
+            914400,
+            1828800,
+            1828800
+          ],
+          "wrap": "square",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Mixed ",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "bold",
+              "pointSize": 18,
+              "bold": true
+            },
+            {
+              "kind": "run",
+              "text": " text",
+              "pointSize": 18,
+              "bold": false
+            }
+          ],
+          "authoredText": "Mixed bold text",
+          "shapeId": 4,
+          "textOriginXEMU": 7415784,
+          "textContentTopEMU": 978408,
+          "availableTextWidthEMU": 1517904
+        },
+        {
+          "id": "s3-calibri-mixed-auto",
+          "family": "Calibri",
+          "frameEMU": [
+            914400,
+            3429000,
+            1828800,
+            1828800
+          ],
+          "wrap": "square",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Mixed ",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "bold",
+              "pointSize": 24,
+              "bold": true
+            },
+            {
+              "kind": "run",
+              "text": " text",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Mixed bold text",
+          "shapeId": 5,
+          "textOriginXEMU": 1014984,
+          "textContentTopEMU": 3493008,
+          "availableTextWidthEMU": 1517904
+        },
+        {
+          "id": "s3-calibri-mixed-explicit-break",
+          "family": "Calibri",
+          "frameEMU": [
+            4114800,
+            3429000,
+            1828800,
+            1828800
+          ],
+          "wrap": "square",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Mixed ",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "bold",
+              "pointSize": 24,
+              "bold": true
+            },
+            {
+              "kind": "break",
+              "pointSize": 14,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "text",
+              "pointSize": 14,
+              "bold": false
+            }
+          ],
+          "authoredText": "Mixed bold\u000btext",
+          "shapeId": 6,
+          "textOriginXEMU": 4215384,
+          "textContentTopEMU": 3493008,
+          "availableTextWidthEMU": 1517904
+        },
+        {
+          "id": "s3-calibri-all18-auto",
+          "family": "Calibri",
+          "frameEMU": [
+            7315200,
+            3429000,
+            1828800,
+            1828800
+          ],
+          "wrap": "square",
+          "lineSpacing": "absent",
+          "paragraphDefaultPointSize": 18,
+          "paragraphDefaultBold": false,
+          "runs": [
+            {
+              "kind": "run",
+              "text": "Mixed ",
+              "pointSize": 18,
+              "bold": false
+            },
+            {
+              "kind": "run",
+              "text": "bold",
+              "pointSize": 18,
+              "bold": true
+            },
+            {
+              "kind": "run",
+              "text": " text",
+              "pointSize": 18,
+              "bold": false
+            }
+          ],
+          "authoredText": "Mixed bold text",
+          "shapeId": 7,
+          "textOriginXEMU": 7415784,
+          "textContentTopEMU": 3493008,
+          "availableTextWidthEMU": 1517904
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "slides": 3,
+    "shapesPerSlide": [
+      12,
+      12,
+      6
+    ],
+    "singleCellTables": 30,
+    "textRuns": 54,
+    "explicitBreaks": 14,
+    "reopenedWith": "python-pptx 1.0.2",
+    "zipCRCValid": true,
+    "embeddedFonts": false,
+    "officeAcceptance": "not performed"
+  },
+  "referenceStatus": "awaiting independent Office exports; no visual equivalence established",
+  "independentReferences": {
+    "directSlidePDF": null,
+    "png1200x700": [
+      null,
+      null,
+      null
+    ],
+    "png2400x1400": [
+      null,
+      null,
+      null
+    ]
+  },
+  "captureInstructions": [
+    "Export all three slides directly to a PDF preserving 12x7-inch slide dimensions; record Office version and route.",
+    "Export each slide as PNG at 1200x700 and 2400x1400; retain original fixture and reference bytes with hashes.",
+    "Verify exported PDF glyph outlines against the pinned local fonts. No font bytes belong in the repository.",
+    "Do not infer baselines or goldens from this authored-coordinate manifest; capture through the coordinated Office-session owner."
+  ]
+}

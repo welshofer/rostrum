@@ -80,6 +80,9 @@ public struct ReadLine: Equatable, Sendable {
     public var width: EMU?
     /// The dash style token (`a:prstDash@val`), e.g. "dash", "sysDot".
     public var dashStyle: String?
+    /// The authored compound stroke token (`a:ln@cmpd`), including unknown
+    /// values. Nil means the XML leaves it inherited or unspecified.
+    public var compoundStyle: String?
     /// True when the outline is explicitly `a:noFill` — a suppressed border,
     /// which is different from no `a:ln` at all.
     public var isNone: Bool
@@ -87,6 +90,7 @@ public struct ReadLine: Equatable, Sendable {
     init(element: XML.Element) {
         width = element[attribute: "w"].flatMap { Int($0) }.map { EMU($0) }
         dashStyle = element.firstChild(named: "a:prstDash")?[attribute: "val"]
+        compoundStyle = element[attribute: "cmpd"]
         isNone = element.firstChild(named: "a:noFill") != nil
         let solid = element.firstChild(named: "a:solidFill")
         color = solid?.firstChild(named: "a:srgbClr")?[attribute: "val"]

@@ -87,7 +87,8 @@ import Testing
         let deck = try Presentation()
         let table = try deck.slides[0].shapes.addTable(rows: 1, columns: 1, frame: frame)
         #expect(throws: RostrumError.self) {
-            try table.cell(0, 0).setFill(.image(png))
+            let detached = TableCell(tc: try table.cell(0, 0).tc, part: table.part)
+            try detached.setFill(.image(png))
         }
     }
 

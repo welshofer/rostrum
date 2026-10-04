@@ -17,10 +17,13 @@ public struct SlideDigest: Sendable, Identifiable {
     /// level so the view can print it without knowing about levels.
     public let bullets: [String]
     public let tableCount: Int
+    public let tables: [TableInspection]
     public let chartTitles: [String]
     /// Filenames the export would write into this slide's folder.
     public let assetNames: [String]
     public let notes: [String]
+    /// A notes page can contain artwork even when its body text is empty.
+    public let hasNotesPage: Bool
 
     /// Which layout and master this slide is built on — the first thing worth
     /// knowing about a slide somebody else formatted.
@@ -92,6 +95,8 @@ public struct DeckInspection: Sendable {
     /// One record per original slide; a failed render remains an explicit slot.
     /// Empty only when preview generation was skipped.
     public let previewRecords: [SlidePreviewRecord]
+    public var previewSlideNumbers: [Int] { previewRecords.map(\.number) }
+    public var previewDiagnostics: [SlidePreviewDiagnostics] = []
     public var previews: [String] { previewRecords.map(\.displaySVG) }
     public var previewTitles: [String] { previewRecords.map(\.title) }
 
@@ -154,6 +159,7 @@ public enum DeckInspector {
                                limits: ZipReader.Limits =
                                    .init(totalUncompressedBytes: DeckInspector.defaultReadLimit),
                                onEvent: (Event) -> Void = { _ in }) throws -> DeckInspection {
+        try Task.checkCancellation()
         onEvent(.opening)
         let data = try Data(contentsOf: url)
         guard !data.isEmpty else { throw DeckInspectionError.emptyFile }
@@ -165,37 +171,33 @@ public enum DeckInspector {
         }
         let embeddedFonts = deck.registerEmbeddedFonts().sorted()
 
+        try Task.checkCancellation()
         onEvent(.validating)
         // A deck somebody else wrote is exactly the one whose lint might throw;
         // that is a finding, not a failure of the inspection.
         let issues = (try? deck.validate()) ?? []
 
         onEvent(.extracting)
+        try TableTextExtractor.preflight(deck)
         let outline = deck.outline()
         let detail = DeckDetailExtractor.walk(deck)
         let digests = outline.slides.map { slide in
             digest(of: slide, detail: detail.slideDetails[slide.number - 1])
         }
 
-        var previews: [SlidePreviewRecord] = []
+        var previews = DeckPreviews()
         if renderPreviews {
-            PreviewFontMeasurement.install(on: deck.fonts)
+            _ = InstalledFonts.register(in: deck, families: try InspectionFonts.families(in: deck, explicit: detail.explicitFonts))
             let total = deck.slides.count
             onEvent(.rendering(done: 0, total: total))
             for index in 0..<total {
                 try Task.checkCancellation()
-                let rendered = try? deck.renderSVGReportingProblems(slideAt: index, pixelWidth: 640)
-                previews.append(SlidePreviewRecord(
-                    number: index + 1,
-                    title: (try? deck.slides[index].title?.textFrame?.text) ?? "",
-                    svg: rendered?.svg,
-                    geometry: SlidePreviewGeometry(width: deck.slideSize.width.inches,
-                                                   height: deck.slideSize.height.inches),
-                    warnings: rendered?.problems.messages ?? ["Preview unavailable."]))
+                previews.append(slideAt: index, from: deck)
                 onEvent(.rendering(done: index + 1, total: total))
             }
         }
 
+        try Task.checkCancellation()
         onEvent(.finished)
         return DeckInspection(
             fileURL: url,
@@ -225,7 +227,7 @@ public enum DeckInspector {
             readWarnings: deck.package.readWarnings,
             outlineWarnings: outline.warnings + detail.issues,
             slides: digests,
-            previewRecords: previews)
+            previewRecords: previews.records, previewDiagnostics: previews.diagnostics)
     }
 
     private static func digest(of slide: SlideOutline,
@@ -240,10 +242,12 @@ public enum DeckInspector {
                            title: slide.title,
                            subtitle: slide.subtitle,
                            bullets: bullets,
-                           tableCount: slide.tables.count,
+                           tableCount: detail?.tables.count ?? slide.tables.count,
+                           tables: detail?.tables ?? slide.tables.enumerated().map { TableInspection(index: $0.offset, rows: $0.element.rows) },
                            chartTitles: slide.charts.map { $0.title ?? "Untitled chart" },
                            assetNames: slide.assets.map(\.filename),
                            notes: slide.notes,
+                           hasNotesPage: detail?.hasNotesPage ?? !slide.notes.isEmpty,
                            layoutName: detail?.layoutName ?? "Unknown layout",
                            masterName: detail?.masterName ?? "",
                            shapeCounts: detail?.shapeCounts ?? [:],

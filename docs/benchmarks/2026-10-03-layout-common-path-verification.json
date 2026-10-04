@@ -1,0 +1,49 @@
+{
+  "baselineRevision": "5654d1b09e43d26f93a195270f8832b6be3a21e4",
+  "candidateSourceCommit": "993447114aba8cdcc39c099ae80fa21c3e3d74b3",
+  "cycle": 3,
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf7",
+  "files": {
+    "candidate-Rostrum.o": "c1691a34aea50f4b88db223981bc20252fe7d36fe4da7c78227850e39089cc96",
+    "candidate-bench": "861a84e9c7b2608884efc2499125c6b1b8697c213041f6154dbd2744123f87e3",
+    "candidate-extended-bench": "2e2fd67bc20a16544c3c2ac4af61b0441f8d721acf9c73936c45276086bd6f46",
+    "candidate-build.log": "fd1ea4f58e7f37ad106e354bd5abcfe99618419a1b05a7c935904dd850e0d83e",
+    "candidate-RichTextLayout.swift": "9b472bc43c121f64125f9699aa7d75527a47f58f5dd5010b99903d43bb1c5182",
+    "candidate.patch": "153c67662d87ed8f2889e7e683a384822526668d543c155922dc8bca884d7c0d",
+    "full-tests.log": "52b71ba5c0a32a43afae8a62e9796bba1af9f2c443bf2be2583be3c0440501bb",
+    "identity.py": "2f5b5dbca297c047affe04facf45920d5861794e4ffe1d9cbb7520b1b7d00425",
+    "identity.log": "55e01cfae13ee2b24b2196406ec52417d4bda089b4d55467d0edb10073b3ccbb",
+    "paired.log": "ae243067dc497475311ad7c5b4bf7f7184e6ef33b2e6f711d05828fcbea5a13c",
+    "recovery-paired.log": "4c365ff36b0f5dcc52ab2f5c78cd8c75c12b47ef4927b9d3ce95489a7636634a"
+  },
+  "baselineFiles": {
+    "baseline-Rostrum.o": "d1c58102341eb35012580f71b239c4f63c925c8b5d930bd65896698e38bd913c",
+    "baseline-extended-bench": "d5d85a51b80de125e2b5edb2f7222918a604127322b9a73542b616007a3f8b10"
+  },
+  "recoveryBaselineRevision": "cf1b8a0cec2cf680383cb683603785aeaa0f2011",
+  "recoveryBaselineFiles": {
+    "baseline-Rostrum.o": "4e54243c71c0fba80a251195c1224cbbf417f1bf694441e9a6637b52dcb9df75",
+    "baseline-extended-bench": "39455d6d17672947c0af314581aa4adaa43e548bee0900fbba1d9c7629a54782"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "9b472bc43c121f64125f9699aa7d75527a47f58f5dd5010b99903d43bb1c5182",
+    "Tests/RostrumTests/LayoutAtomStyleTests.swift": "aef37c492e97eb2c8c117950141d15af860ccbe58df1c22b779fa43ef9cdf2e0",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792"
+  },
+  "buildCommand": "swift build -c release --product rostrum-bench --jobs 2",
+  "buildResult": "Build complete! (45.54 sec)",
+  "matchedDriverCompileCommand": "swiftc -swift-version 6 -O -I .build/perf7 Tools/rostrum-bench/main.swift .build/perf7/candidate-Rostrum.o -o .build/perf7/candidate-extended-bench",
+  "testCommand": "swift test --jobs 2",
+  "testResult": "1021 tests in 141 suites passed after 33.173 seconds",
+  "nativeOracleResult": "All 60 native tab geometry cases passed; nativePowerPointTabGeometry() passed after 11.949 seconds",
+  "identityResult": "76 cases, 628 slides identical against 5654d1b; 152 saved outputs reopened/table-traversed",
+  "measurementQuietWindow": "Root explicitly granted after fidelity worker confirmed no CPU/probe/test jobs and paused; root GUI/builds, Lectern and reviewer idle. Both comparisons ran sequentially and root was notified immediately on completion.",
+  "acceptance": "Registered table and rich fitting improve with nonoverlapping ranges versus both current and cf1b8a0 baselines. Fitting regression recovered on these inputs; fallback recovery remains unproven because ranges overlap and recovery pairs split 5/10. No general speed, net memory, cross-platform or future combined-fidelity claim.",
+  "sourceReview": "Root reported independent APPROVE without findings for numeric scans, paragraph-local style indexing and final nil-metrics guard.",
+  "notes": [
+    "Source and tests were frozen for build, full tests, identity and timing, and source snapshot compared byte-for-byte immediately before commit.",
+    "No runtime dependency, global state or DOM cache added. Each paragraph-local style table is rebuilt from current DOM/inheritance for the current layout call.",
+    "All three measured stages retained separately; no fourth iteration. Existing historical receipts remain unchanged."
+  ]
+}

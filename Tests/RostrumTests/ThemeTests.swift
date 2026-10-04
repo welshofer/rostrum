@@ -55,9 +55,9 @@ import Testing
     @Test func transformsLightenAndDarken() throws {
         let deck = try Presentation()
         deck.theme.setAccent(1, Color("808080"))
-        // tint 0.5 mixes halfway to white; shade 0.5 halves toward black.
-        #expect(deck.theme.resolve(.accent1, transforms: [.tint(0.5)]) == Color("C0C0C0"))
-        #expect(deck.theme.resolve(.accent1, transforms: [.shade(0.5)]) == Color("404040"))
+        // DrawingML mixes linear-light scRGB, then encodes the result as sRGB.
+        #expect(deck.theme.resolve(.accent1, transforms: [.tint(0.5)]) == Color("CDCDCD"))
+        #expect(deck.theme.resolve(.accent1, transforms: [.shade(0.5)]) == Color("5C5C5C"))
     }
 
     @Test func satModScalesSaturation() throws {

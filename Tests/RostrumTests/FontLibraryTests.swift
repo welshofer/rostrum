@@ -53,11 +53,14 @@ import Testing
 
 @Suite struct MeasuredBuildersTests {
     /// The font size of the shape holding `text` on the deck's last slide.
-    private func runSize(_ deck: Presentation, text: String) throws -> Double? {
+    private func runSize(_ deck: Presentation, text: String, effective: Bool = false) throws -> Double? {
         let slide = try deck.slides[deck.slides.count - 1]
         for shape in slide.shapes.all {
             guard let tf = shape.textFrame, tf.text == text else { continue }
-            return tf.paragraphs.first?.runs.first?.fontSize
+            guard let size = tf.paragraphs.first?.runs.first?.fontSize else { return nil }
+            let autofit = tf.txBody.firstChild(named: "a:bodyPr")?.firstChild(named: "a:normAutofit")
+            let scale = autofit?[attribute: "fontScale"].flatMap(Double.init) ?? 100_000
+            return effective ? size * scale / 100_000 : size
         }
         return nil
     }
@@ -67,6 +70,9 @@ import Testing
     private func registerTestFont(in deck: Presentation) throws {
         try deck.fonts.register(TestFont.standard(),
                                 aliases: [deck.style.headingFont, deck.style.bodyFont])
+        for family in Set([deck.style.headingFont, deck.style.bodyFont]) {
+            try deck.fonts.register(TestFont.standard(), face: FontFaceKey(family: family, bold: true))
+        }
     }
 
     @Test func narrowTitleKeepsDisplaySizeWhenMeasured() throws {
@@ -83,7 +89,7 @@ import Testing
         let measured = try Presentation()
         try registerTestFont(in: measured)
         try measured.titleSlide(narrowTitle)
-        let measuredSize = try #require(try runSize(measured, text: narrowTitle))
+        let measuredSize = try #require(try runSize(measured, text: narrowTitle, effective: true))
         #expect(measuredSize > heuristicSize)
     }
 
@@ -101,7 +107,7 @@ import Testing
         let measured = try Presentation()
         try registerTestFont(in: measured)
         try measured.titleSlide(wideTitle)
-        let measuredSize = try #require(try runSize(measured, text: wideTitle))
+        let measuredSize = try #require(try runSize(measured, text: wideTitle, effective: true))
         #expect(measuredSize < heuristicSize)
     }
 

@@ -1,0 +1,192 @@
+{
+  "sourceRevision": "87176bdafaade74a05b4816ecb3a013aaafb5706",
+  "librarySourceTree": "17b721dacf82e8f7a08fbfbcb6e56bd00cc52293",
+  "lecternTree": "62148086f008f5562816744f911a39dcf4760e7a",
+  "laterChanges": "Evidence and documentation only; no source changes after integration.",
+  "checks": {
+    "library": {
+      "command": "swift test --jobs 2",
+      "tests": 1025,
+      "suites": 142,
+      "exitCode": 0
+    },
+    "lecternCore": {
+      "command": "swift test --package-path Lectern --jobs 2",
+      "tests": 236,
+      "suites": 27,
+      "exitCode": 0,
+      "labDemos": 25,
+      "savedFileChecks": 319,
+      "paragraphChecks": 22
+    },
+    "nativeApp": {
+      "command": "Lectern/scripts/test-app.sh -parallel-testing-enabled NO -resultBundlePath /tmp/lectern-fidelity3-native-20261003.xcresult",
+      "tests": 78,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "totalExecutions": 106,
+      "parameterizedTests": 18,
+      "parameterizedRuns": 46
+    },
+    "headlessApp": {
+      "command": "python3 Lectern/scripts/test-inspection-headless.py --all-app-tests --output /tmp/lectern-fidelity3-headless-20261003.json",
+      "reportedTests": 78,
+      "suites": 18,
+      "skippedNativeWebKit": [
+        "\udbc1\ude5f  Test nativeNotesPreviewKeepsPageAndThumbnailGeometry() skipped.",
+        "\udbc1\ude5f  Test nativeWrapperDoesNotResizeNestedSVGViewports() skipped.",
+        "\udbc1\ude5f  Test nativeSnapshotIncludesTheBottomOfPortraitAndFourByThreeSlides() skipped."
+      ],
+      "copiedInputs": 55,
+      "dependencyInputs": 148,
+      "inputAndLogHashesVerified": true,
+      "exitCode": 0
+    },
+    "ios": {
+      "command": "xcodebuild -project Lectern.xcodeproj -scheme Lectern-iOS -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath .build-xcode-ios CODE_SIGNING_ALLOWED=NO 'ARCHS=arm64 x86_64' ONLY_ACTIVE_ARCH=NO build",
+      "cwd": "Lectern",
+      "verifiedArchitectures": [
+        "x86_64",
+        "arm64"
+      ],
+      "exitCode": 0
+    },
+    "readme": {
+      "command": "swift run --jobs 2 ReadmeSnippets /tmp/rostrum-fidelity3-readme-20261003",
+      "result": "Both sample decks written and reopened",
+      "exitCode": 0
+    }
+  },
+  "retainedFiles": {
+    "/tmp/rostrum-fidelity3-library-20261003.log": "f8fb7c95d408769be3e9f574ef534ac554dd6a787a4c5aa5a31d302ab991f831",
+    "/tmp/lectern-fidelity3-core-20261003.log": "df9aff4e1e47a1a6a32f5634cf46cb56772b863d8faf4292fdaee71d057d5f8e",
+    "/tmp/lectern-fidelity3-native-20261003.log": "e8d0eeace31f19a6c119cb84a4efdc7232aa090484aa1f33bf58c67390100f01",
+    "/tmp/lectern-fidelity3-ios-20261003.log": "a54bcbb90e1c0dee67370c7b0e0af2728ffa59b964ff47e465fa87a53870e442",
+    "/tmp/rostrum-fidelity3-readme-20261003.log": "4fbdda64d0b3e2aa49aa8b388a44eca8c3fb31d0211937acf57d610e0a7cec7d",
+    "/tmp/lectern-fidelity3-headless-20261003.json": "9c13bde3b95aa2c0287db7f983fd5c5e7058bf17e79f34bfc48b86fb81bc3445",
+    "/tmp/lectern-fidelity3-headless-20261003.log": "187dda705af50c28703f3b7962a81c575d3f2ee9247dc5817edafeda9abb6a7c",
+    "/tmp/lectern-fidelity3-native-summary-20261003.json": "5938da5a56140b4226cb77693738c3ad9bc61c96ca3b0c5f147944aca4b1ba4b",
+    "/tmp/rostrum-boundary-native-exports-20261003.json": "71ff3aaf006181df488b2317c2889e4604ecf7e3004ef4b6926059d96ddde9b8",
+    "/tmp/lectern-fidelity3-native-specimens-20261003.json": "9637915fe558c157e3ffb3397bec8c298c38c4792169405df9678c201af8004e"
+  },
+  "nativePowerPoint": {
+    "version": "16.113.3",
+    "exports": {
+      "powerPointVersion": "16.113.3",
+      "method": "Root GUI opens, no repair; local Best for printing PDF export; source files not saved",
+      "fixtures": [
+        {
+          "source": "line-break-boundaries.pptx",
+          "sourceSHA256": "515853d753943019db5245b08c8e5cdce70aebe86750b50439db1ca2a4d7c5d1",
+          "pdf": "powerpoint.pdf",
+          "pdfSHA256": "c617e5f539cd053d5b3c22394a19aa369399ee63040bf76d764d4293df531096",
+          "pages": 12,
+          "cases": 72
+        },
+        {
+          "source": "line-break-followup.pptx",
+          "sourceSHA256": "54493185fdfd26914155591f4c3b1386aea5d48b7ffcf999e38d761f1a897851",
+          "pdf": "powerpoint-followup.pdf",
+          "pdfSHA256": "eaf3658481e8e56e6718ead3eec5e4c47a30c71bf7dd733344d3b0f10837eb34",
+          "pages": 11,
+          "cases": 65
+        },
+        {
+          "source": "line-break-final.pptx",
+          "sourceSHA256": "a289f6496640384937e27baca13f4962b6a88e761312b477bea864877f1ea041",
+          "pdf": "powerpoint-final.pdf",
+          "pdfSHA256": "66c55cb2413401983e95eec0bbb3c7cf5a0600a0e436567957b92f587d7ee8db",
+          "pages": 3,
+          "cases": 18
+        },
+        {
+          "source": "line-break-scale.pptx",
+          "sourceSHA256": "8a6c632898782cffa4518c1e3f8f550e64193323a4f9b4ae9e319e9a4f5c86c6",
+          "pdf": "powerpoint-scale.pdf",
+          "pdfSHA256": "a50def2711c23fffe0ceecb2d4512956f039169ef6478f6cbb5227612f22ff32",
+          "pages": 1,
+          "cases": 4
+        },
+        {
+          "source": "line-break-coordinates.pptx",
+          "sourceSHA256": "0e7270f5364944ebe834978a3efcc88c63cc817c4595ee336e588d514046423f",
+          "pdf": "powerpoint-coordinates.pdf",
+          "pdfSHA256": "5ec605ee286288a351cc008b962f61a250d172ad587be471d2b3270bb8eeef28",
+          "pages": 3,
+          "cases": 16
+        }
+      ]
+    },
+    "rostrumWritten": {
+      "path": "Tests/RostrumTests/Fixtures/LineBreakBoundaries/rostrum-written.pptx",
+      "sha256": "f504c33cbe50ce73de8ae849b935a15bf7b682c483ddcc0c964dc910aacc3a5d",
+      "slides": 12,
+      "visuallyInspectedSlides": [
+        1
+      ],
+      "repairPrompt": false,
+      "unchangedAfterOpening": true
+    },
+    "lecternSpecimens": [
+      {
+        "narrow": false,
+        "path": "/tmp/lectern-fidelity3-paragraph-final-20261003/narrow-false-7B34D840-F859-4BA4-ABCD-09CF737EB849/paragraphLayout.pptx",
+        "sha256": "b2a54aa16a1210a9c89f78c9d131b3649fd42d00f4da87c99d68d834d0b1d7ac",
+        "unchangedAfterOpening": true,
+        "repairPrompt": false,
+        "slides": 3,
+        "visuallyInspectedSlides": [
+          3
+        ],
+        "observation": "Native unfitted line breaks match reference labels; both computed-fit copies render cleanly at92.5percent with mixed styles retained."
+      },
+      {
+        "narrow": true,
+        "path": "/tmp/lectern-fidelity3-paragraph-final-20261003/narrow-true-B713C92B-51F1-414D-96A7-8BD33A5065DD/paragraphLayout.pptx",
+        "sha256": "b22c869b8530d26fef0f42b88d0b3142ebd52d0aa972581ea7764e694b2cebde",
+        "unchangedAfterOpening": true,
+        "repairPrompt": false,
+        "slides": 3,
+        "visuallyInspectedSlides": [
+          3
+        ],
+        "observation": "Native unfitted line breaks match reference labels; both computed-fit copies render cleanly at92.5percent with mixed styles retained."
+      }
+    ]
+  },
+  "lecternManual": {
+    "recipe": "Paragraph spacing and justification",
+    "sampleCount": 4,
+    "title": "Native boundary check",
+    "variants": [
+      "default",
+      "narrower"
+    ],
+    "passingChecksEach": 22,
+    "inspectionSlides": 3,
+    "exportSummary": "3 slides \u00b7 0 media files \u00b7 0 chart CSVs",
+    "exportedMarkdown": {
+      "path": "/tmp/lectern-fidelity3-gui-export-20261003/paragraphLayout/paragraphLayout.md",
+      "sha256": "309e55524651df36a7be77b13db42015cb09faf361616be875bb055733dae15d",
+      "verifiedContent": [
+        "Small width changes move line breaks",
+        "108.99",
+        "Computed scale"
+      ]
+    }
+  },
+  "evidenceHashVerification": {
+    "isolatedPerformanceRetainedFiles": 49,
+    "combinedPrimaryFiles": 19,
+    "combinedOutputAndInputFiles": 188,
+    "nativeSourceAndPDFFiles": 10,
+    "workerFidelityLog": true
+  },
+  "limits": [
+    "175 native line contents, 174 bounded horizontal calibrations, one diagnosed ligature control; no whole-slide raster parity claim.",
+    "Headless skips three native WebKit checks; native app execution covers them with zero skips.",
+    "Performance source/tree matches measured candidate; combined results supersede isolated figures.",
+    "No lint configured; no new SwiftPM runtime dependency; no merge."
+  ]
+}

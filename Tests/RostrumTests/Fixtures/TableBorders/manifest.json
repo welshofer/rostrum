@@ -1,0 +1,731 @@
+{
+  "producer": "python-pptx 1.0.2",
+  "sha256": "50131639635a6f6b1046c2da105b8c5b823856e2c1b0f48bc8e2b2260eae7b19",
+  "cases": [
+    {
+      "slide": 1,
+      "id": "vertical-equal",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 2,
+      "id": "vertical-first-thicker",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 3,
+      "id": "vertical-second-thicker",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 4,
+      "id": "vertical-first-none",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 5,
+      "id": "vertical-second-none",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 6,
+      "id": "vertical-first-absent",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "absent",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 7,
+      "id": "vertical-second-absent",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "absent",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 8,
+      "id": "vertical-first-dash",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "dash",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 9,
+      "id": "vertical-second-dash",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "dash",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 10,
+      "id": "vertical-first-alpha",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 30000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 11,
+      "id": "vertical-second-alpha",
+      "direction": "vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 30000
+      }
+    },
+    {
+      "slide": 12,
+      "id": "horizontal-equal",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 13,
+      "id": "horizontal-first-thicker",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 14,
+      "id": "horizontal-second-thicker",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 15,
+      "id": "horizontal-first-none",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 16,
+      "id": "horizontal-second-none",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 17,
+      "id": "horizontal-first-absent",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "absent",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 18,
+      "id": "horizontal-second-absent",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "absent",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 19,
+      "id": "horizontal-first-dash",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "dash",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 20,
+      "id": "horizontal-second-dash",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "dash",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 21,
+      "id": "horizontal-first-alpha",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 30000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 22,
+      "id": "horizontal-second-alpha",
+      "direction": "horizontal",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 30000
+      }
+    },
+    {
+      "slide": 23,
+      "id": "rtl-equal",
+      "direction": "rtl",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 24,
+      "id": "rtl-first-thicker",
+      "direction": "rtl",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 25,
+      "id": "rtl-second-thicker",
+      "direction": "rtl",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 26,
+      "id": "rtl-second-none",
+      "direction": "rtl",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 27,
+      "id": "rtl-shared-equal",
+      "direction": "rtl-shared",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 28,
+      "id": "rtl-shared-first-thicker",
+      "direction": "rtl-shared",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 29,
+      "id": "rtl-shared-second-thicker",
+      "direction": "rtl-shared",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 30,
+      "id": "rtl-shared-second-none",
+      "direction": "rtl-shared",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 31,
+      "id": "merged-vertical-equal",
+      "direction": "merged-vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 32,
+      "id": "merged-vertical-first-thicker",
+      "direction": "merged-vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 33,
+      "id": "merged-vertical-second-thicker",
+      "direction": "merged-vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 1,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 6,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 34,
+      "id": "merged-vertical-second-none",
+      "direction": "merged-vertical",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 35,
+      "id": "merge-left-equal",
+      "direction": "merge-left",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 36,
+      "id": "merge-left-first-none",
+      "direction": "merge-left",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 37,
+      "id": "merge-left-second-none",
+      "direction": "merge-left",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 38,
+      "id": "merge-left-second-alpha",
+      "direction": "merge-left",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 30000
+      }
+    },
+    {
+      "slide": 39,
+      "id": "merge-top-equal",
+      "direction": "merge-top",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 40,
+      "id": "merge-top-first-none",
+      "direction": "merge-top",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 41,
+      "id": "merge-top-second-none",
+      "direction": "merge-top",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "none",
+        "alpha": 100000
+      }
+    },
+    {
+      "slide": 42,
+      "id": "merge-top-second-alpha",
+      "direction": "merge-top",
+      "first": {
+        "color": "0000FF",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 100000
+      },
+      "second": {
+        "color": "FF0000",
+        "widthPt": 2,
+        "style": "solid",
+        "alpha": 30000
+      }
+    }
+  ],
+  "schema": 1,
+  "license": "CC0; original project-authored geometry",
+  "officeVersion": "Microsoft PowerPoint 16.113.3 for Mac",
+  "date": "2026-10-01",
+  "reference": "powerpoint-16.113.3-png.zip",
+  "export": "File > Export > PNG, 1200 by 700 pixels; no repair dialog observed; no PowerPoint save of source",
+  "scope": "Shared-edge ownership, RTL, noFill, absent edges, alpha, dash gaps and merged continuations; stroke antialiasing residuals are reported separately, not certified identical",
+  "files": {
+    "border-conflicts.pptx": "50131639635a6f6b1046c2da105b8c5b823856e2c1b0f48bc8e2b2260eae7b19",
+    "powerpoint-16.113.3-png.zip": "ae42b670d7b5354a8ef6e9d00234a5f7d3342959825477665480d1b99ac0e226"
+  }
+}

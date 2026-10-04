@@ -47,8 +47,8 @@ import Testing
     }
 
     @Test func lightenDarkenMatchThemeTransforms() {
-        // Parity with the DrawingML tint/shade transforms (ThemeTests uses the
-        // same pair): lighten(a) == tint value (1-a), etc.
+        // Design utilities interpolate encoded sRGB channels. DrawingML
+        // tint/shade resolve separately in linear light (see ThemeTests).
         #expect(Color("808080").lighten(0.5) == Color("C0C0C0"))
         #expect(Color("808080").darken(0.5) == Color("404040"))
         #expect(Color("808080").tint(0.5) == Color("808080").lighten(0.5))

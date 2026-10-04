@@ -1,0 +1,46 @@
+{
+  "baselineTimingRevision": "cf1b8a0cec2cf680383cb683603785aeaa0f2011",
+  "baselineIdentityRevision": "7fca2ee746d03c74232a3079e453a5fe3cd7fe6a",
+  "candidateSourceBase": "6158018af854145f25c4c71a3d8dcc1482b3fd43",
+  "candidateSourceDelta": "Retained candidate.patch; only hasTabs gate on standardTabs and original ordered carry.reduce for paragraphs without tabs.",
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf4-fix",
+  "files": {
+    "candidate-Rostrum.o": "91a87474dbdf650be782e2085fe13736ba97ab1eafb51a88ddf83e7754063148",
+    "candidate-bench": "30468f08a17c974957541b4a0349f2becdd04919943db2b4808edb56aaa4565a",
+    "candidate-extended-bench": "f67b65ac160e734383b99abc46d6fab225d7251e5a54705acb02af3e9160fc15",
+    "candidate-build.log": "59fa262146ec40dc4ff6cfdc38dd8046c88f900af72f9c0f2c9c5020963dd08d",
+    "candidate.patch": "6456058b10826e228b3dd152fbb529b39e0c41f7585399559d6b2d765b2b0d9f",
+    "combined-profile": "64fd37c2a7ddf7726d4ec7f26b8a9c8d83f51f424bc4ef59926680eb82e45dc6",
+    "fallback-profile.txt": "c6044c014544b1fafc308d942569d8264470d68de1668b4a72d23f7170f2f992",
+    "registered-profile.txt": "b0c29e7aaa02e82ceeaff4dddacbb3a73ec45b018ab599a19455171acd10accf",
+    "fit-profile.txt": "6452d08349cc1cc1cdf1358d5c408862195b6026939227b706d5b9df96f570a6",
+    "identity.py": "5dcbe0efd14bbf3ed9e4f99046c85d467253ce06b2db2e7ee7fe60d5de928a35",
+    "identity.log": "55e01cfae13ee2b24b2196406ec52417d4bda089b4d55467d0edb10073b3ccbb",
+    "paired.log": "3e6d549689851e23f54fdc9a558a3f284790f067ee6c8792ca515322baa96253",
+    "full-tests.log": "118c82c5f97a8cf6ac221fc8190d9d3fdad6643661edbf5623a6de3014a77049"
+  },
+  "baselineTimingBinarySHA256": "39455d6d17672947c0af314581aa4adaa43e548bee0900fbba1d9c7629a54782",
+  "baselineIdentityBinarySHA256": "a89ff3ce997d11140dd350b48e8d059fae1ca784f67498e4253b9b916364c416",
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "8c114a7ee74cb0c225e9a7e7b99c0d2c9f0546c15ee1e7047cb4cc077fe581ce",
+    "Sources/Rostrum/Fonts/TextShaper.swift": "e3545c95b1d100dfe967d5e4426e03d686860c11c56fe1f92b6b5832ee94305d",
+    "Sources/Rostrum/Presentation/RenderDiagnostics.swift": "170b2789e3170b802753902453a3ff461110579d553cdb65bf33a8f54ab31916",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792"
+  },
+  "buildCommand": "swift build -c release --product rostrum-bench --jobs 2",
+  "buildResult": "Build complete! (44.39 sec)",
+  "matchedDriverCompileCommand": "swiftc -swift-version 6 -O -I .build/perf4-fix Tools/rostrum-bench/main.swift .build/perf4-fix/candidate-Rostrum.o -o .build/perf4-fix/candidate-extended-bench",
+  "testCommand": "swift test --jobs 2",
+  "testResult": "1019 tests in 140 suites passed after 42.191 seconds",
+  "nativeOracleResult": "nativePowerPointTabGeometry() passed after 13.316 seconds; 60 native geometry cases",
+  "identityCommand": "python3 .build/perf4-fix/identity.py",
+  "identityResult": "76 628; 152 saved outputs reopened and table cells traversed",
+  "measurementQuietWindow": "Root explicitly granted after iOS/app/core/headless checks finished, paused GUI, notified other worker to pause; released immediately after paired command exited 0.",
+  "performanceAcceptance": "Failed: the no-tab correction did not remove the combined regression against cf1b8a0. No speed or memory improvement claim. One bounded attempt only; no further source iteration.",
+  "committedPatch": {
+    "path": "docs/benchmarks/2026-10-03-integrated-layout-unshipped-attempt.patch",
+    "sha256": "6456058b10826e228b3dd152fbb529b39e0c41f7585399559d6b2d765b2b0d9f"
+  },
+  "sourceDisposition": "NOT SHIPPED: only the attempted worker RichTextLayout.swift delta restored after preserving patch/hash; root retains 7fca2ee engine."
+}

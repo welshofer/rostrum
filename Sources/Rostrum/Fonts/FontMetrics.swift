@@ -12,11 +12,13 @@ import Foundation
 ///
 /// Measurement is per-scalar advance summation: kerning, ligatures and
 /// complex-script shaping are not applied. That approximation is documented
-/// behavior, not an accident — it is exact for the metrics-driven layout the
-/// library performs and errs by at most a few percent for kerned Latin text.
+/// behavior. Use `TextShaper` for supported kerning and ligature layout, and
+/// inspect its diagnostics before treating a result as typographically complete.
 public struct FontMetrics: Sendable {
     /// Design units per em square (`head`), 16…16384 per the spec.
     public let unitsPerEm: Int
+    public let isBold: Bool
+    public let isItalic: Bool
     /// `hhea` ascender in font units (positive, above the baseline).
     public let ascender: Int
     /// `hhea` descender in font units (negative, below the baseline).
@@ -29,6 +31,10 @@ public struct FontMetrics: Sendable {
     /// bit 7), matching modern rasterizers.
     let typoMetrics: (ascender: Int, descender: Int, lineGap: Int, useTypo: Bool)?
 
+    /// DrawingML uses the Windows ascent/descent share of a 1.2 em line box.
+    /// Keep this separate from the general-purpose hhea/typographic metrics.
+    let drawingMLAscentShare: Double?
+
     /// Family names from the `name` table (IDs 1 and 16), in table order —
     /// the names a deck's `a:latin@typeface` refers to this font by. Empty
     /// when the font has no parseable name table.
@@ -37,7 +43,10 @@ public struct FontMetrics: Sendable {
     /// Advance width per glyph id, in font units, resolved to `numGlyphs`
     /// entries (the trailing `hmtx` run repeats the last explicit advance).
     private let advances: [Int]
+    var glyphCount: Int { advances.count }
     private let characterMap: CharacterMap
+    let layoutTables: FontLayoutTables
+    let hasOutlines: Bool
 
     // MARK: - Loading
 
@@ -104,12 +113,26 @@ public struct FontMetrics: Sendable {
             return table.offset
         }
 
+        hasOutlines = (tables["glyf"] != nil && tables["loca"] != nil) || tables["CFF "] != nil || tables["CFF2"] != nil
+        let layoutTags: Set<String> = ["kern", "GSUB", "GPOS", "GDEF", "fvar"]
+        layoutTables = FontLayoutTables(tables: tables.filter { layoutTags.contains($0.key) }
+            .mapValues { Array(reader.bytes[$0.offset..<($0.offset + $0.length)]) })
+
         let head = try require("head", atLeast: 54)
         let upem = try reader.u16(head + 18)
         guard (16...16384).contains(upem) else {
             throw RostrumError.fontCorrupt("unitsPerEm \(upem) outside 16…16384")
         }
         unitsPerEm = upem
+        if let os2 = tables["OS/2"], os2.length >= 64 {
+            let selection = try reader.u16(os2.offset + 62)
+            isBold = selection & 0x20 != 0
+            isItalic = selection & 0x201 != 0 // italic or oblique
+        } else {
+            let style = try reader.u16(head + 44)
+            isBold = style & 1 != 0
+            isItalic = style & 2 != 0
+        }
 
         let hhea = try require("hhea", atLeast: 36)
         ascender = try reader.s16(hhea + 4)
@@ -189,6 +212,24 @@ public struct FontMetrics: Sendable {
         } else {
             typoMetrics = nil
         }
+        if let os2 = tables["OS/2"], os2.length >= 78 {
+            let ascent = try reader.u16(os2.offset + 74)
+            let descent = try reader.u16(os2.offset + 76)
+            drawingMLAscentShare = ascent > 0
+                ? Double(ascent) / Double(ascent + descent) : nil
+        } else {
+            drawingMLAscentShare = nil
+        }
+    }
+
+    /// Glyph lookup for the explicit registered face; zero means missing.
+    public func glyphID(for scalar: Unicode.Scalar) -> Int {
+        let glyph = characterMap.glyph(for: Int(scalar.value))
+        return advances.indices.contains(glyph) ? glyph : 0
+    }
+
+    public func advance(ofGlyph glyphID: Int) -> Int {
+        advances.indices.contains(glyphID) ? advances[glyphID] : (advances.first ?? 0)
     }
 
     // MARK: - Measurement
@@ -360,7 +401,7 @@ private enum CharacterMap: Sendable {
 
 /// All reads throw on out-of-bounds rather than trapping: font files given to
 /// the library are untrusted input, exactly like zip containers.
-struct SFNTReader {
+struct SFNTReader: Sendable {
     let bytes: [UInt8]
     var count: Int { bytes.count }
 

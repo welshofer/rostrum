@@ -21,6 +21,67 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 - An offline mixed-content regression runner and PowerPoint export comparison
   tool in `Lectern/Tools/CompositionRegression`.
 
+- Existing notes pages can be rendered with `renderNotesSVG` and
+  `renderNotesSVGReportingProblems`, or `pptx-tool render --notes`. The bounded
+  preview resolves notes geometry, master/theme and placeholder ancestry on
+  detached copies, with strict refusal for known gaps. Lectern loads these
+  previews on demand and retains their fidelity diagnostics.
+- Bounded GPOS mark-to-base and mark-to-mark attachment, including extension
+  lookups and GDEF filtering, verified against independent HarfBuzz glyph
+  positions. Ligature, cursive, composition and other unsupported cases remain
+  diagnosed; full complex-script layout is still incomplete.
+- Measured ASCII fallback text-layout fast path: about 3% lower median render
+  time on the paired large-table workloads, with byte-identical output across
+  574 slide renders. No general speedup or memory-reduction claim.
+- Bounded notes-master geometry reconciliation during slide import. Complete
+  body/slide-image placeholder positions and sizes survive compatible master
+  changes; ambiguous or broader appearance conflicts still refuse atomically.
+- Pinned native notes import/save/reopen PDFs and an independent geometry/pixel
+  checker, plus Lectern inspection/export coverage for shadows and kerning.
+- Typed `LineCompound` / `LineDash` settings and raw compound-style inspection;
+  table edits preserve unspecified settings and opaque line XML.
+- Pinned native Office image/crop, typography-baseline and double-border corpora,
+  retaining both passing scoped evidence and failing whole-image comparisons.
+
+- All 74 native table-style definitions through `BuiltInTableStyle` and
+  `Table.applyBuiltInStyle`, with fallback resolution for GUID-only decks and
+  a pinned PowerPoint corpus covering 1,480 sampled cell fills.
+- Bounded GDEF classification and OpenType lookup filtering, checked against
+  35 pinned HarfBuzz cases and additional independent comparison cases.
+- Staged Arabic joining/contextual substitution with owned Unicode data and
+  HarfBuzz oracles; full RTL paragraph geometry and unsupported mark attachment remain
+  diagnosed. Calibri single-component substitutions and wrapped legacy kerning
+  tables are supported with bounded validation and local-font comparisons.
+- Printable default notes-page slide-image/body geometry and inheritance from
+  foreign notes-master placeholder IDs, with pinned Office PDF/PNG examples.
+- Namespace-aware section editing preserves prefix aliases, markup-compatibility
+  policy and inherited XML context through moves and imports.
+
+- Table merge inspection/unmerge, row and column insertion/removal/reordering,
+  frame synchronization, individual edge/diagonal borders, package-aware image
+  fills, and embedded/custom table-style resolution. Overlapping merges and
+  edits that split a merged region fail before changing the document.
+- Shared rich-text layout for fitting and SVG: mixed runs, explicit breaks,
+  fields, tabs, spacing, insets, bullets and computed autofit. Distinct font
+  faces and a bounded Swift shaping implementation have pinned HarfBuzz
+  kerning/ligature/cluster oracles.
+- `OPCArchive` provides bounded read-only package inspection with explicit
+  strict or on-access CRC validation; materialization produces an independent
+  complete editable presentation. Existing initializers remain eager.
+- Release benchmark executable/driver, independent table fixture, pinned
+  PowerPoint reference, and fail-closed semantic/visual conformance tools.
+- Modern comment text editing, reopen/delete, author/timestamp/anchor access,
+  slide/shape/text anchors, and legacy comment read/create/edit/delete with
+  collision-safe author/index remapping. Reply-only invalid operations refuse.
+- Structured render fidelity issues with part/shape/XML locations, optional
+  strict rendering, permitted font embedding in SVG, and CLI render diagnostics.
+- Picture crop read/edit, isolated image replacement, source and destination
+  crop rectangles, stretch/tile mappings, picture rotation/reflection and
+  geometry clipping. Unsupported alternate image representations refuse edits
+  atomically; unknown extensions remain intact.
+- Custom table-style import preserves dependent relationship graphs, namespace
+  context and opaque XML, remapping conflicting GUIDs deterministically.
+
 ### Fixed
 
 - Template charts and tables inherit the content typeface; table columns and
@@ -29,6 +90,57 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   headings remain larger than their inherited body text.
 - Authored comparison cards leave more room for dense content, and text fitting
   reaches its exact readable-size floor without floating-point early rejection.
+
+- DrawingML kerning thresholds now apply consistently to shaping, wrapping,
+  fitting and SVG output without disabling ligatures.
+- Single table-background outer shadows render as a diagnosed approximation;
+  both 36-case LTR/RTL Office style-image suites now pass their unchanged gates.
+- Solid flat centered double table borders, diagonal offsets and qualified joins;
+  native style-boundary precedence now applies before direct logical-donor edges.
+  Unverified compound/junction combinations remain diagnosed.
+- DrawingML baseline proportions and accumulated rounding, shared by fit/render;
+  native Arial/Calibri PDF baselines improve within the documented corpus.
+- Active inherited theme effects now report omissions, and unsupported
+  format-scheme theme overrides report unresolved inheritance.
+- Operation-local text/style/geometry/media caches and a sectionless construction
+  fast path reduce measured latency; whole-process memory remains unchanged.
+- Lectern ignores stale/cancelled inspection callbacks and exposes preview
+  diagnostics; isolated app dependencies allow all AppTests to run headlessly.
+
+- DrawingML tint/shade use linear light, saturation clips after RGB conversion,
+  and two-stop/mirrored gradients follow PowerPoint's interpolation. Public
+  design color mixing retains its existing encoded-channel behavior.
+- Clearing a table style now selects the correct No Style, No Grid GUID and
+  removes an inline style choice. Theme image fills use theme-owned relations.
+- Renderer diagnostics construct paths only when needed; render-local image
+  resource and bounded table-style caches reduce repeated work.
+- Shared table borders follow logical cell ownership, merged continuations and
+  RTL sides. Invisible edges and dash gaps no longer reveal a losing neighbor,
+  and adjacent fills no longer cover half an edge. A 42-case Office corpus
+  checks ownership while reporting remaining antialias differences.
+
+- Rejected table fills preserve the original XML and dirty state.
+- Background resolution shares color transforms, color-map overrides and
+  indexed theme paints with SVG, including per-slide master themes.
+- Duplicated notes/comment threads are independent. Imports remap author
+  identities and slide anchors, preserve source notes-master appearance,
+  and refuse incompatible notes masters atomically.
+- Section membership follows slide addition, deletion, move, duplicate and
+  import; explicit section removal and reordering preserve metadata.
+- Table bulk operations and slide iteration use operation-local snapshots.
+  Media lookup uses a collision-checked content index. Saves stream atomically
+  and cache unchanged part compression within a bounded compressed-byte budget.
+- Atomic saves cannot overwrite directories, retain existing file permissions,
+  and avoid the older Linux Foundation replacement fallback. Replaced parts
+  immediately release cached payload ownership.
+- OpenType layout parsing has byte-derived expansion budgets, preventing small
+  aliased-offset tables from allocating unbounded ligature/coverage structures.
+
+### Fidelity status
+
+See [the operation-level conformance matrix](docs/CONFORMANCE.md). Full complex-script shaping, advanced text layout, table patterns/effects/
+unsupported compound-border variants and whole-slide Office visual equivalence remain acceptance gaps. New inspection APIs or
+passing round-trip tests do not certify those capabilities.
 
 ## [0.4.0] — 2026-08-17
 

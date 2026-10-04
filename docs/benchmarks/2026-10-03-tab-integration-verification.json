@@ -1,0 +1,101 @@
+{
+  "sourceRevision": "26d98d388006a86f457e7ce0dcd08d9414ee342e",
+  "librarySourceTree": "1ba6169f2b0b010beea441e04ea8115e9d731cee",
+  "lecternTree": "933fba120f0f1ae58486128629490c9022026abf",
+  "laterChanges": "Evidence/documentation only; rejected no-tab experiment never integrated.",
+  "checks": {
+    "library": {
+      "command": "swift test --jobs 2",
+      "tests": 1019,
+      "suites": 140,
+      "exitCode": 0
+    },
+    "lecternCore": {
+      "command": "swift test --package-path Lectern --jobs 2",
+      "tests": 234,
+      "suites": 26,
+      "exitCode": 0
+    },
+    "nativeApp": {
+      "command": "Lectern/scripts/test-app.sh -parallel-testing-enabled NO -resultBundlePath /tmp/lectern-tabs-native-20261003.xcresult",
+      "tests": 78,
+      "failed": 0,
+      "skipped": 0,
+      "parameterizedExecutions": 106,
+      "exitCode": 0
+    },
+    "headlessApp": {
+      "command": "python3 Lectern/scripts/test-inspection-headless.py --all-app-tests --output /tmp/lectern-tabs-headless-final-20261003.json",
+      "reportedTests": 78,
+      "suites": 18,
+      "skippedNativeWebKit": [
+        "\udbc1\ude5f  Test nativeSnapshotIncludesTheBottomOfPortraitAndFourByThreeSlides() skipped.",
+        "\udbc1\ude5f  Test nativeWrapperDoesNotResizeNestedSVGViewports() skipped.",
+        "\udbc1\ude5f  Test nativeNotesPreviewKeepsPageAndThumbnailGeometry() skipped."
+      ],
+      "copiedInputs": 55,
+      "dependencyInputs": 146,
+      "inputAndLogHashesVerified": true,
+      "exitCode": 0
+    },
+    "ios": {
+      "command": "xcodebuild -project Lectern.xcodeproj -scheme Lectern-iOS -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath .build-xcode-ios CODE_SIGNING_ALLOWED=NO 'ARCHS=arm64 x86_64' ONLY_ACTIVE_ARCH=NO build",
+      "cwd": "Lectern",
+      "verifiedArchitectures": [
+        "x86_64",
+        "arm64"
+      ],
+      "exitCode": 0
+    },
+    "readme": {
+      "command": "swift run ReadmeSnippets /tmp/rostrum-tabs-readme-20261003",
+      "result": "Both sample decks written and reopened",
+      "exitCode": 0
+    }
+  },
+  "retainedFiles": {
+    "/tmp/rostrum-tabs-library-20261003.log": "0d6571dbc0101915b883d01a5ae2deb0274820670042116c87d216bb94170568",
+    "/tmp/lectern-tabs-core-20261003.log": "3ae842c2251f183be102d1cfb070a181f88a43918cc68892ed7d12624b161602",
+    "/tmp/lectern-tabs-native-20261003.log": "081af13b655b881b724844ec169135c8d41827bdc20643ec593574c720f4e6ad",
+    "/tmp/lectern-tabs-ios-20261003.log": "568261b9630da3a295ce26c290cb44fd20dc3fbca3cf7f5245edd84ee9ac5cc8",
+    "/tmp/rostrum-tabs-readme-20261003.log": "c5490eed3e218f5d29c92fbe9cf41a4417a0bc925920d19ff17352083b244b3f",
+    "/tmp/lectern-tabs-headless-final-20261003.json": "39bf7ecef77cbeb702ca694fb67faf8e38ed371961cf09f82ce47027287b6bf7",
+    "/tmp/lectern-tabs-headless-final-20261003.log": "6071fdaf0951abc79d9cd51da07810484c2f34af5a7dccb45c9a77763e42c008",
+    "/tmp/lectern-tabs-native-summary-20261003.json": "490d08f6e3c8a73c0149c5a879fe75c9a4620912547e46b32eba74f5cb614ef5"
+  },
+  "headlessReceiptNote": "The accepted repeat uses a separate output path. An earlier log failed its receipt hash check and is excluded.",
+  "nativePowerPoint": {
+    "version": "16.113.3",
+    "files": {
+      "default": {
+        "path": "/tmp/lectern-tabs-final-specimens-20261003/rows-12-moved-false-E2D7224E-BECA-49C1-8760-6A4E0379043D/tabLayout.pptx",
+        "sha256": "9d37d9c015a279f3ab92a3e1633e029eb991dbbbee228a6214feda32337ad22a",
+        "unchangedAfterOpening": true,
+        "slidesVisuallyInspected": 2,
+        "repairPrompt": false
+      },
+      "moved": {
+        "path": "/tmp/lectern-tabs-final-specimens-20261003/rows-12-moved-true-8010A83F-B75A-4685-A26A-8301F00EB38B/tabLayout.pptx",
+        "sha256": "b769621496e6d53dba93c9c7b6a4029b6136b153a6605249b5f49e844824fd72",
+        "unchangedAfterOpening": true,
+        "slidesVisuallyInspected": 2,
+        "repairPrompt": false
+      }
+    },
+    "displayAnomaly": "Moved-stop text initially overlapped in a long-lived PowerPoint session. Restarting PowerPoint and reopening the same bytes rendered both slides cleanly. Cause unproven."
+  },
+  "lecternManual": {
+    "recipe": "Tab stops and justified fields",
+    "sampleCount": 12,
+    "variants": [
+      "default stops",
+      "moved stops"
+    ],
+    "passingChecksEach": 13,
+    "inspectionSlides": 2,
+    "exportedMarkdown": {
+      "path": "/tmp/lectern-tabs-gui-export-20261003/tabLayout/tabLayout.md",
+      "sha256": "5e7779009b968abd8e91473d4249cc42501631aeaa326c162233aa409f067c98"
+    }
+  }
+}

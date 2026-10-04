@@ -155,7 +155,7 @@ import Rostrum
         #expect(inspection.previewRecords[1].svg == nil)
         #expect(inspection.previews[1].contains("Preview unavailable"))
         #expect(inspection.previewRecords[1].accessibilityLabel(total: 3) == "Slide 2 of 3. Preview unavailable")
-        #expect(inspection.previewRecords[2].accessibilityLabel(total: 3) == "Slide 3 of 3: Third")
+        #expect(inspection.previewRecords[2].accessibilityLabel(total: 3).hasPrefix("Slide 3 of 3: Third"))
         #expect(inspection.previewRecords[2].svg != nil)
     }
 
