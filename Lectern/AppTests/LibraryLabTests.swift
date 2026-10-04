@@ -48,7 +48,7 @@ import Rostrum
         #expect(result.checks.contains { $0.name == "Paragraph positions survive reopening" && $0.passed })
         await context.app.inspect(deckAt: result.afterURL).value
         #expect(context.app.phase == .inspected)
-        #expect(context.app.inspection?.previews.count == 3)
+        #expect(context.app.inspection?.previews.count == 4)
         let exportRoot = root.appendingPathComponent("Export")
         let task = try #require(context.app.exportInspected(into: exportRoot))
         await task.value
@@ -59,9 +59,9 @@ import Rostrum
         let markdown = try String(contentsOf: markdownURL, encoding: .utf8)
         #expect(markdown.contains("App paragraph demonstration"))
         #expect(markdown.contains("The last line remains natural."))
-        #expect(context.app.exportSummary == "3 slides · 0 media files · 0 chart CSVs")
+        #expect(context.app.exportSummary == "4 slides · 0 media files · 0 chart CSVs")
         let deck = try Presentation(contentsOf: result.afterURL)
-        #expect(deck.slides.count == 3)
+        #expect(deck.slides.count == 4)
         #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
         let shape = try #require(deck.slides[0].shapes.all.first { $0.name == "Justified paragraph" })
         #expect(shape.textFrame?.paragraphs.first?.alignment == .justified)
@@ -104,6 +104,35 @@ import Rostrum
             }
             #expect(layouts[0].lines.map { $0.spans.map(\.run.text).joined() } == [String(repeating: "m", count: count), narrow ? "mZ" : "Z"])
             #expect(layouts[1].lines == layouts[2].lines && layouts[1].lines.count == 1)
+        }
+        #expect(markdown.contains("Common Latin words at a native wrap boundary"))
+        #expect(markdown.contains("officeZ"))
+        let latinTree = try #require(deck.slides[3].part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree"))
+        for caseID in [narrow ? "office-edge-below" : "office-edge-above", "mixed-size-edge"] {
+            #expect(result.checks.contains { $0.name == "Saved native Latin wrap: " + caseID && $0.passed })
+            var layouts: [RichTextLayout] = []
+            for role in ["original", "shape fit", "frame fit"] {
+                let name = caseID + " " + role
+                let box = try #require(deck.slides[3].shapes.all.first { $0.name == name })
+                let node = try #require(latinTree.children(named: "p:sp").first {
+                    $0.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "name"] == name
+                })
+                let body = try #require(node.firstChild(named: "p:txBody"))
+                let layout = RichTextLayout(textBody: body, width: box.frame.width.points,
+                    height: box.frame.height.points, fonts: deck.fonts, theme: deck.theme)
+                #expect(layout.fits && layout.diagnostics.isEmpty)
+                layouts.append(layout)
+                #expect(box.textFrame?.paragraphs.first?.runs.compactMap(\.fontSize) == (caseID == "mixed-size-edge" ? [18, 12] : [18]))
+                #expect(box.textFrame?.paragraphs.first?.runs.allSatisfy { $0.color == .black } == true)
+                let norm = try #require(body.firstChild(named: "a:bodyPr")?.firstChild(named: "a:normAutofit"))
+                let scale = try #require(Double(norm[attribute: "fontScale"] ?? ""))
+                if role == "original" { #expect(scale == 100_000) }
+                else { #expect(scale > 0 && scale < 100_000) }
+            }
+            let nativeLines = caseID == "office-edge-below" ? ["offic", "eZ"] : ["office", "Z"]
+            #expect(layouts[0].lines.map { $0.spans.map(\.run.text).joined() } == nativeLines)
+            #expect(layouts[1].lines == layouts[2].lines)
+            #expect(layouts[1].lines.map { $0.spans.map(\.run.text).joined() } == ["officeZ"])
         }
         #expect(model.results[.paragraphLayout]?.directory == result.directory)
     }

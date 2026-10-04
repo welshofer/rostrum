@@ -28,7 +28,7 @@ Rostrum is a **local path dependency** (`../`), resolving OQ-4.
 
 ## Library Lab
 
-Choose **Library Lab** in the sidebar to exercise the library offline. Its 25
+Choose **Library Lab** in the sidebar to exercise the library offline. Its 26
 configurable demonstrations cover drawing, text/fonts, paragraph justification, standard tab stops, tables, charts, SmartArt,
 notes, comments, sections, imports, layouts/themes/templates, design builders,
 media, packages and extraction. **Run All** saves and reopens every example,
@@ -47,6 +47,11 @@ The paragraph demo also reproduces two native-measured wrapping boundaries:
 a 0.02-point width change moves a character between lines, including across
 mixed-size runs. Its shorter fitted copies display the scale computed through
 both public fit paths; they do not claim PowerPoint chose that same scale.
+A fourth slide applies the same comparison to `officeZ`, with a uniform 18-point
+run and fixed-width mixed 18/12-point runs. The narrower option switches the
+uniform row between independently recorded native wrap boundaries. The specimens
+use separate Latin letter glyphs, matching the native references, and retain
+their font sizes and fitting settings through saving and reopening.
 
 See the [coverage and verification record](../docs/LIBRARY-LAB-20261002.md).
 

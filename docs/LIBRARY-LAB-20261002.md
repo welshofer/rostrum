@@ -191,6 +191,55 @@ positive threshold, retaining the disabled-threshold comparison and exact saved
 attributes. Native app, headless, iOS and interactive acceptance are recorded
 separately by the integrating task.
 
+## Common Latin word extension — fidelity4, 2026-10-04
+
+The existing paragraph recipe retains its first three slides and adds one
+two-row comparison: original size, `Shape.fitText`, and `TextFrame.fitText`.
+The uniform `officeZ` row selects native case `office-edge-below` (49.74 pt,
+`offic` / `eZ`) or `office-edge-above` (49.76 pt, `office` / `Z`) through the
+existing alternative switch. The mixed `of` 18 pt + `ficeZ` 12 pt row remains
+at the independently verified 39.01 pt width (`mixed-size-edge`, `office` / `Z`).
+Its caption explicitly identifies the fixed width. User text still changes the
+title and sample size still changes paragraph density on the first slide.
+
+The bundled [reference record](../Lectern/Sources/LecternCore/Resources/LibraryLab/ParagraphLigatureReferences.json)
+pins the corrected native source/PDF, font and independent kerning control hashes.
+These native cases use separate letter glyphs rather than standard Latin ligature
+substitutions. Standalone `TextShaper` behavior is a separate operation. Scope is
+regular DejaVu Sans, left-to-right Latin, left alignment and zero insets; this
+comparison does not establish other scripts, inherited styles, arbitrary glyph
+substitutions, or general Office pixel parity.
+
+Public authoring omits kerning after independent HarfBuzz controls confirmed
+equivalent output for these exact three run strings. Unlike the native fixture's
+`noAutofit`, the original specimen explicitly writes `normAutofit` at 100% through
+`setAutoFit`. Both fitted copies retain the original run sizes and persist their
+computed fit scale. Saved-file checks retain exact native line expectations,
+run text/sizes/black color/tracking, omitted kerning, insets, fitting attributes,
+all spans and deterministic SVG. Inspector/export coverage includes both
+alternatives and all four slides. Fit scales are not native autofit-choice claims.
+
+The prior wording substitutions (`final`/`field`/`office`) above document the
+previous calibration boundary; this pass adds a controlled native common-word
+specimen without inferring new tab/table behavior from it. The imported-fidelity
+entry from main remains intact, bringing the catalog to 26 entries.
+
+Retain native-review artifacts with:
+
+```sh
+LECTERN_LIGATURE_ARTIFACTS=/tmp/lectern-fidelity4-paragraph \
+  swift test --package-path Lectern --jobs 2 --filter ParagraphLigatureRecipeTests
+```
+
+With the finalized native-policy engine integrated, the focused old/new paragraph
+run passed 4 tests in 2 suites on its first cycle. The full LecternCore run passed
+277 tests in 36 suites; all 26 Lab pipelines passed 337 checks. The four-slide
+paragraph recipe passed 31 checks with no findings; imported fidelity remained
+9 checks with no findings. The tab recipe retained its explicit hard-break
+justification diagnostic (13 checks, 1 finding). Native app/platform/end-to-end
+and PowerPoint acceptance are recorded separately by the integrating task.
+Earlier counts above are historical receipts.
+
 ## Tab-layout extension — 2026-10-03
 
 The 25th catalog entry authors standard left, center, right and period-decimal

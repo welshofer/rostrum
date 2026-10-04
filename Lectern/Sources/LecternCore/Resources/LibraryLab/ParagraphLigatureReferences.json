@@ -1,0 +1,73 @@
+{
+  "source": "Tests/RostrumTests/Fixtures/NativeLigatureLayout/native-ligatures-regular-table.pptx",
+  "sourceSHA256": "3c4c668ad517fefe310e674402482f4ecef3e1c72a00ff50a80eaf8d9c138ab5",
+  "nativePDF": "Tests/RostrumTests/Fixtures/NativeLigatureLayout/powerpoint-regular-table.pdf",
+  "nativePDFSHA256": "a26eeeabada4a6e580b6cd32cc40bd580e7935d291b9344b126c3e5a49785722",
+  "font": "DejaVuSans.ttf",
+  "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+  "scope": "Independent PowerPoint: embedded regular DejaVu Sans, left-to-right Latin, left alignment, zero insets, square wrap, explicit kern=0 and noAutofit. Public recipe omits kerning: independent HarfBuzz liga=0 kern=0/1 controls are identical for exactly officeZ, of and ficeZ. Public originals explicitly write normAutofit fontScale=100000 rather than the reference noAutofit. Selected cases use black runs. Fit choices are computed, not native autofit-choice expectations.",
+  "cases": [
+    {
+      "id": "office-edge-below",
+      "title": "Uniform 18 pt | narrow option",
+      "narrow": true,
+      "widthPoints": 49.74,
+      "runs": [
+        {
+          "text": "officeZ",
+          "font": "DejaVu Sans",
+          "size": 18,
+          "tracking": 0
+        }
+      ],
+      "nativeLines": [
+        "offic",
+        "eZ"
+      ]
+    },
+    {
+      "id": "office-edge-above",
+      "title": "Uniform 18 pt | wider option",
+      "narrow": false,
+      "widthPoints": 49.76,
+      "runs": [
+        {
+          "text": "officeZ",
+          "font": "DejaVu Sans",
+          "size": 18,
+          "tracking": 0
+        }
+      ],
+      "nativeLines": [
+        "office",
+        "Z"
+      ]
+    },
+    {
+      "id": "mixed-size-edge",
+      "title": "Mixed 18/12 pt | fixed width",
+      "narrow": false,
+      "widthPoints": 39.01,
+      "runs": [
+        {
+          "text": "of",
+          "font": "DejaVu Sans",
+          "size": 18,
+          "tracking": 0
+        },
+        {
+          "text": "ficeZ",
+          "font": "DejaVu Sans",
+          "size": 12,
+          "tracking": 0
+        }
+      ],
+      "nativeLines": [
+        "office",
+        "Z"
+      ]
+    }
+  ],
+  "kerningEquivalenceSource": "Tests/RostrumTests/Fixtures/NativeLigatureLayout/harfbuzz-controls.json",
+  "kerningEquivalenceSHA256": "83337d80310287844ec8ae12c87c7477375453839bd2e438f6c1bdf7ba2b632a"
+}

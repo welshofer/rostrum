@@ -25,6 +25,8 @@ struct ParagraphBoundaryReferences: Decodable {
     let font: String
     let fontSHA256: String
     let scope: String
+    let kerningEquivalenceSource: String?
+    let kerningEquivalenceSHA256: String?
     let cases: [Sample]
 }
 

@@ -88,3 +88,22 @@ confirmed identical output for the demonstrated `m/m` and `m/Z` pairs with
 kerning enabled and disabled, allowing the public recipe to omit that setting.
 Only the unfitted native boundaries are oracle expectations; displayed fitting
 scales are computed by the public APIs and checked for persistence and fit.
+## Native common Latin words — fidelity4, 2026-10-04
+
+`ParagraphLigatureReferences.json` selects `office-edge-below`,
+`office-edge-above`, and `mixed-size-edge` from the independent PowerPoint
+`NativeLigatureLayout` fixture. It pins the corrected source presentation, native
+PDF, bundled regular DejaVu Sans bytes, and independent HarfBuzz control receipt
+by SHA-256. The full capture verifies the native subset glyph outlines against
+the embedded font. The selected runs are black; the mixed style is size only.
+
+Native `officeZ` at 18 pt wraps as `offic` / `eZ` at 49.74 pt and `office` / `Z`
+at 49.76 pt. The mixed `of` at 18 pt plus `ficeZ` at 12 pt wraps as `office` / `Z`
+at the fixed 39.01 pt width. The native fixtures use explicit `kern=0` and
+`noAutofit`. Public authoring omits kerning because independent `liga=0`
+HarfBuzz controls give identical glyph IDs, advances and offsets with kerning
+on/off for exactly `officeZ`, `of` and `ficeZ`. Public originals explicitly call
+`setAutoFit(fontScale: 1)` and retain `normAutofit fontScale=100000`; they do not
+reproduce the reference's autofit element. Fitted copies use the two public
+fitting entry points. Their selected scales are computed, not native autofit
+choice expectations. No hidden XML writes or new font resources are needed.
