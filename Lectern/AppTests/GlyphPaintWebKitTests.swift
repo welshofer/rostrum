@@ -90,7 +90,10 @@ import Rostrum
             #expect(result.passed)
             let deck = try Presentation(contentsOf: result.afterURL)
             #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
-            let svg = try deck.renderSVG(slideAt: 6)
+            // Capture the exact preview emitted by the real inspector, including
+            // its viewport metadata and installed-font fallback profile.
+            let inspectorSVG = result.directory.appendingPathComponent("previews/slide-07.svg")
+            let svg = try String(contentsOf: inspectorSVG, encoding: .utf8)
             let size = CGSize(width: deck.slideSize.width.points, height: deck.slideSize.height.points)
             let referenceURL = result.directory.appendingPathComponent("native-glyph-reference.json")
             let reference = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: referenceURL)) as? [String: Any])
@@ -105,7 +108,8 @@ import Rostrum
             }
             try await capture(svg: svg, size: size, stem: "alternative-\(alternative)",
                               source: result.afterURL, slideIndex: 6, specimens: specimens,
-                              expectedText: "Glyph size and placement", host: host, directory: directory)
+                              expectedText: "Glyph size and placement", host: host, directory: directory,
+                              inspectorSVG: inspectorSVG)
         }
     }
 
@@ -139,8 +143,11 @@ import Rostrum
 
     private func capture(svg: String, size: CGSize, stem: String, source: URL, slideIndex: Int,
                          specimens: [[String: Any]], expectedText: String,
-                         host: SnapshotHost, directory: URL) async throws {
+                         host: SnapshotHost, directory: URL, inspectorSVG: URL? = nil) async throws {
         let svgData = Data(svg.utf8)
+        if let inspectorSVG {
+            #expect(try Data(contentsOf: inspectorSVG) == svgData)
+        }
         let svgURL = directory.appendingPathComponent(stem + ".svg")
         try svgData.write(to: svgURL)
         let result = await host.vectorCapture(svg: svg, size: size)
@@ -168,7 +175,8 @@ import Rostrum
         let records = specimens.map { specimen in
             specimen.merging(["svgFilename": svgURL.lastPathComponent, "pdfFilename": pdfURL.lastPathComponent]) { _, new in new }
         }
-        let receipt: [String: Any] = [
+        var receipt: [String: Any] = [
+            "renderingProfile": inspectorSVG == nil ? "raw library render with embedded fonts" : "saved DeckInspector preview",
             "source": source.path, "sourceSHA256": Self.sha(try Data(contentsOf: source)),
             "sourceSlideIndex": slideIndex,
             "svg": svgURL.path, "svgSHA256": Self.sha(svgData),
@@ -180,6 +188,10 @@ import Rostrum
             "originalSpecimens": records,
             "independentGlyphComparison": "pending; capture success alone is not native paint parity"
         ]
+        if let inspectorSVG {
+            receipt["inputInspectorSVG"] = inspectorSVG.path
+            receipt["inputInspectorSVGSHA256"] = Self.sha(try Data(contentsOf: inspectorSVG))
+        }
         try JSONSerialization.data(withJSONObject: receipt, options: [.prettyPrinted, .sortedKeys])
             .write(to: directory.appendingPathComponent(stem + "-capture.json"))
     }
