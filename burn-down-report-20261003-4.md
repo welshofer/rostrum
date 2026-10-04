@@ -245,3 +245,27 @@ hashes pass. Native/manual paragraph evidence transfers by exact PPTX identity.
 The [receipt](docs/benchmarks/2026-10-04-break-reuse-integration-verification.json)
 pins the source and limits. Glyph painting/placement and a seventh Lectern
 paragraph slide continue separately; no merge or deployment occurred.
+
+## Continued native glyph painting and measured cost — October 4
+
+The [native-paint integration report](docs/LAYOUT-FIDELITY-20261004-9.md) records
+separate authored/measurement/paint sizing, explicit unstretched scalar origins,
+native kerning semantics, public table-cell context and the seventh paragraph
+slide. At `15204a9`, retained stages pass 1,148 library, 18 layout, 286 Core and
+80 native app tests / 110 app executions. The initial full command failed three
+cross-profile SVG assertions; test-only corrections and a final serial app run
+resolve them. An intervening concurrent-build run remains explicitly invalid.
+Eleven quiet exit-zero diagnostics and successful nonquiet confirmations remain
+pinned in the [receipt](docs/benchmarks/2026-10-04-native-paint-integration-verification.json).
+
+All 387 Lab checks and 60 independent reopens / 225 slides pass; 313 inputs stay
+unchanged. Exact inspector WebKit output passes 14 cases / 208 glyphs; fresh
+PowerPoint paragraph PDFs pass 188 glyphs plus separate spacing/empty-line
+checks. The registered-table workload improves 4.257% by median ratio and 3.901%
+by paired median, while fitting cost and native timing remain inconclusive under
+heavy background load. No cumulative performance or broad raster claim is made.
+
+Table PDFs/alternative opening and native Lab acceptance, current manual Lectern
+GUI demonstrations and the separate new 18-case bullet capture remain open after
+a PowerPoint Save As stall. Draft PR #39 can carry this partial checkpoint while
+work continues; no merge or deployment is claimed.

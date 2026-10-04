@@ -461,3 +461,21 @@ prior native-accepted sources; 54 paragraph checks pass without findings.
 The [integration report](LAYOUT-FIDELITY-20261004-8.md) preserves the distinction
 between fresh automated app tests and transferred prior manual/PDF evidence.
 The seventh glyph-placement slide remains a separate, unintegrated draft.
+
+## October 4 native glyph painting integration
+
+The paragraph recipe now has seven slides and 74 passing checks with no preview
+findings. Its 12 original/scaled regular DejaVu specimens preserve native source
+bodies and frames; separate copies exercise both public fit APIs. Exact saved
+inspector SVGs pass actual WebKit PDF outline/origin checks, and both paragraph
+variants have fresh PowerPoint PDF evidence. Cell appearance adds a third slide
+for explicit table context and live, nonmutating cell fitting; its ignored-scale
+diagnostic is retained. The catalog remains 26 recipes with 387 passing checks
+and 411 reported findings. All 60 external reopens / 225 slides pass.
+
+The [integration report](LAYOUT-FIDELITY-20261004-9.md) retains the initially
+failed cross-profile assertions, invalid concurrent app rerun, final passing
+serial app tests and all source pins. Default table opening succeeded, but table
+PDFs/alternative opening, current manual Lectern runs and a separate new bullet
+capture remain pending. This checkpoint does not claim their native acceptance
+or native-selected autofit.
