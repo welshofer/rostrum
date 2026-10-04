@@ -71,6 +71,7 @@ final class RenderDiagnosticCollector {
     ]
     private struct EmbeddedFace {
         let data: Data
+        let encoded: String
         let bold: Bool
         let italic: Bool
         let family: String
@@ -84,6 +85,10 @@ final class RenderDiagnosticCollector {
     /// Names point at renderer-owned CSS faces, so aliases use one resource and
     /// the SVG does not accidentally pick a similarly named platform font.
     func embeddedFamily(for face: FontFaceKey, fonts: FontLibrary) -> String? {
+        let resourceFace = fonts.previewFace(for: face) ?? face
+        if resourceFace != face {
+            record(.viewerFontDependency, .approximation, "Requested style of \(face.family) is unavailable; using its registered regular face with viewer style synthesis.")
+        }
         if let existing = resolvedFaces[face] { return existing }
         if let missing = unavailableFaces[face] { record(missing.0, missing.1, missing.2); return nil }
         func unavailable(_ code: FidelityIssueCode, _ impact: FidelityImpact, _ reason: String) -> String? {
@@ -91,7 +96,7 @@ final class RenderDiagnosticCollector {
             record(code, impact, reason)
             return nil
         }
-        guard let data = fonts.data(for: face) else {
+        guard let data = fonts.data(for: resourceFace) else {
             return unavailable(.viewerFontDependency, .approximation, "No embeddable registered font resource for \(face.family).")
         }
         if let restriction = EOTLite.fsType(of: data), restriction & 0x0202 != 0 {
@@ -101,16 +106,16 @@ final class RenderDiagnosticCollector {
         guard signature != [0x74, 0x74, 0x63, 0x66] else {
             return unavailable(.unsupportedFontEmbedding, .approximation, "Collection-face extraction is required before embedding \(face.family) in SVG.")
         }
-        guard fonts.metrics(for: face)?.hasOutlines == true else {
+        guard fonts.metrics(for: resourceFace)?.hasOutlines == true else {
             return unavailable(.unsupportedFontEmbedding, .missingResource, "Font \(face.family) has metrics but no supported outline tables for SVG.")
         }
-        if let shared = embeddedFaces.first(where: { $0.data == data && $0.bold == face.bold && $0.italic == face.italic }) {
+        if let shared = embeddedFaces.first(where: { $0.data == data && $0.bold == resourceFace.bold && $0.italic == resourceFace.italic }) {
             resolvedFaces[face] = shared.family
             return shared.family
         }
         let family = "RostrumEmbeddedFace\(embeddedFaces.count + 1)"
         let format = signature == [0x4F, 0x54, 0x54, 0x4F] ? "opentype" : "truetype"
-        embeddedFaces.append(EmbeddedFace(data: data, bold: face.bold, italic: face.italic, family: family, format: format))
+        embeddedFaces.append(EmbeddedFace(data: data, encoded: fonts.encodedSource(for: resourceFace) ?? data.base64EncodedString(), bold: resourceFace.bold, italic: resourceFace.italic, family: family, format: format))
         resolvedFaces[face] = family
         return family
     }
@@ -118,7 +123,7 @@ final class RenderDiagnosticCollector {
     var fontDefinitions: String {
         guard !embeddedFaces.isEmpty else { return "" }
         let rules = embeddedFaces.map { face in
-            "@font-face{font-family:'\(face.family)';font-style:\(face.italic ? "italic" : "normal");font-weight:\(face.bold ? 700 : 400);src:url(data:font/\(face.format == "opentype" ? "otf" : "ttf");base64,\(face.data.base64EncodedString())) format('\(face.format)');}"
+            "@font-face{font-family:'\(face.family)';font-style:\(face.italic ? "italic" : "normal");font-weight:\(face.bold ? 700 : 400);src:url(data:font/\(face.format == "opentype" ? "otf" : "ttf");base64,\(face.encoded)) format('\(face.format)');}"
         }.joined()
         return "<style type=\"text/css\">" + rules + "</style>"
     }
@@ -159,6 +164,7 @@ final class RenderDiagnosticCollector {
     /// Traversal is iterative and document ordered; paths include same-name indices.
     func inspect(_ shape: XML.Element, owner: Part, slideIndex: Int, path: String, package: OPCPackage,
                  tableStyleReference: Bool = false, approximatedTableEffect: XML.Element? = nil) {
+        guard !ShapeCollection.isHidden(shape) else { return }
         let id = shape.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"]
         location = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: id, path: path)
         if !["p:sp", "p:pic", "p:cxnSp", "p:grpSp", "p:graphicFrame", "p:bg", "p:bgPr", "a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:tblStyle", "a:tableStyle", "a:ln", "a:effectStyle"].contains(shape.name) {
@@ -178,6 +184,7 @@ final class RenderDiagnosticCollector {
         var components: [(name: String, occurrence: Int)] = []
         let tableStyle = tableStyleReference || shape.name == "a:tblStyle" || shape.name == "a:tableStyle"
         while let (element, occurrence, depth, parent) = stack.popLast() {
+            if ShapeCollection.isHidden(element) { continue }
             if components.count > depth { components.removeLast(components.count - depth) }
             if occurrence > 0 { components.append((element.name, occurrence)) }
             func issue(_ code: FidelityIssueCode, _ impact: FidelityImpact, _ text: String) {
@@ -196,7 +203,7 @@ final class RenderDiagnosticCollector {
                 }) == true {
                     issue(.unsupportedGeometry, .approximation, "Unsupported geometry guide formulas use default adjustments.")
                 }
-            case "a:custGeom": issue(.unsupportedGeometry, .approximation, "Custom geometry is approximated by a rectangle.")
+            case "a:custGeom": break // Diagnosed using the resolved frame by the path renderer.
             case "a:xfrm", "p:xfrm":
                 if ShapeTransform.rect(element) == nil, ["rot", "flipH", "flipV"].contains(where: { element[attribute: $0].map { $0 != "0" && $0 != "false" } ?? false }) {
                     issue(.ignoredTransform, .approximation, "A transform without valid bounds cannot be applied.")
@@ -235,18 +242,18 @@ final class RenderDiagnosticCollector {
                     issue(.unsupportedImage, .omission, "The image rectangle is empty, inverted or outside the supported percentage encoding.")
                 }
             case "a:blip":
-                guard let rID = element[attribute: "r:embed"],
+                guard let rID = SVGEmbeddedImage.reference(in: element),
                       let resource = images.resolve(rID, owner: owner, package: package) else {
                     issue(.unavailableImage, .missingResource, "Image bytes could not be resolved from the owning part."); break
                 }
-                if resource.info == nil {
-                    issue(.unsupportedImage, .omission, "The embedded bytes are not a recognized PNG, JPEG or GIF image.")
+                if !resource.supported {
+                    issue(.unsupportedImage, .omission, "The embedded bytes are not a recognized raster image or supported self-contained SVG.")
                 }
                 if element.childElements.contains(where: { $0.name != "a:extLst" }) { issue(.omittedEffect, .omission, "Image effects are not applied.") }
             case "a:graphicData":
                 let uri = element[attribute: "uri"] ?? ""
                 if uri.hasSuffix("/chart") { issue(.chartApproximation, .approximation, "Chart preview approximates axes, labels and formatting; series/point bounds may omit data.") }
-                else if !uri.hasSuffix("/table") { issue(.graphicPlaceholder, .omission, "Graphic content is represented by a labeled placeholder.") }
+                else if !uri.hasSuffix("/table") && uri != GraphicDataURI.diagram { issue(.graphicPlaceholder, .omission, "Graphic content is represented by a labeled placeholder.") }
             case "a:tbl":
                 if !Self.hasTableStyle(element, package: package) { issue(.unresolvedTableStyle, .approximation, "The table style has no recognized native or embedded definition; preview uses fallback/direct formatting.") }
             case "a:tcPr":
@@ -256,13 +263,14 @@ final class RenderDiagnosticCollector {
             case "a:bodyPr":
                 if let vertical = element[attribute: "vert"], vertical != "horz" { issue(.unsupportedTextProperty, .approximation, "Vertical text layout is not implemented.") }
                 if let columns = element[attribute: "numCol"], columns != "1" { issue(.unsupportedTextProperty, .approximation, "Text columns are not implemented.") }
-                if element.firstChild(named: "a:prstTxWarp") != nil { issue(.unsupportedTextProperty, .approximation, "Text warp is not implemented.") }
+                if let warp = element.firstChild(named: "a:prstTxWarp"), warp[attribute: "prst"] != "textNoShape" { issue(.unsupportedTextProperty, .approximation, "Text warp is not implemented.") }
             case "a:pPr":
                 // Resolved paragraph alignment is diagnosed by RichTextLayout,
                 // including inherited modes and unsupported justification cases.
                 if element[attribute: "rtl"] == "1" { issue(.unsupportedTextProperty, .approximation, "Paragraph RTL layout is not verified.") }
             case "a:rPr", "a:defRPr", "a:endParaRPr":
-                if ["cap", "kumimoji", "normalizeH"].contains(where: { element[attribute: $0].map { $0 != "0" && $0 != "none" && $0 != "noStrike" } ?? false }) {
+                if element[attribute: "cap"] == "small" { issue(.unsupportedTextProperty, .approximation, "Small capitals are not rendered.") }
+                if ["kumimoji", "normalizeH"].contains(where: { element[attribute: $0].map { $0 != "0" && $0 != "none" && $0 != "noStrike" } ?? false }) {
                     issue(.unsupportedTextProperty, .approximation, "Character transforms are not rendered.")
                 }
             case "a:tab":

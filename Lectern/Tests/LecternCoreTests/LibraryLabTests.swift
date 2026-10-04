@@ -6,7 +6,7 @@ import Rostrum
 @Suite("Library Lab file pipeline", .serialized)
 struct LibraryLabTests {
     @Test func catalogIsCompleteAndUnambiguous() {
-        let recipes = DrawingLabRecipes.catalog + DocumentLabRecipes.catalog + PlatformLabRecipes.catalog
+        let recipes = [ImportedFidelityRecipe.catalog] + DrawingLabRecipes.catalog + DocumentLabRecipes.catalog + PlatformLabRecipes.catalog
         #expect(recipes.count == LibraryDemoID.allCases.count)
         #expect(Set(recipes.map(\.id)).count == recipes.count)
         #expect(LibraryLab.catalog.map(\.id) == LibraryDemoID.allCases)

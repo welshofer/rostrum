@@ -1,0 +1,37 @@
+# Imported slide fidelity — 2026-10-03
+
+The acceptance input was a private 22-slide PowerPoint deck whose Duo screenshots exposed missing curved decorations, missing SVG-only images, an empty SmartArt placeholder, overlapping titles/body text, mid-word title breaks, and blank numbered paragraphs rendered as list entries. Source files, fonts, and rendered references remain outside version control.
+
+## Changes
+
+- Render DrawingML custom paths with lines and quadratic/cubic curves, guide coordinates, per-path fill/stroke, and stroke widths independent of the path coordinate scale.
+- Resolve basic self-contained SVG images, including Office SVG extension relationships with no raster fallback. Reject unsupported or active/external SVG content while preserving the original package bytes.
+- Render an existing SmartArt drawing cache and its saved text bounds. Missing or unsupported caches retain an explicit placeholder and diagnostic.
+- Inherit text-body properties and placeholder list styles through the layout and master. Apply all-caps before text measurement. Preserve empty-paragraph spacing without drawing/advancing list markers. Move center/right-aligned bullets with their text and use the text size without its underline or baseline shift.
+- Honor hidden flags on shapes and entire groups without deleting their content.
+- Keep viewer glyph proportions when only estimated font widths are available; force measured widths only for registered faces.
+- Use a registered regular face when a requested style is unavailable, with an explicit synthesis diagnostic. No platform font lookup was added to portable Rostrum.
+- Cache bounded base64 font resources across slide renders, invalidating on registration. Avoid dictionary construction and sorting for verified, ordered, single-scalar ASCII glyph runs.
+- Add the offline **Imported artwork and text** Library Lab recipe with saved/reopened, source-preservation, and preview checks.
+
+## Visual acceptance and limits
+
+All 22 slides were compared with native PowerPoint PNG exports, using the same explicitly registered local fonts in Rostrum. WebKit rasterized the resulting SVGs after fonts loaded. The comparison establishes substantial improvement for this deck, not universal or pixel-identical PowerPoint compatibility.
+
+The missing curves, rings, triangular decorations, patterned panels and saved SmartArt text now appear. The overlapping title/body and blank list markers are corrected. Remaining observed differences include some title vertical positions, the font used for explicitly themed numbered markers. These remain open fidelity work. The image-heavy slide’s extra number was explicitly hidden in the source; hidden-shape rendering is now corrected.
+
+Custom arcs, shaded per-path fills, custom geometry text rectangles, nontrivial SmartArt root transforms, and general SVG/CSS are not supported by this change. SmartArt rendering uses the saved drawing snapshot; PowerPoint can regenerate its layout. Small capitals remain diagnosed. The source deck does not embed its fonts: consumers must register appropriate fonts, and iOS font availability differs from the Mac reference. These fixes do not themselves update an installed Duo build.
+
+## Verification method
+
+`ImportedGeometryRegressionTests` covers custom coordinates/strokes, unsupported paths, inherited anchors, all-caps and empty lists, aligned markers, marker decoration, cached/missing SmartArt, SVG-only image resolution, rejected active/external SVG, deterministic reopen, and read-only rendering. `FontFaceTests` covers encoded-resource invalidation and exact lookup versus preview fallback.
+
+The completion gate is `./scripts/verify.sh`: workflow checks, Rostrum and RostrumLayout tests, LecternCore tests and all Library Lab recipes, README examples, macOS/iOS builds, and app-hosted tests. Mac build/test wrappers explicitly apply their existing manual signing policy to SwiftPM resource bundles too; the configured stable signing identity is retained.
+
+The private Release timing harness loads one fixed deck and four explicit font faces once, then renders all 22 slides 16 times at 960 pixels. Every repeated SVG must be byte-identical. The first pass is excluded from the warm median; file I/O, font registration, and WebKit rasterization are excluded. Interleaved runs compare the implementation before the cache/ASCII optimization with the final implementation. This measures library rendering only, not device scrolling or startup latency.
+
+## Measured result
+
+Five interleaved Release runs (15 warm full-deck passes each) measured a pooled median of 57.30 ms before the font-resource/ASCII optimization and 47.85 ms after it, a 16.5% reduction on this Mac. Both binaries include the new geometry and SVG support; a small marker-style correction also separates them. This is a bounded workload result, not an isolated attribution to each optimization.
+
+The generated Imported artwork and text PPTX was opened in native PowerPoint without a repair prompt. Its curved decoration, SVG triangle, and numbered list were visible; PowerPoint regenerated the SmartArt layout from the model, as expected.

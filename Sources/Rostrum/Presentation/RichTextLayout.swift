@@ -57,20 +57,28 @@ public struct RichTextLayout: Sendable {
                 slideNumber: Int? = nil, maxLines: Int = 4096,
                 insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
                 verticalAnchor: String? = nil) {
-        let body = textBody.firstChild(named: "a:bodyPr")
+        let bodies = [textBody.firstChild(named: "a:bodyPr")].compactMap { $0 }
+            + inheritedStyles.filter { $0.name == "a:bodyPr" }
+        let body = XML.Element("a:bodyPr")
+        for source in bodies.reversed() {
+            for (key, value) in source.attributes { body[attribute: key] = value }
+        }
+        if let autofit = bodies.lazy.compactMap({ source in
+            source.childElements.first { ["a:normAutofit", "a:noAutofit", "a:spAutoFit"].contains($0.name) }
+        }).first { body.appendElement(autofit) }
         func inset(_ key: String, _ value: Double) -> Double {
-            body?.coordinate(key).map { Double($0) / Double(EMU.perPoint) } ?? value
+            body.coordinate(key).map { Double($0) / Double(EMU.perPoint) } ?? value
         }
         let margins = insets ?? (inset("lIns", 7.2), inset("tIns", 3.6), inset("rIns", 7.2), inset("bIns", 3.6))
         let availableWidth = max(0, width - margins.0 - margins.2)
         let availableHeight = max(0, height - margins.1 - margins.3)
-        let autofit = body?.firstChild(named: "a:normAutofit")
+        let autofit = body.firstChild(named: "a:normAutofit")
         let scale = Self.bounded(fontScale ?? Self.number(autofit, "fontScale", 100_000) / 1000, 0.1...100) / 100
         let reduction = Self.bounded(lineSpacingReduction ?? Self.number(autofit, "lnSpcReduction", 0) / 1000, 0...100) / 100
-        let wrap = body?[attribute: "wrap"] != "none"
+        let wrap = body[attribute: "wrap"] != "none"
         // DrawingML suppresses spacing at the text body's outer edges unless
         // explicitly requested. Interior paragraph spacing is unaffected.
-        let useEdgeParagraphSpacing = ["1", "true"].contains(body?[attribute: "spcFirstLastPara"] ?? "0")
+        let useEdgeParagraphSpacing = ["1", "true"].contains(body[attribute: "spcFirstLastPara"] ?? "0")
         let paragraphs = textBody.children(named: "a:p")
         let lineLimit = max(1, min(maxLines, 65536))
         let hasRegisteredFonts = fonts?.isEmpty == false
@@ -118,11 +126,16 @@ public struct RichTextLayout: Sendable {
                 guard let position = tab.coordinate("pos") else { return nil }
                 return (Double(position) / Double(EMU.perPoint), tab[attribute: "algn"] ?? "l")
             }.sorted { $0.position < $1.position } ?? []
-            let baseStyle = Self.resolve(text: "", properties: defaults,
+            let hasText = paragraph.childElements.contains { ["a:r", "a:fld"].contains($0.name) && !($0.firstChild(named: "a:t")?.textContent ?? "").isEmpty }
+            let emptyDefaults = hasText ? defaults : [paragraph.firstChild(named: "a:endParaRPr")].compactMap { $0 } + defaults
+            let baseStyle = Self.resolve(text: "", properties: emptyDefaults,
                 theme: theme, defaultSize: defaultPointSize, scale: scale)
             func face(_ style: ResolvedTextRun) -> FontMetrics? {
                 if hasRegisteredFonts, let name = style.fontFamily,
-                   let font = fonts?.metrics(for: name, bold: style.bold, italic: style.italic) { return font }
+                   let library = fonts,
+                   let key = library.previewFace(for: FontFaceKey(family: name, bold: style.bold, italic: style.italic)) {
+                    return library.metrics(for: key)
+                }
                 return fallbackMetrics
             }
             let baseMetrics = face(baseStyle)
@@ -200,6 +213,19 @@ public struct RichTextLayout: Sendable {
                             usesNativeAdvanceGrid = false
                             warnings.append(.unsupportedLayoutFeature("Native advance rounding outside single-scalar left-to-right ASCII glyphs is not verified"))
                         }
+                        if nativeGrid, shaped.glyphs.enumerated().allSatisfy({ $0.element.scalarRange.lowerBound == $0.offset }) {
+                            // Verified one-scalar glyphs are already in logical order.
+                            // Avoid a dictionary and sort for ordinary Latin slide text.
+                            for glyph in shaped.glyphs {
+                                let value = String(scalars[glyph.scalarRange.lowerBound])
+                                atoms.append(Atom(text: value, styleIndex: styleIndex,
+                                    width: Self.nativeAdvance(glyph, font: metrics, pointSize: style.fontSize) + style.tracking,
+                                    ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
+                                    source: source, breakAfter: breaks.contains(glyph.scalarRange.upperBound)))
+                            }
+                            segment = ""
+                            return
+                        }
                         // Logical cluster order makes line breaking independent of bidi.
                         // SVG delegates glyph drawing to its viewer; unsupported
                         // mixed-direction paragraph ordering is diagnosed above.
@@ -227,7 +253,7 @@ public struct RichTextLayout: Sendable {
                     }
                     segment = ""
                 }
-                for character in text {
+                for character in style.text {
                     if character == "\t" || character == "\n" || character == "\r" || character == "\r\n" {
                         appendSegment()
                         if character == "\t" { hasTabs = true }
@@ -285,17 +311,23 @@ public struct RichTextLayout: Sendable {
                 ["a:buNone", "a:buChar", "a:buAutoNum"].contains { p.firstChild(named: $0) != nil }
             }
             var bullet: ResolvedTextRun?
-            if bulletProperties?.firstChild(named: "a:buNone") == nil {
+            if atoms.contains(where: { !$0.text.isEmpty }), bulletProperties?.firstChild(named: "a:buNone") == nil {
                 if let char = bulletProperties?.firstChild(named: "a:buChar")?[attribute: "char"] {
-                    var run = baseStyle; run.text = char; bullet = run
+                    var run = runStyles.first ?? baseStyle; run.text = char; bullet = run
                 } else if let auto = bulletProperties?.firstChild(named: "a:buAutoNum") {
                     let start = Int(Self.bounded(Self.number(auto, "startAt", 1), 1...32767))
                     let value = auto[attribute: "startAt"] != nil ? start : (numberByLevel[level] ?? start)
                     numberByLevel[level] = value + 1
-                    var run = baseStyle; run.text = Self.numberLabel(value, type: auto[attribute: "type"] ?? "arabicPeriod"); bullet = run
+                    var run = runStyles.first ?? baseStyle; run.text = Self.numberLabel(value, type: auto[attribute: "type"] ?? "arabicPeriod"); bullet = run
                 }
                 if bullet != nil {
-                    if let font = child("a:buFont")?[attribute: "typeface"] { bullet?.fontFamily = font }
+                    // A list marker follows text size/color, not its underline,
+                    // strike or superscript decoration.
+                    bullet?.decoration = ""
+                    bullet?.baselineShift = 0
+                    if let font = child("a:buFont")?[attribute: "typeface"] {
+                        bullet?.fontFamily = font == "+mj-lt" ? theme?.majorFont : font == "+mn-lt" ? theme?.minorFont : font
+                    }
                     if let percent = child("a:buSzPct") { bullet?.fontSize *= Self.bounded(Self.number(percent, "val", 100000), 0...400000) / 100000 }
                     if let points = child("a:buSzPts") { bullet?.fontSize = Self.bounded(Self.number(points, "val", 1800), 100...400000) / 100 * scale }
                 }
@@ -495,7 +527,7 @@ public struct RichTextLayout: Sendable {
                 if firstLine, var run = bullet {
                     run.text += " "
                     let width = face(run)?.width(of: run.text, pointSize: run.fontSize) ?? Double(run.text.count) * run.fontSize * 0.42
-                    spans.append(RichTextSpan(run: run, x: margins.0 + left + indent, width: width))
+                    spans.append(RichTextSpan(run: run, x: margins.0 + left + indent + max(0, extra), width: width))
                 }
                 var previousSource: Int?
                 for (atomIndex, atom) in lineAtoms.enumerated() {
@@ -583,7 +615,7 @@ public struct RichTextLayout: Sendable {
         }
         cursor = max(cursor, measuredBottom)
         let offset: Double
-        switch verticalAnchor ?? body?[attribute: "anchor"] {
+        switch verticalAnchor ?? body[attribute: "anchor"] {
         case "ctr": offset = margins.1 + (availableHeight - cursor) / 2
         case "b": offset = margins.1 + availableHeight - cursor
         default: offset = margins.1
@@ -607,19 +639,33 @@ public struct RichTextLayout: Sendable {
                 guard let candidate = Placeholders.phElement(of: element),
                       (candidate[attribute: "idx"].flatMap(Int.init) ?? 0) == index else { continue }
                 kind = candidate[attribute: "type"] ?? kind
-                if let styles = element.firstChild(named: "p:txBody")?.firstChild(named: "a:lstStyle") { result.append(styles) }
+                if let text = element.firstChild(named: "p:txBody") {
+                    if let body = text.firstChild(named: "a:bodyPr") { result.append(body) }
+                    if let styles = text.firstChild(named: "a:lstStyle") { result.append(styles) }
+                }
                 break
             }
         }
-        if let master = try? layout.related(by: RelType.slideMaster, in: package),
-           let styles = try? master.dom().firstChild(named: "p:txStyles") {
+        if let master = try? layout.related(by: RelType.slideMaster, in: package) {
+            if ph != nil, let tree = Slide.existingSpTree(of: master) {
+                let reduced = Slide.masterTypeReduction[kind] ?? kind
+                if let placeholder = tree.childElements.first(where: {
+                    guard let candidate = Placeholders.phElement(of: $0) else { return false }
+                    let type = candidate[attribute: "type"] ?? "obj"
+                    return (Slide.masterTypeReduction[type] ?? type) == reduced
+                }), let text = placeholder.firstChild(named: "p:txBody") {
+                    if let body = text.firstChild(named: "a:bodyPr") { result.append(body) }
+                    if let styles = text.firstChild(named: "a:lstStyle") { result.append(styles) }
+                }
+            }
+            let styles = try? master.dom().firstChild(named: "p:txStyles")
             let bucket: String
             switch ph == nil ? "other" : Slide.masterTypeReduction[kind] ?? "body" {
             case "title": bucket = "p:titleStyle"
             case "body": bucket = "p:bodyStyle"
             default: bucket = "p:otherStyle"
             }
-            if let style = styles.firstChild(named: bucket) { result.append(style) }
+            if let style = styles?.firstChild(named: bucket) { result.append(style) }
         }
         return result
     }
@@ -662,7 +708,7 @@ public struct RichTextLayout: Sendable {
                 break
             }
         }
-        return ResolvedTextRun(text: text, fontFamily: family,
+        return ResolvedTextRun(text: attr("cap") == "all" ? text.uppercased() : text, fontFamily: family,
             fontSize: bounded(attr("sz").flatMap(Double.init) ?? defaultSize * 100, 100...400000) / 100 * scale,
             bold: ["1", "true"].contains(attr("b") ?? "0"), italic: ["1", "true"].contains(attr("i") ?? "0"), color: color,
             tracking: bounded(attr("spc").flatMap(Double.init) ?? 0, -400000...400000) / 100 * scale,

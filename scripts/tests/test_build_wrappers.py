@@ -43,6 +43,7 @@ targets:
                     self.assertIn('CODE_SIGN_ENTITLEMENTS=App/Lectern-iOS-Sim.entitlements', args)
                 else:
                     self.assertIn('CODE_SIGN_IDENTITY=stable-audit-identity', args)
+                    self.assertIn('CODE_SIGN_STYLE=Manual', args)
                 # Same missing-tool error, even when an old generated project exists.
                 (bindir / 'dirname').symlink_to('/usr/bin/dirname')
                 (bindir / 'bash').symlink_to('/bin/bash')

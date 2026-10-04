@@ -179,6 +179,7 @@ struct SVGRenderer {
     private func renderNode(_ node: XML.Element, ownedBy owner: Part, defs: inout SVGDefinitions,
                             problems: inout SlideRenderProblems, inherited: Bool = false,
                             depth: Int = 0, flippedTextH: Bool = false, flippedTextV: Bool = false) -> String {
+        guard !ShapeCollection.isHidden(node) else { return "" }
         guard depth < 64 else {
             problems.record("Preview omitted shapes nested more than 64 levels deep.")
             return ""
@@ -211,7 +212,7 @@ struct SVGRenderer {
         case "p:sp":
             let properties = node.firstChild(named: "p:spPr")
             let preset = properties?.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
-            if properties?.firstChild(named: "a:custGeom") != nil || !SVGPresetGeometry.supported.contains(preset) {
+            if properties?.firstChild(named: "a:custGeom") == nil && !SVGPresetGeometry.supported.contains(preset) {
                 problems.record("Preview approximates custom or unsupported shape geometry as a rectangle.")
             }
             if let guides = properties?.firstChild(named: "a:prstGeom")?.firstChild(named: "a:avLst"),
@@ -334,11 +335,26 @@ struct SVGRenderer {
             if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
         } else {
         if fill != nil || !stroke.isEmpty {
-            out += SVGPresetGeometry.render(prst, adjustments: preset?.firstChild(named: "a:avLst"),
-                                           frame: f, fill: fill ?? "none", stroke: stroke)
+            if let custom = spPr.firstChild(named: "a:custGeom") {
+                if let paths = SVGCustomGeometry.paths(custom, width: Double(f.2), height: Double(f.3)) {
+                    out += SVGCustomGeometry.render(paths, x: f.0, y: f.1, fill: fill ?? "none", stroke: stroke)
+                } else {
+                    diagnostics.record(.unsupportedGeometry, .approximation, "Custom path commands or coordinates are unsupported; using a rectangle.")
+                    problems.record("Preview approximates unsupported custom geometry as a rectangle.")
+                    out += geometry("rect", f, fill: fill ?? "none", stroke: stroke)
+                }
+            } else {
+                out += SVGPresetGeometry.render(prst, adjustments: preset?.firstChild(named: "a:avLst"),
+                                               frame: f, fill: fill ?? "none", stroke: stroke)
+            }
         }
         if let txBody = sp.firstChild(named: "p:txBody") {
-            let textFrame = SVGPresetGeometry.textFrame(prst, adjustments: preset?.firstChild(named: "a:avLst"), frame: f)
+            if !txBody.textContent.isEmpty, let rect = spPr.firstChild(named: "a:custGeom")?.firstChild(named: "a:rect"),
+               ["l", "t", "r", "b"].contains(where: { rect[attribute: $0] != $0 }) {
+                diagnostics.record(.unsupportedGeometry, .approximation, "Custom geometry text rectangle is not resolved; using the shape bounds.")
+            }
+            let textFrame = ShapeTransform.rect(sp.firstChild(named: "dsp:txXfrm")).map { ($0.x.rawValue, $0.y.rawValue, $0.width.rawValue, $0.height.rawValue) }
+                ?? SVGPresetGeometry.textFrame(prst, adjustments: preset?.firstChild(named: "a:avLst"), frame: f)
             let text = renderText(txBody, box: textFrame,
                                   inheriting: inheritedRunDefaults(for: sp, ownedBy: owner),
                                   fontReference: style?.firstChild(named: "a:fontRef"), respectInsets: true)
@@ -524,7 +540,12 @@ struct SVGRenderer {
                 }
                 result += "<tspan x=\"\(decimal(span.x))\""
                 result += diagnostics.textAttributes.attributes(for: run, family: embedded ?? run.fontFamily)
-                if span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
+                // An estimated width is useful for wrapping, but must not
+                // squeeze the viewer's real glyphs into that estimate.
+                let measured = run.fontFamily.flatMap {
+                    fonts.previewFace(for: FontFaceKey(family: $0, bold: run.bold, italic: run.italic))
+                } != nil
+                if measured, span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
                 result += ">" + escape(run.text) + "</tspan>"
             }
             return result + "</text>"
@@ -708,10 +729,10 @@ struct SVGRenderer {
 
     /// Read supported embedded raster bytes without recoding. Unsupported
     /// formats remain preserved in the package, but are not mislabeled PNGs.
-    private func imageResource(rId: String, ownedBy owner: Part) -> (url: String, info: ImageInfo)? {
+    private func imageResource(rId: String, ownedBy owner: Part) -> (url: String, nativeSize: (width: Double, height: Double))? {
         guard let resource = diagnostics.images.resolve(rId, owner: owner, package: package),
-              let info = resource.info, let url = diagnostics.images.url(for: resource) else { return nil }
-        return (url, info)
+              let size = resource.nativeSize, let url = diagnostics.images.url(for: resource) else { return nil }
+        return (url, size)
     }
 
     /// Crop and stretch share ImagePlacement with picture editing. Tile uses
@@ -719,7 +740,7 @@ struct SVGRenderer {
     /// and optional alternating mirror tiles. SVG preserves intrinsic alpha.
     private func imagePattern(_ blip: XML.Element, ownedBy owner: Part,
                               box frame: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String? {
-        guard let rId = blip.firstChild(named: "a:blip")?[attribute: "r:embed"],
+        guard let node = blip.firstChild(named: "a:blip"), let rId = SVGEmbeddedImage.reference(in: node),
               let resource = imageResource(rId: rId, ownedBy: owner), frame.2 > 0, frame.3 > 0 else { return nil }
         // Definitions only grow; byte count gives unique IDs without rescanning
         // all preceding base64 image data for extended grapheme clusters.
@@ -729,8 +750,8 @@ struct SVGRenderer {
             guard crop.valid else { return nil }
             let sx = Double(tile.boundedInt("sx", in: 1...Int(Int32.max)) ?? 100000) / 100000
             let sy = Double(tile.boundedInt("sy", in: 1...Int(Int32.max)) ?? 100000) / 100000
-            let width = Double(resource.info.nativeSize.width.rawValue) * sx * (1 - crop.left - crop.right)
-            let height = Double(resource.info.nativeSize.height.rawValue) * sy * (1 - crop.top - crop.bottom)
+            let width = resource.nativeSize.width * sx * (1 - crop.left - crop.right)
+            let height = resource.nativeSize.height * sy * (1 - crop.top - crop.bottom)
             guard width.isFinite, height.isFinite, width >= 1, height >= 1 else { return nil }
             let flip = tile[attribute: "flip"] ?? "none"
             let mirrorX = flip == "x" || flip == "xy", mirrorY = flip == "y" || flip == "xy"
@@ -763,7 +784,10 @@ struct SVGRenderer {
     private func renderGraphicFrame(_ gf: XML.Element, ownedBy owner: Part,
                                     defs: inout SVGDefinitions, problems: inout SlideRenderProblems) -> String {
         guard let xfrm = gf.firstChild(named: "p:xfrm"),
-              let off = xfrm.firstChild(named: "a:off"), let ext = xfrm.firstChild(named: "a:ext") else { return "" }
+              let off = xfrm.firstChild(named: "a:off"), let ext = xfrm.firstChild(named: "a:ext") else {
+            diagnostics.record(.graphicPlaceholder, .omission, "Graphic frame has no usable transform.")
+            return ""
+        }
         let x = intAttr(off, "x"), y = intAttr(off, "y")
         let w = intAttr(ext, "cx"), h = intAttr(ext, "cy")
         let uri = gf.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?[attribute: "uri"] ?? ""
@@ -774,6 +798,10 @@ struct SVGRenderer {
         if uri.hasSuffix("/chart"), let plot = renderChart(gf, ownedBy: owner, x: x, y: y, w: w, h: h) {
             return plot
         }
+        if uri == GraphicDataURI.diagram,
+           let cached = renderCachedDiagram(gf, ownedBy: owner, x: x, y: y, defs: &defs, problems: &problems) {
+            return cached
+        }
         // Anything still unplotted — SmartArt, OLE, a chart kind with no plot
         // here — keeps the labeled placeholder. Named rather than "[object]"
         // so a thumbnail says which thing it could not draw.
@@ -783,10 +811,62 @@ struct SVGRenderer {
         else if uri == GraphicDataURI.ole { label = "[embedded object]" }
         else { label = "[object]" }
         problems.record("Preview uses a placeholder for \(label).")
+        if uri == GraphicDataURI.diagram {
+            diagnostics.record(.graphicPlaceholder, .omission, "SmartArt has no supported saved drawing; using a labeled placeholder.")
+        }
         return box(x, y, w, h, fill: "#F2F2F2", stroke: " stroke=\"#CCCCCC\" stroke-width=\"6350\"")
             + textElement(label, x: x + w / 2, baseline: y + h / 2,
                           sizeEMU: 18 * emuPerPoint, fill: "#999999", anchor: "middle",
                           bold: false, typeface: nil)
+    }
+
+    /// Office stores a resolved drawing alongside many SmartArt data models.
+    /// Render that snapshot; never run or rewrite the diagram's layout program.
+    private func renderCachedDiagram(_ frame: XML.Element, ownedBy owner: Part, x: Int, y: Int,
+                                     defs: inout SVGDefinitions, problems: inout SlideRenderProblems) -> String? {
+        guard let id = frame.firstChild(named: "a:graphic")?.firstChild(named: "a:graphicData")?
+                .firstChild(named: "dgm:relIds")?[attribute: "r:dm"],
+              let dataRel = owner.rels.relationship(withId: id), !dataRel.isExternal,
+              let data = try? package.part(at: PackURI.resolve(target: dataRel.target, relativeTo: owner.uri.baseURI)),
+              let root = try? data.dom() else { return nil }
+        let extensions = root.firstChild(named: "dgm:extLst")?.children(named: "a:ext") ?? []
+        guard let drawingID = extensions.compactMap({ $0.firstChild(named: "dsp:dataModelExt")?[attribute: "relId"] }).first,
+              let relation = owner.rels.relationship(withId: drawingID), !relation.isExternal,
+              relation.type.hasSuffix("/diagramDrawing"),
+              let drawing = try? package.part(at: PackURI.resolve(target: relation.target, relativeTo: owner.uri.baseURI)),
+              let tree = try? drawing.dom().firstChild(named: "dsp:spTree") else { return nil }
+        // Nontrivial cached root mappings need their own coordinate conversion.
+        if let transform = tree.firstChild(named: "dsp:grpSpPr")?.firstChild(named: "a:xfrm"),
+           transform.childElements.contains(where: { $0.attributes.contains { Double($0.value) != 0 } }) {
+            return nil
+        }
+        // Copies keep all unknown diagram XML byte-faithful in the package.
+        func normalize(_ node: XML.Element, depth: Int = 0) -> XML.Element? {
+            guard depth < 64 else { return nil }
+            let copy = XML.Element(node.name, attributes: node.attributes)
+            if ["dsp:sp", "dsp:grpSp", "dsp:spPr", "dsp:grpSpPr", "dsp:nvSpPr", "dsp:nvGrpSpPr",
+                "dsp:cNvPr", "dsp:cNvSpPr", "dsp:cNvGrpSpPr", "dsp:style", "dsp:txBody"].contains(node.name) {
+                copy.name = "p:" + node.name.dropFirst(4)
+            }
+            for child in node.children {
+                if case .element(let element) = child {
+                    guard let nested = normalize(element, depth: depth + 1) else { return nil }
+                    copy.appendElement(nested)
+                } else { copy.children.append(child) }
+            }
+            return copy
+        }
+        guard tree.childElements.contains(where: { ["dsp:sp", "dsp:grpSp"].contains($0.name) }) else { return nil }
+        var output = ""
+        let location = diagnostics.location
+        defer { diagnostics.location = location }
+        for node in tree.childElements where !["dsp:nvGrpSpPr", "dsp:grpSpPr", "dsp:extLst"].contains(node.name) {
+            guard let shape = normalize(node), ["p:sp", "p:grpSp"].contains(shape.name) else { return nil }
+            diagnostics.inspect(shape, owner: drawing, slideIndex: slideNumber - 1,
+                path: "/dsp:drawing/dsp:spTree/" + node.name, package: package)
+            output += renderNode(shape, ownedBy: drawing, defs: &defs, problems: &problems)
+        }
+        return "<g data-rostrum-diagram=\"cached\" transform=\"translate(\(x) \(y))\">\(output)</g>"
     }
 
     // MARK: - Charts
