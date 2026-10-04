@@ -20,6 +20,35 @@ import Testing
         #expect(try deck.renderSVG(slideAt: 0).contains("textLength="))
     }
 
+    @Test func missingFontRunsFlowNaturallyUntilAnExplicitTabOrListBoundary() throws {
+        let deck = try Presentation(), slide = try deck.slides[0]
+        let shape = try slide.shapes.addTextBox(Rect(x: .zero, y: .zero, width: .points(600), height: .points(100)))
+        let frame = try #require(shape.textFrame)
+        frame.txBody.removeChildren(named: "a:p")
+        frame.txBody.appendElement(try parse("""
+        <a:p><a:pPr marL="254000" indent="-127000"><a:buChar char="•"/><a:tabLst><a:tab pos="2540000"/></a:tabLst><a:defRPr sz="2000"><a:latin typeface="Missing"/></a:defRPr></a:pPr>
+        <a:r><a:rPr b="1"/><a:t>Subjective </a:t></a:r><a:r><a:t>state </a:t></a:r><a:r><a:rPr><a:latin typeface="Known"/></a:rPr><a:t>of being</a:t></a:r><a:r><a:t>\tTabbed</a:t></a:r></a:p>
+        """))
+        try deck.fonts.register(TestFont.standard(), aliases: ["Known"])
+        func spans(_ svg: String) throws -> [XML.Element] {
+            var pending = [try parse(svg)], result: [XML.Element] = []
+            while let node = pending.popLast() {
+                if node.name == "tspan" { result.append(node) }
+                pending.append(contentsOf: node.childElements.reversed())
+            }
+            return result
+        }
+        let bytes = try deck.serializedData()
+        let fallback = try spans(deck.renderSVG(slideAt: 0))
+        #expect(fallback.count == 5)
+        #expect(fallback.map { $0[attribute: "x"] != nil } == [true, true, false, false, true])
+        #expect(fallback[3][attribute: "textLength"] != nil) // measured run follows actual preceding advance
+        #expect(try deck.serializedData() == bytes)
+        try deck.fonts.register(TestFont.standard(), aliases: ["Missing"])
+        let measured = try spans(deck.renderSVG(slideAt: 0))
+        #expect(measured.count == 5 && measured.allSatisfy { $0[attribute: "x"] != nil })
+    }
+
     @Test func hiddenShapesAndGroupsArePreservedWithoutPreviewOrWarnings() throws {
         let deck = try Presentation(), slide = try deck.slides[0]
         let tree = try #require(Slide.existingSpTree(of: slide.part))
