@@ -39,3 +39,7 @@ The generated Imported artwork and text PPTX was opened in native PowerPoint wit
 ## Exact line spacing follow-up
 
 The title master declares 48.75pt exact line spacing, while slides 14 and 18 use 30pt text (36pt natural DrawingML line box). A 12.75pt trailing gap was incorrectly counted in the anchored block height. The fix preserves line pitch between lines and paragraph spacing, excludes only the final surplus gap for supported DrawingML metrics, and retains the measured descent for reduced/overlapping lines. Generic fallback metrics are unchanged. Regression cases cover top/center/bottom anchoring, one/multiple lines, mixed sizes and fitting. The private comparison records per-line ink bands before and after; it is not a claim of pixel-identical rendering.
+
+## List style inheritance follow-up
+
+Marker font and size choices now inherit as groups. A nearer `buFontTx` or `buSzTx` explicitly follows the first text run and suppresses a farther fixed font or size. A nearer percentage size likewise suppresses inherited point sizing. Previously independent lookups could apply both size alternatives or ignore follow-text. A regression reproduces six failed assertions before the fix across paragraph, layout and master styles, and checks the expected font/size after 50% autofit without changing the body run. This does not resolve or claim native acceptance of the private deck's separate explicitly themed numbered-font discrepancy.

@@ -117,6 +117,11 @@ public struct RichTextLayout: Sendable {
             func child(_ name: String) -> XML.Element? {
                 properties.lazy.compactMap { $0.firstChild(named: name) }.first
             }
+            func choice(_ names: [String]) -> XML.Element? {
+                properties.lazy.compactMap { property in
+                    property.childElements.first { names.contains($0.name) }
+                }.first
+            }
             let defaults = properties.compactMap { $0.firstChild(named: "a:defRPr") }
                 + inheritedStyles.filter { $0.name == "a:defRPr" }
             var indent = Self.bounded(attribute("indent").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
@@ -326,11 +331,15 @@ public struct RichTextLayout: Sendable {
                     // strike or superscript decoration.
                     bullet?.decoration = ""
                     bullet?.baselineShift = 0
-                    if let font = child("a:buFont")?[attribute: "typeface"] {
+                    // Each schema choice inherits as a unit. Follow-text is an
+                    // explicit override; a farther font/point size must not win.
+                    if let font = choice(["a:buFontTx", "a:buFont"])?[attribute: "typeface"] {
                         bullet?.fontFamily = font == "+mj-lt" ? theme?.majorFont : font == "+mn-lt" ? theme?.minorFont : font
                     }
-                    if let percent = child("a:buSzPct") { bullet?.fontSize *= Self.bounded(Self.number(percent, "val", 100000), 0...400000) / 100000 }
-                    if let points = child("a:buSzPts") { bullet?.fontSize = Self.bounded(Self.number(points, "val", 1800), 100...400000) / 100 * scale }
+                    if let size = choice(["a:buSzTx", "a:buSzPct", "a:buSzPts"]) {
+                        if size.name == "a:buSzPct" { bullet?.fontSize *= Self.bounded(Self.number(size, "val", 100000), 0...400000) / 100000 }
+                        if size.name == "a:buSzPts" { bullet?.fontSize = Self.bounded(Self.number(size, "val", 1800), 100...400000) / 100 * scale }
+                    }
                 }
             }
             let bulletAdvance: Double = bullet.map { run in
