@@ -14,6 +14,7 @@ final class RenderTextAttributes {
         let baselineShift: Double
         let usesKerning: Bool
         let usesStandardLigatures: Bool
+        let inheritsDisabledStandardLigatures: Bool
 
         static func == (lhs: Self, rhs: Self) -> Bool {
             // Swift String equality normalizes canonically equivalent Unicode.
@@ -26,6 +27,7 @@ final class RenderTextAttributes {
             }
             return sameFamily && lhs.size == rhs.size && lhs.color.utf8.elementsEqual(rhs.color.utf8)
                 && lhs.bold == rhs.bold && lhs.italic == rhs.italic && lhs.tracking == rhs.tracking
+                && lhs.inheritsDisabledStandardLigatures == rhs.inheritsDisabledStandardLigatures
                 && lhs.usesStandardLigatures == rhs.usesStandardLigatures && lhs.usesKerning == rhs.usesKerning && lhs.decoration == rhs.decoration && lhs.baselineShift == rhs.baselineShift
         }
     }
@@ -37,9 +39,9 @@ final class RenderTextAttributes {
 
     func reset() { entries.removeAll(keepingCapacity: true); retainedBytes = 0 }
 
-    func attributes(for run: ResolvedTextRun, family: String?) -> String {
+    func attributes(for run: ResolvedTextRun, family: String?, inheritsDisabledStandardLigatures: Bool = false) -> String {
         let key = Key(family: family, size: run.fontSize, color: run.color,
-                      bold: run.bold, italic: run.italic, tracking: run.tracking, decoration: run.decoration, baselineShift: run.baselineShift, usesKerning: run.usesKerning, usesStandardLigatures: run.usesStandardLigatures)
+                      bold: run.bold, italic: run.italic, tracking: run.tracking, decoration: run.decoration, baselineShift: run.baselineShift, usesKerning: run.usesKerning, usesStandardLigatures: run.usesStandardLigatures, inheritsDisabledStandardLigatures: inheritsDisabledStandardLigatures)
         if let cached = entries[key] { return cached }
         var result = " font-size=\"\(SVGNumber.decimal(run.fontSize))\" fill=\"\(run.color)\""
         if let family, !family.isEmpty {
@@ -53,7 +55,13 @@ final class RenderTextAttributes {
         // ligatures. Span-wide textLength alone would stretch kerned glyphs.
         if !run.usesKerning { result += " kerning=\"0\"" }
         // Disable only optional liga, preserving required script features.
-        if !run.usesStandardLigatures { result += " style=\"font-feature-settings: 'liga' 0\"" }
+        if !run.usesStandardLigatures && !inheritsDisabledStandardLigatures {
+            result += " style=\"font-feature-settings: 'liga' 0\""
+        } else if run.usesStandardLigatures && inheritsDisabledStandardLigatures {
+            // Restore the viewer's default feature policy if a mixed child ever
+            // appears under a suppressed ancestor; do not force liga on.
+            result += " style=\"font-feature-settings: normal\""
+        }
         if run.tracking != 0 { result += " letter-spacing=\"\(SVGNumber.decimal(run.tracking))\"" }
         // Bound keys as well as values. Unusual fonts/styles still serialize
         // normally when the cache is full or a single entry exceeds the budget.

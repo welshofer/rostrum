@@ -530,16 +530,26 @@ struct SVGRenderer {
             slideNumber: slideNumber, maxLines: 64, insets: insets, verticalAnchor: verticalAnchor)
         diagnostics.text(layout)
         let decimal = SVGNumber.decimal
-        return layout.lines.map { line in
+        // A narrow table cell can produce many one-span lines. Scope one
+        // inherited policy to this text body when every emitted run agrees.
+        let blockDisablesLigatures = layout.lines.count > 1
+            && layout.lines.contains { !$0.spans.isEmpty }
+            && layout.lines.allSatisfy { $0.spans.allSatisfy { !$0.run.usesStandardLigatures } }
+        let ligatureStyle = " style=\"font-feature-settings: 'liga' 0\""
+        let text = layout.lines.map { line in
+            let lineDisablesLigatures = !blockDisablesLigatures && !line.spans.isEmpty
+                && line.spans.allSatisfy { !$0.run.usesStandardLigatures }
+            let inheritsDisabled = blockDisablesLigatures || lineDisablesLigatures
             let baseline = Double(f.1) + line.baseline * Double(emuPerPoint)
-            var result = "<text transform=\"translate(\(f.0),\(decimal(baseline))) scale(\(emuPerPoint))\" xml:space=\"preserve\">"
+            var result = "<text transform=\"translate(\(f.0),\(decimal(baseline))) scale(\(emuPerPoint))\" xml:space=\"preserve\""
+                + (lineDisablesLigatures ? ligatureStyle : "") + ">"
             for span in line.spans {
                 let run = span.run
                 let embedded = run.fontFamily.flatMap {
                     diagnostics.embeddedFamily(for: FontFaceKey(family: $0, bold: run.bold, italic: run.italic), fonts: fonts)
                 }
                 result += "<tspan x=\"\(decimal(span.x))\""
-                result += diagnostics.textAttributes.attributes(for: run, family: embedded ?? run.fontFamily)
+                result += diagnostics.textAttributes.attributes(for: run, family: embedded ?? run.fontFamily, inheritsDisabledStandardLigatures: inheritsDisabled)
                 // An estimated width is useful for wrapping, but must not
                 // squeeze the viewer's real glyphs into that estimate.
                 let measured = run.fontFamily.flatMap {
@@ -550,6 +560,7 @@ struct SVGRenderer {
             }
             return result + "</text>"
         }.joined()
+        return blockDisablesLigatures ? "<g" + ligatureStyle + ">" + text + "</g>" : text
     }
 
     // MARK: - Text emission
