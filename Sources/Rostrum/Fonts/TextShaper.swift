@@ -84,6 +84,7 @@ public struct TextShaper: Sendable {
         }
         var clusters: [Cluster] = [], offset = 0
         var combining: [Range<Int>] = []
+        var initialGlyphCount = 0
         for character in text {
             let original = String(character), count = original.unicodeScalars.count
             let range = offset..<(offset + count); offset += count
@@ -96,6 +97,7 @@ public struct TextShaper: Sendable {
             var kind = -1
             for scalar in normalized {
                 let value = scalar.value
+                if value != 0xA && value != 0xD && value != 0x200B { initialGlyphCount += 1 }
                 if (0x05D0...0x05EA).contains(value) { kind = 1 }
                 else if (0x30...0x39).contains(value) { if kind == -1 { kind = 2 } }
                 else if Self.isLatin(value) || Self.isCJK(value) { kind = 0 }
@@ -162,6 +164,8 @@ public struct TextShaper: Sendable {
             }
         }
         var glyphs: [ShapedGlyph] = []
+        // Count normalized emitting scalars, preserving source ranges separately.
+        glyphs.reserveCapacity(initialGlyphCount)
         var compositionInput: [ArabicTextShaper.Glyph] = []
         for cluster in clusters {
             for scalar in cluster.scalars {
