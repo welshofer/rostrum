@@ -94,8 +94,14 @@ tests / three suites, 292 LecternCore tests / 43 suites, README and offline chec
 macOS and iOS simulator builds, and 87 app test definitions / 25 suites covering
 121 executions. The xcresult records zero failures, expected failures, skips or
 runtime warnings. The app console retains ten clipboard, 207 preferences-daemon
-and ten audio-component messages; there are no additional contradictory quiet
-exit-code-zero build diagnostics.
+and ten audio-component messages. The two quiet app-build stages exited zero,
+but their retained log contains 11 contradictory compiler messages saying a
+command failed with exit code zero and produced no further output. Those messages
+are not a clean diagnostic result. Fresh serial macOS and iOS simulator builds
+with full output, each in a separate empty derived-data directory, subsequently
+exited zero with an explicit `BUILD SUCCEEDED` and zero error diagnostics.
+The original gate log and tested app remain unchanged. The integration manifest
+retains both confirmation logs and their receipt; no tests or timings were rerun.
 
 All 29 Lab reports pass 542 checks and retain 413 findings. Independent ZIP CRC,
 unique-member, XML and python-pptx checks reopen 64 packages / 224 slides /

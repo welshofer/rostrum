@@ -1,0 +1,94 @@
+{
+  "status": "Core and offline pipeline passed; app-hosted/WebKit/generated native acceptance pending",
+  "libraryPrerequisite": "1b5125b84ec396d68348217a0dad4734216417e2",
+  "coreTests": 292,
+  "coreSuites": 43,
+  "labRecipes": 29,
+  "labChecks": 542,
+  "labFindings": 413,
+  "mixedSpacingChecks": 37,
+  "mixedSpacingFindings": 0,
+  "nativeCases": 12,
+  "nativeVisibleGlyphs": 96,
+  "nativeSourcePages": 2,
+  "computedFitPages": 1,
+  "computedPublicFit": {
+    "fontScale": 100,
+    "lineSpacingReduction": 0,
+    "frameHeight": 40,
+    "contentExtent": 37.33489932885906,
+    "nativeFitChoiceClaim": false
+  },
+  "profileAudit": [
+    {
+      "page": 1,
+      "exactRemainingXMLAfterViewportNormalization": true
+    },
+    {
+      "page": 2,
+      "exactRemainingXMLAfterViewportNormalization": true
+    },
+    {
+      "page": 3,
+      "exactRemainingXMLAfterViewportNormalization": true
+    }
+  ],
+  "files": [
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-core-focused-final.log",
+      "sha256": "94b6028397e3e4d737807ed817e716de32d15e202e331153abf6d48f5eaa6776"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-core-full-final.log",
+      "sha256": "aa41f0070f267bf92625aaf88c4072d3ac8c327dffb51fb28391e9de67b13f52"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-lab-worker-final-20261004/mixedFaceSpacing-F1487C44-2E0D-464A-8C0E-95EB7982D68F/report.json",
+      "sha256": "81c7a6c0ae2dee5b5090073ca190678bf3d88c3ef1bb107dd6266c5474425a51"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-worker-final-20261004/alternative-true/slide-1.svg",
+      "sha256": "fe8c1b89aabf38b745d6d734df5850f3c1e1925ad563a9634ee396f88137ceac"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-worker-final-20261004/alternative-true/slide-3.svg",
+      "sha256": "911f41edb5e3b1dff60466cb778fcf83bce9c8299d0c3cf8cfe490e44e12eed3"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-worker-final-20261004/alternative-true/slide-2.svg",
+      "sha256": "d24065e3c8afd89a69264676ef37a20443fad6cc31f402e5a4f73f01ac3d5829"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-worker-final-20261004/alternative-true/mixedFaceSpacing.pptx",
+      "sha256": "ffddac821cf81e208f650df38964a2dea6c86a7af4a29eded098095e774dd1e4"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-worker-final-20261004/alternative-false/slide-1.svg",
+      "sha256": "fe8c1b89aabf38b745d6d734df5850f3c1e1925ad563a9634ee396f88137ceac"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-worker-final-20261004/alternative-false/slide-3.svg",
+      "sha256": "7fb075fe298ce4a1fb3e580fd07e7a7ea1ebe7e396750b8746c9ea8d1812caea"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-worker-final-20261004/alternative-false/slide-2.svg",
+      "sha256": "d24065e3c8afd89a69264676ef37a20443fad6cc31f402e5a4f73f01ac3d5829"
+    },
+    {
+      "path": "/private/tmp/lectern-mixed-spacing16-worker-final-20261004/alternative-false/mixedFaceSpacing.pptx",
+      "sha256": "d15397817e21ce3c5d3831f1364af94c70d7bc05625a3631e7a73272421e9573"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/MixedFaceSpacingReferences.json",
+      "sha256": "f8dbaf91ecb87e62f0381ef33e1bf9d41930cf365a2f3259986c0c6253fd809a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/native-mixed-face-spacing-v1.pptx",
+      "sha256": "4e12a5e02468873d34fadb0ea415836ee50fa92245d9e096721faee33013c014"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/native-mixed-face-spacing-anchors-v1.pptx",
+      "sha256": "ade8628fe0ca6c69691ad0790e9678bf92aaa7d2cd3178b5723dcb5c2adc9ea0"
+    }
+  ]
+}
