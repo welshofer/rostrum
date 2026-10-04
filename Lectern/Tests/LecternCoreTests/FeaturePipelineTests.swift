@@ -152,6 +152,11 @@ import Rostrum
     @Test(arguments: [nil, "0", "1200"] as [String?])
     func tableShadowAndKerningSurviveFileBackedPreviewAndExport(threshold: String?) throws {
         let deck = try Presentation()
+        // Native kerning assertions require an eligible, exact face on every
+        // platform; installed/system fallback is deliberately a different path.
+        let font = try PlatformLabRecipes.resource("DejaVuSans", "ttf")
+        try deck.fonts.register(font)
+        try deck.embedFont("DejaVu Sans", faces: .init(regular: font))
         let slide = try deck.slides[0]
         let authoredTable = try slide.shapes.addTable(rows: 1, columns: 2,
             frame: Rect(x: .points(40), y: .points(40), width: .points(400), height: .points(80)))
@@ -167,6 +172,7 @@ import Rostrum
             let cell = try authoredTable.cell(0, column)
             cell.text = text
             cell.textFrame.paragraphs[0].runs[0].fontSize = 12
+            cell.textFrame.paragraphs[0].runs[0].fontName = "DejaVu Sans"
         }
         // Author the DrawingML attribute through the public package DOM; the
         // saved file is what the inspector and exporter independently reopen.
@@ -194,6 +200,19 @@ import Rostrum
         let file = directory.appendingPathComponent("ShadowAndKerning.pptx")
         try deck.save(to: file)
         let sourceBytes = try Data(contentsOf: file)
+        if threshold == nil {
+            // Reproduce the fontless profile without relying on host fonts or
+            // platform branches. Embedded bytes are not registered by opening.
+            let unregistered = try Presentation(data: sourceBytes)
+            #expect(unregistered.fonts.metrics(for: .init(family: "DejaVu Sans")) == nil)
+            let fallback = try unregistered.renderSVGReportingProblems(slideAt: 0)
+            #expect(fallback.problems.fidelityIssues.contains { $0.code == .missingFont })
+            let fallbackRoot = try XML.parse(Data(fallback.svg.utf8))
+            let fallbackSpan = try #require(fallbackRoot.children(named: "text")
+                .flatMap { $0.children(named: "tspan") }.first { $0.textContent == "AV retained" })
+            #expect(fallbackSpan[attribute: "kerning"] == nil)
+            #expect(try unregistered.serializedData() == sourceBytes)
+        }
         let inspection = try DeckInspector.inspect(deckAt: file)
         #expect(inspection.slideCount == 1 && inspection.previewSlideNumbers == [1])
         #expect(inspection.slides[0].tables[0].rows == [["AV office", "AV retained"]])
@@ -224,6 +243,11 @@ import Rostrum
         #expect(try Data(contentsOf: file) == sourceBytes)
         let reopened = try Presentation(contentsOf: file)
         #expect(try table(on: reopened.slides[0]).styleID == styleID)
+        #expect(reopened.registerEmbeddedFonts() == ["DejaVu Sans"])
+        #expect(reopened.fonts.data(for: .init(family: "DejaVu Sans")) == font)
+        #expect(try [0, 1].allSatisfy {
+            try table(on: reopened.slides[0]).cell(0, $0).textFrame.paragraphs[0].runs[0].fontName == "DejaVu Sans"
+        })
         let retainedCells = try cells(in: reopened.slides[0])
         #expect(retainedCells.map { $0.firstChild(named: "a:txBody")?.firstChild(named: "a:p")?
             .firstChild(named: "a:r")?.firstChild(named: "a:rPr")?[attribute: "kern"] } == [Optional("2400"), threshold])
