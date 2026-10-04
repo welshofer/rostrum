@@ -91,36 +91,40 @@ public struct TextShaper: Sendable {
                 diagnostics.append(.unsupportedBidirectionalControl(scalar: scalar.value))
             }
         }
-        // Restricted UAX #9 profile: no embeddings, isolates, marks or brackets.
-        // Digits inherit the preceding strong context (EN after L resolves L).
-        var precedingStrong = base
-        var effective = clusters.map(\.kind)
-        for i in clusters.indices {
-            if effective[i] == 0 || effective[i] == 1 { precedingStrong = effective[i] }
-            else if effective[i] == 2 { effective[i] = precedingStrong == 0 ? 0 : 2 }
-        }
-        var preceding = Array(repeating: base, count: clusters.count)
-        var following = preceding, strong = base
-        for i in clusters.indices {
-            preceding[i] = strong
-            if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
-        }
-        strong = base
-        for i in clusters.indices.reversed() {
-            following[i] = strong
-            if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
-        }
-        for i in clusters.indices {
-            var kind = effective[i]
-            if kind == -1 {
-                kind = preceding[i] == following[i] ? preceding[i] : base
+        // With a left-to-right base and no RTL cluster, digits and neutrals
+        // resolve to level zero, which every cluster already has.
+        if hasRTL {
+            // Restricted UAX #9 profile: no embeddings, isolates, marks or brackets.
+            // Digits inherit the preceding strong context (EN after L resolves L).
+            var precedingStrong = base
+            var effective = clusters.map(\.kind)
+            for i in clusters.indices {
+                if effective[i] == 0 || effective[i] == 1 { precedingStrong = effective[i] }
+                else if effective[i] == 2 { effective[i] = precedingStrong == 0 ? 0 : 2 }
             }
-            clusters[i].level = kind == 1 ? 1 : (kind == 2 || base == 1 ? 2 : 0)
-        }
-        // Trailing whitespace has the paragraph embedding level (UAX #9 L1).
-        for i in clusters.indices.reversed() {
-            guard clusters[i].scalars.allSatisfy({ $0.value == 0x20 }) else { break }
-            clusters[i].level = base
+            var preceding = Array(repeating: base, count: clusters.count)
+            var following = preceding, strong = base
+            for i in clusters.indices {
+                preceding[i] = strong
+                if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
+            }
+            strong = base
+            for i in clusters.indices.reversed() {
+                following[i] = strong
+                if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
+            }
+            for i in clusters.indices {
+                var kind = effective[i]
+                if kind == -1 {
+                    kind = preceding[i] == following[i] ? preceding[i] : base
+                }
+                clusters[i].level = kind == 1 ? 1 : (kind == 2 || base == 1 ? 2 : 0)
+            }
+            // Trailing whitespace has the paragraph embedding level (UAX #9 L1).
+            for i in clusters.indices.reversed() {
+                guard clusters[i].scalars.allSatisfy({ $0.value == 0x20 }) else { break }
+                clusters[i].level = base
+            }
         }
         var glyphs: [ShapedGlyph] = []
         var compositionInput: [ArabicTextShaper.Glyph] = []
@@ -279,16 +283,18 @@ public struct TextShaper: Sendable {
                 }
             }
         }
-        // Reverse maximal runs at each embedding level, retaining source clusters.
-        let maximum = glyphs.map(\.bidiLevel).max() ?? 0
-        if maximum > 0 {
-            for level in stride(from: maximum, through: 1, by: -1) {
-                var i = 0
-                while i < glyphs.count {
-                    guard glyphs[i].bidiLevel >= level else { i += 1; continue }
-                    let start = i
-                    while i < glyphs.count && glyphs[i].bidiLevel >= level { i += 1 }
-                    glyphs.replaceSubrange(start..<i, with: glyphs[start..<i].reversed())
+        if hasRTL {
+            // Reverse maximal runs at each embedding level, retaining source clusters.
+            let maximum = glyphs.map(\.bidiLevel).max() ?? 0
+            if maximum > 0 {
+                for level in stride(from: maximum, through: 1, by: -1) {
+                    var i = 0
+                    while i < glyphs.count {
+                        guard glyphs[i].bidiLevel >= level else { i += 1; continue }
+                        let start = i
+                        while i < glyphs.count && glyphs[i].bidiLevel >= level { i += 1 }
+                        glyphs.replaceSubrange(start..<i, with: glyphs[start..<i].reversed())
+                    }
                 }
             }
         }
