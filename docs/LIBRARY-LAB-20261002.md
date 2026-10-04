@@ -347,3 +347,30 @@ bundle. Hosted tests and normal app launch passed with that configuration.
 
 No existing tests or visual thresholds were weakened. No push, pull request,
 merge, release publication or deployment occurred.
+
+
+## October 4 paragraph fidelity continuation
+
+The catalog now contains 26 recipes; this pass adds a fourth slide to the
+existing paragraph recipe. It compares native-measured common Latin word wraps
+with both `Shape.fitText` and `TextFrame.fitText`, using a bundled regular font.
+The width toggle changes the officeZ row from 49.76 to 49.74 pt while preserving
+the mixed 18/12 pt row at 39.01 pt. Both computed fits retain run sizes and save
+77.5% scale. Computed scales are explicitly distinguished from native choices.
+
+At source `5860a71`, all 26 pipelines pass 337 checks and all 52 result/source
+PPTX files pass ZIP integrity and independent python-pptx reopening. The paragraph
+recipe passes 31 checks with zero findings; the pre-existing tab hard-break
+warning remains visible. The full local gate passes, including 277 Core tests,
+76 native app tests with zero skips, and macOS/iOS simulator builds. The separate
+headless app run reports 76 tests with three native WebKit skips, covered by the
+native gate. Both paragraph alternatives reach the actual inspector and export
+path in tests and manual GUI verification with an edited title.
+
+PowerPoint opens both embedded-font specimens without repair. Local PDF exports
+and source hashes confirm the new six-box slide in each variant: the original
+uniform word wraps at the expected boundary, the original mixed-size word wraps
+as office / Z, and the four fitted boxes each keep officeZ on one line. This is
+bounded evidence, not a claim of native-selected autofit or general raster parity.
+See the [fidelity record](LAYOUT-FIDELITY-20261004-4.md) and
+[integration receipt](benchmarks/2026-10-04-fidelity4-integration-verification.json).
