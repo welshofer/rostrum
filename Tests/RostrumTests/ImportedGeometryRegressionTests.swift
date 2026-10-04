@@ -3,6 +3,32 @@ import Testing
 @testable import Rostrum
 
 @Suite struct ImportedGeometryRegressionTests {
+    @Test func explicitFallbackMeasuresAndDrawsTheSameFaceWithoutChangingSource() throws {
+        let deck = try Presentation()
+        let shape = try deck.slides[0].shapes.addTextBox(Rect(x: .zero, y: .zero, width: .points(125), height: .points(200)))
+        let frame = try #require(shape.textFrame)
+        frame.text = "WWWW WWWW WWWW"
+        frame.paragraphs[0].runs[0].fontName = "Unavailable"
+        frame.paragraphs[0].runs[0].fontSize = 24
+        try deck.fonts.register(TestFont.standard(familyName: "Measured Fallback"))
+        let estimated = RichTextLayout(textBody: frame.txBody, width: 125, height: 200, fonts: deck.fonts)
+        let bytes = try deck.serializedData()
+        deck.fonts.previewFallbackFamily = "Measured Fallback"
+        let measured = RichTextLayout(textBody: frame.txBody, width: 125, height: 200, fonts: deck.fonts)
+        #expect(measured.lines.count > estimated.lines.count)
+        #expect(measured.lines.count == 3)
+        #expect(measured.lines.allSatisfy { $0.visibleWidth <= 110.6 })
+        let rendered = try deck.renderSVGReportingProblems(slideAt: 0)
+        #expect(rendered.svg.contains("measured fallback")) // metric-only fixture uses explicit viewer family
+        #expect(rendered.svg.contains("textLength="))
+        #expect(rendered.problems.fidelityIssues.contains { $0.code == .missingFont && $0.message.contains("measured fallback") })
+        #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+        #expect(try deck.serializedData() == bytes)
+        #expect(try deck.renderSVG(slideAt: 0) == rendered.svg)
+        let reopened = try Presentation(data: bytes)
+        #expect(reopened.fonts.previewFallbackFamily == nil)
+        #expect(try reopened.slides[0].shapes.all.first?.textFrame?.paragraphs[0].runs[0].fontName == "Unavailable")
+    }
     private func parse(_ xml: String) throws -> XML.Element { try XML.parse(Data(xml.utf8)) }
 
     @Test func missingFontEstimatesDoNotCompressViewerGlyphs() throws {

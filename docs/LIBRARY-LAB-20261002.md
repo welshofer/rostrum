@@ -298,3 +298,7 @@ bundle. Hosted tests and normal app launch passed with that configuration.
 
 No existing tests or visual thresholds were weakened. No push, pull request,
 merge, release publication or deployment occurred.
+
+### Explicit preview fallback (2026-10-04)
+
+Extraction and honest previews now exercises `FontLibrary.previewFallbackFamily` with the bundled licensed DejaVu Sans face. The unavailable family remains in the PPTX and exact registry lookup stays nil. Measurement and SVG drawing use the selected registered fallback, strict rendering still refuses the missing-font issue, and reapplying the choice after reopen reproduces the same preview. This does not claim font substitution matches native PowerPoint.

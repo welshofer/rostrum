@@ -53,3 +53,7 @@ The first scratch probe had its bullet elements after `defRPr`, violating paragr
 ## Viewer-font run positioning
 
 The actual iOS simulator check exposed overlapping mixed-style runs when the requested font is unavailable: each run started at an estimated absolute position, while WebKit drew the preceding run at its real substitute-font width. Adjacent runs now follow the viewer's actual advance after an unregistered face. Explicit line, tab and list-marker boundaries retain absolute positions; fully measured lines retain their existing output. A regression checks mixed registered/unregistered faces, style changes, tab and list boundaries, and unchanged source bytes. Missing-font diagnostics remain; this prevents intra-line overlap without claiming equivalent font substitution or exact wrapping.
+
+### Measured missing-font previews
+
+The final iOS sweep exposed title/image collisions when an unavailable font was measured with generic advances but drawn by WebKit with wider fallback glyphs. Hosts can now explicitly select a registered `FontLibrary.previewFallbackFamily`; the layout and SVG use the same face, while exact lookup and document font names remain unchanged. Lectern inspection and Duo register Arial as their preview fallback. Missing-family diagnostics and strict refusal remain. This improves readable fallback rendering, not native-font equivalence.

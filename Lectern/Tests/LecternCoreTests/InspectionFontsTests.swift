@@ -47,7 +47,8 @@ import Rostrum
         let inspection = try DeckInspector.inspect(deckAt: url)
         let missing = inspection.previewDiagnostics.flatMap(\.issues).filter { $0.code == "missingFont" }
         #expect(missing.count == 1)
-        #expect(missing.first?.message.contains("Missing QZX Test Typeface") == true)
+        #expect(missing.first?.message.contains("preview uses registered arial") == true)
+        #expect(missing.first?.message.lowercased().contains("missing qzx test typeface") == true)
         #expect(inspection.previews.count == 1)
         #expect(try Data(contentsOf: url) == bytes)
     }
