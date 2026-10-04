@@ -1,0 +1,906 @@
+{
+  "status": "Final source integration passed; final paired performance evidence is separate",
+  "sourceCommit": "f8b33ee560683bc3dd0494616c2e93aa456ea7ff",
+  "sourceTrees": {
+    "Sources": "1784f7c9fe64b3500eafcb25b518ce957303c8aa",
+    "Lectern": "f2e4c64c81ad0485c4647360968f40a59bb66f9a"
+  },
+  "earlierCheckpoint": {
+    "path": "docs/benchmarks/2026-10-04-fidelity4-integration-verification.json",
+    "sha256": "388a065efe846a554fa38c6e5d000a3637bc0039c5e6b048a0f295664c608699",
+    "preserves": "Initial interrupted gate and isolation fix, native PowerPoint acceptance, manual export evidence; all remain accurately scoped to5860a71."
+  },
+  "fullGate": {
+    "command": "LECTERN_DERIVED_DATA_PATH=/tmp/lectern-fidelity4-xcode LECTERN_LIGATURE_ARTIFACTS=/tmp/lectern-fidelity4-ligatures-hoist-final-20261004 LECTERN_LAB_ARTIFACTS=/tmp/lectern-fidelity4-lab-hoist-final-20261004 ./scripts/verify.sh",
+    "exitCode": 0,
+    "log": "/tmp/rostrum-fidelity4-verify-hoist-final-20261004.log",
+    "logSHA256": "38ac88d0a95016b7be93fdb28d4226dcdbec221c9fc77709b80a7916ae3cda95",
+    "results": {
+      "offlineWorkflowTests": 4,
+      "rostrumTests": 1107,
+      "rostrumSuites": 154,
+      "rostrumLayoutTests": 18,
+      "rostrumLayoutSuites": 3,
+      "lecternCoreTests": 277,
+      "lecternCoreSuites": 36,
+      "README": "source drift and two executable deck examples passed",
+      "macOS": "canonical signed build passed",
+      "iOSSimulator": "canonical build passed; lipo verified x86_64 and arm64"
+    }
+  },
+  "nativeAppTests": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "arm64",
+          "deviceId": "00006050-001E081E3E31401C",
+          "deviceName": "My Mac",
+          "modelName": "MacBook Pro",
+          "osBuildNumber": "26A434",
+          "osVersion": "27.0.1",
+          "platform": "macOS"
+        },
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "passedTests": 106,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Test Scheme Action"
+        }
+      }
+    ],
+    "environmentDescription": "Lectern \u00b7 Built with macOS 27.0.1",
+    "expectedFailures": 0,
+    "failedTests": 0,
+    "finishTime": 1791119596.743,
+    "passedTests": 76,
+    "result": "Passed",
+    "runtimeWarnings": [],
+    "skippedTests": 0,
+    "startTime": 1791119547.847,
+    "statistics": [
+      {
+        "subtitle": "49 test runs",
+        "title": "19 tests ran with dynamic parameters"
+      }
+    ],
+    "testFailures": [],
+    "title": "Test - Lectern",
+    "topInsights": [
+      {
+        "category": "Longest Test Runs",
+        "impact": "42% of duration",
+        "text": "5 longest test runs with outlier durations exceeding 2.86s (three standard deviations)"
+      }
+    ],
+    "totalTestCount": 76
+  },
+  "nativeAppResultPath": "/tmp/lectern-fidelity4-xcode/Logs/Test/Test-Lectern-2026.10.04_06-12-27--0700.xcresult",
+  "headless": {
+    "receipt": {
+      "command": [
+        "swift",
+        "test",
+        "--package-path",
+        "/Users/welshofer/Developer/rostrum/.build/app-headless",
+        "--disable-sandbox",
+        "--jobs",
+        "2"
+      ],
+      "copiedInputs": {
+        "Lectern/App/AppState.swift": "676c8966a08675e8aa685fe626d9658ddf958e331a90ad1d54b7eb41eb4409ce",
+        "Lectern/App/ContentView.swift": "02f4b907c9906540f6cb895c4ba7191ef5fd4f698bd6eeb299f8d43974d52230",
+        "Lectern/App/DeckLibrarySheet.swift": "cef8551350bf5f5efdf32a89aa96529d331dc79a9970fd58e46cfa7bc896c1cb",
+        "Lectern/App/DeckListView.swift": "89d63bb9a0b2aaff1b84dcffe2496131fe88653a0d9ca2b631dbb61e5e511aa3",
+        "Lectern/App/DeckThumbnail.swift": "cdfc2c206b987f21d591ee8cb1d4bd72ddcfd9d8daaf1cb88fef653f0be5e5e3",
+        "Lectern/App/InspectorView.swift": "847ab4f727606ec04abc6390b477a146fa1188318e59ce0f82c9f290bbf8eb00",
+        "Lectern/App/KeychainStore.swift": "668c86a1bf8d008073ea7f1262f1c360ac1ffd2ac61674749acf7c64e445e109",
+        "Lectern/App/LibraryLabModel.swift": "acb750455597386e159a14f202259fbca1fa0b8df06cb2387a6dddd36a9b2fb5",
+        "Lectern/App/LibraryLabView.swift": "20d20ae9a744b172ea6864cbd7da68a342f2d765ad0e837127fa95326b5a5ec1",
+        "Lectern/App/LibraryView.swift": "68c7e3dd2f9a938f641ea3e37dcee0fadd2725362637ba1b1407844af912603e",
+        "Lectern/App/NotesPagePreviewModel.swift": "ebaa8ce8f6b1fd39ad44f91c7f61be3ccefd2760787d053b9cf593259d5363e0",
+        "Lectern/App/NotesPagePreviewView.swift": "d890227e2ac37a1a87fe65a98d68f0ab83d63b5ca86821aafae1dfda6b2d3d5f",
+        "Lectern/App/PDFGrounding.swift": "e91a19d04c5837e5fb4b7469ebad534a50af428fe726546624b3ee049bec6fe5",
+        "Lectern/App/PreviewDiagnosticsView.swift": "b110f87427fc8ddeacd026fd760c850ce75f7b112859740db6ac1c749c51bff7",
+        "Lectern/App/RecoveryView.swift": "9189473dcb0488ffde0cc662ad6cb1eaad46ee0095bd86d2e43206f6f6a7973c",
+        "Lectern/App/SettingsView.swift": "4da38a52af88de81871c5e04fa564c898e1afe85a7cb72b37d439f2c72b527b4",
+        "Lectern/App/SlidePreview.swift": "a1ad72c40ace8548dd4e6ea4fcd45c0e32ee462c75276fcf373a6d63765177fc",
+        "Lectern/App/SlidePreviewGeometry.swift": "735cc66817e95c8430c2c5c499e46a2d8b7e9b53e26a0d0344aae71d6eb93bdd",
+        "Lectern/App/SlideRasterizer.swift": "17d2bbacc45ed4dae8718b2cc6691271e3ba1965f43542793374425762bf7e4a",
+        "Lectern/App/StylePickerSheet.swift": "7ab93cc86564c978f51ab8f29936b5c760ec93a65ae1200614dd6c94b9e130fa",
+        "Lectern/App/StyleThumbnail.swift": "5b278efe2e02fc71421b30159858bf6285e492c27deb1fe959b6dac7bd9ac305",
+        "Lectern/App/TemplatePickerCard.swift": "bc038199708c5ed32c2f3227d994abe23de5c65bd04ac157bdd62d124afc30e2",
+        "Lectern/App/TemplateSelectionModel.swift": "e246d2c1eb01121966066559006acd30e6ae2cdb5a4fe874109382f889cffebc",
+        "Lectern/App/Theme.swift": "5e72df3582bd50941783cdc00800ba2f48a21c66a47a888b5066e4ce9b3c368e",
+        "Lectern/AppTests/AppIconAppearanceTests.swift": "5628f4c0819fed730853e3ea15eb79d428434de9c75474c7c0ed8c877fdae12a",
+        "Lectern/AppTests/AppStateIsolationTests.swift": "670c8fc3e00236510f3e00eaaf9f9d306246122b8e5e428999232a151e730002",
+        "Lectern/AppTests/AppStateTestContext.swift": "b32d771eaf8bb45f6bd42c48c50619f61c3b748b6d25a6e1904b39dd6e6aed23",
+        "Lectern/AppTests/DeckDeletionConfirmationTests.swift": "a7ab10afc633fca9cb3f7b8c96791a6cf6d9637ca4f35957226abb2f0e0c2327",
+        "Lectern/AppTests/DeckInspectorStateTests.swift": "3098307af1b0e5c0915d52df15a1b53371a19dc167f6767d59d0a6b3aeccbbf5",
+        "Lectern/AppTests/ExportRequestTests.swift": "5476d87b42a81649f318b24f68ce4b0378f4b880462e8114e71b32326e931070",
+        "Lectern/AppTests/FileImportFailureTests.swift": "3108020790c990d07ec91bc712a1f2dfca744b7a6b5a49a393374271a0fc2c27",
+        "Lectern/AppTests/Fixtures/hello.pptx": "6fb7a1a5595a3704b4af2be6ccd1d801ae7d3414d2611872e994f89cdde9ab0d",
+        "Lectern/AppTests/Fixtures/notes-geometry-provenance.json": "abf3c32a4824c8667a73b0700cec3eb2961549cf79ce07f916e8321de85063df",
+        "Lectern/AppTests/Fixtures/notes-geometry.pptx": "f984bd9e651541626e835e029b3f310513aee150957a91b62bf1f2ffc310fe3b",
+        "Lectern/AppTests/ImageCacheBoundsTests.swift": "c1cfb967070ef4800b7ab534650cf4986c570d78eae772ad27aaf31175668a37",
+        "Lectern/AppTests/InspectionRequestTests.swift": "c8879e4d5b2815e5f1e0741e52ad9c03f4bdea1d350b59dbd2905c5363320591",
+        "Lectern/AppTests/LibraryLabTests.swift": "62348a98ded24f0430e54b6081686362a80f2392e01119fb7f15d456d239ae81",
+        "Lectern/AppTests/LibraryStartupTests.swift": "66dfff6336d3889e2b38e12b5d095d3c18eca8b9ccfd22a53aa1bca9f8d6fb52",
+        "Lectern/AppTests/NotesPagePreviewTests.swift": "89c35012d4b9543fbf6fcd8c07fc32fc6eebfc5b0360faa3308fd8467bd0c4f0",
+        "Lectern/AppTests/PreviewGeometryTests.swift": "9d7f197b866958f96697dc129b588ee4b19e483947739066d0bee77943ee72ec",
+        "Lectern/AppTests/PreviewIdentityTests.swift": "e50851af7586b5a7fcbb2012a64d9a289308629df25203aa5fc88bb4c44a7d4e",
+        "Lectern/AppTests/PreviewSlideNumberTests.swift": "eac1c7ccb5a5ce507dbe133895135ae72fdb71261fec61f785a0e7ec4ef70129",
+        "Lectern/AppTests/ProviderModelPairingTests.swift": "3174453c6da59c408b6f94747a812cb56d1000f7ca3ad24fc24433af7accf31b",
+        "Lectern/AppTests/RenderRecoveryStateTests.swift": "01b240f52bf5247b204e6700e112db0e03570c35ba4ecc02553c2dec1d98e636",
+        "Lectern/AppTests/SlideCountFanOutTests.swift": "ec10077a1fcdfacee42657ea3205b56654730c562fecbe853b7173a6164ef340",
+        "Lectern/AppTests/SlideRasterizerTests.swift": "0eb402590965fccb0fe1c24faf190242fbab4b5157c87a21de28156548d6b9ba",
+        "Lectern/AppTests/TemplateChoiceTests.swift": "0470f635f0b6b11934ff84ce35fca17f2f355d51cd1bf2b3e135e81a5b8209bd",
+        "Lectern/AppTests/TemplateSelectionTests.swift": "e2b4ac733ad461f9bffe831914a41554f7f305dbabc9143d353d093f0fbea23c",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/Contents.json": "9887e560ac711087aeefbaa265bf98ea564c392ab1e5e716f587b2b93d5346df",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/icon_1024.png": "aa7598753213a26b0fbfe446d7ba502312484d404de54cd44d7b9e73a0e57f81",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/icon_1024_dark.png": "c34a3031dc7d7d306a1cc034af5a1b8c3c1861fb668fb58c6b07868b7da4f014",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/icon_1024_tinted.png": "0c8592ebfef87bda851a1eadb069c1ddf0d67b442d8e373af9e394a403e65472",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/icon_128.png": "f35c8b6a5ef33171b7f069c6d928cf38b8ae8b3f52d86fc0f53a907699fda8e3",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/icon_16.png": "dd613acac8b9357f15a03472ed8397a823dfddd2acd7e76f9489b871da92a55c",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/icon_256.png": "576d410f83d3b71860f4609a43cb52aec7b2a0b0189d931d2bdcc39fb78be74e",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/icon_32.png": "f45fdb852bcd1dc91196f7d6517e81f3a695a83301b7158747aad19992b68633",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/icon_512.png": "cd23eb99c01b5de44eae79b502095d96ae55375a0601128da5eb38e3dd9d5630",
+        "Lectern/App/Assets.xcassets/AppIcon.appiconset/icon_64.png": "ccd104b8974dc65dbe6fd40f75a0d77dcd10f4790d25d26af00d7d8be9ff5327",
+        "Lectern/App/Assets.xcassets/Contents.json": "f23266b9672263c92ced1d26fe4dafa75a14d530eb9bc5fc1f599034d597ab48"
+      },
+      "dependencyInputs": {
+        "Package.swift": "b2a0e2cbf3710f5f003e19caee55bdc2c5a70a4ed152573c6216df4740c27e22",
+        "Lectern/Package.swift": "2940bae22500cc477eebfcff4d72a7b8e526d2b4d37264daa6d8adf340f0bf15",
+        "Sources/Rostrum/Charts/ChartData.swift": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1",
+        "Sources/Rostrum/Charts/ChartReader.swift": "9dabadd987b1d2973928187bf9ac41cfecf875ecd6f1ed003ffb668ae2e0e5cb",
+        "Sources/Rostrum/Charts/ChartSeriesEditing.swift": "4d559abef6e0e4f12b9840a2f8212fffb9900a5fb32c88fc27d162705f164969",
+        "Sources/Rostrum/Charts/ChartWorkbook.swift": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3",
+        "Sources/Rostrum/Charts/ChartWorkbookReader.swift": "b0c5b7332d40a13d429ebd65bbc0f47790e788006f6390744510da5958f34f5d",
+        "Sources/Rostrum/Charts/ChartXML.swift": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223",
+        "Sources/Rostrum/Charts/Charts.swift": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2",
+        "Sources/Rostrum/Charts/ComboChartData.swift": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df",
+        "Sources/Rostrum/Core/RostrumError.swift": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378",
+        "Sources/Rostrum/Core/Units.swift": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96",
+        "Sources/Rostrum/Drawing/ColorMath.swift": "823297429e59c9be0a7be20c2fd1d8b8233c0f6bc3958fd01639288a0082da24",
+        "Sources/Rostrum/Drawing/Drawing.swift": "f11c323f8b462b7798fed6b2d8f338fcd4543e0d448237449bcbd582ec3d14d4",
+        "Sources/Rostrum/Drawing/DrawingColor.swift": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407",
+        "Sources/Rostrum/Drawing/Geometry.swift": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2",
+        "Sources/Rostrum/Drawing/GradientStops.swift": "776c5ec44936c7a8d638ec05c231f4b3e41e4307b7dc626f414d3360aae9a8cf",
+        "Sources/Rostrum/Drawing/ImageSniffer.swift": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc",
+        "Sources/Rostrum/Fonts/ArabicJoining.swift": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1",
+        "Sources/Rostrum/Fonts/ArabicLayoutTables.swift": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec",
+        "Sources/Rostrum/Fonts/ArabicTextShaper.swift": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a",
+        "Sources/Rostrum/Fonts/FontFaceKey.swift": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643",
+        "Sources/Rostrum/Fonts/FontLayoutTables.swift": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262",
+        "Sources/Rostrum/Fonts/FontLibrary.swift": "b2d719ad42a56f80f7369c77ec95d035eeddcc7dc97bca2dccbc0b43e9f38309",
+        "Sources/Rostrum/Fonts/FontMetrics.swift": "a345a821574680cb2f8f5746ba7f2894c730d95b9b161441efc11eb8ae7f30f2",
+        "Sources/Rostrum/Fonts/MarkPositioning.swift": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903",
+        "Sources/Rostrum/Fonts/ShapedGlyphRun.swift": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d",
+        "Sources/Rostrum/Fonts/TextMeasurer.swift": "e710209482959e389c390762138f212e8b4cf613c302e512f98c865a963df477",
+        "Sources/Rostrum/Fonts/TextShaper.swift": "e6f2cefafb7fc7a2d6dd2c5d4c5e2171b2bec783466fb8a6a6e7fbc6e82ed08c",
+        "Sources/Rostrum/OPC/ContentTypes.swift": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3",
+        "Sources/Rostrum/OPC/OPCArchive.swift": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234",
+        "Sources/Rostrum/OPC/OPCPackage.swift": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725",
+        "Sources/Rostrum/OPC/PackURI.swift": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442",
+        "Sources/Rostrum/OPC/Relationships.swift": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663",
+        "Sources/Rostrum/Presentation/AnnotationDependencies.swift": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9",
+        "Sources/Rostrum/Presentation/AnnotationImport.swift": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e",
+        "Sources/Rostrum/Presentation/BackgroundResolver.swift": "93498a53daa95fed0b34f36d82f89fdce992b89d8fe0c783b054ffdd480c49c3",
+        "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": "06f8e56195e344344d8bee27aad899c410adb077d6e57dff98a745e57c5090a2",
+        "Sources/Rostrum/Presentation/CommentEditing.swift": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b",
+        "Sources/Rostrum/Presentation/Comments.swift": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb",
+        "Sources/Rostrum/Presentation/Components.swift": "a0cc660f9b875f120fee3706a379854523eeaf456fd78c130843214ea7c6f746",
+        "Sources/Rostrum/Presentation/DeckExport.swift": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c",
+        "Sources/Rostrum/Presentation/DeckMerge.swift": "db23a96b478abffc6ba638d979987d17dcdde65c6dc44b060440401dbe082763",
+        "Sources/Rostrum/Presentation/DeckOutline.swift": "d3889af227cabf1352fbca4d83c5b3efba10acb316bb734d68176d9f490d1549",
+        "Sources/Rostrum/Presentation/DeckStyle.swift": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a",
+        "Sources/Rostrum/Presentation/Design.swift": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd",
+        "Sources/Rostrum/Presentation/DocumentProperties.swift": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1",
+        "Sources/Rostrum/Presentation/FontEmbedding.swift": "3f33d0e06b8f5bcbc8cd5a4685ff02b6189aa37eb278bdd5698f2d593727aa15",
+        "Sources/Rostrum/Presentation/HeadersFooters.swift": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122",
+        "Sources/Rostrum/Presentation/ImageFill.swift": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff",
+        "Sources/Rostrum/Presentation/Layouts.swift": "504030c31d26d762aaa992d824297373befeeee342870e1d32f6608ec8bf0c91",
+        "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565",
+        "Sources/Rostrum/Presentation/LegacyComments.swift": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d",
+        "Sources/Rostrum/Presentation/Media.swift": "c25c1d80613257d7fd34979fb603e6ea78bb87f9a32b07fd1eaf47791c48a2f8",
+        "Sources/Rostrum/Presentation/MinimalTemplate.swift": "b25543ced00747d3ecc8847c90d784e6bc96af8097f4b85ddef95cb8c948f2b5",
+        "Sources/Rostrum/Presentation/Notes.swift": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd",
+        "Sources/Rostrum/Presentation/NotesImportGeometry.swift": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666",
+        "Sources/Rostrum/Presentation/NotesPageRenderer.swift": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b",
+        "Sources/Rostrum/Presentation/NotesPageTemplate.swift": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687",
+        "Sources/Rostrum/Presentation/PictureCrop.swift": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384",
+        "Sources/Rostrum/Presentation/Pictures.swift": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4",
+        "Sources/Rostrum/Presentation/Presentation.swift": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e",
+        "Sources/Rostrum/Presentation/PublishedLayouts.swift": "210ad6f50ed18c4a3cee296dfe126d1759b3ed3c8f7397d03cf17baaf9e08774",
+        "Sources/Rostrum/Presentation/RenderDiagnostics.swift": "0da1a58e9776e0bc7913873f332e5775f9fe5d2b6297dd24e1af466c0938c3dd",
+        "Sources/Rostrum/Presentation/RenderImageResources.swift": "f395c8838809a40982d2571ebac7232e3891d6d358673aa596f6542c8244fc34",
+        "Sources/Rostrum/Presentation/RenderTextAttributes.swift": "9e49ddba83553d100c3f0df3b794cda78b838afd0dc3fad8dc045e6a34e8b067",
+        "Sources/Rostrum/Presentation/RichTextLayout.swift": "f89860b2a25aca1fd71647ee54dce0b34f82e7dc39f5e2993f7a090a2e268964",
+        "Sources/Rostrum/Presentation/SVGCustomGeometry.swift": "616c465bc924167048a30f95e81a3c92a48d847580c7405922b6cfa0071cd6da",
+        "Sources/Rostrum/Presentation/SVGEmbeddedImage.swift": "df3d3ffc869bcbf64a80e1dcda1dacdbdb478960c998fde9f6ea1bbaf1d6d095",
+        "Sources/Rostrum/Presentation/SVGImagePlacement.swift": "e884cdfc45b98d535aecd0576a52fc2d85661492ec7002213d5443ed4db7c8f1",
+        "Sources/Rostrum/Presentation/SVGPaint.swift": "829d30eed3f4c48559793476927229d7da717d74a8318de28e0852f0dc059ad5",
+        "Sources/Rostrum/Presentation/SVGPresetGeometry.swift": "8eb3258798f9384c7c1bab747ca62676e28f966c6f23d8e18a6adbc3d114ad97",
+        "Sources/Rostrum/Presentation/SVGRenderer.swift": "a5feb0c422261d6e29743ad82a034a4999523d3f440956dbc54cc214ca9f9780",
+        "Sources/Rostrum/Presentation/SVGRichText.swift": "c2057060e536ebda1e9b4a56d3170cc5912c1858a184ff0891de6597382393fe",
+        "Sources/Rostrum/Presentation/SVGShadow.swift": "395097c5f44a453228ea2185b3dd59631fc8d7ce63fd52986829c80638ac124b",
+        "Sources/Rostrum/Presentation/Sections.swift": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1",
+        "Sources/Rostrum/Presentation/ShapeAppearance.swift": "bd738e23daed81d17a80dddddd76a9af2b7c4ad2933c27176a7db191c147d7dc",
+        "Sources/Rostrum/Presentation/ShapeKind.swift": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406",
+        "Sources/Rostrum/Presentation/ShapeTransform.swift": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3",
+        "Sources/Rostrum/Presentation/ShapeTypes.swift": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009",
+        "Sources/Rostrum/Presentation/Shapes.swift": "f23acfc10375556a52b1fa58ad6800fc934fe1d56d0f777d71cc03786668a062",
+        "Sources/Rostrum/Presentation/Slide.swift": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc",
+        "Sources/Rostrum/Presentation/SlideAnnotations.swift": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930",
+        "Sources/Rostrum/Presentation/SlideBuilders.swift": "07d13c886952060130afdcdc1ca819e74de0f1c4d3ca7b7238c6acc8c538ba4a",
+        "Sources/Rostrum/Presentation/SlideMasters.swift": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0",
+        "Sources/Rostrum/Presentation/Slides.swift": "062c2bb25130d60ee1224b044facb276833b8453faf0f607fb60bdc254a9596d",
+        "Sources/Rostrum/Presentation/SmartArt.swift": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb",
+        "Sources/Rostrum/Presentation/TableBorderSegments.swift": "58ee3298d735ef8bc1670ac27949a9f5e4719c0a42ff2bdc58c01b859a1f136d",
+        "Sources/Rostrum/Presentation/TableCellFormatting.swift": "bca107a3188a759ea63f4b9a0091d5b4fa0a9a8eac17e5f1bbc07e773de5e091",
+        "Sources/Rostrum/Presentation/TableDoubleBorder.swift": "3d631f341e3d776bc4fedc56999bc8d9fb1a0622fb2e2d6f90df8368c7e2785f",
+        "Sources/Rostrum/Presentation/TableEditing.swift": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8",
+        "Sources/Rostrum/Presentation/TableGridSnapshot.swift": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2",
+        "Sources/Rostrum/Presentation/TableStyleImport.swift": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb",
+        "Sources/Rostrum/Presentation/TableStyleResolver.swift": "3e8fbd43dcb1065e04fafe1a4eb395ce80e2d0a139906ae6b783a429e8a96c83",
+        "Sources/Rostrum/Presentation/TableStyling.swift": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173",
+        "Sources/Rostrum/Presentation/Tables.swift": "42097757eedea4ec20dab76d867b8792327958668856e5d1dd8168a59d855bb5",
+        "Sources/Rostrum/Presentation/TemplateAuthoring.swift": "512ca68f12d015c7c4ae29e56ae34a23fd2a0e7485851e70f081d5921a821a4d",
+        "Sources/Rostrum/Presentation/Text.swift": "3c022c6956edad9ed94bde19ed72e7ce635cf4c8dbe2c4c22b862a1b0b4d7337",
+        "Sources/Rostrum/Presentation/Theme.swift": "42d77782c3a980b441e31707aee8f428e5187353350d8ab85a0f73d5cb212b9a",
+        "Sources/Rostrum/Presentation/Validation.swift": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89",
+        "Sources/Rostrum/Schema/GeneratedSchema.swift": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66",
+        "Sources/Rostrum/Schema/OXMLHelpers.swift": "02e6da44560c36e0e509d38d9b357f0b6ed1919b52ace21d2277cbafb7e6be8c",
+        "Sources/Rostrum/Schema/PresetGeometry.swift": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931",
+        "Sources/Rostrum/XML/XML.swift": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2",
+        "Sources/Rostrum/Zip/CRC32.swift": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f",
+        "Sources/Rostrum/Zip/Deflate.swift": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc",
+        "Sources/Rostrum/Zip/Inflate.swift": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894",
+        "Sources/Rostrum/Zip/ZipReader.swift": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8",
+        "Sources/Rostrum/Zip/ZipWriter.swift": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0",
+        "Sources/RostrumLayout/AuthoredLayoutEngine.swift": "a11ab21766597cebfb7ff29e3ce287f912b86de75039ed9befd239599cb7901b",
+        "Sources/RostrumLayout/MeasuredPaginator.swift": "c19a0492ad805e7833ebb42f80d6d577287f6a01a73e5b2444abbd8285292943",
+        "Sources/RostrumLayout/StructuredLayout.swift": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850",
+        "Sources/RostrumLayout/TemplateLayoutEngine.swift": "da8c9c58d4c9b7d3cf282362e9db0422de12dfa8226ea047e51a6fa5f477cbf6",
+        "Lectern/Sources/LecternCore/Concurrency/RunGate.swift": "fc3ab0838f85f47ce3a7c736ba9af8da992e564052a1c5bced7e78886e95f595",
+        "Lectern/Sources/LecternCore/DeckIR/DeckIR.swift": "50afb14d5208d69403e74bb669cee7eb3b90c9d93c78337f20047b44f04fd064",
+        "Lectern/Sources/LecternCore/DeckIR/DeckNormalizer.swift": "5a2ec222a43f8bc2b9e34c413eaca60f132588afc142f543cb3bf1518688b3f0",
+        "Lectern/Sources/LecternCore/DeckIR/DeckValidation.swift": "9be3716acab7adc2ebae1457035cd34862663c43ce240fc2434d3f6a1b35620b",
+        "Lectern/Sources/LecternCore/Export/DeckExporter.swift": "08d0ae3020f38eb4972508b3c69b59796b09d162a64214eb066a368719e10b94",
+        "Lectern/Sources/LecternCore/Inspection/DeckDetail.swift": "c45bd5ee121ccb65d5939b83fa3e1fcc089630e19ee263b14aa67254bc716ce7",
+        "Lectern/Sources/LecternCore/Inspection/DeckInspection.swift": "c9696d99f90df901039597c384e5dd0251f8fb05c9b71a19b934717b139fe957",
+        "Lectern/Sources/LecternCore/Inspection/InspectionFonts.swift": "f736b49306a66cfd4e63c046589a20462903e8a173504aee01ed5b608266d779",
+        "Lectern/Sources/LecternCore/Inspection/NotesPageInspection.swift": "ad5dbdbcdafd50874150da7c041db16ceb8ef4e494385a7eb039d7f5bfa99308",
+        "Lectern/Sources/LecternCore/Inspection/SlidePreviewGeometry.swift": "44232a23c4b3432de400ccdc4db8cb6d6433fb4616d70549be5f520b0007560c",
+        "Lectern/Sources/LecternCore/Inspection/SlidePreviewRecord.swift": "6726e77ea5407d377993e188d1526d5b5ab607b9324212a3291529b8b1b80f17",
+        "Lectern/Sources/LecternCore/Inspection/TableTextExtractor.swift": "d4151074ef20c3291eedf90013c492a78a2fba18529de01a1e26e9f877a3b5d9",
+        "Lectern/Sources/LecternCore/Library/DeckCardIndex.swift": "65ed18303d5429fb9d94281a182b77c19a48c77338235a3c685e3da0499a20f7",
+        "Lectern/Sources/LecternCore/LibraryLab/DocumentLabRecipes.swift": "76b1f28a08ff548954f4dcab0ee5149bb73fc8ee16ad8e3f7d9b2ccf94463e17",
+        "Lectern/Sources/LecternCore/LibraryLab/DrawingLabFixtures.swift": "dc03ea7c38303fb77015e4b2c30fa8a846dd5752ac48d5cbc2227349dd835b0e",
+        "Lectern/Sources/LecternCore/LibraryLab/DrawingLabRecipes.swift": "24990f8e2aada94728c3a92ccd4850bce5ea8e28dbf992847a4b2f1175290f49",
+        "Lectern/Sources/LecternCore/LibraryLab/ImportedFidelityRecipe.swift": "f66e88e981397bae8c169aa9e649032380277ce830b541a9a85292955a681c23",
+        "Lectern/Sources/LecternCore/LibraryLab/LibraryLab.swift": "858a28c34bd6038c6a1198aa9c43ddade1390f9e5e7b7cad01c844f9911ca9ba",
+        "Lectern/Sources/LecternCore/LibraryLab/LibraryLabTypes.swift": "1f0770bb61f40aa8d6c0434c29fc7d0f332e9d1803f081039ff6cacf96d3b774",
+        "Lectern/Sources/LecternCore/LibraryLab/PlatformAssetRecipes.swift": "5282665e3b2abda6d83329209df035ec200103577be222b9c6bf2d32bed99cd0",
+        "Lectern/Sources/LecternCore/LibraryLab/PlatformDesignRecipes.swift": "44375292798ba237852b403ff47c599ab231b15b0036f987cce29a363f390575",
+        "Lectern/Sources/LecternCore/LibraryLab/PlatformDocumentRecipes.swift": "accbe89cfa133a9f95be83cdbb046c1a88bb078773fcd44794c34ce7188c5d1d",
+        "Lectern/Sources/LecternCore/LibraryLab/PlatformLabRecipes.swift": "cb52e9f103b57c13f4b6ce5fe5fb54aad4b6bdb4888ea9abd405e7534b9d8840",
+        "Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphBoundary.swift": "545bcb06b2de8361ec25a78753bbab75805795f20b01299b2a7d12d330cc2a06",
+        "Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphLigatures.swift": "7b79e16f0cd6325b42a8cdb0f819fd15de7d22bb5dc5b7e232b340a19c0673e2",
+        "Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphRecipe.swift": "6bf5b715f93dfe4cc9b4ac868b898aba241329f767a86879392e24eccc01e4a3",
+        "Lectern/Sources/LecternCore/LibraryLab/PlatformTabRecipe.swift": "a83b02defa226040afe4c86fb5f64403eb62e957e021ad3111f57a0f5c258191",
+        "Lectern/Sources/LecternCore/Providers/DeckGenerator.swift": "f8d53bb2cb7fc7227b1affb167951f27c261153b682acbf87065404b44131083",
+        "Lectern/Sources/LecternCore/Providers/DeckSchema.swift": "8e9d55820da497a4d9e586dc0033e475daac9d4d16e1a318a5607133a9c4737f",
+        "Lectern/Sources/LecternCore/Providers/HTTPRetry.swift": "5ff5c9f12bc92fc49e9e7591d9b2e59b4d5227daddd12bdf0d5d493a30f4dcdf",
+        "Lectern/Sources/LecternCore/Providers/ImageGeneration.swift": "40f6593e31267bec631e98addbfe0a8baba68884aedeed0b7bf27a8fa5d2b41a",
+        "Lectern/Sources/LecternCore/Providers/OpenAIImageProvider.swift": "69a966f8f8b580cc300c5eda8b85b6a10c4d301d07a2c71c50f9f2fbf494e4f7",
+        "Lectern/Sources/LecternCore/Providers/OpenAIModelCatalog.swift": "c2bf9b3e18d67d7882e191ef714244eb073de6f60c8efc0944687fad63c7eb2b",
+        "Lectern/Sources/LecternCore/Providers/OpenAIModels.swift": "fc3d0c957f7c000af58b51d7b1220e5a906b2852c46bed6ffc7004e82535f578",
+        "Lectern/Sources/LecternCore/Providers/OpenAIProvider.swift": "93c8c63d495f1a6fadee4dbdf822eb37aeb5554a9bcd7550dfea23cf440591eb",
+        "Lectern/Sources/LecternCore/Providers/PriceTable.swift": "cc0a7faf2d35910b56bd8e462c5ebf9cba9afa43694beb62f3d1b68fd19a2f4d",
+        "Lectern/Sources/LecternCore/Providers/PromptTemplates.swift": "0f50f77428918724d99567ae5c229eec8317659442c603bc820b415e24967bde",
+        "Lectern/Sources/LecternCore/Providers/ProviderFactory.swift": "fd294acb8c68ab05812796fd25c497db58af26b94c26a798f6f7efc3a502d21e",
+        "Lectern/Sources/LecternCore/Providers/Providers.swift": "019539f954e081941c7b22b24e7fbdd752842fac95b9995cbd605b4b90b336c8",
+        "Lectern/Sources/LecternCore/Rendering/AuthoredPagination.swift": "abe9877b4f096ed5414991d52b8278d9b58214b54008ebc05db68ecd44b4ecfd",
+        "Lectern/Sources/LecternCore/Rendering/AuthoredRecovery.swift": "5929232ada4e6d15ff8abbf769c0d1aa674313811b84e7fcd628b4919177f035",
+        "Lectern/Sources/LecternCore/Rendering/DeckPreviews.swift": "62e2ccafe38ebf720c778e8e73623d557d25ad205f5b4c0af2196bfc6d324859",
+        "Lectern/Sources/LecternCore/Rendering/DeckRenderer.swift": "edb020b734fc3b07a8ecfc3f1725a28acc5691a425684a755185f15199780997",
+        "Lectern/Sources/LecternCore/Rendering/DeckTemplate.swift": "a8d826433032f2305be7cec707ebf4f24fee1d74056da8d7c7cfacde08b2ea1e",
+        "Lectern/Sources/LecternCore/Rendering/InstalledFonts.swift": "0d5e1fac04f4d766bfb27dd3789ed87f31b81e3a628cff7d59b5cf43c87b3a70",
+        "Lectern/Sources/LecternCore/Rendering/PowerPointTemplate.swift": "58d87e24f2a6485544dfc853dfc59a4557f7f9193f9801e6aa5b917ced2a10ca",
+        "Lectern/Sources/LecternCore/Rendering/PreviewFontMeasurement.swift": "85bb8a48d9d0f233634c91b77846b25b69591d636016f865dd56555f79a26a24",
+        "Lectern/Sources/LecternCore/Rendering/RenderContentCheck.swift": "5396fc0a3501b0ac69b53eae04189fb40f676f5db0ec373134fecda1008745da",
+        "Lectern/Sources/LecternCore/Rendering/TemplateRendering.swift": "412e1b8e5a812da2f9c8e18b7e5f4137fedc40c333a2dc4b3ee8aec7bfb62199",
+        "Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+        "Lectern/Sources/LecternCore/Resources/LibraryLab/LICENSE-DejaVu.txt": "f88d5294af5a772f9114eb385009e3478d62b21f3e5bbc34d159d328047c8867",
+        "Lectern/Sources/LecternCore/Resources/LibraryLab/PROVENANCE.md": "05853522993a4fc39caf42be79350de7885a53be1165a9b5d3e609a60c5bb74a",
+        "Lectern/Sources/LecternCore/Resources/LibraryLab/ParagraphBoundaryReferences.json": "97db4199372c926a4c95779a96ec3b76ef83c43230691f573793b0bb6633a8de",
+        "Lectern/Sources/LecternCore/Resources/LibraryLab/ParagraphLigatureReferences.json": "5693cec65e3b34e29fa8366857be5bdbbe22562a1ce5c45d5716758280c78b5d",
+        "Lectern/Sources/LecternCore/Resources/LibraryLab/PlatformSample.mp4": "77251c88edc63eb3527c7b22d33d854c8c4934d20d2f8ae5f93331cfe75ef367",
+        "Lectern/Sources/LecternCore/Resources/LibraryLab/PlatformSample.wav": "382562326a4ebe12c7f63acec89d630640bff00a67271331bcf37a8d8c5e8ba9",
+        "Lectern/Sources/LecternCore/Storage/DeckLibrary.swift": "855b933e4312aeaea718e0b4051b2a9c646e9c0986bf3ea9147edbb8edeffee9",
+        "Lectern/Sources/LecternCore/Storage/DeckStorage.swift": "31af40f3b5400ea065209fc68685e0aee91e560f47b099dcfa136835e423d658",
+        "Lectern/Sources/LecternCore/Storage/RenderSnapshot.swift": "2e6111a15f5705eb822692582119551aa6f8f95968c0ef2fb46591595690ead9",
+        "Lectern/Sources/LecternCore/StyleCatalog/StyleCatalog.swift": "3c9d05bcc26f7ea95089cf37af6bda0bf0b859e2b79312d4aaa94f3d3a52c81b"
+      },
+      "testSelection": "all AppTests",
+      "entryPointExcluded": "Lectern/App/LecternApp.swift",
+      "manifestSHA256": "86e53daf434561c453a900c775bd862f9de32ac15ab13aa6de3c6a853bb59906",
+      "exitCode": 0,
+      "log": "/tmp/lectern-fidelity4-headless-hoist-final-20261004.log",
+      "logSHA256": "c9d69ac8bb91d372077f410cdea0873be19ec8a5368e43bb9ba1c200a09b1acd"
+    },
+    "receiptPath": "/tmp/lectern-fidelity4-headless-hoist-final-20261004.json",
+    "receiptSHA256": "dfb3158dae878e26352389406c612fc6b53e0dafb9f167663313d534eaa000dd",
+    "tests": 76,
+    "suites": 21,
+    "nativeWebKitSkips": 3,
+    "copiedInputHashesVerified": 59,
+    "dependencyHashesVerified": 173
+  },
+  "lab": {
+    "reports": [
+      {
+        "recipe": "chartEditing",
+        "checks": 24,
+        "findings": 4,
+        "slides": 4,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/chartEditing-E7F916A2-0E15-4257-8FDC-F5EA4C80F4F8/report.json",
+        "reportSHA256": "ce7c21bde6b671c9f13108d736782376f3ac87fe880c9e1cfc76bfaa777429be"
+      },
+      {
+        "recipe": "charts",
+        "checks": 30,
+        "findings": 24,
+        "slides": 12,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/charts-85F71FE4-421A-482A-A94D-8ACA4DDCBBF1/report.json",
+        "reportSHA256": "fc97b9fb16bd34e81f859cfa16fe6b04bbf86b9931a4fd63e7ef30da964cfde3"
+      },
+      {
+        "recipe": "comments",
+        "checks": 12,
+        "findings": 3,
+        "slides": 1,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/comments-DD467B08-B6C0-44DB-95E9-7EE6513724BA/report.json",
+        "reportSHA256": "b5ee5b5f2c2a1d17e7a7a8a19c6923a5e819441ef09f675cd43175951a7793a6"
+      },
+      {
+        "recipe": "design",
+        "checks": 11,
+        "findings": 68,
+        "slides": 20,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/design-DA0BB740-AB24-480C-8C7B-606CC08935C0/report.json",
+        "reportSHA256": "097bc92b8b981d2b8c116c9df302cc463799fffacc9e41ba66ac5c2135f4525e"
+      },
+      {
+        "recipe": "extractionAndRendering",
+        "checks": 11,
+        "findings": 4,
+        "slides": 3,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/extractionAndRendering-F58CBF7C-9118-4C1A-93D7-F85F868F6E65/report.json",
+        "reportSHA256": "204731565c1e5177b779aec6870ec00f270f24da66f3ae8ba585da88e98e4d33"
+      },
+      {
+        "recipe": "fillsAndLines",
+        "checks": 19,
+        "findings": 19,
+        "slides": 10,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/fillsAndLines-5BC238DE-52F8-429A-91CC-3A98C4A66EC6/report.json",
+        "reportSHA256": "6388e52152c68718813d25738906292712e527bab926e8fdc3188ec42276de03"
+      },
+      {
+        "recipe": "fontsAndFitting",
+        "checks": 11,
+        "findings": 0,
+        "slides": 1,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/fontsAndFitting-8DA99AB1-0BF8-44E8-A38C-40BFCA1E4DDF/report.json",
+        "reportSHA256": "439b1c879bf8c53eb357e9490a708b69379fbea98a21175d7959fb18f9893e39"
+      },
+      {
+        "recipe": "importedFidelity",
+        "checks": 9,
+        "findings": 0,
+        "slides": 1,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/importedFidelity-915CB9B6-64EE-45B4-A3BA-E3902C85A8AB/report.json",
+        "reportSHA256": "01ffc940df1adab9b1718c9b5511b8bb9e7173d069587f775acf809c095dc2f7"
+      },
+      {
+        "recipe": "layouts",
+        "checks": 13,
+        "findings": 0,
+        "slides": 3,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/layouts-7834D4FA-A8B6-4FFB-A274-3698EE43EEF3/report.json",
+        "reportSHA256": "173892b56738a17b4f88c878375e6fd0c07fc852d6b8416cab409c4de4aa1d18"
+      },
+      {
+        "recipe": "mediaAndAttachments",
+        "checks": 11,
+        "findings": 3,
+        "slides": 2,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/mediaAndAttachments-61E1517E-76D5-47D0-B787-6B04D5FFE01D/report.json",
+        "reportSHA256": "49fbc5bd32ff833c4f5f14eb023c766994c555a4b4f413e3ebc05bda96e8e0cc"
+      },
+      {
+        "recipe": "notes",
+        "checks": 8,
+        "findings": 2,
+        "slides": 3,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/notes-C5A887A1-1D60-4411-9CA6-73185A747B47/report.json",
+        "reportSHA256": "d466e6f8e2411cb96789efdc756c98fc43f98802617b897d4d855ce6bf1dbde7"
+      },
+      {
+        "recipe": "package",
+        "checks": 11,
+        "findings": 2,
+        "slides": 1,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/package-E3E8EBAB-6E9C-4944-8B8A-D096805FE2C2/report.json",
+        "reportSHA256": "246a801b7c21ed73692d68f58f0d34b193fb50a8223e04af12a96e96b2a07c0b"
+      },
+      {
+        "recipe": "paragraphLayout",
+        "checks": 31,
+        "findings": 0,
+        "slides": 4,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/paragraphLayout-E3E7F34A-B2CB-4941-AE54-E8F1104B893D/report.json",
+        "reportSHA256": "ff48106c944e7f470b5f3086f87539e75fe1de571fd9188b7b409c720150568b"
+      },
+      {
+        "recipe": "pictures",
+        "checks": 17,
+        "findings": 0,
+        "slides": 2,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/pictures-CD16309F-A18B-4B7D-88A0-3B8FC1CF5521/report.json",
+        "reportSHA256": "e57f8972f5479552813373c1782be7ea1c720fa46f282c9cd5708119d3d7720e"
+      },
+      {
+        "recipe": "sections",
+        "checks": 10,
+        "findings": 6,
+        "slides": 7,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/sections-FCCEB408-01AA-4F74-A82D-A88F590F598E/report.json",
+        "reportSHA256": "343213f321cdf5003b2b2928b8a6f92157bad8801e26d12ed53bc7d253c40dac"
+      },
+      {
+        "recipe": "shapes",
+        "checks": 7,
+        "findings": 179,
+        "slides": 15,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/shapes-9C9F4398-BD79-421F-8B6E-8151670E6359/report.json",
+        "reportSHA256": "d08d972821fdc4f3c8b244c25cf3be1fda8861e6f35389c6a99439dda5654247"
+      },
+      {
+        "recipe": "slideImport",
+        "checks": 10,
+        "findings": 10,
+        "slides": 6,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/slideImport-956DC2EF-ABCE-447B-A369-C1CFB6FC9107/report.json",
+        "reportSHA256": "31c90e9cefb8359ed7ea646453e0c8a35bacc3c8d83c0d03ee70e243d05496e2"
+      },
+      {
+        "recipe": "slides",
+        "checks": 9,
+        "findings": 4,
+        "slides": 4,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/slides-93193F97-499E-4BAF-A1F5-33214029A321/report.json",
+        "reportSHA256": "1952015509ebe3f07b51ea596fcd960f99d6591181698448a0d3cb5a4d51f070"
+      },
+      {
+        "recipe": "smartArt",
+        "checks": 10,
+        "findings": 8,
+        "slides": 4,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/smartArt-693F3DFE-D54B-427B-8465-5E832AC8B51A/report.json",
+        "reportSHA256": "6b048b0ba2bb36fd8d03582373217d53fb6af5dc8b12123391200864bfac1c8a"
+      },
+      {
+        "recipe": "tabLayout",
+        "checks": 13,
+        "findings": 1,
+        "slides": 2,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tabLayout-ACEF2457-F6FB-4CA9-86CD-7EEE6F47DFD3/report.json",
+        "reportSHA256": "b840a3d980b04c92136c60bf99d97ce3fe82f9e67b3b50afd4766f4ddce299f3"
+      },
+      {
+        "recipe": "tableAppearance",
+        "checks": 15,
+        "findings": 6,
+        "slides": 2,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tableAppearance-054C438D-2D91-4152-9C11-C45BB9E23266/report.json",
+        "reportSHA256": "fd00399dfb85bcbcf8a0f5f0d083065de7b894a14606e88afd187d311cfa7ff6"
+      },
+      {
+        "recipe": "tableStructure",
+        "checks": 12,
+        "findings": 0,
+        "slides": 1,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tableStructure-1C3F8BB1-797F-4043-995A-7DF790FCCF85/report.json",
+        "reportSHA256": "669838f7479a6fac661e79ea5edec32d616efd48980b94c1e5caddcb9bd4a27b"
+      },
+      {
+        "recipe": "tableStyles",
+        "checks": 7,
+        "findings": 21,
+        "slides": 19,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tableStyles-E2EB2BAD-EF1A-4AE2-8037-E3F2628DF557/report.json",
+        "reportSHA256": "009463c221f6583599c6700503a2a749b8ef6de5ad40ec05d43bdd20072de9f8"
+      },
+      {
+        "recipe": "templates",
+        "checks": 8,
+        "findings": 2,
+        "slides": 1,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/templates-6DE3D31A-E37F-4626-8E4D-9444C6E8BF1A/report.json",
+        "reportSHA256": "654ed1f7a484cb9cc3b38591dfd13b55c17321a691447b2274997682fb19e49b"
+      },
+      {
+        "recipe": "text",
+        "checks": 10,
+        "findings": 2,
+        "slides": 2,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/text-548F2474-F485-41C8-91A7-3224A671D810/report.json",
+        "reportSHA256": "05f7f4d2db424a132be8fadb64a323ebc2acec17b0a5b50e69f6bd255b6ac920"
+      },
+      {
+        "recipe": "theme",
+        "checks": 8,
+        "findings": 2,
+        "slides": 1,
+        "report": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/theme-034236C4-F6A3-4E61-8777-F54F1FCD9EF3/report.json",
+        "reportSHA256": "b5b1c5fba464f6c99755eb78dd317147b95f22490c6022f82e953d864a5c93b8"
+      }
+    ],
+    "independentReopens": [
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/chartEditing-E7F916A2-0E15-4257-8FDC-F5EA4C80F4F8/chartEditing-before.pptx",
+        "sha256": "3a81b28c762d4074a18463cb3f926e70d1d4ad2985e5f36004ea31fec9065268",
+        "slides": 4
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/chartEditing-E7F916A2-0E15-4257-8FDC-F5EA4C80F4F8/chartEditing.pptx",
+        "sha256": "ea99297096e9d4f20bb11a5e68479095049e10647f29cea32c392bad76eb5cad",
+        "slides": 4
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/charts-85F71FE4-421A-482A-A94D-8ACA4DDCBBF1/charts.pptx",
+        "sha256": "0cf9af74a4b96432b414e9ce35208113c6b1a630de94973ce4e7df0bed62b9f4",
+        "slides": 12
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/comments-DD467B08-B6C0-44DB-95E9-7EE6513724BA/comments-before.pptx",
+        "sha256": "9c6481edf5e9e1628c4b0f480da4e8f2855f6a8460fa9f416386f5e8671171b3",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/comments-DD467B08-B6C0-44DB-95E9-7EE6513724BA/comments.pptx",
+        "sha256": "a31eefe6bfb8d93067a02e71911493b63953fbde78f98a7bc069d574427241ab",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/design-DA0BB740-AB24-480C-8C7B-606CC08935C0/design-before.pptx",
+        "sha256": "a635c89d415376e2c0759d2498707526603cd4b87e03272e33a917b6b005d58c",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/design-DA0BB740-AB24-480C-8C7B-606CC08935C0/design.pptx",
+        "sha256": "3ab461124963b4b71f5e5780a9361f11588d16501bc77e6c1484c61e631a87af",
+        "slides": 20
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/extractionAndRendering-F58CBF7C-9118-4C1A-93D7-F85F868F6E65/extractionAndRendering-before.pptx",
+        "sha256": "55be7cca8370ad9f86339d3e74b7ba31873350e4aaf83ea590e1e6ac34d0e743",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/extractionAndRendering-F58CBF7C-9118-4C1A-93D7-F85F868F6E65/extractionAndRendering.pptx",
+        "sha256": "29240aa0c68478074ae22c764219e25dfd7bc8fac48b7eaa9eb808678369c531",
+        "slides": 3
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/fillsAndLines-5BC238DE-52F8-429A-91CC-3A98C4A66EC6/fillsAndLines-before.pptx",
+        "sha256": "b97b424855be08e875977db18b59159cfd4b92dbc7bb749c6febac1eecff70d0",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/fillsAndLines-5BC238DE-52F8-429A-91CC-3A98C4A66EC6/fillsAndLines.pptx",
+        "sha256": "d16f544588feb63d21a4ffa68fee266439d80d3bef4b4bdce646cb82043cd8fb",
+        "slides": 10
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/fontsAndFitting-8DA99AB1-0BF8-44E8-A38C-40BFCA1E4DDF/fontsAndFitting-before.pptx",
+        "sha256": "82990dfc35c80b1d46f0da91a511c0c5eb85be4bca17f9eb7f1a7d8ba0901574",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/fontsAndFitting-8DA99AB1-0BF8-44E8-A38C-40BFCA1E4DDF/fontsAndFitting.pptx",
+        "sha256": "d3d7b79dd955f5cfb5b7a1f318326fcbabf602b17f29adab36688d75130e26e4",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/importedFidelity-915CB9B6-64EE-45B4-A3BA-E3902C85A8AB/importedFidelity-before.pptx",
+        "sha256": "22130531feeb22ebce73c41ab81bbe2f111e3ec98c03c3423d7e926aed7d196a",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/importedFidelity-915CB9B6-64EE-45B4-A3BA-E3902C85A8AB/importedFidelity.pptx",
+        "sha256": "bd72487e25dfd1aa61a60fbf143880c1f835f5de8874fe42f37d3d74623157e4",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/layouts-7834D4FA-A8B6-4FFB-A274-3698EE43EEF3/layouts-before.pptx",
+        "sha256": "ee496bd57ae758cf750adb9c2f0f1df159be5fc83714fe42e06bbbefd34e7ad8",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/layouts-7834D4FA-A8B6-4FFB-A274-3698EE43EEF3/layouts.pptx",
+        "sha256": "6f64dbff97cb66fa7919f779bcbfd41b1e1b7b19baa4c4a3d7d3e5e5d27db978",
+        "slides": 3
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/mediaAndAttachments-61E1517E-76D5-47D0-B787-6B04D5FFE01D/mediaAndAttachments-before.pptx",
+        "sha256": "35da598b77ae3b1e1801a31849e27192abfc6b7c9030bad354d8e9fe42ada9b8",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/mediaAndAttachments-61E1517E-76D5-47D0-B787-6B04D5FFE01D/mediaAndAttachments.pptx",
+        "sha256": "44a3e7ac080c338991543570e5032cda2f91b72d82f760d623620d7cdfa3af21",
+        "slides": 2
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/notes-C5A887A1-1D60-4411-9CA6-73185A747B47/notes-before.pptx",
+        "sha256": "76b1c791c728a153f6d07bc1af365aeb49154546c43696f0a567fac01d786a3e",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/notes-C5A887A1-1D60-4411-9CA6-73185A747B47/notes-source.pptx",
+        "sha256": "d193258313fcbb8552428b4d58ee3fc0cd93bd949a5f74f40188c692abffa1a3",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/notes-C5A887A1-1D60-4411-9CA6-73185A747B47/notes.pptx",
+        "sha256": "2f5c2ae22655f8086719144fe6c124ae30498da69e8ba00a9cee8cd4bb3b78dd",
+        "slides": 3
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/package-E3E8EBAB-6E9C-4944-8B8A-D096805FE2C2/package-before.pptx",
+        "sha256": "38e0b40b6a5ed68653fedec8af624b69597d66e6cdff481a0dbf1d9d8e9de1e0",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/package-E3E8EBAB-6E9C-4944-8B8A-D096805FE2C2/package.pptx",
+        "sha256": "c98d6c673cd92e9d316e1e536ed28a242dad7e8b580b2d072d011c125877ea3a",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/paragraphLayout-E3E7F34A-B2CB-4941-AE54-E8F1104B893D/paragraphLayout-before.pptx",
+        "sha256": "76cf48e1e1d8be752127dcb86913f0a610da27994d4486881285be42421d7301",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/paragraphLayout-E3E7F34A-B2CB-4941-AE54-E8F1104B893D/paragraphLayout.pptx",
+        "sha256": "69709120cd0dd8f7d2ea30bc61f4f71fd4b1ea9a8e939720ef5f44b6ba5d37fc",
+        "slides": 4
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/pictures-CD16309F-A18B-4B7D-88A0-3B8FC1CF5521/pictures-before.pptx",
+        "sha256": "1013508109a261f5f8371cf12e6dab26e1fbc60eb40d1124ee19ef7f5889c393",
+        "slides": 2
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/pictures-CD16309F-A18B-4B7D-88A0-3B8FC1CF5521/pictures.pptx",
+        "sha256": "a0f77e4e6e99f2d3f187bac214cbdabe8c115f817e3b7dcf2a84203ed1858f57",
+        "slides": 2
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/sections-FCCEB408-01AA-4F74-A82D-A88F590F598E/sections-before.pptx",
+        "sha256": "a7aa23a63eba30abfad9c27b61958a4e31f4142f6d25c887f02a0a3dd4237243",
+        "slides": 6
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/sections-FCCEB408-01AA-4F74-A82D-A88F590F598E/sections.pptx",
+        "sha256": "4ccb2b8ff46d15cb08dd167d6bb39f6690e14706488b8d8617b37094c687d4f3",
+        "slides": 7
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/shapes-9C9F4398-BD79-421F-8B6E-8151670E6359/shapes-before.pptx",
+        "sha256": "28a56717be882445fb747deb741bfd5ba79226ad380a2bb1828fbbfde00ac01d",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/shapes-9C9F4398-BD79-421F-8B6E-8151670E6359/shapes.pptx",
+        "sha256": "8a4e2546af9062b7090799b1d7bc9cf75b176ff6525a19b1ce8d98d7fc132e8f",
+        "slides": 15
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/slideImport-956DC2EF-ABCE-447B-A369-C1CFB6FC9107/import-source.pptx",
+        "sha256": "1b60a2394174be50f54506b1851b84d70ef63cced6850ee905a73a1a3e712a19",
+        "slides": 4
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/slideImport-956DC2EF-ABCE-447B-A369-C1CFB6FC9107/slideImport-before.pptx",
+        "sha256": "b3a3552416136d667857335688e005e5bb4ee147a3fe00b73b7f661148c5336a",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/slideImport-956DC2EF-ABCE-447B-A369-C1CFB6FC9107/slideImport.pptx",
+        "sha256": "c8c070c623cf53679e299038b511654606250fc7b0f719bb0925ea81cf540a49",
+        "slides": 6
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/slides-93193F97-499E-4BAF-A1F5-33214029A321/slides-before.pptx",
+        "sha256": "39a8887b5b64e15c01476ee3931e0cc8ff4a1effa6dec52cfc6c8968f8e143c2",
+        "slides": 4
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/slides-93193F97-499E-4BAF-A1F5-33214029A321/slides.pptx",
+        "sha256": "a2593a5cfdb28c5758861bf3f4d95d30ef58359c23167090cf1ca379725160a9",
+        "slides": 4
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/smartArt-693F3DFE-D54B-427B-8465-5E832AC8B51A/smartArt.pptx",
+        "sha256": "e68b359d176fb1fd9f6c742724f608c25a84e16c11656874d798659f96854768",
+        "slides": 4
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tabLayout-ACEF2457-F6FB-4CA9-86CD-7EEE6F47DFD3/tabLayout-before.pptx",
+        "sha256": "b0916e8ac00b8dfa143c5d5b7569fc0a2196f9d363d9dd79fa027c39264caf59",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tabLayout-ACEF2457-F6FB-4CA9-86CD-7EEE6F47DFD3/tabLayout.pptx",
+        "sha256": "eb62682daf2d69620b8111e1c07dba684afdc236edfa7d145681e7f3ff6c87f3",
+        "slides": 2
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tableAppearance-054C438D-2D91-4152-9C11-C45BB9E23266/tableAppearance-before.pptx",
+        "sha256": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tableAppearance-054C438D-2D91-4152-9C11-C45BB9E23266/tableAppearance.pptx",
+        "sha256": "3b989b2d4bf4b398a391e14e2241346421aaed28bc17d79e71d7d5658ec459e2",
+        "slides": 2
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tableStructure-1C3F8BB1-797F-4043-995A-7DF790FCCF85/tableStructure-before.pptx",
+        "sha256": "a090209dea654ea4753ae51d5b3ae1d441679564b7b0bcf7dc771a1c7d787030",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tableStructure-1C3F8BB1-797F-4043-995A-7DF790FCCF85/tableStructure.pptx",
+        "sha256": "5616bb415a4e4eed8ec35510c6611f4ab8c9c0e1c21e13b63c6d39dae3851556",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tableStyles-E2EB2BAD-EF1A-4AE2-8037-E3F2628DF557/tableStyles-before.pptx",
+        "sha256": "21e97d9f2e74bcaca77786f289691d99d28b281aac5220bbaa2236e0d3a3172f",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/tableStyles-E2EB2BAD-EF1A-4AE2-8037-E3F2628DF557/tableStyles.pptx",
+        "sha256": "434031c7380b7c742dadc66d87512d9822561240cb72e4cb70958ca3111c3558",
+        "slides": 19
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/templates-6DE3D31A-E37F-4626-8E4D-9444C6E8BF1A/templates-before.pptx",
+        "sha256": "52047af7d6c258179defe6aac3df8059f02ab2346a27a2828ec4f92f80a0db31",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/templates-6DE3D31A-E37F-4626-8E4D-9444C6E8BF1A/templates.pptx",
+        "sha256": "11ef5debcaeec9280f7f3fc85cdb5c422cd3b889e7938d28d903cc1366affce4",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/text-548F2474-F485-41C8-91A7-3224A671D810/text-before.pptx",
+        "sha256": "952bd3f451f773a612f3f181f661a38ac46a209628925c931d2325512c0708fd",
+        "slides": 2
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/text-548F2474-F485-41C8-91A7-3224A671D810/text.pptx",
+        "sha256": "2a1a38226487f7b1eea73cbe32b37851dbb78935e1b7733e4073495e9b13223e",
+        "slides": 2
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/theme-034236C4-F6A3-4E61-8777-F54F1FCD9EF3/theme-before.pptx",
+        "sha256": "c767a2b1a04c30b76404c64884817f84d85f26712a0f010f2adc3db48a24217e",
+        "slides": 1
+      },
+      {
+        "path": "/tmp/lectern-fidelity4-lab-hoist-final-20261004/theme-034236C4-F6A3-4E61-8777-F54F1FCD9EF3/theme.pptx",
+        "sha256": "cc090f46cb194029bb6e445d42f998bda681fbeeca554cc689481d49ce2ee537",
+        "slides": 1
+      }
+    ],
+    "totalChecks": 337
+  },
+  "manualLectern": [
+    {
+      "narrow": true,
+      "checks": 31,
+      "findings": 0,
+      "slides": 4,
+      "report": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-ACC0137C-9321-4E3B-B607-02E6555112CD/report.json",
+      "reportSHA256": "f58f409d004cfd861327bed5208052f40bc6a8eae212179e2899d10c33696620",
+      "deck": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-ACC0137C-9321-4E3B-B607-02E6555112CD/paragraphLayout.pptx",
+      "deckSHA256": "e41b16d88d2b9358db3a13459c82e3d309050f4f8939c9284cfea183f840bfbf",
+      "identicalToEarlierManualDeck": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-80657822-6F0E-40A7-B942-85C8E0D82474/paragraphLayout.pptx",
+      "observation": "Root CUA regenerated with same edited title, inspected all four thumbnails; slide4 original wraps and both computed fits visually retained. App closed idle before timing. Export path additionally passes refreshed native and headless tests; manual export evidence retained in checkpoint."
+    },
+    {
+      "narrow": false,
+      "checks": 31,
+      "findings": 0,
+      "slides": 4,
+      "report": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-D635E027-E4C8-4B3A-AC25-7C342DEBFF4B/report.json",
+      "reportSHA256": "d14fdf974e42e7b1990affce21cc89b9193d3c5090ba3761ab51445f66ed0e07",
+      "deck": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-D635E027-E4C8-4B3A-AC25-7C342DEBFF4B/paragraphLayout.pptx",
+      "deckSHA256": "07d524db731a217e46cce790b201e388932a42a79ec195b46466bb7c6e35ab9f",
+      "identicalToEarlierManualDeck": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5CF2C1E6-C3DB-44D7-AA3F-22A54026BBE3/paragraphLayout.pptx",
+      "observation": "Root CUA regenerated with same edited title, inspected all four thumbnails; slide4 original wraps and both computed fits visually retained. App closed idle before timing. Export path additionally passes refreshed native and headless tests; manual export evidence retained in checkpoint."
+    }
+  ],
+  "nativeGeometryPolicyProof": {
+    "receipt": {
+      "nativeMatrix": [
+        {
+          "slide": "slide-0.svg",
+          "beforeBytes": 1012911,
+          "afterBytes": 1012911,
+          "savedBytes": 0,
+          "beforeSHA256": "f5a9a6fde843b9e33566e7caeddd6076fc8311024eefe4647df3a4832f931558",
+          "afterSHA256": "f0d332a0eb2fab67b46693fc958f729b9049d92e62a328224c86ff863cb115cf",
+          "resolvedProjectionSHA256": "bc5c8120352eaab53f619549eee2ef68b47bd0c58758ac435d4a44203c9017cb",
+          "geometryAndEffectivePolicyIdentical": true
+        },
+        {
+          "slide": "slide-1.svg",
+          "beforeBytes": 1013422,
+          "afterBytes": 1013342,
+          "savedBytes": 80,
+          "beforeSHA256": "50503a07c8b019e8f5b6ec4261a0a3b44af6e2bcc0b996f0443c7429c0dc50ae",
+          "afterSHA256": "7d67bf62597ecbde1b09d2ac1e38d629b5889e0721a1b5822b09839db5049a13",
+          "resolvedProjectionSHA256": "d360e60832b42a4796c529e44f62c8b5de2984a579f9ee53020be66e5424c5d4",
+          "geometryAndEffectivePolicyIdentical": true
+        },
+        {
+          "slide": "slide-2.svg",
+          "beforeBytes": 1015334,
+          "afterBytes": 1015056,
+          "savedBytes": 278,
+          "beforeSHA256": "8c3c5e3bb18d06a50aa4e8952fe96d6086e8a37e71f99c21b0a95cf2ca9532c5",
+          "afterSHA256": "072dd2ae07ad60f46aaf9f652a77cd35834f657dc6cf68fa0d41601902330741",
+          "resolvedProjectionSHA256": "4f56ab1648a85e2ed5f5f2ec1d1ce6825894c0c68fcb0ebf7292e4fa507ceb3f",
+          "geometryAndEffectivePolicyIdentical": true
+        },
+        {
+          "slide": "slide-3.svg",
+          "beforeBytes": 1015648,
+          "afterBytes": 1015396,
+          "savedBytes": 252,
+          "beforeSHA256": "b73fa21dc4450218f0c3a3d06aec0889e878392a7a6424bfc77f6acc9063d8bf",
+          "afterSHA256": "41a4a6c50a0d3b33df4d66daed2910055ebc3d7b3e268ed84e8470a7c7a4c4b1",
+          "resolvedProjectionSHA256": "34ae3964be6de833537633f5197b9081bc414846ef12005f21a76fa3dc1d2f5d",
+          "geometryAndEffectivePolicyIdentical": true
+        }
+      ],
+      "diagnosticsAndInheritanceIdentical": true,
+      "savedBytesIdentical": true,
+      "savedSHA256": "f4f3f84ea755a811c72f84ad7ce5523dbb6c9e0cf3a968793a254739abec232d",
+      "projection": "Whole SVG tree with only inherited font-feature-settings resolved on painted text; new policy-only g wrappers removed. All other attributes, text and geometry compared exactly."
+    },
+    "path": "/tmp/rostrum-ligature-hoist-proof/comparison.json",
+    "sha256": "cde2d9dc2b1e5045f870918f84f128a973fb390754fd42b1cf61bc485c6507bd",
+    "comparatorPath": "/tmp/rostrum-ligature-hoist-proof/compare.py",
+    "comparatorSHA256": "bd84550fa499be05b426139306283fc0d29a1bf3eb90fce0ff2173e57ba95fd8",
+    "rootRerun": "passed; complete trees differ only by equivalent inherited feature policy and policy-only containers"
+  },
+  "review": "Independent read-only review approved7a434ed source/tests, previously approved all other source/checkpoint records. Final evidence review recorded in report.",
+  "limits": [
+    "Native case matrix is bounded regular DejaVu LTR ASCII horizontal geometry, not all fonts/scripts/raster/autofit-choice equivalence.",
+    "Unstyled hard break retains its existing unresolved-face warning.",
+    "Optional local HTML viewer was unexecuted after browser file URL security rejection; no bypass attempted.",
+    "Performance evidence is separate and must disclose observed background load.",
+    "No merge, release, deployment or App Store submission."
+  ]
+}

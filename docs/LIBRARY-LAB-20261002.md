@@ -374,3 +374,10 @@ as office / Z, and the four fitted boxes each keep officeZ on one line. This is
 bounded evidence, not a claim of native-selected autofit or general raster parity.
 See the [fidelity record](LAYOUT-FIDELITY-20261004-4.md) and
 [integration receipt](benchmarks/2026-10-04-fidelity4-integration-verification.json).
+
+The subsequent SVG serialization reconciliation is verified at `f8b33ee`.
+All gates and 337 Lab checks pass again; 76 native tests have no skips. Both
+manual variants were regenerated and visually rechecked in the rebuilt app,
+with byte-identical PPTX files to the earlier exported variants. Native
+PowerPoint acceptance remains valid through exact saved-file and effective
+SVG-policy/geometry identity, without claiming a new native autofit oracle.

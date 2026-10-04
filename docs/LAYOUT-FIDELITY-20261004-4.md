@@ -80,8 +80,38 @@ storage and uses isolated test directories across restart. Independent review
 approved it, and the full gate was rerun successfully. Production behavior with
 no injected path remains unchanged.
 
-The [performance report](LAYOUT-PERFORMANCE-20261004-4.md) covers the independent
-fallback optimization. The first combined measurement found avoidable repeated SVG styling and higher
-process memory. A focused serialization reconciliation is in progress; final
-source verification and measurement must follow it. Saved-package preservation
-and observed background-load limitations remain separate evidence.
+## Final SVG serialization and integration
+
+Final source `f8b33ee` inherits optional ligature suppression once within a
+homogeneous text body or line. Mixed policies keep their own span attributes;
+cache identity includes the inherited context. Empty blocks add no policy, and
+a defensive general-policy child restores normal defaults instead of forcing
+optional ligatures on. Text positions, textLength, font resolution and
+warnings remain unchanged.
+
+The final large-table SVG is 11,997,344 bytes versus the initial combined
+14,027,344, removing 2,030,000 redundant bytes (81.2% of this feature's initial
+markup addition). It remains 470,000 bytes larger than a9d870b because the
+native policy still needs representation. This is an exact output-size result,
+not a timing or general memory claim.
+
+The [final integration receipt](benchmarks/2026-10-04-fidelity4-final-integration-verification.json)
+records another successful full gate: 1,107 Rostrum tests in 154 suites,
+18 layout tests, 277 Core tests, 76 native app tests with zero failures/skips,
+README examples, macOS build and both iOS simulator architectures. Supplemental
+headless tests pass with the same three native WebKit exclusions. All 26 Lab
+recipes again pass 337 checks, and 52 files independently reopen and pass ZIP
+integrity checks.
+
+Whole-tree comparisons on all four native fixture slides resolve effective
+font-feature settings and remove only policy-only containers: every remaining
+attribute, geometry and text value matches the earlier accepted output exactly.
+Ordered diagnostics, inheritance and saved bytes match too. Both regenerated
+manual Lectern variants pass 31 checks, show the expected four-slide previews,
+and save bytes identical to the earlier manually exported specimens. Refreshed
+native tests again exercise inspector/export for both variants.
+
+The [fallback report](LAYOUT-PERFORMANCE-20261004-4.md) and final integrated
+performance record separate source optimization from fidelity costs. Timing
+remains workload-dependent and load-qualified; primary large-table performance
+recovery and cross-platform performance remain open.
