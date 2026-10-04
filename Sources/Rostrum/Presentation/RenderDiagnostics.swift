@@ -86,7 +86,9 @@ final class RenderDiagnosticCollector {
     /// the SVG does not accidentally pick a similarly named platform font.
     func embeddedFamily(for face: FontFaceKey, fonts: FontLibrary) -> String? {
         let resourceFace = fonts.previewFace(for: face) ?? face
-        if resourceFace != face {
+        if resourceFace.family != face.family {
+            record(.missingFont, .missingResource, "Requested font \(face.family) is unavailable; preview uses registered \(resourceFace.family). The document font is unchanged.")
+        } else if resourceFace != face {
             record(.viewerFontDependency, .approximation, "Requested style of \(face.family) is unavailable; using its registered regular face with viewer style synthesis.")
         }
         if let existing = resolvedFaces[face] { return existing }

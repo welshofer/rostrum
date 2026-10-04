@@ -131,6 +131,7 @@ extension PlatformLabRecipes {
         try content.setNotes("Notes: " + label(options))
         let diagnostic = try deck.slides.add()
         try text(options.alternative ? "سلام abc" : "Missing face", on: diagnostic, font: options.alternative ? "DejaVu Sans" : "Library Lab Unavailable Face")
+        deck.fonts.previewFallbackFamily = "DejaVu Sans"
         let rendered = try deck.renderSVGReportingProblems(slideAt: 2)
         var refused = false
         do { _ = try deck.renderSVG(slideAt: 2, strictRendering: true) }
@@ -146,14 +147,18 @@ extension PlatformLabRecipes {
         return LibraryLabDraft(deck: deck, before: before, checks: [
             .init("Strict supported geometry", strict == ordinary && strict.contains("@font-face"), "Known single-scalar ASCII text uses the same font-embedded SVG in ordinary and strict modes."),
             .init("Strict refusal is distinct from rendering", refused && !rendered.problems.isEmpty && rendered.svg.contains("<svg"), "An ordinary diagnostic preview exists; strict mode refuses its known limitations."),
+            .init("Explicit fallback stays a preview choice", options.alternative || (rendered.svg.contains("@font-face") && rendered.problems.fidelityIssues.contains { $0.code == .missingFont } && deck.fonts.metrics(for: "Library Lab Unavailable Face") == nil), "The missing face uses the bundled DejaVu font for both measurement and drawing; its original name and missing-font diagnostic remain."),
             .init("Actual extracted content", outline.chartCount == 1 && outline.assetCount >= 1 && markdown.contains(label(options)) && exports.assets >= 1 && exports.charts == 1, "Markdown, PNG bytes and one chart CSV were exported."),
             .init("Notes preview uses page geometry", notes.svg.contains("<svg") && notes.svg.contains("Notes:"), "Notes preview produced; \(notes.problems.fidelityIssues.count) known fidelity issue(s) are kept separate from extraction.")
         ], extraFiles: files, verify: { reopened in
             _ = reopened.registerEmbeddedFonts()
+            let fallbackWasNotSerialized = reopened.fonts.previewFallbackFamily == nil
+            reopened.fonts.previewFallbackFamily = "DejaVu Sans"
             let second = try exportedFiles(reopened)
             let chart = reopened.outline().slides.flatMap(\.charts).first
             let changed = Set(second.files.keys).union(exports.files.keys).filter { second.files[$0] != exports.files[$0] }.sorted()
             return [
+                .init("Fallback is reproducible without changing the file", try fallbackWasNotSerialized && reopened.renderSVG(slideAt: 2) == rendered.svg, "Reopening retains original font names; explicitly choosing the same preview fallback reproduces the SVG."),
                 .init("Reopened extraction agrees", second.files == exports.files && chart?.grid.count == options.sampleSize + 1, "Markdown/assets/CSV must agree; changed files: \(changed). Chart rows: \(chart?.grid.count ?? -1), expected \(options.sampleSize + 1)."),
                 .init("Reopened strict rendering agrees", try reopened.renderSVG(slideAt: 0, strictRendering: true) == strict, "The embedded font recovers the same strict SVG."),
                 .init("Reopened notes remain readable", reopened.outline().slides[1].notes.contains("Notes: " + label(options)), "Notes text is extracted from the serialized notes part.")

@@ -3,6 +3,21 @@ import Testing
 @testable import Rostrum
 
 @Suite struct FontLibraryTests {
+    @Test func previewFallbackIsExplicitStyleAwareAndNeverAnExactAlias() throws {
+        let library = FontLibrary()
+        let missing = FontFaceKey(family: "Missing", bold: true)
+        try library.register(TestFont.standard(familyName: "Fallback"))
+        try library.register(TestFont.standard(), face: .init(family: "Fallback", bold: true))
+        #expect(library.previewFace(for: missing) == nil)
+        library.previewFallbackFamily = "Fallback"
+        #expect(library.previewFace(for: missing) == .init(family: "Fallback", bold: true))
+        #expect(library.metrics(for: missing) == nil)
+        #expect(library.data(for: missing) == nil)
+        try library.register(TestFont.standard(), aliases: ["Missing"])
+        #expect(library.previewFace(for: missing) == .init(family: "Missing"))
+        library.previewFallbackFamily = "Not registered"
+        #expect(library.previewFace(for: .init(family: "Other")) == nil)
+    }
     @Test func registersUnderNameTableFamily() throws {
         let library = FontLibrary()
         let primary = try library.register(TestFont.standard(familyName: "Test Sans"))
