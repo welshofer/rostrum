@@ -1,0 +1,323 @@
+[
+  {
+    "name": "unstyled-between-12",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      10.9599609375,
+      26.0799560546875
+    ],
+    "actualBaselines": [
+      11,
+      26
+    ],
+    "deltas": [
+      0.0400390625,
+      -0.0799560546875
+    ],
+    "contentHeight": 28.91744966442953,
+    "diagnostics": []
+  },
+  {
+    "name": "br6-between-12",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      10.9599609375,
+      26.0799560546875
+    ],
+    "actualBaselines": [
+      11,
+      26
+    ],
+    "deltas": [
+      0.0400390625,
+      -0.0799560546875
+    ],
+    "contentHeight": 28.91744966442953,
+    "diagnostics": []
+  },
+  {
+    "name": "br36-between-12",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      11.0400390625,
+      25.9200439453125
+    ],
+    "actualBaselines": [
+      11,
+      26
+    ],
+    "deltas": [
+      -0.0400390625,
+      0.0799560546875
+    ],
+    "contentHeight": 28.91744966442953,
+    "diagnostics": []
+  },
+  {
+    "name": "consecutive-36-6",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      11.0400390625,
+      32.8800048828125
+    ],
+    "actualBaselines": [
+      11,
+      33
+    ],
+    "deltas": [
+      -0.0400390625,
+      0.1199951171875
+    ],
+    "contentHeight": 36,
+    "diagnostics": []
+  },
+  {
+    "name": "consecutive-6-36",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      10.8800048828125,
+      68.9599609375
+    ],
+    "actualBaselines": [
+      11,
+      69
+    ],
+    "deltas": [
+      0.1199951171875,
+      0.0400390625
+    ],
+    "contentHeight": 72,
+    "diagnostics": []
+  },
+  {
+    "name": "leading-br36",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      55.0400390625
+    ],
+    "actualBaselines": [
+      55
+    ],
+    "deltas": [
+      -0.0400390625
+    ],
+    "contentHeight": 57.91744966442954,
+    "diagnostics": []
+  },
+  {
+    "name": "trailing-br36-end6",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      10.9599609375,
+      33.03997802734375
+    ],
+    "actualBaselines": [
+      11,
+      33
+    ],
+    "deltas": [
+      0.0400390625,
+      -0.03997802734375
+    ],
+    "contentHeight": 36,
+    "diagnostics": []
+  },
+  {
+    "name": "trailing-br36-end36",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      10.9599609375,
+      69.03997802734375
+    ],
+    "actualBaselines": [
+      11,
+      69
+    ],
+    "deltas": [
+      0.0400390625,
+      -0.03997802734375
+    ],
+    "contentHeight": 72,
+    "diagnostics": []
+  },
+  {
+    "name": "unstyled-consecutive-local24",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      11.0400390625,
+      54.9599609375
+    ],
+    "actualBaselines": [
+      11,
+      55
+    ],
+    "deltas": [
+      -0.0400390625,
+      0.0400390625
+    ],
+    "contentHeight": 57.91744966442954,
+    "diagnostics": []
+  },
+  {
+    "name": "unstyled-consecutive-local18",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      11.0400390625,
+      47.0400390625
+    ],
+    "actualBaselines": [
+      11,
+      47
+    ],
+    "deltas": [
+      -0.0400390625,
+      -0.0400390625
+    ],
+    "contentHeight": 50.4,
+    "diagnostics": []
+  },
+  {
+    "name": "unstyled-consecutive-list24",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      10.8800048828125,
+      55.0400390625
+    ],
+    "actualBaselines": [
+      11,
+      55
+    ],
+    "deltas": [
+      0.1199951171875,
+      -0.0400390625
+    ],
+    "contentHeight": 57.91744966442954,
+    "diagnostics": []
+  },
+  {
+    "name": "empty-paragraph-end36",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      10.8800048828125,
+      68.9599609375
+    ],
+    "actualBaselines": [
+      11,
+      69
+    ],
+    "deltas": [
+      0.1199951171875,
+      0.0400390625
+    ],
+    "contentHeight": 72,
+    "diagnostics": []
+  },
+  {
+    "name": "empty-paragraph-end6",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      10.9599609375,
+      33.03997802734375
+    ],
+    "actualBaselines": [
+      11,
+      33
+    ],
+    "deltas": [
+      0.0400390625,
+      -0.03997802734375
+    ],
+    "contentHeight": 36,
+    "diagnostics": []
+  },
+  {
+    "name": "br36-exact12",
+    "classification": "known spacing residual",
+    "nativeBaselines": [
+      9.03997802734375,
+      21.03997802734375
+    ],
+    "actualBaselines": [
+      11,
+      23
+    ],
+    "deltas": [
+      1.96002197265625,
+      1.96002197265625
+    ],
+    "contentHeight": 25.91744966442953,
+    "diagnostics": []
+  },
+  {
+    "name": "br36-150percent",
+    "classification": "known spacing residual",
+    "nativeBaselines": [
+      16.0799560546875,
+      37.9200439453125
+    ],
+    "actualBaselines": [
+      11,
+      33
+    ],
+    "deltas": [
+      -5.0799560546875,
+      -4.9200439453125
+    ],
+    "contentHeight": 43.2,
+    "diagnostics": []
+  },
+  {
+    "name": "center-consecutive-36-6",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      72.9599609375,
+      95.0400390625
+    ],
+    "actualBaselines": [
+      73,
+      95
+    ],
+    "deltas": [
+      0.0400390625,
+      -0.0400390625
+    ],
+    "contentHeight": 36,
+    "diagnostics": []
+  },
+  {
+    "name": "bottom-trailing-br36-end6",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      134.9599609375,
+      157.0400390625
+    ],
+    "actualBaselines": [
+      135,
+      157
+    ],
+    "deltas": [
+      0.0400390625,
+      -0.0400390625
+    ],
+    "contentHeight": 36,
+    "diagnostics": []
+  },
+  {
+    "name": "table-consecutive-36-6",
+    "classification": "native baseline calibrated",
+    "nativeBaselines": [
+      10.8800048828125,
+      32.9599609375
+    ],
+    "actualBaselines": [
+      11,
+      33
+    ],
+    "deltas": [
+      0.1199951171875,
+      0.0400390625
+    ],
+    "contentHeight": 36,
+    "diagnostics": []
+  }
+]

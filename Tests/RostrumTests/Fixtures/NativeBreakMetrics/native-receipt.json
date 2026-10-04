@@ -1,0 +1,25 @@
+{
+  "application": "Microsoft PowerPoint",
+  "version": "16.113.3",
+  "operator": "Root agent through CUA",
+  "export": "File > Export > PDF > Best for printing; local export, online option deselected",
+  "slideCount": 3,
+  "openedWithoutRepair": true,
+  "sourceSavedByPowerPoint": false,
+  "sourceSHA256": "3620121ad15fe85abb65e28cb686d454a0fad7b160cfdab7933543960ba087fe",
+  "pdfSHA256": "aa98866ab87866e985a7444790ec538b7b050abb5fba08885e9cd2f50e4c0c60",
+  "font": "Bundled licensed DejaVu Sans 2.37 regular",
+  "baselineCommit": "59efb229c94f484666c9dd2a7e0ea7044f54f94b",
+  "baselineTest": "swift test --jobs 2 --filter NativeBreakMetricsTests: 10 marker-baseline failures in 7 cases",
+  "modelProvenance": {
+    "requested": "gpt-6-astra/high",
+    "runtime": "unattested"
+  },
+  "verification": {
+    "focused": "23 tests / 5 suites passed, followed by 3 refined NativeBreakMetrics tests with 4 known issues",
+    "full": "swift test --jobs 2: 1114 tests / 155 suites + 18 tests / 3 suites passed; 4 known issues are the 2 native spacing residuals",
+    "diffCheck": "git diff --check passed",
+    "nativeExtraction": "capture.py: all 18 cases and all marker glyph outlines/consumption passed",
+    "implementationCycles": 1
+  }
+}

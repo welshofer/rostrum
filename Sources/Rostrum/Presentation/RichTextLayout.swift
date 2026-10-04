@@ -165,7 +165,7 @@ public struct RichTextLayout: Sendable {
                         metrics?.lineHeight(pointSize: size) ?? size * 4 / 3, false)
             }
             let empty = lineMetrics(baseMetrics, size: baseSize)
-            let emptyHeight = empty.height, emptyAscent = empty.ascent
+            let emptyHeight = empty.height
             func spacing(_ element: XML.Element?, relativeTo height: Double) -> Double {
                 guard let element else { return 0 }
                 if let pts = element.firstChild(named: "a:spcPts") { return Self.bounded(Self.number(pts, "val", 0), 0...1e8) / 100 }
@@ -461,7 +461,7 @@ public struct RichTextLayout: Sendable {
                     canJustify = false
                 }
             }
-            func emit(justify: Bool = false) {
+            func emit(justify: Bool = false, emptyMetrics: (ascent: Double, height: Double, drawingML: Bool)? = nil) {
                 guard output.count < lineLimit else { didTruncate = true; return }
                 let lastTab = hasTabs ? lineAtoms.lastIndex(where: \.tab) ?? -1 : -1
                 // Re-shape complete line fragments: a kerning pair that crossed
@@ -523,8 +523,9 @@ public struct RichTextLayout: Sendable {
                 // Read numeric fields directly instead of copying the complete
                 // styled Atom through separate lazy-map reductions. Initialize
                 // from the first element and keep max()'s strict comparison order.
-                var naturalHeight = emptyHeight, maximumAscent = emptyAscent
-                var drawingML = empty.drawingML
+                let emptyLine = emptyMetrics ?? empty
+                var naturalHeight = emptyLine.height, maximumAscent = emptyLine.ascent
+                var drawingML = emptyLine.drawingML
                 if !lineAtoms.isEmpty {
                     naturalHeight = lineAtoms[0].height
                     maximumAscent = lineAtoms[0].ascent
@@ -612,7 +613,10 @@ public struct RichTextLayout: Sendable {
                 if atom.hard {
                     // a:br ends a line, not the paragraph. PowerPoint also
                     // justifies this line; only the final paragraph line is exempt.
-                    emit(justify: true); index += 1; continue
+                    // Only an empty line uses its terminating break's metrics.
+                    // A populated line keeps the metrics of its visible runs.
+                    emit(justify: true, emptyMetrics: (atom.ascent, atom.height, atom.drawingML))
+                    index += 1; continue
                 }
                 if atom.tab {
                     let position = startX() + lineWidth
@@ -649,7 +653,17 @@ public struct RichTextLayout: Sendable {
                 }
                 lineAtoms.append(atom); lineWidth += atom.width; index += 1
             }
-            if !lineAtoms.isEmpty || atoms.isEmpty || atoms.last?.hard == true { emit() }
+            if !lineAtoms.isEmpty || atoms.isEmpty || atoms.last?.hard == true {
+                if lineAtoms.isEmpty, atoms.last?.hard == true,
+                   let end = paragraph.firstChild(named: "a:endParaRPr") {
+                    // A trailing break leaves the paragraph's final empty line.
+                    // Its insertion properties override paragraph defaults even
+                    // when earlier lines contain text. Resolve this lazily.
+                    let style = Self.resolve(text: "", properties: [end] + defaults,
+                        theme: theme, defaultSize: defaultPointSize, scale: scale)
+                    emit(emptyMetrics: lineMetrics(face(style), size: style.fontSize))
+                } else { emit() }
+            }
             if paragraphIndex < paragraphs.count - 1 || useEdgeParagraphSpacing {
                 cursor += spacing(child("a:spcAft"), relativeTo: emptyHeight)
             }
