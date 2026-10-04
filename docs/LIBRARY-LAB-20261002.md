@@ -34,6 +34,7 @@ visible in Lectern and in its JSON report.
 | Fonts, shaping and fitting | Licensed bundled font; exact face lookup, measure/wrap/shape/fit; embed and recover bytes | Platform document |
 | Paragraph spacing and justification | Side-by-side mixed-size left/justified paragraphs; adjustable sentence count and width; both fit APIs; embedded-font recovery; exact span positions after reopening; shared table-cell layout; native-captured narrow wrap boundaries and public fitting across styled runs | [Platform paragraphs](../Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphRecipe.swift) |
 | List markers and hanging indents | All 24 independent native marker specimens; distinct imported masters; separate character/number size and face rules; three absent inherited markers; body continuation margins; both computed fit APIs; saved font bytes and complete glyph SVG checks | [Platform markers](../Lectern/Sources/LecternCore/LibraryLab/PlatformListMarkerRecipe.swift) |
+| Text alignment | 24 native center/right cases and 172 glyphs; fractional widths, wrapping, spaces, insets, actual faces, kerning and table cells; both computed fitting APIs; exact saved inspector previews and extracted text | [Platform alignment](../Lectern/Sources/LecternCore/LibraryLab/PlatformTextAlignmentRecipe.swift) |
 | Tab stops and justified fields | Four standard tab alignments with visible guides; adjustable numeric rows and stop positions; tab-aware Latin justification and a shared table cell; public tab properties and exact spans after reopening | [Platform tabs](../Lectern/Sources/LecternCore/LibraryLab/PlatformTabRecipe.swift) |
 | Pictures and image fills | Image formats and metadata, crop, rotation, deduplication, independent replacement, image fills and retained geometry | Drawing |
 | Edit a table grid | Merge topology, unmerge, insert/delete/move/reorder rows and columns; independent permutations and atomic refusals | Drawing |
@@ -76,8 +77,8 @@ changed by this work; the remaining table, typography and notes image gates in
 Boundaries remain explicit: animation is excluded; SVG does not play media or
 run PowerPoint's SmartArt layout engine; some chart types are approximations or
 placeholders. Pyramid is experimental. Complex-script/font support remains
-bounded. Only the licensed regular DejaVu face is bundled, with unavailable faces
-reported instead of synthesized. Group, connector and OLE fixtures demonstrate
+bounded. Licensed DejaVu faces are bundled or embedded in the native reference
+decks; unavailable faces are reported instead of synthesized. Group, connector and OLE fixtures demonstrate
 reading and preservation through public package/XML APIs, not new high-level
 creation controls. `Slides.addBound` is internal; public builders demonstrate
 its layout-binding behavior. Picture fit exposes stretch/fill; no contain mode
@@ -549,3 +550,24 @@ assertion failure, corrected exact inspector comparisons, metadata-only comment
 differences and historical app-binary observation. Marker performance is an
 accepted bounded fidelity tradeoff with residual ordinary/placeholder costs;
 cycle one remains withheld. The next alignment probe is separate future work.
+
+## October 4 text alignment and performance integration
+
+The 28th recipe, Text alignment, exposes 24 native center/right specimens with
+172 visible glyphs. Both options add a fifth computed-fit comparison and pass
+60 saved-file checks, retaining two expected table-scale findings. Fresh
+PowerPoint and exact inspector WebKit extraction validate the original four
+pages; computed fitting remains outside native autofit-choice acceptance.
+Both real inspector/export workflows retain all 64 text nodes and exact saved
+previews. The complete catalog passes 505 checks across 28 recipes, with 413
+findings retained. See the [integration report](LAYOUT-FIDELITY-20261004-15.md)
+for unchanged bounds, full macOS/iOS validation, external reopens and the next
+observed table appearance gap.
+
+The List markers recipe now parses each page once for all native checks. A
+separate frozen experiment measures roughly 51% faster complete headless runs
+and 67.648 MiB lower paired peak process RSS for both options, with exact
+artifacts and check results. This does not establish GUI latency; see the
+[performance report](LECTERN-MARKER-PERFORMANCE-20261004-15.md). A separate
+[ordinary text rendering experiment](RENDER-INHERITANCE-PERFORMANCE-20261004-15.md)
+records bounded improvements and preserves unresolved fallback costs.

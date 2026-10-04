@@ -1,0 +1,104 @@
+{
+  "status": "Core and offline pipeline passed; app-hosted/WebKit/native generated acceptance pending",
+  "coreTests": 290,
+  "coreSuites": 42,
+  "labRecipes": 28,
+  "labChecks": 505,
+  "labFindings": 413,
+  "alignmentChecks": 60,
+  "alignmentExpectedFindings": 2,
+  "nativeCases": 24,
+  "nativeVisibleGlyphs": 172,
+  "sourceProfileAudit": [
+    {
+      "page": 1,
+      "comparison": "exact after viewport normalization"
+    },
+    {
+      "page": 2,
+      "comparison": "exact after viewport normalization"
+    },
+    {
+      "page": 3,
+      "comparison": "exact after viewport normalization"
+    },
+    {
+      "page": 4,
+      "comparison": "exact after viewport normalization"
+    },
+    {
+      "page": 5,
+      "comparison": "exact painting and remaining XML; only three proved childless baseline changes"
+    }
+  ],
+  "files": [
+    {
+      "path": "/private/tmp/lectern-alignment15-core-focused-final.log",
+      "sha256": "99eb8ab0d79f6f5bc55b471b6487ad21eaec25b42878830903762580fdcc10f7"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-core-full-final.log",
+      "sha256": "aedd631a5822380cc23f1d6faeba04d4d0c6aa45f0b323e83cd2de38dbd4071a"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-lab-worker-final-20261004/textAlignment-E9C2262B-10CF-4E96-A233-8B730E361886/report.json",
+      "sha256": "651ed80a723f88aec2ad5c1c07c7dae0f5d2f98c50063b519d55384f893e83a5"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-true/slide-5.svg",
+      "sha256": "c98438520c1dc7e7433f16f323b2377104efd72b8aab7432a4e118b1c1c327a5"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-true/slide-4.svg",
+      "sha256": "cb80d44e5bb5d1653ded9a0fca5797f58b3bd8e712199df4f77673195547c127"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-true/textAlignment.pptx",
+      "sha256": "aa4f07a0bfd60f43fd619f21611ccbd851707a161851b145f1427d5dc8b8c2a8"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-true/slide-1.svg",
+      "sha256": "49efeea0c517a3336b49648eb460466e672b55404d6ba65e2962a0bb47a5ce2b"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-true/slide-3.svg",
+      "sha256": "c213ef680d9583b17604cadfaa705b1231552725cb191ab0fc271f093fe673ef"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-true/slide-2.svg",
+      "sha256": "f38d002235ef62d444da8e6a5d70394769eba36d06abcd4bc06a4e28f80177f3"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-false/slide-5.svg",
+      "sha256": "f4211784060a799bd8e14b68d5449803fd569778f53e4c6239831a8df5b3cbd5"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-false/slide-4.svg",
+      "sha256": "cb80d44e5bb5d1653ded9a0fca5797f58b3bd8e712199df4f77673195547c127"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-false/textAlignment.pptx",
+      "sha256": "a0b5b05156f7331afd0d34c172924208158b9691636f0c4fb2957572f1882853"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-false/slide-1.svg",
+      "sha256": "49efeea0c517a3336b49648eb460466e672b55404d6ba65e2962a0bb47a5ce2b"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-false/slide-3.svg",
+      "sha256": "c213ef680d9583b17604cadfaa705b1231552725cb191ab0fc271f093fe673ef"
+    },
+    {
+      "path": "/private/tmp/lectern-alignment15-worker-final-20261004/alternative-false/slide-2.svg",
+      "sha256": "f38d002235ef62d444da8e6a5d70394769eba36d06abcd4bc06a4e28f80177f3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/TextAlignmentReferences.json",
+      "sha256": "8bf4c8d7962803aa7a139c3a1508e1b60e3e33fb70e36660c40d568e2a25ef20"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/native-body-alignment-v1.pptx",
+      "sha256": "98c27b081f8ecb9c297d46e04019b83bcdc969ed3d42113f89491aa0b9d70dac"
+    }
+  ]
+}
