@@ -117,7 +117,7 @@ final class AppState {
 
     /// Import a previously saved render session without touching model settings.
     func importRenderSnapshot(_ url: URL) async throws {
-        let directory = Self.diagnosticsDirectory()
+        let directory = injectedDiagnosticsDirectory ?? Self.diagnosticsDirectory()
         let copied = try await Task.detached {
             let access = url.startAccessingSecurityScopedResource()
             defer { if access { url.stopAccessingSecurityScopedResource() } }
