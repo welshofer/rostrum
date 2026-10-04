@@ -1,0 +1,135 @@
+{
+  "source": "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-paired-macos.json",
+  "bootstrapResamples": 100000,
+  "seed": 20261004,
+  "method": "Percentile bootstrap of median paired candidate/baseline percent ratios, pairs resampled together; exact two-sided binomial sign test excludes ties. Exploratory uncertainty from ten pairs, not corrected across workloads. Cannot remove shared load bias.",
+  "backgroundLoad": "Start/during/end snapshots with coordinated pause of agent builds/GUI; uncontrolled background activity remains. Snapshots cannot establish continuous isolation or remove load bias. CPU ranges: {\"WindowServer\": [97.4, 100.7], \"photolibraryd\": [0.0, 0.0], \"managedcorespotlightd\": [0.0, 0.0], \"backupd\": [0.0, 0.0]}",
+  "results": {
+    "table-200x50/render": {
+      "pairedPercentDeltas": [
+        3.851833679318739,
+        -0.01273546688627114,
+        -0.06054079641806265,
+        0.21607555405245282,
+        1.0185669746512804,
+        0.9705122354073392,
+        1.815821227577441,
+        0.6108940093396908,
+        1.3948796777102812,
+        -1.1540057002875748
+      ],
+      "medianPairedPercentDelta": 0.790703122373515,
+      "fasterPairs": 3,
+      "twoSidedExactSignTestP": 0.34375,
+      "percentileBootstrapMedian95PercentInterval": [
+        -0.01273546688627114,
+        1.4171941011143607
+      ]
+    },
+    "table-20x10/render": {
+      "pairedPercentDeltas": [
+        3.976951044482968,
+        5.647162188408084,
+        -5.017482752558678,
+        -0.8463456239338751,
+        4.873420879145196,
+        0.02032484856449024,
+        9.72665974448297,
+        0.6976041986765269,
+        -13.500177838590133,
+        -2.4053999541551296
+      ],
+      "medianPairedPercentDelta": 0.35896452362050857,
+      "fasterPairs": 4,
+      "twoSidedExactSignTestP": 0.75390625,
+      "percentileBootstrapMedian95PercentInterval": [
+        -2.9319141882462763,
+        4.873420879145196
+      ]
+    },
+    "shaped-table-100x20/render": {
+      "pairedPercentDeltas": [
+        1.6990021096833008,
+        -1.1458434738346401,
+        -2.2552230310078802,
+        0.14962709576482602,
+        0.4754018257992376,
+        1.7041226794205944,
+        -3.0993166410125506,
+        -0.8071236353628275,
+        0.33935803006988063,
+        3.812159183500796
+      ],
+      "medianPairedPercentDelta": 0.24449256291735333,
+      "fasterPairs": 4,
+      "twoSidedExactSignTestP": 0.75390625,
+      "percentileBootstrapMedian95PercentInterval": [
+        -1.5311733331853539,
+        1.6990021096833008
+      ]
+    },
+    "richtext-fit/render": {
+      "pairedPercentDeltas": [
+        -8.02430712783815,
+        -5.183661285336161,
+        -6.11139870582379,
+        -8.33343236775933,
+        -13.983370805444173,
+        -4.729829226742021,
+        -0.9807860640464683,
+        -19.119096364778986,
+        -5.527302059514517,
+        -9.741571676425654
+      ],
+      "medianPairedPercentDelta": -7.06785291683097,
+      "fasterPairs": 10,
+      "twoSidedExactSignTestP": 0.001953125,
+      "percentileBootstrapMedian95PercentInterval": [
+        -11.158401586601752,
+        -5.128565643128269
+      ]
+    },
+    "richtext-fit/richtext-fitting": {
+      "pairedPercentDeltas": [
+        -13.559077916921236,
+        -8.259427180434608,
+        -12.513479020979023,
+        -16.596566248045065,
+        -14.539184954096761,
+        -14.590980164897605,
+        -12.363987648875174,
+        -10.64835373213513,
+        -15.1787553139906,
+        -17.114796978901403
+      ],
+      "medianPairedPercentDelta": -14.049131435508999,
+      "fasterPairs": 10,
+      "twoSidedExactSignTestP": 0.001953125,
+      "percentileBootstrapMedian95PercentInterval": [
+        -15.593773206471335,
+        -11.580916376557077
+      ]
+    },
+    "slides-10/render": {
+      "pairedPercentDeltas": [
+        -1.7532608695652208,
+        4.34950645550336,
+        -9.202751241880014,
+        -0.34719896216102164,
+        2.648358522165495,
+        -4.033540888335407,
+        5.391521771208141,
+        5.6603804429564475,
+        -27.46964124208622,
+        -1.9605096045782644
+      ],
+      "medianPairedPercentDelta": -1.0502299158631212,
+      "fasterPairs": 6,
+      "twoSidedExactSignTestP": 0.75390625,
+      "percentileBootstrapMedian95PercentInterval": [
+        -5.581630423229139,
+        4.34950645550336
+      ]
+    }
+  }
+}

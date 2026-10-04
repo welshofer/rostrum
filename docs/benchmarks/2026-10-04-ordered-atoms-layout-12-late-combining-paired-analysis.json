@@ -1,0 +1,30 @@
+{
+  "source": "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-macos.json",
+  "bootstrapResamples": 100000,
+  "seed": 20261004,
+  "method": "Percentile bootstrap of median paired candidate/baseline percent ratios, pairs resampled together; exact two-sided binomial sign test excludes ties. Exploratory uncertainty from ten pairs, not corrected across workloads. Cannot remove shared load bias.",
+  "backgroundLoad": "Start/during/end snapshots with coordinated pause of agent builds/GUI; uncontrolled background activity remains. Snapshots cannot establish continuous isolation or remove load bias. CPU ranges: {\"WindowServer\": [96.9, 99.7], \"photolibraryd\": [0.0, 0.0], \"managedcorespotlightd\": [0.0, 0.0], \"backupd\": [49.1, 139.6]}",
+  "results": {
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx/render": {
+      "pairedPercentDeltas": [
+        -0.42732102254570137,
+        0.3755437067204159,
+        -2.299990197723545,
+        -1.348219449549326,
+        2.4587489460091705,
+        -7.990676309398504,
+        -1.0530657328569615,
+        1.7706857509575125,
+        1.4366039639742922,
+        -0.8607303701759772
+      ],
+      "medianPairedPercentDelta": -0.6440256963608393,
+      "fasterPairs": 6,
+      "twoSidedExactSignTestP": 0.75390625,
+      "percentileBootstrapMedian95PercentInterval": [
+        -1.6765279652902532,
+        1.4366039639742922
+      ]
+    }
+  }
+}
