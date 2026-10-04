@@ -1,0 +1,7203 @@
+{
+  "scope": "24 independently captured native cases. Character U+2022 and Arabic-period numbering; bundled actual DejaVu regular, Serif and bold faces. Finite captured glyph origins tolerance .06pt, baselines .121pt, paint and outline dimensions .002pt. Three inherited markers are explicitly absent. Computed fits are separate from native autofit choices.",
+  "faces": [
+    {
+      "id": "regular",
+      "family": "DejaVu Sans",
+      "bold": false,
+      "sha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+    },
+    {
+      "id": "serif",
+      "family": "DejaVu Serif",
+      "bold": false,
+      "sha256": "107244956e9962b9e96faccdc551825e0ae0898ae13737133e1b921a2fd35ffa"
+    },
+    {
+      "id": "bold",
+      "family": "DejaVu Sans",
+      "bold": true,
+      "sha256": "b184b89e3c1075f22f6b71575b6fc20d4972b3cfd3b23322ca6fd596dcaef167"
+    }
+  ],
+  "cases": [
+    {
+      "id": "follow-text-integer16",
+      "slide": 0,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 30,
+      "y": 50,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"1600\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1600\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.39843726015625,
+            6.782166353125,
+            13.039061796093748,
+            11.407165890625002
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.124999987499997,
+            3.37591669375,
+            34.812498918749995,
+            15.03997802734375
+          ]
+        },
+        {
+          "text": "g",
+          "x": 35.0,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            35.882812411718746,
+            6.079041423437502,
+            43.703124129687495,
+            18.368102694531245
+          ]
+        },
+        {
+          "text": "j",
+          "x": 45.1199951171875,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            44.83093264609376,
+            2.883729242968755,
+            48.06530732265625,
+            18.368102694531245
+          ]
+        },
+        {
+          "text": "p",
+          "x": 49.624000549316406,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            51.07712540400391,
+            6.079041423437502,
+            58.9052496211914,
+            18.368102694531245
+          ]
+        },
+        {
+          "text": "B",
+          "x": 64.87200164794922,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            66.44231399091797,
+            3.37591669375,
+            74.71575066357421,
+            15.03997802734375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 75.87199401855469,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            77.44230636152344,
+            3.37591669375,
+            85.71574303417968,
+            15.03997802734375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 86.87200164794922,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            88.44231399091797,
+            3.37591669375,
+            96.71575066357421,
+            15.03997802734375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 97.87200164794922,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            99.44231399091797,
+            3.37591669375,
+            107.71575066357423,
+            15.03997802734375
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 114.0,
+          "baseline": 15.03997802734375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.999998399999997,
+            15.999998399999997
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            114.71874992812499,
+            3.37591669375,
+            124.24218647578124,
+            15.03997802734375
+          ]
+        }
+      ]
+    },
+    {
+      "id": "follow-text-authored14p5",
+      "slide": 0,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 380,
+      "y": 50,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.098632692578121,
+            6.854370530078128,
+            12.159179335546867,
+            10.901245298828123
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.10937499375001,
+            3.873901950390625,
+            33.460936959374976,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "g",
+          "x": 33.8756103515625,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            34.64807124492188,
+            6.239136190234376,
+            41.49084429140623,
+            16.992065263281248
+          ]
+        },
+        {
+          "text": "j",
+          "x": 43.121185302734375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            42.868255629687496,
+            3.4432379125000026,
+            45.698333592968766,
+            16.992065263281248
+          ]
+        },
+        {
+          "text": "p",
+          "x": 47.116790771484375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            48.38827507382814,
+            6.239136190234376,
+            55.237884057421866,
+            16.992065263281248
+          ]
+        },
+        {
+          "text": "B",
+          "x": 60.988006591796875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            62.36202995078128,
+            3.873901950390625,
+            69.60128734960938,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 70.98959350585938,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            72.36361686484378,
+            3.873901950390625,
+            79.60287426367188,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 80.9912109375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            82.3652342964844,
+            3.873901950390625,
+            89.6044916953125,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 90.9927978515625,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            92.3668212105469,
+            3.873901950390625,
+            99.606078609375,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 105.6199951171875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            106.24890133125001,
+            3.873901950390625,
+            114.58190866757815,
+            14.0799560546875
+          ]
+        }
+      ]
+    },
+    {
+      "id": "follow-text-scaled29x50",
+      "slide": 0,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 30,
+      "y": 270,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:normAutofit fontScale=\"50000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"2900\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"2900\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.24853515625,
+            6.1783447265625,
+            12.59912109375,
+            10.5142822265625
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.1171875,
+            2.9849853515625,
+            34.13671875,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "g",
+          "x": 34.24949645996094,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            35.07713317871094,
+            5.5191650390625,
+            42.40867614746094,
+            17.0401611328125
+          ]
+        },
+        {
+          "text": "j",
+          "x": 43.749000549316406,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            43.478004455566406,
+            2.5235595703125,
+            46.510231018066406,
+            17.0401611328125
+          ]
+        },
+        {
+          "text": "p",
+          "x": 47.878501892089844,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            49.240806579589844,
+            5.5191650390625,
+            56.579673767089844,
+            17.0401611328125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 62.12249755859375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            63.59466552734375,
+            2.9849853515625,
+            71.35101318359375,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 72.37200164794922,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            73.84416961669922,
+            2.9849853515625,
+            81.60051727294922,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 82.62150573730469,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            84.09367370605469,
+            2.9849853515625,
+            91.85002136230469,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 92.87100219726562,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            94.34317016601562,
+            2.9849853515625,
+            102.09951782226562,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 107.864990234375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            108.538818359375,
+            2.9849853515625,
+            117.467041015625,
+            13.9200439453125
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oversized150-two-lines",
+      "slide": 0,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 380,
+      "y": 270,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzPct val=\"150000\"/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB</a:t></a:r><a:br><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr></a:br><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 14,
+      "bodyLines": [
+        "AgjpBBBB",
+        "AgjpZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            27.0,
+            27.0
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            10.04736328125,
+            3.10498046875,
+            17.87841796875,
+            10.90966796875
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.140625,
+            3.91796875,
+            36.1640625,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "g",
+          "x": 36.375,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            37.3681640625,
+            6.958984375,
+            46.166015625,
+            20.7841796875
+          ]
+        },
+        {
+          "text": "j",
+          "x": 47.74200439453125,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            47.41680908203125,
+            3.3642578125,
+            51.05548095703125,
+            20.7841796875
+          ]
+        },
+        {
+          "text": "p",
+          "x": 52.73699951171875,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            54.37176513671875,
+            6.958984375,
+            63.17840576171875,
+            20.7841796875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 69.85501098632812,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            71.62161254882812,
+            3.91796875,
+            80.92922973632812,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 82.23001098632812,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            83.99661254882812,
+            3.91796875,
+            93.30422973632812,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 94.60501098632812,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            96.37161254882812,
+            3.91796875,
+            105.67922973632812,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 106.98001098632812,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            108.74661254882812,
+            3.91796875,
+            118.05422973632812,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 38.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.140625,
+            25.7579345703125,
+            36.1640625,
+            38.8800048828125
+          ]
+        },
+        {
+          "text": "g",
+          "x": 36.375,
+          "baseline": 38.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            37.3681640625,
+            28.7989501953125,
+            46.166015625,
+            42.6241455078125
+          ]
+        },
+        {
+          "text": "j",
+          "x": 47.74200439453125,
+          "baseline": 38.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            47.41680908203125,
+            25.2042236328125,
+            51.05548095703125,
+            42.6241455078125
+          ]
+        },
+        {
+          "text": "p",
+          "x": 52.73699951171875,
+          "baseline": 38.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            54.37176513671875,
+            28.7989501953125,
+            63.17840576171875,
+            42.6241455078125
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 69.85501098632812,
+          "baseline": 38.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            70.66360473632812,
+            25.7579345703125,
+            81.37747192382812,
+            38.8800048828125
+          ]
+        }
+      ]
+    },
+    {
+      "id": "percent75-authored14p5",
+      "slide": 0,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 30,
+      "y": 490,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzPct val=\"75000\"/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            10.9999992,
+            10.9999992
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            7.648925661328121,
+            8.322754319140643,
+            10.839355116796874,
+            11.502441587890644
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.109374993750002,
+            3.793945895703132,
+            33.460936959375,
+            14.0
+          ]
+        },
+        {
+          "text": "g",
+          "x": 33.8755989074707,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            34.64805980083008,
+            6.159180135546876,
+            41.49083284731445,
+            16.912109208593733
+          ]
+        },
+        {
+          "text": "j",
+          "x": 43.12120056152344,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            42.86827088847656,
+            3.363281857812524,
+            45.698348851757814,
+            16.912109208593733
+          ]
+        },
+        {
+          "text": "p",
+          "x": 47.116798400878906,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            48.38828270322266,
+            6.159180135546876,
+            55.23789168681641,
+            16.912109208593733
+          ]
+        },
+        {
+          "text": "B",
+          "x": 60.987998962402344,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            62.36202232138672,
+            3.793945895703132,
+            69.60127972021485,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 70.9896011352539,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            72.36362449423828,
+            3.793945895703132,
+            79.60288189306641,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 80.99120330810547,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            82.36522666708984,
+            3.793945895703132,
+            89.60448406591797,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 90.9927978515625,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            92.36682121054687,
+            3.793945895703132,
+            99.606078609375,
+            14.0
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 105.6199951171875,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            106.24890133125001,
+            3.793945895703132,
+            114.58190866757812,
+            14.0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "percent90-scaled29x50",
+      "slide": 0,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 380,
+      "y": 490,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:normAutofit fontScale=\"50000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzPct val=\"90000\"/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"2900\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"2900\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.098632692578121,
+            6.774414475390643,
+            12.159179335546867,
+            10.821289244140644
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.1171875,
+            3.06494140625,
+            34.13671875,
+            14.0
+          ]
+        },
+        {
+          "text": "g",
+          "x": 34.24951171875,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            35.0771484375,
+            5.59912109375,
+            42.40869140625,
+            17.1201171875
+          ]
+        },
+        {
+          "text": "j",
+          "x": 43.748992919921875,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            43.477996826171875,
+            2.603515625,
+            46.510223388671875,
+            17.1201171875
+          ]
+        },
+        {
+          "text": "p",
+          "x": 47.878509521484375,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            49.240814208984375,
+            5.59912109375,
+            56.579681396484375,
+            17.1201171875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 62.12249755859375,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            63.59466552734375,
+            3.06494140625,
+            71.35101318359375,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 72.37200927734375,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            73.84417724609375,
+            3.06494140625,
+            81.60052490234375,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 82.62149047851562,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            84.09365844726562,
+            3.06494140625,
+            91.85000610351562,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 92.87100219726562,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            94.34317016601562,
+            3.06494140625,
+            102.09951782226562,
+            14.0
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 107.864990234375,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            108.538818359375,
+            3.06494140625,
+            117.467041015625,
+            14.0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "points14p5-body18",
+      "slide": 1,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 1,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 30,
+      "y": 50,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzPts val=\"1450\"/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.24853515625,
+            9.21826171875,
+            12.59912109375,
+            13.55419921875
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.140625,
+            3.837890625,
+            36.1640625,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "g",
+          "x": 36.375,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            37.3681640625,
+            6.87890625,
+            46.166015625,
+            20.7041015625
+          ]
+        },
+        {
+          "text": "j",
+          "x": 47.74199676513672,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            47.41680145263672,
+            3.2841796875,
+            51.05547332763672,
+            20.7041015625
+          ]
+        },
+        {
+          "text": "p",
+          "x": 52.73699951171875,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            54.37176513671875,
+            6.87890625,
+            63.17840576171875,
+            20.7041015625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 69.8550033569336,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            71.6216049194336,
+            3.837890625,
+            80.9292221069336,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 82.23001098632812,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            83.99661254882812,
+            3.837890625,
+            93.30422973632812,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 94.6050033569336,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            96.3716049194336,
+            3.837890625,
+            105.6792221069336,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 106.98001098632812,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            108.74661254882812,
+            3.837890625,
+            118.05422973632812,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 125.10601806640625,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            125.91461181640625,
+            3.837890625,
+            136.62847900390625,
+            16.9599609375
+          ]
+        }
+      ]
+    },
+    {
+      "id": "points14p5-scaled20x72p5",
+      "slide": 1,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 1,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 380,
+      "y": 50,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:normAutofit fontScale=\"72500\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzPts val=\"1450\"/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"2000\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"2000\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.24853515625,
+            6.3382568359375,
+            12.59912109375,
+            10.6741943359375
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.1171875,
+            3.1448974609375,
+            34.13671875,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "g",
+          "x": 34.24951171875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            35.0771484375,
+            5.6790771484375,
+            42.40869140625,
+            17.2000732421875
+          ]
+        },
+        {
+          "text": "j",
+          "x": 43.748992919921875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            43.477996826171875,
+            2.6834716796875,
+            46.510223388671875,
+            17.2000732421875
+          ]
+        },
+        {
+          "text": "p",
+          "x": 47.878509521484375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            49.240814208984375,
+            5.6790771484375,
+            56.579681396484375,
+            17.2000732421875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 62.12249755859375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            63.59466552734375,
+            3.1448974609375,
+            71.35101318359375,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 72.37200927734375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            73.84417724609375,
+            3.1448974609375,
+            81.60052490234375,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 82.62149047851562,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            84.09365844726562,
+            3.1448974609375,
+            91.85000610351562,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 92.87100219726562,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            94.34317016601562,
+            3.1448974609375,
+            102.09951782226562,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 107.864990234375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            108.538818359375,
+            3.1448974609375,
+            117.467041015625,
+            14.0799560546875
+          ]
+        }
+      ]
+    },
+    {
+      "id": "inherited-percent75-serif",
+      "slide": 1,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 1,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 30,
+      "y": 270,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"/><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 0,
+      "omittedMarkers": [
+        "\u2022"
+      ],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "A",
+          "x": 6.0,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            6.109374993750002,
+            3.713989841015632,
+            15.460936959374997,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "g",
+          "x": 15.875598907470703,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            16.648059800830076,
+            6.079224080859376,
+            23.49083284731445,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "j",
+          "x": 25.121196746826172,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            24.8682670737793,
+            3.283325803125024,
+            27.698345037060548,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "p",
+          "x": 29.116798400878906,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            30.388282703222657,
+            6.079224080859376,
+            37.23789168681641,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "B",
+          "x": 42.987998962402344,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            44.36202232138672,
+            3.713989841015632,
+            51.60127972021485,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 52.989601135253906,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            54.36362449423828,
+            3.713989841015632,
+            61.60288189306641,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 62.99120330810547,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            64.36522666708984,
+            3.713989841015632,
+            71.60448406591797,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 72.9927978515625,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            74.36682121054687,
+            3.713989841015632,
+            81.606078609375,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 87.62000274658203,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            88.24890896064453,
+            3.713989841015632,
+            96.58191629697265,
+            13.9200439453125
+          ]
+        }
+      ]
+    },
+    {
+      "id": "local-follow-overrides-inherited",
+      "slide": 1,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 1,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 380,
+      "y": 270,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 0,
+      "omittedMarkers": [
+        "\u2022"
+      ],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "A",
+          "x": 6.0,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            6.109374993750009,
+            3.713989841015632,
+            15.460936959374976,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "g",
+          "x": 15.8756103515625,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            16.64807124492188,
+            6.079224080859376,
+            23.490844291406233,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "j",
+          "x": 25.121185302734375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            24.868255629687496,
+            3.283325803125024,
+            27.698333592968766,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "p",
+          "x": 29.116790771484375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            30.38827507382814,
+            6.079224080859376,
+            37.237884057421866,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "B",
+          "x": 42.988006591796875,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            44.36202995078128,
+            3.713989841015632,
+            51.60128734960938,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 52.989593505859375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            54.36361686484378,
+            3.713989841015632,
+            61.60287426367188,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 62.9912109375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            64.3652342964844,
+            3.713989841015632,
+            71.6044916953125,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 72.9927978515625,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            74.3668212105469,
+            3.713989841015632,
+            81.606078609375,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 87.6199951171875,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            88.24890133125001,
+            3.713989841015632,
+            96.58190866757815,
+            13.9200439453125
+          ]
+        }
+      ]
+    },
+    {
+      "id": "follow-first-run20-default14p5",
+      "slide": 1,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 1,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 30,
+      "y": 490,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"2000\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp </a:t></a:r><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            19.9999992,
+            19.9999992
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.998046755078128,
+            8.717773850390643,
+            14.798827773046874,
+            14.499023619140644
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            19.9999992,
+            19.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.156249993750002,
+            4.459961520703132,
+            37.515624459375005,
+            19.0400390625
+          ]
+        },
+        {
+          "text": "g",
+          "x": 37.625999450683594,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            19.9999992,
+            19.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            38.729515031542974,
+            7.838867635546876,
+            48.50490526552734,
+            23.200195146093733
+          ]
+        },
+        {
+          "text": "j",
+          "x": 50.37200164794922,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            19.9999992,
+            19.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            50.01067353740234,
+            3.844727170312524,
+            54.053642125683595,
+            23.200195146093733
+          ]
+        },
+        {
+          "text": "p",
+          "x": 55.87800598144531,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            19.9999992,
+            19.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            57.69441215878906,
+            7.838867635546876,
+            67.47956801738282,
+            23.200195146093733
+          ]
+        },
+        {
+          "text": "B",
+          "x": 75.0,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            76.37402335898437,
+            8.833984958203132,
+            83.6132807578125,
+            19.0400390625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 85.00019836425781,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            86.37422172324219,
+            8.833984958203132,
+            93.61347912207032,
+            19.0400390625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 95.00039672851562,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            96.3744200875,
+            8.833984958203132,
+            103.61367748632813,
+            19.0400390625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 105.00059509277344,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            106.37461845175781,
+            8.833984958203132,
+            113.61387585058594,
+            19.0400390625
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 119.625,
+          "baseline": 19.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            120.25390621406251,
+            8.833984958203132,
+            128.58691355039062,
+            19.0400390625
+          ]
+        }
+      ]
+    },
+    {
+      "id": "follow-actual-bold14p5",
+      "slide": 1,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 1,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 380,
+      "y": 490,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"1450\" b=\"1\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1450\" b=\"1\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.098632692578121,
+            6.774414475390643,
+            12.159179335546867,
+            10.821289244140644
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            10,
+            0,
+            1575,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.068359371093777,
+            3.793945895703132,
+            34.7666009472656,
+            14.0
+          ]
+        },
+        {
+          "text": "g",
+          "x": 35.250396728515625,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            -442,
+            1294,
+            1145
+          ],
+          "geometricInkBounds": [
+            35.879302942578136,
+            6.17285200976562,
+            44.09609934804689,
+            17.021484202343743
+          ]
+        },
+        {
+          "text": "j",
+          "x": 45.618804931640625,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -68,
+            -442,
+            530,
+            1556
+          ],
+          "geometricInkBounds": [
+            45.1539612082031,
+            3.363281857812524,
+            49.24185159960939,
+            17.021484202343743
+          ]
+        },
+        {
+          "text": "p",
+          "x": 50.6112060546875,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            172,
+            -426,
+            1374,
+            1147
+          ],
+          "geometricInkBounds": [
+            51.7869872375,
+            6.159180135546876,
+            60.003783642968756,
+            16.912109208593733
+          ]
+        },
+        {
+          "text": "B",
+          "x": 65.97198486328125,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            188,
+            0,
+            1417,
+            1493
+          ],
+          "geometricInkBounds": [
+            67.25714103984376,
+            3.793945895703132,
+            75.65850774726562,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 76.97039794921875,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            188,
+            0,
+            1417,
+            1493
+          ],
+          "geometricInkBounds": [
+            78.25555412578126,
+            3.793945895703132,
+            86.65692083320312,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 87.96878051757812,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            188,
+            0,
+            1417,
+            1493
+          ],
+          "geometricInkBounds": [
+            89.25393669414063,
+            3.793945895703132,
+            97.65530340156249,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 98.96719360351562,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            188,
+            0,
+            1417,
+            1493
+          ],
+          "geometricInkBounds": [
+            100.25234978007813,
+            3.793945895703132,
+            108.65371648749999,
+            14.0
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 114.95797729492188,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1393,
+            1493
+          ],
+          "geometricInkBounds": [
+            115.58688350898439,
+            3.793945895703132,
+            124.48043768828126,
+            14.0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "number12-integer18",
+      "slide": 2,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 2,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 30,
+      "y": 50,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buAutoNum type=\"arabicPeriod\" startAt=\"12\"/><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 3,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 12,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "1",
+          "x": 6.0,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            225,
+            0,
+            1114,
+            1493
+          ],
+          "geometricInkBounds": [
+            7.9775390625,
+            3.837890625,
+            15.791015625,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "2",
+          "x": 17.500198364257812,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            150,
+            0,
+            1098,
+            1520
+          ],
+          "geometricInkBounds": [
+            18.818557739257812,
+            3.6005859375,
+            27.150588989257812,
+            16.9599609375
+          ]
+        },
+        {
+          "text": ".",
+          "x": 29.00040054321289,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            219,
+            0,
+            430,
+            254
+          ],
+          "geometricInkBounds": [
+            30.92520523071289,
+            14.7275390625,
+            32.77969741821289,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "A",
+          "x": 34.75,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            34.890625,
+            3.837890625,
+            46.9140625,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "g",
+          "x": 47.125,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            48.1181640625,
+            6.87890625,
+            56.916015625,
+            20.7041015625
+          ]
+        },
+        {
+          "text": "j",
+          "x": 58.49199676513672,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            58.16680145263672,
+            3.2841796875,
+            61.80547332763672,
+            20.7041015625
+          ]
+        },
+        {
+          "text": "p",
+          "x": 63.48699951171875,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            65.12176513671875,
+            6.87890625,
+            73.92840576171875,
+            20.7041015625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 80.6050033569336,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            82.3716049194336,
+            3.837890625,
+            91.6792221069336,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 92.98001098632812,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            94.74661254882812,
+            3.837890625,
+            104.05422973632812,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 105.35501098632812,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            107.12161254882812,
+            3.837890625,
+            116.42922973632812,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 117.73001098632812,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            119.49661254882812,
+            3.837890625,
+            128.80422973632812,
+            16.9599609375
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 135.85601806640625,
+          "baseline": 16.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            136.66461181640625,
+            3.837890625,
+            147.37847900390625,
+            16.9599609375
+          ]
+        }
+      ]
+    },
+    {
+      "id": "number12-scaled29x50",
+      "slide": 2,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 2,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 380,
+      "y": 50,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:normAutofit fontScale=\"50000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buAutoNum type=\"arabicPeriod\" startAt=\"12\"/><a:defRPr sz=\"2900\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"2900\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 3,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 12,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "1",
+          "x": 6.0,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            225,
+            0,
+            1114,
+            1493
+          ],
+          "geometricInkBounds": [
+            7.64794921875,
+            3.1448974609375,
+            14.1591796875,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "2",
+          "x": 15.49951171875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            150,
+            0,
+            1098,
+            1520
+          ],
+          "geometricInkBounds": [
+            16.59814453125,
+            2.9471435546875,
+            23.54150390625,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": ".",
+          "x": 24.998992919921875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            219,
+            0,
+            430,
+            254
+          ],
+          "geometricInkBounds": [
+            26.602996826171875,
+            12.2196044921875,
+            28.148406982421875,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "A",
+          "x": 29.75,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            29.8671875,
+            3.1448974609375,
+            39.88671875,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "g",
+          "x": 39.99951171875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            40.8271484375,
+            5.6790771484375,
+            48.15869140625,
+            17.2000732421875
+          ]
+        },
+        {
+          "text": "j",
+          "x": 49.498992919921875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            49.227996826171875,
+            2.6834716796875,
+            52.260223388671875,
+            17.2000732421875
+          ]
+        },
+        {
+          "text": "p",
+          "x": 53.628509521484375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            54.990814208984375,
+            5.6790771484375,
+            62.329681396484375,
+            17.2000732421875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 67.87249755859375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            69.34466552734375,
+            3.1448974609375,
+            77.10101318359375,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 78.12200927734375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            79.59417724609375,
+            3.1448974609375,
+            87.35052490234375,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 88.37149047851562,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            89.84365844726562,
+            3.1448974609375,
+            97.60000610351562,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 98.62100219726562,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            100.09317016601562,
+            3.1448974609375,
+            107.84951782226562,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 113.614990234375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            15.0,
+            15.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            114.288818359375,
+            3.1448974609375,
+            123.217041015625,
+            14.0799560546875
+          ]
+        }
+      ]
+    },
+    {
+      "id": "number12-explicit-serif",
+      "slide": 2,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 2,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 30,
+      "y": 270,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFont typeface=\"DejaVu Serif\"/><a:buAutoNum type=\"arabicPeriod\" startAt=\"12\"/><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 3,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 12,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "1",
+          "x": 6.0,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            225,
+            0,
+            1114,
+            1493
+          ],
+          "geometricInkBounds": [
+            7.9775390625,
+            3.91796875,
+            15.791015625,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "2",
+          "x": 17.500198364257812,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            150,
+            0,
+            1098,
+            1520
+          ],
+          "geometricInkBounds": [
+            18.818557739257812,
+            3.6806640625,
+            27.150588989257812,
+            17.0400390625
+          ]
+        },
+        {
+          "text": ".",
+          "x": 29.00040054321289,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            219,
+            0,
+            430,
+            254
+          ],
+          "geometricInkBounds": [
+            30.92520523071289,
+            14.8076171875,
+            32.77969741821289,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "A",
+          "x": 34.75,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            34.890625,
+            3.91796875,
+            46.9140625,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "g",
+          "x": 47.125,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            48.1181640625,
+            6.958984375,
+            56.916015625,
+            20.7841796875
+          ]
+        },
+        {
+          "text": "j",
+          "x": 58.49199676513672,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            58.16680145263672,
+            3.3642578125,
+            61.80547332763672,
+            20.7841796875
+          ]
+        },
+        {
+          "text": "p",
+          "x": 63.48699951171875,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            65.12176513671875,
+            6.958984375,
+            73.92840576171875,
+            20.7841796875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 80.6050033569336,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            82.3716049194336,
+            3.91796875,
+            91.6792221069336,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 92.98001098632812,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            94.74661254882812,
+            3.91796875,
+            104.05422973632812,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 105.35501098632812,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            107.12161254882812,
+            3.91796875,
+            116.42922973632812,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "B",
+          "x": 117.73001098632812,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            119.49661254882812,
+            3.91796875,
+            128.80422973632812,
+            17.0400390625
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 135.85601806640625,
+          "baseline": 17.0400390625,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            136.66461181640625,
+            3.91796875,
+            147.37847900390625,
+            17.0400390625
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character-explicit-serif14p5",
+      "slide": 2,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 2,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 380,
+      "y": 270,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFont typeface=\"DejaVu Serif\"/><a:buChar char=\"&#8226;\"/><a:defRPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.098632692578121,
+            6.694458420703143,
+            12.159179335546867,
+            10.741333189453144
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.10937499375001,
+            3.713989841015632,
+            33.460936959374976,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "g",
+          "x": 33.8756103515625,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            34.64807124492188,
+            6.079224080859376,
+            41.49084429140623,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "j",
+          "x": 43.121185302734375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            42.868255629687496,
+            3.283325803125024,
+            45.698333592968766,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "p",
+          "x": 47.116790771484375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            48.38827507382814,
+            6.079224080859376,
+            55.237884057421866,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "B",
+          "x": 60.988006591796875,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            62.36202995078128,
+            3.713989841015632,
+            69.60128734960938,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 70.98959350585938,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            72.36361686484378,
+            3.713989841015632,
+            79.60287426367188,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 80.9912109375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            82.3652342964844,
+            3.713989841015632,
+            89.6044916953125,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 90.9927978515625,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            92.3668212105469,
+            3.713989841015632,
+            99.606078609375,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 105.6199951171875,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            106.24890133125001,
+            3.713989841015632,
+            114.58190866757815,
+            13.9200439453125
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wide-number-hang18",
+      "slide": 2,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 2,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 30,
+      "y": 490,
+      "width": 130,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buAutoNum type=\"arabicPeriod\" startAt=\"12345\"/><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>BBBB BBBB BBBB BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 6,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 23,
+      "bodyLines": [
+        "BBBB",
+        "BBBBBBBB",
+        "BBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "1",
+          "x": 6.0,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            225,
+            0,
+            1114,
+            1493
+          ],
+          "geometricInkBounds": [
+            7.9775390625,
+            3.7579345703125,
+            15.791015625,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "2",
+          "x": 17.500198364257812,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            150,
+            0,
+            1098,
+            1520
+          ],
+          "geometricInkBounds": [
+            18.818557739257812,
+            3.5206298828125,
+            27.150588989257812,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "3",
+          "x": 29.00040054321289,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            156,
+            -29,
+            1139,
+            1520
+          ],
+          "geometricInkBounds": [
+            30.37149429321289,
+            3.5206298828125,
+            39.01114273071289,
+            17.1348876953125
+          ]
+        },
+        {
+          "text": "4",
+          "x": 40.50059509277344,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            100,
+            0,
+            1188,
+            1493
+          ],
+          "geometricInkBounds": [
+            41.37950134277344,
+            3.7579345703125,
+            50.94200134277344,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "5",
+          "x": 52.00080108642578,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            158,
+            -29,
+            1124,
+            1493
+          ],
+          "geometricInkBounds": [
+            53.38947296142578,
+            3.7579345703125,
+            61.87970733642578,
+            17.1348876953125
+          ]
+        },
+        {
+          "text": ".",
+          "x": 63.501007080078125,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            219,
+            0,
+            430,
+            254
+          ],
+          "geometricInkBounds": [
+            65.42581176757812,
+            14.6475830078125,
+            67.28030395507812,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 69.25,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            71.0166015625,
+            3.7579345703125,
+            80.32421875,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 81.625,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            83.3916015625,
+            3.7579345703125,
+            92.69921875,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 94.0,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            95.7666015625,
+            3.7579345703125,
+            105.07421875,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 106.375,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            108.1416015625,
+            3.7579345703125,
+            117.44921875,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 24.0,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            25.7666015625,
+            25.837890625,
+            35.07421875,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 36.375,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            38.1416015625,
+            25.837890625,
+            47.44921875,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 48.75,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            50.5166015625,
+            25.837890625,
+            59.82421875,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 61.125,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            62.8916015625,
+            25.837890625,
+            72.19921875,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 79.25100708007812,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            81.01760864257812,
+            25.837890625,
+            90.32522583007812,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 91.62600708007812,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            93.39260864257812,
+            25.837890625,
+            102.70022583007812,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 104.00100708007812,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            105.76760864257812,
+            25.837890625,
+            115.07522583007812,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 116.37600708007812,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            118.14260864257812,
+            25.837890625,
+            127.45022583007812,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 24.0,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            25.7666015625,
+            46.9580078125,
+            35.07421875,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 36.375,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            38.1416015625,
+            46.9580078125,
+            47.44921875,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 48.75,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            50.5166015625,
+            46.9580078125,
+            59.82421875,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 61.125,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            62.8916015625,
+            46.9580078125,
+            72.19921875,
+            60.080078125
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 79.25100708007812,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            80.05960083007812,
+            46.9580078125,
+            90.77346801757812,
+            60.080078125
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wide-number-hang6",
+      "slide": 2,
+      "source": "native-list-markers-v2.pptx",
+      "sourcePage": 2,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "nativePDFSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea",
+      "x": 380,
+      "y": 490,
+      "width": 130,
+      "height": 190,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-76200\"><a:buSzTx/><a:buFontTx/><a:buAutoNum type=\"arabicPeriod\" startAt=\"12345\"/><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>BBBB BBBB BBBB BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 6,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 23,
+      "bodyLines": [
+        "BBB",
+        "BBBBB",
+        "BBBBBBBB",
+        "Z"
+      ],
+      "glyphs": [
+        {
+          "text": "1",
+          "x": 18.0,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            225,
+            0,
+            1114,
+            1493
+          ],
+          "geometricInkBounds": [
+            19.9775390625,
+            3.7579345703125,
+            27.791015625,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "2",
+          "x": 29.500213623046875,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            150,
+            0,
+            1098,
+            1520
+          ],
+          "geometricInkBounds": [
+            30.818572998046875,
+            3.5206298828125,
+            39.150604248046875,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "3",
+          "x": 41.000396728515625,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            156,
+            -29,
+            1139,
+            1520
+          ],
+          "geometricInkBounds": [
+            42.371490478515625,
+            3.5206298828125,
+            51.011138916015625,
+            17.1348876953125
+          ]
+        },
+        {
+          "text": "4",
+          "x": 52.5006103515625,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            100,
+            0,
+            1188,
+            1493
+          ],
+          "geometricInkBounds": [
+            53.3795166015625,
+            3.7579345703125,
+            62.9420166015625,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "5",
+          "x": 64.00079345703125,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            158,
+            -29,
+            1124,
+            1493
+          ],
+          "geometricInkBounds": [
+            65.38946533203125,
+            3.7579345703125,
+            73.87969970703125,
+            17.1348876953125
+          ]
+        },
+        {
+          "text": ".",
+          "x": 75.50100708007812,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            219,
+            0,
+            430,
+            254
+          ],
+          "geometricInkBounds": [
+            77.42581176757812,
+            14.6475830078125,
+            79.28030395507812,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 81.25,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            83.0166015625,
+            3.7579345703125,
+            92.32421875,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 93.625,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            95.3916015625,
+            3.7579345703125,
+            104.69921875,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 106.0,
+          "baseline": 16.8800048828125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            107.7666015625,
+            3.7579345703125,
+            117.07421875,
+            16.8800048828125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 24.0,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            25.7666015625,
+            25.837890625,
+            35.07421875,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 42.126007080078125,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            43.892608642578125,
+            25.837890625,
+            53.200225830078125,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 54.501007080078125,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            56.267608642578125,
+            25.837890625,
+            65.57522583007812,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 66.87600708007812,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            68.64260864257812,
+            25.837890625,
+            77.95022583007812,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 79.25100708007812,
+          "baseline": 38.9599609375,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            81.01760864257812,
+            25.837890625,
+            90.32522583007812,
+            38.9599609375
+          ]
+        },
+        {
+          "text": "B",
+          "x": 24.0,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            25.7666015625,
+            46.9580078125,
+            35.07421875,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 36.375,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            38.1416015625,
+            46.9580078125,
+            47.44921875,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 48.75,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            50.5166015625,
+            46.9580078125,
+            59.82421875,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 61.125,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            62.8916015625,
+            46.9580078125,
+            72.19921875,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 79.25100708007812,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            81.01760864257812,
+            46.9580078125,
+            90.32522583007812,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 91.62600708007812,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            93.39260864257812,
+            46.9580078125,
+            102.70022583007812,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 104.00100708007812,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            105.76760864257812,
+            46.9580078125,
+            115.07522583007812,
+            60.080078125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 116.37600708007812,
+          "baseline": 60.080078125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            118.14260864257812,
+            46.9580078125,
+            127.45022583007812,
+            60.080078125
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 24.0,
+          "baseline": 81.919921875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            18.0,
+            18.0
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.80859375,
+            68.7978515625,
+            35.5224609375,
+            81.919921875
+          ]
+        }
+      ]
+    },
+    {
+      "id": "local-char-inherited-choices",
+      "slide": 3,
+      "source": "native-list-markers-followup-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd",
+      "nativePDFSHA256": "745576408a02c63c21dca8c243847ef1cf89163758e948e3c3faec61ee59452c",
+      "x": 30,
+      "y": 50,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buChar char=\"&#8226;\"/></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.098632692578121,
+            6.854370530078128,
+            12.159179335546874,
+            10.901245298828123
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.109374993750002,
+            3.873901950390625,
+            33.460936959375,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "g",
+          "x": 33.8755989074707,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            34.64805980083008,
+            6.239136190234376,
+            41.49083284731445,
+            16.992065263281248
+          ]
+        },
+        {
+          "text": "j",
+          "x": 43.12120056152344,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            42.86827088847656,
+            3.4432379125000026,
+            45.698348851757814,
+            16.992065263281248
+          ]
+        },
+        {
+          "text": "p",
+          "x": 47.116798400878906,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            48.38828270322266,
+            6.239136190234376,
+            55.23789168681641,
+            16.992065263281248
+          ]
+        },
+        {
+          "text": "B",
+          "x": 60.987998962402344,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            62.36202232138672,
+            3.873901950390625,
+            69.60127972021485,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 70.9896011352539,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            72.36362449423828,
+            3.873901950390625,
+            79.60288189306641,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 80.99120330810547,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            82.36522666708984,
+            3.873901950390625,
+            89.60448406591797,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 90.9927978515625,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            92.36682121054687,
+            3.873901950390625,
+            99.606078609375,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 105.6199951171875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            106.24890133125001,
+            3.873901950390625,
+            114.58190866757812,
+            14.0799560546875
+          ]
+        }
+      ]
+    },
+    {
+      "id": "local-number-inherited-choices",
+      "slide": 3,
+      "source": "native-list-markers-followup-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd",
+      "nativePDFSHA256": "745576408a02c63c21dca8c243847ef1cf89163758e948e3c3faec61ee59452c",
+      "x": 380,
+      "y": 50,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buAutoNum type=\"arabicPeriod\" startAt=\"12\"/></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 3,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 12,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "1",
+          "x": 6.0,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            225,
+            0,
+            1114,
+            1493
+          ],
+          "geometricInkBounds": [
+            7.538085849609388,
+            3.873901950390625,
+            13.615233939843733,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "2",
+          "x": 15.249786376953125,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            150,
+            0,
+            1098,
+            1520
+          ],
+          "geometricInkBounds": [
+            16.275176943359384,
+            3.689331648437502,
+            22.75564532304685,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": ".",
+          "x": 24.499603271484375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            219,
+            0,
+            430,
+            254
+          ],
+          "geometricInkBounds": [
+            25.996673498437474,
+            12.343628028906252,
+            27.439056228515597,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "A",
+          "x": 29.125,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            29.23437499375001,
+            3.873901950390625,
+            38.585936959374976,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "g",
+          "x": 39.0006103515625,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            39.77307124492188,
+            6.239136190234376,
+            46.61584429140623,
+            16.992065263281248
+          ]
+        },
+        {
+          "text": "j",
+          "x": 48.246185302734375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            47.993255629687496,
+            3.4432379125000026,
+            50.823333592968766,
+            16.992065263281248
+          ]
+        },
+        {
+          "text": "p",
+          "x": 52.241790771484375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            53.51327507382814,
+            6.239136190234376,
+            60.362884057421866,
+            16.992065263281248
+          ]
+        },
+        {
+          "text": "B",
+          "x": 66.11300659179688,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            67.48702995078128,
+            3.873901950390625,
+            74.72628734960938,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 76.11459350585938,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            77.48861686484378,
+            3.873901950390625,
+            84.72787426367188,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 86.1162109375,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            87.4902342964844,
+            3.873901950390625,
+            94.7294916953125,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "B",
+          "x": 96.1177978515625,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            97.4918212105469,
+            3.873901950390625,
+            104.731078609375,
+            14.0799560546875
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 110.7449951171875,
+          "baseline": 14.0799560546875,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            111.37390133125001,
+            3.873901950390625,
+            119.70690866757815,
+            14.0799560546875
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ordinary-shape-master-only",
+      "slide": 3,
+      "source": "native-list-markers-followup-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd",
+      "nativePDFSHA256": "745576408a02c63c21dca8c243847ef1cf89163758e948e3c3faec61ee59452c",
+      "x": 30,
+      "y": 270,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"/><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 0,
+      "omittedMarkers": [
+        "\u2022"
+      ],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "A",
+          "x": 6.0,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            6.109374993750002,
+            3.713989841015632,
+            15.460936959374997,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "g",
+          "x": 15.875598907470703,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            16.648059800830076,
+            6.079224080859376,
+            23.49083284731445,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "j",
+          "x": 25.121196746826172,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            24.8682670737793,
+            3.283325803125024,
+            27.698345037060548,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "p",
+          "x": 29.116798400878906,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            30.388282703222657,
+            6.079224080859376,
+            37.23789168681641,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "B",
+          "x": 42.987998962402344,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            44.36202232138672,
+            3.713989841015632,
+            51.60127972021485,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 52.989601135253906,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            54.36362449423828,
+            3.713989841015632,
+            61.60288189306641,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 62.99120330810547,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            64.36522666708984,
+            3.713989841015632,
+            71.60448406591797,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 72.9927978515625,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            74.36682121054687,
+            3.713989841015632,
+            81.606078609375,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 87.62000274658203,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            88.24890896064453,
+            3.713989841015632,
+            96.58191629697265,
+            13.9200439453125
+          ]
+        }
+      ]
+    },
+    {
+      "id": "body-placeholder-inherited",
+      "slide": 3,
+      "source": "native-list-markers-followup-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd",
+      "nativePDFSHA256": "745576408a02c63c21dca8c243847ef1cf89163758e948e3c3faec61ee59452c",
+      "x": 380,
+      "y": 270,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"/><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            10.9999992,
+            10.9999992
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            7.648925661328121,
+            8.242798264453143,
+            10.839355116796867,
+            11.422485533203144
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.10937499375001,
+            3.713989841015632,
+            33.460936959374976,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "g",
+          "x": 33.8756103515625,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            34.64807124492188,
+            6.079224080859376,
+            41.49084429140623,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "j",
+          "x": 43.121185302734375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            42.868255629687496,
+            3.283325803125024,
+            45.698333592968766,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "p",
+          "x": 47.116790771484375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            48.38827507382814,
+            6.079224080859376,
+            55.237884057421866,
+            16.832153153906233
+          ]
+        },
+        {
+          "text": "B",
+          "x": 60.988006591796875,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            62.36202995078128,
+            3.713989841015632,
+            69.60128734960938,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 70.98959350585938,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            72.36361686484378,
+            3.713989841015632,
+            79.60287426367188,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 80.9912109375,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            82.3652342964844,
+            3.713989841015632,
+            89.6044916953125,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "B",
+          "x": 90.9927978515625,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            92.3668212105469,
+            3.713989841015632,
+            99.606078609375,
+            13.9200439453125
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 105.6199951171875,
+          "baseline": 13.9200439453125,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            106.24890133125001,
+            3.713989841015632,
+            114.58190866757815,
+            13.9200439453125
+          ]
+        }
+      ]
+    },
+    {
+      "id": "body-placeholder-local-follow",
+      "slide": 3,
+      "source": "native-list-markers-followup-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd",
+      "nativePDFSHA256": "745576408a02c63c21dca8c243847ef1cf89163758e948e3c3faec61ee59452c",
+      "x": 30,
+      "y": 490,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 1,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 10,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "\u2022",
+          "x": 6.0,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular",
+            "serif"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            307,
+            465,
+            901,
+            1057
+          ],
+          "geometricInkBounds": [
+            8.098632692578121,
+            6.774414475390643,
+            12.159179335546874,
+            10.821289244140644
+          ]
+        },
+        {
+          "text": "A",
+          "x": 24.0,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            16,
+            0,
+            1384,
+            1493
+          ],
+          "geometricInkBounds": [
+            24.109374993750002,
+            3.793945895703132,
+            33.460936959375,
+            14.0
+          ]
+        },
+        {
+          "text": "g",
+          "x": 33.8755989074707,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            113,
+            -426,
+            1114,
+            1147
+          ],
+          "geometricInkBounds": [
+            34.64805980083008,
+            6.159180135546876,
+            41.49083284731445,
+            16.912109208593733
+          ]
+        },
+        {
+          "text": "j",
+          "x": 43.12120056152344,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -37,
+            -426,
+            377,
+            1556
+          ],
+          "geometricInkBounds": [
+            42.86827088847656,
+            3.363281857812524,
+            45.698348851757814,
+            16.912109208593733
+          ]
+        },
+        {
+          "text": "p",
+          "x": 47.116798400878906,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            186,
+            -426,
+            1188,
+            1147
+          ],
+          "geometricInkBounds": [
+            48.38828270322266,
+            6.159180135546876,
+            55.23789168681641,
+            16.912109208593733
+          ]
+        },
+        {
+          "text": "B",
+          "x": 60.987998962402344,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            62.36202232138672,
+            3.793945895703132,
+            69.60127972021485,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 70.9896011352539,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            72.36362449423828,
+            3.793945895703132,
+            79.60288189306641,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 80.99120330810547,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            82.36522666708984,
+            3.793945895703132,
+            89.60448406591797,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 90.9927978515625,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            201,
+            0,
+            1260,
+            1493
+          ],
+          "geometricInkBounds": [
+            92.36682121054687,
+            3.793945895703132,
+            99.606078609375,
+            14.0
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 105.6199951171875,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "regular"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1311,
+            1493
+          ],
+          "geometricInkBounds": [
+            106.24890133125001,
+            3.793945895703132,
+            114.58190866757812,
+            14.0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "number12-actual-bold14p5",
+      "slide": 3,
+      "source": "native-list-markers-followup-v1.pptx",
+      "sourcePage": 0,
+      "sourceSHA256": "6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd",
+      "nativePDFSHA256": "745576408a02c63c21dca8c243847ef1cf89163758e948e3c3faec61ee59452c",
+      "x": 380,
+      "y": 490,
+      "width": 290,
+      "height": 160,
+      "textBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buAutoNum type=\"arabicPeriod\" startAt=\"12\"/><a:defRPr sz=\"1450\" b=\"1\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1450\" b=\"1\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+      "markerCount": 3,
+      "omittedMarkers": [],
+      "expectedVisibleScalars": 12,
+      "bodyLines": [
+        "AgjpBBBBZ"
+      ],
+      "glyphs": [
+        {
+          "text": "1",
+          "x": 6.0,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            231,
+            0,
+            1284,
+            1493
+          ],
+          "geometricInkBounds": [
+            7.57910147226562,
+            3.793945895703132,
+            14.77734324843749,
+            14.0
+          ]
+        },
+        {
+          "text": "2",
+          "x": 16.124786376953125,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            162,
+            0,
+            1247,
+            1520
+          ],
+          "geometricInkBounds": [
+            17.232208188671848,
+            3.6093755937499736,
+            24.649199952343736,
+            14.0
+          ]
+        },
+        {
+          "text": ".",
+          "x": 26.249603271484375,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            209,
+            0,
+            569,
+            387
+          ],
+          "geometricInkBounds": [
+            27.678314127343754,
+            11.35449233867189,
+            30.139251486718763,
+            14.0
+          ]
+        },
+        {
+          "text": "A",
+          "x": 31.75,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            10,
+            0,
+            1575,
+            1493
+          ],
+          "geometricInkBounds": [
+            31.818359371093777,
+            3.793945895703132,
+            42.5166009472656,
+            14.0
+          ]
+        },
+        {
+          "text": "g",
+          "x": 43.000396728515625,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            -442,
+            1294,
+            1145
+          ],
+          "geometricInkBounds": [
+            43.629302942578136,
+            6.17285200976562,
+            51.84609934804689,
+            17.021484202343743
+          ]
+        },
+        {
+          "text": "j",
+          "x": 53.368804931640625,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            -68,
+            -442,
+            530,
+            1556
+          ],
+          "geometricInkBounds": [
+            52.9039612082031,
+            3.363281857812524,
+            56.99185159960939,
+            17.021484202343743
+          ]
+        },
+        {
+          "text": "p",
+          "x": 58.3612060546875,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            172,
+            -426,
+            1374,
+            1147
+          ],
+          "geometricInkBounds": [
+            59.5369872375,
+            6.159180135546876,
+            67.75378364296876,
+            16.912109208593733
+          ]
+        },
+        {
+          "text": "B",
+          "x": 73.72198486328125,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            188,
+            0,
+            1417,
+            1493
+          ],
+          "geometricInkBounds": [
+            75.00714103984376,
+            3.793945895703132,
+            83.40850774726562,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 84.72039794921875,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            188,
+            0,
+            1417,
+            1493
+          ],
+          "geometricInkBounds": [
+            86.00555412578126,
+            3.793945895703132,
+            94.40692083320312,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 95.71878051757812,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            188,
+            0,
+            1417,
+            1493
+          ],
+          "geometricInkBounds": [
+            97.00393669414063,
+            3.793945895703132,
+            105.40530340156249,
+            14.0
+          ]
+        },
+        {
+          "text": "B",
+          "x": 106.71719360351562,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            188,
+            0,
+            1417,
+            1493
+          ],
+          "geometricInkBounds": [
+            108.00234978007813,
+            3.793945895703132,
+            116.40371648749999,
+            14.0
+          ]
+        },
+        {
+          "text": "Z",
+          "x": 122.70797729492188,
+          "baseline": 14.0,
+          "matchingSourceFaces": [
+            "bold"
+          ],
+          "rawPDFPaintScale": [
+            13.9999992,
+            13.9999992
+          ],
+          "sourceGlyphBounds": [
+            92,
+            0,
+            1393,
+            1493
+          ],
+          "geometricInkBounds": [
+            123.33688350898439,
+            3.793945895703132,
+            132.2304376882812,
+            14.0
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -154,3 +154,46 @@ context, actual SVG and saved/reopened state agree; ignored stored table scale
 remains a visible diagnostic. A separate Core input fixture verifies that
 nonzero stored line reduction is diagnosed and fitting refuses it without
 mutation. This demonstrates the native host rule, not a native autofit search.
+
+## List markers and hanging indents
+
+`native-list-markers-v2.pptx` and `native-list-markers-followup-v1.pptx`
+are byte-for-byte copies of the owned independent Python/OOXML inputs under
+`Tests/RostrumTests/Fixtures/NativeListMarkers`. Their source SHA-256 values are
+`db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8` and
+`6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd`.
+PowerPoint 16.113.3 opened both without repair and exported local Best for
+printing PDFs, with the online option off and source documents unchanged.
+Native PDF pins are `4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea`
+and `745576408a02c63c21dca8c243847ef1cf89163758e948e3c3faec61ee59452c`.
+
+`ListMarkerReferences.json` retains all 24 cases, 277 visible glyphs and three
+explicitly absent inherited markers, with source frames, bodies, font pins,
+actual PDF paint matrices, source outline bounds, glyph origins and body line
+strings. The decks embed licensed DejaVu Sans regular and bold and DejaVu Serif
+regular; the existing `LICENSE-DejaVu.txt` applies. Identical bullet outlines
+retain multiple compatible source faces rather than claiming unique identity.
+
+The recipe imports the followup through public `slides.importAll`, retaining
+its distinct master and placeholder inheritance. Native frames and text bodies
+remain unchanged. Captions outside those frames use bundled DejaVu Sans instead
+of the source's Calibri, so the demo does not require installed platform fonts.
+Actual SVG font bytes must match the registered embedded faces. All native
+marker and body scalars are consumed; per-case finite origin tolerance is
+0.06 pt, baseline tolerance 0.121 pt, and paint/outline dimensions 0.002 pt.
+These bounds cover the captured PDF export drift, not arbitrary long text or
+pixel parity. Explicit x lists must not be replaced with glyph stretching.
+
+A fifth slide compares two public computed fitting paths in 130 by 45 pt
+copies. Both options retain all 24 originals; the alternative selects the
+6 pt rather than 18 pt hanging indent for these copies. Fitting preserves
+paragraph/run properties and is not a native-autofit-choice claim. Core tests
+retain both generated decks and SVGs when `LECTERN_MARKER_ARTIFACTS` is set.
+`LibraryListMarkerAppTests` exercises the real saved-file inspector, all five
+previews, export, and return to the completed demo. Manual GUI and native
+acceptance are separate integration checks, not implied by Core success.
+
+Regenerate this reduced reference with
+`python3 Lectern/scripts/generate-list-marker-references.py`. The development
+script verifies fixed source, PDF and font pins before copying; it never derives
+expected positions from Rostrum.
