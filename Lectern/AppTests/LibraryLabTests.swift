@@ -35,7 +35,11 @@ import Rostrum
                 let savedSVG = try String(contentsOf: result.directory.appendingPathComponent("previews/slide-03.svg"), encoding: .utf8)
                 let deck = try Presentation(contentsOf: result.afterURL)
                 #expect(deck.registerEmbeddedFonts().contains("DejaVu Sans"))
-                #expect(try savedSVG == deck.renderSVG(slideAt: 2))
+                // Compare the two real inspector runs: their viewport and
+                // installed fallback registry differ from raw library defaults.
+                let inspection = try #require(context.app.inspection)
+                let previewIndex = try #require(inspection.previewSlideNumbers.firstIndex(of: 3))
+                #expect(savedSVG == inspection.previews[previewIndex])
                 #expect(savedSVG.contains("BBBBBBBBBBBBZ") && savedSVG.contains("font-size=\"20\""))
                 #expect(result.findings.contains { $0.slideNumber == 3 && $0.message.contains("ignore stored fontScale") })
                 let directory = try #require(context.app.exportedDirectory)
@@ -216,7 +220,9 @@ import Rostrum
         let paintCases = try #require(paintReference["cases"] as? [[String: Any]]).filter { ($0["alternative"] as? Bool) == narrow }
         #expect(paintCases.count == 6)
         let paintSVG = try String(contentsOf: result.directory.appendingPathComponent("previews/slide-07.svg"), encoding: .utf8)
-        #expect(try deck.renderSVG(slideAt: 6) == paintSVG)
+        let inspection = try #require(context.app.inspection)
+        let paintIndex = try #require(inspection.previewSlideNumbers.firstIndex(of: 7))
+        #expect(paintSVG == inspection.previews[paintIndex])
         let paintTree = try #require(deck.slides[6].part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree"))
         let svgRoot = try XML.parse(Data(paintSVG.utf8))
         func textNodes(_ element: XML.Element) -> [XML.Element] {
