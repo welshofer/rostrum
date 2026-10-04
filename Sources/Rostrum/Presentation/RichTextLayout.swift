@@ -137,6 +137,16 @@ public struct RichTextLayout: Sendable {
                 guard let position = tab.coordinate("pos") else { return nil }
                 return (Double(position) / Double(EMU.perPoint), tab[attribute: "algn"] ?? "l")
             }.sorted { $0.position < $1.position } ?? []
+            // These properties belong to the paragraph, not each wrapped line.
+            // Preserve the arithmetic order for percentage spacing so repeated
+            // lines remain byte-identical when their coordinates are serialized.
+            let declaredSpacing = child("a:lnSpc")
+            let fixedSpacing = declaredSpacing?.firstChild(named: "a:spcPts").map {
+                Self.bounded(Self.number($0, "val", 0), 0...1e8) / 100
+            }
+            let percentageSpacing = declaredSpacing?.firstChild(named: "a:spcPct").map {
+                Self.bounded(Self.number($0, "val", 0), 0...1e7)
+            }
             let hasText = paragraph.childElements.contains { ["a:r", "a:fld"].contains($0.name) && !($0.firstChild(named: "a:t")?.textContent ?? "").isEmpty }
             let emptyDefaults = hasText ? defaults : [paragraph.firstChild(named: "a:endParaRPr")].compactMap { $0 } + defaults
             // Without metrics, the empty-line box needs only the inherited size.
@@ -193,6 +203,32 @@ public struct RichTextLayout: Sendable {
             let nativeLatinLigatures = nativeLeftToRight && pieces.allSatisfy {
                 $0.text.utf8.allSatisfy { $0 < 128 }
             }
+            // Keep ordinary and 100% spacing on the existing font-metric path.
+            // The calibrated profile is vertical only; painting and horizontal
+            // advances retain the authored size and existing shaping policy.
+            let explicitSpacing = fixedSpacing != nil || (percentageSpacing != nil && percentageSpacing != 100000)
+            let nativeSpacing = explicitSpacing && nativeLatinLigatures
+                && (fixedSpacing != nil || (percentageSpacing ?? 0) > reduction * 100000)
+            // Nil identifies the single explicitly provided fallback metric.
+            // Registry aliases remain distinct: internal font names cannot prove
+            // that separately registered faces contain identical font bytes.
+            typealias SpacingMetric = (ascent: Double, height: Double, face: FontFaceKey?)
+            func spacingMetric(_ metrics: FontMetrics?, size: Double, style: ResolvedTextRun?) -> SpacingMetric? {
+                guard nativeSpacing, let metrics, let share = metrics.drawingMLAscentShare,
+                      let windowsHeight = metrics.drawingMLWindowsHeight else { return nil }
+                let metricSize = scale == 1 ? size : size.rounded()
+                // No native minimum is assumed for a tiny scaled font. Retain
+                // its original metrics rather than create a zero-height ratio.
+                guard metricSize > 0 else { return nil }
+                let compatible = !["0", "false"].contains(body[attribute: "compatLnSpc"] ?? "1")
+                let height = metricSize * (compatible ? 1.2 : windowsHeight)
+                let face = style.flatMap { run in run.fontFamily.flatMap { family in
+                    fonts?.previewFace(for: FontFaceKey(family: family, bold: run.bold, italic: run.italic))
+                } }
+                return (height * share, height, face)
+            }
+            let emptySpacingMetric = spacingMetric(baseMetrics, size: baseSize, style: baseStyle)
+            var spacingRunMetrics: [SpacingMetric?] = []
             for (piece, text) in pieces {
                 source += 1
                 var style = Self.resolve(text: text,
@@ -202,6 +238,9 @@ public struct RichTextLayout: Sendable {
                 let styleIndex = runStyles.count
                 if !text.isEmpty { runStyles.append(style) }
                 let metrics = face(style)
+                if nativeSpacing, !text.isEmpty {
+                    spacingRunMetrics.append(spacingMetric(metrics, size: style.fontSize, style: style))
+                }
                 if metrics == nil {
                     warnings.append(.unsupportedLayoutFeature("Unregistered font face: " + (style.fontFamily ?? "unspecified")))
                 }
@@ -372,16 +411,6 @@ public struct RichTextLayout: Sendable {
                 face(run)?.width(of: run.text + " ", pointSize: run.fontSize)
                     ?? Double(run.text.count + 1) * run.fontSize * 0.42
             } ?? 0
-            // These properties belong to the paragraph, not each wrapped line.
-            // Preserve the arithmetic order for percentage spacing so repeated
-            // lines remain byte-identical when their coordinates are serialized.
-            let declaredSpacing = child("a:lnSpc")
-            let fixedSpacing = declaredSpacing?.firstChild(named: "a:spcPts").map {
-                Self.bounded(Self.number($0, "val", 0), 0...1e8) / 100
-            }
-            let percentageSpacing = declaredSpacing?.firstChild(named: "a:spcPct").map {
-                Self.bounded(Self.number($0, "val", 0), 0...1e7)
-            }
             let defaultSpacing = Self.bounded(lineSpacing, 0...100)
             let align = attribute("algn") ?? "l"
             var lineAtoms: [Atom] = [], lineWidth = 0.0, firstLine = true, index = 0
@@ -461,7 +490,8 @@ public struct RichTextLayout: Sendable {
                     canJustify = false
                 }
             }
-            func emit(justify: Bool = false, emptyMetrics: (ascent: Double, height: Double, drawingML: Bool)? = nil) {
+            func emit(justify: Bool = false, emptyMetrics: (ascent: Double, height: Double, drawingML: Bool)? = nil,
+                      emptySpacing: SpacingMetric? = nil) {
                 guard output.count < lineLimit else { didTruncate = true; return }
                 let lastTab = hasTabs ? lineAtoms.lastIndex(where: \.tab) ?? -1 : -1
                 // Re-shape complete line fragments: a kerning pair that crossed
@@ -537,7 +567,7 @@ public struct RichTextLayout: Sendable {
                         drawingML = drawingML && lineAtoms[i].drawingML
                     }
                 }
-                let ascent: Double
+                var ascent: Double
                 if drawingML, !lineAtoms.isEmpty {
                     // Share the line box between the participating faces. Sizes
                     // determine the box height; each face supplies its normalized
@@ -554,17 +584,44 @@ public struct RichTextLayout: Sendable {
                 } else {
                     ascent = maximumAscent
                 }
+                var calibratedMetric: SpacingMetric?
+                if nativeSpacing, usesNativeAdvanceGrid, drawingML {
+                    if let first = lineAtoms.first {
+                        calibratedMetric = spacingRunMetrics[first.styleIndex]
+                        for atom in lineAtoms.dropFirst() {
+                            guard let candidate = spacingRunMetrics[atom.styleIndex],
+                                  let current = calibratedMetric else { calibratedMetric = nil; break }
+                            guard candidate.face == current.face else {
+                                warnings.append(.unsupportedLayoutFeature("Native explicit line spacing with multiple font faces on one line is not verified"))
+                                calibratedMetric = nil; break
+                            }
+                            if candidate.height > current.height { calibratedMetric = candidate }
+                        }
+                    } else { calibratedMetric = emptySpacing ?? (emptyMetrics == nil ? emptySpacingMetric : nil) }
+                }
+                if let metric = calibratedMetric {
+                    naturalHeight = metric.height
+                    ascent = metric.ascent
+                }
+                let naturalDescent = naturalHeight - ascent
                 let spacingAdvance: Double
-                if let fixedSpacing { spacingAdvance = fixedSpacing }
-                else if let percentageSpacing { spacingAdvance = naturalHeight * percentageSpacing / 100000 }
+                if let fixedSpacing { spacingAdvance = calibratedMetric == nil ? fixedSpacing : fixedSpacing.rounded() }
+                else if let percentageSpacing {
+                    // Native percentage reduction subtracts percentage points;
+                    // exact spacing ignores reduction. Ordinary/100% spacing
+                    // retains its prior proportional-reduction behavior.
+                    let percentage = calibratedMetric == nil ? percentageSpacing : percentageSpacing - reduction * 100000
+                    spacingAdvance = naturalHeight * percentage / 100000
+                }
                 else { spacingAdvance = declaredSpacing == nil ? naturalHeight * defaultSpacing : 0 }
-                let advance = spacingAdvance * (1 - reduction)
-                // Exact line spacing determines the next baseline, not an
+                if calibratedMetric != nil { ascent = spacingAdvance * 0.75 }
+                let advance = calibratedMetric == nil ? spacingAdvance * (1 - reduction) : spacingAdvance
+                // Explicit line spacing determines the next baseline, not an
                 // extra gap below the final line. Including that gap in the
                 // anchored block moves bottom/center-aligned text upward.
                 // Retain generic fallback metrics until native evidence covers
                 // them; the DrawingML line box has an explicit natural height.
-                trailingLineGap = drawingML && fixedSpacing != nil
+                trailingLineGap = drawingML && (fixedSpacing != nil || calibratedMetric != nil)
                     ? max(0, advance - naturalHeight) : 0
                 let extra = align == "ctr" ? (limit() - lineWidth) / 2 : align == "r" ? breakLimit() - lineWidth : 0
                 var spans: [RichTextSpan] = [], x = margins.0 + startX() + max(0, extra)
@@ -595,12 +652,16 @@ public struct RichTextLayout: Sendable {
                 // unrounded line advances accumulate. Rounding the ascent first
                 // gives incorrect mixed-size and repeated-line spacing. This is
                 // point geometry, independent of SVG pixel size or rasterizer.
-                let baseline = drawingML ? (cursor + ascent).rounded() : cursor + ascent
+                // Guard exact half-point ties from binary accumulation error in
+                // fractional percentage pitches. Ordinary geometry is unchanged.
+                let baseline = drawingML ? (cursor + ascent + (calibratedMetric == nil ? 0 : 1e-9)).rounded() : cursor + ascent
                 if drawingML {
                     // Rounding and reduced/exact line spacing can place the last
                     // descent beyond the flow advance. Fitting must include that
                     // extent, without feeding it back into subsequent line pitch.
-                    measuredBottom = max(measuredBottom, baseline + naturalHeight - ascent)
+                    let bottom = calibratedMetric == nil
+                        ? baseline + naturalHeight - ascent : cursor + ascent + naturalDescent
+                    measuredBottom = max(measuredBottom, bottom)
                 }
                 output.append(RichTextLine(spans: spans, baseline: baseline,
                                            height: advance, width: lineWidth,
@@ -615,7 +676,8 @@ public struct RichTextLayout: Sendable {
                     // justifies this line; only the final paragraph line is exempt.
                     // Only an empty line uses its terminating break's metrics.
                     // A populated line keeps the metrics of its visible runs.
-                    emit(justify: true, emptyMetrics: (atom.ascent, atom.height, atom.drawingML))
+                    emit(justify: true, emptyMetrics: (atom.ascent, atom.height, atom.drawingML),
+                        emptySpacing: nativeSpacing ? spacingRunMetrics[atom.styleIndex] : nil)
                     index += 1; continue
                 }
                 if atom.tab {
@@ -661,7 +723,9 @@ public struct RichTextLayout: Sendable {
                     // when earlier lines contain text. Resolve this lazily.
                     let style = Self.resolve(text: "", properties: [end] + defaults,
                         theme: theme, defaultSize: defaultPointSize, scale: scale)
-                    emit(emptyMetrics: lineMetrics(face(style), size: style.fontSize))
+                    let metrics = face(style)
+                    emit(emptyMetrics: lineMetrics(metrics, size: style.fontSize),
+                        emptySpacing: spacingMetric(metrics, size: style.fontSize, style: style))
                 } else { emit() }
             }
             if paragraphIndex < paragraphs.count - 1 || useEdgeParagraphSpacing {

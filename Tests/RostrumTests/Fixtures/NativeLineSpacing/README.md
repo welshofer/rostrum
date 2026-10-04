@@ -1,0 +1,31 @@
+# Native explicit line spacing
+
+These independently authored python-pptx/OOXML cases measure PowerPoint's vertical line-spacing geometry. They extend the retained `NativeBreakMetrics` oracle. Expected marker origins come from native PDF text traces, never Rostrum output. The capture scripts check every visible marker, its order, and its glyph outline against the authored font. The unchanged 0.121 pt tolerance covers PowerPoint's 0.24 pt PDF coordinate grid.
+
+The root agent opened every deck in PowerPoint 16.113.3 without a repair prompt and exported locally using Best for printing with the online option disabled. Native PowerPoint did not save the source decks. Each manifest pins source and font hashes; each `native-metrics.json` pins the PDF and source provenance. Generator and extraction dependencies are research tools only, not runtime dependencies.
+
+## Captured rule and scope
+
+For left-to-right paragraphs accepted by the existing one-scalar printable-ASCII advance profile, with real Windows ascent/descent data and a single resolved font registration on each physical line, explicit point spacing rounds its declared pitch to whole points. Explicit percentages other than 100% use their natural line height times the percentage minus the authored reduction percentage points, when the remainder is positive. Exact spacing ignores reduction. Both use three quarters of the resulting pitch for the unrounded spacing ascent, and round the accumulated painted baseline. Center/bottom alignment uses the unrounded spacing extent plus the original natural descent; rounding this extent fails captured controls. Both calibrated exact and percentage spacing omit excess pitch below the final line: the final flow height excludes `max(0, pitch - naturalHeight)`, while still including the measured unrounded descent extent. Reduced and unreduced 150% center/bottom controls distinguish this from the rejected full-flow model.
+
+For percentage spacing, `compatLnSpc="0"` or `"false"` selects the real Windows ascent plus descent divided by units per em. True and omitted values use 1.2 times the metric point size in these native captures. The native omitted-value behavior is a compatibility observation, not a claim about the schema default.
+
+When a stored font scale differs from 100%, the vertical metric point size rounds the effective size to whole points. Unscaled authored fractional sizes retain their fractional vertical metrics. Normal and explicit 100% spacing, non-ASCII/RTL paragraphs, missing Windows data, and sizes that would round to zero retain the existing path. Percentages exhausted by reduction also retain that path; no native minimum is inferred. Multiple resolved registrations on one physical line, including mixed aliases, retain that path and emit an unsupported-text-property diagnostic. A single alias on its own uses the same calibrated geometry. Distinct registered faces cannot be treated as identical from their internal family metadata alone. Standalone font APIs and shaping are unchanged.
+
+This is a vertical-layout calibration. It does not change painted font size or horizontal advances: the PDF may paint a rounded size even when vertical metrics use the authored fraction. Capture records retain actual PDF font sizes separately. Authored `normAutofit` scales are controls, not evidence that PowerPoint chose those fit settings. Public fitting remains computed and uses the shared layout.
+
+## Evidence boundaries
+
+The nine fixture groups contain 85 cases: 83 use the repository's licensed DejaVu Sans regular face and run on all platforms; two followup controls use the pinned macOS Arial face and are skipped when that system face is unavailable. The 18 earlier `NativeBreakMetrics` cases remain strict regressions. The old exact12/150% known issues become strict assertions with the same tolerance.
+
+`baseline-library-comparison.json` retains the pre-change counterexample: 8 of 71 cases passed, with 120 marker-baseline failures. `math-proof.json` compares the independently derived model against all 103 captured cases and retains rejected extent/descent models. Generic 30 pt / exact48.75 controls are not the unavailable private imported-title artifact. Existing synthetic imported-title regressions remain, with only native-supported spacing expectations updated.
+
+Primary context: [Microsoft compatible line spacing API](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.drawing.bodyproperties.compatiblelinespacing?view=openxml-3.0.1) and [Microsoft OOXML line-spacing implementation note](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-oe376/405f622a-7f16-400a-8e57-bdb08755f053). These describe properties, not the measured algorithm above.
+
+## Reproduction and verification
+
+Run `python3 <group>/generate.py` to create independent OOXML inputs, and have PowerPoint export that distinct source to `<group>/powerpoint.pdf`. Run `python3 <group>/capture.py` to check PDF outlines and extract origins. The scripts require python-pptx, lxml, fontTools and PyMuPDF; the followup Arial controls require the pinned macOS system face. Do not overwrite the retained native source/PDF evidence merely to regenerate ZIP timestamps. `native-capture-receipts.json` pins all nine source/PDF pairs.
+
+`python3 math-proof.py` reproduces the independent arithmetic and rejected models on the 103 cases (including the earlier 18-case fixture). `math-proof-before-percentage-extent.json` retains the 97/99 intermediate result which motivated the final four controls. `baseline-probe.swift` is the read-only library observation probe used before implementation; the six original groups retain its numeric outputs. Native expectations do not depend on this probe.
+
+`swift test --jobs 2 --filter 'NativeLineSpacingTests|NativeBreakMetricsTests|DrawingMLLineMetricsTests|RichTextParagraphMetricsTests'` checks native marker count/order/origins, inherited properties, actual registry identity, missing glyph/control rejection, tiny scales, generic fallback, diagnostics, both public fitting APIs, save/reopen and repeated SVG rendering. The fitting test distinguishes a computed ladder choice from a native-selected scale. The original normal-spacing, tab, line-boundary and ligature oracle tolerances are unchanged. Final command receipts are in `verification.json`.

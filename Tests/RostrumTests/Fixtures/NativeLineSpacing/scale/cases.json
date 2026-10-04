@@ -1,0 +1,219 @@
+[
+  {
+    "name": "exact18-18-scale50",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "points": 18
+        }
+      }
+    ],
+    "fontScale": 50,
+    "page": 0,
+    "x": 30,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "exact18-18-scale75",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "points": 18
+        }
+      }
+    ],
+    "fontScale": 75,
+    "page": 0,
+    "x": 380,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct150-18-scale50",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "fontScale": 50,
+    "page": 0,
+    "x": 30,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct150-18-scale75",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "fontScale": 75,
+    "page": 0,
+    "x": 380,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct150-consecutive6-36-scale50",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 6
+          },
+          {
+            "kind": "break",
+            "size": 36
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "fontScale": 50,
+    "page": 0,
+    "x": 30,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "exact18-trailingend6-scale50",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          }
+        ],
+        "default": null,
+        "end": 6,
+        "spacing": {
+          "points": 18
+        }
+      },
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "points": 18
+        }
+      }
+    ],
+    "fontScale": 50,
+    "page": 0,
+    "x": 380,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  }
+]

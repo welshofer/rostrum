@@ -1,0 +1,565 @@
+[
+  {
+    "name": "exact10-single12",
+    "errors": [
+      2.9200439453125
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact10-break12",
+    "errors": [
+      2.9200439453125,
+      3.08001708984375
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact12-single12",
+    "errors": [
+      2.1199951171875
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact12-break12",
+    "errors": [
+      2.1199951171875,
+      2.1199951171875
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact14p4-single12",
+    "errors": [
+      0.1199951171875
+    ],
+    "passes": true
+  },
+  {
+    "name": "exact14p4-break12",
+    "errors": [
+      0.1199951171875,
+      0.9599609375
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact18-single12",
+    "errors": [
+      -3.0799560546875
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact18-break12",
+    "errors": [
+      -3.0799560546875,
+      -3.0799560546875
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact24-single12",
+    "errors": [
+      -7.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact24-break12",
+    "errors": [
+      -7.0,
+      -7.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct75-single12",
+    "errors": [
+      3.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct75-break12",
+    "errors": [
+      3.0,
+      2.9599609375
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct100-single12",
+    "errors": [
+      0.0400390625
+    ],
+    "passes": true
+  },
+  {
+    "name": "pct100-break12",
+    "errors": [
+      0.0400390625,
+      -0.0799560546875
+    ],
+    "passes": true
+  },
+  {
+    "name": "pct150-single12",
+    "errors": [
+      -5.0799560546875
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-break12",
+    "errors": [
+      -5.0799560546875,
+      -4.9200439453125
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct200-single12",
+    "errors": [
+      -10.9200439453125
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct200-break12",
+    "errors": [
+      -10.9200439453125,
+      -10.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact12-paragraph12",
+    "errors": [
+      1.96002197265625,
+      1.96002197265625
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact18-paragraph12",
+    "errors": [
+      -3.0799560546875,
+      -3.0799560546875
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct75-paragraph12",
+    "errors": [
+      3.0799560546875,
+      3.0400390625
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-paragraph12",
+    "errors": [
+      -5.0799560546875,
+      -4.9200439453125
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact18-mixed12-24",
+    "errors": [
+      -3.0,
+      9.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact18-mixed24-12",
+    "errors": [
+      9.0,
+      -3.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-mixed12-24",
+    "errors": [
+      -5.0,
+      -8.91998291015625
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-mixed24-12",
+    "errors": [
+      -9.0799560546875,
+      -3.96002197265625
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact12-break12-ctr",
+    "errors": [
+      1.0012361052852299,
+      1.0012361052852299
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact12-break12-b",
+    "errors": [
+      0.12258939807045977,
+      0.12258939807045977
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact24-break12-ctr",
+    "errors": [
+      -3.639941406250003,
+      -3.639941406250003
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact24-break12-b",
+    "errors": [
+      -0.4400390625000057,
+      -0.4400390625000057
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact12-compat0",
+    "errors": [
+      1.96002197265625,
+      1.96002197265625
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact12-compat1",
+    "errors": [
+      1.96002197265625,
+      1.96002197265625
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-compat0",
+    "errors": [
+      -5.0799560546875,
+      -3.9599609375
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-compat1",
+    "errors": [
+      -5.0799560546875,
+      -4.9200439453125
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact48p75-single30-t",
+    "errors": [
+      -8.0400390625
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact48p75-single30-ctr",
+    "errors": [
+      -4.026816963349404
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact48p75-single30-b",
+    "errors": [
+      -0.33360218841755795
+    ],
+    "passes": false
+  },
+  {
+    "name": "dejavu-exact21.9",
+    "errors": [
+      -5.9599609375
+    ],
+    "passes": false
+  },
+  {
+    "name": "dejavu-exact48.05",
+    "errors": [
+      -24.91998291015625
+    ],
+    "passes": false
+  },
+  {
+    "name": "dejavu-18-omitted",
+    "errors": [
+      -0.0400390625,
+      0.1199951171875
+    ],
+    "passes": true
+  },
+  {
+    "name": "dejavu-18-pct100",
+    "errors": [
+      -0.0400390625,
+      0.1199951171875
+    ],
+    "passes": true
+  },
+  {
+    "name": "dejavu-24-omitted",
+    "errors": [
+      0.1199951171875,
+      0.080078125
+    ],
+    "passes": true
+  },
+  {
+    "name": "dejavu-24-pct100",
+    "errors": [
+      0.1199951171875,
+      0.080078125
+    ],
+    "passes": true
+  },
+  {
+    "name": "exact14p4-three-compat0",
+    "errors": [
+      0.0400390625,
+      1.1199951171875,
+      0.96002197265625
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact14p4-three-compat1",
+    "errors": [
+      0.0400390625,
+      1.1199951171875,
+      0.96002197265625
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-three-compat0",
+    "errors": [
+      -5.0799560546875,
+      -3.9599609375,
+      -3.0799560546875
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-three-compat1",
+    "errors": [
+      -5.0799560546875,
+      -4.9200439453125,
+      -4.0400390625
+    ],
+    "passes": false
+  },
+  {
+    "name": "arial-exact21p9",
+    "errors": [
+      -4.8800048828125
+    ],
+    "passes": false
+  },
+  {
+    "name": "arial-pct150",
+    "errors": [
+      -3.9200439453125,
+      -5.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-18-four-compatomitted",
+    "errors": [
+      -6.91998291015625,
+      -7.03997802734375,
+      -6.96002197265625,
+      -8.08001708984375
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-18-four-compat0",
+    "errors": [
+      -6.91998291015625,
+      -4.8800048828125,
+      -4.08001708984375,
+      -4.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-18-four-compat1",
+    "errors": [
+      -7.0,
+      -6.8800048828125,
+      -7.0400390625,
+      -7.9200439453125
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct125-18-four-compatomitted",
+    "errors": [
+      -2.9200439453125,
+      -3.0400390625,
+      -2.9200439453125,
+      -3.0400390625
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct125-18-four-compat0",
+    "errors": [
+      -3.0,
+      -1.919921875,
+      -1.080078125,
+      0.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct125-18-four-compat1",
+    "errors": [
+      -3.0,
+      -2.8800048828125,
+      -3.0,
+      -2.8800048828125
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact60-size18-b",
+    "errors": [
+      -0.2799926757812443
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact60-size18-ctr",
+    "errors": [
+      -14.039990234374997
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact60-size27-b",
+    "errors": [
+      0.07575290347105579
+    ],
+    "passes": true
+  },
+  {
+    "name": "exact60-size27-ctr",
+    "errors": [
+      -9.402125989670722
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact18-18-scale50",
+    "errors": [
+      -5.0799560546875,
+      -5.0799560546875
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact18-18-scale75",
+    "errors": [
+      -1.0799560546875,
+      -1.0799560546875
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-18-scale50",
+    "errors": [
+      -3.0,
+      -3.0799560546875
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-18-scale75",
+    "errors": [
+      -5.9599609375,
+      -6.9200439453125
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-consecutive6-36-scale50",
+    "errors": [
+      -2.0,
+      -1.9599609375
+    ],
+    "passes": false
+  },
+  {
+    "name": "exact18-trailingend6-scale50",
+    "errors": [
+      -8.0,
+      -8.0
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-size13.4-unscaled",
+    "errors": [
+      -4.91998291015625,
+      -4.91998291015625
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-size13.5-unscaled",
+    "errors": [
+      -4.91998291015625,
+      -5.8800048828125
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-size13.6-unscaled",
+    "errors": [
+      -5.0,
+      -5.9599609375
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct150-size20-scale67",
+    "errors": [
+      -5.0,
+      -4.0400390625
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct70-size18-ctr",
+    "errors": [
+      3.191917634490352
+    ],
+    "passes": false
+  },
+  {
+    "name": "pct70-size18-b",
+    "errors": [
+      0.26384015179320386
+    ],
+    "passes": false
+  }
+]

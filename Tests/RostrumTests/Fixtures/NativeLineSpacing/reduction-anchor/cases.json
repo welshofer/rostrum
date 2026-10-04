@@ -1,0 +1,182 @@
+[
+  {
+    "name": "exact18-18-scale100-reduction20-ctr",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "points": 18
+        }
+      }
+    ],
+    "fontScale": 100,
+    "lineSpacingReduction": 20,
+    "anchor": "ctr",
+    "page": 0,
+    "x": 30,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "exact18-18-scale100-reduction20-b",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "points": 18
+        }
+      }
+    ],
+    "fontScale": 100,
+    "lineSpacingReduction": 20,
+    "anchor": "b",
+    "page": 0,
+    "x": 380,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct150-18-scale75-reduction20-ctr",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "fontScale": 75,
+    "lineSpacingReduction": 20,
+    "anchor": "ctr",
+    "page": 0,
+    "x": 30,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct150-18-scale75-reduction20-b",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 18
+          },
+          {
+            "kind": "break",
+            "size": 18
+          },
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "fontScale": 75,
+    "lineSpacingReduction": 20,
+    "anchor": "b",
+    "page": 0,
+    "x": 380,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  }
+]

@@ -25,12 +25,15 @@ import Testing
         #expect(font.descent(pointSize: 20) == 5)
         #expect(font.lineHeight(pointSize: 20) == 22)
         #expect(abs(try #require(font.drawingMLAscentShare) - 1854.0 / 2288) < 1e-12)
+        #expect(abs(try #require(font.drawingMLWindowsHeight) - 2288.0 / 1000) < 1e-12)
     }
     @Test func absentTruncatedAndZeroWindowsMetricsRetainFallback() throws {
         for length in [0, 62, 64, 74, 75, 76, 77] {
             #expect(try metrics(length: length).drawingMLAscentShare == nil)
+            #expect(try metrics(length: length).drawingMLWindowsHeight == nil)
         }
         #expect(try metrics(ascent: 0, descent: 0).drawingMLAscentShare == nil)
+        #expect(try metrics(ascent: 0, descent: 0).drawingMLWindowsHeight == nil)
         #expect(try metrics(ascent: 0, descent: 65535).drawingMLAscentShare == nil)
         #expect(try metrics(ascent: 65535, descent: 65535).drawingMLAscentShare == 0.5)
         #expect(try metrics(ascent: 65535, descent: 0).drawingMLAscentShare == 1)
@@ -60,11 +63,11 @@ import Testing
         let font = try metrics()
         let exact = RichTextLayout(textBody: try body(sizes: [24, 14], paragraph: "<a:lnSpc><a:spcPts val=\"1000\"/></a:lnSpc>"),
                                    width: 300, height: 300, fallbackMetrics: font)
-        #expect(exact.lines.map(\.baseline) == [23, 24])
+        #expect(exact.lines.map(\.baseline) == [8, 18])
         #expect(exact.lines.map(\.height) == [10, 10])
         let proportional = RichTextLayout(textBody: try body(sizes: [24, 14], paragraph: "<a:lnSpc><a:spcPct val=\"200000\"/></a:lnSpc>"),
                                           width: 300, height: 300, fallbackMetrics: font)
-        #expect(proportional.lines.map(\.baseline) == [23, 71])
+        #expect(proportional.lines.map(\.baseline) == [43, 83])
         let xml = try body(sizes: [24, 14], autofit: "<a:normAutofit fontScale=\"50000\" lnSpcReduction=\"20000\"/>")
         let reduced = RichTextLayout(textBody: xml, width: 300, height: 20, fallbackMetrics: font)
         #expect(reduced.lines.map(\.baseline) == [12, 18])
@@ -85,8 +88,9 @@ import Testing
         #expect(layout.lines[0].baseline == 23.04)
     }
     @Test func exactSpacingHasNoTrailingGapInAnchoredText() throws {
-        // Native reference: the imported 30pt title uses 48.75pt exact
-        // spacing. Its final 36pt line box must not retain a 12.75pt gap.
+        // The owned NativeLineSpacing controls independently establish the
+        // rounded exact pitch and unrounded spacing extent. They are not the
+        // unavailable private imported title used by the original regression.
         let font = try metrics(ascent: 800, descent: 200)
         for anchor in ["t", "ctr", "b"] {
             for sizes in [[30], [30, 30], [30, 20]] {
@@ -96,13 +100,13 @@ import Testing
                 let layout = RichTextLayout(textBody: xml, width: 300, height: 100,
                                             fallbackMetrics: font)
                 let natural = Double(sizes.last!) * 1.2
-                let lastStart = Double(sizes.count - 1) * 48.75
-                let lastBaseline = (lastStart + natural * 0.8).rounded()
-                let extent = max(lastStart + natural, lastBaseline + natural * 0.2)
+                let lastStart = Double(sizes.count - 1) * 49
+                let lastBaseline = (lastStart + 36.75).rounded()
+                let extent = max(lastStart + natural, lastStart + 36.75 + natural * 0.2)
                 #expect(abs(layout.contentHeight - extent) < 1e-9)
                 let offset = anchor == "b" ? 100 - extent : anchor == "ctr" ? (100 - extent) / 2 : 0
                 #expect(abs(layout.lines.last!.baseline - lastBaseline - offset) < 1e-9)
-                #expect(layout.lines.allSatisfy { $0.height == 48.75 })
+                #expect(layout.lines.allSatisfy { $0.height == 49 })
                 #expect(RichTextLayout(textBody: xml, width: 300, height: extent,
                                       fallbackMetrics: font).fits)
             }

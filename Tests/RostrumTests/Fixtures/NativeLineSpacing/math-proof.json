@@ -1,0 +1,4747 @@
+{
+  "status": "research hypothesis, not source implementation",
+  "metrics": {
+    "DejaVu Sans": {
+      "unitsPerEm": 2048,
+      "winAscent": 1901,
+      "winDescent": 483
+    },
+    "Arial": {
+      "unitsPerEm": 2048,
+      "winAscent": 1854,
+      "winDescent": 434
+    }
+  },
+  "cases": [
+    {
+      "name": "exact10-single12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 8,
+          "advance": 10,
+          "ascent": 7.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        8.0799560546875
+      ],
+      "errors": [
+        -0.0799560546875
+      ],
+      "extent": 10.41744966442953,
+      "passes": true
+    },
+    {
+      "name": "exact10-break12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 8,
+          "advance": 10,
+          "ascent": 7.5,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 18,
+          "advance": 10,
+          "ascent": 7.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        8.0799560546875,
+        17.91998291015625
+      ],
+      "errors": [
+        -0.0799560546875,
+        0.08001708984375
+      ],
+      "extent": 20.41744966442953,
+      "passes": true
+    },
+    {
+      "name": "exact12-single12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 9,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        8.8800048828125
+      ],
+      "errors": [
+        0.1199951171875
+      ],
+      "extent": 12,
+      "passes": true
+    },
+    {
+      "name": "exact12-break12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 9,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 21,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        8.8800048828125,
+        20.8800048828125
+      ],
+      "errors": [
+        0.1199951171875,
+        0.1199951171875
+      ],
+      "extent": 24,
+      "passes": true
+    },
+    {
+      "name": "exact14p4-single12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14,
+          "ascent": 10.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.8800048828125
+      ],
+      "errors": [
+        0.1199951171875
+      ],
+      "extent": 14,
+      "passes": true
+    },
+    {
+      "name": "exact14p4-break12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14,
+          "ascent": 10.5,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 25,
+          "advance": 14,
+          "ascent": 10.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.8800048828125,
+        25.0400390625
+      ],
+      "errors": [
+        0.1199951171875,
+        -0.0400390625
+      ],
+      "extent": 28,
+      "passes": true
+    },
+    {
+      "name": "exact18-single12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        14.0799560546875
+      ],
+      "errors": [
+        -0.0799560546875
+      ],
+      "extent": 16.41744966442953,
+      "passes": true
+    },
+    {
+      "name": "exact18-break12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 32,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        14.0799560546875,
+        32.0799560546875
+      ],
+      "errors": [
+        -0.0799560546875,
+        -0.0799560546875
+      ],
+      "extent": 34.417449664429526,
+      "passes": true
+    },
+    {
+      "name": "exact24-single12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 18,
+          "advance": 24,
+          "ascent": 18.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        18.0
+      ],
+      "errors": [
+        0.0
+      ],
+      "extent": 20.91744966442953,
+      "passes": true
+    },
+    {
+      "name": "exact24-break12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 18,
+          "advance": 24,
+          "ascent": 18.0,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 42,
+          "advance": 24,
+          "ascent": 18.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        18.0,
+        42.0
+      ],
+      "errors": [
+        0.0,
+        0.0
+      ],
+      "extent": 44.917449664429526,
+      "passes": true
+    },
+    {
+      "name": "pct75-single12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 8,
+          "advance": 10.8,
+          "ascent": 8.100000000000001,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        8.0
+      ],
+      "errors": [
+        0.0
+      ],
+      "extent": 11.017449664429531,
+      "passes": true
+    },
+    {
+      "name": "pct75-break12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 8,
+          "advance": 10.8,
+          "ascent": 8.100000000000001,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 19,
+          "advance": 10.8,
+          "ascent": 8.100000000000001,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        8.0,
+        19.0400390625
+      ],
+      "errors": [
+        0.0,
+        -0.0400390625
+      ],
+      "extent": 21.81744966442953,
+      "passes": true
+    },
+    {
+      "name": "pct100-single12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.9599609375
+      ],
+      "errors": [
+        0.0400390625
+      ],
+      "extent": 14.399999999999999,
+      "passes": true
+    },
+    {
+      "name": "pct100-break12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 26,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.9599609375,
+        26.0799560546875
+      ],
+      "errors": [
+        0.0400390625,
+        -0.0799560546875
+      ],
+      "extent": 28.91744966442953,
+      "passes": true
+    },
+    {
+      "name": "pct150-single12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        16.0799560546875
+      ],
+      "errors": [
+        -0.0799560546875
+      ],
+      "extent": 19.117449664429532,
+      "passes": true
+    },
+    {
+      "name": "pct150-break12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 38,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        16.0799560546875,
+        37.9200439453125
+      ],
+      "errors": [
+        -0.0799560546875,
+        0.0799560546875
+      ],
+      "extent": 40.71744966442954,
+      "passes": true
+    },
+    {
+      "name": "pct200-single12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 22,
+          "advance": 28.799999999999997,
+          "ascent": 21.599999999999998,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        21.9200439453125
+      ],
+      "errors": [
+        0.0799560546875
+      ],
+      "extent": 24.517449664429527,
+      "passes": true
+    },
+    {
+      "name": "pct200-break12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 22,
+          "advance": 28.799999999999997,
+          "ascent": 21.599999999999998,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 50,
+          "advance": 28.799999999999997,
+          "ascent": 21.599999999999998,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        21.9200439453125,
+        50.0
+      ],
+      "errors": [
+        0.0799560546875,
+        0.0
+      ],
+      "extent": 53.31744966442952,
+      "passes": true
+    },
+    {
+      "name": "exact12-paragraph12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 9,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 21,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        9.03997802734375,
+        21.03997802734375
+      ],
+      "errors": [
+        -0.03997802734375,
+        -0.03997802734375
+      ],
+      "extent": 24,
+      "passes": true
+    },
+    {
+      "name": "exact18-paragraph12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 32,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        14.0799560546875,
+        32.0799560546875
+      ],
+      "errors": [
+        -0.0799560546875,
+        -0.0799560546875
+      ],
+      "extent": 34.417449664429526,
+      "passes": true
+    },
+    {
+      "name": "pct75-paragraph12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 8,
+          "advance": 10.8,
+          "ascent": 8.100000000000001,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 19,
+          "advance": 10.8,
+          "ascent": 8.100000000000001,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        7.9200439453125,
+        18.9599609375
+      ],
+      "errors": [
+        0.0799560546875,
+        0.0400390625
+      ],
+      "extent": 21.81744966442953,
+      "passes": true
+    },
+    {
+      "name": "pct150-paragraph12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 38,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        16.0799560546875,
+        37.9200439453125
+      ],
+      "errors": [
+        -0.0799560546875,
+        0.0799560546875
+      ],
+      "extent": 40.71744966442954,
+      "passes": true
+    },
+    {
+      "name": "exact18-mixed12-24",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 32,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 5.834899328859059
+        }
+      ],
+      "native": [
+        14.0,
+        32.0
+      ],
+      "errors": [
+        0.0,
+        0.0
+      ],
+      "extent": 37.33489932885906,
+      "passes": true
+    },
+    {
+      "name": "exact18-mixed24-12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 5.834899328859059
+        },
+        {
+          "text": "B",
+          "baseline": 32,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        14.0,
+        32.0
+      ],
+      "errors": [
+        0.0,
+        0.0
+      ],
+      "extent": 34.417449664429526,
+      "passes": true
+    },
+    {
+      "name": "pct150-mixed12-24",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 54,
+          "advance": 43.2,
+          "ascent": 32.400000000000006,
+          "descent": 5.834899328859059
+        }
+      ],
+      "native": [
+        16.0,
+        53.91998291015625
+      ],
+      "errors": [
+        0.0,
+        0.08001708984375
+      ],
+      "extent": 59.834899328859066,
+      "passes": true
+    },
+    {
+      "name": "pct150-mixed24-12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 32,
+          "advance": 43.2,
+          "ascent": 32.400000000000006,
+          "descent": 5.834899328859059
+        },
+        {
+          "text": "B",
+          "baseline": 59,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        32.0799560546875,
+        58.96002197265625
+      ],
+      "errors": [
+        -0.0799560546875,
+        0.03997802734375
+      ],
+      "extent": 62.31744966442953,
+      "passes": true
+    },
+    {
+      "name": "exact12-break12-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 77.0,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 89.0,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        77.0400390625,
+        89.0400390625
+      ],
+      "errors": [
+        -0.0400390625,
+        -0.0400390625
+      ],
+      "extent": 24,
+      "passes": true
+    },
+    {
+      "name": "exact12-break12-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 145.0,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 157.0,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        144.9599609375,
+        156.9599609375
+      ],
+      "errors": [
+        0.0400390625,
+        0.0400390625
+      ],
+      "extent": 24,
+      "passes": true
+    },
+    {
+      "name": "exact24-break12-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 75.54127516778524,
+          "advance": 24,
+          "ascent": 18.0,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 99.54127516778524,
+          "advance": 24,
+          "ascent": 18.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        75.43994140625,
+        99.43994140625
+      ],
+      "errors": [
+        0.1013337615352441,
+        0.1013337615352441
+      ],
+      "extent": 44.917449664429526,
+      "passes": true
+    },
+    {
+      "name": "exact24-break12-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 133.0825503355705,
+          "advance": 24,
+          "ascent": 18.0,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 157.0825503355705,
+          "advance": 24,
+          "ascent": 18.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        133.0400390625,
+        157.0400390625
+      ],
+      "errors": [
+        0.04251127307048819,
+        0.04251127307048819
+      ],
+      "extent": 44.917449664429526,
+      "passes": true
+    },
+    {
+      "name": "exact12-compat0",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 9,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.830078125
+        },
+        {
+          "text": "B",
+          "baseline": 21,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.830078125
+        }
+      ],
+      "native": [
+        9.03997802734375,
+        21.03997802734375
+      ],
+      "errors": [
+        -0.03997802734375,
+        -0.03997802734375
+      ],
+      "extent": 24,
+      "passes": true
+    },
+    {
+      "name": "exact12-compat1",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 9,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 21,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        9.03997802734375,
+        21.03997802734375
+      ],
+      "errors": [
+        -0.03997802734375,
+        -0.03997802734375
+      ],
+      "extent": 24,
+      "passes": true
+    },
+    {
+      "name": "pct150-compat0",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 20.953125,
+          "ascent": 15.71484375,
+          "descent": 2.830078125
+        },
+        {
+          "text": "B",
+          "baseline": 37,
+          "advance": 20.953125,
+          "ascent": 15.71484375,
+          "descent": 2.830078125
+        }
+      ],
+      "native": [
+        16.0799560546875,
+        36.9599609375
+      ],
+      "errors": [
+        -0.0799560546875,
+        0.0400390625
+      ],
+      "extent": 39.498046875,
+      "passes": true
+    },
+    {
+      "name": "pct150-compat1",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 38,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        16.0799560546875,
+        37.9200439453125
+      ],
+      "errors": [
+        -0.0799560546875,
+        0.0799560546875
+      ],
+      "extent": 40.71744966442954,
+      "passes": true
+    },
+    {
+      "name": "exact48p75-single30-t",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 37,
+          "advance": 49,
+          "ascent": 36.75,
+          "descent": 7.293624161073826
+        }
+      ],
+      "native": [
+        37.0400390625
+      ],
+      "errors": [
+        -0.0400390625
+      ],
+      "extent": 44.04362416107382,
+      "passes": true
+    },
+    {
+      "name": "exact48p75-single30-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 94.9781879194631,
+          "advance": 49,
+          "ascent": 36.75,
+          "descent": 7.293624161073826
+        }
+      ],
+      "native": [
+        94.8800048828125
+      ],
+      "errors": [
+        0.09818303665059602
+      ],
+      "extent": 44.04362416107382,
+      "passes": true
+    },
+    {
+      "name": "exact48p75-single30-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 152.9563758389262,
+          "advance": 49,
+          "ascent": 36.75,
+          "descent": 7.293624161073826
+        }
+      ],
+      "native": [
+        153.03997802734375
+      ],
+      "errors": [
+        -0.08360218841755795
+      ],
+      "extent": 44.04362416107382,
+      "passes": true
+    },
+    {
+      "name": "dejavu-exact21.9",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 17,
+          "advance": 22,
+          "ascent": 16.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        16.9599609375
+      ],
+      "errors": [
+        0.0400390625
+      ],
+      "extent": 19.41744966442953,
+      "passes": true
+    },
+    {
+      "name": "dejavu-exact48.05",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 36,
+          "advance": 48,
+          "ascent": 36.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        35.91998291015625
+      ],
+      "errors": [
+        0.08001708984375
+      ],
+      "extent": 38.917449664429526,
+      "passes": true
+    },
+    {
+      "name": "dejavu-18-omitted",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 17,
+          "advance": 21.599999999999998,
+          "ascent": 17.2238255033557,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 39,
+          "advance": 21.599999999999998,
+          "ascent": 17.2238255033557,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        17.0400390625,
+        38.8800048828125
+      ],
+      "errors": [
+        -0.0400390625,
+        0.1199951171875
+      ],
+      "extent": 43.376174496644296,
+      "passes": true
+    },
+    {
+      "name": "dejavu-18-pct100",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 17,
+          "advance": 21.599999999999998,
+          "ascent": 17.2238255033557,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 39,
+          "advance": 21.599999999999998,
+          "ascent": 17.2238255033557,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        17.0400390625,
+        38.8800048828125
+      ],
+      "errors": [
+        -0.0400390625,
+        0.1199951171875
+      ],
+      "extent": 43.376174496644296,
+      "passes": true
+    },
+    {
+      "name": "dejavu-24-omitted",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 23,
+          "advance": 28.799999999999997,
+          "ascent": 22.965100671140938,
+          "descent": 5.834899328859059
+        },
+        {
+          "text": "B",
+          "baseline": 52,
+          "advance": 28.799999999999997,
+          "ascent": 22.965100671140938,
+          "descent": 5.834899328859059
+        }
+      ],
+      "native": [
+        22.8800048828125,
+        51.919921875
+      ],
+      "errors": [
+        0.1199951171875,
+        0.080078125
+      ],
+      "extent": 57.83489932885906,
+      "passes": true
+    },
+    {
+      "name": "dejavu-24-pct100",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 23,
+          "advance": 28.799999999999997,
+          "ascent": 22.965100671140938,
+          "descent": 5.834899328859059
+        },
+        {
+          "text": "B",
+          "baseline": 52,
+          "advance": 28.799999999999997,
+          "ascent": 22.965100671140938,
+          "descent": 5.834899328859059
+        }
+      ],
+      "native": [
+        22.8800048828125,
+        51.919921875
+      ],
+      "errors": [
+        0.1199951171875,
+        0.080078125
+      ],
+      "extent": 57.83489932885906,
+      "passes": true
+    },
+    {
+      "name": "exact14p4-three-compat0",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14,
+          "ascent": 10.5,
+          "descent": 2.830078125
+        },
+        {
+          "text": "B",
+          "baseline": 25,
+          "advance": 14,
+          "ascent": 10.5,
+          "descent": 2.830078125
+        },
+        {
+          "text": "Z",
+          "baseline": 39,
+          "advance": 14,
+          "ascent": 10.5,
+          "descent": 2.830078125
+        }
+      ],
+      "native": [
+        10.9599609375,
+        24.8800048828125,
+        39.03997802734375
+      ],
+      "errors": [
+        0.0400390625,
+        0.1199951171875,
+        -0.03997802734375
+      ],
+      "extent": 41.96875,
+      "passes": true
+    },
+    {
+      "name": "exact14p4-three-compat1",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14,
+          "ascent": 10.5,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 25,
+          "advance": 14,
+          "ascent": 10.5,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 39,
+          "advance": 14,
+          "ascent": 10.5,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.9599609375,
+        24.8800048828125,
+        39.03997802734375
+      ],
+      "errors": [
+        0.0400390625,
+        0.1199951171875,
+        -0.03997802734375
+      ],
+      "extent": 42,
+      "passes": true
+    },
+    {
+      "name": "pct150-three-compat0",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 20.953125,
+          "ascent": 15.71484375,
+          "descent": 2.830078125
+        },
+        {
+          "text": "B",
+          "baseline": 37,
+          "advance": 20.953125,
+          "ascent": 15.71484375,
+          "descent": 2.830078125
+        },
+        {
+          "text": "Z",
+          "baseline": 58,
+          "advance": 20.953125,
+          "ascent": 15.71484375,
+          "descent": 2.830078125
+        }
+      ],
+      "native": [
+        16.0799560546875,
+        36.9599609375,
+        58.0799560546875
+      ],
+      "errors": [
+        -0.0799560546875,
+        0.0400390625,
+        -0.0799560546875
+      ],
+      "extent": 60.451171875,
+      "passes": true
+    },
+    {
+      "name": "pct150-three-compat1",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 38,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 59,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        16.0799560546875,
+        37.9200439453125,
+        59.0400390625
+      ],
+      "errors": [
+        -0.0799560546875,
+        0.0799560546875,
+        -0.0400390625
+      ],
+      "extent": 62.31744966442953,
+      "passes": true
+    },
+    {
+      "name": "arial-exact21p9",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 17,
+          "advance": 22,
+          "ascent": 16.5,
+          "descent": 2.731468531468531
+        }
+      ],
+      "native": [
+        16.8800048828125
+      ],
+      "errors": [
+        0.1199951171875
+      ],
+      "extent": 19.23146853146853,
+      "passes": true
+    },
+    {
+      "name": "arial-pct150",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.731468531468531
+        },
+        {
+          "text": "B",
+          "baseline": 38,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.731468531468531
+        }
+      ],
+      "native": [
+        15.9200439453125,
+        38.0
+      ],
+      "errors": [
+        0.0799560546875,
+        0.0
+      ],
+      "extent": 40.53146853146853,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-four-compatomitted",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 24,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 57,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 89,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "A",
+          "baseline": 122,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        23.91998291015625,
+        57.03997802734375,
+        88.96002197265625,
+        122.08001708984375
+      ],
+      "errors": [
+        0.08001708984375,
+        -0.03997802734375,
+        0.03997802734375,
+        -0.08001708984375
+      ],
+      "extent": 125.87617449664428,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-four-compat0",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 24,
+          "advance": 31.4296875,
+          "ascent": 23.572265625,
+          "descent": 4.2451171875
+        },
+        {
+          "text": "B",
+          "baseline": 55,
+          "advance": 31.4296875,
+          "ascent": 23.572265625,
+          "descent": 4.2451171875
+        },
+        {
+          "text": "Z",
+          "baseline": 86,
+          "advance": 31.4296875,
+          "ascent": 23.572265625,
+          "descent": 4.2451171875
+        },
+        {
+          "text": "A",
+          "baseline": 118,
+          "advance": 31.4296875,
+          "ascent": 23.572265625,
+          "descent": 4.2451171875
+        }
+      ],
+      "native": [
+        23.91998291015625,
+        54.8800048828125,
+        86.08001708984375,
+        118.0
+      ],
+      "errors": [
+        0.08001708984375,
+        0.1199951171875,
+        -0.08001708984375,
+        0.0
+      ],
+      "extent": 122.1064453125,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-four-compat1",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 24,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 57,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 89,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "A",
+          "baseline": 122,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        24.0,
+        56.8800048828125,
+        89.0400390625,
+        121.9200439453125
+      ],
+      "errors": [
+        0.0,
+        0.1199951171875,
+        -0.0400390625,
+        0.0799560546875
+      ],
+      "extent": 125.87617449664428,
+      "passes": true
+    },
+    {
+      "name": "pct125-18-four-compatomitted",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 20,
+          "advance": 26.999999999999996,
+          "ascent": 20.249999999999996,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 47,
+          "advance": 26.999999999999996,
+          "ascent": 20.249999999999996,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 74,
+          "advance": 26.999999999999996,
+          "ascent": 20.249999999999996,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "A",
+          "baseline": 101,
+          "advance": 26.999999999999996,
+          "ascent": 20.249999999999996,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        19.9200439453125,
+        47.0400390625,
+        73.9200439453125,
+        101.0400390625
+      ],
+      "errors": [
+        0.0799560546875,
+        -0.0400390625,
+        0.0799560546875,
+        -0.0400390625
+      ],
+      "extent": 105.62617449664428,
+      "passes": true
+    },
+    {
+      "name": "pct125-18-four-compat0",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 20,
+          "advance": 26.19140625,
+          "ascent": 19.6435546875,
+          "descent": 4.2451171875
+        },
+        {
+          "text": "B",
+          "baseline": 46,
+          "advance": 26.19140625,
+          "ascent": 19.6435546875,
+          "descent": 4.2451171875
+        },
+        {
+          "text": "Z",
+          "baseline": 72,
+          "advance": 26.19140625,
+          "ascent": 19.6435546875,
+          "descent": 4.2451171875
+        },
+        {
+          "text": "A",
+          "baseline": 98,
+          "advance": 26.19140625,
+          "ascent": 19.6435546875,
+          "descent": 4.2451171875
+        }
+      ],
+      "native": [
+        20.0,
+        45.919921875,
+        72.080078125,
+        98.0
+      ],
+      "errors": [
+        0.0,
+        0.080078125,
+        -0.080078125,
+        0.0
+      ],
+      "extent": 102.462890625,
+      "passes": true
+    },
+    {
+      "name": "pct125-18-four-compat1",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 20,
+          "advance": 26.999999999999996,
+          "ascent": 20.249999999999996,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 47,
+          "advance": 26.999999999999996,
+          "ascent": 20.249999999999996,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 74,
+          "advance": 26.999999999999996,
+          "ascent": 20.249999999999996,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "A",
+          "baseline": 101,
+          "advance": 26.999999999999996,
+          "ascent": 20.249999999999996,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        20.0,
+        46.8800048828125,
+        74.0,
+        100.8800048828125
+      ],
+      "errors": [
+        0.0,
+        0.1199951171875,
+        0.0,
+        0.1199951171875
+      ],
+      "extent": 105.62617449664428,
+      "passes": true
+    },
+    {
+      "name": "exact60-size18-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 155.6238255033557,
+          "advance": 60,
+          "ascent": 45.0,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        155.67999267578125
+      ],
+      "errors": [
+        -0.05616717242554614
+      ],
+      "extent": 49.376174496644296,
+      "passes": true
+    },
+    {
+      "name": "exact60-size18-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 100.31191275167785,
+          "advance": 60,
+          "ascent": 45.0,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        100.239990234375
+      ],
+      "errors": [
+        0.07192251730285193
+      ],
+      "extent": 49.376174496644296,
+      "passes": true
+    },
+    {
+      "name": "exact60-size27-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 153.43573825503356,
+          "advance": 60,
+          "ascent": 45.0,
+          "descent": 6.564261744966444
+        }
+      ],
+      "native": [
+        153.3599853515625
+      ],
+      "errors": [
+        0.07575290347105579
+      ],
+      "extent": 51.564261744966444,
+      "passes": true
+    },
+    {
+      "name": "exact60-size27-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 99.21786912751678,
+          "advance": 60,
+          "ascent": 45.0,
+          "descent": 6.564261744966444
+        }
+      ],
+      "native": [
+        99.1199951171875
+      ],
+      "errors": [
+        0.0978740103292779
+      ],
+      "extent": 51.564261744966444,
+      "passes": true
+    },
+    {
+      "name": "exact18-18-scale50",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 2.188087248322148
+        },
+        {
+          "text": "B",
+          "baseline": 32,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 2.188087248322148
+        }
+      ],
+      "native": [
+        14.0799560546875,
+        32.0799560546875
+      ],
+      "errors": [
+        -0.0799560546875,
+        -0.0799560546875
+      ],
+      "extent": 33.68808724832215,
+      "passes": true
+    },
+    {
+      "name": "exact18-18-scale75",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "B",
+          "baseline": 32,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 3.4036912751677857
+        }
+      ],
+      "native": [
+        14.0799560546875,
+        32.0799560546875
+      ],
+      "errors": [
+        -0.0799560546875,
+        -0.0799560546875
+      ],
+      "extent": 34.90369127516779,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-scale50",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 12,
+          "advance": 16.2,
+          "ascent": 12.149999999999999,
+          "descent": 2.188087248322148
+        },
+        {
+          "text": "B",
+          "baseline": 28,
+          "advance": 16.2,
+          "ascent": 12.149999999999999,
+          "descent": 2.188087248322148
+        }
+      ],
+      "native": [
+        12.0,
+        28.0799560546875
+      ],
+      "errors": [
+        0.0,
+        -0.0799560546875
+      ],
+      "extent": 30.538087248322146,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-scale75",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 19,
+          "advance": 25.2,
+          "ascent": 18.9,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "B",
+          "baseline": 44,
+          "advance": 25.2,
+          "ascent": 18.9,
+          "descent": 3.4036912751677857
+        }
+      ],
+      "native": [
+        18.9599609375,
+        43.9200439453125
+      ],
+      "errors": [
+        0.0400390625,
+        0.0799560546875
+      ],
+      "extent": 47.50369127516778,
+      "passes": true
+    },
+    {
+      "name": "pct150-consecutive6-36-scale50",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 8,
+          "advance": 10.8,
+          "ascent": 8.100000000000001,
+          "descent": 1.4587248322147648
+        },
+        {
+          "text": "B",
+          "baseline": 51,
+          "advance": 10.8,
+          "ascent": 8.100000000000001,
+          "descent": 1.4587248322147648
+        }
+      ],
+      "native": [
+        8.0,
+        50.9599609375
+      ],
+      "errors": [
+        0.0,
+        0.0400390625
+      ],
+      "extent": 52.75872483221477,
+      "passes": true
+    },
+    {
+      "name": "exact18-trailingend6-scale50",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 1.4587248322147648
+        },
+        {
+          "text": "Z",
+          "baseline": 50,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 1.4587248322147648
+        }
+      ],
+      "native": [
+        14.0,
+        50.0
+      ],
+      "errors": [
+        0.0,
+        0.0
+      ],
+      "extent": 50.95872483221476,
+      "passes": true
+    },
+    {
+      "name": "pct150-size13.4-unscaled",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 18,
+          "advance": 24.119999999999994,
+          "ascent": 18.089999999999996,
+          "descent": 3.257818791946308
+        },
+        {
+          "text": "B",
+          "baseline": 42,
+          "advance": 24.119999999999994,
+          "ascent": 18.089999999999996,
+          "descent": 3.257818791946308
+        }
+      ],
+      "native": [
+        17.91998291015625,
+        41.91998291015625
+      ],
+      "errors": [
+        0.08001708984375,
+        0.08001708984375
+      ],
+      "extent": 45.4678187919463,
+      "passes": true
+    },
+    {
+      "name": "pct150-size13.5-unscaled",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 18,
+          "advance": 24.3,
+          "ascent": 18.225,
+          "descent": 3.282130872483222
+        },
+        {
+          "text": "B",
+          "baseline": 43,
+          "advance": 24.3,
+          "ascent": 18.225,
+          "descent": 3.282130872483222
+        }
+      ],
+      "native": [
+        17.91998291015625,
+        42.8800048828125
+      ],
+      "errors": [
+        0.08001708984375,
+        0.1199951171875
+      ],
+      "extent": 45.80713087248323,
+      "passes": true
+    },
+    {
+      "name": "pct150-size13.6-unscaled",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 18,
+          "advance": 24.48,
+          "ascent": 18.36,
+          "descent": 3.3064429530201345
+        },
+        {
+          "text": "B",
+          "baseline": 43,
+          "advance": 24.48,
+          "ascent": 18.36,
+          "descent": 3.3064429530201345
+        }
+      ],
+      "native": [
+        18.0,
+        42.9599609375
+      ],
+      "errors": [
+        0.0,
+        0.0400390625
+      ],
+      "extent": 46.14644295302014,
+      "passes": true
+    },
+    {
+      "name": "pct150-size20-scale67",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 18,
+          "advance": 23.4,
+          "ascent": 17.549999999999997,
+          "descent": 3.1605704697986585
+        },
+        {
+          "text": "B",
+          "baseline": 41,
+          "advance": 23.4,
+          "ascent": 17.549999999999997,
+          "descent": 3.1605704697986585
+        }
+      ],
+      "native": [
+        18.0,
+        41.0400390625
+      ],
+      "errors": [
+        0.0,
+        -0.0400390625
+      ],
+      "extent": 44.11057046979865,
+      "passes": true
+    },
+    {
+      "name": "pct70-size18-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 83.14191275167785,
+          "advance": 15.119999999999997,
+          "ascent": 11.339999999999998,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        83.1199951171875
+      ],
+      "errors": [
+        0.021917634490350224
+      ],
+      "extent": 15.716174496644294,
+      "passes": true
+    },
+    {
+      "name": "pct70-size18-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 155.2838255033557,
+          "advance": 15.119999999999997,
+          "ascent": 11.339999999999998,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        155.3599853515625
+      ],
+      "errors": [
+        -0.07615984820679955
+      ],
+      "extent": 15.716174496644294,
+      "passes": true
+    },
+    {
+      "name": "exact18-18-reduction10",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 32,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 50,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        14.0799560546875,
+        32.0799560546875,
+        50.08001708984375
+      ],
+      "errors": [
+        -0.0799560546875,
+        -0.0799560546875,
+        -0.08001708984375
+      ],
+      "extent": 54,
+      "passes": true
+    },
+    {
+      "name": "exact18-18-reduction20",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 32,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 50,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        14.0799560546875,
+        32.0799560546875,
+        50.08001708984375
+      ],
+      "errors": [
+        -0.0799560546875,
+        -0.0799560546875,
+        -0.08001708984375
+      ],
+      "extent": 54,
+      "passes": true
+    },
+    {
+      "name": "exact18-18-scale75-reduction20",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 14,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "B",
+          "baseline": 32,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "Z",
+          "baseline": 50,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 3.4036912751677857
+        }
+      ],
+      "native": [
+        13.9200439453125,
+        31.9200439453125,
+        49.9200439453125
+      ],
+      "errors": [
+        0.0799560546875,
+        0.0799560546875,
+        0.0799560546875
+      ],
+      "extent": 52.90369127516779,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-reduction10",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 23,
+          "advance": 30.239999999999995,
+          "ascent": 22.679999999999996,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 53,
+          "advance": 30.239999999999995,
+          "ascent": 22.679999999999996,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 83,
+          "advance": 30.239999999999995,
+          "ascent": 22.679999999999996,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        23.0400390625,
+        53.0400390625,
+        83.0400390625
+      ],
+      "errors": [
+        -0.0400390625,
+        -0.0400390625,
+        -0.0400390625
+      ],
+      "extent": 87.53617449664428,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-reduction20",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 21,
+          "advance": 28.079999999999995,
+          "ascent": 21.059999999999995,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 49,
+          "advance": 28.079999999999995,
+          "ascent": 21.059999999999995,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 77,
+          "advance": 28.079999999999995,
+          "ascent": 21.059999999999995,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        20.9599609375,
+        49.0400390625,
+        76.8800048828125
+      ],
+      "errors": [
+        0.0400390625,
+        -0.0400390625,
+        0.1199951171875
+      ],
+      "extent": 81.59617449664428,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-scale75-reduction20",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 21.84,
+          "ascent": 16.38,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "B",
+          "baseline": 38,
+          "advance": 21.84,
+          "ascent": 16.38,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "Z",
+          "baseline": 60,
+          "advance": 21.84,
+          "ascent": 16.38,
+          "descent": 3.4036912751677857
+        }
+      ],
+      "native": [
+        15.9200439453125,
+        38.0,
+        60.080078125
+      ],
+      "errors": [
+        0.0799560546875,
+        0.0,
+        -0.080078125
+      ],
+      "extent": 63.46369127516779,
+      "passes": true
+    },
+    {
+      "name": "exact18-18-scale100-reduction20-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 67.0,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 85.0,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 103.0,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        66.8800048828125,
+        84.8800048828125,
+        102.8800048828125
+      ],
+      "errors": [
+        0.1199951171875,
+        0.1199951171875,
+        0.1199951171875
+      ],
+      "extent": 54,
+      "passes": true
+    },
+    {
+      "name": "exact18-18-scale100-reduction20-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 120.0,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 138.0,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 156.0,
+          "advance": 18,
+          "ascent": 13.5,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        119.91998291015625,
+        137.91998291015625,
+        155.91998291015625
+      ],
+      "errors": [
+        0.08001708984375,
+        0.08001708984375,
+        0.08001708984375
+      ],
+      "extent": 54,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-scale75-reduction20-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 64.26815436241611,
+          "advance": 21.84,
+          "ascent": 16.38,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "B",
+          "baseline": 86.26815436241611,
+          "advance": 21.84,
+          "ascent": 16.38,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "Z",
+          "baseline": 108.26815436241611,
+          "advance": 21.84,
+          "ascent": 16.38,
+          "descent": 3.4036912751677857
+        }
+      ],
+      "native": [
+        64.320068359375,
+        86.1600341796875,
+        108.239990234375
+      ],
+      "errors": [
+        -0.051913996958887765,
+        0.10812018272861224,
+        0.028164128041112235
+      ],
+      "extent": 63.46369127516779,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-scale75-reduction20-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 112.53630872483221,
+          "advance": 21.84,
+          "ascent": 16.38,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "B",
+          "baseline": 134.53630872483222,
+          "advance": 21.84,
+          "ascent": 16.38,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "Z",
+          "baseline": 156.53630872483222,
+          "advance": 21.84,
+          "ascent": 16.38,
+          "descent": 3.4036912751677857
+        }
+      ],
+      "native": [
+        112.56005859375,
+        134.6400146484375,
+        156.47998046875
+      ],
+      "errors": [
+        -0.02374986891778974,
+        -0.10370592360527553,
+        0.05632825608222447
+      ],
+      "extent": 63.46369127516779,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-scale100-reduction0-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 57.261912751677855,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 90.26191275167785,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 122.26191275167785,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        57.280029296875,
+        90.1600341796875,
+        122.32000732421875
+      ],
+      "errors": [
+        -0.01811654519714523,
+        0.10187857199035477,
+        -0.05809457254089523
+      ],
+      "extent": 93.47617449664429,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-scale100-reduction0-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 90.52382550335571,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "B",
+          "baseline": 123.52382550335571,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        },
+        {
+          "text": "Z",
+          "baseline": 155.5238255033557,
+          "advance": 32.4,
+          "ascent": 24.299999999999997,
+          "descent": 4.376174496644296
+        }
+      ],
+      "native": [
+        90.6400146484375,
+        123.52001953125,
+        155.44000244140625
+      ],
+      "errors": [
+        -0.11618914508179046,
+        0.003805972105709543,
+        0.08382306194945954
+      ],
+      "extent": 93.47617449664429,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-scale75-reduction0-ctr",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 62.64815436241611,
+          "advance": 25.2,
+          "ascent": 18.9,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "B",
+          "baseline": 87.64815436241611,
+          "advance": 25.2,
+          "ascent": 18.9,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "Z",
+          "baseline": 112.64815436241611,
+          "advance": 25.2,
+          "ascent": 18.9,
+          "descent": 3.4036912751677857
+        }
+      ],
+      "native": [
+        62.6400146484375,
+        87.5999755859375,
+        112.56005859375
+      ],
+      "errors": [
+        0.008139713978607688,
+        0.04817877647860769,
+        0.08809576866610769
+      ],
+      "extent": 72.70369127516778,
+      "passes": true
+    },
+    {
+      "name": "pct150-18-scale75-reduction0-b",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 106.29630872483222,
+          "advance": 25.2,
+          "ascent": 18.9,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "B",
+          "baseline": 131.29630872483222,
+          "advance": 25.2,
+          "ascent": 18.9,
+          "descent": 3.4036912751677857
+        },
+        {
+          "text": "Z",
+          "baseline": 156.29630872483222,
+          "advance": 25.2,
+          "ascent": 18.9,
+          "descent": 3.4036912751677857
+        }
+      ],
+      "native": [
+        106.320068359375,
+        131.280029296875,
+        156.239990234375
+      ],
+      "errors": [
+        -0.023759634542784625,
+        0.016279427957215375,
+        0.056318490457215375
+      ],
+      "extent": 72.70369127516778,
+      "passes": true
+    },
+    {
+      "name": "unstyled-between-12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 26,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.9599609375,
+        26.0799560546875
+      ],
+      "errors": [
+        0.0400390625,
+        -0.0799560546875
+      ],
+      "extent": 28.91744966442953,
+      "passes": true
+    },
+    {
+      "name": "br6-between-12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 26,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.9599609375,
+        26.0799560546875
+      ],
+      "errors": [
+        0.0400390625,
+        -0.0799560546875
+      ],
+      "extent": 28.91744966442953,
+      "passes": true
+    },
+    {
+      "name": "br36-between-12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 26,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        11.0400390625,
+        25.9200439453125
+      ],
+      "errors": [
+        -0.0400390625,
+        0.0799560546875
+      ],
+      "extent": 28.91744966442953,
+      "passes": true
+    },
+    {
+      "name": "consecutive-36-6",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 33,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        11.0400390625,
+        32.8800048828125
+      ],
+      "errors": [
+        -0.0400390625,
+        0.1199951171875
+      ],
+      "extent": 36.0,
+      "passes": true
+    },
+    {
+      "name": "consecutive-6-36",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 69,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.8800048828125,
+        68.9599609375
+      ],
+      "errors": [
+        0.1199951171875,
+        0.0400390625
+      ],
+      "extent": 72.0,
+      "passes": true
+    },
+    {
+      "name": "leading-br36",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 55,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        55.0400390625
+      ],
+      "errors": [
+        -0.0400390625
+      ],
+      "extent": 57.917449664429526,
+      "passes": true
+    },
+    {
+      "name": "trailing-br36-end6",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 33,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.9599609375,
+        33.03997802734375
+      ],
+      "errors": [
+        0.0400390625,
+        -0.03997802734375
+      ],
+      "extent": 36.0,
+      "passes": true
+    },
+    {
+      "name": "trailing-br36-end36",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 69,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.9599609375,
+        69.03997802734375
+      ],
+      "errors": [
+        0.0400390625,
+        -0.03997802734375
+      ],
+      "extent": 72.0,
+      "passes": true
+    },
+    {
+      "name": "unstyled-consecutive-local24",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 55,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        11.0400390625,
+        54.9599609375
+      ],
+      "errors": [
+        -0.0400390625,
+        0.0400390625
+      ],
+      "extent": 57.917449664429526,
+      "passes": true
+    },
+    {
+      "name": "unstyled-consecutive-local18",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 47,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        11.0400390625,
+        47.0400390625
+      ],
+      "errors": [
+        -0.0400390625,
+        -0.0400390625
+      ],
+      "extent": 50.4,
+      "passes": true
+    },
+    {
+      "name": "unstyled-consecutive-list24",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 55,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.8800048828125,
+        55.0400390625
+      ],
+      "errors": [
+        0.1199951171875,
+        -0.0400390625
+      ],
+      "extent": 57.917449664429526,
+      "passes": true
+    },
+    {
+      "name": "empty-paragraph-end36",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 69,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.8800048828125,
+        68.9599609375
+      ],
+      "errors": [
+        0.1199951171875,
+        0.0400390625
+      ],
+      "extent": 72.0,
+      "passes": true
+    },
+    {
+      "name": "empty-paragraph-end6",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 33,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.9599609375,
+        33.03997802734375
+      ],
+      "errors": [
+        0.0400390625,
+        -0.03997802734375
+      ],
+      "extent": 36.0,
+      "passes": true
+    },
+    {
+      "name": "br36-exact12",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 9,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 21,
+          "advance": 12,
+          "ascent": 9.0,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        9.03997802734375,
+        21.03997802734375
+      ],
+      "errors": [
+        -0.03997802734375,
+        -0.03997802734375
+      ],
+      "extent": 24,
+      "passes": true
+    },
+    {
+      "name": "br36-150percent",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 16,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 38,
+          "advance": 21.6,
+          "ascent": 16.200000000000003,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        16.0799560546875,
+        37.9200439453125
+      ],
+      "errors": [
+        -0.0799560546875,
+        0.0799560546875
+      ],
+      "extent": 40.71744966442954,
+      "passes": true
+    },
+    {
+      "name": "center-consecutive-36-6",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 73.0,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 95.0,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        72.9599609375,
+        95.0400390625
+      ],
+      "errors": [
+        0.0400390625,
+        -0.0400390625
+      ],
+      "extent": 36.0,
+      "passes": true
+    },
+    {
+      "name": "bottom-trailing-br36-end6",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 135.0,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "Z",
+          "baseline": 157.0,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        134.9599609375,
+        157.0400390625
+      ],
+      "errors": [
+        0.0400390625,
+        -0.0400390625
+      ],
+      "extent": 36.0,
+      "passes": true
+    },
+    {
+      "name": "table-consecutive-36-6",
+      "predicted": [
+        {
+          "text": "A",
+          "baseline": 11,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        },
+        {
+          "text": "B",
+          "baseline": 33,
+          "advance": 14.399999999999999,
+          "ascent": 11.482550335570469,
+          "descent": 2.9174496644295296
+        }
+      ],
+      "native": [
+        10.8800048828125,
+        32.9599609375
+      ],
+      "errors": [
+        0.1199951171875,
+        0.0400390625
+      ],
+      "extent": 36.0,
+      "passes": true
+    }
+  ],
+  "models": {
+    "explicit-trailing-gap": {
+      "passed": 103,
+      "total": 103,
+      "failures": []
+    },
+    "unrounded-spacing-extent": {
+      "passed": 97,
+      "total": 103,
+      "failures": [
+        {
+          "name": "pct150-18-scale75-reduction20-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 63.24,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "B",
+              "baseline": 85.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "Z",
+              "baseline": 107.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            }
+          ],
+          "native": [
+            64.320068359375,
+            86.1600341796875,
+            108.239990234375
+          ],
+          "errors": [
+            -1.080068359374998,
+            -0.9200341796874909,
+            -0.9999902343749909
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction20-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 110.48,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "B",
+              "baseline": 132.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "Z",
+              "baseline": 154.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            }
+          ],
+          "native": [
+            112.56005859375,
+            134.6400146484375,
+            156.47998046875
+          ],
+          "errors": [
+            -2.080058593749996,
+            -2.160014648437482,
+            -1.9999804687499818
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 55.400000000000006,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "B",
+              "baseline": 88.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "Z",
+              "baseline": 120.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            }
+          ],
+          "native": [
+            57.280029296875,
+            90.1600341796875,
+            122.32000732421875
+          ],
+          "errors": [
+            -1.8800292968749943,
+            -1.7600341796874943,
+            -1.9200073242187443
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 86.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "B",
+              "baseline": 119.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "Z",
+              "baseline": 151.8,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            }
+          ],
+          "native": [
+            90.6400146484375,
+            123.52001953125,
+            155.44000244140625
+          ],
+          "errors": [
+            -3.8400146484374886,
+            -3.7200195312499886,
+            -3.6400024414062386
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 61.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "B",
+              "baseline": 86.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "Z",
+              "baseline": 111.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            }
+          ],
+          "native": [
+            62.6400146484375,
+            87.5999755859375,
+            112.56005859375
+          ],
+          "errors": [
+            -1.4400146484374972,
+            -1.3999755859374972,
+            -1.3600585937499972
+          ],
+          "extent": 75.6,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 103.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "B",
+              "baseline": 128.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "Z",
+              "baseline": 153.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            }
+          ],
+          "native": [
+            106.320068359375,
+            131.280029296875,
+            156.239990234375
+          ],
+          "errors": [
+            -2.9200683593749943,
+            -2.8800292968749943,
+            -2.8399902343749943
+          ],
+          "extent": 75.6,
+          "passes": false
+        }
+      ]
+    },
+    "unrounded-normalized": {
+      "passed": 93,
+      "total": 103,
+      "failures": [
+        {
+          "name": "exact48p75-single30-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 152.7063758389262,
+              "advance": 49,
+              "ascent": 36.75,
+              "descent": 7.293624161073826
+            }
+          ],
+          "native": [
+            153.03997802734375
+          ],
+          "errors": [
+            -0.33360218841755795
+          ],
+          "extent": 44.29362416107382,
+          "passes": false
+        },
+        {
+          "name": "pct70-size18-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 83.31191275167785,
+              "advance": 15.119999999999997,
+              "ascent": 11.339999999999998,
+              "descent": 4.376174496644296
+            }
+          ],
+          "native": [
+            83.1199951171875
+          ],
+          "errors": [
+            0.19191763449035193
+          ],
+          "extent": 15.376174496644296,
+          "passes": false
+        },
+        {
+          "name": "pct70-size18-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 155.6238255033557,
+              "advance": 15.119999999999997,
+              "ascent": 11.339999999999998,
+              "descent": 4.376174496644296
+            }
+          ],
+          "native": [
+            155.3599853515625
+          ],
+          "errors": [
+            0.26384015179320386
+          ],
+          "extent": 15.376174496644296,
+          "passes": false
+        },
+        {
+          "name": "exact18-18-scale100-reduction20-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 119.6238255033557,
+              "advance": 18,
+              "ascent": 13.5,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "B",
+              "baseline": 137.6238255033557,
+              "advance": 18,
+              "ascent": 13.5,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "Z",
+              "baseline": 155.6238255033557,
+              "advance": 18,
+              "ascent": 13.5,
+              "descent": 4.376174496644296
+            }
+          ],
+          "native": [
+            119.91998291015625,
+            137.91998291015625,
+            155.91998291015625
+          ],
+          "errors": [
+            -0.29615740680054614,
+            -0.29615740680054614,
+            -0.29615740680054614
+          ],
+          "extent": 54.376174496644296,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction20-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 63.24,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "B",
+              "baseline": 85.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "Z",
+              "baseline": 107.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            }
+          ],
+          "native": [
+            64.320068359375,
+            86.1600341796875,
+            108.239990234375
+          ],
+          "errors": [
+            -1.080068359374998,
+            -0.9200341796874909,
+            -0.9999902343749909
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction20-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 110.48,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "B",
+              "baseline": 132.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "Z",
+              "baseline": 154.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3.4036912751677857
+            }
+          ],
+          "native": [
+            112.56005859375,
+            134.6400146484375,
+            156.47998046875
+          ],
+          "errors": [
+            -2.080058593749996,
+            -2.160014648437482,
+            -1.9999804687499818
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 55.400000000000006,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "B",
+              "baseline": 88.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "Z",
+              "baseline": 120.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            }
+          ],
+          "native": [
+            57.280029296875,
+            90.1600341796875,
+            122.32000732421875
+          ],
+          "errors": [
+            -1.8800292968749943,
+            -1.7600341796874943,
+            -1.9200073242187443
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 86.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "B",
+              "baseline": 119.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            },
+            {
+              "text": "Z",
+              "baseline": 151.8,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4.376174496644296
+            }
+          ],
+          "native": [
+            90.6400146484375,
+            123.52001953125,
+            155.44000244140625
+          ],
+          "errors": [
+            -3.8400146484374886,
+            -3.7200195312499886,
+            -3.6400024414062386
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 61.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "B",
+              "baseline": 86.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "Z",
+              "baseline": 111.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            }
+          ],
+          "native": [
+            62.6400146484375,
+            87.5999755859375,
+            112.56005859375
+          ],
+          "errors": [
+            -1.4400146484374972,
+            -1.3999755859374972,
+            -1.3600585937499972
+          ],
+          "extent": 75.6,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 103.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "B",
+              "baseline": 128.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            },
+            {
+              "text": "Z",
+              "baseline": 153.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3.4036912751677857
+            }
+          ],
+          "native": [
+            106.320068359375,
+            131.280029296875,
+            156.239990234375
+          ],
+          "errors": [
+            -2.9200683593749943,
+            -2.8800292968749943,
+            -2.8399902343749943
+          ],
+          "extent": 75.6,
+          "passes": false
+        }
+      ]
+    },
+    "rounded-normalized": {
+      "passed": 92,
+      "total": 103,
+      "failures": [
+        {
+          "name": "exact60-size18-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 156.0,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 4
+            }
+          ],
+          "native": [
+            155.67999267578125
+          ],
+          "errors": [
+            0.32000732421875
+          ],
+          "extent": 49,
+          "passes": false
+        },
+        {
+          "name": "exact60-size18-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 100.5,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 4
+            }
+          ],
+          "native": [
+            100.239990234375
+          ],
+          "errors": [
+            0.260009765625
+          ],
+          "extent": 49,
+          "passes": false
+        },
+        {
+          "name": "exact60-size27-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 153.0,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 7
+            }
+          ],
+          "native": [
+            153.3599853515625
+          ],
+          "errors": [
+            -0.3599853515625
+          ],
+          "extent": 52,
+          "passes": false
+        },
+        {
+          "name": "pct70-size18-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 83.44,
+              "advance": 15.119999999999997,
+              "ascent": 11.339999999999998,
+              "descent": 4
+            }
+          ],
+          "native": [
+            83.1199951171875
+          ],
+          "errors": [
+            0.3200048828124977
+          ],
+          "extent": 15.119999999999997,
+          "passes": false
+        },
+        {
+          "name": "pct70-size18-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 155.88,
+              "advance": 15.119999999999997,
+              "ascent": 11.339999999999998,
+              "descent": 4
+            }
+          ],
+          "native": [
+            155.3599853515625
+          ],
+          "errors": [
+            0.5200146484374955
+          ],
+          "extent": 15.119999999999997,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction20-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 63.24,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            },
+            {
+              "text": "B",
+              "baseline": 85.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            },
+            {
+              "text": "Z",
+              "baseline": 107.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            }
+          ],
+          "native": [
+            64.320068359375,
+            86.1600341796875,
+            108.239990234375
+          ],
+          "errors": [
+            -1.080068359374998,
+            -0.9200341796874909,
+            -0.9999902343749909
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction20-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 110.48,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            },
+            {
+              "text": "B",
+              "baseline": 132.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            },
+            {
+              "text": "Z",
+              "baseline": 154.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            }
+          ],
+          "native": [
+            112.56005859375,
+            134.6400146484375,
+            156.47998046875
+          ],
+          "errors": [
+            -2.080058593749996,
+            -2.160014648437482,
+            -1.9999804687499818
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 55.400000000000006,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            },
+            {
+              "text": "B",
+              "baseline": 88.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            },
+            {
+              "text": "Z",
+              "baseline": 120.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            }
+          ],
+          "native": [
+            57.280029296875,
+            90.1600341796875,
+            122.32000732421875
+          ],
+          "errors": [
+            -1.8800292968749943,
+            -1.7600341796874943,
+            -1.9200073242187443
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 86.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            },
+            {
+              "text": "B",
+              "baseline": 119.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            },
+            {
+              "text": "Z",
+              "baseline": 151.8,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            }
+          ],
+          "native": [
+            90.6400146484375,
+            123.52001953125,
+            155.44000244140625
+          ],
+          "errors": [
+            -3.8400146484374886,
+            -3.7200195312499886,
+            -3.6400024414062386
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 61.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            },
+            {
+              "text": "B",
+              "baseline": 86.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            },
+            {
+              "text": "Z",
+              "baseline": 111.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            }
+          ],
+          "native": [
+            62.6400146484375,
+            87.5999755859375,
+            112.56005859375
+          ],
+          "errors": [
+            -1.4400146484374972,
+            -1.3999755859374972,
+            -1.3600585937499972
+          ],
+          "extent": 75.6,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 103.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            },
+            {
+              "text": "B",
+              "baseline": 128.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            },
+            {
+              "text": "Z",
+              "baseline": 153.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            }
+          ],
+          "native": [
+            106.320068359375,
+            131.280029296875,
+            156.239990234375
+          ],
+          "errors": [
+            -2.9200683593749943,
+            -2.8800292968749943,
+            -2.8399902343749943
+          ],
+          "extent": 75.6,
+          "passes": false
+        }
+      ]
+    },
+    "rounded-font-windows": {
+      "passed": 91,
+      "total": 103,
+      "failures": [
+        {
+          "name": "exact60-size18-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 156.0,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 4
+            }
+          ],
+          "native": [
+            155.67999267578125
+          ],
+          "errors": [
+            0.32000732421875
+          ],
+          "extent": 49,
+          "passes": false
+        },
+        {
+          "name": "exact60-size18-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 100.5,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 4
+            }
+          ],
+          "native": [
+            100.239990234375
+          ],
+          "errors": [
+            0.260009765625
+          ],
+          "extent": 49,
+          "passes": false
+        },
+        {
+          "name": "exact60-size27-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 154.0,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 6
+            }
+          ],
+          "native": [
+            153.3599853515625
+          ],
+          "errors": [
+            0.6400146484375
+          ],
+          "extent": 51,
+          "passes": false
+        },
+        {
+          "name": "exact60-size27-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 99.5,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 6
+            }
+          ],
+          "native": [
+            99.1199951171875
+          ],
+          "errors": [
+            0.3800048828125
+          ],
+          "extent": 51,
+          "passes": false
+        },
+        {
+          "name": "pct70-size18-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 83.44,
+              "advance": 15.119999999999997,
+              "ascent": 11.339999999999998,
+              "descent": 4
+            }
+          ],
+          "native": [
+            83.1199951171875
+          ],
+          "errors": [
+            0.3200048828124977
+          ],
+          "extent": 15.119999999999997,
+          "passes": false
+        },
+        {
+          "name": "pct70-size18-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 155.88,
+              "advance": 15.119999999999997,
+              "ascent": 11.339999999999998,
+              "descent": 4
+            }
+          ],
+          "native": [
+            155.3599853515625
+          ],
+          "errors": [
+            0.5200146484374955
+          ],
+          "extent": 15.119999999999997,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction20-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 63.24,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            },
+            {
+              "text": "B",
+              "baseline": 85.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            },
+            {
+              "text": "Z",
+              "baseline": 107.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            }
+          ],
+          "native": [
+            64.320068359375,
+            86.1600341796875,
+            108.239990234375
+          ],
+          "errors": [
+            -1.080068359374998,
+            -0.9200341796874909,
+            -0.9999902343749909
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction20-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 110.48,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            },
+            {
+              "text": "B",
+              "baseline": 132.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            },
+            {
+              "text": "Z",
+              "baseline": 154.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 3
+            }
+          ],
+          "native": [
+            112.56005859375,
+            134.6400146484375,
+            156.47998046875
+          ],
+          "errors": [
+            -2.080058593749996,
+            -2.160014648437482,
+            -1.9999804687499818
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 55.400000000000006,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            },
+            {
+              "text": "B",
+              "baseline": 88.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            },
+            {
+              "text": "Z",
+              "baseline": 120.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            }
+          ],
+          "native": [
+            57.280029296875,
+            90.1600341796875,
+            122.32000732421875
+          ],
+          "errors": [
+            -1.8800292968749943,
+            -1.7600341796874943,
+            -1.9200073242187443
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 86.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            },
+            {
+              "text": "B",
+              "baseline": 119.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            },
+            {
+              "text": "Z",
+              "baseline": 151.8,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 4
+            }
+          ],
+          "native": [
+            90.6400146484375,
+            123.52001953125,
+            155.44000244140625
+          ],
+          "errors": [
+            -3.8400146484374886,
+            -3.7200195312499886,
+            -3.6400024414062386
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 61.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            },
+            {
+              "text": "B",
+              "baseline": 86.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            },
+            {
+              "text": "Z",
+              "baseline": 111.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            }
+          ],
+          "native": [
+            62.6400146484375,
+            87.5999755859375,
+            112.56005859375
+          ],
+          "errors": [
+            -1.4400146484374972,
+            -1.3999755859374972,
+            -1.3600585937499972
+          ],
+          "extent": 75.6,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 103.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            },
+            {
+              "text": "B",
+              "baseline": 128.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            },
+            {
+              "text": "Z",
+              "baseline": 153.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 3
+            }
+          ],
+          "native": [
+            106.320068359375,
+            131.280029296875,
+            156.239990234375
+          ],
+          "errors": [
+            -2.9200683593749943,
+            -2.8800292968749943,
+            -2.8399902343749943
+          ],
+          "extent": 75.6,
+          "passes": false
+        }
+      ]
+    },
+    "rounded-height-minus-ascent": {
+      "passed": 90,
+      "total": 103,
+      "failures": [
+        {
+          "name": "exact60-size18-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 155.0,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 5
+            }
+          ],
+          "native": [
+            155.67999267578125
+          ],
+          "errors": [
+            -0.67999267578125
+          ],
+          "extent": 50,
+          "passes": false
+        },
+        {
+          "name": "exact60-size18-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 100.0,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 5
+            }
+          ],
+          "native": [
+            100.239990234375
+          ],
+          "errors": [
+            -0.239990234375
+          ],
+          "extent": 50,
+          "passes": false
+        },
+        {
+          "name": "exact60-size27-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 154.0,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 6
+            }
+          ],
+          "native": [
+            153.3599853515625
+          ],
+          "errors": [
+            0.6400146484375
+          ],
+          "extent": 51,
+          "passes": false
+        },
+        {
+          "name": "exact60-size27-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 99.5,
+              "advance": 60,
+              "ascent": 45.0,
+              "descent": 6
+            }
+          ],
+          "native": [
+            99.1199951171875
+          ],
+          "errors": [
+            0.3800048828125
+          ],
+          "extent": 51,
+          "passes": false
+        },
+        {
+          "name": "pct70-size18-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 155.0,
+              "advance": 15.119999999999997,
+              "ascent": 11.339999999999998,
+              "descent": 5
+            }
+          ],
+          "native": [
+            155.3599853515625
+          ],
+          "errors": [
+            -0.3599853515625
+          ],
+          "extent": 16,
+          "passes": false
+        },
+        {
+          "name": "exact18-18-scale100-reduction20-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 66.5,
+              "advance": 18,
+              "ascent": 13.5,
+              "descent": 5
+            },
+            {
+              "text": "B",
+              "baseline": 84.5,
+              "advance": 18,
+              "ascent": 13.5,
+              "descent": 5
+            },
+            {
+              "text": "Z",
+              "baseline": 102.5,
+              "advance": 18,
+              "ascent": 13.5,
+              "descent": 5
+            }
+          ],
+          "native": [
+            66.8800048828125,
+            84.8800048828125,
+            102.8800048828125
+          ],
+          "errors": [
+            -0.3800048828125,
+            -0.3800048828125,
+            -0.3800048828125
+          ],
+          "extent": 55,
+          "passes": false
+        },
+        {
+          "name": "exact18-18-scale100-reduction20-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 119.0,
+              "advance": 18,
+              "ascent": 13.5,
+              "descent": 5
+            },
+            {
+              "text": "B",
+              "baseline": 137.0,
+              "advance": 18,
+              "ascent": 13.5,
+              "descent": 5
+            },
+            {
+              "text": "Z",
+              "baseline": 155.0,
+              "advance": 18,
+              "ascent": 13.5,
+              "descent": 5
+            }
+          ],
+          "native": [
+            119.91998291015625,
+            137.91998291015625,
+            155.91998291015625
+          ],
+          "errors": [
+            -0.91998291015625,
+            -0.91998291015625,
+            -0.91998291015625
+          ],
+          "extent": 55,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction20-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 63.24,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 4
+            },
+            {
+              "text": "B",
+              "baseline": 85.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 4
+            },
+            {
+              "text": "Z",
+              "baseline": 107.24000000000001,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 4
+            }
+          ],
+          "native": [
+            64.320068359375,
+            86.1600341796875,
+            108.239990234375
+          ],
+          "errors": [
+            -1.080068359374998,
+            -0.9200341796874909,
+            -0.9999902343749909
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction20-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 110.48,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 4
+            },
+            {
+              "text": "B",
+              "baseline": 132.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 4
+            },
+            {
+              "text": "Z",
+              "baseline": 154.48000000000002,
+              "advance": 21.84,
+              "ascent": 16.38,
+              "descent": 4
+            }
+          ],
+          "native": [
+            112.56005859375,
+            134.6400146484375,
+            156.47998046875
+          ],
+          "errors": [
+            -2.080058593749996,
+            -2.160014648437482,
+            -1.9999804687499818
+          ],
+          "extent": 65.52,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 55.400000000000006,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 5
+            },
+            {
+              "text": "B",
+              "baseline": 88.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 5
+            },
+            {
+              "text": "Z",
+              "baseline": 120.4,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 5
+            }
+          ],
+          "native": [
+            57.280029296875,
+            90.1600341796875,
+            122.32000732421875
+          ],
+          "errors": [
+            -1.8800292968749943,
+            -1.7600341796874943,
+            -1.9200073242187443
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale100-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 86.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 5
+            },
+            {
+              "text": "B",
+              "baseline": 119.80000000000001,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 5
+            },
+            {
+              "text": "Z",
+              "baseline": 151.8,
+              "advance": 32.4,
+              "ascent": 24.299999999999997,
+              "descent": 5
+            }
+          ],
+          "native": [
+            90.6400146484375,
+            123.52001953125,
+            155.44000244140625
+          ],
+          "errors": [
+            -3.8400146484374886,
+            -3.7200195312499886,
+            -3.6400024414062386
+          ],
+          "extent": 97.19999999999999,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-ctr",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 61.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 4
+            },
+            {
+              "text": "B",
+              "baseline": 86.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 4
+            },
+            {
+              "text": "Z",
+              "baseline": 111.2,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 4
+            }
+          ],
+          "native": [
+            62.6400146484375,
+            87.5999755859375,
+            112.56005859375
+          ],
+          "errors": [
+            -1.4400146484374972,
+            -1.3999755859374972,
+            -1.3600585937499972
+          ],
+          "extent": 75.6,
+          "passes": false
+        },
+        {
+          "name": "pct150-18-scale75-reduction0-b",
+          "predicted": [
+            {
+              "text": "A",
+              "baseline": 103.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 4
+            },
+            {
+              "text": "B",
+              "baseline": 128.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 4
+            },
+            {
+              "text": "Z",
+              "baseline": 153.4,
+              "advance": 25.2,
+              "ascent": 18.9,
+              "descent": 4
+            }
+          ],
+          "native": [
+            106.320068359375,
+            131.280029296875,
+            156.239990234375
+          ],
+          "errors": [
+            -2.9200683593749943,
+            -2.8800292968749943,
+            -2.8399902343749943
+          ],
+          "extent": 75.6,
+          "passes": false
+        }
+      ]
+    }
+  }
+}

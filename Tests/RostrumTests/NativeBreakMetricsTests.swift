@@ -59,15 +59,9 @@ import Testing
                 #expect(span.run.text == marker.text)
                 #expect(marker.sourceGlyphMatches)
                 #expect(abs(span.x - marker.x) < 0.121)
-                // Two pre-existing spacing residuals remain separately measured:
-                // this patch calibrates empty-line ownership, not line-spacing ascent.
-                if input.name == "br36-exact12" || input.name == "br36-150percent" {
-                    withKnownIssue("Native line-spacing baseline residual: \(input.name); retained for the next calibration wave") {
-                        #expect(abs(baseline - marker.baseline) < 0.121)
-                    }
-                } else {
-                    #expect(abs(baseline - marker.baseline) < 0.121, "\(input.name): \(baseline) vs \(marker.baseline)")
-                }
+                // The explicit-spacing cases are independently calibrated by
+                // NativeLineSpacing; their original tolerance is unchanged.
+                #expect(abs(baseline - marker.baseline) < 0.121, "\(input.name): \(baseline) vs \(marker.baseline)")
             }
         }
         #expect(try deck.serializedData() == before)

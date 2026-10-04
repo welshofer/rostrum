@@ -1,0 +1,185 @@
+[
+  {
+    "name": "pct150-size13.4-unscaled",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 13.4
+          },
+          {
+            "kind": "break",
+            "size": 13.4
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 13.4
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "page": 0,
+    "x": 30,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct150-size13.5-unscaled",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 13.5
+          },
+          {
+            "kind": "break",
+            "size": 13.5
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 13.5
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "page": 0,
+    "x": 380,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct150-size13.6-unscaled",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 13.6
+          },
+          {
+            "kind": "break",
+            "size": 13.6
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 13.6
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "page": 0,
+    "x": 30,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct150-size20-scale67",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 20
+          },
+          {
+            "kind": "break",
+            "size": 20
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 20
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "fontScale": 67,
+    "page": 0,
+    "x": 380,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct70-size18-ctr",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 70
+        }
+      }
+    ],
+    "anchor": "ctr",
+    "page": 0,
+    "x": 30,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "pct70-size18-b",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 18
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 70
+        }
+      }
+    ],
+    "anchor": "b",
+    "page": 0,
+    "x": 380,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  }
+]

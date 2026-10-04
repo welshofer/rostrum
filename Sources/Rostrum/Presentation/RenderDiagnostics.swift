@@ -153,7 +153,8 @@ final class RenderDiagnosticCollector {
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Unregistered font face:"):
                 record(.missingFont, .missingResource, reason)
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Paragraph alignment") || reason.hasPrefix("Justification")
-                || reason.hasPrefix("Tab alignment") || reason.hasPrefix("Unknown tab alignment"):
+                || reason.hasPrefix("Tab alignment") || reason.hasPrefix("Unknown tab alignment")
+                || reason.hasPrefix("Native explicit line spacing"):
                 record(.unsupportedTextProperty, .approximation, reason)
             default:
                 record(.unsupportedShaping, .approximation, String(describing: diagnostic))

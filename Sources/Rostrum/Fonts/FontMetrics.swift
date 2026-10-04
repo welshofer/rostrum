@@ -34,6 +34,8 @@ public struct FontMetrics: Sendable {
     /// DrawingML uses the Windows ascent/descent share of a 1.2 em line box.
     /// Keep this separate from the general-purpose hhea/typographic metrics.
     let drawingMLAscentShare: Double?
+    /// Windows ascent plus descent in ems, independent of hhea/typo selection.
+    let drawingMLWindowsHeight: Double?
 
     /// Family names from the `name` table (IDs 1 and 16), in table order —
     /// the names a deck's `a:latin@typeface` refers to this font by. Empty
@@ -217,8 +219,11 @@ public struct FontMetrics: Sendable {
             let descent = try reader.u16(os2.offset + 76)
             drawingMLAscentShare = ascent > 0
                 ? Double(ascent) / Double(ascent + descent) : nil
+            drawingMLWindowsHeight = ascent > 0
+                ? Double(ascent + descent) / Double(unitsPerEm) : nil
         } else {
             drawingMLAscentShare = nil
+            drawingMLWindowsHeight = nil
         }
     }
 
