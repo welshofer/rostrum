@@ -1,11 +1,9 @@
 #!/bin/bash
 # The gate before a push.
 #
-# CI runs Linux only, because GitHub's hosted macOS runners bill at 10x and
-# this repository pushes often. That does not make the Apple platforms
-# unverified — it makes them verified here, where a Mac is free. Everything
-# below either cannot run on a Linux runner, or is worth running once more
-# against the real toolchain before you push.
+# CI runs Linux checks on pushes and a macOS build/test job on pull requests.
+# This local gate also builds the iOS simulator app and runs app-hosted tests,
+# which the SwiftPM-only test commands cannot discover.
 #
 #   ./scripts/verify.sh            everything
 #   ./scripts/verify.sh --fast     skip app builds and app-hosted tests
@@ -59,10 +57,13 @@ fi
 # of any SwiftPM target — so nothing else here would catch a break in them, and
 # their tests (Lectern/AppTests) would never run in any gate at all. This does.
 step "Lectern macOS app"
-Lectern/scripts/build.sh -quiet
+# Preserve full compiler output. A zero exit from a quiet build has previously
+# accompanied contradictory compiler diagnostics; the complete log is needed
+# to assess and retain the result.
+Lectern/scripts/build.sh
 
 step "Lectern iOS app (simulator)"
-Lectern/scripts/build-ios.sh -quiet
+Lectern/scripts/build-ios.sh
 
 step "Lectern app-hosted tests (AppTests — invisible to swift test)"
 Lectern/scripts/test-app.sh
