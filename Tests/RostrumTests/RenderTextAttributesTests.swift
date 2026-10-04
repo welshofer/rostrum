@@ -48,6 +48,59 @@ import Testing
         #expect(second.utf8.elementsEqual(" font-size=\"18\" fill=\"#123456\" font-family=\"\(decomposed), sans-serif\"".utf8))
     }
 
+    @Test func repeatedAndRevisitedStylesMatchUncachedSerializationByteForByte() {
+        let base = ResolvedTextRun(text: "office café", fontFamily: nil, fontSize: 18,
+            bold: false, italic: false, color: "#123456", tracking: 0)
+        var variants: [(ResolvedTextRun, String?, Bool)] = [(base, "Café", false)]
+        let changes: [(inout ResolvedTextRun) -> Void] = [
+            { $0.fontSize = 31 }, { $0.bold = true }, { $0.italic = true },
+            { $0.color = "#ABCDEF" }, { $0.tracking = -0.25 },
+            { $0.decoration = " underline line-through" }, { $0.baselineShift = 30 },
+            { $0.explicitlyDisablesKerning = true }, { $0.usesStandardLigatures = false },
+        ]
+        for change in changes {
+            var run = base; change(&run)
+            variants.append((run, "Café", false))
+        }
+        variants += [(base, "Cafe\u{0301}", false), (base, nil, false),
+                     (base, "", false), (base, "A&B", false), (base, "Café", true)]
+        let expected = variants.map { run, family, inherited in
+            RenderTextAttributes().attributes(for: run, family: family,
+                inheritsDisabledStandardLigatures: inherited)
+        }
+        let cache = RenderTextAttributes()
+        // Repeat neighbors, then revisit older entries after different styles.
+        for index in Array(variants.indices) + Array(variants.indices.reversed()) {
+            let (run, family, inherited) = variants[index]
+            for _ in 0..<2 {
+                let result = cache.attributes(for: run, family: family,
+                    inheritsDisabledStandardLigatures: inherited)
+                #expect(result.utf8.elementsEqual(expected[index].utf8))
+            }
+        }
+    }
+
+    @Test func refusedStylesCannotReturnRecentValuesAndResetReadmitsTheLastStyle() {
+        let cache = RenderTextAttributes()
+        var run = ResolvedTextRun(text: "", fontFamily: nil, fontSize: 18,
+            bold: false, italic: false, color: "#123456", tracking: 0)
+        for index in 0..<128 { _ = cache.attributes(for: run, family: "Face \(index)") }
+        let retained = cache.retainedBytes
+        let large = String(repeating: "x", count: 100_000)
+        run.fontSize = 42
+        let expected = " font-size=\"42\" fill=\"#123456\" font-family=\"\(large), sans-serif\""
+        for _ in 0..<2 {
+            #expect(cache.attributes(for: run, family: large).utf8.elementsEqual(expected.utf8))
+        }
+        #expect(cache.count == 128 && cache.retainedBytes == retained)
+        run.fontSize = 18
+        let admitted = cache.attributes(for: run, family: "Face 127")
+        cache.reset()
+        #expect(cache.count == 0 && cache.retainedBytes == 0)
+        #expect(cache.attributes(for: run, family: "Face 127") == admitted)
+        #expect(cache.count == 1 && cache.retainedBytes > 0)
+    }
+
     @Test func cachedTextStylesDoNotHideChangesOrPerShapeDiagnostics() throws {
         let deck = try Presentation(), slide = try deck.slides[0]
         for index in 0..<2 {

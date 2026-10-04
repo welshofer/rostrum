@@ -32,17 +32,25 @@ final class RenderTextAttributes {
         }
     }
     private var entries: [Key: String] = [:]
+    // Wrapped lines commonly repeat the same admitted style. Reuse that entry
+    // before hashing every field again; never retain a refused key or value.
+    private var recent: (key: Key, value: String)?
     private(set) var retainedBytes = 0
     var count: Int { entries.count }
     private static let byteLimit = 65_536
     private static let entryLimit = 128
 
-    func reset() { entries.removeAll(keepingCapacity: true); retainedBytes = 0 }
+    func reset() { recent = nil; entries.removeAll(keepingCapacity: true); retainedBytes = 0 }
 
     func attributes(for run: ResolvedTextRun, family: String?, inheritsDisabledStandardLigatures: Bool = false) -> String {
         let key = Key(family: family, size: run.fontSize, color: run.color,
                       bold: run.bold, italic: run.italic, tracking: run.tracking, decoration: run.decoration, baselineShift: run.baselineShift, usesKerning: run.usesKerning, usesStandardLigatures: run.usesStandardLigatures, inheritsDisabledStandardLigatures: inheritsDisabledStandardLigatures)
-        if let cached = entries[key] { return cached }
+        if let recent, recent.key == key { return recent.value }
+        if let index = entries.index(forKey: key) {
+            let entry = entries[index]
+            recent = (entry.key, entry.value)
+            return entry.value
+        }
         var result = " font-size=\"\(SVGNumber.decimal(run.fontSize))\" fill=\"\(run.color)\""
         if let family, !family.isEmpty {
             result += " font-family=\"\(SVGMarkup.escape(family)), sans-serif\""
@@ -68,6 +76,7 @@ final class RenderTextAttributes {
         let cost = 256 + (family?.utf8.count ?? 0) + run.color.utf8.count + result.utf8.count
         if entries.count < Self.entryLimit, cost <= Self.byteLimit - retainedBytes {
             entries[key] = result
+            recent = (key, result)
             retainedBytes += cost
         }
         return result
