@@ -1,6 +1,6 @@
 # Ordered non-ASCII atom ranges: two measured iterations
 
-**Cycle 2 reduces fitting and accented/CJK rendering time in this matched run. Cycle 1 remains withheld because it slowed the registered table.** The final helper's registered-table interval crosses zero; this does not prove nonregression. Fallback and combining controls also retain possible costs. Independent final evidence review is pending.
+**Cycle 2 reduces fitting and accented/CJK rendering time in this matched run. Cycle 1 remains withheld because it slowed the registered table.** The final helper's registered-table interval crosses zero; this does not prove nonregression. Fallback and combining controls also retain possible costs. Independent review accepted the final source and evidence packet, including the retained adverse cycle 1 result and bounded cycle 2 claims.
 
 Both iterations compare against the same accepted perf11 baseline: evidence 76aa45d, source b68f5a1 (engine 83a1c72; root equivalent e8841e3), Sources tree 36791fc7d7d2e0c89b0720e7d50fda1d14944af8. Its retained Release module/object pair was not rebuilt. Cycle 2 source/tests are committed as 8503f44; they were measured as a frozen uncommitted patch with RichTextLayout SHA-256 6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055. No production source changed after timing.
 

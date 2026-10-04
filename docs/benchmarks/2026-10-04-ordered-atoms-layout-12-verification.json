@@ -1,5 +1,5 @@
 {
-  "status": "Cycle2 source reviewed and measured; final independent evidence acceptance pending. Cycle1 withheld.",
+  "status": "Cycle2 source and final evidence independently reviewed and accepted with bounded claims. Cycle1 withheld.",
   "baselineRevision": "76aa45d3520276854b4344dfb54473820449f4fc",
   "baselineSourceCommit": "b68f5a1ae1f1a4a66f0ca57d03ec0ca3c2388c12",
   "baselineEngineCommit": "83a1c72be443b51f05070f1b3858c3665aa71efb",
@@ -143,7 +143,7 @@
     "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-macos.json": "139f6e2c512063c47d826aefbda763a4ee8753fd69e92cd0822f1fd668cfc402"
   },
   "reportSHA256": {
-    "docs/ORDERED-ATOMS-PERFORMANCE-20261004-12.md": "60ff4308912d683a1a91f7d67514011cddd1cc911427485da511fd105ee9b6f2"
+    "docs/ORDERED-ATOMS-PERFORMANCE-20261004-12.md": "0ae5ffda71d82b5980aa6267e05007e47e72e4b577eb4fb18d52efa6f0772f2f"
   },
   "cycle1RetainedPinsReverified": 125,
   "artifactHashChecks": 7860,
@@ -531,5 +531,13 @@
     "nativeCases": 47,
     "nativeVisibleGlyphs": 669
   },
-  "runtimeAndRSS": "Bounded fitting/accented gains; registered/fallback/combining costs remain possible, RSS mixed, high WindowServer. No recovery, universal, memory or clean-host claim."
+  "runtimeAndRSS": "Bounded fitting/accented gains; registered/fallback/combining costs remain possible, RSS mixed, high WindowServer. No recovery, universal, memory or clean-host claim.",
+  "independentReview": {
+    "outcome": "accepted",
+    "reviewedEvidenceCommit": "7c26656adbf56e4c03967bd894752c3022fda2f5",
+    "rootEquivalentCommit": "0734361",
+    "reviewedReportSHA256": "60ff4308912d683a1a91f7d67514011cddd1cc911427485da511fd105ee9b6f2",
+    "reviewedManifestSHA256": "86c9c557dd52a4d753c74a61b14d5d44d95cb788da02da952125e6a250e4564d",
+    "scope": "Source correctness; both cycles retained evidence, statistics, output preservation and report qualifications. This update records acceptance only; measurements and proof inputs are unchanged."
+  }
 }
