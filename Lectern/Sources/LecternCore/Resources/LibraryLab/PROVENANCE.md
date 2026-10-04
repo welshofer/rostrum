@@ -283,3 +283,26 @@ necessary to establish native paint agreement. Set
 `LECTERN_MIXED_SPACING_WEBKIT_OUTPUT` and `LECTERN_TEST_WEBKIT=1` to retain it.
 Regenerate resources with
 `python3 Lectern/scripts/generate-mixed-spacing-references.py`.
+
+
+## Table defaults and border joins (2026-10-04)
+
+`native-table-default-builtin-v1.pptx`, `native-table-default-custom-v1.pptx`
+and `native-table-joins-v1.pptx` are exact copies of the independently captured
+library fixtures under `Tests/RostrumTests/Fixtures/NativeTableDefault/{builtin,custom}`
+and `NativeTableJoins`. `TableDefaultsReferences.json` combines those three
+`paint-reference.json` arrays without changing their values, adding source/group
+and destination slide indexes. Its source records pin source PPTX, native PDF and
+embedded DejaVu Sans bytes. The existing DejaVu license applies.
+
+The runtime recipe preserves all 12 complete native table nodes and their
+frames/font bytes. Only captions outside those specimens switch to the bundled
+face. Three pages contain 72 visible glyphs: the glyph references are PDF text
+traces of origins and sizes, not source-outline ink measurements. Independent
+vector fill and border comparisons retain .001 pt geometry and .0001 normalized
+RGB tolerances. Only touching collinear identically painted opaque strokes may
+coalesce; widths, colors, opacity, gaps and different-color paint order survive.
+Cell dimensions must exceed the widest stroke in the admitted rectangular,
+unmerged LTR join profile. Glyph first-origin grouping is specific to the
+captured unwrapped Agjp strings, one per cell. The fourth public authoring page
+is outside the native numerical corpus.

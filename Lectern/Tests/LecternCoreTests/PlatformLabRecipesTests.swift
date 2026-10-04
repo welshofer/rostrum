@@ -4,7 +4,7 @@ import Rostrum
 @testable import LecternCore
 
 @Suite struct PlatformLabRecipesTests {
-    private static let ids: [LibraryDemoID] = [.layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering]
+    private static let ids: [LibraryDemoID] = [.layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tableDefaults, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering]
 
     @Test(arguments: ids, [false, true])
     func everyRecipeExecutesSerializesAndVerifies(id: LibraryDemoID, alternative: Bool) throws {

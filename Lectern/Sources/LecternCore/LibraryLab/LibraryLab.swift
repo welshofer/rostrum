@@ -192,7 +192,7 @@ public enum LibraryLab {
             try DrawingLabRecipes.make(id, options: options)
         case .slides, .charts, .chartEditing, .smartArt, .notes, .comments, .sections, .slideImport:
             try DocumentLabRecipes.make(id, options: options)
-        case .layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering:
+        case .layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tableDefaults, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering:
             try PlatformLabRecipes.make(id, options: options)
         }
     }
