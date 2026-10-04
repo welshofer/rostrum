@@ -28,5 +28,5 @@ with zipfile.ZipFile(p) as z:
   b=(R/face['file']).read_bytes();assert hashlib.sha256(b).hexdigest()==face['sha256']
   e=z.read('ppt/fonts/'+key+'.fntdata');size=struct.unpack_from('<I',e,4)[0];assert e[-size:]==b
   assert TTFont(R/face['file'])['OS/2'].fsType==0
-result=dict(sourceSHA256=m['sourceSHA256'],cases=24,slides=4,visibleScalars=sum(len([v for v in n.get('text','') if v!=' ']) for x in c for p in x['paragraphs'] for n in p['nodes']),packageXMLAndRelationshipsParsed=True,sourceBodyTextAndCaseFramesMatch=True,embeddedSFNTExact=True,productionBaseline='05613d0',nativeAcceptance='Accepted PDF separately pinned by capture-receipt.json; glyph proof in native-alignment-metrics.json')
+result=dict(sourceSHA256=m['sourceSHA256'],cases=24,slides=4,visibleScalars=sum(len([v for v in n.get('text','') if v!=' ']) for x in c for p in x['paragraphs'] for n in p['nodes']),packageXMLAndRelationshipsParsed=True,sourceBodyTextWidthsAlignmentAndChildOrderMatch=True,embeddedSFNTExact=True,productionBaseline='05613d0',nativeAcceptance='Accepted PDF separately pinned by capture-receipt.json; glyph proof in native-alignment-metrics.json')
 (R/'audit.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))

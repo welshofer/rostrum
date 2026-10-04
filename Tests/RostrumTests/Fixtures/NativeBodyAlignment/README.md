@@ -43,7 +43,8 @@ unsupported stored-scale diagnostic.
 ## Independent extraction and checks
 
 `generate.py` uses python-pptx and explicit OOXML, with fixed ZIP timestamps.
-`audit.py` checks parsed XML/relationships, source text/frames and actual embedded
+`audit.py` checks parsed XML/relationships, source text, widths, alignment, body
+child order and actual embedded
 sfnt bytes. `capture.py` requires the accepted source and PDF hashes, matches
 source/subset glyph outlines exactly, parses raw PDF graphics/text matrices and
 retains every visible glyph origin, painted scale and geometric ink bounds.
