@@ -141,6 +141,50 @@ import Rostrum
                           expectedText: "AVATAR", host: host, directory: directory)
     }
 
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
+    func listMarkerVariantsProduceFontReadyVectorEvidence() async throws {
+        let base = URL(fileURLWithPath: ProcessInfo.processInfo.environment["LECTERN_MARKER_WEBKIT_OUTPUT"]
+            ?? "/tmp/lectern-marker-webkit-20261004", isDirectory: true)
+        let directory = base.appendingPathComponent("markers-" + UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let host = SnapshotHost()
+        defer { host.close() }
+        for alternative in [false, true] {
+            let result = try LibraryLab.run(.listMarkers, options: .init(alternative: alternative),
+                                           in: directory.appendingPathComponent("lab-\(alternative)", isDirectory: true))
+            #expect(result.passed && result.slideCount == 5)
+            let deck = try Presentation(contentsOf: result.afterURL)
+            #expect(Set(deck.registerEmbeddedFonts()) == ["DejaVu Sans", "DejaVu Serif"])
+            let size = CGSize(width: deck.slideSize.width.points, height: deck.slideSize.height.points)
+            #expect(size == CGSize(width: 720, height: 720))
+            let referenceURL = result.directory.appendingPathComponent("native-marker-reference.json")
+            let reference = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: referenceURL)) as? [String: Any])
+            let cases = try #require(reference["cases"] as? [[String: Any]])
+            #expect(cases.count == 24)
+            // The fifth slide contains computed fits, not native-selected
+            // fitting evidence. Capture only the four original native pages.
+            for slideIndex in 0..<4 {
+                let selected = cases.filter { ($0["slide"] as? Int) == slideIndex }
+                #expect(selected.count == 6)
+                let inspectorSVG = result.directory.appendingPathComponent(String(format: "previews/slide-%02d.svg", slideIndex + 1))
+                let svg = try String(contentsOf: inspectorSVG, encoding: .utf8)
+                let specimens: [[String: Any]] = try selected.map { sample in
+                    let id = try #require(sample["id"] as? String)
+                    let shape = try #require(deck.slides[slideIndex].shapes.first { $0.name == id })
+                    let source = try #require(sample["source"] as? String)
+                    return ["sampleID": id, "frame": Self.frame(shape.frame),
+                            "referenceGroup": slideIndex == 3 ? "NativeListMarkers/followup" : "NativeListMarkers",
+                            "referenceID": id, "referenceSource": source, "referenceJSON": referenceURL.path]
+                }
+                let expectedText = try #require(selected.first?["id"] as? String)
+                try await capture(svg: svg, size: size, stem: "markers-\(alternative)-slide-\(slideIndex + 1)",
+                                  source: result.afterURL, slideIndex: slideIndex, specimens: specimens,
+                                  expectedText: expectedText, host: host, directory: directory,
+                                  inspectorSVG: inspectorSVG)
+            }
+        }
+    }
+
     private func capture(svg: String, size: CGSize, stem: String, source: URL, slideIndex: Int,
                          specimens: [[String: Any]], expectedText: String,
                          host: SnapshotHost, directory: URL, inspectorSVG: URL? = nil) async throws {
