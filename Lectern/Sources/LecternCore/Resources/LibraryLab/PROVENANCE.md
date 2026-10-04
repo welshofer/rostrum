@@ -107,3 +107,50 @@ on/off for exactly `officeZ`, `of` and `ficeZ`. Public originals explicitly call
 reproduce the reference's autofit element. Fitted copies use the two public
 fitting entry points. Their selected scales are computed, not native autofit
 choice expectations. No hidden XML writes or new font resources are needed.
+## Native glyph painting — seventh paragraph slide
+
+`ParagraphPaintReferences.json` contains 12 approved cases from the independent
+`NativeGlyphPlacement/primary` and `NativeGlyphPlacement/autofit` PowerPoint
+fixtures. Each record pins its source deck, source slide, PDF and regular
+DejaVu Sans font hash, and retains the original text-body XML, frame dimensions,
+PDF paint matrix, visible character origins, source-outline bounds and geometric
+ink bounds. Six original cases appear per alternative without modifying their
+text bodies or frames. The alternative selects stored font scaling cases.
+
+The recipe reads explicit scalar positions and painted `font-size` from public
+SVG output, rejects `textLength`/`lengthAdjust` glyph stretching, and compares
+origins within 0.025 pt, baselines within 0.121 pt, and paint scale/outline-derived
+ink dimensions within 0.002 pt. These tolerances retain native print-grid
+residuals separately; they do not equate authored `Run.fontSize` with painted
+glyph size or claim general Office pixel parity. The profile is the bundled
+regular face, calibrated printable ASCII, zero insets and the exact recorded
+properties; bold/italic, other faces and broad script behavior are outside this
+demonstration.
+
+Separate 100 by 20 pt boxes exercise `Shape.fitText` and `TextFrame.fitText`.
+Their labels identify computed choices, and their original paragraph/run XML
+survives fitting; they do not claim native-selected autofit steps. Captions and
+fitting copies use distinct x positions from the original boxes, allowing SVG
+checks to select only the original glyphs. Saved checks retain original XML,
+fitting attributes, line geometry and deterministic SVG. The exported
+`native-glyph-reference.json` carries the complete selected evidence.
+
+The seventh paragraph slide is also captured through Lectern's real offscreen
+WebKit host by the opt-in `GlyphPaintWebKitTests` (`LECTERN_TEST_WEBKIT=1`).
+The capture saves unmodified SVG/PDF, hashes, loaded embedded-font receipts,
+viewport and PDF bounds, and exact original specimen frames. The independent
+PDF comparison is a separate acceptance step; serialized SVG attributes and
+successful capture alone do not establish native paint parity. The additional
+kerning capture uses `eligibility/native-paint-eligibility-v1.pptx`, page 2,
+with `kern-threshold14.6-scaled20x72p5` and
+`kern-threshold15.1-scaled20x72p5` as the enabled/disabled pair.
+
+The third cell-appearance slide exercises `RichTextLayout.Context.tableCell`
+and the live public cell fitting path with bundled DejaVu Sans. It retains a
+text frame before changing cell padding, style and anchor: the initial narrow
+content width fails, while the final visible cell fits. Both results are
+100% scale / zero reduction and leave the stored 50% scale untouched. Explicit
+context, actual SVG and saved/reopened state agree; ignored stored table scale
+remains a visible diagnostic. A separate Core input fixture verifies that
+nonzero stored line reduction is diagnosed and fitting refuses it without
+mutation. This demonstrates the native host rule, not a native autofit search.

@@ -179,8 +179,8 @@ import Rostrum
         }
         let authoredCells = try cells(in: slide)
         #expect(authoredCells.count == 2)
-        // Native PowerPoint distinguishes explicit zero (off) from omission
-        // and a positive threshold reached by the rendered 12 pt run.
+        // Native omitted/zero DrawingML kerning is off. A positive threshold
+        // reached by the measured 12 pt run enables pair positioning.
         for (cell, threshold) in zip(authoredCells, [Optional("2400"), threshold]) {
             let properties = try #require(cell.firstChild(named: "a:txBody")?
                 .firstChild(named: "a:p")?.firstChild(named: "a:r")?.firstChild(named: "a:rPr"))
@@ -205,7 +205,7 @@ import Rostrum
         let disabled = try #require(spans.first { $0.textContent == "AV office" })
         let comparison = try #require(spans.first { $0.textContent == "AV retained" })
         #expect(disabled[attribute: "kerning"] == "0")
-        #expect(comparison[attribute: "kerning"] == (threshold == "0" ? "0" : nil))
+        #expect(comparison[attribute: "kerning"] == (threshold == "1200" ? nil : "0"))
         let diagnostic = try #require(inspection.previewDiagnostics.first { $0.slideNumber == 1 })
         let shadowIssue = try #require(diagnostic.issues.first {
             $0.code == "omittedEffect" && $0.impact == "approximation" && $0.path.contains("/a:tblBg[")

@@ -166,11 +166,25 @@ final class SlideSnapshotRequest<Value: Sendable> {
 /// documented way to give it one without showing anything.
 @MainActor
 final class SnapshotHost: NSObject, WKNavigationDelegate {
+    struct VectorCapture: Sendable {
+        let pdf: Data
+        let fontReadinessJSON: String
+        let viewport: CGSize
+    }
+
+    private enum Capture: Sendable {
+        case bitmap(NSImage)
+        case vector(VectorCapture)
+    }
+    private enum Mode { case bitmap, vector }
     private let window: NSWindow
     private let webView: WKWebView
-    private var request: SlideSnapshotRequest<NSImage>?
+    private var request: SlideSnapshotRequest<Capture>?
     private var navigation: WKNavigation?
     private var snapshotSize: CGSize = .zero
+    private var mode: Mode = .bitmap
+    private(set) var lastCaptureFailure: String?
+    var isCapturing: Bool { request != nil && navigation != nil }
 
     override init() {
         let config = WKWebViewConfiguration()
@@ -202,38 +216,143 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
     }
 
     func snapshot(svg: String, size: CGSize) async -> NSImage? {
-        let request = SlideSnapshotRequest<NSImage>()
+        guard let result = await capture(svg: svg, size: size, mode: .bitmap),
+              case .bitmap(let image) = result else { return nil }
+        return image
+    }
+
+    /// Captures the same loaded SVG as the bitmap path, retaining vector glyphs
+    /// for independent inspection. It does not establish native Office parity.
+    func vectorCapture(svg: String, size: CGSize) async -> VectorCapture? {
+        guard let result = await capture(svg: svg, size: size, mode: .vector),
+              case .vector(let capture) = result else { return nil }
+        return capture
+    }
+
+    private func capture(svg: String, size: CGSize, mode: Mode) async -> Capture? {
+        guard request == nil, !Task.isCancelled, size.width.isFinite, size.height.isFinite,
+              size.width > 0, size.height > 0 else { return nil }
+        let request = SlideSnapshotRequest<Capture>()
         self.request = request
+        self.mode = mode
+        lastCaptureFailure = nil
         snapshotSize = size
         window.setContentSize(size)
         webView.frame = NSRect(origin: .zero, size: size)
-        let image = await request.value(timeout: .seconds(10), start: {
+        let result = await request.value(timeout: .seconds(10), start: {
             navigation = webView.loadHTMLString(Self.document(svg: svg), baseURL: nil)
-        }, stop: { [weak self] in self?.webView.stopLoading() })
+        }, stop: { [weak self] in
+            guard let self else { return }
+            if lastCaptureFailure == nil { lastCaptureFailure = "Capture cancelled or timed out." }
+            webView.stopLoading()
+        })
         if self.request === request { self.request = nil; navigation = nil }
-        return image
+        return result
+    }
+
+    /// Tests and short-lived export callers dispose only their owned host.
+    func close() {
+        request?.finish(nil)
+        navigation = nil
+        webView.stopLoading()
+        window.orderOut(nil)
+        window.close()
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         guard navigation === self.navigation, let request else { return }
-        let config = WKSnapshotConfiguration()
-        config.rect = NSRect(origin: .zero, size: snapshotSize)
-        config.snapshotWidth = NSNumber(value: Double(snapshotSize.width))
-        webView.takeSnapshot(with: config) { image, _ in
-            request.finish(image)
+        // API-injected script remains available with page scripting disabled.
+        // Font promises and the request deadline are bounded; offscreen windows
+        // may throttle animation frames, so readiness does not depend on rAF.
+        webView.callAsyncJavaScript(Self.fontReadinessScript, arguments: [:], in: nil, in: .defaultClient) { [weak self] result in
+            guard let self, navigation === self.navigation, self.request === request else { return }
+            switch result {
+            case .failure(let error):
+                self.lastCaptureFailure = "Font readiness failed: \(error.localizedDescription)"
+                request.finish(nil)
+            case .success(let value):
+                guard let readiness = value as? String else {
+                    self.lastCaptureFailure = "Font readiness returned no receipt."
+                    request.finish(nil)
+                    return
+                }
+                self.finishCapture(request, navigation: navigation, readiness: readiness)
+            }
+        }
+    }
+
+    private func finishCapture(_ request: SlideSnapshotRequest<Capture>, navigation: WKNavigation?, readiness: String) {
+        let size = snapshotSize
+        switch mode {
+        case .bitmap:
+            let config = WKSnapshotConfiguration()
+            config.rect = NSRect(origin: .zero, size: size)
+            config.snapshotWidth = NSNumber(value: Double(size.width))
+            webView.takeSnapshot(with: config) { [weak self] image, error in
+                guard let self, navigation === self.navigation, self.request === request else { return }
+                if let error { self.lastCaptureFailure = "Snapshot failed: \(error.localizedDescription)" }
+                request.finish(image.map(Capture.bitmap))
+            }
+        case .vector:
+            let config = WKPDFConfiguration()
+            config.rect = NSRect(origin: .zero, size: size)
+            webView.createPDF(configuration: config) { [weak self] result in
+                guard let self, navigation === self.navigation, self.request === request else { return }
+                switch result {
+                case .success(let data):
+                    request.finish(.vector(.init(pdf: data, fontReadinessJSON: readiness, viewport: size)))
+                case .failure(let error):
+                    self.lastCaptureFailure = "PDF capture failed: \(error.localizedDescription)"
+                    request.finish(nil)
+                }
+            }
         }
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        if navigation === self.navigation { request?.finish(nil) }
+        if navigation === self.navigation {
+            lastCaptureFailure = "Navigation failed: \(error.localizedDescription)"
+            request?.finish(nil)
+        }
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
                  withError error: Error) {
-        if navigation === self.navigation { request?.finish(nil) }
+        if navigation === self.navigation {
+            lastCaptureFailure = "Navigation failed: \(error.localizedDescription)"
+            request?.finish(nil)
+        }
     }
 
-    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { request?.finish(nil) }
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        lastCaptureFailure = "Web content process terminated."
+        request?.finish(nil)
+    }
+
+    private static let fontReadinessScript = """
+    const normalize = value => value.trim().replace(/^['"]|['"]$/g, '');
+    const families = new Set();
+    for (const node of document.querySelectorAll('svg text, svg tspan')) {
+        for (const family of getComputedStyle(node).fontFamily.split(',')) families.add(normalize(family));
+    }
+    const faces = Array.from(document.fonts).filter(face => families.has(normalize(face.family)));
+    let timer;
+    try {
+        await Promise.race([
+            (async () => {
+                document.body.getBoundingClientRect();
+                await Promise.all(faces.map(face => face.load()));
+                await document.fonts.ready;
+                document.body.getBoundingClientRect();
+            })(),
+            new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Embedded font readiness timed out.')), 5000); })
+        ]);
+    } finally { clearTimeout(timer); }
+    if (faces.some(face => face.status !== 'loaded')) throw new Error('A used embedded font did not load.');
+    return JSON.stringify({status: document.fonts.status, usedFamilies: Array.from(families).sort(),
+        faces: faces.map(face => ({family: face.family, status: face.status, style: face.style, weight: face.weight})),
+        viewport: {width: innerWidth, height: innerHeight}});
+    """
 
     /// The SVG carries its own background and aspect ratio; this only stops the
     /// web view adding chrome around it.

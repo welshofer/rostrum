@@ -7,7 +7,7 @@ import Rostrum
     @Test(arguments: [false, true])
     func nativeCommonWordsSurviveBothFitsAndSaving(narrow: Bool) throws {
         let draft = try PlatformLabRecipes.make(.paragraphLayout, options: .init(text: "Native Latin words", sampleSize: 2, alternative: narrow))
-        #expect(draft.deck.slides.count == 6)
+        #expect(draft.deck.slides.count == 7)
         let reference = try PlatformLabRecipes.paragraphLigatureReferences()
         let samples = reference.cases.filter { $0.id == "mixed-size-edge" || $0.narrow == narrow }
         #expect(samples.count == 2)

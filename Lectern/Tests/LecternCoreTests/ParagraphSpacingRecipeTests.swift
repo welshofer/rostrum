@@ -8,7 +8,7 @@ import Rostrum
     func nativeSpacingAndAnchorsSurviveSaving(alternative: Bool) throws {
         let draft = try PlatformLabRecipes.make(.paragraphLayout,
             options: .init(text: "Native line spacing", sampleSize: 2, alternative: alternative))
-        #expect(draft.deck.slides.count == 6)
+        #expect(draft.deck.slides.count == 7)
         let reference = try PlatformLabRecipes.paragraphSpacingReferences()
         let samples = reference.cases.filter { $0.alternative == alternative }
         #expect(samples.count == 6)

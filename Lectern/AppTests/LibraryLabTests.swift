@@ -11,9 +11,9 @@ import Rostrum
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("LabApp-" + UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
         let model = LibraryLabModel()
-        let ids: [LibraryDemoID] = [.tableStructure, .notes, .comments]
+        let ids: [LibraryDemoID] = [.tableStructure, .tableAppearance, .notes, .comments]
         await model.run(ids, in: root).value
-        #expect(!model.isRunning && model.failures.isEmpty && model.completed == 3)
+        #expect(!model.isRunning && model.failures.isEmpty && model.completed == 4)
         for id in ids {
             let result = try #require(model.results[id])
             #expect(result.passed)
@@ -29,9 +29,24 @@ import Rostrum
             await task.value
             #expect(context.app.exportProblem == nil)
             #expect(context.app.exportedDirectory != nil)
+            if id == .tableAppearance {
+                #expect(result.slideCount == 3 && context.app.inspection?.previews.count == 3)
+                #expect(result.checks.contains { $0.name == "Saved table context and live fit persist" && $0.passed })
+                let savedSVG = try String(contentsOf: result.directory.appendingPathComponent("previews/slide-03.svg"), encoding: .utf8)
+                let deck = try Presentation(contentsOf: result.afterURL)
+                #expect(deck.registerEmbeddedFonts().contains("DejaVu Sans"))
+                #expect(try savedSVG == deck.renderSVG(slideAt: 2))
+                #expect(savedSVG.contains("BBBBBBBBBBBBZ") && savedSVG.contains("font-size=\"20\""))
+                #expect(result.findings.contains { $0.slideNumber == 3 && $0.message.contains("ignore stored fontScale") })
+                let directory = try #require(context.app.exportedDirectory)
+                let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+                let markdown = try String(contentsOf: #require(files.first { $0.pathExtension == "md" }), encoding: .utf8)
+                #expect(markdown.contains("Table cells measure full-size text") && markdown.contains("Stored scale: 50%"))
+                #expect(context.app.exportSummary?.hasPrefix("3 slides") == true)
+            }
             context.app.goHome()
         }
-        #expect(model.results.count == 3)
+        #expect(model.results.count == 4)
     }
 
     @Test(arguments: [false, true])
@@ -48,7 +63,7 @@ import Rostrum
         #expect(result.checks.contains { $0.name == "Paragraph positions survive reopening" && $0.passed })
         await context.app.inspect(deckAt: result.afterURL).value
         #expect(context.app.phase == .inspected)
-        #expect(context.app.inspection?.previews.count == 6)
+        #expect(context.app.inspection?.previews.count == 7)
         let exportRoot = root.appendingPathComponent("Export")
         let task = try #require(context.app.exportInspected(into: exportRoot))
         await task.value
@@ -59,9 +74,9 @@ import Rostrum
         let markdown = try String(contentsOf: markdownURL, encoding: .utf8)
         #expect(markdown.contains("App paragraph demonstration"))
         #expect(markdown.contains("The last line remains natural."))
-        #expect(context.app.exportSummary == "6 slides · 0 media files · 0 chart CSVs")
+        #expect(context.app.exportSummary == "7 slides · 0 media files · 0 chart CSVs")
         let deck = try Presentation(contentsOf: result.afterURL)
-        #expect(deck.slides.count == 6)
+        #expect(deck.slides.count == 7)
         #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
         let shape = try #require(deck.slides[0].shapes.all.first { $0.name == "Justified paragraph" })
         #expect(shape.textFrame?.paragraphs.first?.alignment == .justified)
@@ -195,6 +210,66 @@ import Rostrum
             }
         }
         #expect(try deck.renderSVGReportingProblems(slideAt: 5).problems.isEmpty)
+        #expect(markdown.contains("Glyph size and placement follow native painting"))
+        let paintData = try Data(contentsOf: result.directory.appendingPathComponent("native-glyph-reference.json"))
+        let paintReference = try #require(JSONSerialization.jsonObject(with: paintData) as? [String: Any])
+        let paintCases = try #require(paintReference["cases"] as? [[String: Any]]).filter { ($0["alternative"] as? Bool) == narrow }
+        #expect(paintCases.count == 6)
+        let paintSVG = try String(contentsOf: result.directory.appendingPathComponent("previews/slide-07.svg"), encoding: .utf8)
+        #expect(try deck.renderSVG(slideAt: 6) == paintSVG)
+        let paintTree = try #require(deck.slides[6].part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree"))
+        let svgRoot = try XML.parse(Data(paintSVG.utf8))
+        func textNodes(_ element: XML.Element) -> [XML.Element] {
+            (element.name == "text" ? [element] : []) + element.childElements.flatMap(textNodes)
+        }
+        for sample in paintCases {
+            let caseID = try #require(sample["id"] as? String)
+            #expect(result.checks.contains { $0.name == "Saved native glyph painting: " + caseID && $0.passed })
+            let name = caseID + " paint original"
+            let box = try #require(deck.slides[6].shapes.all.first { $0.name == name })
+            #expect(box.frame.width == .points(try #require(sample["widthPoints"] as? Double)))
+            #expect(box.frame.height == .points(160))
+            let node = try #require(paintTree.children(named: "p:sp").first {
+                $0.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "name"] == name
+            })
+            let body = try #require(node.firstChild(named: "p:txBody"))
+            let source = try XML.parse(Data(try #require(sample["textBodyXML"] as? String).utf8))
+            #expect(body.childElements.map { $0.serialized() } == source.childElements.map { $0.serialized() })
+            let lines = try #require(sample["nativeLines"] as? [[String: Any]])
+            let expected = try lines.flatMap { try #require($0["characters"] as? [[String: Any]]) }
+            var actual: [(text: String, x: Double, baseline: Double, size: Double)] = []
+            for text in textNodes(svgRoot) {
+                let transform = text[attribute: "transform"] ?? ""
+                let values = transform.components(separatedBy: CharacterSet(charactersIn: "(), ")).compactMap(Double.init)
+                guard values.count == 3, values[2] == Double(EMU.perPoint), abs(values[0] - Double(box.frame.x.rawValue)) < 0.001 else { continue }
+                let baseline = values[1] / Double(EMU.perPoint) - box.frame.y.points
+                guard baseline >= 0 && baseline <= box.frame.height.points else { continue }
+                for span in text.children(named: "tspan") {
+                    #expect(span[attribute: "textLength"] == nil && span[attribute: "lengthAdjust"] == nil)
+                    let size = try #require(span[attribute: "font-size"].flatMap(Double.init))
+                    let positions = try #require(span[attribute: "x"]).split(whereSeparator: { $0.isWhitespace }).compactMap { Double($0) }
+                    let scalars = Array(span.textContent.unicodeScalars)
+                    #expect(positions.count == scalars.count)
+                    for (scalar, x) in zip(scalars, positions) where scalar.value != 32 {
+                        actual.append((String(scalar), x, baseline, size))
+                    }
+                }
+            }
+            #expect(actual.count == expected.count)
+            for (glyph, native) in zip(actual, expected) {
+                #expect(glyph.text == (native["text"] as? String))
+                #expect(abs(glyph.x - (try #require(native["x"] as? Double))) <= 0.025)
+                #expect(abs(glyph.baseline - (try #require(native["baseline"] as? Double))) <= 0.121)
+                let matrix = try #require(native["rawPDFPaintScale"] as? [Double])
+                #expect(matrix.count == 2 && matrix.allSatisfy { abs(glyph.size - $0) <= 0.002 })
+                let bounds = try #require(native["sourceGlyphBounds"] as? [Double])
+                let ink = try #require(native["geometricInkBounds"] as? [Double])
+                let units = try #require(sample["unitsPerEm"] as? Double)
+                #expect(abs((bounds[2] - bounds[0]) * glyph.size / units - (ink[2] - ink[0])) <= 0.002)
+                #expect(abs((bounds[3] - bounds[1]) * glyph.size / units - (ink[3] - ink[1])) <= 0.002)
+            }
+        }
+        #expect(try deck.renderSVGReportingProblems(slideAt: 6).problems.isEmpty)
         #expect(model.results[.paragraphLayout]?.directory == result.directory)
     }
 
