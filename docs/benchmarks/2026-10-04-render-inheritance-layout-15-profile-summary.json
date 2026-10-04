@@ -1,0 +1,168 @@
+{
+  "scope": "Fresh6a3f61b baseline attribution, not comparative timing/predicted gain. Inclusive categories nest and may not be added. Root GUI/review/background may overlap; alignment worker held builds during sampling.",
+  "profiles": {
+    "ordinary-buNone-200": {
+      "inclusiveSamples": {
+        "mainThread": 2625,
+        "inheritedRunDefaults": 566,
+        "inheritedStyles": 561,
+        "ordinaryProjection": 72
+      },
+      "inheritedStylesSourceLineSamples": {
+        "946": 248,
+        "930": 211,
+        "969": 79,
+        "931": 14,
+        "958": 3,
+        "965": 4,
+        "unknown": 1,
+        "960": 1
+      },
+      "driverResult": {
+        "checksum": 1539702659,
+        "passes": 1439,
+        "savedBytesUnchanged": true
+      }
+    },
+    "ordinary-buNone-large-style-200": {
+      "inclusiveSamples": {
+        "mainThread": 2706,
+        "inheritedRunDefaults": 599,
+        "inheritedStyles": 593,
+        "ordinaryProjection": 117
+      },
+      "inheritedStylesSourceLineSamples": {
+        "946": 226,
+        "930": 219,
+        "969": 125,
+        "931": 7,
+        "965": 6,
+        "958": 7,
+        "unknown": 1,
+        "960": 2
+      },
+      "driverResult": {
+        "checksum": 1520443001,
+        "passes": 1421,
+        "savedBytesUnchanged": true
+      }
+    },
+    "ordinary-inherited-bullet-ascii-200": {
+      "inclusiveSamples": {
+        "mainThread": 2697,
+        "inheritedRunDefaults": 584,
+        "inheritedStyles": 580,
+        "ordinaryProjection": 104
+      },
+      "inheritedStylesSourceLineSamples": {
+        "946": 232,
+        "930": 209,
+        "969": 115,
+        "931": 12,
+        "965": 5,
+        "958": 5,
+        "unknown": 1,
+        "960": 1
+      },
+      "driverResult": {
+        "checksum": 1422004749,
+        "passes": 1329,
+        "savedBytesUnchanged": true
+      }
+    },
+    "ordinary-inherited-bullet-unicode-200": {
+      "inclusiveSamples": {
+        "mainThread": 2670,
+        "inheritedRunDefaults": 287,
+        "inheritedStyles": 284,
+        "ordinaryProjection": 61
+      },
+      "inheritedStylesSourceLineSamples": {
+        "930": 109,
+        "946": 103,
+        "969": 66,
+        "931": 2,
+        "unknown": 1,
+        "958": 1,
+        "965": 2
+      },
+      "driverResult": {
+        "checksum": 659718439,
+        "passes": 619,
+        "savedBytesUnchanged": true
+      }
+    },
+    "placeholder-inherited-bullet-200": {
+      "inclusiveSamples": {
+        "mainThread": 2707,
+        "inheritedRunDefaults": 549,
+        "inheritedStyles": 529
+      },
+      "inheritedStylesSourceLineSamples": {
+        "946": 211,
+        "930": 190,
+        "936": 29,
+        "949": 25,
+        "935": 12,
+        "unknown": 25,
+        "931": 8,
+        "947": 4,
+        "954": 3,
+        "958": 4,
+        "969": 3,
+        "948": 2,
+        "953": 2,
+        "955": 3,
+        "932": 1,
+        "933": 1,
+        "934": 1,
+        "960": 2,
+        "965": 3
+      },
+      "driverResult": {
+        "checksum": 1891527392,
+        "passes": 1181,
+        "savedBytesUnchanged": true
+      }
+    },
+    "table-200x50": {
+      "inclusiveSamples": {
+        "mainThread": 2699
+      },
+      "inheritedStylesSourceLineSamples": {},
+      "driverResult": {
+        "checksum": 491891268,
+        "passes": 41,
+        "savedBytesUnchanged": true
+      }
+    },
+    "shaped-table-100x20": {
+      "inclusiveSamples": {
+        "mainThread": 2720
+      },
+      "inheritedStylesSourceLineSamples": {},
+      "driverResult": {
+        "checksum": 577112460,
+        "passes": 122,
+        "savedBytesUnchanged": true
+      }
+    },
+    "richtext-fit": {
+      "inclusiveSamples": {
+        "mainThread": 2720,
+        "inheritedRunDefaults": 8,
+        "inheritedStyles": 8
+      },
+      "inheritedStylesSourceLineSamples": {
+        "930": 4,
+        "946": 3,
+        "958": 1
+      },
+      "driverResult": {
+        "checksum": 5416159700,
+        "passes": 5210,
+        "savedBytesUnchanged": true
+      }
+    }
+  }
+}

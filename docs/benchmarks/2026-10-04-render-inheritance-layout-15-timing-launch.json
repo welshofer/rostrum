@@ -1,0 +1,29 @@
+{
+  "planSHA256": "54fc96ed4cbfa6a0d467c8236818ed90b4deb4118500adad2fedbcafb5f90554",
+  "scriptSHA256": "4f2cec298e3267b76b70d2c731ff4d62e41f6f24afa13a71687ca7eb8946fe96",
+  "environment": {
+    "canonical": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    },
+    "supplement": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    },
+    "native": {
+      "ROSTRUM_BENCH_FONT": null,
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/native-inputs.json",
+      "ROSTRUM_BENCH_OUTPUT": null
+    }
+  },
+  "environmentRule": "These exact task variables replace inherited values. run.py sets its per-child temporary ROSTRUM_BENCH_OUTPUT itself. No unrelated shell environment or credentials are captured.",
+  "rootHeadAtLaunch": "6a3f61b5fb85f767096e87d3c14a2a1ceb74d410",
+  "binarySource": "6a3f61b plus pinned candidate.patch (only SVGRenderer.swift)",
+  "grant": "Root coordinated no active build/test/helper/GUI jobs; independent protocol reviews approved exact plan with this explicit environment preflight.",
+  "timestamp": "2026-10-04T15:23:17.848170-07:00"
+}
