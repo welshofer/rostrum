@@ -1,8 +1,17 @@
 # Performance measurements
 
-The latest [combined fidelity and performance checkpoint](INTEGRATED-LAYOUT-PERFORMANCE-20261003-3.md)
+The latest [October 4 comparison](INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-UPSTREAM.md)
+compares integrated source `2953dc1` with current-main baseline `6a1f56f`.
+Large fallback rendering is **3.97% slower** and registered-table rendering
+**2.51% slower**, each in nine of ten matched pairs, with about 2 MiB additional
+peak process RSS. Substantial background load limits attribution. This is an
+explicit fidelity tradeoff; performance recovery remains open. Inherited SVG
+styling removes 2.03 MB versus the first unhoisted implementation while retaining
+470,000 bytes over the large-table baseline. See the October 4 section below.
+
+The historical [October 3 combined checkpoint](INTEGRATED-LAYOUT-PERFORMANCE-20261003-3.md)
 measures **4.44% faster registered-font table rendering and 5.92% faster fitting**
-against this pass's `5654d1b` baseline. Both improve in all ten matched pairs with
+against that pass's `5654d1b` baseline. Both improve in all ten matched pairs with
 nonoverlapping observed ranges, including the new native-calibrated geometry.
 Fallback rendering has overlapping ranges. Against the older `cf1b8a0` baseline,
 registered rendering improves 5.94%; fitting's 3.73% lower median has overlapping
@@ -19,7 +28,7 @@ finds **2.26% slower fallback table rendering and 3.01% slower rich-text fitting
 against `cf1b8a0`, with both slower in all ten matched pairs. Registered-font
 table rendering is 0.75% faster with overlapping ranges; there is no meaningful
 net speedup claim. One [bounded fast-path attempt](INTEGRATED-LAYOUT-PERFORMANCE-20261003-ATTEMPT.md)
-failed to remove these regressions and was discarded. The latest pass above
+failed to remove these regressions and was discarded. That October 3 pass
 profiles and reduces common layout copying while separately measuring the
 additional fidelity work.
 
