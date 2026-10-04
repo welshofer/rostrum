@@ -1,0 +1,165 @@
+{
+  "snapshotCount": 13,
+  "percentCPURanges": {
+    "WindowServer": [
+      65.1,
+      71.5
+    ],
+    "photolibraryd": [
+      0.0,
+      0.0
+    ],
+    "managedcorespotlightd": [
+      0.0,
+      0.0
+    ],
+    "backupd": [
+      0.1,
+      1195.4
+    ]
+  },
+  "startTimestamp": "2026-10-04T13:23:22.763598-07:00",
+  "endTimestamp": "2026-10-04T13:25:49.722444-07:00",
+  "qualification": "Root/worker builds and GUI paused; uncontrolled user/background activity. Snapshots cannot prove continuous isolation or remove shared-load bias.",
+  "samples": [
+    {
+      "file": "process-canonical-during-15.txt",
+      "timestamp": "2026-10-04T13:23:37.950403-07:00",
+      "percentCPU": {
+        "WindowServer": 68.6,
+        "backupd": 0.1,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-canonical-end.txt",
+      "timestamp": "2026-10-04T13:23:50.574626-07:00",
+      "percentCPU": {
+        "WindowServer": 71.3,
+        "backupd": 1195.4,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-cell-during-15.txt",
+      "timestamp": "2026-10-04T13:24:30.117522-07:00",
+      "percentCPU": {
+        "WindowServer": 70.1,
+        "backupd": 2.1,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-cell-during-30.txt",
+      "timestamp": "2026-10-04T13:24:45.284904-07:00",
+      "percentCPU": {
+        "WindowServer": 69.4,
+        "backupd": 2.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-cell-during-45.txt",
+      "timestamp": "2026-10-04T13:25:00.465314-07:00",
+      "percentCPU": {
+        "WindowServer": 68.5,
+        "backupd": 0.4,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-cell-during-60.txt",
+      "timestamp": "2026-10-04T13:25:15.645941-07:00",
+      "percentCPU": {
+        "WindowServer": 65.1,
+        "backupd": 0.5,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-cell-during-75.txt",
+      "timestamp": "2026-10-04T13:25:30.839770-07:00",
+      "percentCPU": {
+        "WindowServer": 68.2,
+        "backupd": 144.8,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-cell-during-91.txt",
+      "timestamp": "2026-10-04T13:25:46.055023-07:00",
+      "percentCPU": {
+        "WindowServer": 71.5,
+        "backupd": 156.6,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-cell-end.txt",
+      "timestamp": "2026-10-04T13:25:49.664611-07:00",
+      "percentCPU": {
+        "WindowServer": 71.1,
+        "backupd": 149.7,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-end.txt",
+      "timestamp": "2026-10-04T13:25:49.722444-07:00",
+      "percentCPU": {
+        "WindowServer": 70.1,
+        "backupd": 149.7,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-start.txt",
+      "timestamp": "2026-10-04T13:23:22.763598-07:00",
+      "percentCPU": {
+        "WindowServer": 70.2,
+        "backupd": 30.8,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-supplement-during-15.txt",
+      "timestamp": "2026-10-04T13:24:05.791332-07:00",
+      "percentCPU": {
+        "WindowServer": 67.5,
+        "backupd": 91.6,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "file": "process-supplement-end.txt",
+      "timestamp": "2026-10-04T13:24:14.931520-07:00",
+      "percentCPU": {
+        "WindowServer": 68.5,
+        "backupd": 68.7,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    }
+  ],
+  "candidateSourceCommit": "308f20d3a7b870011bdbdb769fa399a0246b6014",
+  "candidateMeasuredAsFrozenUncommittedPatch": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Fonts/TextMeasurer.swift": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "752484dbc6e074de3edb20c3a9b26cd5fbdb665f72ce4f2473f628025392cf32",
+    "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886",
+    "Tools/table-style-catalog/generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
+    "Tests/RostrumTests/TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f"
+  }
+}

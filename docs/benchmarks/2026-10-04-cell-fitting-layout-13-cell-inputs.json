@@ -1,0 +1,20 @@
+{
+  "scope": "Separate retained-cell fitting workloads; all frames acquired and font registered before fitting timer. Large/table-style cases do not alter canonical or existing supplementary scenarios.",
+  "files": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx": "a5aa98715bc7c71d17d969ac43bede3322fde4807b9550e155a00a5b497c35f8"
+  },
+  "fontPath": "/System/Library/Fonts/Supplemental/Arial.ttf",
+  "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+  "candidateSourceCommit": "308f20d3a7b870011bdbdb769fa399a0246b6014",
+  "candidateMeasuredAsFrozenUncommittedPatch": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Fonts/TextMeasurer.swift": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "752484dbc6e074de3edb20c3a9b26cd5fbdb665f72ce4f2473f628025392cf32",
+    "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886",
+    "Tools/table-style-catalog/generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
+    "Tests/RostrumTests/TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f"
+  }
+}

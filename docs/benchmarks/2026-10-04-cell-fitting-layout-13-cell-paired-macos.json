@@ -1,0 +1,1256 @@
+{
+  "schema": 2,
+  "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "processor": "arm",
+  "revision": "7c26656adbf56e4c03967bd894752c3022fda2f5",
+  "font": "/System/Library/Fonts/Supplemental/Arial.ttf",
+  "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+  "warmups": 1,
+  "runs": 10,
+  "corpus": {
+    "FromGoogleSlides.pptx": "faf87c2ca895a78753b7e1b00928cc5e2b504b748efb11278ac7f46095e4ce6d",
+    "FromKeynote.pptx": "38d4969e820dc9e1e2d1acec155fc450e4bdf8658f3aacf59da95311a6c01762",
+    "MovieAndComments.pptx": "3e33e2455a21a6c1d3a38157eb1ebbd994a79d1005ec6c83435e93e0dec0ab8b",
+    "SimplePowerPoint.pptx": "84fd425655ded6454a8614b9fa948256d63fb6f911c1d9ae87a739061e02bed3"
+  },
+  "scenarios": {
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx": {
+      "phases": {
+        "cell-fitting": {
+          "baseline": {
+            "medianMS": 26.986458,
+            "p95MS": 27.270125,
+            "minMS": 26.359708,
+            "maxMS": 27.270125,
+            "relativeSpread": 0.03373606866080754
+          },
+          "candidate": {
+            "medianMS": 10.2249375,
+            "p95MS": 10.632375,
+            "minMS": 9.73425,
+            "maxMS": 10.632375,
+            "relativeSpread": 0.08783672271835406
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 3.6619165000000002,
+            "p95MS": 3.830083,
+            "minMS": 3.551125,
+            "maxMS": 3.830083,
+            "relativeSpread": 0.07617814333013881
+          },
+          "candidate": {
+            "medianMS": 3.7408955,
+            "p95MS": 4.03225,
+            "minMS": 3.614458,
+            "maxMS": 4.03225,
+            "relativeSpread": 0.11168234985446676
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 26.984958,
+              "render": 3.638625
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20054016,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 26.64875,
+              "render": 3.551125
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 26.869291,
+              "render": 3.790625
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 26.359708,
+              "render": 3.71525
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20054016,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 27.270125,
+              "render": 3.647291
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 27.034875,
+              "render": 3.676542
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20054016,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 26.993083,
+              "render": 3.561083
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 26.791916,
+              "render": 3.62025
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 27.089958,
+              "render": 3.830083
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20021248,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 26.987958,
+              "render": 3.720417
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          }
+        ],
+        "candidate": [
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 10.195375,
+              "render": 3.614458
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19808256,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 9.73425,
+              "render": 3.743958
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19808256,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 10.285583,
+              "render": 3.871833
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19791872,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 10.218542,
+              "render": 4.03225
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19808256,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 10.61625,
+              "render": 3.849333
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19808256,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 10.632375,
+              "render": 3.737833
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19808256,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 10.084375,
+              "render": 3.684208
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19808256,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 10.128709,
+              "render": 3.735584
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19808256,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 10.515375,
+              "render": 3.791542
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19808256,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          },
+          {
+            "cellCount": 100,
+            "checksum": 10100,
+            "outputBytes": 10233,
+            "phases": {
+              "cell-fitting": 10.231333,
+              "render": 3.658792
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 19808256,
+            "outputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+          }
+        ]
+      },
+      "savedOutputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
+      "peakRSSMedianBytes": {
+        "baseline": 20037632.0,
+        "candidate": 19808256.0
+      }
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx": {
+      "phases": {
+        "cell-fitting": {
+          "baseline": {
+            "medianMS": 277.4376665,
+            "p95MS": 281.96075,
+            "minMS": 274.926917,
+            "maxMS": 281.96075,
+            "relativeSpread": 0.025352840833528335
+          },
+          "candidate": {
+            "medianMS": 98.1541045,
+            "p95MS": 98.951875,
+            "minMS": 96.903417,
+            "maxMS": 98.951875,
+            "relativeSpread": 0.020869814975490876
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 19.86675,
+            "p95MS": 20.783666,
+            "minMS": 19.627541,
+            "maxMS": 20.783666,
+            "relativeSpread": 0.05819396730718408
+          },
+          "candidate": {
+            "medianMS": 20.104,
+            "p95MS": 20.748125,
+            "minMS": 19.911375,
+            "maxMS": 20.748125,
+            "relativeSpread": 0.041621070433744634
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 275.375916,
+              "render": 20.783666
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26361856,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 276.397,
+              "render": 20.315083
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26361856,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 275.810458,
+              "render": 19.627541
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26361856,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 281.96075,
+              "render": 20.520875
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26427392,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 280.762625,
+              "render": 20.158208
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26378240,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 274.926917,
+              "render": 19.856958
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26394624,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 278.478333,
+              "render": 19.765042
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26460160,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 278.881834,
+              "render": 19.85625
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26492928,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 279.476209,
+              "render": 19.876542
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26378240,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 276.1815,
+              "render": 19.848958
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 26345472,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          }
+        ],
+        "candidate": [
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 97.428375,
+              "render": 19.911375
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24150016,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 98.147417,
+              "render": 19.955375
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24117248,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 98.184458,
+              "render": 20.0375
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24150016,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 98.160792,
+              "render": 20.399542
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24133632,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 97.273166,
+              "render": 20.091667
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24117248,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 98.951875,
+              "render": 20.155125
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24166400,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 98.691291,
+              "render": 20.116333
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24117248,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 97.053875,
+              "render": 20.306917
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24117248,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 96.903417,
+              "render": 19.938875
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24117248,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 11800,
+            "phases": {
+              "cell-fitting": 98.737833,
+              "render": 20.748125
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 24084480,
+            "outputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+          }
+        ]
+      },
+      "savedOutputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
+      "peakRSSMedianBytes": {
+        "baseline": 26378240.0,
+        "candidate": 24117248.0
+      }
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx": {
+      "phases": {
+        "cell-fitting": {
+          "baseline": {
+            "medianMS": 3753.4309169999997,
+            "p95MS": 3799.3182500000003,
+            "minMS": 3715.6195,
+            "maxMS": 3799.3182500000003,
+            "relativeSpread": 0.02229926481953164
+          },
+          "candidate": {
+            "medianMS": 1083.739833,
+            "p95MS": 1099.76825,
+            "minMS": 1080.657625,
+            "maxMS": 1099.76825,
+            "relativeSpread": 0.017633960124080836
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 205.41075,
+            "p95MS": 209.370959,
+            "minMS": 203.266292,
+            "maxMS": 209.370959,
+            "relativeSpread": 0.029719316053322457
+          },
+          "candidate": {
+            "medianMS": 205.3405205,
+            "p95MS": 217.335542,
+            "minMS": 202.765833,
+            "maxMS": 217.335542,
+            "relativeSpread": 0.07095389144102232
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3799.3182500000003,
+              "render": 203.266292
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 141000704,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3762.205959,
+              "render": 205.431833
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 140918784,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3737.66625,
+              "render": 204.02925
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 140918784,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3767.072125,
+              "render": 205.389667
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 140967936,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3770.049417,
+              "render": 208.293375
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 141000704,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3733.981625,
+              "render": 208.300542
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 140935168,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3744.655875,
+              "render": 208.935584
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 140967936,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3715.6195,
+              "render": 203.583834
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 140951552,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3773.983625,
+              "render": 205.113833
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 141000704,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 3726.9614579999998,
+              "render": 209.370959
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 140886016,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          }
+        ],
+        "candidate": [
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1099.76825,
+              "render": 207.627333
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118308864,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1084.580916,
+              "render": 217.335542
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118439936,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1081.860209,
+              "render": 207.28375
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118390784,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1097.529459,
+              "render": 205.071458
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118292480,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1080.657625,
+              "render": 202.830042
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118308864,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1085.755,
+              "render": 202.765833
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118292480,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1082.377292,
+              "render": 205.609583
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118308864,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1082.89875,
+              "render": 203.623583
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118259712,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1085.799041,
+              "render": 206.31375
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118341632,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          },
+          {
+            "cellCount": 10000,
+            "checksum": 1010000,
+            "outputBytes": 27300,
+            "phases": {
+              "cell-fitting": 1081.772333,
+              "render": 204.368583
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 118325248,
+            "outputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+          }
+        ]
+      },
+      "savedOutputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
+      "peakRSSMedianBytes": {
+        "baseline": 140959744.0,
+        "candidate": 118308864.0
+      }
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx": {
+      "phases": {
+        "cell-fitting": {
+          "baseline": {
+            "medianMS": 140.860854,
+            "p95MS": 145.676334,
+            "minMS": 135.972958,
+            "maxMS": 145.676334,
+            "relativeSpread": 0.06888624997261476
+          },
+          "candidate": {
+            "medianMS": 108.73460399999999,
+            "p95MS": 111.881083,
+            "minMS": 105.623666,
+            "maxMS": 111.881083,
+            "relativeSpread": 0.057547613821263416
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 20.149875,
+            "p95MS": 20.608958,
+            "minMS": 19.472542,
+            "maxMS": 20.608958,
+            "relativeSpread": 0.05639816624172609
+          },
+          "candidate": {
+            "medianMS": 20.1604375,
+            "p95MS": 21.437042,
+            "minMS": 19.513083,
+            "maxMS": 21.437042,
+            "relativeSpread": 0.09543240319065496
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 139.680125,
+              "render": 19.861916
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22577152,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 137.96325,
+              "render": 19.62875
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22577152,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 140.692875,
+              "render": 20.529875
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22577152,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 141.645958,
+              "render": 19.579208
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22544384,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 136.676916,
+              "render": 19.472542
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22577152,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 135.972958,
+              "render": 20.554125
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22626304,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 142.629708,
+              "render": 20.1465
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22560768,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 145.676334,
+              "render": 20.604791
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22609920,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 141.407917,
+              "render": 20.608958
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22593536,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 141.028833,
+              "render": 20.15325
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22577152,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          }
+        ],
+        "candidate": [
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 108.754875,
+              "render": 20.179208
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22740992,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 108.714333,
+              "render": 20.476
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22691840,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 109.859667,
+              "render": 20.235208
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22691840,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 107.048916,
+              "render": 19.513083
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22773760,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 105.623666,
+              "render": 19.902625
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22691840,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 106.079875,
+              "render": 20.066083
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22691840,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 111.881083,
+              "render": 21.437042
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22740992,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 108.973334,
+              "render": 20.141667
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22708224,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 109.6395,
+              "render": 20.662375
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22740992,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          },
+          {
+            "cellCount": 1000,
+            "checksum": 101000,
+            "outputBytes": 12197,
+            "phases": {
+              "cell-fitting": 108.3475,
+              "render": 20.10075
+            },
+            "scenario": "retained-cell-fitting",
+            "slideCount": 1,
+            "peakRSSBytes": 22724608,
+            "outputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165"
+          }
+        ]
+      },
+      "savedOutputSHA256": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165",
+      "peakRSSMedianBytes": {
+        "baseline": 22577152.0,
+        "candidate": 22716416.0
+      }
+    }
+  },
+  "processOrder": "Alternating AB/BA pairs",
+  "pairedRevision": "7c26656adbf56e4c03967bd894752c3022fda2f5",
+  "binarySHA256": {
+    "baseline": "3b25779876d4155354093e5d6a7fd9da9c3ba26b4e47c691c7d0d30e06de12fc",
+    "candidate": "a3f1a4f523318054209075c63becb897ea6553699b6c989d5f861657a10ca12b"
+  },
+  "runnerSHA256": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+  "layoutSHA256": "6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055"
+}

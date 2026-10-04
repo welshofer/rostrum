@@ -1,0 +1,145 @@
+{
+  "commands": [
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      ".build/perf23-cell-fitting/baseline-module",
+      ".build/perf23-cell-fitting/cell-main.swift",
+      ".build/perf23-cell-fitting/baseline-Rostrum.o",
+      "-o",
+      ".build/perf23-cell-fitting/baseline-cell-bench"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      ".build/perf23-cell-fitting/candidate-module",
+      ".build/perf23-cell-fitting/cell-main.swift",
+      ".build/perf23-cell-fitting/candidate-Rostrum.o",
+      "-o",
+      ".build/perf23-cell-fitting/candidate-cell-bench"
+    ]
+  ],
+  "cases": [
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
+      "inputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
+      "cellCount": 100,
+      "artifacts": {
+        "baseline": {
+          "saved.pptx": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
+          "slide.svg": "e0a6b65b275c5f1fc895ce36bde0666a7667a5b885efa12304b23e50b35eabf7",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "5a612804769cd5433dd5bba03c63c184d5c14d56103a9114fad15a70e3d7af23"
+        },
+        "candidate-1": {
+          "saved.pptx": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
+          "slide.svg": "e0a6b65b275c5f1fc895ce36bde0666a7667a5b885efa12304b23e50b35eabf7",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "5a612804769cd5433dd5bba03c63c184d5c14d56103a9114fad15a70e3d7af23"
+        },
+        "candidate-2": {
+          "saved.pptx": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
+          "slide.svg": "e0a6b65b275c5f1fc895ce36bde0666a7667a5b885efa12304b23e50b35eabf7",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "5a612804769cd5433dd5bba03c63c184d5c14d56103a9114fad15a70e3d7af23"
+        }
+      },
+      "fitsSVGDiagnosticsAndSavedBytesIdentical": true
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
+      "inputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
+      "cellCount": 1000,
+      "artifacts": {
+        "baseline": {
+          "saved.pptx": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
+          "slide.svg": "fc9423a5874df0833438350fe311505018c67d97338d6a5a3e31218fce961e03",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "f11aa6c3bd9fd75cdcd294084549a653f6f55b4d71587e768185fc13b6231dce"
+        },
+        "candidate-1": {
+          "saved.pptx": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
+          "slide.svg": "fc9423a5874df0833438350fe311505018c67d97338d6a5a3e31218fce961e03",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "f11aa6c3bd9fd75cdcd294084549a653f6f55b4d71587e768185fc13b6231dce"
+        },
+        "candidate-2": {
+          "saved.pptx": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
+          "slide.svg": "fc9423a5874df0833438350fe311505018c67d97338d6a5a3e31218fce961e03",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "f11aa6c3bd9fd75cdcd294084549a653f6f55b4d71587e768185fc13b6231dce"
+        }
+      },
+      "fitsSVGDiagnosticsAndSavedBytesIdentical": true
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
+      "inputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
+      "cellCount": 10000,
+      "artifacts": {
+        "baseline": {
+          "saved.pptx": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
+          "slide.svg": "d4f0f4b0861128a26c630479ce8732824512fe81983004f2f9fdb20713dbb7fa",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "c1b0c2ccc3d4ee4ad2417205775c02de5a4fb8929fc43d6fad8dc2be2c5611ce"
+        },
+        "candidate-1": {
+          "saved.pptx": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
+          "slide.svg": "d4f0f4b0861128a26c630479ce8732824512fe81983004f2f9fdb20713dbb7fa",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "c1b0c2ccc3d4ee4ad2417205775c02de5a4fb8929fc43d6fad8dc2be2c5611ce"
+        },
+        "candidate-2": {
+          "saved.pptx": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
+          "slide.svg": "d4f0f4b0861128a26c630479ce8732824512fe81983004f2f9fdb20713dbb7fa",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "c1b0c2ccc3d4ee4ad2417205775c02de5a4fb8929fc43d6fad8dc2be2c5611ce"
+        }
+      },
+      "fitsSVGDiagnosticsAndSavedBytesIdentical": true
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
+      "inputSHA256": "a5aa98715bc7c71d17d969ac43bede3322fde4807b9550e155a00a5b497c35f8",
+      "cellCount": 1000,
+      "artifacts": {
+        "baseline": {
+          "saved.pptx": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165",
+          "slide.svg": "fc9423a5874df0833438350fe311505018c67d97338d6a5a3e31218fce961e03",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "f11aa6c3bd9fd75cdcd294084549a653f6f55b4d71587e768185fc13b6231dce"
+        },
+        "candidate-1": {
+          "saved.pptx": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165",
+          "slide.svg": "fc9423a5874df0833438350fe311505018c67d97338d6a5a3e31218fce961e03",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "f11aa6c3bd9fd75cdcd294084549a653f6f55b4d71587e768185fc13b6231dce"
+        },
+        "candidate-2": {
+          "saved.pptx": "dc48c7507588fcd19f732fe0f0b70554b20a18aa4d00c88d602aed0082272165",
+          "slide.svg": "fc9423a5874df0833438350fe311505018c67d97338d6a5a3e31218fce961e03",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "fits.json": "f11aa6c3bd9fd75cdcd294084549a653f6f55b4d71587e768185fc13b6231dce"
+        }
+      },
+      "fitsSVGDiagnosticsAndSavedBytesIdentical": true
+    }
+  ],
+  "pythonPptxReopens": 12,
+  "scope": "Proof only; emitted phase observations are not authoritative timing. Retained frames before fitting; candidate repeated twice.",
+  "candidateSourceCommit": "308f20d3a7b870011bdbdb769fa399a0246b6014",
+  "candidateMeasuredAsFrozenUncommittedPatch": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Fonts/TextMeasurer.swift": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "752484dbc6e074de3edb20c3a9b26cd5fbdb665f72ce4f2473f628025392cf32",
+    "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886",
+    "Tools/table-style-catalog/generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
+    "Tests/RostrumTests/TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f"
+  }
+}
