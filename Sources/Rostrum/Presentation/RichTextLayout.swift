@@ -131,6 +131,33 @@ public struct RichTextLayout: Sendable {
             var tab = false
             var hard = false
         }
+        @inline(never)
+        func appendOrderedGlyphs(_ glyphs: [ShapedGlyph], scalars: [Unicode.Scalar],
+                                 breaks: Set<Int>, styleIndex: Int, tracking: Double,
+                                 ascent: Double, lineHeight: Double, drawingML: Bool,
+                                 source: Int, atoms: inout [Atom]) -> Bool {
+            // General LTR shaping can already be in logical cluster order.
+            // Validate before appending: repeated/overlapping ranges retain
+            // dictionary accumulation, including all of its operation order.
+            var previousEnd = 0
+            for glyph in glyphs {
+                guard glyph.bidiLevel == 0, !glyph.scalarRange.isEmpty,
+                      glyph.scalarRange.lowerBound >= previousEnd else { return false }
+                previousEnd = glyph.scalarRange.upperBound
+            }
+            for glyph in glyphs {
+                let range = glyph.scalarRange
+                let value = String(String.UnicodeScalarView(scalars[range]))
+                // A single glyph may cover multiple source scalars (NFC or a
+                // ligature). Match the dictionary's default-zero addition.
+                let advance = 0.0 + glyph.advance
+                atoms.append(Atom(text: value, styleIndex: styleIndex,
+                    width: advance + tracking * Double(value.count),
+                    ascent: ascent, height: lineHeight, drawingML: drawingML,
+                    source: source, breakAfter: breaks.contains(range.upperBound)))
+            }
+            return true
+        }
         for (paragraphIndex, paragraph) in paragraphs.enumerated() {
             if output.count >= lineLimit { didTruncate = true; break }
             let own = paragraph.firstChild(named: "a:pPr")
@@ -333,6 +360,13 @@ public struct RichTextLayout: Sendable {
                                         ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
                                         source: source, breakAfter: breaks.contains(glyph.scalarRange.upperBound)))
                                 }
+                                segment = ""
+                                return
+                            }
+                            if !nativeGrid, appendOrderedGlyphs(shaped.glyphs, scalars: scalars,
+                                breaks: breaks, styleIndex: styleIndex, tracking: style.tracking,
+                                ascent: ascent, lineHeight: lineHeight, drawingML: vertical.drawingML,
+                                source: source, atoms: &atoms) {
                                 segment = ""
                                 return
                             }
