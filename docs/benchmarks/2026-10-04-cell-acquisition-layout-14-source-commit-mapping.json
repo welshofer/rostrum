@@ -1,0 +1,24 @@
+{
+  "originalTimingPlanSHA256": "301bbc76431cb21fa170edef9daecccdcc3edd5f6f84aded1cc0e059c77c58d8",
+  "originalPlanPreserved": true,
+  "candidateSourceCommit": "d64ddb31e7790b002bcfa819059ed657deb1a527",
+  "candidateSourceTree": "de42aa5fb48da53f255a5864a9a707c38a704528",
+  "precommitRevision": "e5bd10729e63e32e1bbea1f59c4c2039be45ef10",
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Presentation/Tables.swift": "eee820115188d8bfa3e1adcf8f37276dedb4441ee78063f69db7e6602ad4b06f",
+    "Tests/RostrumTests/TableCellLookupTests.swift": "887168d98079c690838cee2e1c9f630d29af95c7f670367a3768df0a7a7348e4"
+  },
+  "candidatePatchSHA256": "b7199bbdef27d80212122d11aee0a3c6765fce2e8af36b0140f86d1ab686fd57",
+  "binariesUnchanged": {
+    "baseline-extended-bench": "0f9dd899f4e24ebb53869e601f78ab46eb2e9dab80e67651e279130b7a393a55",
+    "baseline-supplement-bench": "7849ec3eb3efdff6c51ab40ca2d8469ad0f7cf2271c7d877b48bc1843004025e",
+    "baseline-acquisition-bench": "5b32ad62fbc1be84d58e0896e254ac52b3c0db860d362e7436a770ad780bb789",
+    "candidate-extended-bench": "54b2746ba2a85ab0abc6b6d0770f2eb16d8d540dc338f5488d6390fcdd7f05cd",
+    "candidate-supplement-bench": "7964e27c5743081f03d011ed954775e75cd9d492160958e9b2111fd126885d15",
+    "candidate-acquisition-bench": "f900fb3aacab1cd1216c42584ae66867f625090519465d8707fa49114d3c780b"
+  },
+  "precommitOrchestratorSHA256": "92c496d415968a514d9782cf05002d01b7b2942db61f0af5418bb9e4ca284eb4",
+  "committedOrchestratorSHA256": "026948ecf8efed457c50526b29282c2db361964fc070ad5e19b452e08612e4a0",
+  "note": "Source/test commit only, no byte change or rebuild. Original plan immutable. Orchestrator preflight HEAD check uses this mapping and validates original plan hash; subprocess commands, inputs, order, timers and canonical runner unchanged.",
+  "candidateCommittedBeforeTiming": true
+}

@@ -1,0 +1,1256 @@
+{
+  "schema": 2,
+  "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "processor": "arm",
+  "revision": "d64ddb31e7790b002bcfa819059ed657deb1a527",
+  "font": "/System/Library/Fonts/Supplemental/Arial.ttf",
+  "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+  "warmups": 1,
+  "runs": 10,
+  "corpus": {
+    "FromGoogleSlides.pptx": "faf87c2ca895a78753b7e1b00928cc5e2b504b748efb11278ac7f46095e4ce6d",
+    "FromKeynote.pptx": "38d4969e820dc9e1e2d1acec155fc450e4bdf8658f3aacf59da95311a6c01762",
+    "MovieAndComments.pptx": "3e33e2455a21a6c1d3a38157eb1ebbd994a79d1005ec6c83435e93e0dec0ab8b",
+    "SimplePowerPoint.pptx": "84fd425655ded6454a8614b9fa948256d63fb6f911c1d9ae87a739061e02bed3"
+  },
+  "scenarios": {
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx": {
+      "phases": {
+        "cell-acquisition": {
+          "baseline": {
+            "medianMS": 23.7045,
+            "p95MS": 24.957,
+            "minMS": 23.101375,
+            "maxMS": 24.957,
+            "relativeSpread": 0.07828154991668249
+          },
+          "candidate": {
+            "medianMS": 0.742875,
+            "p95MS": 0.828542,
+            "minMS": 0.735084,
+            "maxMS": 0.828542,
+            "relativeSpread": 0.12580582197543336
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 4.1484585,
+            "p95MS": 4.273667,
+            "minMS": 4.092292,
+            "maxMS": 4.273667,
+            "relativeSpread": 0.043721059280212166
+          },
+          "candidate": {
+            "medianMS": 4.147729,
+            "p95MS": 4.351125,
+            "minMS": 4.056416,
+            "maxMS": 4.351125,
+            "relativeSpread": 0.07105309917788749
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 23.31725,
+              "render": 4.139125
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 24.957,
+              "render": 4.144667
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20054016,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 23.342958,
+              "render": 4.208792
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20070400,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 23.101375,
+              "render": 4.15225
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 24.384709,
+              "render": 4.2105
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20054016,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 23.345375,
+              "render": 4.130209
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 23.65175,
+              "render": 4.092292
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 24.378375,
+              "render": 4.115083
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 23.851833,
+              "render": 4.273667
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20070400,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 23.75725,
+              "render": 4.2735
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20054016,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          }
+        ],
+        "candidate": [
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.735084,
+              "render": 4.101042
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.737541,
+              "render": 4.056416
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20021248,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.739583,
+              "render": 4.139208
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20054016,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.74,
+              "render": 4.069792
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20021248,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.751916,
+              "render": 4.233333
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20021248,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.738333,
+              "render": 4.15625
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20021248,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.74575,
+              "render": 4.351125
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20021248,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.746791,
+              "render": 4.107167
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20037632,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.828542,
+              "render": 4.21725
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20021248,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 10499,
+            "phases": {
+              "cell-acquisition": 0.774792,
+              "render": 4.178125
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 20021248,
+            "outputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520"
+          }
+        ]
+      },
+      "savedOutputSHA256": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520",
+      "peakRSSMedianBytes": {
+        "baseline": 20045824.0,
+        "candidate": 20021248.0
+      }
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx": {
+      "phases": {
+        "cell-acquisition": {
+          "baseline": {
+            "medianMS": 142.9095835,
+            "p95MS": 149.474917,
+            "minMS": 138.124167,
+            "maxMS": 149.474917,
+            "relativeSpread": 0.07942609391202939
+          },
+          "candidate": {
+            "medianMS": 1.182521,
+            "p95MS": 1.288583,
+            "minMS": 1.139833,
+            "maxMS": 1.288583,
+            "relativeSpread": 0.12579057792631163
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 24.7005415,
+            "p95MS": 25.327209,
+            "minMS": 24.249375,
+            "maxMS": 25.327209,
+            "relativeSpread": 0.04363604741215893
+          },
+          "candidate": {
+            "medianMS": 24.539082999999998,
+            "p95MS": 25.065083,
+            "minMS": 24.058166,
+            "maxMS": 25.065083,
+            "relativeSpread": 0.041033195902226725
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 146.9505,
+              "render": 24.714708
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26329088,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 145.061833,
+              "render": 24.807583
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26312704,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 140.811833,
+              "render": 24.331917
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26345472,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 142.724208,
+              "render": 25.019709
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26345472,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 149.474917,
+              "render": 25.080167
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26329088,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 142.310916,
+              "render": 24.249375
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26312704,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 143.094959,
+              "render": 24.686375
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26329088,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 138.124167,
+              "render": 24.3095
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26312704,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 138.632584,
+              "render": 24.449375
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26329088,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 145.662625,
+              "render": 25.327209
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26345472,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          }
+        ],
+        "candidate": [
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.1755,
+              "render": 24.575458
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26198016,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.170917,
+              "render": 24.09675
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26198016,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.288583,
+              "render": 24.634917
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26230784,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.2395,
+              "render": 24.125875
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26198016,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.139833,
+              "render": 25.065083
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26230784,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.164875,
+              "render": 24.502708
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26198016,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.18025,
+              "render": 24.706583
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26198016,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.205,
+              "render": 24.058166
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26198016,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.225291,
+              "render": 24.208959
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26230784,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 14913,
+            "phases": {
+              "cell-acquisition": 1.184792,
+              "render": 24.620833
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 26230784,
+            "outputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b"
+          }
+        ]
+      },
+      "savedOutputSHA256": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b",
+      "peakRSSMedianBytes": {
+        "baseline": 26329088.0,
+        "candidate": 26198016.0
+      }
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx": {
+      "phases": {
+        "cell-acquisition": {
+          "baseline": {
+            "medianMS": 1067.8362295,
+            "p95MS": 1127.395625,
+            "minMS": 1050.087,
+            "maxMS": 1127.395625,
+            "relativeSpread": 0.07239745465107403
+          },
+          "candidate": {
+            "medianMS": 3.345063,
+            "p95MS": 3.889,
+            "minMS": 3.144458,
+            "maxMS": 3.889,
+            "relativeSpread": 0.2225793654708445
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 276.3489795,
+            "p95MS": 284.2985,
+            "minMS": 272.531833,
+            "maxMS": 284.2985,
+            "relativeSpread": 0.042579013757494205
+          },
+          "candidate": {
+            "medianMS": 276.707229,
+            "p95MS": 279.728416,
+            "minMS": 273.911209,
+            "maxMS": 279.728416,
+            "relativeSpread": 0.021022967202638555
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1051.511125,
+              "render": 273.508958
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155975680,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1057.947917,
+              "render": 276.169334
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155959296,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1072.338,
+              "render": 274.854625
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155942912,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1050.087,
+              "render": 276.681917
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155959296,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1127.395625,
+              "render": 277.898042
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155959296,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1114.870958,
+              "render": 281.705334
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155959296,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1086.1085,
+              "render": 284.2985
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155959296,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1063.334459,
+              "render": 273.586959
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155942912,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1062.597875,
+              "render": 272.531833
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155975680,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 1122.865875,
+              "render": 276.528625
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155959296,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          }
+        ],
+        "candidate": [
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.489584,
+              "render": 274.049667
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155893760,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.357584,
+              "render": 277.819917
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155893760,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.239041,
+              "render": 273.911209
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155877376,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.144458,
+              "render": 278.919333
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155893760,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.458416,
+              "render": 274.84925
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155893760,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.889,
+              "render": 278.2425
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155877376,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.476416,
+              "render": 278.971875
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155893760,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.332542,
+              "render": 274.262709
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155877376,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.264292,
+              "render": 279.728416
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 160137216,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 90000,
+            "lookupCount": 10000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 3.305333,
+              "render": 275.594541
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155877376,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          }
+        ]
+      },
+      "savedOutputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2",
+      "peakRSSMedianBytes": {
+        "baseline": 155959296.0,
+        "candidate": 155893760.0
+      }
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx": {
+      "phases": {
+        "cell-acquisition": {
+          "baseline": {
+            "medianMS": 107.86185449999999,
+            "p95MS": 112.193,
+            "minMS": 104.375875,
+            "maxMS": 112.193,
+            "relativeSpread": 0.07247348968953621
+          },
+          "candidate": {
+            "medianMS": 0.576333,
+            "p95MS": 0.607334,
+            "minMS": 0.566417,
+            "maxMS": 0.607334,
+            "relativeSpread": 0.07099541410955142
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 277.382,
+            "p95MS": 279.368708,
+            "minMS": 274.584083,
+            "maxMS": 279.368708,
+            "relativeSpread": 0.017249226698199616
+          },
+          "candidate": {
+            "medianMS": 276.0820415,
+            "p95MS": 285.355458,
+            "minMS": 273.191208,
+            "maxMS": 285.355458,
+            "relativeSpread": 0.044060272569376745
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 108.78,
+              "render": 277.654667
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155107328,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 105.67025,
+              "render": 277.369083
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155041792,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 111.547584,
+              "render": 276.484042
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155041792,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 108.06425,
+              "render": 277.394917
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155041792,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 107.125209,
+              "render": 278.5745
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155041792,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 107.941,
+              "render": 276.577958
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155074560,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 104.375875,
+              "render": 279.368708
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155172864,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 105.924042,
+              "render": 274.584083
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155074560,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 112.193,
+              "render": 277.764167
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155041792,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 107.782709,
+              "render": 276.892708
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155041792,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          }
+        ],
+        "candidate": [
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.578958,
+              "render": 274.246417
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 154992640,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.607334,
+              "render": 276.095083
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 154976256,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.57725,
+              "render": 278.485291
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 154959872,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.57325,
+              "render": 274.968166
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 154992640,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.572166,
+              "render": 277.737709
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 154992640,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.575625,
+              "render": 276.069
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 154976256,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.604375,
+              "render": 285.355458
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 154992640,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.57025,
+              "render": 276.066042
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 154959872,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.566417,
+              "render": 273.191208
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 155025408,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          },
+          {
+            "checksum": 9000,
+            "lookupCount": 1000,
+            "outputBytes": 58650,
+            "phases": {
+              "cell-acquisition": 0.577041,
+              "render": 278.642
+            },
+            "scenario": "cell-acquisition",
+            "slideCount": 1,
+            "peakRSSBytes": 154992640,
+            "outputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2"
+          }
+        ]
+      },
+      "savedOutputSHA256": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2",
+      "peakRSSMedianBytes": {
+        "baseline": 155041792.0,
+        "candidate": 154992640.0
+      }
+    }
+  },
+  "processOrder": "Alternating AB/BA pairs",
+  "pairedRevision": "e5bd10729e63e32e1bbea1f59c4c2039be45ef10",
+  "binarySHA256": {
+    "baseline": "5b32ad62fbc1be84d58e0896e254ac52b3c0db860d362e7436a770ad780bb789",
+    "candidate": "f900fb3aacab1cd1216c42584ae66867f625090519465d8707fa49114d3c780b"
+  },
+  "runnerSHA256": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+  "layoutSHA256": "6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055"
+}

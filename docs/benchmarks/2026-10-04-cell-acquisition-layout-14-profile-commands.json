@@ -1,0 +1,65 @@
+{
+  "scope": "Attribution only, root GUI/review and user/background activity may overlap. Acquisition explicitly sampled; short text consumption keeps returned cells observable. No comparative timing.",
+  "commands": [
+    {
+      "name": "10x10",
+      "driverCommand": [
+        ".build/perf24-cell-acquisition/baseline-profile",
+        ".build/perf24-cell-acquisition/10x10.pptx",
+        ".build/perf24-cell-acquisition/10x10.ready"
+      ],
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "96067",
+        "4",
+        "1",
+        "-file",
+        ".build/perf24-cell-acquisition/10x10-profile.txt"
+      ],
+      "driverExit": 0,
+      "sampleExit": 0
+    },
+    {
+      "name": "40x25",
+      "driverCommand": [
+        ".build/perf24-cell-acquisition/baseline-profile",
+        ".build/perf24-cell-acquisition/40x25.pptx",
+        ".build/perf24-cell-acquisition/40x25.ready"
+      ],
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "96094",
+        "4",
+        "1",
+        "-file",
+        ".build/perf24-cell-acquisition/40x25-profile.txt"
+      ],
+      "driverExit": 0,
+      "sampleExit": 0
+    },
+    {
+      "name": "200x50",
+      "driverCommand": [
+        ".build/perf24-cell-acquisition/baseline-profile",
+        ".build/perf24-cell-acquisition/200x50.pptx",
+        ".build/perf24-cell-acquisition/200x50.ready"
+      ],
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "96103",
+        "4",
+        "1",
+        "-file",
+        ".build/perf24-cell-acquisition/200x50-profile.txt"
+      ],
+      "driverExit": 0,
+      "sampleExit": 0
+    }
+  ],
+  "candidateSourceCommit": "d64ddb31e7790b002bcfa819059ed657deb1a527",
+  "candidateCommittedBeforeTiming": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Presentation/Tables.swift": "eee820115188d8bfa3e1adcf8f37276dedb4441ee78063f69db7e6602ad4b06f",
+    "Tests/RostrumTests/TableCellLookupTests.swift": "887168d98079c690838cee2e1c9f630d29af95c7f670367a3768df0a7a7348e4"
+  }
+}

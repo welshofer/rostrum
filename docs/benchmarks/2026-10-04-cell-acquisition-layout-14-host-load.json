@@ -1,0 +1,119 @@
+{
+  "snapshots": [
+    {
+      "snapshot": "process-acquisition-during-15.txt",
+      "timestamp": "2026-10-04T14:02:11.192754-07:00",
+      "cpuPercent": {
+        "WindowServer": 22.0,
+        "backupd": 0.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "snapshot": "process-acquisition-during-30.txt",
+      "timestamp": "2026-10-04T14:02:26.536861-07:00",
+      "cpuPercent": {
+        "WindowServer": 22.0,
+        "backupd": 0.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "snapshot": "process-acquisition-end.txt",
+      "timestamp": "2026-10-04T14:02:30.156728-07:00",
+      "cpuPercent": {
+        "WindowServer": 26.3,
+        "backupd": 0.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "snapshot": "process-canonical-during-15.txt",
+      "timestamp": "2026-10-04T14:01:28.111953-07:00",
+      "cpuPercent": {
+        "WindowServer": 23.1,
+        "backupd": 0.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "snapshot": "process-canonical-end.txt",
+      "timestamp": "2026-10-04T14:01:34.800341-07:00",
+      "cpuPercent": {
+        "WindowServer": 25.3,
+        "backupd": 0.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "snapshot": "process-end.txt",
+      "timestamp": "2026-10-04T14:02:30.234957-07:00",
+      "cpuPercent": {
+        "WindowServer": 24.5,
+        "backupd": 0.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "snapshot": "process-start.txt",
+      "timestamp": "2026-10-04T14:01:12.773881-07:00",
+      "cpuPercent": {
+        "WindowServer": 20.2,
+        "backupd": 0.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "snapshot": "process-supplement-during-15.txt",
+      "timestamp": "2026-10-04T14:01:50.169906-07:00",
+      "cpuPercent": {
+        "WindowServer": 13.7,
+        "backupd": 0.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    },
+    {
+      "snapshot": "process-supplement-end.txt",
+      "timestamp": "2026-10-04T14:01:55.816212-07:00",
+      "cpuPercent": {
+        "WindowServer": 25.5,
+        "backupd": 0.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      }
+    }
+  ],
+  "ranges": {
+    "WindowServer": [
+      13.7,
+      26.3
+    ],
+    "backupd": [
+      0.0,
+      0.0
+    ],
+    "photolibraryd": [
+      0.0,
+      0.0
+    ],
+    "managedcorespotlightd": [
+      0.0,
+      0.0
+    ]
+  },
+  "qualification": "Coordinated agent build/test/GUI pause, uncontrolled user/background load. Snapshots cannot establish continuous isolation or remove load bias. No settings changed.",
+  "candidateSourceCommit": "d64ddb31e7790b002bcfa819059ed657deb1a527",
+  "candidateCommittedBeforeTiming": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Presentation/Tables.swift": "eee820115188d8bfa3e1adcf8f37276dedb4441ee78063f69db7e6602ad4b06f",
+    "Tests/RostrumTests/TableCellLookupTests.swift": "887168d98079c690838cee2e1c9f630d29af95c7f670367a3768df0a7a7348e4"
+  }
+}

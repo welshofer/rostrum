@@ -1,0 +1,67 @@
+{
+  "scope": "Fresh accepted perf13 baseline attribution only. Root GUI/review and background work may overlap. Inclusive categories nest; no predicted savings or comparative timing.",
+  "profiles": {
+    "10x10": {
+      "inclusiveSamples": {
+        "mainThread": 2833,
+        "tableCell": 2432,
+        "grid": 1894,
+        "cellText": 373
+      },
+      "outerCellSourceLineSamples": {
+        "180": 1986,
+        "unknown": 443,
+        "181": 3
+      },
+      "driverResult": {
+        "passes": 26267,
+        "checksum": 10506800,
+        "cellsPerPass": 100,
+        "savedBytesUnchanged": true
+      }
+    },
+    "40x25": {
+      "inclusiveSamples": {
+        "mainThread": 2956,
+        "tableCell": 2864,
+        "grid": 2125,
+        "cellText": 87
+      },
+      "outerCellSourceLineSamples": {
+        "180": 2237,
+        "unknown": 625,
+        "181": 2
+      },
+      "driverResult": {
+        "passes": 504,
+        "checksum": 2016000,
+        "cellsPerPass": 1000,
+        "savedBytesUnchanged": true
+      }
+    },
+    "200x50": {
+      "inclusiveSamples": {
+        "mainThread": 2916,
+        "tableCell": 2908,
+        "grid": 2107,
+        "cellText": 7
+      },
+      "outerCellSourceLineSamples": {
+        "180": 2245,
+        "unknown": 663
+      },
+      "driverResult": {
+        "passes": 7,
+        "checksum": 280000,
+        "cellsPerPass": 10000,
+        "savedBytesUnchanged": true
+      }
+    }
+  },
+  "candidateSourceCommit": "d64ddb31e7790b002bcfa819059ed657deb1a527",
+  "candidateCommittedBeforeTiming": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Presentation/Tables.swift": "eee820115188d8bfa3e1adcf8f37276dedb4441ee78063f69db7e6602ad4b06f",
+    "Tests/RostrumTests/TableCellLookupTests.swift": "887168d98079c690838cee2e1c9f630d29af95c7f670367a3768df0a7a7348e4"
+  }
+}
