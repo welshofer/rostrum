@@ -5,6 +5,7 @@ Run from any directory. No downloads or third-party Python modules are needed.
 The style definitions are PowerPoint output collected by PPTX Studio; the
 adjacent LICENSE/NOTICE and THIRD_PARTY_LICENSES.md preserve attribution.
 """
+import copy
 import json
 from pathlib import Path
 import re
@@ -18,6 +19,7 @@ assert len(styles) == 74
 assert len({s["id"] for s in styles}) == len(styles)
 assert len({s["key"] for s in styles}) == len(styles)
 namespace = "http://schemas.openxmlformats.org/drawingml/2006/main"
+ET.register_namespace("a", namespace)
 for style in styles:
     assert re.fullmatch(r"\{[0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12}\}", style["id"])
     assert re.fullmatch(r"[A-Za-z][A-Za-z0-9]*", style["key"])
@@ -27,6 +29,12 @@ for style in styles:
     assert element.attrib["styleId"] == style["id"]
     assert element.attrib["styleName"] == style["name"]
     style["xml"] = xml
+    text = copy.deepcopy(element)
+    for region in text:
+        for child in list(region):
+            if child.tag != "{" + namespace + "}tcTxStyle":
+                region.remove(child)
+    style["textXML"] = ET.tostring(text, encoding="unicode")
     style["case"] = style["key"][0].lower() + style["key"][1:]
 
 lines = [
@@ -52,7 +60,13 @@ for style in styles:
     lines.append(f'        case .{style["case"]}: return {json.dumps(style["name"])}')
 lines += ["        }", "    }", "", "    // Each resolver gets its own mutable tree. No global DOM cache is shared.",
           "    func definition() -> XML.Element? { try? XML.parse(Data(definitionXML.utf8)) }", "",
-          "    private var definitionXML: String {", "        switch self {"]
+          "    // Internal fitting projection: same ordered regions and text subtrees,",
+          "    // without paint-only descendants. Parsed afresh for each operation.",
+          "    func textDefinition() -> XML.Element? { try? XML.parse(Data(textDefinitionXML.utf8)) }", "",
+          "    private var textDefinitionXML: String {", "        switch self {"]
+for style in styles:
+    lines.append(f'        case .{style["case"]}: return #"{style["textXML"]}"#')
+lines += ["        }", "    }", "", "    private var definitionXML: String {", "        switch self {"]
 for style in styles:
     lines.append(f'        case .{style["case"]}: return #"{style["xml"]}"#')
 lines += ["        }", "    }", "}", "", "public extension Table {",

@@ -21,6 +21,52 @@ public struct TableStyleResolver {
         definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }; stylePart = found.1
     }
 
+    /// One live cell-fitting operation needs text regions and root cell attributes,
+    /// not paint/border properties or a materialized array for every table cell.
+    /// Identity lookup remains row-major and operation-local, including aliases.
+    static func fittingStyle(for cell: XML.Element, in table: Table,
+                             theme: Theme) -> (properties: XML.Element, text: XML.Element)? {
+        let properties = table.tbl.firstChild(named: "a:tblPr")
+        let flags = Set(["rtl", "firstRow", "lastRow", "firstCol", "lastCol", "bandRow", "bandCol"].filter { name in
+            properties.map { TableMergeTopology.flag($0, name) } ?? false
+        })
+        let found = definition(for: table.tbl, package: table.package, fittingOnly: true)
+        let definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }
+        var rowCount = 0
+        var position: (row: Int, column: Int)?
+        for node in table.tbl.children {
+            guard case .element(let row) = node, row.name == "a:tr" else { continue }
+            if position == nil {
+                var column = 0
+                for child in row.children {
+                    guard case .element(let candidate) = child, candidate.name == "a:tc" else { continue }
+                    if candidate === cell { position = (rowCount, column); break }
+                    column += 1
+                }
+            }
+            rowCount += 1
+        }
+        guard let position else { return nil }
+        var columnCount = 0
+        for node in table.tbl.firstChild(named: "a:tblGrid")?.children ?? [] {
+            if case .element(let column) = node, column.name == "a:gridCol" { columnCount += 1 }
+        }
+        let text = XML.Element("a:defRPr")
+        for name in regionNames(row: position.row, column: position.column,
+                                rowCount: rowCount, columnCount: columnCount, flags: flags) {
+            if let style = definition?.firstChild(named: "a:" + name)?.firstChild(named: "a:tcTxStyle") {
+                mergeText(style, into: text, theme: theme)
+            }
+        }
+        resolveColors(in: text, theme: theme)
+        let direct = XML.Element("a:tcPr")
+        // Match applyingCell's ordered overlay, including duplicate attributes.
+        for attribute in cell.firstChild(named: "a:tcPr")?.attributes ?? [] {
+            direct[attribute: attribute.name] = attribute.value
+        }
+        return (direct, text)
+    }
+
     /// True when an inline, package-owned or recognized native style is resolved.
     public var hasStyleDefinition: Bool { definition != nil }
 
@@ -106,8 +152,14 @@ public struct TableStyleResolver {
     }
 
     private func regionNames(row: Int, column: Int) -> [String] {
-        func enabled(_ flag: String) -> Bool { enabledFlags.contains(flag) }
-        let lastRow = grid.rows.count - 1, lastColumn = grid.columns.count - 1
+        Self.regionNames(row: row, column: column, rowCount: grid.rows.count,
+                         columnCount: grid.columns.count, flags: enabledFlags)
+    }
+
+    private static func regionNames(row: Int, column: Int, rowCount: Int,
+                                    columnCount: Int, flags: Set<String>) -> [String] {
+        func enabled(_ flag: String) -> Bool { flags.contains(flag) }
+        let lastRow = rowCount - 1, lastColumn = columnCount - 1
         let firstR = enabled("firstRow"), lastR = enabled("lastRow")
         let firstC = enabled("firstCol"), lastC = enabled("lastCol")
         var regions = ["wholeTbl"]
@@ -354,6 +406,10 @@ public struct TableStyleResolver {
     }
 
     private func mergeText(_ source: XML.Element, into target: XML.Element) {
+        Self.mergeText(source, into: target, theme: theme)
+    }
+
+    private static func mergeText(_ source: XML.Element, into target: XML.Element, theme: Theme) {
         for name in ["b", "i"] {
             if let value = source[attribute: name], value != "def" { target[attribute: name] = value == "on" ? "1" : value == "off" ? "0" : value }
         }
@@ -404,6 +460,10 @@ public struct TableStyleResolver {
     }
 
     private func resolveColors(in root: XML.Element) {
+        Self.resolveColors(in: root, theme: theme)
+    }
+
+    private static func resolveColors(in root: XML.Element, theme: Theme) {
         var stack = [root]
         while let node = stack.popLast() {
             if node.name == "a:srgbClr", node.childElements.isEmpty { continue }
@@ -424,7 +484,8 @@ public struct TableStyleResolver {
         }
     }
 
-    static func definition(for table: XML.Element, package: OPCPackage?) -> (XML.Element?, Part?) {
+    static func definition(for table: XML.Element, package: OPCPackage?,
+                           fittingOnly: Bool = false) -> (XML.Element?, Part?) {
         let properties = table.firstChild(named: "a:tblPr")
         if let inline = properties?.firstChild(named: "a:tableStyle") { return (inline, nil) }
         var desired = properties?.firstChild(named: "a:tableStyleId")?.textContent
@@ -438,6 +499,7 @@ public struct TableStyleResolver {
                 if let root = try? part.dom(), let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired?.lowercased() }) { return (definition, part) }
             }
         }
-        return (desired.flatMap(BuiltInTableStyle.init(id:))?.definition(), nil)
+        let builtIn = desired.flatMap(BuiltInTableStyle.init(id:))
+        return (fittingOnly ? builtIn?.textDefinition() : builtIn?.definition(), nil)
     }
 }

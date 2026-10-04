@@ -299,15 +299,9 @@ extension TableCell {
         }
         var properties = tc.firstChild(named: "a:tcPr") ?? XML.Element("a:tcPr")
         var styles: [XML.Element] = []
-        if let owner, let resolvedTheme {
-            let resolver = TableStyleResolver(table: owner, theme: resolvedTheme)
-            outer: for row in resolver.grid.cells.indices {
-                for column in resolver.grid.cells[row].indices where resolver.grid.cells[row][column] === tc {
-                    let effective = resolver.effective(row: row, column: column)
-                    properties = effective.properties; styles = [effective.text]
-                    break outer
-                }
-            }
+        if let owner, let resolvedTheme,
+           let effective = TableStyleResolver.fittingStyle(for: tc, in: owner, theme: resolvedTheme) {
+            properties = effective.properties; styles = [effective.text]
         }
         func inset(_ key: String, _ fallback: Int) -> Double {
             Double(properties.coordinate(key) ?? fallback) / Double(EMU.perPoint)
