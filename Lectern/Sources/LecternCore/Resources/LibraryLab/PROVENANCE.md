@@ -232,3 +232,54 @@ Regenerate the reduced resource with
 native fixtures are present. Retain generated option decks/SVGs with
 `LECTERN_ALIGNMENT_ARTIFACTS`; retain actual WebKit captures with
 `LECTERN_ALIGNMENT_WEBKIT_OUTPUT` and `LECTERN_TEST_WEBKIT=1`.
+
+## Mixed faces and exact spacing
+
+The two owned source decks are copied byte-for-byte from
+`Tests/RostrumTests/Fixtures/NativeMixedFaceSpacing`:
+
+| Group | Source SHA-256 | Native PDF SHA-256 |
+| --- | --- | --- |
+| base | `4e12a5e02468873d34fadb0ea415836ee50fa92245d9e096721faee33013c014` | `9d8c125d036eb15b0b0c3f2cf84e6a2b47f0f79812ca003a056814d74ca7268b` |
+| anchors | `ade8628fe0ca6c69691ad0790e9678bf92aaa7d2cd3178b5723dcb5c2adc9ea0` | `49ec14886c2dbee1701b25039f362c221569957742a20d82ea0b18dd84af1c64` |
+
+`MixedFaceSpacingReferences.json` retains the 12 independently captured cases,
+96 visible glyphs, two source page identities, per-glyph actual face, native
+baselines/origins, raw paint scales and source-outline/native-ink bounds. The
+source decks embed the licensed DejaVu Sans and Serif regular resources; the
+existing DejaVu license applies. The projection script pins and verifies both
+source/PDF pairs and actual font bytes before copying evidence. Expected glyph
+geometry never comes from Rostrum.
+
+The recipe imports the second page through `Slides.importAll`. All 12 native
+specimen nodes, frames and master links remain intact. Only captions outside
+the native frames switch from Calibri to bundled DejaVu Sans, so full generated
+pages are not byte-identical to the native input. Per-page SVG parsing is reused
+for every case. Each glyph must use its own actual embedded face; a case-wide
+font assumption would miss the mixed runs. Tolerances remain 0.025 pt for the
+line's first scalar x, 0.06 pt for remaining scalar x, 0.121 pt for baselines,
+and 0.002 pt for paint scales and ink dimensions.
+
+The supported extension requires actual distinct faces with equal normalized
+Windows ascent share and height, shape context, exact point spacing, compatible
+spacing and zero reduction. The demo checks the two real source font resources'
+OS/2 and head fields against the independently projected metric signature.
+Unequal metrics, mixed-face percentage spacing, table contexts and rejected
+paint profiles retain their existing fallback/diagnostic boundaries. This is
+not a universal mixed-font or pixel-parity claim.
+
+A third page copies the captured mixed body into two outlined 290 by 40 pt
+shapes and invokes the two public fitting APIs separately. The alternative
+changes only these copies from top to bottom anchoring. Both compute 100% scale
+and zero reduction from a 37.33489932885906 pt unrounded content extent. The
+fitter writes the schema-default bare `a:normAutofit` element; paragraph/run
+properties remain exact. These are computed fits, not native-selected autofit.
+
+Core tests retain both generated variants when `LECTERN_MIXED_SPACING_ARTIFACTS`
+is set. App tests cover real inspection and folder export. The opt-in WebKit
+capture uses exact saved 640 px inspector previews of the first two pages,
+waits for embedded fonts and retains raw PDFs; independent extraction remains
+necessary to establish native paint agreement. Set
+`LECTERN_MIXED_SPACING_WEBKIT_OUTPUT` and `LECTERN_TEST_WEBKIT=1` to retain it.
+Regenerate resources with
+`python3 Lectern/scripts/generate-mixed-spacing-references.py`.
