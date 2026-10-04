@@ -400,3 +400,33 @@ across the same 26 recipes. The fresh full gate passes 1,111 library, 277 Core
 and 76 native app tests (zero native skips). All 52 decks reopen independently;
 the four paragraph SVGs and both saved variants remain byte-identical. See the
 [final receipt](benchmarks/2026-10-04-fidelity4-preview-fallback-integration-verification.json).
+
+### Empty-line typography (2026-10-04)
+
+The paragraph demonstration now has five slides and 40 saved-file checks. Its
+new slide imports independently constructed DrawingML with consecutive manual
+breaks and a trailing break whose paragraph-end style differs from its visible
+text. The alternative switches blank-line typography from 6 to 36 pt. Original
+markers are compared with independently captured PowerPoint baselines; both
+public fitting APIs show the same text and their computed scale in shorter boxes.
+The exact imported paragraphs, list defaults and autofit attributes survive
+saving and reopening. This uses the public owned-DOM import path; there is no
+new high-level manual-break authoring API.
+
+The [reference subset](../Lectern/Sources/LecternCore/Resources/LibraryLab/ParagraphBreakReferences.json)
+pins the [native source and PDF](../Tests/RostrumTests/Fixtures/NativeBreakMetrics/README.md).
+Both PowerPoint demonstration variants open without repair. Their 24 visible
+marker glyphs match the licensed font outlines; original baselines are within
+0.121 pt of the rounded library layout, and both fitted copies stay inside their
+boxes with equal native positions. The display frame is shorter than the source
+oracle but retains top alignment and ample height. Native-selected autofit and
+general pixel parity are not established. Exact and percentage spacing remain
+separate, explicitly recorded fidelity gaps.
+
+The final caption uses ASCII punctuation so the demonstration itself stays
+inside its declared calibrated profile. Its saved/reopened slide preview is
+required to have no diagnostics. At integrated source `a98dd69`, the complete
+local gate passes 1,123 library tests (four known spacing assertions), 18 layout
+tests, 279 Core tests and 76 native app tests with zero native failures or skips.
+The catalog remains 26 recipes; the current evidence is recorded in the
+[integration report](LAYOUT-FIDELITY-20261004-5.md).

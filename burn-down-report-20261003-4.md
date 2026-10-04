@@ -186,3 +186,18 @@ four findings all identify the same verified source-file SHA-256 checksum,
 not a credential. Its incident #37859419 requires authenticated dismissal;
 the security check remains visible and monitoring has not been disabled.
 No merge to main or deployment occurred.
+
+## Continued empty-line fidelity and shaping performance — October 4
+
+The subsequent [integration report](docs/LAYOUT-FIDELITY-20261004-5.md) records
+native empty-line metric ownership, the fifth Lectern paragraph slide, and three
+separately measured optimizations. At `a98dd69`, the full local gate passes
+1,123 library, 18 layout, 279 Core and 76 native app tests. Four known native
+exact/percentage-spacing assertions remain visible. All 348 Lab checks and 54
+independent reopens pass. Both manual app variants pass 40 checks with no preview
+findings and export five slides. Native geometry and output-preservation evidence
+are pinned in the [receipt](docs/benchmarks/2026-10-04-empty-lines-shaping-integration-verification.json).
+
+This remains an ongoing draft PR. Exact/percentage spacing calibration and the
+next allocation experiment continue; no general fidelity or cumulative historical
+performance claim is made.
