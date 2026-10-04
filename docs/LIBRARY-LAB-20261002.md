@@ -451,3 +451,13 @@ demo still passes 54 checks with zero findings; both six-slide options are
 byte-identical to the preceding PowerPoint-accepted exports. Previous manual
 GUI/native evidence transfers by that identity; no fresh manual capture is
 claimed. See [the integration report](LAYOUT-FIDELITY-20261004-7.md).
+
+## October 4 line-break reuse integration
+
+At `7fbb9bc`, all 362 checks across 26 recipes and rebuilt native inspector/export
+tests pass. Independent external checks reopen 56 files/199 slides and retain
+all 302 input hashes. Both six-slide paragraph exports exactly match their
+prior native-accepted sources; 54 paragraph checks pass without findings.
+The [integration report](LAYOUT-FIDELITY-20261004-8.md) preserves the distinction
+between fresh automated app tests and transferred prior manual/PDF evidence.
+The seventh glyph-placement slide remains a separate, unintegrated draft.

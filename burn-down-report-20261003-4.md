@@ -231,3 +231,17 @@ transferred by source identity, without claiming a fresh manual capture.
 The [receipt](docs/benchmarks/2026-10-04-glyph-capacity-integration-verification.json)
 pins the source and 302 unchanged external inputs. Glyph paint/placement and
 duplicate-break research continue. No merge or deployment occurred.
+
+## Continued line-break reuse performance — October 4
+
+The [line-break reuse report](docs/LAYOUT-FIDELITY-20261004-8.md) records the
+reviewed elimination of a duplicate original-coordinate breaker scan. One
+matched run improves registered rendering 0.76% and fitting 5.51%, with mixed
+RSS and substantial host-load limits retained. At `7fbb9bc`, the full gate
+passes 1,140 library, 18 layout, 281 Core and 76 native app tests. Five initial
+quiet-build diagnostics are retained alongside successful, error-free nonquiet
+macOS/iOS confirmations. All 362 Lab checks, 56 external reopens and 302 input
+hashes pass. Native/manual paragraph evidence transfers by exact PPTX identity.
+The [receipt](docs/benchmarks/2026-10-04-break-reuse-integration-verification.json)
+pins the source and limits. Glyph painting/placement and a seventh Lectern
+paragraph slide continue separately; no merge or deployment occurred.
