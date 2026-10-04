@@ -291,3 +291,29 @@ by exact bytes. Both new table page-three specimens now pass independent native
 checks for 60 glyphs total, without broad table/manual acceptance. Current manual
 Lectern runs and the separate new bullet capture remain pending. No merge or
 deployment is claimed.
+
+## Continued live table-cell fitting performance — October 4
+
+The [integration report](docs/LAYOUT-FIDELITY-20261004-11.md) records fresh
+text-only style resolution for retained cell fitting, preserving live mutations
+and document bytes. Four retained-cell controls improve paired medians
+61.90%, 64.59%, 71.05% and 22.30%, each 10/10 faster. Wide canonical intervals,
+possible rendering costs, mixed RSS, substantial backup load and quadratic
+identity lookup remain explicit; no universal or cumulative claim is made.
+
+At `2e57a2d`, the full gate passes 1,155 library, 18 layout, 286 Core and
+81 app tests / 112 executions, now including Unicode fitting in the whole run.
+Five quiet exit-zero messages and seven clipboard error lines remain, with
+successful error-free serial nonquiet platform confirmations. All 387 Lab checks,
+60 external reopens / 225 slides and 313 unchanged verification inputs pass.
+Four general Lab packages differ only in authored comment metadata and are not
+claimed byte-identical. Fresh WebKit proof covers 208 glyphs; prior native
+paragraph/table specimens transfer by exact inputs.
+
+Both table-appearance manual Lab → inspect → folder-export workflows now pass,
+with 20 checks / three slides / seven findings each. Original source bytes and
+exact exported text survive; slide-three SVGs differ only in root viewport size.
+The [receipt](docs/benchmarks/2026-10-04-cell-fitting-integration-verification.json)
+retains the recovered automation pipe and initial viewport assertion. Other
+manual workflows and the new bullet correction remain separate pending work.
+No merge or deployment is claimed.

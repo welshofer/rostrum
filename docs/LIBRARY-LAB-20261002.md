@@ -496,3 +496,22 @@ specimens now pass 30-glyph checks at unchanged tolerances, with current sources
 and SVGs identical to the accepted inputs. Current manual Lectern demos and new
 bullet capture remain pending. The [integration report](LAYOUT-FIDELITY-20261004-10.md)
 records those boundaries, retained failures and the bounded performance result.
+
+## October 4 live table-cell fitting integration
+
+The existing table-appearance demo exercises the optimized live text-style
+resolution without changing its public behavior, UI or catalog entry. Both
+variants now also pass manual Run Demo → inspector → folder export in the exact
+built app: 20 checks / three slides / seven findings each, exact exported cell
+text and unchanged source bytes. Slide-three XML equals the verified gate;
+manual and raw SVGs match after only their root viewport dimensions are aligned.
+No raw SVG or whole-package identity is claimed for those manual artifacts.
+
+The whole local gate now includes the Unicode fitting app test: 81 app tests /
+112 executions pass, alongside 1,155 library, 18 layout and 286 Core tests.
+All 387 checks across 26 Lab recipes and 60 external reopens / 225 slides pass.
+Fresh WebKit proof covers 208 glyphs; prior paragraph and both table-page native
+proofs transfer by exact specimen identity. Other manual workflows and the
+separate new bullet correction remain pending. See the
+[integration report](LAYOUT-FIDELITY-20261004-11.md) for retained diagnostics,
+comment-metadata differences and bounded fitting-performance evidence.
