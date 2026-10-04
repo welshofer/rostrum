@@ -282,9 +282,10 @@ public struct RichTextLayout: Sendable {
             let nativeSpacing = explicitSpacing && nativeLatinLigatures && !unsupportedTableReduction
                 && (fixedSpacing != nil || (percentageSpacing ?? 0) > reduction * 100000)
             // Nil identifies the single explicitly provided fallback metric.
-            // Registry aliases remain distinct: internal font names cannot prove
-            // that separately registered faces contain identical font bytes.
-            typealias SpacingMetric = (ascent: Double, height: Double, face: FontFaceKey?)
+            // Preserve actual source vertical metrics separately from scaled line
+            // values; family names cannot establish metric equivalence.
+            typealias SpacingMetric = (ascent: Double, height: Double, face: FontFaceKey?,
+                                       ascentShare: Double, windowsHeight: Double)
             func spacingMetric(_ metrics: FontMetrics?, size: Double, style: ResolvedTextRun?) -> SpacingMetric? {
                 guard nativeSpacing, let metrics, let share = metrics.drawingMLAscentShare,
                       let windowsHeight = metrics.drawingMLWindowsHeight else { return nil }
@@ -297,7 +298,7 @@ public struct RichTextLayout: Sendable {
                 let face = style.flatMap { run in run.fontFamily.flatMap { family in
                     fonts?.previewFace(for: FontFaceKey(family: family, bold: run.bold, italic: run.italic))
                 } }
-                return (height * share, height, face)
+                return (height * share, height, face, share, windowsHeight)
             }
             let emptySpacingMetric = spacingMetric(baseMetrics, size: baseSize, style: baseStyle)
             var spacingRunMetrics: [SpacingMetric?] = []
@@ -425,6 +426,27 @@ public struct RichTextLayout: Sendable {
                 shapePieces()
                 warnings.append(.unsupportedLayoutFeature("Native glyph paint rejected a paragraph with unsupported glyph mapping; retaining authored paint and measurement"))
             }
+            // Native mixed-face exact-spacing controls cover real faces with
+            // identical Windows vertical metrics in shapes, compatible spacing,
+            // and zero reduction. Compute admission once after shaping fallback;
+            // ordinary paragraphs do not parse or allocate any extra metadata.
+            let equivalentSpacingFacesAllowed: Bool = {
+                guard nativeSpacing, fixedSpacing != nil, context == .shape,
+                      nativePaint, reduction == 0 else { return false }
+                if let compatibility = body[attribute: "compatLnSpc"],
+                   !["1", "true"].contains(compatibility) { return false }
+                if let fontScale {
+                    guard fontScale.isFinite, (1...100).contains(fontScale) else { return false }
+                } else if let value = autofit?[attribute: "fontScale"] {
+                    guard let value = Int(value), (1000...100000).contains(value) else { return false }
+                }
+                if let lineSpacingReduction {
+                    guard lineSpacingReduction == 0 else { return false }
+                } else if let value = autofit?[attribute: "lnSpcReduction"], Int(value) != 0 {
+                    return false
+                }
+                return true
+            }()
             if atoms.isEmpty, nativeLatinLigatures, let baseStyle, baseMetrics != nil,
                !supportsNativePaint(baseStyle, metrics: baseMetrics) {
                 warnings.append(.unsupportedLayoutFeature("Native glyph paint requires resolved scalar Latin faces without synthetic styles or baseline shifts"))
@@ -746,9 +768,14 @@ public struct RichTextLayout: Sendable {
                         for atom in lineAtoms.dropFirst() {
                             guard let candidate = spacingRunMetrics[atom.styleIndex],
                                   let current = calibratedMetric else { calibratedMetric = nil; break }
-                            guard candidate.face == current.face else {
-                                warnings.append(.unsupportedLayoutFeature("Native explicit line spacing with multiple font faces on one line is not verified"))
-                                calibratedMetric = nil; break
+                            if candidate.face != current.face {
+                                guard equivalentSpacingFacesAllowed,
+                                      candidate.face != nil, current.face != nil,
+                                      candidate.ascentShare == current.ascentShare,
+                                      candidate.windowsHeight == current.windowsHeight else {
+                                    warnings.append(.unsupportedLayoutFeature("Native explicit line spacing with multiple font faces on one line is not verified"))
+                                    calibratedMetric = nil; break
+                                }
                             }
                             if candidate.height > current.height { calibratedMetric = candidate }
                         }

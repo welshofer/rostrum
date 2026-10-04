@@ -1,0 +1,94 @@
+{
+  "item": "FUNC-2/FUNC-3 fidelity16",
+  "status": "local tests green; independent review and integration gates owned by root",
+  "baselineCommit": "5be8d48f3b9c6d22aee9ae7ccb250373f8942962",
+  "executorModel": "requested gpt-6-astra/high; runtime identity unattested",
+  "nativeCases": 12,
+  "nativeVisibleGlyphs": 96,
+  "platformEligibility": "All cases use bundled actual DejaVu Sans and Serif; no system-font skips.",
+  "nativeCapture": "PowerPoint 16.113.3; root GUI; local Best for printing=1, online=0; no repair or source save. Per-deck receipts retained.",
+  "bounds": {
+    "lineStartPoints": 0.025,
+    "finiteGlyphOriginPoints": 0.06,
+    "baselinePoints": 0.121,
+    "paintAndInkPoints": 0.002
+  },
+  "checks": [
+    {
+      "command": "swift test --jobs 2 --filter NativeMixedFaceSpacingTests",
+      "result": "expected failure",
+      "exitCode": 1,
+      "retainedLog": ".build/mixed-face-spacing16/fail-before.log",
+      "sha256": "0afd2d7f59d107a50f76e3625464be0c43d3b60260512c5e9861586d64fca3db",
+      "outputTail": "Test run with 4 tests in 1 suite failed after 3.830 seconds with 37 issues."
+    },
+    {
+      "command": "swift test --jobs 2 --filter 'NativeMixedFaceSpacingTests|NativeLineSpacingTests|NativeBodyAlignmentTests'",
+      "result": "passed",
+      "exitCode": 0,
+      "retainedLog": ".build/mixed-face-spacing16/candidate-focused.log",
+      "sha256": "8193d4850255540a0c4ad00a22e14f22081c83ac0ebc1698de7fac4f6fbdd738",
+      "outputTail": "Test run with 12 tests in 3 suites passed after 8.630 seconds."
+    },
+    {
+      "command": "swift test --jobs 2 --filter 'NativeMixedFaceSpacingTests|NativeLineSpacingTests|NativeBreakMetricsTests|NativeBodyAlignmentTests|NativeGlyphPlacementTests|NativeListMarkerTests|TabLayoutTests|ParagraphJustificationTests|LineBreak'",
+      "result": "passed",
+      "exitCode": 0,
+      "retainedLog": ".build/mixed-face-spacing16/broader-focused.log",
+      "sha256": "a9a5741b7f99b77960c9045fc2ecfc4a165d2ee8e5a8226a94e729de94d25f33",
+      "outputTail": "Test run with 51 tests in 11 suites passed after 13.073 seconds."
+    },
+    {
+      "command": "swift test --jobs 2",
+      "result": "passed",
+      "exitCode": 0,
+      "retainedLog": ".build/mixed-face-spacing16/full.log",
+      "sha256": "d19c0bae704f2d8d6bbaa924a6a9695edee821a4aec82b8b4242710e9957ba41",
+      "outputTail": "Test run with 1170 tests in 169 suites passed after 50.582 seconds.\nTest run with 18 tests in 3 suites passed after 0.071 seconds."
+    }
+  ],
+  "sourceHashes": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "a34baff705f04cf663bdfe89ca2a06fb7259038596a0d0acb1e819d5166b082c",
+    "Tests/RostrumTests/NativeMixedFaceSpacingTests.swift": "8feb11ff3e3ec823fee89499af4a0e8cc5e44a720c61595817a18cf14f33ca89"
+  },
+  "sourceReproduction": [
+    {
+      "group": "base",
+      "sourceSHA256": "4e12a5e02468873d34fadb0ea415836ee50fa92245d9e096721faee33013c014",
+      "caseManifestIdentical": true
+    },
+    {
+      "group": "anchors",
+      "sourceSHA256": "ade8628fe0ca6c69691ad0790e9678bf92aaa7d2cd3178b5723dcb5c2adc9ea0",
+      "caseManifestIdentical": true
+    }
+  ],
+  "sourceAudit": {
+    "status": "passed",
+    "cases": 12,
+    "checks": "all frames, anchors, zero insets, autofit choices, exact spacing, node order, per-run faces/sizes/kerning/text, sfnt bytes and source/PDF pins",
+    "groups": [
+      {
+        "folder": "base",
+        "cases": 4,
+        "sourceSHA256": "4e12a5e02468873d34fadb0ea415836ee50fa92245d9e096721faee33013c014",
+        "pdfSHA256": "9d8c125d036eb15b0b0c3f2cf84e6a2b47f0f79812ca003a056814d74ca7268b"
+      },
+      {
+        "folder": "anchors",
+        "cases": 8,
+        "sourceSHA256": "ade8628fe0ca6c69691ad0790e9678bf92aaa7d2cd3178b5723dcb5c2adc9ea0",
+        "pdfSHA256": "49ec14886c2dbee1701b25039f362c221569957742a20d82ea0b18dd84af1c64"
+      }
+    ]
+  },
+  "diffCheck": "git diff --check: passed",
+  "lint": "N/A: no configured lint command; repository gates use Swift tests and scripts/verify.sh",
+  "remainingGates": [
+    "independent source review",
+    "root combined scripts/verify.sh",
+    "Lectern capability recipe and inspector/export acceptance",
+    "combined performance verification if requested"
+  ],
+  "scope": "Exact explicit spacing only; shape context; compatible spacing; zero reduction; real registered faces with exactly equal normalized Windows ascent share and Windows height. Same-face and rejected contexts unchanged. Fits are computed library results, not native-chosen autofit."
+}
