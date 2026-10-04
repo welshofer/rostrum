@@ -73,6 +73,22 @@ import Testing
             #expect(span.run.paintedPointSize == 14.5)
         }
     }
+    @Test func enlargedMarkerCrossingKerningThresholdKeepsPriorPath() throws {
+        let fonts = FontLibrary()
+        try fonts.register(Data(contentsOf: root.appendingPathComponent("fonts/DejaVuSans.ttf")))
+        for size in ["<a:buSzPts val=\"1450\"/>", "<a:buSzPct val=\"181250\"/>"] {
+            let xml = try XML.parse(Data("""
+            <p:txBody><a:bodyPr/><a:p><a:pPr>\(size)<a:buAutoNum type="arabicPeriod" startAt="12"/>
+            <a:defRPr sz="800" kern="1200"><a:latin typeface="DejaVu Sans"/></a:defRPr></a:pPr>
+            <a:r><a:t>BBBB</a:t></a:r></a:p></p:txBody>
+            """.utf8))
+            let layout = RichTextLayout(textBody: xml, width: 300, height: 100, fonts: fonts)
+            let marker = try #require(layout.lines.first?.spans.first)
+            #expect(marker.run.nativeSizing == nil && marker.scalarPositions == nil)
+            #expect(marker.run.paintedPointSize == 14.5)
+            #expect(marker.run.usesKerning)
+        }
+    }
     @Test func invalidSizesAndLeadingControlsDeclineMarkerCalibration() throws {
         let fonts = FontLibrary()
         try fonts.register(Data(contentsOf: root.appendingPathComponent("fonts/DejaVuSans.ttf")))

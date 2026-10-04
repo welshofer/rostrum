@@ -541,7 +541,7 @@ public struct RichTextLayout: Sendable {
                     run.fontSize = Self.bounded(Self.number(markerSize, "val", 1800), 100...400000) / 100
                     run.nativeSizing = .scaled
                 }
-                if let metrics = face(run), supportsNativePaint(run, metrics: metrics) {
+                if !run.usesKerning, let metrics = face(run), supportsNativePaint(run, metrics: metrics) {
                     let scalars = Array(run.text.unicodeScalars)
                     let glyphs = scalars.map { metrics.glyphID(for: $0) }
                     if glyphs.allSatisfy({ $0 != 0 }) {
