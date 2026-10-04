@@ -1,0 +1,38 @@
+{
+  "baselineRevision": "72b9b710e288eb295e6b9b26f47d8c641c181452",
+  "groups": [
+    {
+      "group": "shaping",
+      "records": 100734,
+      "SHA256": {
+        "baseline": "29c6ac7490f918baedb0e612cf3e36ae4fb3f38dcf7108887281a309e0d4b366",
+        "candidate": "29c6ac7490f918baedb0e612cf3e36ae4fb3f38dcf7108887281a309e0d4b366"
+      },
+      "byteIdentical": true
+    },
+    {
+      "group": "supplement-shaping",
+      "records": 288,
+      "SHA256": {
+        "baseline": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+        "candidate": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079"
+      },
+      "byteIdentical": true
+    }
+  ],
+  "fields": "Full glyph IDs, original ranges, advance/x/y bit patterns, bidi levels, breaks and ordered diagnostics; font/size/direction/kerning metadata retained",
+  "fonts": {
+    "/System/Library/Fonts/Supplemental/Arial.ttf": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+    "Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+  },
+  "drivers": {
+    "shaping-proof.swift": "f85627fd3e0acb611dd4f6ec1b2d737f076a8158a9561a42f82887f2b069b735",
+    "supplement-shaping.swift": "690cb41febd6eba9de5624227253758d72ef0554cee868734843793d41101006"
+  },
+  "binaries": {
+    "baseline-shaping-proof": "4b51c7fbbaf3026102e5cf61492ef556a0bd9bea18b099c64be700a451f7a237",
+    "candidate-shaping-proof": "70ec50ed6feea4a6b5251bcb94de3155b0c0714c709211f2ab80a8a06b0c44fe",
+    "baseline-supplement-shaping": "1dca8448127c3be5b55fae7bf30bb47c7bf3835ca9063b179eac5ac7337a05f9",
+    "candidate-supplement-shaping": "bb4db3d747930023be4120f684583ba5c33134c96883a43045eb13dbf58a15d9"
+  }
+}
