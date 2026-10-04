@@ -266,9 +266,9 @@ public struct RichTextLayout: Sendable {
                         segment = ""
                         return
                     }
-                    let breaks = Set(TextShaper.lineBreaks(in: segment).map(\.scalarOffset))
                     if let metrics {
                         let shaped = TextShaper(metrics).shape(segment, pointSize: style.fontSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
+                        let breaks = Set(shaped.breaks.map(\.scalarOffset))
                         warnings.append(contentsOf: shaped.diagnostics)
                         if shaped.glyphs.contains(where: { $0.bidiLevel > 0 }) {
                             warnings.append(.unsupportedLayoutFeature("Rich-text bidirectional span ordering requires a verified paragraph renderer"))
@@ -308,6 +308,7 @@ public struct RichTextLayout: Sendable {
                                 source: source, breakAfter: breaks.contains(range.upperBound)))
                         }
                     } else {
+                        let breaks = Set(TextShaper.lineBreaks(in: segment).map(\.scalarOffset))
                         var scalarOffset = 0
                         for character in segment {
                             let value = String(character); scalarOffset += value.unicodeScalars.count
