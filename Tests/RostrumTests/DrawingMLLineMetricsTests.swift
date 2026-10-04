@@ -84,6 +84,30 @@ import Testing
         #expect(abs(layout.lines[99].baseline - 2161.04) < 1e-8)
         #expect(layout.lines[0].baseline == 23.04)
     }
+    @Test func exactSpacingHasNoTrailingGapInAnchoredText() throws {
+        // Native reference: the imported 30pt title uses 48.75pt exact
+        // spacing. Its final 36pt line box must not retain a 12.75pt gap.
+        let font = try metrics(ascent: 800, descent: 200)
+        for anchor in ["t", "ctr", "b"] {
+            for sizes in [[30], [30, 30], [30, 20]] {
+                let xml = try body(sizes: sizes,
+                    paragraph: "<a:lnSpc><a:spcPts val=\"4875\"/></a:lnSpc>")
+                xml.firstChild(named: "a:bodyPr")?[attribute: "anchor"] = anchor
+                let layout = RichTextLayout(textBody: xml, width: 300, height: 100,
+                                            fallbackMetrics: font)
+                let natural = Double(sizes.last!) * 1.2
+                let lastStart = Double(sizes.count - 1) * 48.75
+                let lastBaseline = (lastStart + natural * 0.8).rounded()
+                let extent = max(lastStart + natural, lastBaseline + natural * 0.2)
+                #expect(abs(layout.contentHeight - extent) < 1e-9)
+                let offset = anchor == "b" ? 100 - extent : anchor == "ctr" ? (100 - extent) / 2 : 0
+                #expect(abs(layout.lines.last!.baseline - lastBaseline - offset) < 1e-9)
+                #expect(layout.lines.allSatisfy { $0.height == 48.75 })
+                #expect(RichTextLayout(textBody: xml, width: 300, height: extent,
+                                      fallbackMetrics: font).fits)
+            }
+        }
+    }
     @Test func fittingUsesTheSameWindowsMetricsAndRoundedDescentAsSVG() throws {
         let deck = try Presentation()
         try deck.fonts.register(fontData(ascent: 1854, descent: 434), aliases: ["Metric Fixture"])
