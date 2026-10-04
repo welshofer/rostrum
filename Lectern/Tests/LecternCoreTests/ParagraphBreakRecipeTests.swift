@@ -8,6 +8,7 @@ import Rostrum
     func nativeEmptyLinesSurviveBothFitsAndSaving(large: Bool) throws {
         let draft = try PlatformLabRecipes.make(.paragraphLayout, options: .init(text: "Styled empty lines", sampleSize: 2, alternative: large))
         #expect(draft.deck.slides.count == 5)
+        #expect(try draft.deck.renderSVGReportingProblems(slideAt: 4).problems.isEmpty)
         let samples = try PlatformLabRecipes.paragraphBreakReferences().cases.filter { $0.large == large }
         #expect(samples.count == 2)
         for sample in samples {
@@ -38,6 +39,7 @@ import Rostrum
         let reopened = try Presentation(data: bytes)
         for check in draft.checks + (try draft.verify(reopened)) { #expect(check.passed, "\(check.name): \(check.detail)") }
         #expect(try reopened.serializedData() == bytes)
+        #expect(try reopened.renderSVGReportingProblems(slideAt: 4).problems.isEmpty)
         #expect(draft.extraFiles["native-break-reference.json"] != nil)
         if let parent = ProcessInfo.processInfo.environment["LECTERN_BREAK_ARTIFACTS"] {
             let directory = URL(fileURLWithPath: parent).appendingPathComponent("large-\(large)-" + UUID().uuidString)

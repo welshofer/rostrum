@@ -65,7 +65,7 @@ extension PlatformLabRecipes {
                 .init("Native empty-line spacing: \(sample.id)", breakMarkersMatch(natural, sample: sample) && natural.fits && natural.diagnostics.isEmpty, "Every visible marker matches the independently captured native baseline within 0.121 pt. The empty line retains its own metrics."),
                 .init("Public break fits: \(sample.id)", selected == selectedFrame && selected.fits && selected.fontScale < 100 && shapeLayout.lines == frameLayout.lines && shapeLayout.fits && shapeLayout.diagnostics.isEmpty && boundaryLineStrings(shapeLayout) == boundaryLineStrings(natural), "Both public fitting paths preserve the manual empty line and visible text, selecting \(selected.fontScale)% scale and \(selected.lineSpacingReduction)% line-spacing reduction.")
             ]
-            let baselines = sample.nativeMarkers.map { "\($0.text): \(String(format: "%.2f", $0.baseline)) pt" }.joined(separator: " · ")
+            let baselines = sample.nativeMarkers.map { "\($0.text): \(String(format: "%.2f", $0.baseline)) pt" }.joined(separator: "; ")
             let nativeNote = try text("PowerPoint baselines\n" + baselines, on: slide, in: LibraryLabSupport.frame(1.2, y + 0.55, 3.1, 0.75))
             nativeNote.textFrame?.paragraphs.first?.runs.first?.fontSize = 12
             for x in [4.8, 9.0] {
