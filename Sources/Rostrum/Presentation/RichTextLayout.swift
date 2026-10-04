@@ -966,17 +966,40 @@ public struct RichTextLayout: Sendable {
                 // Native ordinary shapes do not acquire marker/font/size choices
                 // from master otherStyle. Placeholder body inheritance remains
                 // distinct, including local follow-text overrides.
-                if ph == nil,
-                   style.childElements.contains(where: { level in level.childElements.contains { inheritedMarkerChoices.contains($0.name) } }) {
-                    let copy = style.deepCopy()
-                    for level in copy.childElements {
-                        for name in inheritedMarkerChoices { level.removeChildren(named: name) }
-                    }
-                    result.append(copy)
-                } else { result.append(style) }
+                result.append(ph == nil ? Self.withoutInheritedMasterMarkers(style) : style)
             }
         }
         return result
+    }
+
+    /// Layout consumers only read these nodes. Project the affected paragraph
+    /// containers and share every untouched descendant; unknown extension trees
+    /// must neither be cloned per shape nor modified in the package DOM.
+    private static func withoutInheritedMasterMarkers(_ style: XML.Element) -> XML.Element {
+        var projected: XML.Element?
+        for (index, node) in style.children.enumerated() {
+            guard case .element(let level) = node else { continue }
+            switch level.name {
+            case "a:defPPr", "a:lvl1pPr", "a:lvl2pPr", "a:lvl3pPr", "a:lvl4pPr", "a:lvl5pPr",
+                 "a:lvl6pPr", "a:lvl7pPr", "a:lvl8pPr", "a:lvl9pPr": break
+            default: continue
+            }
+            // At the last inheritance tier, buNone alone is equivalent to no
+            // marker. Local/list activation already wins before this tier.
+            guard level.children.contains(where: { child in
+                guard case .element(let element) = child else { return false }
+                return element.name != "a:buNone" && inheritedMarkerChoices.contains(element.name)
+            }) else { continue }
+            let children = level.children.filter { child in
+                guard case .element(let element) = child else { return true }
+                return !inheritedMarkerChoices.contains(element.name)
+            }
+            if projected == nil {
+                projected = XML.Element(style.name, attributes: style.attributes, children: style.children)
+            }
+            projected?.children[index] = .element(XML.Element(level.name, attributes: level.attributes, children: children))
+        }
+        return projected ?? style
     }
 
     private static let inheritedMarkerChoices: Set<String> = ["a:buNone", "a:buChar", "a:buAutoNum",
