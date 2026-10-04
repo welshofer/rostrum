@@ -48,7 +48,7 @@ import Rostrum
         #expect(result.checks.contains { $0.name == "Paragraph positions survive reopening" && $0.passed })
         await context.app.inspect(deckAt: result.afterURL).value
         #expect(context.app.phase == .inspected)
-        #expect(context.app.inspection?.previews.count == 4)
+        #expect(context.app.inspection?.previews.count == 5)
         let exportRoot = root.appendingPathComponent("Export")
         let task = try #require(context.app.exportInspected(into: exportRoot))
         await task.value
@@ -59,9 +59,9 @@ import Rostrum
         let markdown = try String(contentsOf: markdownURL, encoding: .utf8)
         #expect(markdown.contains("App paragraph demonstration"))
         #expect(markdown.contains("The last line remains natural."))
-        #expect(context.app.exportSummary == "4 slides · 0 media files · 0 chart CSVs")
+        #expect(context.app.exportSummary == "5 slides · 0 media files · 0 chart CSVs")
         let deck = try Presentation(contentsOf: result.afterURL)
-        #expect(deck.slides.count == 4)
+        #expect(deck.slides.count == 5)
         #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
         let shape = try #require(deck.slides[0].shapes.all.first { $0.name == "Justified paragraph" })
         #expect(shape.textFrame?.paragraphs.first?.alignment == .justified)
@@ -133,6 +133,32 @@ import Rostrum
             #expect(layouts[0].lines.map { $0.spans.map(\.run.text).joined() } == nativeLines)
             #expect(layouts[1].lines == layouts[2].lines)
             #expect(layouts[1].lines.map { $0.spans.map(\.run.text).joined() } == ["officeZ"])
+        }
+        #expect(markdown.contains("Empty lines keep their own typography"))
+        #expect(markdown.contains("Empty-line formatting is preserved."))
+        let breakTree = try #require(deck.slides[4].part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree"))
+        for caseID in [narrow ? "consecutive-6-36" : "consecutive-36-6", narrow ? "trailing-br36-end36" : "trailing-br36-end6"] {
+            #expect(result.checks.contains { $0.name == "Saved native empty-line spacing: " + caseID && $0.passed })
+            #expect(result.checks.contains { $0.name == "Saved break properties and fits: " + caseID && $0.passed })
+            var layouts: [RichTextLayout] = []
+            var paragraphs: [[String]] = []
+            for role in ["original", "shape fit", "frame fit"] {
+                let name = caseID + " " + role
+                let box = try #require(deck.slides[4].shapes.all.first { $0.name == name })
+                let node = try #require(breakTree.children(named: "p:sp").first {
+                    $0.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "name"] == name
+                })
+                let body = try #require(node.firstChild(named: "p:txBody"))
+                let layout = RichTextLayout(textBody: body, width: box.frame.width.points,
+                    height: box.frame.height.points, fonts: deck.fonts, theme: deck.theme)
+                #expect(layout.fits && layout.diagnostics.isEmpty && layout.lines.count == 3)
+                #expect(layout.lines[1].spans.isEmpty)
+                layouts.append(layout)
+                paragraphs.append(body.children(named: "a:p").map { $0.serialized() })
+            }
+            #expect(layouts[0].lines.last?.baseline == (narrow ? 69 : 33))
+            #expect(layouts[1].lines == layouts[2].lines && layouts[1].contentHeight <= 28)
+            #expect(paragraphs[0] == paragraphs[1] && paragraphs[1] == paragraphs[2])
         }
         #expect(model.results[.paragraphLayout]?.directory == result.directory)
     }
