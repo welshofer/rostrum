@@ -134,8 +134,14 @@ public struct RichTextLayout: Sendable {
             }.sorted { $0.position < $1.position } ?? []
             let hasText = paragraph.childElements.contains { ["a:r", "a:fld"].contains($0.name) && !($0.firstChild(named: "a:t")?.textContent ?? "").isEmpty }
             let emptyDefaults = hasText ? defaults : [paragraph.firstChild(named: "a:endParaRPr")].compactMap { $0 } + defaults
-            let baseStyle = Self.resolve(text: "", properties: emptyDefaults,
-                theme: theme, defaultSize: defaultPointSize, scale: scale)
+            // Without metrics, the empty-line box needs only the inherited size.
+            // Avoid resolving paint and font properties that cannot affect it.
+            let baseStyle = hasRegisteredFonts || fallbackMetrics != nil
+                ? Self.resolve(text: "", properties: emptyDefaults,
+                    theme: theme, defaultSize: defaultPointSize, scale: scale) : nil
+            let baseSize = baseStyle?.fontSize ?? Self.bounded(
+                emptyDefaults.lazy.compactMap { $0[attribute: "sz"] }.first.flatMap(Double.init)
+                    ?? defaultPointSize * 100, 100...400000) / 100 * scale
             func face(_ style: ResolvedTextRun) -> FontMetrics? {
                 if hasRegisteredFonts, let name = style.fontFamily,
                    let library = fonts,
@@ -144,7 +150,7 @@ public struct RichTextLayout: Sendable {
                 }
                 return fallbackMetrics
             }
-            let baseMetrics = face(baseStyle)
+            let baseMetrics = baseStyle.flatMap(face)
             func lineMetrics(_ metrics: FontMetrics?, size: Double) -> (ascent: Double, height: Double, drawingML: Bool) {
                 if let share = metrics?.drawingMLAscentShare {
                     let height = size * 1.2
@@ -153,7 +159,7 @@ public struct RichTextLayout: Sendable {
                 return (metrics?.ascent(pointSize: size) ?? size,
                         metrics?.lineHeight(pointSize: size) ?? size * 4 / 3, false)
             }
-            let empty = lineMetrics(baseMetrics, size: baseStyle.fontSize)
+            let empty = lineMetrics(baseMetrics, size: baseSize)
             let emptyHeight = empty.height, emptyAscent = empty.ascent
             func spacing(_ element: XML.Element?, relativeTo height: Double) -> Double {
                 guard let element else { return 0 }
@@ -319,12 +325,14 @@ public struct RichTextLayout: Sendable {
             var bullet: ResolvedTextRun?
             if atoms.contains(where: { !$0.text.isEmpty }), bulletProperties?.firstChild(named: "a:buNone") == nil {
                 if let char = bulletProperties?.firstChild(named: "a:buChar")?[attribute: "char"] {
-                    var run = runStyles.first ?? baseStyle; run.text = char; bullet = run
+                    var run = runStyles.first ?? baseStyle ?? Self.resolve(text: "", properties: emptyDefaults,
+                        theme: theme, defaultSize: defaultPointSize, scale: scale); run.text = char; bullet = run
                 } else if let auto = bulletProperties?.firstChild(named: "a:buAutoNum") {
                     let start = Int(Self.bounded(Self.number(auto, "startAt", 1), 1...32767))
                     let value = auto[attribute: "startAt"] != nil ? start : (numberByLevel[level] ?? start)
                     numberByLevel[level] = value + 1
-                    var run = runStyles.first ?? baseStyle; run.text = Self.numberLabel(value, type: auto[attribute: "type"] ?? "arabicPeriod"); bullet = run
+                    var run = runStyles.first ?? baseStyle ?? Self.resolve(text: "", properties: emptyDefaults,
+                        theme: theme, defaultSize: defaultPointSize, scale: scale); run.text = Self.numberLabel(value, type: auto[attribute: "type"] ?? "arabicPeriod"); bullet = run
                 }
                 if bullet != nil {
                     // A list marker follows text size/color, not its underline,
