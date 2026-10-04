@@ -170,19 +170,24 @@ import Testing
         }
     }
 
-    @Test func separateBulletMarkersRetainGeneralPaintAndWidth() throws {
+    @Test func separateBulletMarkersResolveIndependentPaintAndWidth() throws {
         let fonts = FontLibrary(); try registerFaces(in: fonts)
         for marker in ["<a:buAutoNum type=\"arabicPeriod\" startAt=\"12\"/>",
                        "<a:buFont typeface=\"DejaVu Serif\"/><a:buSzPts val=\"1450\"/><a:buChar char=\"AB\"/>"] {
             let layout = RichTextLayout(textBody: try body(paragraph("BBBB", properties: marker)), width: 300, height: 100, fonts: fonts)
             let spans = try #require(layout.lines.first).spans
             let bullet = try #require(spans.first)
-            #expect(bullet.run.nativeSizing == nil && bullet.scalarPositions == nil)
             #expect(bullet.run.text.count > 1 && bullet.width > 0)
             #expect(spans.last?.run.nativeSizing != nil)
             if marker.contains("buFont") {
+                #expect(bullet.run.nativeSizing == nil && bullet.scalarPositions == nil)
                 #expect(bullet.run.fontFamily == "DejaVu Serif")
                 #expect(bullet.run.paintedPointSize == 10.5125)
+            } else {
+                // NativeListMarkers independently captures scaled Arabic numbering.
+                #expect(bullet.run.paintedPointSize == 15)
+                #expect(bullet.scalarPositions == [0, 9.5, 19, 23.75])
+                #expect(spans.last?.x == 23.75)
             }
         }
     }

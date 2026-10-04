@@ -1,0 +1,268 @@
+"""Capture native origins and independently transformed vector glyph ink.
+
+PDF font-size metadata is retained, but is not the ink-size oracle. Exact raw
+font outlines under independently parsed PDF graphics/text matrices determine
+geometric ink. SVG-export paths are retained separately with conversion deltas.
+Every visible source scalar must match both the PDF text trace and vector use.
+"""
+from pathlib import Path
+from io import BytesIO
+import hashlib, json, math, re
+import xml.etree.ElementTree as ET
+import fitz
+from pypdf import PdfReader
+from fontTools.ttLib import TTFont
+from fontTools.pens.recordingPen import RecordingPen
+from fontTools.pens.boundsPen import BoundsPen
+from fontTools.pens.transformPen import TransformPen
+from fontTools.svgLib.path import parse_path
+
+ROOT = Path(__file__).resolve().parent
+REPO = next(p for p in ROOT.parents if (p / 'Package.swift').exists())
+FONT = REPO / 'Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf'
+source = TTFont(FONT)
+source_glyphs = source.getGlyphSet()
+cmap = source.getBestCmap()
+units = source['head'].unitsPerEm
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+def signature(glyphs, name):
+    pen = RecordingPen()
+    glyphs[name].draw(pen)
+    return digest(repr(pen.value).encode())
+
+def bounds(glyphs, name):
+    pen = BoundsPen(glyphs)
+    glyphs[name].draw(pen)
+    return pen.bounds
+
+IDENTITY = (1, 0, 0, 1, 0, 0)
+
+def multiply(left, right):
+    a, b, c, d, e, f = left
+    g, h, i, j, k, l = right
+    return (a*g+c*h, b*g+d*h, a*i+c*j, b*i+d*j, a*k+c*l+e, b*k+d*l+f)
+
+def transform(value):
+    result = IDENTITY
+    for name, values in re.findall(r'([A-Za-z]+)\(([^)]*)\)', value or ''):
+        numbers = [float(v) for v in re.findall(r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[Ee][-+]?\d+)?', values)]
+        if name == 'matrix':
+            assert len(numbers) == 6
+            current = tuple(numbers)
+        elif name == 'translate':
+            assert 1 <= len(numbers) <= 2
+            current = (1, 0, 0, 1, numbers[0], numbers[1] if len(numbers) == 2 else 0)
+        elif name == 'scale':
+            assert 1 <= len(numbers) <= 2
+            current = (numbers[0], 0, 0, numbers[-1], 0, 0)
+        else:
+            raise AssertionError(f'Unverified vector transform: {name}')
+        result = multiply(result, current)
+    return result
+
+def vector_glyphs(page):
+    xml = page.get_svg_image(text_as_path=True)
+    tree = ET.fromstring(xml)
+    paths = {node.attrib['id']: node.attrib['d'] for node in tree.iter()
+             if node.tag.endswith('}path') and 'id' in node.attrib}
+    result = []
+    def visit(node, inherited):
+        matrix = multiply(inherited, transform(node.get('transform')))
+        if node.tag.endswith('}use') and 'data-text' in node.attrib:
+            char = node.attrib['data-text']
+            href = node.attrib['{http://www.w3.org/1999/xlink}href'][1:]
+            pen = BoundsPen(None)
+            parse_path(paths[href], TransformPen(pen, matrix))
+            result.append(dict(text=char, origin=[matrix[4], matrix[5]], matrix=list(matrix),
+                               inkBounds=list(pen.bounds) if pen.bounds is not None else None,
+                               pathSHA256=digest(paths[href].encode()), pathID=href))
+        for child in node:
+            visit(child, matrix)
+    visit(tree, IDENTITY)
+    return result, digest(xml.encode())
+
+def raw_text_matrices(page):
+    # Read PDF operators directly. Font-size metadata from texttrace and the
+    # vector exporter are not used to derive these linear transforms.
+    ctm = IDENTITY
+    text_matrix = IDENTITY
+    font_size = 1.0
+    font_key = None
+    horizontal_scale = 1.0
+    rise = 0.0
+    stack = []
+    output = []
+    page_height = float(page.mediabox.height)
+    assert page.rotation == 0 and float(page.get('/UserUnit', 1)) == 1
+    for operands, operator in page.get_contents().operations:
+        values = lambda: tuple(float(value) for value in operands)
+        if operator == b'q':
+            stack.append((ctm, font_size, font_key, horizontal_scale, rise))
+        elif operator == b'Q':
+            ctm, font_size, font_key, horizontal_scale, rise = stack.pop()
+        elif operator == b'cm':
+            ctm = multiply(ctm, values())
+        elif operator == b'BT':
+            text_matrix = IDENTITY
+        elif operator == b'Tm':
+            text_matrix = values()
+        elif operator == b'Tf':
+            font_key, font_size = str(operands[0]), float(operands[1])
+        elif operator == b'Tz':
+            horizontal_scale = float(operands[0]) / 100
+        elif operator == b'Ts':
+            rise = float(operands[0])
+        elif operator in [b'Td', b'TD', b'T*', b"'", b'"']:
+            raise AssertionError(f'Unexpected text-position operator: {operator}')
+        elif operator in [b'Tj', b'TJ']:
+            assert font_key is not None
+            font = page['/Resources']['/Font'][font_key].get_object()
+            name = str(font['/BaseFont']).split('+')[-1].lstrip('/')
+            matrix = multiply(multiply(ctm, text_matrix),
+                              (font_size * horizontal_scale, 0, 0, font_size, 0, rise))
+            top_down = [matrix[0], -matrix[1], matrix[2], -matrix[3], matrix[4], page_height-matrix[5]]
+            output.append(dict(font=name, resource=font_key, operator=operator.decode(),
+                               graphicsMatrix=list(ctm), textMatrix=list(text_matrix),
+                               fontSizeOperator=font_size, horizontalScale=horizontal_scale,
+                               textRise=rise, pageGlyphMatrix=top_down))
+    assert not stack
+    return output
+
+manifest = json.loads((ROOT / 'manifest.json').read_text())
+assert digest((ROOT / manifest['source']).read_bytes()) == manifest['sourceSHA256']
+cases = json.loads((ROOT / 'cases.json').read_text())
+assert len(cases) == manifest['caseCount'] == 18
+assert len({case['name'] for case in cases}) == len(cases)
+pdf = ROOT / 'powerpoint.pdf'
+doc = fitz.open(pdf)
+assert len(doc) == manifest['slideCount'] == 3
+fonts = {}
+for page in doc:
+    for item in page.get_fonts():
+        _, extension, _, data = doc.extract_font(item[0])
+        if extension not in ['ttf', 'otf']:
+            continue
+        font = TTFont(BytesIO(data))
+        key=item[3].split('+')[-1]
+        assert key not in fonts or fonts[key][1]==digest(data), ('ambiguous PDF font key',key)
+        fonts[key] = (font, digest(data))
+page_vectors = [vector_glyphs(page) for page in doc]
+reader = PdfReader(str(pdf))
+raw_matrices = [raw_text_matrices(page) for page in reader.pages]
+for index, page in enumerate(doc):
+    (ROOT/f'page-{index+1}-content.txt').write_bytes(page.read_contents())
+results = []
+for case in cases:
+    x, y, width, height = [case[k] for k in ['x', 'y', 'width', 'height']]
+    marker_face = case['face'] if case['markerType']=='number' or case['fontChoice']=='text' else 'serif'
+    authored = [dict(text=char, role='marker', authoredFace=marker_face) for char in case['marker'] if not char.isspace()]
+    for run in case['nodes']:
+        if run['kind']=='break':continue
+        for char in run['text']:
+            if not char.isspace():authored.append(dict(text=char,role='body',authoredFace=case['face'],size=run['size'],effectiveSize=run['size']*case['fontScale']/100))
+    marker_chars=set(case['marker'])
+    assert marker_chars.isdisjoint({item['text'] for item in authored if item['role']=='body'})
+    assert ''.join(item['text'] for item in authored)==case['expectedVisibleText']
+    def within(origin):
+        return x - .001 <= origin[0] <= x + width + .001 and y - .001 <= origin[1] <= y + height + .001
+    chars = []
+    for trace in doc[case['page']].get_texttrace():
+        for scalar, glyph, origin, trace_bbox in trace['chars']:
+            char = chr(scalar)
+            if char == ' ' or not within(origin):
+                continue
+            chars.append(dict(text=char, glyphID=glyph, origin=list(origin),
+                              pdfFont=trace['font'], pdfSize=trace['size'],
+                              pdfColor=list(trace['color']), pdfCellBounds=list(trace_bbox)))
+    vectors = [v for v in page_vectors[case['page']][0] if v['text'] != ' ' and within(v['origin'])]
+    key = lambda record: (0 if record['text'] in marker_chars else 1, round(record['origin'][1], 3), record['origin'][0])
+    chars.sort(key=key)
+    vectors.sort(key=key)
+    authored_count = len(authored)
+    omitted_markers = []
+    # Native capture explicitly omits master-only markers on these ordinary
+    # text boxes. Retain that counterexample, including the unconsumed scalar;
+    # do not silently drop a missing marker from the calibration accounting.
+    if case['name'] in ['inherited-percent75-serif', 'local-follow-overrides-inherited']:
+        assert not any(c['text'] in marker_chars for c in chars)
+        omitted_markers = [item for item in authored if item['role'] == 'marker']
+        authored = [item for item in authored if item['role'] == 'body']
+    assert len(chars) == len(vectors) == len(authored), (case['name'], len(chars), len(vectors), len(authored))
+    assert sum(c['text'] in marker_chars for c in chars) + len(omitted_markers) == len(case['marker'])
+    output = []
+    for actual, vector, expected in zip(chars, vectors, authored):
+        char = expected['text']
+        assert actual['text'] == vector['text'] == char, (case['name'], actual, vector, expected)
+        assert all(abs(a-b) < .002 for a, b in zip(actual['origin'], vector['origin']))
+        subset, _ = fonts[actual['pdfFont']]
+        subset_glyphs = subset.getGlyphSet()
+        subset_name = subset.getGlyphOrder()[actual['glyphID']]
+        matching_faces=[]
+        for face_key, selected in manifest['faces'].items():
+            selected_path=ROOT/selected['file']
+            assert digest(selected_path.read_bytes())==selected['sha256']
+            candidate=TTFont(selected_path);candidate_glyphs=candidate.getGlyphSet();candidate_cmap=candidate.getBestCmap()
+            if ord(char) not in candidate_cmap:continue
+            if candidate['head'].unitsPerEm==subset['head'].unitsPerEm and signature(subset_glyphs,subset_name)==signature(candidate_glyphs,candidate_cmap[ord(char)]):matching_faces.append(face_key)
+        assert matching_faces,(case['name'],char,actual['pdfFont'],'no pinned source outline matches')
+        # Identical bullet outlines can occur in multiple real faces. Preserve
+        # that ambiguity rather than claim outline identity determines a family.
+        selected_face=expected['authoredFace'] if expected['authoredFace'] in matching_faces else matching_faces[0]
+        selected=manifest['faces'][selected_face];source=TTFont(ROOT/selected['file']);source_glyphs=source.getGlyphSet();cmap=source.getBestCmap();units=source['head'].unitsPerEm
+        outline_match=True
+        source_bounds=bounds(source_glyphs,cmap[ord(char)])
+        matrix = vector['matrix']
+        # This bounded fixture is horizontal and unrotated. Fail rather than
+        # reinterpret an unexpected affine glyph transform as a font-size rule.
+        assert abs(matrix[1]) < 1e-8 and abs(matrix[2]) < 1e-8 and matrix[0] > 0 and matrix[3] < 0
+        matches = [entry for entry in raw_matrices[case['page']]
+                   if entry['font'] == actual['pdfFont']
+                   and abs(entry['pageGlyphMatrix'][5] - actual['origin'][1]) < .002
+                   and all(abs(a-b) < .00002 for a,b in zip(entry['pageGlyphMatrix'][:4],matrix[:4]))]
+        assert matches, (case['name'], char, matrix, actual['pdfFont'])
+        preceding=[entry for entry in matches if entry['pageGlyphMatrix'][4]<=actual['origin'][0]+.002]
+        chosen=min(preceding or matches,key=lambda entry:abs(entry['pageGlyphMatrix'][4]-actual['origin'][0]))
+        raw_matrix = chosen['pageGlyphMatrix']
+        paint_x, paint_y = raw_matrix[0], -raw_matrix[3]
+        expected_ink = [actual['origin'][0] + source_bounds[0] * paint_x / units,
+                        actual['origin'][1] - source_bounds[3] * paint_y / units,
+                        actual['origin'][0] + source_bounds[2] * paint_x / units,
+                        actual['origin'][1] - source_bounds[1] * paint_y / units]
+        # MuPDF's SVG path conversion can quantize an outline by a font
+        # unit. Preserve that discrepancy; do not call it exact native ink.
+        exported_ink_delta = [a-b for a,b in zip(vector['inkBounds'], expected_ink)]
+        output.append(dict(text=char, role=expected['role'], matchingSourceFaces=matching_faces, geometrySourceFace=selected_face, faceIdentity='unique outline' if len(matching_faces)==1 else 'ambiguous identical outline', subsetFamily=subset['name'].getDebugName(1), subsetSubfamily=subset['name'].getDebugName(2), x=actual['origin'][0]-x, baseline=actual['origin'][1]-y,
+                           pdfFont=actual['pdfFont'], pdfSize=actual['pdfSize'], pdfColor=actual['pdfColor'],
+                           rawPDFPaintScale=[paint_x,paint_y], vectorPaintScale=[matrix[0],-matrix[3]], vectorMatrix=matrix,
+                           rawPDFTextMatrixRecord=chosen,
+                           geometricInkBounds=[expected_ink[0]-x,expected_ink[1]-y,expected_ink[2]-x,expected_ink[3]-y],
+                           vectorExporterInkDelta=exported_ink_delta,
+                           vectorInkBounds=[vector['inkBounds'][0]-x, vector['inkBounds'][1]-y,
+                                            vector['inkBounds'][2]-x, vector['inkBounds'][3]-y],
+                           sourceGlyphMatches=outline_match, sourceGlyphBounds=list(source_bounds),
+                           sourceAdvance=source['hmtx'][cmap[ord(char)]][0],
+                           pathSHA256=vector['pathSHA256'], authored=expected))
+    lines = []
+    for item in output:
+        if not lines or abs(lines[-1]['baseline']-item['baseline']) > .002:
+            lines.append(dict(baseline=item['baseline'], visibleText='', characters=[]))
+        lines[-1]['visibleText'] += item['text']
+        lines[-1]['characters'].append(item)
+    body_lines=[]
+    for item in output:
+        if item['role']!='body':continue
+        if not body_lines or abs(body_lines[-1]['baseline']-item['baseline'])>.002:body_lines.append(dict(baseline=item['baseline'],visibleText='',characters=[]))
+        body_lines[-1]['visibleText']+=item['text'];body_lines[-1]['characters'].append(item)
+    results.append(dict(name=case['name'], bodyLines=body_lines, expectedVisibleScalars=authored_count, consumedVisibleScalars=len(output), explicitlyOmittedMarkers=omitted_markers, markerGlyphs=[g for g in output if g['role']=='marker'], bodyGlyphs=[g for g in output if g['role']=='body'], lines=lines))
+    print(case['name'], [(line['visibleText'], round(line['baseline'],4)) for line in lines],
+          'paint', sorted(set(tuple(c['vectorPaintScale']) for c in output)))
+record = dict(source=manifest['source'], sourceSHA256=manifest['sourceSHA256'], pdf=pdf.name,
+              pdfSHA256=digest(pdf.read_bytes()), sourceFaces=manifest['faces'],
+              extraction='Exact source/subset outlines transformed using raw PDF graphics/text matrices, located at PDF texttrace origins. MuPDF SVG-export paths retained separately with their outline-quantization deltas. Ordinary spaces excluded from visible-scalar counts.',
+              pageStreamSHA256=[digest(page.read_contents()) for page in doc], rawTextMatrices=raw_matrices,
+              vectorExportSHA256=[entry[1] for entry in page_vectors],
+              subsetSHA256={name: entry[1] for name,entry in fonts.items()}, cases=results)
+(ROOT/'native-marker-metrics.json').write_text(json.dumps(record,indent=2)+'\n')

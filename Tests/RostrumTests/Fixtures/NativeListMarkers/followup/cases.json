@@ -1,0 +1,176 @@
+[
+  {
+    "name": "local-char-inherited-choices",
+    "size": 14.5,
+    "marker": "\u2022",
+    "markerType": "character",
+    "sizeChoice": "inherited",
+    "fontChoice": "inherited",
+    "face": "regular",
+    "fontScale": 100,
+    "marL": 24,
+    "indent": -18,
+    "wrap": false,
+    "width": 290,
+    "height": 160,
+    "nodes": [
+      {
+        "kind": "run",
+        "text": "Agjp BBBB Z",
+        "size": 14.5
+      }
+    ],
+    "inherited": true,
+    "activate": true,
+    "page": 0,
+    "x": 30,
+    "y": 50,
+    "sourceTextBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buChar char=\"&#8226;\"/></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+    "expectedVisibleText": "\u2022AgjpBBBBZ"
+  },
+  {
+    "name": "local-number-inherited-choices",
+    "size": 14.5,
+    "marker": "12.",
+    "markerType": "number",
+    "sizeChoice": "inherited",
+    "fontChoice": "inherited",
+    "face": "regular",
+    "fontScale": 100,
+    "marL": 24,
+    "indent": -18,
+    "wrap": false,
+    "width": 290,
+    "height": 160,
+    "nodes": [
+      {
+        "kind": "run",
+        "text": "Agjp BBBB Z",
+        "size": 14.5
+      }
+    ],
+    "inherited": true,
+    "activate": true,
+    "startAt": 12,
+    "page": 0,
+    "x": 380,
+    "y": 50,
+    "sourceTextBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buAutoNum type=\"arabicPeriod\" startAt=\"12\"/></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+    "expectedVisibleText": "12.AgjpBBBBZ"
+  },
+  {
+    "name": "ordinary-shape-master-only",
+    "size": 14.5,
+    "marker": "\u2022",
+    "markerType": "character",
+    "sizeChoice": "inherited",
+    "fontChoice": "inherited",
+    "face": "regular",
+    "fontScale": 100,
+    "marL": 24,
+    "indent": -18,
+    "wrap": false,
+    "width": 290,
+    "height": 160,
+    "nodes": [
+      {
+        "kind": "run",
+        "text": "Agjp BBBB Z",
+        "size": 14.5
+      }
+    ],
+    "inherited": true,
+    "ordinaryShape": true,
+    "page": 0,
+    "x": 30,
+    "y": 270,
+    "sourceTextBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"/><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+    "expectedVisibleText": "\u2022AgjpBBBBZ"
+  },
+  {
+    "name": "body-placeholder-inherited",
+    "size": 14.5,
+    "marker": "\u2022",
+    "markerType": "character",
+    "sizeChoice": "inherited",
+    "fontChoice": "inherited",
+    "face": "regular",
+    "fontScale": 100,
+    "marL": 24,
+    "indent": -18,
+    "wrap": false,
+    "width": 290,
+    "height": 160,
+    "nodes": [
+      {
+        "kind": "run",
+        "text": "Agjp BBBB Z",
+        "size": 14.5
+      }
+    ],
+    "inherited": true,
+    "placeholder": true,
+    "page": 0,
+    "x": 380,
+    "y": 270,
+    "sourceTextBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"/><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+    "expectedVisibleText": "\u2022AgjpBBBBZ"
+  },
+  {
+    "name": "body-placeholder-local-follow",
+    "size": 14.5,
+    "marker": "\u2022",
+    "markerType": "character",
+    "sizeChoice": "text",
+    "fontChoice": "text",
+    "face": "regular",
+    "fontScale": 100,
+    "marL": 24,
+    "indent": -18,
+    "wrap": false,
+    "width": 290,
+    "height": 160,
+    "nodes": [
+      {
+        "kind": "run",
+        "text": "Agjp BBBB Z",
+        "size": 14.5
+      }
+    ],
+    "inherited": true,
+    "placeholder": true,
+    "page": 0,
+    "x": 30,
+    "y": 490,
+    "sourceTextBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/></a:pPr><a:r><a:rPr sz=\"1450\" b=\"0\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+    "expectedVisibleText": "\u2022AgjpBBBBZ"
+  },
+  {
+    "name": "number12-actual-bold14p5",
+    "size": 14.5,
+    "marker": "12.",
+    "markerType": "number",
+    "sizeChoice": "text",
+    "fontChoice": "text",
+    "face": "bold",
+    "fontScale": 100,
+    "marL": 24,
+    "indent": -18,
+    "wrap": false,
+    "width": 290,
+    "height": 160,
+    "nodes": [
+      {
+        "kind": "run",
+        "text": "Agjp BBBB Z",
+        "size": 14.5
+      }
+    ],
+    "startAt": 12,
+    "page": 0,
+    "x": 380,
+    "y": 490,
+    "sourceTextBodyXML": "<p:txBody xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr wrap=\"none\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"l\" lvl=\"0\" marL=\"304800\" indent=\"-228600\"><a:buSzTx/><a:buFontTx/><a:buAutoNum type=\"arabicPeriod\" startAt=\"12\"/><a:defRPr sz=\"1450\" b=\"1\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:defRPr></a:pPr><a:r><a:rPr sz=\"1450\" b=\"1\" i=\"0\" lang=\"en-US\" kern=\"0\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp BBBB Z</a:t></a:r></a:p></p:txBody>",
+    "expectedVisibleText": "12.AgjpBBBBZ"
+  }
+]

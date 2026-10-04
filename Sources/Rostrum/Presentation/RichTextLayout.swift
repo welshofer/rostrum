@@ -483,6 +483,10 @@ public struct RichTextLayout: Sendable {
                 ["a:buNone", "a:buChar", "a:buAutoNum"].contains { p.firstChild(named: $0) != nil }
             }
             var bullet: ResolvedTextRun?
+            var markerPositions: [Double]?
+            var markerWidth = 0.0
+            let markerBodyStyle = runStyles.first ?? baseStyle
+            var markerSize: XML.Element?
             if atoms.contains(where: { !$0.text.isEmpty }), bulletProperties?.firstChild(named: "a:buNone") == nil {
                 if let char = bulletProperties?.firstChild(named: "a:buChar")?[attribute: "char"] {
                     var run = runStyles.first ?? baseStyle ?? Self.resolve(text: "", properties: emptyDefaults,
@@ -507,23 +511,66 @@ public struct RichTextLayout: Sendable {
                        let font = choice(["a:buFontTx", "a:buFont"])?[attribute: "typeface"] {
                         bullet?.fontFamily = font == "+mj-lt" ? theme?.majorFont : font == "+mn-lt" ? theme?.minorFont : font
                     }
-                    if let size = choice(["a:buSzTx", "a:buSzPct", "a:buSzPts"]) {
+                    markerSize = choice(["a:buSzTx", "a:buSzPct", "a:buSzPts"])
+                    if let size = markerSize {
                         if size.name == "a:buSzPct" { bullet?.fontSize *= Self.bounded(Self.number(size, "val", 100000), 0...400000) / 100000 }
                         if size.name == "a:buSzPts" { bullet?.fontSize = Self.bounded(Self.number(size, "val", 1800), 100...400000) / 100 * scale }
                     }
                 }
             }
-            // Markers have independent font/size choices and no calibrated scalar origins.
+            // Independent marker choices must be validated after changing face/size.
             bullet?.nativeSizing = nil
+            // The native marker oracle covers ordinary LTR character bullets
+            // and Arabic period numbering. Keep other marker forms on their
+            // prior shaping path, independently of eligible body text.
+            let characterMarker = bulletProperties?.firstChild(named: "a:buChar") != nil
+            if var run = bullet, nativePaint, usesNativeAdvanceGrid, context == .shape,
+               (attribute("algn") ?? "l") == "l", !explicitSpacing,
+               Self.validNativeMarkerSize(markerSize),
+               let firstAtom = atoms.first, !firstAtom.hard, !firstAtom.tab,
+               let firstScalar = firstAtom.text.unicodeScalars.first, (33...126).contains(firstScalar.value),
+               let bodyStyle = markerBodyStyle, bodyStyle.tracking == 0, !bodyStyle.italic, !bodyStyle.usesKerning,
+               (characterMarker ? run.text == "•" : bulletProperties?.firstChild(named: "a:buAutoNum")?[attribute: "type"] == "arabicPeriod") {
+                if characterMarker { run.bold = false; run.italic = false }
+                run.nativeSizing = bodyStyle.nativeSizing
+                if markerSize?.name == "a:buSzPct" {
+                    run.fontSize = bodyStyle.measurementPointSize * Self.bounded(Self.number(markerSize, "val", 100000), 25000...400000) / 100000
+                    run.nativeSizing = .scaled
+                } else if markerSize?.name == "a:buSzPts" {
+                    // An explicit marker size is independent of stored body autofit.
+                    run.fontSize = Self.bounded(Self.number(markerSize, "val", 1800), 100...400000) / 100
+                    run.nativeSizing = .scaled
+                }
+                if let metrics = face(run), supportsNativePaint(run, metrics: metrics) {
+                    let scalars = Array(run.text.unicodeScalars)
+                    let glyphs = scalars.map { metrics.glyphID(for: $0) }
+                    if glyphs.allSatisfy({ $0 != 0 }) {
+                        var positions: [Double] = []
+                        for glyph in glyphs {
+                            positions.append(markerWidth)
+                            let advance = Double(metrics.advance(ofGlyph: glyph)) * run.measurementPointSize / Double(metrics.unitsPerEm)
+                            markerWidth += (advance * 8).rounded() / 8
+                        }
+                        // Preserve the public marker text's separator without
+                        // using it to push body text or stretch painted glyphs.
+                        positions.append(markerWidth)
+                        markerPositions = positions
+                        run.usesStandardLigatures = false
+                        bullet = run
+                    }
+                }
+            }
             let bulletAdvance: Double = bullet.map { run in
-                face(run)?.width(of: run.text + " ", pointSize: run.fontSize)
+                if markerPositions != nil { return markerWidth }
+                return face(run)?.width(of: run.text + " ", pointSize: run.fontSize)
                     ?? Double(run.text.count + 1) * run.fontSize * 0.42
             } ?? 0
             let defaultSpacing = Self.bounded(lineSpacing, 0...100)
             let align = attribute("algn") ?? "l"
             var lineAtoms: [Atom] = [], lineWidth = 0.0, firstLine = true, index = 0
             func startX() -> Double {
-                let value = left + (bullet != nil ? max(0, indent + bulletAdvance) : (firstLine ? indent : 0))
+                let markerOffset = markerPositions != nil && !firstLine ? 0 : max(0, indent + bulletAdvance)
+                let value = left + (bullet != nil ? markerOffset : (firstLine ? indent : 0))
                 return usesNativeAdvanceGrid ? max(0, value) : value
             }
             func limit() -> Double { max(0, availableWidth - right - startX()) }
@@ -735,8 +782,11 @@ public struct RichTextLayout: Sendable {
                 var spans: [RichTextSpan] = [], x = margins.0 + startX() + max(0, extra)
                 if firstLine, var run = bullet {
                     run.text += " "
-                    let width = face(run)?.width(of: run.text, pointSize: run.fontSize) ?? Double(run.text.count) * run.fontSize * 0.42
-                    spans.append(RichTextSpan(run: run, x: margins.0 + left + indent + max(0, extra), width: width))
+                    let width = markerPositions != nil ? markerWidth : face(run)?.width(of: run.text, pointSize: run.fontSize) ?? Double(run.text.count) * run.fontSize * 0.42
+                    let markerX = margins.0 + left + indent + max(0, extra)
+                    var span = RichTextSpan(run: run, x: markerX, width: width)
+                    span.scalarPositions = markerPositions?.map { markerX + $0 }
+                    spans.append(span)
                 }
                 var previousSource: Int?
                 for (atomIndex, atom) in lineAtoms.enumerated() {
@@ -912,9 +962,35 @@ public struct RichTextLayout: Sendable {
             case "body": bucket = "p:bodyStyle"
             default: bucket = "p:otherStyle"
             }
-            if let style = styles?.firstChild(named: bucket) { result.append(style) }
+            if let style = styles?.firstChild(named: bucket) {
+                // Native ordinary shapes do not acquire marker/font/size choices
+                // from master otherStyle. Placeholder body inheritance remains
+                // distinct, including local follow-text overrides.
+                if ph == nil,
+                   style.childElements.contains(where: { level in level.childElements.contains { inheritedMarkerChoices.contains($0.name) } }) {
+                    let copy = style.deepCopy()
+                    for level in copy.childElements {
+                        for name in inheritedMarkerChoices { level.removeChildren(named: name) }
+                    }
+                    result.append(copy)
+                } else { result.append(style) }
+            }
         }
         return result
+    }
+
+    private static let inheritedMarkerChoices: Set<String> = ["a:buNone", "a:buChar", "a:buAutoNum",
+        "a:buFont", "a:buFontTx", "a:buSzPct", "a:buSzPts", "a:buSzTx"]
+
+    private static func validNativeMarkerSize(_ size: XML.Element?) -> Bool {
+        guard let size else { return true }
+        if size.name == "a:buSzTx" { return true }
+        guard let value = size[attribute: "val"].flatMap(Int.init) else { return false }
+        switch size.name {
+        case "a:buSzPct": return (25000...400000).contains(value)
+        case "a:buSzPts": return (100...400000).contains(value)
+        default: return false
+        }
     }
 
     private static func supportsNativeAdvanceGrid(_ shaped: ShapedGlyphRun, text: String) -> Bool {
