@@ -33,7 +33,7 @@ Negative deltas mean faster. Ratio-of-medians and median-paired-percent changes 
 | Registered table 100×20 / render | 76.4976 | 78.3821 | +2.46% | 0/10 |
 | Rich text / fitting | 14.3175 | 14.1634 | −1.08% | 5/10 |
 | Fitted rich text / render | 3.3892 | 3.3789 | −0.30% | 5/10 |
-| Ten-slide deck / first render | 0.6027 | 0.5872 | −2.57% | 7/10 |
+| Ten-slide deck / first render | 0.6027 | 0.5872 | −2.57% | 8/10 |
 
 | Phase | Median paired delta | Bootstrap 95% interval | Exact two-sided sign p |
 |---|---:|---:|---:|
