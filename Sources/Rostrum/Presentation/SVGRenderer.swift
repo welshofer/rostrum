@@ -1,5 +1,17 @@
 import Foundation
 
+/// Scratch storage for one render. It retains no style nodes between calls,
+/// including when an internal renderer value is reused after direct DOM edits.
+private final class SVGOrdinaryInheritedDefaults {
+    var resolved = false
+    var value: XML.Element?
+
+    func clear() {
+        resolved = false
+        value = nil
+    }
+}
+
 /// Locale-independent SVG numbers without invoking a locale/ICU formatter for
 /// every text coordinate. Four fractional digits exceed the layout precision.
 enum SVGNumber {
@@ -37,8 +49,11 @@ struct SVGRenderer {
 
     private let emuPerPoint = 12700
     private let diagnostics = RenderDiagnosticCollector()
+    private let ordinaryInheritedDefaults = SVGOrdinaryInheritedDefaults()
 
     func render(pixelWidth: Int) throws -> (svg: String, problems: SlideRenderProblems) {
+        ordinaryInheritedDefaults.clear()
+        defer { ordinaryInheritedDefaults.clear() }
         // Not for the value: this is the one call that surfaces a malformed
         // slide part as a thrown error. Everything below reaches the tree
         // through `existingSpTree`, which swallows the parse with `try?` and
@@ -484,10 +499,21 @@ struct SVGRenderer {
     /// applying a template is supposed to change.
     private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
         guard owner === slidePart else { return nil }
+        // Ordinary slide shapes share the same final master style. Placeholder
+        // matching and notes inheritance remain specific to each shape.
+        let ordinary = notesContext == nil && Placeholders.phElement(of: sp) == nil
+        if ordinary && ordinaryInheritedDefaults.resolved { return ordinaryInheritedDefaults.value }
         let styles = notesContext?.styles(for: sp) ?? RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
-        guard !styles.isEmpty else { return nil }
+        guard !styles.isEmpty else {
+            if ordinary { ordinaryInheritedDefaults.resolved = true }
+            return nil
+        }
         let resolved = XML.Element("rostrum:inheritedStyles")
         for style in styles { resolved.appendElement(style) }
+        if ordinary {
+            ordinaryInheritedDefaults.value = resolved
+            ordinaryInheritedDefaults.resolved = true
+        }
         return resolved
     }
 
