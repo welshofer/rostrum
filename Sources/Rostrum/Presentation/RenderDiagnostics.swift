@@ -154,7 +154,8 @@ final class RenderDiagnosticCollector {
                 record(.missingFont, .missingResource, reason)
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Paragraph alignment") || reason.hasPrefix("Justification")
                 || reason.hasPrefix("Tab alignment") || reason.hasPrefix("Unknown tab alignment")
-                || reason.hasPrefix("Native explicit line spacing"):
+                || reason.hasPrefix("Native explicit line spacing") || reason.hasPrefix("Native table")
+                || reason.hasPrefix("Native glyph paint"):
                 record(.unsupportedTextProperty, .approximation, reason)
             default:
                 record(.unsupportedShaping, .approximation, String(describing: diagnostic))

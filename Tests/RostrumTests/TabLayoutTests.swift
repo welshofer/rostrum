@@ -166,7 +166,8 @@ import Testing
             let deck = try #require(decks[oracle.source])
             let shape = try #require(deck.slides[oracle.page].shapes.first { $0.name == oracle.name })
             let frame = try #require(shape.textFrame)
-            let result = RichTextLayout(textBody:frame.txBody,width:oracle.width,height:oracle.height,fonts:fonts)
+            let inherited = RichTextLayout.inheritedStyles(for: shape.element, owner: shape.part, package: try #require(shape.package))
+            let result = RichTextLayout(textBody:frame.txBody,width:oracle.width,height:oracle.height,fonts:fonts, inheritedStyles: inherited)
             #expect(result.lines.count == oracle.lines.count, "\(oracle.name) line count")
             for (line, expected) in zip(result.lines,oracle.lines) {
                 var actual:[(text:String,x:Double,end:Double)] = []

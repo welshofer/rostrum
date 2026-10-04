@@ -510,7 +510,7 @@ struct SVGRenderer {
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
                             inheriting defaults: XML.Element? = nil, fontReference: XML.Element? = nil, respectInsets: Bool = false,
                             insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
-                            verticalAnchor: String? = nil) -> String {
+                            verticalAnchor: String? = nil, context: RichTextLayout.Context = .shape) -> String {
         var inherited = defaults.map { $0.name == "rostrum:inheritedStyles" ? $0.childElements : [$0] } ?? []
         if let reference = fontReference {
             let properties = XML.Element("a:defRPr")
@@ -527,7 +527,7 @@ struct SVGRenderer {
         let layout = RichTextLayout(textBody: txBody,
             width: Double(f.2) / Double(emuPerPoint), height: Double(f.3) / Double(emuPerPoint),
             fonts: fonts, theme: theme, inheritedStyles: inherited,
-            slideNumber: slideNumber, maxLines: 64, insets: insets, verticalAnchor: verticalAnchor)
+            slideNumber: slideNumber, maxLines: 64, insets: insets, verticalAnchor: verticalAnchor, context: context)
         diagnostics.text(layout)
         let decimal = SVGNumber.decimal
         // A narrow table cell can produce many one-span lines. Scope one
@@ -557,12 +557,15 @@ struct SVGRenderer {
                 // Once a run uses an unregistered viewer font, let adjacent
                 // runs follow its actual advance. An estimated absolute x can
                 // overlap the preceding glyphs. Tabs and bullets reset flow.
-                if !usesViewerAdvances { result += " x=\"\(decimal(span.x))\"" }
+                if !usesViewerAdvances {
+                    let positions = span.scalarPositions.map { $0.map(decimal).joined(separator: " ") } ?? decimal(span.x)
+                    result += " x=\"\(positions)\""
+                }
                 result += diagnostics.textAttributes.attributes(for: run, family: embedded ?? previewFace?.family ?? run.fontFamily, inheritsDisabledStandardLigatures: inheritsDisabled)
                 // An estimated width is useful for wrapping, but must not
                 // squeeze the viewer's real glyphs into that estimate.
                 let measured = previewFace != nil
-                if measured, span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
+                if measured, run.nativeSizing == nil, span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
                 usesViewerAdvances = usesViewerAdvances || !measured
                 result += ">" + escape(run.text) + "</tspan>"
             }
@@ -1464,10 +1467,10 @@ struct SVGRenderer {
                     if direction == "vert" || direction == "vert270" {
                         let transform = direction == "vert" ? "translate(\(cx + cw) \(cy)) rotate(90)" : "translate(\(cx) \(cy + rh)) rotate(-90)"
                         textContent += "<g transform=\"\(transform)\">" + renderText(body, box: (0, 0, rh, cw), inheriting: effective.text,
-                            insets: insets, verticalAnchor: anchor) + "</g>"
+                            insets: insets, verticalAnchor: anchor, context: .tableCell) + "</g>"
                     } else {
                         textContent += renderText(body, box: frame, inheriting: effective.text,
-                            insets: insets, verticalAnchor: anchor)
+                            insets: insets, verticalAnchor: anchor, context: .tableCell)
                     }
                 }
             }

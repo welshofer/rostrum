@@ -43,7 +43,7 @@ final class RenderTextAttributes {
     func reset() { recent = nil; entries.removeAll(keepingCapacity: true); retainedBytes = 0 }
 
     func attributes(for run: ResolvedTextRun, family: String?, inheritsDisabledStandardLigatures: Bool = false) -> String {
-        let key = Key(family: family, size: run.fontSize, color: run.color,
+        let key = Key(family: family, size: run.paintedPointSize, color: run.color,
                       bold: run.bold, italic: run.italic, tracking: run.tracking, decoration: run.decoration, baselineShift: run.baselineShift, usesKerning: run.usesKerning, usesStandardLigatures: run.usesStandardLigatures, inheritsDisabledStandardLigatures: inheritsDisabledStandardLigatures)
         if let recent, recent.key == key { return recent.value }
         if let index = entries.index(forKey: key) {
@@ -51,7 +51,7 @@ final class RenderTextAttributes {
             recent = (entry.key, entry.value)
             return entry.value
         }
-        var result = " font-size=\"\(SVGNumber.decimal(run.fontSize))\" fill=\"\(run.color)\""
+        var result = " font-size=\"\(SVGNumber.decimal(run.paintedPointSize))\" fill=\"\(run.color)\""
         if let family, !family.isEmpty {
             result += " font-family=\"\(SVGMarkup.escape(family)), sans-serif\""
         }

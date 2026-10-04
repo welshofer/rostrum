@@ -47,12 +47,13 @@ import Testing
 
     @Test func explicitThresholdIsInclusiveAndZeroDisablesNativeKerning() throws {
         let font = try metrics()
-        for (threshold, enabled) in [("", true), ("0", false), ("1199", true), ("1200", true), ("1201", false), ("400000", false)] {
+        for (threshold, enabled) in [("", false), ("0", false), ("1199", true), ("1200", true), ("1201", false), ("400000", false)] {
             let attribute = threshold.isEmpty ? "" : "kern=\"\(threshold)\""
             let layout = RichTextLayout(textBody: try body(run: attribute),
                 width: 100, height: 100, fallbackMetrics: font)
             let span = try #require(layout.lines.first?.spans.first)
             #expect(span.run.usesKerning == enabled)
+            // NativeGlyphPlacement truly absent controls disable kerning.
             // Native LineBreakBoundaries final probes: rounded bases 8.25 each,
             // with the font's -131-unit pair adjustment only when enabled.
             let adjustment: Double = enabled ? 131.0 * 12 / 2048 : 0

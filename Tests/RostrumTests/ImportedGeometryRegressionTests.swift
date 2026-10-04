@@ -20,7 +20,7 @@ import Testing
         #expect(measured.lines.allSatisfy { $0.visibleWidth <= 110.6 })
         let rendered = try deck.renderSVGReportingProblems(slideAt: 0)
         #expect(rendered.svg.contains("measured fallback")) // metric-only fixture uses explicit viewer family
-        #expect(rendered.svg.contains("textLength="))
+        try expectExplicitScalarPositions(rendered.svg)
         #expect(rendered.problems.fidelityIssues.contains { $0.code == .missingFont && $0.message.contains("measured fallback") })
         #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
         #expect(try deck.serializedData() == bytes)
@@ -28,6 +28,18 @@ import Testing
         let reopened = try Presentation(data: bytes)
         #expect(reopened.fonts.previewFallbackFamily == nil)
         #expect(try reopened.slides[0].shapes.all.first?.textFrame?.paragraphs[0].runs[0].fontName == "Unavailable")
+    }
+    private func expectExplicitScalarPositions(_ svg: String) throws {
+        var pending = [try XML.parse(Data(svg.utf8))], count = 0
+        while let element = pending.popLast() {
+            pending.append(contentsOf: element.childElements)
+            guard element.name == "tspan" else { continue }
+            count += 1
+            let origins = (element[attribute: "x"] ?? "").split(separator: " ")
+            #expect(origins.count == element.textContent.unicodeScalars.count)
+            #expect(element[attribute: "textLength"] == nil && element[attribute: "lengthAdjust"] == nil)
+        }
+        #expect(count > 0)
     }
     private func parse(_ xml: String) throws -> XML.Element { try XML.parse(Data(xml.utf8)) }
 
@@ -43,7 +55,7 @@ import Testing
         #expect(!estimated.svg.contains("textLength="))
         #expect(estimated.problems.fidelityIssues.contains { $0.code == .viewerFontDependency })
         try deck.fonts.register(TestFont.standard(), aliases: ["Unregistered Face"])
-        #expect(try deck.renderSVG(slideAt: 0).contains("textLength="))
+        try expectExplicitScalarPositions(deck.renderSVG(slideAt: 0))
     }
 
     @Test func missingFontRunsFlowNaturallyUntilAnExplicitTabOrListBoundary() throws {

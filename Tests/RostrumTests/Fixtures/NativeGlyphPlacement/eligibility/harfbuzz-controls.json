@@ -1,0 +1,209 @@
+{
+  "version": "hb-shape (HarfBuzz) 14.4.0",
+  "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+  "text": "AVATAR ToTo",
+  "controls": [
+    {
+      "kerning": false,
+      "command": [
+        "hb-shape",
+        "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7-eligibility/fonts/DejaVuSans.ttf",
+        "AVATAR ToTo",
+        "--no-glyph-names",
+        "--output-format=json",
+        "--features=liga=0,kern=0"
+      ],
+      "result": [
+        {
+          "g": 36,
+          "cl": 0,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1401,
+          "ay": 0
+        },
+        {
+          "g": 57,
+          "cl": 1,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1401,
+          "ay": 0
+        },
+        {
+          "g": 36,
+          "cl": 2,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1401,
+          "ay": 0
+        },
+        {
+          "g": 55,
+          "cl": 3,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1251,
+          "ay": 0
+        },
+        {
+          "g": 36,
+          "cl": 4,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1401,
+          "ay": 0
+        },
+        {
+          "g": 53,
+          "cl": 5,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1423,
+          "ay": 0
+        },
+        {
+          "g": 3,
+          "cl": 6,
+          "dx": 0,
+          "dy": 0,
+          "ax": 651,
+          "ay": 0
+        },
+        {
+          "g": 55,
+          "cl": 7,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1251,
+          "ay": 0
+        },
+        {
+          "g": 82,
+          "cl": 8,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1253,
+          "ay": 0
+        },
+        {
+          "g": 55,
+          "cl": 9,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1251,
+          "ay": 0
+        },
+        {
+          "g": 82,
+          "cl": 10,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1253,
+          "ay": 0
+        }
+      ]
+    },
+    {
+      "kerning": true,
+      "command": [
+        "hb-shape",
+        "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7-eligibility/fonts/DejaVuSans.ttf",
+        "AVATAR ToTo",
+        "--no-glyph-names",
+        "--output-format=json",
+        "--features=liga=0,kern=1"
+      ],
+      "result": [
+        {
+          "g": 36,
+          "cl": 0,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1270,
+          "ay": 0
+        },
+        {
+          "g": 57,
+          "cl": 1,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1270,
+          "ay": 0
+        },
+        {
+          "g": 36,
+          "cl": 2,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1242,
+          "ay": 0
+        },
+        {
+          "g": 55,
+          "cl": 3,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1092,
+          "ay": 0
+        },
+        {
+          "g": 36,
+          "cl": 4,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1401,
+          "ay": 0
+        },
+        {
+          "g": 53,
+          "cl": 5,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1423,
+          "ay": 0
+        },
+        {
+          "g": 3,
+          "cl": 6,
+          "dx": 0,
+          "dy": 0,
+          "ax": 651,
+          "ay": 0
+        },
+        {
+          "g": 55,
+          "cl": 7,
+          "dx": 0,
+          "dy": 0,
+          "ax": 903,
+          "ay": 0
+        },
+        {
+          "g": 82,
+          "cl": 8,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1253,
+          "ay": 0
+        },
+        {
+          "g": 55,
+          "cl": 9,
+          "dx": 0,
+          "dy": 0,
+          "ax": 903,
+          "ay": 0
+        },
+        {
+          "g": 82,
+          "cl": 10,
+          "dx": 0,
+          "dy": 0,
+          "ax": 1253,
+          "ay": 0
+        }
+      ]
+    }
+  ]
+}

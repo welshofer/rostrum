@@ -116,9 +116,9 @@ public struct TextMeasurer: Sendable {
 
     // MARK: - Autofit
 
-    /// PowerPoint's shrink-to-fit ladder, as it steps `a:normAutofit`: font
-    /// scale falls in 7.5-point steps and line-spacing reduction kicks in as
-    /// the scale drops, bottoming out at 25% scale / 20% reduction.
+    /// Library search steps for `a:normAutofit`, evaluated against shared layout.
+    /// These discrete candidates are not a claim about native PowerPoint
+    /// choosing the same scale; the search ends at 25% / 20% reduction.
     static let autofitLadder: [(scale: Double, reduction: Double)] = [
         (100, 0), (92.5, 0), (85, 0),
         (77.5, 10), (70, 10),
@@ -129,7 +129,7 @@ public struct TextMeasurer: Sendable {
     /// Find the first ladder step at which every paragraph, wrapped at its
     /// scaled size, fits inside `width` × `height` points. `fits == false`
     /// means even the floor step overflows (the returned floor values are
-    /// still the best the format can express).
+    /// the smallest candidate this search evaluates).
     public func autofit(
         paragraphs: [(text: String, pointSize: Double)],
         width: Double, height: Double, lineSpacing: Double = 1.0
@@ -153,7 +153,7 @@ public struct TextMeasurer: Sendable {
 }
 
 /// A computed `a:normAutofit`: the font scale and line-spacing reduction
-/// PowerPoint would apply so the text fits its frame.
+/// the library computes so the text fits its frame.
 public struct Autofit: Sendable, Equatable {
     /// Percent, 100 = unscaled. Written as `fontScale` thousandths when < 100.
     public let fontScale: Double
@@ -171,9 +171,12 @@ extension TextFrame {
     private static let defaultInsets = (left: 91_440, top: 45_720, right: 91_440, bottom: 45_720)
 
     /// Measure the frame's current text with real font metrics and write a
-    /// *computed* `a:normAutofit` — `fontScale`/`lnSpcReduction` chosen the
-    /// way PowerPoint steps them — so the text fits inside `frame` (the
+    /// *computed* `a:normAutofit` using the library's discrete scale/spacing
+    /// search, so the shared layout fits inside `frame` (the
     /// owning shape's frame, minus this body's insets).
+    /// Table cells are measured once at full size with their live cell padding
+    /// and anchor. They return 100%/0% and do not modify XML: native cells ignore
+    /// stored font scaling. Unsupported cell spacing reduction returns fits=false.
     ///
     /// Runs without an explicit size measure at `defaultPointSize`. Returns
     /// the chosen step; `fits == false` means the floor step still overflows
@@ -189,6 +192,8 @@ extension TextFrame {
 
     /// Fit mixed families/styles with the same explicit registry used by SVG.
     /// Supply the same theme and inherited paragraph styles to resolve placeholders.
+    /// Cell frames measure full-size native geometry without writing autofit;
+    /// overflow or unverified stored cell spacing reduction returns fits=false.
     @discardableResult
     public func fitText(in frame: Rect, fonts: FontLibrary, theme: Theme? = nil,
                         inheritedStyles: [XML.Element] = [], defaultPointSize: Double = 18,
@@ -204,6 +209,18 @@ extension TextFrame {
         let bound = OOXMLBounds.coordinate
         let width = Double(bound.contains(frame.width.rawValue) ? frame.width.rawValue : 0) / Double(EMU.perPoint)
         let height = Double(bound.contains(frame.height.rawValue) ? frame.height.rawValue : 0) / Double(EMU.perPoint)
+        if let tableCell {
+            let cell = tableCell.fittingContext(theme: theme)
+            let vertical = ["vert", "vert270"].contains(cell.direction)
+            let layout = RichTextLayout(textBody: txBody, width: vertical ? height : width,
+                height: vertical ? width : height, fonts: fonts, fallbackMetrics: fallbackMetrics,
+                theme: cell.theme, inheritedStyles: inheritedStyles.isEmpty ? cell.styles : inheritedStyles,
+                defaultPointSize: defaultPointSize, lineSpacing: lineSpacing,
+                fontScale: 100, lineSpacingReduction: 0, maxLines: 64,
+                insets: cell.insets, verticalAnchor: cell.anchor, context: .tableCell)
+            let unverifiedReduction = layout.diagnostics.contains(.unsupportedLayoutFeature("Native table line-spacing reduction is not verified"))
+            return Autofit(fontScale: 100, lineSpacingReduction: 0, fits: layout.fits && !unverifiedReduction)
+        }
         var result = Autofit(fontScale: 25, lineSpacingReduction: 20, fits: false)
         for step in TextMeasurer.autofitLadder {
             let layout = RichTextLayout(textBody: txBody, width: width, height: height,
@@ -266,5 +283,36 @@ extension Shape {
         let styles = package.map { RichTextLayout.inheritedStyles(for: element, owner: part, package: $0) } ?? []
         return textFrame?.fitRichText(in: frame, fonts: nil, fallbackMetrics: metrics,
             inheritedStyles: styles, defaultPointSize: defaultPointSize, lineSpacing: lineSpacing)
+    }
+}
+
+
+extension TableCell {
+    /// Resolve on each fitting operation so style, theme and cell edits remain live.
+    fileprivate func fittingContext(theme: Theme?) -> (insets: (left: Double, top: Double, right: Double, bottom: Double), anchor: String, direction: String, styles: [XML.Element], theme: Theme?) {
+        var resolvedTheme = theme
+        if resolvedTheme == nil, let package,
+           let layout = try? part.related(by: RelType.slideLayout, in: package),
+           let master = try? layout.related(by: RelType.slideMaster, in: package),
+           let themePart = try? master.related(by: RelType.theme, in: package) {
+            resolvedTheme = Theme(part: themePart, master: master)
+        }
+        var properties = tc.firstChild(named: "a:tcPr") ?? XML.Element("a:tcPr")
+        var styles: [XML.Element] = []
+        if let owner, let resolvedTheme {
+            let resolver = TableStyleResolver(table: owner, theme: resolvedTheme)
+            outer: for row in resolver.grid.cells.indices {
+                for column in resolver.grid.cells[row].indices where resolver.grid.cells[row][column] === tc {
+                    let effective = resolver.effective(row: row, column: column)
+                    properties = effective.properties; styles = [effective.text]
+                    break outer
+                }
+            }
+        }
+        func inset(_ key: String, _ fallback: Int) -> Double {
+            Double(properties.coordinate(key) ?? fallback) / Double(EMU.perPoint)
+        }
+        return ((inset("marL", 91440), inset("marT", 45720), inset("marR", 91440), inset("marB", 45720)),
+                properties[attribute: "anchor"] ?? "t", properties[attribute: "vert"] ?? "horz", styles, resolvedTheme)
     }
 }

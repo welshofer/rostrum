@@ -4,6 +4,7 @@ import Foundation
 public struct ResolvedTextRun: Equatable, Sendable {
     public var text: String
     public var fontFamily: String?
+    /// Authored point size after the applicable body scale, before native paint quantization.
     public var fontSize: Double
     public var bold: Bool
     public var italic: Bool
@@ -12,14 +13,26 @@ public struct ResolvedTextRun: Equatable, Sendable {
     public var decoration: String = ""
     public var baselineShift: Double = 0
     /// Minimum rendered point size at which DrawingML enables kerning.
-    /// An omitted DrawingML value preserves kerning at every size.
+    /// Native DrawingML resolves absent/zero kerning as disabled; general runs retain their default.
     public var kerningThreshold: Double = 0
     /// Native PowerPoint treats an explicit DrawingML `kern="0"` as disabled,
     /// independently of the inherited/default threshold. XML remains unchanged.
     public var explicitlyDisablesKerning = false
     // Internal DrawingML policy; general TextShaper callers retain optional liga.
     var usesStandardLigatures = true
-    public var usesKerning: Bool { !explicitlyDisablesKerning && fontSize >= kerningThreshold }
+    enum NativeSizing: Sendable { case authored, scaled }
+    var nativeSizing: NativeSizing?
+    var measurementPointSize: Double { nativeSizing == .scaled ? max(1, fontSize.rounded()) : fontSize }
+    var paintedPointSize: Double {
+        guard let nativeSizing else { return fontSize }
+        return nativeSizing == .scaled ? max(1, fontSize.rounded()) : max(1, fontSize.rounded(.toNearestOrEven))
+    }
+    /// Actual resolved kerning when native DrawingML layout is calibrated;
+    /// otherwise the general authored-size threshold predicate.
+    public var usesKerning: Bool {
+        !explicitlyDisablesKerning && (nativeSizing == nil || kerningThreshold > 0)
+            && measurementPointSize >= kerningThreshold
+    }
 }
 
 public struct RichTextSpan: Equatable, Sendable {
@@ -29,6 +42,8 @@ public struct RichTextSpan: Equatable, Sendable {
     // Preserve the distinction between adjacent text runs and explicit tab or
     // list-marker positioning when viewer font advances are unavailable.
     var followsPreviousRun = false
+    // Additional scalar origins only; a one-scalar span needs no array allocation.
+    var scalarPositions: [Double]? = nil
 }
 
 public struct RichTextLine: Equatable, Sendable {
@@ -46,6 +61,8 @@ public struct RichTextLine: Equatable, Sendable {
 /// Geometry is in points relative to the outer text box. Explicit fallback
 /// metrics or the deterministic estimate are used when a face is unavailable.
 public struct RichTextLayout: Sendable {
+    /// Native host semantics cannot be inferred from XML namespace or padding.
+    public enum Context: Sendable { case shape, tableCell }
     public let lines: [RichTextLine]
     public let contentHeight: Double
     public let fits: Bool
@@ -61,7 +78,7 @@ public struct RichTextLayout: Sendable {
                 fontScale: Double? = nil, lineSpacingReduction: Double? = nil,
                 slideNumber: Int? = nil, maxLines: Int = 4096,
                 insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
-                verticalAnchor: String? = nil) {
+                verticalAnchor: String? = nil, context: Context = .shape) {
         let bodies = [textBody.firstChild(named: "a:bodyPr")].compactMap { $0 }
             + inheritedStyles.filter { $0.name == "a:bodyPr" }
         let body = XML.Element("a:bodyPr")
@@ -78,7 +95,8 @@ public struct RichTextLayout: Sendable {
         let availableWidth = max(0, width - margins.0 - margins.2)
         let availableHeight = max(0, height - margins.1 - margins.3)
         let autofit = body.firstChild(named: "a:normAutofit")
-        let scale = Self.bounded(fontScale ?? Self.number(autofit, "fontScale", 100_000) / 1000, 0.1...100) / 100
+        let storedScale = Self.number(autofit, "fontScale", 100_000) / 1000
+        let scale = Self.bounded(fontScale ?? (context == .tableCell ? 100 : storedScale), 0.1...100) / 100
         let reduction = Self.bounded(lineSpacingReduction ?? Self.number(autofit, "lnSpcReduction", 0) / 1000, 0...100) / 100
         let wrap = body[attribute: "wrap"] != "none"
         // DrawingML suppresses spacing at the text body's outer edges unless
@@ -88,6 +106,13 @@ public struct RichTextLayout: Sendable {
         let lineLimit = max(1, min(maxLines, 65536))
         let hasRegisteredFonts = fonts?.isEmpty == false
         var output: [RichTextLine] = [], warnings: [ShapingDiagnostic] = []
+        if context == .tableCell, storedScale != 100, fontScale == nil {
+            warnings.append(.unsupportedLayoutFeature("Native table cells ignore stored fontScale; rendering at full size"))
+        }
+        let unsupportedTableReduction = context == .tableCell && Self.number(autofit, "lnSpcReduction", 0) != 0
+        if unsupportedTableReduction {
+            warnings.append(.unsupportedLayoutFeature("Native table line-spacing reduction is not verified"))
+        }
         var cursor = 0.0, didTruncate = false, overflowWidth = false
         var measuredBottom = 0.0
         var trailingLineGap = 0.0
@@ -174,16 +199,13 @@ public struct RichTextLayout: Sendable {
                 return (metrics?.ascent(pointSize: size) ?? size,
                         metrics?.lineHeight(pointSize: size) ?? size * 4 / 3, false)
             }
-            let empty = lineMetrics(baseMetrics, size: baseSize)
-            let emptyHeight = empty.height
+            var empty = lineMetrics(baseMetrics, size: baseSize)
+            var emptyHeight = empty.height
             func spacing(_ element: XML.Element?, relativeTo height: Double) -> Double {
                 guard let element else { return 0 }
                 if let pts = element.firstChild(named: "a:spcPts") { return Self.bounded(Self.number(pts, "val", 0), 0...1e8) / 100 }
                 if let pct = element.firstChild(named: "a:spcPct") { return height * Self.bounded(Self.number(pct, "val", 0), 0...1e7) / 100000 }
                 return 0
-            }
-            if paragraphIndex > 0 || useEdgeParagraphSpacing {
-                cursor += spacing(child("a:spcBef"), relativeTo: emptyHeight)
             }
             var atoms: [Atom] = [], source = 0, hasTabs = false
             let nativeLeftToRight = !["1", "true"].contains(attribute("rtl") ?? "0")
@@ -191,11 +213,14 @@ public struct RichTextLayout: Sendable {
             // Each nonempty piece owns one resolved style for this paragraph.
             // Atoms share its index instead of retaining all style strings per glyph.
             var runStyles: [ResolvedTextRun] = []
-            let pieces = paragraph.childElements.compactMap { piece -> (element: XML.Element, text: String)? in
+            let pieces = paragraph.childElements.compactMap { piece -> (element: XML.Element, text: String, style: ResolvedTextRun, metrics: FontMetrics?)? in
                 guard ["a:r", "a:fld", "a:br"].contains(piece.name) else { return nil }
                 let text = piece.name == "a:br" ? "\n" : (piece.name == "a:fld" && piece[attribute: "type"] == "slidenum" && slideNumber != nil
                     ? String(slideNumber!) : piece.firstChild(named: "a:t")?.textContent ?? "")
-                return (piece, text)
+                let style = Self.resolve(text: text,
+                    properties: [piece.firstChild(named: "a:rPr")].compactMap { $0 } + defaults,
+                    theme: theme, defaultSize: defaultPointSize, scale: scale)
+                return (piece, text, style, face(style))
             }
             // Native PowerPoint draws individual common Latin ligature components.
             // One policy covers all source text after field substitution, before
@@ -203,11 +228,31 @@ public struct RichTextLayout: Sendable {
             let nativeLatinLigatures = nativeLeftToRight && pieces.allSatisfy {
                 $0.text.utf8.allSatisfy { $0 < 128 }
             }
-            // Keep ordinary and 100% spacing on the existing font-metric path.
-            // The calibrated profile is vertical only; painting and horizontal
-            // advances retain the authored size and existing shaping policy.
+            // Explicit spacing keeps its independently calibrated vertical
+            // model. Native paint/measurement sizing is resolved separately.
             let explicitSpacing = fixedSpacing != nil || (percentageSpacing != nil && percentageSpacing != 100000)
-            let nativeSpacing = explicitSpacing && nativeLatinLigatures
+            func supportsNativePaint(_ style: ResolvedTextRun, metrics: FontMetrics?) -> Bool {
+                guard let metrics, style.baselineShift == 0,
+                      metrics.isBold == style.bold, metrics.isItalic == style.italic else { return false }
+                return !(explicitSpacing && scale != 1 && style.fontSize.rounded() == 0)
+            }
+            // Preflight is cheap and shares the already resolved run/face data.
+            // Unexpected substitutions take the rare uncalibrated fallback below.
+            var nativePaint = nativeLatinLigatures && !unsupportedTableReduction && scale >= 0.01
+                && pieces.allSatisfy { piece in
+                    guard !piece.text.isEmpty else { return true }
+                    return supportsNativePaint(piece.style, metrics: piece.metrics)
+                        && piece.text.utf8.allSatisfy { (32...126).contains($0) || [9, 10, 13].contains($0) }
+                }
+            if nativeLatinLigatures && !nativePaint && !unsupportedTableReduction,
+               pieces.contains(where: { piece in
+                   guard !piece.text.isEmpty, let metrics = piece.metrics else { return false }
+                   return piece.style.baselineShift != 0 || metrics.isBold != piece.style.bold
+                       || metrics.isItalic != piece.style.italic || scale < 0.01
+               }) {
+                warnings.append(.unsupportedLayoutFeature("Native glyph paint requires resolved scalar Latin faces without synthetic styles or baseline shifts"))
+            }
+            let nativeSpacing = explicitSpacing && nativeLatinLigatures && !unsupportedTableReduction
                 && (fixedSpacing != nil || (percentageSpacing ?? 0) > reduction * 100000)
             // Nil identifies the single explicitly provided fallback metric.
             // Registry aliases remain distinct: internal font names cannot prove
@@ -229,108 +274,134 @@ public struct RichTextLayout: Sendable {
             }
             let emptySpacingMetric = spacingMetric(baseMetrics, size: baseSize, style: baseStyle)
             var spacingRunMetrics: [SpacingMetric?] = []
-            for (piece, text) in pieces {
-                source += 1
-                var style = Self.resolve(text: text,
-                    properties: [piece.firstChild(named: "a:rPr")].compactMap { $0 } + defaults,
-                    theme: theme, defaultSize: defaultPointSize, scale: scale)
-                style.usesStandardLigatures = !nativeLatinLigatures
-                let styleIndex = runStyles.count
-                if !text.isEmpty { runStyles.append(style) }
-                let metrics = face(style)
-                if nativeSpacing, !text.isEmpty {
-                    spacingRunMetrics.append(spacingMetric(metrics, size: style.fontSize, style: style))
-                }
-                if metrics == nil {
-                    warnings.append(.unsupportedLayoutFeature("Unregistered font face: " + (style.fontFamily ?? "unspecified")))
-                }
-                let vertical = lineMetrics(metrics, size: style.fontSize)
-                let ascent = vertical.ascent, lineHeight = vertical.height
-                // Segment control characters before shaping: tabs are paragraph geometry.
-                var segment = ""
-                func appendSegment() {
-                    guard !segment.isEmpty else { return }
-                    if metrics == nil { usesNativeAdvanceGrid = false }
-                    // ASCII fallback text has one scalar per grapheme and only
-                    // space/hyphen break opportunities after control splitting.
-                    // Keep the same atom arithmetic without rescanning it through
-                    // the Unicode breaker and materializing an offset set.
-                    if metrics == nil, segment.utf8.allSatisfy({ $0 < 128 }) {
-                        for byte in segment.utf8 {
-                            let value = String(Unicode.Scalar(byte))
-                            atoms.append(Atom(text: value, styleIndex: styleIndex,
-                                width: style.fontSize * (byte == 32 ? 0.25 : 0.42) + style.tracking,
-                                ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
-                                source: source, breakAfter: byte == 32 || byte == 45))
-                        }
-                        segment = ""
-                        return
+            func shapePieces() {
+                for (piece, text, originalStyle, metrics) in pieces {
+                    source += 1
+                    var style = originalStyle
+                    style.usesStandardLigatures = !nativeLatinLigatures
+                    if nativePaint { style.nativeSizing = scale == 1 ? .authored : .scaled }
+                    let styleIndex = runStyles.count
+                    if !text.isEmpty { runStyles.append(style) }
+                    if nativeSpacing, !text.isEmpty {
+                        spacingRunMetrics.append(spacingMetric(metrics, size: style.fontSize, style: style))
                     }
-                    if let metrics {
-                        let shaped = TextShaper(metrics).shape(segment, pointSize: style.fontSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
-                        let breaks = Set(shaped.breaks.map(\.scalarOffset))
-                        warnings.append(contentsOf: shaped.diagnostics)
-                        if shaped.glyphs.contains(where: { $0.bidiLevel > 0 }) {
-                            warnings.append(.unsupportedLayoutFeature("Rich-text bidirectional span ordering requires a verified paragraph renderer"))
-                        }
-                        let scalars = Array(segment.unicodeScalars)
-                        let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: segment)
-                        if !nativeGrid {
-                            usesNativeAdvanceGrid = false
-                            warnings.append(.unsupportedLayoutFeature("Native advance rounding outside single-scalar left-to-right ASCII glyphs is not verified"))
-                        }
-                        if nativeGrid, shaped.glyphs.enumerated().allSatisfy({ $0.element.scalarRange.lowerBound == $0.offset }) {
-                            // Verified one-scalar glyphs are already in logical order.
-                            // Avoid a dictionary and sort for ordinary Latin slide text.
-                            for glyph in shaped.glyphs {
-                                let value = String(scalars[glyph.scalarRange.lowerBound])
+                    if metrics == nil {
+                        warnings.append(.unsupportedLayoutFeature("Unregistered font face: " + (style.fontFamily ?? "unspecified")))
+                    }
+                    let vertical = lineMetrics(metrics, size: style.measurementPointSize)
+                    let ascent = vertical.ascent, lineHeight = vertical.height
+                    // Segment control characters before shaping: tabs are paragraph geometry.
+                    var segment = ""
+                    func appendSegment() {
+                        guard !segment.isEmpty else { return }
+                        if metrics == nil { usesNativeAdvanceGrid = false }
+                        // ASCII fallback text has one scalar per grapheme and only
+                        // space/hyphen break opportunities after control splitting.
+                        // Keep the same atom arithmetic without rescanning it through
+                        // the Unicode breaker and materializing an offset set.
+                        if metrics == nil, segment.utf8.allSatisfy({ $0 < 128 }) {
+                            for byte in segment.utf8 {
+                                let value = String(Unicode.Scalar(byte))
                                 atoms.append(Atom(text: value, styleIndex: styleIndex,
-                                    width: Self.nativeAdvance(glyph, font: metrics, pointSize: style.fontSize) + style.tracking,
+                                    width: style.fontSize * (byte == 32 ? 0.25 : 0.42) + style.tracking,
                                     ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
-                                    source: source, breakAfter: breaks.contains(glyph.scalarRange.upperBound)))
+                                    source: source, breakAfter: byte == 32 || byte == 45))
                             }
                             segment = ""
                             return
                         }
-                        // Logical cluster order makes line breaking independent of bidi.
-                        // SVG delegates glyph drawing to its viewer; unsupported
-                        // mixed-direction paragraph ordering is diagnosed above.
-                        var grouped: [Range<Int>: Double] = [:]
-                        for glyph in shaped.glyphs {
-                            grouped[glyph.scalarRange, default: 0] += nativeGrid
-                                ? Self.nativeAdvance(glyph, font: metrics, pointSize: style.fontSize) : glyph.advance
+                        if let metrics {
+                            let shaped = TextShaper(metrics).shape(segment, pointSize: style.measurementPointSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
+                            let breaks = Set(shaped.breaks.map(\.scalarOffset))
+                            warnings.append(contentsOf: shaped.diagnostics)
+                            if shaped.glyphs.contains(where: { $0.bidiLevel > 0 }) {
+                                warnings.append(.unsupportedLayoutFeature("Rich-text bidirectional span ordering requires a verified paragraph renderer"))
+                            }
+                            let scalars = Array(segment.unicodeScalars)
+                            let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: segment)
+                            if !nativeGrid {
+                                usesNativeAdvanceGrid = false
+                                warnings.append(.unsupportedLayoutFeature("Native advance rounding outside single-scalar left-to-right ASCII glyphs is not verified"))
+                            }
+                            if nativeGrid, shaped.glyphs.enumerated().allSatisfy({ $0.element.scalarRange.lowerBound == $0.offset }) {
+                                // Verified one-scalar glyphs are already in logical order.
+                                // Avoid a dictionary and sort for ordinary Latin slide text.
+                                for glyph in shaped.glyphs {
+                                    let value = String(scalars[glyph.scalarRange.lowerBound])
+                                    atoms.append(Atom(text: value, styleIndex: styleIndex,
+                                        width: Self.nativeAdvance(glyph, font: metrics, pointSize: style.measurementPointSize) + style.tracking,
+                                        ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
+                                        source: source, breakAfter: breaks.contains(glyph.scalarRange.upperBound)))
+                                }
+                                segment = ""
+                                return
+                            }
+                            // Logical cluster order makes line breaking independent of bidi.
+                            // SVG delegates glyph drawing to its viewer; unsupported
+                            // mixed-direction paragraph ordering is diagnosed above.
+                            var grouped: [Range<Int>: Double] = [:]
+                            for glyph in shaped.glyphs {
+                                grouped[glyph.scalarRange, default: 0] += nativeGrid
+                                    ? Self.nativeAdvance(glyph, font: metrics, pointSize: style.measurementPointSize) : glyph.advance
+                            }
+                            for range in grouped.keys.sorted(by: { $0.lowerBound < $1.lowerBound }) {
+                                let value = String(String.UnicodeScalarView(scalars[range]))
+                                atoms.append(Atom(text: value, styleIndex: styleIndex,
+                                    width: (grouped[range] ?? 0) + style.tracking * Double(value.count),
+                                    ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
+                                    source: source, breakAfter: breaks.contains(range.upperBound)))
+                            }
+                        } else {
+                            let breaks = Set(TextShaper.lineBreaks(in: segment).map(\.scalarOffset))
+                            var scalarOffset = 0
+                            for character in segment {
+                                let value = String(character); scalarOffset += value.unicodeScalars.count
+                                atoms.append(Atom(text: value, styleIndex: styleIndex,
+                                    width: style.fontSize * (character == " " ? 0.25 : 0.42) + style.tracking,
+                                    ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
+                                    source: source, breakAfter: breaks.contains(scalarOffset)))
+                            }
                         }
-                        for range in grouped.keys.sorted(by: { $0.lowerBound < $1.lowerBound }) {
-                            let value = String(String.UnicodeScalarView(scalars[range]))
-                            atoms.append(Atom(text: value, styleIndex: styleIndex,
-                                width: (grouped[range] ?? 0) + style.tracking * Double(value.count),
-                                ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
-                                source: source, breakAfter: breaks.contains(range.upperBound)))
-                        }
-                    } else {
-                        let breaks = Set(TextShaper.lineBreaks(in: segment).map(\.scalarOffset))
-                        var scalarOffset = 0
-                        for character in segment {
-                            let value = String(character); scalarOffset += value.unicodeScalars.count
-                            atoms.append(Atom(text: value, styleIndex: styleIndex,
-                                width: style.fontSize * (character == " " ? 0.25 : 0.42) + style.tracking,
-                                ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
-                                source: source, breakAfter: breaks.contains(scalarOffset)))
-                        }
+                        segment = ""
                     }
-                    segment = ""
+                    for character in style.text {
+                        if character == "\t" || character == "\n" || character == "\r" || character == "\r\n" {
+                            appendSegment()
+                            if character == "\t" { hasTabs = true }
+                            atoms.append(Atom(text: character == "\t" ? "\t" : "", styleIndex: styleIndex,
+                                width: 0, ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
+                                source: character == "\t" ? atoms.count : source,
+                                breakAfter: false, tab: character == "\t", hard: character != "\t"))
+                        } else { segment.append(character) }
+                    }
+                    appendSegment()
                 }
-                for character in style.text {
-                    if character == "\t" || character == "\n" || character == "\r" || character == "\r\n" {
-                        appendSegment()
-                        if character == "\t" { hasTabs = true }
-                        atoms.append(Atom(text: character == "\t" ? "\t" : "", styleIndex: styleIndex,
-                            width: 0, ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
-                            source: character == "\t" ? atoms.count : source,
-                            breakAfter: false, tab: character == "\t", hard: character != "\t"))
-                    } else { segment.append(character) }
-                }
-                appendSegment()
+            }
+            let beforeShapingWarnings = warnings.count
+            shapePieces()
+            if nativePaint && !usesNativeAdvanceGrid {
+                // Retry only the rejected paragraph once. A missing glyph or
+                // substitution must not change neighboring paragraphs' policy.
+                nativePaint = false
+                atoms.removeAll(keepingCapacity: true)
+                runStyles.removeAll(keepingCapacity: true)
+                spacingRunMetrics.removeAll(keepingCapacity: true)
+                source = 0; hasTabs = false; usesNativeAdvanceGrid = nativeLeftToRight
+                warnings.removeSubrange(beforeShapingWarnings...)
+                shapePieces()
+                warnings.append(.unsupportedLayoutFeature("Native glyph paint rejected a paragraph with unsupported glyph mapping; retaining authored paint and measurement"))
+            }
+            if atoms.isEmpty, nativeLatinLigatures, let baseStyle, baseMetrics != nil,
+               !supportsNativePaint(baseStyle, metrics: baseMetrics) {
+                warnings.append(.unsupportedLayoutFeature("Native glyph paint requires resolved scalar Latin faces without synthetic styles or baseline shifts"))
+            }
+            if nativePaint, scale != 1, let baseStyle,
+               supportsNativePaint(baseStyle, metrics: baseMetrics) {
+                empty = lineMetrics(baseMetrics, size: max(1, baseSize.rounded()))
+                emptyHeight = empty.height
+            }
+            if paragraphIndex > 0 || useEdgeParagraphSpacing {
+                cursor += spacing(child("a:spcBef"), relativeTo: emptyHeight)
             }
             if usesNativeAdvanceGrid {
                 // Paragraph coordinates use a twentieth-point conversion;
@@ -408,6 +479,8 @@ public struct RichTextLayout: Sendable {
                     }
                 }
             }
+            // Markers have independent font/size choices and no calibrated scalar origins.
+            bullet?.nativeSizing = nil
             let bulletAdvance: Double = bullet.map { run in
                 face(run)?.width(of: run.text + " ", pointSize: run.fontSize)
                     ?? Double(run.text.count + 1) * run.fontSize * 0.42
@@ -510,10 +583,10 @@ public struct RichTextLayout: Sendable {
                         let style = runStyles[lineAtoms[fragmentStart].styleIndex]
                         if let font = face(style) {
                             let value = fragment.map(\.text).joined()
-                            let shaped = TextShaper(font).shape(value, pointSize: style.fontSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
+                            let shaped = TextShaper(font).shape(value, pointSize: style.measurementPointSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
                             let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: value)
                             let advance = nativeGrid ? shaped.glyphs.reduce(0) {
-                                $0 + Self.nativeAdvance($1, font: font, pointSize: style.fontSize)
+                                $0 + Self.nativeAdvance($1, font: font, pointSize: style.measurementPointSize)
                             } : shaped.width
                             let exact = advance + Double(value.count) * style.tracking
                             let adjustment = exact - fragment.reduce(0) { $0 + $1.width }
@@ -638,6 +711,12 @@ public struct RichTextLayout: Sendable {
                     // the letters of a justified word along with its whitespace.
                     let expanded = expandedSpaces.contains(atomIndex)
                     if previousSource == atom.source, !spans.isEmpty, !expanded {
+                        if nativePaint {
+                            if spans[spans.count - 1].scalarPositions == nil {
+                                spans[spans.count - 1].scalarPositions = [spans[spans.count - 1].x]
+                            }
+                            spans[spans.count - 1].scalarPositions?.append(x)
+                        }
                         spans[spans.count - 1].run.text += atom.text
                         spans[spans.count - 1].width += atom.width
                     } else {
@@ -722,10 +801,15 @@ public struct RichTextLayout: Sendable {
                     // A trailing break leaves the paragraph's final empty line.
                     // Its insertion properties override paragraph defaults even
                     // when earlier lines contain text. Resolve this lazily.
-                    let style = Self.resolve(text: "", properties: [end] + defaults,
+                    var style = Self.resolve(text: "", properties: [end] + defaults,
                         theme: theme, defaultSize: defaultPointSize, scale: scale)
                     let metrics = face(style)
-                    emit(emptyMetrics: lineMetrics(metrics, size: style.fontSize),
+                    if nativePaint, supportsNativePaint(style, metrics: metrics) {
+                        style.nativeSizing = scale == 1 ? .authored : .scaled
+                    } else if nativePaint, metrics != nil {
+                        warnings.append(.unsupportedLayoutFeature("Native glyph paint requires resolved scalar Latin faces without synthetic styles or baseline shifts"))
+                    }
+                    emit(emptyMetrics: lineMetrics(metrics, size: style.measurementPointSize),
                         emptySpacing: spacingMetric(metrics, size: style.fontSize, style: style))
                 } else { emit() }
             }
@@ -734,7 +818,13 @@ public struct RichTextLayout: Sendable {
             }
         }
         if didTruncate, !output.isEmpty {
-            if !output[output.count - 1].spans.isEmpty { output[output.count - 1].spans[output[output.count - 1].spans.count - 1].run.text += "…" }
+            if !output[output.count - 1].spans.isEmpty {
+                let lastSpan = output[output.count - 1].spans.count - 1
+                output[output.count - 1].spans[lastSpan].run.text += "…"
+                // The synthesized truncation marker is outside the native scalar oracle.
+                output[output.count - 1].spans[lastSpan].run.nativeSizing = nil
+                output[output.count - 1].spans[lastSpan].scalarPositions = nil
+            }
         }
         cursor = max(cursor - trailingLineGap, measuredBottom)
         let offset: Double

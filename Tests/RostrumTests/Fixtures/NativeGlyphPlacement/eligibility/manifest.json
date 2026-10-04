@@ -1,0 +1,45 @@
+{
+  "source": "native-paint-eligibility-v1.pptx",
+  "sourceSHA256": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+  "slideCount": 3,
+  "caseCount": 18,
+  "faces": {
+    "regular": {
+      "family": "DejaVu Sans",
+      "bold": false,
+      "italic": false,
+      "file": "fonts/DejaVuSans.ttf",
+      "sha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "originalPath": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf",
+      "embeddingPermissions": 0
+    },
+    "serif": {
+      "family": "DejaVu Serif",
+      "bold": false,
+      "italic": false,
+      "file": "fonts/DejaVuSerif.ttf",
+      "sha256": "107244956e9962b9e96faccdc551825e0ae0898ae13737133e1b921a2fd35ffa",
+      "originalPath": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSerif.ttf",
+      "embeddingPermissions": 0
+    },
+    "bold": {
+      "family": "DejaVu Sans",
+      "bold": true,
+      "italic": false,
+      "file": "fonts/DejaVuSans-Bold.ttf",
+      "sha256": "b184b89e3c1075f22f6b71575b6fc20d4972b3cfd3b23322ca6fd596dcaef167",
+      "originalPath": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Bold.ttf",
+      "embeddingPermissions": 0
+    },
+    "oblique": {
+      "family": "DejaVu Sans",
+      "bold": false,
+      "italic": true,
+      "file": "fonts/DejaVuSans-Oblique.ttf",
+      "sha256": "ccdf74b350f11fd3dd5774de50e5e6346a1a5da1f5b7d5fb83590665e97a5213",
+      "originalPath": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf",
+      "embeddingPermissions": 0
+    }
+  },
+  "scope": "Independent face/style, kerning, tiny-size, integer ink and context controls. No native outcome assumed."
+}

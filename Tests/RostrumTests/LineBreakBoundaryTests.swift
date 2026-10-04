@@ -51,7 +51,8 @@ import Testing
             #expect(input.name == native.name)
             let shape = try #require(deck.slides[input.page].shapes.first { $0.name == input.name })
             let frame = try #require(shape.textFrame)
-            let layout = RichTextLayout(textBody: frame.txBody, width: input.width, height: input.height, fonts: fonts)
+            let inherited = RichTextLayout.inheritedStyles(for: shape.element, owner: shape.part, package: try #require(shape.package))
+            let layout = RichTextLayout(textBody: frame.txBody, width: input.width, height: input.height, fonts: fonts, inheritedStyles: inherited)
             let actual = layout.lines.map { $0.spans.map(\.run.text).joined() }
             let expected = native.lines.map(\.text)
             observations.append(Observation(name: input.name, native: expected, actual: actual, widths: layout.lines.map(\.width)))

@@ -192,8 +192,9 @@ import Testing
             if element.name == "tspan" { spans.append(element) }
             pending.append(contentsOf: element.childElements.reversed())
         }
-        #expect(spans.map { $0[attribute: "x"] } == ["0", "10", "20", "0"])
-        #expect(spans.map { $0[attribute: "textLength"].flatMap(Double.init) } == [10, 10, 12.5, 10])
+        #expect(spans.map { $0[attribute: "x"] } == ["0 5", "10", "20 25 30", "0 5"])
+        #expect(spans.allSatisfy { $0[attribute: "textLength"] == nil && $0[attribute: "lengthAdjust"] == nil })
+        #expect(shared.lines.flatMap(\.spans).map(\.width) == [10, 10, 12.5, 10])
         #expect(try deck.serializedData() == before)
         let reopened = try Presentation(data: before)
         try reopened.fonts.register(TestFont.standard(), aliases: ["Test"])

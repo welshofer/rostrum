@@ -1,0 +1,337 @@
+{
+  "caseCount": 18,
+  "visibleScalarCount": 242,
+  "maxima": {
+    "maxOriginResidual": 0.0492095947265625,
+    "maxBaselineResidual": 0.1199951171875,
+    "maxPaintResidual": 1.6000000027105443e-06,
+    "maxInkDimensionResidual": 1.5484375097685188e-06
+  },
+  "cases": [
+    {
+      "name": "serif-authored14p50-wrap",
+      "predictedLines": [
+        "AgjpWiBBBBBBBBBBBB",
+        "Z"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 14.5,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.0150146484375,
+      "maxBaselineResidual": 0.1199951171875,
+      "maxPaintResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 8.160156284020559e-07
+    },
+    {
+      "name": "serif-scaled29x50-wrap",
+      "predictedLines": [
+        "AgjpWiBBBBBBBBBBB",
+        "BZ"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 15,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.03997802734375,
+      "maxBaselineResidual": 0.0799560546875,
+      "maxPaintResidual": 0.0,
+      "maxInkDimensionResidual": 0.0
+    },
+    {
+      "name": "bold-authored14p50-wrap",
+      "predictedLines": [
+        "AgjpWiBBBBBBBBBBBB",
+        "Z"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 14.5,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.0492095947265625,
+      "maxBaselineResidual": 0.0799560546875,
+      "maxPaintResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 8.335937593528797e-07
+    },
+    {
+      "name": "bold-scaled29x50-wrap",
+      "predictedLines": [
+        "AgjpWiBBBBBBBBBBB",
+        "BZ"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 15,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.030029296875,
+      "maxBaselineResidual": 0.0799560546875,
+      "maxPaintResidual": 0.0,
+      "maxInkDimensionResidual": 0.0
+    },
+    {
+      "name": "oblique-authored14p50-wrap",
+      "predictedLines": [
+        "AgjpWiBBBBBBBBBBBB",
+        "Z"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 14.5,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.02239990234375,
+      "maxBaselineResidual": 0.0400390625,
+      "maxPaintResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07
+    },
+    {
+      "name": "oblique-scaled29x50-wrap",
+      "predictedLines": [
+        "AgjpWiBBBBBBBBBBB",
+        "BZ"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 15,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.003509521484375,
+      "maxBaselineResidual": 0.0,
+      "maxPaintResidual": 0.0,
+      "maxInkDimensionResidual": 0.0
+    },
+    {
+      "name": "integer16-ink-origins",
+      "predictedLines": [
+        "AgjpWiBBBBBB"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 16.0,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.009002685546875,
+      "maxBaselineResidual": 0.03997802734375,
+      "maxPaintResidual": 1.6000000027105443e-06,
+      "maxInkDimensionResidual": 1.5484375097685188e-06
+    },
+    {
+      "name": "kern-zero-authored14p50",
+      "predictedLines": [
+        "AVATARToTo"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 14.5,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.031982421875,
+      "maxBaselineResidual": 0.0799560546875,
+      "maxPaintResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 5.832031249042302e-07
+    },
+    {
+      "name": "kern-omitted-authored14p50",
+      "predictedLines": [
+        "AVATARToTo"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 14.5,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.031982421875,
+      "maxBaselineResidual": 0.0799560546875,
+      "maxPaintResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 5.832031320096576e-07
+    },
+    {
+      "name": "kern-threshold14.6-scaled20x72p5",
+      "predictedLines": [
+        "AVATARToTo"
+      ],
+      "kerning": [
+        {
+          "threshold": 14.6,
+          "measurementSize": 15,
+          "enabled": true
+        }
+      ],
+      "maxOriginResidual": 0.029296875,
+      "maxBaselineResidual": 0.0799560546875,
+      "maxPaintResidual": 0.0,
+      "maxInkDimensionResidual": 0.0
+    },
+    {
+      "name": "kern-threshold15.1-scaled20x72p5",
+      "predictedLines": [
+        "AVATARToTo"
+      ],
+      "kerning": [
+        {
+          "threshold": 15.1,
+          "measurementSize": 15,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.0149993896484375,
+      "maxBaselineResidual": 0.0,
+      "maxPaintResidual": 0.0,
+      "maxInkDimensionResidual": 0.0
+    },
+    {
+      "name": "tiny1x49",
+      "predictedLines": [
+        "Agjp"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 1,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.0,
+      "maxBaselineResidual": 0.0400390625,
+      "maxPaintResidual": 7.999999995789153e-08,
+      "maxInkDimensionResidual": 7.742187335679773e-08
+    },
+    {
+      "name": "tiny1x50",
+      "predictedLines": [
+        "Agjp"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 1,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.0,
+      "maxBaselineResidual": 0.1199951171875,
+      "maxPaintResidual": 7.999999995789153e-08,
+      "maxInkDimensionResidual": 7.742187335679773e-08
+    },
+    {
+      "name": "tiny1x51",
+      "predictedLines": [
+        "Agjp"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 1,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.0,
+      "maxBaselineResidual": 0.1199951171875,
+      "maxPaintResidual": 7.999999995789153e-08,
+      "maxInkDimensionResidual": 7.742187335679773e-08
+    },
+    {
+      "name": "table-authored14p50-wide",
+      "predictedLines": [
+        "AgjpWiBBBBBB"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 14.5,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.0211944580078125,
+      "maxBaselineResidual": 0.0799560546875,
+      "maxPaintResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07
+    },
+    {
+      "name": "table-scaled20x67p5-wrap",
+      "predictedLines": [
+        "BBBBBBBB",
+        "BBBBZ"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 20,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.0,
+      "maxBaselineResidual": 0.0400390625,
+      "maxPaintResidual": 7.999999986907369e-07,
+      "maxInkDimensionResidual": 5.832031320096576e-07
+    },
+    {
+      "name": "justified-authored14p50",
+      "predictedLines": [
+        "AgjpWiBBBB",
+        "AgjpWiBBBB",
+        "AgjpWiBBBB"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 14.5,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.00820159912109375,
+      "maxBaselineResidual": 0.0400390625,
+      "maxPaintResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07
+    },
+    {
+      "name": "decimal-tab-mixed-fractional",
+      "predictedLines": [
+        "Agjp12.50"
+      ],
+      "kerning": [
+        {
+          "threshold": 0,
+          "measurementSize": 13.49,
+          "enabled": false
+        },
+        {
+          "threshold": 0,
+          "measurementSize": 13.51,
+          "enabled": false
+        }
+      ],
+      "maxOriginResidual": 0.00579833984375,
+      "maxBaselineResidual": 0.0400390625,
+      "maxPaintResidual": 1.6000000009341875e-06,
+      "maxInkDimensionResidual": 1.5484374671359546e-06
+    }
+  ],
+  "qualifications": [
+    "Local omitted kern inherits zero; no truly omitted default inference.",
+    "Table stored scale ignored by this candidate because native paints and measures20 instead of13.5.",
+    "Tiny candidate min1point only tested at effective0.49/0.50/0.51; no universal minimum claimed."
+  ]
+}

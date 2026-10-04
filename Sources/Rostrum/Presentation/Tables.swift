@@ -178,7 +178,7 @@ public final class Table {
     /// as `Slides.subscript`.
     public func cell(_ row: Int, _ column: Int) throws -> TableCell {
         let snapshot = TableGridSnapshot(tbl)
-        return TableCell(tc: try snapshot.cell(row, column), part: part, package: package)
+        return TableCell(tc: try snapshot.cell(row, column), part: part, package: package, owner: self)
     }
 
     public func setColumnWidth(_ column: Int, _ width: EMU) {
@@ -257,24 +257,26 @@ public final class TableCell {
     let part: Part
 
     let package: OPCPackage?
+    let owner: Table?
 
-    init(tc: XML.Element, part: Part, package: OPCPackage? = nil) {
+    init(tc: XML.Element, part: Part, package: OPCPackage? = nil, owner: Table? = nil) {
         self.tc = tc
         self.part = part
         self.package = package
+        self.owner = owner
     }
 
     /// The cell's text body, created if absent. Writing accessor: use
     /// `existingTextFrame` (or `text`) to read without touching the DOM.
     public var textFrame: TextFrame {
-        TextFrame(txBody: tc.getOrAddChild("a:txBody", beforeAnyOf: ["a:tcPr"]), part: part)
+        TextFrame(txBody: tc.getOrAddChild("a:txBody", beforeAnyOf: ["a:tcPr"]), part: part, tableCell: self)
     }
 
     /// The cell's text body if it has one — a pure read. `a:txBody` is
     /// optional in `CT_TableCell`, and reading a foreign deck's table must
     /// not invent one.
     public var existingTextFrame: TextFrame? {
-        tc.firstChild(named: "a:txBody").map { TextFrame(txBody: $0, part: part) }
+        tc.firstChild(named: "a:txBody").map { TextFrame(txBody: $0, part: part, tableCell: self) }
     }
 
     public var text: String {
