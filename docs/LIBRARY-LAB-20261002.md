@@ -35,6 +35,7 @@ visible in Lectern and in its JSON report.
 | Paragraph spacing and justification | Side-by-side mixed-size left/justified paragraphs; adjustable sentence count and width; both fit APIs; embedded-font recovery; exact span positions after reopening; shared table-cell layout; native-captured narrow wrap boundaries and public fitting across styled runs | [Platform paragraphs](../Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphRecipe.swift) |
 | List markers and hanging indents | All 24 independent native marker specimens; distinct imported masters; separate character/number size and face rules; three absent inherited markers; body continuation margins; both computed fit APIs; saved font bytes and complete glyph SVG checks | [Platform markers](../Lectern/Sources/LecternCore/LibraryLab/PlatformListMarkerRecipe.swift) |
 | Text alignment | 24 native center/right cases and 172 glyphs; fractional widths, wrapping, spaces, insets, actual faces, kerning and table cells; both computed fitting APIs; exact saved inspector previews and extracted text | [Platform alignment](../Lectern/Sources/LecternCore/LibraryLab/PlatformTextAlignmentRecipe.swift) |
+| Mixed faces and exact spacing | 12 native cases and 96 glyphs with equivalent vertical metrics across distinct actual fonts; exact spacing and anchored/scaled controls; both computed fitting APIs in a 40 pt frame; exact saved inspector previews and extracted text | [Platform mixed spacing](../Lectern/Sources/LecternCore/LibraryLab/PlatformMixedFaceSpacingRecipe.swift) |
 | Tab stops and justified fields | Four standard tab alignments with visible guides; adjustable numeric rows and stop positions; tab-aware Latin justification and a shared table cell; public tab properties and exact spans after reopening | [Platform tabs](../Lectern/Sources/LecternCore/LibraryLab/PlatformTabRecipe.swift) |
 | Pictures and image fills | Image formats and metadata, crop, rotation, deduplication, independent replacement, image fills and retained geometry | Drawing |
 | Edit a table grid | Merge topology, unmerge, insert/delete/move/reorder rows and columns; independent permutations and atomic refusals | Drawing |
@@ -571,3 +572,27 @@ artifacts and check results. This does not establish GUI latency; see the
 [performance report](LECTERN-MARKER-PERFORMANCE-20261004-15.md). A separate
 [ordinary text rendering experiment](RENDER-INHERITANCE-PERFORMANCE-20261004-15.md)
 records bounded improvements and preserves unresolved fallback costs.
+
+## October 4 mixed-face exact spacing integration
+
+The 29th recipe, Mixed faces and exact spacing, retains 12 native specimens /
+96 glyphs on two pages and adds a third computed-fit comparison. Both options
+pass 37 checks without findings; the alternative changes only the computed
+copies from top to bottom anchoring. Distinct actual fonts must have equivalent
+vertical metrics within the admitted shape/exact-spacing profile. Both public
+fitting APIs compute 100% scale and zero reduction in the 40 pt frame; this is
+not a claim about PowerPoint's autofit choice.
+
+The full local gate passes 1,174 library, 18 layout, 292 Core and 87 app test
+definitions / 121 executions. The catalog passes 542 checks across 29 recipes,
+retaining 413 findings. Independent native extraction passes 24 cases / 192 glyphs
+across both generated options at unchanged bounds; 64 external package reopens /
+224 slides pass. Fresh exact-inspector WebKit extraction also passes all
+24 mixed-face cases / 192 glyphs, alongside alignment, marker and paragraph
+regression controls at unchanged bounds. Both real demo → inspector → folder-export
+workflows show three loaded previews and retain all 73 source text nodes per
+option, unchanged source bytes and exact app-gate previews. Independent performance
+review accepts a bounded fidelity cost, preserving the adverse fitting and
+combining-text intervals without an optimization or nonregression claim. See the
+[integration report](LAYOUT-FIDELITY-20261004-16.md) for the complete evidence and
+unchanged support limits. The separate table appearance gap remains unfixed.
