@@ -1,5 +1,5 @@
 {
-  "status": "Source and bounded statistical result approved; final report/manifest review pending",
+  "status": "Source, preservation, statistics and final report/manifest independently accepted for bounded retained-cell fitting benefit.",
   "baselineRevision": "7c26656adbf56e4c03967bd894752c3022fda2f5",
   "baselineSourceCommit": "8503f44b31115488c915fa61449a9a3922cca876",
   "baselineSourceTree": "e1b7a510acd496f68b0fb11489fc422a823f3f75",
@@ -187,7 +187,7 @@
     "docs/benchmarks/2026-10-04-cell-fitting-layout-13-timing-validation.json": "9ce7c67d1a8fe66f96e3c13373e9e96e5aa0f4093c2487f33c39f4af68d4b7a0"
   },
   "reportSHA256": {
-    "docs/CELL-FITTING-PERFORMANCE-20261004-13.md": "1f460698d0f2541b7a63c9d261278351a81fc08e44d5483756790367aa19dc00"
+    "docs/CELL-FITTING-PERFORMANCE-20261004-13.md": "3be2b9e34c32055fb3d3841b747eecda9f2877f40f7d95a7480a5da4127754f8"
   },
   "artifactHashChecks": 7896,
   "timingPlan": {
@@ -636,5 +636,13 @@
     "flagCombinations": 128,
     "positionsPerStyleFlag": 6
   },
-  "runtimeAndRSS": "Scoped retained-cell gains; wide canonical intervals leave unresolved regression risk. Rendering controls inconclusive, RSS mixed, backupd high. No unrelated combining benefit attribution, historical recovery, universal nonregression, lower-memory or clean-host claim."
+  "runtimeAndRSS": "Scoped retained-cell gains; wide canonical intervals leave unresolved regression risk. Rendering controls inconclusive, RSS mixed, backupd high. No unrelated combining benefit attribution, historical recovery, universal nonregression, lower-memory or clean-host claim.",
+  "independentReview": {
+    "outcome": "accepted",
+    "reviewedEvidenceCommit": "e5bd10729e63e32e1bbea1f59c4c2039be45ef10",
+    "rootEquivalentCommit": "08fc737",
+    "reviewedReportSHA256": "1f460698d0f2541b7a63c9d261278351a81fc08e44d5483756790367aa19dc00",
+    "reviewedManifestSHA256": "d1c9e44118182d8a081d15f7065571599b61817ae5f9dbadd265fd0e8cf79832",
+    "scope": "Source, both output repetitions, per-cell preservation, raw statistics, protocol and all report qualifications. Acceptance wording only; raw measurements and proof inputs are unchanged."
+  }
 }

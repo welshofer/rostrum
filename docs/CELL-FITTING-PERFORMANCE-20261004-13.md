@@ -1,6 +1,6 @@
 # Live table-cell fitting: text-only style resolution
 
-**All four retained-cell fitting controls improve in this matched run. Canonical rendering and rich-text fitting retain unresolved regression risk because their intervals are wide under changing backup load.** Source, preservation and bounded statistical review passed; final report/manifest review is pending. This is a scoped fitting result, not universal nonregression or historical recovery.
+**All four retained-cell fitting controls improve in this matched run. Canonical rendering and rich-text fitting retain unresolved regression risk because their intervals are wide under changing backup load.** Independent review accepted source, preservation, statistics and the final report/manifest with these bounded claims. This is a scoped fitting result, not universal nonregression or historical recovery.
 
 Baseline is accepted perf12 evidence 7c26656/source 8503f44, Sources tree e1b7a510acd496f68b0fb11489fc422a823f3f75, identical to root 0734361 at preparation. The retained Release module/object pair was not rebuilt. Candidate source/tests/generator commit is 308f20d; its measured source was frozen before timing, and committing did not change those bytes. Canonical and supplementary drivers, font bytes, compiler and flags match on both sides.
 
