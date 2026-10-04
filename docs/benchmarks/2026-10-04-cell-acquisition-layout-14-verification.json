@@ -1,5 +1,5 @@
 {
-  "status": "Source equivalence approved; bounded acquisition result and final packet await independent evidence review",
+  "status": "Source equivalence, statistics, preservation and final evidence independently accepted for bounded indexed-cell acquisition benefit.",
   "baselineRevision": "e5bd10729e63e32e1bbea1f59c4c2039be45ef10",
   "baselineSourceCommit": "308f20d3a7b870011bdbdb769fa399a0246b6014",
   "baselineSourceTree": "1fed769a7817b8da2c1381828dd6db5e364f0e81",
@@ -188,7 +188,7 @@
     "docs/benchmarks/2026-10-04-cell-acquisition-layout-14-timing-validation.json": "1a802ee7427acc3ce9dbc67d9eb6ba2255ba4b2b97715388ebc1baa44f8fa804"
   },
   "reportSHA256": {
-    "docs/CELL-ACQUISITION-PERFORMANCE-20261004-14.md": "15987fdd711ed78bd68ca13f206afa0df3f08484d54ac019fb2706616d8b40b3"
+    "docs/CELL-ACQUISITION-PERFORMANCE-20261004-14.md": "d44f7100c86a7a073ed0abfb45bd2578372179c5c580ffccfb6c7f51403159f9"
   },
   "artifactHashChecks": 7896,
   "timingPlan": {
@@ -610,5 +610,13 @@
     "standaloneShapingRecords": 101310,
     "fullLayoutRecords": 1728
   },
-  "limits": "Acquisition-only benefit. Rendering/fitting intervals cross zero, possible regression remains; unrelated controls not attributed to change. Mixed whole-process RSS cannot isolate allocation impact. No historical recovery, universal nonregression, lower-memory or clean-host claim."
+  "limits": "Acquisition-only benefit. Rendering/fitting intervals cross zero, possible regression remains; unrelated controls not attributed to change. Mixed whole-process RSS cannot isolate allocation impact. No historical recovery, universal nonregression, lower-memory or clean-host claim.",
+  "independentReview": {
+    "outcome": "accepted",
+    "reviewedEvidenceCommit": "2272047b3023fa81e54e0ace38a8a0fc4a0b5d09",
+    "rootEquivalentCommit": "273efab",
+    "reviewedReportSHA256": "15987fdd711ed78bd68ca13f206afa0df3f08484d54ac019fb2706616d8b40b3",
+    "reviewedManifestSHA256": "591e8bda11c791702bb7d110d75731c1330b0ce03b95f6eb1c02a5e864f18371",
+    "scope": "Source, protocol, inputs, exact preservation, all17 primary phase comparisons, raw statistics and report qualifications. Updated acceptance wording and exact0.0625MiB RSS formatting only; raw measurements and proof inputs unchanged."
+  }
 }

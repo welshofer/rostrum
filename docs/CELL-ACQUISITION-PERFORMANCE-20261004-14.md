@@ -1,6 +1,6 @@
 # Indexed table-cell acquisition
 
-**Streaming lookup improves all four acquisition controls in this matched run. Rendering and fitting controls remain inconclusive; no end-to-end table-rendering or historical recovery claim follows.** Source equivalence review passed; final statistical/evidence review is pending.
+**Streaming lookup improves all four acquisition controls in this matched run. Rendering and fitting controls remain inconclusive; no end-to-end table-rendering or historical recovery claim follows.** Source equivalence, statistics, preservation and final evidence review passed for the bounded acquisition result.
 
 Baseline is accepted perf13 source 308f20d/evidence e5bd107, Sources tree 1fed769a7817b8da2c1381828dd6db5e364f0e81. Candidate source/tests commit d64ddb31e7790b002bcfa819059ed657deb1a527 has Sources tree de42aa5fb48da53f255a5864a9a707c38a704528. The candidate was built from frozen source, then committed unchanged before timing. The original plan SHA256 301bbc76431cb21fa170edef9daecccdcc3edd5f6f84aded1cc0e059c77c58d8 is preserved; a separate mapping receipt records the commit and adjusts only the orchestration preflight HEAD check. Measured binaries, commands, order and timers did not change.
 
@@ -16,10 +16,10 @@ All processes succeeded in **77.51 seconds** (exact 77.50994004204404), without 
 |---|---:|---:|---:|---:|---:|
 | 10×10 / 10,000 lookups | 23.7045→0.7429 | -96.87% | -96.84% [-96.92, -96.79] | 10/10 | -0.023 |
 | 40×25 / 10,000 lookups | 142.9096→1.1825 | -99.17% | -99.18% [-99.19, -99.12] | 10/10 | -0.125 |
-| 200×50 / 10,000 lookups | 1067.8362→3.3451 | -99.69% | -99.69% [-99.70, -99.68] | 10/10 | -0.062 |
+| 200×50 / 10,000 lookups | 1067.8362→3.3451 | -99.69% | -99.69% [-99.70, -99.68] | 10/10 | -0.0625 |
 | 200×50 last cell / 1,000 lookups | 107.8619→0.5763 | -99.47% | -99.47% [-99.48, -99.44] | 10/10 | -0.047 |
 
-All four acquisition controls have 10/10 faster pairs, exact two-sided sign-test p=.001953125. The 200×50 control's 10,000 calls decrease from 1,067.8362 to 3.3451 ms; the last-cell control avoids relying only on early-exit cells. These percentages describe the explicitly timed acquisition loops, not arbitrary table operations. Whole-process RSS medians differ by −0.023/−0.125/−0.063/−0.047 MiB, respectively; this includes retained wrappers/text, DOM, rendering, serialization and allocator behavior, so it does not isolate lookup allocations or establish general lower memory.
+All four acquisition controls have 10/10 faster pairs, exact two-sided sign-test p=.001953125. The 200×50 control's 10,000 calls decrease from 1,067.8362 to 3.3451 ms; the last-cell control avoids relying only on early-exit cells. These percentages describe the explicitly timed acquisition loops, not arbitrary table operations. Whole-process RSS medians differ by −0.023/−0.125/−0.0625/−0.047 MiB, respectively; this includes retained wrappers/text, DOM, rendering, serialization and allocator behavior, so it does not isolate lookup allocations or establish general lower memory.
 
 Canonical and existing supplementary controls:
 
@@ -43,7 +43,7 @@ Separate render phases from acquisition controls:
 |---|---:|---:|---:|---:|---:|
 | 10×10 / 10,000 lookups | 4.1485→4.1477 | -0.02% | -1.12% [-1.99, +0.54] | 7/10 | -0.023 |
 | 40×25 / 10,000 lookups | 24.7005→24.5391 | -0.65% | -0.77% [-2.79, +0.49] | 7/10 | -0.125 |
-| 200×50 / 10,000 lookups | 276.3490→276.7072 | +0.13% | -0.07% [-1.10, +0.60] | 5/10 | -0.062 |
+| 200×50 / 10,000 lookups | 276.3490→276.7072 | +0.13% | -0.07% [-1.10, +0.60] | 5/10 | -0.0625 |
 | 200×50 last cell / 1,000 lookups | 277.3820→276.0820 | -0.47% | -0.24% [-0.87, +0.63] | 6/10 | -0.047 |
 
 These intervals also cross zero. Render and acquisition rows for a given workload share whole-process RSS. Negative runtime deltas favor the candidate. Ratios of separate medians and medians of paired ratios are reported separately. Intervals use 100,000 deterministic bootstrap pair resamples (seed 20261004); exact two-sided sign tests exclude ties. These exploratory results are not multiplicity-adjusted and cannot remove shared-load bias.
