@@ -1,0 +1,21 @@
+Building for debugging...
+[1 / 1]
+[2 / 13] LecternCore
+[4 / 15] LecternCore
+[10 / 20] LecternCore
+[17 / 22] LecternCore-product
+[21 / 26] LecternCoreTests-product
+[25 / 29] LecternCoreTests-product
+Build complete! (2.14 sec)
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite ListMarkerRecipeTests started.
+􀟈  Test nativeMarkerReferencesAndStrictSVGAuditRemainIndependent() started.
+􀟈  Test allNativeMarkersAndBothPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to allNativeMarkersAndBothPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to allNativeMarkersAndBothPublicFitsSurviveSaving(alternative:) started.
+􁁛  Test nativeMarkerReferencesAndStrictSVGAuditRemainIndependent() passed after 3.334 seconds.
+􁁛  Test allNativeMarkersAndBothPublicFitsSurviveSaving(alternative:) with 2 test cases passed after 7.517 seconds.
+􁁛  Suite ListMarkerRecipeTests passed after 7.517 seconds.
+􁁛  Test run with 2 tests in 1 suite passed after 7.517 seconds.

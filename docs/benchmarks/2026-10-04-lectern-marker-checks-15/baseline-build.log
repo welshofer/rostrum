@@ -1,0 +1,66 @@
+Building for production...
+[Planning deferred tasks]
+[43 / 69]
+[44 / 70] Rostrum
+[53 / 105]
+[57 / 105]
+[63 / 105]
+[64 / 105]
+[68 / 105]
+[71 / 105]
+[76 / 105]
+[78 / 105]
+[79 / 105]
+/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:29:5: warning: 'public' modifier is redundant for property declared in a public extension
+ 27 |     /// which is how two parts of one deck end up disagreeing about whether a
+ 28 |     /// background is dark.
+ 29 |     public var relativeLuminance: Double {
+    |     `- warning: 'public' modifier is redundant for property declared in a public extension
+ 30 |         func linear(_ c: Int) -> Double {
+ 31 |             let s = Double(c) / 255
+
+/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:39:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+ 37 |     /// WCAG contrast ratio with `other`, 1 (identical) … 21 (black↔white).
+ 38 |     /// Symmetric.
+ 39 |     public func contrastRatio(with other: Color) -> Double {
+    |     `- warning: 'public' modifier is redundant for instance method declared in a public extension
+ 40 |         let hi = Swift.max(relativeLuminance, other.relativeLuminance)
+ 41 |         let lo = Swift.min(relativeLuminance, other.relativeLuminance)
+
+/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:47:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+ 45 |     /// The more legible of `dark`/`light` to sit ON this color as a background.
+ 46 |     /// Ties favor `dark`.
+ 47 |     public func onColor(dark: Color = .black, light: Color = .white) -> Color {
+    |     `- warning: 'public' modifier is redundant for instance method declared in a public extension
+ 48 |         contrastRatio(with: dark) >= contrastRatio(with: light) ? dark : light
+ 49 |     }
+
+/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:54:5: warning: 'public' modifier is redundant for static method declared in a public extension
+ 52 |     /// text). Deterministic — the first of equally-good options wins; empty
+ 53 |     /// `options` yields `.black`.
+ 54 |     public static func bestTextColor(on background: Color,
+    |     `- warning: 'public' modifier is redundant for static method declared in a public extension
+ 55 |                                      options: [Color] = [.black, .white]) -> Color {
+ 56 |         var best = Color.black
+
+/Users/welshofer/Developer/rostrum/Sources/Rostrum/Presentation/RichTextLayout.swift:305:22: warning: immutable value 'piece' was never used; consider replacing with '_' or removing it [#NoUsage][80 / 105] Rostrum
+
+ 303 |             var spacingRunMetrics: [SpacingMetric?] = []
+ 304 |             func shapePieces() {
+ 305 |                 for (piece, text, originalStyle, metrics) in pieces {
+     |                      `- warning: immutable value 'piece' was never used; consider replacing with '_' or removing it [#NoUsage]
+ 306 |                     source += 1
+ 307 |                     var style = originalStyle
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[87 / 106] RostrumLayout
+[89 / 107] RostrumLayout
+[96 / 108] LecternCore
+[103 / 117]
+[105 / 117]
+[106 / 117] LecternCore
+[113 / 118] MarkerAuditProbe-product
+[115 / 119] MarkerAuditProbe-product
+[117 / 119] MarkerAuditProbe-product
+[118 / 119] MarkerAuditProbe-product
+Build complete! (71.22 sec)

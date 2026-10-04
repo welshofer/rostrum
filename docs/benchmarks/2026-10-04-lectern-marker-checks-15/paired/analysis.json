@@ -1,0 +1,225 @@
+{
+  "analysisScriptSHA256": "c5e04022a740056c2dca28abf086658d6e65642f227cef1236c8af1e37a2a67c",
+  "independentReopens": {
+    "packages": 88,
+    "slides": 352,
+    "xmlRelationshipParts": 4796
+  },
+  "limits": "Background host load remains uncontrolled. Peak RSS includes the whole child process and is not an allocation count or average memory estimate. No universal/cumulative/cross-platform gain inferred.",
+  "preservation": "All nine non-report output files exact per alternative; report JSON exact excluding only elapsedSeconds. Driver directory and timing fields are process metadata, not compared for equality.",
+  "rawSHA256": "78f5ba6d9154539e44197e993758812c26ba4b3469316eda82f6b8e997b5453e",
+  "results": [
+    {
+      "alternative": false,
+      "seconds": {
+        "baseline": [
+          2.135286083,
+          2.078230625,
+          2.093783917,
+          2.058544791,
+          2.038494792,
+          2.046056875,
+          2.055143334,
+          2.063525875,
+          2.045614541,
+          2.040483958
+        ],
+        "baselineMedian": 2.0568440624999997,
+        "bootstrap95Percent": [
+          -51.250718393749025,
+          -50.504956943740865
+        ],
+        "candidate": [
+          1.103399875,
+          1.015125416,
+          1.011080209,
+          1.007833959,
+          1.008953875,
+          1.013786959,
+          1.007185041,
+          1.010284459,
+          0.992941292,
+          1.006623333
+        ],
+        "candidateMedian": 1.0096191669999999,
+        "faster": 10,
+        "medianPairedDeltaPercent": -51.016421897109176,
+        "pairedDeltasPercent": [
+          -48.325431248549,
+          -51.154342362749084,
+          -51.71038420962329,
+          -51.041436484342206,
+          -50.504956943740865,
+          -50.45167261051823,
+          -50.99198073743696,
+          -51.04086305678139,
+          -51.46000030315584,
+          -50.66742235079115
+        ],
+        "ratioOfMediansPercent": -50.91416090275438,
+        "slower": 0,
+        "ties": 0,
+        "twoSidedSignP": 0.001953125
+      },
+      "wholeProcessPeakRSSBytes": {
+        "baseline": [
+          238551040,
+          236191744,
+          239042560,
+          236158976,
+          236224512,
+          236208128,
+          241565696,
+          236191744,
+          236257280,
+          236224512
+        ],
+        "baselineMedian": 236224512.0,
+        "bootstrap95Percent": [
+          -30.45573268706509,
+          -30.020812039626662
+        ],
+        "candidate": [
+          170606592,
+          165265408,
+          165265408,
+          165249024,
+          165281792,
+          165232640,
+          165330944,
+          165298176,
+          165265408,
+          165298176
+        ],
+        "candidateMedian": 165273600.0,
+        "faster": 10,
+        "medianPairedDeltaPercent": -30.030519429483647,
+        "medianPairedDifferenceMiB": -67.6484375,
+        "pairedDeltasPercent": [
+          -28.482142857142854,
+          -30.02913429522752,
+          -30.863605209047297,
+          -30.026363257943668,
+          -30.031904563739776,
+          -30.047860165082884,
+          -31.558600108518718,
+          -30.015260821309653,
+          -30.048543689320383,
+          -30.024968789013727
+        ],
+        "ratioOfMediansPercent": -30.035372451102795,
+        "slower": 0,
+        "ties": 0,
+        "twoSidedSignP": 0.001953125
+      }
+    },
+    {
+      "alternative": true,
+      "seconds": {
+        "baseline": [
+          2.587372583,
+          2.933543125,
+          2.651954291,
+          2.477744875,
+          2.055097167,
+          2.063969041,
+          2.057967542,
+          2.05823875,
+          2.049641167,
+          2.019863416
+        ],
+        "baselineMedian": 2.0611038955,
+        "bootstrap95Percent": [
+          -51.072718871319836,
+          -47.33071047893367
+        ],
+        "candidate": [
+          1.564774458,
+          1.430958916,
+          1.479151541,
+          1.013650209,
+          1.018561083,
+          1.01290025,
+          1.011169458,
+          1.009387125,
+          1.006456417,
+          1.00725425
+        ],
+        "candidateMedian": 1.0132752295,
+        "faster": 10,
+        "medianPairedDeltaPercent": -50.88079817995534,
+        "pairedDeltasPercent": [
+          -39.52264670804853,
+          -51.220798364776044,
+          -44.22409367990121,
+          -59.089807056910985,
+          -50.437327277966126,
+          -50.92463937786362,
+          -50.86562652891442,
+          -50.9586958752963,
+          -50.895969830996265,
+          -50.13255638865436
+        ],
+        "ratioOfMediansPercent": -50.8382264614472,
+        "slower": 0,
+        "ties": 0,
+        "twoSidedSignP": 0.001953125
+      },
+      "wholeProcessPeakRSSBytes": {
+        "baseline": [
+          252788736,
+          253329408,
+          252542976,
+          261373952,
+          236158976,
+          236142592,
+          236175360,
+          236191744,
+          237240320,
+          236175360
+        ],
+        "baselineMedian": 236716032.0,
+        "bootstrap95Percent": [
+          -30.645495134673823,
+          -30.0088139396641
+        ],
+        "candidate": [
+          173785088,
+          177340416,
+          182386688,
+          165281792,
+          165232640,
+          165249024,
+          165249024,
+          165298176,
+          165265408,
+          165232640
+        ],
+        "candidateMedian": 165273600.0,
+        "faster": 10,
+        "medianPairedDeltaPercent": -30.032259219596163,
+        "medianPairedDifferenceMiB": -67.6484375,
+        "pairedDeltasPercent": [
+          -31.25283556938233,
+          -29.99611951882033,
+          -27.779940314000264,
+          -36.764244969598195,
+          -30.03330095740252,
+          -30.021508360507877,
+          -30.031217481789806,
+          -30.015260821309653,
+          -30.33839779005525,
+          -30.038154699965315
+        ],
+        "ratioOfMediansPercent": -30.18064784053156,
+        "slower": 0,
+        "ties": 0,
+        "twoSidedSignP": 0.001953125
+      }
+    }
+  ],
+  "samples": "44 fresh children, four excluded warmup children; ten retained alternating pairs per alternative",
+  "scope": "Complete headless LibraryLab.run(.listMarkers), including saved-file checks, inspection and export; not GUI interaction or isolated library rendering",
+  "statistics": "100000 percentile bootstrap samples, Random seed20261004 separately per metric; median of paired ratios distinct from ratio of medians; exact two-sided sign test excluding ties. Four comparisons exploratory/unadjusted.",
+  "status": "MEASURED_AWAITING_INDEPENDENT_REVIEW"
+}

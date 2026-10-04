@@ -1,0 +1,9 @@
+{
+  "createdUTC": "2026-10-04T22:17:03.906210+00:00",
+  "status": "PRELAUNCH_ADDENDUM_NO_TIMED_CHILDREN_STARTED",
+  "planSHA256": "61795be921f0fc7ce865e29bd075882da5db9156a91565d1d2a5f6a56b0b1bb5",
+  "secondaryMetric": "Peak whole-process resident set bytes from /usr/bin/time -l; same wrapper for every baseline/candidate/warmup child",
+  "limits": "Includes loading/fonts/render/check/save/export/allocator retention; not isolated allocations or average memory. All results reported; exploratory unadjusted alongside both primary workloads.",
+  "candidateSourceCommit": "3e004c7",
+  "sourceFrozenBeforeCommit": "Candidate source pins match exactly the committed helper; only subsequent native alignment fixture/test/docs commits differ."
+}
