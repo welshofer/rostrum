@@ -1,0 +1,131 @@
+{
+  "status": "PRE-RECONCILIATION / UNACCEPTED MEMORY COST; supersedable evidence, not final performance approval",
+  "baselineRevision": "a9d870b9f8145a40e76fd48998606da796e3e32d",
+  "candidateWorkerCommit": "2a4c1b31fbd367deb14cbb45a9728450bba6215a",
+  "rootSourceRevision": "5860a71ebc2b15f626b5e04b1f072de130cbd9d3",
+  "sourcesGitTree": "a8393245a53e199f98afd678e3b8a3efb88600c9",
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf11-combined",
+  "files": {
+    "Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "387c5bf2e5416e0d78337ac166486e4641e05e7ef72e2019fb923db63b8df8a1",
+    "Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "e09cbf8ccae0d351451d2d454301935b9448823b020a2cdca149844b1a07a537",
+    "baseline-Rostrum.o": "a76db2935ce7f84fae793ec06e70560e6c786ae5ddda52810279c12627dc6bb9",
+    "baseline-extended-bench": "9cac4409353cb5743a2a41b051d12181adb700d8531464ff74f49d8ba643e1b8",
+    "baseline-preservation": "c4b17b82398905eaea02720385802df633cdbcf5163f482f4cab32503b723c10",
+    "candidate-Rostrum.o": "fe59ce0250858e2a7d9d57e3e7e2f4bf453389ff7b1ace484b66290d04dca4e6",
+    "candidate-bench": "ca195fe38148ce106fb2ed3b30bb81575aa81fe103ccb3e41b269da8a12b3fcb",
+    "candidate-build.log": "fafe82c779427335fb1445668bb01552ce8907924a896d6e1ea8850871a09ea5",
+    "candidate-extended-bench": "a9d94b14d37f3d91196172ea7460ef4d408735e7264d322985ad4252b214aedd",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "387c5bf2e5416e0d78337ac166486e4641e05e7ef72e2019fb923db63b8df8a1",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "f385338f4d72addb3ba52547616056c269fc952421e6a10c6c81872bd8afe42b",
+    "candidate-preservation": "3a4de655c58366275356ebe2fef7f715cb14b6fc1fc4fb2b444cb85e14aa8df7",
+    "canonical-runner.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+    "classify-output-differences.py": "235423ea0a55a6f037064ef6ace36e34b263d9bc1cd76ea65ec7680124a6bd95",
+    "final-timing-plan.json": "317dd18d6defae4c79ff7d70af5d35d9010fea503cc6fd39b1b9ac9e9c106c62",
+    "fixed-inputs/images-unique.pptx": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+    "fixed-inputs/slides-10.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+    "fixed-inputs/table-200x50.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+    "fixed-inputs/table-20x10.pptx": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
+    "frozen-source.json": "68c71b65264b30c9d51f938f91dc879578d8580adc9ab3b80f197500b1e291fb",
+    "output-differences.log": "03e228ea9bdb528dea574a37013b7d2824be7b339576409c11068960edc75cd9",
+    "output-proof.log": "d344fec293c2c2153804976399486b2709fbd0315bcb08fec06b03ffcebb8b36",
+    "paired-analysis.log": "978aeb7063a562a41844751f9f273b0bcd4bba23ecd1376ce47cc7b57f08878e",
+    "paired-analysis.py": "7ae8c73c923bd4294f3dbd22fb89f05c1b6b464f42d876303488fead5f4f828e",
+    "paired.log": "1bc6cc9b8a9019ba410339280a570a9e55f87933a829e4a18e3cad001ef67a97",
+    "pre-quiet-validation-process-context.txt": "026ae313727b3db843a4b24df06be10f1ca908c750ce13953391732675c070ed",
+    "preparation-process-context.txt": "9291b77ab9422e91a24cabd65e7e2997a4471789b814a69f25f27f1da473b44f",
+    "preservation-images-unique-baseline.log": "63e9d04bae569aab11b15e044583489deff0a9879ec6387836de50f995719e2b",
+    "preservation-images-unique-candidate.log": "5195e7dea4be3098e9a639b7fb7465e3a3f030da94198fcb37652c6d7c54af39",
+    "preservation-slides-10-baseline.log": "24d642ef25e8ac0f5b56f0d290b801b72f34e1c83ff0ce187535f4be09d605c2",
+    "preservation-slides-10-candidate.log": "f3efe7f069fd9be390b2a1195f067aa9730be0902ca1ed50e6c369b74acfbfe1",
+    "preservation-table-200x50-baseline.log": "843400cf7219b7f3fc9cbbe0c681907cf8ab4f345260cd8f0b7ee6bc9fd4d847",
+    "preservation-table-200x50-candidate.log": "d9c89e1c99b358b4bcf2882b8a9148bf529f103566821b28000a75a6ec73ee21",
+    "preservation.log": "b74c878da023f6dc464e20038508885498d4947fa17fe97ea34825947b6c56f8",
+    "preservation.py": "8500d9fa4cd48e4ea8630b7dae820e1b0e77651837fc597affe7004dfa7e6d8f",
+    "process-during.txt": "c391c7ddf85fa2ae0905d83ed2bd03047dcb7c67d217426418a7b92eebf9c0ea",
+    "process-end.txt": "a9701b1a470aeed9e1ea6f99a636fc82f0dd8167e11c3fc439cd0b1292f86393",
+    "process-start.txt": "e4da85141ba08ddda0321d8b9e94c1ae787a92e57f1ece1c0f48620bebfde324",
+    "protocol.json": "19ef44e73d9dffdd43b59b3ea065057432ee8c2faa46add93bfe2b11994330e0",
+    "retained-driver.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "workload-proof.py": "b020c3ff2692b375c57efc2ea176de01521c33401f5f0c1ce019af044fa9c461",
+    "preflight-baseline-module/NOTE.txt": "230ceaea0f29a6e722240ab0e8c5f42150f3afdae20c464b20ff8f918b8ae75b",
+    "preflight-baseline-module/candidate-extended-bench": "d5e5132a76d14582479cb01063b6d1bd3996f099e641a1b74ee83f873f3a7e86"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "f89860b2a25aca1fd71647ee54dce0b34f82e7dc39f5e2993f7a090a2e268964",
+    "Sources/Rostrum/Presentation/RenderTextAttributes.swift": "a4854e1242ff1dd8fba931bfa5b5c6be3c9d09188a7143c428e0998df4a19644",
+    "Sources/Rostrum/Fonts/TextShaper.swift": "e6f2cefafb7fc7a2d6dd2c5d4c5e2171b2bec783466fb8a6a6e7fbc6e82ed08c",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+    "Tools/rostrum-benchmark/main.swift": "9ca197e948dd5a4cb8e47d360f071f696e140255cc71e3b07a867b66cfc73180",
+    "Package.swift": "b2a0e2cbf3710f5f003e19caee55bdc2c5a70a4ed152573c6216df4740c27e22"
+  },
+  "receiptSHA256": {
+    "docs/benchmarks/2026-10-04-final-combined-layout-4-output-differences.json": "c1688fd055e5165a6f7a6a38dbcac6c985d3ab015f7404fa774d69b831ea9127",
+    "docs/benchmarks/2026-10-04-final-combined-layout-4-output-proof.json": "b9ba3af1d5c7e82df0f5b1189b6a5a26385db5172edc8d859d4de10de91fc14d",
+    "docs/benchmarks/2026-10-04-final-combined-layout-4-paired-analysis.json": "e1f21421ea98cdfc5189b1470a41b2aa6ecd699276a8ccc629e4c1e0dcd884e4",
+    "docs/benchmarks/2026-10-04-final-combined-layout-4-paired-macos.json": "551dd6247a4c9f176da03a23342a548c897128c3f69b34d860eb90870349dc85",
+    "docs/benchmarks/2026-10-04-final-combined-layout-4-preservation.json": "1d2b31bfee1a4a8e2cd3f1daa78fa3a44ef6a7b2ce0a4afe8b3b0974c9dbc89d"
+  },
+  "reportSHA256": {
+    "docs/INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-PRE-RECONCILIATION.md": "f7eb47c5492c4016c1e29b6317c8e0f3c09d307a50054b576ab86fa17fed144e"
+  },
+  "verification": {
+    "primaryAndSourceAndReceiptHashes": 57,
+    "proofArtifactAndInputHashes": 186,
+    "totalVerifiedHashesExcludingReport": 243
+  },
+  "timingPlan": {
+    "status": "VALIDATED ONLY; no build or authoritative timing launched",
+    "rootRevision": "5860a71ebc2b15f626b5e04b1f072de130cbd9d3",
+    "sourcesGitTree": "a8393245a53e199f98afd678e3b8a3efb88600c9",
+    "rostrumGitTree": "194fe0fd2cab22ac386be832c86b37f6ebc963c6",
+    "baselineRevision": "a9d870b9f8145a40e76fd48998606da796e3e32d",
+    "candidateSHA256": "a9d94b14d37f3d91196172ea7460ef4d408735e7264d322985ad4252b214aedd",
+    "timingCommand": "ROSTRUM_BENCH_FONT=/System/Library/Fonts/Supplemental/Arial.ttf python3 Tools/rostrum-bench/run.py --binary .build/perf11-combined/candidate-extended-bench --paired-binary .build/perf11-combined/baseline-extended-bench --paired-revision a9d870b9f8145a40e76fd48998606da796e3e32d --runs 10 --warmups 1 --scenarios table-200x50 table-20x10 shaped-table-100x20 richtext-fit slides-10 --output docs/benchmarks/2026-10-04-final-combined-layout-4-paired-macos.json",
+    "exactSamplePlan": "5 workloads x (1 excluded warmup pair + 10 retained pairs) x 2 variants = 110 fresh processes, 100 retained samples",
+    "estimatedWallTimeSeconds": 45,
+    "reservedWindowSeconds": 90,
+    "durationLimit": "No fixed-time run or early truncation: complete all 110 processes, notify promptly if longer than 60 seconds, release immediately on completion. Prior same-shape comparison took approximately 42 seconds.",
+    "receiptExpectations": [
+      "Root final revision and exact matching Sources/Rostrum trees; frozen source/driver/runner/font hashes",
+      "Matched baseline/candidate object/module/executable hashes and exact compile/measurement commands",
+      "Ten alternating fresh-process pairs per workload, raw phase times/RSS and saved-PPTX identity",
+      "Start/during/end process CPU snapshots; qualify WindowServer/backup/other load and any interference",
+      "Paired median percent deltas, seeded bootstrap intervals/exact sign tests; no unqualified clean-host claim",
+      "Five-workload deterministic proof and intended liga-markup-only SVG differences; required fixed-deck preservation and independent reopens",
+      "Preparation-only baseline-module preflight excluded from authoritative timing/proof acceptance"
+    ]
+  },
+  "execution": {
+    "completed": true,
+    "freshProcesses": 110,
+    "retainedSamples": 100,
+    "start": "2026-10-04T06:00:03.519038-07:00",
+    "end": "2026-10-04T06:00:35.902436-07:00",
+    "explicitQuietWindowGranted": true,
+    "releasedImmediately": true,
+    "WindowServerCPU": [
+      80.6,
+      75.0,
+      75.4
+    ],
+    "backupCPU": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "limitation": "Process snapshots are not continuous; ongoing WindowServer load. No clean-host/general/cross-platform speed claim."
+  },
+  "preflightCorrection": "Candidate initially compiled against baseline module; detected before timing. Excluded binary/preliminary proof retained separately; matching candidate module used for rebuilt timed binary and rerun proofs. No bad timing samples.",
+  "localVerification": [
+    "Release build",
+    "five workloads/14 slides deterministic candidate proof",
+    "30 python-pptx workload reopens",
+    "small/large/image-heavy preservation with six reopens",
+    "all pinned hashes verified"
+  ],
+  "parentReportedVerification": "Full local library/Core/headless/platform gates and native/manual GUI acceptance before window; not locally rerun here.",
+  "acceptance": "Large SVG +2,500,000 bytes and median peak RSS +19.37 MiB; primary paired timing interval crosses zero. Root requires markup reconciliation before acceptance. Baseline and originals retained."
+}
