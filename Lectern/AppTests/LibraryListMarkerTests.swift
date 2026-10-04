@@ -33,8 +33,18 @@ import Rostrum
         #expect(deck.slides.count == 5 && deck.slideSize.width == .points(720))
         for page in 0..<5 {
             let position = try #require(inspection.previewSlideNumbers.firstIndex(of: page + 1))
-            let svg = try deck.renderSVG(slideAt: page)
-            #expect(inspection.previews[position] == svg)
+            // Inspector previews use 640 px; the raw library default is 1280.
+            // All painted faces in this fixture are embedded, so installed-font
+            // registration must leave this independent render unchanged.
+            let expectedSVG = try deck.renderSVG(slideAt: page, pixelWidth: 640)
+            let actualSVG = inspection.previews[position]
+            let matchesIndependentRender = actualSVG == expectedSVG
+            #expect(matchesIndependentRender, "Marker preview page \(page + 1), alternative=\(alternative)")
+            let savedURL = result.directory.appendingPathComponent(
+                String(format: "previews/slide-%02d.svg", page + 1))
+            let savedSVG = try String(contentsOf: savedURL, encoding: .utf8)
+            let matchesSavedPreview = actualSVG == savedSVG
+            #expect(matchesSavedPreview, "Saved marker preview page \(page + 1), alternative=\(alternative)")
         }
         let task = try #require(context.app.exportInspected(into: root.appendingPathComponent("Export")))
         await task.value
