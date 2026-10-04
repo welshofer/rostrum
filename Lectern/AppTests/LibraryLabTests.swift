@@ -54,6 +54,70 @@ import Rostrum
     }
 
     @Test(arguments: [false, true])
+    func unicodeFontDemoReachesInspectorAndExport(narrow: Bool) async throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("LabUnicodeFonts-" + UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        // Keep both composed and decomposed spellings. Byte comparisons below
+        // detect normalization that Swift's canonical String equality allows.
+        let text = "caf\u{00E9} na\u{00EF}ve cafe\u{0301} ffi"
+        let expectedBody = Array(repeating: text, count: 6).joined(separator: " ")
+        let model = LibraryLabModel()
+        model.options = .init(text: text, sampleSize: 6, alternative: narrow)
+        await model.run([.fontsAndFitting], in: root).value
+        let result = try #require(model.results[.fontsAndFitting])
+        #expect(result.passed && !model.isRunning && model.failures.isEmpty && model.completed == 1)
+        for name in ["Registered metrics and shaping", "Measured wrapping", "Autofit calculated",
+                     "Exact face availability", "Embedded face bytes reopened", "Autofit persisted", "Reopened shaping"] {
+            #expect(result.checks.contains { $0.name == name && $0.passed })
+        }
+        let saved = try Data(contentsOf: result.afterURL)
+        let deck = try Presentation(contentsOf: result.afterURL)
+        #expect(deck.slides.count == 1 && deck.registerEmbeddedFonts() == ["DejaVu Sans"])
+        let embedded = try #require(deck.fonts.data(for: .init(family: "DejaVu Sans")))
+        #expect(!embedded.isEmpty)
+        let box = try #require(deck.slides[0].shapes.all.first)
+        #expect(box.frame.width == .inches(narrow ? 4 : 10))
+        let body = try #require(box.textFrame)
+        #expect(Data(body.text.utf8) == Data(expectedBody.utf8))
+        #expect(body.paragraphs.flatMap(\.runs).allSatisfy { $0.fontName == "DejaVu Sans" })
+
+        await context.app.inspect(deckAt: result.afterURL).value
+        #expect(context.app.phase == .inspected)
+        let inspection = try #require(context.app.inspection)
+        #expect(inspection.slideCount == 1 && inspection.embeddedFonts == ["DejaVu Sans"])
+        let previewIndex = try #require(inspection.previewSlideNumbers.firstIndex(of: 1))
+        let savedSVG = try String(contentsOf: result.directory.appendingPathComponent("previews/slide-01.svg"), encoding: .utf8)
+        #expect(savedSVG == inspection.previews[previewIndex])
+        let limitations = result.findings.filter {
+            $0.slideNumber == 1 && ($0.code == "unsupportedTextProperty" || $0.code == "unsupportedShaping")
+                && $0.message.contains("Native")
+        }
+        #expect(!limitations.isEmpty && inspection.hasFindings)
+        let diagnostics = try #require(inspection.previewDiagnostics.first { $0.slideNumber == 1 })
+        for limitation in limitations {
+            #expect(diagnostics.issues.contains { $0.code == limitation.code && $0.message == limitation.message })
+        }
+        #expect(!diagnostics.issues.contains { $0.code == "missingFont" })
+
+        let task = try #require(context.app.exportInspected(into: root.appendingPathComponent("Export")))
+        await task.value
+        #expect(context.app.exportProblem == nil)
+        #expect(context.app.exportSummary == "1 slide · 0 media files · 0 chart CSVs")
+        let directory = try #require(context.app.exportedDirectory)
+        let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        let markdown = try Data(contentsOf: #require(files.first { $0.pathExtension == "md" }))
+        #expect(markdown.range(of: Data(expectedBody.utf8)) != nil)
+        let reopened = try Presentation(contentsOf: result.afterURL)
+        #expect(reopened.slides.count == 1 && reopened.registerEmbeddedFonts() == ["DejaVu Sans"])
+        #expect(reopened.fonts.data(for: .init(family: "DejaVu Sans")) == embedded)
+        #expect(try Data(contentsOf: result.afterURL) == saved && reopened.serializedData() == saved)
+        // Passing preservation and diagnosed previews does not establish native
+        // Unicode painting or a native-selected fitting scale.
+    }
+
+    @Test(arguments: [false, true])
     func paragraphDemoReachesInspectorAndExport(narrow: Bool) async throws {
         let context = try AppStateTestContext()
         defer { context.remove() }
