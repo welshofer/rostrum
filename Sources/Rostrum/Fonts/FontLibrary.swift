@@ -9,8 +9,9 @@ import Foundation
 /// A deck built with an empty library behaves exactly as before the metrics
 /// engine existed (the builders' calibrated estimates).
 public final class FontLibrary {
-    /// Lowercased typeface name → metrics.
-    private var byName: [String: FontMetrics] = [:]
+    /// Distinct styles never overwrite one another.
+    private var byFace: [FontFaceKey: FontMetrics] = [:]
+    private var sourceData: [FontFaceKey: Data] = [:]
 
     /// Optional host-provided glyph measurement for previews. It is never used
     /// to alter document XML or serialized bytes. Hosts must install the same
@@ -24,20 +25,32 @@ public final class FontLibrary {
     /// registered under. Throws when the font is unparseable, or when it has
     /// no name table and no aliases were given.
     ///
-    /// Names already registered are replaced — last registration wins. IDs
-    /// 1/16 are *family* names, not face names: two styles of one family
-    /// (regular and bold) share them, so registering both overwrites; pass
-    /// distinct `aliases` (e.g. "Arial Bold") to keep both reachable.
+    /// Infers bold/italic from OS/2 fsSelection, falling back to head macStyle.
+    /// Registering the same exact face again replaces it; other styles persist.
     @discardableResult
     public func register(_ data: Data, aliases: [String] = [], fontIndex: Int = 0) throws -> String {
         let metrics = try FontMetrics(data: data, fontIndex: fontIndex)
-        let names = metrics.familyNames + aliases
+        return try register(metrics, data: data, names: metrics.familyNames + aliases,
+                            bold: metrics.isBold, italic: metrics.isItalic)
+    }
+
+    /// Explicit style metadata overrides font metadata (including embedded-face tags).
+    @discardableResult
+    public func register(_ data: Data, face: FontFaceKey, aliases: [String] = [],
+                         fontIndex: Int = 0) throws -> String {
+        let metrics = try FontMetrics(data: data, fontIndex: fontIndex)
+        return try register(metrics, data: data, names: [face.family] + metrics.familyNames + aliases,
+                            bold: face.bold, italic: face.italic)
+    }
+
+    private func register(_ metrics: FontMetrics, data: Data, names: [String], bold: Bool, italic: Bool) throws -> String {
         guard let primary = names.first else {
-            throw RostrumError.fontCorrupt(
-                "font has no family name; pass aliases: when registering")
+            throw RostrumError.fontCorrupt("font has no family name; pass aliases: when registering")
         }
         for name in names {
-            byName[name.lowercased()] = metrics
+            let key = FontFaceKey(family: name, bold: bold, italic: italic)
+            byFace[key] = metrics
+            sourceData[key] = data
         }
         return primary
     }
@@ -48,10 +61,25 @@ public final class FontLibrary {
         try register(try Data(contentsOf: url), aliases: aliases, fontIndex: fontIndex)
     }
 
-    /// Metrics for a typeface name, case-insensitive; nil when unregistered.
+    /// Family-only compatibility lookup: regular, bold, italic, then bold-italic.
+    /// This fixed preference is independent of registration order.
     public func metrics(for typeface: String) -> FontMetrics? {
-        byName[typeface.lowercased()]
+        for (bold, italic) in [(false, false), (true, false), (false, true), (true, true)] {
+            if let metrics = metrics(for: typeface, bold: bold, italic: italic) { return metrics }
+        }
+        return nil
     }
 
-    public var isEmpty: Bool { byName.isEmpty }
+    /// Exact style lookup; nil means the requested face is not registered.
+    public func metrics(for typeface: String, bold: Bool, italic: Bool) -> FontMetrics? {
+        metrics(for: FontFaceKey(family: typeface, bold: bold, italic: italic))
+    }
+
+    public func metrics(for face: FontFaceKey) -> FontMetrics? { byFace[face] }
+
+    /// Original explicit font bytes. Aliases share the same value; consumers
+    /// must honor the font's OS/2 embedding restrictions when exporting them.
+    public func data(for face: FontFaceKey) -> Data? { sourceData[face] }
+
+    public var isEmpty: Bool { byFace.isEmpty }
 }

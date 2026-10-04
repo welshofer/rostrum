@@ -65,12 +65,8 @@ public final class Slide {
             .firstChild(named: "p:cSld")?
             .firstChild(named: "p:bg")?
             .firstChild(named: "p:bgPr")?
-            .firstChild(named: "a:solidFill"),
-            let srgb = bg.firstChild(named: "a:srgbClr"),
-            let value = srgb[attribute: "val"] else { return nil }
-        // `validating:` rather than the literal init: this value came out of a
-        // file, and a malformed one should be nil rather than a trap.
-        return Color(validating: value)
+            .firstChild(named: "a:solidFill") else { return nil }
+        return BackgroundResolver.colour(in: bg, theme: resolvedTheme)
     }
 
     /// Set the slide's background fill (`p:bg`, always the first child of

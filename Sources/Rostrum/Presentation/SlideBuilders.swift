@@ -47,17 +47,17 @@ public extension Presentation {
         let slide = try titledCanvas(type: "title")
         try slide.setBackground(.solid(s.background))
         let grid = deckGrid(s)
-        // Fit the display size to the title so a long headline stays on the
-        // slide — measured with real metrics when the deck's fonts are
-        // registered, estimated by length otherwise.
+        // Start at the configured display size when its face is registered.
+        // The completed shape is fitted below: a line-count-only measurement
+        // misses both the bold face and the height of this four-row band.
         let titleBand = grid.cell(column: 0, row: 4, columnSpan: 11, rowSpan: 4)
-        // Candidates are capped at the configured role size: a custom style
-        // with a small display face must never be UPsized to a ladder value.
-        let fitted = fitSize([title], font: s.type(.display).font,
-                             candidates: [s.type(.display).sizePt, 74, 60].filter { $0 <= s.type(.display).sizePt },
-                             maxLines: 2, lineWidth: titleBand.width,
-                             fallback: title.count > 44 ? 60.0 : (title.count > 28 ? 74.0 : s.type(.display).sizePt))
-        let titleStyle = s.with(.display) { $0.sizePt = fitted }
+        let display = s.type(.display)
+        let titleStyle = s.with(.display) {
+            if fonts.metrics(for: display.font, bold: display.bold, italic: false) == nil {
+                let fallback = title.count > 44 ? 60.0 : (title.count > 28 ? 74.0 : display.sizePt)
+                $0.sizePt = Swift.min(display.sizePt, fallback)
+            }
+        }
         try slide.addAccentRule(
             in: Rect(x: grid.content.minX, y: grid.cell(column: 0, row: 3).minY,
                      width: .inches(1.4), height: .points(4)), style: s)
@@ -67,13 +67,22 @@ public extension Presentation {
         // The deck's title, as PowerPoint understands the word. Positioned by
         // the grid exactly as before; the `p:ph` binding is what puts it in the
         // outline view, the slide navigator and a screen reader.
-        try slide.addText(title, in: titleBand,
-                          role: .display, style: titleStyle, anchor: .bottom)
-            .markAsPlaceholder(type: "ctrTitle")
+        let titleShape = try slide.addText(title, in: titleBand,
+                                           role: .display, style: titleStyle, anchor: .bottom)
+        titleShape.markAsPlaceholder(type: "ctrTitle")
+        titleShape.textFrame?.paragraphs.forEach { $0.setNoBullet() }
+        // Write the computed scale, rather than bare normAutofit, which Office
+        // need not recalculate until the user edits the shape. The shared rich
+        // layout resolves bold/italic, tracking and inherited paragraph styles.
+        titleShape.fitText(fonts: fonts)
         if let subtitle {
-            try slide.addText(subtitle, in: grid.cell(column: 0, row: 9, columnSpan: 10, rowSpan: 2),
-                              role: .subhead, style: s)
-                .markAsPlaceholder(type: "subTitle", idx: 1)
+            let subtitleShape = try slide.addText(subtitle,
+                in: grid.cell(column: 0, row: 9, columnSpan: 10, rowSpan: 2), role: .subhead, style: s)
+            subtitleShape.markAsPlaceholder(type: "subTitle", idx: 1)
+            // Binding this positioned box to a real template placeholder can
+            // inherit a body bullet even though the author did not request one.
+            subtitleShape.textFrame?.paragraphs.forEach { $0.setNoBullet() }
+            subtitleShape.fitText(fonts: fonts)
         }
         return slide
     }

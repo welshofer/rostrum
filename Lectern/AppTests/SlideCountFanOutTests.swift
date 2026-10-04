@@ -41,8 +41,10 @@ import LecternCore
     }
 
     @MainActor
-    @Test func oneCallCountsEveryPendingDeckAndTheReadsOverlap() async {
-        let app = AppState(skipKeychain: true)
+    @Test func oneCallCountsEveryPendingDeckAndTheReadsOverlap() async throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         let decks = [makeDeck("a"), makeDeck("b"), makeDeck("c"), makeDeck("d")]
         // "d" has no reading — it must simply get no count, not crash or block.
         let known: [URL: Int] = [decks[0].url: 3, decks[1].url: 7, decks[2].url: 12]
@@ -73,8 +75,10 @@ import LecternCore
     }
 
     @MainActor
-    @Test func decksThatAlreadyHaveACountAreNotReReadRequested() async {
-        let app = AppState(skipKeychain: true)
+    @Test func decksThatAlreadyHaveACountAreNotReReadRequested() async throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
         let one = makeDeck("one")
         let two = makeDeck("two")
         let known: [URL: Int] = [one.url: 5, two.url: 9]

@@ -1,0 +1,95 @@
+{
+  "source": "Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-boundaries.pptx",
+  "sourceSHA256": "515853d753943019db5245b08c8e5cdce70aebe86750b50439db1ca2a4d7c5d1",
+  "nativePDF": "Tests/RostrumTests/Fixtures/LineBreakBoundaries/powerpoint.pdf",
+  "nativePDFSHA256": "c617e5f539cd053d5b3c22394a19aa369399ee63040bf76d764d4293df531096",
+  "font": "DejaVuSans.ttf",
+  "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+  "scope": "PowerPoint 16.113.3: left-to-right ASCII, zero body insets, paragraph margins and indent; regular embedded DejaVu Sans. Native probes disable kerning; the m/m and m/Z pairs have identical independent HarfBuzz output with kerning on and off, so this public-API demo leaves kerning omitted. Fit choices are computed, not native autofit-choice expectations.",
+  "cases": [
+    {
+      "id": "dejavu-18-1",
+      "title": "Uniform 18 pt run",
+      "narrow": true,
+      "widthPoints": 209.99,
+      "runs": [
+        {
+          "text": "mmmmmmmmmmmmZ",
+          "font": "DejaVu Sans",
+          "size": 18,
+          "tracking": 0
+        }
+      ],
+      "nativeLines": [
+        "mmmmmmmmmmm",
+        "mZ"
+      ]
+    },
+    {
+      "id": "dejavu-18-2",
+      "title": "Uniform 18 pt run",
+      "narrow": false,
+      "widthPoints": 210.01,
+      "runs": [
+        {
+          "text": "mmmmmmmmmmmmZ",
+          "font": "DejaVu Sans",
+          "size": 18,
+          "tracking": 0
+        }
+      ],
+      "nativeLines": [
+        "mmmmmmmmmmmm",
+        "Z"
+      ]
+    },
+    {
+      "id": "dejavu-mixed-size-1",
+      "title": "Mixed 18/10 pt runs",
+      "narrow": true,
+      "widthPoints": 108.99,
+      "runs": [
+        {
+          "text": "mmmm",
+          "font": "DejaVu Sans",
+          "size": 18,
+          "tracking": 0
+        },
+        {
+          "text": "mmmmZ",
+          "font": "DejaVu Sans",
+          "size": 10,
+          "tracking": 0
+        }
+      ],
+      "nativeLines": [
+        "mmmmmmm",
+        "mZ"
+      ]
+    },
+    {
+      "id": "dejavu-mixed-size-2",
+      "title": "Mixed 18/10 pt runs",
+      "narrow": false,
+      "widthPoints": 109.01,
+      "runs": [
+        {
+          "text": "mmmm",
+          "font": "DejaVu Sans",
+          "size": 18,
+          "tracking": 0
+        },
+        {
+          "text": "mmmmZ",
+          "font": "DejaVu Sans",
+          "size": 10,
+          "tracking": 0
+        }
+      ],
+      "nativeLines": [
+        "mmmmmmmm",
+        "Z"
+      ]
+    }
+  ]
+}

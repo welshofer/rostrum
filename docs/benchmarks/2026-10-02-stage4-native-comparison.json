@@ -1,0 +1,51 @@
+{
+  "rasterizer": "resvg-py 0.5.0",
+  "imageReader": "Pillow 12.3.0",
+  "svgSHA256": "8317726f75f6901f63db8ea87ee4a71b7846fee713f3b10b5c748ba729a120e5",
+  "referenceSHA256": "118605ddc801546321cca798c59f9c894e46b96e0770f4d232bec4cae94b2c01",
+  "width": 1200,
+  "height": 700,
+  "fontAliases": {
+    "RostrumEmbeddedFace1": {
+      "family": "Calibri",
+      "path": "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibrib.ttf",
+      "sha256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+      "style": "normal",
+      "weight": 700
+    },
+    "RostrumEmbeddedFace2": {
+      "family": "Calibri",
+      "path": "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibri.ttf",
+      "sha256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+      "style": "normal",
+      "weight": 400
+    },
+    "RostrumEmbeddedFace3": {
+      "family": "Arial",
+      "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+      "style": "normal",
+      "weight": 400
+    },
+    "RostrumEmbeddedFace4": {
+      "family": "Arial",
+      "path": "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+      "sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0",
+      "style": "normal",
+      "weight": 700
+    }
+  },
+  "dimensionPolicy": "Both SVG roots use the verified reference dimensions and matching viewBox aspect",
+  "embeddedStylesIgnored": true,
+  "channelTolerance": 16,
+  "maximumDifferenceFraction": 0.005,
+  "original": {
+    "differingPixels": 18915,
+    "fraction": 0.02251785714285714
+  },
+  "corrected": {
+    "differingPixels": 18082,
+    "fraction": 0.021526190476190477
+  },
+  "passed": false
+}

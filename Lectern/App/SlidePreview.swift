@@ -25,15 +25,15 @@ struct SlidePreview {
 
     /// The SVG carries the slide's own background and aspect ratio (an explicit
     /// `viewBox`), so the wrapper only has to stop the web view adding chrome,
-    /// margins or a scrollbar around it. Width 100% with `height: auto`
-    /// overrides the SVG's pixel width and scales it by the viewBox instead.
+    /// margins or a scrollbar around it. A full-viewport SVG uses its viewBox
+    /// to contain the slide even in a differently proportioned app panel.
     private var document: String {
         """
         <!doctype html><html><head><meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
-          html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
-          svg { display: block; width: 100%; height: auto; }
+          html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+          body > svg { display: block; width: 100%; height: 100%; }
         </style></head><body>\(svg)</body></html>
         """
     }
@@ -138,13 +138,13 @@ struct SlideContactSheet: View {
         self.total = total
     }
 
-    init(previews: [String], titles: [String] = []) {
+    init(previews: [String], titles: [String] = [], slideNumbers: [Int] = [], slideCount: Int? = nil) {
         records = previews.enumerated().map { index, svg in
-            SlidePreviewRecord(number: index + 1,
+            SlidePreviewRecord(number: slideNumbers.indices.contains(index) ? slideNumbers[index] : index + 1,
                                title: titles.indices.contains(index) ? titles[index] : "",
                                svg: svg)
         }
-        total = previews.count
+        total = slideCount ?? previews.count
     }
 
     /// Fixed at three so the grid reads as a contact sheet at any window size;
@@ -209,4 +209,11 @@ struct SlideFilmstrip: View {
         }
         .frame(height: 152)
     }
+}
+
+func slideLabel(_ index: Int, of count: Int, titles: [String], slideNumbers: [Int] = []) -> String {
+    let number = slideNumbers.indices.contains(index) ? slideNumbers[index] : index + 1
+    let base = "Slide \(number) of \(count)"
+    guard titles.indices.contains(index), !titles[index].isEmpty else { return base }
+    return "\(base): \(titles[index])"
 }

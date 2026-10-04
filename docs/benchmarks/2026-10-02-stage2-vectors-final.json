@@ -1,0 +1,572 @@
+{
+  "scope": "Supplemental common-resvg attribution. PDF print text is not a replacement PNG acceptance reference.",
+  "tools": {
+    "Pillow": "12.3.0",
+    "resvg-py": "0.5.0"
+  },
+  "source": {
+    "path": "Tools/render-regression/office_vector_diagnostic.py",
+    "sha256": "6e78a645b95a46ca45077fb80564c71c6bd37789a786f4a50d7910e3b3b9b9fb"
+  },
+  "dependencySources": [
+    {
+      "path": "Tools/conformance/check_text_rendering.py",
+      "sha256": "d0e5a432c2efbf134559a728c63f39df1c5d751fce91270223c9a3c13c749a57"
+    },
+    {
+      "path": "Tools/render-regression/analyze_fidelity.py",
+      "sha256": "eff6d441bc0ef554cf3a7e9a08a159d4a897f4ab591768d28a321b08fb125df6"
+    }
+  ],
+  "vectorMeasurementSource": {
+    "path": "evidence/stage2-office-vectors/office-vector-measurements.json",
+    "sha256": "b451c284fbf9641588f79780ebef2bd517de2689aa9bf1ded2303e783f2ab370"
+  },
+  "candidate": {
+    "path": "evidence/stage2-table-v3.svg",
+    "sha256": "8317726f75f6901f63db8ea87ee4a71b7846fee713f3b10b5c748ba729a120e5"
+  },
+  "officeSVG": {
+    "path": "evidence/stage2-office-vectors/office-cropped-vectors.svg",
+    "sha256": "32382af5028914886269dadd2d12bd0fb4d3af1cfbba2b71ba359e36bd6a9411"
+  },
+  "officePNG": {
+    "path": "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-office.png",
+    "sha256": "118605ddc801546321cca798c59f9c894e46b96e0770f4d232bec4cae94b2c01"
+  },
+  "fontAliases": {
+    "RostrumEmbeddedFace1": {
+      "family": "Calibri",
+      "path": "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibrib.ttf",
+      "sha256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+      "style": "normal",
+      "weight": 700
+    },
+    "RostrumEmbeddedFace2": {
+      "family": "Calibri",
+      "path": "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibri.ttf",
+      "sha256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+      "style": "normal",
+      "weight": 400
+    },
+    "RostrumEmbeddedFace3": {
+      "family": "Arial",
+      "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+      "style": "normal",
+      "weight": 400
+    },
+    "RostrumEmbeddedFace4": {
+      "family": "Arial",
+      "path": "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+      "sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0",
+      "style": "normal",
+      "weight": 700
+    }
+  },
+  "coreProbes": [
+    {
+      "pixel": [
+        700,
+        300
+      ],
+      "officePNGAndPDF": [
+        235,
+        242,
+        250
+      ],
+      "candidate": [
+        235,
+        242,
+        250
+      ]
+    },
+    {
+      "pixel": [
+        700,
+        400
+      ],
+      "officePNGAndPDF": [
+        255,
+        255,
+        255
+      ],
+      "candidate": [
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "pixel": [
+        300,
+        99
+      ],
+      "officePNGAndPDF": [
+        204,
+        51,
+        0
+      ],
+      "candidate": [
+        204,
+        51,
+        0
+      ]
+    },
+    {
+      "pixel": [
+        99,
+        300
+      ],
+      "officePNGAndPDF": [
+        27,
+        54,
+        93
+      ],
+      "candidate": [
+        27,
+        54,
+        93
+      ]
+    },
+    {
+      "pixel": [
+        600,
+        300
+      ],
+      "officePNGAndPDF": [
+        27,
+        54,
+        93
+      ],
+      "candidate": [
+        27,
+        54,
+        93
+      ]
+    },
+    {
+      "pixel": [
+        700,
+        224
+      ],
+      "officePNGAndPDF": [
+        51,
+        51,
+        51
+      ],
+      "candidate": [
+        51,
+        51,
+        51
+      ]
+    },
+    {
+      "pixel": [
+        850,
+        400
+      ],
+      "officePNGAndPDF": [
+        24,
+        169,
+        153
+      ],
+      "candidate": [
+        24,
+        169,
+        153
+      ]
+    }
+  ],
+  "officeVectorsVersusCandidate": {
+    "differingPixels": 5480,
+    "fraction": 0.006523809523809524,
+    "strokeZone": 0,
+    "outsideStrokeZone": 5480
+  },
+  "officeVectorsVersusOfficePNG": {
+    "differingPixels": 18405,
+    "fraction": 0.021910714285714287,
+    "strokeZone": 13367,
+    "outsideStrokeZone": 5038
+  },
+  "candidateVersusOfficePNG": {
+    "differingPixels": 18082,
+    "fraction": 0.021526190476190477,
+    "strokeZone": 13367,
+    "outsideStrokeZone": 4715
+  },
+  "residualAttribution": {
+    "maskDefinitions": {
+      "A": "candidate versus Office PNG",
+      "B": "Office vectors versus Office PNG",
+      "C": "candidate versus Office vectors"
+    },
+    "strokeOverlap": {
+      "A": 13367,
+      "B": 13367,
+      "C": 0,
+      "AintersectB": 13367,
+      "AsymmetricDifferenceB": 0
+    },
+    "outsideStrokeOverlap": {
+      "A": 4715,
+      "B": 5038,
+      "C": 5480,
+      "AintersectB": 3448,
+      "Aonly": 1267,
+      "Bonly": 1590,
+      "AunionB": 6305
+    },
+    "regions": [
+      {
+        "region": "merged-origin",
+        "bounds": [
+          100,
+          100,
+          600,
+          350
+        ],
+        "candidateVsOfficePNG": 0,
+        "officeVectorsVsOfficePNG": 0,
+        "candidateVsOfficeVectors": 0
+      },
+      {
+        "region": "R0C2",
+        "bounds": [
+          600,
+          100,
+          850,
+          225
+        ],
+        "candidateVsOfficePNG": 0,
+        "officeVectorsVsOfficePNG": 0,
+        "candidateVsOfficeVectors": 0
+      },
+      {
+        "region": "R0C3",
+        "bounds": [
+          850,
+          100,
+          1100,
+          225
+        ],
+        "candidateVsOfficePNG": 0,
+        "officeVectorsVsOfficePNG": 0,
+        "candidateVsOfficeVectors": 0
+      },
+      {
+        "region": "R1C2",
+        "bounds": [
+          600,
+          225,
+          850,
+          350
+        ],
+        "candidateVsOfficePNG": 333,
+        "officeVectorsVsOfficePNG": 398,
+        "candidateVsOfficeVectors": 441
+      },
+      {
+        "region": "R1C3",
+        "bounds": [
+          850,
+          225,
+          1100,
+          350
+        ],
+        "candidateVsOfficePNG": 342,
+        "officeVectorsVsOfficePNG": 414,
+        "candidateVsOfficeVectors": 442
+      },
+      {
+        "region": "R2C0",
+        "bounds": [
+          100,
+          350,
+          400,
+          475
+        ],
+        "candidateVsOfficePNG": 354,
+        "officeVectorsVsOfficePNG": 435,
+        "candidateVsOfficeVectors": 481
+      },
+      {
+        "region": "R2C1-first-line",
+        "bounds": [
+          400,
+          350,
+          600,
+          395
+        ],
+        "candidateVsOfficePNG": 1178,
+        "officeVectorsVsOfficePNG": 950,
+        "candidateVsOfficeVectors": 858
+      },
+      {
+        "region": "R2C1-second-line",
+        "bounds": [
+          400,
+          395,
+          600,
+          475
+        ],
+        "candidateVsOfficePNG": 334,
+        "officeVectorsVsOfficePNG": 153,
+        "candidateVsOfficeVectors": 285
+      },
+      {
+        "region": "R2C2",
+        "bounds": [
+          600,
+          350,
+          850,
+          475
+        ],
+        "candidateVsOfficePNG": 350,
+        "officeVectorsVsOfficePNG": 428,
+        "candidateVsOfficeVectors": 493
+      },
+      {
+        "region": "R2C3",
+        "bounds": [
+          850,
+          350,
+          1100,
+          475
+        ],
+        "candidateVsOfficePNG": 359,
+        "officeVectorsVsOfficePNG": 442,
+        "candidateVsOfficeVectors": 493
+      },
+      {
+        "region": "R3C0",
+        "bounds": [
+          100,
+          475,
+          400,
+          600
+        ],
+        "candidateVsOfficePNG": 371,
+        "officeVectorsVsOfficePNG": 456,
+        "candidateVsOfficeVectors": 499
+      },
+      {
+        "region": "R3C1",
+        "bounds": [
+          400,
+          475,
+          600,
+          600
+        ],
+        "candidateVsOfficePNG": 349,
+        "officeVectorsVsOfficePNG": 433,
+        "candidateVsOfficeVectors": 454
+      },
+      {
+        "region": "R3C2",
+        "bounds": [
+          600,
+          475,
+          850,
+          600
+        ],
+        "candidateVsOfficePNG": 368,
+        "officeVectorsVsOfficePNG": 449,
+        "candidateVsOfficeVectors": 508
+      },
+      {
+        "region": "R3C3",
+        "bounds": [
+          850,
+          475,
+          1100,
+          600
+        ],
+        "candidateVsOfficePNG": 377,
+        "officeVectorsVsOfficePNG": 469,
+        "candidateVsOfficeVectors": 515
+      }
+    ],
+    "outsideTable": {
+      "candidateVsOfficePNG": 0,
+      "officeVectorsVsOfficePNG": 11,
+      "candidateVsOfficeVectors": 11
+    },
+    "regionPolicy": "Half-open table-cell bounds; mixed cell split at y395 in the empty gap between lines. Stroke zones excluded.",
+    "outsideTableCaveat": "The PDF crop can expose print-page furniture at its bottom corners; these pixels are separated from table text.",
+    "nonadditivity": "Pairwise thresholded pixel sets are not additive error contributions. PDF print typography makes text mask B more than raster error."
+  },
+  "mergedStrokeStyleKeysMatch": true,
+  "strokeIntervals": [
+    {
+      "style": "('h', 100.0, (204, 51, 0), 2.778)",
+      "office": [
+        98.61121849144224,
+        1101.3889240955548
+      ],
+      "candidate": [
+        98.61111111111111,
+        1101.388888888889
+      ],
+      "maximumEndpointDeltaPixels": 0.00010738033113000256
+    },
+    {
+      "style": "('h', 225.0, (51, 51, 51), 2.778)",
+      "office": [
+        598.6112026484426,
+        1101.3889240955548
+      ],
+      "candidate": [
+        598.6111111111111,
+        1101.388888888889
+      ],
+      "maximumEndpointDeltaPixels": 9.153733151379129e-05
+    },
+    {
+      "style": "('h', 350.0, (204, 51, 0), 2.778)",
+      "office": [
+        400.0000633719987,
+        600.0
+      ],
+      "candidate": [
+        400.0,
+        600.0
+      ],
+      "maximumEndpointDeltaPixels": 6.337199869221877e-05
+    },
+    {
+      "style": "('h', 350.0, (51, 51, 51), 2.778)",
+      "office": [
+        98.61121849144224,
+        400.0000633719987
+      ],
+      "candidate": [
+        98.61111111111111,
+        400.0
+      ],
+      "maximumEndpointDeltaPixels": 0.00010738033113000256
+    },
+    {
+      "style": "('h', 350.0, (51, 51, 51), 2.778)",
+      "office": [
+        600.0,
+        1101.3889240955548
+      ],
+      "candidate": [
+        600.0,
+        1101.388888888889
+      ],
+      "maximumEndpointDeltaPixels": 3.520666587064625e-05
+    },
+    {
+      "style": "('h', 475.0, (51, 51, 51), 2.778)",
+      "office": [
+        98.61121849144224,
+        1101.3889240955548
+      ],
+      "candidate": [
+        98.61111111111111,
+        1101.388888888889
+      ],
+      "maximumEndpointDeltaPixels": 0.00010738033113000256
+    },
+    {
+      "style": "('h', 600.0, (51, 51, 51), 2.778)",
+      "office": [
+        98.61121849144224,
+        1101.3889240955548
+      ],
+      "candidate": [
+        98.61111111111111,
+        1101.388888888889
+      ],
+      "maximumEndpointDeltaPixels": 0.00010738033113000256
+    },
+    {
+      "style": "('v', 100.0, (27, 54, 93), 2.778)",
+      "office": [
+        98.6111563978158,
+        601.3889387042641
+      ],
+      "candidate": [
+        98.61111111111111,
+        601.3888888888889
+      ],
+      "maximumEndpointDeltaPixels": 4.9815375177786336e-05
+    },
+    {
+      "style": "('v', 1100.0, (24, 169, 153), 2.778)",
+      "office": [
+        98.6111563978158,
+        601.3889387042641
+      ],
+      "candidate": [
+        98.61111111111111,
+        601.3888888888889
+      ],
+      "maximumEndpointDeltaPixels": 4.9815375177786336e-05
+    },
+    {
+      "style": "('v', 400.0, (24, 169, 153), 2.778)",
+      "office": [
+        348.611129225793,
+        601.3889387042641
+      ],
+      "candidate": [
+        348.6111111111111,
+        601.3888888888889
+      ],
+      "maximumEndpointDeltaPixels": 4.9815375177786336e-05
+    },
+    {
+      "style": "('v', 600.0, (24, 169, 153), 2.778)",
+      "office": [
+        98.6111563978158,
+        225.0000135860114
+      ],
+      "candidate": [
+        98.61111111111111,
+        225.0
+      ],
+      "maximumEndpointDeltaPixels": 4.528670469028384e-05
+    },
+    {
+      "style": "('v', 600.0, (24, 169, 153), 2.778)",
+      "office": [
+        350.0000475510399,
+        601.3889387042641
+      ],
+      "candidate": [
+        350.0,
+        601.3888888888889
+      ],
+      "maximumEndpointDeltaPixels": 4.9815375177786336e-05
+    },
+    {
+      "style": "('v', 600.0, (27, 54, 93), 2.778)",
+      "office": [
+        225.0000135860114,
+        350.0000475510399
+      ],
+      "candidate": [
+        225.0,
+        350.0
+      ],
+      "maximumEndpointDeltaPixels": 4.755103992692966e-05
+    },
+    {
+      "style": "('v', 850.0, (24, 169, 153), 2.778)",
+      "office": [
+        98.6111563978158,
+        601.3889387042641
+      ],
+      "candidate": [
+        98.61111111111111,
+        601.3888888888889
+      ],
+      "maximumEndpointDeltaPixels": 4.9815375177786336e-05
+    }
+  ],
+  "maximumEndpointDeltaPixels": 0.00010738033113000256
+}

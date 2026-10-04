@@ -1,0 +1,71 @@
+{
+  "candidateWorkerCommit": "f839c8951ca2fdaf20b4ac8ada106483238011a7",
+  "candidateRootCommit": "301a6c27de03fdc13d4b2617724de40c861a71e9",
+  "candidateLibraryGitTree": "17b721dacf82e8f7a08fbfbcb6e56bd00cc52293",
+  "rootLibraryGitTree": "17b721dacf82e8f7a08fbfbcb6e56bd00cc52293",
+  "sourceEqualityCheck": "git diff 301a6c2 -- Sources/Rostrum Tools/rostrum-bench returned empty output; identical library Git tree",
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf8-combined",
+  "files": {
+    "candidate-Rostrum.o": "79208d290a760bfd2c3c1b846ca5b2f5fa521eda50442e9ef3d161277b8aa8a7",
+    "candidate-bench": "72717e82bc09607c79fe9db0254b1061bf1e7931e4c0680cd8fa70a0a3ba5d42",
+    "candidate-extended-bench": "d9c10a4b10666e71fef104cfc7bcc7fcd549502c69f88ba1baced3041268d31d",
+    "candidate-build.log": "c270358ce4eea65c83b9b3f04264e533907e806deb31625133b2c1da4352e87c",
+    "workload-proof.py": "5ebedce372d446f9ef516abe66177412f65dbd99bd7c87aa2506ffea813cf8c4",
+    "output-proof.log": "e1dc99cfb16056bf629f1ca5d8327e2a2d93c0e5c0ed4436b5b11bda3bb9efef",
+    "paired.log": "d7bf629ed72a6bcfa66aa77a8ca8a2a0f5cadbfe7b5029e9eef0fcc6a28a7339",
+    "recovery-paired.log": "5a98aa2dbb5d73af2f3070e9838d6634ea554d4a59755681df22684f38e2f837"
+  },
+  "baselines": {
+    "current": {
+      "revision": "5654d1b09e43d26f93a195270f8832b6be3a21e4",
+      "directory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf5",
+      "files": {
+        "baseline-Rostrum.o": "d1c58102341eb35012580f71b239c4f63c925c8b5d930bd65896698e38bd913c",
+        "baseline-extended-bench": "d5d85a51b80de125e2b5edb2f7222918a604127322b9a73542b616007a3f8b10"
+      }
+    },
+    "preTab": {
+      "revision": "cf1b8a0cec2cf680383cb683603785aeaa0f2011",
+      "directory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf4",
+      "files": {
+        "baseline-Rostrum.o": "4e54243c71c0fba80a251195c1224cbbf417f1bf694441e9a6637b52dcb9df75",
+        "baseline-extended-bench": "39455d6d17672947c0af314581aa4adaa43e548bee0900fbba1d9c7629a54782"
+      }
+    }
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "d3d5a1694679c2bdeb9b0af78be12f79811e8f37ad9f9e6718904bb4afddb3c7",
+    "Sources/Rostrum/Fonts/TextShaper.swift": "e3545c95b1d100dfe967d5e4426e03d686860c11c56fe1f92b6b5832ee94305d",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792"
+  },
+  "receiptSHA256": {
+    "docs/benchmarks/2026-10-03-final-combined-layout-paired-macos.json": "8c656253d2f1d204563a37e013419c6ee7c91bffd1ac2056c9b3843dbcb3c538",
+    "docs/benchmarks/2026-10-03-final-combined-layout-recovery-paired-macos.json": "d245560fa7104888e165d4233cb6cb66774d3420acb88ed8319b73726f6dd47e",
+    "docs/benchmarks/2026-10-03-final-combined-layout-output-proof.json": "ace6c1742e8fbbf279f56ef970eab80d4d46ab57fd8867cbfd343e83f30678eb"
+  },
+  "buildCommand": "swift build -c release --product rostrum-bench --jobs 2",
+  "buildResult": "Build complete! (55.13 sec)",
+  "matchedDriverCompileCommand": "swiftc -swift-version 6 -O -I .build/perf8-combined Tools/rostrum-bench/main.swift .build/perf8-combined/candidate-Rostrum.o -o .build/perf8-combined/candidate-extended-bench",
+  "measurementCommands": [
+    "ROSTRUM_BENCH_FONT=/System/Library/Fonts/Supplemental/Arial.ttf python3 Tools/rostrum-bench/run.py --binary .build/perf8-combined/candidate-extended-bench --paired-binary .build/perf5/baseline-extended-bench --paired-revision 5654d1b09e43d26f93a195270f8832b6be3a21e4 --runs 10 --warmups 1 --scenarios table-200x50 shaped-table-100x20 richtext-fit slides-10 --output docs/benchmarks/2026-10-03-final-combined-layout-paired-macos.json",
+    "ROSTRUM_BENCH_FONT=/System/Library/Fonts/Supplemental/Arial.ttf python3 Tools/rostrum-bench/run.py --binary .build/perf8-combined/candidate-extended-bench --paired-binary .build/perf4/baseline-extended-bench --paired-revision cf1b8a0cec2cf680383cb683603785aeaa0f2011 --runs 10 --warmups 1 --scenarios table-200x50 shaped-table-100x20 richtext-fit slides-10 --output docs/benchmarks/2026-10-03-final-combined-layout-recovery-paired-macos.json"
+  ],
+  "measurementQuietWindow": "Parent explicitly granted after root builds/tests/GUI stopped, Lectern confirmed no CPU jobs and paused, engine complete and reviewer idle. Both comparisons ran sequentially after grant; parent notified immediately on completion. No timing jobs remained on release.",
+  "measurementRunner": "Canonical unchanged Tools/rostrum-bench/run.py, schema 2; original cross-version saved-PPTX hash equality check passed. Scratch paired-output-aware.py and runner.patch were not used for either timing comparison.",
+  "proofCommand": "python3 .build/perf8-combined/workload-proof.py",
+  "proofResult": "4 scenarios, 13 candidate slides deterministic across two repetitions; 32 PPTX independent reopen/table traversals with python-pptx 1.0.2. All saved PPTX hashes equal across both baselines and candidate. Registered-table SVG and rich-fit ordered diagnostics intentionally differ from both baselines.",
+  "localChecks": [
+    "release build passed",
+    "both ten-pair timing commands exited 0",
+    "deterministic output/reopen script exited 0",
+    "source matches root 301a6c2",
+    "git diff --check passed"
+  ],
+  "externalCorrectnessEvidence": {
+    "scope": "Reported by parent/fidelity worker; not locally re-executed during measurement task",
+    "tests": "1025 tests in 142 suites passed at fidelity source 85f70a2",
+    "native": "175 line-content cases and 174 horizontal calibrations passed; old 60 native tab cases unchanged"
+  },
+  "acceptance": "Combined registered render and fitting improve against 5654d1b with all ten pairs faster and nonoverlapping ranges. Registered render also improves versus cf1b8a0 with nonoverlap. Combined fitting recovery is favorable by median and nine pairs but overlapping ranges limit confidence. Fallback recovery remains unproven (0.27% slower median versus cf1b8a0; five faster pairs). No universal speed, net memory or cross-platform claim."
+}

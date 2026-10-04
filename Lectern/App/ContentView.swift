@@ -11,6 +11,7 @@ struct ContentView: View {
     @Environment(AppState.self) private var app
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var section: LibrarySection = .recent
+    @State private var labModel = LibraryLabModel()
     @State private var query = ""
     @State private var preferredColumns: NavigationSplitViewVisibility = .all
     @State private var windowWidth: CGFloat = 1200
@@ -127,10 +128,14 @@ struct ContentView: View {
         Group {
             switch app.phase {
             case .home:
-                DeckGridView(section: section, query: $query, layout: layout,
-                             columnCount: deckColumnCount)
-                    .searchable(text: $query, placement: .toolbar, prompt: "Search")
-                    .transition(phaseTransition)
+                if section == .lab {
+                    LibraryLabView(model: labModel)
+                } else {
+                    DeckGridView(section: section, query: $query, layout: layout,
+                                 columnCount: deckColumnCount)
+                        .searchable(text: $query, placement: .toolbar, prompt: "Search")
+                        .transition(phaseTransition)
+                }
             case .compose: ComposeView().transition(phaseTransition)
             case .generating: GeneratingView().transition(phaseTransition)
             case .result(let r): ResultView(result: r).transition(phaseTransition)
@@ -206,7 +211,7 @@ struct ContentView: View {
                 }
                 .help("Back to your decks")
             }
-        } else {
+        } else if section != .lab {
             ToolbarItem {
                 // A segmented picker rather than a single toggle: with one
                 // button the icon has to mean either "what you have" or "what
@@ -490,7 +495,7 @@ struct ComposeView: View {
         } message: {
             Text(importError ?? "")
         }
-        .task { app.refreshLibrary() }
+        .task { await app.refreshLibraryAndWait() }
     }
 
     @ViewBuilder private var groundingCard: some View {
@@ -716,9 +721,10 @@ struct ResultView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                // Rendered by Rostrum from the deck on disk, so what you see
-                // here is what PowerPoint will open — not a redraw of the plan.
-                SlideContactSheet(previews: result.previews, titles: result.previewTitles)
+                // Rendered from the written deck. Known preview differences
+                // are reported separately below.
+                SlideContactSheet(previews: result.previews, titles: result.previewTitles,
+                                  slideNumbers: result.previewSlideNumbers, slideCount: result.slideCount)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 Divider()
             }
@@ -787,13 +793,15 @@ struct ResultView: View {
                 }
                 .frame(maxWidth: 420)
             }
+            if !result.previewDiagnostics.isEmpty {
+                PreviewDiagnosticsView(diagnostics: result.previewDiagnostics)
+                    .frame(maxWidth: 420)
+            }
             if !result.unmeasuredFonts.isEmpty {
-                // Not a warning: the deck is fine, its text was just sized by
-                // estimate because these faces aren't installed on this Mac.
-                DisclosureGroup("\(result.unmeasuredFonts.count) font(s) not installed") {
-                    Text("Text in \(result.unmeasuredFonts.joined(separator: ", ")) was fitted "
-                        + "by estimate. Install the font and re-render to size it from real "
-                        + "glyph metrics.")
+                DisclosureGroup("\(result.unmeasuredFonts.count) font face(s) unavailable for measurement") {
+                    Text("Lectern could not load exact metrics for \(result.unmeasuredFonts.joined(separator: ", ")). "
+                        + "Text using these faces may use estimated sizing. Make the exact "
+                        + "font faces available and re-render to measure them.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: 420)

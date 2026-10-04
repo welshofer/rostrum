@@ -85,23 +85,27 @@ then add `"Rostrum"` to your target's dependencies.
 | **Shapes** | 178 preset geometries, rounded rects (pill corners), transforms, rotation |
 | **Fills & lines** | solid, alpha, multi-stop gradients, outlines, soft shadows |
 | **Text** | paragraphs, runs, fonts, sizes, colours, alignment, spacing, tracking, **bullets, numbered lists, hyperlinks** |
-| **Pictures** | PNG/JPEG/GIF sniffing, content dedup, natural sizing, **cover-crop (`fit: .fill`)**, alt text |
-| **Tables** | grid, cell fills & anchors, merge, banded rows |
+| **Pictures** | PNG/JPEG/GIF sniffing, content dedup, crop read/edit, isolated replacement, stretch/tile mapping, picture rotation/reflection and geometry clipping |
+| **Tables** | merge inspection/unmerge, row/column insertion, removal and reordering, edge/diagonal borders, padding, image fills, embedded/custom style resolution |
 | **Charts** | bar / line / pie / area / doughnut / scatter / **radar / bubble / combo**, stacked & multi-series, titles, **data labels**, axis control, embedded Edit-Data workbook |
 | **Chart editing** | `deck.charts` reads any deck's charts; `replaceData` swaps every cache and the workbook or **refuses without writing a byte**; `addSeries` / `removeSeries` |
-| **Rendering** | `renderSVG(slideAt:)` / `exportSVG` — headless slide→SVG previews with real font metrics, master/layout inheritance, no platform text stack; `renderSVGReportingProblems` names a broken inheritance chain instead of quietly rendering without it |
+| **Rendering** | `renderSVG(slideAt:)` / `exportSVG` — deterministic SVG previews with shared rich-text layout and master/layout inheritance; structured fidelity reports and opt-in `strictRendering` reject known gaps |
 | **SmartArt** | Basic Block List creation; **text extraction from any diagram** |
-| **Comments** | modern threaded comments, replies, resolve |
-| **Notes** | per-slide speaker notes |
-| **Fonts** | **embed TTF/OTF** so a deck renders identically everywhere; **parse font metrics** (pure Swift, zero deps) to measure text |
-| **Text fitting** | `shape.fitText(using:)` — measure with real font metrics and write a **computed `normAutofit`**, so text provably fits its box (python-pptx's `fit_text` can't) |
+| **Comments** | modern threads/replies, text editing, resolve/reopen/delete, slide/shape/text anchors; legacy comment read/create/edit/delete |
+| **Notes** | rich speaker notes, independent duplicates, source notes-master preservation on import; bounded notes-page SVG previews with fidelity diagnostics; incompatible masters are refused atomically |
+| **Fonts** | distinct regular/bold/italic faces, TTF/OTF embedding, bounded Swift kerning/ligature shaping with diagnostics for unsupported scripts; permitted registered fonts are embedded in SVG |
+| **Text fitting** | `shape.fitText(fonts: deck.fonts)` — shared mixed-run layout measures registered faces and writes computed `normAutofit`; inspect `renderSVGReportingProblems` for unsupported script/layout cases |
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import a slide from another deck with its images, charts and layout intact |
 | **Design layer** | `DeckStyle` (type scale, WCAG auto-contrast, tokens); one-call slide builders; cards/buttons/kickers/stat tiles; a Grid DSL |
 | **Templates** | lossless `.potx`/`.ppsx` round-trip; `Presentation.fromTemplate(data:)` creates a new deck retaining masters, layouts, themes and their assets; `RostrumLayout` fills inherited placeholders and checks fit; `design.md` can compile into a native master and subordinate layouts |
-| **Sections** | native PowerPoint sections; footers, slide numbers, dates via live fields |
 | **Extraction** | `deck.outline()` — every slide's text (title, subtitle, bullets with outline level, table cells, SmartArt, notes) as a value type; `DeckExport.write` unpacks a deck to a folder: one Markdown file plus per-slide media and one CSV per chart |
-| **Tooling** | `pptx-tool inspect`/`validate` — modeled structural lint, not proof of PowerPoint acceptance; `pptx-tool extract` — a deck to Markdown + media + chart CSVs |
+| **Sections** | native sections, membership maintained across slide lifecycle operations, section removal/reordering; footers, slide numbers, dates via live fields |
+| **Tooling** | `pptx-tool inspect`/`validate` — schema lint; `extract` — Markdown + media + chart CSVs; `render` — SVG with fidelity diagnostics and `--strict`; separate Office/visual conformance gates |
+
+Read/edit/preservation support and preview fidelity are separate claims. See the
+[operation-level conformance matrix](docs/CONFORMANCE.md) for evidence and open
+acceptance gaps. Animation is outside the current accuracy/performance work.
 
 ## Design
 

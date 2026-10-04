@@ -16,7 +16,9 @@ public final class Part {
     public let rels: Relationships
 
     /// The part's serialized bytes. Authoritative while `isDirty` is false.
-    public internal(set) var blob: Data
+    public internal(set) var blob: Data { didSet { blobRevision &+= 1; didReplaceBlob?() } }
+    private(set) var blobRevision: UInt64 = 0
+    var didReplaceBlob: (() -> Void)?
 
     private var cachedDocument: XML.Document?
     public private(set) var isDirty = false
@@ -123,6 +125,36 @@ public final class OPCPackage {
         parts = [:]
         rels = Relationships()
         contentTypes = ContentTypesMap()
+    }
+
+    // Indexed by size plus CRC, with exact-byte verification for collisions.
+    private struct MediaKey: Hashable { let size: Int; let crc: UInt32 }
+    private var mediaIndex: [MediaKey: [PackURI]]?
+
+    private func watchPart(_ part: Part) {
+        let uri = part.uri
+        part.didReplaceBlob = { [weak self] in
+            guard let self else { return }
+            if uri.value.hasPrefix("/ppt/media/") { self.mediaIndex = nil }
+            self.discardCachedPayload(at: uri)
+        }
+    }
+    private func mediaKey(_ data: Data) -> MediaKey { MediaKey(size: data.count, crc: CRC32.checksum(data)) }
+
+    func matchingMedia(for data: Data) -> Part? {
+        if mediaIndex == nil {
+            var index: [MediaKey: [PackURI]] = [:]
+            for (uri, part) in parts where uri.value.hasPrefix("/ppt/media/") {
+                index[mediaKey(part.blob), default: []].append(uri)
+                watchPart(part)
+            }
+            for key in index.keys { index[key]!.sort { $0.value < $1.value } }
+            mediaIndex = index
+        }
+        for uri in mediaIndex?[mediaKey(data)] ?? [] {
+            if let part = parts[uri], part.blob == data { return part }
+        }
+        return nil
     }
 
     // MARK: - Reading
@@ -246,14 +278,26 @@ public final class OPCPackage {
 
     @discardableResult
     public func addPart(uri: PackURI, contentType: String, blob: Data) -> Part {
+        discardCachedPayload(at: uri)
         let part = Part(uri: uri, contentType: contentType, blob: blob)
+        if let old = parts[uri], old.uri.value.hasPrefix("/ppt/media/") { mediaIndex = nil }
         parts[uri] = part
+        if uri.value.hasPrefix("/ppt/media/") {
+            watchPart(part)
+            if mediaIndex != nil {
+                let key = mediaKey(blob)
+                mediaIndex![key, default: []].append(uri)
+                mediaIndex![key]!.sort { $0.value < $1.value }
+            }
+        }
         contentTypes.setOverride(partName: uri, contentType: contentType)
         return part
     }
 
     public func removePart(at uri: PackURI) {
         parts[uri] = nil
+        if let old = compressionCache.removeValue(forKey: uri) { compressionCacheBytes -= old.cost }
+        if uri.value.hasPrefix("/ppt/media/") { mediaIndex = nil }
         contentTypes.removeOverride(partName: uri)
     }
 
@@ -297,7 +341,69 @@ public final class OPCPackage {
         return nil
     }
 
-    public func serialize() throws -> Data {
+    public func serialize() throws -> Data { try makeZip().finalize() }
+
+    /// Stream a complete ZIP to a sibling temporary file, then atomically
+    /// replace the destination. Failures leave the existing file intact.
+    public func writeAtomically(to url: URL) throws {
+        guard url.isFileURL else { throw RostrumError.packageInvalid("save destination must be a file URL") }
+        let zip = try makeZip()
+        let existing = try? FileManager.default.attributesOfItem(atPath: url.path)
+        let temporary = url.deletingLastPathComponent().appendingPathComponent(".rostrum-\(UUID().uuidString).tmp")
+        guard FileManager.default.createFile(atPath: temporary.path, contents: nil) else {
+            throw RostrumError.packageInvalid("cannot create temporary file beside \(url.path)")
+        }
+        defer { try? FileManager.default.removeItem(at: temporary) }
+        let handle = try FileHandle(forWritingTo: temporary)
+        do { try zip.write(to: handle); try handle.synchronize(); try handle.close() }
+        catch { try? handle.close(); throw error }
+        if existing?[.type] as? FileAttributeType == .typeRegular, let mode = existing?[.posixPermissions] {
+            try FileManager.default.setAttributes([.posixPermissions: mode], ofItemAtPath: temporary.path)
+        }
+        // Foundation re-exports this POSIX primitive on all supported platforms.
+        // A sibling rename publishes atomically, refuses directory destinations,
+        // and has no fallible metadata work after publication. In particular,
+        // avoid FileManager.replaceItemAt's swap/cleanup behavior on directories
+        // and the reversed-rename fallback in older Linux Foundation releases.
+        let result = temporary.withUnsafeFileSystemRepresentation { source in
+            url.withUnsafeFileSystemRepresentation { destination in
+                guard let source, let destination else { errno = EINVAL; return Int32(-1) }
+                return rename(source, destination)
+            }
+        }
+        if result != 0 { throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno), userInfo: [NSFilePathErrorKey: url.path]) }
+    }
+
+    private struct CachedPayload {
+        let part: Part
+        let revision: UInt64
+        let payload: ZipWriter.Payload
+        var cost: Int { payload.method == 8 ? payload.data.count : 0 }
+    }
+    private var compressionCache: [PackURI: CachedPayload] = [:]
+    private var compressionCacheBytes = 0
+    private let compressionCacheLimit = 16 * 1024 * 1024
+
+    private func discardCachedPayload(at uri: PackURI) {
+        if let old = compressionCache.removeValue(forKey: uri) { compressionCacheBytes -= old.cost }
+    }
+
+    private func prepared(_ part: Part, compress: Bool) -> ZipWriter.Payload {
+        watchPart(part)
+        if let cached = compressionCache[part.uri], cached.part === part, cached.revision == part.blobRevision { return cached.payload }
+        if let old = compressionCache.removeValue(forKey: part.uri) { compressionCacheBytes -= old.cost }
+        let payload = ZipWriter.prepare(data: part.blob, compress: compress)
+        let cached = CachedPayload(part: part, revision: part.blobRevision, payload: payload)
+        if cached.cost <= compressionCacheLimit {
+            if compressionCacheBytes + cached.cost > compressionCacheLimit {
+                compressionCache.removeAll(); compressionCacheBytes = 0
+            }
+            compressionCache[part.uri] = cached; compressionCacheBytes += cached.cost
+        }
+        return payload
+    }
+
+    private func makeZip() throws -> ZipWriter {
         for part in parts.values {
             part.flushIfDirty()
         }
@@ -371,7 +477,10 @@ public final class OPCPackage {
             // Media and embedded workbooks are already compressed — don't
             // waste CPU re-DEFLATEing them; XML parts compress well.
             let alreadyCompressed = Self.storedExtensions.contains(uri.ext)
-            zip.addFile(name: uri.memberName, data: part.blob, compress: !alreadyCompressed)
+            if UInt64(part.blob.count) > 0xFFFF_FFFF {
+                throw RostrumError.packageInvalid("part exceeds the supported ZIP size field")
+            }
+            zip.addFile(name: uri.memberName, payload: prepared(part, compress: !alreadyCompressed))
             // `isWritten`, not `!isEmpty`: a `<Relationships/>` with no
             // children is legal OPC and some producers emit it, and gating on
             // emptiness dropped it on resave. A part Rostrum created with no
@@ -382,6 +491,6 @@ public final class OPCPackage {
                 zip.addFile(name: uri.relsURI.memberName, data: part.rels.serialized())
             }
         }
-        return try zip.finalize()
+        return zip
     }
 }

@@ -1,0 +1,26 @@
+{
+  "office-tables-v3.pptx": {
+    "source": "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3.pptx",
+    "sha256": "3f7d5427de26934424329ef6e739b6fe92db26c0c23f260fa9bea1adf6dcd7dd",
+    "provenance": "Owned python-pptx table fixture with PowerPoint16.113.3 roundtrip and pinned PNG/notes references in the root Conformance fixture directory. No proprietary fonts copied."
+  },
+  "authored-features.pptx": {
+    "producer": "FeaturePipelineFixture.make()",
+    "sha256": "1cf13da7c18e6dc0c5a41a81c45952e9c9db5749e83dc5943497166a145ad89d",
+    "features": [
+      "native and custom tables",
+      "typed double and dash borders",
+      "merge",
+      "bold and italic text",
+      "owned PNG crop",
+      "notes",
+      "modern thread and reply",
+      "legacy comment",
+      "sections",
+      "slide duplication",
+      "slide import"
+    ],
+    "determinism": "Fresh factory invocation twice produces identical bytes after normalizing owned annotation/section IDs and annotation dates. The test repeats this check.",
+    "consumer": "Native GUI checks are outside this pipeline fixture contract; pipeline tests do not claim app or PowerPoint validation."
+  }
+}

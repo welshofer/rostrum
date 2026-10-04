@@ -9,12 +9,19 @@ import LecternCore
 @Suite struct DeckInspectorStateTests {
     @MainActor
     @Test func openingADeckReachesTheInspector() async throws {
+        #if SWIFT_PACKAGE
+        let bundle = Bundle.module
+        #else
+        let bundle = Bundle(for: BundleMarker.self)
+        #endif
         let deck = try #require(
-            Bundle(for: BundleMarker.self).url(
+            bundle.url(
                 forResource: "hello",
                 withExtension: "pptx",
                 subdirectory: "Fixtures"))
-        let app = AppState(skipKeychain: true)
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
 
         app.inspect(deckAt: deck)
         let inspection = try await waitForInspection(in: app)
@@ -36,7 +43,9 @@ import LecternCore
             .appendingPathComponent("not-a-deck-\(UUID().uuidString).pptx")
         try Data("not a deck".utf8).write(to: url)
         defer { try? FileManager.default.removeItem(at: url) }
-        let app = AppState(skipKeychain: true)
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
 
         app.inspect(deckAt: url)
 

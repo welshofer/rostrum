@@ -207,6 +207,6 @@ public final class Presentation {
     /// the destination once it is complete, so a reader sees either the old
     /// file or the new one and never something in between.
     public func save(to url: URL) throws {
-        try serializedData().write(to: url, options: .atomic)
+        try package.writeAtomically(to: url)
     }
 }

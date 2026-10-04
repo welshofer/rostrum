@@ -230,13 +230,10 @@ public extension ShapeCollection {
         let stCondLst = XML.Element("p:stCondLst")
         stCondLst.appendElement(XML.Element("p:cond", attributes: [("delay", "indefinite")]))
         cTn.appendElement(stCondLst)
-        let endCondLst = XML.Element("p:endCondLst")
-        let endCond = XML.Element("p:cond", attributes: [("evt", "onStopped"), ("delay", "0")])
-        let endTgt = XML.Element("p:tgtEl")
-        endTgt.appendElement(XML.Element("p:spTgt", attributes: [("spid", String(shapeID))]))
-        endCond.appendElement(endTgt)
-        endCondLst.appendElement(endCond)
-        cTn.appendElement(endCondLst)
+        // Match PowerPoint's media-node timing: an indefinite start, with no
+        // invented end event. "onStopped" is not an ST_TLTriggerEvent value;
+        // PowerPoint repairs decks containing it. An onBegin replacement would
+        // change playback semantics, so retain the native absence instead.
         cMediaNode.appendElement(cTn)
         let tgtEl = XML.Element("p:tgtEl")
         tgtEl.appendElement(XML.Element("p:spTgt", attributes: [("spid", String(shapeID))]))

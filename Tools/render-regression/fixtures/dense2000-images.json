@@ -1,0 +1,27 @@
+{
+  "scope": "Owned synthetic rendering stress fixture; not representative image-content or visual acceptance evidence.",
+  "producer": "python-pptx 1.0.2",
+  "generator": "make_dense_image_fixture.py",
+  "generatorSHA256": "236713ce3e6ca799685a346f889a401653f123aebe05ce1db9af5c317f2d5593",
+  "fixture": "dense2000-images.pptx",
+  "fixtureSHA256": "4b56a1c7ac25daf389cb37c695d865e22746d9e6c6559f70b5b845fed42a880c",
+  "fixtureBytes": 424367,
+  "slides": 1,
+  "pictures": 2000,
+  "distinctImageRelationships": 2000,
+  "totalSlideRelationships": 2001,
+  "uniqueMediaParts": 2000,
+  "dimensionsEMU": [
+    10972800,
+    6400800
+  ],
+  "pictureFrameInches": [
+    1,
+    1,
+    10,
+    5
+  ],
+  "imageContent": "Unique opaque RGBA colors in valid 1x1 PNG files, all overlapping at the same frame.",
+  "verification": "Reopened by python-pptx; ZIP counts, distinct media SHA-256 values and distinct relationship IDs asserted.",
+  "license": "CC0; original project-authored test geometry and image pixels"
+}

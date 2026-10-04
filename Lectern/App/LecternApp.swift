@@ -34,7 +34,7 @@ struct LecternApp: App {
     #if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     #endif
-    @State private var app = AppState()
+    @State private var app = AppState.forLaunch()
 
     var body: some Scene {
         WindowGroup("Lectern") {

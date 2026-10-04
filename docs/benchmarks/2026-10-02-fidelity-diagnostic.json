@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "scope": "Supplemental fixture-specific diagnosis. No acceptance thresholds, references, or renderer geometry are changed.",
+  "tools": {
+    "Pillow": "12.3.0",
+    "resvg-py": "0.5.0",
+    "python": "3.12.0"
+  },
+  "inputs": {
+    "candidate": {
+      "path": "evidence/baseline-v3-comparison/corrected.png",
+      "sha256": "68a277b5de2959008f9d05dafe8880ae317d1928f37c6a175d84afaf9e2cdf21"
+    },
+    "reference": {
+      "path": "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-office.png",
+      "sha256": "118605ddc801546321cca798c59f9c894e46b96e0770f4d232bec4cae94b2c01"
+    }
+  },
+  "candidateRevision": "2783ea38616cfd7c30ad2358c1056b9dc3f19481",
+  "analysisSource": {
+    "path": "Tools/render-regression/analyze_fidelity.py",
+    "sha256": "eff6d441bc0ef554cf3a7e9a08a159d4a897f4ab591768d28a321b08fb125df6"
+  },
+  "acceptanceSource": {
+    "path": "Tools/conformance/compare_images.py",
+    "sha256": "aab39fd0b32d09472aa5d319196f380f781691396d1a0fa7761c53dcc3324886"
+  },
+  "unchangedAcceptance": {
+    "passed": false,
+    "differingPixelFraction": 0.021601190476190475,
+    "channelTolerance": 16,
+    "fractionTolerance": 0.005
+  },
+  "partition": {
+    "dimensions": [
+      1200,
+      700
+    ],
+    "differingPixels": 18145,
+    "strokeZonePixels": 13430,
+    "outsideStrokeZonePixels": 4715,
+    "outsideStrokeZoneInterpretation": "Text for this fixture; this classification is not general-purpose.",
+    "zones": {
+      "verticalXAndYRange": [
+        [
+          100,
+          100,
+          600
+        ],
+        [
+          400,
+          350,
+          600
+        ],
+        [
+          600,
+          100,
+          600
+        ],
+        [
+          850,
+          100,
+          600
+        ],
+        [
+          1100,
+          100,
+          600
+        ]
+      ],
+      "horizontalYAndXRange": [
+        [
+          100,
+          100,
+          1100
+        ],
+        [
+          225,
+          600,
+          1100
+        ],
+        [
+          350,
+          100,
+          1100
+        ],
+        [
+          475,
+          100,
+          1100
+        ],
+        [
+          600,
+          100,
+          1100
+        ]
+      ],
+      "paddingPixels": 4,
+      "boundsInclusive": true
+    }
+  },
+  "standaloneStrokeDiagnostic": {
+    "scope": "Independent SVG primitive; no Rostrum, fonts, or EMU-coordinate transforms. Supplemental only.",
+    "fixture": {
+      "path": "Tools/render-regression/fixtures/fractional-stroke.svg",
+      "sha256": "81fbba43dbe4c6ba858f6752ffc07c40e3d6e35c9df7850c6694913a5447aec1"
+    },
+    "samplePixel": [
+      300,
+      98
+    ],
+    "strokeWidthPixels": 2.7777777777777777,
+    "mathematicalCoverage": 0.38888888888888884,
+    "mathematicalRGBApprox": [
+      235,
+      176,
+      156
+    ],
+    "officeReferenceRGB": [
+      236,
+      178,
+      159
+    ],
+    "nativeResvgRGB": [
+      229,
+      153,
+      128
+    ],
+    "supplemental2xBoxRGB": [
+      236,
+      179,
+      160
+    ]
+  }
+}

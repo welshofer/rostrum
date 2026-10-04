@@ -1,0 +1,92 @@
+{
+  "scope": "Owned synthetic image scaling fixtures; no visual acceptance claim.",
+  "source": {
+    "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/fixtures/dense2000-images.pptx",
+    "sha256": "4b56a1c7ac25daf389cb37c695d865e22746d9e6c6559f70b5b845fed42a880c",
+    "bytes": 424367,
+    "pictures": 2000,
+    "distinctImageRelationships": 2000,
+    "totalSlideRelationships": 2001,
+    "uniqueMediaParts": 2000,
+    "pythonPptxReopen": true
+  },
+  "generator": {
+    "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/make_image_scale_fixtures.py",
+    "sha256": "d3fa5e13f9464bfa9c18d154bc1364c6ef3b575fc27e18d1ad4c482e9c356266"
+  },
+  "tools": {
+    "python-pptx": "1.0.2",
+    "python": "3.12.0",
+    "lxml": [
+      5,
+      3,
+      0,
+      0
+    ],
+    "zlib": "1.2.11"
+  },
+  "method": "Keep first N picture elements and their original media/relationships; fixed ZIP metadata and sorted entry order.",
+  "subsets": [
+    {
+      "path": "images-100.pptx",
+      "sha256": "e0fe02077d3227e0e0cecdc21005187c39f8f84edf62c759ecc1b9922db9430c",
+      "bytes": 47879,
+      "pictures": 100,
+      "distinctImageRelationships": 100,
+      "totalSlideRelationships": 101,
+      "uniqueMediaParts": 100,
+      "pythonPptxReopen": true
+    },
+    {
+      "path": "images-250.pptx",
+      "sha256": "f0702a0e5e5f7728f9c4a7f9bf212593561553fed158fd2063ea93e8274df76a",
+      "bytes": 77454,
+      "pictures": 250,
+      "distinctImageRelationships": 250,
+      "totalSlideRelationships": 251,
+      "uniqueMediaParts": 250,
+      "pythonPptxReopen": true
+    },
+    {
+      "path": "images-510.pptx",
+      "sha256": "4a09c0b7fd64996734fda49e0619a5cdbd23246d5405790cd7802762460891cc",
+      "bytes": 128634,
+      "pictures": 510,
+      "distinctImageRelationships": 510,
+      "totalSlideRelationships": 511,
+      "uniqueMediaParts": 510,
+      "pythonPptxReopen": true
+    },
+    {
+      "path": "images-511.pptx",
+      "sha256": "cc9cffdd9cc202d1ffa9ec7895e833109da1a023f8238b78574624336a6c7923",
+      "bytes": 128832,
+      "pictures": 511,
+      "distinctImageRelationships": 511,
+      "totalSlideRelationships": 512,
+      "uniqueMediaParts": 511,
+      "pythonPptxReopen": true
+    },
+    {
+      "path": "images-768.pptx",
+      "sha256": "b0f16452078c4c2b3612c52817e0c46d272911dec7916796801ed57ce5a6bddb",
+      "bytes": 179412,
+      "pictures": 768,
+      "distinctImageRelationships": 768,
+      "totalSlideRelationships": 769,
+      "uniqueMediaParts": 768,
+      "pythonPptxReopen": true
+    },
+    {
+      "path": "images-1024.pptx",
+      "sha256": "8e61018fdec8eac20a9bbaa62edd929a3271afa425fc1a9ba9689f9cdddcd792",
+      "bytes": 229915,
+      "pictures": 1024,
+      "distinctImageRelationships": 1024,
+      "totalSlideRelationships": 1025,
+      "uniqueMediaParts": 1024,
+      "pythonPptxReopen": true
+    }
+  ],
+  "case2000": "Use source.path directly; the retained original is not copied or modified."
+}

@@ -62,7 +62,8 @@ public extension Color {
         return best
     }
 
-    /// Linear sRGB blend. `amount` (clamped 0…1) is the weight of `b`:
+    /// Linear interpolation of encoded sRGB channels. `amount` (clamped
+    /// 0…1) is the weight of `b`:
     /// 0 → `a`, 1 → `b`, 0.5 → the midpoint.
     static func mix(_ a: Color, _ b: Color, amount: Double = 0.5) -> Color {
         RGB(a).mixed(with: RGB(b), amount: amount).color
@@ -109,17 +110,62 @@ struct RGB {
     func applying(_ t: ColorTransform) -> RGB {
         let f = t.fraction
         switch t {
-        case .tint:   return map { $0 * f + 255 * (1 - f) }      // mix toward white
-        case .shade:  return map { $0 * f }                       // mix toward black
-        case .lumMod: return adjustingHSL { ($0, $1, $2 * f) }
-        case .lumOff: return adjustingHSL { ($0, $1, $2 + f) }
-        case .satMod: return scalingSaturation(by: f)            // HSL saturation × f
+        case .tint:   return mapLinear { $0 * f + (1 - f) }
+        case .shade:  return mapLinear { $0 * f }
+        case .lumMod: return adjustingHSL(luminanceScale: f)
+        case .lumOff: return adjustingHSL(luminanceOffset: f)
+        case .satMod: return adjustingHSL(saturationScale: f)            // HSL saturation × f
         case .alpha:  return self                                // opacity: no RGB effect
         }
     }
 
     func map(_ fn: (Double) -> Double) -> RGB {
         RGB(r: fn(r), g: fn(g), b: fn(b))
+    }
+
+    // DrawingML tint/shade operate on linear-light scRGB, then convert back
+    // to sRGB. Applying these directly to encoded channels makes native table
+    // bands too dark (e.g. black at 20% tint must produce #E7E7E7, not #CCCCCC).
+    private func mapLinear(_ fn: (Double) -> Double) -> RGB {
+        map { channel in
+            let encoded = Swift.max(0, Swift.min(1, channel / 255))
+            let linear = encoded <= 0.04045 ? encoded / 12.92 : pow((encoded + 0.055) / 1.055, 2.4)
+            let result = Swift.max(0, Swift.min(1, fn(linear)))
+            return (result <= 0.0031308 ? result * 12.92 : 1.055 * pow(result, 1 / 2.4) - 0.055) * 255
+        }
+    }
+
+    /// DrawingML modulation can take HSL saturation above 100%. Convert that
+    /// extended value to RGB before clipping channels; clamping saturation
+    /// first changes the resulting color (notably native Office gradients).
+    /// Clip after each transform so subsequent transforms see an in-gamut RGB.
+    private func adjustingHSL(saturationScale: Double = 1, luminanceScale: Double = 1, luminanceOffset: Double = 0) -> RGB {
+        let rn = r / 255, gn = g / 255, bn = b / 255
+        let maxc = Swift.max(rn, gn, bn), minc = Swift.min(rn, gn, bn)
+        let originalLum = (maxc + minc) / 2
+        let lum = Swift.max(0, Swift.min(1, originalLum * luminanceScale + luminanceOffset))
+        let delta = maxc - minc
+        guard delta != 0 else { return RGB(r: lum * 255, g: lum * 255, b: lum * 255) }
+        var hue: Double
+        if maxc == rn { hue = (gn - bn) / delta + (gn < bn ? 6 : 0) }
+        else if maxc == gn { hue = (bn - rn) / delta + 2 }
+        else { hue = (rn - gn) / delta + 4 }
+        hue /= 6
+        let sat0 = originalLum > 0.5 ? delta / (2 - maxc - minc) : delta / (maxc + minc)
+        let sat = Swift.max(0, sat0 * saturationScale)
+        let q = lum < 0.5 ? lum * (1 + sat) : lum + sat - lum * sat
+        let p = 2 * lum - q
+        func channel(_ offset: Double) -> Double {
+            var t = hue + offset
+            if t < 0 { t += 1 } else if t > 1 { t -= 1 }
+            if t < 1.0 / 6 { return p + (q - p) * 6 * t }
+            if t < 1.0 / 2 { return q }
+            if t < 2.0 / 3 { return p + (q - p) * (2.0 / 3 - t) * 6 }
+            return p
+        }
+        return RGB(r: channel(1.0 / 3) * 255, g: channel(0) * 255, b: channel(-1.0 / 3) * 255)
+            .map { Swift.max(0, Swift.min(255, $0)) }
+
     }
 
     private func scalingSaturation(by factor: Double) -> RGB {

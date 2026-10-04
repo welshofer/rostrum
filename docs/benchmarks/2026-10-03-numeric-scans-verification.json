@@ -1,0 +1,43 @@
+{
+  "baselineRevision": "5654d1b09e43d26f93a195270f8832b6be3a21e4",
+  "cycle": 1,
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf5",
+  "files": {
+    "baseline-Rostrum.o": "d1c58102341eb35012580f71b239c4f63c925c8b5d930bd65896698e38bd913c",
+    "baseline-bench": "3df026f619b567a994b14f9dd043c453e269d4559d28be94572cbe1306fd647e",
+    "baseline-extended-bench": "d5d85a51b80de125e2b5edb2f7222918a604127322b9a73542b616007a3f8b10",
+    "baseline-build.log": "9e49b1c3ec74d653964478c8be28789f6c1fc944ba7e9aafe4b0afe69583a088",
+    "baseline-profile": "a867cdba0bcaed0e37b09ec22b016a78d497039f205584a5d9ee1c146509b931",
+    "profile.swift": "1163ba3575d8dd047269126a0f578dc9790accaad5b816e5b15ae87ff1481dd4",
+    "fallback-profile.txt": "749162df6a3e1ede100da4fb5be71ba72fad666132327d5a266902555168fc5a",
+    "registered-profile.txt": "d64c89f416d9aa91e132e3100f2d67cc93b1500759a0044f9319ccfa2ebbf21f",
+    "fit-profile.txt": "988f67cb7291c80479ee0456405b93c87e44ac132caff5248eda287f8a3e828a",
+    "candidate-Rostrum.o": "b0128eb430bc12339ab3ef968db2291ccd559e289a6a7cd28f390742d74dc6f4",
+    "candidate-bench": "5e1c68eba86a83bc0b1ab6c693342cc8baf0ccfa5e0bfde7423df5b7cd80186d",
+    "candidate-extended-bench": "e0cd65062db753106ec52618bc59d3a09179ba189cb521fd4be9136239021b77",
+    "candidate-build.log": "c4f5f3dfa0320e5ffbd8e98c6d6d6acbe514f9831ba0f523d573c252ed985b52",
+    "candidate-RichTextLayout.swift": "e2ca86f8e74fdab7a604eef1635527eaf45692446f346eba404a29dfd372e1aa",
+    "candidate.patch": "dab0b1a48e316f4464a906c12f2a097baa2abf77fdbdc435c8a5b59304e6188b",
+    "full-tests.log": "91617944f2ec22264176eab347d99a03ba0b561b7fdcdaf94441a6fb5c13bbb1",
+    "identity.py": "7dd43d9a646e041012f8fbf602ccb5d6ee0ea846c8a85348f2224da11073644b",
+    "identity.log": "55e01cfae13ee2b24b2196406ec52417d4bda089b4d55467d0edb10073b3ccbb",
+    "paired.log": "1b450c395770aa3dc6c53c6fbea2c10eca342ecc1cdfcc2c6199059c3822817b",
+    "recovery-paired.log": "fc32ed2a9395f1b125aa3cee1239d36aed9c29ae226ab4fe8eb46e2f46302e80"
+  },
+  "recoveryBaselineRevision": "cf1b8a0cec2cf680383cb683603785aeaa0f2011",
+  "recoveryBaselineBinarySHA256": "39455d6d17672947c0af314581aa4adaa43e548bee0900fbba1d9c7629a54782",
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "e2ca86f8e74fdab7a604eef1635527eaf45692446f346eba404a29dfd372e1aa",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792"
+  },
+  "buildCommand": "swift build -c release --product rostrum-bench --jobs 2",
+  "buildResult": "Build complete! (38.55 sec)",
+  "matchedDriverCompileCommand": "swiftc -swift-version 6 -O -I .build/perf5 Tools/rostrum-bench/main.swift .build/perf5/VARIANT-Rostrum.o -o .build/perf5/VARIANT-extended-bench",
+  "testCommand": "swift test --jobs 2",
+  "testResult": "1019 tests in 140 suites passed after 38.369 seconds",
+  "nativeOracleResult": "All 60 native tab geometry cases passed",
+  "identityResult": "76 cases, 628 slides identical against 5654d1b; 152 saved outputs reopened/table-traversed",
+  "measurementQuietWindow": "Root explicitly granted after engine confirmed no CPU jobs and paused, Lectern idle, root GUI/build paused. Both comparisons ran sequentially before release.",
+  "acceptance": "Directionally useful against current baseline but overlapping ranges; fallback remained 1.88% slower versus cf1b8a0. No full-recovery claim; proceeding to separately retained cycle 2."
+}

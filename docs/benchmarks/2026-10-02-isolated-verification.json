@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "scope": "Local isolated follow-up; no merge, push, publication, or CI result. Final evidence-only commit is source-equivalent to the revisions below.",
+  "baseRevision": "2783ea38616cfd7c30ad2358c1056b9dc3f19481",
+  "testAndAppBuildRevision": "a589fb48d83ab805030bca634a3e7eb11874b5d9",
+  "benchmarkRevision": "9478ea9a6a5f3182dc96081d90b4dfcbdc9e2bce",
+  "sourceTrees": {
+    "Sources": "d9298e1f5fba15e50862b6b3e338b2e341a1e748",
+    "Tests": "6289554fc9f35807c937f5d3c8045341bc84f105",
+    "Lectern": "d0b414ca69a8d526e8c75dfd31a9df48e852d942"
+  },
+  "verification": {
+    "libraryTests": {
+      "passed": 907,
+      "suites": 120,
+      "seconds": 35.93
+    },
+    "lecternCoreTests": {
+      "passed": 168,
+      "suites": 15,
+      "seconds": 7.091
+    },
+    "macOSAppAndHostedTestBundleBuild": "passed build-for-testing; tests not executed",
+    "iOSSimulatorBuild": "passed arm64 and x86_64",
+    "appHostedExecution": "not run: isolated app startup would access Keychain and existing deck store",
+    "linuxExecution": "not run",
+    "wholeSlideVisualAcceptance": "failed; 0.021601190476190475 differing fraction exceeds 0.005 at channel tolerance 16"
+  },
+  "artifacts": {
+    "evidence/final-library-tests.log": {
+      "sha256": "bd6d2810bec08261dd41e043b901ba1f50c9c1a23fc10ed6bafe32c679a6d754",
+      "bytes": 157481
+    },
+    "evidence/final-lectern-core-tests.log": {
+      "sha256": "8d9516f35c89af885a7f29dff3ba9f5bb81396d79c2212d7b66c48c34398a2b4",
+      "bytes": 25067
+    },
+    "evidence/lectern-trash-test.log": {
+      "sha256": "e79060825d5c8eb865c00ed843d70feda954ee0bfa897ef7a387b772a977fed6",
+      "bytes": 404
+    },
+    "evidence/macos-build.log": {
+      "sha256": "7d8a1898848cea801c7918bce92666161ccb1800621342f31f58f2582eba5a78",
+      "bytes": 322111
+    },
+    "evidence/ios-build.log": {
+      "sha256": "483e231df9c05e7e350663743322262a23bfbcb0198123e5075f317b0989bb25",
+      "bytes": 450192
+    },
+    "evidence/final-release-build.log": {
+      "sha256": "aa1135ca776b5977e7279a8a121032befe6d87e3fbb3931c557409e9cc2c7885",
+      "bytes": 2627
+    },
+    "evidence/baseline-render-profile": {
+      "sha256": "5213e85b97905c6278bc5db8b6451d46cd70780bab7c82319743528daa01b68c",
+      "bytes": 3422424
+    },
+    "evidence/final-render-profile": {
+      "sha256": "c2f76c4f3d40c06c52e6fb348b54631a92af9249775dd11901db0faea8f7329e",
+      "bytes": 3429336
+    },
+    "evidence/baseline-rostrum-bench": {
+      "sha256": "70c3ed386e05a5c68fb13b0d68870d1cc9d70e569e922242d2872210f0b07c86",
+      "bytes": 3535168
+    },
+    "evidence/final-rostrum-bench": {
+      "sha256": "35e620b459319f891aba46f501e16966facc6e5bdd207ffdf89460976efa9e92",
+      "bytes": 3542112
+    },
+    "docs/benchmarks/2026-10-02-isolated-baseline-macos.json": {
+      "sha256": "0a9095c81debe4c83e4ad6278ecab17d05b68795581f98a8c575ceed34d7e9fe",
+      "bytes": 75284
+    },
+    "docs/benchmarks/2026-10-02-isolated-macos.json": {
+      "sha256": "2eb85b75634e83c7d817a13fb6fb082d1b3df67289c57540826f09e09cfde359",
+      "bytes": 75270
+    },
+    "docs/benchmarks/2026-10-02-render-paired.json": {
+      "sha256": "f384eb33f533126d1e18ee8e0629b6ae68c9b2118dfbe801875600353c193bec",
+      "bytes": 8906
+    },
+    "docs/benchmarks/2026-10-02-fidelity-diagnostic.json": {
+      "sha256": "48f606c2876d743220cbd29529139c9e00d61d49e34142b056a7b8ad355717f1",
+      "bytes": 3006
+    },
+    "Tools/conformance/check_text_rendering.py": {
+      "sha256": "d0e5a432c2efbf134559a728c63f39df1c5d751fce91270223c9a3c13c749a57",
+      "bytes": 11035
+    },
+    "Tools/conformance/compare_images.py": {
+      "sha256": "aab39fd0b32d09472aa5d319196f380f781691396d1a0fa7761c53dcc3324886",
+      "bytes": 1562
+    },
+    "evidence/fonts.json": {
+      "sha256": "8bbb38f45c2d1f95187d7730fc28461b97ba4f0eafe026d5039c46b871ca15d4",
+      "bytes": 826
+    },
+    "evidence/baseline-v3-comparison/comparison.json": {
+      "sha256": "4cc2b65f369caf3d8730b706a3172c02265f46a40662cd017aaac20c2e7274f6",
+      "bytes": 1784
+    }
+  },
+  "fontPinnedV3ByteParity": {
+    ".svg": {
+      "baselineSHA256": "f0b4eaaf655a4d455a81382939d4772307e3d9dad8fcb0b754598bf1267c20cd",
+      "candidateSHA256": "f0b4eaaf655a4d455a81382939d4772307e3d9dad8fcb0b754598bf1267c20cd",
+      "exactBytes": true
+    },
+    "-issues.json": {
+      "baselineSHA256": "ace810d7e2cbb4f8c40ce09dc8e191ae466adb4e1a7d49c59f2215b411d38b05",
+      "candidateSHA256": "ace810d7e2cbb4f8c40ce09dc8e191ae466adb4e1a7d49c59f2215b411d38b05",
+      "exactBytes": true
+    },
+    "-inheritance.json": {
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "exactBytes": true
+    }
+  },
+  "fontPinnedV3Raster": {
+    "candidateSHA256": "68a277b5de2959008f9d05dafe8880ae317d1928f37c6a175d84afaf9e2cdf21",
+    "officeReferenceSHA256": "118605ddc801546321cca798c59f9c894e46b96e0770f4d232bec4cae94b2c01",
+    "differingPixels": 18145,
+    "totalPixels": 840000,
+    "channelTolerance": 16,
+    "fractionTolerance": 0.005,
+    "passed": false
+  },
+  "localEvidenceNote": "Raw logs and corrected PNG accompany the local handoff archive; local font binaries and font-embedded SVG are excluded from the archive."
+}

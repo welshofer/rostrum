@@ -43,15 +43,86 @@ public enum DeckExporter {
     /// wrote and leaves everything else in the folder alone, so running it
     /// twice is a refresh rather than a mess.
     public static func export(deckAt deck: URL, into parent: URL) throws -> Outcome {
-        let presentation = try Presentation(contentsOf: deck)
+        try Task.checkCancellation()
+        let presentation = try Presentation(contentsOf: deck,
+            limits: .init(totalUncompressedBytes: DeckInspector.defaultReadLimit))
         let name = folderName(for: deck)
         let directory = parent.appendingPathComponent(name, isDirectory: true)
+        try Task.checkCancellation()
+        try TableTextExtractor.preflight(presentation)
+        let outline = presentation.outline()
+        let metadata = metadataMarkdown(from: presentation, outline: outline)
+        try Task.checkCancellation()
         let summary = try DeckExport.write(presentation, to: directory, named: name)
+        // Retain the base export's assets and all other outline fields, replacing
+        // only its table projection. One final atomic write avoids conflicting
+        // partial/lexical tables or duplicated metadata on a repeated export.
+        let markdown = outline.markdown(title: name, tableOverrides: metadata.tableOverrides) + metadata.text
+        try markdown.write(to: summary.markdownFile, atomically: true, encoding: .utf8)
         return Outcome(directory: summary.directory,
                        markdownFile: summary.markdownFile,
                        slideCount: presentation.slides.count,
                        assetsWritten: summary.assetsWritten,
                        chartsWritten: summary.chartsWritten,
-                       warnings: summary.warnings)
+                       warnings: summary.warnings + metadata.warnings)
     }
+    private static func metadataMarkdown(from deck: Presentation, outline: Rostrum.DeckOutline)
+        -> (text: String, warnings: [String], tableOverrides: [Int: [OutlineTable]]) {
+        var lines: [String] = []
+        var warnings: [String] = []
+        var remainingTableCells = TableTextExtractor.maximumTotalCells
+        var tableOverrides: [Int: [OutlineTable]] = [:]
+        let ordinaryTableCounts = Dictionary(uniqueKeysWithValues: outline.slides.map { ($0.number, $0.tables.count) })
+        let sections = Array(deck.sections)
+        if !sections.isEmpty {
+            lines += ["", "## Sections", ""]
+            for section in sections {
+                let slides = section.slideIndices.map { String($0 + 1) }.joined(separator: ", ")
+                lines.append("- \(inline(section.name)) — slides \(slides)")
+            }
+        }
+        for index in 0..<deck.slides.count {
+            guard let slide = try? deck.slides.slide(at: index) else { continue }
+            if let root = try? slide.part.dom() {
+                let extraction = TableTextExtractor.extract(in: root, remainingCells: &remainingTableCells)
+                warnings += extraction.warnings.map { "slide \(index + 1): " + $0 }
+                // Keys use the outline's one-based slide numbers. Empty overrides
+                // also remove lexical namespace lookalikes from the artifact.
+                tableOverrides[index + 1] = extraction.tables.filter { !$0.rows.isEmpty }
+                    .map { OutlineTable(rows: $0.rows) }
+                if (ordinaryTableCounts[index + 1] ?? 0) > extraction.tables.count {
+                    warnings.append("slide \(index + 1): some table payloads could not be resolved in the DrawingML namespace")
+                }
+            }
+            let comments = DeckDetailExtractor.comments(in: slide)
+            guard !comments.isEmpty else { continue }
+            lines += ["", "## Slide \(index + 1) comments", ""]
+            for comment in comments {
+                let status = comment.kind == "legacy" ? "legacy" : (comment.resolved ? "resolved" : "open")
+                lines.append("### \(inline(comment.author)) (\(status))")
+                lines += quoted(comment.text)
+                for reply in comment.replies {
+                    lines += ["", "Reply — \(inline(reply.author))"]
+                    lines += quoted(reply.text)
+                }
+                lines.append("")
+            }
+        }
+        return (lines.isEmpty ? "" : lines.joined(separator: "\n") + "\n", warnings, tableOverrides)
+    }
+
+    private static func inline(_ text: String) -> String {
+        var result = text.replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n", with: " ")
+        for character in ["\\", "`", "*", "_", "[", "]", "<", ">", "#", "|"] {
+            result = result.replacingOccurrences(of: character, with: "\\" + character)
+        }
+        return result
+    }
+
+    private static func quoted(_ text: String) -> [String] {
+        text.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
+            .components(separatedBy: "\n").map { "> " + inline($0) }
+    }
+
 }

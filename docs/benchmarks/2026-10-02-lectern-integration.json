@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "recordedUTC": "2026-10-02T18:00:42.943650+00:00",
+  "sourceCommit": "35cb03297844fa9b9ff4fd39e108b0890fdd872e",
+  "sourceStatus": "Only README and evidence documentation differ from this revision.",
+  "platform": {
+    "os": "macOS 27.0.1",
+    "osBuild": "26A434",
+    "architecture": "arm64",
+    "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0"
+  },
+  "inputGroups": {
+    "rostrum": {
+      "files": 279,
+      "manifestSHA256": "cad994f2f08d0f7bea68d7a81cc74021b64db50666944bbbe65adbb93e4a4706",
+      "hashMethod": "SHA256 of sorted compact JSON path-to-SHA256 mapping",
+      "trackedPaths": [
+        "Sources",
+        "Tests",
+        "Package.swift"
+      ]
+    },
+    "lectern": {
+      "files": 54,
+      "manifestSHA256": "f6d5aad4675452cf8600fb950ac2b2437fcc6c01d7f2f2377e25e3830f2a3dc1",
+      "hashMethod": "SHA256 of sorted compact JSON path-to-SHA256 mapping",
+      "trackedPaths": [
+        "Lectern/Sources",
+        "Lectern/Tests",
+        "Lectern/Package.swift"
+      ]
+    },
+    "app": {
+      "files": 351,
+      "manifestSHA256": "0172210159f96ed1aef7c0048b88dff5851acc43347a7351911c41a9a204eb4f",
+      "hashMethod": "SHA256 of sorted compact JSON path-to-SHA256 mapping",
+      "trackedPaths": [
+        "Lectern/App",
+        "Lectern/AppTests",
+        "Lectern/project.yml",
+        "Lectern/scripts"
+      ]
+    }
+  },
+  "checks": {
+    "rostrum": {
+      "command": "swift test --jobs 2",
+      "exitCode": 0,
+      "log": "/tmp/rostrum-lectern-pass-library-final.log",
+      "logSHA256": "af5bfc11bab62b67bc21cec6722ef51ac0e10e81dd9b8efa10901ebec8834981",
+      "reportedTestCount": 954,
+      "suites": 129,
+      "testDurationSeconds": 38.277,
+      "skippedNativeTests": 0,
+      "runCommit": "497a362",
+      "finalSourceUnchanged": true
+    },
+    "lecternCore": {
+      "command": "swift test --package-path Lectern --jobs 2",
+      "exitCode": 0,
+      "log": "/tmp/rostrum-lectern-core-final.log",
+      "logSHA256": "4401c10e7fd6a3bcdb4bba6fdf264fc4262f0c079b91366862edaab48ee5f728",
+      "reportedTestCount": 192,
+      "suites": 19,
+      "testDurationSeconds": 8.913,
+      "skippedNativeTests": 0
+    },
+    "appHeadless": {
+      "command": "python3 Lectern/scripts/test-inspection-headless.py --all-app-tests --output /tmp/rostrum-lectern-app-final.json",
+      "exitCode": 0,
+      "log": "/tmp/rostrum-lectern-app-final.log",
+      "logSHA256": "c58192455507e83341097a1a7d8c80f38a07ccd604a85d182d0bda776cadc180",
+      "reportedTestCount": 59,
+      "suites": 15,
+      "testDurationSeconds": 8.907,
+      "skippedNativeTests": 1,
+      "note": "Swift Testing reports 59 total definitions including one disabled native WebKit test. That test passed in the separate hosted run."
+    },
+    "appHosted": {
+      "command": "Lectern/scripts/test-app.sh -parallel-testing-enabled NO -resultBundlePath /tmp/rostrum-lectern-hosted-final-20261002.xcresult",
+      "exitCode": 0,
+      "log": "/tmp/rostrum-lectern-hosted-final-20261002.log",
+      "logSHA256": "db5584241a084e99a6511d8925c260b86600d287a32607c0be3ec5ef55085594",
+      "reportedTestCount": 59,
+      "suites": 15,
+      "testDurationSeconds": 12.955,
+      "skippedNativeTests": 0,
+      "xcresult": "/tmp/rostrum-lectern-hosted-final-20261002.xcresult",
+      "summarySHA256": "76cae30e5937563ff12856cc0ec459f66f6431fe291dcde5f1e790f1aded8d26",
+      "passedTests": 59,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "runtimeWarnings": [],
+      "nativeSnapshotTest": "nativeSnapshotIncludesTheBottomOfPortraitAndFourByThreeSlides",
+      "nativeSnapshotSeconds": 0.259
+    },
+    "iosBuild": {
+      "command": "xcodebuild -project Lectern.xcodeproj -scheme Lectern-iOS -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath .build-xcode-ios CODE_SIGNING_ALLOWED=NO 'ARCHS=arm64 x86_64' ONLY_ACTIVE_ARCH=NO build",
+      "exitCode": 0,
+      "log": "/tmp/rostrum-lectern-ios-final.log",
+      "logSHA256": "b81f332301e9d85c8764b5a59fbba82b736c6fa5b89ac73abb4ec7de06a988a4",
+      "reportedTestCount": null,
+      "suites": null,
+      "testDurationSeconds": null,
+      "skippedNativeTests": 0,
+      "binaryArchitectures": [
+        "x86_64",
+        "arm64"
+      ]
+    }
+  },
+  "binariesSHA256": {
+    "Lectern/.build-xcode/Build/Products/Debug/Lectern.app/Contents/MacOS/Lectern": "7a58c34755876c6f1665224a1b3415260612011fee29831fae7ea47dd5e8f14d",
+    "Lectern/.build-xcode/Build/Products/Debug/Lectern.app/Contents/MacOS/Lectern.debug.dylib": "6e410e64050e9e0d556600542f6e1b30a9743f12730f4cb7e4fdb21151e68474",
+    "Lectern/.build-xcode-ios/Build/Products/Debug-iphonesimulator/Lectern.app/Lectern": "bd0a52a2aaf25ecec70438581af6fdfcddadd0aed53f493766f737db240e7f6b"
+  },
+  "headlessInputReceipt": {
+    "path": "docs/benchmarks/2026-10-02-lectern-app-headless.json",
+    "sha256": "1cd94501ee2b6f49a80e6abe0d7ebb832d0fdae46f24d0a74148f79c79fe9f16"
+  },
+  "nativeEndToEnd": {
+    "method": "Normal app launch and native UI via cua_repl; accessibility state and screenshots observed in task conversation. No scripted PowerPoint/API-provider run.",
+    "sourceCommit": "35cb03297844fa9b9ff4fd39e108b0890fdd872e",
+    "fixture": "Lectern/Tests/LecternCoreTests/Fixtures/FeaturePipeline/authored-features.pptx",
+    "fixtureSHA256": "1cf13da7c18e6dc0c5a41a81c45952e9c9db5749e83dc5943497166a145ad89d",
+    "sourceBytesUnchanged": true,
+    "actions": [
+      "Launch normal app after app-hosted runner finishes",
+      "Open committed authored-features.pptx through native chooser",
+      "Verify four previews and section members",
+      "Expand 3x3 table; verify cells, notes, resolved modern thread, reply and legacy comment",
+      "Export through native chooser to owned temporary folder",
+      "Verify success message: 4 slides, 2 media files, 0 chart CSVs",
+      "Check final Markdown and original media bytes",
+      "Open owned eight-column derived fixture; expand; Next shows columns7-8; Previous restores1-6"
+    ],
+    "outputDirectory": "/tmp/rostrum-lectern-ui-export-20261002/authored-features",
+    "outputSHA256": {
+      "authored-features.md": "861bf75dd3f4d65fe9327f99ba6a7a24da2f85dc901765fd7547438cf6915c24",
+      "slide-02/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "slide-03/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76"
+    },
+    "rawMediaSHA256": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+    "wideFixture": {
+      "path": "/tmp/rostrum-lectern-wide-table-20261002.pptx",
+      "sha256": "98a150a9108a15976c624a79a8f1982c62c26b67da8d8ec5bfdfe654e01584ef",
+      "derivation": "Authored fixture with slide 1 first a:tbl replaced by one physical row of eight columns labeled Column 1 through Column 8; other ZIP members retained."
+    },
+    "priorCrash": "Selectable table cells plus a custom accessibility label caused SwiftUI/AppKit recursive accessibility lookup; custom label/unbounded height removed, native checks repeated successfully."
+  },
+  "review": {
+    "startup": "Fonts reviewer approved 6c88348.",
+    "fonts": "Tables reviewer approved 4b4aa64 + a40a9d0; 10 focused tests passed.",
+    "tableText": "Tables reviewer approved a4d12b0; 8 focused tests passed.",
+    "canonicalExport": "Fonts reviewer approved 55270c5 and identical root 35cb032.",
+    "markdownAPIAndInspectionFonts": "Fonts reviewer approved d17f52b + 497a362 + e03400a.",
+    "ui": "Tables reviewer checked paging and indices; root validated native interaction after the accessibility fix."
+  },
+  "limits": [
+    "No new Office whole-image qualification; existing failures remain open",
+    "Alias support added for table text inspection/export, not general SVG namespace support",
+    "Native GUI tests cover local inspect/export, not paid live provider generation",
+    "iOS arm64/x86_64 compilation only; no device interaction",
+    "Linux and remote CI not executed in this pass",
+    "Test durations include concurrent verification work and are not performance benchmarks"
+  ]
+}

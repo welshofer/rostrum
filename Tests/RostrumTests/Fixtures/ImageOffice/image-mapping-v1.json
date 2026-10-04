@@ -1,0 +1,246 @@
+{
+  "producer": "python-pptx 1.0.2",
+  "sourceSHA256": "9b5ce6d88c3c074641df256d1b2f9cbeaef3b1742a1c006dd5b7b3679c5eea8c",
+  "sourceImageSHA256": "9a889d15fbb3506fbf7f44aedbbff02b6f394c56dabedf4c37c937f9edc4ddc3",
+  "imagePixels": [
+    192,
+    192
+  ],
+  "imageDPI": [
+    96,
+    96
+  ],
+  "slideInches": [
+    12,
+    7
+  ],
+  "referenceStatus": "awaiting independent Office capture",
+  "cases": [
+    {
+      "slide": 1,
+      "id": "stretch",
+      "kind": "picture",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {},
+      "destinationInsets": {},
+      "transform": {},
+      "tile": null
+    },
+    {
+      "slide": 2,
+      "id": "right-half-crop",
+      "kind": "picture",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {
+        "l": 50000
+      },
+      "destinationInsets": {},
+      "transform": {},
+      "tile": null
+    },
+    {
+      "slide": 3,
+      "id": "asymmetric-crop",
+      "kind": "picture",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {
+        "l": 15000,
+        "r": 25000,
+        "t": 10000,
+        "b": 20000
+      },
+      "destinationInsets": {},
+      "transform": {},
+      "tile": null
+    },
+    {
+      "slide": 4,
+      "id": "negative-crop",
+      "kind": "picture",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {
+        "l": -50000,
+        "r": -50000
+      },
+      "destinationInsets": {},
+      "transform": {},
+      "tile": null
+    },
+    {
+      "slide": 5,
+      "id": "destination-insets",
+      "kind": "picture",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {},
+      "destinationInsets": {
+        "l": 25000,
+        "t": 12500,
+        "r": 12500,
+        "b": 25000
+      },
+      "transform": {},
+      "tile": null
+    },
+    {
+      "slide": 6,
+      "id": "crop-and-destination",
+      "kind": "picture",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {
+        "l": -25000,
+        "t": 25000
+      },
+      "destinationInsets": {
+        "t": 25000,
+        "b": 25000
+      },
+      "transform": {},
+      "tile": null
+    },
+    {
+      "slide": 7,
+      "id": "rotate-flip-ellipse",
+      "kind": "picture",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {
+        "t": 50000
+      },
+      "destinationInsets": {},
+      "transform": {
+        "rot": 5400000,
+        "flipH": "1",
+        "flipV": "1"
+      },
+      "tile": null
+    },
+    {
+      "slide": 8,
+      "id": "shape-stretch",
+      "kind": "shape",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {},
+      "destinationInsets": {},
+      "transform": {},
+      "tile": null
+    },
+    {
+      "slide": 9,
+      "id": "shape-tile",
+      "kind": "shape",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {},
+      "destinationInsets": {},
+      "transform": {},
+      "tile": {
+        "sx": 100000,
+        "sy": 100000,
+        "algn": "tl"
+      }
+    },
+    {
+      "slide": 10,
+      "id": "shape-mirror-tile",
+      "kind": "shape",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {},
+      "destinationInsets": {},
+      "transform": {},
+      "tile": {
+        "sx": 100000,
+        "sy": 100000,
+        "algn": "ctr",
+        "tx": 228600,
+        "ty": -114300,
+        "flip": "xy"
+      }
+    },
+    {
+      "slide": 11,
+      "id": "cell-stretch",
+      "kind": "cell",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {
+        "l": 25000,
+        "b": 25000
+      },
+      "destinationInsets": {},
+      "transform": {},
+      "tile": null
+    },
+    {
+      "slide": 12,
+      "id": "cell-tile",
+      "kind": "cell",
+      "frameInches": [
+        3,
+        2,
+        6,
+        3
+      ],
+      "sourceCrop": {},
+      "destinationInsets": {},
+      "transform": {},
+      "tile": {
+        "sx": 50000,
+        "sy": 75000,
+        "algn": "br",
+        "flip": "x"
+      }
+    }
+  ]
+}

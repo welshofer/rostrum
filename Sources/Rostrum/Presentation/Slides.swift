@@ -47,16 +47,24 @@ public final class Slides: Sequence {
         return Slide(part: try package.part(at: uri), package: package)
     }
 
-    /// Iterates the resolvable slides. Entries whose relationship or part is
+    /// Iterates an operation-local snapshot of the resolvable slide identities. Entries whose relationship or part is
     /// missing are skipped — `for`-`in` cannot throw, and a malformed deck
     /// must never abort the host process. Use `slide(at:)` to surface the
     /// underlying error for a specific index.
     public func makeIterator() -> AnyIterator<Slide> {
-        var index = 0
+        // Snapshot the operation, not the mutable DOM's lifetime. This avoids
+        // rescanning the entire slide-id list and relationships for each item.
+        let entries = (try? sldIdLst().childElements) ?? []
+        var byID: [String: Relationship] = [:]
+        for rel in presentationPart.rels.items where byID[rel.rId] == nil { byID[rel.rId] = rel }
+        let uris = entries.compactMap { entry -> PackURI? in
+            guard let id = entry[attribute: "r:id"], let rel = byID[id] else { return nil }
+            return PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
+        }
+        var iterator = uris.makeIterator()
         return AnyIterator {
-            while index < self.count {
-                defer { index += 1 }
-                if let slide = try? self.slide(at: index) { return slide }
+            while let uri = iterator.next() {
+                if let part = try? self.package.part(at: uri) { return Slide(part: part, package: self.package) }
             }
             return nil
         }
@@ -68,11 +76,15 @@ public final class Slides: Sequence {
     @discardableResult
     public func add() throws -> Slide {
         let uri = nextSlideURI()
+        let slideID = try nextSlideID()
+        let layout = try firstLayoutPart()
+        let list = try sldIdLst()
+        let oldIDs = list.childElements.compactMap { $0[attribute: "id"].flatMap(Int.init) }
+        let sections = try Sections(package: package, presentationPart: presentationPart)
+            .maintainSectionMembership(order: oldIDs + [slideID], insertedIDs: [slideID])
         let part = package.addPart(
             uri: uri, contentType: ContentType.slide,
             blob: Data(MinimalTemplate.slideXML.utf8))
-
-        let layout = try firstLayoutPart()
         part.rels.add(type: RelType.slideLayout, target: uri.relativeReference(to: layout.uri))
 
         let rId = presentationPart.rels.add(
@@ -80,9 +92,10 @@ public final class Slides: Sequence {
             target: presentationPart.uri.relativeReference(to: uri))
 
         let entry = XML.Element("p:sldId", attributes: [
-            ("id", String(try nextSlideID())), ("r:id", rId),
+            ("id", String(slideID)), ("r:id", rId),
         ])
-        try sldIdLst().appendElement(entry)
+        list.appendElement(entry)
+        sections?.commit()
         presentationPart.markDirty()
         return Slide(part: part, package: package)
     }
@@ -96,13 +109,23 @@ public final class Slides: Sequence {
             throw RostrumError.packageInvalid("slide index \(index) out of range 0..<\(entries.count)")
         }
         let entry = entries[index]
+        let remainingIDs = entries.enumerated().filter { $0.offset != index }
+            .compactMap { $0.element[attribute: "id"].flatMap(Int.init) }
+        let sections = try Sections(package: package, presentationPart: presentationPart)
+            .maintainSectionMembership(order: remainingIDs)
         if let rId = entry[attribute: "r:id"],
            let rel = presentationPart.rels.relationship(withId: rId) {
             let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
+            let annotations = try annotationRemovalPlan(for: try package.part(at: uri))
             presentationPart.rels.remove(rId: rId)
             package.removePart(at: uri)
+            for annotationURI in annotations.removed { package.removePart(at: annotationURI) }
+            for (part, relationships) in annotations.retained {
+                part.rels.setItems(relationships)
+            }
         }
         list.removeChild(entry)
+        sections?.commit()
         presentationPart.markDirty()
     }
 
@@ -116,34 +139,53 @@ public final class Slides: Sequence {
         }
         let entry = entries.remove(at: from)
         entries.insert(entry, at: to)
+        let order = entries.compactMap { $0[attribute: "id"].flatMap(Int.init) }
+        let sections = try Sections(package: package, presentationPart: presentationPart)
+            .maintainSectionMembership(order: order, insertedAt: to,
+                                      moving: entry[attribute: "id"].flatMap(Int.init))
         list.replaceChildElements(with: entries)
+        sections?.commit()
         presentationPart.markDirty()
     }
 
     /// Duplicate the slide at `index`, inserting the copy immediately after
-    /// the original. Copies the slide XML and its relationships.
+    /// the original. Copies slide-owned notes and comments independently;
+    /// layout, notes master, authors and media remain shared.
     @discardableResult
     public func duplicate(at index: Int) throws -> Slide {
         let source = try slide(at: index)
         source.part.flushIfDirty()
 
         let uri = nextSlideURI()
-        let copy = package.addPart(uri: uri, contentType: ContentType.slide, blob: source.part.blob)
-        // Relationship targets are relative to /ppt/slides for both parts, so
-        // they copy verbatim; rIds are preserved because the slide XML
-        // references them by value.
-        copy.rels.setItems(source.part.rels.items)
+        let slideID = try nextSlideID()
+        let list = try sldIdLst()
+        var entries = list.childElements
+        // Resolve and parse every annotation before changing the package. A
+        // missing or malformed part must not leave a half-inserted duplicate.
+        let annotations = try copySlideAnnotations(from: source.part, to: uri, slideID: slideID)
+        var order = entries.compactMap { $0[attribute: "id"].flatMap(Int.init) }
+        order.insert(slideID, at: index + 1)
+        let sections = try Sections(package: package, presentationPart: presentationPart)
+            .maintainSectionMembership(order: order, insertedAt: index + 1,
+                                      insertedIDs: [slideID], duplicateOf: try source.slideID())
 
+        let copy = package.addPart(uri: uri, contentType: ContentType.slide, blob: source.part.blob)
+        copy.rels.setItems(annotations.relationships)
+        for annotation in annotations.parts {
+            let installed = package.addPart(
+                uri: annotation.uri, contentType: annotation.contentType, blob: annotation.blob)
+            installed.rels.setItems(annotation.rels.items)
+        }
+        annotations.legacyAuthors?.commit()
         let rId = presentationPart.rels.add(
             type: RelType.slide,
             target: presentationPart.uri.relativeReference(to: uri))
         let entry = XML.Element("p:sldId", attributes: [
-            ("id", String(try nextSlideID())), ("r:id", rId),
+            ("id", String(slideID)), ("r:id", rId),
         ])
-        let list = try sldIdLst()
-        var entries = list.childElements
         entries.insert(entry, at: index + 1)
         list.replaceChildElements(with: entries)
+        sections?.commit()
         presentationPart.markDirty()
         return Slide(part: copy, package: package)
     }
@@ -170,7 +212,12 @@ public final class Slides: Sequence {
     }
 
     private func firstLayoutPart() throws -> Part {
-        let master = try presentationPart.related(by: RelType.slideMaster, in: package)
-        return try master.related(by: RelType.slideLayout, in: package)
+        let master = try firstPresentationMaster(presentationPart, in: package)
+        guard let entry = try master.dom().firstChild(named: "p:sldLayoutIdLst")?.children(named: "p:sldLayoutId").first,
+              let id = entry[attribute: "r:id"], let relationship = master.rels.relationship(withId: id),
+              relationship.type == RelType.slideLayout, !relationship.isExternal else {
+            throw RostrumError.packageInvalid("slide master has no resolvable first layout")
+        }
+        return try package.part(at: PackURI.resolve(target: relationship.target, relativeTo: master.uri.baseURI))
     }
 }

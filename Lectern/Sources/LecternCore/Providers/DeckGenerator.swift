@@ -24,6 +24,12 @@ public actor DeckGenerator {
         self.useSmartArt = useSmartArt
     }
 
+    public func generate(_ request: DeckRequest, designURL: URL?, template: DeckTemplate,
+                         into directory: URL, emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
+        try await generate(request, designURL: designURL, into: directory,
+                           template: template.nativeTemplate(), emit: emit)
+    }
+
     private struct DraftErrors: Error { var errors: [String] }
 
     public func generate(_ request: DeckRequest, designURL: URL?, into directory: URL,
@@ -318,7 +324,7 @@ public actor DeckGenerator {
         let (images, imageWarnings) = await illustrate(shaped.deck, template: template, emit: emit)   // no-op without an image provider
         emit(.rendering)
         let snapshot = RenderSnapshot(deck: shaped.deck, images: images,
-            design: try designURL.map { try String(contentsOf: $0, encoding: .utf8) },
+            design: try (template == nil ? designURL : nil).map { try String(contentsOf: $0, encoding: .utf8) },
             template: template, notesEnabled: request.notes, useSmartArt: useSmartArt)
         let recoveryURL = diagnostics.flatMap { try? snapshot.save(in: $0) }
         if let recoveryURL { emit(.recoveryAvailable(recoveryURL)) }

@@ -27,7 +27,7 @@ import LecternCore
         let inspection = try #require(app.inspection)
         let labels = inspection.previewRecords.map { $0.accessibilityLabel(total: inspection.slideCount) }
         #expect(labels.contains("Slide 2 of 3. Preview unavailable"))
-        #expect(labels.contains("Slide 3 of 3: Third"))
+        #expect(labels.contains { $0.hasPrefix("Slide 3 of 3: Third") })
         #expect(inspection.previewRecords[1].svg == nil)
         #expect(inspection.previewRecords[2].svg != nil)
         // Optional snapshot exercises the production contact sheet without UI automation

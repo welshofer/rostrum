@@ -52,10 +52,13 @@ public final class Theme {
     public let part: Part
     /// The slide master, needed to read its clrMap for bg*/tx* routing.
     let master: Part?
+    /// Operation-local override from the slide/layout color-map cascade.
+    let colorMap: XML.Element?
 
-    init(part: Part, master: Part?) {
+    init(part: Part, master: Part?, colorMap: XML.Element? = nil) {
         self.part = part
         self.master = master
+        self.colorMap = colorMap
     }
 
     private var clrScheme: XML.Element? {
@@ -147,7 +150,7 @@ public final class Theme {
         case .phClr: return nil
         default:
             // clrMap attribute value is a theme-slot name.
-            guard let clrMap = try? master?.dom().firstChild(named: "p:clrMap"),
+            guard let clrMap = colorMap ?? (try? master?.dom().firstChild(named: "p:clrMap")),
                   let mapped = clrMap[attribute: scheme.rawValue] else {
                 // No master/clrMap: accents map to themselves.
                 return ThemeSlot(rawValue: scheme.rawValue)
@@ -161,7 +164,7 @@ extension Presentation {
     /// The deck's theme (via the first slide master), for brand-kit editing
     /// and color resolution.
     public var theme: Theme {
-        let master = try? presentationPart.related(by: RelType.slideMaster, in: package)
+        let master = try? firstPresentationMaster(presentationPart, in: package)
         let themePart: Part? = {
             if let master, let t = try? master.related(by: RelType.theme, in: package) { return t }
             return package.parts[PackURI("/ppt/theme/theme1.xml")]

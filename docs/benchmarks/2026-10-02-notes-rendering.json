@@ -1,0 +1,623 @@
+{
+  "schema": 1,
+  "command": [
+    "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+    "/Users/welshofer/Developer/rostrum/Tools/conformance/check_notes_render.py",
+    "--binary",
+    ".build/out/Products/Release/pptx-tool",
+    "--output-dir",
+    ".build/notes-ever-forward",
+    "--report",
+    "docs/benchmarks/2026-10-02-notes-rendering.json",
+    "--font",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/arial.ttf",
+    "--font",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/arialbd.ttf",
+    "--font",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/ariali.ttf",
+    "--font",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/arialbi.ttf",
+    "--font",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibri.ttf",
+    "--font",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibrib.ttf",
+    "--font",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibrii.ttf",
+    "--font",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibriz.ttf"
+  ],
+  "revision": "94ab8bfbf4b7913486449f2f18573e7af76f2520",
+  "engines": {
+    "python": "3.12.0",
+    "python-pptx": "1.0.2",
+    "resvg_py": "0.5.0",
+    "PyMuPDF": "1.27.2.3",
+    "Pillow": "12.3.0"
+  },
+  "tools": {
+    "scriptSHA256": "788efccc695eb29825d8cfdce47b532b8721c63d4e17953d32667d6fba0eee27",
+    "binarySHA256": "e6935d74735307bef64c162754d36954be87e3f50b6d40475e443e1801a955d0",
+    "pythonExecutableSHA256": "f4cd716d4b54f205398bec6932cc59361b087494ca2ddb157a5e8631d4d6f863",
+    "modules": {
+      "pptx": {
+        "path": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/pptx/__init__.py",
+        "sha256": "5cbabf88d062a399cd8d03e6986c700bc189647bd5d7404ba9130244301e519c"
+      },
+      "pptx.shapes.placeholder": {
+        "path": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/pptx/shapes/placeholder.py",
+        "sha256": "7bb9bc6bf557299c31b36b6390d27a0bda01f402d2dcc00ce055804d9092f600"
+      },
+      "pymupdf": {
+        "path": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/pymupdf/__init__.py",
+        "sha256": "1b8fe9fd941fac2bfb45143c2d21be04e0a8eb0599c92a29de7ec913914d4568"
+      },
+      "pymupdf._mupdf": {
+        "path": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/pymupdf/_mupdf.so",
+        "sha256": "2b61537744f934bf3b47577a1f5e6fba3de8dc7ffe8fdfcf828a9697befe7a2a"
+      },
+      "resvg_py.resvg_py": {
+        "path": "/tmp/rostrum-visual-oracle/lib/python3.12/site-packages/resvg_py/resvg_py.abi3.so",
+        "sha256": "ed9c4ae7b21dae5d2f64508a6e71ccf898c824317ade2325adb0b4ae46eb70f7"
+      },
+      "PIL._imaging": {
+        "path": "/tmp/rostrum-visual-oracle/lib/python3.12/site-packages/PIL/_imaging.cpython-312-darwin.so",
+        "sha256": "ee754300d3bda6413b80ddabe3a7ed7b419e1b0468bf2830e2b19fe68f14be42"
+      }
+    }
+  },
+  "implementationSHA256": {
+    "Sources/Rostrum/Presentation/NotesPageRenderer.swift": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b",
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "23db5f9e66dbcf29972cda8eb012aa10d52312a3ead5be310199b81cae935b00",
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "6fa5c7b36811dbc680e4c9da4edbec369523a06e196c3e5998e86efdaa8d5578"
+  },
+  "allLibrarySourcesSHA256": "8880cdf5bd0aaba6a1811b2ebcdbccc75e76b53809afbfd0d35c9ca6bd25e60e",
+  "sourceSHA256": {
+    "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported.pptx": "29cae94851e547795595088eba2b9f5f5dcc90e9b8395aaeab714b6761d489fd",
+    "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-source.pptx": "f984bd9e651541626e835e029b3f310513aee150957a91b62bf1f2ffc310fe3b",
+    "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-target-before.pptx": "b2a0e253990bf44402340ec5fbc68b1317f01d2d2e9e7e561a320cbe791ef0f8",
+    "Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-imported.pptx": "73e590c283a4e1541a768caac19410789043264a1886dd245eec59b5152166de",
+    "Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-source.pptx": "6d6785dba27b98593090ea0b2cb9946c1f416d59aadc5a3c46a5d79cfee1aac1",
+    "Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-imported.pptx": "c6d87e77f86b91003684fccbd190e2cc4a10d2c99bc053f585af1d95392f44fe",
+    "Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-source.pptx": "bc0334e2ffbed42cd2a5e89e3a1f11e6389f0e61fc204b9ee9da88601c590d2c",
+    "Tests/RostrumTests/Fixtures/Conformance/python-tables.pptx": "72366e5c1c72b1218a77cead73f40d7effa2cd16923a257fbef02bab3a866aaf",
+    "Tests/RostrumTests/Fixtures/Conformance/python-tables-v2.pptx": "7930ccc91d1269083aecdcc83a4d382976fbd1099c9f677fdca5de90918cc3bf",
+    "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3.pptx": "3f7d5427de26934424329ef6e739b6fe92db26c0c23f260fa9bea1adf6dcd7dd"
+  },
+  "fontSHA256": {
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/arial.ttf": "15663c7e8495594c6136eb51b11983eb8f5bbcdd07bb2c327e0d1e83415b0f06",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/arialbd.ttf": "b018b20bd6392de9ad3c5f0a1dcd23ad1fdf94227652fd92541521c32d8e5fc1",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/ariali.ttf": "541466c87057d2f665fe190ec1e8011c82326ef9aaae0c318244db88b1ee63f5",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/arialbi.ttf": "399f00fe9cca7136639df72e976914c3713cbb321374e52def9ab5a10815904e",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibri.ttf": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibrib.ttf": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibrii.ttf": "38e28b619448710314a298dd66305a3b8f494a854f19d40aa18b9872e61911fe",
+    "/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts/Calibriz.ttf": "77117338878fefc82770d27303bcca90e900f2ef59a0a87d294b7744ec158b5b"
+  },
+  "nativePDFSHA256": {
+    "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-source-office.pdf": "02fd63003062a4fecc03a5439b82fb508fc80cadf04b7169d7984a2b826ee05a",
+    "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-target-before-office.pdf": "a8e484d92c82ef88e7176b3fbaf684b45ee7cd19dc5e51237752e5de5e09c238",
+    "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported-office.pdf": "d52a10a1107c5daa328af12243ba91ab7943278b06d1dd98bdd5248a83dafe04",
+    "Tests/RostrumTests/Fixtures/Conformance/python-tables-notes-office.pdf": "c2cfb7d9ef32ff9f57afbf700c9da2d4570d127803e1935d339aa3426acee4f5",
+    "Tests/RostrumTests/Fixtures/Conformance/python-tables-v2-notes-office.pdf": "269e744cf14ee1c59d4b24d191fa67ba685a65f4353b1e2a26b4d8fdddf8891c",
+    "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-notes-office.pdf": "ab34afde5b7663d6759591bff3f7e28796abb58a9a9d716610c307eab3bddd4d"
+  },
+  "apiSizeRendering": {
+    "preservesSourceNotesSize": true,
+    "decks": [
+      {
+        "input": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported.pptx",
+        "exitCode": 0,
+        "diagnostics": [],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01.svg",
+            "svgSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2",
+            "pngSHA256": "04de228fb8b54c5e32f6d10bfd90f870e6b29ca5084f7ae93f57c04063b9646b",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              685800,
+              685800,
+              5486400,
+              3429000
+            ],
+            "renderImageFrame": [
+              685800,
+              685800,
+              5486400,
+              3429000
+            ]
+          },
+          {
+            "slide": 2,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02.svg",
+            "svgSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0",
+            "pngSHA256": "4086ce4f07b7983b82a726fa0bef973f2fe596b54d8e647b8f12a08e3d09361c",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ],
+            "renderImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ]
+          }
+        ]
+      },
+      {
+        "input": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-source.pptx",
+        "exitCode": 0,
+        "diagnostics": [],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01.svg",
+            "svgSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0",
+            "pngSHA256": "4086ce4f07b7983b82a726fa0bef973f2fe596b54d8e647b8f12a08e3d09361c",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ],
+            "renderImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ]
+          }
+        ]
+      },
+      {
+        "input": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-target-before.pptx",
+        "exitCode": 0,
+        "diagnostics": [],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01.svg",
+            "svgSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2",
+            "pngSHA256": "04de228fb8b54c5e32f6d10bfd90f870e6b29ca5084f7ae93f57c04063b9646b",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              685800,
+              685800,
+              5486400,
+              3429000
+            ],
+            "renderImageFrame": [
+              685800,
+              685800,
+              5486400,
+              3429000
+            ]
+          }
+        ]
+      },
+      {
+        "input": "Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-imported.pptx",
+        "exitCode": 0,
+        "diagnostics": [],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-imported/notes-01.svg",
+            "svgSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2",
+            "pngSHA256": "04de228fb8b54c5e32f6d10bfd90f870e6b29ca5084f7ae93f57c04063b9646b",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              685800,
+              685800,
+              5486400,
+              3429000
+            ],
+            "renderImageFrame": [
+              685800,
+              685800,
+              5486400,
+              3429000
+            ]
+          },
+          {
+            "slide": 2,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-imported/notes-02.svg",
+            "svgSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0",
+            "pngSHA256": "4086ce4f07b7983b82a726fa0bef973f2fe596b54d8e647b8f12a08e3d09361c",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ],
+            "renderImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ]
+          }
+        ]
+      },
+      {
+        "input": "Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-source.pptx",
+        "exitCode": 0,
+        "diagnostics": [],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-source/notes-01.svg",
+            "svgSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0",
+            "pngSHA256": "4086ce4f07b7983b82a726fa0bef973f2fe596b54d8e647b8f12a08e3d09361c",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ],
+            "renderImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ]
+          }
+        ]
+      },
+      {
+        "input": "Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-imported.pptx",
+        "exitCode": 0,
+        "diagnostics": [],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-imported/notes-01.svg",
+            "svgSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2",
+            "pngSHA256": "04de228fb8b54c5e32f6d10bfd90f870e6b29ca5084f7ae93f57c04063b9646b",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              685800,
+              685800,
+              5486400,
+              3429000
+            ],
+            "renderImageFrame": [
+              685800,
+              685800,
+              5486400,
+              3429000
+            ]
+          },
+          {
+            "slide": 2,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-imported/notes-02.svg",
+            "svgSHA256": "763eac67032879b19871cc5394f4f3c051602a98a99de3af6fef2073ee94c8d8",
+            "pngSHA256": "c5583356fdcb1147c3bd64e2b8448a036b612e6a0c349f73ea40807bdaf58958",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ],
+            "renderImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ]
+          }
+        ]
+      },
+      {
+        "input": "Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-source.pptx",
+        "exitCode": 0,
+        "diagnostics": [],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-source/notes-01.svg",
+            "svgSHA256": "763eac67032879b19871cc5394f4f3c051602a98a99de3af6fef2073ee94c8d8",
+            "pngSHA256": "c5583356fdcb1147c3bd64e2b8448a036b612e6a0c349f73ea40807bdaf58958",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ],
+            "renderImageFrame": [
+              1371600,
+              914400,
+              4114800,
+              2743200
+            ]
+          }
+        ]
+      },
+      {
+        "input": "Tests/RostrumTests/Fixtures/Conformance/python-tables.pptx",
+        "exitCode": 0,
+        "diagnostics": [
+          "pptx-tool: slide 1 unresolvedInheritance /p:notes: The notes relationship selects a master not registered by the presentation; native notes-page placement may differ.",
+          "pptx-tool: slide 1 omittedShape /p:notes: Notes placeholder type sldNum needs header/footer or other placeholder semantics not supported by this preview."
+        ],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables/notes-01.svg",
+            "svgSHA256": "8b68d71688ac39e70c28c4ad0721a4fb60f235c7db0d63f3cf352388f74e8231",
+            "pngSHA256": "e6e7427e4eb9ef87f68c00e7961faea89a0e88fce683878976d925315050c071",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              1143000,
+              685800,
+              4572000,
+              3429000
+            ],
+            "renderImageFrame": [
+              1143000,
+              685800,
+              4572000,
+              3429000
+            ]
+          }
+        ]
+      },
+      {
+        "input": "Tests/RostrumTests/Fixtures/Conformance/python-tables-v2.pptx",
+        "exitCode": 0,
+        "diagnostics": [
+          "pptx-tool: slide 1 unresolvedInheritance /p:notes: The notes relationship selects a master not registered by the presentation; native notes-page placement may differ.",
+          "pptx-tool: slide 1 omittedShape /p:notes: Notes placeholder type sldNum needs header/footer or other placeholder semantics not supported by this preview."
+        ],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v2/notes-01.svg",
+            "svgSHA256": "8b68d71688ac39e70c28c4ad0721a4fb60f235c7db0d63f3cf352388f74e8231",
+            "pngSHA256": "e6e7427e4eb9ef87f68c00e7961faea89a0e88fce683878976d925315050c071",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              1143000,
+              685800,
+              4572000,
+              3429000
+            ],
+            "renderImageFrame": [
+              1143000,
+              685800,
+              4572000,
+              3429000
+            ]
+          }
+        ]
+      },
+      {
+        "input": "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3.pptx",
+        "exitCode": 0,
+        "diagnostics": [
+          "pptx-tool: slide 1 omittedShape /p:notes: Notes placeholder type sldNum needs header/footer or other placeholder semantics not supported by this preview."
+        ],
+        "pages": [
+          {
+            "slide": 1,
+            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v3/notes-01.svg",
+            "svgSHA256": "8b68d71688ac39e70c28c4ad0721a4fb60f235c7db0d63f3cf352388f74e8231",
+            "pngSHA256": "e6e7427e4eb9ef87f68c00e7961faea89a0e88fce683878976d925315050c071",
+            "notesSizeEMU": [
+              6858000,
+              9144000
+            ],
+            "pythonPptxImageFrame": [
+              1143000,
+              685800,
+              4572000,
+              3429000
+            ],
+            "renderImageFrame": [
+              1143000,
+              685800,
+              4572000,
+              3429000
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "sourceImportPairs": [
+    {
+      "source": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01.svg",
+      "imported": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02.svg",
+      "byteIdenticalSVG": true,
+      "sharedSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0"
+    },
+    {
+      "source": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-source/notes-01.svg",
+      "imported": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-imported/notes-02.svg",
+      "byteIdenticalSVG": true,
+      "sharedSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0"
+    },
+    {
+      "source": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-source/notes-01.svg",
+      "imported": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-imported/notes-02.svg",
+      "byteIdenticalSVG": true,
+      "sharedSHA256": "763eac67032879b19871cc5394f4f3c051602a98a99de3af6fef2073ee94c8d8"
+    },
+    {
+      "source": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01.svg",
+      "imported": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01.svg",
+      "byteIdenticalSVG": true,
+      "sharedSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2"
+    }
+  ],
+  "printProfileNormalization": {
+    "paperPoints": [
+      612,
+      792
+    ],
+    "notesAreaPoints": [
+      17.0,
+      11.0,
+      578.0,
+      770.0
+    ],
+    "explanation": "Explicit recorded Office print profile applied only to comparison copies; API SVG keeps p:notesSz. No per-page fit to content or reference changes.",
+    "channelTolerance": 16,
+    "maximumDifferenceFraction": 0.005,
+    "comparisons": [
+      {
+        "deck": "geometry-source",
+        "page": 1,
+        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01-print-candidate.png",
+        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01-native.png",
+        "referencePDF": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-source-office.pdf",
+        "candidateSHA256": "8a04743abf354ea3022d2ef184e79b939010f6d79bf9cf0eaab656d3c6f542fe",
+        "nativeRasterSHA256": "9c4e21dfb1eb380519a982a979df2f87134275afea2f579c9a595fc46168a99d",
+        "pixelSize": [
+          1200,
+          1553
+        ],
+        "differingPixelFraction": 0.00835694355011805,
+        "passed": false
+      },
+      {
+        "deck": "geometry-target-before",
+        "page": 1,
+        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01-print-candidate.png",
+        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01-native.png",
+        "referencePDF": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-target-before-office.pdf",
+        "candidateSHA256": "8b4ccdfa798bc36a29b60bc290d918b682b94c26dd2d4f57d1ec75f273d1bcc5",
+        "nativeRasterSHA256": "3f8f0201e6fbeef1cf79f521fb4dd01b3a0800e9139db58bf3416f7ed1dc57a3",
+        "pixelSize": [
+          1200,
+          1553
+        ],
+        "differingPixelFraction": 0.010406203047864349,
+        "passed": false
+      },
+      {
+        "deck": "geometry-imported",
+        "page": 1,
+        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01-print-candidate.png",
+        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01-native.png",
+        "referencePDF": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported-office.pdf",
+        "candidateSHA256": "8b4ccdfa798bc36a29b60bc290d918b682b94c26dd2d4f57d1ec75f273d1bcc5",
+        "nativeRasterSHA256": "3f8f0201e6fbeef1cf79f521fb4dd01b3a0800e9139db58bf3416f7ed1dc57a3",
+        "pixelSize": [
+          1200,
+          1553
+        ],
+        "differingPixelFraction": 0.010406203047864349,
+        "passed": false
+      },
+      {
+        "deck": "geometry-imported",
+        "page": 2,
+        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02-print-candidate.png",
+        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02-native.png",
+        "referencePDF": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported-office.pdf",
+        "candidateSHA256": "8a04743abf354ea3022d2ef184e79b939010f6d79bf9cf0eaab656d3c6f542fe",
+        "nativeRasterSHA256": "9c4e21dfb1eb380519a982a979df2f87134275afea2f579c9a595fc46168a99d",
+        "pixelSize": [
+          1200,
+          1553
+        ],
+        "differingPixelFraction": 0.00835694355011805,
+        "passed": false
+      },
+      {
+        "deck": "python-tables",
+        "page": 1,
+        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables/notes-01-print-candidate.png",
+        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables/notes-01-native.png",
+        "referencePDF": "Tests/RostrumTests/Fixtures/Conformance/python-tables-notes-office.pdf",
+        "candidateSHA256": "958c0b9c156d361e4c406b4097f9b292faee7d46da859f197aafac31eaa840ff",
+        "nativeRasterSHA256": "05d793716005f20b7623b7fdfab69ccac2e59e3f7c90fa77ca87f0ea016751f4",
+        "pixelSize": [
+          1200,
+          1553
+        ],
+        "differingPixelFraction": 0.04788849538527581,
+        "passed": false
+      },
+      {
+        "deck": "python-tables-v2",
+        "page": 1,
+        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v2/notes-01-print-candidate.png",
+        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v2/notes-01-native.png",
+        "referencePDF": "Tests/RostrumTests/Fixtures/Conformance/python-tables-v2-notes-office.pdf",
+        "candidateSHA256": "958c0b9c156d361e4c406b4097f9b292faee7d46da859f197aafac31eaa840ff",
+        "nativeRasterSHA256": "05d793716005f20b7623b7fdfab69ccac2e59e3f7c90fa77ca87f0ea016751f4",
+        "pixelSize": [
+          1200,
+          1553
+        ],
+        "differingPixelFraction": 0.04788849538527581,
+        "passed": false
+      },
+      {
+        "deck": "python-tables-v3",
+        "page": 1,
+        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v3/notes-01-print-candidate.png",
+        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v3/notes-01-native.png",
+        "referencePDF": "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-notes-office.pdf",
+        "candidateSHA256": "958c0b9c156d361e4c406b4097f9b292faee7d46da859f197aafac31eaa840ff",
+        "nativeRasterSHA256": "d5943cac6c7b4029ec63369a27b8f60adc9436fb07cc7087f31561b33506df51",
+        "pixelSize": [
+          1200,
+          1553
+        ],
+        "differingPixelFraction": 0.010428740072977033,
+        "passed": false
+      }
+    ],
+    "passed": false
+  },
+  "passed": false
+}

@@ -29,9 +29,10 @@ import Testing
         <a:srgbClr val="FF0000"><a:tint val="50000"/><a:shade val="50000"/>
         <a:alpha val="50000"/><a:alphaMod val="50000"/><a:alphaOff val="10000"/></a:srgbClr>
         """))
+        // DrawingML tint/shade resolve in linear light, as native Office does.
         let before = try deck.serializedData()
         let svg = try deck.renderSVG(slideAt: 0)
-        #expect(svg.contains("offset=\"0.12345\" stop-color=\"#804040\" stop-opacity=\"0.35\""))
+        #expect(svg.contains("offset=\"0.12345\" stop-color=\"rgba(188,137,137,0.35)\""))
         #expect(svg.contains("x1=\"0.0\" y1=\"1000000.0\" x2=\"4000000.0\" y2=\"1000000.0\""))
         #expect(try deck.serializedData() == before)
         #expect(try Presentation(data: before).renderSVG(slideAt: 0) == svg)
@@ -48,7 +49,7 @@ import Testing
         deck.theme.part.markDirty()
         let before = try deck.serializedData()
         let svg = try deck.renderSVG(slideAt: 0)
-        #expect(svg.contains("stop-color=\"#BF8080\" stop-opacity=\"0.25\""))
+        #expect(svg.contains("stop-color=\"rgba(225,188,188,0.25)\""))
         #expect(try deck.serializedData() == before)
     }
 
@@ -75,7 +76,7 @@ import Testing
     @Test func malformedPaintCannotInjectMarkupOrNonfiniteValues() throws {
         let deck = try deck(fill: gradient("<a:srgbClr val=\"00FF00\"><a:tint val=\"9999999999999999999999999\"/><a:alpha val=\"NaN\"/><a:satMod val=\"-1\"/></a:srgbClr>", angle: Int.max))
         let svg = try deck.renderSVG(slideAt: 0)
-        #expect(svg.contains("stop-color=\"#00FF00\" stop-opacity=\"1.0\""))
+        #expect(svg.contains("stop-color=\"#00FF00\""))
         #expect(!svg.contains("NaN") && !svg.contains("nan"))
         _ = try XML.parse(Data(svg.utf8))
     }

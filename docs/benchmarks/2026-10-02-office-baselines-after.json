@@ -1,0 +1,2216 @@
+{
+  "scope": "Baseline-only vector diagnostic. Native PNG gate remains independent and unchanged.",
+  "tools": {
+    "PyMuPDF": "1.27.2.3",
+    "fonttools": "4.60.1"
+  },
+  "checkerSHA256": "5f3061d0546b4624f113a21fa8eb0d105896db0653d72d07f8d611a742b61272",
+  "pdfSHA256": "1ecd600ebbed746667c5fecdb622b52b62dab98f0126657fc1818df9861945b3",
+  "pptxSHA256": "e6ae71b1228c362eb9d1917df413e49d6850a92ffcb5416f2b9efdcc02393079",
+  "candidateSVGs": [
+    {
+      "file": "slide-01.svg",
+      "sha256": "0afcf1ca7b3d41ac1e39606fbe562beda6e5bcb726ce187964a267a1a0b867bf"
+    },
+    {
+      "file": "slide-02.svg",
+      "sha256": "544fa752a55eb268dbd1ed9d9741cd764a9e4c1bfc2ad47cc206f5ecfbdeb349"
+    },
+    {
+      "file": "slide-03.svg",
+      "sha256": "febed32fc4f0a20f2a419cf70f5cde64051a6ba95aa3f8febb4264682538b4ec"
+    }
+  ],
+  "verifiedGlyphOutlines": 268,
+  "caseCount": 30,
+  "lineCount": 46,
+  "baselineTolerancePoints": 0.121,
+  "maximumBaselineDifferencePoints": 0.12001708984375625,
+  "passed": true,
+  "lines": [
+    {
+      "case": "s1-arial-regular-14",
+      "line": 0,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 54.9599609375,
+      "candidateBaselinePoints": 55.04,
+      "differencePoints": 0.08003906249999915,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              43.91999816894531,
+              54.9599609375
+            ],
+            [
+              54.0447998046875,
+              54.9599609375
+            ],
+            [
+              61.795196533203125,
+              54.9599609375
+            ],
+            [
+              68.79519653320312,
+              54.9599609375
+            ],
+            [
+              76.54559326171875,
+              54.9599609375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-arial-bold-14",
+      "line": 0,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 54.9599609375,
+      "candidateBaselinePoints": 55.04,
+      "differencePoints": 0.08003906249999915,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Arial-BoldMT",
+          "fontSHA256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              241.9199981689453,
+              54.9599609375
+            ],
+            [
+              252.0447998046875,
+              54.9599609375
+            ],
+            [
+              260.54559326171875,
+              54.9599609375
+            ],
+            [
+              268.2904052734375,
+              54.9599609375
+            ],
+            [
+              276.79119873046875,
+              54.9599609375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            10
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-calibri-regular-14",
+      "line": 0,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 54.0,
+      "candidateBaselinePoints": 54.04,
+      "differencePoints": 0.03999999999999915,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              439.9200134277344,
+              54.0
+            ],
+            [
+              448.6700134277344,
+              54.0
+            ],
+            [
+              455.76800537109375,
+              54.0
+            ],
+            [
+              461.9000244140625,
+              54.0
+            ],
+            [
+              468.5220031738281,
+              54.0
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-calibri-bold-14",
+      "line": 0,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 54.0,
+      "candidateBaselinePoints": 54.04,
+      "differencePoints": 0.03999999999999915,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri-Bold",
+          "fontSHA256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              637.9199829101562,
+              54.0
+            ],
+            [
+              646.7945556640625,
+              54.0
+            ],
+            [
+              654.045166015625,
+              54.0
+            ],
+            [
+              660.4137573242188,
+              54.0
+            ],
+            [
+              667.0343627929688,
+              54.0
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            14
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-arial-regular-18",
+      "line": 0,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 203.03997802734375,
+      "candidateBaselinePoints": 203.04,
+      "differencePoints": 2.197265624204192e-05,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              43.91999816894531,
+              203.03997802734375
+            ],
+            [
+              56.91959762573242,
+              203.03997802734375
+            ],
+            [
+              66.92039489746094,
+              203.03997802734375
+            ],
+            [
+              75.92039489746094,
+              203.03997802734375
+            ],
+            [
+              85.92120361328125,
+              203.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-arial-bold-18",
+      "line": 0,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 203.03997802734375,
+      "candidateBaselinePoints": 203.04,
+      "differencePoints": 2.197265624204192e-05,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Arial-BoldMT",
+          "fontSHA256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              241.9199981689453,
+              203.03997802734375
+            ],
+            [
+              254.9196014404297,
+              203.03997802734375
+            ],
+            [
+              265.92120361328125,
+              203.03997802734375
+            ],
+            [
+              275.914794921875,
+              203.03997802734375
+            ],
+            [
+              286.9163818359375,
+              203.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            18,
+            26
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-calibri-regular-18",
+      "line": 0,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 202.08001708984375,
+      "candidateBaselinePoints": 202.04,
+      "differencePoints": -0.04001708984375796,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              439.9200134277344,
+              202.08001708984375
+            ],
+            [
+              451.1700134277344,
+              202.08001708984375
+            ],
+            [
+              460.31402587890625,
+              202.08001708984375
+            ],
+            [
+              468.072021484375,
+              202.08001708984375
+            ],
+            [
+              476.5680236816406,
+              202.08001708984375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-calibri-bold-18",
+      "line": 0,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 202.08001708984375,
+      "candidateBaselinePoints": 202.04,
+      "differencePoints": -0.04001708984375796,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri-Bold",
+          "fontSHA256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              637.9199829101562,
+              202.08001708984375
+            ],
+            [
+              649.294189453125,
+              202.08001708984375
+            ],
+            [
+              658.598388671875,
+              202.08001708984375
+            ],
+            [
+              666.840576171875,
+              202.08001708984375
+            ],
+            [
+              675.3347778320312,
+              202.08001708984375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            22,
+            30
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-arial-regular-24",
+      "line": 0,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 352.0799560546875,
+      "candidateBaselinePoints": 352.04,
+      "differencePoints": -0.039956054687479536,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              43.91999816894531,
+              352.0799560546875
+            ],
+            [
+              61.295997619628906,
+              352.0799560546875
+            ],
+            [
+              74.67119598388672,
+              352.0799560546875
+            ],
+            [
+              86.67120361328125,
+              352.0799560546875
+            ],
+            [
+              100.04640197753906,
+              352.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-arial-bold-24",
+      "line": 0,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 352.0799560546875,
+      "candidateBaselinePoints": 352.04,
+      "differencePoints": -0.039956054687479536,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Arial-BoldMT",
+          "fontSHA256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              241.9199981689453,
+              352.0799560546875
+            ],
+            [
+              259.2959899902344,
+              352.0799560546875
+            ],
+            [
+              273.9119873046875,
+              352.0799560546875
+            ],
+            [
+              287.2799987792969,
+              352.0799560546875
+            ],
+            [
+              301.89599609375,
+              352.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            18,
+            26
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-calibri-regular-24",
+      "line": 0,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 351.1199951171875,
+      "candidateBaselinePoints": 351.04,
+      "differencePoints": -0.07999511718747954,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              439.9200134277344,
+              351.1199951171875
+            ],
+            [
+              454.9200134277344,
+              351.1199951171875
+            ],
+            [
+              467.06402587890625,
+              351.1199951171875
+            ],
+            [
+              477.4320068359375,
+              351.1199951171875
+            ],
+            [
+              488.6880187988281,
+              351.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            28
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s1-calibri-bold-24",
+      "line": 0,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 351.1199951171875,
+      "candidateBaselinePoints": 351.04,
+      "differencePoints": -0.07999511718747954,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri-Bold",
+          "fontSHA256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              637.9199829101562,
+              351.1199951171875
+            ],
+            [
+              653.0447998046875,
+              351.1199951171875
+            ],
+            [
+              665.4840087890625,
+              351.1199951171875
+            ],
+            [
+              676.483154296875,
+              351.1199951171875
+            ],
+            [
+              687.8591918945312,
+              351.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            22,
+            30
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-24-14-absent",
+      "line": 0,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 64.0799560546875,
+      "candidateBaselinePoints": 64.04,
+      "differencePoints": -0.03995605468749375,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              43.91999816894531,
+              64.0799560546875
+            ],
+            [
+              61.295997619628906,
+              64.0799560546875
+            ],
+            [
+              74.67119598388672,
+              64.0799560546875
+            ],
+            [
+              86.67120361328125,
+              64.0799560546875
+            ],
+            [
+              100.04640197753906,
+              64.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-24-14-absent",
+      "line": 1,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 83.03997802734375,
+      "candidateBaselinePoints": 83.04,
+      "differencePoints": 2.1972656256252776e-05,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              43.91999816894531,
+              83.03997802734375
+            ],
+            [
+              54.0447998046875,
+              83.03997802734375
+            ],
+            [
+              61.795196533203125,
+              83.03997802734375
+            ],
+            [
+              68.79519653320312,
+              83.03997802734375
+            ],
+            [
+              76.54559326171875,
+              83.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-24-14-explicit100percent",
+      "line": 0,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 64.0799560546875,
+      "candidateBaselinePoints": 64.04,
+      "differencePoints": -0.03995605468749375,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              241.9199981689453,
+              64.0799560546875
+            ],
+            [
+              259.2959899902344,
+              64.0799560546875
+            ],
+            [
+              272.67120361328125,
+              64.0799560546875
+            ],
+            [
+              284.67120361328125,
+              64.0799560546875
+            ],
+            [
+              298.04638671875,
+              64.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-24-14-explicit100percent",
+      "line": 1,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 83.03997802734375,
+      "candidateBaselinePoints": 83.04,
+      "differencePoints": 2.1972656256252776e-05,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              241.9199981689453,
+              83.03997802734375
+            ],
+            [
+              252.0447998046875,
+              83.03997802734375
+            ],
+            [
+              259.7951965332031,
+              83.03997802734375
+            ],
+            [
+              266.7951965332031,
+              83.03997802734375
+            ],
+            [
+              274.54559326171875,
+              83.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-24-14-absent",
+      "line": 0,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 63.1199951171875,
+      "candidateBaselinePoints": 63.04,
+      "differencePoints": -0.07999511718750085,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              439.9200134277344,
+              63.1199951171875
+            ],
+            [
+              454.9200134277344,
+              63.1199951171875
+            ],
+            [
+              467.06402587890625,
+              63.1199951171875
+            ],
+            [
+              477.4320068359375,
+              63.1199951171875
+            ],
+            [
+              488.6880187988281,
+              63.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            28
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-24-14-absent",
+      "line": 1,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 83.03997802734375,
+      "candidateBaselinePoints": 83.04,
+      "differencePoints": 2.1972656256252776e-05,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              439.9200134277344,
+              83.03997802734375
+            ],
+            [
+              448.6700134277344,
+              83.03997802734375
+            ],
+            [
+              455.76800537109375,
+              83.03997802734375
+            ],
+            [
+              461.9000244140625,
+              83.03997802734375
+            ],
+            [
+              468.5220031738281,
+              83.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-24-14-explicit100percent",
+      "line": 0,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 63.1199951171875,
+      "candidateBaselinePoints": 63.04,
+      "differencePoints": -0.07999511718750085,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              637.9199829101562,
+              63.1199951171875
+            ],
+            [
+              652.9199829101562,
+              63.1199951171875
+            ],
+            [
+              665.06396484375,
+              63.1199951171875
+            ],
+            [
+              675.4320068359375,
+              63.1199951171875
+            ],
+            [
+              686.68798828125,
+              63.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            28
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-24-14-explicit100percent",
+      "line": 1,
+      "contentTopPoints": 41.04,
+      "officeBaselinePoints": 83.03997802734375,
+      "candidateBaselinePoints": 83.04,
+      "differencePoints": 2.1972656256252776e-05,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              637.9199829101562,
+              83.03997802734375
+            ],
+            [
+              646.6699829101562,
+              83.03997802734375
+            ],
+            [
+              653.7680053710938,
+              83.03997802734375
+            ],
+            [
+              659.8999633789062,
+              83.03997802734375
+            ],
+            [
+              666.52197265625,
+              83.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-14-24-absent",
+      "line": 0,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 198.96002197265625,
+      "candidateBaselinePoints": 199.04,
+      "differencePoints": 0.07997802734374204,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              43.91999816894531,
+              198.96002197265625
+            ],
+            [
+              54.0447998046875,
+              198.96002197265625
+            ],
+            [
+              61.795196533203125,
+              198.96002197265625
+            ],
+            [
+              68.79519653320312,
+              198.96002197265625
+            ],
+            [
+              76.54559326171875,
+              198.96002197265625
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-14-24-absent",
+      "line": 1,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 225.1199951171875,
+      "candidateBaselinePoints": 225.04,
+      "differencePoints": -0.07999511718750796,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              43.91999816894531,
+              225.1199951171875
+            ],
+            [
+              61.295997619628906,
+              225.1199951171875
+            ],
+            [
+              74.67119598388672,
+              225.1199951171875
+            ],
+            [
+              86.67120361328125,
+              225.1199951171875
+            ],
+            [
+              100.04640197753906,
+              225.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-14-24-explicit100percent",
+      "line": 0,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 198.96002197265625,
+      "candidateBaselinePoints": 199.04,
+      "differencePoints": 0.07997802734374204,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              241.9199981689453,
+              198.96002197265625
+            ],
+            [
+              252.0447998046875,
+              198.96002197265625
+            ],
+            [
+              259.7951965332031,
+              198.96002197265625
+            ],
+            [
+              266.7951965332031,
+              198.96002197265625
+            ],
+            [
+              274.54559326171875,
+              198.96002197265625
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-14-24-explicit100percent",
+      "line": 1,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 225.1199951171875,
+      "candidateBaselinePoints": 225.04,
+      "differencePoints": -0.07999511718750796,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              241.9199981689453,
+              225.1199951171875
+            ],
+            [
+              259.2959899902344,
+              225.1199951171875
+            ],
+            [
+              272.67120361328125,
+              225.1199951171875
+            ],
+            [
+              284.67120361328125,
+              225.1199951171875
+            ],
+            [
+              298.04638671875,
+              225.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-14-24-absent",
+      "line": 0,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 198.0,
+      "candidateBaselinePoints": 198.04,
+      "differencePoints": 0.03999999999999204,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              439.9200134277344,
+              198.0
+            ],
+            [
+              448.6700134277344,
+              198.0
+            ],
+            [
+              455.76800537109375,
+              198.0
+            ],
+            [
+              461.9000244140625,
+              198.0
+            ],
+            [
+              468.5220031738281,
+              198.0
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-14-24-absent",
+      "line": 1,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 223.91998291015625,
+      "candidateBaselinePoints": 224.04,
+      "differencePoints": 0.12001708984374204,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              439.9200134277344,
+              223.91998291015625
+            ],
+            [
+              454.9200134277344,
+              223.91998291015625
+            ],
+            [
+              467.06402587890625,
+              223.91998291015625
+            ],
+            [
+              477.4320068359375,
+              223.91998291015625
+            ],
+            [
+              488.6880187988281,
+              223.91998291015625
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            28
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-14-24-explicit100percent",
+      "line": 0,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 198.0,
+      "candidateBaselinePoints": 198.04,
+      "differencePoints": 0.03999999999999204,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              637.9199829101562,
+              198.0
+            ],
+            [
+              646.6699829101562,
+              198.0
+            ],
+            [
+              653.7680053710938,
+              198.0
+            ],
+            [
+              659.8999633789062,
+              198.0
+            ],
+            [
+              666.52197265625,
+              198.0
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-14-24-explicit100percent",
+      "line": 1,
+      "contentTopPoints": 185.04,
+      "officeBaselinePoints": 223.91998291015625,
+      "candidateBaselinePoints": 224.04,
+      "differencePoints": 0.12001708984374204,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              637.9199829101562,
+              223.91998291015625
+            ],
+            [
+              652.9199829101562,
+              223.91998291015625
+            ],
+            [
+              665.06396484375,
+              223.91998291015625
+            ],
+            [
+              675.4320068359375,
+              223.91998291015625
+            ],
+            [
+              686.68798828125,
+              223.91998291015625
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            28
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-18-18-absent",
+      "line": 0,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 347.0400390625,
+      "candidateBaselinePoints": 347.04,
+      "differencePoints": -3.906249997953637e-05,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              43.91999816894531,
+              347.0400390625
+            ],
+            [
+              56.91959762573242,
+              347.0400390625
+            ],
+            [
+              66.92039489746094,
+              347.0400390625
+            ],
+            [
+              75.92039489746094,
+              347.0400390625
+            ],
+            [
+              85.92120361328125,
+              347.0400390625
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-18-18-absent",
+      "line": 1,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 367.9200439453125,
+      "candidateBaselinePoints": 368.04,
+      "differencePoints": 0.11995605468752046,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              43.91999816894531,
+              367.9200439453125
+            ],
+            [
+              56.91959762573242,
+              367.9200439453125
+            ],
+            [
+              66.92039489746094,
+              367.9200439453125
+            ],
+            [
+              75.92039489746094,
+              367.9200439453125
+            ],
+            [
+              85.92120361328125,
+              367.9200439453125
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-18-18-explicit100percent",
+      "line": 0,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 347.0400390625,
+      "candidateBaselinePoints": 347.04,
+      "differencePoints": -3.906249997953637e-05,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              241.9199981689453,
+              347.0400390625
+            ],
+            [
+              254.9196014404297,
+              347.0400390625
+            ],
+            [
+              264.92041015625,
+              347.0400390625
+            ],
+            [
+              273.92041015625,
+              347.0400390625
+            ],
+            [
+              283.92120361328125,
+              347.0400390625
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-arial-18-18-explicit100percent",
+      "line": 1,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 367.9200439453125,
+      "candidateBaselinePoints": 368.04,
+      "differencePoints": 0.11995605468752046,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              241.9199981689453,
+              367.9200439453125
+            ],
+            [
+              254.9196014404297,
+              367.9200439453125
+            ],
+            [
+              264.92041015625,
+              367.9200439453125
+            ],
+            [
+              273.92041015625,
+              367.9200439453125
+            ],
+            [
+              283.92120361328125,
+              367.9200439453125
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-18-18-absent",
+      "line": 0,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 346.0799560546875,
+      "candidateBaselinePoints": 346.04,
+      "differencePoints": -0.039956054687479536,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              439.9200134277344,
+              346.0799560546875
+            ],
+            [
+              451.1700134277344,
+              346.0799560546875
+            ],
+            [
+              460.31402587890625,
+              346.0799560546875
+            ],
+            [
+              468.072021484375,
+              346.0799560546875
+            ],
+            [
+              476.5680236816406,
+              346.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-18-18-absent",
+      "line": 1,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 366.9599609375,
+      "candidateBaselinePoints": 367.04,
+      "differencePoints": 0.08003906250002046,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              439.9200134277344,
+              366.9599609375
+            ],
+            [
+              451.1700134277344,
+              366.9599609375
+            ],
+            [
+              460.31402587890625,
+              366.9599609375
+            ],
+            [
+              468.072021484375,
+              366.9599609375
+            ],
+            [
+              476.5680236816406,
+              366.9599609375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-18-18-explicit100percent",
+      "line": 0,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 346.0799560546875,
+      "candidateBaselinePoints": 346.04,
+      "differencePoints": -0.039956054687479536,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              637.9199829101562,
+              346.0799560546875
+            ],
+            [
+              649.1699829101562,
+              346.0799560546875
+            ],
+            [
+              658.31396484375,
+              346.0799560546875
+            ],
+            [
+              666.0719604492188,
+              346.0799560546875
+            ],
+            [
+              674.5679931640625,
+              346.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s2-calibri-18-18-explicit100percent",
+      "line": 1,
+      "contentTopPoints": 329.04,
+      "officeBaselinePoints": 366.9599609375,
+      "candidateBaselinePoints": 367.04,
+      "differencePoints": 0.08003906250002046,
+      "officeSpans": [
+        {
+          "text": "Hpxgy",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              637.9199829101562,
+              366.9599609375
+            ],
+            [
+              649.1699829101562,
+              366.9599609375
+            ],
+            [
+              658.31396484375,
+              366.9599609375
+            ],
+            [
+              666.0719604492188,
+              366.9599609375
+            ],
+            [
+              674.5679931640625,
+              366.9599609375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-arial-mixed-auto",
+      "line": 0,
+      "contentTopPoints": 77.04,
+      "officeBaselinePoints": 100.08001708984375,
+      "candidateBaselinePoints": 100.04,
+      "differencePoints": -0.04001708984374375,
+      "officeSpans": [
+        {
+          "text": "Mixed ",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              79.91999816894531,
+              100.08001708984375
+            ],
+            [
+              94.91940307617188,
+              100.08001708984375
+            ],
+            [
+              98.91899871826172,
+              100.08001708984375
+            ],
+            [
+              107.91899871826172,
+              100.08001708984375
+            ],
+            [
+              117.9197998046875,
+              100.08001708984375
+            ],
+            [
+              127.92060852050781,
+              100.08001708984375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16
+          ]
+        },
+        {
+          "text": "bold",
+          "font": "Arial-BoldMT",
+          "fontSHA256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              132.9199981689453,
+              100.08001708984375
+            ],
+            [
+              147.54559326171875,
+              100.08001708984375
+            ],
+            [
+              162.17120361328125,
+              100.08001708984375
+            ],
+            [
+              168.80479431152344,
+              100.08001708984375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            26,
+            18
+          ]
+        },
+        {
+          "text": " ",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              183.4199981689453,
+              100.08001708984375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-arial-mixed-auto",
+      "line": 1,
+      "contentTopPoints": 77.04,
+      "officeBaselinePoints": 119.03997802734375,
+      "candidateBaselinePoints": 119.04,
+      "differencePoints": 2.1972656256252776e-05,
+      "officeSpans": [
+        {
+          "text": "text",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              79.91999816894531,
+              119.03997802734375
+            ],
+            [
+              83.79519653320312,
+              119.03997802734375
+            ],
+            [
+              91.54560089111328,
+              119.03997802734375
+            ],
+            [
+              98.54559326171875,
+              119.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-arial-mixed-explicit-break",
+      "line": 0,
+      "contentTopPoints": 77.04,
+      "officeBaselinePoints": 100.08001708984375,
+      "candidateBaselinePoints": 100.04,
+      "differencePoints": -0.04001708984374375,
+      "officeSpans": [
+        {
+          "text": "Mixed ",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              331.9200134277344,
+              100.08001708984375
+            ],
+            [
+              346.9194030761719,
+              100.08001708984375
+            ],
+            [
+              350.91900634765625,
+              100.08001708984375
+            ],
+            [
+              359.91900634765625,
+              100.08001708984375
+            ],
+            [
+              369.9198303222656,
+              100.08001708984375
+            ],
+            [
+              379.9206237792969,
+              100.08001708984375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16
+          ]
+        },
+        {
+          "text": "bold",
+          "font": "Arial-BoldMT",
+          "fontSHA256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              384.9200134277344,
+              100.08001708984375
+            ],
+            [
+              399.5456237792969,
+              100.08001708984375
+            ],
+            [
+              414.17120361328125,
+              100.08001708984375
+            ],
+            [
+              420.8048095703125,
+              100.08001708984375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            26,
+            18
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-arial-mixed-explicit-break",
+      "line": 1,
+      "contentTopPoints": 77.04,
+      "officeBaselinePoints": 119.03997802734375,
+      "candidateBaselinePoints": 119.04,
+      "differencePoints": 2.1972656256252776e-05,
+      "officeSpans": [
+        {
+          "text": "text",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              331.9200134277344,
+              119.03997802734375
+            ],
+            [
+              335.79522705078125,
+              119.03997802734375
+            ],
+            [
+              343.5456237792969,
+              119.03997802734375
+            ],
+            [
+              350.5456237792969,
+              119.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-arial-all18-auto",
+      "line": 0,
+      "contentTopPoints": 77.04,
+      "officeBaselinePoints": 95.03997802734375,
+      "candidateBaselinePoints": 95.04,
+      "differencePoints": 2.1972656256252776e-05,
+      "officeSpans": [
+        {
+          "text": "Mixed ",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              583.9199829101562,
+              95.03997802734375
+            ],
+            [
+              598.9193725585938,
+              95.03997802734375
+            ],
+            [
+              602.9190063476562,
+              95.03997802734375
+            ],
+            [
+              611.9190063476562,
+              95.03997802734375
+            ],
+            [
+              621.9197998046875,
+              95.03997802734375
+            ],
+            [
+              631.9205932617188,
+              95.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16
+          ]
+        },
+        {
+          "text": "bold",
+          "font": "Arial-BoldMT",
+          "fontSHA256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              636.9199829101562,
+              95.03997802734375
+            ],
+            [
+              647.9197998046875,
+              95.03997802734375
+            ],
+            [
+              658.9195556640625,
+              95.03997802734375
+            ],
+            [
+              663.9254150390625,
+              95.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            26,
+            18
+          ]
+        },
+        {
+          "text": " ",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              674.9199829101562,
+              95.03997802734375
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-arial-all18-auto",
+      "line": 1,
+      "contentTopPoints": 77.04,
+      "officeBaselinePoints": 115.91998291015625,
+      "candidateBaselinePoints": 116.04,
+      "differencePoints": 0.12001708984375625,
+      "officeSpans": [
+        {
+          "text": "text",
+          "font": "ArialMT",
+          "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              583.9199829101562,
+              115.91998291015625
+            ],
+            [
+              588.92041015625,
+              115.91998291015625
+            ],
+            [
+              598.9212036132812,
+              115.91998291015625
+            ],
+            [
+              607.9212036132812,
+              115.91998291015625
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-calibri-mixed-auto",
+      "line": 0,
+      "contentTopPoints": 275.04,
+      "officeBaselinePoints": 297.1199951171875,
+      "candidateBaselinePoints": 297.04,
+      "differencePoints": -0.07999511718747954,
+      "officeSpans": [
+        {
+          "text": "Mixed ",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              79.91999816894531,
+              297.1199951171875
+            ],
+            [
+              95.29560089111328,
+              297.1199951171875
+            ],
+            [
+              99.42120361328125,
+              297.1199951171875
+            ],
+            [
+              106.6968002319336,
+              297.1199951171875
+            ],
+            [
+              115.70040130615234,
+              297.1199951171875
+            ],
+            [
+              125.2080078125,
+              297.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20
+          ]
+        },
+        {
+          "text": "bold",
+          "font": "Calibri-Bold",
+          "fontSHA256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              129.32000732421875,
+              297.1199951171875
+            ],
+            [
+              142.19601440429688,
+              297.1199951171875
+            ],
+            [
+              155.07200622558594,
+              297.1199951171875
+            ],
+            [
+              160.94000244140625,
+              297.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            30,
+            22
+          ]
+        },
+        {
+          "text": " ",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              173.82000732421875,
+              297.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20,
+            12
+          ]
+        },
+        {
+          "text": "text",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              176.94500732421875,
+              297.1199951171875
+            ],
+            [
+              181.54541015625,
+              297.1199951171875
+            ],
+            [
+              188.32980346679688,
+              297.1199951171875
+            ],
+            [
+              194.49819946289062,
+              297.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-calibri-mixed-explicit-break",
+      "line": 0,
+      "contentTopPoints": 275.04,
+      "officeBaselinePoints": 297.1199951171875,
+      "candidateBaselinePoints": 297.04,
+      "differencePoints": -0.07999511718747954,
+      "officeSpans": [
+        {
+          "text": "Mixed ",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              331.9200134277344,
+              297.1199951171875
+            ],
+            [
+              347.2956237792969,
+              297.1199951171875
+            ],
+            [
+              351.42120361328125,
+              297.1199951171875
+            ],
+            [
+              358.6968078613281,
+              297.1199951171875
+            ],
+            [
+              367.7004089355469,
+              297.1199951171875
+            ],
+            [
+              377.2080078125,
+              297.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20
+          ]
+        },
+        {
+          "text": "bold",
+          "font": "Calibri-Bold",
+          "fontSHA256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+          "pointSize": 24.0,
+          "glyphOrigins": [
+            [
+              381.32000732421875,
+              297.1199951171875
+            ],
+            [
+              394.1960144042969,
+              297.1199951171875
+            ],
+            [
+              407.072021484375,
+              297.1199951171875
+            ],
+            [
+              412.94000244140625,
+              297.1199951171875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            30,
+            22
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-calibri-mixed-explicit-break",
+      "line": 1,
+      "contentTopPoints": 275.04,
+      "officeBaselinePoints": 317.0400390625,
+      "candidateBaselinePoints": 317.04,
+      "differencePoints": -3.906249997953637e-05,
+      "officeSpans": [
+        {
+          "text": "text",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 13.999998092651367,
+          "glyphOrigins": [
+            [
+              331.9200134277344,
+              317.0400390625
+            ],
+            [
+              336.5204162597656,
+              317.0400390625
+            ],
+            [
+              343.3048095703125,
+              317.0400390625
+            ],
+            [
+              349.47320556640625,
+              317.0400390625
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "case": "s3-calibri-all18-auto",
+      "line": 0,
+      "contentTopPoints": 275.04,
+      "officeBaselinePoints": 292.0799560546875,
+      "candidateBaselinePoints": 292.04,
+      "differencePoints": -0.039956054687479536,
+      "officeSpans": [
+        {
+          "text": "Mixed ",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              583.9199829101562,
+              292.0799560546875
+            ],
+            [
+              599.2955932617188,
+              292.0799560546875
+            ],
+            [
+              603.4212036132812,
+              292.0799560546875
+            ],
+            [
+              610.69677734375,
+              292.0799560546875
+            ],
+            [
+              619.7003784179688,
+              292.0799560546875
+            ],
+            [
+              629.2080078125,
+              292.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20
+          ]
+        },
+        {
+          "text": "bold",
+          "font": "Calibri-Bold",
+          "fontSHA256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              633.3200073242188,
+              292.0799560546875
+            ],
+            [
+              642.944580078125,
+              292.0799560546875
+            ],
+            [
+              652.5692138671875,
+              292.0799560546875
+            ],
+            [
+              656.9378051757812,
+              292.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            30,
+            22
+          ]
+        },
+        {
+          "text": " ",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              666.5700073242188,
+              292.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20,
+            12
+          ]
+        },
+        {
+          "text": "text",
+          "font": "Calibri",
+          "fontSHA256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53",
+          "pointSize": 18.0,
+          "glyphOrigins": [
+            [
+              670.6950073242188,
+              292.0799560546875
+            ],
+            [
+              676.5,
+              292.0799560546875
+            ],
+            [
+              685.2210083007812,
+              292.0799560546875
+            ],
+            [
+              693.0239868164062,
+              292.0799560546875
+            ]
+          ],
+          "verifiedSubsetXrefs": [
+            20
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -54,6 +54,15 @@ extension DeckRenderer {
             }
         }
         if let sectionList, !newIDs.isEmpty {
+            // Slide import/move now maintains membership automatically. Remove
+            // those provisional memberships before assigning continuation pages
+            // to their original section, including insertion at its boundary.
+            for section in sections {
+                section.firstChild(named: "p14:sldIdLst")?.children.removeAll {
+                    if case .element(let e) = $0 { return newIDs.contains(e[attribute: "id"] ?? "") }
+                    return false
+                }
+            }
             var entries = sectionList.children
             let endID = idsBefore[index + oldCount - 1]
             if let end = entries.firstIndex(where: { node in
