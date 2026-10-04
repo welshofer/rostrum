@@ -1,0 +1,37 @@
+{
+  "scope": "V2onlyspacinghelpersrebuilt;productionandotherhelpersunchanged",
+  "originalBuildReceipt": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/helper-build.json",
+  "originalBuildReceiptSHA256": "b122ce506e9e4f72ab49f3f0f643f15c79083bfc15d15f01729e80bf89418e99",
+  "commands": [
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/baseline-module",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/spacing-main.swift",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/baseline-Rostrum.o",
+      "-o",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/baseline-spacing-bench"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/candidate-module",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/spacing-main.swift",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/candidate-Rostrum.o",
+      "-o",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/candidate-spacing-bench"
+    ]
+  ],
+  "files": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/spacing-main.swift": "f2c5a96a9fe02bf8ee012eac8ac0cbcd32c70e15a19fdd2fae78712b306be7d0",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/baseline-spacing-bench": "1b3334e83f27874b191f967bcf050bcf7e3a64e74af77a7157e1bcf653408ea7",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/candidate-spacing-bench": "79a7d352f73a0c8f002a7828a96af863f3a6898e6c05b43279e69b8c3fcfe170"
+  },
+  "sourceUnchanged": true
+}

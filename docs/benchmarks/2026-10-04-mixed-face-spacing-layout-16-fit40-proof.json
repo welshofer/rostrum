@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "baseline": [
+    {
+      "api": "textframe",
+      "deterministicSave": true,
+      "fits": true,
+      "fontScale": 77.5,
+      "lineSpacingReduction": 10,
+      "reopenedSVGExact": true
+    },
+    {
+      "api": "shape",
+      "deterministicSave": true,
+      "fits": true,
+      "fontScale": 77.5,
+      "lineSpacingReduction": 10,
+      "reopenedSVGExact": true
+    }
+  ],
+  "candidate": [
+    {
+      "api": "textframe",
+      "deterministicSave": true,
+      "fits": true,
+      "fontScale": 100,
+      "lineSpacingReduction": 0,
+      "reopenedSVGExact": true
+    },
+    {
+      "api": "shape",
+      "deterministicSave": true,
+      "fits": true,
+      "fontScale": 100,
+      "lineSpacingReduction": 0,
+      "reopenedSVGExact": true
+    }
+  ],
+  "freshExternalReopens": 4,
+  "outputPathCorrection": "Candidate functional output was moved from accidental .build/per28/fit40/candidate into this scratch; no rerun or byte changes."
+}

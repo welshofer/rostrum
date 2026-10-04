@@ -1,0 +1,47 @@
+{
+  "scope": "Actual original-render bytes fromallretainedtimingsamples; candidate/baseline savedfittedpackages remainexact",
+  "cases": [
+    {
+      "name": "native-mixed-face-spacing-v1.pptx",
+      "baselineSVGBytes": 1519631,
+      "candidateSVGBytes": 1519631,
+      "deltaBytes": 0
+    },
+    {
+      "name": "native-mixed-face-spacing-anchors-v1.pptx",
+      "baselineSVGBytes": 1523970,
+      "candidateSVGBytes": 1523970,
+      "deltaBytes": 0
+    },
+    {
+      "name": "mixed-exact-200.pptx",
+      "baselineSVGBytes": 2443596,
+      "candidateSVGBytes": 2443594,
+      "deltaBytes": -2
+    },
+    {
+      "name": "same-face-exact-200.pptx",
+      "baselineSVGBytes": 1937143,
+      "candidateSVGBytes": 1937143,
+      "deltaBytes": 0
+    },
+    {
+      "name": "mixed-percentage-200.pptx",
+      "baselineSVGBytes": 2443607,
+      "candidateSVGBytes": 2443607,
+      "deltaBytes": 0
+    },
+    {
+      "name": "mixed-table-200.pptx",
+      "baselineSVGBytes": 2515280,
+      "candidateSVGBytes": 2515280,
+      "deltaBytes": 0
+    },
+    {
+      "name": "unequal-signature-200.pptx",
+      "baselineSVGBytes": 2443596,
+      "candidateSVGBytes": 2443596,
+      "deltaBytes": 0
+    }
+  ]
+}
