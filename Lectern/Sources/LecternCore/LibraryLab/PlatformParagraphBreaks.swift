@@ -23,6 +23,10 @@ struct ParagraphBreakReferences: Decodable {
 }
 
 extension PlatformLabRecipes {
+    // The source uses a 160 pt frame. Top alignment keeps its marker origins
+    // unchanged in this shorter display frame, whose height still exceeds 72 pt.
+    static let breakDisplayHeight = 120.0
+
     static func paragraphBreakReferences() throws -> ParagraphBreakReferences {
         try JSONDecoder().decode(ParagraphBreakReferences.self, from: resource("ParagraphBreakReferences", "json"))
     }
@@ -43,7 +47,7 @@ extension PlatformLabRecipes {
             let y = row == 0 ? 1.9 : 4.3
             let caption = try text(sample.title, on: slide, in: LibraryLabSupport.frame(0.6, y - 0.45, 12, 0.4))
             caption.textFrame?.paragraphs.first?.runs.first?.fontSize = 15
-            let original = try breakBox(sample, deck: deck, on: slide, x: 0.6, y: y, height: sample.heightPoints, role: "original")
+            let original = try breakBox(sample, deck: deck, on: slide, x: 0.6, y: y, height: breakDisplayHeight, role: "original")
             let shape = try breakBox(sample, deck: deck, on: slide, x: 4.8, y: y, height: 28, role: "shape fit")
             let frame = try breakBox(sample, deck: deck, on: slide, x: 9.0, y: y, height: 28, role: "frame fit")
             let selected = try require(shape.fitText(fonts: deck.fonts, theme: deck.theme), "Break shape fit missing")
@@ -124,7 +128,7 @@ extension PlatformLabRecipes {
         guard body.childElements.filter({ contentNames.contains($0.name) }).map({ $0.serialized() })
             == source.childElements.filter({ contentNames.contains($0.name) }).map({ $0.serialized() }),
               shape.frame.width == .points(sample.widthPoints),
-              shape.frame.height == .points(fit == nil ? sample.heightPoints : 28),
+              shape.frame.height == .points(fit == nil ? breakDisplayHeight : 28),
               let properties = body.firstChild(named: "a:bodyPr"),
               ["lIns", "rIns", "tIns", "bIns"].allSatisfy({ properties[attribute: $0] == "0" }),
               properties[attribute: "anchor"] == "t", properties[attribute: "wrap"] == "square" else { return false }

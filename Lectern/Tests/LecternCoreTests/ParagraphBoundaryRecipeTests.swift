@@ -7,7 +7,7 @@ import Rostrum
     @Test(arguments: [false, true])
     func nativeBoundariesSurvivePublicFittingAndReopening(narrow: Bool) throws {
         let draft = try PlatformLabRecipes.make(.paragraphLayout, options: .init(text: "Native line boundary", sampleSize: 2, alternative: narrow))
-        #expect(draft.deck.slides.count == 4)
+        #expect(draft.deck.slides.count == 5)
         let references = try PlatformLabRecipes.paragraphBoundaryReferences()
         let samples = references.cases.filter { $0.narrow == narrow }
         #expect(samples.count == 2)
