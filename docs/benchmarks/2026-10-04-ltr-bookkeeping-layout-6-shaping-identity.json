@@ -1,0 +1,33 @@
+{
+  "baselineRevision": "6e84bfbceffba18c0cf71e09dbd4837b65adbeb2",
+  "cases": 100734,
+  "allRecordsByteIdentical": true,
+  "recordsSHA256": {
+    "baseline": "29c6ac7490f918baedb0e612cf3e36ae4fb3f38dcf7108887281a309e0d4b366",
+    "candidate": "29c6ac7490f918baedb0e612cf3e36ae4fb3f38dcf7108887281a309e0d4b366"
+  },
+  "fields": [
+    "font",
+    "caseID",
+    "scalars",
+    "pointSizeBits",
+    "requestedDirection",
+    "kerning",
+    "direction",
+    "widthBits",
+    "glyphs.id/lower/upper/advanceBits/xBits/yBits/level",
+    "breakOffsets",
+    "mandatoryBreaks",
+    "diagnostics"
+  ],
+  "fonts": {
+    "/System/Library/Fonts/Supplemental/Arial.ttf": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+    "Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+  },
+  "driverSHA256": "f85627fd3e0acb611dd4f6ec1b2d737f076a8158a9561a42f82887f2b069b735",
+  "binaries": {
+    "baseline": "e34a6b9ef139a9b466fde55749b54daf6ecc82cad645e36c43170d237ce82644",
+    "candidate": "7cd01cc396548c700c90fbe3639f740f9885bbb79bf6fcb1376efadd2b2eeaae"
+  },
+  "scope": "Every ASCII singleton/pair in all three directions; varied non-ASCII, control, script, combining, invalid size and kerning combinations in Arial and DejaVu Sans. Includes substitutions, source ranges and ordered diagnostics. Focused tests separately check internal standardLigatures=false policy."
+}
