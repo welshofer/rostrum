@@ -269,3 +269,25 @@ Table PDFs/alternative opening and native Lab acceptance, current manual Lectern
 GUI demonstrations and the separate new 18-case bullet capture remain open after
 a PowerPoint Save As stall. Draft PR #39 can carry this partial checkpoint while
 work continues; no merge or deployment is claimed.
+
+## Continued ordered atom performance and app coverage — October 4
+
+The [integration report](docs/LAYOUT-FIDELITY-20261004-10.md) records the accepted
+second ordered-range optimization; the first cycle's regression remains withheld.
+Fitting, rich-text rendering and accented/CJK paired medians improve 14.05%,
+7.07% and 3.40% in one matched run; registered/fallback possible costs, mixed RSS
+and host-load limits remain explicit. No cumulative or universal claim is made.
+
+At `b5076bf`, the full gate passes 1,151 library, 18 layout, 286 Core and 80 app
+tests / 110 executions. At `aded5d2`, a separately added Unicode Fonts and fitting
+app test passes both widths through real inspector/export. The eight exact
+quiet exit-zero diagnostics, seven additional clipboard console error lines,
+successful nonquiet confirmations and initial wrong-target focused attempt are
+retained in the [receipt](docs/benchmarks/2026-10-04-ordered-atoms-integration-verification.json).
+
+All 387 Lab checks, 60 independent reopens / 225 slides and 313 input hashes pass.
+Fresh WebKit proof covers 208 glyphs; earlier paragraph native evidence transfers
+by exact bytes. Both new table page-three specimens now pass independent native
+checks for 60 glyphs total, without broad table/manual acceptance. Current manual
+Lectern runs and the separate new bullet capture remain pending. No merge or
+deployment is claimed.

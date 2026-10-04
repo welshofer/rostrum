@@ -479,3 +479,20 @@ serial app tests and all source pins. Default table opening succeeded, but table
 PDFs/alternative opening, current manual Lectern runs and a separate new bullet
 capture remain pending. This checkpoint does not claim their native acceptance
 or native-selected autofit.
+
+## October 4 ordered atom integration and Unicode app coverage
+
+The existing Fonts and fitting recipe now has an actual app-hosted test for
+composed/decomposed accented text and `ffi`, at both widths. It verifies exact
+UTF-8 preservation through saved-body reopen and export, embedded font bytes,
+actual saved-inspector preview identity and visible non-native limitations.
+The recipe/UI and 26-entry catalog are unchanged; no native Unicode parity is
+claimed. The full gate passes 80 app tests / 110 executions, followed by this
+separate one-test / two-case run.
+
+All 387 Lab checks, 60 external reopens / 225 slides and 313 input hashes pass.
+Fresh WebKit proof covers 14 cases / 208 glyphs. Both native table page-three
+specimens now pass 30-glyph checks at unchanged tolerances, with current sources
+and SVGs identical to the accepted inputs. Current manual Lectern demos and new
+bullet capture remain pending. The [integration report](LAYOUT-FIDELITY-20261004-10.md)
+records those boundaries, retained failures and the bounded performance result.

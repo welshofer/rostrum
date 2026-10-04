@@ -1,0 +1,1525 @@
+{
+  "assembly": {
+    "additionalEvidenceSHA256": {
+      "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Sources/Rostrum/Presentation/RichTextLayout.swift": "6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055",
+      "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Tests/RostrumTests/LayoutOrderedGlyphRangesTests.swift": "af0fe65c9a876ee0b6b45a6d44f2dd5e20812977ecc2b5b6224ff5a80594fd11",
+      "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/ORDERED-ATOMS-PERFORMANCE-20261004-12.md": "0ae5ffda71d82b5980aa6267e05007e47e72e4b577eb4fb18d52efa6f0772f2f",
+      "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
+      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
+      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+      "/tmp/lectern-fidelity11-break-verified/large-false-6A1A359E-6A2D-4216-8C4A-140ED79952CE/paragraphLayout.pptx": "414f34a5b9123272c6523172e945ef5a7793a739da33ece55d1e489e77de7d86",
+      "/tmp/lectern-fidelity11-break-verified/large-true-229B48D5-8691-4921-BD43-40E866505B32/paragraphLayout.pptx": "ceb94ddf2a12e034da752d1d8ebe696fd25745e4624fb54e0afaae92f2971a14",
+      "/tmp/lectern-fidelity11-native/alternative/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
+      "/tmp/lectern-fidelity11-native/default/paragraphLayout.pptx": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3",
+      "/tmp/lectern-fidelity11-native/independent-native-paint/review-receipt.json": "02de23e8d9b3e7d934ab9ae8f5da1c0e4727fd72179bc8f2e2a1ef418863fe01",
+      "/tmp/lectern-fidelity11-native/independent-spacing-break-review.json": "9cb0c02e7d367429fa03070be71dd0ba4893a1e7db1ffbcda3523b0c5096aa6d",
+      "/tmp/lectern-fidelity11-native/independent-table-alternative/review-receipt.json": "51c010d1ad1e2f08c29888fd5da7d50c180aee53446d6a96aa20e28337e84fd4",
+      "/tmp/lectern-fidelity11-native/independent-table-alternative/svg-source-expectations.json": "3a429af8c8398c6789eb81f17c579396b2bd84bae5a3d7f804e62d55dac279d5",
+      "/tmp/lectern-fidelity11-native/independent-table-alternative/verify-alternative-table.py": "be4e197a40d09e9ce65aa11dd6113ead7b1d3d36acfaff663a66e451269c115e",
+      "/tmp/lectern-fidelity11-native/independent-table-default/review-receipt.json": "2f3159794acef242b55b6917909168a6c49fbbda11d0e28931de0a9aee8279b9",
+      "/tmp/lectern-fidelity11-native/independent-table-default/svg-source-expectations.json": "4feac541c942932da2bd4e1941a26f2731b2a73f587ea148c6d55d2cc53cb5b5",
+      "/tmp/lectern-fidelity11-native/independent-table-default/verify-default-table.py": "5a29beb6a1b9eb1f947dda003e478c58e4f7e57c0479be1ba0683c3aa8c089e7",
+      "/tmp/lectern-fidelity11-native/table-alternative/powerpoint.pdf": "1ba0c49d876f1673a3c38e1bfd4d05fbc6af0b8ba5b0273175f68af4e3a08713",
+      "/tmp/lectern-fidelity11-native/table-alternative/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+      "/tmp/lectern-fidelity11-native/table-default/powerpoint.pdf": "b864aa7b5571c0284889e33ed1871eff8db8314cc79ea3a9b80634906b4d10c8",
+      "/tmp/lectern-fidelity11-native/table-default/tableAppearance.pptx": "964b2826b92ed506489aca40fa1d87b46da1730e34798ec2218c802f2dfbfc95",
+      "/tmp/lectern-fidelity11-paint-verified/alternative-false-E2E0FD59-7336-41A8-A256-D657721B630B/paragraphLayout.pptx": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3",
+      "/tmp/lectern-fidelity11-paint-verified/alternative-false-E2E0FD59-7336-41A8-A256-D657721B630B/slide-07.svg": "54e489d89e59b23198f7fe7a91e6245448186661f7fe29aaa3158c3e4aa1abbd",
+      "/tmp/lectern-fidelity11-paint-verified/alternative-true-52AEA149-32CE-46D4-8635-F5963DCB121F/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
+      "/tmp/lectern-fidelity11-paint-verified/alternative-true-52AEA149-32CE-46D4-8635-F5963DCB121F/slide-07.svg": "a9baec01a884f4c089b707824d667212ee8cbd2e543ae5bd88cbb70cae6841fc",
+      "/tmp/lectern-fidelity11-spacing-verified/alternative-false-4D8C6288-F893-4D0B-8B95-4D43AB752F75/paragraphLayout.pptx": "71232d55de23ace080dc0ce97292026cf8029f153cc794b2cd40d41cc6a053fe",
+      "/tmp/lectern-fidelity11-spacing-verified/alternative-true-E59B5830-21C9-49B7-AC29-CAF1E4F5E618/paragraphLayout.pptx": "29e19166fa0d6fe81a44c25c824aee52f7f5f3128676eaab85fdcfe32e88d4fe",
+      "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/slide-03.svg": "78e12dd789c0e04bfb838ddda685bb71a69c18eb1f00458acb221ae8ef6402cf",
+      "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/tableAppearance.pptx": "964b2826b92ed506489aca40fa1d87b46da1730e34798ec2218c802f2dfbfc95",
+      "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/slide-03.svg": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+      "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+      "/tmp/lectern-fidelity12-test-summary.json": "ffc22281ede7ff5a98728fba9d029047b2cc3eadb3033873ca3ecbc705afd13f",
+      "/tmp/lectern-fidelity12-webkit/independent-final/0-kerning-thresholds-cases.json": "b615bc589a0180c6993ee53e241d5e71d75cddc3f747e59cb05f8aa1aebf45f5",
+      "/tmp/lectern-fidelity12-webkit/independent-final/0-kerning-thresholds-comparison.json": "fa442ddd6f79a8d8bd5729e83d21b833d1aa37896eb3ceeb0052c19bfda5f191",
+      "/tmp/lectern-fidelity12-webkit/independent-final/0-kerning-thresholds.log": "95aaff69fe573e7040b76c33e55c708c875b2eaaf256802f92fbd92bfd25c191",
+      "/tmp/lectern-fidelity12-webkit/independent-final/1-alternative-false-cases.json": "0ec422769715e567cea1eaec772b2dac94347cb3a2dba5b9adc74a8835d18297",
+      "/tmp/lectern-fidelity12-webkit/independent-final/1-alternative-false-comparison.json": "41cd9f961f5bc6f569cf61a188daf81c976e0ceb8710883bd8d7f09f16a5694b",
+      "/tmp/lectern-fidelity12-webkit/independent-final/1-alternative-false.log": "cba736385bc1e1aa16b8ff6e3f51803edac0ece96a858853d853dad03c2d3a59",
+      "/tmp/lectern-fidelity12-webkit/independent-final/2-alternative-true-cases.json": "3eed651a075030a21c475bb85749f7a3d0748cf449eaab5dc7df9850907f21d6",
+      "/tmp/lectern-fidelity12-webkit/independent-final/2-alternative-true-comparison.json": "73af152278d484b70f27c70689962c84e3b191a67fdd5e99b081425aa34f4830",
+      "/tmp/lectern-fidelity12-webkit/independent-final/2-alternative-true.log": "a3085d600fd579b22ca1482831fe9bf3ad9862f5cff6ddde19bd3d52507eb0b2",
+      "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds-capture.json": "d580f596a58bd0371b44bfa62866cd8c3d70f84852641cbfabe4955fd801aa86",
+      "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.pdf": "ffa079ea5193c576bf628440e12e879a84aea0f1bea8dab793d32cccafb76a6a",
+      "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.svg": "374edc49a24df0870c210bc24ea384612a3f047ea137be6d941bacb155fb6ae2",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false-capture.json": "69b273b2f87b113bf7cd19789cf153299eb2f73f28a586e981ef331d767af707",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.pdf": "349627fa6d24aabfc992fbf36163f6d6ac8bda66f5ec20473cfa488c4054ba00",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true-capture.json": "5da0f2dbc1cd373ec9c6c99a187295f5c522a1880c9e42d9fe7f9fa0611b97a6",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.pdf": "d2f44de8b47e8d0583b4ee8c07cf9353c5c3cbc0c86607398c3eb87efcd86ee0",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/native-glyph-reference.json": "1731d4deccb0698b67f2a6bd25eb3b99afe798bde2508bb738eb1d744a2b6371",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/paragraphLayout.pptx": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/previews/slide-07.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/native-glyph-reference.json": "1731d4deccb0698b67f2a6bd25eb3b99afe798bde2508bb738eb1d744a2b6371",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
+      "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/previews/slide-07.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
+      "/tmp/rostrum-fidelity12-ios-confirm.log": "36458c02ed92e1a6fe5b9d360f8d609243f110b9e36c99210d8423c76e4d5c6d",
+      "/tmp/rostrum-fidelity12-macos-confirm.log": "c68e449ca2cdb4e51a94aadc3ba2c300810c2cb39033632a2192d056d325b01e",
+      "/tmp/rostrum-fidelity12-verify.log": "f501f8164e5cd7f6bde1b4e5e389b5c874ad5f2d6719c50cfb388be1312428ae",
+      "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+    },
+    "allComparedHashesMatched": true,
+    "scope": "Read-only evidence validation and alternative-table numeric verifier adaptation; no app builds/tests/GUI here. Prior records unchanged.",
+    "verifiedUniqueEvidenceFiles": 377
+  },
+  "buildConfirmations": {
+    "logs": [
+      {
+        "path": "/tmp/rostrum-fidelity12-macos-confirm.log",
+        "sha256": "c68e449ca2cdb4e51a94aadc3ba2c300810c2cb39033632a2192d056d325b01e"
+      },
+      {
+        "path": "/tmp/rostrum-fidelity12-ios-confirm.log",
+        "sha256": "36458c02ed92e1a6fe5b9d360f8d609243f110b9e36c99210d8423c76e4d5c6d"
+      }
+    ],
+    "status": "Both canonical nonquiet builds succeeded, zero error: lines; root reports exit0. Original diagnostics retained."
+  },
+  "changes": {
+    "orderedAtomSource": "900c2aee701d2db3dcbe9157f40d4046f5a2a450",
+    "performanceAcceptance": "9bcf2fd15024bc1d56db5688dbb9b2ef795d3d99",
+    "performanceEvidence": "0734361324bbca25413ab1b797c9b0a1133d6171",
+    "portableFontFixture": "b5076bf2c4a30e7a9576232055fb3335f8cb1853",
+    "unicodeAppTest": "aded5d22ac6f6d0e2766b7afaa0d0e7f359dcfa5"
+  },
+  "external": {
+    "directories": [
+      {
+        "checks": 387,
+        "fileCount": 301,
+        "findings": 411,
+        "passedChecks": 387,
+        "path": "/tmp/lectern-fidelity12-lab-verified",
+        "pptxReopens": 52,
+        "reopenedSlides": 177,
+        "reports": 26,
+        "xmlPartsParsed": 1445
+      },
+      {
+        "checks": 0,
+        "fileCount": 2,
+        "findings": 0,
+        "passedChecks": 0,
+        "path": "/tmp/lectern-fidelity12-break-verified",
+        "pptxReopens": 2,
+        "reopenedSlides": 14,
+        "reports": 0,
+        "xmlPartsParsed": 62
+      },
+      {
+        "checks": 0,
+        "fileCount": 2,
+        "findings": 0,
+        "passedChecks": 0,
+        "path": "/tmp/lectern-fidelity12-spacing-verified",
+        "pptxReopens": 2,
+        "reopenedSlides": 14,
+        "reports": 0,
+        "xmlPartsParsed": 62
+      },
+      {
+        "checks": 0,
+        "fileCount": 4,
+        "findings": 0,
+        "passedChecks": 0,
+        "path": "/tmp/lectern-fidelity12-paint-verified",
+        "pptxReopens": 2,
+        "reopenedSlides": 14,
+        "reports": 0,
+        "xmlPartsParsed": 62
+      },
+      {
+        "checks": 0,
+        "fileCount": 4,
+        "findings": 0,
+        "passedChecks": 0,
+        "path": "/tmp/lectern-fidelity12-table-verified",
+        "pptxReopens": 2,
+        "reopenedSlides": 6,
+        "reports": 0,
+        "xmlPartsParsed": 52
+      }
+    ],
+    "inputSHA256": {
+      "/tmp/lectern-fidelity12-break-verified/large-false-0AE5DF1E-2AC9-42B0-AECC-49F164C41AC8/paragraphLayout.pptx": "414f34a5b9123272c6523172e945ef5a7793a739da33ece55d1e489e77de7d86",
+      "/tmp/lectern-fidelity12-break-verified/large-true-D8C78CCA-8B65-440A-8C05-10736E14316B/paragraphLayout.pptx": "ceb94ddf2a12e034da752d1d8ebe696fd25745e4624fb54e0afaae92f2971a14",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/chartEditing-before.pptx": "3a81b28c762d4074a18463cb3f926e70d1d4ad2985e5f36004ea31fec9065268",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/chartEditing.pptx": "ea99297096e9d4f20bb11a5e68479095049e10647f29cea32c392bad76eb5cad",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/extracted/chartEditing/chartEditing.md": "c583aceeb9030bd5be4b325644c1f70f6c4d0e85a201036d1307d1f2867522b0",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/extracted/chartEditing/slide-01/chart-1.csv": "56e5a1fb495f0bf0ab7f5c184f4ba3257cc1c814dc8bcb3af96536ac38ef799e",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/extracted/chartEditing/slide-02/chart-1.csv": "e8732d69126f7dcc80ec160a01ab4c96846ac1bd624f545f82381af195a3f46b",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/extracted/chartEditing/slide-03/chart-1.csv": "bf502077da9ad8df67d1b2abda6d71049fa47c9d6b55e1f57fbe283908e90657",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/extracted/chartEditing/slide-04/chart-1.csv": "e404ca4a3dcdb18dc704e525ce05770c4730e94308eb872ceedf326ca2bf10e6",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/previews/slide-01.svg": "23809b3804671030d9913f7acaab59b33d81be4f092746e7edf35964bb7bfe0f",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/previews/slide-02.svg": "145223c614ee7c036adc87bd9c942de1fefe8ee672cb51261193f787d02393c3",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/previews/slide-03.svg": "7b03af42dee556b1bf67c50daa2ac736c3739c537d18bf1ec36ae1c64ff5c639",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/previews/slide-04.svg": "c7f8cab1e66dd41c4a4a6d350fa9ee0e1bb3a979758a8b25b2a7f884c11a2ffc",
+      "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/report.json": "8ae959f3d487fd8296703c8107617a88eb631f53c3ecd6dde9e9745352abfca3",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/charts.pptx": "0cf9af74a4b96432b414e9ce35208113c6b1a630de94973ce4e7df0bed62b9f4",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/charts.md": "6e6c6d08f485fad3c6dcc058bb3d3f31e428f6b74ea70b77c647da8ef2cdc102",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-01/chart-1.csv": "460a4e3d2bc601c9e82c98e4a9a1f0b6999d99250a384b472e9bcb0b711681fb",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-02/chart-1.csv": "460a4e3d2bc601c9e82c98e4a9a1f0b6999d99250a384b472e9bcb0b711681fb",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-03/chart-1.csv": "460a4e3d2bc601c9e82c98e4a9a1f0b6999d99250a384b472e9bcb0b711681fb",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-04/chart-1.csv": "460a4e3d2bc601c9e82c98e4a9a1f0b6999d99250a384b472e9bcb0b711681fb",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-05/chart-1.csv": "460a4e3d2bc601c9e82c98e4a9a1f0b6999d99250a384b472e9bcb0b711681fb",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-06/chart-1.csv": "bf502077da9ad8df67d1b2abda6d71049fa47c9d6b55e1f57fbe283908e90657",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-07/chart-1.csv": "bf502077da9ad8df67d1b2abda6d71049fa47c9d6b55e1f57fbe283908e90657",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-08/chart-1.csv": "460a4e3d2bc601c9e82c98e4a9a1f0b6999d99250a384b472e9bcb0b711681fb",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-09/chart-1.csv": "460a4e3d2bc601c9e82c98e4a9a1f0b6999d99250a384b472e9bcb0b711681fb",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-10/chart-1.csv": "08dbc4403ab9ea28afd69ce9d2822e902023c26e02bd66b4e4c0024278537b89",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-11/chart-1.csv": "cf33bc778abd49359b8723773bccd58027d4bf838b3500bc24fd5f3d55b114fe",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/extracted/charts/slide-12/chart-1.csv": "460a4e3d2bc601c9e82c98e4a9a1f0b6999d99250a384b472e9bcb0b711681fb",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-01.svg": "2429f047ac045ce6dd6dca2dd78ed4141402329999bc8776818f42ecb3f7728c",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-02.svg": "fe47356375f88f62c3d6314b254c4248966781a6253911815c05053547addab6",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-03.svg": "4ee0f07642d69b3d1343aef8b8916b815bafac7b82d292cf0e4b9708dc9a4fe9",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-04.svg": "d8f6cc6694a92c92036b8b755c3029ab44d54168f38e17105cd4fef960b229b5",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-05.svg": "20dceaddce00505ead404dc4cd100760c62831e9d64de70e3f886f3f78cf8865",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-06.svg": "3d09131640be09dda043410ee4a29c7917e1b64a8694c9acc93a2415fb440f2e",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-07.svg": "ec124f353667af8ff955dc79d8360537cb49adb9ed1dd6cb0c868a929e6ba0a2",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-08.svg": "9d433ab0faa8361d5b6ec13960f4fbcc4ef3dfd63bbbd854abfacad0a8c66050",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-09.svg": "0c095de3d8a407d9fe46f8fa1e4f05f9f7950b9f8bbd1e8ea758cc5ede70e371",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-10.svg": "2cd294879a016f492aa94208e4999fe7ddd8258106b4a529518d615f01a7c54d",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-11.svg": "5080116f1cec56f4624b3376fac6e513d26d22e43a90e0c50b49296a3e389af8",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/previews/slide-12.svg": "d79cf119cf084d95e91de719345ecdf23c77dff3a7a9481a569df3009f6b5a37",
+      "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/report.json": "4f615ee2b5791d16865e27f399cc61344236c5d39f894a65df770e2867b34b35",
+      "/tmp/lectern-fidelity12-lab-verified/comments-B2A8E154-C083-453F-840D-49914D6E800F/comments-before.pptx": "fc16b2d124f2a47828af0856678c020e398549fa6601bb268550917a7c7b190a",
+      "/tmp/lectern-fidelity12-lab-verified/comments-B2A8E154-C083-453F-840D-49914D6E800F/comments.pptx": "137d8550525e43ce193893cf3189752693d3fc51d6ce59169167ca029c095682",
+      "/tmp/lectern-fidelity12-lab-verified/comments-B2A8E154-C083-453F-840D-49914D6E800F/extracted/comments/comments.md": "df15cf51d2f91bf1a9cb66728b7e84604c131da22b092c204560d8f452936f12",
+      "/tmp/lectern-fidelity12-lab-verified/comments-B2A8E154-C083-453F-840D-49914D6E800F/previews/slide-01.svg": "c46d29c7e85fe1373bfe29f17f11c5f297908b5555473b74b6c55aabe9fe079f",
+      "/tmp/lectern-fidelity12-lab-verified/comments-B2A8E154-C083-453F-840D-49914D6E800F/report.json": "3ebdf99a5ffaaa17dc3e96038ba1940a2efc08e9d51b19c563d3d928087f243b",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/design-before.pptx": "a635c89d415376e2c0759d2498707526603cd4b87e03272e33a917b6b005d58c",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/design.md": "873317b4e9169ed02377069f062528b7005aa2587617925a4291897a36994681",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/design.pptx": "3ab461124963b4b71f5e5780a9361f11588d16501bc77e6c1484c61e631a87af",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/extracted/design/design.md": "55097f665e055b1ff9ab111c7ff25cf3551300352a35ca118aa8d36d11b8239d",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/extracted/design/slide-12/chart-1.csv": "dbe3ce4ca39bb62c645eb0b37305c2333b93cbd800dd35b51354d86552311c57",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-01.svg": "c73f7883d809a1dcddb5dba2dffdeaae01dbe0c681b8b9022cdab9a33709401a",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-02.svg": "2e31c8dbd79d17dbd3fc07d78ae73d70c069e6c56f7d3b36d4393a0b34caf7cc",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-03.svg": "e13ff72da1bfadb5bdf0e351ee93c40e8cee17af1d8f40b1adf44a3e75bc9a21",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-04.svg": "c57770fe70b870607e349df0489392b0cdde698a351ad889e1bb7f6bb65f1ec8",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-05.svg": "9fa74d75be27224bad5eb3c9f4c88ce4f83bbeeeb1a9fc93a2f69f08bfa6d9b9",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-06.svg": "a06c9282db4c95209dc8e2add970620a80f558f5a3aff17bff7f512acda37d30",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-07.svg": "68e8f28b1b463667c22916234e2d151d51b8185b7ff810766a8189f254daf96f",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-08.svg": "5484e4e8e2196a87711864406404b6434d47ff0f4c1a562b1ecec4d138ba3e0c",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-09.svg": "bbb4968f85168d02390d10c4a59c7c376456e8bb90150da5f8a8d3e8d4526a78",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-10.svg": "6f4954c43907520b2d23b7ee9778ad6cb994547c1438b8627afac7c3411e14ca",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-11.svg": "e5333ccbb45f8c84f4c8110654d1ff458c91c59a066c9c07bde8a8e4446f8141",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-12.svg": "6c98e744bbdebe11a663807df8cc6c91629f66c1a43a63e5945ba1df136621c1",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-13.svg": "fdaa0ae2a6b5e3c62fcfbf4eb6f74f879fe5a413f9c54a7db944a096fac2ddbc",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-14.svg": "1e6200f0759eec37652782b5b33fa1dab949aa7b752969ddd2d7472eee222731",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-15.svg": "4acb540d7c511640306ec21d68a24b9c59cef18a9844443f0a20c373352e1ceb",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-16.svg": "e7b41e7c3d96849d978dc9c6ab89c40153dfdbc2af03683c016ec9c9c7f49c9e",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-17.svg": "3776583bd83c3f8d89dbdf27de507ee74394bdf702439207158b2bccc4723e20",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-18.svg": "cb325c7a4b50d55fafdd3f638d1ec9eb54e7ab65c017a039954b42a71c89c991",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-19.svg": "4119f640c972454f80218cdbd05f12b6de22ae5035c5c9931274069ef0192977",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/previews/slide-20.svg": "bade599123d27ea9719e148de190e2ac38516af45b90b8f0326a22dd5ccb3320",
+      "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/report.json": "8cfc21d8849ffee41e1efd0f7b68624394f693df2e5a202b1a9cf80cd0924a34",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/diagnostic-slide.svg": "954b659042c81e0d12989f92a30162fe724e342572a33514125f38ecd5e8ac9f",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/extracted/extractionAndRendering/extractionAndRendering.md": "c3c03449d6699d7738aef2e7a2ffc94fa756c1c7fdbf37b1be47c341971be6a9",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/extracted/extractionAndRendering/slide-02/chart-1.csv": "9aebca486394683ce9a13bac377a5ea6f90aecd9a0bbf87c6f1405b23de2e0de",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/extracted/extractionAndRendering/slide-02/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/extraction-library-lab.md": "3c8c5cb8f17666c8ae400b4aa5607c03d9bbd8def63e67fd3b07a5864957bbc9",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/extraction-slide-02--chart-1.csv": "9aebca486394683ce9a13bac377a5ea6f90aecd9a0bbf87c6f1405b23de2e0de",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/extraction-slide-02--image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/extractionAndRendering-before.pptx": "55be7cca8370ad9f86339d3e74b7ba31873350e4aaf83ea590e1e6ac34d0e743",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/extractionAndRendering.pptx": "29240aa0c68478074ae22c764219e25dfd7bc8fac48b7eaa9eb808678369c531",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/notes-page.svg": "aa14a59c7af4df8b7e12461fdf8b76d2a1dd9a3392919f89f6a57203ef038718",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/outline.md": "bee264fe7b1f3b0c9e481b723a17e68bdcf45d1bb8571c69221b19bf8ed60f8d",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/previews/notes-02.svg": "e966bb8bc34a3a9b83780e53e763d6d28f9691d56bfc69f34deae554b52cc24b",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/previews/slide-01.svg": "91087016b3495b729215607bf9e1e9cd0980e6c47ff5f8aa4cc0db2643d2d3a0",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/previews/slide-02.svg": "005cad316f5e0dd31ec252596b6458e5745676d78ef29a083e9526afd629b12f",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/previews/slide-03.svg": "9e00e4e9026a7b3525970db5a595f861b67772144976fa716fdb7174f714750e",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/report.json": "1e60d359b4572f6bd29deb71ec9dd02b718cfbbd7f7792f3b1b609478037e7d8",
+      "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/strict-slide.svg": "c277479fb1669a547acf917ca2182526a9f42b0c4560703eee0335298cfcc1f7",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/extracted/fillsAndLines/fillsAndLines.md": "bf50e9676273723e8a3dde5d7e166e8ee1369d15f23c4d3c3c7df5909858f5a4",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/fillsAndLines-before.pptx": "b97b424855be08e875977db18b59159cfd4b92dbc7bb749c6febac1eecff70d0",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/fillsAndLines.pptx": "d16f544588feb63d21a4ffa68fee266439d80d3bef4b4bdce646cb82043cd8fb",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-01.svg": "58b7034954089c676fa70adc43f05c30fda0b3a13c5bbf2127afffd3bf7857fa",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-02.svg": "222b1ae6d051104cd3dfbc159c6cef6e1e4d0b1788af983bcfaa3423128936ec",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-03.svg": "76d259328f8ecfe3d9ed79169ca1e539d28cf8ffc771aa84a07be1f6b9df1f33",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-04.svg": "d744744618d93742e8dcd8d30a8ca0e90e060f681ddd068f032750a127a524ec",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-05.svg": "2c09b5d2b5266ef49649ebedbc783593b0ba240a30847893f41f7f8990c2fba9",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-06.svg": "7ae0356c12682508ff2eea972204ff3d56f1130fdd1a30b70a276739b3853709",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-07.svg": "ed501cb8ca8e53cb56a9248a986338dc028a2366bf40b5d420677023eef42a25",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-08.svg": "aad6f80e279357fdebecbeda3fb886a22c3ae0b0280f1cb8fef8d26a26cb616a",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-09.svg": "728add5213d167ac6117c3783b2ac93426bbcc7a9816ffb66297ce0aec320981",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/previews/slide-10.svg": "701574e96f21c47353e7a16b4faa2b664594131ce997069b91014d995f64addf",
+      "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/report.json": "8e472286931ea99c2c240a1f12b872fe90ba01b1fdb49af2d6ad9137ae41a0c2",
+      "/tmp/lectern-fidelity12-lab-verified/fontsAndFitting-C3C0D857-D6F9-4893-B2D7-0C61FB01EF68/extracted/fontsAndFitting/fontsAndFitting.md": "4a9e05789f963fda5e7c7cd632cc4e1fed18fe89139fa38082a5d1b3e0bda5fa",
+      "/tmp/lectern-fidelity12-lab-verified/fontsAndFitting-C3C0D857-D6F9-4893-B2D7-0C61FB01EF68/fontsAndFitting-before.pptx": "82990dfc35c80b1d46f0da91a511c0c5eb85be4bca17f9eb7f1a7d8ba0901574",
+      "/tmp/lectern-fidelity12-lab-verified/fontsAndFitting-C3C0D857-D6F9-4893-B2D7-0C61FB01EF68/fontsAndFitting.pptx": "d3d7b79dd955f5cfb5b7a1f318326fcbabf602b17f29adab36688d75130e26e4",
+      "/tmp/lectern-fidelity12-lab-verified/fontsAndFitting-C3C0D857-D6F9-4893-B2D7-0C61FB01EF68/previews/slide-01.svg": "027beb325f0bd0458a3801a98478ef1f5a488f637af105b2646e2c0a4369c8df",
+      "/tmp/lectern-fidelity12-lab-verified/fontsAndFitting-C3C0D857-D6F9-4893-B2D7-0C61FB01EF68/report.json": "062eb906dc711d6a3534a1cbe64a3595c9573119914cb4582d0ebe0f842dd954",
+      "/tmp/lectern-fidelity12-lab-verified/importedFidelity-2268F8B2-0037-443F-8078-699242E26D88/extracted/importedFidelity/importedFidelity.md": "6b7da6f43968d3490991b47aade167e227d05e3455f5b02cd6b7c6ed292e7677",
+      "/tmp/lectern-fidelity12-lab-verified/importedFidelity-2268F8B2-0037-443F-8078-699242E26D88/importedFidelity-before.pptx": "22130531feeb22ebce73c41ab81bbe2f111e3ec98c03c3423d7e926aed7d196a",
+      "/tmp/lectern-fidelity12-lab-verified/importedFidelity-2268F8B2-0037-443F-8078-699242E26D88/importedFidelity.pptx": "bd72487e25dfd1aa61a60fbf143880c1f835f5de8874fe42f37d3d74623157e4",
+      "/tmp/lectern-fidelity12-lab-verified/importedFidelity-2268F8B2-0037-443F-8078-699242E26D88/previews/slide-01.svg": "5c9cb0a3cc9761b34977fe0c5cdfcdf9929c791e16b08502246b502e44a98d55",
+      "/tmp/lectern-fidelity12-lab-verified/importedFidelity-2268F8B2-0037-443F-8078-699242E26D88/report.json": "d5816d2748354b868e6ca7e28e214086357665fcf6b5e7ecd7ceb9e37bbe33f9",
+      "/tmp/lectern-fidelity12-lab-verified/layouts-E4AA41E9-A623-4850-B56F-EC1DAD1D4808/extracted/layouts/layouts.md": "1026c8219cf10746d5bffcd89483cb6a569e76df8542338c72ba2695ae93fcea",
+      "/tmp/lectern-fidelity12-lab-verified/layouts-E4AA41E9-A623-4850-B56F-EC1DAD1D4808/layouts-before.pptx": "ee496bd57ae758cf750adb9c2f0f1df159be5fc83714fe42e06bbbefd34e7ad8",
+      "/tmp/lectern-fidelity12-lab-verified/layouts-E4AA41E9-A623-4850-B56F-EC1DAD1D4808/layouts.pptx": "6f64dbff97cb66fa7919f779bcbfd41b1e1b7b19baa4c4a3d7d3e5e5d27db978",
+      "/tmp/lectern-fidelity12-lab-verified/layouts-E4AA41E9-A623-4850-B56F-EC1DAD1D4808/previews/slide-01.svg": "c08254c77098529393d051f377e7c73e74057295a59f74de48d92dd907eb4118",
+      "/tmp/lectern-fidelity12-lab-verified/layouts-E4AA41E9-A623-4850-B56F-EC1DAD1D4808/previews/slide-02.svg": "d0475db2b7fb64b460d8c5f28c8fe182e763f6d9bffad75924f00ad679838871",
+      "/tmp/lectern-fidelity12-lab-verified/layouts-E4AA41E9-A623-4850-B56F-EC1DAD1D4808/previews/slide-03.svg": "8c7df75065fddb40dcdc31772b49c0d2d15b339c49d6387b75c546dd1f3c96b0",
+      "/tmp/lectern-fidelity12-lab-verified/layouts-E4AA41E9-A623-4850-B56F-EC1DAD1D4808/report.json": "52876f0b6da931157f8f16b8ed4a6bb887fac22905b987e166a48311d124fe0a",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/extracted/mediaAndAttachments/mediaAndAttachments.md": "8dce26cb57ea592eff64bb8ec0d8f3fba9e699acf9ee144fbc5405d803887a7c",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/extracted/mediaAndAttachments/slide-01/media1.mp4": "77251c88edc63eb3527c7b22d33d854c8c4934d20d2f8ae5f93331cfe75ef367",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/extracted/mediaAndAttachments/slide-01/media2.wav": "382562326a4ebe12c7f63acec89d630640bff00a67271331bcf37a8d8c5e8ba9",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/extraction-library-lab.md": "6ccbfd8850739c41acd4a1c5fdb06cb2f6e5e5e1801aa5b47753ec4163bd0ddd",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/extraction-slide-01--media1.mp4": "77251c88edc63eb3527c7b22d33d854c8c4934d20d2f8ae5f93331cfe75ef367",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/extraction-slide-01--media2.wav": "382562326a4ebe12c7f63acec89d630640bff00a67271331bcf37a8d8c5e8ba9",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/mediaAndAttachments-before.pptx": "35da598b77ae3b1e1801a31849e27192abfc6b7c9030bad354d8e9fe42ada9b8",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/mediaAndAttachments.pptx": "44a3e7ac080c338991543570e5032cda2f91b72d82f760d623620d7cdfa3af21",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/owned-attachment.xlsx": "e83571a360341a3ac13253eeb2951ce12cdd7afd62b5f6de2501be3a04d77414",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/previews/slide-01.svg": "7828b2c57abd72c766ff15e81e0fe313d17e100ab9965a0dc29b0764c8d56991",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/previews/slide-02.svg": "88ebb903b42a07ff7815f8db28da003cc82364410a9bcf12e3fc643051c83e42",
+      "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/report.json": "da1df8eac9512e4c985a683e7b5f84bbe9bb3579139a52c7590a720315c6f092",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/extracted/notes/notes.md": "ff65c26aafc26170a16489c26ebbcdabcaa85e81a6e1d62b082242e26412e11a",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/notes-before.pptx": "76b1c791c728a153f6d07bc1af365aeb49154546c43696f0a567fac01d786a3e",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/notes-source.pptx": "d193258313fcbb8552428b4d58ee3fc0cd93bd949a5f74f40188c692abffa1a3",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/notes.pptx": "2f5c2ae22655f8086719144fe6c124ae30498da69e8ba00a9cee8cd4bb3b78dd",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/previews/notes-01.svg": "bff89fbbc816f2ab5a2ae499e60fa7e0baa6f4f9256f5e0d25b29ee3425c82d6",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/previews/notes-02.svg": "5805b5a5dd969481bf6093d7370b6951f9f0f6e4d7d0b50e329d2815f51d5cbf",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/previews/notes-03.svg": "868077751913c19f7c8579681136e83e87d2f84bb5ff0a2443dbcfe617cbbb44",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/previews/slide-01.svg": "a774cb8908d8d9e6b90640e809c5e8096def5e4d38f6a4302b1bac52c408dc9c",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/previews/slide-02.svg": "3537317521c59d0afd8505faa5d35be4095a96394b4efbfd274a22e1fcf4c54c",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/previews/slide-03.svg": "07fc060f6739f12b053d13e0aaec7d325be53787d651da235c2ea9e469a96a37",
+      "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/report.json": "60dd33fc3c88b967eb92c2296cb04ce7c52415ec9a4819508ae241e95a3d60b4",
+      "/tmp/lectern-fidelity12-lab-verified/package-B7EDEFCE-0CE7-484A-B996-171BD7D468D6/extracted/package/package.md": "0d78c5e3d22c2a826b516decd1beff8e08f7dadccdf408e87571f5eb6fa5265d",
+      "/tmp/lectern-fidelity12-lab-verified/package-B7EDEFCE-0CE7-484A-B996-171BD7D468D6/package-before.pptx": "38e0b40b6a5ed68653fedec8af624b69597d66e6cdff481a0dbf1d9d8e9de1e0",
+      "/tmp/lectern-fidelity12-lab-verified/package-B7EDEFCE-0CE7-484A-B996-171BD7D468D6/package-parts.txt": "86e828ecec82367a4b7fd8f19083a8e0915446642d6107f4f584416642398751",
+      "/tmp/lectern-fidelity12-lab-verified/package-B7EDEFCE-0CE7-484A-B996-171BD7D468D6/package.pptx": "c98d6c673cd92e9d316e1e536ed28a242dad7e8b580b2d072d011c125877ea3a",
+      "/tmp/lectern-fidelity12-lab-verified/package-B7EDEFCE-0CE7-484A-B996-171BD7D468D6/previews/slide-01.svg": "adca7e456ff6501fd3832c6a4d65e4ce3850067299f83c4041b3af090368da03",
+      "/tmp/lectern-fidelity12-lab-verified/package-B7EDEFCE-0CE7-484A-B996-171BD7D468D6/report.json": "3cd0ea09d1ed62284c832290980e5646f8a571c7fbdf46a402b896f929623ba9",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/extracted/paragraphLayout/paragraphLayout.md": "e21ef0b9c95daf30de4256412828de02a9efc4b3ba3ea0f99de26122783f852b",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/extraction-library-lab.md": "a0e576c7bcdf3ddf789f983f82280ca5c2eca7acb865601b61c1b07dd0c933e8",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/native-boundary-reference.json": "97db4199372c926a4c95779a96ec3b76ef83c43230691f573793b0bb6633a8de",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/native-break-reference.json": "68612a081d10f893cf29b44b42d004a5cc8c99f6543ad76eb9f14ecc3e9296ec",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/native-glyph-reference.json": "1731d4deccb0698b67f2a6bd25eb3b99afe798bde2508bb738eb1d744a2b6371",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/native-ligature-reference.json": "5693cec65e3b34e29fa8366857be5bdbbe22562a1ce5c45d5716758280c78b5d",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/native-spacing-reference.json": "ae5c7218853037c8e9bc92a467f658863afbdcb84b5345992e02f45aa20ac23e",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/paragraphLayout-before.pptx": "76cf48e1e1d8be752127dcb86913f0a610da27994d4486881285be42421d7301",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/paragraphLayout.pptx": "6404e3dc4b9844ace2bcc6fb722569c6200589362e7ecb184e78bf5ae3964f43",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/previews/slide-01.svg": "e724668eed6437a9ef721e2d55f75bcc454ec2f38ae4ae5ec87b24a7dd99ee7d",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/previews/slide-02.svg": "dc63193a1aa8477d95354f9a28d9db7909c79ab98cbb4d4382c2a8b0e342f836",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/previews/slide-03.svg": "f168338383207de94565f6ac8d4e0f6819d3bc7564b9c93a82824aa26f86dfb6",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/previews/slide-04.svg": "7e40041e661e371e0a8e5c6142df247e1772369b357811abae02f1a38e73496d",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/previews/slide-05.svg": "bc6de87b5c1092d2fad107426f09297b5cf63baae93b0a2bf8c988080e3747ca",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/previews/slide-06.svg": "edeffe9590bfd353fd52f7ac9d8a6b2d46b258365c834b1a23358e2ed4282c0c",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/previews/slide-07.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
+      "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/report.json": "758ec4cfb90f54cb3d51f926f5d744a93ee9a4ab18eacf727886d201ce33fca4",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/extracted/pictures/pictures.md": "d8f7f3ca3d3c37087ecc6bf145968446532999fbd2a9dfffc2d11497b74729aa",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/extracted/pictures/slide-01/image1.gif": "ef1955ae757c8b966c83248350331bd3a30f658ced11f387f8ebf05ab3368629",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/extracted/pictures/slide-01/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/extracted/pictures/slide-02/image1.jpeg": "c271cc8fdc4f8f7bbba67ef89d61b35c7d9d2ac48f5d759e35cf4a78ddd1493a",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/extracted/pictures/slide-02/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/pictures-before.pptx": "1013508109a261f5f8371cf12e6dab26e1fbc60eb40d1124ee19ef7f5889c393",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/pictures.pptx": "a0f77e4e6e99f2d3f187bac214cbdabe8c115f817e3b7dcf2a84203ed1858f57",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/previews/slide-01.svg": "250f7aff763f6e6d6a007afb3ceaa8c1af00fde0a963d30d132e21e1b5a38b16",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/previews/slide-02.svg": "e18acdd4cd03a5b35c5cc6eb7ddbde58e95aaad1871742fd155f1fb30888e0c1",
+      "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/report.json": "f9e396e89ee66e0718d920c33d668841962e1ca5be6a9c0397fedab5de018ca0",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/extracted/sections/sections.md": "74042f6ebb65b232ea22fee78a64698a2ae25bde4523cf6c7cbe6699542b4764",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/previews/slide-01.svg": "a63b650384f35f84eafc5994162b8368a614ab5b731538dc4447c18a60265750",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/previews/slide-02.svg": "15703056b11706ce0d254d00842f6ba9849eccc18189be57f1540a184f14ca6d",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/previews/slide-03.svg": "27134b627cdd65f7fcbb30cc21601a26f32e9b3a16cd3dca7941fdfb35b3cb5d",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/previews/slide-04.svg": "27134b627cdd65f7fcbb30cc21601a26f32e9b3a16cd3dca7941fdfb35b3cb5d",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/previews/slide-05.svg": "d6c442c46666ccb6f6deeebe3a413baf63d8e0b289fdf1b7660675d3611267ca",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/previews/slide-06.svg": "baaebf595bc12c1f393c15aeacf5b927c22513e35a14901f066236876c2628c4",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/previews/slide-07.svg": "2c770d398aaab076e0c59405f78d9e1988f082ce4ed3a16b3b593e84ac6a0d4d",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/report.json": "3aa7761ef9bf2565251e8b155dcfe1c9f2a22d3a447f15654901d696dbab0aad",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/sections-before.pptx": "a7aa23a63eba30abfad9c27b61958a4e31f4142f6d25c887f02a0a3dd4237243",
+      "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/sections.pptx": "4ccb2b8ff46d15cb08dd167d6bb39f6690e14706488b8d8617b37094c687d4f3",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/extracted/shapes/shapes.md": "4127649d9e7db3fbc0f4fb08d6439e09360f5b1d5a40966068aa3a6250e8c951",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-01.svg": "6a96023c95f813718a21e4247e0cfc0bb40f0300a5a1889b9be96be3fde93bc5",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-02.svg": "4d16e21036a7dddf12b12d1a7949c5ed9f3b2ca6c3747cc7b576fc0ec6e66a4b",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-03.svg": "76c58dce1cd5297bc5c0c885a7d6a5a8f1dbcf1604f2d70c9ac42b4b660a5b32",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-04.svg": "e879fbac43c9b8453638a0df341c521a77d3d4f629c31ac051043c1fe5815815",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-05.svg": "2047744984590b334c2dc77a2768e2d64ab5fb9c1ab15115008dabea2bb18d72",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-06.svg": "3dacfe897fa9defcb62f15f44a7ffb8732ca16ab4eb07165f4a9c42072598062",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-07.svg": "f0188b616f312152d5b97752bde81dec0988a6d74ae0e8d32ba10ed28245ba78",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-08.svg": "cf7ccb331a35a62b4dc50a17f911a2816e44dcf268d2f1aaa9b3492b255ed006",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-09.svg": "bf5c8cb1da4da514d0d3e19ddd2213044c6ff9d65274892534cfca8d306d5f6b",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-10.svg": "29825172756be5ceec5c157fd7217a939583e6aa88ce8f8fbb7a0c8bf9a4f655",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-11.svg": "807c838c644434239b833bc7e1aa481edc69a25d6a6d1a55329be41b448cd50f",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-12.svg": "27679a1333c21b71ca0d0eafc4f979f73775a395f9eafcb3c90cff687c6c7485",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-13.svg": "3153f57af31942b347d0e5fadb691b29061b15d05ccd789bf8100b7b8216c0f7",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-14.svg": "460f068d399281caeccaf034b376f566ff128742446cf7e404a9c45c7f21318f",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/previews/slide-15.svg": "8b432bc2dc68512e6b50362c8d7f7f811c061a6677919e0901fc41d7504ab669",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/report.json": "5eec56cc73c155552b942661b4c72030fff2b62fb09de8c4f8a5f1fc5c408a26",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/shapes-before.pptx": "28a56717be882445fb747deb741bfd5ba79226ad380a2bb1828fbbfde00ac01d",
+      "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/shapes.pptx": "8a4e2546af9062b7090799b1d7bc9cf75b176ff6525a19b1ce8d98d7fc132e8f",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/extracted/slideImport/slide-02/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/extracted/slideImport/slide-03/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/extracted/slideImport/slide-04/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/extracted/slideImport/slide-05/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/extracted/slideImport/slide-06/image1.png": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/extracted/slideImport/slideImport.md": "1ab90a2d47538abecd866a4c75d1d2f83cc9cb1c2d012b86867aa4f5537c6459",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/import-source.pptx": "4ff977a8e414d21fcfbd8cb9d2f4948b9a7e37855b7917888d07293a90d48518",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/notes-02.svg": "d0e187d6ea5fb435123f513619a4d6ec714d7d26bc03d0a7186e9b6e749d28ed",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/notes-03.svg": "b1b78b8e6b90b845e20c3baaf2c62fb7d1dd67039c23473a00461a5a76295c6e",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/notes-04.svg": "98db83ec042727f2e6fe4f59df641c163a48300ae2fad503350afd09509df936",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/notes-05.svg": "a33d5327555ec67f8f6feff8846b578f9c752c3ba9a8494ad7a9e008b366bb7f",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/notes-06.svg": "1f6fb841d863cc86681297d391001aaa9c2d356dbbb1224b523e6bf24f79703f",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/slide-01.svg": "c48d7080309aa76bbefab36b676f652744e19d42e4c294acebff1ccf31c23b65",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/slide-02.svg": "614c88de7f4ce6e4f266c4be743c11da231752fee6019b0558dddc25717d6da0",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/slide-03.svg": "614c88de7f4ce6e4f266c4be743c11da231752fee6019b0558dddc25717d6da0",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/slide-04.svg": "1476feea63451ae3f3c9b49ad90e9882bd83ec83adaf34c63d63e0848ca24325",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/slide-05.svg": "016a96419c0e6d4b903e318a94237e7644561715226259c6604b31561ebde008",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/previews/slide-06.svg": "42aab31ce2057564afab92c7d35b9eb4e8250849a4d9218957bee987512f9769",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/report.json": "baec718e2fa33b8e4c14f5b49dfb3fbe55fe388521608b408a5816c9c08f5b25",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/slideImport-before.pptx": "b3a3552416136d667857335688e005e5bb4ee147a3fe00b73b7f661148c5336a",
+      "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/slideImport.pptx": "4c4bfefbae03a2a360271b8d888d47e39516a590f7eab8ffeec8c0918c285ac8",
+      "/tmp/lectern-fidelity12-lab-verified/slides-314BFB89-E11A-49D3-991D-312D65568E88/extracted/slides/slides.md": "5d47bf958376ea514f70972b9be7dd6c0a681cbf3197c37527f5e28e819838d4",
+      "/tmp/lectern-fidelity12-lab-verified/slides-314BFB89-E11A-49D3-991D-312D65568E88/previews/slide-01.svg": "819507c5bf1b2cbf68f49ed35d59a7d9955e7fc41f71fae546b10137aaf74b90",
+      "/tmp/lectern-fidelity12-lab-verified/slides-314BFB89-E11A-49D3-991D-312D65568E88/previews/slide-02.svg": "b827c4ff2f147f3a9c7622ea92d568587c4f674d139d3ef6925eeaa28c5f2cd4",
+      "/tmp/lectern-fidelity12-lab-verified/slides-314BFB89-E11A-49D3-991D-312D65568E88/previews/slide-03.svg": "0641947d02570aa81fbcd8ed04958afe157e27a8888215adf7a4cd422bc2e86a",
+      "/tmp/lectern-fidelity12-lab-verified/slides-314BFB89-E11A-49D3-991D-312D65568E88/previews/slide-04.svg": "beff07785bd7c0e3f0a47a054b20a1d5203ae507e3896c8449ba4d43c5a687a3",
+      "/tmp/lectern-fidelity12-lab-verified/slides-314BFB89-E11A-49D3-991D-312D65568E88/report.json": "e080d11418182053a283a8b6d3ef3d0bfc4d0900f3bec6a9217f3a232d42277c",
+      "/tmp/lectern-fidelity12-lab-verified/slides-314BFB89-E11A-49D3-991D-312D65568E88/slides-before.pptx": "39a8887b5b64e15c01476ee3931e0cc8ff4a1effa6dec52cfc6c8968f8e143c2",
+      "/tmp/lectern-fidelity12-lab-verified/slides-314BFB89-E11A-49D3-991D-312D65568E88/slides.pptx": "a2593a5cfdb28c5758861bf3f4d95d30ef58359c23167090cf1ca379725160a9",
+      "/tmp/lectern-fidelity12-lab-verified/smartArt-6FF99947-B7CC-411F-ACCE-E10FC74056CC/extracted/smartArt/smartArt.md": "8bfe7bf717c52ca842a9b47196b57fd711dd3b59d5a2d75aeb6f6ada947cdf50",
+      "/tmp/lectern-fidelity12-lab-verified/smartArt-6FF99947-B7CC-411F-ACCE-E10FC74056CC/previews/slide-01.svg": "81c5b8e7e8e50ccc895e4e4f8e8f7d2f9181096687e10ca63b382589e0a5c5de",
+      "/tmp/lectern-fidelity12-lab-verified/smartArt-6FF99947-B7CC-411F-ACCE-E10FC74056CC/previews/slide-02.svg": "100fa751f580c40ad5f94a194add5a00f721d5c3af49d48ee22a01a5aa14ab6e",
+      "/tmp/lectern-fidelity12-lab-verified/smartArt-6FF99947-B7CC-411F-ACCE-E10FC74056CC/previews/slide-03.svg": "dc0882e037cf782c607372a709bb5adbb342644a55b242e5992b42f1c02cde02",
+      "/tmp/lectern-fidelity12-lab-verified/smartArt-6FF99947-B7CC-411F-ACCE-E10FC74056CC/previews/slide-04.svg": "754237fbb289821149f028c957fe168c21000a035aa0264af3ea9f8a2a43bed4",
+      "/tmp/lectern-fidelity12-lab-verified/smartArt-6FF99947-B7CC-411F-ACCE-E10FC74056CC/report.json": "5f357bab7f886230d2d03064854233a6e41a7a728cdcd1d4806bc9981ee96f48",
+      "/tmp/lectern-fidelity12-lab-verified/smartArt-6FF99947-B7CC-411F-ACCE-E10FC74056CC/smartArt.pptx": "e68b359d176fb1fd9f6c742724f608c25a84e16c11656874d798659f96854768",
+      "/tmp/lectern-fidelity12-lab-verified/smartArt-6FF99947-B7CC-411F-ACCE-E10FC74056CC/smartart-labels.txt": "d8ae4ac74d2f1e6cbff65fc544534f5a27eee84a2bf56c9c9cf059491615a31e",
+      "/tmp/lectern-fidelity12-lab-verified/tabLayout-E4DB5615-4841-47CD-BD5D-A1F6225898F7/extracted/tabLayout/tabLayout.md": "6141ed219752f7fb636abee9fe6e149e6c71be7740d0b50d6cd222ba408e0059",
+      "/tmp/lectern-fidelity12-lab-verified/tabLayout-E4DB5615-4841-47CD-BD5D-A1F6225898F7/extraction-library-lab.md": "280432127b51b0aab3372275698f0120a6f5e5f2edebc0b08d635a182263b994",
+      "/tmp/lectern-fidelity12-lab-verified/tabLayout-E4DB5615-4841-47CD-BD5D-A1F6225898F7/previews/slide-01.svg": "9f6ca4b5788cb0351dab57b5dcc7f10a85b83e0c15dd3d66045e809ce9d1848e",
+      "/tmp/lectern-fidelity12-lab-verified/tabLayout-E4DB5615-4841-47CD-BD5D-A1F6225898F7/previews/slide-02.svg": "bd0f44e94299988a8424b57dbaf6392175433e58d8351d5e51a4a2c33bdda3fa",
+      "/tmp/lectern-fidelity12-lab-verified/tabLayout-E4DB5615-4841-47CD-BD5D-A1F6225898F7/report.json": "5b7fa3c978558599c3c46f22905974ff188a394c6469e6687f61bcae340ed5cc",
+      "/tmp/lectern-fidelity12-lab-verified/tabLayout-E4DB5615-4841-47CD-BD5D-A1F6225898F7/tabLayout-before.pptx": "b0916e8ac00b8dfa143c5d5b7569fc0a2196f9d363d9dd79fa027c39264caf59",
+      "/tmp/lectern-fidelity12-lab-verified/tabLayout-E4DB5615-4841-47CD-BD5D-A1F6225898F7/tabLayout.pptx": "eb62682daf2d69620b8111e1c07dba684afdc236edfa7d145681e7f3ff6c87f3",
+      "/tmp/lectern-fidelity12-lab-verified/tableAppearance-E76F8BAD-8831-40DA-BA91-8EE41B52C34C/extracted/tableAppearance/tableAppearance.md": "aa8a3da593612993d877bf26c3f2e36a5bf55f0bd551c040cb2b538ea4b0a8e3",
+      "/tmp/lectern-fidelity12-lab-verified/tableAppearance-E76F8BAD-8831-40DA-BA91-8EE41B52C34C/previews/slide-01.svg": "644bfc8275d56a49ff72ab3f567e86722876e16c0c6b776e7628b2b1e8e493da",
+      "/tmp/lectern-fidelity12-lab-verified/tableAppearance-E76F8BAD-8831-40DA-BA91-8EE41B52C34C/previews/slide-02.svg": "e25c81ed7357a0712f00efe170432968f327920f89d88218dc1d39eb572b523e",
+      "/tmp/lectern-fidelity12-lab-verified/tableAppearance-E76F8BAD-8831-40DA-BA91-8EE41B52C34C/previews/slide-03.svg": "5364f515ad094c1d0c6a0ca1ae7bf28ced726614123969f6f5c8daf2fb0f8b1c",
+      "/tmp/lectern-fidelity12-lab-verified/tableAppearance-E76F8BAD-8831-40DA-BA91-8EE41B52C34C/report.json": "0f972f2b2e5e4d1dd244dd55ebb969c0f6569244cfb759ebc9ab5a9a0d2edb47",
+      "/tmp/lectern-fidelity12-lab-verified/tableAppearance-E76F8BAD-8831-40DA-BA91-8EE41B52C34C/tableAppearance-before.pptx": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
+      "/tmp/lectern-fidelity12-lab-verified/tableAppearance-E76F8BAD-8831-40DA-BA91-8EE41B52C34C/tableAppearance.pptx": "b7351a492cd0b3e9d0c29f2dec5ff4d6eb1954b92e05cf343c7d77929ee4022b",
+      "/tmp/lectern-fidelity12-lab-verified/tableStructure-25A79057-EFF4-4177-BDEF-D6D0DC4C569B/extracted/tableStructure/tableStructure.md": "04f75165b24bb8d6283e59cb485d792f0ec950ca2d394d23af816563cad94cd0",
+      "/tmp/lectern-fidelity12-lab-verified/tableStructure-25A79057-EFF4-4177-BDEF-D6D0DC4C569B/previews/slide-01.svg": "78e0805e23070cbdca1e63cb9886ffffbb2b08fe475414a1da4bbb6051c33f31",
+      "/tmp/lectern-fidelity12-lab-verified/tableStructure-25A79057-EFF4-4177-BDEF-D6D0DC4C569B/report.json": "0d06c4b5a306a887fd0c48e79bc61bf94e0804a9e4086a98bed09a85f304b777",
+      "/tmp/lectern-fidelity12-lab-verified/tableStructure-25A79057-EFF4-4177-BDEF-D6D0DC4C569B/tableStructure-before.pptx": "a090209dea654ea4753ae51d5b3ae1d441679564b7b0bcf7dc771a1c7d787030",
+      "/tmp/lectern-fidelity12-lab-verified/tableStructure-25A79057-EFF4-4177-BDEF-D6D0DC4C569B/tableStructure.pptx": "5616bb415a4e4eed8ec35510c6611f4ab8c9c0e1c21e13b63c6d39dae3851556",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/extracted/tableStyles/tableStyles.md": "2251ec490812fb420d45e817514d7b395114457096b2e0bfb5195797c66d2ae2",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-01.svg": "8bd350a81a42c9d3e7df480724d499d4ac97c15b6460b2b3f9072c7ec9d78b66",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-02.svg": "8c7ba58620024fc941264e87c9260cb49a0b8260e47d9505a4f56165a797da9d",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-03.svg": "f156595f66b7a5095291b84106afd4b330caf55747baf7f8f01d88f3e46f06db",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-04.svg": "ed4806a38461b086d07bf4f8651f3e3556b4e17788ca47b1ff8bbe9236b66b23",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-05.svg": "c2979211dcab5a2e401706aaf9d783f556d08ae850d1cbe341abab28efe06d38",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-06.svg": "d897c96c6393f97a00c4d8db9905e42fc01917ef742fea646a0c78aa219fa738",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-07.svg": "184958dc1d3d19a4452f94d1e3248bf6a9dc37a76debb157ef5b4cd0b6a936d1",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-08.svg": "5e07cffa3287b865ee9fea4c2d040bc7128b6b94dbd8d88ef78d1d63974d6d24",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-09.svg": "5f91031a982455290f86a310f5c9fd9cb4cf825d8a1fcd44ccd76a11b545d36d",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-10.svg": "7e8f3205f31a1506c0955b18d05fda3aefd6a47b799687c6b7f95efd8d8f7737",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-11.svg": "960d51850091e9e25e447122a500478674b289ac9e5c9a939c4a1427ee0a0983",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-12.svg": "26b26dfb85b9f115a50bd7867807996f99233a3919fc8d31379c9450a816e925",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-13.svg": "7c19a31ce2abdd05f9b39d60d7924910e442bd15b0e4b177125b908466a9a04a",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-14.svg": "690f6fa289421b718ec43be96b86cab2e99b6d4efda2be6c7cfbb26dc9b36c06",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-15.svg": "236cbdd8f33d9d8da60b65ab7875016d4407f487a44d147ab92650d020433501",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-16.svg": "0f72c8abd46a154c3fe83f243fa5614ea57ec02eed8e13cabaee28376d0ca3a2",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-17.svg": "1fc0b49d902a228e97890da1bf911a958e2880777eb49ff154f049ea24d3dc7d",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-18.svg": "bcfe5e5dab01092e69d420f46164cb968a13608cde59f159e0a94f09193f2c2d",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/previews/slide-19.svg": "10344a24b490f575bd45d0aa814ee003d56630d0e2de2a8322e90017eb9f90ad",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/report.json": "aa54673c580489eb0744a823192ad311038a598756be8c2e1c1413fc9360a37c",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/tableStyles-before.pptx": "21e97d9f2e74bcaca77786f289691d99d28b281aac5220bbaa2236e0d3a3172f",
+      "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/tableStyles.pptx": "434031c7380b7c742dadc66d87512d9822561240cb72e4cb70958ca3111c3558",
+      "/tmp/lectern-fidelity12-lab-verified/templates-1D98C3E1-A9D3-44B3-8575-C615CABC9BFA/extracted/templates/templates.md": "5f931ab2ba5131220de0dc016df089c11b7bd320cb2bfd25dcc6cd07afead386",
+      "/tmp/lectern-fidelity12-lab-verified/templates-1D98C3E1-A9D3-44B3-8575-C615CABC9BFA/previews/slide-01.svg": "bf6748179909973fff9f38a71b7f7c3d50440d5a3a4523549025b503bf7c95c3",
+      "/tmp/lectern-fidelity12-lab-verified/templates-1D98C3E1-A9D3-44B3-8575-C615CABC9BFA/report.json": "f52cf0a6b230d7dd83bdf5862ed59a5e648a77c5878bc161d6539feac96f7ed9",
+      "/tmp/lectern-fidelity12-lab-verified/templates-1D98C3E1-A9D3-44B3-8575-C615CABC9BFA/slideshow.ppsx": "6b458513c58d72c6f439e8c2efd66de3ff7d0f2ef48d9402546ac5525e2c50c5",
+      "/tmp/lectern-fidelity12-lab-verified/templates-1D98C3E1-A9D3-44B3-8575-C615CABC9BFA/template.potx": "b0f67c8c4a6eb8b28a05bfb57b7d9af2081f2569ab13507e8163c3731cb730a5",
+      "/tmp/lectern-fidelity12-lab-verified/templates-1D98C3E1-A9D3-44B3-8575-C615CABC9BFA/templates-before.pptx": "52047af7d6c258179defe6aac3df8059f02ab2346a27a2828ec4f92f80a0db31",
+      "/tmp/lectern-fidelity12-lab-verified/templates-1D98C3E1-A9D3-44B3-8575-C615CABC9BFA/templates.pptx": "11ef5debcaeec9280f7f3fc85cdb5c422cd3b889e7938d28d903cc1366affce4",
+      "/tmp/lectern-fidelity12-lab-verified/text-FC836842-A027-4D3A-893B-CA0D0280225D/extracted/text/text.md": "42d7e9d919797cd11e38957ae0fa324cec133e6232002ff9a3402871ab3781d7",
+      "/tmp/lectern-fidelity12-lab-verified/text-FC836842-A027-4D3A-893B-CA0D0280225D/previews/slide-01.svg": "2110b01b85ffb7570520f674ff44de8b5b2b82eb4328e9d6680bc7181a06c633",
+      "/tmp/lectern-fidelity12-lab-verified/text-FC836842-A027-4D3A-893B-CA0D0280225D/previews/slide-02.svg": "12cc6341048edbed03a16590e9e689a995f78e9d497f4cbd5a2b209e1e874784",
+      "/tmp/lectern-fidelity12-lab-verified/text-FC836842-A027-4D3A-893B-CA0D0280225D/report.json": "e5ca93644ff7e16ae0eb7e09e986cf113715329e3dd7db75f6b954f4ad17edcd",
+      "/tmp/lectern-fidelity12-lab-verified/text-FC836842-A027-4D3A-893B-CA0D0280225D/text-before.pptx": "952bd3f451f773a612f3f181f661a38ac46a209628925c931d2325512c0708fd",
+      "/tmp/lectern-fidelity12-lab-verified/text-FC836842-A027-4D3A-893B-CA0D0280225D/text.pptx": "2a1a38226487f7b1eea73cbe32b37851dbb78935e1b7733e4073495e9b13223e",
+      "/tmp/lectern-fidelity12-lab-verified/theme-73955B18-48EF-45E7-962B-06BF0C255D06/extracted/theme/theme.md": "882f1ac6066293c91ebc92333b339400fe2ce30fe78c2f232da0d28b93e49e5a",
+      "/tmp/lectern-fidelity12-lab-verified/theme-73955B18-48EF-45E7-962B-06BF0C255D06/previews/slide-01.svg": "652e6a5790137156acef7c9f1afabf2b87cb6f2a9f65f6fb4df814d0aff14a69",
+      "/tmp/lectern-fidelity12-lab-verified/theme-73955B18-48EF-45E7-962B-06BF0C255D06/report.json": "1909c275a82c2cf590dfd62472a9d07e82b8f65f05c5595652fcaba1c6cd45e7",
+      "/tmp/lectern-fidelity12-lab-verified/theme-73955B18-48EF-45E7-962B-06BF0C255D06/theme-before.pptx": "c767a2b1a04c30b76404c64884817f84d85f26712a0f010f2adc3db48a24217e",
+      "/tmp/lectern-fidelity12-lab-verified/theme-73955B18-48EF-45E7-962B-06BF0C255D06/theme.pptx": "cc090f46cb194029bb6e445d42f998bda681fbeeca554cc689481d49ce2ee537",
+      "/tmp/lectern-fidelity12-paint-verified/alternative-false-413E32A6-A3CC-4117-B45E-A429AE096F38/paragraphLayout.pptx": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3",
+      "/tmp/lectern-fidelity12-paint-verified/alternative-false-413E32A6-A3CC-4117-B45E-A429AE096F38/slide-07.svg": "54e489d89e59b23198f7fe7a91e6245448186661f7fe29aaa3158c3e4aa1abbd",
+      "/tmp/lectern-fidelity12-paint-verified/alternative-true-FA7B7775-FCE7-44CF-8321-A888777911BF/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
+      "/tmp/lectern-fidelity12-paint-verified/alternative-true-FA7B7775-FCE7-44CF-8321-A888777911BF/slide-07.svg": "a9baec01a884f4c089b707824d667212ee8cbd2e543ae5bd88cbb70cae6841fc",
+      "/tmp/lectern-fidelity12-spacing-verified/alternative-false-D049E91A-39E5-445C-9BA6-1A7FE0D5E605/paragraphLayout.pptx": "71232d55de23ace080dc0ce97292026cf8029f153cc794b2cd40d41cc6a053fe",
+      "/tmp/lectern-fidelity12-spacing-verified/alternative-true-EE13D8C6-2A92-4D1B-9B7F-771CFAC70C37/paragraphLayout.pptx": "29e19166fa0d6fe81a44c25c824aee52f7f5f3128676eaab85fdcfe32e88d4fe",
+      "/tmp/lectern-fidelity12-table-verified/alternative-false-C6008B90-7A4B-4F4D-B19B-99D51E2B4394/slide-03.svg": "78e12dd789c0e04bfb838ddda685bb71a69c18eb1f00458acb221ae8ef6402cf",
+      "/tmp/lectern-fidelity12-table-verified/alternative-false-C6008B90-7A4B-4F4D-B19B-99D51E2B4394/tableAppearance.pptx": "964b2826b92ed506489aca40fa1d87b46da1730e34798ec2218c802f2dfbfc95",
+      "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/slide-03.svg": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+      "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a"
+    },
+    "labFindings": 411,
+    "nativeSourceIdentity": [
+      {
+        "alternative": false,
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-paint-verified/alternative-false-413E32A6-A3CC-4117-B45E-A429AE096F38/paragraphLayout.pptx",
+        "kind": "paragraph",
+        "priorNativeSource": "/tmp/lectern-fidelity11-native/default/paragraphLayout.pptx",
+        "sha256": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3"
+      },
+      {
+        "alternative": true,
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-paint-verified/alternative-true-FA7B7775-FCE7-44CF-8321-A888777911BF/paragraphLayout.pptx",
+        "kind": "paragraph",
+        "priorNativeSource": "/tmp/lectern-fidelity11-native/alternative/paragraphLayout.pptx",
+        "sha256": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9"
+      },
+      {
+        "alternative": false,
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-table-verified/alternative-false-C6008B90-7A4B-4F4D-B19B-99D51E2B4394/tableAppearance.pptx",
+        "kind": "table",
+        "priorNativeSource": "/tmp/lectern-fidelity11-native/table-default/tableAppearance.pptx",
+        "sha256": "964b2826b92ed506489aca40fa1d87b46da1730e34798ec2218c802f2dfbfc95"
+      },
+      {
+        "alternative": true,
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/tableAppearance.pptx",
+        "kind": "table",
+        "priorNativeSource": "/tmp/lectern-fidelity11-native/table-alternative/tableAppearance.pptx",
+        "sha256": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a"
+      }
+    ],
+    "priorGateIdentity": [
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-break-verified/large-false-0AE5DF1E-2AC9-42B0-AECC-49F164C41AC8/paragraphLayout.pptx",
+        "currentSHA256": "414f34a5b9123272c6523172e945ef5a7793a739da33ece55d1e489e77de7d86",
+        "prior": "/tmp/lectern-fidelity11-break-verified/large-false-6A1A359E-6A2D-4216-8C4A-140ED79952CE/paragraphLayout.pptx",
+        "priorSHA256": "414f34a5b9123272c6523172e945ef5a7793a739da33ece55d1e489e77de7d86"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-break-verified/large-true-D8C78CCA-8B65-440A-8C05-10736E14316B/paragraphLayout.pptx",
+        "currentSHA256": "ceb94ddf2a12e034da752d1d8ebe696fd25745e4624fb54e0afaae92f2971a14",
+        "prior": "/tmp/lectern-fidelity11-break-verified/large-true-229B48D5-8691-4921-BD43-40E866505B32/paragraphLayout.pptx",
+        "priorSHA256": "ceb94ddf2a12e034da752d1d8ebe696fd25745e4624fb54e0afaae92f2971a14"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-spacing-verified/alternative-false-D049E91A-39E5-445C-9BA6-1A7FE0D5E605/paragraphLayout.pptx",
+        "currentSHA256": "71232d55de23ace080dc0ce97292026cf8029f153cc794b2cd40d41cc6a053fe",
+        "prior": "/tmp/lectern-fidelity11-spacing-verified/alternative-false-4D8C6288-F893-4D0B-8B95-4D43AB752F75/paragraphLayout.pptx",
+        "priorSHA256": "71232d55de23ace080dc0ce97292026cf8029f153cc794b2cd40d41cc6a053fe"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-spacing-verified/alternative-true-EE13D8C6-2A92-4D1B-9B7F-771CFAC70C37/paragraphLayout.pptx",
+        "currentSHA256": "29e19166fa0d6fe81a44c25c824aee52f7f5f3128676eaab85fdcfe32e88d4fe",
+        "prior": "/tmp/lectern-fidelity11-spacing-verified/alternative-true-E59B5830-21C9-49B7-AC29-CAF1E4F5E618/paragraphLayout.pptx",
+        "priorSHA256": "29e19166fa0d6fe81a44c25c824aee52f7f5f3128676eaab85fdcfe32e88d4fe"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-paint-verified/alternative-false-413E32A6-A3CC-4117-B45E-A429AE096F38/paragraphLayout.pptx",
+        "currentSHA256": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3",
+        "prior": "/tmp/lectern-fidelity11-paint-verified/alternative-false-E2E0FD59-7336-41A8-A256-D657721B630B/paragraphLayout.pptx",
+        "priorSHA256": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-paint-verified/alternative-false-413E32A6-A3CC-4117-B45E-A429AE096F38/slide-07.svg",
+        "currentSHA256": "54e489d89e59b23198f7fe7a91e6245448186661f7fe29aaa3158c3e4aa1abbd",
+        "prior": "/tmp/lectern-fidelity11-paint-verified/alternative-false-E2E0FD59-7336-41A8-A256-D657721B630B/slide-07.svg",
+        "priorSHA256": "54e489d89e59b23198f7fe7a91e6245448186661f7fe29aaa3158c3e4aa1abbd"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-paint-verified/alternative-true-FA7B7775-FCE7-44CF-8321-A888777911BF/paragraphLayout.pptx",
+        "currentSHA256": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
+        "prior": "/tmp/lectern-fidelity11-paint-verified/alternative-true-52AEA149-32CE-46D4-8635-F5963DCB121F/paragraphLayout.pptx",
+        "priorSHA256": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-paint-verified/alternative-true-FA7B7775-FCE7-44CF-8321-A888777911BF/slide-07.svg",
+        "currentSHA256": "a9baec01a884f4c089b707824d667212ee8cbd2e543ae5bd88cbb70cae6841fc",
+        "prior": "/tmp/lectern-fidelity11-paint-verified/alternative-true-52AEA149-32CE-46D4-8635-F5963DCB121F/slide-07.svg",
+        "priorSHA256": "a9baec01a884f4c089b707824d667212ee8cbd2e543ae5bd88cbb70cae6841fc"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-table-verified/alternative-false-C6008B90-7A4B-4F4D-B19B-99D51E2B4394/slide-03.svg",
+        "currentSHA256": "78e12dd789c0e04bfb838ddda685bb71a69c18eb1f00458acb221ae8ef6402cf",
+        "prior": "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/slide-03.svg",
+        "priorSHA256": "78e12dd789c0e04bfb838ddda685bb71a69c18eb1f00458acb221ae8ef6402cf"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-table-verified/alternative-false-C6008B90-7A4B-4F4D-B19B-99D51E2B4394/tableAppearance.pptx",
+        "currentSHA256": "964b2826b92ed506489aca40fa1d87b46da1730e34798ec2218c802f2dfbfc95",
+        "prior": "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/tableAppearance.pptx",
+        "priorSHA256": "964b2826b92ed506489aca40fa1d87b46da1730e34798ec2218c802f2dfbfc95"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/slide-03.svg",
+        "currentSHA256": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+        "prior": "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/slide-03.svg",
+        "priorSHA256": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79"
+      },
+      {
+        "byteIdentical": true,
+        "current": "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/tableAppearance.pptx",
+        "currentSHA256": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+        "prior": "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/tableAppearance.pptx",
+        "priorSHA256": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a"
+      }
+    ],
+    "receipt": {
+      "path": "/tmp/lectern-fidelity12-external.json",
+      "sha256": "74491f46ffd01d07d8fa50e1ec6a3ad013c4aaea21c890b1ca47e343ac0241dd"
+    },
+    "reports": [
+      {
+        "checks": 24,
+        "findings": 4,
+        "path": "/tmp/lectern-fidelity12-lab-verified/chartEditing-DECEE9BA-AE42-4E7A-BB64-A832C3F016E1/report.json",
+        "recipe": "chartEditing",
+        "sha256": "8ae959f3d487fd8296703c8107617a88eb631f53c3ecd6dde9e9745352abfca3"
+      },
+      {
+        "checks": 30,
+        "findings": 24,
+        "path": "/tmp/lectern-fidelity12-lab-verified/charts-D14C807C-2EFF-4CB7-8307-BF296FC9F820/report.json",
+        "recipe": "charts",
+        "sha256": "4f615ee2b5791d16865e27f399cc61344236c5d39f894a65df770e2867b34b35"
+      },
+      {
+        "checks": 12,
+        "findings": 3,
+        "path": "/tmp/lectern-fidelity12-lab-verified/comments-B2A8E154-C083-453F-840D-49914D6E800F/report.json",
+        "recipe": "comments",
+        "sha256": "3ebdf99a5ffaaa17dc3e96038ba1940a2efc08e9d51b19c563d3d928087f243b"
+      },
+      {
+        "checks": 11,
+        "findings": 111,
+        "path": "/tmp/lectern-fidelity12-lab-verified/design-34B80BAE-2805-48A1-B07C-2FC0340A7483/report.json",
+        "recipe": "design",
+        "sha256": "8cfc21d8849ffee41e1efd0f7b68624394f693df2e5a202b1a9cf80cd0924a34"
+      },
+      {
+        "checks": 13,
+        "findings": 3,
+        "path": "/tmp/lectern-fidelity12-lab-verified/extractionAndRendering-A47E7C6A-5F46-4E47-AB47-0040023E1366/report.json",
+        "recipe": "extractionAndRendering",
+        "sha256": "1e60d359b4572f6bd29deb71ec9dd02b718cfbbd7f7792f3b1b609478037e7d8"
+      },
+      {
+        "checks": 19,
+        "findings": 19,
+        "path": "/tmp/lectern-fidelity12-lab-verified/fillsAndLines-8D3FE01B-0B3F-4B84-9252-29211455B863/report.json",
+        "recipe": "fillsAndLines",
+        "sha256": "8e472286931ea99c2c240a1f12b872fe90ba01b1fdb49af2d6ad9137ae41a0c2"
+      },
+      {
+        "checks": 11,
+        "findings": 0,
+        "path": "/tmp/lectern-fidelity12-lab-verified/fontsAndFitting-C3C0D857-D6F9-4893-B2D7-0C61FB01EF68/report.json",
+        "recipe": "fontsAndFitting",
+        "sha256": "062eb906dc711d6a3534a1cbe64a3595c9573119914cb4582d0ebe0f842dd954"
+      },
+      {
+        "checks": 9,
+        "findings": 0,
+        "path": "/tmp/lectern-fidelity12-lab-verified/importedFidelity-2268F8B2-0037-443F-8078-699242E26D88/report.json",
+        "recipe": "importedFidelity",
+        "sha256": "d5816d2748354b868e6ca7e28e214086357665fcf6b5e7ecd7ceb9e37bbe33f9"
+      },
+      {
+        "checks": 13,
+        "findings": 0,
+        "path": "/tmp/lectern-fidelity12-lab-verified/layouts-E4AA41E9-A623-4850-B56F-EC1DAD1D4808/report.json",
+        "recipe": "layouts",
+        "sha256": "52876f0b6da931157f8f16b8ed4a6bb887fac22905b987e166a48311d124fe0a"
+      },
+      {
+        "checks": 11,
+        "findings": 2,
+        "path": "/tmp/lectern-fidelity12-lab-verified/mediaAndAttachments-2A2A5E14-8D1B-4618-9C2F-AED68B97FC70/report.json",
+        "recipe": "mediaAndAttachments",
+        "sha256": "da1df8eac9512e4c985a683e7b5f84bbe9bb3579139a52c7590a720315c6f092"
+      },
+      {
+        "checks": 8,
+        "findings": 2,
+        "path": "/tmp/lectern-fidelity12-lab-verified/notes-D04BC8F5-1D6C-49F6-BB16-2541D24384A6/report.json",
+        "recipe": "notes",
+        "sha256": "60dd33fc3c88b967eb92c2296cb04ce7c52415ec9a4819508ae241e95a3d60b4"
+      },
+      {
+        "checks": 11,
+        "findings": 1,
+        "path": "/tmp/lectern-fidelity12-lab-verified/package-B7EDEFCE-0CE7-484A-B996-171BD7D468D6/report.json",
+        "recipe": "package",
+        "sha256": "3cd0ea09d1ed62284c832290980e5646f8a571c7fbdf46a402b896f929623ba9"
+      },
+      {
+        "checks": 74,
+        "findings": 0,
+        "path": "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/report.json",
+        "recipe": "paragraphLayout",
+        "sha256": "758ec4cfb90f54cb3d51f926f5d744a93ee9a4ab18eacf727886d201ce33fca4"
+      },
+      {
+        "checks": 17,
+        "findings": 0,
+        "path": "/tmp/lectern-fidelity12-lab-verified/pictures-F583E705-861B-49AC-AECE-74B37F165224/report.json",
+        "recipe": "pictures",
+        "sha256": "f9e396e89ee66e0718d920c33d668841962e1ca5be6a9c0397fedab5de018ca0"
+      },
+      {
+        "checks": 10,
+        "findings": 6,
+        "path": "/tmp/lectern-fidelity12-lab-verified/sections-DB778408-F37B-4D46-BA6A-907DAC6A6B01/report.json",
+        "recipe": "sections",
+        "sha256": "3aa7761ef9bf2565251e8b155dcfe1c9f2a22d3a447f15654901d696dbab0aad"
+      },
+      {
+        "checks": 7,
+        "findings": 179,
+        "path": "/tmp/lectern-fidelity12-lab-verified/shapes-FCA54C6B-87E2-41BD-A915-60DB8E693822/report.json",
+        "recipe": "shapes",
+        "sha256": "5eec56cc73c155552b942661b4c72030fff2b62fb09de8c4f8a5f1fc5c408a26"
+      },
+      {
+        "checks": 10,
+        "findings": 10,
+        "path": "/tmp/lectern-fidelity12-lab-verified/slideImport-44DE5C83-274F-4247-8312-9E6BCD6D3F0F/report.json",
+        "recipe": "slideImport",
+        "sha256": "baec718e2fa33b8e4c14f5b49dfb3fbe55fe388521608b408a5816c9c08f5b25"
+      },
+      {
+        "checks": 9,
+        "findings": 4,
+        "path": "/tmp/lectern-fidelity12-lab-verified/slides-314BFB89-E11A-49D3-991D-312D65568E88/report.json",
+        "recipe": "slides",
+        "sha256": "e080d11418182053a283a8b6d3ef3d0bfc4d0900f3bec6a9217f3a232d42277c"
+      },
+      {
+        "checks": 10,
+        "findings": 8,
+        "path": "/tmp/lectern-fidelity12-lab-verified/smartArt-6FF99947-B7CC-411F-ACCE-E10FC74056CC/report.json",
+        "recipe": "smartArt",
+        "sha256": "5f357bab7f886230d2d03064854233a6e41a7a728cdcd1d4806bc9981ee96f48"
+      },
+      {
+        "checks": 13,
+        "findings": 1,
+        "path": "/tmp/lectern-fidelity12-lab-verified/tabLayout-E4DB5615-4841-47CD-BD5D-A1F6225898F7/report.json",
+        "recipe": "tabLayout",
+        "sha256": "5b7fa3c978558599c3c46f22905974ff188a394c6469e6687f61bcae340ed5cc"
+      },
+      {
+        "checks": 20,
+        "findings": 7,
+        "path": "/tmp/lectern-fidelity12-lab-verified/tableAppearance-E76F8BAD-8831-40DA-BA91-8EE41B52C34C/report.json",
+        "recipe": "tableAppearance",
+        "sha256": "0f972f2b2e5e4d1dd244dd55ebb969c0f6569244cfb759ebc9ab5a9a0d2edb47"
+      },
+      {
+        "checks": 12,
+        "findings": 0,
+        "path": "/tmp/lectern-fidelity12-lab-verified/tableStructure-25A79057-EFF4-4177-BDEF-D6D0DC4C569B/report.json",
+        "recipe": "tableStructure",
+        "sha256": "0d06c4b5a306a887fd0c48e79bc61bf94e0804a9e4086a98bed09a85f304b777"
+      },
+      {
+        "checks": 7,
+        "findings": 21,
+        "path": "/tmp/lectern-fidelity12-lab-verified/tableStyles-CAB3B97E-A709-46B4-BF21-AF79EC322C63/report.json",
+        "recipe": "tableStyles",
+        "sha256": "aa54673c580489eb0744a823192ad311038a598756be8c2e1c1413fc9360a37c"
+      },
+      {
+        "checks": 8,
+        "findings": 1,
+        "path": "/tmp/lectern-fidelity12-lab-verified/templates-1D98C3E1-A9D3-44B3-8575-C615CABC9BFA/report.json",
+        "recipe": "templates",
+        "sha256": "f52cf0a6b230d7dd83bdf5862ed59a5e648a77c5878bc161d6539feac96f7ed9"
+      },
+      {
+        "checks": 10,
+        "findings": 4,
+        "path": "/tmp/lectern-fidelity12-lab-verified/text-FC836842-A027-4D3A-893B-CA0D0280225D/report.json",
+        "recipe": "text",
+        "sha256": "e5ca93644ff7e16ae0eb7e09e986cf113715329e3dd7db75f6b954f4ad17edcd"
+      },
+      {
+        "checks": 8,
+        "findings": 1,
+        "path": "/tmp/lectern-fidelity12-lab-verified/theme-73955B18-48EF-45E7-962B-06BF0C255D06/report.json",
+        "recipe": "theme",
+        "sha256": "1909c275a82c2cf590dfd62472a9d07e82b8f65f05c5595652fcaba1c6cd45e7"
+      }
+    ],
+    "retainedToolingAttempt": "An initial read-only option-matching assertion rejected large-false folder naming before producing a receipt; corrected to exact true/false option tokens, without altering inputs or bounds.",
+    "totals": {
+      "checks": 387,
+      "fileCount": 313,
+      "findings": 411,
+      "passedChecks": 387,
+      "pptxReopens": 60,
+      "reopenedSlides": 225,
+      "reports": 26,
+      "xmlPartsParsed": 1683
+    },
+    "unchangedInputBytes": true
+  },
+  "freshWebKit": {
+    "receipt": {
+      "path": "/tmp/lectern-fidelity12-webkit/independent-final/review-receipt.json",
+      "sha256": "a31c8be38c018d4b8994fbc8974c6722ca74b964ac694264d4d8a32a14b0ff0a"
+    },
+    "review": {
+      "createdUTC": "2026-10-04T20:10:03.867733+00:00",
+      "nativeTransfer": "Prior independently verified paragraph source/SVG inputs are byte-identical. Fresh PDF geometry verified independently; no native-selected computed autofit or broad raster/table-alternative claim.",
+      "results": [
+        {
+          "captureReceipt": "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds-capture.json",
+          "captureReceiptSHA256": "d580f596a58bd0371b44bfa62866cd8c3d70f84852641cbfabe4955fd801aa86",
+          "cases": 2,
+          "casesPath": "/tmp/lectern-fidelity12-webkit/independent-final/0-kerning-thresholds-cases.json",
+          "casesSHA256": "b615bc589a0180c6993ee53e241d5e71d75cddc3f747e59cb05f8aa1aebf45f5",
+          "comparison": "/tmp/lectern-fidelity12-webkit/independent-final/0-kerning-thresholds-comparison.json",
+          "comparisonSHA256": "fa442ddd6f79a8d8bd5729e83d21b833d1aa37896eb3ceeb0052c19bfda5f191",
+          "inputHashesAfter": {
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
+            "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds-capture.json": "d580f596a58bd0371b44bfa62866cd8c3d70f84852641cbfabe4955fd801aa86",
+            "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.pdf": "ffa079ea5193c576bf628440e12e879a84aea0f1bea8dab793d32cccafb76a6a",
+            "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.svg": "374edc49a24df0870c210bc24ea384612a3f047ea137be6d941bacb155fb6ae2",
+            "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+          },
+          "inputHashesBefore": {
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
+            "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds-capture.json": "d580f596a58bd0371b44bfa62866cd8c3d70f84852641cbfabe4955fd801aa86",
+            "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.pdf": "ffa079ea5193c576bf628440e12e879a84aea0f1bea8dab793d32cccafb76a6a",
+            "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.svg": "374edc49a24df0870c210bc24ea384612a3f047ea137be6d941bacb155fb6ae2",
+            "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+          },
+          "log": "/tmp/lectern-fidelity12-webkit/independent-final/0-kerning-thresholds.log",
+          "logSHA256": "95aaff69fe573e7040b76c33e55c708c875b2eaaf256802f92fbd92bfd25c191",
+          "maxInkDimensionDelta": 0.0,
+          "maxPDFVsPriorNative": [
+            0.029296875,
+            0.0799560546875
+          ],
+          "maxPDFVsSVG": [
+            1.5722656250716227e-05,
+            0.0
+          ],
+          "pdfSHA256": "ffa079ea5193c576bf628440e12e879a84aea0f1bea8dab793d32cccafb76a6a",
+          "profile": "raw library render with embedded fonts",
+          "sourceAndSVGIdenticalToFidelity11": true,
+          "sourceSHA256": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+          "svgSHA256": "374edc49a24df0870c210bc24ea384612a3f047ea137be6d941bacb155fb6ae2",
+          "unchangedInputs": true,
+          "verifiedVisibleGlyphs": 20
+        },
+        {
+          "captureReceipt": "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false-capture.json",
+          "captureReceiptSHA256": "69b273b2f87b113bf7cd19789cf153299eb2f73f28a586e981ef331d767af707",
+          "cases": 6,
+          "casesPath": "/tmp/lectern-fidelity12-webkit/independent-final/1-alternative-false-cases.json",
+          "casesSHA256": "0ec422769715e567cea1eaec772b2dac94347cb3a2dba5b9adc74a8835d18297",
+          "comparison": "/tmp/lectern-fidelity12-webkit/independent-final/1-alternative-false-comparison.json",
+          "comparisonSHA256": "41cd9f961f5bc6f569cf61a188daf81c976e0ceb8710883bd8d7f09f16a5694b",
+          "inputHashesAfter": {
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false-capture.json": "69b273b2f87b113bf7cd19789cf153299eb2f73f28a586e981ef331d767af707",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.pdf": "349627fa6d24aabfc992fbf36163f6d6ac8bda66f5ec20473cfa488c4054ba00",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/native-glyph-reference.json": "1731d4deccb0698b67f2a6bd25eb3b99afe798bde2508bb738eb1d744a2b6371",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/paragraphLayout.pptx": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/previews/slide-07.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
+            "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+          },
+          "inputHashesBefore": {
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false-capture.json": "69b273b2f87b113bf7cd19789cf153299eb2f73f28a586e981ef331d767af707",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.pdf": "349627fa6d24aabfc992fbf36163f6d6ac8bda66f5ec20473cfa488c4054ba00",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/native-glyph-reference.json": "1731d4deccb0698b67f2a6bd25eb3b99afe798bde2508bb738eb1d744a2b6371",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/paragraphLayout.pptx": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/previews/slide-07.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
+            "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+          },
+          "log": "/tmp/lectern-fidelity12-webkit/independent-final/1-alternative-false.log",
+          "logSHA256": "cba736385bc1e1aa16b8ff6e3f51803edac0ece96a858853d853dad03c2d3a59",
+          "maxInkDimensionDelta": 1.5484375097685188e-06,
+          "maxPDFVsPriorNative": [
+            0.0150146484375,
+            0.1199951171875
+          ],
+          "maxPDFVsSVG": [
+            6.1035156022626325e-06,
+            6.1035156022626325e-06
+          ],
+          "pdfSHA256": "349627fa6d24aabfc992fbf36163f6d6ac8bda66f5ec20473cfa488c4054ba00",
+          "profile": "saved DeckInspector preview",
+          "sourceAndSVGIdenticalToFidelity11": true,
+          "sourceSHA256": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3",
+          "svgSHA256": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
+          "unchangedInputs": true,
+          "verifiedVisibleGlyphs": 94
+        },
+        {
+          "captureReceipt": "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true-capture.json",
+          "captureReceiptSHA256": "5da0f2dbc1cd373ec9c6c99a187295f5c522a1880c9e42d9fe7f9fa0611b97a6",
+          "cases": 6,
+          "casesPath": "/tmp/lectern-fidelity12-webkit/independent-final/2-alternative-true-cases.json",
+          "casesSHA256": "3eed651a075030a21c475bb85749f7a3d0748cf449eaab5dc7df9850907f21d6",
+          "comparison": "/tmp/lectern-fidelity12-webkit/independent-final/2-alternative-true-comparison.json",
+          "comparisonSHA256": "73af152278d484b70f27c70689962c84e3b191a67fdd5e99b081425aa34f4830",
+          "inputHashesAfter": {
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true-capture.json": "5da0f2dbc1cd373ec9c6c99a187295f5c522a1880c9e42d9fe7f9fa0611b97a6",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.pdf": "d2f44de8b47e8d0583b4ee8c07cf9353c5c3cbc0c86607398c3eb87efcd86ee0",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/native-glyph-reference.json": "1731d4deccb0698b67f2a6bd25eb3b99afe798bde2508bb738eb1d744a2b6371",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/previews/slide-07.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
+            "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+          },
+          "inputHashesBefore": {
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true-capture.json": "5da0f2dbc1cd373ec9c6c99a187295f5c522a1880c9e42d9fe7f9fa0611b97a6",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.pdf": "d2f44de8b47e8d0583b4ee8c07cf9353c5c3cbc0c86607398c3eb87efcd86ee0",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/native-glyph-reference.json": "1731d4deccb0698b67f2a6bd25eb3b99afe798bde2508bb738eb1d744a2b6371",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/previews/slide-07.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
+            "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+          },
+          "log": "/tmp/lectern-fidelity12-webkit/independent-final/2-alternative-true.log",
+          "logSHA256": "a3085d600fd579b22ca1482831fe9bf3ad9862f5cff6ddde19bd3d52507eb0b2",
+          "maxInkDimensionDelta": 1.5484374671359546e-06,
+          "maxPDFVsPriorNative": [
+            0.015036010742164763,
+            0.08008422851560226
+          ],
+          "maxPDFVsSVG": [
+            6.1035156022626325e-06,
+            6.1035156022626325e-06
+          ],
+          "pdfSHA256": "d2f44de8b47e8d0583b4ee8c07cf9353c5c3cbc0c86607398c3eb87efcd86ee0",
+          "profile": "saved DeckInspector preview",
+          "sourceAndSVGIdenticalToFidelity11": true,
+          "sourceSHA256": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
+          "svgSHA256": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
+          "unchangedInputs": true,
+          "verifiedVisibleGlyphs": 94
+        }
+      ],
+      "scope": "Fresh actual saved-inspector WebKit PDFs for both paragraph options plus explicitly raw-library kerning pair. Reused independently verified exact descriptors only after reference JSON/frame/id/font/source/SVG identity checks. Unchanged .025 primary/autofit, .06 eligibility, .121 baseline and .002 ink/paint bounds. No parser/bounds changes, no new GUI/native operation; initial prior failures preserved separately.",
+      "scriptSHA256": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48",
+      "status": "PASS",
+      "totals": {
+        "cases": 14,
+        "visibleGlyphs": 208
+      }
+    },
+    "scope": "12paragraph specimens/188glyphs from exact saved inspector SVG;2kerning specimens/20glyphs separately raw-library scoped. Same origin/baseline/ink/paint tolerances; no parser changes."
+  },
+  "fullGate": {
+    "allErrorSubstringLines": [
+      {
+        "line": 3869,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern macOS app"
+      },
+      {
+        "line": 3902,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern macOS app"
+      },
+      {
+        "line": 3944,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern macOS app"
+      },
+      {
+        "line": 3946,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern macOS app"
+      },
+      {
+        "line": 3969,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern iOS app (simulator)"
+      },
+      {
+        "line": 4002,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern iOS app (simulator)"
+      },
+      {
+        "line": 4035,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern iOS app (simulator)"
+      },
+      {
+        "line": 4046,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern iOS app (simulator)"
+      },
+      {
+        "line": 5017,
+        "message": "2026-10-04 12:58:19.008592-0700 Lectern[85117:6910401] [general] WebContent[85205] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents =",
+        "stage": "==> Lectern app-hosted tests (AppTests \u2014 invisible to swift test)"
+      },
+      {
+        "line": 5059,
+        "message": "2026-10-04 12:58:21.759096-0700 Lectern[85117:6910401] [general] WebContent[85212] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents =",
+        "stage": "==> Lectern app-hosted tests (AppTests \u2014 invisible to swift test)"
+      },
+      {
+        "line": 5100,
+        "message": "2026-10-04 12:58:24.813246-0700 Lectern[85117:6910401] [general] WebContent[85213] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents =",
+        "stage": "==> Lectern app-hosted tests (AppTests \u2014 invisible to swift test)"
+      },
+      {
+        "line": 5144,
+        "message": "2026-10-04 12:58:28.831546-0700 Lectern[85117:6910401] [general] WebContent[85227] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents =",
+        "stage": "==> Lectern app-hosted tests (AppTests \u2014 invisible to swift test)"
+      },
+      {
+        "line": 5283,
+        "message": "2026-10-04 12:59:13.676266-0700 Lectern[85117:6910401] [general] WebContent[85385] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents =",
+        "stage": "==> Lectern app-hosted tests (AppTests \u2014 invisible to swift test)"
+      },
+      {
+        "line": 5317,
+        "message": "2026-10-04 12:59:13.842871-0700 Lectern[85117:6910401] [general] WebContent[85386] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents =",
+        "stage": "==> Lectern app-hosted tests (AppTests \u2014 invisible to swift test)"
+      },
+      {
+        "line": 5401,
+        "message": "2026-10-04 12:59:14.675255-0700 Lectern[85117:6910401] [general] WebContent[85402] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents =",
+        "stage": "==> Lectern app-hosted tests (AppTests \u2014 invisible to swift test)"
+      }
+    ],
+    "allGreenMarker": true,
+    "appExecutions": 110,
+    "appSuites": 22,
+    "appTests": 80,
+    "command": "./scripts/verify.sh",
+    "coreSuites": 40,
+    "coreTests": 286,
+    "diagnosticCountDistinction": "8 exact exit-code-zero build messages (4 macOS,4 iOS), plus7 app-host WebContent pboard console lines containing error:, total15. The latter are not additional build failures.",
+    "exitCodeReportedByRoot": 0,
+    "expectedFailures": 0,
+    "failures": 0,
+    "layoutSuites": 3,
+    "layoutTests": 18,
+    "librarySuites": 163,
+    "libraryTests": 1151,
+    "log": {
+      "path": "/tmp/rostrum-fidelity12-verify.log",
+      "sha256": "f501f8164e5cd7f6bde1b4e5e389b5c874ad5f2d6719c50cfb388be1312428ae"
+    },
+    "macOSAndIOSSimulatorBuilds": "PASS",
+    "offlineAndREADME": "PASS",
+    "quietExitZeroMessages": [
+      {
+        "line": 3869,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern macOS app"
+      },
+      {
+        "line": 3902,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern macOS app"
+      },
+      {
+        "line": 3944,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern macOS app"
+      },
+      {
+        "line": 3946,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern macOS app"
+      },
+      {
+        "line": 3969,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern iOS app (simulator)"
+      },
+      {
+        "line": 4002,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern iOS app (simulator)"
+      },
+      {
+        "line": 4035,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern iOS app (simulator)"
+      },
+      {
+        "line": 4046,
+        "message": "error: the following command failed with exit code 0 but produced no further output",
+        "stage": "==> Lectern iOS app (simulator)"
+      }
+    ],
+    "skips": 0,
+    "summary": {
+      "path": "/tmp/lectern-fidelity12-test-summary.json",
+      "sha256": "ffc22281ede7ff5a98728fba9d029047b2cc3eadb3033873ca3ecbc705afd13f"
+    },
+    "xcresultRuntimeWarnings": 0
+  },
+  "fullGateCommit": "b5076bf2c4a30e7a9576232055fb3335f8cb1853",
+  "integrationCommit": "aded5d22ac6f6d0e2766b7afaa0d0e7f359dcfa5",
+  "nativeParagraphTransfer": {
+    "boundedTransfers": [
+      {
+        "acceptedInputMatches": {
+          "/tmp/lectern-fidelity11-final-webkit/paragraph-47413EB2-E2C7-470C-AEDB-3FD0ECE7C7FB/lab-false/paragraphLayout-0669DDC7-7C18-4DCA-80CE-C0C5B1900824/previews/slide-07.svg": [
+            "/tmp/lectern-fidelity12-lab-verified/paragraphLayout-463CB295-1816-45FD-B07A-BA0AC26FD721/previews/slide-07.svg",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/previews/slide-07.svg",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.svg"
+          ],
+          "/tmp/lectern-fidelity11-native/default/paragraphLayout.pptx": [
+            "/tmp/lectern-fidelity12-paint-verified/alternative-false-413E32A6-A3CC-4117-B45E-A429AE096F38/paragraphLayout.pptx",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-false/paragraphLayout-1CD38949-2F07-4D9E-A1A4-B44CC0A5C4FA/paragraphLayout.pptx"
+          ]
+        },
+        "priorReceipt": "/tmp/lectern-fidelity11-native/independent-native-paint/review-receipt.json",
+        "scope": "paragraph glyphs",
+        "transferByExactBytesOnly": true
+      },
+      {
+        "acceptedInputMatches": {
+          "/tmp/lectern-fidelity11-final-webkit/paragraph-47413EB2-E2C7-470C-AEDB-3FD0ECE7C7FB/lab-true/paragraphLayout-96DF9848-991D-4375-963C-294918135F5A/previews/slide-07.svg": [
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/previews/slide-07.svg",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.svg"
+          ],
+          "/tmp/lectern-fidelity11-native/alternative/paragraphLayout.pptx": [
+            "/tmp/lectern-fidelity12-paint-verified/alternative-true-FA7B7775-FCE7-44CF-8321-A888777911BF/paragraphLayout.pptx",
+            "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/lab-true/paragraphLayout-96D2505A-39C5-4221-A8D4-DE059D03A03F/paragraphLayout.pptx"
+          ]
+        },
+        "priorReceipt": "/tmp/lectern-fidelity11-native/independent-native-paint/review-receipt.json",
+        "scope": "paragraph glyphs",
+        "transferByExactBytesOnly": true
+      },
+      {
+        "acceptedInputMatches": {
+          "/tmp/lectern-fidelity11-native/table-default/tableAppearance.pptx": [
+            "/tmp/lectern-fidelity12-table-verified/alternative-false-C6008B90-7A4B-4F4D-B19B-99D51E2B4394/tableAppearance.pptx"
+          ],
+          "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/slide-03.svg": [
+            "/tmp/lectern-fidelity12-table-verified/alternative-false-C6008B90-7A4B-4F4D-B19B-99D51E2B4394/slide-03.svg"
+          ],
+          "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/tableAppearance.pptx": [
+            "/tmp/lectern-fidelity12-table-verified/alternative-false-C6008B90-7A4B-4F4D-B19B-99D51E2B4394/tableAppearance.pptx"
+          ]
+        },
+        "priorReceipt": "/tmp/lectern-fidelity11-native/independent-table-default/review-receipt.json",
+        "scope": "default table third page",
+        "transferByExactBytesOnly": true
+      }
+    ],
+    "receiptPins": {
+      "/tmp/lectern-fidelity11-native/independent-native-paint/review-receipt.json": "02de23e8d9b3e7d934ab9ae8f5da1c0e4727fd72179bc8f2e2a1ef418863fe01",
+      "/tmp/lectern-fidelity11-native/independent-spacing-break-review.json": "9cb0c02e7d367429fa03070be71dd0ba4893a1e7db1ffbcda3523b0c5096aa6d",
+      "/tmp/lectern-fidelity11-native/independent-table-default/review-receipt.json": "2f3159794acef242b55b6917909168a6c49fbbda11d0e28931de0a9aee8279b9"
+    },
+    "scope": "Prior independent PowerPoint paragraph188glyph and32spacing/24empty-line proof transfers by exact source/SVG identity; no new paragraph native capture claimed."
+  },
+  "nativeTable": {
+    "expectationProvenance": "SVG/source-font descriptors are expectations, not preexisting independent native cases. Actual PowerPoint PDFs are the independent oracle.",
+    "glyphCount": 60,
+    "independentAlternativeTransfer": {
+      "receipt": {
+        "path": "/tmp/lectern-fidelity12-alternative-table-transfer.json",
+        "sha256": "f22db6d53f2c470413261fbea3c4507740b447ee0b7c9c979f8c67abf7339730"
+      },
+      "review": {
+        "bounds": {
+          "baselinePT": 0.121,
+          "paintAndInkPT": 0.002,
+          "xOriginPT": 0.06
+        },
+        "byteIdentityTransfer": true,
+        "createdUTC": "2026-10-04T20:13:42.367874+00:00",
+        "currentPPTX": "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/tableAppearance.pptx",
+        "currentSVGSHA256": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+        "glyphCount": 30,
+        "inputHashesAfter": {
+          "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "/tmp/lectern-fidelity11-native/independent-table-alternative/review-receipt.json": "51c010d1ad1e2f08c29888fd5da7d50c180aee53446d6a96aa20e28337e84fd4",
+          "/tmp/lectern-fidelity11-native/independent-table-alternative/svg-source-expectations.json": "3a429af8c8398c6789eb81f17c579396b2bd84bae5a3d7f804e62d55dac279d5",
+          "/tmp/lectern-fidelity11-native/table-alternative/powerpoint.pdf": "1ba0c49d876f1673a3c38e1bfd4d05fbc6af0b8ba5b0273175f68af4e3a08713",
+          "/tmp/lectern-fidelity11-native/table-alternative/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+          "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/slide-03.svg": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+          "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/slide-03.svg": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+          "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+          "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+        },
+        "inputHashesBefore": {
+          "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "/tmp/lectern-fidelity11-native/independent-table-alternative/review-receipt.json": "51c010d1ad1e2f08c29888fd5da7d50c180aee53446d6a96aa20e28337e84fd4",
+          "/tmp/lectern-fidelity11-native/independent-table-alternative/svg-source-expectations.json": "3a429af8c8398c6789eb81f17c579396b2bd84bae5a3d7f804e62d55dac279d5",
+          "/tmp/lectern-fidelity11-native/table-alternative/powerpoint.pdf": "1ba0c49d876f1673a3c38e1bfd4d05fbc6af0b8ba5b0273175f68af4e3a08713",
+          "/tmp/lectern-fidelity11-native/table-alternative/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+          "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/slide-03.svg": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+          "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/slide-03.svg": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+          "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+          "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+        },
+        "maxInkDimensionDelta": 9.677734382762537e-07,
+        "maxOriginDelta": [
+          0.010003662109369316,
+          0.07999267578125568
+        ],
+        "priorPDFSHA256": "1ba0c49d876f1673a3c38e1bfd4d05fbc6af0b8ba5b0273175f68af4e3a08713",
+        "priorReceipt": "/tmp/lectern-fidelity11-native/independent-table-alternative/review-receipt.json",
+        "priorReceiptSHA256": "51c010d1ad1e2f08c29888fd5da7d50c180aee53446d6a96aa20e28337e84fd4",
+        "scope": "Alternative table third page only: independently rechecked 30 actual native PDF glyph origins/source-subset outlines/raw linear paint scales and retained ink bounds, then transferred by exact PPTX/SVG byte identity to fidelity12. Root native export/visual provenance separate. No GUI/build/new PDF export, whole-deck raster/native-autofit choice or general table claim. Published fidelity11 and final external12 receipts untouched.",
+        "sourceDescriptorSHA256": "3a429af8c8398c6789eb81f17c579396b2bd84bae5a3d7f804e62d55dac279d5",
+        "sourcePPTXSHA256": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+        "status": "PASS"
+      }
+    },
+    "limits": "Bounded new cell specimen only; not whole-table/whole-deck/manual Lectern acceptance, general raster parity or native autofit selection.",
+    "rootUIObservation": "Both three-slide sources opened without repair; local PDF Best for printing with online printing off; both source packages unchanged; root visually inspected both page-three PDFs with two complete lines at full20pt. Save As stalls were recovered and original pending checkpoint remains intact.",
+    "status": "PASS_BOTH_PAGE_THREE_SPECIMENS",
+    "variants": [
+      {
+        "bounds": {
+          "baselinePT": 0.121,
+          "paintAndInkPT": 0.002,
+          "xOriginPT": 0.06
+        },
+        "glyphCount": 30,
+        "inputSHA256": {
+          "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "/tmp/lectern-fidelity11-native/table-default/powerpoint.pdf": "b864aa7b5571c0284889e33ed1871eff8db8314cc79ea3a9b80634906b4d10c8",
+          "/tmp/lectern-fidelity11-native/table-default/tableAppearance.pptx": "964b2826b92ed506489aca40fa1d87b46da1730e34798ec2218c802f2dfbfc95",
+          "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/slide-03.svg": "78e12dd789c0e04bfb838ddda685bb71a69c18eb1f00458acb221ae8ef6402cf",
+          "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/tableAppearance.pptx": "964b2826b92ed506489aca40fa1d87b46da1730e34798ec2218c802f2dfbfc95",
+          "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+        },
+        "log": {
+          "path": "/tmp/lectern-fidelity11-native/independent-table-default/verification-final.log",
+          "sha256": "127e36fc50ebc24f009a8a3c0f9d4bc96037d94d71d2dc77e66e5a0bbbcb752c"
+        },
+        "maxInkDimensionDelta": 9.677734382762537e-07,
+        "maxOriginDelta": [
+          0.010003662109369316,
+          0.07999267578125568
+        ],
+        "packageProperties": {
+          "cellProperties": {
+            "anchor": "ctr",
+            "marB": "127000",
+            "marL": "228600",
+            "marR": "177800",
+            "marT": "152400"
+          },
+          "embeddedFontBytesEqualSource": true,
+          "embeddedFontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "fontScale": "50000",
+          "fontSizeHundredths": "2000",
+          "framePoints": [
+            57.6,
+            129.6,
+            432.0,
+            165.6
+          ],
+          "text": "BBBBBBBBBBBBZ Agjp BBBBBBBBBBBBZ"
+        },
+        "pageIndex": 2,
+        "receipt": {
+          "path": "/tmp/lectern-fidelity11-native/independent-table-default/review-receipt.json",
+          "sha256": "2f3159794acef242b55b6917909168a6c49fbbda11d0e28931de0a9aee8279b9"
+        },
+        "retainedParserWarnings": "pypdf reports unused offset-zero objects7/11; fontTools reports two extra post.stringData bytes. Raw bytes/warnings are retained. No parser or tolerance changes were required.",
+        "script": {
+          "path": "/tmp/lectern-fidelity11-native/independent-table-default/verify-default-table.py",
+          "sha256": "5a29beb6a1b9eb1f947dda003e478c58e4f7e57c0479be1ba0683c3aa8c089e7"
+        },
+        "sourceDescriptor": {
+          "path": "/tmp/lectern-fidelity11-native/independent-table-default/svg-source-expectations.json",
+          "sha256": "4feac541c942932da2bd4e1941a26f2731b2a73f587ea148c6d55d2cc53cb5b5"
+        },
+        "transferToCurrentSVG": {
+          "byteIdentical": true,
+          "current": "/tmp/lectern-fidelity12-table-verified/alternative-false-C6008B90-7A4B-4F4D-B19B-99D51E2B4394/slide-03.svg",
+          "currentSHA256": "78e12dd789c0e04bfb838ddda685bb71a69c18eb1f00458acb221ae8ef6402cf",
+          "prior": "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/slide-03.svg",
+          "priorSHA256": "78e12dd789c0e04bfb838ddda685bb71a69c18eb1f00458acb221ae8ef6402cf"
+        },
+        "variant": "default"
+      },
+      {
+        "bounds": {
+          "baselinePT": 0.121,
+          "paintAndInkPT": 0.002,
+          "xOriginPT": 0.06
+        },
+        "glyphCount": 30,
+        "inputSHA256": {
+          "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "/tmp/lectern-fidelity11-native/table-alternative/powerpoint.pdf": "1ba0c49d876f1673a3c38e1bfd4d05fbc6af0b8ba5b0273175f68af4e3a08713",
+          "/tmp/lectern-fidelity11-native/table-alternative/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+          "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/slide-03.svg": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+          "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
+          "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+        },
+        "log": {
+          "path": "/tmp/lectern-fidelity11-native/independent-table-alternative/verification-final.log",
+          "sha256": "127e36fc50ebc24f009a8a3c0f9d4bc96037d94d71d2dc77e66e5a0bbbcb752c"
+        },
+        "maxInkDimensionDelta": 9.677734382762537e-07,
+        "maxOriginDelta": [
+          0.010003662109369316,
+          0.07999267578125568
+        ],
+        "packageProperties": {
+          "cellProperties": {
+            "anchor": "ctr",
+            "marB": "127000",
+            "marL": "406400",
+            "marR": "177800",
+            "marT": "152400"
+          },
+          "embeddedFontBytesEqualSource": true,
+          "embeddedFontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "fontScale": "50000",
+          "fontSizeHundredths": "2000",
+          "framePoints": [
+            57.6,
+            129.6,
+            432.0,
+            165.6
+          ],
+          "text": "BBBBBBBBBBBBZ Agjp BBBBBBBBBBBBZ"
+        },
+        "pageIndex": 2,
+        "receipt": {
+          "path": "/tmp/lectern-fidelity11-native/independent-table-alternative/review-receipt.json",
+          "sha256": "51c010d1ad1e2f08c29888fd5da7d50c180aee53446d6a96aa20e28337e84fd4"
+        },
+        "retainedParserWarnings": "pypdf reports unused offset-zero objects7/11; fontTools reports two extra post.stringData bytes. Raw bytes/warnings are retained. No parser or tolerance changes were required.",
+        "script": {
+          "path": "/tmp/lectern-fidelity11-native/independent-table-alternative/verify-alternative-table.py",
+          "sha256": "be4e197a40d09e9ce65aa11dd6113ead7b1d3d36acfaff663a66e451269c115e"
+        },
+        "sourceDescriptor": {
+          "path": "/tmp/lectern-fidelity11-native/independent-table-alternative/svg-source-expectations.json",
+          "sha256": "3a429af8c8398c6789eb81f17c579396b2bd84bae5a3d7f804e62d55dac279d5"
+        },
+        "transferToCurrentSVG": {
+          "byteIdentical": true,
+          "current": "/tmp/lectern-fidelity12-table-verified/alternative-true-042D8BD4-2BA8-47BA-822D-92D00C46F158/slide-03.svg",
+          "currentSHA256": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
+          "prior": "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/slide-03.svg",
+          "priorSHA256": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79"
+        },
+        "variant": "alternative"
+      }
+    ]
+  },
+  "pendingAcceptance": {
+    "currentManualLecternDemoRuns": "PENDING; actual automated inspector/export and WebKit paths pass",
+    "new18CaseBulletNativeCapture": "PENDING",
+    "publication": "Draft PR39; no merge or deployment claimed",
+    "wholeTableManualAcceptance": "Not established by page-three specimen evidence"
+  },
+  "performance": {
+    "independentReview": "Accepted with bounded cycle2 claims; adverse cycle1 remains withheld.",
+    "limits": "One matched run with substantial WindowServer load. Registered and fallback possible costs remain; mixed RSS. No cumulative speedup, universal nonregression, clean-host or cross-platform claim.",
+    "manifest": {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-verification.json",
+      "sha256": "3a8c953d60d8f677b62e6c70616e66b04555d08b1a383e6fceee9d1cfe234e56"
+    },
+    "originalMeasuredPacketUnchanged": true,
+    "receiptPins": [
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-canonical-paired-analysis.json",
+        "sha256": "fa024415d5cbdb7ab571f4b415b3a2d6d5ee934e4e503f08afbc3fb39e1c8152"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle1-checkpoint.json",
+        "sha256": "8a096c472349af0b45ce71e44a9382694c95a12d51c5446f59f15c682fed7cd4"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-assembly-comparison.json",
+        "sha256": "ba224f9036df98907781eec8078f239c26ec0982cd49bf1fb272fd40c8766dbe"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-candidate-build.json",
+        "sha256": "c992cec3c8b9a042e8230ed17741821fa8ddeb5005650d5a20b0791c8347c489"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-canonical-paired-analysis.json",
+        "sha256": "355d53be72195164210379f5fd81eda4a39a6e28466cd4422d4673a0db333e12"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-paired-analysis.json",
+        "sha256": "bd1394f12e316fb84bd0a019b9d8c1f618fa504fe0f8a74229f9979246e6f5ac"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-paired-macos.json",
+        "sha256": "8156159394e074876c58c0c4600866c7ad2670c0302e2502a2dccfacb80e0e40"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-proof.json",
+        "sha256": "0f5a364eea7f4a22453f8dc561993110ff53a193a9d0b8a7e801ab3e847d1558"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-load-summary.json",
+        "sha256": "af74ad2935d35cada465ffb220946820ee890622b202d2a0ae09c4b3f5423c2f"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-output-proof.json",
+        "sha256": "b41e177eb29df0ed3545b49cf2ed3e14bcd1e4c58f9321583875167dfb6763f8"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-paired-macos.json",
+        "sha256": "f1888cab6cc07d5de67a5c0efaf609de0e1ff409b7d1dafa79f37d571451a20f"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-preservation.json",
+        "sha256": "1e4f339e89e34cf2a4041167306e6fa970bd6fd23b0a8496e03643d8208cc1d9"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-summary.json",
+        "sha256": "d52c2d1ca3c14684402801f945676ec3b3df7496e7f95d702a3d4bf2db1acbcc"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-supplement-paired-analysis.json",
+        "sha256": "7c463d177ce8672564fce036505e83c78675d6986f126a49e658cd531144857b"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-supplement-paired-macos.json",
+        "sha256": "9c69039c7f9a765b3e20b1171b1ef735fca09f29f3d7b1fae32da6203b0710fe"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-timing-validation.json",
+        "sha256": "720cdc9f76fee94b0a216842438c36f1de3ef39406b0432a7b38e425a050d373"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-analysis.json",
+        "sha256": "c96a8f09e35b47d68845c796847f21ac18cc723be074c65b138dcc34a6950294"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-macos.json",
+        "sha256": "f78c5e326fa670715720998292c49f744a3ea318faa845421db530b1a2e2d7cb"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-paired-macos.json",
+        "sha256": "84ba73b3048e5aaed66a64b86f236700b4924874066414a90457ecd3d867ee60"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-summary.json",
+        "sha256": "1d2dd61943f9320d8aa7720fbc940821786e1891f2602d52e169baf7da294184"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-analysis.json",
+        "sha256": "fb9ee6e88143dc71bd081f39d970f58c15dea792f9b96ea32b949f90eddfa9e6"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-macos.json",
+        "sha256": "139f6e2c512063c47d826aefbda763a4ee8753fd69e92cd0822f1fd668cfc402"
+      },
+      {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-verification.json",
+        "sha256": "3a8c953d60d8f677b62e6c70616e66b04555d08b1a383e6fceee9d1cfe234e56"
+      }
+    ],
+    "report": {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/ORDERED-ATOMS-PERFORMANCE-20261004-12.md",
+      "sha256": "0ae5ffda71d82b5980aa6267e05007e47e72e4b577eb4fb18d52efa6f0772f2f"
+    }
+  },
+  "portableFixture": {
+    "focusedCoreLog": {
+      "path": "/tmp/lectern-portable-kerning-focused-20261004.log",
+      "sha256": "9d4d73d60b757d9720c7f4f673a0e0e23eae1db63db1e851ff7ce8bcdddb7d99"
+    },
+    "linuxRerunStatus": "Not asserted by this local receipt.",
+    "priorLinuxFailure": {
+      "path": "/tmp/rostrum-fidelity11-linux61-failure.log",
+      "sha256": "32fddce3edfe6563e847dffbf4100146ce77de68d89999366a71596d8381f616"
+    },
+    "productionBehaviorChanged": false,
+    "scope": "Explicit licensed embedded DejaVu Sans avoids installed-font dependence in native kerning assertions. Strict nil/0 off and1200 on remain; unregistered fallback retains nil and missing-font diagnostic. Exact font bytes/family survive reopen."
+  },
+  "previousCheckpoint": {
+    "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-native-paint-integration-verification.json",
+    "sha256": "a114b89ee203b26377481bbd42ffda141ad2c5ee3b4bc7da9080fddbdaf64f5d"
+  },
+  "schemaVersion": 1,
+  "scope": "Ordered non-ASCII atom assembly optimization with unchanged rendering semantics; portable native-font fixture; actual fonts/fitting Lab Unicode inspector/export coverage. Native table page-three evidence extended to both options.",
+  "sourceSHA256": {
+    "Lectern/AppTests/LibraryLabTests.swift": "b031dd9fa2a090244517872d902cf70a1d3ff9c5a20c8dc9f9cc10ca62577d47",
+    "Lectern/Tests/LecternCoreTests/FeaturePipelineTests.swift": "d863153da73e4c07647d3713b9b1825363e101d05f3ef976c4dd82480a653932",
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055",
+    "Tests/RostrumTests/LayoutOrderedGlyphRangesTests.swift": "af0fe65c9a876ee0b6b45a6d44f2dd5e20812977ecc2b5b6224ff5a80594fd11"
+  },
+  "status": "AUTOMATED_AND_BOUNDED_NATIVE_PASS_WITH_MANUAL_AND_BULLET_PENDING",
+  "unicodeAppTest": {
+    "countingLimit": "80 full-gate tests/110 executions plus1 separately added focused test/2 cases, not81 tests in one full gate.",
+    "fullGateNotRerunAfterTestAddition": true,
+    "invalidInitialAttempt": {
+      "acceptedEvidence": false,
+      "cause": "Incorrect LecternTests selector; corrected to LecternAppTests.",
+      "exitCodeReportedByRoot": 70,
+      "log": {
+        "path": "/tmp/rostrum-fidelity12-unicode-app.log",
+        "sha256": "34f92e2164a74cf37a055a16fddad313a65f035d07823ef36a620dfba5fe337c"
+      },
+      "testsRun": 0
+    },
+    "log": {
+      "path": "/tmp/rostrum-fidelity12-unicode-app-corrected.log",
+      "sha256": "62a739492f371b46a74357a3516a24f9da261c6ca7e2040b4e47e3529c9eb614"
+    },
+    "parameterCases": 2,
+    "productionSourceUnchangedFromFullGate": true,
+    "scope": "Both width options; composed cafe/naive accents and decomposed cafe plus ffi. Exact UTF-8 body/export preservation, existing recipe checks, embedded-font reopen, saved inspector preview identity and diagnosed native limitations. No native Unicode parity or timing claim.",
+    "secondsReportedByTest": 7.429,
+    "sourceCommit": "aded5d22ac6f6d0e2766b7afaa0d0e7f359dcfa5",
+    "status": "PASS",
+    "summary": {
+      "path": "/tmp/lectern-fidelity12-unicode-test-summary.json",
+      "sha256": "873450a4ce061fb0e136c9e98b276c6ff09590726e25d59c52b7701f4d321dec"
+    },
+    "test": "LibraryLabAppTests.unicodeFontDemoReachesInspectorAndExport",
+    "tests": 1,
+    "xcresult": "/tmp/lectern-fidelity12-xcode/Logs/Test/Test-Lectern-2026.10.04_13-08-33--0700.xcresult"
+  }
+}
