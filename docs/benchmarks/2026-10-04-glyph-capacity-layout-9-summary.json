@@ -1,0 +1,130 @@
+{
+  "status": "ACCEPTED bounded registered-rendering result; independent review approved; substantial WindowServer and backupd load",
+  "baselineRevision": "fbbec90024dca2c7e43dca8201b4803dbf9aee6e",
+  "candidateWasFrozenUncommittedPatchAtTiming": true,
+  "measurements": {
+    "canonical": {
+      "table-200x50": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 196.236229,
+            "candidateMedianMS": 196.495875,
+            "ratioOfMediansPercentDelta": 0.13231297876195036
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 189702144.0,
+          "candidate": 189792256.0
+        },
+        "peakRSSMedianDeltaBytes": 90112.0
+      },
+      "table-20x10": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 3.894625,
+            "candidateMedianMS": 3.8696669999999997,
+            "ratioOfMediansPercentDelta": -0.6408319157813702
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 18268160.0,
+          "candidate": 18243584.0
+        },
+        "peakRSSMedianDeltaBytes": -24576.0
+      },
+      "shaped-table-100x20": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 70.455521,
+            "candidateMedianMS": 69.334521,
+            "ratioOfMediansPercentDelta": -1.5910747434541128
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 57434112.0,
+          "candidate": 57311232.0
+        },
+        "peakRSSMedianDeltaBytes": -122880.0
+      },
+      "richtext-fit": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 3.0473334999999997,
+            "candidateMedianMS": 2.9497705,
+            "ratioOfMediansPercentDelta": -3.2015859110924194
+          },
+          "richtext-fitting": {
+            "baselineMedianMS": 12.297021,
+            "candidateMedianMS": 11.968375,
+            "ratioOfMediansPercentDelta": -2.672565981630848
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 22282240.0,
+          "candidate": 22208512.0
+        },
+        "peakRSSMedianDeltaBytes": -73728.0
+      },
+      "slides-10": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 0.605729,
+            "candidateMedianMS": 0.6121669999999999,
+            "ratioOfMediansPercentDelta": 1.062851539219678
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 16195584.0,
+          "candidate": 16056320.0
+        },
+        "peakRSSMedianDeltaBytes": -139264.0
+      }
+    },
+    "supplement": {
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 137.2087705,
+            "candidateMedianMS": 135.1370415,
+            "ratioOfMediansPercentDelta": -1.5099100388775821
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 51961856.0,
+          "candidate": 52183040.0
+        },
+        "peakRSSMedianDeltaBytes": 221184.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 131.64999999999998,
+            "candidateMedianMS": 131.6965835,
+            "ratioOfMediansPercentDelta": 0.03538435244969662
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 50249728.0,
+          "candidate": 50520064.0
+        },
+        "peakRSSMedianDeltaBytes": 270336.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 432.048625,
+            "candidateMedianMS": 422.940771,
+            "ratioOfMediansPercentDelta": -2.1080622580386676
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 43352064.0,
+          "candidate": 43286528.0
+        },
+        "peakRSSMedianDeltaBytes": -65536.0
+      }
+    }
+  },
+  "scope": "Canonical and supplementary drivers/results kept separate. Current baseline only; no cumulative/historical, fallback, memory, general/cross-platform or clean-host claim.",
+  "candidateSourceCommit": "850a9185babafa3ba555b05d18bfe13f2b04056e"
+}
