@@ -25,6 +25,13 @@ public struct TextShaper: Sendable {
     /// joining, bidi and unsupported-feature diagnostics remain unchanged.
     public func shape(_ text: String, pointSize: Double,
                       direction: TextDirection = .automatic, kerning: Bool) -> ShapedGlyphRun {
+        shape(text, pointSize: pointSize, direction: direction, kerning: kerning, standardLigatures: true)
+    }
+
+    /// DrawingML's bounded Latin policy controls optional `liga` separately from
+    /// this general shaper's public defaults. Required script shaping is retained.
+    func shape(_ text: String, pointSize: Double, direction: TextDirection = .automatic,
+               kerning: Bool, standardLigatures: Bool) -> ShapedGlyphRun {
         if text.unicodeScalars.contains(where: { ArabicJoining.isArabic($0.value) }) {
             return ArabicTextShaper(metrics: metrics).shape(text, pointSize: pointSize, direction: direction, kerning: kerning)
         }
@@ -164,7 +171,7 @@ public struct TextShaper: Sendable {
             }
             return links
         }
-        for lookup in tables.ligatureLookups {
+        for lookup in tables.ligatureLookups where standardLigatures {
             let links = successors(lookup.filter)
             var next: [ShapedGlyph] = [], i = 0
             while i < glyphs.count {

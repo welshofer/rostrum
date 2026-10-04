@@ -17,6 +17,8 @@ public struct ResolvedTextRun: Equatable, Sendable {
     /// Native PowerPoint treats an explicit DrawingML `kern="0"` as disabled,
     /// independently of the inherited/default threshold. XML remains unchanged.
     public var explicitlyDisablesKerning = false
+    // Internal DrawingML policy; general TextShaper callers retain optional liga.
+    var usesStandardLigatures = true
     public var usesKerning: Bool { !explicitlyDisablesKerning && fontSize >= kerningThreshold }
 }
 
@@ -176,14 +178,24 @@ public struct RichTextLayout: Sendable {
             // Each nonempty piece owns one resolved style for this paragraph.
             // Atoms share its index instead of retaining all style strings per glyph.
             var runStyles: [ResolvedTextRun] = []
-            let pieces = paragraph.childElements.filter { ["a:r", "a:fld", "a:br"].contains($0.name) }
-            for piece in pieces {
-                source += 1
+            let pieces = paragraph.childElements.compactMap { piece -> (element: XML.Element, text: String)? in
+                guard ["a:r", "a:fld", "a:br"].contains(piece.name) else { return nil }
                 let text = piece.name == "a:br" ? "\n" : (piece.name == "a:fld" && piece[attribute: "type"] == "slidenum" && slideNumber != nil
                     ? String(slideNumber!) : piece.firstChild(named: "a:t")?.textContent ?? "")
-                let style = Self.resolve(text: text,
+                return (piece, text)
+            }
+            // Native PowerPoint draws individual common Latin ligature components.
+            // One policy covers all source text after field substitution, before
+            // case conversion. Non-ASCII and RTL paragraphs retain general shaping.
+            let nativeLatinLigatures = nativeLeftToRight && pieces.allSatisfy {
+                $0.text.utf8.allSatisfy { $0 < 128 }
+            }
+            for (piece, text) in pieces {
+                source += 1
+                var style = Self.resolve(text: text,
                     properties: [piece.firstChild(named: "a:rPr")].compactMap { $0 } + defaults,
                     theme: theme, defaultSize: defaultPointSize, scale: scale)
+                style.usesStandardLigatures = !nativeLatinLigatures
                 let styleIndex = runStyles.count
                 if !text.isEmpty { runStyles.append(style) }
                 let metrics = face(style)
@@ -214,7 +226,7 @@ public struct RichTextLayout: Sendable {
                     }
                     let breaks = Set(TextShaper.lineBreaks(in: segment).map(\.scalarOffset))
                     if let metrics {
-                        let shaped = TextShaper(metrics).shape(segment, pointSize: style.fontSize, kerning: style.usesKerning)
+                        let shaped = TextShaper(metrics).shape(segment, pointSize: style.fontSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
                         warnings.append(contentsOf: shaped.diagnostics)
                         if shaped.glyphs.contains(where: { $0.bidiLevel > 0 }) {
                             warnings.append(.unsupportedLayoutFeature("Rich-text bidirectional span ordering requires a verified paragraph renderer"))
@@ -461,7 +473,7 @@ public struct RichTextLayout: Sendable {
                         let style = runStyles[lineAtoms[fragmentStart].styleIndex]
                         if let font = face(style) {
                             let value = fragment.map(\.text).joined()
-                            let shaped = TextShaper(font).shape(value, pointSize: style.fontSize, kerning: style.usesKerning)
+                            let shaped = TextShaper(font).shape(value, pointSize: style.fontSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
                             let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: value)
                             let advance = nativeGrid ? shaped.glyphs.reduce(0) {
                                 $0 + Self.nativeAdvance($1, font: font, pointSize: style.fontSize)

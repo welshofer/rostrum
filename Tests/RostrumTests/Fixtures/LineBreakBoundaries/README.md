@@ -57,14 +57,15 @@ and [W3C EOT v2.1](https://www.w3.org/submissions/EOT/).
 ## Final calibrated rules and checks
 
 The five captured decks contain 175 cases across 30 slides. All 175 assert exact
-native line contents. Of these, 174 additionally assert native line starts
-within 0.025pt and advance widths within 0.06pt; the single `office` ligature
-control instead requires the explicit unsupported-shaping diagnostic. Prior
-tab and paragraph oracle tolerances are unchanged.
+native line contents, line starts within 0.025 pt and advance widths within
+0.06 pt. The `office` control originally required an unsupported-shaping
+diagnostic; the independent [NativeLigatureLayout](../NativeLigatureLayout/README.md)
+capture now establishes its individual glyph policy, enabling the same numeric
+assertions for that case. Prior tab and paragraph oracle tolerances are unchanged.
 
 149 cases use portable synthetic metric fonts reconstructed from retained Arial
 regular/bold ASCII advances and kerning numbers. The remaining 26 use the
-bundled DejaVu font (25 calibrated cases and the ligature control). Swift tests
+bundled DejaVu font (26 calibrated cases). Swift tests
 need no system Arial and skip no cases on Linux. FontTools is used only for
 independent fixture generation/capture, not library execution or Swift tests.
 
