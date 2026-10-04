@@ -177,8 +177,25 @@ public final class Table {
     /// deck must never abort the host process, so this follows the same rule
     /// as `Slides.subscript`.
     public func cell(_ row: Int, _ column: Int) throws -> TableCell {
-        let snapshot = TableGridSnapshot(tbl)
-        return TableCell(tc: try snapshot.cell(row, column), part: part, package: package, owner: self)
+        if row >= 0, column >= 0 {
+            var remainingRows = row
+            for node in tbl.children {
+                guard case .element(let candidateRow) = node, candidateRow.name == "a:tr" else { continue }
+                if remainingRows == 0 {
+                    var remainingCells = column
+                    for child in candidateRow.children {
+                        guard case .element(let cell) = child, cell.name == "a:tc" else { continue }
+                        if remainingCells == 0 {
+                            return TableCell(tc: cell, part: part, package: package, owner: self)
+                        }
+                        remainingCells -= 1
+                    }
+                    break
+                }
+                remainingRows -= 1
+            }
+        }
+        throw RostrumError.packageInvalid("table cell (\(row), \(column)) is missing")
     }
 
     public func setColumnWidth(_ column: Int, _ width: EMU) {
