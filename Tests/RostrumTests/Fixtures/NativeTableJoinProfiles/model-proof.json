@@ -1,0 +1,58 @@
+{
+  "model": "Signed17extensions interpreted in physical endpoint order; native observations retained unchanged",
+  "cases": [
+    {
+      "id": "rtl-unequal-grid",
+      "intervals": 11,
+      "maxEndpointError": 0,
+      "paintOrder": null
+    },
+    {
+      "id": "colored-vertical-red",
+      "intervals": 11,
+      "maxEndpointError": 0,
+      "paintOrder": {
+        "distinctColorIntersectionSamples": 9,
+        "legacyOrderWrongSamples": 1,
+        "groupedOrderWrongSamples": 0,
+        "sampling": "Interior midpoint of every native distinct-color stroke overlap; geometry corrected in both model order variants."
+      }
+    },
+    {
+      "id": "colored-vertical-blue",
+      "intervals": 11,
+      "maxEndpointError": 0,
+      "paintOrder": {
+        "distinctColorIntersectionSamples": 9,
+        "legacyOrderWrongSamples": 1,
+        "groupedOrderWrongSamples": 0,
+        "sampling": "Interior midpoint of every native distinct-color stroke overlap; geometry corrected in both model order variants."
+      }
+    },
+    {
+      "id": "horizontal-merge-matching",
+      "intervals": 8,
+      "maxEndpointError": 0,
+      "paintOrder": null
+    },
+    {
+      "id": "horizontal-merge-conflicting",
+      "intervals": 8,
+      "maxEndpointError": 0,
+      "paintOrder": null
+    },
+    {
+      "id": "vertical-merge-matching",
+      "intervals": 10,
+      "maxEndpointError": 0,
+      "paintOrder": null
+    },
+    {
+      "id": "vertical-merge-conflicting",
+      "intervals": 10,
+      "maxEndpointError": 0,
+      "paintOrder": null
+    }
+  ],
+  "productionSourceEdited": false
+}

@@ -1511,21 +1511,44 @@ struct SVGRenderer {
             && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
             $0.paint.width == uniformWidth && $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
         }
-        // Native mixed-width controls cover opaque solid unmerged LTR grids.
-        // Keep the established uniform path and all other fallbacks unchanged.
-        let mixedJoinedGrid = !joinedGrid && !rtl && topology?.regions.isEmpty == true
+        // Native mixed-width profiles share the same signed donor extensions.
+        // Keep uniform geometry and uncaptured combinations on their old paths.
+        func admittedMixedProfile() -> Bool {
+            guard let topology else { return false }
+            let oneColor = segments.allSatisfy { $0.paint.color == segments.first?.paint.color }
+            if !topology.regions.isEmpty {
+                // Captured LTR merges share one orientation and one stroke color.
+                return !rtl && oneColor
+                    && (topology.regions.allSatisfy { $0.rowSpan == 1 }
+                        || topology.regions.allSatisfy { $0.columnSpan == 1 })
+            }
+            if oneColor { return true } // Both LTR and RTL are captured.
+            guard !rtl else { return false }
+            if widths.count == 1 && heights.count == 1 { return true }
+            // Two-color crossings are calibrated when each axis has one color.
+            // Arbitrary collinear color transitions retain their prior path.
+            var verticalColor: String?, horizontalColor: String?
+            for segment in segments {
+                if segment.edge.axis == .vertical {
+                    if let verticalColor, verticalColor != segment.paint.color { return false }
+                    verticalColor = segment.paint.color
+                } else {
+                    if let horizontalColor, horizontalColor != segment.paint.color { return false }
+                    horizontalColor = segment.paint.color
+                }
+            }
+            return true
+        }
+        let mixedJoinedGrid = !joinedGrid
             // A segment cannot contract past its opposite endpoint: each
             // physical cell dimension exceeds the largest admitted stroke.
             && widths.allSatisfy { $0 > maximumBorderWidth }
             && heights.allSatisfy { $0 > maximumBorderWidth }
             && grid.cells.allSatisfy { $0.count == widths.count }
-            // The single-cell override proves distinct corner colors. Native
-            // multi-cell seam controls use one color, so keep that boundary.
-            && ((widths.count == 1 && heights.count == 1)
-                || segments.allSatisfy { $0.paint.color == segments.first?.paint.color })
             && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
                 $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
             }
+            && admittedMixedProfile()
         let orderedGrid = joinedGrid || mixedJoinedGrid
         func paintGroup(_ segment: TableBorderSegments<BorderPaint>.Segment) -> Int {
             let edge = segment.edge
@@ -1557,8 +1580,8 @@ struct SVGRenderer {
             var startExtension = start ? halfWidth : 0, endExtension = end ? halfWidth : 0
             if mixedJoinedGrid {
                 let extensions = borders.mixedWidthExtensions(segment, width: { $0.width })
-                startExtension = extensions.lower
-                endExtension = extensions.upper
+                startExtension = edge.axis == .horizontal && rtl ? extensions.upper : extensions.lower
+                endExtension = edge.axis == .horizontal && rtl ? extensions.lower : extensions.upper
             }
             if segment.paint.double {
                 // Collinear continuations suppress terminal extensions, but
