@@ -6,6 +6,9 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ## [Unreleased]
 
+- Authored image slides share a left-aligned full-width header, with pictures placed below its measured bounds. Title and closing slides use typography and theme fills instead of generated background photos. Non-list text and stat tiles explicitly suppress inherited bullets and hanging indents. PowerPoint exports of the reported 33-slide deck verified the corrected composition; original text and slide identities are retained.
+
+
 ### Added
 
 - Template-aware editable metrics, timelines, processes, cycles, pyramids,

@@ -293,7 +293,8 @@ public enum SlideLayoutKind: Sendable, Equatable {
     /// clips or crowds text.
     public var imagePlacement: ImagePlacement {
         switch self {
-        case .title, .bigNumber, .quote, .closing, .statement: return .fullBleed   // sparse, centered/large text
+        case .title, .closing: return .none // Typography carries the opening and closing.
+        case .bigNumber, .quote, .statement: return .fullBleed
         // Text narrows to the left seven columns and the picture takes the
         // panel Rostrum reserves. Bullets and agendas qualify: they are one
         // column of text, so losing the right-hand fifth costs width, not

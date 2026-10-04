@@ -122,10 +122,10 @@ import Rostrum
     @Test func imagePlacementPolicyKeepsPicturesOffText() {
         // Full-bleed: the picture IS the background, scrimmed, with sparse
         // centred text over it by design.
-        #expect(SlideLayoutKind.title.imagePlacement == .fullBleed)
+        #expect(SlideLayoutKind.title.imagePlacement == .none)
         #expect(SlideLayoutKind.bigNumber.imagePlacement == .fullBleed)
         #expect(SlideLayoutKind.quote.imagePlacement == .fullBleed)
-        #expect(SlideLayoutKind.closing.imagePlacement == .fullBleed)
+        #expect(SlideLayoutKind.closing.imagePlacement == .none)
 
         // Side panel: a single column of text, which the builder narrows to
         // the columns left of the panel. That the narrowing genuinely clears
@@ -374,6 +374,25 @@ import Rostrum
         #expect(described)
         // It placed, so nothing is reported lost.
         #expect(rendered.droppedContent.isEmpty)
+    }
+
+    @Test func openingAndClosingIgnoreSavedDecorativeImages() async throws {
+        let deck = DeckIR(meta: Meta(title: "Typography first"), slides: [
+            IRSlide(id: "open", layout: "title", title: "Clear evidence", body: Body(subtitle: "A direct introduction")),
+            IRSlide(id: "close", layout: "closing", title: "Choose the next step", body: Body(callToAction: "Put the evidence to work"))
+        ])
+        let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
+        let result = try await DeckRenderer().render(deck, designURL: nil, notesEnabled: false,
+            into: dir, images: ["open": png(), "close": png()])
+        let reopened = try Presentation(contentsOf: result.url)
+        #expect(reopened.slides.count == 2)
+        for slide in reopened.slides {
+            #expect(slide.shapes.all.allSatisfy { $0.kind != .picture })
+            #expect(!(try slide.part.dom()).serialized().contains("a:blipFill"))
+            #expect(!(try slide.layout!.part.dom()).serialized().contains("a:blipFill"))
+        }
+        #expect(result.schemaIssues.isEmpty)
+        #expect(result.droppedContent.isEmpty)
     }
 
     /// Image requests must respect the ceiling the provider declares.
@@ -1143,7 +1162,8 @@ import Rostrum
     @Test func scrimmingAPhotographDoesNotInflateIt() async throws {
         let source = try #require(Self.photographJPEG())
         let deck = DeckIR(meta: Meta(title: "Images"), slides: [
-            IRSlide(id: "s1", layout: "title", title: "Opener",
+            IRSlide(id: "cover", layout: "title", title: "Opener"),
+            IRSlide(id: "s1", layout: "statement", title: "Evidence", body: Body(claim: "A clear claim"),
                     image: ImageBrief(prompt: "a lighthouse")),
         ])
         let validated = try DeckValidator().validate(deck, notesRequired: false)
@@ -1255,7 +1275,7 @@ import Rostrum
     /// The classic pairing, both ways round. A deck that can only put the
     /// picture on the right reads as the same slide repeated.
     @Test func imageLeftAndImageRightMirrorEachOther() async throws {
-        func render(_ layout: String) async throws -> (text: Rect, panel: Rect) {
+        func render(_ layout: String) async throws -> (title: Rect, text: Rect, panel: Rect) {
             let deck = DeckIR(meta: Meta(title: "Mirror"), slides: [
                 IRSlide(id: "s1", layout: "title", title: "Opener"),
                 IRSlide(id: "s2", layout: layout, title: "Findings",
@@ -1273,12 +1293,17 @@ import Rostrum
             let title = try #require(slide.shapes.all.first {
                 ($0.textFrame?.text ?? "").contains("Findings")
             })
-            return (try #require(slide.effectiveFrame(of: title)), try #require(slide.effectiveFrame(of: picture)))
+            let body = try #require(slide.shapes.all.first { $0.textFrame?.text.contains("one") == true })
+            return (try #require(slide.effectiveFrame(of: title)), try #require(slide.effectiveFrame(of: body)), try #require(slide.effectiveFrame(of: picture)))
         }
 
         let right = try await render("imageRight")
         let left = try await render("imageLeft")
-        // Text left of the picture one way, right of it the other.
+        // A shared left-aligned title sits above either body arrangement.
+        #expect(right.title == left.title)
+        #expect(right.title.maxY <= right.panel.minY)
+        #expect(left.title.maxY <= left.panel.minY)
+        // Body left of the picture one way, right of it the other.
         #expect(right.text.maxX.rawValue <= right.panel.x.rawValue)
         #expect(left.panel.maxX.rawValue <= left.text.x.rawValue)
         // And the panel really did swap sides.

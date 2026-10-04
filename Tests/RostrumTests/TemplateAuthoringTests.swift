@@ -41,6 +41,25 @@ import Testing
         #expect(ids.count == Set(ids).count)
     }
 
+    @Test func publishedStatTilesSuppressInheritedBodyBullets() throws {
+        let deck = try Presentation()
+        try deck.compileThemeMaster()
+        let slide = try deck.metricsSlide("Measured values", metrics: [(value: "13", label: "Canonical arcs"), (value: "100", label: "Samples per arc")])
+        try deck.publishLayout(of: slide, named: "Metrics")
+        let reopened = try Presentation(data: deck.serializedData())
+        let result = try reopened.slides[1]
+        let tiles = result.shapes.all.filter { $0.textFrame?.text.hasPrefix("13\n") == true || $0.textFrame?.text.hasPrefix("100\n") == true }
+        #expect(tiles.count == 2)
+        for tile in tiles {
+            for paragraph in tile.element.firstChild(named: "p:txBody")!.children(named: "a:p") {
+                #expect(paragraph.firstChild(named: "a:pPr")?.firstChild(named: "a:buNone") != nil)
+                #expect(paragraph.firstChild(named: "a:pPr")?[attribute: "marL"] == "0")
+                #expect(paragraph.firstChild(named: "a:pPr")?[attribute: "indent"] == "0")
+            }
+        }
+        #expect(try reopened.validate().isEmpty)
+    }
+
     @Test func placeholderOnChartRetainsBinding() throws {
         let deck = try Presentation()
         let layout = try #require(deck.layout(type: "obj"))
