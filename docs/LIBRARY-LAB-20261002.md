@@ -441,3 +441,13 @@ properties, and pass the actual inspector/export flow. The complete catalog now
 passes 362 checks across 26 recipes. Native PDF geometry, both manual app runs,
 56 external reopens, and all support limits are recorded in the
 [explicit-spacing integration report](LAYOUT-FIDELITY-20261004-6.md).
+
+## October 4 glyph reservation integration
+
+At `051cf5b`, the rebuilt app retains all 362 checks across 26 Lab recipes and
+passes the actual inspector/export tests. Independent validation reopens 56
+files/199 slides and confirms all 302 external inputs unchanged. The paragraph
+demo still passes 54 checks with zero findings; both six-slide options are
+byte-identical to the preceding PowerPoint-accepted exports. Previous manual
+GUI/native evidence transfers by that identity; no fresh manual capture is
+claimed. See [the integration report](LAYOUT-FIDELITY-20261004-7.md).

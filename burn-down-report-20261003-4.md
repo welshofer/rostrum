@@ -216,3 +216,18 @@ and all source/data pins are in the
 The scalar-storage result is workload-specific; its possible small combining
 cost and mixed RSS remain disclosed. Glyph reservation and painted glyph-size
 research continue in separate experiments. No merge or deployment occurred.
+
+## Continued glyph allocation performance — October 4
+
+The [glyph-reservation integration report](docs/LAYOUT-FIDELITY-20261004-7.md)
+records the exact normalized emitting-scalar capacity change and its bounded
+registered-rendering median improvement of 1.59%. Fitting is inconclusive and
+whole-process RSS is mixed. At `051cf5b`, the full gate passes 1,136 library,
+18 layout, 281 Core and 76 native app tests, with no known issues or native
+failures/skips. All 362 Lab checks and 56 independent reopens pass. Both final
+paragraph decks exactly match the prior PowerPoint-accepted specimens; the
+rebuilt app inspector/export tests pass. Prior native/manual evidence is
+transferred by source identity, without claiming a fresh manual capture.
+The [receipt](docs/benchmarks/2026-10-04-glyph-capacity-integration-verification.json)
+pins the source and 302 unchanged external inputs. Glyph paint/placement and
+duplicate-break research continue. No merge or deployment occurred.
