@@ -140,6 +140,7 @@ public enum LibraryLab {
             }
             let export = try DeckExporter.export(deckAt: afterURL, into: directory.appendingPathComponent("extracted"))
             checks += try DrawingLabRecipes.imageFillExportChecks(id: id, export: export)
+            if id == .imageOwners { checks.append(try PlatformLabRecipes.imageOwnerExportCheck(reopened, export: export)) }
             for message in export.warnings {
                 findings.append(.init(stage: "Export", slideNumber: nil, code: "export", message: message,
                                       partURI: nil, shapeID: nil, path: nil))
@@ -193,7 +194,7 @@ public enum LibraryLab {
             try DrawingLabRecipes.make(id, options: options)
         case .slides, .charts, .chartEditing, .smartArt, .notes, .comments, .sections, .slideImport:
             try DocumentLabRecipes.make(id, options: options)
-        case .layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tableDefaults, .tableJoinProfiles, .partialTableStyles, .tableTransitions, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering:
+        case .imageOwners, .layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tableDefaults, .tableJoinProfiles, .partialTableStyles, .tableTransitions, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering:
             try PlatformLabRecipes.make(id, options: options)
         }
     }
