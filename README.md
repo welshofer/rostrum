@@ -5,8 +5,8 @@
 [![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20iOS%20%7C%20Linux-blue.svg)](#install)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A **pure-Swift, zero-dependency** library for creating and editing PowerPoint
-(`.pptx`) files. Rostrum owns its entire stack — from the zip container and a
+A **pure-Swift, zero-dependency** toolkit for creating, editing, composing and
+previewing PowerPoint (`.pptx`) files. Rostrum owns its entire stack — from the zip container and a
 hand-written DEFLATE codec, up through OPC packaging and the PresentationML
 object model. It runs anywhere Swift runs: **macOS, iOS, Linux**.
 
@@ -18,6 +18,24 @@ Rostrum adds capabilities outside python-pptx's current scope: slide
 **remove / move / duplicate**, **modern threaded comments**, **SmartArt**
 creation and text extraction, **deck merge**, **theme / brand-kit editing**,
 and lossless byte-identical round-trips of the parts you don't touch.
+
+## Two libraries, one document model
+
+| Product | Use it for |
+| --- | --- |
+| **`Rostrum`** | Read and save PowerPoint packages; edit slides, tables, images, notes, comments and sections; register fonts; fit rich text; render SVG previews with diagnostics. |
+| **`RostrumLayout`** | Select native template layouts, measure and fill inherited placeholders, compose editable structured content, finish authored slides and paginate without dropping content. Depends on `Rostrum`. |
+
+Both products ship in the same Swift package. The portable libraries use
+Foundation and have no external package dependencies. The companion
+[Lectern app](Lectern/README.md) demonstrates the libraries on macOS and iOS;
+its **34 offline Library Lab demos** save PowerPoint decks you can inspect.
+
+Start with [Getting started](docs/GETTING-STARTED.md) for installation, file I/O,
+tables, templates and preview diagnostics. See [Layout engine](docs/LAYOUT-ENGINE.md)
+for measurement and composition in depth.
+
+## Create a presentation
 
 <!-- snippet:quickStart -->
 ```swift
@@ -32,10 +50,12 @@ try deck.save(to: URL(filePath: "hello.pptx"))
 ```
 <!-- /snippet:quickStart -->
 
-### …or the design-authoring layer
+### Author from a design system
 
-Open a brand template, apply a `design.md`, and build a whole deck from one-call,
-auto-laid-out builders — on-brand, no placeholder plumbing:
+Apply a `design.md` to a new presentation and build a deck with high-level slide
+builders. For a native PowerPoint template, use
+[`Presentation.fromTemplate(data:)` and `RostrumLayout`](docs/GETTING-STARTED.md#compose-from-a-powerpoint-template)
+to preserve the template's own layout and typography.
 
 <!-- snippet:designAuthoring -->
 ```swift
@@ -63,44 +83,69 @@ with 149 more.)
 
 More recipes in the [cookbook](docs/COOKBOOK.md).
 
-## Imported presentation fidelity
-
-The current `main` branch includes a major preview and layout update: custom
-DrawingML curves, saved SmartArt drawings, bounded SVG artwork, inherited text
-and list formatting, corrected anchored text, and an explicit measured fallback
-for unavailable fonts. Native glyph placement, bounded mixed-font spacing and
-list-marker corrections, live table fitting, and native table defaults/border
-joins extend the shared engine. Later updates add partial custom-style defaults,
-bounded border transitions and selected image-fill ownership in inspection and
-export. Source font names and untouched package content remain
-preserved. These changes are **Unreleased**; the versioned installation below
-does not imply that version 0.4.0 includes them. Pin a reviewed commit revision
-when consuming these changes before the next release.
-
-The [layout-engine guide](docs/LAYOUT-ENGINE.md) explains shared text measurement,
-native glyph placement, table context, template selection, pagination and caches.
-
-Start with [Importing and previewing](docs/IMPORTING-AND-PREVIEWING.md) for font
-registration, fallback policy, diagnostics and acceptance checks. The
-[acceptance record](docs/IMPORTED-FIDELITY-20261003.md) covers native PowerPoint
-comparisons and a 22-slide iOS consumer review. A scoped Release benchmark
-measured **16.5% lower warm full-deck SVG rendering time** at the optimization
-checkpoint; see [performance measurements](docs/PERFORMANCE.md) for scope and
-limits. Neither result claims universal PowerPoint equivalence.
-
 ## Install
 
-Swift Package Manager:
+Requires **Swift 6.0+**, with macOS 13+, iOS 16+ or Linux. Add the package and
+choose the products your target uses:
 
 ```swift
-.package(url: "https://github.com/welshofer/rostrum", from: "0.4.0")
+// Package.swift
+.package(url: "https://github.com/welshofer/rostrum", from: "1.0.0")
+
+// In your target's dependencies:
+.product(name: "Rostrum", package: "rostrum"),
+.product(name: "RostrumLayout", package: "rostrum")
 ```
 
-then add `"Rostrum"` to your target's dependencies.
+The [complete package example](docs/GETTING-STARTED.md#install-with-swift-package-manager)
+is ready to copy. Version 1.0 includes the layout product and the imported-deck
+fidelity work described here; see the [changelog](CHANGELOG.md) for release details.
 
-> **Pre-1.0**: Rostrum follows SemVer, but until 1.0 minor versions may
-> change API. Pin a version if you need stability; see
-> [`CHANGELOG.md`](CHANGELOG.md) for what moved.
+## Layout and fidelity in 1.0
+
+The shared text engine resolves inherited formatting, registered font faces,
+line breaks, spacing, tabs, list markers and vertical anchors. Fitting and SVG
+previews use the same rich-text geometry. `RostrumLayout` adds template selection,
+readable fit constraints, measured object captions and lossless text partitioning.
+
+Table previews resolve native and embedded custom styles, padding, vertical
+alignment, fills and supported border joins. Newly authored table cells center
+text vertically by default; imported cells retain their saved alignment.
+Image handling includes picture crops and selected image fills whose relationships
+are resolved from the owning slide, layout, master, theme or table-style part.
+Speaker notes, comments and sections remain part of the editable document model.
+
+Document preservation, editing and visual rendering have separate acceptance
+criteria. Unmodeled content in untouched package parts is preserved even when a
+preview cannot draw it. A structured fidelity report exposes known omissions,
+approximations and missing resources; strict rendering rejects those known gaps.
+It does not certify universal PowerPoint equivalence. The
+[conformance matrix](docs/CONFORMANCE.md) records the operation-level boundaries.
+
+Start with [Importing and previewing](docs/IMPORTING-AND-PREVIEWING.md) for explicit
+font registration, measured fallback and diagnostic handling. The
+[layout-engine guide](docs/LAYOUT-ENGINE.md) covers native glyph placement,
+table context, template scoring, pagination and cache lifetimes.
+
+## See it in Lectern
+
+Lectern is the working integration of both products: choose a template, run an
+offline demo, inspect its generated slides, and reveal the saved `.pptx` on disk.
+Each demo has its own result and saved deck; multi-slide demos retain every slide.
+The Library Lab also exposes checks and support boundaries for the exercised API.
+
+![Lectern Library Lab with offline demos and saved PowerPoint results](docs/images/lectern-library-lab.png)
+
+![Lectern inspecting a saved table demonstration](docs/images/lectern-table-inspector.png)
+
+Screenshots show an isolated offline test session. The 1.0 release includes
+[34 saved demo decks containing 168 slides](https://github.com/welshofer/rostrum/releases/download/v1.0.0/rostrum-v1.0.0-demo-decks.zip)
+for independent inspection. The [validation receipt](docs/RELEASE-1.0-VALIDATION.md)
+also records the native PowerPoint table check.
+
+See the [Lectern guide](Lectern/README.md) and
+[Library Lab coverage record](docs/LIBRARY-LAB-20261002.md) for the runnable catalog,
+file persistence and end-to-end verification.
 
 ## What it can do
 
@@ -111,7 +156,7 @@ then add `"Rostrum"` to your target's dependencies.
 | **Fills & lines** | solid, alpha, multi-stop gradients, outlines, soft shadows |
 | **Text** | paragraphs, runs, fonts, sizes, colours, alignment, spacing, tracking, **bullets, numbered lists, hyperlinks** |
 | **Pictures** | PNG/JPEG/GIF sniffing, content dedup, crop read/edit, isolated replacement, stretch/tile mapping, picture rotation/reflection and geometry clipping |
-| **Tables** | merge inspection/unmerge, row/column insertion, removal and reordering, edge/diagonal borders, padding, image fills, embedded/custom style resolution |
+| **Tables** | centered text in new cells, explicit vertical alignment, merge inspection/unmerge, row/column insertion, removal and reordering, edge/diagonal borders, padding, image fills, embedded/custom style resolution |
 | **Charts** | bar / line / pie / area / doughnut / scatter / **radar / bubble / combo**, stacked & multi-series, titles, **data labels**, axis control, embedded Edit-Data workbook |
 | **Chart editing** | `deck.charts` reads any deck's charts; `replaceData` swaps every cache and the workbook or **refuses without writing a byte**; `addSeries` / `removeSeries` |
 | **Rendering** | `renderSVG(slideAt:)` / `exportSVG` — deterministic SVG previews with shared rich-text layout and master/layout inheritance; structured fidelity reports and opt-in `strictRendering` reject known gaps |
@@ -148,7 +193,8 @@ bytes, XML knows trees, OPC knows parts and never slides):
 
 ```mermaid
 flowchart TB
-    subgraph API["Public API"]
+    L["RostrumLayout<br/>native templates · measured composition · pagination"]
+    subgraph API["Rostrum public API"]
         P["Presentation · Slides · Shapes · Charts<br/><i>Sources/Rostrum/Presentation, Charts</i>"]
         D["Design-authoring layer<br/>DeckStyle · Grid · slide builders · SmartArt<br/><i>Sources/Rostrum/Presentation</i>"]
     end
@@ -157,6 +203,7 @@ flowchart TB
     X["XML DOM<br/>prefix-preserving parse · deterministic serialize<br/><i>Sources/Rostrum/XML</i>"]
     Z["Zip container<br/>own inflate + deflate · CRC-32 · fixed timestamps<br/><i>Sources/Rostrum/Zip</i>"]
 
+    L --> P
     D --> P
     P --> S
     P --> O
@@ -172,6 +219,7 @@ flowchart TB
 | OPC packaging (parts, content types, relationships) | `Sources/Rostrum/OPC` | `pptx.opc` |
 | Generated schema tables | `Sources/Rostrum/Schema` | `pptx.oxml` descriptors |
 | PresentationML object model | `Sources/Rostrum/Presentation`, `Charts` | `pptx.parts` + API |
+| Template composition and pagination | `Sources/RostrumLayout` | Separate Swift-native product |
 
 And the life of a document — the pristine-DOM hybrid at work:
 
@@ -213,12 +261,46 @@ swift run SunflowerDeck out.pptx path/to/images
 swift run ReadmeSnippets            # writes hello.pptx + review.pptx
 ```
 
-## Verification
+## Verification and performance
 
-Rostrum is checked three ways: unit tests against external oracles
-(`unzip -t`, `zlib`), reopening its own output, and — the strictest — a
-scripted **PowerPoint double-click open** (`Tools/ppt-check.sh`) that catches
-integrity errors other tools tolerate.
+The test suites cover archive validity, preservation of untouched parts,
+relationship integrity, saved-file reopening, layout geometry and deterministic
+output. Linux CI builds Swift 6.0 and runs the full suites on Swift 6.1; macOS PR
+checks exercise the Darwin implementations and compile Lectern. Local app and
+PowerPoint checks add consumer evidence beyond those package tests.
+
+```sh
+swift test
+swift test --package-path Lectern
+python3 scripts/readme-snippets.py
+```
+
+The full local acceptance workflow is documented in
+[Contributing](CONTRIBUTING.md). Native PowerPoint comparisons, SVG/browser
+checks and structural lint establish different facts; a passing unit test or
+an issue-free preview alone does not establish pixel equivalence.
+
+Performance reports retain workload, source revisions, font inputs and output
+checks. A historical 22-slide checkpoint measured **57.30 → 47.85 ms** warm SVG
+rendering (16.5% lower); a separate 2,000-cell registered-font checkpoint measured
+**67.71 → 64.82 ms**. These are distinct local comparisons, not cumulative release
+speedups. Some richer fidelity paths are slower, and lower overall memory use
+has not been established. Read the [performance ledger](docs/PERFORMANCE.md)
+for the raw records, adverse results and reproduction instructions.
+
+## Documentation
+
+| Guide | Contents |
+| --- | --- |
+| [Getting started](docs/GETTING-STARTED.md) | Package setup, save/reopen, editable tables, native templates and preview reports |
+| [Layout engine](docs/LAYOUT-ENGINE.md) | Rich-text geometry, measurement adapters, composition, pagination and table context |
+| [Cookbook](docs/COOKBOOK.md) | Focused document-editing and authoring recipes |
+| [Importing and previewing](docs/IMPORTING-AND-PREVIEWING.md) | Fonts, inherited artwork, fallback and diagnostics |
+| [Architecture](docs/ARCHITECTURE.md) | Module boundaries, pristine parts, XML mutation and deterministic saving |
+| [Format support](docs/FORMAT_SUPPORT.md) / [Conformance](docs/CONFORMANCE.md) | Read, edit, preservation and preview support, with evidence limits |
+| [Performance](docs/PERFORMANCE.md) | Reproducible measurements and open costs |
+| [Lectern](Lectern/README.md) | App setup, templates, saved decks and offline demonstrations |
+| [1.0 validation](docs/RELEASE-1.0-VALIDATION.md) / [Publication audit](docs/RELEASE-1.0-AUDIT.md) | Release checks, native table evidence, demo downloads and publication hygiene |
 
 ## Acknowledgments
 
@@ -237,44 +319,3 @@ mature, battle-tested, and excellent.
 [MIT](LICENSE). Portions derived from python-pptx (MIT, © Steve Canny) — see
 [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md). Contributions welcome —
 see [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-## Template-aware composition
-
-`Rostrum` owns the PowerPoint document model and lossless package I/O.
-The separate `RostrumLayout` product owns composition and measured fit. It is
-portable and accepts a text-measurement adapter; Lectern supplies CoreText on Apple
-platforms. Font discovery remains outside the document library.
-
-Use `Presentation.fromTemplate(data:)` to create a new presentation from a POTX.
-This explicit authoring operation removes starter slides and their unused parts,
-retains the template's master/layout/theme library and linked resources, and changes
-the output document type to PPTX. Normal open/save continues to preserve the original
-file. A template resource linking to a removed starter slide is rejected with an
-explanation rather than producing a broken relationship.
-
-`TemplateLayoutEngine.plan` selects actual placeholders, optionally restricted to
-one master. `compose` fills text and paragraph levels with inherited typography.
-Wrapped text can extend a slide's placeholder downward into free space when the
-template permits text flow, stopping before other placeholders, artwork or the slide
-edge. Native shrink-to-fit uses a computed font scale with a readability floor.
-The template's master and layout parts remain unchanged. It supports title/subtitle
-levels within a single custom cover placeholder, as well as separate native title/body
-placeholders. Content that still cannot fit is rejected so the caller can shorten it
-or choose another layout.
-For charts and tables, pass `objectCaption` to `plan`: it reserves the measured text
-height alongside a minimum object height before selecting a compatible layout.
-`measureObjectHeight` lets the caller account for wrapped table rows at each candidate
-width. Layout ranking considers the number of content regions and their available
-area, rather than accepting the first narrow variant. A title can extend horizontally
-over the content span when vertical wrapping cannot fit and no artwork blocks it.
-`validateTemplateBindings()` verifies each slide's layout/master/theme chain.
-
-For authored design systems, apply the design, call `compileThemeMaster()`, compose
-slides, then call `AuthoredLayoutEngine.finish(_:layoutName:)`. This measures text
-and publishes real layouts carrying geometry and inherited styles. Native charts,
-tables and pictures remain editable and bound to insertion placeholders. PowerPoint
-visual acceptance remains necessary: structural checks and SVG previews do not
-prove final-client font substitution, spacing or rendering fidelity.
-
-For preservation, editing, authoring and preview limitations, see the
-[PowerPoint support matrix](docs/FORMAT_SUPPORT.md).

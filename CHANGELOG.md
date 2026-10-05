@@ -1,10 +1,26 @@
 # Changelog
 
-Rostrum is **pre-1.0**: minor versions may change API. Format follows
-[Keep a Changelog](https://keepachangelog.com/); versions follow
-[SemVer](https://semver.org/) with the 0.x caveat above.
+Format follows [Keep a Changelog](https://keepachangelog.com/); releases follow
+[SemVer](https://semver.org/). Version 1.0 establishes the public API baseline;
+the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
+
+## [1.0.0] — 2026-10-04
+
+The first major release adds the `RostrumLayout` product for template-aware
+composition, shared text measurement, fitting and pagination alongside the
+PowerPoint document library. Lectern exercises both products through 34 offline
+demonstrations with saved decks, inspection and export. See the
+[layout guide](docs/LAYOUT-ENGINE.md), [conformance matrix](docs/CONFORMANCE.md)
+and [performance ledger](docs/PERFORMANCE.md) for the supported profiles and
+measured results.
+
+- Lectern's macOS Library Lab reveals saved PowerPoint files directly in Finder,
+  lists every saved demo with file/slide totals, and keeps batches running while
+  inspecting results. Failed saves can be retried without rerunning the demo.
+- New table cells center text vertically, including inserted rows and columns;
+  imported cells retain their authored alignment.
 
 The native glyph-placement update separates authored, measured and painted Latin
 text sizes, retains explicit scalar origins without glyph stretching, and uses

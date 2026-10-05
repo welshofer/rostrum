@@ -734,5 +734,17 @@ Completed app-run demos now save a distinct PowerPoint file in the library,
 including results with findings or failed file checks. Previous runs remain
 available, and Inspect Result uses the durable saved copy. A save failure retains
 the diagnostic result; cancelled or superseded work cannot publish a late file.
+The Lab displays every saved deck and its slide count, with a total file/slide
+summary. On macOS, Reveal in Finder selects the actual library copy and Reveal
+All in Finder selects all saved demo decks. Report and artifact actions also
+reveal files directly. Inspecting a result or navigating away keeps a running
+batch alive; the explicit Cancel button stops it. Retry Save copies a failed
+save's existing result without rerunning the demo, duplicating a successful save
+or overwriting an existing destination.
+
+New table cells, including inserted rows and columns, now explicitly author
+middle vertical alignment. The table-grid demo checks this after saving and
+reopening. Imported cells retain their existing top, middle, bottom or absent
+alignment; the renderer continues to honor those authored values.
 The [credential safety and persistence record](KEYCHAIN-SAFETY-20261004.md)
 records the headless workflow checks and the explicit native-app validation hold.

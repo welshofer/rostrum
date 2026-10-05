@@ -6,9 +6,10 @@
   },
   "authored-features.pptx": {
     "producer": "FeaturePipelineFixture.make()",
-    "sha256": "1cf13da7c18e6dc0c5a41a81c45952e9c9db5749e83dc5943497166a145ad89d",
+    "sha256": "aeb04870e63c85892e3f3df55724613b34f13c9b67715ab2681a001261a28b7c",
     "features": [
       "native and custom tables",
+      "vertically centered authored table cells",
       "typed double and dash borders",
       "merge",
       "bold and italic text",
@@ -21,6 +22,23 @@
       "slide import"
     ],
     "determinism": "Fresh factory invocation twice produces identical bytes after normalizing owned annotation/section IDs and annotation dates. The test repeats this check.",
-    "consumer": "Native GUI checks are outside this pipeline fixture contract; pipeline tests do not claim app or PowerPoint validation."
+    "consumer": "Native GUI checks are outside this pipeline fixture contract; pipeline tests do not claim app or PowerPoint validation.",
+    "authoringDefaultRefresh": {
+      "date": "2026-10-04",
+      "producer": "FeaturePipelineFixture.make() invoked twice with byte-identical output",
+      "previousSHA256": "1cf13da7c18e6dc0c5a41a81c45952e9c9db5749e83dc5943497166a145ad89d",
+      "changedParts": [
+        {
+          "part": "ppt/slides/slide1.xml",
+          "addedCellMiddleAnchors": 9
+        },
+        {
+          "part": "ppt/slides/slide4.xml",
+          "addedCellMiddleAnchors": 2
+        }
+      ],
+      "unchangedParts": 51,
+      "delta": "Only explicit a:tcPr anchor=\"ctr\" on the 11 newly authored cells; removing those attributes reproduces the prior part bytes exactly. Foreign Office fixture unchanged."
+    }
   }
 }

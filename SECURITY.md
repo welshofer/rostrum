@@ -2,7 +2,8 @@
 
 ## Supported versions
 
-Rostrum is pre-1.0; only the latest release receives fixes.
+Only the latest release receives fixes. Rostrum 1.x is the current major series;
+older releases do not have a separate maintenance commitment.
 
 ## Reporting a vulnerability
 
@@ -43,4 +44,13 @@ history. Investigate matches without copying candidate secrets into logs or PRs;
 checksums and identifiers can be false positives. If a credential is found,
 revoke or rotate it before relying on removal. Removing a tracked value does
 not remove it from old commits, forks or caches. See the
-[publication audit](PUBLICATION-HYGIENE.md) for this update's scope and limitations.
+[publication hygiene record](docs/PUBLICATION-HYGIENE.md) for the prior cleanup's
+scope and limitations, and the [1.0 release audit](docs/RELEASE-1.0-AUDIT.md) for
+the current publication review.
+
+The focused check can be repeated with
+`python3 scripts/publication-audit.py --include-untracked`. It scans Git-selected
+text, textual ZIP/PPTX members, and PDF metadata and extracted text, and reports
+only paths, categories and line numbers. It requires `pdfinfo` and `pdftotext` for
+the PDF checks. Run a separate redacted Gitleaks scan for its provider-specific
+rules and reachable Git history; the focused check does not replace that review.

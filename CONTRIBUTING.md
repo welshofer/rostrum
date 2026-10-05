@@ -12,8 +12,10 @@ coherent — most are also documented in [`CLAUDE.md`](CLAUDE.md) and
   `FoundationXML` on Linux) is the only import.
 - **Three platforms.** macOS, iOS, and Linux. Never use an API that is absent
   on any of them — notably `XMLDocument`/`XMLNode` (iOS lacks them; use
-  `Sources/Rostrum/XML`). CI builds and tests on Linux; the Apple platforms are
-  verified locally by `./scripts/verify.sh` (see [Before a PR](#before-a-pr)).
+  `Sources/Rostrum/XML`). CI builds on Linux with Swift 6.0 and 6.1, runs the
+  package tests on 6.1, and checks macOS on pull requests. The local
+  `./scripts/verify.sh` gate adds iOS simulator builds and app-hosted tests
+  (see [Before a PR](#before-a-pr)).
 - **Lossless round-trip is sacred.** Opening a file and saving it must never
   drop or corrupt XML we do not model. A part you never touch re-emits its
   original bytes.
@@ -68,11 +70,12 @@ Run the helper's offline checks with `python3 -m unittest discover -s scripts/te
 ./scripts/verify.sh --fast   # skip both app builds AND app-hosted tests
 ```
 
-CI runs Linux only. GitHub's hosted macOS runners bill at ten times the Linux
-rate and this repository pushes often, so the Apple-platform checks live here
-instead, where a Mac is free. `verify.sh` runs both test suites, the README
-snippets, and the two things a Linux runner genuinely cannot do: build the
-Lectern SwiftUI targets for macOS and for the iOS simulator.
+CI builds with Swift 6.0 and 6.1 on Linux on every push, runs the Rostrum,
+RostrumLayout and LecternCore tests on 6.1, and runs the README examples on both
+toolchains. The macOS 26 pull-request gate runs the package tests and builds
+the Lectern app. See [the workflow](.github/workflows/ci.yml) for the exact
+commands. The local `verify.sh` gate also builds the iOS simulator target and
+runs app-hosted tests, alongside the package suites and README examples.
 
 Those app targets are not part of any SwiftPM target, so `swift test` never
 compiles them. The full gate also runs the app-hosted tests. Use

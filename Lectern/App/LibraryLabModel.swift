@@ -11,6 +11,7 @@ final class LibraryLabModel {
     private(set) var results: [LibraryDemoID: LibraryLabResult] = [:]
     private(set) var savedDecks: [LibraryDemoID: URL] = [:]
     private(set) var saveFailures: [LibraryDemoID: String] = [:]
+    private(set) var savingIDs: Set<LibraryDemoID> = []
     private(set) var failures: [LibraryDemoID: String] = [:]
     private(set) var isRunning = false
     private(set) var activeID: LibraryDemoID?
@@ -18,6 +19,68 @@ final class LibraryLabModel {
     private(set) var total = 0
     @ObservationIgnored private var task: Task<Void, Never>?
     @ObservationIgnored private var runs = RunGate()
+    @ObservationIgnored private var saveTasks: [LibraryDemoID: Task<Void, Never>] = [:]
+    @ObservationIgnored private var saveRevisions: [LibraryDemoID: UUID] = [:]
+
+    /// Retry a failed durable copy without rerunning or replacing the demo.
+    /// The prepared file remains hidden until this exact result is accepted.
+    @discardableResult
+    func retrySave(_ result: LibraryLabResult, to library: URL,
+                   onSaved: @escaping @MainActor @Sendable (URL) -> Void = { _ in },
+                   preparingSave: @escaping @Sendable (LibraryLabResult, URL) async throws -> DeckStorage.PreparedDeckCopy = { result, library in
+                       let title = LibraryLab.catalog.first { $0.id == result.id }?.title ?? result.id.rawValue
+                       return try DeckStorage.prepareDeckCopy(from: result.afterURL, title: title, into: library)
+                   }) -> Task<Void, Never> {
+        let id = result.id
+        guard results[id]?.afterURL == result.afterURL,
+              results[id]?.directory == result.directory,
+              savedDecks[id] == nil, saveFailures[id] != nil else { return Task {} }
+        if let existing = saveTasks[id] { return existing }
+        let revision = UUID()
+        saveRevisions[id] = revision
+        savingIDs.insert(id)
+        let work = Task.detached(priority: .userInitiated) { [self] in
+            do {
+                let pending = try await preparingSave(result, library)
+                defer { pending.discard() }
+                try Task.checkCancellation()
+                await MainActor.run {
+                    guard saveRevisions[id] == revision, saveTasks[id]?.isCancelled == false,
+                          results[id]?.afterURL == result.afterURL,
+                          results[id]?.directory == result.directory, savedDecks[id] == nil else { return }
+                    do {
+                        let url = try pending.commit()
+                        savedDecks[id] = url
+                        saveFailures[id] = nil
+                        onSaved(url)
+                    } catch { saveFailures[id] = error.localizedDescription }
+                }
+            } catch {
+                if !Task.isCancelled && !(error is CancellationError) {
+                    let message = error.localizedDescription
+                    await MainActor.run {
+                        guard saveRevisions[id] == revision, saveTasks[id]?.isCancelled == false else { return }
+                        saveFailures[id] = message
+                    }
+                }
+            }
+            await MainActor.run {
+                guard saveRevisions[id] == revision else { return }
+                saveRevisions[id] = nil
+                saveTasks[id] = nil
+                savingIDs.remove(id)
+            }
+        }
+        saveTasks[id] = work
+        return work
+    }
+
+    private func cancelPendingSaves() {
+        saveRevisions.removeAll()
+        for task in saveTasks.values { task.cancel() }
+        saveTasks.removeAll()
+        savingIDs.removeAll()
+    }
 
     @discardableResult
     func run(_ ids: [LibraryDemoID], in parent: URL = AppState.diagnosticsDirectory().appendingPathComponent("Library Lab"),
@@ -37,6 +100,7 @@ final class LibraryLabModel {
              },
              using operation: @escaping @Sendable (LibraryDemoID, LibraryLabOptions, URL) async throws -> LibraryLabResult) -> Task<Void, Never> {
         let run = runs.begin()
+        cancelPendingSaves()
         task?.cancel()
         let options = options
         var seen = Set<LibraryDemoID>()
@@ -102,6 +166,7 @@ final class LibraryLabModel {
     }
 
     func cancel() {
+        cancelPendingSaves()
         runs.abandon()
         task?.cancel()
         task = nil

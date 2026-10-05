@@ -350,6 +350,7 @@ enum DrawingLabRecipes {
             return [
                 .init("Grid edits preserve the expected cell identities", grid == expectedGrid, "Every surviving cell matches the independently computed permutation."),
                 .init("Edited dimensions persist", try t.columnWidth(0) == .inches(1.7) && t.rowHeight(0) == .inches(0.9), "Column width and row height are read from the reopened grid."),
+                .init("Cell text stays vertically centered", try (0..<t.rowCount).allSatisfy { row in try (0..<t.columnCount).allSatisfy { try t.cell(row, $0).verticalAnchor == .middle } }, "New table cells use middle alignment, including cells created during row and column edits."),
                 .init("Final topology matches variant", try t.mergedRegions == (o.alternative ? [TableMergeRegion(row: 0, column: 0, rowSpan: 1, columnSpan: 2)] : []), "Variant either leaves a horizontal merge or a fully split grid.")
             ]
         })

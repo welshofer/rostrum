@@ -49,6 +49,7 @@ struct LibraryLabView: View {
                     }
                     .accessibilityIdentifier("libraryLab.progress")
                 }
+                if !savedRecipes.isEmpty || !unsavedRecipes.isEmpty { savedResults }
                 if let failure = model.failures[recipe.id] {
                     Label("Couldn’t finish this demo", systemImage: "exclamationmark.triangle")
                         .font(.headline).foregroundStyle(.orange)
@@ -69,8 +70,8 @@ struct LibraryLabView: View {
                     .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
                 }
                 if model.total > 1, !model.isRunning {
-                    Label("\(model.results.count) completed · \(model.failures.count) could not finish",
-                          systemImage: model.failures.isEmpty ? "checkmark.circle" : "exclamationmark.triangle")
+                    Label("\(model.results.count) completed · \(model.failures.count) could not finish · \(unsavedRecipes.count) could not save",
+                          systemImage: model.failures.isEmpty && unsavedRecipes.isEmpty ? "checkmark.circle" : "exclamationmark.triangle")
                         .font(.callout).foregroundStyle(.secondary)
                     Text("Choose any demonstration above to inspect its result. A checkmark means file checks passed; preview findings are reported separately.")
                         .font(.caption).foregroundStyle(.secondary)
@@ -81,15 +82,28 @@ struct LibraryLabView: View {
             .frame(maxWidth: .infinity)
         }
         .navigationTitle("Library Lab")
-        .onDisappear { model.cancel() }
         .sheet(isPresented: $showingFiles) {
             if let result = model.results[recipe.id] {
                 NavigationStack {
                     List(result.artifacts, id: \.self) { url in
+                        #if os(macOS)
+                        Button {
+                            NSWorkspace.shared.activateFileViewerSelecting([url])
+                        } label: {
+                            HStack {
+                                Label(artifactName(url, in: result.directory), systemImage: "doc")
+                                Spacer()
+                                Text("Reveal in Finder").foregroundStyle(.secondary)
+                            }
+                            .font(.callout)
+                        }
+                        .buttonStyle(.plain)
+                        #else
                         ShareLink(item: url) {
                             Label(artifactName(url, in: result.directory), systemImage: "doc")
                                 .font(.callout)
                         }
+                        #endif
                     }
                     .navigationTitle("Demo Files")
                     .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { showingFiles = false } } }
@@ -132,8 +146,73 @@ struct LibraryLabView: View {
         LibraryLab.catalog.first { $0.id == model.activeID }?.title ?? "Finishing"
     }
 
+    private var savedRecipes: [LibraryLabRecipe] {
+        LibraryLab.catalog.filter { model.savedDecks[$0.id] != nil }
+    }
+
+    private var unsavedRecipes: [LibraryLabRecipe] {
+        LibraryLab.catalog.filter { model.results[$0.id] != nil && model.saveFailures[$0.id] != nil }
+    }
+
+    private var savedResults: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            let slides = savedRecipes.reduce(0) { $0 + (model.results[$1.id]?.slideCount ?? 0) }
+            Label("\(savedRecipes.count) PowerPoint files saved · \(slides) slides", systemImage: "folder.fill")
+                .font(.headline)
+                .accessibilityIdentifier("libraryLab.savedSummary")
+            Text("Each demo has its own PowerPoint file. Earlier runs are kept too.")
+                .font(.callout).foregroundStyle(.secondary)
+            #if os(macOS)
+            Button("Reveal All in Finder", systemImage: "folder") {
+                NSWorkspace.shared.activateFileViewerSelecting(savedRecipes.compactMap { model.savedDecks[$0.id] })
+            }
+            .disabled(savedRecipes.isEmpty)
+            .accessibilityIdentifier("libraryLab.revealAll")
+            #endif
+            ForEach(unsavedRecipes) { recipe in
+                if let result = model.results[recipe.id] {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Label("Couldn’t save “\(recipe.title)”", systemImage: "exclamationmark.triangle")
+                                .foregroundStyle(.orange)
+                            Text(model.saveFailures[recipe.id] ?? "")
+                                .font(.caption).textSelection(.enabled)
+                        }
+                        Spacer()
+                        retrySaveButton(result)
+                    }
+                }
+            }
+            DisclosureGroup("Saved decks") {
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(savedRecipes) { recipe in
+                        if let url = model.savedDecks[recipe.id] {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(recipe.title).font(.callout.bold())
+                                    Text("\(model.results[recipe.id]?.slideCount ?? 0) slides · " + url.lastPathComponent)
+                                        .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                                }
+                                Spacer()
+                                Button("Inspect") { app.inspect(deckAt: url) }
+                                #if os(macOS)
+                                Button("Reveal") { NSWorkspace.shared.activateFileViewerSelecting([url]) }
+                                    .help("Reveal in Finder")
+                                #endif
+                            }
+                        }
+                    }
+                }
+                .padding(.top, 8)
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.quaternary.opacity(0.4), in: .rect(cornerRadius: 12))
+    }
+
     private func catalogTitle(_ recipe: LibraryLabRecipe) -> String {
-        if model.failures[recipe.id] != nil { return "! " + recipe.title }
+        if model.failures[recipe.id] != nil || model.saveFailures[recipe.id] != nil { return "! " + recipe.title }
         if let result = model.results[recipe.id] { return (result.passed ? "✓ " : "! ") + recipe.title }
         return recipe.title
     }
@@ -157,13 +236,13 @@ struct LibraryLabView: View {
                     .accessibilityLabel("Slide \(result.coverSlideNumber ?? 1) of \(recipe.title)")
             }
             if let saved = model.savedDecks[result.id] {
-                Label("Saved to your library: " + saved.lastPathComponent, systemImage: "checkmark.circle")
+                Label("Saved: " + saved.path, systemImage: "checkmark.circle")
                     .font(.callout).textSelection(.enabled)
                     .accessibilityIdentifier("libraryLab.savedDeck")
             } else if let failure = model.saveFailures[result.id] {
                 Label("Couldn’t save this deck to your library", systemImage: "exclamationmark.triangle")
                     .foregroundStyle(.orange)
-                Text(failure + " Use Save Deck below to keep a copy. You can still inspect this result.")
+                Text(failure + " Use Retry Save below. You can still inspect this result.")
                     .font(.callout).textSelection(.enabled)
                     .accessibilityIdentifier("libraryLab.saveFailure")
             }
@@ -208,14 +287,33 @@ struct LibraryLabView: View {
             Button("Inspect Before") { app.inspect(deckAt: before) }
                 .accessibilityIdentifier("libraryLab.inspectBefore")
         }
-        ShareLink("Save Deck", item: result.afterURL)
-        ShareLink("Share Report", item: result.reportURL)
-        Button("All Files") { showingFiles = true }
+        if model.saveFailures[result.id] != nil {
+            retrySaveButton(result)
+        }
         #if os(macOS)
-        Button("Show Files") { NSWorkspace.shared.activateFileViewerSelecting([result.afterURL, result.reportURL]) }
+        if let saved = model.savedDecks[result.id] {
+            Button("Reveal in Finder", systemImage: "folder") {
+                NSWorkspace.shared.activateFileViewerSelecting([saved])
+            }
+            .accessibilityIdentifier("libraryLab.revealDeck")
+        }
+        Button("Reveal Report") { NSWorkspace.shared.activateFileViewerSelecting([result.reportURL]) }
         #else
+        ShareLink("Share Deck", item: model.savedDecks[result.id] ?? result.afterURL)
+        ShareLink("Share Report", item: result.reportURL)
+        #endif
+        Button("All Files") { showingFiles = true }
+        #if !os(macOS)
         ShareLink("Extracted Text", item: result.markdownURL)
         #endif
+    }
+
+    private func retrySaveButton(_ result: LibraryLabResult) -> some View {
+        Button(model.savingIDs.contains(result.id) ? "Saving…" : "Retry Save") {
+            app.retrySavingLibraryDemo(result, model: model)
+        }
+        .disabled(model.savingIDs.contains(result.id))
+        .accessibilityIdentifier("libraryLab.retrySave")
     }
 
     private func artifactName(_ url: URL, in directory: URL) -> String {

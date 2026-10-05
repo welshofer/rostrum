@@ -1,12 +1,16 @@
-# Layout engine
+# RostrumLayout and shared text layout
 
 Rostrum separates document layout from slide composition. The shared text engine
 measures existing DrawingML for fitting and previews. The `RostrumLayout` product
 chooses and fills native template regions or finishes slides authored from a
 design system. Neither is a replacement for PowerPoint's complete layout engine.
 
-This guide describes the imported-fidelity and native glyph-placement updates. Read it with the [preview guide](IMPORTING-AND-PREVIEWING.md),
-[format support matrix](FORMAT_SUPPORT.md) and [conformance record](CONFORMANCE.md).
+Version 1.0 ships `RostrumLayout` as a separate SwiftPM product. Add both products
+to a composing application and `import RostrumLayout` alongside `import Rostrum`.
+The [getting-started guide](GETTING-STARTED.md) includes a complete manifest and
+native-template example. Read this guide with the
+[preview guide](IMPORTING-AND-PREVIEWING.md), [format support matrix](FORMAT_SUPPORT.md)
+and [conformance record](CONFORMANCE.md).
 
 ## Components and responsibilities
 
@@ -18,6 +22,7 @@ This guide describes the imported-fidelity and native glyph-placement updates. R
 | `SVGRenderer` | Draw resolved content using text geometry and collect fidelity issues | Read-only preview; does not repair or relayout the saved document |
 | `TemplateLayoutEngine` in `RostrumLayout` | Evaluate native layouts, measure content, score compatible candidates and fill placeholders | Composes new slide content; retains the supplied master/layout/theme |
 | `AuthoredLayoutEngine` in `RostrumLayout` | Check and fit design-authored text regions, then publish a reusable layout | May adjust authored typography and spacing; not used to rewrite imported templates |
+| `StructuredLayout` in `RostrumLayout` | Preflight and compose editable metrics, process, cycle, pyramid, timeline, quadrant and band structures | Adds native shapes and text inside the chosen region |
 | `MeasuredPaginator` in `RostrumLayout` | Partition ordered content according to a caller's actual fit predicate | Returns partitions without dropping or reordering content |
 
 ```mermaid
@@ -36,6 +41,36 @@ The composition adapters are distinct from `RichTextLayout`. They can accept a
 `TextHeightMeasurer` supplied by the host, such as Lectern's Apple measurement
 adapter. Do not assume that every composition decision is made by the portable
 rich-text algorithm or that a computed fit matches PowerPoint's chosen autofit.
+
+## Choose the right operation
+
+| Input and intent | API | Result |
+| --- | --- | --- |
+| Inspect an existing slide | `renderSVGReportingProblems(slideAt:)` | SVG plus known fidelity issues; source content is preserved |
+| Explicitly fit a text shape | `shape.fitText(fonts:)` | Saved normal-autofit settings computed from shared rich-text layout |
+| Start from a `.potx` | `Presentation.fromTemplate(data:)`, then `TemplateLayoutEngine` | New PPTX slides connected to the source template's layouts and masters |
+| Finish slides built from a `Design` or `DeckStyle` | `AuthoredLayoutEngine` | Checked/adjusted authored text and optional published native layouts |
+| Break ordered content across pages | `MeasuredPaginator` | Fitting partitions; the caller creates slides and retains document context |
+
+### Measurement contract
+
+`TextHeightMeasurer` receives a `TextMeasureRequest`: text, family name, point
+size, bold flag, tracking and available width in points. Return the occupied
+height in points for that request. The engine applies its own paragraph/body
+spacing and fit rules around this measurement. Keep the adapter deterministic
+and the font environment fixed while an engine is in use.
+
+Lectern's [adapter](../Lectern/Sources/LecternCore/Rendering/TemplateRendering.swift)
+uses CoreText when available. The portable library does not discover installed
+fonts or fetch missing resources. With no adapter, it uses registered font
+metrics when available and an estimated character-width path otherwise. The
+adapter contract measures a single styled text value, so it does not imply the
+full DrawingML semantics of `RichTextLayout`. Preserve those different evidence
+boundaries when evaluating fit results.
+
+The layout code uses point coordinates around `Rect`/`EMU`; OOXML stores lengths
+in EMUs. Construct lengths with `.points(...)` or `.inches(...)` instead of mixing
+raw EMU integers with measured point heights.
 
 ## Shared text layout
 
@@ -96,7 +131,72 @@ Generated object typography scales with slide height relative to a 540-point
 canvas. Tables, charts, diagrams and captions therefore participate in measured
 composition rather than consuming arbitrary leftover rectangles.
 
+### Plan, inspect, compose, validate
+
+```mermaid
+flowchart TD
+    Input["POTX + exact content + optional measurement adapter"] --> New["fromTemplate: retain template library, remove starter slides"]
+    New --> Filter["Filter by master/layout identity and content placeholders"]
+    Filter --> Fit["Measure title, body, object and caption"]
+    Fit --> Valid{"Compatible readable candidate?"}
+    Valid -- yes --> Rank["Score semantic match, shrink, area and balance"]
+    Rank --> Plan["TemplateSlidePlan: frames, font scales and reasons"]
+    Plan --> Compose["compose: fill inherited text placeholders"]
+    Compose --> Objects["Caller inserts pictures, tables, charts or structures"]
+    Objects --> Save["Validate layout/master/theme bindings and save PPTX"]
+    Valid -- no --> Retry["cannotFit: choose another layout or paginate"]
+```
+
+A plan records the layout and its selected title/body/object/picture slots,
+measured text frames and font scales, separate object/caption frames and scoring
+reasons. Build and compose with the same title and column content. Planning does
+not create a slide; `compose` creates and fills text placeholders. The caller
+adds the requested picture or structured object in the returned region.
+
+Call `validateTemplateBindings()` before saving to check the resulting
+slide → layout → master → theme chain. This verifies package relationships,
+not visual acceptance. The [template example](GETTING-STARTED.md#compose-from-a-powerpoint-template)
+shows the complete save path.
+
+### Tables and other structured objects
+
+Object geometry must leave room for both its content and its caption. For a
+table, use `object: "tbl"` and compatible preferred types such as `["tbl", "obj"]`.
+Provide `objectCaption`, `minimumObjectHeight` and, when rows wrap,
+`measureObjectHeight(width, style)`. The callback is evaluated for each candidate
+width and should account for cell widths, padding, text styles, every row and
+borders. Use `validateObject(frame, style)` for additional rejection conditions.
+
+After planning, use `objectFrame` for the table or chart and `captionFrame` for
+its explanatory text. `objectStyle(layout:slot:)` resolves the placeholder's
+font and the owning master's palette. Object type sizes scale relative to the
+presentation's height, using a 540-point reference canvas. The caller writes
+row heights and cell content; the planner does not automatically divide an
+existing table across slides.
+
+`StructuredLayout` provides native editable shapes for metrics, process, cycle,
+pyramid, timeline, quadrant and band arrangements. It accepts 1–12 items,
+measures heading/detail content before adding shapes and throws when content
+cannot fit its region. Use `StructuredLayout.validate` from `validateObject`
+during planning, then `StructuredLayout.compose` after text composition. This
+path creates shapes and text; it is separate from a SmartArt diagram part.
+
+Newly authored `TableCell`s have `.middle` vertical anchoring. Set `.top` or
+`.bottom` explicitly for another authoring choice. Imported cells preserve the
+source setting, including the OOXML top fallback when no anchor is present.
+The read-only table fit/preview path uses the cell's current anchor, padding
+and effective style rather than assuming a text-box body.
+
 ## Authored slides and pagination
+
+For a design you own, create a presentation, apply `Design`/`DeckStyle`, then
+call `compileThemeMaster()` to publish shared theme typography and backgrounds.
+Compose the slide content and call `AuthoredLayoutEngine.finish(_:layoutName:)`
+to fit authored text and publish a real subordinate layout. Published layout
+prototypes retain geometry and reusable styles; actual slide text stays on the
+slide. Native tables, charts and pictures remain editable slide objects with
+insertion placeholders in the layout. Use this flow for authored designs;
+imported POTX content follows the template engine's inheritance path.
 
 `AuthoredLayoutEngine` is the final pass for design-authored slides. It rejects
 text frames outside the slide and checks occupied height within the insets.
@@ -110,6 +210,43 @@ fit produces an error. `MeasuredPaginator.text` splits at word boundaries into
 exact substrings whose concatenation reproduces the original. Cancellation is
 checked during partitioning. The consumer remains responsible for creating
 continuation slides and retaining notes and other document context.
+
+### Paginate with the same fit rule
+
+For a known template text slot, reuse `engine.fits` as the predicate. This example
+partitions paragraphs against a selected plan's first text slot; the caller can
+then compose one page at a time with the same template and title constraints.
+
+```swift
+import Rostrum
+import RostrumLayout
+
+func paragraphPages(
+    _ paragraphs: [LayoutParagraph],
+    plan: TemplateSlidePlan,
+    engine: TemplateLayoutEngine
+) throws -> [[LayoutParagraph]] {
+    guard let slot = plan.textSlots.first, let frame = slot.frame else {
+        throw LayoutError.cannotFit("The selected layout has no body text region.")
+    }
+    return try MeasuredPaginator.pages(paragraphs) { candidate in
+        engine.fits(candidate, in: frame, layout: plan.layout, slot: slot.index)
+    }
+}
+```
+
+The predicate must be deterministic and monotonic: adding content must not make
+an otherwise oversized prefix fit. Keep the chosen layout and measurement
+policy stable for the partitioning operation. Recheck the complete final plan
+when titles, captions or other occupied regions change. For one oversized
+paragraph, `MeasuredPaginator.text` splits at word boundaries while retaining
+exact substrings, including whitespace. A single unfit item is an explicit
+failure, not permission to omit it.
+
+The consumer owns continuation titles, notes, source references, sections and
+stable review identity. Lectern's composition layer carries that context and
+reports expanded slide counts. The paginator itself neither creates slides nor
+selects how to redistribute comments or notes.
 
 ## Performance and determinism
 
@@ -151,11 +288,12 @@ and reuse of shaped line breaks reduce repeated layout work. The
 [initial glyph integration record](LAYOUT-FIDELITY-20261004-9.md) and its linked benchmark
 retain source revisions, independent glyph/spacing evidence and tradeoffs.
 Lectern's paragraph demonstration has seven slides; the cell-appearance
-example has three. Both exercise saved-file inspection and the WebKit paint path.
+example has three. Their integration tests exercise saved-file inspection and the WebKit paint path;
+acceptance remains scoped to the recorded source and test environment.
 
 ## Later native corrections and demonstrations
 
-The update reconciled with `main` at `4df1c71` includes these bounded additions:
+The 1.0 engine includes these bounded additions, reconciled before the release:
 
 - List markers use native-calibrated sizing and continuation placement for the
   admitted profiles. Threshold-crossing sizes keep the earlier shaping path.
@@ -202,9 +340,9 @@ Acceptance remains bounded. Marker comparisons retain six explicit omissions;
 computed-fit pages do not prove native autofit choices. Colored RTL/merged
 combinations, dashed or translucent transitions and compound borders retain
 separate fallback paths. Neither workflow checks nor the native specimens
-establish complete table or whole-slide equivalence. The
-[publication receipt](PUBLICATION-HYGIENE.md) distinguishes upstream records
-from checks rerun on this documentation and privacy update.
+establish complete table or whole-slide equivalence. Historical [publication evidence](PUBLICATION-HYGIENE.md) distinguishes checks
+rerun for that publication pass from upstream acceptance records. It is not a
+replacement for the current release gate.
 
 ## Source and verification map
 
