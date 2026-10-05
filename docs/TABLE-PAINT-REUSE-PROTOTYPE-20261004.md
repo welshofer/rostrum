@@ -94,5 +94,25 @@ Raw drivers, source snapshots, original/candidate objects, input decks, outputs,
 counts and logs remain under `.build/table-paint-reuse20`. The machine-readable
 receipt in `docs/benchmarks/2026-10-04-table-paint-reuse-prototype.json` pins them.
 Independent review, integrated platform/native acceptance and any formal timing
-protocol remain parent-owned. Requested executor was gpt-6-astra/high; runtime
-model identity is unattested.
+protocol remain parent-owned.
+
+## Retained artifact clarification
+
+The original receipt pinned the candidate object hash but omitted its path.
+Following review, `.build/debug/Rostrum.o` was verified against that exact
+pre-existing hash and copied to
+`.build/table-paint-reuse20/candidate-Rostrum.o`. This is the Debug object used
+for the untimed proof, not a new build. The baseline object was already retained
+as `baseline-Rostrum.o`. Immutable production source archives are now explicitly
+retained as `baseline-sources.tar` (dc40a98) and `candidate-sources.tar` (3bab3d5).
+The receipt records each path, object/archive hash and Git Sources tree. The
+instrumented source directories are separate diagnostic modifications, not
+substitutes for the production source archives.
+
+The budget edge case was also reviewed without changing source: when the
+per-edge reservation exceeds the remaining estimated budget, `cost` receives a
+negative limit. Its nonempty roots contribute a positive cost and immediately
+reject admission, so the remaining budget is not decremented. Successful
+admission requires `cost <= remainingCost - paintCost`, keeping the stored
+remaining budget nonnegative. The cache's configurable internal test limit is
+clamped to zero; the renderer uses its fixed default of 216 entries.
