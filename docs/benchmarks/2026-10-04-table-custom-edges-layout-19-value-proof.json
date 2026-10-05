@@ -1,0 +1,68 @@
+{
+  "status": "PASS_EXACT_REPEATED_SHAPING_AND_LAYOUT",
+  "rows": [
+    {
+      "kind": "shaping",
+      "variant": "baseline",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/baseline-shaping.jsonl",
+      "SHA256": "254e2f8b8d1581154ec6cbde5f5f9d685322e4b110e1c54d03387d0bea6a18e3",
+      "records": 101022
+    },
+    {
+      "kind": "shaping",
+      "variant": "candidate-1",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/candidate-1-shaping.jsonl",
+      "SHA256": "254e2f8b8d1581154ec6cbde5f5f9d685322e4b110e1c54d03387d0bea6a18e3",
+      "records": 101022
+    },
+    {
+      "kind": "shaping",
+      "variant": "candidate-2",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/candidate-2-shaping.jsonl",
+      "SHA256": "254e2f8b8d1581154ec6cbde5f5f9d685322e4b110e1c54d03387d0bea6a18e3",
+      "records": 101022
+    },
+    {
+      "kind": "supplement-shaping",
+      "variant": "baseline",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/baseline-supplement-shaping.jsonl",
+      "SHA256": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+      "records": 288
+    },
+    {
+      "kind": "supplement-shaping",
+      "variant": "candidate-1",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/candidate-1-supplement-shaping.jsonl",
+      "SHA256": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+      "records": 288
+    },
+    {
+      "kind": "supplement-shaping",
+      "variant": "candidate-2",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/candidate-2-supplement-shaping.jsonl",
+      "SHA256": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+      "records": 288
+    },
+    {
+      "kind": "layout",
+      "variant": "baseline",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/baseline-layout.jsonl",
+      "SHA256": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+      "records": 1728
+    },
+    {
+      "kind": "layout",
+      "variant": "candidate-1",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/candidate-1-layout.jsonl",
+      "SHA256": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+      "records": 1728
+    },
+    {
+      "kind": "layout",
+      "variant": "candidate-2",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/candidate-2-layout.jsonl",
+      "SHA256": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+      "records": 1728
+    }
+  ]
+}
