@@ -1,0 +1,80 @@
+{
+  "scope": "Combined source integration before merging PR39. No app launch, termination, replacement, hosted tests, WebKit or new PowerPoint capture.",
+  "sourceParent": "e24c3f81a88ee4898cf2246262d6bc5cb33407a5",
+  "librarySourcesTree": "329d4adcde5e8b6deb0e8daeeabb5ab243ed6909",
+  "checks": {
+    "library": {
+      "tests": 1218,
+      "suites": 177,
+      "seconds": 64.011
+    },
+    "layout": {
+      "tests": 18,
+      "suites": 3,
+      "seconds": 0.073
+    },
+    "lecternCore": {
+      "tests": 315,
+      "suites": 50,
+      "seconds": 145.128
+    },
+    "focusedStandaloneAppTests": {
+      "definitions": 28,
+      "executions": 37,
+      "suites": 5,
+      "seconds": 71.018,
+      "catalogDecksPersisted": 34
+    },
+    "offlineWorkflowTests": 8,
+    "nativeSourceAudit": {
+      "decks": 4,
+      "imagePaints": 7
+    },
+    "readmeExamples": "source check plus both saved/reopened examples pass"
+  },
+  "logs": {
+    "library": {
+      "path": "/tmp/rostrum-main-integration-library-20261004.log",
+      "sha256": "6b934d290fc5201b0b57f0717b7ce5316e2f06d765eba1d7c8dee73b09fd48fd"
+    },
+    "core": {
+      "path": "/tmp/rostrum-main-integration-core-20261004.log",
+      "sha256": "ed169f326e58fc4d00dcc7834caf44becf3cfff1dbb96d4557f4260bf9dc5817"
+    },
+    "headless": {
+      "path": "/tmp/rostrum-main-integration-headless-fixed-20261004.log",
+      "sha256": "47075360ae4c7b3a5359d5ad361d5eb2b6180a0c651a1ff71a9f93b92b715202"
+    },
+    "headlessReceipt": {
+      "path": "/tmp/rostrum-main-integration-headless-fixed-20261004.json",
+      "sha256": "8b7577240a29e08a06f3623fbbe2e7daae8edc5bfefff329b9f2a34260ab5b6d"
+    },
+    "readme": {
+      "path": "/tmp/rostrum-main-integration-readme-fixed-20261004.log",
+      "sha256": "df930a20d577d8137e208e68ef28217c7e365be098b62dfb124589d0afdce99a"
+    },
+    "nativeAudit": {
+      "path": "/tmp/rostrum-main-integration-native-audit-20261004.json",
+      "sha256": "15fbf253c7a87132191d1dfbc7f5a68c7ed737bf864700fcb4648eff91179fc5"
+    }
+  },
+  "corrections": [
+    {
+      "reason": "New image-owner test used DirectoryEnumerator from an async function; extraction moved unchanged into synchronous helper.",
+      "path": "/tmp/rostrum-main-integration-headless-20261004.log",
+      "sha256": "a898db55f725f503132f705833fbdc8b95f47d826961b12df2bcfdd4219521f2"
+    },
+    {
+      "reason": "Independent review caught an out-of-scope expectedText reference in an existing font recovery test; restored original nonempty-font assertion."
+    },
+    {
+      "reason": "Initial README invocation used a missing output directory; corrected invocation creates the directory before running unchanged examples.",
+      "path": "/tmp/rostrum-main-integration-readme-20261004.log",
+      "sha256": "450aea170b1659583693431ae897ec3704ee4ea52016c133a6ed178169179859"
+    }
+  ],
+  "limits": [
+    "Native hosted and new WebKit/PowerPoint workflow acceptance deferred.",
+    "No new performance campaign was executed; prepared measurement scratch is not published as a result."
+  ]
+}

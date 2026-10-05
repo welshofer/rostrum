@@ -28,7 +28,7 @@ Rostrum is a **local path dependency** (`../`), resolving OQ-4.
 
 ## Library Lab
 
-Choose **Library Lab** in the sidebar to exercise the library offline. Its 33
+Choose **Library Lab** in the sidebar to exercise the library offline. Its 34
 configurable demonstrations cover drawing, text/fonts, paragraph justification, standard tab stops, tables, charts, SmartArt,
 notes, comments, sections, imports, layouts/themes/templates, design builders,
 media, packages and extraction. **Run All** saves and reopens every example,

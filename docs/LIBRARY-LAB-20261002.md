@@ -715,3 +715,24 @@ transition control's +1.326% interval extends to +2.817%, leaving adverse cost
 unresolved. See the [S21 report](LAYOUT-FIDELITY-20261004-21.md) and
 [performance report](TABLE-TRANSITIONS-PERFORMANCE-20261004-21.md) for scope,
 uncertainty and the retained complete results.
+
+
+## Image ownership and saved demo results (October 4)
+
+The 34th demonstration, **Image fill ownership**, exercises selected theme-image
+owners, colliding relationship IDs, direct slide overrides, and inherited
+layout/master images. Its first four pages preserve seven source image cases;
+the fifth exercises a public direct-image/no-fill override. Each option has 24
+checks and no findings in the scoped worker verification. Source/native evidence
+and the exact limitations are recorded in
+[NativeShapeImageOwners](../Tests/RostrumTests/Fixtures/NativeShapeImageOwners/README.md).
+The generated combined deck extends the source canvas to 864 by 540 points;
+it does not rescale the retained source shapes. Fresh native capture of the
+combined five-page decks and WebKit screenshots remains deferred.
+
+Completed app-run demos now save a distinct PowerPoint file in the library,
+including results with findings or failed file checks. Previous runs remain
+available, and Inspect Result uses the durable saved copy. A save failure retains
+the diagnostic result; cancelled or superseded work cannot publish a late file.
+The [credential safety and persistence record](KEYCHAIN-SAFETY-20261004.md)
+records the headless workflow checks and the explicit native-app validation hold.

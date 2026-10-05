@@ -34,7 +34,7 @@ import Rostrum
         #expect(host.lastCaptureFailure == nil)
         let readiness = try #require(JSONSerialization.jsonObject(with: Data(captured.fontReadinessJSON.utf8)) as? [String: Any])
         let faces = try #require(readiness["faces"] as? [[String: Any]])
-        #expect((expectedText == nil || !faces.isEmpty) && faces.allSatisfy { $0["status"] as? String == "loaded" })
+        #expect(!faces.isEmpty && faces.allSatisfy { $0["status"] as? String == "loaded" })
         #expect(try #require(PDFDocument(data: captured.pdf)).page(at: 0)?.string?.contains("AVATAR") == true)
         // This invokes the actual bitmap host, not SlideRasterizer's test override.
         let bitmap = try #require(await host.snapshot(svg: svg, size: size))

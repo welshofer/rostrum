@@ -44,13 +44,17 @@ import Rostrum
             #expect(try Data(contentsOf: directory.appendingPathComponent(relative)) == deck.package.part(at: PackURI(asset.partName)).blob)
             #expect(markdown.contains(relative))
         } }
+        #expect(try files(in: directory) == expected)
+        #expect(try deck.serializedData() == bytes)
+        #expect(try Data(contentsOf: result.afterURL) == bytes)
+    }
+
+    private func files(in directory: URL) throws -> Set<String> {
         var actual: Set<String> = []
         let files = try #require(FileManager.default.enumerator(at: directory, includingPropertiesForKeys: [.isRegularFileKey]))
         for case let file as URL in files where try file.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true {
             actual.insert(file.resolvingSymlinksInPath().pathComponents.dropFirst(directory.resolvingSymlinksInPath().pathComponents.count).joined(separator: "/"))
         }
-        #expect(actual == expected)
-        #expect(try deck.serializedData() == bytes)
-        #expect(try Data(contentsOf: result.afterURL) == bytes)
+        return actual
     }
 }
