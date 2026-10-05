@@ -1,0 +1,119 @@
+Building for debugging...
+[Pre-planning 1 / 272]
+[Finalizing plan]
+[1 / 1]
+[9 / 29] Rostrum
+[12 / 33] Rostrum
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:29:5: warning: 'public' modifier is redundant for property declared in a public extension
+ 27 |     /// which is how two parts of one deck end up disagreeing about whether a
+ 28 |     /// background is dark.
+ 29 |     public var relativeLuminance: Double {
+    |     `- warning: 'public' modifier is redundant for property declared in a public extension
+ 30 |         func linear(_ c: Int) -> Double {
+ 31 |             let s = Double(c) / 255
+
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:39:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+ 37 |     /// WCAG contrast ratio with `other`, 1 (identical) … 21 (black↔white).
+ 38 |     /// Symmetric.
+ 39 |     public func contrastRatio(with other: Color) -> Double {
+    |     `- warning: 'public' modifier is redundant for instance method declared in a public extension
+ 40 |         let hi = Swift.max(relativeLuminance, other.relativeLuminance)
+ 41 |         let lo = Swift.min(relativeLuminance, other.relativeLuminance)
+
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:47:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+ 45 |     /// The more legible of `dark`/`light` to sit ON this color as a background.
+ 46 |     /// Ties favor `dark`.
+ 47 |     public func onColor(dark: Color = .black, light: Color = .white) -> Color {
+    |     `- warning: 'public' modifier is redundant for instance method declared in a public extension
+ 48 |         contrastRatio(with: dark) >= contrastRatio(with: light) ? dark : light
+ 49 |     }
+
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:54:5: warning: 'public' modifier is redundant for static method declared in a public extension
+ 52 |     /// text). Deterministic — the first of equally-good options wins; empty
+ 53 |     /// `options` yields `.black`.
+ 54 |     public static func bestTextColor(on background: Color,
+    |     `- warning: 'public' modifier is redundant for static method declared in a public extension
+ 55 |                                      options: [Color] = [.black, .white]) -> Color {
+ 56 |         var best = Color.black
+[13 / 33] Rostrum
+[19 / 35] Rostrum
+[24 / 40] RostrumLayout
+[26 / 40] RostrumLayout
+[28 / 40] RostrumLayout
+[33 / 45] LecternCore
+[36 / 64] LecternCore
+[37 / 64] LecternCore
+[38 / 64] LecternCore
+[39 / 64] LecternCore
+[41 / 64] LecternCore
+[43 / 67] LecternCore
+[47 / 67] LecternCore
+[49 / 72] CompositionRegression-product
+[53 / 74] CompositionRegression-product
+[54 / 74] LecternCore
+[57 / 74] LecternCore
+[59 / 74] LecternCore
+[60 / 74] LecternCore
+[61 / 74] LecternCore
+[62 / 74] CompositionRegression-product
+[63 / 74] CompositionRegression-product
+[71 / 77] CompositionRegression-product
+[75 / 97] LecternCoreTests-product
+[77 / 97] LecternCoreTests-product
+[80 / 97] LecternCoreTests-product
+[81 / 97] LecternCoreTests-product
+[82 / 97] LecternCoreTests-product
+[83 / 97] LecternCoreTests-product
+[84 / 97] LecternCoreTests-product
+[86 / 97] LecternCoreTests-product
+[87 / 97] LecternCoreTests-product
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/DeckInspectionDetailTests.swift:102:13: warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+100 | 
+101 |     @Test func rejectsEmptyAndNonPowerPointData() throws {
+102 |         try withDeckFile(Data(), named: "empty.pptx") { url in
+    |             `- warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+103 |             #expect(throws: DeckInspectionError.self) {
+104 |                 _ = try DeckInspector.inspect(deckAt: url)
+
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/DeckInspectionDetailTests.swift:107:13: warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+105 |             }
+106 |         }
+107 |         try withDeckFile(Data("not a zip".utf8), named: "not-a-deck.pptx") { url in
+    |             `- warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+108 |             #expect(throws: DeckInspectionError.self) {
+109 |                 _ = try DeckInspector.inspect(deckAt: url)
+
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/DeckInspectionDetailTests.swift:117:13: warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+115 |     /// container, so it must not inherit Rostrum's unlimited default.
+116 |     @Test func enforcesTheUntrustedFileReadBudget() throws {
+117 |         try withDeckFile(try deckData()) { url in
+    |             `- warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+118 |             #expect(throws: DeckInspectionError.self) {
+119 |                 _ = try DeckInspector.inspect(deckAt: url,
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[88 / 97] LecternCoreTests-product
+[89 / 97] LecternCoreTests-product
+[90 / 97] LecternCoreTests-product
+[91 / 97] LecternCoreTests-product
+[92 / 97] LecternCoreTests-product
+[93 / 97] LecternCoreTests-product
+macro expansion #expect:1:53: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+`- /Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/TemplateGenerationTests.swift:110:74: note: expanded code originates here
+108 |         #expect(output.sections.map(\.name) == ["Generated section"])
+109 |         #expect(output.slides.map(\.notesText) == content().slides.map { $0.notes! })
+110 |         #expect(try output.slides.allSatisfy { try $0.comments.isEmpty })
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkValue(try output.slides.allSatisfy { try $0.comments.isEmpty },expression: .__fromSyntaxNode("try output.slides.allSatisfy { try $0.comments.isEmpty }"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    |  |                                                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+    +-------------------------------------------------------------------
+111 |         #expect(result.droppedContent.isEmpty)
+112 |         #expect(result.schemaIssues.isEmpty)
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[94 / 97] CompositionRegression-product
+[94 / 100] LecternCoreTests-product
+[96 / 100] LecternCoreTests-product
+Build complete! (17.03 sec)
+warning: No matching test cases were run

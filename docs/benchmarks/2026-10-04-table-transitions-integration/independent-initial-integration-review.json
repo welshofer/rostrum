@@ -1,0 +1,69 @@
+{
+  "status": "APPROVE_FROZEN_S21_INTEGRATION_DRAFT_PENDING_FINAL_ASSEMBLY",
+  "manifest": "/tmp/lectern-fidelity21-integration-draft/docs/benchmarks/2026-10-04-table-transitions-integration-verification.json",
+  "manifestSHA256": "7ddcae59f361d6fdd4dcbc7f3c340ba8422918b4bae50893a9f10ec7aed056cc",
+  "physicalPins": 2392,
+  "sourceGitPins": 685,
+  "exports": 169,
+  "sourceCheckpoint": "33e484edf53f8b3ba817b28e6717d27fe265a94c",
+  "SourcesTree": "d555de4fa405e9c03217ebb966125a360cdd7f78",
+  "gate": {
+    "library": [
+      1195,
+      175
+    ],
+    "layout": [
+      18,
+      3
+    ],
+    "core": [
+      306,
+      47
+    ],
+    "appDefinitions": [
+      96,
+      29
+    ],
+    "appExecutions": 135,
+    "pboardMessages": 14,
+    "buildsSucceeded": 2,
+    "contradictoryQuietExitCodeZero": 0
+  },
+  "freshBrowser": {
+    "PDFs": 45,
+    "cases": 226,
+    "glyphs": 2290,
+    "omissions": 6,
+    "admittedNewNativePaintCases": 26,
+    "excludedMergedNativeBorders": 2
+  },
+  "manualIndependentReview": {
+    "path": "/tmp/rostrum-s21-independent-manual-review.json",
+    "sha256": "53598b4f8c251250dda0a2311a94a78a99a020571ebc9548729a547f8967bfda"
+  },
+  "outputPreservation": {
+    "allPriorSVGBytesExact": true,
+    "nativeInputRows": 26,
+    "priorByteExact": 84,
+    "priorCommentOnly": 4,
+    "priorPackages": 88
+  },
+  "externalTotals": {
+    "checks": 1253,
+    "fileCount": 504,
+    "findings": 413,
+    "passedChecks": 1253,
+    "pptxReopens": 96,
+    "reopenedSlides": 320,
+    "reports": 41,
+    "xmlPartsParsed": 3752
+  },
+  "findings": [],
+  "limits": [
+    "Original draft correctly pending performance; final accepted packet and report assembly must be additive and reviewed separately.",
+    "685 source pins explicitly scoped, not whole repository or interchangeable with prior denominators.",
+    "No fresh GUI, tests/builds/benchmarks, old evidence modification or extraction by reviewer for this draft; previous independent strict native/browser/manual receipts remain pinned."
+  ],
+  "script": "/tmp/review-s21-integration-draft.py",
+  "scriptSHA256": "8d457a1d1ac53e4e6f70fe3e7f6f332eccd96fc20f78e14a681339bfd72648ec"
+}

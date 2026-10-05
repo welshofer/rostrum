@@ -1,0 +1,8 @@
+{
+  "status": "INITIAL_PROMOTION_STOPPED_BEFORE_MANIFEST_WRITE",
+  "helper": "/tmp/accept-fidelity21-integration.py",
+  "observedError": "AssertionError at line37: target = root / row[proposedExport]; assert not target.exists()",
+  "cause": "The reviewed input manifest contains two same-byte manual-addendum-assembly.py export rows. 176 unique files had already been copied. No evidence bytes were overwritten.",
+  "recovery": "v2 verifies all existing copies by exact SHA and deduplicates the repeated provenance destination. Original helper, report snapshot and draft retained.",
+  "helperPreparation": "An intermediate generator asserted a non-semantic script line-count before writing v2 and failed; its subsequent shell invocation found no v2 file. Removing that incidental check changed no evidence."
+}

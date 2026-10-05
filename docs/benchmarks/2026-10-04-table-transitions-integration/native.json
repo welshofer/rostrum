@@ -1,0 +1,132 @@
+{
+  "status": "PASS_S21_GENERATED_NATIVE_BOUNDED_PAINT_AND_ALL_GLYPHS",
+  "options": 2,
+  "PDFs": 2,
+  "PDFPagesEach": 5,
+  "oraclePagesEach": 4,
+  "cases": 28,
+  "glyphs": 480,
+  "nativePaintAdmittedCases": 26,
+  "nativePaintExcludedMergedCases": 2,
+  "bounds": {
+    "vectorPoints": 0.001,
+    "RGB": 0.0001,
+    "glyphX": 0.025,
+    "glyphY": 0.121,
+    "paintSize": 0.002
+  },
+  "rows": [
+    {
+      "option": "alternative-false",
+      "page": 0,
+      "receipt": "/tmp/lectern-fidelity21-generated-native/alternative-false/independent-v2-page1.json",
+      "receiptSHA256": "fb4aba802b2f5bebc7dc91830ab3f6e5b04e13322b1a68a5eeaefeed53203da4",
+      "cases": 4,
+      "glyphs": 64,
+      "admittedCases": 4
+    },
+    {
+      "option": "alternative-false",
+      "page": 1,
+      "receipt": "/tmp/lectern-fidelity21-generated-native/alternative-false/independent-v2-page2.json",
+      "receiptSHA256": "3076afe4050b86a275ce0619da973a568b5d2bc7ebd263c55dcb90fe01d5bfec",
+      "cases": 4,
+      "glyphs": 60,
+      "admittedCases": 3
+    },
+    {
+      "option": "alternative-false",
+      "page": 2,
+      "receipt": "/tmp/lectern-fidelity21-generated-native/alternative-false/independent-v2-page3.json",
+      "receiptSHA256": "ee7598b5e78ab3ae207b2f2b84fdbee4ca987d1181ee755fc635e428887d9b4a",
+      "cases": 4,
+      "glyphs": 64,
+      "admittedCases": 4
+    },
+    {
+      "option": "alternative-false",
+      "page": 3,
+      "receipt": "/tmp/lectern-fidelity21-generated-native/alternative-false/independent-v2-page4.json",
+      "receiptSHA256": "c1665f59cf6f1b75aea141f637d3d724459cb0c8cea530e43cc5389a7f3ac87e",
+      "cases": 2,
+      "glyphs": 52,
+      "admittedCases": 2
+    },
+    {
+      "option": "alternative-true",
+      "page": 0,
+      "receipt": "/tmp/lectern-fidelity21-generated-native/alternative-true/independent-v2-page1.json",
+      "receiptSHA256": "0cf4e74a580a785948c6b559b73377c207f13f5ab93d96ff8b0e71b77a444efb",
+      "cases": 4,
+      "glyphs": 64,
+      "admittedCases": 4
+    },
+    {
+      "option": "alternative-true",
+      "page": 1,
+      "receipt": "/tmp/lectern-fidelity21-generated-native/alternative-true/independent-v2-page2.json",
+      "receiptSHA256": "b0815a704b0b421ed8e3b53ce5bbaa111a296180229bdd44b93fd8da19614ee1",
+      "cases": 4,
+      "glyphs": 60,
+      "admittedCases": 3
+    },
+    {
+      "option": "alternative-true",
+      "page": 2,
+      "receipt": "/tmp/lectern-fidelity21-generated-native/alternative-true/independent-v2-page3.json",
+      "receiptSHA256": "2e63ea19272b8026876bb2f2d8d7630a4d663f703f0128bea0da10a926fc0b18",
+      "cases": 4,
+      "glyphs": 64,
+      "admittedCases": 4
+    },
+    {
+      "option": "alternative-true",
+      "page": 3,
+      "receipt": "/tmp/lectern-fidelity21-generated-native/alternative-true/independent-v2-page4.json",
+      "receiptSHA256": "b8ed3e0ab87deaebb43b730eaa2374f004be55eccd91e2574cee51ce7143665a",
+      "cases": 2,
+      "glyphs": 52,
+      "admittedCases": 2
+    }
+  ],
+  "pins": {
+    "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/TableTransitionsReferences.json": "f32377d4f0c561c1712e2260193aebda3874fbb29a119306322800cfe5a859cb",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+    "/tmp/verify-fidelity21-table-transition-paint-v2.py": "cc37e33c839bbc858908d636ffc28fec28525ade6c1402c2ebce720bac243db4",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableTransitions/vertical/native-table-transitions21-v1.pptx": "5db74899fc18508281bc6787e4618a7bd471d27df213a2982cf86dfdccd022d2",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableTransitions/horizontal/native-table-transitions21-horizontal-v1.pptx": "166cc0173a0ce1c899a1e11a29fc6d7f3d00d2da9d40818a7852249c4be07824",
+    "/tmp/lectern-transitions21-worker/native-candidates/alternative-false/slide-1.svg": "f09ed1c33e887b8fbca61fbe636b134994dd575fe6080ed47117522d7aab4ae2",
+    "/tmp/lectern-fidelity21-generated-native/alternative-false/independent-v2-page1.json": "fb4aba802b2f5bebc7dc91830ab3f6e5b04e13322b1a68a5eeaefeed53203da4",
+    "/tmp/lectern-transitions21-worker/native-candidates/alternative-false/slide-2.svg": "40f62b7de92955cc88799ed8e0a24afff548fcdfbdadffc60f6b8bab7c831596",
+    "/tmp/lectern-fidelity21-generated-native/alternative-false/independent-v2-page2.json": "3076afe4050b86a275ce0619da973a568b5d2bc7ebd263c55dcb90fe01d5bfec",
+    "/tmp/lectern-transitions21-worker/native-candidates/alternative-false/slide-3.svg": "3e8ec0040c596dae3df60c51dc72fe8e967490e71f8e65c0a1783ed3bfeedebc",
+    "/tmp/lectern-fidelity21-generated-native/alternative-false/independent-v2-page3.json": "ee7598b5e78ab3ae207b2f2b84fdbee4ca987d1181ee755fc635e428887d9b4a",
+    "/tmp/lectern-transitions21-worker/native-candidates/alternative-false/slide-4.svg": "7990a6b60b048adfce3a7233bf4ebfcffc0d053b32958103d7a8ea8945fcf775",
+    "/tmp/lectern-fidelity21-generated-native/alternative-false/independent-v2-page4.json": "c1665f59cf6f1b75aea141f637d3d724459cb0c8cea530e43cc5389a7f3ac87e",
+    "/tmp/lectern-fidelity21-generated-native/alternative-false/capture-receipt.json": "e54872f2e8e0f610298bd342320256c590ab3557c735dd37d0d9a4d256ba8346",
+    "/tmp/lectern-fidelity21-generated-native/alternative-false/input-pins.json": "4314f68bdd61a5e1d67ff2435b6e8bf0d8e7e575a70aed91b57e56d199d9214e",
+    "/tmp/lectern-fidelity21-generated-native/alternative-false/tableTransitions.pptx": "5c5d1898ff750097b00e79d20fa0ee60500adaedf204d6f2e30a228893d64d20",
+    "/tmp/lectern-fidelity21-generated-native/alternative-false/powerpoint.pdf": "acee05eb0c5a73021c1c80c47c28735fc61cd1370ef4a25a1756f665c5c95469",
+    "/tmp/lectern-transitions21-worker/native-candidates/alternative-true/slide-1.svg": "f09ed1c33e887b8fbca61fbe636b134994dd575fe6080ed47117522d7aab4ae2",
+    "/tmp/lectern-fidelity21-generated-native/alternative-true/independent-v2-page1.json": "0cf4e74a580a785948c6b559b73377c207f13f5ab93d96ff8b0e71b77a444efb",
+    "/tmp/lectern-transitions21-worker/native-candidates/alternative-true/slide-2.svg": "40f62b7de92955cc88799ed8e0a24afff548fcdfbdadffc60f6b8bab7c831596",
+    "/tmp/lectern-fidelity21-generated-native/alternative-true/independent-v2-page2.json": "b0815a704b0b421ed8e3b53ce5bbaa111a296180229bdd44b93fd8da19614ee1",
+    "/tmp/lectern-transitions21-worker/native-candidates/alternative-true/slide-3.svg": "3e8ec0040c596dae3df60c51dc72fe8e967490e71f8e65c0a1783ed3bfeedebc",
+    "/tmp/lectern-fidelity21-generated-native/alternative-true/independent-v2-page3.json": "2e63ea19272b8026876bb2f2d8d7630a4d663f703f0128bea0da10a926fc0b18",
+    "/tmp/lectern-transitions21-worker/native-candidates/alternative-true/slide-4.svg": "7990a6b60b048adfce3a7233bf4ebfcffc0d053b32958103d7a8ea8945fcf775",
+    "/tmp/lectern-fidelity21-generated-native/alternative-true/independent-v2-page4.json": "b8ed3e0ab87deaebb43b730eaa2374f004be55eccd91e2574cee51ce7143665a",
+    "/tmp/lectern-fidelity21-generated-native/alternative-true/capture-receipt.json": "e68aa157f911e14807bfaa18f38f21bd28013556cb5778ca5e4f0a7c2af4786d",
+    "/tmp/lectern-fidelity21-generated-native/alternative-true/input-pins.json": "2c9a42c4bfebb647bafef9dc32e0cf1fbf1cae165daf9d87978b8b505d78b85e",
+    "/tmp/lectern-fidelity21-generated-native/alternative-true/tableTransitions.pptx": "33554e0538f198d8be0600eb9088f16c1486874f610345a204aa9a89635f7cd1",
+    "/tmp/lectern-fidelity21-generated-native/alternative-true/powerpoint.pdf": "7a7b7fd69388f067061123dc840f16e97f61a2b53a3622598cdfbc8c3bf0fd65"
+  },
+  "scope": [
+    "All14 source frames/table bodies/grids/actual embedded font bytes retained exactly per option; only outside captions and deck composition may differ.",
+    "All480 visible body glyphs independently consumed, actual subset/source outlines and raw PDF/text/vector matrices checked. No trace-bbox-as-ink or raster parity claim.",
+    "26 admitted cases complete opaque stroke/fill arrangement and intervals checked; merged-colored borders remain excluded from native acceptance, while their glyph bounds remain strict and SVG baseline fallback is checked.",
+    "Fifth public computed-control page outside native geometry oracle; root owns no-repair/local-print and visual observations.",
+    "No tests/builds/GUI/timing or source/original evidence changes by reviewer."
+  ],
+  "script": "/tmp/review-s21-generated-native-v2.py",
+  "scriptSHA256": "faefe7bb36123a980856f75b1e52b952b3c22ef4654d8672f6d708eb64a346af"
+}
