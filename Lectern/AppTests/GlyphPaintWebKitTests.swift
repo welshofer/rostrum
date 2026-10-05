@@ -399,6 +399,48 @@ import Rostrum
         }
     }
 
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
+    func tableTransitionsVariantsProduceFontReadyVectorEvidence() async throws {
+        let base = URL(fileURLWithPath: ProcessInfo.processInfo.environment["LECTERN_TABLE_TRANSITIONS_WEBKIT_OUTPUT"]
+            ?? "/tmp/lectern-table-transitions-webkit-20261004", isDirectory: true)
+        let directory = base.appendingPathComponent("table-transitions-" + UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let host = SnapshotHost()
+        defer { host.close() }
+        for alternative in [false, true] {
+            let result = try LibraryLab.run(.tableTransitions, options: .init(alternative: alternative),
+                                           in: directory.appendingPathComponent("lab-\(alternative)", isDirectory: true))
+            #expect(result.passed && result.slideCount == 5)
+            let deck = try Presentation(contentsOf: result.afterURL)
+            #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
+            let size = CGSize(width: deck.slideSize.width.points, height: deck.slideSize.height.points)
+            #expect(size == CGSize(width: 720, height: 720))
+            let referenceURL = result.directory.appendingPathComponent("native-table-transitions-reference.json")
+            let reference = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: referenceURL)) as? [String: Any])
+            let cases = try #require(reference["cases"] as? [[String: Any]])
+            #expect(cases.count == 14)
+            // Page five is a public control; the excluded merged specimen retains fallback only.
+            for slideIndex in 0..<4 {
+                let selected = cases.filter { ($0["slide"] as? Int) == slideIndex }
+                #expect(!selected.isEmpty)
+                let inspectorSVG = result.directory.appendingPathComponent(String(format: "previews/slide-%02d.svg", slideIndex + 1))
+                let svg = try String(contentsOf: inspectorSVG, encoding: .utf8)
+                let groups = ["NativeTableTransitions/vertical", "NativeTableTransitions/vertical", "NativeTableTransitions/horizontal", "NativeTableTransitions/horizontal"]
+                let specimens: [[String: Any]] = try selected.map { sample in
+                    let id = try #require(sample["id"] as? String)
+                    let shape = try #require(deck.slides[slideIndex].shapes.first { $0.name == id })
+                    return ["sampleID": id, "frame": Self.frame(shape.frame), "referenceGroup": groups[slideIndex],
+                            "referenceID": id, "nativeBorderAdmitted": id != "merged-colored-rejection", "referenceSource": try #require(sample["source"] as? String),
+                            "referenceJSON": referenceURL.path]
+                }
+                try await capture(svg: svg, size: size, stem: "table-transitions-\(alternative)-slide-\(slideIndex + 1)",
+                                  source: result.afterURL, slideIndex: slideIndex, specimens: specimens,
+                                  expectedText: try #require(selected.first?["id"] as? String), host: host, directory: directory,
+                                  inspectorSVG: inspectorSVG)
+            }
+        }
+    }
+
     private func capture(svg: String, size: CGSize, stem: String, source: URL, slideIndex: Int,
                          specimens: [[String: Any]], expectedText: String,
                          host: SnapshotHost, directory: URL, inspectorSVG: URL? = nil) async throws {
