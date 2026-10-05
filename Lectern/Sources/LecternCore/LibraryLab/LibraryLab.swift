@@ -139,6 +139,7 @@ public enum LibraryLab {
                 }
             }
             let export = try DeckExporter.export(deckAt: afterURL, into: directory.appendingPathComponent("extracted"))
+            checks += try DrawingLabRecipes.imageFillExportChecks(id: id, export: export)
             for message in export.warnings {
                 findings.append(.init(stage: "Export", slideNumber: nil, code: "export", message: message,
                                       partURI: nil, shapeID: nil, path: nil))

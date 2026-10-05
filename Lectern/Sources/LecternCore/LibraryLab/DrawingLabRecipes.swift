@@ -10,7 +10,7 @@ enum DrawingLabRecipes {
               limitations: ["The document stores every preset; SVG approximates unsupported geometries and shape rotations. Group/connector creation and flip setters are not public APIs."],
               inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Rotate presets 15 degrees"),
         .init(.fillsAndLines, title: "Fills, outlines and shadows", summary: "Solid, alpha, theme, linear/radial gradient and image fills; every dash and compound stroke.",
-              operations: ["Slide.setBackground", "Slide.background", "Slide.effectiveBackground", "Slide.effectiveBackgroundColor", "Shape.setFill", "Shape.setLine", "Shape.enableSoftShadow", "Fill.themeColor", "GradientFill.radial", "LineDash.allCases", "LineCompound.allCases"],
+              operations: ["Slide.setBackground", "Slide.background", "Slide.effectiveBackground", "Slide.effectiveBackgroundColor", "Shape.setFill", "Shape.setLine", "Shape.enableSoftShadow", "Fill.themeColor", "GradientFill.radial", "LineDash.allCases", "LineCompound.allCases", "Presentation.outline", "DeckExport.write"],
               limitations: ["Preview gradient geometry and compound strokes may be approximated. Slide.background reads authored paint; effectiveBackground follows slide → layout → master. An explicit no-fill stops inheritance, while an absent slide background inherits."],
               inputs: [.text, .accent, .alternative], alternativeLabel: "Reverse gradient colors"),
         .init(.text, title: "Rich text and live fields", summary: "Paragraphs, lists, formatted runs, external/internal links, slide numbers and dates.",
@@ -30,7 +30,7 @@ enum DrawingLabRecipes {
               limitations: ["Native styles use theme colors. SVG is a preview; PowerPoint remains the document rendering authority."],
               inputs: [.text, .sampleSize, .alternative], alternativeLabel: "Column bands, footers and RTL"),
         .init(.tableAppearance, title: "Cell appearance", summary: "Borders, fills, padding, vertical text, custom styles and live full-size table-cell fitting.",
-              operations: ["Table.clearBuiltInStyle", "Table.cellPadding", "TableCell.setFill", "TableCell.setPadding", "TableCell.setText", "TableCell.applyTextStyle", "TableCell.setBorders", "TableCell.setBorder", "TableCell.clearBorder", "TableCell.verticalAnchor", "TableCell.textDirection", "Table.rightToLeft", "Table.setStyleDefinition", "Table.setStyleDefinition(_:from:in:)", "RichTextLayout.Context.tableCell", "TableCell.textFrame.fitText"],
+              operations: ["Table.clearBuiltInStyle", "Table.cellPadding", "TableCell.setFill", "TableCell.setPadding", "TableCell.setText", "TableCell.applyTextStyle", "TableCell.setBorders", "TableCell.setBorder", "TableCell.clearBorder", "TableCell.verticalAnchor", "TableCell.textDirection", "Table.rightToLeft", "Table.setStyleDefinition", "Table.setStyleDefinition(_:from:in:)", "RichTextLayout.Context.tableCell", "TableCell.textFrame.fitText", "Presentation.outline", "DeckExport.write"],
               limitations: ["Vertical text and gradient fills can be approximated by previews. Custom style extensions are preserved as opaque data; previewing their proprietary meaning is unsupported. Table-cell context ignores and diagnoses stored font scale. Nonzero stored line reduction is unverified; cell fitting refuses it without changing the document."],
               inputs: [.text, .accent, .alternative], alternativeLabel: "RTL, vertical-270 and wider cell inset")
     ]
@@ -176,7 +176,7 @@ enum DrawingLabRecipes {
                 .init("Radial path and tiling persist", try nodes(reopened.slides[0].part.dom(), "a:path").contains { $0[attribute: "path"] == "circle" } && nodes(reopened.slides[0].part.dom(), "a:tile").contains { $0[attribute: "sx"] == "1200000" }, "Verified radial gradient and image tile settings in document XML."),
                 .init("Shadow survives", first[1].hasShadow, "Outer shadow is present."),
                 .init("Every dash and compound survives", Set(outline.compactMap { $0.line?.dashStyle }) == Set(LineDash.allCases.map(\.rawValue)) && Set(outline.compactMap { $0.line?.compoundStyle }) == Set(LineCompound.allCases.map(\.rawValue)), "Compared every public dash and compound token.")
-            ] + backgroundChecks
+            ] + backgroundChecks + [try imageFillInventoryCheck(reopened, id: .fillsAndLines)]
         })
     }
 
@@ -420,7 +420,7 @@ enum DrawingLabRecipes {
                 .init("Suppressed and inherited borders remain distinct", try table.cell(0, 1).border(.top)?.isNone == true && table.cell(0, 2).border(.top) == nil, "Explicit no-fill differs from absent/inherited line."),
                 .init("Cell fills persist", try cell.fill == .solid(accent, alpha: 1) && table.cell(1, 2).fill == .solid(accent, alpha: 0.3) && table.cell(2, 1).fill == .themeScheme("accent2") && table.cell(2, 2).fill == .noFill, "Solid, alpha, theme and no-fill retain their semantics."),
                 .init("Cell layout and text persist", try cell.text == o.text && cell.verticalAnchor == .middle && table.cell(2, 0).textDirection == (o.alternative ? .vertical270 : .vertical) && table.rightToLeft == o.alternative && table.builtInStyle == .noStyleNoGrid && nodes(root, "a:tcPr").contains { $0[attribute: "marL"] == "152400" && $0[attribute: "marT"] == "114300" }, "Text, padding, anchor, direction and No Style, No Grid identity survive.")
-            ] + (try custom.verify(reopened)) + (try context.verify(reopened))
+            ] + (try custom.verify(reopened)) + (try context.verify(reopened)) + [try imageFillInventoryCheck(reopened, id: .tableAppearance)]
         })
     }
 }
