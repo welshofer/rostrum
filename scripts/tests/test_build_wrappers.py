@@ -19,6 +19,9 @@ class BuildWrappersTests(unittest.TestCase):
                 (root / 'App/main.swift').write_text('print("fixture")')
                 (root / '.signing.local').write_text('LECTERN_SIGN_IDENTITY="stable-audit-identity"\n')
                 bindir = root / 'bin'; bindir.mkdir()
+                process_check = bindir / 'pgrep'
+                process_check.write_text('#!/bin/bash\nexit 1\n')
+                process_check.chmod(0o755)
                 builder = bindir / 'xcodebuild'
                 builder.write_text('#!/bin/bash\nprintf "%s\\n" "$@" > build-arguments.txt\n')
                 builder.chmod(0o755)
@@ -44,6 +47,9 @@ targets:
                 else:
                     self.assertIn('CODE_SIGN_IDENTITY=stable-audit-identity', args)
                     self.assertIn('CODE_SIGN_STYLE=Manual', args)
+                if wrapper == 'test-app.sh':
+                    self.assertIn('LecternTests', args)
+                    self.assertIn('.build-xcode-tests', args)
                 # Same missing-tool error, even when an old generated project exists.
                 (bindir / 'dirname').symlink_to('/usr/bin/dirname')
                 (bindir / 'bash').symlink_to('/bin/bash')

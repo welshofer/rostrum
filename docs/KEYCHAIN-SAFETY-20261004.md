@@ -15,3 +15,9 @@ The exact application Swift sources, excluding the `@main` entry point, were com
 Receipt and raw log: [credential safety evidence](verification/2026-10-04-credential-safety/headless-tests.json). Source hashes identify the tested snapshot. Subsequent independent changes require their own verification.
 
 The earlier S22 full verification run was interrupted during its hosted-app stage and is **not a completed acceptance gate**. App-hosted tests, app launches, runtime Keychain verification, and replacing/relaunching the user's app remain deferred to preserve the active session. The headless check does not claim UI or native-app end-to-end acceptance.
+
+## Hosted-test product separation
+
+`LecternTests` now builds and hosts tests in `LecternTestHost.app`, with bundle ID `com.lectern.app.testhost`, its own executable name, and the explicit test-session Info.plist flag. The normal app retains its identity and build settings. The test script defaults to `.build-xcode-tests`, preserves the stable signing configuration, and refuses to start if either app is already running or process inspection fails. It checks again after project generation and never terminates an app.
+
+Four mocked/static wrapper tests passed, including an app becoming active during project generation, process-query failure, preserved normal identity, and the generated test host/scheme mapping. These checks invoke XcodeGen in temporary directories and mocked build commands; they do not launch or build an app. Runtime hosted-test acceptance remains deferred.
