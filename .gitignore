@@ -38,7 +38,14 @@ core.*
 # Their durable findings belong in ROADMAP.md (deferred work) and CHANGELOG.md
 # (what shipped), not as 200KB of process notes at the repo root.
 /lift-up-plan-*.md
-/burn-down-report-*.md
+# Report basenames are ignored at any depth, including common filename variants.
+burn-down-report*
+burn_down_report*
+burndown-report*
+burndown_report*
+
+# Local security policy; keep the working copy outside the public repository.
+/SECURITY.md
 
 # Python test-tool caches
 __pycache__/

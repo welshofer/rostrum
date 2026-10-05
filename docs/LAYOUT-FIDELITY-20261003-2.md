@@ -64,8 +64,7 @@ change was discarded. No net memory or cross-platform speed gain is claimed.
 
 ## Verification and remaining work
 
-The [burn-down report](../burn-down-report-20261003-2.md) records final integration
-checks and native PowerPoint evidence. Profiling the common layout overhead is
+Profiling the common layout overhead is
 the next performance target. Full bidi layout, locale-specific decimal separators,
 multi-column flow, decoration geometry, narrow font-rounding boundaries and
 the existing table raster discrepancies remain separate fidelity targets.
