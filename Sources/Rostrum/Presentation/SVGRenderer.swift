@@ -1368,12 +1368,12 @@ struct SVGRenderer {
         }
         var borders = TableBorderSegments<BorderPaint>()
         var maximumBorderWidth = 0
-        func borderPaint(_ line: XML.Element?) -> BorderPaint? {
-            guard let line, line.firstChild(named: "a:noFill") == nil,
+        var decodedBorders = TableBorderPaintCache<BorderPaint>()
+        func decodeBorderPaint(_ line: XML.Element) -> BorderPaint? {
+            guard line.firstChild(named: "a:noFill") == nil,
                   let color = colorHex(in: line.firstChild(named: "a:solidFill")) else { return nil }
             let width = max(0, line.coordinate("w") ?? 12700)
             guard width > 0 else { return nil }
-            maximumBorderWidth = max(maximumBorderWidth, width)
             let pattern: String
             switch line.firstChild(named: "a:prstDash")?[attribute: "val"] {
             case "dot", "sysDot": pattern = "\(width) \(width * 2)"
@@ -1392,6 +1392,11 @@ struct SVGRenderer {
                 }
             return BorderPaint(color: color, width: width, pattern: pattern, simpleSolid: simpleSolid,
                                double: TableDoubleBorder.supports(line))
+        }
+        func borderPaint(_ line: XML.Element?) -> BorderPaint? {
+            let paint = decodedBorders.value(for: line, canReuse: styles.ownsSharedBorder, decode: decodeBorderPaint)
+            if let paint { maximumBorderWidth = max(maximumBorderWidth, paint.width) }
+            return paint
         }
         func lineSVG(_ paint: BorderPaint, _ endpoints: (Int, Int, Int, Int), offset: Int = 0,
                      startExtension: Double = 0, endExtension: Double = 0) -> String {

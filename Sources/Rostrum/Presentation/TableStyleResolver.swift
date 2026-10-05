@@ -364,9 +364,16 @@ public struct TableStyleResolver {
     struct RenderSession {
         private let resolver: TableStyleResolver
         private var templates: [Int: Effective] = [:]
+        private var sharedBorders = Set<ObjectIdentifier>()
         private var remainingCost = 1_048_576
 
         init(_ resolver: TableStyleResolver) { self.resolver = resolver }
+
+        /// Only admitted template descendants have the stable read-only lifetime
+        /// needed by the renderer's decoded-paint reuse. Direct overlays bypass it.
+        func ownsSharedBorder(_ line: XML.Element) -> Bool {
+            sharedBorders.contains(ObjectIdentifier(line))
+        }
 
         mutating func effective(row: Int, column: Int) -> Effective {
             // Region membership and whole-table edge selection depend only on
@@ -385,8 +392,14 @@ public struct TableStyleResolver {
                 resolver.resolveColors(in: base.text)
                 // Bound estimated retained nodes/strings as well as the variant count.
                 // A large custom style still renders normally without caching.
-                if let cost = Self.cost(of: [base.properties, base.text], limit: remainingCost) {
-                    templates[key] = base; remainingCost -= cost
+                let borders = TableCellBorder.allCases.compactMap { base.properties.firstChild(named: $0.rawValue) }
+                // Reserve an estimated 512 bytes per border for identity sets,
+                // retained decoded entries and their bounded CSS/pattern strings.
+                // At most 36 templates x 6 borders can be admitted per render.
+                let paintCost = borders.count * 512
+                if let cost = Self.cost(of: [base.properties, base.text], limit: remainingCost - paintCost) {
+                    templates[key] = base; remainingCost -= cost + paintCost
+                    for border in borders { sharedBorders.insert(ObjectIdentifier(border)) }
                 }
             }
             if let direct = resolver.grid.cells[row][column].firstChild(named: "a:tcPr"),
