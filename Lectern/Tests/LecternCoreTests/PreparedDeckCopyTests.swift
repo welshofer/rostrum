@@ -58,7 +58,9 @@ import Rostrum
         for title in ["../folder:bad\\name", String(repeating: "🎨", count: 150), "..."] {
             let pending = try DeckStorage.prepareDeckCopy(from: f.source, title: title, into: f.library)
             let url = try pending.commit()
-            #expect(url.deletingLastPathComponent().standardizedFileURL == f.library.standardizedFileURL)
+            // Foundation may retain different directory hints (and trailing
+            // slashes) on Linux; containment concerns the filesystem path.
+            #expect(url.deletingLastPathComponent().standardizedFileURL.path == f.library.standardizedFileURL.path)
             #expect(!url.lastPathComponent.hasPrefix(".") && url.lastPathComponent.utf8.count < 255)
             #expect(try Data(contentsOf: url) == f.bytes)
         }
