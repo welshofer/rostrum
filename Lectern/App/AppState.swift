@@ -109,6 +109,17 @@ final class AppState {
 
     func dismissMigrationNotice() { migrationNotice = nil }
 
+    /// Actual app-run demos become durable library documents. Core recipe runs
+    /// remain diagnostics-only unless this app boundary explicitly requests it.
+    @discardableResult
+    func runLibraryDemos(_ ids: [LibraryDemoID], model: LibraryLabModel, in directory: URL? = nil) -> Task<Void, Never> {
+        let parent = directory ?? (injectedDiagnosticsDirectory ?? Self.diagnosticsDirectory())
+            .appendingPathComponent("Library Lab", isDirectory: true)
+        return model.run(ids, in: parent, savingTo: libraryDirectory) { [weak self] _ in
+            self?.refreshLibrary()
+        }
+    }
+
     func acceptRecoveredDeck(_ result: DeckResult) {
         phase = .result(result)
         recoveryURL = result.recoveryURL; recoverySourceURL = result.url
