@@ -1,0 +1,604 @@
+{
+  "status": "PASS",
+  "scope": "Functional validation only under uncontrolled overlap; rawphase durations retained but excluded from authoritative statistics and claims. One sample/build/input; no comparative estimates.",
+  "cases": [
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-builtin-v1.pptx",
+      "name": "native-builtin",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "98f5852c774cef00be3ba9982c51735d8430a345c608587605a2c20d8717b68b",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1013794
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "98f5852c774cef00be3ba9982c51735d8430a345c608587605a2c20d8717b68b",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1013717
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-custom-v1.pptx",
+      "name": "native-custom",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "fd69ced7b0710600699774615ee86f8ad598bed68265fb4950d97dbc5723defd",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1014181
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "fd69ced7b0710600699774615ee86f8ad598bed68265fb4950d97dbc5723defd",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1014104
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-joins-v1.pptx",
+      "name": "native-joins",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "99b6c053c9110a249c83ccb6d7c9411890b1fc17fa375ea11ed13c4b4c40a414",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1017028
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "99b6c053c9110a249c83ccb6d7c9411890b1fc17fa375ea11ed13c4b4c40a414",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1017028
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-20x10.pptx",
+      "name": "absent-20x10",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "45eddc34f1ac55815428110bcf29630be95cdec573dfcdee60f5c6a115d123af",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1119911
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "45eddc34f1ac55815428110bcf29630be95cdec573dfcdee60f5c6a115d123af",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1104731
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-100x20.pptx",
+      "name": "absent-100x20",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "401401b767c4890fbf5c00b4e37e4723e27a13e41027b0600e601853e77f4011",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 2093443
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "401401b767c4890fbf5c00b4e37e4723e27a13e41027b0600e601853e77f4011",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1942663
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-200x50.pptx",
+      "name": "absent-200x50",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "c22c456f416aced6dbabeab679579732d2c22405092e14775634bb6c7692cac9",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 6342805
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "c22c456f416aced6dbabeab679579732d2c22405092e14775634bb6c7692cac9",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 5586855
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-20x10.pptx",
+      "name": "explicit-20x10",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "5cd3cd0d19b825efa2bc6831b846ee3167f3ad5efb9da1f67663d91b89dafc6a",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1119911
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "5cd3cd0d19b825efa2bc6831b846ee3167f3ad5efb9da1f67663d91b89dafc6a",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1119911
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-200x50.pptx",
+      "name": "explicit-200x50",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "a2bdb4093eab61626dd9ed4d7bd27939853b5885b02c43076fd61c3b412193a5",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 6342805
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "a2bdb4093eab61626dd9ed4d7bd27939853b5885b02c43076fd61c3b412193a5",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 6342805
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-absent-20x10.pptx",
+      "name": "custom-absent-20x10",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "1140e9e94fc21685227b7fc7148268a4127653a469a81b80725b94231b3b8611",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1119943
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "1140e9e94fc21685227b7fc7148268a4127653a469a81b80725b94231b3b8611",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1104731
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-explicit-20x10.pptx",
+      "name": "custom-explicit-20x10",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "91774b8b1a5dc0afed26fe2d4aa22a94779c9218c5c5b0696d8d6e9f0d06bb81",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1119943
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "91774b8b1a5dc0afed26fe2d4aa22a94779c9218c5c5b0696d8d6e9f0d06bb81",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1119943
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-20x10.pptx",
+      "name": "mixed-joins-20x10",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "3f5e0046f30a9d9ea1ac40c3a1ab4631c4611c2884882544860ca99974dde08a",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1104603
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "3f5e0046f30a9d9ea1ac40c3a1ab4631c4611c2884882544860ca99974dde08a",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1104731
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-100x20.pptx",
+      "name": "mixed-joins-100x20",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "f4a578e9f4b9a27d93ec6790581bb5532302cfad2ebf3b639d84215f4bb72292",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1942175
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "f4a578e9f4b9a27d93ec6790581bb5532302cfad2ebf3b639d84215f4bb72292",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1942663
+        }
+      }
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/uniform-joins-100x20.pptx",
+      "name": "uniform-joins-100x20",
+      "samples": {
+        "baseline": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "7c283a9256cae6d426911a9f292eacb9fb4c8e64f238e8248975bb9175795d2e",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1942785
+        },
+        "candidate": {
+          "phaseNames": [
+            "first-slide",
+            "initial-save",
+            "lazy-first-part",
+            "lazy-open",
+            "one-cell-edit-save",
+            "open",
+            "render",
+            "reopen",
+            "traversal",
+            "unchanged-save",
+            "warm-unchanged-save"
+          ],
+          "savedSHA256": "7c283a9256cae6d426911a9f292eacb9fb4c8e64f238e8248975bb9175795d2e",
+          "registeredFaces": [
+            "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+          ],
+          "renderedSVGBytes": 1942785
+        }
+      }
+    }
+  ]
+}

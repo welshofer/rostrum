@@ -1,0 +1,96 @@
+{
+  "scope": "Actual original-render bytes from all retained timing samples. Saved edited packages match across builds; original packages and deterministic render preservation were separately proved.",
+  "cases": [
+    {
+      "name": "native-table-default-builtin-v1.pptx",
+      "baselineSVGBytes": 1013794,
+      "candidateSVGBytes": 1013717,
+      "deltaBytes": -77,
+      "candidateDeltaPercent": -0.007595231378365597
+    },
+    {
+      "name": "native-table-default-custom-v1.pptx",
+      "baselineSVGBytes": 1014181,
+      "candidateSVGBytes": 1014104,
+      "deltaBytes": -77,
+      "candidateDeltaPercent": -0.00759233312397356
+    },
+    {
+      "name": "native-table-joins-v1.pptx",
+      "baselineSVGBytes": 1017028,
+      "candidateSVGBytes": 1017028,
+      "deltaBytes": 0,
+      "candidateDeltaPercent": 0.0
+    },
+    {
+      "name": "absent-20x10.pptx",
+      "baselineSVGBytes": 1119911,
+      "candidateSVGBytes": 1104731,
+      "deltaBytes": -15180,
+      "candidateDeltaPercent": -1.3554648539035652
+    },
+    {
+      "name": "absent-100x20.pptx",
+      "baselineSVGBytes": 2093443,
+      "candidateSVGBytes": 1942663,
+      "deltaBytes": -150780,
+      "candidateDeltaPercent": -7.202488914195415
+    },
+    {
+      "name": "absent-200x50.pptx",
+      "baselineSVGBytes": 6342805,
+      "candidateSVGBytes": 5586855,
+      "deltaBytes": -755950,
+      "candidateDeltaPercent": -11.9182286070595
+    },
+    {
+      "name": "explicit-20x10.pptx",
+      "baselineSVGBytes": 1119911,
+      "candidateSVGBytes": 1119911,
+      "deltaBytes": 0,
+      "candidateDeltaPercent": 0.0
+    },
+    {
+      "name": "explicit-200x50.pptx",
+      "baselineSVGBytes": 6342805,
+      "candidateSVGBytes": 6342805,
+      "deltaBytes": 0,
+      "candidateDeltaPercent": 0.0
+    },
+    {
+      "name": "custom-absent-20x10.pptx",
+      "baselineSVGBytes": 1119943,
+      "candidateSVGBytes": 1104731,
+      "deltaBytes": -15212,
+      "candidateDeltaPercent": -1.3582834126379617
+    },
+    {
+      "name": "custom-explicit-20x10.pptx",
+      "baselineSVGBytes": 1119943,
+      "candidateSVGBytes": 1119943,
+      "deltaBytes": 0,
+      "candidateDeltaPercent": 0.0
+    },
+    {
+      "name": "mixed-joins-20x10.pptx",
+      "baselineSVGBytes": 1104603,
+      "candidateSVGBytes": 1104731,
+      "deltaBytes": 128,
+      "candidateDeltaPercent": 0.011587873652341152
+    },
+    {
+      "name": "mixed-joins-100x20.pptx",
+      "baselineSVGBytes": 1942175,
+      "candidateSVGBytes": 1942663,
+      "deltaBytes": 488,
+      "candidateDeltaPercent": 0.02512646903600757
+    },
+    {
+      "name": "uniform-joins-100x20.pptx",
+      "baselineSVGBytes": 1942785,
+      "candidateSVGBytes": 1942785,
+      "deltaBytes": 0,
+      "candidateDeltaPercent": 0.0
+    }
+  ]
+}
