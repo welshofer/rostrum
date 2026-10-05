@@ -38,9 +38,16 @@ separately; passing a demo is not a claim of perfect PowerPoint rendering.
 Every completed **Run Demo** or **Run All** result is automatically saved as a
 new PowerPoint deck in your library, including results with reported findings
 or failed checks. Filenames include the demo title, timestamp and a unique ID;
-rerunning a demo preserves earlier decks. **Inspect Result** opens that saved
-copy. If saving fails, the report shows the error and the diagnostic deck remains
-available for inspection or manual saving.
+rerunning a demo preserves earlier decks. The saved-results summary lists every
+demo deck and its slide count. On macOS, **Reveal in Finder** selects the saved
+PowerPoint file and **Reveal All in Finder** selects the whole batch; no share
+extension is needed. **Inspect Result** opens the saved copy. Inspecting a result
+or leaving the Lab does not cancel the remaining demos; use **Cancel** to stop.
+If saving fails, **Retry Save** writes the existing result directly to the library
+without rerunning the demo or overwriting another file.
+
+Newly created table cells center their text vertically, including inserted rows
+and columns. Imported tables retain their authored alignment.
 
 The tab-stop demo shows left, center, right and period-decimal fields against
 visible guides, plus tab-aware Latin justification in text boxes and a table cell.

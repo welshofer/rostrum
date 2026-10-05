@@ -23,6 +23,12 @@ struct DrawingLabRecipesTests {
             let warm = try reopened.serializedData()
             #expect(try reopened.serializedData() == warm)
             variants.append(after)
+            if [.tableStyles, .tableStructure, .tableAppearance].contains(id) {
+                let tables = reopened.slides.flatMap { $0.shapes.all.compactMap { ($0 as? TableFrame)?.table } }
+                for table in tables { for row in 0..<table.rowCount { for column in 0..<table.columnCount {
+                    #expect(try table.cell(row, column).verticalAnchor == .middle)
+                } } }
+            }
             // Independent expectations, beyond recipe-reported checks.
             switch id {
             case .shapes:

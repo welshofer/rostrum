@@ -21,3 +21,11 @@ and hashes are in `provenance.json`; no proprietary fonts have been copied.
 The tests are file-backed LecternCore integration tests. They do not assert
 native app behavior, Office acceptance of newly authored files, font rendering
 accuracy, or whole-slide pixel equivalence. Native GUI testing is separate.
+
+The authored fixture was regenerated on 2026-10-04 through the unchanged factory
+for the new vertically centered cell default. Only `ppt/slides/slide1.xml` and
+`ppt/slides/slide4.xml` changed: nine and two `a:tcPr` elements respectively now
+carry `anchor="ctr"`. Removing those attributes reproduces the prior part bytes
+exactly; the other 51 package parts and the foreign Office fixture are unchanged.
+The pipeline test checks middle alignment after saving and reopening. This
+fixture follows current authoring defaults; it is not a historical alignment oracle.

@@ -2,7 +2,8 @@ import Foundation
 
 extension ShapeCollection {
     /// Add a table. Column widths and row heights start uniform within
-    /// `frame`; adjust with `setColumnWidth`/`setRowHeight`.
+    /// `frame`; adjust with `setColumnWidth`/`setRowHeight`. New cells center
+    /// their text vertically; override with `TableCell.verticalAnchor`.
     @discardableResult
     public func addTable(rows: Int, columns: Int, frame: Rect) throws -> Table {
         precondition(rows > 0 && columns > 0, "table needs at least 1×1 cells")
@@ -157,7 +158,9 @@ public final class Table {
         txBody.appendElement(XML.Element("a:lstStyle"))
         txBody.appendElement(XML.Element("a:p"))
         tc.appendElement(txBody)
-        tc.appendElement(XML.Element("a:tcPr"))
+        // Author the default on new cells only. Missing anchors in imported
+        // tables must retain DrawingML's top-aligned interpretation.
+        tc.appendElement(XML.Element("a:tcPr", attributes: [("anchor", "ctr")]))
         return tc
     }
 

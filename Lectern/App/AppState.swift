@@ -120,6 +120,13 @@ final class AppState {
         }
     }
 
+    @discardableResult
+    func retrySavingLibraryDemo(_ result: LibraryLabResult, model: LibraryLabModel) -> Task<Void, Never> {
+        model.retrySave(result, to: libraryDirectory) { [weak self] _ in
+            self?.refreshLibrary()
+        }
+    }
+
     func acceptRecoveredDeck(_ result: DeckResult) {
         phase = .result(result)
         recoveryURL = result.recoveryURL; recoverySourceURL = result.url

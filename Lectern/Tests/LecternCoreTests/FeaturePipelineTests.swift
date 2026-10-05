@@ -107,6 +107,12 @@ import Rostrum
             #expect(slide.legacyComments.first?.text == "Keep the original image bytes.")
         }
         #expect(try table(on: reopened.slides[3]).styleID == FeaturePipelineFixture.importedStyle)
+        for index in [0, 3] {
+            let savedTable = try table(on: reopened.slides[index])
+            for row in 0..<savedTable.rowCount { for column in 0..<savedTable.columnCount {
+                #expect(try savedTable.cell(row, column).verticalAnchor == .middle)
+            } }
+        }
         let saved = directory.appendingPathComponent("Reopened.pptx")
         try reopened.save(to: saved)
         #expect(try Data(contentsOf: saved) == original)

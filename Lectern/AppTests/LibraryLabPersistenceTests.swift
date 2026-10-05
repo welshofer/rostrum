@@ -125,6 +125,105 @@ import Rostrum
         #expect(!files.contains { $0.hasPrefix(".library-demo-") })
     }
 
+    @Test func retrySavesOriginalBytesRefreshesLibraryAndDoesNotDuplicateSuccessfulSave() async throws {
+        let context = try AppStateTestContext(); defer { context.remove() }
+        let parent = context.libraryDirectory.appendingPathComponent("Diagnostics")
+        let model = LibraryLabModel()
+        await model.run([.slides], in: parent, savingTo: context.libraryDirectory,
+                        preparingSave: { _, _ in throw PersistenceFailure.controlled }) { id, options, parent in
+            try LibraryLab.run(id, options: options, in: parent)
+        }.value
+        let result = try #require(model.results[.slides])
+        let bytes = try Data(contentsOf: result.afterURL)
+        #expect(model.saveFailures[.slides] != nil)
+        await context.app.retrySavingLibraryDemo(result, model: model).value
+        try await waitForAutomaticScan(context.app)
+        let saved = try #require(model.savedDecks[.slides])
+        #expect(saved.deletingLastPathComponent() == context.libraryDirectory)
+        #expect(try Data(contentsOf: saved) == bytes)
+        #expect(try Presentation(contentsOf: saved).slides.count == result.slideCount)
+        #expect(context.app.library.map { $0.url.resolvingSymlinksInPath() } == [saved.resolvingSymlinksInPath()])
+        #expect(model.results[.slides]?.afterURL == result.afterURL && model.completed == 1)
+        #expect(model.saveFailures.isEmpty && model.savingIDs.isEmpty)
+        await context.app.retrySavingLibraryDemo(result, model: model).value
+        #expect(model.savedDecks[.slides] == saved)
+        #expect(DeckLibrary.decks(in: context.libraryDirectory).count == 1)
+        #expect(try Data(contentsOf: result.afterURL) == bytes)
+        #expect(try Data(contentsOf: saved) == bytes)
+    }
+
+    @Test func concurrentRetryClicksShareOneCopyAndCannotOverwriteAnExistingFile() async throws {
+        let context = try AppStateTestContext(); defer { context.remove() }
+        let parent = context.libraryDirectory.appendingPathComponent("Diagnostics")
+        let model = LibraryLabModel(), stage = ControlledDeckPreparation()
+        await model.run([.slides], in: parent, savingTo: context.libraryDirectory,
+                        preparingSave: { _, _ in throw PersistenceFailure.controlled }) { id, options, parent in
+            try LibraryLab.run(id, options: options, in: parent)
+        }.value
+        let result = try #require(model.results[.slides])
+        let first = model.retrySave(result, to: context.libraryDirectory, preparingSave: stage.prepare)
+        await stage.waitUntilPrepared()
+        #expect(model.savingIDs == [.slides])
+        let second = model.retrySave(result, to: context.libraryDirectory,
+                                     preparingSave: { _, _ in
+                                         Issue.record("A concurrent click started another copy")
+                                         throw PersistenceFailure.controlled
+                                     })
+        await stage.release(); await first.value; await second.value
+        #expect(model.savedDecks.count == 1 && model.saveFailures.isEmpty)
+        #expect(DeckLibrary.decks(in: context.libraryDirectory).count == 1)
+
+        // A separate failed result exercises the final non-overwriting rename.
+        await model.run([.text], in: parent, savingTo: context.libraryDirectory,
+                        preparingSave: { _, _ in throw PersistenceFailure.controlled }) { id, options, parent in
+            try LibraryLab.run(id, options: options, in: parent)
+        }.value
+        let other = try #require(model.results[.text])
+        let collision = try DeckStorage.prepareDeckCopy(from: other.afterURL, title: "Existing", into: context.libraryDirectory)
+        let existing = Data("existing destination must survive".utf8)
+        try existing.write(to: collision.destination)
+        await model.retrySave(other, to: context.libraryDirectory, preparingSave: { _, _ in collision }).value
+        #expect(try Data(contentsOf: collision.destination) == existing)
+        #expect(model.savedDecks[.text] == nil && model.saveFailures[.text] != nil)
+        #expect(model.results[.text]?.afterURL == other.afterURL && model.savingIDs.isEmpty)
+        let files = try FileManager.default.contentsOfDirectory(atPath: context.libraryDirectory.path)
+        #expect(!files.contains { $0.hasPrefix(".library-demo-") })
+    }
+
+    @Test(arguments: ["cancel-model", "cancel-task", "replace-result"])
+    func retiredRetryCannotPublishOrChangeTheCurrentResult(action: String) async throws {
+        let context = try AppStateTestContext(); defer { context.remove() }
+        let parent = context.libraryDirectory.appendingPathComponent("Diagnostics")
+        let model = LibraryLabModel(), stage = ControlledDeckPreparation()
+        await model.run([.slides], in: parent, savingTo: context.libraryDirectory,
+                        preparingSave: { _, _ in throw PersistenceFailure.controlled }) { id, options, parent in
+            try LibraryLab.run(id, options: options, in: parent)
+        }.value
+        let original = try #require(model.results[.slides])
+        let retry = model.retrySave(original, to: context.libraryDirectory, preparingSave: stage.prepare)
+        await stage.waitUntilPrepared()
+        if action == "replace-result" {
+            await model.run([.slides], in: parent, savingTo: context.libraryDirectory).value
+        } else if action == "cancel-task" { retry.cancel() }
+        else { model.cancel() }
+        let current = try #require(model.results[.slides])
+        await stage.release(); await retry.value
+        #expect(model.results[.slides]?.afterURL == current.afterURL)
+        #expect(model.savingIDs.isEmpty)
+        #expect(DeckLibrary.decks(in: context.libraryDirectory).count == (action == "replace-result" ? 1 : 0))
+        if action == "replace-result" {
+            #expect(current.afterURL != original.afterURL && model.saveFailures[.slides] == nil)
+            let saved = try #require(model.savedDecks[.slides])
+            await model.retrySave(original, to: context.libraryDirectory).value
+            #expect(model.savedDecks[.slides] == saved)
+            #expect(try Data(contentsOf: saved) == Data(contentsOf: current.afterURL))
+        } else {
+            #expect(model.savedDecks[.slides] == nil && model.saveFailures[.slides] != nil)
+        }
+        let files = try FileManager.default.contentsOfDirectory(atPath: context.libraryDirectory.path)
+        #expect(!files.contains { $0.hasPrefix(".library-demo-") })
+    }
+
     @Test func returnedTaskCancellationDoesNotPersistAnUnacceptedResult() async throws {
         let context = try AppStateTestContext(); defer { context.remove() }
         let parent = context.libraryDirectory.appendingPathComponent("Diagnostics")
@@ -135,6 +234,35 @@ import Rostrum
         await stage.waitUntilPrepared(); task.cancel(); await stage.release(); await task.value
         #expect(model.savedDecks.isEmpty && model.results.isEmpty && !model.isRunning)
         #expect(DeckLibrary.decks(in: context.libraryDirectory).isEmpty)
+    }
+
+    @Test func inspectingFirstCompletedDeckDoesNotCancelRemainingBatchSaves() async throws {
+        let context = try AppStateTestContext(); defer { context.remove() }
+        let parent = context.libraryDirectory.appendingPathComponent("Diagnostics")
+        let model = LibraryLabModel(), stage = ControlledDeckPreparation()
+        let batch = model.run([.slides, .text], in: parent, savingTo: context.libraryDirectory,
+                              onSaved: { _ in context.app.refreshLibrary() },
+                              preparingSave: { result, library in
+                                  if result.id == .text { return try await stage.prepare(result, library) }
+                                  return try DeckStorage.prepareDeckCopy(from: result.afterURL, title: "First deck", into: library)
+                              }) { id, options, parent in
+            try LibraryLab.run(id, options: options, in: parent)
+        }
+        await stage.waitUntilPrepared()
+        let first = try #require(model.savedDecks[.slides])
+        #expect(model.completed == 1 && model.isRunning)
+        await context.app.inspect(deckAt: first).value
+        #expect(context.app.phase == .inspected && context.app.inspection?.fileURL == first)
+        #expect(model.completed == 1 && model.isRunning && model.savedDecks[.text] == nil)
+        await stage.release(); await batch.value
+        try await waitForAutomaticScan(context.app)
+        #expect(model.completed == 2 && !model.isRunning)
+        #expect(model.savedDecks.count == 2 && model.saveFailures.isEmpty && model.failures.isEmpty)
+        #expect(context.app.library.count == 2)
+        for id in [LibraryDemoID.slides, .text] {
+            let saved = try #require(model.savedDecks[id]), result = try #require(model.results[id])
+            #expect(try Data(contentsOf: saved) == Data(contentsOf: result.afterURL))
+        }
     }
 }
 
