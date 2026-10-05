@@ -13,6 +13,13 @@ from phase 0 onward.
 > phase; the animations/transitions round-trip **has no dedicated test**;
 > and the SVG renderer **did not** use "the TTF metrics we already parse" —
 > no metrics parsing existed until the v0.4 program below built it.
+>
+> **Release reconciliation (2026-10-05).** Version 1.0.0 now establishes the
+> public API baseline and ships `RostrumLayout` as a separate SwiftPM product.
+> That release milestone does **not** close the stock-chart, animation, broad
+> Office-equivalence or cross-platform performance gates below. The complete
+> 28-slide Horseshoe Curve example landed after the release as an inspectable
+> demonstration, not as evidence that those remaining gates have passed.
 
 ## Phase 0 — Foundations ✅ (broke ground 2026-07-18)
 
@@ -261,6 +268,28 @@ box; this program makes Rostrum the first.
   only when a relationship or content type actually changes, so the
   byte-identity gate now covers every zip entry. This was the last documented
   exception to the sacred invariant.
+
+## Program: v1.0 release — layout engine and API baseline ✅ (2026-10-04)
+
+Version 1.0.0 is the first major release and the SemVer public-API baseline. It
+adds `RostrumLayout` beside `Rostrum` as a separate SwiftPM product for
+template-aware composition, shared text measurement, fitting, structured
+editable content and measured pagination. The supported profiles and refusal
+boundaries are documented in [the layout guide](docs/LAYOUT-ENGINE.md), with
+operation-level evidence in [CONFORMANCE.md](docs/CONFORMANCE.md) and measured
+costs in [PERFORMANCE.md](docs/PERFORMANCE.md).
+
+Lectern exercises the release surface through 34 offline Library Lab
+demonstrations whose decks can be saved, inspected and exported. The release
+also centers newly authored table-cell text vertically while retaining imported
+cells' authored alignment.
+
+**Post-release example (2026-10-05):** `Examples/HorseshoeCurve` is a complete,
+researched 28-slide presentation built in Swift with Rostrum and RostrumLayout.
+Its saved PowerPoint, builder, content, generated images and citations are
+checked in. It demonstrates editable charts and tables, varied layouts, image
+crops, speaker notes, comments and sections; it is a worked example rather than
+a claim of universal rendering equivalence.
 
 Hardening backlog (schedule opportunistically):
 
