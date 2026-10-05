@@ -1,0 +1,129 @@
+{
+  "status": "CORE_AND_FOCUSED_AND_PACKAGE_PASS_APP_NATIVE_PENDING",
+  "engine": "5d3d3b5a8d88c685c80c03813a3e13e4522d57fe",
+  "scope": "Lectern implementation only. Full295/44 Core gate preceded final caption/catalog scope wording and stricter rejection of unmodeled SVG position attributes; final focused3 tests cover all12 native cases, both real inspector pipelines and targeted parent/span dy failures. App source-file immutability assertion parses; root owns app execution/native/WebKit and combined gate.",
+  "fullCore": {
+    "tests": 295,
+    "suites": 44,
+    "log": {
+      "path": "/tmp/lectern-table-default17-core-final.log",
+      "sha256": "e2d735695a65baad1f12599693633080bb81ea87a4451141af33a6a5ef69a55f"
+    }
+  },
+  "finalFocused": {
+    "tests": 3,
+    "suites": 1,
+    "log": {
+      "path": "/tmp/lectern-table-default17-focused-reviewed.log",
+      "sha256": "8858d663fe872afae4c65dd17e042b3a50afd81f1ee8fdb86766e49be875c291"
+    }
+  },
+  "labFullRun": {
+    "recipes": 30,
+    "checks": 605,
+    "findings": 413,
+    "stage": "Before final caption/catalog wording clarification; no changed geometry or checks"
+  },
+  "pipelineFinal": [
+    {
+      "path": "/tmp/lectern-table-default17-pipeline-reviewed-20261004/tableDefaults-3897F681-F79C-4438-BD78-2246E565BB41/report.json",
+      "sha256": "028c031558737de1b6064816a849aa435645d6c20df6283e16bd4ce38025d52f",
+      "checks": 63,
+      "findings": 0,
+      "alternative": true
+    },
+    {
+      "path": "/tmp/lectern-table-default17-pipeline-reviewed-20261004/tableDefaults-24E08298-C94E-481B-AB51-FABDD521AA6B/report.json",
+      "sha256": "4d889d35ab2f89c30d32356b992de136db38137ac9b888afff69873a54932f29",
+      "checks": 63,
+      "findings": 0,
+      "alternative": false
+    }
+  ],
+  "nativeCandidates": [
+    {
+      "path": "/tmp/lectern-table-default17-reviewed-20261004/alternative-false/tableDefaults.pptx",
+      "sha256": "0dde749bb953b478df7a029b708c18e0b2475426e7c9ff769a0d685b0daef84b",
+      "alternative": false,
+      "matchesPriorFrozenCandidate": true,
+      "zipCRC": true,
+      "pythonPptxSlides": 4
+    },
+    {
+      "path": "/tmp/lectern-table-default17-reviewed-20261004/alternative-true/tableDefaults.pptx",
+      "sha256": "a7e045b286900c3e8e8a5f45f873019afedac29924dee6d4720696b6054508b5",
+      "alternative": true,
+      "matchesPriorFrozenCandidate": true,
+      "zipCRC": true,
+      "pythonPptxSlides": 4
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/AppTests/LibraryTableDefaultsTests.swift",
+      "sha256": "69366099a3489a8e76b4de0082ad23ccdda097b5a9f71cffbadfe315f466d37e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/LibraryLab/PlatformTableDefaultsRecipe.swift",
+      "sha256": "a354931df7a2a81055b16d38b9d3a00e57fc0c09eb553810fb310f0edaa02203"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/TableDefaultsReferences.json",
+      "sha256": "7bb8b268ea2afc69d1ad8766a097679367648a9d534d626301ef5fa05391c2ab"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/native-table-default-builtin-v1.pptx",
+      "sha256": "3583235fd4a0caf7be17fad4e79d250ac1098e0a4f64ce462c9a396d91a5873b"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/native-table-default-custom-v1.pptx",
+      "sha256": "5506d837f8a12b4f6a54cca287c9f2943b22d2537270aa084e83792aad65652e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/native-table-joins-v1.pptx",
+      "sha256": "23b9cde5274eda35b5278042caf7a9b9d49f5557a4038be1c4646ffd73d42ede"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/TableDefaultsRecipeTests.swift",
+      "sha256": "cfa8d8b3539bf6bb61ccd101975eec32f4d0c915e1f4061d5539ac7ffa7042fd"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/AppTests/GlyphPaintWebKitTests.swift",
+      "sha256": "c908554e2fc81c4789cd2223efe66bc77e0b195ed75de96d50da19f4df89a63e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/LibraryLab/LibraryLab.swift",
+      "sha256": "1115a9963db8522bbd775c1a174742f0d72d66c1f17f737b6ce4fffa600a0c62"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/LibraryLab/LibraryLabTypes.swift",
+      "sha256": "81e8105a3e1597b14e889bbd9262bc8cf5ea55c18931241f3f01902a83437b86"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/LibraryLab/PlatformLabRecipes.swift",
+      "sha256": "c008bff18f343d94ee918420da58d532227fc058900b8c6dab945d8736219941"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/PROVENANCE.md",
+      "sha256": "5d192518d3700eea74ac36fd0b107b7d595e77fe804569545bffbe1a4b5d1454"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/PlatformLabRecipesTests.swift",
+      "sha256": "7783be9324b07c3d85b55307793f43f3d46e100ba6c318b6ad9cbafc1677fe74"
+    }
+  ],
+  "retainedFailures": [
+    {
+      "path": "/tmp/lectern-table-default17-focused-1.log",
+      "sha256": "b2fde02b592e54eca322875fe08d9f15a63c96af27c631c7988f97215b0c7554"
+    },
+    {
+      "path": "/tmp/lectern-table-default17-core-full.log",
+      "sha256": "d7cb2bda60db369e749366cdf288e5f6f3113b58be6b322fc04f046f903f16e2"
+    }
+  ],
+  "priorReceipt": {
+    "path": "/tmp/lectern-table-default17-worker-receipt.json",
+    "sha256": "eec1f1f35c3f12326871c1a5c49ee4363873a8063e2a42344cc5baa994fc315c"
+  }
+}

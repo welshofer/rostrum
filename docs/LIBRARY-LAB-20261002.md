@@ -596,3 +596,27 @@ review accepts a bounded fidelity cost, preserving the adverse fitting and
 combining-text intervals without an optimization or nonregression claim. See the
 [integration report](LAYOUT-FIDELITY-20261004-16.md) for the complete evidence and
 unchanged support limits. The separate table appearance gap remains unfixed.
+
+## October 4 table defaults and unequal joins integration
+
+The 30th recipe, Table defaults and border joins, retains 12 native specimens /
+72 glyphs on three pages and adds a fourth public-API style comparison. Both
+options pass 63 checks with zero findings. Import preserves absent applied
+styles even when source and destination insertion defaults differ. Unequal
+border joins are corrected for the captured opaque, solid, unmerged LTR scope.
+
+The full gate passes 1,180 library, 18 layout, 295 Core and 89 app test definitions /
+124 executions, including macOS and iOS simulator builds. All 30 catalog recipes
+pass 605 checks and retain 413 findings. Independent external checks reopen
+72 packages / 247 slides. Both generated PowerPoint references and six fresh
+saved-inspector WebKit PDFs pass 24 case comparisons / 144 glyphs each, with
+typography regressions also passing at unchanged bounds. Both real four-slide
+inspection/export workflows preserve source bytes, exact previews and all 37
+source text nodes per option.
+
+The [integration report](LAYOUT-FIDELITY-20261004-17.md) and separate
+[performance report](TABLE-DEFAULT-JOINS-PERFORMANCE-20261004-17.md) retain the
+native scope, observed costs, faster absent-style cases and background-load
+limitations. The public comparison also exposes a remaining partial custom-style
+missing-edge fallback gap. The successful file checks do not assert full custom
+style or whole-slide native parity.
