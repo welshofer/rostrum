@@ -124,7 +124,7 @@ public struct TableStyleResolver {
             let cellScope = TableStyleXML.bindings(cell, inheriting: rowScope)
             if let properties = cell.childElements.first(where: { TableStyleXML.isDrawing($0, "tcPr", namespaces: cellScope) }) {
                 let scope = TableStyleXML.bindings(properties, inheriting: cellScope)
-                if let direct = properties.childElements.first(where: { child in
+                if let direct = properties.childElements.last(where: { child in
                     Fill.choiceNames.contains { TableStyleXML.isDrawing(child, String($0.dropFirst(2)), namespaces: scope) }
                 }) {
                     return Selection(fill: direct, owner: resolver.table.part, namespaces: scope)

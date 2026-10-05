@@ -33,22 +33,30 @@ struct OutlineImageFills {
     init(slide: Slide) { self.slide = slide; theme = slide.resolvedTheme; chain = slide.inheritanceParts }
 
     mutating func collect() -> (images: [Image], warnings: [String]) {
-        if let selected = BackgroundResolver.fill(chain: chain, theme: theme) {
-            var chosen: Node?
-            for owner in chain {
-                guard let root = try? owner.dom(), let background = node(root, owner: owner)
-                    .child("cSld", namespace: Self.presentation)?.child("bg", namespace: Self.presentation) else { continue }
-                if owner === selected.owner {
-                    chosen = background.child("bgPr", namespace: Self.presentation)?.child("blipFill")
-                    if chosen != nil { break }
+        // Follow the same nearest-background selection without losing URI
+        // identity or ancestor bindings when PresentationML uses another prefix.
+        for owner in chain {
+            guard let root = try? owner.dom(), let background = node(root, owner: owner)
+                .child("cSld", namespace: Self.presentation)?.child("bg", namespace: Self.presentation) else { continue }
+            if let properties = background.child("bgPr", namespace: Self.presentation) {
+                if let solid = properties.child("solidFill") {
+                    let context = XML.Element("context", attributes: solid.scope.map {
+                        ($0.key.isEmpty ? "xmlns" : "xmlns:" + $0.key, $0.value)
+                    })
+                    let canonical = TableStyleXML.drawingView(solid.xml, root: context)
+                    if BackgroundResolver.colour(in: canonical, theme: theme) == nil { continue }
                 }
-                if selected.owner === theme.part, let reference = background.child("bgRef", namespace: Self.presentation) {
-                    chosen = themeFill(reference); break
+                if let selected = properties.child("blipFill") {
+                    image(selected, owner: owner, path: "background", alt: nil)
                 }
+            } else if let reference = background.child("bgRef", namespace: Self.presentation),
+                      let index = reference.xml.boundedInt("idx", in: 1...Int(UInt32.max)), index != 1000,
+                      let selected = themeFill(reference), selected.name == "{\(TableStyleXML.drawing)}blipFill" {
+                image(selected, owner: theme.part, path: "background", alt: nil)
             }
-            if let chosen, chosen.name == "{\(TableStyleXML.drawing)}blipFill" {
-                image(chosen, owner: selected.owner, path: "background", alt: nil)
-            }
+            // Explicit noFill, invalid references and unknown backgrounds stop
+            // inheritance just as the existing background resolver does.
+            break
         }
         walkShapes(owner: slide.part, inherited: false)
         if chain.count > 1 { walkShapes(owner: chain[1], inherited: true) }
@@ -86,8 +94,8 @@ struct OutlineImageFills {
         guard depth < 64 else { warn(owner, path, "shape nesting exceeds 64 levels"); return }
         for (index, shape) in container.children.enumerated() {
             let location = "\(path)/\(shape.xml.name)[\(index + 1)]"
-            guard !ShapeCollection.isHidden(shape.xml) else { continue }
-            if inherited && Placeholders.phElement(of: shape.xml) != nil { continue }
+            guard !hidden(shape) else { continue }
+            if inherited && placeholder(shape) != nil { continue }
             let alt = shape.children.first?.child("cNvPr", namespace: Self.presentation)?.xml[attribute: "descr"]
             if shape.name == "{\(Self.presentation)}grpSp" {
                 // An unused group fill is not an attachment. It is selected
@@ -166,8 +174,21 @@ struct OutlineImageFills {
             }
         }
     }
+    private func nonvisual(_ shape: Node) -> Node? {
+        let pairs = [("sp", "nvSpPr"), ("pic", "nvPicPr"), ("cxnSp", "nvCxnSpPr"),
+                     ("grpSp", "nvGrpSpPr"), ("graphicFrame", "nvGraphicFramePr")]
+        guard let pair = pairs.first(where: { shape.name == "{\(Self.presentation)}" + $0.0 }) else { return nil }
+        return shape.child(pair.1, namespace: Self.presentation)
+    }
+    private func hidden(_ shape: Node) -> Bool {
+        let value = nonvisual(shape)?.child("cNvPr", namespace: Self.presentation)?.xml[attribute: "hidden"]
+        return value == "1" || value == "true"
+    }
+    private func placeholder(_ shape: Node) -> XML.Element? {
+        nonvisual(shape)?.child("nvPr", namespace: Self.presentation)?.child("ph", namespace: Self.presentation)?.xml
+    }
     private func placeholderFill(_ shape: Node) -> (Node, Part)? {
-        guard let ph = Placeholders.phElement(of: shape.xml) else { return nil }
+        guard let ph = placeholder(shape) else { return nil }
         guard chain.count > 1 else { return nil }
         let idx = ph[attribute: "idx"] ?? "0"
         func shapes(_ owner: Part) -> [Node] {
@@ -176,14 +197,14 @@ struct OutlineImageFills {
                 .child("spTree", namespace: Self.presentation)?.children ?? []
         }
         guard let layoutShape = shapes(chain[1]).first(where: {
-            Placeholders.phElement(of: $0.xml).map { ($0[attribute: "idx"] ?? "0") == idx } ?? false
+            placeholder($0).map { ($0[attribute: "idx"] ?? "0") == idx } ?? false
         }) else { return nil }
         var candidates: [(Node, Part)] = [(layoutShape, chain[1])]
         if chain.count > 2 {
-            let kind = Placeholders.phElement(of: layoutShape.xml)?[attribute: "type"] ?? "obj"
+            let kind = placeholder(layoutShape)?[attribute: "type"] ?? "obj"
             let reduced = Slide.masterTypeReduction[kind] ?? "body"
             if let master = shapes(chain[2]).first(where: {
-                Placeholders.phElement(of: $0.xml).map { ($0[attribute: "type"] ?? "obj") == reduced } ?? false
+                placeholder($0).map { ($0[attribute: "type"] ?? "obj") == reduced } ?? false
             }) { candidates.append((master, chain[2])) }
         }
         for (candidate, owner) in candidates {

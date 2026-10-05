@@ -331,4 +331,98 @@ import Testing
         }
     }
 
+    private func aliasPresentation(_ element: XML.Element, uri: String = "http://schemas.openxmlformats.org/presentationml/2006/main") {
+        element[attribute: "xmlns:q"] = uri
+        func rename(_ node: XML.Element) {
+            if node.name.hasPrefix("p:") { node.name = "q:" + node.name.dropFirst(2) }
+            for child in node.childElements { rename(child) }
+        }
+        rename(element)
+    }
+
+    @Test func presentationAliasesPreserveHiddenAndInheritedPlaceholderSelection() throws {
+        for alias in [false, true] {
+            let deck = try Presentation(), slide = try deck.slides[0]
+            let shape = try slide.shapes.addTextBox(frame)
+            let (_, id) = addImage(deck, owner: slide.part, name: "hidden.png")
+            shape.element.firstChild(named: "p:spPr")?.children = [.element(Fill.blipFill(rId: id, fit: .stretch))]
+            shape.element.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "hidden"] = "true"
+            let picture = try slide.shapes.addPicture(png, frame: frame)
+            picture.element.firstChild(named: "p:nvPicPr")?.firstChild(named: "p:cNvPr")?[attribute: "hidden"] = "1"
+            picture.element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip")?[attribute: "r:embed"] = "hidden-unused"
+            let layout = slide.inheritanceParts[1]
+            let (_, layoutID) = addImage(deck, owner: layout, name: "unused-placeholder.png")
+            let placeholder = shape.element.deepCopy()
+            placeholder.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "hidden"] = nil
+            placeholder.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:nvPr")?.appendElement(XML.Element("p:ph", attributes: [("idx", "901")]))
+            placeholder.firstChild(named: "p:spPr")?.children = [.element(Fill.blipFill(rId: layoutID, fit: .stretch))]
+            try Slide.spTree(of: layout).appendElement(placeholder)
+            if alias { aliasPresentation(shape.element); aliasPresentation(picture.element); aliasPresentation(placeholder) }
+            slide.part.markDirty(); layout.markDirty()
+            let saved = try deck.serializedData(), result = deck.outline()
+            #expect(result.assetCount == 0 && result.warnings.isEmpty)
+            #expect(try deck.serializedData() == saved)
+            #expect(try Presentation(data: saved).outline() == result)
+        }
+    }
+
+    @Test func aliasedMatchedPlaceholdersAndLookalikesKeepSelectionBounded() throws {
+        let deck = try Presentation(), slide = try deck.slides[0], layout = slide.inheritanceParts[1]
+        let shape = try slide.shapes.addTextBox(frame)
+        shape.element.firstChild(named: "p:spPr")?.children = []
+        shape.element.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:nvPr")?.appendElement(XML.Element("p:ph", attributes: [("idx", "902")]))
+        let placeholder = shape.element.deepCopy()
+        let (image, id) = addImage(deck, owner: layout, name: "matched.png")
+        placeholder.firstChild(named: "p:spPr")?.appendElement(Fill.blipFill(rId: id, fit: .stretch))
+        try Slide.spTree(of: layout).appendElement(placeholder)
+        aliasPresentation(shape.element); aliasPresentation(placeholder)
+        slide.part.markDirty(); layout.markDirty()
+        #expect(deck.outline().slides[0].assets.map(\.partName) == [image.uri.value])
+        shape.element.firstChild(named: "q:spPr")?.appendElement(XML.Element("a:noFill"))
+        #expect(deck.outline().assetCount == 0)
+        shape.element.firstChild(named: "q:spPr")?.removeChildren(named: "a:noFill")
+        placeholder[attribute: "xmlns:q"] = "urn:lookalike"
+        #expect(deck.outline().assetCount == 0)
+        shape.element[attribute: "xmlns:q"] = "urn:lookalike"
+        #expect(deck.outline().assetCount == 0 && deck.outline().warnings.isEmpty)
+    }
+
+    @Test func fullyAliasedBackgroundsSelectActualOwnerAndRespectNoFill() throws {
+        let deck = try Presentation(), slide = try deck.slides[0], layout = slide.inheritanceParts[1]
+        let (image, id) = addImage(deck, owner: layout, name: "aliased-background.png")
+        try setBackground(layout, id: id)
+        let common = try #require(try layout.dom().firstChild(named: "p:cSld"))
+        aliasPresentation(common); layout.markDirty()
+        #expect(deck.outline().slides[0].assets.map(\.partName) == [image.uri.value])
+        try setBackground(slide.part, id: nil)
+        let local = try #require(try slide.part.dom().firstChild(named: "p:cSld"))
+        aliasPresentation(local); slide.part.markDirty()
+        #expect(deck.outline().assetCount == 0)
+        local.firstChild(named: "q:bg")?[attribute: "xmlns:q"] = "urn:lookalike"
+        slide.part.markDirty()
+        let saved = try deck.serializedData(), result = deck.outline()
+        #expect(result.slides[0].assets.map(\.partName) == [image.uri.value])
+        #expect(result.warnings.isEmpty)
+        #expect(try deck.serializedData() == saved)
+        #expect(try Presentation(data: saved).outline() == result)
+    }
+
+    @Test func directCellFillInventoryUsesLastOverlayInLiveDocumentOrder() throws {
+        let deck = try Presentation(), slide = try deck.slides[0]
+        let table = try slide.shapes.addTable(rows: 1, columns: 1, frame: frame)
+        let (image, id) = addImage(deck, owner: slide.part, name: "last-overlay.png")
+        let properties = try #require(try table.cell(0, 0).tc.firstChild(named: "a:tcPr"))
+        let imageFill = Fill.blipFill(rId: id, fit: .stretch), none = XML.Element("a:noFill")
+        for imageLast in [false, true, false] {
+            properties.children = imageLast ? [.element(none), .element(imageFill)] : [.element(imageFill), .element(none)]
+            slide.part.markDirty()
+            let saved = try deck.serializedData(), result = deck.outline()
+            #expect(result.slides[0].assets.map(\.partName) == (imageLast ? [image.uri.value] : []))
+            let effective = TableStyleResolver(table: table, theme: deck.theme).effective(row: 0, column: 0)
+            #expect((effective.properties.firstChild(named: "a:blipFill") != nil) == imageLast)
+            #expect(try deck.serializedData() == saved)
+            #expect(try Presentation(data: saved).outline() == result)
+        }
+    }
+
 }
