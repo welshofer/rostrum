@@ -333,10 +333,22 @@ struct SVGRenderer {
         let preset = spPr.firstChild(named: "a:prstGeom")
         let prst = spPr.firstChild(named: "a:custGeom") != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
         let style = sp.firstChild(named: "p:style")
-        let fillProperties = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"))
-        let fill = fillProperties.firstChild(named: "a:blipFill").flatMap {
-            imagePattern($0, ownedBy: owner, box: f, defs: &defs)
-        } ?? paint(for: fillProperties, box: f, defs: &defs)
+        let selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner)
+        let fill: String?
+        if let blip = selectedFill.properties.firstChild(named: "a:blipFill") {
+            if selectedFill.properties !== spPr {
+                // Direct paint was inspected with the shape. Referenced paint
+                // belongs to the theme and must use that same owner for both
+                // diagnostics and drawing, including colliding relationship IDs.
+                let location = diagnostics.location
+                diagnostics.inspect(blip, owner: selectedFill.owner, slideIndex: slideNumber - 1,
+                    path: location.path + "/p:style/a:fillRef", package: package)
+                diagnostics.location = location
+            }
+            fill = imagePattern(blip, ownedBy: selectedFill.owner, box: f, defs: &defs)
+        } else {
+            fill = paint(for: selectedFill.properties, box: f, defs: &defs, ownedBy: selectedFill.owner)
+        }
         let lineProperties = effectiveLine(spPr, reference: style?.firstChild(named: "a:lnRef"))
         let stroke = strokeAttrs(lineProperties)
         if let notesContext, NotesPageRenderContext.placeholderType(sp) == "sldImg" {
@@ -1679,11 +1691,12 @@ struct SVGRenderer {
         return copy
     }
 
-    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?) -> XML.Element {
+    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?, ownedBy owner: Part)
+        -> (properties: XML.Element, owner: Part) {
         let fills = ["a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:grpFill", "a:noFill"]
         guard !properties.childElements.contains(where: { fills.contains($0.name) }),
-              let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return properties }
-        return XML.Element("p:spPr", children: [.element(fill)])
+              let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return (properties, owner) }
+        return (XML.Element("p:spPr", children: [.element(fill)]), theme.part)
     }
 
     private func effectiveLine(_ properties: XML.Element, reference: XML.Element?) -> XML.Element {
