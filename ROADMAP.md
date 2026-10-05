@@ -13,6 +13,13 @@ from phase 0 onward.
 > phase; the animations/transitions round-trip **has no dedicated test**;
 > and the SVG renderer **did not** use "the TTF metrics we already parse" —
 > no metrics parsing existed until the v0.4 program below built it.
+>
+> **Release reconciliation (2026-10-05).** Version 1.0.0 now establishes the
+> public API baseline and ships `RostrumLayout` as a separate SwiftPM product.
+> That release milestone does **not** close the stock-chart, animation, broad
+> Office-equivalence or cross-platform performance gates below. The complete
+> 28-slide Horseshoe Curve example landed after the release as an inspectable
+> demonstration, not as evidence that those remaining gates have passed.
 
 ## Phase 0 — Foundations ✅ (broke ground 2026-07-18)
 
@@ -262,6 +269,28 @@ box; this program makes Rostrum the first.
   byte-identity gate now covers every zip entry. This was the last documented
   exception to the sacred invariant.
 
+## Program: v1.0 release — layout engine and API baseline ✅ (2026-10-04)
+
+Version 1.0.0 is the first major release and the SemVer public-API baseline. It
+adds `RostrumLayout` beside `Rostrum` as a separate SwiftPM product for
+template-aware composition, shared text measurement, fitting, structured
+editable content and measured pagination. The supported profiles and refusal
+boundaries are documented in [the layout guide](docs/LAYOUT-ENGINE.md), with
+operation-level evidence in [CONFORMANCE.md](docs/CONFORMANCE.md) and measured
+costs in [PERFORMANCE.md](docs/PERFORMANCE.md).
+
+Lectern exercises the release surface through 34 offline Library Lab
+demonstrations whose decks can be saved, inspected and exported. The release
+also centers newly authored table-cell text vertically while retaining imported
+cells' authored alignment.
+
+**Post-release example (2026-10-05):** `Examples/HorseshoeCurve` is a complete,
+researched 28-slide presentation built in Swift with Rostrum and RostrumLayout.
+Its saved PowerPoint, builder, content, generated images and citations are
+checked in. It demonstrates editable charts and tables, varied layouts, image
+crops, speaker notes, comments and sections; it is a worked example rather than
+a claim of universal rendering equivalence.
+
 Hardening backlog (schedule opportunistically):
 
 - ~~`PackURI` precondition on a file-supplied part name~~ ✅ 2026-07-27, along
@@ -491,11 +520,13 @@ Each is a judgement about leverage, not a doubt about the finding.
 - Zero SwiftPM dependencies, forever
 
 
-## Accuracy acceptance work (updated 2026-10-02)
+## Accuracy acceptance work (updated 2026-10-05)
 
-The current implementation expands tables, typography, annotations and package
-performance. [CONFORMANCE.md](docs/CONFORMANCE.md) is the per-operation evidence
-ledger. These gates remain open and must not be relabeled complete:
+The current evidence now includes the October 3 imported-slide fidelity pass,
+the October 4 native table/layout checkpoints, selected image-fill inventory
+and export, and the 1.0 release integration. [CONFORMANCE.md](docs/CONFORMANCE.md)
+is the per-operation evidence ledger. A checked item below means only that
+bounded scope passed; it is not a claim of universal PowerPoint equivalence.
 
 - [x] All 74 native GUID-only styles, independently checked with 1,480 Office
   fill probes. Shared borders have 737 probes across 42 Office cases.
@@ -504,12 +535,37 @@ ledger. These gates remain open and must not be relabeled complete:
 - [x] Bounded table-background outer shadows bring both native style-image
   corpora to 36/36 passing; approximation diagnostics and strict refusal remain.
 - [x] Twelve native Office image-mapping cases and 46 native text baselines pass
-  their scoped checks; [current evidence](docs/IMPLEMENTATION-20261002.md).
+  their scoped checks; [October 2 evidence](docs/IMPLEMENTATION-20261002.md).
+- [x] The October 3 imported-slide pass covers custom DrawingML paths,
+  self-contained SVG-only images, saved SmartArt drawings, hidden shapes/groups,
+  inherited text/list styles and explicit missing-font fallback. All 22 slides
+  were compared with native PowerPoint exports; four title anchors improved from
+  9–13 pixels high to within 0–1 pixel in that scoped corpus. The generated deck
+  opened without repair, and final macOS/iOS consumer verification passed.
+  [Evidence and limits](docs/IMPORTED-FIDELITY-20261003.md).
+- [x] Native table checkpoints now cover bounded RTL/colored/merged join profiles,
+  absent/partial custom-style defaults and unmerged LTR color/width transitions.
+  Their retained PowerPoint PDF, actual-inspector browser, saved-file and manual
+  Lectern checks pass within the recorded vector/glyph bounds. Combined
+  color-and-merge profiles and whole-slide raster equivalence remain outside the
+  accepted scope. [Join profiles](docs/LAYOUT-FIDELITY-20261004-18.md),
+  [partial styles](docs/LAYOUT-FIDELITY-20261004-19.md), and
+  [border transitions](docs/LAYOUT-FIDELITY-20261004-21.md).
+- [x] Selected table/shape/theme image fills are now inventoried with their owning
+  package part and exported as their original bytes. The combined source
+  integration, 34-demo catalog persistence and standalone AppState
+  inspector/export path pass. Fresh native UI/browser acceptance and comparative
+  inventory timing were explicitly deferred, so this closes resource selection
+  and export—not visual equivalence. [Evidence](docs/LAYOUT-FIDELITY-20261004-22.md).
+- [x] Namespace-aliased section mutation preserves inherited
+  compatibility/XML context.
 - [ ] Advanced vertical cell typography, pattern/effect preview, unsupported
   compound/dashed-double/junction variants and whole-slide Office equivalence.
-  Table and typography PNG failures remain at unchanged thresholds.
-- [ ] Complete Arabic/Indic shaping, mark positioning, language features
-  and complete Unicode bidirectional/line-break conformance. Bounded Arabic
+  New table cells now center text vertically and imported cells retain authored
+  alignment, but the broader gate remains open. Table and typography PNG
+  failures remain at unchanged thresholds.
+- [ ] Complete Arabic/Indic shaping, mark positioning, language features and
+  complete Unicode bidirectional/line-break conformance. Bounded Arabic
   joining/contextual GSUB, GDEF filtering, mark-to-base/mark-to-mark attachment
   and Calibri compatibility are implemented. Unsupported composition and
   ligature/cursive attachment remain diagnosed.
@@ -519,16 +575,22 @@ ledger. These gates remain open and must not be relabeled complete:
   A bounded notes-page SVG renderer and Lectern preview now exist; native notes
   print-image comparisons still exceed the unchanged tolerance.
 - [ ] Broader image/effect and annotation lifecycle Office fixture coverage beyond
-  the twelve image cases and the existing notes/customXML examples.
-- [x] Namespace-aliased section mutation with inherited compatibility/XML context.
+  the twelve image cases and the existing notes/customXML examples. The selected
+  image-fill inventory/export checkpoint above does not close this visual and
+  lifecycle coverage gap.
 - [ ] Broader author dependency interoperability and conflicting notes-master
   reconciliation. Custom author graphs transfer within bounded contracts;
   compatible notes placeholder position/size changes now retain native appearance.
   Defined Office semantic dependencies, ambiguous placeholders and broader
   master/theme/page-size conflicts refuse atomically.
 - [ ] Reduce the richer table/image renderer's measured latency regressions while
-  retaining layout and fidelity diagnostics; see [performance results](docs/PERFORMANCE.md).
+  retaining layout and fidelity diagnostics. Bounded cache/reuse experiments
+  have measured wins in specific warm workloads, but the border-transition
+  checkpoint makes no speedup/nonregression claim and selected-image inventory
+  comparative timing has not run. See [performance results](docs/PERFORMANCE.md).
 - [ ] Execute the new package save/loading paths on Linux and collect Linux/iOS
-  performance baselines. This run's executed checks are on macOS.
+  performance baselines. Linux Swift 6.0/6.1 source and test gates pass, but
+  platform performance evidence is not portable and the missing baselines remain
+  open.
 
 Animation work remains outside this accuracy/performance program.
