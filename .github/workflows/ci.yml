@@ -86,3 +86,57 @@ jobs:
         run: |
           brew install xcodegen
           Lectern/scripts/build.sh
+
+
+  published-release-smoke:
+    name: Published 1.0 consumer
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    container:
+      image: swift:6.1
+    steps:
+      - name: Install download tools
+        run: apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
+      - name: Resolve and run a clean external consumer
+        run: |
+          mkdir -p /tmp/rostrum-release-consumer/Sources/ReleaseConsumer
+          cat > /tmp/rostrum-release-consumer/Package.swift <<'SWIFT'
+          // swift-tools-version:6.0
+          import PackageDescription
+
+          let package = Package(
+              name: "RostrumReleaseConsumer",
+              dependencies: [
+                  .package(url: "https://github.com/welshofer/rostrum", exact: "1.0.0")
+              ],
+              targets: [
+                  .executableTarget(
+                      name: "ReleaseConsumer",
+                      dependencies: [
+                          .product(name: "Rostrum", package: "rostrum"),
+                          .product(name: "RostrumLayout", package: "rostrum")
+                      ]
+                  )
+              ]
+          )
+          SWIFT
+          cat > /tmp/rostrum-release-consumer/Sources/ReleaseConsumer/main.swift <<'SWIFT'
+          import Foundation
+          import Rostrum
+          import RostrumLayout
+
+          let deck = try Presentation()
+          let output = URL(fileURLWithPath: "/tmp/rostrum-release-consumer/smoke.pptx")
+          try deck.save(to: output)
+          print("Created \(deck.slides.count)-slide deck at \(output.path)")
+          SWIFT
+          swift run --package-path /tmp/rostrum-release-consumer ReleaseConsumer
+      - name: Download and verify the public demo archive
+        run: |
+          mkdir -p /tmp/rostrum-release-assets
+          cd /tmp/rostrum-release-assets
+          curl --fail --location --silent --show-error --remote-name \
+            https://github.com/welshofer/rostrum/releases/download/v1.0.0/rostrum-v1.0.0-demo-decks.zip
+          curl --fail --location --silent --show-error --remote-name \
+            https://github.com/welshofer/rostrum/releases/download/v1.0.0/SHA256SUMS
+          sha256sum --check SHA256SUMS
