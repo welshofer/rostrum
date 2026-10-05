@@ -73,7 +73,7 @@ public struct OutlineChart: Sendable, Equatable {
     }
 }
 
-/// A picture, movie or sound the slide carries.
+/// A picture, selected image-fill resource, movie or sound the slide carries.
 public struct OutlineAsset: Sendable, Equatable {
     public enum Kind: String, Sendable {
         case image, video, audio
@@ -86,7 +86,8 @@ public struct OutlineAsset: Sendable, Equatable {
     /// The package part it came from, e.g. `/ppt/media/image1.png`.
     public let partName: String
     public let byteCount: Int
-    /// The picture's alt text (`p:cNvPr@descr`), if the author wrote one.
+    /// The first inventoried picture/fill owner's alt text (`p:cNvPr@descr`).
+    /// Existing picture/media occurrences take precedence over added fills.
     public let altText: String?
 
     public init(kind: Kind, filename: String, partName: String, byteCount: Int, altText: String?) {
@@ -138,6 +139,14 @@ public struct DeckOutline: Sendable, Equatable {
 extension Presentation {
     /// Read the deck's text and take an inventory of what it carries.
     ///
+    /// Image fills follow selected table regions, direct overrides, theme
+    /// references, backgrounds and matched placeholders. Unused package images
+    /// and overridden fills are excluded. This is a resource inventory, not
+    /// occlusion/raster visibility analysis; a selected group fill is retained
+    /// even where the preview cannot paint that group-fill inheritance.
+    /// Existing picture/video/audio ordering is preserved; fill-only resources
+    /// follow those assets and share their per-slide part deduplication.
+    ///
     /// Never throws. A deck somebody else made is exactly the deck most likely
     /// to have one unreadable slide in it, and losing the other forty because
     /// of it would be a poor trade; a slide that cannot be read becomes a line
@@ -151,7 +160,7 @@ extension Presentation {
             let number = index + 1
             do {
                 let slide = try slides.slide(at: index)
-                out.append(SlideOutline(extracting: slide, number: number, folderWidth: width))
+                out.append(SlideOutline(extracting: slide, number: number, folderWidth: width, warnings: &warnings))
             } catch {
                 warnings.append("slide \(number) could not be read: \(error)")
             }
@@ -161,7 +170,7 @@ extension Presentation {
 }
 
 extension SlideOutline {
-    init(extracting slide: Slide, number: Int, folderWidth: Int) {
+    init(extracting slide: Slide, number: Int, folderWidth: Int, warnings: inout [String]) {
         let flat = SlideOutline.flattened(slide.shapes.all)
 
         // Filenames are handed out once per slide folder, case-insensitively,
@@ -234,6 +243,17 @@ extension SlideOutline {
                                        filename: unique("chart-\(index + 1).csv")))
         }
 
+        // Append newly supported fill resources after the original media and
+        // chart names are allocated, preserving existing export filenames.
+        var fills = OutlineImageFills(slide: slide)
+        let inventory = fills.collect()
+        warnings.append(contentsOf: inventory.warnings.map { "slide \(number): " + $0 })
+        for image in inventory.images where seenParts.insert(image.part.uri.value).inserted {
+            assets.append(OutlineAsset(kind: .image,
+                filename: unique(Self.sanitized(image.part.uri.filename, fallback: "image.bin")),
+                partName: image.part.uri.value, byteCount: image.part.blob.count, altText: image.altText))
+        }
+
         let diagrams = slide.smartArtTexts.filter { !$0.isEmpty }
         let notes = slide.hasNotes
             ? slide.notesParagraphs.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
@@ -278,6 +298,14 @@ extension SlideOutline {
             part = media
             kind = picture.isAudio ? .audio : .video
         } else if let image = picture.imagePart {
+            if !picture.isMedia {
+                // Invalid ordinary-picture references are diagnosed by the
+                // owner-aware collector; they must not export an unrelated part.
+                guard let id = picture.imageRelationshipID,
+                      let relationship = picture.part.rels.relationship(withId: id),
+                      !relationship.isExternal, relationship.type == RelType.image,
+                      !relationship.target.isEmpty, image.contentType.hasPrefix("image/") else { return nil }
+            }
             part = image
             kind = .image
         } else {

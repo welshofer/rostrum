@@ -100,6 +100,69 @@ public struct TableStyleResolver {
         return (properties, owner)
     }
 
+    /// Fill-only, operation-local selection for asset inventory. Reuse region
+    /// winners without constructing borders, text or effective cell properties.
+    struct ImageFillSession {
+        struct Selection {
+            let fill: XML.Element?
+            let owner: Part
+            let namespaces: [String: String]?
+            init(fill: XML.Element?, owner: Part, namespaces: [String: String]? = nil) {
+                self.fill = fill; self.owner = owner; self.namespaces = namespaces
+            }
+        }
+        let resolver: TableStyleResolver
+        private var selections: [Int: Selection] = [:]
+        private let namespaces: [String: String]
+        init(_ resolver: TableStyleResolver, namespaces: [String: String]) {
+            self.resolver = resolver; self.namespaces = namespaces
+        }
+
+        mutating func selected(row: Int, column: Int) -> Selection {
+            let rowScope = TableStyleXML.bindings(resolver.grid.rows[row], inheriting: namespaces)
+            let cell = resolver.grid.cells[row][column]
+            let cellScope = TableStyleXML.bindings(cell, inheriting: rowScope)
+            if let properties = cell.childElements.first(where: { TableStyleXML.isDrawing($0, "tcPr", namespaces: cellScope) }) {
+                let scope = TableStyleXML.bindings(properties, inheriting: cellScope)
+                if let direct = properties.childElements.first(where: { child in
+                    Fill.choiceNames.contains { TableStyleXML.isDrawing(child, String($0.dropFirst(2)), namespaces: scope) }
+                }) {
+                    return Selection(fill: direct, owner: resolver.table.part, namespaces: scope)
+                }
+            }
+            func category(_ index: Int, _ count: Int) -> Int {
+                (index == 0 ? 1 : 0) | (index == count - 1 ? 2 : 0)
+                    | (index == 1 ? 4 : 0) | (index == count - 2 ? 8 : 0) | ((index & 1) << 4)
+            }
+            let key = category(row, resolver.grid.rows.count) | (category(column, resolver.grid.columns.count) << 5)
+            if let previous = selections[key] { return previous }
+            var chosen = Selection(fill: nil, owner: resolver.stylePart ?? resolver.table.part)
+            for name in resolver.regionNames(row: row, column: column) {
+                guard let style = resolver.definition?.firstChild(named: "a:" + name)?.firstChild(named: "a:tcStyle") else { continue }
+                if let fill = style.firstChild(named: "a:fill")?.childElements.first {
+                    chosen = Selection(fill: fill, owner: resolver.stylePart ?? resolver.table.part)
+                } else if let selected = referenceFill(style) {
+                    chosen = selected
+                }
+            }
+            selections[key] = chosen
+            return chosen
+        }
+        private func referenceFill(_ style: XML.Element) -> Selection? {
+            guard let reference = style.firstChild(named: "a:fillRef"),
+                  let index = reference[attribute: "idx"].flatMap(Int.init), index > 0,
+                  let root = try? resolver.theme.part.dom(),
+                  let elements = root.firstChild(named: "a:themeElements"),
+                  let scheme = elements.firstChild(named: "a:fmtScheme"),
+                  let list = scheme.firstChild(named: index >= 1001 ? "a:bgFillStyleLst" : "a:fillStyleLst") else { return nil }
+            let offset = index >= 1001 ? index - 1001 : index - 1
+            guard list.childElements.indices.contains(offset) else { return nil }
+            var scope = TableStyleXML.defaults
+            for node in [root, elements, scheme, list] { scope = TableStyleXML.bindings(node, inheriting: scope) }
+            return Selection(fill: list.childElements[offset], owner: resolver.theme.part, namespaces: scope)
+        }
+    }
+
     /// A bounded approximation of a table-background outer shadow. The source
     /// XML stays untouched; unsupported effect chains retain omission reports.
     struct BackgroundShadow {
