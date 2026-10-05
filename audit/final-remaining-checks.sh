@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-cd /Users/welshofer/Develop/rostrum
+cd "$(dirname "$0")/.."
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests
 (cd Lectern && swift build && swift test)
 python3 scripts/readme-snippets.py

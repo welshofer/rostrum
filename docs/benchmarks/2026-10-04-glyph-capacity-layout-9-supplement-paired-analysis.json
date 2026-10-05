@@ -5,7 +5,7 @@
   "method": "Percentile bootstrap of median paired candidate/baseline percent ratios, pairs resampled together; exact two-sided binomial sign test excludes ties. Exploratory uncertainty from ten pairs, not corrected across workloads. Cannot remove shared load bias.",
   "backgroundLoad": "WindowServer97.6\u201399.3 percent CPU and backupd30.7\u201343.4 percent CPU across six start/during/end snapshots. No external compiler/xcodebuild/xctest observed. Snapshots are not continuous isolation monitoring; substantial background load qualifies results.",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render": {
       "pairedPercentDeltas": [
         0.8994858537450856,
         1.5032151710264285,
@@ -26,7 +26,7 @@
         0.8994858537450856
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render": {
       "pairedPercentDeltas": [
         -2.046245032417837,
         -0.9410501289623285,
@@ -47,7 +47,7 @@
         0.6715040023739238
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render": {
       "pairedPercentDeltas": [
         -0.7444896460628181,
         -9.158639220398335,

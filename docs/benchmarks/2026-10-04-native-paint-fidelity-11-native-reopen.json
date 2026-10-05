@@ -1,14 +1,14 @@
 {
   "helperUnchanged": true,
-  "manifest": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopen-inputs.json",
+  "manifest": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopen-inputs.json",
   "cases": [
     {
       "name": "primary",
       "command": [
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
         "proof",
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/primary/candidate-1/saved.pptx",
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/primary"
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/primary/candidate-1/saved.pptx",
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/primary"
       ],
       "savedReopenAllArtifactsIdentical": true,
       "artifacts": {
@@ -27,10 +27,10 @@
     {
       "name": "autofit",
       "command": [
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
         "proof",
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/autofit/candidate-1/saved.pptx",
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/autofit"
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/autofit/candidate-1/saved.pptx",
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/autofit"
       ],
       "savedReopenAllArtifactsIdentical": true,
       "artifacts": {
@@ -46,10 +46,10 @@
     {
       "name": "eligibility",
       "command": [
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
         "proof",
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/eligibility/candidate-1/saved.pptx",
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/eligibility"
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/eligibility/candidate-1/saved.pptx",
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/eligibility"
       ],
       "savedReopenAllArtifactsIdentical": true,
       "artifacts": {
@@ -68,10 +68,10 @@
     {
       "name": "kern-v2",
       "command": [
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/candidate-native-bench",
         "proof",
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/kern-v2/candidate-1/saved.pptx",
-        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/kern-v2"
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/proof/native/kern-v2/candidate-1/saved.pptx",
+        "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/native-reopened/kern-v2"
       ],
       "savedReopenAllArtifactsIdentical": true,
       "artifacts": {

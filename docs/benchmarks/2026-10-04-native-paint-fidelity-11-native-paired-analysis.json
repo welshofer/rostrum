@@ -5,7 +5,7 @@
   "method": "Percentile bootstrap of median paired candidate/baseline percent ratios, pairs resampled together; exact two-sided binomial sign test excludes ties. Exploratory uncertainty from ten pairs, not corrected across workloads. Cannot remove shared load bias.",
   "backgroundLoad": "Seven retained start/during/end snapshots; no agent builds/GUI by coordination. Background load substantial; snapshots do not establish clean-host isolation or remove load bias. CPU ranges: {\"WindowServer\": [96.5, 99.6], \"photolibraryd\": [84.6, 103.1], \"managedcorespotlightd\": [2.1, 34.3], \"backupd\": [0.0, 0.0]}",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx/render": {
       "pairedPercentDeltas": [
         1.1400848150293852,
         -5.745754069339992,
@@ -26,7 +26,7 @@
         7.395424599459233
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx/render": {
       "pairedPercentDeltas": [
         1.7461056340875025,
         4.963663523561124,
@@ -47,7 +47,7 @@
         3.0910076898233996
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx/render": {
       "pairedPercentDeltas": [
         10.765240108929074,
         1.8509536238873636,
@@ -68,7 +68,7 @@
         2.649931917141901
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx/render": {
       "pairedPercentDeltas": [
         -7.913458710053578,
         35.5290122372504,

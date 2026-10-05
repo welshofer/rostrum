@@ -1,15 +1,15 @@
 {
   "assembly": {
     "additionalEvidenceSHA256": {
-      "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Sources/Rostrum/Presentation/RichTextLayout.swift": "6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055",
-      "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Tests/RostrumTests/LayoutOrderedGlyphRangesTests.swift": "af0fe65c9a876ee0b6b45a6d44f2dd5e20812977ecc2b5b6224ff5a80594fd11",
-      "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/ORDERED-ATOMS-PERFORMANCE-20261004-12.md": "0ae5ffda71d82b5980aa6267e05007e47e72e4b577eb4fb18d52efa6f0772f2f",
-      "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+      "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/Sources/Rostrum/Presentation/RichTextLayout.swift": "6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055",
+      "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/Tests/RostrumTests/LayoutOrderedGlyphRangesTests.swift": "af0fe65c9a876ee0b6b45a6d44f2dd5e20812977ecc2b5b6224ff5a80594fd11",
+      "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/ORDERED-ATOMS-PERFORMANCE-20261004-12.md": "0ae5ffda71d82b5980aa6267e05007e47e72e4b577eb4fb18d52efa6f0772f2f",
+      "/path/to/user/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
       "/tmp/lectern-fidelity11-break-verified/large-false-6A1A359E-6A2D-4216-8C4A-140ED79952CE/paragraphLayout.pptx": "414f34a5b9123272c6523172e945ef5a7793a739da33ece55d1e489e77de7d86",
       "/tmp/lectern-fidelity11-break-verified/large-true-229B48D5-8691-4921-BD43-40E866505B32/paragraphLayout.pptx": "ceb94ddf2a12e034da752d1d8ebe696fd25745e4624fb54e0afaae92f2971a14",
       "/tmp/lectern-fidelity11-native/alternative/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
@@ -803,18 +803,18 @@
           "comparison": "/tmp/lectern-fidelity12-webkit/independent-final/0-kerning-thresholds-comparison.json",
           "comparisonSHA256": "fa442ddd6f79a8d8bd5729e83d21b833d1aa37896eb3ceeb0052c19bfda5f191",
           "inputHashesAfter": {
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
             "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds-capture.json": "d580f596a58bd0371b44bfa62866cd8c3d70f84852641cbfabe4955fd801aa86",
             "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.pdf": "ffa079ea5193c576bf628440e12e879a84aea0f1bea8dab793d32cccafb76a6a",
             "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.svg": "374edc49a24df0870c210bc24ea384612a3f047ea137be6d941bacb155fb6ae2",
             "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
           },
           "inputHashesBefore": {
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
             "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds-capture.json": "d580f596a58bd0371b44bfa62866cd8c3d70f84852641cbfabe4955fd801aa86",
             "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.pdf": "ffa079ea5193c576bf628440e12e879a84aea0f1bea8dab793d32cccafb76a6a",
             "/tmp/lectern-fidelity12-webkit/kerning-6792B295-395E-47C1-A973-69BF4222923B/kerning-thresholds.svg": "374edc49a24df0870c210bc24ea384612a3f047ea137be6d941bacb155fb6ae2",
@@ -848,8 +848,8 @@
           "comparison": "/tmp/lectern-fidelity12-webkit/independent-final/1-alternative-false-comparison.json",
           "comparisonSHA256": "41cd9f961f5bc6f569cf61a188daf81c976e0ceb8710883bd8d7f09f16a5694b",
           "inputHashesAfter": {
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false-capture.json": "69b273b2f87b113bf7cd19789cf153299eb2f73f28a586e981ef331d767af707",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.pdf": "349627fa6d24aabfc992fbf36163f6d6ac8bda66f5ec20473cfa488c4054ba00",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
@@ -859,8 +859,8 @@
             "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
           },
           "inputHashesBefore": {
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false-capture.json": "69b273b2f87b113bf7cd19789cf153299eb2f73f28a586e981ef331d767af707",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.pdf": "349627fa6d24aabfc992fbf36163f6d6ac8bda66f5ec20473cfa488c4054ba00",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-false.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
@@ -897,9 +897,9 @@
           "comparison": "/tmp/lectern-fidelity12-webkit/independent-final/2-alternative-true-comparison.json",
           "comparisonSHA256": "73af152278d484b70f27c70689962c84e3b191a67fdd5e99b081425aa34f4830",
           "inputHashesAfter": {
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true-capture.json": "5da0f2dbc1cd373ec9c6c99a187295f5c522a1880c9e42d9fe7f9fa0611b97a6",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.pdf": "d2f44de8b47e8d0583b4ee8c07cf9353c5c3cbc0c86607398c3eb87efcd86ee0",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
@@ -909,9 +909,9 @@
             "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
           },
           "inputHashesBefore": {
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true-capture.json": "5da0f2dbc1cd373ec9c6c99a187295f5c522a1880c9e42d9fe7f9fa0611b97a6",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.pdf": "d2f44de8b47e8d0583b4ee8c07cf9353c5c3cbc0c86607398c3eb87efcd86ee0",
             "/tmp/lectern-fidelity12-webkit/paragraph-3FDA3756-35A1-4AF5-9252-E94282F546A3/alternative-true.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
@@ -1177,7 +1177,7 @@
         "currentSVGSHA256": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
         "glyphCount": 30,
         "inputHashesAfter": {
-          "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "/path/to/user/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
           "/tmp/lectern-fidelity11-native/independent-table-alternative/review-receipt.json": "51c010d1ad1e2f08c29888fd5da7d50c180aee53446d6a96aa20e28337e84fd4",
           "/tmp/lectern-fidelity11-native/independent-table-alternative/svg-source-expectations.json": "3a429af8c8398c6789eb81f17c579396b2bd84bae5a3d7f804e62d55dac279d5",
           "/tmp/lectern-fidelity11-native/table-alternative/powerpoint.pdf": "1ba0c49d876f1673a3c38e1bfd4d05fbc6af0b8ba5b0273175f68af4e3a08713",
@@ -1188,7 +1188,7 @@
           "/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
         },
         "inputHashesBefore": {
-          "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "/path/to/user/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
           "/tmp/lectern-fidelity11-native/independent-table-alternative/review-receipt.json": "51c010d1ad1e2f08c29888fd5da7d50c180aee53446d6a96aa20e28337e84fd4",
           "/tmp/lectern-fidelity11-native/independent-table-alternative/svg-source-expectations.json": "3a429af8c8398c6789eb81f17c579396b2bd84bae5a3d7f804e62d55dac279d5",
           "/tmp/lectern-fidelity11-native/table-alternative/powerpoint.pdf": "1ba0c49d876f1673a3c38e1bfd4d05fbc6af0b8ba5b0273175f68af4e3a08713",
@@ -1224,7 +1224,7 @@
         },
         "glyphCount": 30,
         "inputSHA256": {
-          "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "/path/to/user/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
           "/tmp/lectern-fidelity11-native/table-default/powerpoint.pdf": "b864aa7b5571c0284889e33ed1871eff8db8314cc79ea3a9b80634906b4d10c8",
           "/tmp/lectern-fidelity11-native/table-default/tableAppearance.pptx": "964b2826b92ed506489aca40fa1d87b46da1730e34798ec2218c802f2dfbfc95",
           "/tmp/lectern-fidelity11-table-verified/alternative-false-AED13D47-7DE7-4FC7-A079-368B74411C44/slide-03.svg": "78e12dd789c0e04bfb838ddda685bb71a69c18eb1f00458acb221ae8ef6402cf",
@@ -1291,7 +1291,7 @@
         },
         "glyphCount": 30,
         "inputSHA256": {
-          "/Users/welshofer/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "/path/to/user/Developer/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
           "/tmp/lectern-fidelity11-native/table-alternative/powerpoint.pdf": "1ba0c49d876f1673a3c38e1bfd4d05fbc6af0b8ba5b0273175f68af4e3a08713",
           "/tmp/lectern-fidelity11-native/table-alternative/tableAppearance.pptx": "10be04ae20752ef408aa2727d21ddf42fc2a69ab9756375a66e573a699e83b0a",
           "/tmp/lectern-fidelity11-table-verified/alternative-true-5B9183E7-5087-4EFF-A44F-913D58B799E2/slide-03.svg": "0782ca8ed186e2b13774a6506f6c6ddef313d1e3ac57bcd98cf33d30b79a7e79",
@@ -1362,106 +1362,106 @@
     "independentReview": "Accepted with bounded cycle2 claims; adverse cycle1 remains withheld.",
     "limits": "One matched run with substantial WindowServer load. Registered and fallback possible costs remain; mixed RSS. No cumulative speedup, universal nonregression, clean-host or cross-platform claim.",
     "manifest": {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-verification.json",
+      "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-verification.json",
       "sha256": "3a8c953d60d8f677b62e6c70616e66b04555d08b1a383e6fceee9d1cfe234e56"
     },
     "originalMeasuredPacketUnchanged": true,
     "receiptPins": [
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-canonical-paired-analysis.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-canonical-paired-analysis.json",
         "sha256": "fa024415d5cbdb7ab571f4b415b3a2d6d5ee934e4e503f08afbc3fb39e1c8152"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle1-checkpoint.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle1-checkpoint.json",
         "sha256": "8a096c472349af0b45ce71e44a9382694c95a12d51c5446f59f15c682fed7cd4"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-assembly-comparison.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-assembly-comparison.json",
         "sha256": "ba224f9036df98907781eec8078f239c26ec0982cd49bf1fb272fd40c8766dbe"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-candidate-build.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-candidate-build.json",
         "sha256": "c992cec3c8b9a042e8230ed17741821fa8ddeb5005650d5a20b0791c8347c489"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-canonical-paired-analysis.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-canonical-paired-analysis.json",
         "sha256": "355d53be72195164210379f5fd81eda4a39a6e28466cd4422d4673a0db333e12"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-paired-analysis.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-paired-analysis.json",
         "sha256": "bd1394f12e316fb84bd0a019b9d8c1f618fa504fe0f8a74229f9979246e6f5ac"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-paired-macos.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-paired-macos.json",
         "sha256": "8156159394e074876c58c0c4600866c7ad2670c0302e2502a2dccfacb80e0e40"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-proof.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-proof.json",
         "sha256": "0f5a364eea7f4a22453f8dc561993110ff53a193a9d0b8a7e801ab3e847d1558"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-load-summary.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-load-summary.json",
         "sha256": "af74ad2935d35cada465ffb220946820ee890622b202d2a0ae09c4b3f5423c2f"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-output-proof.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-output-proof.json",
         "sha256": "b41e177eb29df0ed3545b49cf2ed3e14bcd1e4c58f9321583875167dfb6763f8"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-paired-macos.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-paired-macos.json",
         "sha256": "f1888cab6cc07d5de67a5c0efaf609de0e1ff409b7d1dafa79f37d571451a20f"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-preservation.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-preservation.json",
         "sha256": "1e4f339e89e34cf2a4041167306e6fa970bd6fd23b0a8496e03643d8208cc1d9"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-summary.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-summary.json",
         "sha256": "d52c2d1ca3c14684402801f945676ec3b3df7496e7f95d702a3d4bf2db1acbcc"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-supplement-paired-analysis.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-supplement-paired-analysis.json",
         "sha256": "7c463d177ce8672564fce036505e83c78675d6986f126a49e658cd531144857b"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-supplement-paired-macos.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-supplement-paired-macos.json",
         "sha256": "9c69039c7f9a765b3e20b1171b1ef735fca09f29f3d7b1fae32da6203b0710fe"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-timing-validation.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-timing-validation.json",
         "sha256": "720cdc9f76fee94b0a216842438c36f1de3ef39406b0432a7b38e425a050d373"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-analysis.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-analysis.json",
         "sha256": "c96a8f09e35b47d68845c796847f21ac18cc723be074c65b138dcc34a6950294"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-macos.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-macos.json",
         "sha256": "f78c5e326fa670715720998292c49f744a3ea318faa845421db530b1a2e2d7cb"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-paired-macos.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-paired-macos.json",
         "sha256": "84ba73b3048e5aaed66a64b86f236700b4924874066414a90457ecd3d867ee60"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-summary.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-summary.json",
         "sha256": "1d2dd61943f9320d8aa7720fbc940821786e1891f2602d52e169baf7da294184"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-analysis.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-analysis.json",
         "sha256": "fb9ee6e88143dc71bd081f39d970f58c15dea792f9b96ea32b949f90eddfa9e6"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-macos.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-macos.json",
         "sha256": "139f6e2c512063c47d826aefbda763a4ee8753fd69e92cd0822f1fd668cfc402"
       },
       {
-        "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-verification.json",
+        "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-ordered-atoms-layout-12-verification.json",
         "sha256": "3a8c953d60d8f677b62e6c70616e66b04555d08b1a383e6fceee9d1cfe234e56"
       }
     ],
     "report": {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/ORDERED-ATOMS-PERFORMANCE-20261004-12.md",
+      "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/ORDERED-ATOMS-PERFORMANCE-20261004-12.md",
       "sha256": "0ae5ffda71d82b5980aa6267e05007e47e72e4b577eb4fb18d52efa6f0772f2f"
     }
   },
@@ -1479,7 +1479,7 @@
     "scope": "Explicit licensed embedded DejaVu Sans avoids installed-font dependence in native kerning assertions. Strict nil/0 off and1200 on remain; unregistered fallback retains nil and missing-font diagnostic. Exact font bytes/family survive reopen."
   },
   "previousCheckpoint": {
-    "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-native-paint-integration-verification.json",
+    "path": "/path/to/user/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-native-paint-integration-verification.json",
     "sha256": "a114b89ee203b26377481bbd42ffda141ad2c5ee3b4bc7da9080fddbdaf64f5d"
   },
   "schemaVersion": 1,

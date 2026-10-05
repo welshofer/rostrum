@@ -6,7 +6,7 @@ It makes no model calls and includes no API keys.
 
 ```
 swift run -c release --package-path Lectern CompositionRegression /tmp/composition \
-  /path/to/Contoso.potx /path/to/welshofer.potx Lectern/App/Resources/Styles/serif.md
+  /path/to/Contoso.potx /path/to/private-template.potx Lectern/App/Resources/Styles/serif.md
 ```
 
 Pass `--replay /path/to/deck.json` to replay DeckIR or a protected RenderSnapshot,

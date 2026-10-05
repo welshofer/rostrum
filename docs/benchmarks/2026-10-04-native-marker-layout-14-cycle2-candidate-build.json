@@ -1,7 +1,7 @@
 {
   "candidateSource": "c522a9dacef797697c7b860ec1884dd84cced35b",
   "candidateSourceTree": "dda66f4a098cb995b6aa75e09e1e9d0dee4aa482",
-  "worker": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum",
+  "worker": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum",
   "productionDiffFromCycle1": "Sources/Rostrum/Presentation/RichTextLayout.swift | 39 ++++++++++++++++++-----\n 1 file changed, 31 insertions(+), 8 deletions(-)",
   "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
   "commands": [
@@ -11,11 +11,11 @@
       "6",
       "-O",
       "-I",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/extended-main.swift",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/extended-main.swift",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
       "-o",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-extended-bench"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-extended-bench"
     ],
     [
       "swiftc",
@@ -23,11 +23,11 @@
       "6",
       "-O",
       "-I",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/native-main.swift",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/native-main.swift",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
       "-o",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-native-bench"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-native-bench"
     ],
     [
       "swiftc",
@@ -35,11 +35,11 @@
       "6",
       "-O",
       "-I",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/supplement-main.swift",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/supplement-main.swift",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
       "-o",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-supplement-bench"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-supplement-bench"
     ],
     [
       "swiftc",
@@ -47,11 +47,11 @@
       "6",
       "-O",
       "-I",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/shaping-proof.swift",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/shaping-proof.swift",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
       "-o",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-shaping-proof"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-shaping-proof"
     ],
     [
       "swiftc",
@@ -59,11 +59,11 @@
       "6",
       "-O",
       "-I",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/supplement-shaping.swift",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/supplement-shaping.swift",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
       "-o",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-supplement-shaping"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-supplement-shaping"
     ],
     [
       "swiftc",
@@ -71,14 +71,14 @@
       "6",
       "-O",
       "-I",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/layout-proof.swift",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/layout-proof.swift",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
       "-o",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-layout-proof"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-layout-proof"
     ]
   ],
-  "products": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release",
+  "products": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release",
   "buildLogSHA256": "acab8c439bb64f704ac04b40df6dbe37190775474b5d4411cac154bfecc2e6c2",
   "files": {
     "candidate-RichTextLayout.swift": "65ea20231352915ffa16fcc7c5f4de81c423841552da0066bc1c3c2dd00784d2",

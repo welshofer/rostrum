@@ -3,9 +3,18 @@
 Support is evaluated separately for reading, authoring, editing, duplication,
 import, round-trip preservation and rendering. Preserving unknown XML does not
 imply the renderer understands it. Animation is outside this program. The
-[latest notes and shaping record](NOTES-AND-MARKS-20261002.md) contains current
-combined checks and acceptance failures; the
+[imported-fidelity record](IMPORTED-FIDELITY-20261003.md) covers the imported artwork,
+list, anchoring and missing-font fixes with native and iOS consumer acceptance. The
+[notes and shaping record](NOTES-AND-MARKS-20261002.md) retains its scoped
+checks and acceptance failures; the
 [earlier integrated record](IMPLEMENTATION-20261002.md) retains prior evidence.
+
+The later [native table checkpoint](LAYOUT-FIDELITY-20261004-17.md) covers absent
+applied styles and bounded unequal border joins. It also retains fresh typography
+regressions for [mixed-face spacing](LAYOUT-FIDELITY-20261004-16.md),
+[alignment](LAYOUT-FIDELITY-20261004-15.md), markers and glyph painting, with native
+and exact-inspector WebKit evidence. Read the [layout guide](LAYOUT-ENGINE.md) for
+current admission rules; the historical records below retain their original bounds.
 
 ## Operation-level evidence
 
@@ -14,6 +23,7 @@ combined checks and acceptance failures; the
 | Tables | Merge topology, atomic overlap refusal, unmerge, row/column insert/remove/reorder, dimension synchronization; `TableContractTests`, `TableConformanceTests` | PowerPoint visual equivalence, advanced vertical cell text |
 | Table appearance | Typed compound/dash line settings, qualified solid double-border geometry, native style-boundary precedence, shared-edge ownership, merged-continuation/RTL borders, margins, image/gradient fills, embedded/custom regions and all 74 native style definitions, theme-owned image references, correct tint/shade/saturation and Office interpolation for endpoint-pair/mirrored-three-stop gradients; `BuiltInTableStyleTests`, `TableStyleContractTests`, `TableStyleImportTests`, `TableFillAtomicityTests` | Whole-slide Office equivalence; pattern fills, effects, unsupported compound/dashed-double/junction variants in preview |
 | Typography | Exact regular/bold/italic face selection, mixed-run shared fit/render layout, Office-verified baseline and bounded line-break subsets, fields, breaks, standard LTR Latin tab stops, word-space justification, spacing, bullets, autofit; `FontFaceTests`, `RichTextLayoutTests`, `ParagraphJustificationTests`, `TabLayoutTests`, `LineBreakBoundaryTests` | Whole-image typography equivalence, full paragraph bidi, non-Latin/distributed justification, locale-specific decimal tabs, text decorations/warps/columns, language-specific typography |
+| Imported artwork and text | Custom line/curve paths and guide coordinates, SVG-only images, saved SmartArt drawings, hidden shapes/groups, inherited text/list styles, empty markers and exact-spacing anchors; `ImportedGeometryRegressionTests`, `FontFaceTests` | Custom arcs/shaded fills/text rectangles, general SVG/CSS, complex SmartArt transforms and exact typography with unavailable fonts |
 | Shaping | Bounded Latin kerning/ligatures, Arabic joining/contextual GSUB, GDEF filtering, mark-to-base/mark-to-mark attachment, Calibri compatibility, NFC clusters, restricted Hebrew bidi and horizontal CJK breaks; `TextShaperTests`, `ArabicShapingTests`, `FontCompatibilityTests`, `FontLookupFilteringTests` and pinned HarfBuzz oracles | Complete Arabic/Indic shaping, unsupported composition and mark-to-ligature/cursive attachment, full Unicode bidi/line-breaking |
 | Pictures/crops | Source/destination crops, stretch/tile, transforms/clipping, isolated replacement; `PictureMappingTests`; resvg quadrant/transparency checks and 12 passing Office mapping cases | Broader native image/effect coverage; alternate SVG/layer/linked image replacement refuses atomically |
 | Speaker notes | Rich notes, bounded read-only notes-page SVG previews with diagnostics, printable default page geometry, foreign placeholder inheritance, independent duplicates, source master/theme/media import, exact-master reuse; `NotesTests`, `NotesPageLayoutTests`, annotation lifecycle/import suites | Conflicting masters/page sizes are refused atomically; broader Office notes lifecycle coverage |
@@ -34,7 +44,13 @@ with stable category, impact, slide index, part URI, shape ID and XML path.
 when known omissions, approximations or missing resources are encountered.
 Strict mode detects known gaps; passing it is not a full OOXML certification.
 
-Register exact font faces on `deck.fonts` before rendering. SVG embeds permitted
+Register exact font faces on `deck.fonts` before rendering. An explicitly
+registered `previewFallbackFamily` can keep unavailable-font previews readable;
+it does not make exact lookup succeed or suppress missing-font diagnostics.
+Automatic numbers use the first paragraph text face; character bullets honor
+their separate face. Empty paragraphs preserve spacing without list markers.
+See [Importing and previewing](IMPORTING-AND-PREVIEWING.md) for the API and policy.
+SVG embeds permitted
 registered font bytes under renderer-owned family names. Restricted fonts,
 missing faces, unsupported collection embedding and unsupported shaping remain
 explicit diagnostics. `shape.fitText(fonts: deck.fonts)` and SVG use the same

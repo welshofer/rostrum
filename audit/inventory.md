@@ -194,7 +194,7 @@ No project `.claude/`, `.cursor/`, `.cursorrules`, AGENTS.md, separate TODO file
 
 Searched ~/.claude/projects, ~/.codex/sessions, and ~/.codex/archived_sessions. No Claude project directory named Rostrum/Lectern found. Exact project cwd metadata matched:
 
-- `/Users/welshofer/.codex/sessions/2026/09/24/rollout-2026-09-24T11-16-29-01a0d4a2-1b82-7ff0-b5ed-391921e979aa.jsonl` — 2026-09-24T18:17:03.725Z; 561904 bytes; cwd `/Users/welshofer/Develop/rostrum`
+- `/path/to/user/.codex/sessions/2026/09/24/rollout-2026-09-24T11-16-29-01a0d4a2-1b82-7ff0-b5ed-391921e979aa.jsonl` — 2026-09-24T18:17:03.725Z; 561904 bytes; cwd `/path/to/user/Develop/rostrum`
 
 Cross-project mention hits exist; Phase 3 will classify these and look for alternate history stores. The current audit session is excluded as prior evidence.
 
@@ -210,6 +210,6 @@ Read-only Codex state_5.sqlite lookup also found no previous Rostrum/Lectern cwd
 
 - ~/.claude/CLAUDE.md: 45 lines, global editing/completion/security/privacy rules and hosted-macOS CI cost prohibition. Read in full. The budget requirement must be preserved.
 - ~/.codex/AGENTS.md: empty (0 lines).
-- No ancestor CLAUDE.md at /, /Users, the user home, or /Users/welshofer/Develop.
+- No ancestor CLAUDE.md at /, /Users, the user home, or /path/to/user/Develop.
 
 Generated build trees and ignored local binary fixture decks are excluded from instruction inventory. The real-deck test enrolls ignored decks too; its result describes this checkout, not necessarily a clean clone.

@@ -10,7 +10,7 @@
     "Sources/Rostrum/Presentation/Tables.swift": "eee820115188d8bfa3e1adcf8f37276dedb4441ee78063f69db7e6602ad4b06f",
     "Tests/RostrumTests/TableCellLookupTests.swift": "887168d98079c690838cee2e1c9f630d29af95c7f670367a3768df0a7a7348e4"
   },
-  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition",
+  "retainedDirectory": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition",
   "files": {
     "10x10-baseline-proof-sample.json": "e78f7420a604a58955cfc781b4133eeb15b98c73cf9bb237dc2e623b4588ee75",
     "10x10-candidate-1-proof-sample.json": "8375aef6b09a450b31d2798806befee793fa10a0025d5ed680332c384a2e3df8",
@@ -247,9 +247,9 @@
         "--warmups",
         "1",
         "--scenarios",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
         "--output",
         "docs/benchmarks/2026-10-04-cell-acquisition-layout-14-supplement-paired-macos.json"
       ],
@@ -267,10 +267,10 @@
         "--warmups",
         "1",
         "--scenarios",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx",
         "--output",
         "docs/benchmarks/2026-10-04-cell-acquisition-layout-14-acquisition-paired-macos.json"
       ]
@@ -292,10 +292,10 @@
       ".build/perf24-cell-acquisition/supplement-main.swift": "6b27eda99b23232d4a04a8e71dd48ccba789313361456137d750c570a7753da1",
       ".build/perf24-cell-acquisition/acquisition-main.swift": "8a78ac0909934b5758672ba6cca555ed42a1ea7ecdc772140bf852c8bf351310",
       "/System/Library/Fonts/Supplemental/Arial.ttf": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx": "2cb40f40470687b29a907337ef9ca84ac7763ce8fd57f2c4c25305f7309656cb",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx": "44ff60834a619b4b90ea445bed406eebfbb23fa145d7aafcab6a517ddc80a1fa",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx": "a4cd4d8957bbe7d310857036ef05f43b378e76584aa30b6110405d0294fc8f93",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx": "a4cd4d8957bbe7d310857036ef05f43b378e76584aa30b6110405d0294fc8f93"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx": "2cb40f40470687b29a907337ef9ca84ac7763ce8fd57f2c4c25305f7309656cb",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx": "44ff60834a619b4b90ea445bed406eebfbb23fa145d7aafcab6a517ddc80a1fa",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx": "a4cd4d8957bbe7d310857036ef05f43b378e76584aa30b6110405d0294fc8f93",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx": "a4cd4d8957bbe7d310857036ef05f43b378e76584aa30b6110405d0294fc8f93"
     },
     "scope": "Once264children. Canonical+supplementary176 unchanged. Separate acquisition88 controls:10k lookups10x10/40x25/200x50 plus1k last-cell lookups200x50. Dimensions/capacity outside lookup timer, text consumption outside, genuine render separate. Perf13 fitting timer is not changed or reused for acquisition claims. No adaptive rerun."
   },
@@ -367,9 +367,9 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-cell-acquisition-layout-14-supplement-paired-macos.json"
         ],
@@ -392,10 +392,10 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-cell-acquisition-layout-14-acquisition-paired-macos.json"
         ],
@@ -441,43 +441,43 @@
       },
       {
         "scope": "supplement",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "supplement",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "supplement",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "acquisition",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "acquisition",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "acquisition",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "acquisition",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       }

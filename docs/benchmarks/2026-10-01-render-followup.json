@@ -8,23 +8,23 @@
     "sha256": "187333e215d1763da918d8c90cd06fe5a901ff2b45ca83675056528c5317a9ca",
     "compileCommand": "swiftc -O -I .build/out/Products/Release Tools/render-profile/main.swift .build/out/Products/Release/Rostrum.o -o PROFILE",
     "runCommand": "PROFILE FIXTURE.pptx COUNT [OUTPUT_PREFIX]",
-    "originalSource": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/Profile.swift"
+    "originalSource": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/Profile.swift"
   },
   "fixtures": {
     "table10000HistoricalGUID": {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/table.pptx",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/table.pptx",
       "sha256": "429b635347b5c16a0bfe37ff4f6a5124e06f6334b04800e539e8ea61a95543a5"
     },
     "table10000NoGrid": {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/native-perf/no-grid.pptx",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/native-perf/no-grid.pptx",
       "sha256": "557d0a00f6f452d9ffb176309198e419be0a1a2bdc724a103dcc03a5cb758f29"
     },
     "images250Unique": {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/images.pptx",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/images.pptx",
       "sha256": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52"
     },
     "customMerged": {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/native-perf/custom.pptx",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/native-perf/custom.pptx",
       "sha256": "0068e39ddba967cc782415d4cca1b09a72e6888bdc882e43c347873fd11ba549"
     }
   },
@@ -184,7 +184,7 @@
           "caveat": "Only one warm sample each; exploratory, not a robust performance acceptance claim."
         }
       ],
-      "sourceEvidence": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/evidence.json"
+      "sourceEvidence": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/render-followup/evidence.json"
     },
     {
       "name": "native table style operation-local templates",
@@ -304,7 +304,7 @@
         "The No Grid comparison fixture changes only that GUID to2D5ABB26. Its output SHA cf9a7c5f... matches the prior unresolved historical fixture output; inputs differ semantically despite matching appearance.",
         "prior-perf-timing uses the saved7801c release binary with the historical fixture and is separate contextual evidence; do not treat all native-stage timings as one unchanged-input optimization."
       ],
-      "sourceEvidence": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/native-perf/evidence.json"
+      "sourceEvidence": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/native-perf/evidence.json"
     },
     {
       "name": "Office shared border ownership accuracy",
@@ -396,7 +396,7 @@
         "8 renders per fixture per process; first excluded; measured after release build/full test completion and coordination with other agents to avoid concurrent heavy builds.",
         "NoGrid retains no border candidate entries; TableGrid avoids duplicate shared edges. There is no global DOM cache."
       ],
-      "sourceEvidence": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-borders/timings.json"
+      "sourceEvidence": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/table-borders/timings.json"
     }
   ]
 }

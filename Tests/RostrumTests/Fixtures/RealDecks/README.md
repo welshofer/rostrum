@@ -54,9 +54,12 @@ below, which exists because of them:
   for them forever. A focused deck beats a big one.
 - Check the metadata before committing. `docProps/core.xml` carries
   `dc:creator` and `cp:lastModifiedBy`; `docProps/app.xml` can carry a
-  template name and the full slide-title list. Scrub in PowerPoint *before*
-  the file lands here — editing the XML afterwards would forge a deck no
-  application actually wrote, which is the one thing this corpus can't use.
+  template name and the full slide-title list. Prefer sanitizing in the authoring
+  application before export. If metadata-only cleanup is necessary, record the
+  original and replacement hashes, list the changed members, and verify every
+  other uncompressed member is identical. Do not label the replacement hash as
+  natively accepted without repeating that check. Never edit slide content to
+  manufacture an independent rendering oracle.
 - **Check the provenance, not just the metadata.** These files ship in a
   public MIT-licensed repository, so a deck has to be yours to give away.
   Starting from a corporate or downloaded template carries its theme, its
@@ -82,3 +85,13 @@ ROSTRUM_REAL_DECKS=~/private-decks swift test --filter RealDeckCorpusTests
 
 The variable replaces this directory for that run. Nothing is copied, nothing
 is staged, and the invariants are identical.
+
+## Publication sanitization — 2026-10-04
+
+`SimplePowerPoint.pptx` and `MovieAndComments.pptx` retain their PowerPoint-authored
+structure with synthetic creator/comment-author identities. The derived
+`ModernCustomXML.pptx` received the same metadata-only cleanup. Every other
+uncompressed member, including slides, relationships and media, is unchanged.
+The [provenance manifest](../AuthorDependencyImport/manifest.json) records old/new
+hashes and the exact changed members. Earlier native acceptance and benchmark
+hashes refer to the original inputs; they are not silently relabeled as new runs.

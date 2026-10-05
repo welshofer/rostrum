@@ -2,7 +2,7 @@
   "schema": 1,
   "command": [
     "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
-    "/Users/welshofer/Developer/rostrum/Tools/conformance/check_notes_render.py",
+    "/path/to/user/Developer/rostrum/Tools/conformance/check_notes_render.py",
     "--binary",
     ".build/out/Products/Release/pptx-tool",
     "--output-dir",
@@ -40,19 +40,19 @@
     "pythonExecutableSHA256": "f4cd716d4b54f205398bec6932cc59361b087494ca2ddb157a5e8631d4d6f863",
     "modules": {
       "pptx": {
-        "path": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/pptx/__init__.py",
+        "path": "/path/to/user/Library/Python/3.12/lib/python/site-packages/pptx/__init__.py",
         "sha256": "5cbabf88d062a399cd8d03e6986c700bc189647bd5d7404ba9130244301e519c"
       },
       "pptx.shapes.placeholder": {
-        "path": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/pptx/shapes/placeholder.py",
+        "path": "/path/to/user/Library/Python/3.12/lib/python/site-packages/pptx/shapes/placeholder.py",
         "sha256": "7bb9bc6bf557299c31b36b6390d27a0bda01f402d2dcc00ce055804d9092f600"
       },
       "pymupdf": {
-        "path": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/pymupdf/__init__.py",
+        "path": "/path/to/user/Library/Python/3.12/lib/python/site-packages/pymupdf/__init__.py",
         "sha256": "1b8fe9fd941fac2bfb45143c2d21be04e0a8eb0599c92a29de7ec913914d4568"
       },
       "pymupdf._mupdf": {
-        "path": "/Users/welshofer/Library/Python/3.12/lib/python/site-packages/pymupdf/_mupdf.so",
+        "path": "/path/to/user/Library/Python/3.12/lib/python/site-packages/pymupdf/_mupdf.so",
         "sha256": "2b61537744f934bf3b47577a1f5e6fba3de8dc7ffe8fdfcf828a9697befe7a2a"
       },
       "resvg_py.resvg_py": {
@@ -111,7 +111,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01.svg",
             "svgSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2",
             "pngSHA256": "04de228fb8b54c5e32f6d10bfd90f870e6b29ca5084f7ae93f57c04063b9646b",
             "notesSizeEMU": [
@@ -133,7 +133,7 @@
           },
           {
             "slide": 2,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02.svg",
             "svgSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0",
             "pngSHA256": "4086ce4f07b7983b82a726fa0bef973f2fe596b54d8e647b8f12a08e3d09361c",
             "notesSizeEMU": [
@@ -162,7 +162,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01.svg",
             "svgSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0",
             "pngSHA256": "4086ce4f07b7983b82a726fa0bef973f2fe596b54d8e647b8f12a08e3d09361c",
             "notesSizeEMU": [
@@ -191,7 +191,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01.svg",
             "svgSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2",
             "pngSHA256": "04de228fb8b54c5e32f6d10bfd90f870e6b29ca5084f7ae93f57c04063b9646b",
             "notesSizeEMU": [
@@ -220,7 +220,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-imported/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-imported/notes-01.svg",
             "svgSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2",
             "pngSHA256": "04de228fb8b54c5e32f6d10bfd90f870e6b29ca5084f7ae93f57c04063b9646b",
             "notesSizeEMU": [
@@ -242,7 +242,7 @@
           },
           {
             "slide": 2,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-imported/notes-02.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-imported/notes-02.svg",
             "svgSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0",
             "pngSHA256": "4086ce4f07b7983b82a726fa0bef973f2fe596b54d8e647b8f12a08e3d09361c",
             "notesSizeEMU": [
@@ -271,7 +271,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-source/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-source/notes-01.svg",
             "svgSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0",
             "pngSHA256": "4086ce4f07b7983b82a726fa0bef973f2fe596b54d8e647b8f12a08e3d09361c",
             "notesSizeEMU": [
@@ -300,7 +300,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-imported/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-local-imported/notes-01.svg",
             "svgSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2",
             "pngSHA256": "04de228fb8b54c5e32f6d10bfd90f870e6b29ca5084f7ae93f57c04063b9646b",
             "notesSizeEMU": [
@@ -322,7 +322,7 @@
           },
           {
             "slide": 2,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-imported/notes-02.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-local-imported/notes-02.svg",
             "svgSHA256": "763eac67032879b19871cc5394f4f3c051602a98a99de3af6fef2073ee94c8d8",
             "pngSHA256": "c5583356fdcb1147c3bd64e2b8448a036b612e6a0c349f73ea40807bdaf58958",
             "notesSizeEMU": [
@@ -351,7 +351,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-source/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-local-source/notes-01.svg",
             "svgSHA256": "763eac67032879b19871cc5394f4f3c051602a98a99de3af6fef2073ee94c8d8",
             "pngSHA256": "c5583356fdcb1147c3bd64e2b8448a036b612e6a0c349f73ea40807bdaf58958",
             "notesSizeEMU": [
@@ -383,7 +383,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/python-tables/notes-01.svg",
             "svgSHA256": "8b68d71688ac39e70c28c4ad0721a4fb60f235c7db0d63f3cf352388f74e8231",
             "pngSHA256": "e6e7427e4eb9ef87f68c00e7961faea89a0e88fce683878976d925315050c071",
             "notesSizeEMU": [
@@ -415,7 +415,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v2/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/python-tables-v2/notes-01.svg",
             "svgSHA256": "8b68d71688ac39e70c28c4ad0721a4fb60f235c7db0d63f3cf352388f74e8231",
             "pngSHA256": "e6e7427e4eb9ef87f68c00e7961faea89a0e88fce683878976d925315050c071",
             "notesSizeEMU": [
@@ -446,7 +446,7 @@
         "pages": [
           {
             "slide": 1,
-            "svg": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v3/notes-01.svg",
+            "svg": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/python-tables-v3/notes-01.svg",
             "svgSHA256": "8b68d71688ac39e70c28c4ad0721a4fb60f235c7db0d63f3cf352388f74e8231",
             "pngSHA256": "e6e7427e4eb9ef87f68c00e7961faea89a0e88fce683878976d925315050c071",
             "notesSizeEMU": [
@@ -472,26 +472,26 @@
   },
   "sourceImportPairs": [
     {
-      "source": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01.svg",
-      "imported": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02.svg",
+      "source": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01.svg",
+      "imported": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02.svg",
       "byteIdenticalSVG": true,
       "sharedSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0"
     },
     {
-      "source": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-source/notes-01.svg",
-      "imported": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-imported/notes-02.svg",
+      "source": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-source/notes-01.svg",
+      "imported": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-inherited-imported/notes-02.svg",
       "byteIdenticalSVG": true,
       "sharedSHA256": "16c5eb30e04c289d3e1e6cbcfff9c3550a439f7d1e73bcbd102d6b48408764c0"
     },
     {
-      "source": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-source/notes-01.svg",
-      "imported": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/type-index-local-imported/notes-02.svg",
+      "source": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-local-source/notes-01.svg",
+      "imported": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/type-index-local-imported/notes-02.svg",
       "byteIdenticalSVG": true,
       "sharedSHA256": "763eac67032879b19871cc5394f4f3c051602a98a99de3af6fef2073ee94c8d8"
     },
     {
-      "source": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01.svg",
-      "imported": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01.svg",
+      "source": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01.svg",
+      "imported": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01.svg",
       "byteIdenticalSVG": true,
       "sharedSHA256": "ab47e72765a5b20daae172ca98f254c1b0f5a75fd0b9b628a71d7e5bcabae7c2"
     }
@@ -514,8 +514,8 @@
       {
         "deck": "geometry-source",
         "page": 1,
-        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01-print-candidate.png",
-        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01-native.png",
+        "candidate": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01-print-candidate.png",
+        "nativeRaster": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-source/notes-01-native.png",
         "referencePDF": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-source-office.pdf",
         "candidateSHA256": "8a04743abf354ea3022d2ef184e79b939010f6d79bf9cf0eaab656d3c6f542fe",
         "nativeRasterSHA256": "9c4e21dfb1eb380519a982a979df2f87134275afea2f579c9a595fc46168a99d",
@@ -529,8 +529,8 @@
       {
         "deck": "geometry-target-before",
         "page": 1,
-        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01-print-candidate.png",
-        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01-native.png",
+        "candidate": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01-print-candidate.png",
+        "nativeRaster": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-target-before/notes-01-native.png",
         "referencePDF": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-target-before-office.pdf",
         "candidateSHA256": "8b4ccdfa798bc36a29b60bc290d918b682b94c26dd2d4f57d1ec75f273d1bcc5",
         "nativeRasterSHA256": "3f8f0201e6fbeef1cf79f521fb4dd01b3a0800e9139db58bf3416f7ed1dc57a3",
@@ -544,8 +544,8 @@
       {
         "deck": "geometry-imported",
         "page": 1,
-        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01-print-candidate.png",
-        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01-native.png",
+        "candidate": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01-print-candidate.png",
+        "nativeRaster": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-01-native.png",
         "referencePDF": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported-office.pdf",
         "candidateSHA256": "8b4ccdfa798bc36a29b60bc290d918b682b94c26dd2d4f57d1ec75f273d1bcc5",
         "nativeRasterSHA256": "3f8f0201e6fbeef1cf79f521fb4dd01b3a0800e9139db58bf3416f7ed1dc57a3",
@@ -559,8 +559,8 @@
       {
         "deck": "geometry-imported",
         "page": 2,
-        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02-print-candidate.png",
-        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02-native.png",
+        "candidate": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02-print-candidate.png",
+        "nativeRaster": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/geometry-imported/notes-02-native.png",
         "referencePDF": "Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported-office.pdf",
         "candidateSHA256": "8a04743abf354ea3022d2ef184e79b939010f6d79bf9cf0eaab656d3c6f542fe",
         "nativeRasterSHA256": "9c4e21dfb1eb380519a982a979df2f87134275afea2f579c9a595fc46168a99d",
@@ -574,8 +574,8 @@
       {
         "deck": "python-tables",
         "page": 1,
-        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables/notes-01-print-candidate.png",
-        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables/notes-01-native.png",
+        "candidate": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/python-tables/notes-01-print-candidate.png",
+        "nativeRaster": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/python-tables/notes-01-native.png",
         "referencePDF": "Tests/RostrumTests/Fixtures/Conformance/python-tables-notes-office.pdf",
         "candidateSHA256": "958c0b9c156d361e4c406b4097f9b292faee7d46da859f197aafac31eaa840ff",
         "nativeRasterSHA256": "05d793716005f20b7623b7fdfab69ccac2e59e3f7c90fa77ca87f0ea016751f4",
@@ -589,8 +589,8 @@
       {
         "deck": "python-tables-v2",
         "page": 1,
-        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v2/notes-01-print-candidate.png",
-        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v2/notes-01-native.png",
+        "candidate": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/python-tables-v2/notes-01-print-candidate.png",
+        "nativeRaster": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/python-tables-v2/notes-01-native.png",
         "referencePDF": "Tests/RostrumTests/Fixtures/Conformance/python-tables-v2-notes-office.pdf",
         "candidateSHA256": "958c0b9c156d361e4c406b4097f9b292faee7d46da859f197aafac31eaa840ff",
         "nativeRasterSHA256": "05d793716005f20b7623b7fdfab69ccac2e59e3f7c90fa77ca87f0ea016751f4",
@@ -604,8 +604,8 @@
       {
         "deck": "python-tables-v3",
         "page": 1,
-        "candidate": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v3/notes-01-print-candidate.png",
-        "nativeRaster": "/Users/welshofer/Developer/rostrum/.build/notes-ever-forward/python-tables-v3/notes-01-native.png",
+        "candidate": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/python-tables-v3/notes-01-print-candidate.png",
+        "nativeRaster": "/path/to/user/Developer/rostrum/.build/notes-ever-forward/python-tables-v3/notes-01-native.png",
         "referencePDF": "Tests/RostrumTests/Fixtures/Conformance/python-tables-v3-notes-office.pdf",
         "candidateSHA256": "958c0b9c156d361e4c406b4097f9b292faee7d46da859f197aafac31eaa840ff",
         "nativeRasterSHA256": "d5943cac6c7b4029ec63369a27b8f60adc9436fb07cc7087f31561b33506df51",

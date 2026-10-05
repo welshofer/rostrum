@@ -102,9 +102,9 @@ four agents including root:
 
 | Worker | Recorded model | Isolated branch / worktree |
 | --- | --- | --- |
-| `implement_tables` | `gpt-6-astra`, high | `codex/burndown/tables-20261001`, `/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum` |
-| `implement_fonts` | `gpt-6-astra`, high | `codex/burndown/fonts-20261001`, `/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum` |
-| `implement_metadata` | `gpt-6.1-sol`, high | `codex/burndown/metadata-20261001`, `/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum` |
+| `implement_tables` | `gpt-6-astra`, high | `codex/burndown/tables-20261001`, `/path/to/user/.codex/worktrees/rostrum-tables/rostrum` |
+| `implement_fonts` | `gpt-6-astra`, high | `codex/burndown/fonts-20261001`, `/path/to/user/.codex/worktrees/rostrum-fonts/rostrum` |
+| `implement_metadata` | `gpt-6.1-sol`, high | `codex/burndown/metadata-20261001`, `/path/to/user/.codex/worktrees/rostrum-metadata/rostrum` |
 
 Feature workers ran focused tests before integration. Integration checks covered
 the shared table/color/text code, metadata lifecycle, image mappings and package

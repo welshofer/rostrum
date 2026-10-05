@@ -7,11 +7,11 @@
       "6",
       "-O",
       "-I",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-module",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/extended-main.swift",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-Rostrum.o",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-module",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/extended-main.swift",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-Rostrum.o",
       "-o",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-extended-bench"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-extended-bench"
     ],
     [
       "swiftc",
@@ -19,11 +19,11 @@
       "6",
       "-O",
       "-I",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-module",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/supplement-main.swift",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-Rostrum.o",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-module",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/supplement-main.swift",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-Rostrum.o",
       "-o",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-supplement-bench"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-supplement-bench"
     ],
     [
       "swiftc",
@@ -31,21 +31,21 @@
       "6",
       "-O",
       "-I",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-module",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/table-main.swift",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-Rostrum.o",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-module",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/table-main.swift",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-Rostrum.o",
       "-o",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-table-bench"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-table-bench"
     ]
   ],
   "files": {
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/extended-main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/supplement-main.swift": "6b27eda99b23232d4a04a8e71dd48ccba789313361456137d750c570a7753da1",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/native-main.swift": "198ac9508943ecfb2027c862af6205f99433d166fd10ee60d56d555db63fd114",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/table-main.swift": "99def3a14e3a0b0e5c8ef2ef348defcef549c68c9eff8fbc5645ec2714385cab",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-extended-bench": "4f951e1347a13b43fd3e9df2cbb57acf341e9a00b1dfff90bbddd9b8f3e28576",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-supplement-bench": "e5264f743aad5586b174f9966c5c8b84e8d18bf138ce1a6feda2a58c400692b1",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-table-bench": "70a71f09ed2074938e4d53db3415eb1d19b5f78867d5ca209332e0bd86d08583"
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/extended-main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/supplement-main.swift": "6b27eda99b23232d4a04a8e71dd48ccba789313361456137d750c570a7753da1",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/native-main.swift": "198ac9508943ecfb2027c862af6205f99433d166fd10ee60d56d555db63fd114",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/table-main.swift": "99def3a14e3a0b0e5c8ef2ef348defcef549c68c9eff8fbc5645ec2714385cab",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-extended-bench": "4f951e1347a13b43fd3e9df2cbb57acf341e9a00b1dfff90bbddd9b8f3e28576",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-supplement-bench": "e5264f743aad5586b174f9966c5c8b84e8d18bf138ce1a6feda2a58c400692b1",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/baseline-table-bench": "70a71f09ed2074938e4d53db3415eb1d19b5f78867d5ca209332e0bd86d08583"
   },
   "driverDelta": "Onlypost-editverification findsfirstTableFrame ratherthanfirstshape; exactsamechangeplannedbothbuilds. Timedrenderunchanged. Canonicalandsupplementdriversbyte-identicaltoacceptedones."
 }

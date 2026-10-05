@@ -1,6 +1,6 @@
 {
   "commit": "c522a9dacef797697c7b860ec1884dd84cced35b",
-  "worktree": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum",
+  "worktree": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum",
   "sourceTreeSHA256": "28fbc02bc30680a6592e3a9821f7daa60db9b08acadae809d5ffd549bdfe4b5a",
   "hashEncoding": "sorted path + NUL + lowercase file SHA256 + newline",
   "sourceFiles": {
@@ -128,48 +128,48 @@
   "buildCommand": "swift build -c release --jobs 2 --scratch-path .build/list-marker-projection-release",
   "releaseArtifacts": [
     {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Intermediates.noindex/Rostrum.build/Release/Rostrum-t.build/Objects-normal/arm64/Rostrum.swiftdoc",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Intermediates.noindex/Rostrum.build/Release/Rostrum-t.build/Objects-normal/arm64/Rostrum.swiftdoc",
       "sha256": "7fec40cf32b2e97699bd65f207ba2189ecbbc9c9f4a407a3dfff0e367877328a",
       "bytes": 327928
     },
     {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Intermediates.noindex/Rostrum.build/Release/Rostrum-t.build/Objects-normal/arm64/Rostrum.swiftmodule",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Intermediates.noindex/Rostrum.build/Release/Rostrum-t.build/Objects-normal/arm64/Rostrum.swiftmodule",
       "sha256": "dcd1d2b276b666064bb40c8fae9cae0bdd2b8849647fc08be442697eb4a4114a",
       "bytes": 1763080
     },
     {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Intermediates.noindex/Rostrum.build/Release/Rostrum-t.build/Objects-normal/arm64/Rostrum.swiftsourceinfo",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Intermediates.noindex/Rostrum.build/Release/Rostrum-t.build/Objects-normal/arm64/Rostrum.swiftsourceinfo",
       "sha256": "a0624f6691f8bef41eabdadb9b4658fdf937a996c847eac7e35ca2b5c7e82b25",
       "bytes": 437076
     },
     {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/Rostrum.o",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/Rostrum.o",
       "sha256": "22bc41519f91bb153abb01367df8bb201c25fe91adfa04dfc0766acbd433265a",
       "bytes": 6020776
     },
     {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc",
       "sha256": "7fec40cf32b2e97699bd65f207ba2189ecbbc9c9f4a407a3dfff0e367877328a",
       "bytes": 327928
     },
     {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule",
       "sha256": "dcd1d2b276b666064bb40c8fae9cae0bdd2b8849647fc08be442697eb4a4114a",
       "bytes": 1763080
     },
     {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/rostrum-benchmark",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/rostrum-benchmark",
       "sha256": "bd1146febb621be940fe8887a5aac4963b80df062db179ee3898310e787a3c95",
       "bytes": 4890064
     },
     {
-      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/rostrum-benchmark.dSYM/Contents/Resources/DWARF/rostrum-benchmark",
+      "path": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release/rostrum-benchmark.dSYM/Contents/Resources/DWARF/rostrum-benchmark",
       "sha256": "cd5ccdf397c30fbd0072c64cf68ad0d285f2de88870a4cb12eb0f7dffebf85a0",
       "bytes": 15142688
     }
   ],
   "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
-  "buildLog": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-markers8/projection-release.log",
+  "buildLog": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/list-markers8/projection-release.log",
   "buildLogSHA256": "acab8c439bb64f704ac04b40df6dbe37190775474b5d4411cac154bfecc2e6c2",
   "buildExitCode": 0
 }

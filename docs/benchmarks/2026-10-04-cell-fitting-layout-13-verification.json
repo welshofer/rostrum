@@ -13,7 +13,7 @@
     "Tools/table-style-catalog/generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
     "Tests/RostrumTests/TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f"
   },
-  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting",
+  "retainedDirectory": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting",
   "files": {
     "10x10-baseline-proof-sample.json": "e2c6ee152350951c99e5ccdd0111d24c73bf069e7754ada264b198130b282cda",
     "10x10-candidate-1-proof-sample.json": "c16751e3db3a031db86ced67a542bcb46ff35805fcbc3d844d6bda980e8930c4",
@@ -249,9 +249,9 @@
         "--warmups",
         "1",
         "--scenarios",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
         "--output",
         "docs/benchmarks/2026-10-04-cell-fitting-layout-13-supplement-paired-macos.json"
       ],
@@ -269,10 +269,10 @@
         "--warmups",
         "1",
         "--scenarios",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
         "--output",
         "docs/benchmarks/2026-10-04-cell-fitting-layout-13-cell-paired-macos.json"
       ]
@@ -297,10 +297,10 @@
       ".build/perf23-cell-fitting/supplement-main.swift": "6b27eda99b23232d4a04a8e71dd48ccba789313361456137d750c570a7753da1",
       ".build/perf23-cell-fitting/cell-main.swift": "b8026d81beb8df480901740a813beb7f17bc44d9066018b79aec5b4e3ba57053",
       "/System/Library/Fonts/Supplemental/Arial.ttf": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx": "a5aa98715bc7c71d17d969ac43bede3322fde4807b9550e155a00a5b497c35f8"
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx": "a5aa98715bc7c71d17d969ac43bede3322fde4807b9550e155a00a5b497c35f8"
     },
     "scope": "One frozen264-child run. Existing canonical+supplementary176 unchanged; four separate retained-cell controls88. Fonts and frame acquisition before fitting timer; render is a separate genuine measured phase. Background load retained; no adaptive reruns."
   },
@@ -349,9 +349,9 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-cell-fitting-layout-13-supplement-paired-macos.json"
         ],
@@ -374,10 +374,10 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-cell-fitting-layout-13-cell-paired-macos.json"
         ],
@@ -423,43 +423,43 @@
       },
       {
         "scope": "supplement",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "supplement",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "supplement",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "cell",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "cell",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "cell",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "cell",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       }

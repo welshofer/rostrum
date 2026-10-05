@@ -1102,7 +1102,7 @@
     "spacingAndBreakReview": {
       "breakMarkers": 24,
       "inputHashesAfter": {
-        "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+        "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
         "/tmp/lectern-fidelity11-native/alternative/library-layout.json": "e3a7f59866116868b72f00dc5948d917a4d64c531e99b91bf5073aa48d55750e",
         "/tmp/lectern-fidelity11-native/alternative/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
         "/tmp/lectern-fidelity11-native/alternative/powerpoint.pdf": "ce36ef59fef98f34eb9dc02dd9f07eaa6ba327bec71d90489a07b396144a82ca",
@@ -1114,7 +1114,7 @@
         "/tmp/lectern-fidelity11-native/source-pins.json": "62672479cbdfd050976b9df9ea6b0293e4fc1614d79465380d7fd05bd8a6e3fe"
       },
       "inputHashesBefore": {
-        "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+        "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
         "/tmp/lectern-fidelity11-native/alternative/library-layout.json": "e3a7f59866116868b72f00dc5948d917a4d64c531e99b91bf5073aa48d55750e",
         "/tmp/lectern-fidelity11-native/alternative/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
         "/tmp/lectern-fidelity11-native/alternative/powerpoint.pdf": "ce36ef59fef98f34eb9dc02dd9f07eaa6ba327bec71d90489a07b396144a82ca",
@@ -1177,11 +1177,11 @@
     "independentReview": "Approved per root; frozen original measurement/verification records retain earlier pending-review labels.",
     "limits": "One matched run under substantial WindowServer/Photos/Spotlight load. Fitting retains an inconclusive possible cost; native timing is inconclusive. No cumulative speedup or general lower-memory claim.",
     "manifest": {
-      "path": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-native-paint-fidelity-11-verification.json",
+      "path": "/path/to/user/Developer/rostrum/docs/benchmarks/2026-10-04-native-paint-fidelity-11-verification.json",
       "sha256": "9ebb3e7ec78679fb0537fecd51cf5a18b02b3c2813d348cb579ec201ff98d148"
     },
     "pairedAnalysis": {
-      "path": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-native-paint-fidelity-11-canonical-paired-analysis.json",
+      "path": "/path/to/user/Developer/rostrum/docs/benchmarks/2026-10-04-native-paint-fidelity-11-canonical-paired-analysis.json",
       "sha256": "256de90248dfb7b43f7d49d3a32e1307397fe7533507753e91a25fc95ce85d2e"
     },
     "registeredMedianRatioPercent": -4.257331013415477,
@@ -1207,28 +1207,28 @@
       "twoSidedExactSignTestP": 0.001953125
     },
     "report": {
-      "path": "/Users/welshofer/Developer/rostrum/docs/NATIVE-PAINT-PERFORMANCE-20261004-11.md",
+      "path": "/path/to/user/Developer/rostrum/docs/NATIVE-PAINT-PERFORMANCE-20261004-11.md",
       "sha256": "5082ad79c57e48865d6510dd07ebaabaa0d0302589736714b0f291eb6b51e7e2"
     },
     "summary": {
-      "path": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-native-paint-fidelity-11-summary.json",
+      "path": "/path/to/user/Developer/rostrum/docs/benchmarks/2026-10-04-native-paint-fidelity-11-summary.json",
       "sha256": "4d9acc30fe2d1aa6d03a7373a449297a7854d16583d553a250016740ee19980a"
     }
   },
   "previousIntegration": {
-    "path": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-break-reuse-integration-verification.json",
+    "path": "/path/to/user/Developer/rostrum/docs/benchmarks/2026-10-04-break-reuse-integration-verification.json",
     "sha256": "3e0ded4f7bc63b0dd496294ed80e50ac3612ae58f2e0beda2f2ce2d188131358"
   },
   "receiptAssembly": {
     "additionalEvidenceSHA256": {
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-metrics.json": "605c9f6be3b85adcd148a92e94c60fc96dc0b521446a5cc86bde65df7af42dab",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-metrics.json": "fdd9797a5f0fbc80d6ed4fa3172de222d97e0d45b242be3e3999b5242819c588",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
-      "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-metrics.json": "605c9f6be3b85adcd148a92e94c60fc96dc0b521446a5cc86bde65df7af42dab",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-metrics.json": "fdd9797a5f0fbc80d6ed4fa3172de222d97e0d45b242be3e3999b5242819c588",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+      "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
       "/tmp/lectern-fidelity11-final-webkit/independent-final/0-kerning-thresholds-cases.json": "b615bc589a0180c6993ee53e241d5e71d75cddc3f747e59cb05f8aa1aebf45f5",
       "/tmp/lectern-fidelity11-final-webkit/independent-final/0-kerning-thresholds-comparison.json": "29a6e005e66d355831f7f4293d6f226fe8d275a63f93a612c93f1ae202fe66bd",
       "/tmp/lectern-fidelity11-final-webkit/independent-final/0-kerning-thresholds.log": "80743f59c9386af0fd6f9ba3e397ac70c46a27edc61f507b0561570b4b1ec210",
@@ -1374,9 +1374,9 @@
           "exitCode": 0,
           "expectedVisibleGlyphs": 20,
           "inputHashes": {
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-metrics.json": "945f2a9b3379e24c0b44cbf589580999c226270f70c42fa7bee6182f0b522b10",
             "/tmp/lectern-fidelity11-final-webkit/kerning-F47B9397-F551-477C-A022-4EB0D1E564F1/kerning-thresholds-capture.json": "d4a8a246990c6479ddeeb8801295c3bf14bdd150fa3cd85f1b34598eb4cb4fe1",
             "/tmp/lectern-fidelity11-final-webkit/kerning-F47B9397-F551-477C-A022-4EB0D1E564F1/kerning-thresholds.pdf": "1dd048de187a0e915e6e5c967492dc5101043346042801471787dd4860632823",
             "/tmp/lectern-fidelity11-final-webkit/kerning-F47B9397-F551-477C-A022-4EB0D1E564F1/kerning-thresholds.svg": "374edc49a24df0870c210bc24ea384612a3f047ea137be6d941bacb155fb6ae2"
@@ -1418,9 +1418,9 @@
           "exitCode": 0,
           "expectedVisibleGlyphs": 94,
           "inputHashes": {
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-metrics.json": "fdd9797a5f0fbc80d6ed4fa3172de222d97e0d45b242be3e3999b5242819c588",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-metrics.json": "fdd9797a5f0fbc80d6ed4fa3172de222d97e0d45b242be3e3999b5242819c588",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
             "/tmp/lectern-fidelity11-final-webkit/paragraph-47413EB2-E2C7-470C-AEDB-3FD0ECE7C7FB/alternative-false-capture.json": "2fffdd4a7366db6c835f30ea05973ff82a8bc06b0fb2d22837c18015646271c0",
             "/tmp/lectern-fidelity11-final-webkit/paragraph-47413EB2-E2C7-470C-AEDB-3FD0ECE7C7FB/alternative-false.pdf": "f5f05bdeea5f24ae329f3ade46e380fe97ec9deb5c9d3d37029983cb96db587c",
             "/tmp/lectern-fidelity11-final-webkit/paragraph-47413EB2-E2C7-470C-AEDB-3FD0ECE7C7FB/alternative-false.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
@@ -1464,11 +1464,11 @@
           "exitCode": 0,
           "expectedVisibleGlyphs": 94,
           "inputHashes": {
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-metrics.json": "605c9f6be3b85adcd148a92e94c60fc96dc0b521446a5cc86bde65df7af42dab",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-metrics.json": "fdd9797a5f0fbc80d6ed4fa3172de222d97e0d45b242be3e3999b5242819c588",
-            "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-metrics.json": "605c9f6be3b85adcd148a92e94c60fc96dc0b521446a5cc86bde65df7af42dab",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-metrics.json": "fdd9797a5f0fbc80d6ed4fa3172de222d97e0d45b242be3e3999b5242819c588",
+            "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
             "/tmp/lectern-fidelity11-final-webkit/paragraph-47413EB2-E2C7-470C-AEDB-3FD0ECE7C7FB/alternative-true-capture.json": "ed69915487ef9be54ccedbbabecf9dd81b97ccb4d8b5f75a0b4c2fc6bd80b622",
             "/tmp/lectern-fidelity11-final-webkit/paragraph-47413EB2-E2C7-470C-AEDB-3FD0ECE7C7FB/alternative-true.pdf": "695931e0128f22af44ad362cc2b84d4c94dbaa28976b47fa7ef81bf6282b6e24",
             "/tmp/lectern-fidelity11-final-webkit/paragraph-47413EB2-E2C7-470C-AEDB-3FD0ECE7C7FB/alternative-true.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",

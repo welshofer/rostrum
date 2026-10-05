@@ -11,7 +11,7 @@
     "Sources/Rostrum/Presentation/RichTextLayout.swift": "6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055",
     "Tests/RostrumTests/LayoutOrderedGlyphRangesTests.swift": "af0fe65c9a876ee0b6b45a6d44f2dd5e20812977ecc2b5b6224ff5a80594fd11"
   },
-  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/cycle2",
+  "retainedDirectory": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/cycle2",
   "files": {
     "../cycle1-checkpoint.json": "8a096c472349af0b45ce71e44a9382694c95a12d51c5446f59f15c682fed7cd4",
     "../cycle1-checkpoint.md": "a134623516af8ba264d87589123778a1bfc076b1bf5750774bb80abb54064d6e",
@@ -203,9 +203,9 @@
         "--warmups",
         "1",
         "--scenarios",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
         "--output",
         "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-supplement-paired-macos.json"
       ],
@@ -223,7 +223,7 @@
         "--warmups",
         "1",
         "--scenarios",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
         "--output",
         "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-paired-macos.json"
       ]
@@ -235,10 +235,10 @@
       ".build/perf22-ordered-atoms/supplement-inputs.json": "3fa3702f1264eda7bc85110ce39af1416d801feb6d36e7a82bb08f5649b56ce2",
       ".build/perf22-ordered-atoms/late-combining-input.json": "5d4c20ffd56c5e3413e79bdb8051b4b7751e83274100b844e176d8176677ee29",
       ".build/perf22-ordered-atoms/late-combining-range-proof.json": "175e7376a50615b52dc7e681fc48c87e0e9540cedcb0b1ddec8a349dab71b338",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx": "9897f3190dfb1872086bc07a47a45e8816a53624d3f0826c7a45f4cd04d323a3",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx": "b5620bfaf63d81c89b8b920526b6df9818a5d9f25acdc5b20dcd47c86ecd855d",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx": "ebb7229f6ebe5fa8deaf8a8ec0ac10806f9e6c633e6250c67d54892e69ac7567",
-      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx": "6aced35ad3f5f02e38f6383f331b2e1fb7144e2848f4d5ed1f942d7630e1ca0a",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx": "9897f3190dfb1872086bc07a47a45e8816a53624d3f0826c7a45f4cd04d323a3",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx": "b5620bfaf63d81c89b8b920526b6df9818a5d9f25acdc5b20dcd47c86ecd855d",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx": "ebb7229f6ebe5fa8deaf8a8ec0ac10806f9e6c633e6250c67d54892e69ac7567",
+      "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx": "6aced35ad3f5f02e38f6383f331b2e1fb7144e2848f4d5ed1f942d7630e1ca0a",
       "/System/Library/Fonts/Supplemental/Arial.ttf": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
       "Sources/RostrumLayout/StructuredLayout.swift": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850",
       "Sources/RostrumLayout/TemplateLayoutEngine.swift": "da8c9c58d4c9b7d3cf282362e9db0422de12dfa8226ea047e51a6fa5f477cbf6",
@@ -402,9 +402,9 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-supplement-paired-macos.json"
         ],
@@ -427,7 +427,7 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-cycle2-late-combining-paired-macos.json"
         ],
@@ -473,25 +473,25 @@
       },
       {
         "scope": "supplement",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "supplement",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "supplement",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       },
       {
         "scope": "late-combining",
-        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
+        "scenario": "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
         "retainedPairs": 10,
         "savedOutputConstant": true
       }

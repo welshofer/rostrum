@@ -83,7 +83,7 @@
         "swift",
         "test",
         "--package-path",
-        "/Users/welshofer/Developer/rostrum/.build/app-headless",
+        "/path/to/user/Developer/rostrum/.build/app-headless",
         "--disable-sandbox",
         "--jobs",
         "2"
@@ -820,11 +820,11 @@
       "checks": 31,
       "findings": 0,
       "slides": 4,
-      "report": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-ACC0137C-9321-4E3B-B607-02E6555112CD/report.json",
+      "report": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-ACC0137C-9321-4E3B-B607-02E6555112CD/report.json",
       "reportSHA256": "f58f409d004cfd861327bed5208052f40bc6a8eae212179e2899d10c33696620",
-      "deck": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-ACC0137C-9321-4E3B-B607-02E6555112CD/paragraphLayout.pptx",
+      "deck": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-ACC0137C-9321-4E3B-B607-02E6555112CD/paragraphLayout.pptx",
       "deckSHA256": "e41b16d88d2b9358db3a13459c82e3d309050f4f8939c9284cfea183f840bfbf",
-      "identicalToEarlierManualDeck": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-80657822-6F0E-40A7-B942-85C8E0D82474/paragraphLayout.pptx",
+      "identicalToEarlierManualDeck": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-80657822-6F0E-40A7-B942-85C8E0D82474/paragraphLayout.pptx",
       "observation": "Root CUA regenerated with same edited title, inspected all four thumbnails; slide4 original wraps and both computed fits visually retained. App closed idle before timing. Export path additionally passes refreshed native and headless tests; manual export evidence retained in checkpoint."
     },
     {
@@ -832,11 +832,11 @@
       "checks": 31,
       "findings": 0,
       "slides": 4,
-      "report": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-D635E027-E4C8-4B3A-AC25-7C342DEBFF4B/report.json",
+      "report": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-D635E027-E4C8-4B3A-AC25-7C342DEBFF4B/report.json",
       "reportSHA256": "d14fdf974e42e7b1990affce21cc89b9193d3c5090ba3761ab51445f66ed0e07",
-      "deck": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-D635E027-E4C8-4B3A-AC25-7C342DEBFF4B/paragraphLayout.pptx",
+      "deck": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-D635E027-E4C8-4B3A-AC25-7C342DEBFF4B/paragraphLayout.pptx",
       "deckSHA256": "07d524db731a217e46cce790b201e388932a42a79ec195b46466bb7c6e35ab9f",
-      "identicalToEarlierManualDeck": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5CF2C1E6-C3DB-44D7-AA3F-22A54026BBE3/paragraphLayout.pptx",
+      "identicalToEarlierManualDeck": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5CF2C1E6-C3DB-44D7-AA3F-22A54026BBE3/paragraphLayout.pptx",
       "observation": "Root CUA regenerated with same edited title, inspected all four thumbnails; slide4 original wraps and both computed fits visually retained. App closed idle before timing. Export path additionally passes refreshed native and headless tests; manual export evidence retained in checkpoint."
     }
   ],

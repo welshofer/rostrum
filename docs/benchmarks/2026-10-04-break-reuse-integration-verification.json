@@ -65,7 +65,7 @@
     "rootCommitAtInspection": "7fbb9bc34cd840d5e5951ae856da3c33756a4a9f",
     "rootGitTreeAtInspection": "4bc5fe766a75c85a1e554f63b717e5d1ef3e9e81",
     "requestedCheckpoint": "7fbb9bc",
-    "pythonExecutable": "/Users/welshofer/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "pythonExecutable": "/path/to/user/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
     "directories": [
       {
         "path": "/tmp/lectern-fidelity10-lab-verified",
@@ -1429,15 +1429,15 @@
   },
   "rootRehashedExternalFiles": 302,
   "priorNativeAndManualIntegration": {
-    "path": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-explicit-spacing-integration-verification.json",
+    "path": "/path/to/user/Developer/rostrum/docs/benchmarks/2026-10-04-explicit-spacing-integration-verification.json",
     "sha256": "35eaa3bd4f37548ff4fc533a2a552b531e08a278b5a9c5e5b36ea6b7fdf216c3"
   },
   "performanceManifest": {
-    "path": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-break-reuse-layout-10-verification.json",
+    "path": "/path/to/user/Developer/rostrum/docs/benchmarks/2026-10-04-break-reuse-layout-10-verification.json",
     "sha256": "f17ff7308f9eb305d893f27437e9c368234cd761aa53822b70d71f60c4c451cc"
   },
   "performanceReport": {
-    "path": "/Users/welshofer/Developer/rostrum/docs/LAYOUT-PERFORMANCE-20261004-10.md",
+    "path": "/path/to/user/Developer/rostrum/docs/LAYOUT-PERFORMANCE-20261004-10.md",
     "sha256": "f2418985b675114a56d3297b464c0e8058d0549a29fbd6c6e917828f676ac853"
   },
   "performance": {
@@ -1472,7 +1472,7 @@
     "Tests/RostrumTests/LayoutShapedBreakReuseTests.swift": "9a89c04ce9541de7f080c16331bae9566f45ad33b688812157282c85b8270925"
   },
   "previousIntegration": {
-    "path": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-glyph-capacity-integration-verification.json",
+    "path": "/path/to/user/Developer/rostrum/docs/benchmarks/2026-10-04-glyph-capacity-integration-verification.json",
     "sha256": "e4cb97119b1083db60aaa8562e32f19ae121e9fe59576d3415dc2c4c6d1ac0ff"
   }
 }

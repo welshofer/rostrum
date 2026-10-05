@@ -5,7 +5,7 @@
   "method": "Percentile bootstrap of median paired candidate/baseline percent ratios, pairs resampled together; exact two-sided binomial sign test excludes ties. Exploratory uncertainty from ten pairs, not corrected across workloads. Cannot remove shared load bias.",
   "backgroundLoad": "Coordinated agent build/test/GUI pause, uncontrolled user/background load. Snapshots cannot establish continuous isolation or remove load bias. No settings changed. CPU ranges {\"WindowServer\": [13.7, 26.3], \"backupd\": [0.0, 0.0], \"photolibraryd\": [0.0, 0.0], \"managedcorespotlightd\": [0.0, 0.0]}",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx/render": {
       "pairedPercentDeltas": [
         -0.9200736870715542,
         -2.1292663560184777,
@@ -26,7 +26,7 @@
         0.5422871392946282
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx/cell-acquisition": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx/cell-acquisition": {
       "pairedPercentDeltas": [
         -96.84746700404207,
         -97.0447529751172,
@@ -47,7 +47,7 @@
         -96.785189454766
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx/render": {
       "pairedPercentDeltas": [
         -0.5634296792015547,
         -2.865385958801392,
@@ -68,7 +68,7 @@
         0.4922779749937656
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx/cell-acquisition": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx/cell-acquisition": {
       "pairedPercentDeltas": [
         -99.20007077213076,
         -99.19281524589587,
@@ -89,7 +89,7 @@
         -99.123850653186
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx/render": {
       "pairedPercentDeltas": [
         0.1976933420952065,
         0.5976706305849344,
@@ -110,7 +110,7 @@
         0.5976706305849344
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx/cell-acquisition": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx/cell-acquisition": {
       "pairedPercentDeltas": [
         -99.66813627387917,
         -99.68263239181745,
@@ -131,7 +131,7 @@
         -99.67538433284831
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx/render": {
       "pairedPercentDeltas": [
         -1.2275140327463019,
         -0.45931579187576954,
@@ -152,7 +152,7 @@
         0.6317656259774207
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx/cell-acquisition": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx/cell-acquisition": {
       "pairedPercentDeltas": [
         -99.46777164920022,
         -99.42525545269363,

@@ -7,17 +7,17 @@
   "python": "3.12.0 (v3.12.0:0fb18b02c8, Oct  2 2023, 09:45:56) [Clang 13.0.0 (clang-1300.0.29.30)]",
   "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
   "input": {
-    "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/table-200x50.pptx",
+    "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/table-200x50.pptx",
     "sha256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
     "bytes": 74767
   },
   "binaries": {
     "baseline": {
-      "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-era-driver",
+      "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-era-driver",
       "sha256": "745e299350578c884696dd4c41740f1c50d9ff9b5a98b103e47b4cb21c43d3fe"
     },
     "candidate": {
-      "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/candidate-era-driver",
+      "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/candidate-era-driver",
       "sha256": "91fb5f94b74949207e09c12c013510ee73927de0a349f890e335d7f8914875d5"
     }
   },
@@ -27,7 +27,7 @@
   },
   "sourceIdentity": {
     "baseline": {
-      "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-historical-83c1",
+      "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-historical-83c1",
       "files": {
         "Package.swift": "6b33221816145318fc362c488470400c5cfc2a5372e781327198c03f5d1a20b0",
         "Sources/Rostrum/Charts/ChartData.swift": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1",
@@ -99,7 +99,7 @@
       "manifestSHA256": "e5aed1cb5acfabdd7ad460181799bc7634f0bf2fb6dfacd2c614d551642eb831"
     },
     "candidate": {
-      "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "files": {
         "Package.swift": "442a87b94c93d41b10c1fee6846399397799ac321866e2e540aeff8bfa9638b2",
         "Sources/Rostrum/Charts/ChartData.swift": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1",
@@ -224,7 +224,7 @@
       "pair": 0,
       "era": "baseline",
       "excludedWarmup": true,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-000-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-000-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -275,7 +275,7 @@
       "pair": 0,
       "era": "candidate",
       "excludedWarmup": true,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-000-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-000-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -330,7 +330,7 @@
       "pair": 1,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-001-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-001-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -385,7 +385,7 @@
       "pair": 1,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-001-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-001-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -436,7 +436,7 @@
       "pair": 2,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-002-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-002-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -487,7 +487,7 @@
       "pair": 2,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-002-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-002-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -542,7 +542,7 @@
       "pair": 3,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-003-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-003-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -597,7 +597,7 @@
       "pair": 3,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-003-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-003-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -648,7 +648,7 @@
       "pair": 4,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-004-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-004-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -699,7 +699,7 @@
       "pair": 4,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-004-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-004-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -754,7 +754,7 @@
       "pair": 5,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-005-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-005-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -809,7 +809,7 @@
       "pair": 5,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-005-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-005-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -860,7 +860,7 @@
       "pair": 6,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-006-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-006-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -911,7 +911,7 @@
       "pair": 6,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-006-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-006-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -966,7 +966,7 @@
       "pair": 7,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-007-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-007-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -1021,7 +1021,7 @@
       "pair": 7,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-007-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-007-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1072,7 +1072,7 @@
       "pair": 8,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-008-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-008-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1123,7 +1123,7 @@
       "pair": 8,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-008-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-008-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -1178,7 +1178,7 @@
       "pair": 9,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-009-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-009-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -1233,7 +1233,7 @@
       "pair": 9,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-009-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-009-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1284,7 +1284,7 @@
       "pair": 10,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-010-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-010-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1335,7 +1335,7 @@
       "pair": 10,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-010-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-010-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -1390,7 +1390,7 @@
       "pair": 11,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-011-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-011-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -1445,7 +1445,7 @@
       "pair": 11,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-011-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-011-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1496,7 +1496,7 @@
       "pair": 12,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-012-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-012-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1547,7 +1547,7 @@
       "pair": 12,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-012-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-012-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -1602,7 +1602,7 @@
       "pair": 13,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-013-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-013-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -1657,7 +1657,7 @@
       "pair": 13,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-013-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-013-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1708,7 +1708,7 @@
       "pair": 14,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-014-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-014-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1759,7 +1759,7 @@
       "pair": 14,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-014-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-014-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -1814,7 +1814,7 @@
       "pair": 15,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-015-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-015-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -1869,7 +1869,7 @@
       "pair": 15,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-015-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-015-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1920,7 +1920,7 @@
       "pair": 16,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-016-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-016-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -1971,7 +1971,7 @@
       "pair": 16,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-016-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-016-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -2026,7 +2026,7 @@
       "pair": 17,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-017-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-017-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -2081,7 +2081,7 @@
       "pair": 17,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-017-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-017-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -2132,7 +2132,7 @@
       "pair": 18,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-018-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-018-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -2183,7 +2183,7 @@
       "pair": 18,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-018-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-018-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -2238,7 +2238,7 @@
       "pair": 19,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-019-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-019-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,
@@ -2293,7 +2293,7 @@
       "pair": 19,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-019-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-019-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -2344,7 +2344,7 @@
       "pair": 20,
       "era": "baseline",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-020-baseline",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-020-baseline",
       "sample": {
         "fidelityIssueCount": null,
         "fidelityIssuesSupported": false,
@@ -2395,7 +2395,7 @@
       "pair": 20,
       "era": "candidate",
       "excludedWarmup": false,
-      "artifactPrefix": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-020-candidate",
+      "artifactPrefix": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/historical-comparison/pair-020-candidate",
       "sample": {
         "fidelityIssueCount": 4,
         "fidelityIssuesSupported": true,

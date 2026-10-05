@@ -5,7 +5,7 @@
   "cases": [
     {
       "name": "canonical/table-200x50",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/table-200x50/baseline.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/table-200x50/baseline.pptx",
       "inputSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
       "mode": "fallback",
       "nativeHelper": false,
@@ -19,7 +19,7 @@
     },
     {
       "name": "canonical/table-20x10",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/table-20x10/baseline.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/table-20x10/baseline.pptx",
       "inputSHA256": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
       "mode": "fallback",
       "nativeHelper": false,
@@ -33,7 +33,7 @@
     },
     {
       "name": "canonical/shaped-table-100x20",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/shaped-table-100x20/baseline.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/shaped-table-100x20/baseline.pptx",
       "inputSHA256": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
       "mode": "registered",
       "nativeHelper": false,
@@ -47,7 +47,7 @@
     },
     {
       "name": "canonical/richtext-fit",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/richtext-fit/baseline.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/richtext-fit/baseline.pptx",
       "inputSHA256": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
       "mode": "registered",
       "nativeHelper": false,
@@ -61,7 +61,7 @@
     },
     {
       "name": "canonical/slides-10",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/slides-10/baseline.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/generated/slides-10/baseline.pptx",
       "inputSHA256": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
       "mode": "fallback",
       "nativeHelper": false,
@@ -102,7 +102,7 @@
     },
     {
       "name": "supplement/unicode-latin",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
       "inputSHA256": "9897f3190dfb1872086bc07a47a45e8816a53624d3f0826c7a45f4cd04d323a3",
       "mode": "registered",
       "nativeHelper": false,
@@ -116,7 +116,7 @@
     },
     {
       "name": "supplement/mixed-rtl",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
       "inputSHA256": "b5620bfaf63d81c89b8b920526b6df9818a5d9f25acdc5b20dcd47c86ecd855d",
       "mode": "registered",
       "nativeHelper": false,
@@ -130,7 +130,7 @@
     },
     {
       "name": "supplement/long-combining",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
       "inputSHA256": "ebb7229f6ebe5fa8deaf8a8ec0ac10806f9e6c633e6250c67d54892e69ac7567",
       "mode": "registered",
       "nativeHelper": false,
@@ -144,7 +144,7 @@
     },
     {
       "name": "native/primary",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx",
       "inputSHA256": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
       "mode": "fallback",
       "nativeHelper": true,
@@ -164,7 +164,7 @@
     },
     {
       "name": "native/autofit",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx",
       "inputSHA256": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
       "mode": "fallback",
       "nativeHelper": true,
@@ -181,7 +181,7 @@
     },
     {
       "name": "native/eligibility",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx",
       "inputSHA256": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
       "mode": "fallback",
       "nativeHelper": true,
@@ -201,7 +201,7 @@
     },
     {
       "name": "native/kern-v2",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx",
       "inputSHA256": "149e991e629901a967383a8064e7dfd9f40977ce132e7730e0c14f7d434ec7e0",
       "mode": "fallback",
       "nativeHelper": true,
@@ -215,7 +215,7 @@
     },
     {
       "name": "corpus/fallback/0",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/AuthorDependencyImport/ModernCustomXML.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/AuthorDependencyImport/ModernCustomXML.pptx",
       "inputSHA256": "cd0077157da9c681c0afa66a33ddcd9543b932ee1561a3290bb67e8d19d3957d",
       "mode": "fallback",
       "nativeHelper": false,
@@ -232,7 +232,7 @@
     },
     {
       "name": "corpus/fallback/1",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables-v2.pptx",
       "inputSHA256": "7930ccc91d1269083aecdcc83a4d382976fbd1099c9f677fdca5de90918cc3bf",
       "mode": "fallback",
       "nativeHelper": false,
@@ -246,7 +246,7 @@
     },
     {
       "name": "corpus/fallback/2",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables-v3.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables-v3.pptx",
       "inputSHA256": "3f7d5427de26934424329ef6e739b6fe92db26c0c23f260fa9bea1adf6dcd7dd",
       "mode": "fallback",
       "nativeHelper": false,
@@ -260,7 +260,7 @@
     },
     {
       "name": "corpus/fallback/3",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables.pptx",
       "inputSHA256": "72366e5c1c72b1218a77cead73f40d7effa2cd16923a257fbef02bab3a866aaf",
       "mode": "fallback",
       "nativeHelper": false,
@@ -274,7 +274,7 @@
     },
     {
       "name": "corpus/fallback/4",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/double-borders.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/double-borders.pptx",
       "inputSHA256": "0aa0fab8a89bef4e40eec910dc02d4a2b95acfdb8b564aa7c2f291b2b3ed2834",
       "mode": "fallback",
       "nativeHelper": false,
@@ -372,7 +372,7 @@
     },
     {
       "name": "corpus/fallback/5",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence-rtl.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence-rtl.pptx",
       "inputSHA256": "6d2be07ce538a5bddff9906b77d2d815b82cd0685d5e6752975a1360b54ea836",
       "mode": "fallback",
       "nativeHelper": false,
@@ -491,7 +491,7 @@
     },
     {
       "name": "corpus/fallback/6",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence.pptx",
       "inputSHA256": "58446fe12b21fe075f088c4655e4415466419e8f3b4cdf212d28fe436e8f8d30",
       "mode": "fallback",
       "nativeHelper": false,
@@ -610,7 +610,7 @@
     },
     {
       "name": "corpus/fallback/7",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ImageOffice/image-mapping-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ImageOffice/image-mapping-v1.pptx",
       "inputSHA256": "9b5ce6d88c3c074641df256d1b2f9cbeaef3b1742a1c006dd5b7b3679c5eea8c",
       "mode": "fallback",
       "nativeHelper": false,
@@ -657,7 +657,7 @@
     },
     {
       "name": "corpus/fallback/8",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ImageOffice/image-mapping-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ImageOffice/image-mapping-v2.pptx",
       "inputSHA256": "3aaf45277c7ae8b7b411390ae8d7a55c8f2b9ac7b83e15a60504387475b7aac8",
       "mode": "fallback",
       "nativeHelper": false,
@@ -704,7 +704,7 @@
     },
     {
       "name": "corpus/fallback/9",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-boundaries.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-boundaries.pptx",
       "inputSHA256": "515853d753943019db5245b08c8e5cdce70aebe86750b50439db1ca2a4d7c5d1",
       "mode": "fallback",
       "nativeHelper": false,
@@ -751,7 +751,7 @@
     },
     {
       "name": "corpus/fallback/10",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-coordinates.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-coordinates.pptx",
       "inputSHA256": "0e7270f5364944ebe834978a3efcc88c63cc817c4595ee336e588d514046423f",
       "mode": "fallback",
       "nativeHelper": false,
@@ -771,7 +771,7 @@
     },
     {
       "name": "corpus/fallback/11",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-final.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-final.pptx",
       "inputSHA256": "a289f6496640384937e27baca13f4962b6a88e761312b477bea864877f1ea041",
       "mode": "fallback",
       "nativeHelper": false,
@@ -791,7 +791,7 @@
     },
     {
       "name": "corpus/fallback/12",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-followup.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-followup.pptx",
       "inputSHA256": "54493185fdfd26914155591f4c3b1386aea5d48b7ffcf999e38d761f1a897851",
       "mode": "fallback",
       "nativeHelper": false,
@@ -835,7 +835,7 @@
     },
     {
       "name": "corpus/fallback/13",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-scale.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-scale.pptx",
       "inputSHA256": "8a6c632898782cffa4518c1e3f8f550e64193323a4f9b4ae9e319e9a4f5c86c6",
       "mode": "fallback",
       "nativeHelper": false,
@@ -849,7 +849,7 @@
     },
     {
       "name": "corpus/fallback/14",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/rostrum-written.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/rostrum-written.pptx",
       "inputSHA256": "f504c33cbe50ce73de8ae849b935a15bf7b682c483ddcc0c964dc910aacc3a5d",
       "mode": "fallback",
       "nativeHelper": false,
@@ -896,7 +896,7 @@
     },
     {
       "name": "corpus/fallback/15",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeBreakMetrics/native-break-metrics-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeBreakMetrics/native-break-metrics-v1.pptx",
       "inputSHA256": "3620121ad15fe85abb65e28cb686d454a0fad7b160cfdab7933543960ba087fe",
       "mode": "fallback",
       "nativeHelper": false,
@@ -916,7 +916,7 @@
     },
     {
       "name": "corpus/fallback/16",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx",
       "inputSHA256": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
       "mode": "fallback",
       "nativeHelper": false,
@@ -933,7 +933,7 @@
     },
     {
       "name": "corpus/fallback/17",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx",
       "inputSHA256": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
       "mode": "fallback",
       "nativeHelper": false,
@@ -953,7 +953,7 @@
     },
     {
       "name": "corpus/fallback/18",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/kerning/native-paint-omitted-kern-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/kerning/native-paint-omitted-kern-v2.pptx",
       "inputSHA256": "149e991e629901a967383a8064e7dfd9f40977ce132e7730e0c14f7d434ec7e0",
       "mode": "fallback",
       "nativeHelper": false,
@@ -967,7 +967,7 @@
     },
     {
       "name": "corpus/fallback/19",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx",
       "inputSHA256": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
       "mode": "fallback",
       "nativeHelper": false,
@@ -987,7 +987,7 @@
     },
     {
       "name": "corpus/fallback/20",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLigatureLayout/native-ligatures-regular-table.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLigatureLayout/native-ligatures-regular-table.pptx",
       "inputSHA256": "3c4c668ad517fefe310e674402482f4ecef3e1c72a00ff50a80eaf8d9c138ab5",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1010,7 +1010,7 @@
     },
     {
       "name": "corpus/fallback/21",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/base/native-spacing-metrics-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/base/native-spacing-metrics-v1.pptx",
       "inputSHA256": "f2607f1ac458652e9876053e98d9145aa87347455d60691dd7255438dd72a6fe",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1042,7 +1042,7 @@
     },
     {
       "name": "corpus/fallback/22",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/compatibility/native-spacing-final-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/compatibility/native-spacing-final-v1.pptx",
       "inputSHA256": "cee93ef0a05ed50b83b7590eb7deef0e976d2527a41108319596f157fc447bf2",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1056,7 +1056,7 @@
     },
     {
       "name": "corpus/fallback/23",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/descent/native-spacing-descent-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/descent/native-spacing-descent-v1.pptx",
       "inputSHA256": "42cfd040e861ca5c788f1d08fb0a4bf4526b2d9ec3298cbfb9280e1792966d22",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1070,7 +1070,7 @@
     },
     {
       "name": "corpus/fallback/24",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/followup/native-spacing-followup-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/followup/native-spacing-followup-v1.pptx",
       "inputSHA256": "fc460f7a0984230a589daf2535c329e39944d135a13e6a05bbf8dc42a7e74f0d",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1087,7 +1087,7 @@
     },
     {
       "name": "corpus/fallback/25",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx",
       "inputSHA256": "3aedbb0fe53fd15f36c050817cf8162b1398e142481177104e62ecb941f07d19",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1101,7 +1101,7 @@
     },
     {
       "name": "corpus/fallback/26",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/percentage-anchor/native-spacing-percentage-anchor-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/percentage-anchor/native-spacing-percentage-anchor-v1.pptx",
       "inputSHA256": "e530a494658cda4a13fc40889c6ec5a1643fe8f817f510b08c862a47f7b414c0",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1115,7 +1115,7 @@
     },
     {
       "name": "corpus/fallback/27",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx",
       "inputSHA256": "93bdeb4c0df5249999d2440cad441f361d131891029b598394fdd719776708e3",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1129,7 +1129,7 @@
     },
     {
       "name": "corpus/fallback/28",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx",
       "inputSHA256": "28c1929e7fab8e63c07cc9dafc28a2036477f5dabf244b3406ee352bda92343f",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1143,7 +1143,7 @@
     },
     {
       "name": "corpus/fallback/29",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/scale/native-spacing-scale-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/scale/native-spacing-scale-v1.pptx",
       "inputSHA256": "faffd204755918f41ac6d1a43e82e094360e9b696dbe21f8a74912c133892450",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1157,7 +1157,7 @@
     },
     {
       "name": "corpus/fallback/30",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyles/native-styles.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyles/native-styles.pptx",
       "inputSHA256": "b55368f1c7ebfb28444da93d912858afd6afe08781ca8fd9a95cde87124011c9",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1390,7 +1390,7 @@
     },
     {
       "name": "corpus/fallback/31",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported.pptx",
       "inputSHA256": "29cae94851e547795595088eba2b9f5f5dcc90e9b8395aaeab714b6761d489fd",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1407,7 +1407,7 @@
     },
     {
       "name": "corpus/fallback/32",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-source.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-source.pptx",
       "inputSHA256": "f984bd9e651541626e835e029b3f310513aee150957a91b62bf1f2ffc310fe3b",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1421,7 +1421,7 @@
     },
     {
       "name": "corpus/fallback/33",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-target-before.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-target-before.pptx",
       "inputSHA256": "b2a0e253990bf44402340ec5fbc68b1317f01d2d2e9e7e561a320cbe791ef0f8",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1435,7 +1435,7 @@
     },
     {
       "name": "corpus/fallback/34",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-imported.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-imported.pptx",
       "inputSHA256": "73e590c283a4e1541a768caac19410789043264a1886dd245eec59b5152166de",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1452,7 +1452,7 @@
     },
     {
       "name": "corpus/fallback/35",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-source.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-source.pptx",
       "inputSHA256": "6d6785dba27b98593090ea0b2cb9946c1f416d59aadc5a3c46a5d79cfee1aac1",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1466,7 +1466,7 @@
     },
     {
       "name": "corpus/fallback/36",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-imported.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-imported.pptx",
       "inputSHA256": "c6d87e77f86b91003684fccbd190e2cc4a10d2c99bc053f585af1d95392f44fe",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1483,7 +1483,7 @@
     },
     {
       "name": "corpus/fallback/37",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-source.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-source.pptx",
       "inputSHA256": "bc0334e2ffbed42cd2a5e89e3a1f11e6389f0e61fc204b9ee9da88601c590d2c",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1497,7 +1497,7 @@
     },
     {
       "name": "corpus/fallback/38",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesPages/authored-notes.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesPages/authored-notes.pptx",
       "inputSHA256": "c09e0869247e89664c49468e4c5adbe337c335d5203925acdd4919cd7373dcc9",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1511,7 +1511,7 @@
     },
     {
       "name": "corpus/fallback/39",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesPages/imported-notes.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesPages/imported-notes.pptx",
       "inputSHA256": "2a8801e2c07358955ac1385c30b862d9709fdbf51ed08649c9d415bc954a2229",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1525,7 +1525,7 @@
     },
     {
       "name": "corpus/fallback/40",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ParagraphJustification/paragraph-justification-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ParagraphJustification/paragraph-justification-v1.pptx",
       "inputSHA256": "7f402b38e8beba345725c4a9e5ad6378b5c009c6996fd638c8d64bbcb2f9fa13",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1539,7 +1539,7 @@
     },
     {
       "name": "corpus/fallback/41",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ParagraphJustification/paragraph-justification-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ParagraphJustification/paragraph-justification-v2.pptx",
       "inputSHA256": "1af84e993f13a56bdf100a18a07109821da0efaae434be1f1a35fe3560a8291a",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1553,7 +1553,7 @@
     },
     {
       "name": "corpus/fallback/42",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/FromGoogleSlides.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/FromGoogleSlides.pptx",
       "inputSHA256": "faf87c2ca895a78753b7e1b00928cc5e2b504b748efb11278ac7f46095e4ce6d",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1588,7 +1588,7 @@
     },
     {
       "name": "corpus/fallback/43",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/FromKeynote.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/FromKeynote.pptx",
       "inputSHA256": "38d4969e820dc9e1e2d1acec155fc450e4bdf8658f3aacf59da95311a6c01762",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1641,7 +1641,7 @@
     },
     {
       "name": "corpus/fallback/44",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/MovieAndComments.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/MovieAndComments.pptx",
       "inputSHA256": "3e33e2455a21a6c1d3a38157eb1ebbd994a79d1005ec6c83435e93e0dec0ab8b",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1658,7 +1658,7 @@
     },
     {
       "name": "corpus/fallback/45",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/SimplePowerPoint.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/SimplePowerPoint.pptx",
       "inputSHA256": "84fd425655ded6454a8614b9fa948256d63fb6f911c1d9ae87a739061e02bed3",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1672,7 +1672,7 @@
     },
     {
       "name": "corpus/fallback/46",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v2.pptx",
       "inputSHA256": "aad43f7b18221cbb802414d257546cae60293b217419016de89307b448c46123",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1698,7 +1698,7 @@
     },
     {
       "name": "corpus/fallback/47",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v3.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v3.pptx",
       "inputSHA256": "d6639a8d6881c1d3c00c7cefd9d2a8f8315e4d2d973b2c2c7e74b5cc04237a2f",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1715,7 +1715,7 @@
     },
     {
       "name": "corpus/fallback/48",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v4.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v4.pptx",
       "inputSHA256": "46dedf7cc17654862872faf9a596a0fc3a21c0020702ee148549c145ad9576dd",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1732,7 +1732,7 @@
     },
     {
       "name": "corpus/fallback/49",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v5.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v5.pptx",
       "inputSHA256": "844ad10cbe7689a38771976edef630de9cc259c4481bf6e010f4d12b186b7bf6",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1746,7 +1746,7 @@
     },
     {
       "name": "corpus/fallback/50",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v2.pptx",
       "inputSHA256": "bb5d9697b3fbc5522c2a5319a55027e9470d7fb2185c287315b2eda856f2111c",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1772,7 +1772,7 @@
     },
     {
       "name": "corpus/fallback/51",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v3.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v3.pptx",
       "inputSHA256": "0a7b895279b9350772d16e495824bc00c6ed20969946d6150802b33c8f48d67f",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1789,7 +1789,7 @@
     },
     {
       "name": "corpus/fallback/52",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v4.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v4.pptx",
       "inputSHA256": "492f04ea52d2a3082b49e4f8ebb1249701c7835b52d37767c13fbf10dbc0d2dd",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1806,7 +1806,7 @@
     },
     {
       "name": "corpus/fallback/53",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v5.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v5.pptx",
       "inputSHA256": "692e1a7886d6f73633a8abc150197583c95051129cf5d8eb8a9256bcd0528cbc",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1820,7 +1820,7 @@
     },
     {
       "name": "corpus/fallback/54",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout.pptx",
       "inputSHA256": "f47614e35eb970cf15379eb089f750d103fa9015977bce791be9f3b94a84bd1e",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1843,7 +1843,7 @@
     },
     {
       "name": "corpus/fallback/55",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TableBorders/border-conflicts.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TableBorders/border-conflicts.pptx",
       "inputSHA256": "50131639635a6f6b1046c2da105b8c5b823856e2c1b0f48bc8e2b2260eae7b19",
       "mode": "fallback",
       "nativeHelper": false,
@@ -1980,7 +1980,7 @@
     },
     {
       "name": "corpus/fallback/56",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TypographyOffice/text-baseline-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TypographyOffice/text-baseline-v1.pptx",
       "inputSHA256": "e6ae71b1228c362eb9d1917df413e49d6850a92ffcb5416f2b9efdcc02393079",
       "mode": "fallback",
       "nativeHelper": false,
@@ -2000,7 +2000,7 @@
     },
     {
       "name": "corpus/fallback/57",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/images-unique.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/images-unique.pptx",
       "inputSHA256": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
       "mode": "fallback",
       "nativeHelper": false,
@@ -2014,7 +2014,7 @@
     },
     {
       "name": "corpus/fallback/58",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/slides-10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/slides-10.pptx",
       "inputSHA256": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
       "mode": "fallback",
       "nativeHelper": false,
@@ -2055,7 +2055,7 @@
     },
     {
       "name": "corpus/fallback/59",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/table-200x50.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/table-200x50.pptx",
       "inputSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
       "mode": "fallback",
       "nativeHelper": false,
@@ -2069,7 +2069,7 @@
     },
     {
       "name": "corpus/fallback/60",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/table-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/table-20x10.pptx",
       "inputSHA256": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
       "mode": "fallback",
       "nativeHelper": false,
@@ -2083,7 +2083,7 @@
     },
     {
       "name": "corpus/corpus-registered/0",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/AuthorDependencyImport/ModernCustomXML.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/AuthorDependencyImport/ModernCustomXML.pptx",
       "inputSHA256": "cd0077157da9c681c0afa66a33ddcd9543b932ee1561a3290bb67e8d19d3957d",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2100,7 +2100,7 @@
     },
     {
       "name": "corpus/corpus-registered/1",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables-v2.pptx",
       "inputSHA256": "7930ccc91d1269083aecdcc83a4d382976fbd1099c9f677fdca5de90918cc3bf",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2114,7 +2114,7 @@
     },
     {
       "name": "corpus/corpus-registered/2",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables-v3.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables-v3.pptx",
       "inputSHA256": "3f7d5427de26934424329ef6e739b6fe92db26c0c23f260fa9bea1adf6dcd7dd",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2128,7 +2128,7 @@
     },
     {
       "name": "corpus/corpus-registered/3",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/Conformance/python-tables.pptx",
       "inputSHA256": "72366e5c1c72b1218a77cead73f40d7effa2cd16923a257fbef02bab3a866aaf",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2142,7 +2142,7 @@
     },
     {
       "name": "corpus/corpus-registered/4",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/double-borders.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/double-borders.pptx",
       "inputSHA256": "0aa0fab8a89bef4e40eec910dc02d4a2b95acfdb8b564aa7c2f291b2b3ed2834",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2240,7 +2240,7 @@
     },
     {
       "name": "corpus/corpus-registered/5",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence-rtl.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence-rtl.pptx",
       "inputSHA256": "6d2be07ce538a5bddff9906b77d2d815b82cd0685d5e6752975a1360b54ea836",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2359,7 +2359,7 @@
     },
     {
       "name": "corpus/corpus-registered/6",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/DoubleTableBorders/style-precedence.pptx",
       "inputSHA256": "58446fe12b21fe075f088c4655e4415466419e8f3b4cdf212d28fe436e8f8d30",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2478,7 +2478,7 @@
     },
     {
       "name": "corpus/corpus-registered/7",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ImageOffice/image-mapping-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ImageOffice/image-mapping-v1.pptx",
       "inputSHA256": "9b5ce6d88c3c074641df256d1b2f9cbeaef3b1742a1c006dd5b7b3679c5eea8c",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2525,7 +2525,7 @@
     },
     {
       "name": "corpus/corpus-registered/8",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ImageOffice/image-mapping-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ImageOffice/image-mapping-v2.pptx",
       "inputSHA256": "3aaf45277c7ae8b7b411390ae8d7a55c8f2b9ac7b83e15a60504387475b7aac8",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2572,7 +2572,7 @@
     },
     {
       "name": "corpus/corpus-registered/9",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-boundaries.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-boundaries.pptx",
       "inputSHA256": "515853d753943019db5245b08c8e5cdce70aebe86750b50439db1ca2a4d7c5d1",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2619,7 +2619,7 @@
     },
     {
       "name": "corpus/corpus-registered/10",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-coordinates.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-coordinates.pptx",
       "inputSHA256": "0e7270f5364944ebe834978a3efcc88c63cc817c4595ee336e588d514046423f",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2639,7 +2639,7 @@
     },
     {
       "name": "corpus/corpus-registered/11",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-final.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-final.pptx",
       "inputSHA256": "a289f6496640384937e27baca13f4962b6a88e761312b477bea864877f1ea041",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2659,7 +2659,7 @@
     },
     {
       "name": "corpus/corpus-registered/12",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-followup.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-followup.pptx",
       "inputSHA256": "54493185fdfd26914155591f4c3b1386aea5d48b7ffcf999e38d761f1a897851",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2703,7 +2703,7 @@
     },
     {
       "name": "corpus/corpus-registered/13",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-scale.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/line-break-scale.pptx",
       "inputSHA256": "8a6c632898782cffa4518c1e3f8f550e64193323a4f9b4ae9e319e9a4f5c86c6",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2717,7 +2717,7 @@
     },
     {
       "name": "corpus/corpus-registered/14",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/rostrum-written.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/LineBreakBoundaries/rostrum-written.pptx",
       "inputSHA256": "f504c33cbe50ce73de8ae849b935a15bf7b682c483ddcc0c964dc910aacc3a5d",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2764,7 +2764,7 @@
     },
     {
       "name": "corpus/corpus-registered/15",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeBreakMetrics/native-break-metrics-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeBreakMetrics/native-break-metrics-v1.pptx",
       "inputSHA256": "3620121ad15fe85abb65e28cb686d454a0fad7b160cfdab7933543960ba087fe",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2784,7 +2784,7 @@
     },
     {
       "name": "corpus/corpus-registered/16",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx",
       "inputSHA256": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2801,7 +2801,7 @@
     },
     {
       "name": "corpus/corpus-registered/17",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx",
       "inputSHA256": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2821,7 +2821,7 @@
     },
     {
       "name": "corpus/corpus-registered/18",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/kerning/native-paint-omitted-kern-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/kerning/native-paint-omitted-kern-v2.pptx",
       "inputSHA256": "149e991e629901a967383a8064e7dfd9f40977ce132e7730e0c14f7d434ec7e0",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2835,7 +2835,7 @@
     },
     {
       "name": "corpus/corpus-registered/19",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx",
       "inputSHA256": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2855,7 +2855,7 @@
     },
     {
       "name": "corpus/corpus-registered/20",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLigatureLayout/native-ligatures-regular-table.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLigatureLayout/native-ligatures-regular-table.pptx",
       "inputSHA256": "3c4c668ad517fefe310e674402482f4ecef3e1c72a00ff50a80eaf8d9c138ab5",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2878,7 +2878,7 @@
     },
     {
       "name": "corpus/corpus-registered/21",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/base/native-spacing-metrics-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/base/native-spacing-metrics-v1.pptx",
       "inputSHA256": "f2607f1ac458652e9876053e98d9145aa87347455d60691dd7255438dd72a6fe",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2910,7 +2910,7 @@
     },
     {
       "name": "corpus/corpus-registered/22",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/compatibility/native-spacing-final-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/compatibility/native-spacing-final-v1.pptx",
       "inputSHA256": "cee93ef0a05ed50b83b7590eb7deef0e976d2527a41108319596f157fc447bf2",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2924,7 +2924,7 @@
     },
     {
       "name": "corpus/corpus-registered/23",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/descent/native-spacing-descent-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/descent/native-spacing-descent-v1.pptx",
       "inputSHA256": "42cfd040e861ca5c788f1d08fb0a4bf4526b2d9ec3298cbfb9280e1792966d22",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2938,7 +2938,7 @@
     },
     {
       "name": "corpus/corpus-registered/24",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/followup/native-spacing-followup-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/followup/native-spacing-followup-v1.pptx",
       "inputSHA256": "fc460f7a0984230a589daf2535c329e39944d135a13e6a05bbf8dc42a7e74f0d",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2955,7 +2955,7 @@
     },
     {
       "name": "corpus/corpus-registered/25",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx",
       "inputSHA256": "3aedbb0fe53fd15f36c050817cf8162b1398e142481177104e62ecb941f07d19",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2969,7 +2969,7 @@
     },
     {
       "name": "corpus/corpus-registered/26",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/percentage-anchor/native-spacing-percentage-anchor-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/percentage-anchor/native-spacing-percentage-anchor-v1.pptx",
       "inputSHA256": "e530a494658cda4a13fc40889c6ec5a1643fe8f817f510b08c862a47f7b414c0",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2983,7 +2983,7 @@
     },
     {
       "name": "corpus/corpus-registered/27",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx",
       "inputSHA256": "93bdeb4c0df5249999d2440cad441f361d131891029b598394fdd719776708e3",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -2997,7 +2997,7 @@
     },
     {
       "name": "corpus/corpus-registered/28",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx",
       "inputSHA256": "28c1929e7fab8e63c07cc9dafc28a2036477f5dabf244b3406ee352bda92343f",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3011,7 +3011,7 @@
     },
     {
       "name": "corpus/corpus-registered/29",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/scale/native-spacing-scale-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeLineSpacing/scale/native-spacing-scale-v1.pptx",
       "inputSHA256": "faffd204755918f41ac6d1a43e82e094360e9b696dbe21f8a74912c133892450",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3025,7 +3025,7 @@
     },
     {
       "name": "corpus/corpus-registered/30",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyles/native-styles.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyles/native-styles.pptx",
       "inputSHA256": "b55368f1c7ebfb28444da93d912858afd6afe08781ca8fd9a95cde87124011c9",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3258,7 +3258,7 @@
     },
     {
       "name": "corpus/corpus-registered/31",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-imported.pptx",
       "inputSHA256": "29cae94851e547795595088eba2b9f5f5dcc90e9b8395aaeab714b6761d489fd",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3275,7 +3275,7 @@
     },
     {
       "name": "corpus/corpus-registered/32",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-source.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-source.pptx",
       "inputSHA256": "f984bd9e651541626e835e029b3f310513aee150957a91b62bf1f2ffc310fe3b",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3289,7 +3289,7 @@
     },
     {
       "name": "corpus/corpus-registered/33",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-target-before.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/geometry-target-before.pptx",
       "inputSHA256": "b2a0e253990bf44402340ec5fbc68b1317f01d2d2e9e7e561a320cbe791ef0f8",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3303,7 +3303,7 @@
     },
     {
       "name": "corpus/corpus-registered/34",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-imported.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-imported.pptx",
       "inputSHA256": "73e590c283a4e1541a768caac19410789043264a1886dd245eec59b5152166de",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3320,7 +3320,7 @@
     },
     {
       "name": "corpus/corpus-registered/35",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-source.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-inherited-source.pptx",
       "inputSHA256": "6d6785dba27b98593090ea0b2cb9946c1f416d59aadc5a3c46a5d79cfee1aac1",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3334,7 +3334,7 @@
     },
     {
       "name": "corpus/corpus-registered/36",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-imported.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-imported.pptx",
       "inputSHA256": "c6d87e77f86b91003684fccbd190e2cc4a10d2c99bc053f585af1d95392f44fe",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3351,7 +3351,7 @@
     },
     {
       "name": "corpus/corpus-registered/37",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-source.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesGeometry/type-index-local-source.pptx",
       "inputSHA256": "bc0334e2ffbed42cd2a5e89e3a1f11e6389f0e61fc204b9ee9da88601c590d2c",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3365,7 +3365,7 @@
     },
     {
       "name": "corpus/corpus-registered/38",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesPages/authored-notes.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesPages/authored-notes.pptx",
       "inputSHA256": "c09e0869247e89664c49468e4c5adbe337c335d5203925acdd4919cd7373dcc9",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3379,7 +3379,7 @@
     },
     {
       "name": "corpus/corpus-registered/39",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesPages/imported-notes.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/NotesPages/imported-notes.pptx",
       "inputSHA256": "2a8801e2c07358955ac1385c30b862d9709fdbf51ed08649c9d415bc954a2229",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3393,7 +3393,7 @@
     },
     {
       "name": "corpus/corpus-registered/40",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ParagraphJustification/paragraph-justification-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ParagraphJustification/paragraph-justification-v1.pptx",
       "inputSHA256": "7f402b38e8beba345725c4a9e5ad6378b5c009c6996fd638c8d64bbcb2f9fa13",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3407,7 +3407,7 @@
     },
     {
       "name": "corpus/corpus-registered/41",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ParagraphJustification/paragraph-justification-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/ParagraphJustification/paragraph-justification-v2.pptx",
       "inputSHA256": "1af84e993f13a56bdf100a18a07109821da0efaae434be1f1a35fe3560a8291a",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3421,7 +3421,7 @@
     },
     {
       "name": "corpus/corpus-registered/42",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/FromGoogleSlides.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/FromGoogleSlides.pptx",
       "inputSHA256": "faf87c2ca895a78753b7e1b00928cc5e2b504b748efb11278ac7f46095e4ce6d",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3456,7 +3456,7 @@
     },
     {
       "name": "corpus/corpus-registered/43",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/FromKeynote.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/FromKeynote.pptx",
       "inputSHA256": "38d4969e820dc9e1e2d1acec155fc450e4bdf8658f3aacf59da95311a6c01762",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3509,7 +3509,7 @@
     },
     {
       "name": "corpus/corpus-registered/44",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/MovieAndComments.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/MovieAndComments.pptx",
       "inputSHA256": "3e33e2455a21a6c1d3a38157eb1ebbd994a79d1005ec6c83435e93e0dec0ab8b",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3526,7 +3526,7 @@
     },
     {
       "name": "corpus/corpus-registered/45",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/SimplePowerPoint.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/RealDecks/SimplePowerPoint.pptx",
       "inputSHA256": "84fd425655ded6454a8614b9fa948256d63fb6f911c1d9ae87a739061e02bed3",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3540,7 +3540,7 @@
     },
     {
       "name": "corpus/corpus-registered/46",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v2.pptx",
       "inputSHA256": "aad43f7b18221cbb802414d257546cae60293b217419016de89307b448c46123",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3566,7 +3566,7 @@
     },
     {
       "name": "corpus/corpus-registered/47",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v3.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v3.pptx",
       "inputSHA256": "d6639a8d6881c1d3c00c7cefd9d2a8f8315e4d2d973b2c2c7e74b5cc04237a2f",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3583,7 +3583,7 @@
     },
     {
       "name": "corpus/corpus-registered/48",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v4.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v4.pptx",
       "inputSHA256": "46dedf7cc17654862872faf9a596a0fc3a21c0020702ee148549c145ad9576dd",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3600,7 +3600,7 @@
     },
     {
       "name": "corpus/corpus-registered/49",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v5.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/rostrum-tab-layout-v5.pptx",
       "inputSHA256": "844ad10cbe7689a38771976edef630de9cc259c4481bf6e010f4d12b186b7bf6",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3614,7 +3614,7 @@
     },
     {
       "name": "corpus/corpus-registered/50",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v2.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v2.pptx",
       "inputSHA256": "bb5d9697b3fbc5522c2a5319a55027e9470d7fb2185c287315b2eda856f2111c",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3640,7 +3640,7 @@
     },
     {
       "name": "corpus/corpus-registered/51",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v3.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v3.pptx",
       "inputSHA256": "0a7b895279b9350772d16e495824bc00c6ed20969946d6150802b33c8f48d67f",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3657,7 +3657,7 @@
     },
     {
       "name": "corpus/corpus-registered/52",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v4.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v4.pptx",
       "inputSHA256": "492f04ea52d2a3082b49e4f8ebb1249701c7835b52d37767c13fbf10dbc0d2dd",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3674,7 +3674,7 @@
     },
     {
       "name": "corpus/corpus-registered/53",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v5.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout-v5.pptx",
       "inputSHA256": "692e1a7886d6f73633a8abc150197583c95051129cf5d8eb8a9256bcd0528cbc",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3688,7 +3688,7 @@
     },
     {
       "name": "corpus/corpus-registered/54",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TabLayout/tab-layout.pptx",
       "inputSHA256": "f47614e35eb970cf15379eb089f750d103fa9015977bce791be9f3b94a84bd1e",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3711,7 +3711,7 @@
     },
     {
       "name": "corpus/corpus-registered/55",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TableBorders/border-conflicts.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TableBorders/border-conflicts.pptx",
       "inputSHA256": "50131639635a6f6b1046c2da105b8c5b823856e2c1b0f48bc8e2b2260eae7b19",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3848,7 +3848,7 @@
     },
     {
       "name": "corpus/corpus-registered/56",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TypographyOffice/text-baseline-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/Tests/RostrumTests/Fixtures/TypographyOffice/text-baseline-v1.pptx",
       "inputSHA256": "e6ae71b1228c362eb9d1917df413e49d6850a92ffcb5416f2b9efdcc02393079",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3868,7 +3868,7 @@
     },
     {
       "name": "corpus/corpus-registered/57",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/images-unique.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/images-unique.pptx",
       "inputSHA256": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3882,7 +3882,7 @@
     },
     {
       "name": "corpus/corpus-registered/58",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/slides-10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/slides-10.pptx",
       "inputSHA256": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3923,7 +3923,7 @@
     },
     {
       "name": "corpus/corpus-registered/59",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/table-200x50.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/table-200x50.pptx",
       "inputSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3937,7 +3937,7 @@
     },
     {
       "name": "corpus/corpus-registered/60",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/table-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/fixed-inputs/table-20x10.pptx",
       "inputSHA256": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
       "mode": "corpus-registered",
       "nativeHelper": false,
@@ -3951,7 +3951,7 @@
     },
     {
       "name": "marker-controls/native/list-markers-primary",
-      "input": "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx",
+      "input": "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx",
       "inputSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
       "mode": "native",
       "nativeHelper": true,
@@ -3959,7 +3959,7 @@
     },
     {
       "name": "marker-controls/fallback/list-markers-primary",
-      "input": "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx",
+      "input": "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx",
       "inputSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
       "mode": "fallback",
       "nativeHelper": false,
@@ -3967,7 +3967,7 @@
     },
     {
       "name": "marker-controls/native/list-markers-followup",
-      "input": "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx",
+      "input": "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx",
       "inputSHA256": "6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd",
       "mode": "native",
       "nativeHelper": true,
@@ -3975,7 +3975,7 @@
     },
     {
       "name": "marker-controls/fallback/list-markers-followup",
-      "input": "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx",
+      "input": "/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx",
       "inputSHA256": "6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd",
       "mode": "fallback",
       "nativeHelper": false,
@@ -3983,7 +3983,7 @@
     },
     {
       "name": "marker-controls/native/ordinary-buNone-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-200.pptx",
       "inputSHA256": "14d936089da9416afd9b5ce6d721bedd1742f5d0a55f12610e9ca2735b70a4ff",
       "mode": "native",
       "nativeHelper": true,
@@ -3991,7 +3991,7 @@
     },
     {
       "name": "marker-controls/fallback/ordinary-buNone-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-200.pptx",
       "inputSHA256": "14d936089da9416afd9b5ce6d721bedd1742f5d0a55f12610e9ca2735b70a4ff",
       "mode": "fallback",
       "nativeHelper": false,
@@ -3999,7 +3999,7 @@
     },
     {
       "name": "marker-controls/native/ordinary-buNone-large-style-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-large-style-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-large-style-200.pptx",
       "inputSHA256": "a7afe605d9e2e8f619dd77f3611f03e6060cff2ea8da20ac66552af3b583b94d",
       "mode": "native",
       "nativeHelper": true,
@@ -4007,7 +4007,7 @@
     },
     {
       "name": "marker-controls/fallback/ordinary-buNone-large-style-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-large-style-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-large-style-200.pptx",
       "inputSHA256": "a7afe605d9e2e8f619dd77f3611f03e6060cff2ea8da20ac66552af3b583b94d",
       "mode": "fallback",
       "nativeHelper": false,
@@ -4015,7 +4015,7 @@
     },
     {
       "name": "marker-controls/native/ordinary-inherited-bullet-ascii-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-ascii-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-ascii-200.pptx",
       "inputSHA256": "65b4e7d81c6e0010e0531ed85a558c08c37c64e8f075ab506e028276672a18ee",
       "mode": "native",
       "nativeHelper": true,
@@ -4023,7 +4023,7 @@
     },
     {
       "name": "marker-controls/fallback/ordinary-inherited-bullet-ascii-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-ascii-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-ascii-200.pptx",
       "inputSHA256": "65b4e7d81c6e0010e0531ed85a558c08c37c64e8f075ab506e028276672a18ee",
       "mode": "fallback",
       "nativeHelper": false,
@@ -4031,7 +4031,7 @@
     },
     {
       "name": "marker-controls/native/ordinary-inherited-bullet-unicode-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-unicode-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-unicode-200.pptx",
       "inputSHA256": "07077a457e0350db084386670c72f2d390694c9b18b94743f19ab756deaa94e1",
       "mode": "native",
       "nativeHelper": true,
@@ -4039,7 +4039,7 @@
     },
     {
       "name": "marker-controls/fallback/ordinary-inherited-bullet-unicode-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-unicode-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-unicode-200.pptx",
       "inputSHA256": "07077a457e0350db084386670c72f2d390694c9b18b94743f19ab756deaa94e1",
       "mode": "fallback",
       "nativeHelper": false,
@@ -4047,7 +4047,7 @@
     },
     {
       "name": "marker-controls/native/placeholder-inherited-bullet-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/placeholder-inherited-bullet-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/placeholder-inherited-bullet-200.pptx",
       "inputSHA256": "d4b83de2d5be5626c7af40e51007e4452d675b2ac56f3d20f0f802e22e69110c",
       "mode": "native",
       "nativeHelper": true,
@@ -4055,7 +4055,7 @@
     },
     {
       "name": "marker-controls/fallback/placeholder-inherited-bullet-200",
-      "input": "/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/placeholder-inherited-bullet-200.pptx",
+      "input": "/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/placeholder-inherited-bullet-200.pptx",
       "inputSHA256": "d4b83de2d5be5626c7af40e51007e4452d675b2ac56f3d20f0f802e22e69110c",
       "mode": "fallback",
       "nativeHelper": false,
@@ -4063,140 +4063,140 @@
     },
     {
       "name": "spacing16/native-base",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-v1.pptx",
       "inputSHA256": "4e12a5e02468873d34fadb0ea415836ee50fa92245d9e096721faee33013c014",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "spacing16/native-anchors",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-anchors-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-anchors-v1.pptx",
       "inputSHA256": "ade8628fe0ca6c69691ad0790e9678bf92aaa7d2cd3178b5723dcb5c2adc9ea0",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "spacing16/mixed-exact",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-exact-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-exact-200.pptx",
       "inputSHA256": "96343e28966bcf9f799485607b88136f2d003c81ba93380d678aff54ccc7da63",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "spacing16/same-face-exact",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/same-face-exact-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/same-face-exact-200.pptx",
       "inputSHA256": "4d1376f6a23a823cdf8c0165393bcdd9735a7764176425b989713e35a3488fa5",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "spacing16/mixed-percentage",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-percentage-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-percentage-200.pptx",
       "inputSHA256": "7c523bacdd8510b31e4eff9ea0fa2a4c58fd6accd6ee7d9873fa088067ba81e2",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "spacing16/mixed-table",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-table-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-table-200.pptx",
       "inputSHA256": "e95ef180dba8c327d3d03e8f5aeeed61a82d96a55feacce65a73daca930f14a5",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "spacing16/unequal-signature",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/unequal-signature-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/unequal-signature-200.pptx",
       "inputSHA256": "6e9a3fbb0379b233dda074302b06d03e2fd99628238cf7e79a27b7bfbb697573",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-native-builtin",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-builtin-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-builtin-v1.pptx",
       "inputSHA256": "3583235fd4a0caf7be17fad4e79d250ac1098e0a4f64ce462c9a396d91a5873b",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-native-custom",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-custom-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-custom-v1.pptx",
       "inputSHA256": "5506d837f8a12b4f6a54cca287c9f2943b22d2537270aa084e83792aad65652e",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-native-joins",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-joins-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-joins-v1.pptx",
       "inputSHA256": "23b9cde5274eda35b5278042caf7a9b9d49f5557a4038be1c4646ffd73d42ede",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-absent-20x10",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-20x10.pptx",
       "inputSHA256": "32a5658ebaaf7d22a0637a88f5c22f94899812e98501ddcf9b2fccf23bd61813",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-absent-100x20",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-100x20.pptx",
       "inputSHA256": "033249f2b564e18845018160e440f54d461511ba8ab9f5aa24580cf1c0191120",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-absent-200x50",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-200x50.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-200x50.pptx",
       "inputSHA256": "327cbdda7b2c47b0a26d425196095215565a0d7cc599b09162467af539e24693",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-explicit-20x10",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-20x10.pptx",
       "inputSHA256": "85aaca574181fc52f32578f69123336358e0ba6c16b3894e7b6db7b50e819961",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-explicit-200x50",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-200x50.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-200x50.pptx",
       "inputSHA256": "3bb5c416ea9213a1f18b8e7f840a66df2de481335643afc78a5865e3f89f42aa",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-custom-absent-20x10",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-absent-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-absent-20x10.pptx",
       "inputSHA256": "53f23d54df276b90db217ce963d1c53dbf92102a9e9f2c155a2395400e5dcf2c",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-custom-explicit-20x10",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-explicit-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-explicit-20x10.pptx",
       "inputSHA256": "55ab3941c7e6fe5e90d6295ca5032b19807e18b963b6e19ac8b01eb069abd738",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-mixed-joins-20x10",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-20x10.pptx",
       "inputSHA256": "90b4d06331139fa79c9de3d8bad161b598995af4380d76f29dc750d80100142e",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-mixed-joins-100x20",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-100x20.pptx",
       "inputSHA256": "6437f450610ca7ee75be860e71aee1ff7c4f2a06eb9427cc913c6001594fd7c4",
       "mode": "native",
       "nativeHelper": true
     },
     {
       "name": "table17-uniform-joins-100x20",
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/uniform-joins-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/uniform-joins-100x20.pptx",
       "inputSHA256": "911242ce25e1223c984fc3d3a69a0001de8be2a91c6a4611322b009d8e6ace83",
       "mode": "native",
       "nativeHelper": true

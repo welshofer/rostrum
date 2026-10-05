@@ -97,7 +97,7 @@ imports template snapshots, selects masters, carries template constraints throug
 generation stages and uses native content regions. Header spacing, bullet indents and
 photo-background text contrast were corrected for authored decks.
 
-Used the supplied welshofer.potx in offline end-to-end generation and enrolled an
+Used the supplied private-template.potx in offline end-to-end generation and enrolled an
 unchanged copy in the ignored local corpus. Its custom body-placeholder cover and
 subtitle conventions produced two additional regression tests. See
 `template-acceptance/README.md` for exact evidence and unresolved acceptance.
@@ -115,11 +115,11 @@ view; the later PDF presenter suppressed the template presenter. Replaced them
 with one presenter and an explicit template/PDF purpose retained through completion.
 
 Rebuilt and launched the signed macOS app. In the actual running app, clicked the
-template button, selected Desktop/welshofer.potx, clicked Open, and observed
-“welshofer PowerPoint template · 34 layouts”. Then opened/cancelled the PDF picker,
+template button, selected Desktop/private-template.potx, clicked Open, and observed
+“private-template PowerPoint template · 34 layouts”. Then opened/cancelled the PDF picker,
 reopened/cancelled the template picker, and verified the selection remained intact.
 Both macOS and iOS simulator builds passed. No presentation generation was started.
-The app remains open with the Welshofer template selected.
+The app remains open with the private-template template selected.
 
 The earlier check proved only button visibility, not its action. Picker acceptance
 must exercise click → open dialog → select file → confirm loaded state, plus cancel
@@ -163,7 +163,7 @@ exports retain the final accepted normalized draft under protected seven-day ret
 Inspected all 13 slides of audit/caption-flow/climate-layout-acceptance.pptx in Microsoft
 PowerPoint: full-width charts, aligned paired columns, complete diagram, table separated
 from caption/footer. The 46 Contoso master/layout/theme XML parts remain byte-identical.
-python-pptx opens all 13 slides. Both slides of the supplied Welshofer template's caption
+python-pptx opens all 13 slides. Both slides of the supplied private-template template's caption
 regression were also inspected in PowerPoint. Original decks/templates were unchanged.
 
 The full scripts/verify.sh gate passed, including both package suites, workflow checks,

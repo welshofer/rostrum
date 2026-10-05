@@ -4,12 +4,12 @@
     "binaries": {
       "baseline": {
         "bytes": 2959024,
-        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "sha256": "0d576500422a2528dacb909bdb47e93c598c95d9a6f9e1f85104e8a614681bd7"
       },
       "candidate": {
         "bytes": 3535168,
-        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "sha256": "70c3ed386e05a5c68fb13b0d68870d1cc9d70e569e922242d2872210f0b07c86"
       }
     },
@@ -20,7 +20,7 @@
     },
     "runner": {
       "bytes": 16857,
-      "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
+      "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
       "sha256": "b7358ce2ca75c67834dfedbeb500a4e3e6ef92fa3364583eaf17722204ea5dc5"
     },
     "sources": {
@@ -376,7 +376,7 @@
           }
         },
         "manifestSHA256": "bab77ae6c1ffe2ff88656c9173008df3c2efec36ffc3146dc90a442c77b0fba0",
-        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
+        "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
       },
       "candidate": {
         "files": {
@@ -766,7 +766,7 @@
           }
         },
         "manifestSHA256": "72fcd88a21ab38bd2b8c1fc20ad00262ed8e7cc5890ee44f4e916f8b64e97d3a",
-        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783"
+        "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783"
       }
     }
   },
@@ -774,12 +774,12 @@
     "binaries": {
       "baseline": {
         "bytes": 2959024,
-        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "sha256": "0d576500422a2528dacb909bdb47e93c598c95d9a6f9e1f85104e8a614681bd7"
       },
       "candidate": {
         "bytes": 3535168,
-        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "sha256": "70c3ed386e05a5c68fb13b0d68870d1cc9d70e569e922242d2872210f0b07c86"
       }
     },
@@ -790,7 +790,7 @@
     },
     "runner": {
       "bytes": 16857,
-      "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
+      "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
       "sha256": "b7358ce2ca75c67834dfedbeb500a4e3e6ef92fa3364583eaf17722204ea5dc5"
     },
     "sources": {
@@ -1146,7 +1146,7 @@
           }
         },
         "manifestSHA256": "bab77ae6c1ffe2ff88656c9173008df3c2efec36ffc3146dc90a442c77b0fba0",
-        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
+        "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
       },
       "candidate": {
         "files": {
@@ -1536,19 +1536,19 @@
           }
         },
         "manifestSHA256": "72fcd88a21ab38bd2b8c1fc20ad00262ed8e7cc5890ee44f4e916f8b64e97d3a",
-        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783"
+        "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783"
       }
     }
   },
   "comparison": "Paired fresh-process construction with identical serialized PPTX output",
   "declaredBuilds": {
     "baseline": {
-      "command": "env CLANG_MODULE_CACHE_PATH=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --package-path /Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc --scratch-path .isolated-construction-e3fc-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
+      "command": "env CLANG_MODULE_CACHE_PATH=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --package-path /path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc --scratch-path .isolated-construction-e3fc-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
       "flags": "--disable-sandbox -c release -debug-info-format none --product rostrum-bench -j 2; isolated scratch and module caches",
       "revision": "e3fc99bc790d7d7c23ca2acacd8f5274d3bdf3cd"
     },
     "candidate": {
-      "command": "env CLANG_MODULE_CACHE_PATH=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --package-path /Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783 --scratch-path .isolated-construction-2783-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
+      "command": "env CLANG_MODULE_CACHE_PATH=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --package-path /path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783 --scratch-path .isolated-construction-2783-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
       "flags": "--disable-sandbox -c release -debug-info-format none --product rostrum-bench -j 2; isolated scratch and module caches",
       "revision": "2783ea38616cfd7c30ad2358c1056b9dc3f19481"
     }
@@ -1557,12 +1557,12 @@
   "invocations": [
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": true,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-baseline.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -1594,22 +1594,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 340,
         "sha256": "f228810e7292b0102c461682c388f23fcf5e8ac2df0355cbb787cb4c8db9572f"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": true,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-candidate.pptx",
       "outputRetained": false,
       "pair": 0,
       "returnCode": 0,
@@ -1641,22 +1641,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 338,
         "sha256": "a1b8b82e458c58a343f449599eab98d1268d6d4b0a4a82c92d49d9e28959f17e"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-baseline.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -1688,22 +1688,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 336,
         "sha256": "75d0f43cd6e29f3540f40613db59a019407e3df115eb0167a59cd668dddaf935"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-candidate.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -1735,22 +1735,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "93fec67a61db84bebaea4754ea3851849c4a977ee38aea4754c656b8ea4fda68"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-candidate.pptx",
       "outputRetained": false,
       "pair": 1,
       "returnCode": 0,
@@ -1782,22 +1782,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "7491364cae41dff18d250ba0239c98cc4919417811bdc4ea5e4a3ecda12093d9"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-baseline.pptx",
       "outputRetained": false,
       "pair": 1,
       "returnCode": 0,
@@ -1829,22 +1829,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 339,
         "sha256": "7f6087cbdc5b720612ab3f3fbe8c2d70c58e1e36853104700d7c06e0714c580d"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-001-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-baseline.pptx",
       "outputRetained": false,
       "pair": 2,
       "returnCode": 0,
@@ -1876,22 +1876,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "58a256381ca8f8f3d67d4c56578c7c5db0e37c4295533bc025fc233d278a3a04"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-candidate.pptx",
       "outputRetained": false,
       "pair": 2,
       "returnCode": 0,
@@ -1923,22 +1923,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 334,
         "sha256": "5714e5a9a97d8015bc7db412f37dd071e363294dbfbf4557dc51d3125b529f79"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-002-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-candidate.pptx",
       "outputRetained": false,
       "pair": 3,
       "returnCode": 0,
@@ -1970,22 +1970,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 336,
         "sha256": "d5ad224c2fe50307e6408e6efe40dc34818fb7bd0076df2a5cef73cf4f0d688f"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-baseline.pptx",
       "outputRetained": false,
       "pair": 3,
       "returnCode": 0,
@@ -2017,22 +2017,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 335,
         "sha256": "d41cd75c4614788f98df8267b267cb0cfb30109cb779abc5f9fcb2efd5e06a7a"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-003-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-baseline.pptx",
       "outputRetained": false,
       "pair": 4,
       "returnCode": 0,
@@ -2064,22 +2064,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 336,
         "sha256": "6de441be88721505e04ec9f0b1a2873a1fd36833a6d661563ec96740b54579f2"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-candidate.pptx",
       "outputRetained": false,
       "pair": 4,
       "returnCode": 0,
@@ -2111,22 +2111,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 337,
         "sha256": "3ad6d208a160e41f93543ea7cd541ad194530a5ec098dbfdcd533924d78d2dec"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-004-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-candidate.pptx",
       "outputRetained": false,
       "pair": 5,
       "returnCode": 0,
@@ -2158,22 +2158,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 340,
         "sha256": "8ecdcb8774533c6a5bc29fbab7db19663a503ad1a4e21a86d2db702af78ae986"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-baseline.pptx",
       "outputRetained": false,
       "pair": 5,
       "returnCode": 0,
@@ -2205,22 +2205,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 340,
         "sha256": "d2b70e27bd68126d3f8915eedd07e85d474af039b644e9b3e491919d9dbf3640"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-005-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-baseline.pptx",
       "outputRetained": false,
       "pair": 6,
       "returnCode": 0,
@@ -2252,22 +2252,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 338,
         "sha256": "1015abe716794232f96ab8a4c830854be548e4353a9f1d3d113410adb910bedc"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-candidate.pptx",
       "outputRetained": false,
       "pair": 6,
       "returnCode": 0,
@@ -2299,22 +2299,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 334,
         "sha256": "6edd9413f1f3d98ec5f4ab1a700ed8d7999cb3c55db546ed91f67bff8f1726c4"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-006-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-candidate.pptx",
       "outputRetained": false,
       "pair": 7,
       "returnCode": 0,
@@ -2346,22 +2346,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 337,
         "sha256": "31850fc41353aa39b58fe4899a4098b8a390c5026df8d685fe004d070f4d2ce1"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-baseline.pptx",
       "outputRetained": false,
       "pair": 7,
       "returnCode": 0,
@@ -2393,22 +2393,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 334,
         "sha256": "4eef9799dca3ca4f7799d79bf5b2416c86abae8b5ac0e6e5e9c75e7afdfb2c72"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-007-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-baseline.pptx",
       "outputRetained": false,
       "pair": 8,
       "returnCode": 0,
@@ -2440,22 +2440,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 331,
         "sha256": "659880581f42920d53030832d17f997c3126ee08506f346fe10af5fe9460ec0a"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-candidate.pptx",
       "outputRetained": false,
       "pair": 8,
       "returnCode": 0,
@@ -2487,22 +2487,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 334,
         "sha256": "690e761fa8e4f0a26dc45c40123a433cfbd1fca82a544861c642050d67ea7f4d"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-008-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-candidate.pptx",
       "outputRetained": false,
       "pair": 9,
       "returnCode": 0,
@@ -2534,22 +2534,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 336,
         "sha256": "b75ed53a7b17253910122c21787a818b2f874d4cf4df462ad49ca84568d4fc9a"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-baseline.pptx",
       "outputRetained": false,
       "pair": 9,
       "returnCode": 0,
@@ -2581,22 +2581,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 338,
         "sha256": "eb104e7b0ad4a419cecbbbe11b313fcf1a518755b6cc7397099bb23e89fb6948"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-009-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-baseline.pptx",
       "outputRetained": false,
       "pair": 10,
       "returnCode": 0,
@@ -2628,22 +2628,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 339,
         "sha256": "9509332e222d0be592c28865341a4fe4ead4d421d3a6b7a77cf5685491270a24"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-candidate.pptx",
       "outputRetained": false,
       "pair": 10,
       "returnCode": 0,
@@ -2675,22 +2675,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 336,
         "sha256": "2ee9a853d46861d573db813258a7bf7edf187443827584568e2ed1d56813497d"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-010-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-candidate.pptx",
       "outputRetained": false,
       "pair": 11,
       "returnCode": 0,
@@ -2722,22 +2722,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "0e1b2796eba87ed3582687e1a1aa6695684b89d227e36f73d811865b754e5006"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-10"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-baseline.pptx",
       "outputRetained": false,
       "pair": 11,
       "returnCode": 0,
@@ -2769,22 +2769,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "594b76a6f570d35fc0c4ce5383071cb6ea7aa258c669395e8b9444c3ab8f7fbb"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-011-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": true,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-baseline.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -2816,22 +2816,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 336,
         "sha256": "f9b5849501c1508474f99cf026d5a5b3d953bbccdbae44b033196848cfa58844"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": true,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-candidate.pptx",
       "outputRetained": false,
       "pair": 0,
       "returnCode": 0,
@@ -2863,22 +2863,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 340,
         "sha256": "e7e436a2421c90a6c954f4b3512dc2e0dd5f715ebb334f82f319ec066b5f4587"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-baseline.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -2910,22 +2910,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "5e73dfa8f1527b54601ef57700473be5620b46d12116a6722e1a7938f70decf1"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-candidate.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -2957,22 +2957,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 342,
         "sha256": "88b5c733782d3b9d226dd218ef622cc1fb68a54ac7b89932efd38b8fc23f90ee"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-candidate.pptx",
       "outputRetained": false,
       "pair": 1,
       "returnCode": 0,
@@ -3004,22 +3004,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 343,
         "sha256": "e9ee67f1cfdec6cae7df25920d370540aeaeee6515b6873314ce2b2e86952c56"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-baseline.pptx",
       "outputRetained": false,
       "pair": 1,
       "returnCode": 0,
@@ -3051,22 +3051,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 340,
         "sha256": "089b7aaa825d2becdd5aef9d5a9b1c69cf3e0b7e6ee56c44aba043272621a358"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-001-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-baseline.pptx",
       "outputRetained": false,
       "pair": 2,
       "returnCode": 0,
@@ -3098,22 +3098,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "f97582dbf2849b84b086be9c9b73ae933a63a374af5615055ca14918a3a8d86b"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-candidate.pptx",
       "outputRetained": false,
       "pair": 2,
       "returnCode": 0,
@@ -3145,22 +3145,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 338,
         "sha256": "89f4a25334c121de33b2e5d5e63ea98045df988376ce5ab7bd69489498ca85d3"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-002-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-candidate.pptx",
       "outputRetained": false,
       "pair": 3,
       "returnCode": 0,
@@ -3192,22 +3192,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 343,
         "sha256": "dde720b782d918be09265a5a5ea26d826f8304af7353a06c59668f8e71af08f1"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-baseline.pptx",
       "outputRetained": false,
       "pair": 3,
       "returnCode": 0,
@@ -3239,22 +3239,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 337,
         "sha256": "ffdb3f40721ce8d2059ebc9c86586c003a2953e2960058efa172256c4f9e26a9"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-003-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-baseline.pptx",
       "outputRetained": false,
       "pair": 4,
       "returnCode": 0,
@@ -3286,22 +3286,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 342,
         "sha256": "ea8262127576c8b43b3a4d7fbac0cb299d87a82f69008add756a53adcb42bd28"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-candidate.pptx",
       "outputRetained": false,
       "pair": 4,
       "returnCode": 0,
@@ -3333,22 +3333,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 344,
         "sha256": "3240f5585e4c103e2d1bdcf97831c857a39d0e8da8832e3dea5a4f7eaaf27760"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-004-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-candidate.pptx",
       "outputRetained": false,
       "pair": 5,
       "returnCode": 0,
@@ -3380,22 +3380,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 344,
         "sha256": "421f276ff036e3136bee9af9a181e352feecc5ebd5eae1ae6d20f55684814302"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-baseline.pptx",
       "outputRetained": false,
       "pair": 5,
       "returnCode": 0,
@@ -3427,22 +3427,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 340,
         "sha256": "df97dcf0980e2cecd028675cfa1aeb45c2fe5e83a94e0feea11ec1543bff5f23"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-005-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-baseline.pptx",
       "outputRetained": false,
       "pair": 6,
       "returnCode": 0,
@@ -3474,22 +3474,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "3f744f9355b5267e5a50fb9175992a26095efd68223ffde02e213f722b85f76e"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-candidate.pptx",
       "outputRetained": false,
       "pair": 6,
       "returnCode": 0,
@@ -3521,22 +3521,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 343,
         "sha256": "5c5eeeb9f067228084698b91bc94aa119aa09b42ee73462b5ad2a77064e4038f"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-006-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-candidate.pptx",
       "outputRetained": false,
       "pair": 7,
       "returnCode": 0,
@@ -3568,22 +3568,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 342,
         "sha256": "be5faa86b20b3b49a9640ee958f2ca9d65d9766669f05819f8ddc226cba3af92"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-baseline.pptx",
       "outputRetained": false,
       "pair": 7,
       "returnCode": 0,
@@ -3615,22 +3615,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "7f399e73a3cd039aa6779bca9e299804c618da0dfa2b2e499e991977c1c4f7a0"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-007-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-baseline.pptx",
       "outputRetained": false,
       "pair": 8,
       "returnCode": 0,
@@ -3662,22 +3662,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "d6f882e0da2ee9dca980310339186d42fab1bbb98527dfa57ce5bbc7ec9afb2b"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-candidate.pptx",
       "outputRetained": false,
       "pair": 8,
       "returnCode": 0,
@@ -3709,22 +3709,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "c4ff60c00f8d6c9c2c7c9090d9cc9a518653ad3a7734adbaac47cde18dfb7367"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-008-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-candidate.pptx",
       "outputRetained": false,
       "pair": 9,
       "returnCode": 0,
@@ -3756,22 +3756,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 342,
         "sha256": "3caa1f7ce93caf9fc144b218515f238e0070f801f957b483ec7c8a8520953fbd"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-baseline.pptx",
       "outputRetained": false,
       "pair": 9,
       "returnCode": 0,
@@ -3803,22 +3803,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 339,
         "sha256": "484ef99124f98caab1e129fbcad4373b8993cd12eb17343169ace7ecdc8fb945"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-009-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-baseline.pptx",
       "outputRetained": false,
       "pair": 10,
       "returnCode": 0,
@@ -3850,22 +3850,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "6457e31db1b24485a32acbbe7f24c7cdee8edac511c4b80025e7f64844dbdb44"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-candidate.pptx",
       "outputRetained": false,
       "pair": 10,
       "returnCode": 0,
@@ -3897,22 +3897,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 342,
         "sha256": "0ed1f3b6f7c224ec7b8f33f16afa5cfac32302225d29d1e215149fbbb6af4e9c"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-010-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-candidate.pptx",
       "outputRetained": false,
       "pair": 11,
       "returnCode": 0,
@@ -3944,22 +3944,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 343,
         "sha256": "fc85c94f7377c201b055526912c484d0bed2dc99ef953010d826d9bf7a90ffb4"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-100"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-baseline.pptx",
       "outputRetained": false,
       "pair": 11,
       "returnCode": 0,
@@ -3991,22 +3991,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 341,
         "sha256": "3cd4ec6a4bcefdcdbbaa517f89fb534882712f4b255c82d1edd61934b0094454"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-011-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": true,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-baseline.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -4038,22 +4038,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "ccc7491c59e1fda903cd3d11b162ce727e4d70aa11fdf5b9544eb7d0e49f6e1b"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": true,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-candidate.pptx",
       "outputRetained": false,
       "pair": 0,
       "returnCode": 0,
@@ -4085,22 +4085,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 353,
         "sha256": "12d5763557c305966bf3d35289a7b8fd3cdbe6c93ca95f96f1931321d3d20e75"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-baseline.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -4132,22 +4132,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "693a0f3b850c56f6287b5fa1dfebcaac98762eec6fcc907d1ac418cb65332737"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-candidate.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -4179,22 +4179,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 355,
         "sha256": "5d4fffe32427d8eea41a6b881c5b88f21a47cbbd1bd18b4eece7517133c2d9c6"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-candidate.pptx",
       "outputRetained": false,
       "pair": 1,
       "returnCode": 0,
@@ -4226,22 +4226,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 354,
         "sha256": "091d3a9df90c6168c137bda56516622530ad42efe316928953cb05d710585e67"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-baseline.pptx",
       "outputRetained": false,
       "pair": 1,
       "returnCode": 0,
@@ -4273,22 +4273,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 353,
         "sha256": "9651e2d992fe0cda3ab315c4fe753fbe83e69f4078d6952f635c9bede418593d"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-001-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-baseline.pptx",
       "outputRetained": false,
       "pair": 2,
       "returnCode": 0,
@@ -4320,22 +4320,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 349,
         "sha256": "bb2d6fce90b3ea123d32a20cf56e248c5db9b06e637ee96625bb2ebb80c856af"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-candidate.pptx",
       "outputRetained": false,
       "pair": 2,
       "returnCode": 0,
@@ -4367,22 +4367,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 349,
         "sha256": "c2bb1cd3c41c7188b6e835b9e8aabc932312efde4078730d85383d72546b3292"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-002-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-candidate.pptx",
       "outputRetained": false,
       "pair": 3,
       "returnCode": 0,
@@ -4414,22 +4414,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 349,
         "sha256": "16b503459c9c5ecfb0cc1fb6af65b8c4e7361dd304790f1e6c6698c8977a893b"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-baseline.pptx",
       "outputRetained": false,
       "pair": 3,
       "returnCode": 0,
@@ -4461,22 +4461,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 353,
         "sha256": "e252bd99f5040145e98decf9d2008be4c8d43d0b94534f281f944c9506367d84"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-003-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-baseline.pptx",
       "outputRetained": false,
       "pair": 4,
       "returnCode": 0,
@@ -4508,22 +4508,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 350,
         "sha256": "fce6c475a9528897771724c03ae2cf0e5c86544a95335c53b155f1c11afaf6e5"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-candidate.pptx",
       "outputRetained": false,
       "pair": 4,
       "returnCode": 0,
@@ -4555,22 +4555,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 352,
         "sha256": "2b2be2868e36c3352f4b9ef37ac3a747b9b48e201a5db4758efaf30a97ec02d0"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-004-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-candidate.pptx",
       "outputRetained": false,
       "pair": 5,
       "returnCode": 0,
@@ -4602,22 +4602,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 354,
         "sha256": "7f40f1897727767ae982055e84c9b46d547e9b6677a1580518c1d3c53a0a1ad1"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-baseline.pptx",
       "outputRetained": false,
       "pair": 5,
       "returnCode": 0,
@@ -4649,22 +4649,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 353,
         "sha256": "b24bab72fb1c98d888f96cc3ec111d95c1c896e5b6af67e97ee93994282c5345"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-005-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-baseline.pptx",
       "outputRetained": false,
       "pair": 6,
       "returnCode": 0,
@@ -4696,22 +4696,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 352,
         "sha256": "5de7ab1cb16432afc35b2a12d13433193a95df6fb5e0e82a676a83c8bb519a92"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-candidate.pptx",
       "outputRetained": false,
       "pair": 6,
       "returnCode": 0,
@@ -4743,22 +4743,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "aa7e6ed5c42d9343d8f455b7c59499040a61882d282c2486469c1f5b68154f80"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-006-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-candidate.pptx",
       "outputRetained": false,
       "pair": 7,
       "returnCode": 0,
@@ -4790,22 +4790,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 350,
         "sha256": "91119db4bb2f867da413b051c501a68b8b802b46e153aa6ad4d8e5c948f91a71"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-baseline.pptx",
       "outputRetained": false,
       "pair": 7,
       "returnCode": 0,
@@ -4837,22 +4837,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 355,
         "sha256": "66a80b61030a357b1e58926616701fd8cf2bba81bdf37a6ece07f2c2c3204f2e"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-007-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-baseline.pptx",
       "outputRetained": false,
       "pair": 8,
       "returnCode": 0,
@@ -4884,22 +4884,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 352,
         "sha256": "b437ee18f3ae36493751b4d558f1c860a787f7358a25e784e7070e66753f57d1"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-candidate.pptx",
       "outputRetained": false,
       "pair": 8,
       "returnCode": 0,
@@ -4931,22 +4931,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 353,
         "sha256": "974c7759279d520f797edf49d37b9038695b49607142b48d70fbb5183dc6155d"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-008-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-candidate.pptx",
       "outputRetained": false,
       "pair": 9,
       "returnCode": 0,
@@ -4978,22 +4978,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 355,
         "sha256": "a1536128353ac96a095899ae9fa5414c2cfccaf7875f826153a87f9a0d54d0c0"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-baseline.pptx",
       "outputRetained": false,
       "pair": 9,
       "returnCode": 0,
@@ -5025,22 +5025,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "08460c5fe6220ba4538efce2c707139b09e62a9744f0d85aa04d468968d399b8"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-009-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-baseline.pptx",
       "outputRetained": false,
       "pair": 10,
       "returnCode": 0,
@@ -5072,22 +5072,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "6ad73329a20c84a64e6091b7cb5d50c78c5ce54af9e50378a9e3664415e77618"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-candidate.pptx",
       "outputRetained": false,
       "pair": 10,
       "returnCode": 0,
@@ -5119,22 +5119,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 350,
         "sha256": "a35f54b33b9c4e7508a623d1f38214722919379e2a8cb96ca93bc3f64ac8fe7a"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-010-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/2783-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-2783",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-candidate.pptx",
       "outputRetained": false,
       "pair": 11,
       "returnCode": 0,
@@ -5166,22 +5166,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 353,
         "sha256": "796cb43e62fd56674b81ecdafb1bc99868d5604b78f61fe2daadba14218a0faa"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-baseline.pptx",
       "outputRetained": false,
       "pair": 11,
       "returnCode": 0,
@@ -5213,12 +5213,12 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 352,
         "sha256": "087e1953c8412d457f8cce439d20b7ef60770d909b8dd6a166ca89cbd8609a7a"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-011-baseline-stdout.json",
       "variant": "baseline"
     }
   ],
@@ -5650,10 +5650,10 @@
         ]
       },
       "primaryPhase": "construct",
-      "referencePPTX": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-baseline.pptx",
+      "referencePPTX": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/warmup-000-baseline.pptx",
       "representativePPTXs": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-baseline.pptx",
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-candidate.pptx"
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-baseline.pptx",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-10/pair-000-candidate.pptx"
       ],
       "serializedPPTX": {
         "bytes": 20501,
@@ -6531,10 +6531,10 @@
         ]
       },
       "primaryPhase": "construct",
-      "referencePPTX": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-baseline.pptx",
+      "referencePPTX": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/warmup-000-baseline.pptx",
       "representativePPTXs": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-baseline.pptx",
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-candidate.pptx"
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-baseline.pptx",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-100/pair-000-candidate.pptx"
       ],
       "serializedPPTX": {
         "bytes": 125367,
@@ -7412,10 +7412,10 @@
         ]
       },
       "primaryPhase": "construct",
-      "referencePPTX": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-baseline.pptx",
+      "referencePPTX": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/warmup-000-baseline.pptx",
       "representativePPTXs": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-baseline.pptx",
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-candidate.pptx"
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-baseline.pptx",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/historical-reproduction/slides-1000/pair-000-candidate.pptx"
       ],
       "serializedPPTX": {
         "bytes": 1178991,
