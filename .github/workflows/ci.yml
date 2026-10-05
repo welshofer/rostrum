@@ -77,6 +77,8 @@ jobs:
         run: swift --version
       - name: Test Rostrum (Darwin XML branch)
         run: swift test
+      - name: Build and validate the Horseshoe Curve worked example
+        run: swift run --package-path Examples/HorseshoeCurve/Builder HorseshoeDeck
       - name: Test LecternCore (CoreText/CoreGraphics half included)
         run: swift test
         working-directory: Lectern
