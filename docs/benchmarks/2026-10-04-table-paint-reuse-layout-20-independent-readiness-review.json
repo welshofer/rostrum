@@ -1,0 +1,172 @@
+{
+  "status": "APPROVED_READINESS_ONLY_NO_TIMING_OR_QUIET_GRANT",
+  "scope": "Independent read-only source, protocol, physical hash, retained whole-output and source-input audit. No build, benchmark/helper launch, timing or new reopens. Fresh process/reopen counts describe pinned recorded worker evidence, not reruns by this reviewer. Root alone may grant a quiet window after active gate/manual work finishes.",
+  "candidateSource": "20e4a3556724f20937fcbca7208728798b658fcd",
+  "candidateSourceTree": "6d2e7cd2d2c057d4c9b916358882695cbe2c66d7",
+  "baselineSource": "007efa9c5b1c56af36d5251937fe95244ffaa289",
+  "baselineSourceTree": "11ead6fd725008f26757f839abda10aa97761adb",
+  "rootIntegratedCommit": "5d3d888175d12f615a3f917e15d8c9b6a170f201",
+  "rootCandidatePhysicalSourceFilesExact": 112,
+  "baselineGitSourceFiles": 111,
+  "candidateGitSourceFiles": 112,
+  "baselineBuild": "Exact retained accepted S19 Release products including ordinary inherited-style reuse, not new baseline compilation. Debug actual-session audit is separate and untimed.",
+  "physicalPins": 85,
+  "planPins": 48,
+  "campaignBinaries": 6,
+  "outputArtifactPins": 9861,
+  "inputPins": 122,
+  "productionDiffFiles": [
+    "Sources/Rostrum/Presentation/SVGRenderer.swift",
+    "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift"
+  ],
+  "corpus": {
+    "cases": 190,
+    "slides": 886,
+    "retainedFreshProofProcessOutputs": 570,
+    "reportedFreshPythonReopens": 570,
+    "changedCases": 0,
+    "changedArtifacts": 0,
+    "wholeSVGAndAllAttributesExact": true,
+    "packagesOrderedDiagnosticsInheritanceExact": true
+  },
+  "valueProof": {
+    "shapingRecords": 101310,
+    "layoutRecords": 1728,
+    "threeVariantsByteExact": true,
+    "fixedPreservationCases": 3,
+    "reportedFixedPythonReopens": 6
+  },
+  "controlSourceXML": [
+    {
+      "name": "direct-unique-200x50",
+      "cells": 10000,
+      "unknownCommentCharactersPerStyleEdge": 0,
+      "sourceSHA256": "eb3e9bbdf3c4333ef5841cc7c45ef57abf39e55a297e6547a729a24647aaa00c"
+    },
+    {
+      "name": "budget-near-20x10",
+      "cells": 200,
+      "unknownCommentCharactersPerStyleEdge": 40000,
+      "sourceSHA256": "8b31940a41d044a820786e08584ae4ead1906d96d484ac546e7f8525d0c834b7"
+    },
+    {
+      "name": "oversize-bypass-6x6",
+      "cells": 36,
+      "unknownCommentCharactersPerStyleEdge": 1100000,
+      "sourceSHA256": "d0bbdbff933c0d9d074a080b3bffc8075f43384ce08ff7bea75f5486f70dfd22"
+    }
+  ],
+  "actualInternalRenderSessionAdmission": [
+    {
+      "cells": 10000,
+      "distinctAdmittedBorderIdentities": 0,
+      "name": "direct-unique-200x50",
+      "nonnilBorders": 40000,
+      "sharedBorderEncounters": 0,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 40000
+    },
+    {
+      "cells": 200,
+      "distinctAdmittedBorderIdentities": 24,
+      "name": "budget-near-20x10",
+      "nonnilBorders": 800,
+      "sharedBorderEncounters": 40,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 760
+    },
+    {
+      "cells": 36,
+      "distinctAdmittedBorderIdentities": 0,
+      "name": "oversize-bypass-6x6",
+      "nonnilBorders": 144,
+      "sharedBorderEncounters": 0,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 144
+    }
+  ],
+  "cacheScopeReview": {
+    "strongOwnerPerEntry": true,
+    "negativePaintDistinguishedFromAbsentEntry": true,
+    "perTableRenderLifetime": true,
+    "directOverlaysNotAdmitted": true,
+    "estimatedTemplateBudgetBytes": 1048576,
+    "estimatedPaintReservationPerBorder": 512,
+    "maximumEntries": 216,
+    "partialBudgetControlDistinctIdentities": 24,
+    "claims216EntrySaturation": false,
+    "sharedTemplateSourceOnly": true,
+    "maximumBorderWidthUpdatedForCachedValues": true,
+    "publicReadsAndNextRenderRemainLive": true,
+    "debugAdmissionProbeUsesActualCandidateInternalTypes": true
+  },
+  "protocol": {
+    "children": 660,
+    "originalScopeChildren": 594,
+    "separateControlChildren": 66,
+    "scenarioPools": {
+      "canonical": 5,
+      "supplement": 3,
+      "native": 19,
+      "cache-controls": 3
+    },
+    "primaryComparisons": 31,
+    "allPhaseComparisons": 339,
+    "derivedPhaseCounts": {
+      "canonical": 61,
+      "supplement": 36,
+      "native-and-controls": 242
+    },
+    "warmupPairsExcluded": 1,
+    "retainedAlternatingPairs": 10,
+    "bootstrapResamples": 100000,
+    "bootstrapSeed": 20261004,
+    "signTest": "Exact two-sided, ties excluded",
+    "reporting": "All phases, adverse controls, peak process RSS and ambient host snapshots; no adaptive reruns or blanket speed/memory/nonregression claim.",
+    "originalDriversAndOriginalInputScopesUnchanged": true
+  },
+  "historicalBuildSourceResolution": [
+    {
+      "originalPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift",
+      "originalSHA256": "5eb6f4dcdc2c8690f786b02dbfd17a6ebc179703a7e681937f3d5200fe4d9353",
+      "retainedOriginal": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-initial.swift",
+      "correctedPathSHA256": "37c42f5fc192cae9067145e558fcc04f47e86eb115dab54740ba10321ea3913e",
+      "finalAuthority": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-receipt.json",
+      "scope": "Scratch audit source changed after helper-build inventory; campaign helper sources/binaries unchanged. Both initial error and final actual-session probe independently pinned."
+    }
+  ],
+  "auditHistory": "Reviewer script initially assumed S19 baseline receipt key names and absolute file keys; adapted to the retained S20 schema and relative keys. Intermediate read-only failures also exposed the historical scratch-audit pin documented separately. All logs retained in /tmp/review-s20-readiness*.log; no frozen packet or test changes.",
+  "findings": [
+    {
+      "severity": "informational",
+      "finding": "Helper-build inventory carries pre-correction scratch budget-audit.swift hash; exact old bytes resolve to budget-audit-initial.swift. Separate final audit receipt pins corrected source, Debug object/module/binary and actual RenderSession result. No timed driver or production source changed."
+    },
+    {
+      "severity": "informational",
+      "finding": "Frozen ready.json says root equality is awaiting confirmation; additive root-integration.json supplies exact112-file/production-tree equality without modifying original ready. Its no-timing-grant boundary remains in force."
+    }
+  ],
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/timing-plan.json": "c0de7aaa015a1bf28f5a8c3ff3aa2e4655201e4c7bf8f4f1e54e38eea4ce1454",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/ready.json": "98106d6fe9aaf0abb70867ba4bdc731406beb8822c71d85dff74a8111906e580",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/preflight-verification.json": "79ceb41b6720211a50e7a06ec1141da5bf6d84ac07460a54f8e6fd2f0f29c606",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/root-integration.json": "70dfe731b78fff2732e73707bc50e54420916fc13ebe2b0f1b76fcaa2a174594",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/baseline-pins.json": "45f676082fcd0579a5bbf671a2ef726b9b21510b5544c7dcb01561a86649f0fb",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-helper-build.json": "af729e00f9b26582a5b7d70656326bef65b3303279ab7f1ed6311211907451ab",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-source-pins.json": "6dab4f7ffe5703ff8eed5390f28c6675d3b6a637fd1d4fdd41d9f7a7e8330e3a",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/corpus-proof.json": "5a27fb04a28be990229b9d8a5b118a9bca1239ed7b4ad85b31e6ea89b7a5cac6",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/value-proof.json": "d94d46bc26068513a52643220f82f8eb5e727f3784d456d0a58d81b1647ee68e",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-receipt.json": "a381a0aa7991946a0f494150e36b457443c3517d9a4d283680689611eaf22f59",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift": "37c42f5fc192cae9067145e558fcc04f47e86eb115dab54740ba10321ea3913e",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/generate-inputs.py": "67aad28bedb9b4a9f8833dd9705dbed5e537b6bf4b9e24d01fa9d3512796c3e5",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/input-reproduction.json": "b049756af4465ae76ac27b4e1634b07d7246a429e81b9331c8426d6ba91c894c",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/run-authorized.py": "34ab5a476c52a8916034520b97377ecbb93878deaa0d09b915d8e7e3e4cc6845",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/full-tests.log": "4e19d0860ad5efccf82f75caabe89ee18e8d2fec4f48eb19ab57f350932736f2",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-release.log": "d3b381d36d5202bf2e66a79da8814a90529796a17fcfb28a79a6ac1b45536088",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/output-artifact-pins.json": "6080dbe172f4e952cc1f680fa13999875d473059d3b5562714a6d193f43822ba",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/input-pins.json": "4b682625636367f8a70d7bef63ce0cc2a7d4e118330484ae475654082d195bea"
+  },
+  "script": "/tmp/review-s20-readiness.py",
+  "scriptSHA256": "81a580b3529e3ae5a4f8658bb9722bb5379b065c3d58c902e6f4ee63726b199d"
+}
