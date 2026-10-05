@@ -150,16 +150,9 @@ public struct TableStyleResolver {
         }
         private func referenceFill(_ style: XML.Element) -> Selection? {
             guard let reference = style.firstChild(named: "a:fillRef"),
-                  let index = reference[attribute: "idx"].flatMap(Int.init), index > 0,
-                  let root = try? resolver.theme.part.dom(),
-                  let elements = root.firstChild(named: "a:themeElements"),
-                  let scheme = elements.firstChild(named: "a:fmtScheme"),
-                  let list = scheme.firstChild(named: index >= 1001 ? "a:bgFillStyleLst" : "a:fillStyleLst") else { return nil }
-            let offset = index >= 1001 ? index - 1001 : index - 1
-            guard list.childElements.indices.contains(offset) else { return nil }
-            var scope = TableStyleXML.defaults
-            for node in [root, elements, scheme, list] { scope = TableStyleXML.bindings(node, inheriting: scope) }
-            return Selection(fill: list.childElements[offset], owner: resolver.theme.part, namespaces: scope)
+                  let index = reference[attribute: "idx"].flatMap(Int.init),
+                  let selected = OutlineImageFills.themeSelection(index: index, theme: resolver.theme) else { return nil }
+            return Selection(fill: selected.element, owner: resolver.theme.part, namespaces: selected.namespaces)
         }
     }
 

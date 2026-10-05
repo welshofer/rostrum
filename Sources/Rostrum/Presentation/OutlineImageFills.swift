@@ -76,13 +76,21 @@ struct OutlineImageFills {
             ["solidFill", "gradFill", "blipFill", "pattFill", "grpFill", "noFill"].contains { n.name == "{\(TableStyleXML.drawing)}\($0)" }
         }
     }
-    private func themeFill(_ reference: Node?) -> Node? {
-        guard let index = reference?.xml[attribute: "idx"].flatMap(Int.init), index > 0,
-              let root = try? theme.part.dom() else { return nil }
-        let scheme = node(root, owner: theme.part).child("themeElements")?.child("fmtScheme")
-        let entries = scheme?.child(index >= 1001 ? "bgFillStyleLst" : "fillStyleLst")?.children ?? []
+    /// Shared inventory-only theme lookup. Retains ancestor bindings and the
+    /// original selected node; callers resolve relationships through theme.part.
+    static func themeSelection(index: Int, theme: Theme) -> (element: XML.Element, namespaces: [String: String])? {
+        guard index > 0, let root = try? theme.part.dom() else { return nil }
+        let scheme = Node(root, scope: TableStyleXML.defaults).child("themeElements")?.child("fmtScheme")
+        guard let list = scheme?.child(index >= 1001 ? "bgFillStyleLst" : "fillStyleLst") else { return nil }
+        let entries = list.xml.childElements
         let offset = index >= 1001 ? index - 1001 : index - 1
-        return entries.indices.contains(offset) ? entries[offset] : nil
+        guard entries.indices.contains(offset) else { return nil }
+        return (entries[offset], list.scope)
+    }
+    private func themeFill(_ reference: Node?) -> Node? {
+        guard let index = reference?.xml[attribute: "idx"].flatMap(Int.init),
+              let selected = Self.themeSelection(index: index, theme: theme) else { return nil }
+        return Node(selected.element, scope: selected.namespaces)
     }
     private mutating func walkShapes(owner: Part, inherited: Bool) {
         guard let root = try? owner.dom(), let tree = node(root, owner: owner)

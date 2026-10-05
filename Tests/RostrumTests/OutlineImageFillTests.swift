@@ -425,4 +425,43 @@ import Testing
         }
     }
 
+    @Test func tableThemeReferencesShareNamespaceAwareStructuralSelection() throws {
+        for prefix in ["d:", ""] {
+            let deck = try Presentation(), slide = try deck.slides[0]
+            let table = try slide.shapes.addTable(rows: 2, columns: 2, frame: frame)
+            try table.setStyleDefinition(style("<a:fillRef idx=\"1\"/>"))
+            let theme = deck.theme.part, root = try theme.dom()
+            let elements = try #require(root.firstChild(named: "a:themeElements"))
+            let scheme = try #require(elements.firstChild(named: "a:fmtScheme"))
+            let list = try #require(scheme.firstChild(named: "a:fillStyleLst"))
+            let (image, id) = addImage(deck, owner: theme, name: "aliased-theme.png")
+            let fill = Fill.blipFill(rId: id, fit: .stretch)
+            let blip = try #require(fill.firstChild(named: "a:blip"))
+            blip[attribute: "r:embed"] = nil; blip[attribute: "scoped:embed"] = id
+            list.children = [.element(fill)]
+            root[attribute: "xmlns:scoped"] = TableStyleXML.relationships
+            elements[attribute: prefix.isEmpty ? "xmlns" : "xmlns:d"] = TableStyleXML.drawing
+            func rename(_ node: XML.Element) {
+                if node.name.hasPrefix("a:") { node.name = prefix + node.name.dropFirst(2) }
+                for child in node.childElements { rename(child) }
+            }
+            rename(elements); theme.markDirty()
+            #expect(deck.outline().slides[0].assets.map(\.partName) == [image.uri.value])
+            let shape = try slide.shapes.addTextBox(frame)
+            shape.element.firstChild(named: "p:spPr")?.children = []
+            shape.element.appendElement(XML.Element("p:style", children: [.element(XML.Element("a:fillRef", attributes: [("idx", "1")]))]))
+            slide.part.markDirty()
+            #expect(deck.outline().slides[0].assets.map(\.partName) == [image.uri.value])
+            list[attribute: "xmlns:scoped"] = "urn:lookalike"
+            #expect(deck.outline().assetCount == 0 && !deck.outline().warnings.isEmpty)
+            list[attribute: "xmlns:scoped"] = TableStyleXML.relationships
+            let saved = try deck.serializedData(), result = deck.outline()
+            #expect(result.slides[0].assets.map(\.partName) == [image.uri.value] && result.warnings.isEmpty)
+            #expect(try deck.serializedData() == saved)
+            #expect(try Presentation(data: saved).outline() == result)
+            list[attribute: prefix.isEmpty ? "xmlns" : "xmlns:d"] = "urn:not-drawingml"
+            #expect(deck.outline().assetCount == 0)
+        }
+    }
+
 }
