@@ -311,6 +311,14 @@ for the raw records, adverse results and reproduction instructions.
 | [Performance](docs/PERFORMANCE.md) | Reproducible measurements and open costs |
 | [Lectern](Lectern/README.md) | App setup, templates, saved decks and offline demonstrations |
 | [1.0 validation](docs/RELEASE-1.0-VALIDATION.md) / [Publication audit](docs/RELEASE-1.0-AUDIT.md) | Release checks, native table evidence, demo downloads and publication hygiene |
+| [Security policy](SECURITY.md) | Supported versions and private vulnerability reporting |
+
+## Security
+
+Please report suspected vulnerabilities privately through
+[GitHub Security Advisories](https://github.com/welshofer/rostrum/security/advisories/new),
+not as public issues. See the [security policy](SECURITY.md) for supported
+versions, scope and disclosure guidance.
 
 ## Acknowledgments
 
