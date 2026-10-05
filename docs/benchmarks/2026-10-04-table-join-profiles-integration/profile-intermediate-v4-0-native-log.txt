@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/tmp/verify-fidelity18-table-profile-paint.py", line 124, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/verify-fidelity18-table-profile-paint.py", line 110, in main
+    check_vectors(svg_paint(root,c),c);paint=pdf_paint(page,c,scale);check_vectors(paint,c);sg=svg_chars(root,c,aliases);assert len(sg)==len(c['glyphs']);records=[]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/verify-fidelity18-table-profile-paint.py", line 43, in check_vectors
+    assert len(actual['lines'])==len(expected['lines'])
+AssertionError

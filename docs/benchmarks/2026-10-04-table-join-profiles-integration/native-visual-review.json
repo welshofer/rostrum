@@ -1,0 +1,36 @@
+{
+  "status": "ROOT_VISUAL_REVIEW_PASS",
+  "utc": "2026-10-05T00:27:41.521476+00:00",
+  "pages": [
+    {
+      "path": "/tmp/lectern-fidelity18-profiles-native/alternative-false/page-1.png",
+      "sha256": "a012284da63b1cf1cdbabd866aaddfbe72b142626f49e89cc8787e3c271977f5"
+    },
+    {
+      "path": "/tmp/lectern-fidelity18-profiles-native/alternative-false/page-2.png",
+      "sha256": "b738a5b9b74676a697303cbc68bbbe1cf3b79378ee10cb885257cbb202c3ce7d"
+    },
+    {
+      "path": "/tmp/lectern-fidelity18-profiles-native/alternative-false/page-3.png",
+      "sha256": "3cd6e85df1b29da5cc68dc2f2645257f0d1ea05852a776749cc0e458df2f3a06"
+    },
+    {
+      "path": "/tmp/lectern-fidelity18-profiles-native/alternative-true/page-1.png",
+      "sha256": "a012284da63b1cf1cdbabd866aaddfbe72b142626f49e89cc8787e3c271977f5"
+    },
+    {
+      "path": "/tmp/lectern-fidelity18-profiles-native/alternative-true/page-2.png",
+      "sha256": "b738a5b9b74676a697303cbc68bbbe1cf3b79378ee10cb885257cbb202c3ce7d"
+    },
+    {
+      "path": "/tmp/lectern-fidelity18-profiles-native/alternative-true/page-3.png",
+      "sha256": "4ce53e28d2aa99d67e9b4d78f98835449956e5fd617240564d1e865fa2ad2eb1"
+    }
+  ],
+  "observations": [
+    "All six rendered pages visually reviewed.",
+    "First two native specimen pages identical between options: RTL grids, axis colors, horizontal and vertical merges retain labels and cell text.",
+    "Third page shows RTL, two-color axis borders, and the requested horizontal versus vertical merge with visible labels and no clipped content."
+  ],
+  "limits": "Visual review is separate from pending numeric native/browser comparison. No universal parity claim."
+}

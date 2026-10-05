@@ -1,0 +1,78 @@
+{
+  "status": "APPROVE_FROZEN_S20_INTEGRATION_DRAFT_PENDING_FINAL_PERFORMANCE_ASSEMBLY",
+  "manifest": "/tmp/lectern-fidelity20-integration-draft/docs/benchmarks/2026-10-04-table-paint-reuse-integration-verification.json",
+  "manifestSHA256": "1d814cbf09c461ee04fd80e45677383a64650c28bc1cb77889c35c35123f2beb",
+  "physicalPins": 1693,
+  "sourceGitPins": 633,
+  "exports": 108,
+  "sourceCheckpoint": "5d3d888175d12f615a3f917e15d8c9b6a170f201",
+  "sourceTree": "6d2e7cd2d2c057d4c9b916358882695cbe2c66d7",
+  "assemblyScript": "/tmp/assemble-fidelity20-integration.py",
+  "assemblyScriptSHA256": "c0a9fab928ecc63d0bf637c8a5614dc475b05d36c8be29ee36f750f81c5301b4",
+  "gate": {
+    "library": [
+      1193,
+      174
+    ],
+    "layout": [
+      18,
+      3
+    ],
+    "core": [
+      302,
+      46
+    ],
+    "app": [
+      94,
+      28
+    ],
+    "appExecutions": 132,
+    "runtimeFailuresExpectedSkipsWarnings": 0,
+    "pboardMessages": 13,
+    "compileWarnings": 76,
+    "macOSAndIOSBuildSucceeded": true
+  },
+  "manual": {
+    "variants": 2,
+    "checksEach": 20,
+    "findingsEach": 7,
+    "slidesEach": 3,
+    "textNodesEach": 27,
+    "allSixSVGsExactSeparateHeadlessPipeline": true,
+    "nativeUIObservations": "root-owned; files/hashes/text/preview read independently",
+    "knownGap": "Table direct/style fill embedded image exists but omitted from export; no full media claim"
+  },
+  "freshBrowser": {
+    "PDFs": 37,
+    "cases": 198,
+    "glyphs": 1810,
+    "omissions": 6
+  },
+  "outputPreservation": {
+    "allSVGBytesExact": 236,
+    "byteExact": 84,
+    "commentUUIDTimestampOnly": 4,
+    "nativeInputRowsExact": 21,
+    "noNewNativeExportsClaimed": true,
+    "packages": 88
+  },
+  "externalTotals": {
+    "checks": 1049,
+    "fileCount": 462,
+    "findings": 413,
+    "passedChecks": 1049,
+    "pptxReopens": 88,
+    "reopenedSlides": 289,
+    "reports": 38,
+    "xmlPartsParsed": 3293
+  },
+  "performanceSlot": "Original frozen draft explicitly pending and unmodified; reviewed accepted numerical packet must be additive final assembly, not silently overwrite draft.",
+  "sourceScope": "633 pins intentionally enumerate Sources, Lectern App/AppTests/Sources/Tests/scripts, workflow and TableBorderPaintReuseTests at5d3d888. They are not a complete repository snapshot or equivalent denominator to S19 705 source pins (different explicit path scope including native library tests/fixtures). Native fixture/input/history pins reside in1693 evidence pins and accepted S19 references; final report must retain scope.",
+  "findings": [],
+  "limits": [
+    "This is bounded pending-scope draft review, not final assembled/report approval. No new native openings/exports claimed: native transfer only exact source/SVG input identity to accepted S19.",
+    "No tests/builds/GUI/benchmarks or source/evidence modifications by reviewer. All current original evidence pins rehashed; published originals untouched."
+  ],
+  "script": "/tmp/review-s20-integration-draft.py",
+  "scriptSHA256": "6473908cc5f1a059007deab8b73c63ccb65c8fb592d276932e085bcc2badc911"
+}

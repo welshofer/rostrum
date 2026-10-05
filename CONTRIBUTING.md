@@ -81,6 +81,13 @@ both honor the same optional, gitignored signing configuration so saved
 Keychain items remain readable across builds. Simulator builds use
 `Lectern/scripts/build-ios.sh` and its ad-hoc entitlement shim.
 
+Hosted tests run in the distinct `LecternTestHost` app through `LecternTests`.
+The wrapper refuses to run while either Lectern app is open and never terminates
+one. Test products use `.build-xcode-tests` (`LECTERN_TEST_DERIVED_DATA_PATH`);
+normal builds use `.build-xcode` (`LECTERN_DERIVED_DATA_PATH`). The test host
+disables all credential operations and live generation, including when opened
+without the scheme environment. Do not use a test host for user work.
+
 The gate also runs offline acceptance-helper and project-wrapper regressions.
 For performance changes, use the [Release benchmark](Tools/rostrum-benchmark/README.md)
 with fixed decks and compare both timing and preservation results. Inspect

@@ -1,0 +1,57 @@
+{
+  "status": "READY_FOR_INDEPENDENT_FINAL_PROTOCOL_REVIEW_NO_TIMING_AUTHORIZED",
+  "baselineSource": "a3766dbbff72447538037ea4c60015c74c50bfaf",
+  "baselineBuild": "Retained matching accepted S18 Release products copied byte for byte; not a newly built baseline. Original Git, source, compiler, object/module/helper pins verified.",
+  "candidateSource": "a9776a1741b3ede7c7a8d9daac3ca131731ca6b5",
+  "productionDiffFiles": [
+    "Sources/Rostrum/Presentation/SVGRenderer.swift",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift"
+  ],
+  "tests": {
+    "libraryTests": 1189,
+    "librarySuites": 173,
+    "layoutTests": 18,
+    "layoutSuites": 3
+  },
+  "candidateReleaseSeconds": 57.05,
+  "corpus": {
+    "cases": 187,
+    "slides": 883,
+    "freshProofProcesses": 561,
+    "freshExternalReopens": 561,
+    "changedCases": 9,
+    "changedSVGs": 66,
+    "savedPackagesExact": true,
+    "orderedDiagnosticsAndInheritanceExact": true,
+    "candidateRepeatedExact": true,
+    "allPriorS18FilesExact": true
+  },
+  "semantic": {
+    "actualWholeNonLineTreeIncludingTextAndFillsExact": true,
+    "sourceCounterfactualOnlyAbsentBlack1ptEdges": 24295,
+    "counterfactualProcesses": 18,
+    "publicBorderDumpProcesses": 14,
+    "candidateCounterfactualSVGExact": true,
+    "remainingJoinLinePaintAttributesAndCountsExact": true,
+    "sourceWhitelistExact": true,
+    "nativeCases": 12,
+    "nativeGlyphs": 72,
+    "nativeIntervals": 49,
+    "nativeFills": 15
+  },
+  "shapingRecords": 101310,
+  "layoutRecords": 1728,
+  "fixedPreservationExternalReopens": 6,
+  "children": 594,
+  "primaryComparisons": 28,
+  "allMeasuredPhaseComparisons": 306,
+  "physicalPins": 76,
+  "outputArtifactCount": 11223,
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/timing-plan.json": "b93ee2b8309b06c37b44bb9772229797309980870fc8507dc615d24a556488e6",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/run-authorized.py": "e848c776b8d2aed972302c2ab7a76c8083bd9b65cf00b09c4fc58a3683726d74",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/preflight-verification.json": "dbb835fae4217d8a971172aa21582be50573507ff35cade0df9eadf60a3b637f",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/output-artifact-pins.json": "f497b920b8bbdcdb4cb1ae82af011eea67a94e04f8a96880161aae49813036d8",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/input-pins.json": "859a59bb335458ff507eeb456c0d60eebcabf432375ff28cb907ee8fd2b9da87"
+  }
+}

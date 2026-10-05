@@ -1,0 +1,2161 @@
+{
+  "schema": 2,
+  "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "processor": "arm",
+  "revision": "20e4a3556724f20937fcbca7208728798b658fcd",
+  "font": null,
+  "fontSHA256": null,
+  "warmups": 1,
+  "runs": 10,
+  "corpus": {
+    "FromGoogleSlides.pptx": "faf87c2ca895a78753b7e1b00928cc5e2b504b748efb11278ac7f46095e4ce6d",
+    "FromKeynote.pptx": "38d4969e820dc9e1e2d1acec155fc450e4bdf8658f3aacf59da95311a6c01762",
+    "MovieAndComments.pptx": "3e33e2455a21a6c1d3a38157eb1ebbd994a79d1005ec6c83435e93e0dec0ab8b",
+    "SimplePowerPoint.pptx": "84fd425655ded6454a8614b9fa948256d63fb6f911c1d9ae87a739061e02bed3"
+  },
+  "scenarios": {
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/direct-unique-200x50.pptx": {
+      "phases": {
+        "first-slide": {
+          "baseline": {
+            "medianMS": 390.64156249999996,
+            "p95MS": 396.886709,
+            "minMS": 382.284208,
+            "maxMS": 396.886709,
+            "relativeSpread": 0.03738081761333324
+          },
+          "candidate": {
+            "medianMS": 386.95183299999997,
+            "p95MS": 406.666875,
+            "minMS": 378.417959,
+            "maxMS": 406.666875,
+            "relativeSpread": 0.0730037012126003
+          }
+        },
+        "initial-save": {
+          "baseline": {
+            "medianMS": 46.446479,
+            "p95MS": 48.565292,
+            "minMS": 45.941417,
+            "maxMS": 48.565292,
+            "relativeSpread": 0.05649244154761437
+          },
+          "candidate": {
+            "medianMS": 47.004875,
+            "p95MS": 50.667417,
+            "minMS": 45.938125,
+            "maxMS": 50.667417,
+            "relativeSpread": 0.10061279814061842
+          }
+        },
+        "lazy-first-part": {
+          "baseline": {
+            "medianMS": 0.20177099999999998,
+            "p95MS": 0.220708,
+            "minMS": 0.19825,
+            "maxMS": 0.220708,
+            "relativeSpread": 0.11130439954205501
+          },
+          "candidate": {
+            "medianMS": 0.211146,
+            "p95MS": 0.230042,
+            "minMS": 0.19325,
+            "maxMS": 0.230042,
+            "relativeSpread": 0.1742490977806825
+          }
+        },
+        "lazy-open": {
+          "baseline": {
+            "medianMS": 0.25183350000000004,
+            "p95MS": 0.280208,
+            "minMS": 0.224625,
+            "maxMS": 0.280208,
+            "relativeSpread": 0.22071328874037813
+          },
+          "candidate": {
+            "medianMS": 0.2670415,
+            "p95MS": 0.283917,
+            "minMS": 0.23825,
+            "maxMS": 0.283917,
+            "relativeSpread": 0.17101087284186162
+          }
+        },
+        "one-cell-edit-save": {
+          "baseline": {
+            "medianMS": 71.42093750000001,
+            "p95MS": 75.8415,
+            "minMS": 69.695583,
+            "maxMS": 75.8415,
+            "relativeSpread": 0.0860520348112204
+          },
+          "candidate": {
+            "medianMS": 70.909771,
+            "p95MS": 73.095125,
+            "minMS": 70.228042,
+            "maxMS": 73.095125,
+            "relativeSpread": 0.040432834002524044
+          }
+        },
+        "open": {
+          "baseline": {
+            "medianMS": 28.0290625,
+            "p95MS": 28.304708,
+            "minMS": 27.793541,
+            "maxMS": 28.304708,
+            "relativeSpread": 0.018237035220139825
+          },
+          "candidate": {
+            "medianMS": 28.063625000000002,
+            "p95MS": 32.102,
+            "minMS": 27.53225,
+            "maxMS": 32.102,
+            "relativeSpread": 0.1628353429038478
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 250.986042,
+            "p95MS": 264.320042,
+            "minMS": 248.026875,
+            "maxMS": 264.320042,
+            "relativeSpread": 0.064916625921373
+          },
+          "candidate": {
+            "medianMS": 253.768542,
+            "p95MS": 262.895917,
+            "minMS": 250.997917,
+            "maxMS": 262.895917,
+            "relativeSpread": 0.046885243955887945
+          }
+        },
+        "reopen": {
+          "baseline": {
+            "medianMS": 26.216749999999998,
+            "p95MS": 28.0675,
+            "minMS": 25.534917,
+            "maxMS": 28.0675,
+            "relativeSpread": 0.09660171455271913
+          },
+          "candidate": {
+            "medianMS": 26.3384585,
+            "p95MS": 28.420416,
+            "minMS": 25.804417,
+            "maxMS": 28.420416,
+            "relativeSpread": 0.09932240339729823
+          }
+        },
+        "traversal": {
+          "baseline": {
+            "medianMS": 0.07314599999999999,
+            "p95MS": 0.086167,
+            "minMS": 0.066291,
+            "maxMS": 0.086167,
+            "relativeSpread": 0.2717305115795805
+          },
+          "candidate": {
+            "medianMS": 0.0670835,
+            "p95MS": 0.070834,
+            "minMS": 0.060917,
+            "maxMS": 0.070834,
+            "relativeSpread": 0.14783068861940707
+          }
+        },
+        "unchanged-save": {
+          "baseline": {
+            "medianMS": 43.1205415,
+            "p95MS": 45.455667,
+            "minMS": 42.120625,
+            "maxMS": 45.455667,
+            "relativeSpread": 0.07734230331963715
+          },
+          "candidate": {
+            "medianMS": 42.892458,
+            "p95MS": 44.84975,
+            "minMS": 42.081917,
+            "maxMS": 44.84975,
+            "relativeSpread": 0.06452959632203879
+          }
+        },
+        "warm-unchanged-save": {
+          "baseline": {
+            "medianMS": 0.28702099999999997,
+            "p95MS": 0.315292,
+            "minMS": 0.279166,
+            "maxMS": 0.315292,
+            "relativeSpread": 0.125865354799823
+          },
+          "candidate": {
+            "medianMS": 0.283771,
+            "p95MS": 0.31975,
+            "minMS": 0.272916,
+            "maxMS": 0.31975,
+            "relativeSpread": 0.16504152996606414
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 392.276916,
+              "initial-save": 46.454958,
+              "lazy-first-part": 0.205916,
+              "lazy-open": 0.251958,
+              "one-cell-edit-save": 70.298333,
+              "open": 27.921,
+              "render": 248.026875,
+              "reopen": 25.534917,
+              "traversal": 0.074042,
+              "unchanged-save": 43.781959,
+              "warm-unchanged-save": 0.288875
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266829824,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 396.886709,
+              "initial-save": 46.625375,
+              "lazy-first-part": 0.199958,
+              "lazy-open": 0.257667,
+              "one-cell-edit-save": 71.474667,
+              "open": 28.05625,
+              "render": 251.13725,
+              "reopen": 26.283792,
+              "traversal": 0.073875,
+              "unchanged-save": 43.745166,
+              "warm-unchanged-save": 0.299958
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266846208,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 389.678,
+              "initial-save": 46.438,
+              "lazy-first-part": 0.199834,
+              "lazy-open": 0.250208,
+              "one-cell-edit-save": 71.367208,
+              "open": 28.021333,
+              "render": 251.797458,
+              "reopen": 26.149708,
+              "traversal": 0.071292,
+              "unchanged-save": 42.216333,
+              "warm-unchanged-save": 0.280875
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266829824,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 391.605125,
+              "initial-save": 46.312792,
+              "lazy-first-part": 0.203084,
+              "lazy-open": 0.245417,
+              "one-cell-edit-save": 70.795416,
+              "open": 27.875708,
+              "render": 250.715125,
+              "reopen": 26.005375,
+              "traversal": 0.06875,
+              "unchanged-save": 42.321708,
+              "warm-unchanged-save": 0.279166
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266862592,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 392.898125,
+              "initial-save": 46.613083,
+              "lazy-first-part": 0.198458,
+              "lazy-open": 0.251709,
+              "one-cell-edit-save": 74.040375,
+              "open": 27.98025,
+              "render": 250.532375,
+              "reopen": 25.883083,
+              "traversal": 0.079709,
+              "unchanged-save": 42.495917,
+              "warm-unchanged-save": 0.284042
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266862592,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 382.284208,
+              "initial-save": 48.565292,
+              "lazy-first-part": 0.220708,
+              "lazy-open": 0.280208,
+              "one-cell-edit-save": 69.695583,
+              "open": 28.036792,
+              "render": 251.736333,
+              "reopen": 28.0675,
+              "traversal": 0.086167,
+              "unchanged-save": 42.209666,
+              "warm-unchanged-save": 0.285167
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266862592,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 385.566167,
+              "initial-save": 46.227917,
+              "lazy-first-part": 0.208125,
+              "lazy-open": 0.224625,
+              "one-cell-edit-save": 71.698041,
+              "open": 28.304708,
+              "render": 250.834834,
+              "reopen": 25.835791,
+              "traversal": 0.072417,
+              "unchanged-save": 43.921292,
+              "warm-unchanged-save": 0.295083
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266829824,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 384.791708,
+              "initial-save": 46.549,
+              "lazy-first-part": 0.215625,
+              "lazy-open": 0.273875,
+              "one-cell-edit-save": 70.318333,
+              "open": 27.793541,
+              "render": 248.693208,
+              "reopen": 26.614375,
+              "traversal": 0.079167,
+              "unchanged-save": 42.120625,
+              "warm-unchanged-save": 0.281833
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266829824,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 395.032666,
+              "initial-save": 46.39575,
+              "lazy-first-part": 0.19825,
+              "lazy-open": 0.245709,
+              "one-cell-edit-save": 73.056709,
+              "open": 28.1755,
+              "render": 253.742416,
+              "reopen": 26.409541,
+              "traversal": 0.066291,
+              "unchanged-save": 44.892542,
+              "warm-unchanged-save": 0.304209
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266813440,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 384.930667,
+              "initial-save": 45.941417,
+              "lazy-first-part": 0.200458,
+              "lazy-open": 0.254708,
+              "one-cell-edit-save": 75.8415,
+              "open": 28.225084,
+              "render": 264.320042,
+              "reopen": 26.290125,
+              "traversal": 0.070583,
+              "unchanged-save": 45.455667,
+              "warm-unchanged-save": 0.315292
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266829824,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          }
+        ],
+        "candidate": [
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 388.050833,
+              "initial-save": 46.7725,
+              "lazy-first-part": 0.212459,
+              "lazy-open": 0.280125,
+              "one-cell-edit-save": 70.675375,
+              "open": 28.817083,
+              "render": 254.641667,
+              "reopen": 26.097125,
+              "traversal": 0.06675,
+              "unchanged-save": 43.1455,
+              "warm-unchanged-save": 0.275375
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 265601024,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 385.852833,
+              "initial-save": 48.823375,
+              "lazy-first-part": 0.21425,
+              "lazy-open": 0.267125,
+              "one-cell-edit-save": 72.755792,
+              "open": 28.133791,
+              "render": 254.804666,
+              "reopen": 26.375417,
+              "traversal": 0.066417,
+              "unchanged-save": 42.470667,
+              "warm-unchanged-save": 0.2845
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 265748480,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 390.858917,
+              "initial-save": 48.681375,
+              "lazy-first-part": 0.209959,
+              "lazy-open": 0.265167,
+              "one-cell-edit-save": 70.928208,
+              "open": 32.102,
+              "render": 251.347583,
+              "reopen": 27.307875,
+              "traversal": 0.060917,
+              "unchanged-save": 42.75825,
+              "warm-unchanged-save": 0.31975
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 266878976,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 378.417959,
+              "initial-save": 47.2485,
+              "lazy-first-part": 0.208375,
+              "lazy-open": 0.269167,
+              "one-cell-edit-save": 70.228042,
+              "open": 27.8975,
+              "render": 250.997917,
+              "reopen": 26.898333,
+              "traversal": 0.0655,
+              "unchanged-save": 42.686666,
+              "warm-unchanged-save": 0.283042
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 265502720,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 383.984584,
+              "initial-save": 47.23725,
+              "lazy-first-part": 0.22525,
+              "lazy-open": 0.283375,
+              "one-cell-edit-save": 73.095125,
+              "open": 27.921125,
+              "render": 254.388792,
+              "reopen": 26.911167,
+              "traversal": 0.067417,
+              "unchanged-save": 44.84975,
+              "warm-unchanged-save": 0.294209
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 265519104,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 389.446791,
+              "initial-save": 45.938125,
+              "lazy-first-part": 0.19325,
+              "lazy-open": 0.23825,
+              "one-cell-edit-save": 70.432583,
+              "open": 27.53225,
+              "render": 253.190334,
+              "reopen": 25.804417,
+              "traversal": 0.065,
+              "unchanged-save": 42.081917,
+              "warm-unchanged-save": 0.293583
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 265502720,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 384.28625,
+              "initial-save": 46.487291,
+              "lazy-first-part": 0.212333,
+              "lazy-open": 0.251625,
+              "one-cell-edit-save": 73.064583,
+              "open": 28.677042,
+              "render": 254.34675,
+              "reopen": 25.944958,
+              "traversal": 0.070834,
+              "unchanged-save": 43.263416,
+              "warm-unchanged-save": 0.272916
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 265502720,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 383.776791,
+              "initial-save": 46.257417,
+              "lazy-first-part": 0.201666,
+              "lazy-open": 0.266958,
+              "one-cell-edit-save": 70.891334,
+              "open": 27.993459,
+              "render": 252.056416,
+              "reopen": 26.3015,
+              "traversal": 0.070375,
+              "unchanged-save": 43.026666,
+              "warm-unchanged-save": 0.289209
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 265502720,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 395.005875,
+              "initial-save": 46.048416,
+              "lazy-first-part": 0.208208,
+              "lazy-open": 0.244334,
+              "one-cell-edit-save": 70.554,
+              "open": 27.648583,
+              "render": 253.140834,
+              "reopen": 25.858125,
+              "traversal": 0.068917,
+              "unchanged-save": 42.426,
+              "warm-unchanged-save": 0.275917
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 265502720,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          },
+          {
+            "checksum": 6424115,
+            "outputBytes": 556023,
+            "phases": {
+              "first-slide": 406.666875,
+              "initial-save": 50.667417,
+              "lazy-first-part": 0.230042,
+              "lazy-open": 0.283917,
+              "one-cell-edit-save": 71.71275,
+              "open": 30.047542,
+              "render": 262.895917,
+              "reopen": 28.420416,
+              "traversal": 0.068542,
+              "unchanged-save": 44.31375,
+              "warm-unchanged-save": 0.278167
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 6424113,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 265502720,
+            "outputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1"
+          }
+        ]
+      },
+      "savedOutputSHA256": "3f3ab167f4f87cd63cc7657655c688193fcbfb03bfeea8ccdfcd43ad6edfd8c1",
+      "peakRSSMedianBytes": {
+        "baseline": 266829824.0,
+        "candidate": 265502720.0
+      }
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/budget-near-20x10.pptx": {
+      "phases": {
+        "first-slide": {
+          "baseline": {
+            "medianMS": 4.345271,
+            "p95MS": 4.923,
+            "minMS": 4.141875,
+            "maxMS": 4.923,
+            "relativeSpread": 0.17976439214032916
+          },
+          "candidate": {
+            "medianMS": 4.3554379999999995,
+            "p95MS": 4.745292,
+            "minMS": 4.116708,
+            "maxMS": 4.745292,
+            "relativeSpread": 0.1443216503139294
+          }
+        },
+        "initial-save": {
+          "baseline": {
+            "medianMS": 16.3967915,
+            "p95MS": 16.681083,
+            "minMS": 16.275583,
+            "maxMS": 16.681083,
+            "relativeSpread": 0.024730448026981378
+          },
+          "candidate": {
+            "medianMS": 16.3467295,
+            "p95MS": 16.572834,
+            "minMS": 16.225958,
+            "maxMS": 16.572834,
+            "relativeSpread": 0.02121990212170586
+          }
+        },
+        "lazy-first-part": {
+          "baseline": {
+            "medianMS": 0.2075415,
+            "p95MS": 0.231208,
+            "minMS": 0.1985,
+            "maxMS": 0.231208,
+            "relativeSpread": 0.15759739618341387
+          },
+          "candidate": {
+            "medianMS": 0.2044585,
+            "p95MS": 0.209917,
+            "minMS": 0.199542,
+            "maxMS": 0.209917,
+            "relativeSpread": 0.050743793972859996
+          }
+        },
+        "lazy-open": {
+          "baseline": {
+            "medianMS": 0.2371875,
+            "p95MS": 0.260666,
+            "minMS": 0.225375,
+            "maxMS": 0.260666,
+            "relativeSpread": 0.14878945981554684
+          },
+          "candidate": {
+            "medianMS": 0.227896,
+            "p95MS": 0.248458,
+            "minMS": 0.223416,
+            "maxMS": 0.248458,
+            "relativeSpread": 0.10988345561133153
+          }
+        },
+        "one-cell-edit-save": {
+          "baseline": {
+            "medianMS": 1.0764795,
+            "p95MS": 1.118875,
+            "minMS": 1.049458,
+            "maxMS": 1.118875,
+            "relativeSpread": 0.06448520385200095
+          },
+          "candidate": {
+            "medianMS": 1.0902295,
+            "p95MS": 1.130875,
+            "minMS": 1.060083,
+            "maxMS": 1.130875,
+            "relativeSpread": 0.06493311729319375
+          }
+        },
+        "open": {
+          "baseline": {
+            "medianMS": 12.3002085,
+            "p95MS": 12.735291,
+            "minMS": 11.885708,
+            "maxMS": 12.735291,
+            "relativeSpread": 0.0690706177866823
+          },
+          "candidate": {
+            "medianMS": 11.8980835,
+            "p95MS": 12.569625,
+            "minMS": 11.861791,
+            "maxMS": 12.569625,
+            "relativeSpread": 0.059491429859271035
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 16.3108965,
+            "p95MS": 17.242709,
+            "minMS": 15.722917,
+            "maxMS": 17.242709,
+            "relativeSpread": 0.09317648481185574
+          },
+          "candidate": {
+            "medianMS": 16.165229,
+            "p95MS": 17.310209,
+            "minMS": 15.612625,
+            "maxMS": 17.310209,
+            "relativeSpread": 0.10501453459149888
+          }
+        },
+        "reopen": {
+          "baseline": {
+            "medianMS": 10.9601665,
+            "p95MS": 11.523958,
+            "minMS": 10.496541,
+            "maxMS": 11.523958,
+            "relativeSpread": 0.09374100293093174
+          },
+          "candidate": {
+            "medianMS": 10.5866455,
+            "p95MS": 11.350625,
+            "minMS": 10.327584,
+            "maxMS": 11.350625,
+            "relativeSpread": 0.0966350483729715
+          }
+        },
+        "traversal": {
+          "baseline": {
+            "medianMS": 0.0327085,
+            "p95MS": 0.039959,
+            "minMS": 0.029959,
+            "maxMS": 0.039959,
+            "relativeSpread": 0.305730926211841
+          },
+          "candidate": {
+            "medianMS": 0.030625,
+            "p95MS": 0.03275,
+            "minMS": 0.029333,
+            "maxMS": 0.03275,
+            "relativeSpread": 0.11157551020408163
+          }
+        },
+        "unchanged-save": {
+          "baseline": {
+            "medianMS": 15.8149585,
+            "p95MS": 16.033,
+            "minMS": 15.693417,
+            "maxMS": 16.033,
+            "relativeSpread": 0.021472266272466102
+          },
+          "candidate": {
+            "medianMS": 15.830459000000001,
+            "p95MS": 16.462583,
+            "minMS": 15.536375,
+            "maxMS": 16.462583,
+            "relativeSpread": 0.058507968720300466
+          }
+        },
+        "warm-unchanged-save": {
+          "baseline": {
+            "medianMS": 0.312042,
+            "p95MS": 0.342083,
+            "minMS": 0.297792,
+            "maxMS": 0.342083,
+            "relativeSpread": 0.14193922612981594
+          },
+          "candidate": {
+            "medianMS": 0.3142705,
+            "p95MS": 0.336791,
+            "minMS": 0.306041,
+            "maxMS": 0.336791,
+            "relativeSpread": 0.0978456457096673
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.228333,
+              "initial-save": 16.681083,
+              "lazy-first-part": 0.206791,
+              "lazy-open": 0.238375,
+              "one-cell-edit-save": 1.054708,
+              "open": 12.465458,
+              "render": 15.722917,
+              "reopen": 10.629125,
+              "traversal": 0.036875,
+              "unchanged-save": 15.711542,
+              "warm-unchanged-save": 0.305208
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34471936,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.553041,
+              "initial-save": 16.397041,
+              "lazy-first-part": 0.206292,
+              "lazy-open": 0.225375,
+              "one-cell-edit-save": 1.104875,
+              "open": 12.039375,
+              "render": 15.850917,
+              "reopen": 11.096041,
+              "traversal": 0.034791,
+              "unchanged-save": 15.791584,
+              "warm-unchanged-save": 0.313167
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34504704,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.364167,
+              "initial-save": 16.276625,
+              "lazy-first-part": 0.208292,
+              "lazy-open": 0.236,
+              "one-cell-edit-save": 1.066958,
+              "open": 11.958,
+              "render": 17.166875,
+              "reopen": 10.496541,
+              "traversal": 0.034,
+              "unchanged-save": 15.994875,
+              "warm-unchanged-save": 0.317666
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34471936,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.319334,
+              "initial-save": 16.364875,
+              "lazy-first-part": 0.208542,
+              "lazy-open": 0.231833,
+              "one-cell-edit-save": 1.07175,
+              "open": 11.885708,
+              "render": 16.717125,
+              "reopen": 10.507291,
+              "traversal": 0.030333,
+              "unchanged-save": 15.801792,
+              "warm-unchanged-save": 0.308792
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34471936,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.619166,
+              "initial-save": 16.275583,
+              "lazy-first-part": 0.1985,
+              "lazy-open": 0.241667,
+              "one-cell-edit-save": 1.097875,
+              "open": 12.528,
+              "render": 16.223542,
+              "reopen": 10.920666,
+              "traversal": 0.029959,
+              "unchanged-save": 15.765458,
+              "warm-unchanged-save": 0.313334
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.222667,
+              "initial-save": 16.4085,
+              "lazy-first-part": 0.206708,
+              "lazy-open": 0.240167,
+              "one-cell-edit-save": 1.049458,
+              "open": 12.735291,
+              "render": 16.376584,
+              "reopen": 10.905209,
+              "traversal": 0.036125,
+              "unchanged-save": 15.837625,
+              "warm-unchanged-save": 0.300792
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34471936,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.61525,
+              "initial-save": 16.375083,
+              "lazy-first-part": 0.20625,
+              "lazy-open": 0.229208,
+              "one-cell-edit-save": 1.090209,
+              "open": 12.2295,
+              "render": 16.245209,
+              "reopen": 11.307166,
+              "traversal": 0.031417,
+              "unchanged-save": 15.693417,
+              "warm-unchanged-save": 0.310917
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34471936,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.923,
+              "initial-save": 16.396542,
+              "lazy-first-part": 0.231208,
+              "lazy-open": 0.260666,
+              "one-cell-edit-save": 1.072167,
+              "open": 12.290917,
+              "render": 16.735125,
+              "reopen": 11.018375,
+              "traversal": 0.03025,
+              "unchanged-save": 16.033,
+              "warm-unchanged-save": 0.342083
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34504704,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.326375,
+              "initial-save": 16.585834,
+              "lazy-first-part": 0.219958,
+              "lazy-open": 0.230334,
+              "one-cell-edit-save": 1.118875,
+              "open": 12.3095,
+              "render": 16.097375,
+              "reopen": 10.999667,
+              "traversal": 0.039959,
+              "unchanged-save": 15.828125,
+              "warm-unchanged-save": 0.318958
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.141875,
+              "initial-save": 16.418667,
+              "lazy-first-part": 0.21175,
+              "lazy-open": 0.238375,
+              "one-cell-edit-save": 1.080792,
+              "open": 12.729083,
+              "render": 17.242709,
+              "reopen": 11.523958,
+              "traversal": 0.030875,
+              "unchanged-save": 15.870334,
+              "warm-unchanged-save": 0.297792
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34471936,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          }
+        ],
+        "candidate": [
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.545666,
+              "initial-save": 16.411292,
+              "lazy-first-part": 0.209917,
+              "lazy-open": 0.233666,
+              "one-cell-edit-save": 1.060083,
+              "open": 12.180083,
+              "render": 15.612625,
+              "reopen": 11.350625,
+              "traversal": 0.029333,
+              "unchanged-save": 15.909584,
+              "warm-unchanged-save": 0.336791
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.480542,
+              "initial-save": 16.312292,
+              "lazy-first-part": 0.208833,
+              "lazy-open": 0.233917,
+              "one-cell-edit-save": 1.092417,
+              "open": 11.8995,
+              "render": 17.231958,
+              "reopen": 10.558417,
+              "traversal": 0.03275,
+              "unchanged-save": 15.662833,
+              "warm-unchanged-save": 0.307666
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34504704,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.468917,
+              "initial-save": 16.346375,
+              "lazy-first-part": 0.199542,
+              "lazy-open": 0.225917,
+              "one-cell-edit-save": 1.074041,
+              "open": 11.875917,
+              "render": 16.685292,
+              "reopen": 10.581792,
+              "traversal": 0.029333,
+              "unchanged-save": 15.751834,
+              "warm-unchanged-save": 0.317959
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34504704,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.116708,
+              "initial-save": 16.347084,
+              "lazy-first-part": 0.2035,
+              "lazy-open": 0.228791,
+              "one-cell-edit-save": 1.117917,
+              "open": 11.875084,
+              "render": 15.875291,
+              "reopen": 10.800333,
+              "traversal": 0.03175,
+              "unchanged-save": 15.909084,
+              "warm-unchanged-save": 0.31125
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.236625,
+              "initial-save": 16.225958,
+              "lazy-first-part": 0.206458,
+              "lazy-open": 0.228375,
+              "one-cell-edit-save": 1.089042,
+              "open": 11.963167,
+              "render": 17.310209,
+              "reopen": 11.323833,
+              "traversal": 0.029917,
+              "unchanged-save": 15.729417,
+              "warm-unchanged-save": 0.316208
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.719542,
+              "initial-save": 16.382917,
+              "lazy-first-part": 0.201792,
+              "lazy-open": 0.2265,
+              "one-cell-edit-save": 1.060792,
+              "open": 11.901916,
+              "render": 16.577917,
+              "reopen": 10.561458,
+              "traversal": 0.030667,
+              "unchanged-save": 15.975959,
+              "warm-unchanged-save": 0.306041
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.745292,
+              "initial-save": 16.285542,
+              "lazy-first-part": 0.205458,
+              "lazy-open": 0.227417,
+              "one-cell-edit-save": 1.081458,
+              "open": 11.861791,
+              "render": 16.315958,
+              "reopen": 10.590791,
+              "traversal": 0.030417,
+              "unchanged-save": 15.622041,
+              "warm-unchanged-save": 0.311416
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.241959,
+              "initial-save": 16.572834,
+              "lazy-first-part": 0.202875,
+              "lazy-open": 0.223416,
+              "one-cell-edit-save": 1.130875,
+              "open": 11.896667,
+              "render": 15.842292,
+              "reopen": 10.327584,
+              "traversal": 0.031292,
+              "unchanged-save": 16.462583,
+              "warm-unchanged-save": 0.3245
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.195834,
+              "initial-save": 16.555458,
+              "lazy-first-part": 0.205417,
+              "lazy-open": 0.248458,
+              "one-cell-edit-save": 1.101084,
+              "open": 12.569625,
+              "render": 15.8255,
+              "reopen": 11.036375,
+              "traversal": 0.030583,
+              "unchanged-save": 16.393417,
+              "warm-unchanged-save": 0.320292
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          },
+          {
+            "checksum": 1118031,
+            "outputBytes": 466504,
+            "phases": {
+              "first-slide": 4.224666,
+              "initial-save": 16.251834,
+              "lazy-first-part": 0.20325,
+              "lazy-open": 0.224709,
+              "one-cell-edit-save": 1.091417,
+              "open": 11.895125,
+              "render": 16.0145,
+              "reopen": 10.5825,
+              "traversal": 0.031208,
+              "unchanged-save": 15.536375,
+              "warm-unchanged-save": 0.312333
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1118029,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 34488320,
+            "outputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6"
+          }
+        ]
+      },
+      "savedOutputSHA256": "7beff3d16ba1611655b10f344e66a898852f13d3f4a69fcb9bdeb9925b67ffa6",
+      "peakRSSMedianBytes": {
+        "baseline": 34471936.0,
+        "candidate": 34488320.0
+      }
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/oversize-bypass-6x6.pptx": {
+      "phases": {
+        "first-slide": {
+          "baseline": {
+            "medianMS": 1.0217494999999999,
+            "p95MS": 1.1125,
+            "minMS": 0.993458,
+            "maxMS": 1.1125,
+            "relativeSpread": 0.11650800905701457
+          },
+          "candidate": {
+            "medianMS": 1.0290205000000001,
+            "p95MS": 1.106917,
+            "minMS": 1.008583,
+            "maxMS": 1.106917,
+            "relativeSpread": 0.09556077842958416
+          }
+        },
+        "initial-save": {
+          "baseline": {
+            "medianMS": 37.9836045,
+            "p95MS": 39.150667,
+            "minMS": 37.532,
+            "maxMS": 39.150667,
+            "relativeSpread": 0.04261488664141925
+          },
+          "candidate": {
+            "medianMS": 38.1469995,
+            "p95MS": 39.41625,
+            "minMS": 37.610833,
+            "maxMS": 39.41625,
+            "relativeSpread": 0.047327890100504456
+          }
+        },
+        "lazy-first-part": {
+          "baseline": {
+            "medianMS": 0.19877050000000002,
+            "p95MS": 0.214583,
+            "minMS": 0.195166,
+            "maxMS": 0.214583,
+            "relativeSpread": 0.09768552174492688
+          },
+          "candidate": {
+            "medianMS": 0.198584,
+            "p95MS": 0.2115,
+            "minMS": 0.194125,
+            "maxMS": 0.2115,
+            "relativeSpread": 0.08749446078233897
+          }
+        },
+        "lazy-open": {
+          "baseline": {
+            "medianMS": 0.2395625,
+            "p95MS": 0.268667,
+            "minMS": 0.2365,
+            "maxMS": 0.268667,
+            "relativeSpread": 0.13427393686407513
+          },
+          "candidate": {
+            "medianMS": 0.2389585,
+            "p95MS": 0.272208,
+            "minMS": 0.228959,
+            "maxMS": 0.272208,
+            "relativeSpread": 0.18098958605783017
+          }
+        },
+        "one-cell-edit-save": {
+          "baseline": {
+            "medianMS": 0.446396,
+            "p95MS": 0.502541,
+            "minMS": 0.425083,
+            "maxMS": 0.502541,
+            "relativeSpread": 0.1735185799155907
+          },
+          "candidate": {
+            "medianMS": 0.457104,
+            "p95MS": 0.5035,
+            "minMS": 0.434375,
+            "maxMS": 0.5035,
+            "relativeSpread": 0.15122379152227924
+          }
+        },
+        "open": {
+          "baseline": {
+            "medianMS": 25.958875499999998,
+            "p95MS": 26.829958,
+            "minMS": 25.229541,
+            "maxMS": 26.829958,
+            "relativeSpread": 0.0616520157046094
+          },
+          "candidate": {
+            "medianMS": 25.723104,
+            "p95MS": 27.008125,
+            "minMS": 25.166375,
+            "maxMS": 27.008125,
+            "relativeSpread": 0.0715990574076908
+          }
+        },
+        "render": {
+          "baseline": {
+            "medianMS": 261.0336035,
+            "p95MS": 270.646666,
+            "minMS": 256.262708,
+            "maxMS": 270.646666,
+            "relativeSpread": 0.05510385562294092
+          },
+          "candidate": {
+            "medianMS": 260.891646,
+            "p95MS": 268.343792,
+            "minMS": 255.111125,
+            "maxMS": 268.343792,
+            "relativeSpread": 0.050720930328294306
+          }
+        },
+        "reopen": {
+          "baseline": {
+            "medianMS": 24.428521000000003,
+            "p95MS": 25.268333,
+            "minMS": 23.915959,
+            "maxMS": 25.268333,
+            "relativeSpread": 0.05536045346339213
+          },
+          "candidate": {
+            "medianMS": 24.220166499999998,
+            "p95MS": 24.72925,
+            "minMS": 23.900375,
+            "maxMS": 24.72925,
+            "relativeSpread": 0.03422251453143396
+          }
+        },
+        "traversal": {
+          "baseline": {
+            "medianMS": 0.035125,
+            "p95MS": 0.046,
+            "minMS": 0.032708,
+            "maxMS": 0.046,
+            "relativeSpread": 0.3784199288256227
+          },
+          "candidate": {
+            "medianMS": 0.034875,
+            "p95MS": 0.048917,
+            "minMS": 0.032916,
+            "maxMS": 0.048917,
+            "relativeSpread": 0.4588100358422939
+          }
+        },
+        "unchanged-save": {
+          "baseline": {
+            "medianMS": 34.9064795,
+            "p95MS": 35.458833,
+            "minMS": 34.489292,
+            "maxMS": 35.458833,
+            "relativeSpread": 0.027775387661193373
+          },
+          "candidate": {
+            "medianMS": 35.0545,
+            "p95MS": 35.727542,
+            "minMS": 34.689083,
+            "maxMS": 35.727542,
+            "relativeSpread": 0.02962412814331978
+          }
+        },
+        "warm-unchanged-save": {
+          "baseline": {
+            "medianMS": 0.2844585,
+            "p95MS": 0.342709,
+            "minMS": 0.274958,
+            "maxMS": 0.342709,
+            "relativeSpread": 0.2381753401638552
+          },
+          "candidate": {
+            "medianMS": 0.2835,
+            "p95MS": 0.302917,
+            "minMS": 0.276833,
+            "maxMS": 0.302917,
+            "relativeSpread": 0.09200705467372133
+          }
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.1125,
+              "initial-save": 38.660416,
+              "lazy-first-part": 0.198125,
+              "lazy-open": 0.238875,
+              "one-cell-edit-save": 0.450417,
+              "open": 25.31125,
+              "render": 262.388417,
+              "reopen": 23.964583,
+              "traversal": 0.034916,
+              "unchanged-save": 35.139375,
+              "warm-unchanged-save": 0.28525
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115195904,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.049042,
+              "initial-save": 39.150667,
+              "lazy-first-part": 0.214583,
+              "lazy-open": 0.268667,
+              "one-cell-edit-save": 0.502541,
+              "open": 26.566292,
+              "render": 262.97925,
+              "reopen": 23.915959,
+              "traversal": 0.041708,
+              "unchanged-save": 35.36075,
+              "warm-unchanged-save": 0.29325
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115195904,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.086292,
+              "initial-save": 37.643084,
+              "lazy-first-part": 0.197709,
+              "lazy-open": 0.237167,
+              "one-cell-edit-save": 0.461083,
+              "open": 25.949042,
+              "render": 260.974791,
+              "reopen": 24.187125,
+              "traversal": 0.033459,
+              "unchanged-save": 35.458833,
+              "warm-unchanged-save": 0.29425
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115179520,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.027667,
+              "initial-save": 37.753791,
+              "lazy-first-part": 0.195166,
+              "lazy-open": 0.24,
+              "one-cell-edit-save": 0.425083,
+              "open": 26.076541,
+              "render": 256.262708,
+              "reopen": 25.196292,
+              "traversal": 0.035,
+              "unchanged-save": 34.941,
+              "warm-unchanged-save": 0.274958
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115179520,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.018583,
+              "initial-save": 37.532,
+              "lazy-first-part": 0.197959,
+              "lazy-open": 0.2365,
+              "one-cell-edit-save": 0.428417,
+              "open": 25.903,
+              "render": 266.437834,
+              "reopen": 24.669917,
+              "traversal": 0.034125,
+              "unchanged-save": 34.489292,
+              "warm-unchanged-save": 0.275291
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115212288,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 0.993458,
+              "initial-save": 38.894084,
+              "lazy-first-part": 0.213583,
+              "lazy-open": 0.2675,
+              "one-cell-edit-save": 0.429334,
+              "open": 26.829958,
+              "render": 261.092416,
+              "reopen": 25.268333,
+              "traversal": 0.046,
+              "unchanged-save": 35.243542,
+              "warm-unchanged-save": 0.275167
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115195904,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.010333,
+              "initial-save": 37.753584,
+              "lazy-first-part": 0.195958,
+              "lazy-open": 0.239125,
+              "one-cell-edit-save": 0.4565,
+              "open": 26.417459,
+              "render": 257.6285,
+              "reopen": 24.849,
+              "traversal": 0.03525,
+              "unchanged-save": 34.715834,
+              "warm-unchanged-save": 0.342709
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115179520,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.024916,
+              "initial-save": 38.173084,
+              "lazy-first-part": 0.203084,
+              "lazy-open": 0.243,
+              "one-cell-edit-save": 0.442375,
+              "open": 25.968709,
+              "render": 257.544458,
+              "reopen": 24.739291,
+              "traversal": 0.0385,
+              "unchanged-save": 34.871959,
+              "warm-unchanged-save": 0.283667
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115212288,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.000084,
+              "initial-save": 38.233542,
+              "lazy-first-part": 0.205958,
+              "lazy-open": 0.248334,
+              "one-cell-edit-save": 0.4365,
+              "open": 25.229541,
+              "render": 258.594542,
+              "reopen": 24.119708,
+              "traversal": 0.041625,
+              "unchanged-save": 34.713375,
+              "warm-unchanged-save": 0.280916
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115195904,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.017458,
+              "initial-save": 37.794125,
+              "lazy-first-part": 0.199416,
+              "lazy-open": 0.23825,
+              "one-cell-edit-save": 0.4595,
+              "open": 25.576292,
+              "render": 270.646666,
+              "reopen": 24.158792,
+              "traversal": 0.032708,
+              "unchanged-save": 34.736083,
+              "warm-unchanged-save": 0.290459
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115228672,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          }
+        ],
+        "candidate": [
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.033,
+              "initial-save": 37.933791,
+              "lazy-first-part": 0.20775,
+              "lazy-open": 0.255625,
+              "one-cell-edit-save": 0.456083,
+              "open": 25.355917,
+              "render": 259.099833,
+              "reopen": 24.261083,
+              "traversal": 0.03625,
+              "unchanged-save": 34.689083,
+              "warm-unchanged-save": 0.283917
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115130368,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.036959,
+              "initial-save": 39.41625,
+              "lazy-first-part": 0.2115,
+              "lazy-open": 0.272208,
+              "one-cell-edit-save": 0.434375,
+              "open": 25.752583,
+              "render": 255.111125,
+              "reopen": 24.456667,
+              "traversal": 0.048917,
+              "unchanged-save": 35.34025,
+              "warm-unchanged-save": 0.278125
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115130368,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.025041,
+              "initial-save": 38.718375,
+              "lazy-first-part": 0.196666,
+              "lazy-open": 0.23725,
+              "one-cell-edit-save": 0.448333,
+              "open": 25.693625,
+              "render": 258.945625,
+              "reopen": 24.52375,
+              "traversal": 0.032916,
+              "unchanged-save": 34.789125,
+              "warm-unchanged-save": 0.281209
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115146752,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.03725,
+              "initial-save": 37.610833,
+              "lazy-first-part": 0.20175,
+              "lazy-open": 0.238167,
+              "one-cell-edit-save": 0.48575,
+              "open": 25.807958,
+              "render": 259.833292,
+              "reopen": 24.032667,
+              "traversal": 0.033792,
+              "unchanged-save": 35.101708,
+              "warm-unchanged-save": 0.277209
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115130368,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.020416,
+              "initial-save": 37.894417,
+              "lazy-first-part": 0.199084,
+              "lazy-open": 0.23975,
+              "one-cell-edit-save": 0.458333,
+              "open": 25.29075,
+              "render": 264.398667,
+              "reopen": 24.153708,
+              "traversal": 0.040125,
+              "unchanged-save": 35.050042,
+              "warm-unchanged-save": 0.293792
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115163136,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.079959,
+              "initial-save": 37.693708,
+              "lazy-first-part": 0.197375,
+              "lazy-open": 0.251958,
+              "one-cell-edit-save": 0.458125,
+              "open": 25.166375,
+              "render": 263.769916,
+              "reopen": 23.900375,
+              "traversal": 0.035375,
+              "unchanged-save": 34.962125,
+              "warm-unchanged-save": 0.298333
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115146752,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.106917,
+              "initial-save": 38.360208,
+              "lazy-first-part": 0.197541,
+              "lazy-open": 0.228959,
+              "one-cell-edit-save": 0.5035,
+              "open": 25.890291,
+              "render": 263.288541,
+              "reopen": 24.705791,
+              "traversal": 0.034375,
+              "unchanged-save": 35.727542,
+              "warm-unchanged-save": 0.302917
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115130368,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.021166,
+              "initial-save": 38.497167,
+              "lazy-first-part": 0.200792,
+              "lazy-open": 0.245583,
+              "one-cell-edit-save": 0.486542,
+              "open": 26.439417,
+              "render": 257.724542,
+              "reopen": 24.72925,
+              "traversal": 0.03625,
+              "unchanged-save": 35.208666,
+              "warm-unchanged-save": 0.295416
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115130368,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.0105,
+              "initial-save": 37.782375,
+              "lazy-first-part": 0.198084,
+              "lazy-open": 0.233667,
+              "one-cell-edit-save": 0.440667,
+              "open": 27.008125,
+              "render": 268.343792,
+              "reopen": 24.17925,
+              "traversal": 0.034375,
+              "unchanged-save": 35.052834,
+              "warm-unchanged-save": 0.283083
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115146752,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          },
+          {
+            "checksum": 1029562,
+            "outputBytes": 505864,
+            "phases": {
+              "first-slide": 1.008583,
+              "initial-save": 38.398541,
+              "lazy-first-part": 0.194125,
+              "lazy-open": 0.234875,
+              "one-cell-edit-save": 0.453791,
+              "open": 25.371084,
+              "render": 261.95,
+              "reopen": 23.94925,
+              "traversal": 0.034166,
+              "unchanged-save": 35.056166,
+              "warm-unchanged-save": 0.276833
+            },
+            "registeredNativeFaces": [
+              "DejaVu Sans|bold=false|italic=false|sfntSHA256=7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+            ],
+            "renderedSVGBytes": 1029560,
+            "renderedSlideCount": 1,
+            "scenario": "file",
+            "slideCount": 1,
+            "peakRSSBytes": 115146752,
+            "outputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a"
+          }
+        ]
+      },
+      "savedOutputSHA256": "50dafc658442be987aa614eff1ee356e9dc6431a794e102fe9b6e33dcd96031a",
+      "peakRSSMedianBytes": {
+        "baseline": 115195904.0,
+        "candidate": 115138560.0
+      }
+    }
+  },
+  "processOrder": "Alternating AB/BA pairs",
+  "pairedRevision": "007efa9c5b1c56af36d5251937fe95244ffaa289",
+  "binarySHA256": {
+    "baseline": "038b3f61195f3b63911782a7cf5ccee881d7610203feeb3d64c6d489ce951f60",
+    "candidate": "9055d47f3ccc5fff434324e5acb71944be91a4e7893158cd754145c197856ebf"
+  },
+  "runnerSHA256": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+  "layoutSHA256": "a34baff705f04cf663bdfe89ca2a06fb7259038596a0d0acb1e819d5166b082c"
+}

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/verify-fidelity21-table-transition-paint.py", line 152, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/verify-fidelity21-table-transition-paint.py", line 135, in main
+    else:assert c['id']=='merged-colored-rejection' and c['nativeLinesExcluded'] is True
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

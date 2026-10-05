@@ -1,0 +1,77 @@
+{
+  "status": "APPROVE_FINAL_S21_INTEGRATION_PENDING_REPORT_AND_LAB_STATUS_PROMOTION",
+  "manifest": "/tmp/lectern-fidelity21-integration-accepted-performance/docs/benchmarks/2026-10-04-table-transitions-integration-verification.json",
+  "manifestSHA256": "e899e962529ff39ae8bdc1b1816bf5beee94020c21d79e8afc76fb2f59cbc7d5",
+  "physicalPins": 2780,
+  "sourceGitPins": 685,
+  "exports": 242,
+  "sourceCheckpoint": "33e484edf53f8b3ba817b28e6717d27fe265a94c",
+  "SourcesTree": "d555de4fa405e9c03217ebb966125a360cdd7f78",
+  "gate": {
+    "library": [
+      1195,
+      175
+    ],
+    "layout": [
+      18,
+      3
+    ],
+    "core": [
+      306,
+      47
+    ],
+    "appDefinitions": [
+      96,
+      29
+    ],
+    "appExecutions": 135,
+    "pboardMessages": 14,
+    "buildsSucceeded": 2,
+    "contradictoryQuietExitCodeZero": 0
+  },
+  "freshBrowser": {
+    "PDFs": 45,
+    "cases": 226,
+    "glyphs": 2290,
+    "omissions": 6,
+    "admittedNewNativePaintCases": 26,
+    "excludedMergedNativeBorders": 2
+  },
+  "manualIndependentReview": {
+    "path": "/tmp/rostrum-s21-independent-manual-review.json",
+    "sha256": "53598b4f8c251250dda0a2311a94a78a99a020571ebc9548729a547f8967bfda"
+  },
+  "outputPreservation": {
+    "allPriorSVGBytesExact": true,
+    "nativeInputRows": 26,
+    "priorByteExact": 84,
+    "priorCommentOnly": 4,
+    "priorPackages": 88
+  },
+  "externalTotals": {
+    "checks": 1253,
+    "fileCount": 504,
+    "findings": 413,
+    "passedChecks": 1253,
+    "pptxReopens": 96,
+    "reopenedSlides": 320,
+    "reports": 41,
+    "xmlPartsParsed": 3752
+  },
+  "findings": [],
+  "limits": [
+    "Final accepted performance packet is additive; all historical draft snapshots, pending report/wrapper and originals retained.",
+    "685 source pins explicitly scoped, not whole repository or interchangeable with prior denominators.",
+    "No fresh GUI, tests/builds/benchmarks, old evidence modification or extraction by reviewer for this draft; previous independent strict native/browser/manual receipts remain pinned."
+  ],
+  "script": "/tmp/review-s21-integration-final.py",
+  "scriptSHA256": "ec06230099ebf7524aaae4e02ea7e986e74587c3190003ca7d2b59bcaad4356a",
+  "reportReviewed": {
+    "path": "/Users/welshofer/Developer/rostrum/docs/LAYOUT-FIDELITY-20261004-21.md",
+    "sha256": "c549f304b9e0530d4b18fd7d53baabe617536f73a2ecb0018d36530cd5c50d12"
+  },
+  "approvedFinalTextDeltas": [
+    "Promote final acceptance wording only after this review, and repin final report and review receipts.",
+    "Library Lab final paragraph should state completed root gate/browser/native/manual and accepted bounded uncertain-cost performance evidence; current in-progress wording is a known pending status update."
+  ]
+}

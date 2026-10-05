@@ -54,6 +54,84 @@ import Rostrum
     }
 
     @Test(arguments: [false, true])
+    func sharedCustomTableStylesReachFreshInspectorAndExport(alternative: Bool) async throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("LabSharedTableStyles-" + UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let model = LibraryLabModel()
+        model.options = .init(alternative: alternative)
+        await model.run([.tableAppearance], in: root).value
+        let result = try #require(model.results[.tableAppearance])
+        #expect(result.passed && model.failures.isEmpty && model.completed == 1)
+        #expect(result.slideCount == 3)
+        for name in ["Equivalent custom style reused", "Conflicting custom style identities preserved",
+                     "Original custom fill preserved", "Custom style relationships and opaque extension preserved",
+                     "Saved table context and live fit persist"] {
+            #expect(result.checks.contains { $0.name == name && $0.passed }, "Missing shared-style check: \(name)")
+        }
+        let sourceURL = result.afterURL
+        let sourceBytes = try Data(contentsOf: sourceURL)
+        let deck = try Presentation(data: sourceBytes)
+        try #require(deck.slideCount == 3)
+        let tables = try deck.slides[1].shapes.all.compactMap { ($0 as? TableFrame)?.table }
+        try #require(tables.count == 3)
+        let originalStyle = try #require(tables.first?.styleID)
+        let importedStyle = try #require(tables.dropFirst().first?.styleID)
+        let reusedStyle = try #require(tables.last?.styleID)
+        #expect(originalStyle != importedStyle && importedStyle == reusedStyle)
+        #expect(try tables[1].cell(0, 0).text == "Imported")
+        #expect(try tables[2].cell(0, 0).text == "Reused")
+        #expect(try deck.serializedData() == sourceBytes)
+
+        await context.app.inspect(deckAt: sourceURL).value
+        let inspection = try #require(context.app.inspection)
+        #expect(context.app.phase == .inspected && inspection.previews.count == 3)
+        // Reopen through the public inspector on a fresh task. This uses the
+        // actual installed/embedded font profile and 640px viewport; an
+        // embedded-only raw render has a different fallback profile.
+        let fresh = try await Task.detached { try DeckInspector.inspect(deckAt: sourceURL) }.value
+        #expect(fresh.previewSlideNumbers == [1, 2, 3])
+        for page in 1...3 {
+            let actualIndex = try #require(inspection.previewSlideNumbers.firstIndex(of: page))
+            let freshIndex = try #require(fresh.previewSlideNumbers.firstIndex(of: page))
+            let saved = try String(contentsOf: result.directory.appendingPathComponent(String(format: "previews/slide-%02d.svg", page)), encoding: .utf8)
+            #expect(saved == inspection.previews[actualIndex], "Saved versus actual inspector slide \(page)")
+            #expect(saved == fresh.previews[freshIndex], "Fresh same-profile render slide \(page)")
+        }
+        #expect(try Data(contentsOf: sourceURL) == sourceBytes)
+        let task = try #require(context.app.exportInspected(into: root.appendingPathComponent("Export")))
+        await task.value
+        #expect(context.app.exportProblem == nil)
+        #expect(context.app.exportSummary == "3 slides · 2 media files · 0 chart CSVs")
+        let directory = try #require(context.app.exportedDirectory)
+        let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        let markdownURL = try #require(files.first { $0.pathExtension == "md" })
+        let markdown = try String(contentsOf: markdownURL, encoding: .utf8)
+        for text in ["Original", "Imported", "Reused", "Same GUID", "No duplicate", "Resources", "Table cells measure full-size text"] {
+            #expect(markdown.contains(text), "Shared-style content missing from export: \(text)")
+        }
+        let images = deck.package.parts.values.filter { $0.contentType.hasPrefix("image/") }
+        let image = try #require(images.first)
+        #expect(images.count == 1 && image.blob.count == 84)
+        for page in [1, 2] {
+            let relative = String(format: "slide-%02d/image1.png", page)
+            #expect(try Data(contentsOf: directory.appendingPathComponent(relative)) == image.blob)
+            #expect(markdown.contains(relative))
+            let contents = try FileManager.default.contentsOfDirectory(atPath: directory.appendingPathComponent(String(format: "slide-%02d", page)).path)
+            #expect(contents == ["image1.png"])
+        }
+        #expect(!FileManager.default.fileExists(atPath: directory.appendingPathComponent("slide-03").path))
+        #expect(result.checks.contains { $0.name == "Selected image fills export exact bytes" && $0.passed })
+        #expect(try Data(contentsOf: sourceURL) == sourceBytes)
+        let reopened = try Presentation(contentsOf: sourceURL)
+        try #require(reopened.slideCount == 3)
+        let reopenedTables = try reopened.slides[1].shapes.all.compactMap { $0 as? TableFrame }
+        #expect(reopenedTables.count == 3)
+        #expect(try reopened.serializedData() == sourceBytes)
+    }
+
+    @Test(arguments: [false, true])
     func unicodeFontDemoReachesInspectorAndExport(narrow: Bool) async throws {
         let context = try AppStateTestContext()
         defer { context.remove() }

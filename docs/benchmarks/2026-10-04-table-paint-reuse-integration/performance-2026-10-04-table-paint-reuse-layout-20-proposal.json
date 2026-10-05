@@ -1,0 +1,70 @@
+{
+  "status": "PROPOSAL_ONLY_NO_BUILD_OR_TIMING_AUTHORIZATION",
+  "experiment": "S20 bounded operation-local shared border paint reuse",
+  "baselineSourceTree": "11ead6fd725008f26757f839abda10aa97761adb",
+  "baselineLocalCommit": "007efa9c5b1c56af36d5251937fe95244ffaa289",
+  "baselineBuild": "Reuse accepted S19 matching Release products only after exact root pre-S20 Sources, compiler, modules, object and helper pins validate; no fresh baseline build claim.",
+  "candidateEngine": "3bab3d552ea016035921ce97671356152718ee05",
+  "candidateDocumentation": "119b1c107ff9911bdc86241e0e86a7a323a3b087",
+  "candidateIntegration": "Await parent integrated source; apply only approved S20 delta atop accepted S19 with S15 ordinary renderer reuse intact. Never use worker dc40 baseline products.",
+  "originalCampaign": {
+    "children": 594,
+    "primaryComparisons": 28,
+    "allPhaseComparisons": 306,
+    "planSHA256": "b93ee2b8309b06c37b44bb9772229797309980870fc8507dc615d24a556488e6",
+    "inputs": "All original 19 file workloads plus 5 canonical and 3 Unicode workloads unchanged."
+  },
+  "newControls": [
+    {
+      "name": "direct-unique-200x50",
+      "rows": 200,
+      "columns": 50,
+      "construction": "Derive from S19 partial-200x50; declare all four cardinal borders separately on each physical cell, retaining text, dimensions, styles and registered fonts. Each direct line is a distinct XML object.",
+      "purpose": "Measure lookup and non-admission overhead at 10000 cells; S19 direct-override control has only 200 cells."
+    },
+    {
+      "name": "budget-near-20x10",
+      "rows": 20,
+      "columns": 10,
+      "construction": "Derive from S19 partial-20x10. Replace custom style cardinal/inside edge declarations with explicit black 1pt lines, each carrying a 40000-character unknown comment in extLst. Preserve all unrelated parts.",
+      "purpose": "Exercise partial template-budget admission and repeated uncached decoding after the existing 1MiB estimate is exhausted; confirm admission distribution untimed before freezing."
+    },
+    {
+      "name": "oversize-bypass-6x6",
+      "rows": 6,
+      "columns": 6,
+      "construction": "Derive a 6x6 table from the same S19 source with reproducible row/grid truncation and dimensions. Use the same six explicit style edge lines, each with a 1100000-character unknown comment.",
+      "purpose": "Exercise complete template non-admission without multiplying large XML over a 10000-cell table. Thirty-six physical cells still span ordinary row/column categories. Confirm bypass untimed before freezing."
+    }
+  ],
+  "proposedCampaign": {
+    "children": 660,
+    "primaryComparisons": 31,
+    "allPhaseComparisons": 339,
+    "pools": {
+      "canonical": 110,
+      "supplement": 66,
+      "originalNative": 418,
+      "cacheControls": 66
+    },
+    "runs": 10,
+    "warmupPairs": 1,
+    "processOrder": "Existing alternating fresh-process runner unchanged; new controls in a separate labeled pool.",
+    "estimatedWall": "Approximately 3 to 4 minutes, provisional until untimed functional preflight; no timed pilot or adaptive rerun."
+  },
+  "proof": {
+    "corpus": "Expected 190 cases / 886 slides: accepted S19 187 / 883 plus three one-slide controls; reconcile actual inventory before final plan.",
+    "identity": "Complete SVG bytes, all glyph/font/text/line attributes, ordered issues, inheritance and saved package bytes exact for each same authored input across baseline and repeated candidate; no semantic stripping or counterfactual substitution.",
+    "native": "Retain unchanged S17-S19 actual native sources and references; stress controls are not new native evidence.",
+    "additional": "Full Swift tests including live mutation, owner lifetime, negative-cache/reset, direct mutable nodes, cap, maximum width, alpha/dash/double/noFill, unknown XML; 101310 shaping and 1728 layout records; small/large/image-heavy fixed preservation with independent python-pptx reopen.",
+    "budgetQualification": "Confirm partial admission versus complete bypass using a separate untimed source-linked admission audit or focused test; no instrumentation in measured binaries. The 216-entry hard cap is unit-tested, not represented as a 216-entry real-workload saturation claim."
+  },
+  "statistics": "Keep every raw phase/RSS/process outcome; 100000 seeded bootstrap resamples and exact sign tests as S19. Foreground partial-scale targets, direct/budget adverse controls and memory; no cumulative, clean-host, universal or cross-platform claim.",
+  "authorization": "No candidate build until parent integrated source; independent frozen plan review and explicit quiet grant before exactly one campaign.",
+  "pins": {
+    ".build/perf31-table-custom-edges/timing-plan.json": "b93ee2b8309b06c37b44bb9772229797309980870fc8507dc615d24a556488e6",
+    ".build/perf31-table-custom-edges/native-inputs.json": "d7b05e7a54bf4f83f373297159ea79282658585ee58ab164706395c7c5bfb272",
+    ".build/perf31-table-custom-edges/table-main.swift": "99def3a14e3a0b0e5c8ef2ef348defcef549c68c9eff8fbc5645ec2714385cab",
+    ".build/perf31-table-custom-edges/verification.json": "2defcb7ebc68b2eeec59b744cb5fc380fad9798048a832ec19e677d305a66a37"
+  }
+}

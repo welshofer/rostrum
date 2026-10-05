@@ -9,6 +9,7 @@ public struct TableStyleResolver {
     let definition: XML.Element?
     let stylePart: Part?
     private let enabledFlags: Set<String>
+    private let defaultsMissingCustomBorders: Bool
 
     public init(table: Table, theme: Theme) {
         self.table = table; self.theme = theme
@@ -19,6 +20,8 @@ public struct TableStyleResolver {
         })
         let found = Self.definition(for: table.tbl, package: table.package)
         definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }; stylePart = found.1
+        defaultsMissingCustomBorders = found.0 != nil
+            && (found.1 != nil || flags?.firstChild(named: "a:tableStyle") != nil)
     }
 
     /// One live cell-fitting operation needs text regions and root cell attributes,
@@ -95,6 +98,62 @@ public struct TableStyleResolver {
         }
         resolveColors(in: properties)
         return (properties, owner)
+    }
+
+    /// Fill-only, operation-local selection for asset inventory. Reuse region
+    /// winners without constructing borders, text or effective cell properties.
+    struct ImageFillSession {
+        struct Selection {
+            let fill: XML.Element?
+            let owner: Part
+            let namespaces: [String: String]?
+            init(fill: XML.Element?, owner: Part, namespaces: [String: String]? = nil) {
+                self.fill = fill; self.owner = owner; self.namespaces = namespaces
+            }
+        }
+        let resolver: TableStyleResolver
+        private var selections: [Int: Selection] = [:]
+        private let namespaces: [String: String]
+        init(_ resolver: TableStyleResolver, namespaces: [String: String]) {
+            self.resolver = resolver; self.namespaces = namespaces
+        }
+
+        mutating func selected(row: Int, column: Int) -> Selection {
+            let rowScope = TableStyleXML.bindings(resolver.grid.rows[row], inheriting: namespaces)
+            let cell = resolver.grid.cells[row][column]
+            let cellScope = TableStyleXML.bindings(cell, inheriting: rowScope)
+            if let properties = cell.childElements.first(where: { TableStyleXML.isDrawing($0, "tcPr", namespaces: cellScope) }) {
+                let scope = TableStyleXML.bindings(properties, inheriting: cellScope)
+                if let direct = properties.childElements.last(where: { child in
+                    Fill.choiceNames.contains { TableStyleXML.isDrawing(child, String($0.dropFirst(2)), namespaces: scope) }
+                }) {
+                    return Selection(fill: direct, owner: resolver.table.part, namespaces: scope)
+                }
+            }
+            func category(_ index: Int, _ count: Int) -> Int {
+                (index == 0 ? 1 : 0) | (index == count - 1 ? 2 : 0)
+                    | (index == 1 ? 4 : 0) | (index == count - 2 ? 8 : 0) | ((index & 1) << 4)
+            }
+            let key = category(row, resolver.grid.rows.count) | (category(column, resolver.grid.columns.count) << 5)
+            if let previous = selections[key] { return previous }
+            var chosen = Selection(fill: nil, owner: resolver.stylePart ?? resolver.table.part)
+            for name in resolver.regionNames(row: row, column: column) {
+                guard let style = resolver.definition?.firstChild(named: "a:" + name)?.firstChild(named: "a:tcStyle") else { continue }
+                if let fill = style.firstChild(named: "a:fill")?.childElements.first {
+                    chosen = Selection(fill: fill, owner: resolver.stylePart ?? resolver.table.part)
+                } else if let selected = referenceFill(style) {
+                    chosen = selected
+                }
+            }
+            selections[key] = chosen
+            return chosen
+        }
+        private func referenceFill(_ style: XML.Element) -> Selection? {
+            guard let reference = style.firstChild(named: "a:fillRef"),
+                  let index = reference[attribute: "idx"].flatMap(Int.init),
+                  let selected = OutlineImageFills.themeSelection(index: index, theme: resolver.theme) else { return nil }
+            return Selection(fill: selected.element, owner: resolver.theme.part, namespaces: selected.namespaces)
+        }
     }
 
     /// A bounded approximation of a table-background outer shadow. The source
@@ -238,6 +297,9 @@ public struct TableStyleResolver {
         let properties = XML.Element("a:tcPr"), text = XML.Element("a:defRPr")
         var fillOwner = stylePart ?? table.part
         var borderRanks: [String: Int] = [:]
+        // An active but unresolved wrapper is not an absent declaration. Keep
+        // its previous behavior rather than supplying an invented black edge.
+        var declaredBorders = Set<String>()
         func rank(_ name: String) -> Int {
             switch name {
             case "wholeTbl": 0
@@ -277,8 +339,9 @@ public struct TableStyleResolver {
                 }
                 if let borders = style.firstChild(named: "a:tcBdr") {
                     for edge in TableCellBorder.allCases {
-                        guard let wrapper = wrapper(borders, region: name, row: row, column: column, edge: edge),
-                              let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
+                        guard let wrapper = wrapper(borders, region: name, row: row, column: column, edge: edge) else { continue }
+                        if defaultsMissingCustomBorders { declaredBorders.insert(edge.rawValue) }
+                        guard let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
                         let copy = line.deepCopy(); copy.name = edge.rawValue
                         properties.removeChildren(named: edge.rawValue); properties.appendElement(copy)
                         borderRanks[edge.rawValue] = rank(name)
@@ -302,11 +365,26 @@ public struct TableStyleResolver {
                 guard rank(name) > (borderRanks[edge.rawValue] ?? -1),
                       let borders = definition?.firstChild(named: "a:\(name)")?
                         .firstChild(named: "a:tcStyle")?.firstChild(named: "a:tcBdr") else { continue }
-                guard let wrapper = wrapper(borders, region: name, row: neighborRow, column: neighborColumn, edge: opposite),
-                      let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
+                guard let wrapper = wrapper(borders, region: name, row: neighborRow, column: neighborColumn, edge: opposite) else { continue }
+                if defaultsMissingCustomBorders { declaredBorders.insert(edge.rawValue) }
+                guard let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
                 let copy = line.deepCopy(); copy.name = edge.rawValue
                 properties.removeChildren(named: edge.rawValue); properties.appendElement(copy)
                 borderRanks[edge.rawValue] = rank(name)
+            }
+        }
+        if defaultsMissingCustomBorders {
+            // Native package/inline custom styles retain the black 1 pt grid
+            // only where no applicable edge was declared. Present empty lines,
+            // noFill and unresolved references must not acquire default paint.
+            for edge in [TableCellBorder.left, .right, .top, .bottom]
+                where !declaredBorders.contains(edge.rawValue)
+                    && properties.firstChild(named: edge.rawValue) == nil {
+                properties.appendElement(XML.Element(edge.rawValue, attributes: [("w", "12700")], children: [
+                    .element(XML.Element("a:solidFill", children: [
+                        .element(XML.Element("a:srgbClr", attributes: [("val", "000000")]))
+                    ]))
+                ]))
             }
         }
         return Effective(properties: properties, text: text, fillOwner: fillOwner)
@@ -342,9 +420,16 @@ public struct TableStyleResolver {
     struct RenderSession {
         private let resolver: TableStyleResolver
         private var templates: [Int: Effective] = [:]
+        private var sharedBorders = Set<ObjectIdentifier>()
         private var remainingCost = 1_048_576
 
         init(_ resolver: TableStyleResolver) { self.resolver = resolver }
+
+        /// Only admitted template descendants have the stable read-only lifetime
+        /// needed by the renderer's decoded-paint reuse. Direct overlays bypass it.
+        func ownsSharedBorder(_ line: XML.Element) -> Bool {
+            sharedBorders.contains(ObjectIdentifier(line))
+        }
 
         mutating func effective(row: Int, column: Int) -> Effective {
             // Region membership and whole-table edge selection depend only on
@@ -363,8 +448,14 @@ public struct TableStyleResolver {
                 resolver.resolveColors(in: base.text)
                 // Bound estimated retained nodes/strings as well as the variant count.
                 // A large custom style still renders normally without caching.
-                if let cost = Self.cost(of: [base.properties, base.text], limit: remainingCost) {
-                    templates[key] = base; remainingCost -= cost
+                let borders = TableCellBorder.allCases.compactMap { base.properties.firstChild(named: $0.rawValue) }
+                // Reserve an estimated 512 bytes per border for identity sets,
+                // retained decoded entries and their bounded CSS/pattern strings.
+                // At most 36 templates x 6 borders can be admitted per render.
+                let paintCost = borders.count * 512
+                if let cost = Self.cost(of: [base.properties, base.text], limit: remainingCost - paintCost) {
+                    templates[key] = base; remainingCost -= cost + paintCost
+                    for border in borders { sharedBorders.insert(ObjectIdentifier(border)) }
                 }
             }
             if let direct = resolver.grid.cells[row][column].firstChild(named: "a:tcPr"),

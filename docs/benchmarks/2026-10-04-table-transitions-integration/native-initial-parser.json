@@ -1,0 +1,7 @@
+{
+  "status": "RETAINED_REVIEWER_JSON_REPRESENTATION_ERROR",
+  "script": "/tmp/review-s21-native-proposal-initial.py",
+  "scriptSHA256": "4e97bd0c14c4cc995cd95249a394356edafc205f61303b0dd45fa80c84267071",
+  "failure": "Direct glyph-record equality compared live fitz RGB tuple with JSON RGB list. Exact values otherwise match.",
+  "correction": "Normalize the live RGB tuple to JSON list; no values/tolerances/source/evidence changed."
+}

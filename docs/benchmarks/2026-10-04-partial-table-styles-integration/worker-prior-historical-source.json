@@ -1,0 +1,76 @@
+{
+  "commit": "e9b65363fd7a2614139543093b8b6e988807d554",
+  "scope": "Historical S18 owned source/resources pinned directly from Git; metadata checkout has advanced to S19. Original worker receipt and source blobs unchanged.",
+  "workerReceipt": {
+    "path": "/tmp/lectern-table-profiles18-worker-receipt.json",
+    "sha256": "e0155416d350255569a3229c1ca8d1d46a1607b61b2facf6be57705c0d34eef0"
+  },
+  "files": [
+    {
+      "path": "Lectern/AppTests/GlyphPaintWebKitTests.swift",
+      "gitBlob": "89328551d5397d00b5c3429ed34a5c3ff0d33fdc",
+      "sha256": "fc6c4838b3f82223282833f8923e6bb3f53484d8e1d515b1a0e45c427cdfca3a",
+      "bytes": 30578
+    },
+    {
+      "path": "Lectern/AppTests/LibraryTableJoinProfilesTests.swift",
+      "gitBlob": "4861200752990ab9d8c39543827651328bbea31d",
+      "sha256": "781acc08e98df53db5b2cec3c357471b0f024da91ce9f76237ce13836c19a0aa",
+      "bytes": 4436
+    },
+    {
+      "path": "Lectern/Sources/LecternCore/LibraryLab/LibraryLab.swift",
+      "gitBlob": "8f657761345d5b74b4dca1aa7d0905537ea467de",
+      "sha256": "3ede41b0586d391c4793e608fa8e10eb6df99582e6f228c158c8684d046f57f6",
+      "bytes": 13379
+    },
+    {
+      "path": "Lectern/Sources/LecternCore/LibraryLab/LibraryLabTypes.swift",
+      "gitBlob": "a82fff262e5f42d4e47d66526054706581c469d2",
+      "sha256": "d9953765f3c96a9033e998aef875a32e6a38fe13fb2394d798b385a9989279a8",
+      "bytes": 3912
+    },
+    {
+      "path": "Lectern/Sources/LecternCore/LibraryLab/PlatformLabRecipes.swift",
+      "gitBlob": "1ff1c4b264c5bec730e3ff6bb9606408fc2df980",
+      "sha256": "63334046a1f3f96b0920131f92f5889f1a5dbc1580d8268eaea97ec10cd57df6",
+      "bytes": 19492
+    },
+    {
+      "path": "Lectern/Sources/LecternCore/LibraryLab/PlatformTableJoinProfilesRecipe.swift",
+      "gitBlob": "33aa7bedadc86ca8a1daefc992a28fd991908b5f",
+      "sha256": "4d574ba548d3d8cb06ae1e704fd0791ba0f5c37d7f8f469511697cc7eb56d4f2",
+      "bytes": 17855
+    },
+    {
+      "path": "Lectern/Sources/LecternCore/Resources/LibraryLab/PROVENANCE.md",
+      "gitBlob": "aae06783cde3b450d45bc46cb4a88c5accfe0a97",
+      "sha256": "66ef67fe606296e335f850c30db9af5e9512f802a2ed72b9889bd9f08140ffdb",
+      "bytes": 20265
+    },
+    {
+      "path": "Lectern/Sources/LecternCore/Resources/LibraryLab/TableJoinProfilesReferences.json",
+      "gitBlob": "395a2f0e2665dc4ad8c3add43ddee30c7da71638",
+      "sha256": "bbff27c11da229684523fb6558f55f2c267adb1a258804acfbe5217f5a3e6765",
+      "bytes": 82461
+    },
+    {
+      "path": "Lectern/Sources/LecternCore/Resources/LibraryLab/native-table-joins18-v1.pptx",
+      "gitBlob": "b9a2d51af793530800b41160d0f3bd8cb5e2a483",
+      "sha256": "39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e",
+      "bytes": 411031
+    },
+    {
+      "path": "Lectern/Tests/LecternCoreTests/PlatformLabRecipesTests.swift",
+      "gitBlob": "a6b5b1e713b6f3cc0c6c7f5abd275d2523aeaf66",
+      "sha256": "b01183bae198ee0b4c60c14dd8db4e48c1bb04220addf922b7318a05989a0488",
+      "bytes": 7061
+    },
+    {
+      "path": "Lectern/Tests/LecternCoreTests/TableJoinProfilesRecipeTests.swift",
+      "gitBlob": "d3c97e22371da2eb94b309e7fb3f9871027ddc01",
+      "sha256": "cdf0386538b72147a559f0ffaa2b71c6b26767cf0aaaffe11c21880d59a1075b",
+      "bytes": 6411
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "status": "READ_ONLY_PROPOSAL_NO_BUILD_OR_TIMING",
+  "baselineSourceTree": "6d2e7cd2d2c057d4c9b916358882695cbe2c66d7",
+  "baseline": "S20 candidate Release retained byte-for-byte after S20 acceptance; verify exact integrated pre-S21 source/toolchain/modules/object/helpers. No fresh baseline build claim.",
+  "engine": "89aa1633cbbd07c152eb9e456c12e15686f7dbb8",
+  "productionScope": [
+    "Sources/Rostrum/Presentation/SVGRenderer.swift"
+  ],
+  "oldProtocol": {
+    "children": 660,
+    "primaryComparisons": 31,
+    "allPhases": 339,
+    "planSHA256": "c0de7aaa015a1bf28f5a8c3ff3aa2e4655201e4c7bf8f4f1e54e38eea4ce1454",
+    "preserve": "All original canonical/Unicode/native/custom/cache controls unchanged in bytes, scope, font registration and iteration counts."
+  },
+  "newWorkloads": [
+    {
+      "name": "native-transitions-vertical",
+      "source": "Tests/RostrumTests/Fixtures/NativeTableTransitions/vertical/native-table-transitions21-v1.pptx",
+      "inputSHA256": "5db74899fc18508281bc6787e4618a7bd471d27df213a2982cf86dfdccd022d2",
+      "slides": 2,
+      "cases": 8,
+      "scope": "Captured positive control, six newly admitted unmerged cases, one excluded colored merge. Complete file render remains primary; per-case native fidelity checked separately."
+    },
+    {
+      "name": "native-transitions-horizontal",
+      "source": "Tests/RostrumTests/Fixtures/NativeTableTransitions/horizontal/native-table-transitions21-horizontal-v1.pptx",
+      "inputSHA256": "166cc0173a0ce1c899a1e11a29fc6d7f3d00d2da9d40818a7852249c4be07824",
+      "slides": 2,
+      "cases": 6,
+      "scope": "Captured outer/interior horizontal transitions, noFill donor and both-axis junctions."
+    },
+    {
+      "name": "vertical-transitions-100x20",
+      "slides": 1,
+      "rows": 100,
+      "columns": 20,
+      "scope": "Derived reproducibly from pinned S20/S18 axis-color100x20 input. Change only agreed neighboring direct edge declarations to repeated opaque solid color/width transitions along vertical lines, retain text/style/fonts and positive24x12pt cells. Dense transition stress covers repeated admissions beyond old single-transition control."
+    },
+    {
+      "name": "horizontal-transitions-100x20",
+      "slides": 1,
+      "rows": 100,
+      "columns": 20,
+      "scope": "Same fixed source with repeated horizontal color/width transitions and periodic agreeing noFill donor edges. Native scope supports both axes/noFill; this finite generated case is not new native validation."
+    }
+  ],
+  "proposedCounts": {
+    "children": 748,
+    "newChildren": 88,
+    "primaryComparisons": 35,
+    "allMeasuredPhases": 383,
+    "corpusCases": 194,
+    "corpusSlides": 892
+  },
+  "protocol": "One excluded warmup pair plus10alternating retained pairs; unchanged canonical runner and helper source; new four files in separate88-child transition pool; original render before mutation, embedded registration outside render; same font SHA7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954.",
+  "classification": "Old reject-collinear-transition100x20 is now newly admitted, not an unchanged rejection control. Preserve its old input and report intentional endpoint/ordered-border changes. Audit every changed corpus SVG against source eligibility; exact complete text/font/glyph/fill/non-line tree and line count/non-coordinate paint attributes. Preserve saved packages, ordered diagnostics/inheritance and repeated candidate outputs. Rejected merged and colored RTL remain exact. No broad stripping that could hide unsupported changes.",
+  "native": "14captured cases/240body glyphs;13admitted107intervals, excluded colored merge exact old path. Native ordered-paint checks remain separate from large generated stress.",
+  "proof": "Full candidate tests/Release,194case892slide baseline+candidate2 and python-pptx reopen; existing101310shaping1728layout and fixedsmall/large/image-heavy; retain source/helper/input/font/object/module pins. All stress generated twice exact. Source limited to approved admission simplification; no perf optimization edits.",
+  "statistics": "All383phases/RSS/raw controls; same100000seeded bootstrap/exactsign, phase attribution and sharedhost limits. SVGbyte deltas reported with intended endpoint/order differences, no universal recovery.",
+  "estimatedSeconds": "Approximately210\u2013260, provisional until untimed preflight; no timed pilot/adaptive rerun.",
+  "gates": "Wait for S20 acceptance/docs freeze before branch/candidate work. Independent final S21 protocol/readiness review and new explicit root quiet grant before timing."
+}

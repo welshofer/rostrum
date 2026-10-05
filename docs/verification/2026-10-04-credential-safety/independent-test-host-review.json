@@ -1,0 +1,46 @@
+{
+  "status": "APPROVE_SOURCE_CONFIG_RUNTIME_ACCEPTANCE_HELD",
+  "initialCommit": "afc3a3148eef36653dc615a71bae62bcfe82d2dc",
+  "reviewedWorkingCorrection": "Dedicated LECTERN_TEST_DERIVED_DATA_PATH; production override ignored",
+  "pins": {
+    "/Users/welshofer/Developer/rostrum/Lectern/project.yml": "21606da372802aee47d7a46de763d02e1792da76c0c9e00500ee3e9d6ba488cd",
+    "/Users/welshofer/Developer/rostrum/Lectern/scripts/test-app.sh": "74cc88f300ba1b406e344f7865fc68ed133a3652e919692b5d25186318903e0f",
+    "/Users/welshofer/Developer/rostrum/Lectern/scripts/build.sh": "599b854aa169ce6a3855cb04bf492c8fff9f13a2eb15bee9462b0adcade3f8a7",
+    "/Users/welshofer/Developer/rostrum/Lectern/scripts/build-ios.sh": "9ac031d96d23c87b22c2a7fd6a5cd93da0a97d9f767e4509a8468404baf9d355",
+    "/Users/welshofer/Developer/rostrum/scripts/tests/test_app_preflight.py": "a281ae2b06a7c2213c0ec6d6ad131b7c6dbbb908b47ebea41fe87bae77e42d91",
+    "/Users/welshofer/Developer/rostrum/scripts/tests/test_build_wrappers.py": "3688ee26f9bcbb6630a188cd472ab57787bbeabd3b2deb0c7fcdb7764d50caa5",
+    "/Users/welshofer/Developer/rostrum/Lectern/App/AppState.swift": "578bd231c7b5163c9c15f2e96541740de83ad4adb5f3a3c8f1ddc6ec6999bb5b",
+    "/Users/welshofer/Developer/rostrum/Lectern/App/CredentialStore.swift": "38494b401a2b1668d57fc59cc12be60ea77d25125c4ff0c1ecb2c6c84d8baae6",
+    "/Users/welshofer/Developer/rostrum/docs/KEYCHAIN-SAFETY-20261004.md": "d266f2384992ca1863ef94c76e16b0ef4245c9f88cfda3fa5f642d64031914e2",
+    "/tmp/lectern-test-derived-data-before.log": "83e10fdf3a34f30206ab8807ad3fde4375b17b107a48a5abaf8a4fc5feabec5e",
+    "/tmp/lectern-test-host-isolation-final-20261004.log": "26a0332e1e63894a22c6c56e3d65aa46881ea4291393cc8358414e60fd7bd47b"
+  },
+  "findingsClosed": [
+    "Common derived-data override could select production products; new dedicated override closes this path"
+  ],
+  "verifiedSourceContracts": [
+    "Normal Lectern bundle identity/signing unchanged",
+    "Test host executable/product LecternTestHost and bundle com.lectern.app.testhost distinct",
+    "PRODUCT_MODULE_NAME Lectern retains existing test imports",
+    "LecternTests scheme and AppTests TEST_HOST/BUNDLE_LOADER target dedicated host",
+    "Explicit test-host bundle flag selects disabled credentials and temporary library/preferences without scheme env",
+    "Script checks both exact process names before and after project generation; fails closed on inspection error",
+    "No process termination commands in wrapper",
+    "Test path default .build-xcode-tests and dedicated override; production LECTERN_DERIVED_DATA_PATH unused by test wrapper",
+    "Canonical signing identity and manual signing retained"
+  ],
+  "testEvidence": {
+    "originalGapRegression": "One definition/two subcases failed before correction; original log retained",
+    "finalMockedStatic": "Five definitions passed in 0.450s per reviewed root log; reviewer did not execute them",
+    "executionScope": "XcodeGen in owned temporary project and mocked pgrep/xcodebuild; no actual build/app launch",
+    "standaloneHeadless": "Root separately reports 26 definitions/33 executions/3 suites; review saw actual final passing log summary; not hosted acceptance"
+  },
+  "reviewerActivity": "Read source/config/generated project metadata and logs, write only this receipt; no build/test/app launch, termination, Keychain or secret access",
+  "limits": [
+    "Hosted target has not been compiled/launched/tested; static source and generated mapping only",
+    "Two preflight checks cannot provide an atomic guarantee against an app starting after final check; distinct host identity still protects against launching or terminating the normal bundle",
+    "Explicit user hold on app-hosted tests/launch/termination/relaunch remains in effect",
+    "Dedicated test-path override can deliberately point anywhere; callers must use owned isolated path",
+    "Author of KeychainStore patch did not independently approve that patch here"
+  ]
+}

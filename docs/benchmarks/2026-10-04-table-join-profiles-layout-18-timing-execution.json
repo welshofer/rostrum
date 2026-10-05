@@ -1,0 +1,111 @@
+{
+  "planSHA256": "70049f06a5d86f9b5e30eebc5f695cbc4e3962af4e66579729a2f5c19d1084de",
+  "launchSHA256": "a1f81dbedb8fcf99b1abd0b5cdb7709f5a43f01870a73254de1f4ce55407a631",
+  "executions": [
+    {
+      "name": "canonical",
+      "argv": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/candidate-extended-bench",
+        "--paired-binary",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/baseline-extended-bench",
+        "--paired-revision",
+        "ce8551e69350ba5f5808df1c2337e40add9548d2",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "table-200x50",
+        "table-20x10",
+        "shaped-table-100x20",
+        "richtext-fit",
+        "slides-10",
+        "--output",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/canonical-paired.json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 20.8023953330121,
+      "environment": {
+        "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "ROSTRUM_PROFILE_FONTS": null,
+        "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+        "ROSTRUM_BENCH_OUTPUT": null
+      }
+    },
+    {
+      "name": "supplement",
+      "argv": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/candidate-supplement-bench",
+        "--paired-binary",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/baseline-supplement-bench",
+        "--paired-revision",
+        "ce8551e69350ba5f5808df1c2337e40add9548d2",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "--output",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/supplement-paired.json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 20.826839999994263,
+      "environment": {
+        "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "ROSTRUM_PROFILE_FONTS": null,
+        "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+        "ROSTRUM_BENCH_OUTPUT": null
+      }
+    },
+    {
+      "name": "native",
+      "argv": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/candidate-table-bench",
+        "--paired-binary",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/baseline-table-bench",
+        "--paired-revision",
+        "ce8551e69350ba5f5808df1c2337e40add9548d2",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/native-table-joins18-v1.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/ltr-single-100x20.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/rtl-single-100x20.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/axis-colors-100x20.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/horizontal-merges-100x20.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/vertical-merges-100x20.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-rtl-colors-100x20.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-merge-colors-100x20.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/uniform-100x20.pptx",
+        "--output",
+        "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/native-paired.json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 58.291250417008996,
+      "environment": {
+        "ROSTRUM_BENCH_FONT": null,
+        "ROSTRUM_PROFILE_FONTS": null,
+        "ROSTRUM_BENCH_NATIVE_INPUTS": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/native-inputs.json",
+        "ROSTRUM_BENCH_OUTPUT": null
+      }
+    }
+  ],
+  "elapsedSeconds": 100.02530400000978,
+  "explicitQuietWindow": true,
+  "knownLoad": "No task build/test/GUI work; ambient process snapshots retained. No host settings changed.",
+  "reruns": 0
+}

@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "review": "Independent read-only final credential storage, state, and UI source review",
+  "result": "APPROVE",
+  "reviewedAt": "2026-10-05T03:58:14.149021+00:00",
+  "repository": "/Users/welshofer/Developer/rostrum",
+  "head": "afc3a3148eef36653dc615a71bae62bcfe82d2dc",
+  "files": {
+    "Lectern/App/KeychainStore.swift": {
+      "sha256": "ef5ec8049e673705648b15773b7a1fa68cee2734d4ba67d8821002169e347488",
+      "bytes": 8646
+    },
+    "Lectern/App/AppState.swift": {
+      "sha256": "578bd231c7b5163c9c15f2e96541740de83ad4adb5f3a3c8f1ddc6ec6999bb5b",
+      "bytes": 52761
+    },
+    "Lectern/App/CredentialStore.swift": {
+      "sha256": "38494b401a2b1668d57fc59cc12be60ea77d25125c4ff0c1ecb2c6c84d8baae6",
+      "bytes": 1147
+    },
+    "Lectern/App/SettingsView.swift": {
+      "sha256": "ce8cbf6a69dad60731de930793f91530303f000dc6db18b7831f9ac98cfc329d",
+      "bytes": 9877
+    },
+    "Lectern/App/ContentView.swift": {
+      "sha256": "6d0f52f6f0a0879fccc4659610f96f021fe534b3e3800992ec5381e88121de41",
+      "bytes": 41847
+    },
+    "Lectern/App/LibraryView.swift": {
+      "sha256": "aacabeb8e577aa5a5c9898d3e142d7dbeb09d32fe59688b376bf33cfa54fd735",
+      "bytes": 20456
+    },
+    "Lectern/AppTests/KeychainStoreTests.swift": {
+      "sha256": "abe4acf11c3d667ce374ce853edf1f1b28cfc6fd849fd3758a579066c5a42304",
+      "bytes": 8957
+    },
+    "Lectern/AppTests/CredentialStateTests.swift": {
+      "sha256": "2a7f6c93b88764f9ee7a3c1fb91b88de1ff99491e85d8a7d37a1aa86e0bcabbd",
+      "bytes": 6821
+    }
+  },
+  "findings": [],
+  "resolvedFindings": [
+    {
+      "surface": "ContentView.generateBar",
+      "resolution": "Test-session and unavailable-access messages precede the missing-key branch."
+    },
+    {
+      "surface": "LibraryView.empty",
+      "resolution": "Test-session or unavailable-access state precedes missing-key welcome; retry is offered only outside the test session."
+    }
+  ],
+  "verifiedBySourceInspection": [
+    "Replacement updates only kSecValueData, preserving existing access control; no replacement path deletes an item.",
+    "Only item-not-found permits add; duplicate-add retries update once. Write failures propagate without deletion.",
+    "Read/presence queries distinguish missing from unavailable; malformed successful read is decode failure.",
+    "AppState routes all credential operations through one dependency; failed writes/removals preserve known presence.",
+    "Availability refresh changes validation revisions; stale asynchronous validation results cannot replace refreshed state.",
+    "Active-run guard precedes credential guards; duplicate generate does not replace active generation state.",
+    "Settings retains entered key after a failed save; unavailable prompts and footers do not imply absence.",
+    "Disabled test store cannot reach live Security; validation and generation stop before credential reads in test sessions.",
+    "forLaunch accepts either explicit test environment or immutable bundle flag; Bool and NSString flag representations are handled.",
+    "Fake-only tests cover failure paths, separate account namespaces, absence classification, disabled live requests, active-run guard, and manually launched test-host flag."
+  ],
+  "validation": {
+    "method": "Read-only source inspection and source hashing only",
+    "testsExecutedByReviewer": false,
+    "appLaunchedOrTerminated": false,
+    "realSecurityCalls": false,
+    "credentialValuesRead": false,
+    "parentReportedHarnessResults": "Parent reported first standalone headless harness 18 definitions / 24 executions passed; latest UI/flag harness result was pending at request time. This review does not independently assert those execution results."
+  },
+  "scopeLimitations": [
+    "Dedicated test-host target, scheme, build/signing configuration, and verify script are outside this review.",
+    "No runtime GUI or actual Keychain accessibility/ACL experiment was performed.",
+    "Review covers exact file hashes, not all unrelated changes at recorded HEAD."
+  ]
+}

@@ -1,0 +1,284 @@
+{
+  "status": "APPROVE_BOUNDED_S21_NATIVE_PROPOSAL_BEFORE_IMPLEMENTATION",
+  "sourceBaseline": "119b1c107ff9911bdc86241e0e86a7a323a3b087 (S20 ancestry; not integrated root)",
+  "productionEditsApprovedForNextReviewOnly": "Simplify existing unmerged LTR mixed-profile admission; preserve all enclosing solid/opaque/topology/dimension/ragged/diagonal guards, existing one-color RTL and one-orientation/one-color merged paths. Actual implementation/tests/integrated output/performance still require review.",
+  "cases": 14,
+  "glyphs": 240,
+  "nativeIntervals": 115,
+  "opaquePaintRegions": 1131,
+  "proposedCases": 13,
+  "proposedIntervals": 107,
+  "proposedPaintRegions": 1081,
+  "preFixAdmittedIntervalFailures": 101,
+  "excludedCaseIDs": [
+    "merged-colored-rejection"
+  ],
+  "maximumGlyphErrors": {
+    "x": 0.00830078125,
+    "y": 0.080078125,
+    "paintSize": 1.9073486328125e-06
+  },
+  "bounds": {
+    "vectorPT": 0.001,
+    "RGB": 0.0001,
+    "glyphXPT": 0.025,
+    "glyphYPT": 0.121,
+    "paintSizePT": 0.002
+  },
+  "rows": [
+    {
+      "id": "constant-grid-line-control",
+      "glyphs": 16,
+      "intervals": 6,
+      "paintRegions": 36,
+      "preFixFailingIntervals": 0,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "outer-width-transition",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "outer-color-transition",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 36,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "outer-color-width-transition",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "interior-narrow-to-wide",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "interior-wide-to-narrow",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "transition-noFill-donor",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "merged-colored-rejection",
+      "glyphs": 12,
+      "intervals": 8,
+      "paintRegions": 50,
+      "preFixFailingIntervals": 8,
+      "proposedAdmission": false,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "horizontal-outer-narrow-wide",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "horizontal-outer-wide-narrow",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "horizontal-interior-narrow-wide",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "horizontal-interior-wide-narrow",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "horizontal-noFill-donor",
+      "glyphs": 16,
+      "intervals": 7,
+      "paintRegions": 48,
+      "preFixFailingIntervals": 7,
+      "proposedAdmission": true,
+      "grid": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "both-axes-multiple-transitions",
+      "glyphs": 36,
+      "intervals": 24,
+      "paintRegions": 529,
+      "preFixFailingIntervals": 24,
+      "proposedAdmission": true,
+      "grid": [
+        3,
+        3
+      ]
+    }
+  ],
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/capture.log": "e4eaf1206b296c19fedfbd581233e0b21f3b4d94059dc30a89c55077c0235853",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/before-comparison.log": "496efaa95a41aee123d7d8a3d09b5b13a6ebf8db130c251c52473bc3d8bbc9b2",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/audit.json": "e9aa749c125847c4cd04bc5fad2bb52c967ee4a8f9298ab95b1375288860ce9d",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/native-vectors.json": "a3bd0034d4ac2e9d94c0dcfe891468284e1fbb7f5032cf83376ecff51bac0ca2",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/audit.py": "c4ee3dbe22534e79e438890a73f9f39fbb7e299179bb7ff270691e52cd3a7572",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/paint-reference.json": "80dbfba63a00257ed31d5cef37fe86119eb3c4b9bf47f673c62e3842913f44e1",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/before-comparison.json": "1ceb84445e79c657a11a57414836db9a65f6906d46b4779f89a75b68ed3a0176",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/generate.py": "005b7b4dd0d21022571724a8fa44b0437f1d71a91d24e3b5c9152bc2ce3cce8e",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/font-proof.json": "09ee5ac2ee28bc70b516eda8b1a518a6484ada2262a5aeea0cf7b41ce6ed00b8",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/powerpoint.pdf": "b2cf2764cd381e441c7f0639d986905b42c06ba7969e7caa4495ff6c8e4691f7",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/model-proof.json": "2853970eec8ce2a2750a6ec8efde38e9d61ac8127bc1261bf060c02727c6da66",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/model.py": "ee91a1d154132d217ef4d938e20b3780458df5e573602137d3709cbfd4540704",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/capture.py": "4ceee681d7dd5f324d555f4f28b941d6fafa27186791fc6ac14eafbfbb4b460c",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/root-visual-review.json": "e516ed886bcc18029a0e5ae036773fd50cff98aa254ad7badc3762868f266859",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/baseline-paint.json": "bf132115ded1f22d6180b2787607d26c79730a1b2930ac158c1348b4ec5dc071",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/model.log": "e7057be6fbd33a85fa6f8e880835241b2d7967315e308c0ee7c4c17fbef8e877",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/cases.json": "9e936449e4da20d674c19e65c005c4976b855c3adc8147ab38514959b548d1af",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/font-proof.py": "7f7548312a2cf0ebbbf36794e66b6afcaf8f83fe1a54761de4ad09b554c19c74",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/pdf-font-7.ttf": "bb8d7ffd35bee675072ca28007fcdbb27670a4dea4cf21e354566739a8632f47",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/model-paint.json": "8b1d74139adfbda7d817c26f63bde9959f675aa7e94501701661d104b97f43ad",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/manifest.json": "339c07a2c8e0abb14cf631830149b1351a8d021a345509e35945b4d39831f55b",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/page-1-content.txt": "5e5491cadfc50c63658b1e5c454a6a6c8b864a136fdd76867e82f8854e85188c",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/page-2-content.txt": "481d64ab9f30c41674174d01668be41c6a784957872269c7690a2de683fd4d32",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/PROPOSAL.md": "994351f6e98fd76d6ada2a59536ebbade1ca94859e946f3e0a983b44e009d730",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/native-table-transitions21-v1.pptx": "5db74899fc18508281bc6787e4618a7bd471d27df213a2982cf86dfdccd022d2",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/compare.py": "3cd37a9e6b093730c9b0f8bc9c6094497833d879c4f2fbaef23e5713b9645bc1",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/capture-receipt.json": "c4756eea6a82101372c1a40c706cae63798498e12bada11e35534edfe9fca446",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21/before.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/capture.log": "ead9aa4e44694dba0303884c6f6778439ead3cb77e2b30840a954d3990b4f701",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/IMPLEMENTATION-PROPOSAL.md": "76c89283bba1ff3dd704977e6f3b26e74376fd1a1036e87f9e8cf1a54f0be9c3",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/audit.json": "64bb9cfd10bd6e5d62ca35a2be63d42b99aca666306cce98ba50747cbff66c54",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/native-vectors.json": "0a388870fa543572d6a382642433e8d58bae76c44ce84a9c6f8ae273f2b7855c",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/native-table-transitions21-horizontal-v1.pptx": "166cc0173a0ce1c899a1e11a29fc6d7f3d00d2da9d40818a7852249c4be07824",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/font-proof.log": "1daa34bf59e2b41f13319c3ed43f96f6bbdda702530806117c14997d385bb02c",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/audit.py": "1645fdbd2ff7542c4e402c38930925eb91269fe4a2ea83821d300efa1b03d72c",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/paint-reference.json": "b97966cc0b10c835325637c3b08cdd68d043bc1a4871bab22e07afd2d132d37f",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/before-comparison.json": "6ff9b67f1d4bcf597e9a6d700e369b38e201c7a37cc2d40c60b75725aea44981",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/generate.py": "eaa7ab6e24104808cc0fe3cff20b6bac4bb09ef64167aee1ed9bde1c95ab04bc",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/font-proof.json": "5ccd0e530325552e13244885dd3b8e0921880b1deb7f33d442a406b95d37a386",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/powerpoint.pdf": "198360278444fa0b3c2fe7aa7fa2f528fa1adeb7959d922932538f2b15cbed4e",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/model-proof.json": "cd412683fe67768db7c8a585b53a7aaba541dbd644c519630a42586f7e7e0423",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/frozen-source-pins.json": "856f74ba8e327d23428e948d0cd188ada0200705c472d23fb1c2f44e575f9da2",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/model.py": "5d464b09bdfc0575c12e7e852ee52b4991de5dab7cdef8c5438d3ded54c2a5f6",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/capture.py": "4ceee681d7dd5f324d555f4f28b941d6fafa27186791fc6ac14eafbfbb4b460c",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/root-visual-review.json": "6f451620425881fe5d39de520c4d8dc4994005ed95ce6de91ae06ac53c222b3d",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/expanded-model-proof.json": "e0759302a182303dd8f7aac366aeffbf33d10a05b3ff5247d7a2508d7a4bc136",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/baseline-paint.json": "098f0632fe7a1205c22f2ba3ea17e26f815d1e0d85d0ff7d289bd91307733e1a",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/model.log": "b12ada39d5139d353de324883636441e06c32e54f5f82601cef000e1f66c41eb",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/cases.json": "7410c2ec576f182b6b32fce386b7ce2b17715b8e905ab9c0ea67f1502b1d282a",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/font-proof.py": "1318a0dd9a2eb7f714526d04ab67f057ac67e728179898cc1abf1e6d88b3a9bd",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/pdf-font-7.ttf": "e8caec44eea353ba04207c8d0aefeaade67342e2ffdb6169272af659d5336763",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/model-paint.json": "3d2ad9b5656ae382c4170d6536b8d5c34149ae0509a723da617fc79d5c8141dd",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/manifest.json": "4893dbabbadd83602e429966951b193cf5ee29f30d4eb2207980fd6016be4e5f",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/page-1-content.txt": "8e6f79fd764cca0df914bc5747732e21a2eab1a8734fbf189d73c8ce982d62c3",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/page-2-content.txt": "1faf5277edce98b0a91530252a26e4e7c16c047ba434c2f2ae3f8f919606ce7c",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/PROPOSAL.md": "ea74aff5000293248365a97445c6d6dd52ab136beebdacecc7268ea2795c7bd7",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/compare.py": "3cd37a9e6b093730c9b0f8bc9c6094497833d879c4f2fbaef23e5713b9645bc1",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/capture-receipt.json": "0780410c0073d780bef838027e1042c1839a3e3fb6a01cfb276a9b464199107e",
+    "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-transitions21-horizontal/before.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+  "reviewedRawMatrixHelper": {
+    "path": "/tmp/verify-webkit-paint.py",
+    "sha256": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48"
+  },
+  "findings": [],
+  "retainedParserRepresentationCorrection": {
+    "path": "/tmp/rostrum-s21-independent-initial-parser-review.json",
+    "sha256": "4a486dd34c80b931b0ba8e85a2172d81959ddddfcdb38caa4e3082cf3149effc"
+  },
+  "retainedReviewerImportCorrection": {
+    "path": "/tmp/rostrum-s21-independent-import-review-failure.json",
+    "sha256": "c1c5ce89b6897f8bbec3280f6f78c020b5e09d802fbada5fb2828c1b974e7b0d"
+  },
+  "limitations": [
+    "No production change, tests/builds/GUI or timing launched by reviewer; source/regeneration/helper provenance retained, no new production performance claim.",
+    "All 240 font outlines/raw paint matrices and existing body positions independently checked; no transformed glyph-ink/raster/whole-slide claim.",
+    "Model predictions use pinned baseline primitives and source grid coordinates/widths only; native intervals/origins are comparison targets, not prediction inputs. Full ordered paint regions compare raw RGB within .0001 rather than only rounded color buckets.",
+    "Merged-colored model agreement is research only, excluded from proposed support; preserve exact baseline fallback geometry in strict tests. Both-axis3x3 expands transition evidence without proving all topology/style combinations.",
+    "S20 ancestry omits root prior ordinary-inheritance reuse; integrated proof/performance must use exact accepted root baseline."
+  ],
+  "script": "/tmp/review-s21-native-proposal.py",
+  "scriptSHA256": "70cde44e663e9a129a47838d4cd8fa5f6b77b47f08ef7156100e1194569c9bfd"
+}

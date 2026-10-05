@@ -2,17 +2,31 @@
 # Run the app-hosted tests locally. These exercise AppState and the SwiftUI
 # target, which SwiftPM's LecternCore tests cannot import.
 #
-# Signing: identical to scripts/build.sh, and that is not optional. Both write
-# into the same derived-data path, so whichever ran last decides how the app in
-# .build-xcode is signed. This script used to leave it at project.yml's ad-hoc
-# default, whose cdhash changes on every build — which re-sealed the app after
-# each test run and orphaned the login-keychain items saved by the previous,
-# stably-signed one. The symptom is a key the app can find and cannot read:
-# Settings says "saved" in the field and "no key stored" beside it.
+# A separate test host and derived-data directory protect the user's app.
+# LECTERN_TEST_DERIVED_DATA_PATH is intentionally separate from the app override.
+# Signing still follows build.sh; this script never terminates running apps.
 #
 # Deliberately local-only: never add a hosted macOS Actions job for this repo.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+require_idle_apps() {
+  local app process_status
+  for app in Lectern LecternTestHost; do
+    if pgrep -x "$app" >/dev/null 2>&1; then
+      echo "error: $app is running. Finish your work and quit it before running app tests; no process was stopped." >&2
+      exit 1
+    else
+      process_status=$?
+      if [ "$process_status" -ne 1 ]; then
+        echo "error: Could not check whether $app is running; app tests were not started." >&2
+        exit 1
+      fi
+    fi
+  done
+}
+
+require_idle_apps
 
 if [ -f .signing.local ]; then
   # shellcheck disable=SC1091
@@ -21,10 +35,12 @@ fi
 
 bash scripts/generate-project.sh
 
+require_idle_apps
+
 # Apply manual signing to SwiftPM resource bundles as well as the app.
 # Automatic bundle signing otherwise requests a team even for a local build.
-xcodebuild -project Lectern.xcodeproj -scheme Lectern -configuration Debug \
-  -destination 'platform=macOS' -derivedDataPath "${LECTERN_DERIVED_DATA_PATH:-.build-xcode}" \
+xcodebuild -project Lectern.xcodeproj -scheme LecternTests -configuration Debug \
+  -destination 'platform=macOS' -derivedDataPath "${LECTERN_TEST_DERIVED_DATA_PATH:-.build-xcode-tests}" \
   CODE_SIGN_STYLE=Manual \
   ${LECTERN_SIGN_IDENTITY:+CODE_SIGN_IDENTITY="$LECTERN_SIGN_IDENTITY"} \
   test "$@"

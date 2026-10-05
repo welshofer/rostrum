@@ -1,0 +1,51 @@
+{
+  "status": "READY_FOR_INDEPENDENT_FINAL_PROTOCOL_REVIEW_NO_TIMING_AUTHORIZED",
+  "baselineSource": "ce8551e69350ba5f5808df1c2337e40add9548d2",
+  "baselineBuild": "Retained matching accepted S17 Release products copied byte for byte; not a newly built baseline. Original Git, source, compiler, object/module/helper pins verified.",
+  "candidateSource": "e8c8b1642635c7542e5e075f0a904c8bf908e0ea",
+  "productionDiffFiles": [
+    "Sources/Rostrum/Presentation/SVGRenderer.swift"
+  ],
+  "tests": {
+    "libraryTests": 1183,
+    "librarySuites": 172,
+    "layoutTests": 18,
+    "layoutSuites": 3
+  },
+  "candidateReleaseSeconds": 56.88,
+  "corpus": {
+    "cases": 177,
+    "slides": 872,
+    "freshProofProcesses": 531,
+    "freshExternalReopens": 531,
+    "changedCases": 7,
+    "changedSVGs": 12,
+    "savedPackagesExact": true,
+    "orderedDiagnosticsAndInheritanceExact": true,
+    "candidateRepeatedExact": true,
+    "all13PriorS17InputsExact": true
+  },
+  "semantic": {
+    "wholeNonLineTreeIncludingTextExact": true,
+    "lineCountAndAllNonCoordinatePaintAttributesExact": true,
+    "onlyEndpointsAndOrderChange": true,
+    "changedOlderFixture": "DoubleTableBorders/style-precedence-rtl.pptx slides12/15/16 in fallback and corpus-registered modes",
+    "nativeCases": 8,
+    "nativeGlyphs": 112
+  },
+  "shapingRecords": 101310,
+  "layoutRecords": 1728,
+  "fixedPreservationExternalReopens": 6,
+  "children": 374,
+  "primaryComparisons": 18,
+  "allMeasuredPhaseComparisons": 196,
+  "physicalPins": 70,
+  "outputArtifactCount": 9540,
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/timing-plan.json": "70049f06a5d86f9b5e30eebc5f695cbc4e3962af4e66579729a2f5c19d1084de",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/run-authorized.py": "6c9b70f71ce07b418e2b99187f68e586a0758774c304524fbfb965412f5b135d",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/preflight-verification.json": "6d3248e0d04d8a7e09a60602c64554cca5c0fb0e5d93e0ab7e8cba1ec29160cc",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/output-artifact-pins.json": "dec92f527e2d6fbd5b00f8efb1a1f625b2b1a39c8c0be11007ceb4320c1158f1",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/input-pins.json": "175e1b951175932ac3ab5673faebbe79b331ab2910980e25a2b37b501f50efa0"
+  }
+}

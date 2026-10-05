@@ -1,0 +1,17 @@
+# Native shape image ownership
+
+Four independently generated decks isolate selected image resources without typography. PowerPoint 16.113.3 opened each without repair and exported local Best for printing PDFs with the online option disabled. Source PPTX bytes were unchanged and never saved by PowerPoint. Per-deck capture receipts and visual-review receipts are retained beside each accepted PDF. Numeric acceptance is separate from the visual review.
+
+The first three decks select format-scheme fill index 1: a theme-owned red image with a colliding slide-owned blue relationship; the same theme image without a matching slide relationship; and a direct blue slide fill overriding the theme reference. The fourth deck adds background-matrix indices 1001 and 1002 for collision/no-collision, plus direct layout/master blue furniture overriding theme red. Separate background entries are necessary to select distinct relationship IDs on the same slide. The fourth slide has an explicit white background to isolate its four shape fills.
+
+All seven PDF image paints decode to the exact independently CRC-verified 2×2 RGB source pixels. Their raw image matrices and frames match the authored finite rectangles exactly. `capture.py` retains raw page streams, XObject metadata, decoded pixel hashes and matrices. `audit.py` verifies source/PDF pins, source PNG chunks/pixels, native decoded pixels, all seven ordered matrices/frames and package XML readability. The Swift test verifies exact embedded original PNG bytes, ordered SVG pattern/image frames and their actual painted rectangles against these references, at 0.001 pt (observed residual zero). This is selected-resource and finite-placement evidence, not general raster, interpolation, crop, transform or typography parity.
+
+`generate-originals.py` reproduces the original three decks from the retained ImageOffice fixture. `generate-inherited.py` derives the fourth from the first. All four reproduce byte-for-byte. Existing unused package members are retained; only the presented one-slide cases are asserted. `pins.json` records committed artifact hashes.
+
+## Implementation and tests
+
+The pre-fix renderer selected a theme image but resolved its relationship using the shape part. A colliding slide ID painted the wrong blue PNG; a missing slide ID omitted the red image. Selected theme image failures also escaped direct-shape diagnostics. The source/relationship tests recorded 15 strict failures before the correction; direct authored paint was already correct.
+
+The bounded correction retains the selected Part alongside effective fill properties. Direct fills and noFill retain the shape's actual slide/layout/master owner. Selected theme fills retain the theme owner for both image lookup and diagnostics. Failed selected image lookups no longer retry with an implicit slide owner. Existing color substitution, crop/transform algorithms, table/background rendering and public APIs are unchanged. Diagnostics for referenced images name the theme part and the referring fillRef path; direct paint is not diagnosed twice.
+
+Additional source-contract tests cover missing/external/unsupported theme resources, unused overrides, live relationship retargeting through a reused renderer, invalid/zero/out-of-range references, inherited furniture switching to theme paint, deterministic output, source purity and save/reopen. Those mutated controls are not additional native captures. No new placeholder-fill inheritance or namespace-rendering support is claimed.

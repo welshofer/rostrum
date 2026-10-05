@@ -1,0 +1,103 @@
+{
+  "status": "CorePassed_AppNativePending",
+  "engineCommit": "85e1e3946f9d34a93e500cd977e4741e249a8425",
+  "engineDocsCommit": "dc40a98b09d0db7c132c82c9e8f41b12dd4c5638",
+  "focused": {
+    "tests": 4,
+    "suites": 1,
+    "executions": 6,
+    "seconds": 7.319,
+    "exitCode": 0,
+    "command": "swift test --package-path Lectern --jobs 2 --filter PartialTableStylesRecipeTests",
+    "log": {
+      "path": "/tmp/lectern-partial-styles19-focused-3.log",
+      "sha256": "a9a7e8b30cc89d8400179ced902904fb0a46d77b3c6d6c2c9ea146feb72b6474",
+      "bytes": 1709
+    }
+  },
+  "fullCore": {
+    "tests": 302,
+    "suites": 46,
+    "seconds": 108.318,
+    "exitCode": 0,
+    "command": "swift test --package-path Lectern --jobs 2",
+    "log": {
+      "path": "/tmp/lectern-partial-styles19-core-final.log",
+      "sha256": "f307fceab1a49d08063bd6c5d8ed3b481850cb5113878b1e3cf23aa3d21dca83",
+      "bytes": 76207
+    }
+  },
+  "catalog": {
+    "recipes": 32,
+    "checks": 711,
+    "findings": 413,
+    "failedChecks": 0,
+    "directory": "/tmp/lectern-partial-styles19-all-lab-final"
+  },
+  "newPipeline": {
+    "options": 2,
+    "checksPerOption": 62,
+    "findingsPerOption": 0,
+    "slides": 3,
+    "directory": "/tmp/lectern-partial-styles19-pipeline-full-final"
+  },
+  "history": [
+    {
+      "log": {
+        "path": "/tmp/lectern-partial-styles19-focused.log",
+        "sha256": "c15c752f8066db457ad00b9aed173078e95bf46b540ec8defbeb44b76a7a8dde",
+        "bytes": 19724
+      },
+      "status": "compile failure retained: Swift throwing short-circuit expression needed outer try"
+    },
+    {
+      "log": {
+        "path": "/tmp/lectern-partial-styles19-focused-2.log",
+        "sha256": "6679885af5133bfbc54977d2ffab4594dae5dc247ad270617cffbea6d9e362fc",
+        "bytes": 6037
+      },
+      "status": "focused pass before adding non-vacuous definition count"
+    },
+    {
+      "log": {
+        "path": "/tmp/lectern-partial-styles19-core-full.log",
+        "sha256": "a872d66ce9f87fe0862f32fb1f9da39d049463b674d32be96909a76102d2c00a",
+        "bytes": 3167728
+      },
+      "status": "302tests/46suites failed7issues: helper selected a prefix while native definitions use ns0; fixed namespace resolution with exact12native/16authored count, no relaxed checks"
+    }
+  ],
+  "nativeInputsAndCaptionDelta": {
+    "path": "/tmp/lectern-partial-styles19-native-inputs-and-caption-delta.json",
+    "sha256": "c002f353cb7483fb5d84890251719786dbc28c5ce3ed1db83d0d1b8f85e735a2",
+    "bytes": 6412
+  },
+  "priorS18HistoricalSource": {
+    "path": "/tmp/lectern-table-profiles18-historical-source-pins.json",
+    "sha256": "b892145276cf60112c6d212357d9739b51d12ac798939bb932cd218b7d60aedf",
+    "bytes": 3276
+  },
+  "ownedSourcePins": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/LibraryLab/PlatformPartialTableStylesRecipe.swift",
+      "sha256": "4a92effca24fc77ee812a7785261ad30665f15704ae3b688515e1fd85c7a462d",
+      "bytes": 23857
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/PartialTableStylesRecipeTests.swift",
+      "sha256": "4c832e892ffb4291b99feee875aed449aed778d26edc47d198f1e58b21d2b752",
+      "bytes": 7692
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/AppTests/LibraryPartialTableStylesTests.swift",
+      "sha256": "47b67469d83a375b02c2709423cec5ed0894fad3ddaf44774ec2ae7012e65ccc",
+      "bytes": 4647
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/AppTests/GlyphPaintWebKitTests.swift",
+      "sha256": "bdf70501b5233404e04777d6b51a426b7dd5718b0fa6e946618924a631ad026b",
+      "bytes": 33784
+    }
+  ],
+  "app": "App test source syntax parsed only. Actual App/WebKit/native generated acceptance remains root-owned and pending; no worker GUI/app build."
+}

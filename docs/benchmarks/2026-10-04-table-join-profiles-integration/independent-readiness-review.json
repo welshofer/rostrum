@@ -1,0 +1,44 @@
+{
+  "status": "APPROVE_SOURCE_AND_FROZEN_PREFLIGHT_NO_TIMING_GRANT",
+  "planSHA256": "70049f06a5d86f9b5e30eebc5f695cbc4e3962af4e66579729a2f5c19d1084de",
+  "readySHA256": "40ddefab6181c371e9e3e9031673bb5a1d389b0b3c8c2245caef0a39b6da8333",
+  "pinCounts": {
+    "ready": 5,
+    "plan": 30,
+    "preflight": 70,
+    "inputs": 109,
+    "artifacts": 9540
+  },
+  "binariesVerified": 6,
+  "baseline": "Retained accepted S17 complete Release product, object/module and three timed helper binaries copied byte for byte; baseline source tree matches ce8551e/d088ee9. Shaping/layout proof executables freshly relinked with identical pinned helper source, flags and retained baseline object/module; no new baseline Release-build claim.",
+  "candidate": "e8c8b1642635c7542e5e075f0a904c8bf908e0ea",
+  "candidateSourceTree": "59c7beb3d5e49ebf49cecb361a36f5ce53b9b7b1",
+  "productionDelta": "Exact approved engine b5407e49 added/deleted lines, SVGRenderer only; no persistent DOM state or change to uniform geometry path.",
+  "corpus": [
+    177,
+    872,
+    531
+  ],
+  "changedOutput": [
+    7,
+    12
+  ],
+  "priorS17InputsExact": 13,
+  "unchangedOrRejectedProfiles": [
+    "ltr-single",
+    "reject-rtl-colors",
+    "reject-merge-colors",
+    "uniform"
+  ],
+  "nativeCases": 8,
+  "nativeGlyphs": 112,
+  "nativeExtraction": "Actual raw PDF operators/ordered vectors and compact paint/glyph projection independently replayed; no ink/raster claim.",
+  "children": 374,
+  "primaryComparisons": 18,
+  "allMeasuredPhases": 196,
+  "scope": "One fixed campaign, original render before mutation, existing helper and canonical/supp inputs unchanged, warmup exclusion/ABBA/all adverse phases/RSS/exploratory unadjusted statistics and uncontrolled-host qualification retained. No timing launched or speed/cost accepted. Source reviewed for calibrated single-color RTL, axis-color LTR and same-orientation single-color LTR merges; uncaptured combined profiles retain fallback.",
+  "shapingRecordsVerified": 101310,
+  "completeLayoutRecordsVerified": 1728,
+  "fixedPreservationReopens": 6,
+  "sourceReviewVerdict": "APPROVE b5407e49 peer source review: inherited S17 dimension/topology/solid/opaque/diagonal guards preserved, narrow added profile combinations, RTL signed-extension swap correctly scoped, no uniform-path arithmetic alteration. Positive original-native geometry/crossing/112glyph and meaningful combined-profile rejection/live-DOM/reopen regressions retained."
+}

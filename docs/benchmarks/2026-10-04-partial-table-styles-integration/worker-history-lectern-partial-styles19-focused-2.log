@@ -1,0 +1,96 @@
+Building for debugging...
+[1 / 1]
+[2 / 28] LecternCore
+[5 / 33] LecternCore
+[6 / 36] LecternCore
+[14 / 51] LecternCore
+[15 / 51] LecternCore
+[17 / 51] LecternCore
+[18 / 51] LecternCore
+[20 / 53] CompositionRegression-product
+[22 / 54] CompositionRegression-product
+[23 / 54] LecternCore
+[27 / 54] LecternCore
+[29 / 54] LecternCore
+[30 / 54] LecternCore
+[32 / 54] LecternCore
+[34 / 54] LecternCore
+[36 / 54] CompositionRegression-product
+[41 / 54] CompositionRegression-product
+[44 / 54] LecternCoreTests-product
+[47 / 73] LecternCoreTests-product
+[49 / 72] LecternCoreTests-product
+[53 / 72] LecternCoreTests-product
+[55 / 72] LecternCoreTests-product
+[56 / 72] LecternCoreTests-product
+[57 / 72] LecternCoreTests-product
+[58 / 72] LecternCoreTests-product
+[60 / 72] LecternCoreTests-product
+[61 / 72] LecternCoreTests-product
+[62 / 72] LecternCoreTests-product
+[63 / 72] LecternCoreTests-product
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/DeckInspectionDetailTests.swift:102:13: warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+100 | 
+101 |     @Test func rejectsEmptyAndNonPowerPointData() throws {
+102 |         try withDeckFile(Data(), named: "empty.pptx") { url in
+    |             `- warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+103 |             #expect(throws: DeckInspectionError.self) {
+104 |                 _ = try DeckInspector.inspect(deckAt: url)
+
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/DeckInspectionDetailTests.swift:107:13: warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+105 |             }
+106 |         }
+107 |         try withDeckFile(Data("not a zip".utf8), named: "not-a-deck.pptx") { url in
+    |             `- warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+108 |             #expect(throws: DeckInspectionError.self) {
+109 |                 _ = try DeckInspector.inspect(deckAt: url)
+
+/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/DeckInspectionDetailTests.swift:117:13: warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+115 |     /// container, so it must not inherit Rostrum's unlimited default.
+116 |     @Test func enforcesTheUntrustedFileReadBudget() throws {
+117 |         try withDeckFile(try deckData()) { url in
+    |             `- warning: result of call to 'withDeckFile(_:named:_:)' is unused [#NoUsage]
+118 |             #expect(throws: DeckInspectionError.self) {
+119 |                 _ = try DeckInspector.inspect(deckAt: url,
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[64 / 72] LecternCoreTests-product
+[65 / 72] LecternCoreTests-product
+macro expansion #expect:1:53: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+`- /Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Tests/LecternCoreTests/TemplateGenerationTests.swift:110:74: note: expanded code originates here
+108 |         #expect(output.sections.map(\.name) == ["Generated section"])
+109 |         #expect(output.slides.map(\.notesText) == content().slides.map { $0.notes! })
+110 |         #expect(try output.slides.allSatisfy { try $0.comments.isEmpty })
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkValue(try output.slides.allSatisfy { try $0.comments.isEmpty },expression: .__fromSyntaxNode("try output.slides.allSatisfy { try $0.comments.isEmpty }"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    |  |                                                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+    +-------------------------------------------------------------------
+111 |         #expect(result.droppedContent.isEmpty)
+112 |         #expect(result.schemaIssues.isEmpty)
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[66 / 72] LecternCoreTests-product
+[67 / 72] LecternCoreTests-product
+[67 / 72] CompositionRegression-product
+[69 / 75] LecternCoreTests-product
+[71 / 75] LecternCoreTests-product
+Build complete! (13.61 sec)
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite PartialTableStylesRecipeTests started.
+􀟈  Test nativeProfilesAndPublicControlsSurviveSaving(alternative:) started.
+􀟈  Test actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test publicOverrideRestorationChangesOnlyAuthoredPage() started.
+􀟈  Test auditRejectsPaintOrderAndUnmodeledPositions() started.
+􀟈  Test case passing 1 argument alternative → true to nativeProfilesAndPublicControlsSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to nativeProfilesAndPublicControlsSurviveSaving(alternative:) started.
+􁁛  Test publicOverrideRestorationChangesOnlyAuthoredPage() passed after 2.965 seconds.
+􁁛  Test auditRejectsPaintOrderAndUnmodeledPositions() passed after 2.998 seconds.
+􁁛  Test nativeProfilesAndPublicControlsSurviveSaving(alternative:) with 2 test cases passed after 3.772 seconds.
+􁁛  Test actualInspectorPreviewsMatchSavedFiles(alternative:) with 2 test cases passed after 6.810 seconds.
+􁁛  Suite PartialTableStylesRecipeTests passed after 6.810 seconds.
+􁁛  Test run with 4 tests in 1 suite passed after 6.810 seconds.

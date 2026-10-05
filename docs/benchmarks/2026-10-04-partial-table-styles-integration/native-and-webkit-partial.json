@@ -1,0 +1,147 @@
+{
+  "status": "PASS",
+  "createdUTC": "2026-10-05T00:59:32.480401+00:00",
+  "script": "/tmp/verify-fidelity19-partial-final.py",
+  "scriptSHA256": "d1f9096ad4b2ed6910a2406b8cca1d4564479563d79fae91f137c860082b78f4",
+  "extractor": "/tmp/verify-fidelity19-partial-table-paint.py",
+  "extractorSHA256": "486a6fb19fe11b57ffecab8804b4160ba8e85daf4b6d172fbeddd7ed4f39776e",
+  "inputSHA256": {
+    "/private/tmp/verify-fidelity19-partial-table-paint.py": "486a6fb19fe11b57ffecab8804b4160ba8e85daf4b6d172fbeddd7ed4f39776e",
+    "/private/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+    "/private/tmp/fidelity17-table-verifier-controls-v4/controls-receipt.json": "f33fb7df205de3ff8d7da23a8f1e9277b6db73adcf3a14d1cec347c44fcacc6c",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-1-capture.json": "8034694c8eb5c71a9eafbe7a7f06a3d0d90e7196b71801883c4900c6eb94b0ef",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/lab-false/partialTableStyles-64742738-AC8A-4D01-925D-E87C0198D9F1/partialTableStyles.pptx": "bcf0cf34bbae3f3dab612b3d867544cb7eea668dda865b5e7797518587285505",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-1.svg": "488d8e1dedb691d3404d56e25cae8e250eb046f01f5d9345a5f3370ae14fa91e",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-1.pdf": "462513520b17856fb29918769ea1c208cb39d97a7e509e1f384b4dc4c46820be",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/lab-false/partialTableStyles-64742738-AC8A-4D01-925D-E87C0198D9F1/previews/slide-01.svg": "488d8e1dedb691d3404d56e25cae8e250eb046f01f5d9345a5f3370ae14fa91e",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/lab-false/partialTableStyles-64742738-AC8A-4D01-925D-E87C0198D9F1/native-partial-table-styles-reference.json": "cd0cc26a85fa311068c2ce0328536f028025209e28919106cce365c8b4d19cdd",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyleFallback/paint-reference.json": "e5f504839356b54af2bb30f649b4348441d8e8627ac5b517decd54510eac5e88",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyleFallback/native-table-style-fallback19-v1.pptx": "e261b6864780fb021e914dfcd4a0e19b3aae9825cc33b94b0168933dcf057268",
+    "/private/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-false/capture-receipt.json": "a2e69fda946deded5e5643f2d197882c88e6c477a562879516f3945d395ed506",
+    "/private/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-false/partialTableStyles.pptx": "bcf0cf34bbae3f3dab612b3d867544cb7eea668dda865b5e7797518587285505",
+    "/private/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-false/powerpoint.pdf": "8e2ddad21e02723c8051f2e9490073c2813690ee566b2af7ec88316da061b465",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-2-capture.json": "b9c1ba2950c79635ce5938668143a50a4baa1f6e58f14588832303301c060ac3",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-2.svg": "fc06e0cdef2bae70581a9de3338dc3eb32b58a340171b1ac02a5a27e118533fe",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-2.pdf": "af6f837d63aaf7b4907438a2ee15ce5242f46b0a92ea676121b6a0d0404fdb98",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/lab-false/partialTableStyles-64742738-AC8A-4D01-925D-E87C0198D9F1/previews/slide-02.svg": "fc06e0cdef2bae70581a9de3338dc3eb32b58a340171b1ac02a5a27e118533fe",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-1-capture.json": "6cfa0457656e4105491af7e88b6899d0ffcd88ea058b7bba00ab94c52536f438",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/lab-true/partialTableStyles-E662F0EE-0682-4E7D-8E83-314C220C441D/partialTableStyles.pptx": "b6390b624d88ad492b64904a797e25369beca4b37bd7fdf40591da56f71e3d06",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-1.svg": "488d8e1dedb691d3404d56e25cae8e250eb046f01f5d9345a5f3370ae14fa91e",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-1.pdf": "054284149535781c8d28cdf4f9d8f8cb2d6096272b9d29cdac339dccbe0662a3",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/lab-true/partialTableStyles-E662F0EE-0682-4E7D-8E83-314C220C441D/previews/slide-01.svg": "488d8e1dedb691d3404d56e25cae8e250eb046f01f5d9345a5f3370ae14fa91e",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/lab-true/partialTableStyles-E662F0EE-0682-4E7D-8E83-314C220C441D/native-partial-table-styles-reference.json": "cd0cc26a85fa311068c2ce0328536f028025209e28919106cce365c8b4d19cdd",
+    "/private/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-true/capture-receipt.json": "a2cd3da0190078edcea1ad9b7b57ea3beca58a8470c48e9e3fc19a08767a51bb",
+    "/private/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-true/partialTableStyles.pptx": "b6390b624d88ad492b64904a797e25369beca4b37bd7fdf40591da56f71e3d06",
+    "/private/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-true/powerpoint.pdf": "215b2aaa27e3ea43cdbe2c6ddcd4960cb3c97e0770b88be6a87bca9594556376",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-2-capture.json": "f293e43a3fd454b8c37ecc98e546989c6d3c2d0166752556e3251e2e7c5e9641",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-2.svg": "fc06e0cdef2bae70581a9de3338dc3eb32b58a340171b1ac02a5a27e118533fe",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-2.pdf": "fdbcaa86afa0ffb123d6f000959fa608780a1d0ae6b7e8021a0f1f2d77c38faa",
+    "/private/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/lab-true/partialTableStyles-E662F0EE-0682-4E7D-8E83-314C220C441D/previews/slide-02.svg": "fc06e0cdef2bae70581a9de3338dc3eb32b58a340171b1ac02a5a27e118533fe"
+  },
+  "unchangedInputBytes": true,
+  "results": [
+    {
+      "capture": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-1-capture.json",
+      "captureSHA256": "8034694c8eb5c71a9eafbe7a7f06a3d0d90e7196b71801883c4900c6eb94b0ef",
+      "mode": "browser",
+      "cases": 6,
+      "glyphs": 24,
+      "comparison": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/0-browser-comparison.json",
+      "comparisonSHA256": "f364e93d52e2dc50ea7e0ad1f8abcc4aabf5cf5b11f184685ea961cfec793516",
+      "log": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/0-browser-log.txt",
+      "logSHA256": "2bc4c00d5ee055cb9e6e293e39055be4187ef15086e404c664cce14fd6e6b841"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-1-capture.json",
+      "captureSHA256": "8034694c8eb5c71a9eafbe7a7f06a3d0d90e7196b71801883c4900c6eb94b0ef",
+      "mode": "native",
+      "cases": 6,
+      "glyphs": 24,
+      "comparison": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/0-native-comparison.json",
+      "comparisonSHA256": "e6b925761537120474656406676ac4960daa0fdc4a97dad03c48a205a6c4214c",
+      "log": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/0-native-log.txt",
+      "logSHA256": "9dc15df9d0067f2f87b8420408594b0fc069012fe34dbf3821f9228f1f39e470"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-2-capture.json",
+      "captureSHA256": "b9c1ba2950c79635ce5938668143a50a4baa1f6e58f14588832303301c060ac3",
+      "mode": "browser",
+      "cases": 6,
+      "glyphs": 48,
+      "comparison": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/1-browser-comparison.json",
+      "comparisonSHA256": "12f9b443c2f46768ced2da50b762e6b69f2b2f96278a1ededc98337dfd1b0845",
+      "log": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/1-browser-log.txt",
+      "logSHA256": "48953bf3d33d29a7cc29917d657dbeb9c3e9f9d8beb6111ea1d5a1cbb0906f43"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-2-capture.json",
+      "captureSHA256": "b9c1ba2950c79635ce5938668143a50a4baa1f6e58f14588832303301c060ac3",
+      "mode": "native",
+      "cases": 6,
+      "glyphs": 48,
+      "comparison": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/1-native-comparison.json",
+      "comparisonSHA256": "21dd4c3e00f3e6ca70b871208191137f84ab0041b06adb4aa83b8cef742f4c0b",
+      "log": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/1-native-log.txt",
+      "logSHA256": "aa024c0b3c4cf3ed5cd8a9d0602198f2fefbe5bd3578e193cb00ba3c0d27a8f9"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-1-capture.json",
+      "captureSHA256": "6cfa0457656e4105491af7e88b6899d0ffcd88ea058b7bba00ab94c52536f438",
+      "mode": "browser",
+      "cases": 6,
+      "glyphs": 24,
+      "comparison": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/2-browser-comparison.json",
+      "comparisonSHA256": "2304e63034d355de28459b94e087a1f83caf0cdd465a14a24ce543b15fdd3c93",
+      "log": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/2-browser-log.txt",
+      "logSHA256": "9cbff6646301433dc3021f30b6feff206a7161b5c32b6039ff6ab515e711e7b8"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-1-capture.json",
+      "captureSHA256": "6cfa0457656e4105491af7e88b6899d0ffcd88ea058b7bba00ab94c52536f438",
+      "mode": "native",
+      "cases": 6,
+      "glyphs": 24,
+      "comparison": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/2-native-comparison.json",
+      "comparisonSHA256": "90047f72a2e79a2af1ffdc099de50e4ea140756dbfe23ea311f5bd84b68f238f",
+      "log": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/2-native-log.txt",
+      "logSHA256": "de211884cc22269ed4e6508478dc54e6e7e2ac0913fcb8dc500da5a11b43ea42"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-2-capture.json",
+      "captureSHA256": "f293e43a3fd454b8c37ecc98e546989c6d3c2d0166752556e3251e2e7c5e9641",
+      "mode": "browser",
+      "cases": 6,
+      "glyphs": 48,
+      "comparison": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/3-browser-comparison.json",
+      "comparisonSHA256": "e10881d945831b1f4aa3bc2c77602f73c9c3e0f4066448faae048ed2ee750fe9",
+      "log": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/3-browser-log.txt",
+      "logSHA256": "81b9d2003baa9e49e6929e8862dac082e395d4144c2dc23c2ab7281743378a0d"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-true-slide-2-capture.json",
+      "captureSHA256": "f293e43a3fd454b8c37ecc98e546989c6d3c2d0166752556e3251e2e7c5e9641",
+      "mode": "native",
+      "cases": 6,
+      "glyphs": 48,
+      "comparison": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/3-native-comparison.json",
+      "comparisonSHA256": "c4d1f0bb6d1a4ce986e2d4372935976af9a2d9313b5699fa98a2f98d95019748",
+      "log": "/tmp/lectern-fidelity19-partial-webkit/independent-final-v1/3-native-log.txt",
+      "logSHA256": "f424cfc63dcd69f35345c5ceeeb74115246da0120598d8f29d97d00293b1f722"
+    }
+  ],
+  "failures": [],
+  "totals": {
+    "browser": {
+      "PDFcomparisons": 4,
+      "cases": 24,
+      "glyphs": 144
+    },
+    "native": {
+      "PDFcomparisons": 4,
+      "cases": 24,
+      "glyphs": 144
+    }
+  },
+  "scope": "First two original pages only. Four fresh saved-inspector WebKit PDF comparisons and four pages of two generated PowerPoint PDFs. All24 repeated cases/144 glyphs in each mode; all-glyph x .025 and independently established S19 print y .121; browser/SVG .025; complete opaque ordered fill/stroke coverage checked over every region of the combined edge arrangement. Complete finite ordered fill/stroke paint and glyph origin/raw paint-size with source/subset outline equality; no trace-bbox ink, raster or third computed page native parity claim. UI provenance is root-observed; independent input identities and numeric extraction checked here."
+}

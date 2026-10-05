@@ -41,6 +41,10 @@ visible in Lectern and in its JSON report.
 | Edit a table grid | Merge topology, unmerge, insert/delete/move/reorder rows and columns; independent permutations and atomic refusals | Drawing |
 | 74 native table styles | Complete native enum gallery, headers/footers/banding/RTL | Drawing |
 | Cell appearance | Border edges/diagonals, fills, text, padding, direction, inheritance and custom styles | Drawing |
+| Table defaults and border joins | Twelve native specimens; absent applied styles, unequal border joins and public style comparison; preserved import defaults and exact saved previews | [Platform table defaults](../Lectern/Sources/LecternCore/LibraryLab/PlatformTableDefaultsRecipe.swift) |
+| Table join profiles | Eight native specimens; RTL grids, axis colors and one-orientation merges; public direction, border and merge controls | [Platform table profiles](../Lectern/Sources/LecternCore/LibraryLab/PlatformTableJoinProfilesRecipe.swift) |
+| Partial table styles | Twelve native specimens; missing custom-style edges, empty lines, noFill and direct overrides; clear a direct edge to restore inherited paint | [Platform partial styles](../Lectern/Sources/LecternCore/LibraryLab/PlatformPartialTableStylesRecipe.swift) |
+| Border transitions | Four native reference pages; thirteen admitted color/width transition cases and one unchanged excluded colored merge; a fifth public page toggles a suppressed donor | [Platform border transitions](../Lectern/Sources/LecternCore/LibraryLab/PlatformTableTransitionsRecipe.swift) |
 | Chart gallery | Every category kind, XY/scatter, bubbles, combo/secondary axis and native workbooks | Document |
 | Chart editing | Replace/add/remove series; multi-group combo replacement; explicit invalid-operation refusals | Document |
 | SmartArt | Every public layout: block list, process, cycle, experimental pyramid; layout URNs and extracted labels | Document |
@@ -620,3 +624,115 @@ native scope, observed costs, faster absent-style cases and background-load
 limitations. The public comparison also exposes a remaining partial custom-style
 missing-edge fallback gap. The successful file checks do not assert full custom
 style or whole-slide native parity.
+
+## October 4 RTL, color and merge profile integration
+
+The 31st recipe, Table join profiles, preserves eight native specimens and
+112 glyphs on two pages, then demonstrates public RTL, axis-color and merge
+APIs on a third. Its option changes only the public merge orientation. Both
+variants pass 44 saved-file checks with no findings.
+
+The local gate passes 1,183 library, 18 layout, 298 Core and 91 app test
+definitions / 127 executions, with successful macOS and iOS simulator builds.
+All 31 catalog recipes pass 649 checks and retain 413 findings; four additional
+table pipeline executions pass 214 checks. External checks reopen 80 packages
+and 268 slides. All 34 prior reference SVGs are byte-identical.
+
+Both generated PowerPoint decks and fresh exact-inspector browser captures pass
+16 case comparisons / 224 glyphs each at 0.025 pt x/y, with complete ordered
+border coverage and crossing checks. Both manual three-slide workflows preserve
+source bytes, exact app-gate previews and all 52 source text nodes per option.
+The public third page remains separate from numerical native acceptance.
+
+The [integration report](LAYOUT-FIDELITY-20261004-18.md) records the bounded
+admission rules and retained parser history. The separately measured performance
+intervals for all newly admitted targets include zero; speedup and universal
+nonregression are not established. Independent performance and final integration review pass. Custom-style missing-edge defaults are the next
+independently captured gap.
+
+## October 4 partial custom table styles integration
+
+The 32nd recipe, Partial table styles, preserves twelve native specimens and
+72 glyphs on two pages. A third page exercises referenced fill-only styles,
+explicit empty and noFill edges, and direct overrides. The alternative clears
+the direct blue left edge, restoring inherited black 1 pt while keeping the
+right edge suppressed. Both options pass 62 checks with zero findings.
+
+The full local gate passes 1,189 library, 18 layout, 302 Core and 93 app test
+definitions / 130 executions, with successful macOS and iOS simulator builds.
+All 32 catalog recipes pass 711 checks and retain 413 findings. Six additional
+pipeline reports pass 338 checks. External validation reopens 88 presentations
+and 289 slides with all 462 checked inputs unchanged.
+
+Both native and actual-inspector browser comparisons pass 24 case comparisons
+and 144 glyphs, including complete ordered fill/border paint. Refreshed profiles
+and prior typography/default-table browser regressions also pass their existing
+bounds. Both manual three-slide inspection/export workflows retain all 41
+source text nodes per option, exact previews and unchanged source bytes.
+
+The [integration report](LAYOUT-FIDELITY-20261004-19.md) records the captured
+scope and separate public-page controls. Independent performance review accepts
+the measured fidelity cost: partial-style tables slow approximately 11–14%,
+with 6.508 MiB additional peak process RSS for the largest case. Final independent
+integration review passes. The next optimization targets repeated border decoding
+without changing the rendered result.
+
+## October 4 shared table paint reuse
+
+The [S20 integration](LAYOUT-PERFORMANCE-20261004-20.md) retains the same 32
+demonstrations and rendered output while reusing decoded shared-style border
+paint within each render. Both Cell appearance options pass fresh actual
+inspector/export tests and manual workflows. The full gate passes 1,193 library,
+18 layout, 302 Core and 94 app test definitions / 132 total executions.
+
+One independently reviewed experiment measures partial-style render improvements
+of approximately 9–16%, with a 0.947% slowdown on the axis-color direct-border
+control. All results and background-load limits remain in the
+[performance report](TABLE-PAINT-REUSE-PERFORMANCE-20261004-20.md); earlier cost
+percentages use different baselines and cannot be added. The manual workflows
+also expose a separate image-fill export omission, retained as an open gap in
+that checkpoint.
+
+## October 4 border transitions
+
+The 33rd demonstration, Border transitions, retains fourteen native specimens
+and 240 body glyphs across four pages. Thirteen cases receive native border and
+ordered-paint checks; the colored merged control must keep its previous exact
+rendering and is explicitly excluded from the new support. The fifth page uses
+public border APIs, with an option that suppresses an upper-left donor.
+
+Both variants pass 68 saved-file checks with no findings. Focused actual app
+tests compare all five previews and export content while preserving the source.
+The complete root gate passes 1,195 library, eighteen layout, 306 Core and
+96 app test definitions / 135 total executions. Both actual manual workflows
+inspect all five previews and export all 82 source text nodes with unchanged
+PPTX bytes. Fresh browser coverage passes 45 PDFs, 226 cases and 2,290 visible
+glyphs, preserving six explicit prior omissions. Both generated native decks
+pass their own strict first-four-page geometry and glyph checks.
+
+All 35 primary performance intervals include zero. The dense horizontal
+transition control's +1.326% interval extends to +2.817%, leaving adverse cost
+unresolved. See the [S21 report](LAYOUT-FIDELITY-20261004-21.md) and
+[performance report](TABLE-TRANSITIONS-PERFORMANCE-20261004-21.md) for scope,
+uncertainty and the retained complete results.
+
+
+## Image ownership and saved demo results (October 4)
+
+The 34th demonstration, **Image fill ownership**, exercises selected theme-image
+owners, colliding relationship IDs, direct slide overrides, and inherited
+layout/master images. Its first four pages preserve seven source image cases;
+the fifth exercises a public direct-image/no-fill override. Each option has 24
+checks and no findings in the scoped worker verification. Source/native evidence
+and the exact limitations are recorded in
+[NativeShapeImageOwners](../Tests/RostrumTests/Fixtures/NativeShapeImageOwners/README.md).
+The generated combined deck extends the source canvas to 864 by 540 points;
+it does not rescale the retained source shapes. Fresh native capture of the
+combined five-page decks and WebKit screenshots remains deferred.
+
+Completed app-run demos now save a distinct PowerPoint file in the library,
+including results with findings or failed file checks. Previous runs remain
+available, and Inspect Result uses the durable saved copy. A save failure retains
+the diagnostic result; cancelled or superseded work cannot publish a late file.
+The [credential safety and persistence record](KEYCHAIN-SAFETY-20261004.md)
+records the headless workflow checks and the explicit native-app validation hold.

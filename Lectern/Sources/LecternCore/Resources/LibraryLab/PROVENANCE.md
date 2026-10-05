@@ -306,3 +306,56 @@ Cell dimensions must exceed the widest stroke in the admitted rectangular,
 unmerged LTR join profile. Glyph first-origin grouping is specific to the
 captured unwrapped Agjp strings, one per cell. The fourth public authoring page
 is outside the native numerical corpus.
+
+## Table join profiles (31st recipe)
+
+`native-table-joins18-v1.pptx` is copied byte-for-byte from
+`Tests/RostrumTests/Fixtures/NativeTableJoinProfiles` (source SHA-256
+`39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e`).
+`TableJoinProfilesReferences.json` projects all eight cases and 112 glyph traces
+without changing native values; its source, PDF and licensed DejaVu Sans hashes
+are pinned in the resource. The PDF hash is
+`76fb8fb6e663efe692e15873ee51d21bc1e6a85e759d0a4527c02742a1874e46`.
+The first two generated pages preserve entire specimen nodes and their frames,
+master bindings and font bytes. Outside captions use bundled DejaVu Sans, so
+whole pages are not source-byte-identical. The third page is public authoring,
+with horizontal/vertical merge options, and has no native numeric oracle.
+
+The admitted profiles are single-color unmerged RTL, axis-uniform two-color
+unmerged LTR, and single-color LTR merges with one orientation across the entire
+grid. Cells exceed the widest stroke; opaque solid centered borders have no
+diagonals. Mixed orientations and combined profiles are excluded. Native vector
+checks retain all intervals and nine ordered colored crossings per colored case.
+Glyph trace scalar origins/size are separate evidence, not outline ink parity.
+Custom-style default borders remain a separate limitation.
+
+## Partial table styles (32nd recipe)
+
+`native-table-style-fallback19-v1.pptx` is copied byte-for-byte from
+`Tests/RostrumTests/Fixtures/NativeTableStyleFallback` (source SHA-256
+`e261b6864780fb021e914dfcd4a0e19b3aae9825cc33b94b0168933dcf057268`).
+`PartialTableStylesReferences.json` projects all twelve native cases without
+changing measured values: 72 glyph traces, 49 border intervals and 15 fills.
+The PDF SHA-256 is
+`02d7eb7e7e727717ddd4e9a56cecb65f619eec747041f51eade7b22819d766a5`;
+the source and licensed regular DejaVu Sans hashes are pinned in the resource.
+
+The first two pages preserve entire specimen nodes, referenced definitions,
+inline styles, frames, master bindings and embedded font bytes. Only outside
+captions adopt the bundled font, so full pages are not source-byte-identical.
+The third page uses the public `setStyleDefinition`, `setBorder`, `clearBorder`,
+`TableStyleResolver.border` and authored-only `TableCell.border` APIs. Its option
+clears a direct blue 4 pt override and restores the black 1 pt inherited edge.
+Inline authoring is not a new API: the native inline specimen is loaded,
+resolved and saved without rewriting its source. The public control page is
+outside the native numeric oracle.
+
+Only absent effective cardinal edges in resolved custom definitions acquire
+the black 1 pt fallback. Present empty lines, noFill, unresolved wrappers and
+direct overrides stay distinct. Native joins cover unmerged LTR grids with
+constant opaque solid color and width along each grid line; cells exceed the
+widest stroke and there are no diagonals. Combined profiles remain outside
+this evidence. Vector bounds stay .001 pt and RGB .0001. Native glyph x uses
+.025 pt; y separately uses .121 pt to retain the measured print-grid residual;
+size uses .002 pt. This does not loosen the S18 two-axis .025 pt check, establish
+source-outline ink parity, or claim general table fidelity.

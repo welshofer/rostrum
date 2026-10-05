@@ -1,0 +1,124 @@
+{
+  "scope": "Exact application Swift source compiled as a library, excluding only LecternApp.swift (@main). Standalone tests with fake/disabled credentials. No app launched; no real Keychain API invoked by tests.",
+  "command": "swift test --package-path /tmp/lectern-credential-state-headless-20261004-final --scratch-path /tmp/lectern-credential-state-headless-20261004/.build --jobs 2",
+  "exitCode": 0,
+  "testDefinitions": 19,
+  "testExecutions": 25,
+  "suites": 2,
+  "appHostedTests": "Not run; preserve active user session.",
+  "runtimeReplacement": "No app replaced or relaunched.",
+  "sources": [
+    {
+      "path": "Lectern/App/AppState.swift",
+      "sha256": "915a45c4c4d3e460fcce5c0c763881c4fa14d0f5ef27b96642a322b2e8bd2458"
+    },
+    {
+      "path": "Lectern/App/ContentView.swift",
+      "sha256": "6d0f52f6f0a0879fccc4659610f96f021fe534b3e3800992ec5381e88121de41"
+    },
+    {
+      "path": "Lectern/App/CredentialStore.swift",
+      "sha256": "38494b401a2b1668d57fc59cc12be60ea77d25125c4ff0c1ecb2c6c84d8baae6"
+    },
+    {
+      "path": "Lectern/App/DeckLibrarySheet.swift",
+      "sha256": "cef8551350bf5f5efdf32a89aa96529d331dc79a9970fd58e46cfa7bc896c1cb"
+    },
+    {
+      "path": "Lectern/App/DeckListView.swift",
+      "sha256": "89d63bb9a0b2aaff1b84dcffe2496131fe88653a0d9ca2b631dbb61e5e511aa3"
+    },
+    {
+      "path": "Lectern/App/DeckThumbnail.swift",
+      "sha256": "cdfc2c206b987f21d591ee8cb1d4bd72ddcfd9d8daaf1cb88fef653f0be5e5e3"
+    },
+    {
+      "path": "Lectern/App/InspectorView.swift",
+      "sha256": "847ab4f727606ec04abc6390b477a146fa1188318e59ce0f82c9f290bbf8eb00"
+    },
+    {
+      "path": "Lectern/App/KeychainStore.swift",
+      "sha256": "ef5ec8049e673705648b15773b7a1fa68cee2734d4ba67d8821002169e347488"
+    },
+    {
+      "path": "Lectern/App/LibraryLabModel.swift",
+      "sha256": "acb750455597386e159a14f202259fbca1fa0b8df06cb2387a6dddd36a9b2fb5"
+    },
+    {
+      "path": "Lectern/App/LibraryLabView.swift",
+      "sha256": "20d20ae9a744b172ea6864cbd7da68a342f2d765ad0e837127fa95326b5a5ec1"
+    },
+    {
+      "path": "Lectern/App/LibraryView.swift",
+      "sha256": "aacabeb8e577aa5a5c9898d3e142d7dbeb09d32fe59688b376bf33cfa54fd735"
+    },
+    {
+      "path": "Lectern/App/NotesPagePreviewModel.swift",
+      "sha256": "ebaa8ce8f6b1fd39ad44f91c7f61be3ccefd2760787d053b9cf593259d5363e0"
+    },
+    {
+      "path": "Lectern/App/NotesPagePreviewView.swift",
+      "sha256": "d890227e2ac37a1a87fe65a98d68f0ab83d63b5ca86821aafae1dfda6b2d3d5f"
+    },
+    {
+      "path": "Lectern/App/PDFGrounding.swift",
+      "sha256": "e91a19d04c5837e5fb4b7469ebad534a50af428fe726546624b3ee049bec6fe5"
+    },
+    {
+      "path": "Lectern/App/PreviewDiagnosticsView.swift",
+      "sha256": "b110f87427fc8ddeacd026fd760c850ce75f7b112859740db6ac1c749c51bff7"
+    },
+    {
+      "path": "Lectern/App/RecoveryView.swift",
+      "sha256": "9189473dcb0488ffde0cc662ad6cb1eaad46ee0095bd86d2e43206f6f6a7973c"
+    },
+    {
+      "path": "Lectern/App/SettingsView.swift",
+      "sha256": "ce8cbf6a69dad60731de930793f91530303f000dc6db18b7831f9ac98cfc329d"
+    },
+    {
+      "path": "Lectern/App/SlidePreview.swift",
+      "sha256": "a1ad72c40ace8548dd4e6ea4fcd45c0e32ee462c75276fcf373a6d63765177fc"
+    },
+    {
+      "path": "Lectern/App/SlidePreviewGeometry.swift",
+      "sha256": "735cc66817e95c8430c2c5c499e46a2d8b7e9b53e26a0d0344aae71d6eb93bdd"
+    },
+    {
+      "path": "Lectern/App/SlideRasterizer.swift",
+      "sha256": "ba4e866fcfc5d2989f020bef660784bb9813b41df8cdc5cee91b25a1894e7fcc"
+    },
+    {
+      "path": "Lectern/App/StylePickerSheet.swift",
+      "sha256": "7ab93cc86564c978f51ab8f29936b5c760ec93a65ae1200614dd6c94b9e130fa"
+    },
+    {
+      "path": "Lectern/App/StyleThumbnail.swift",
+      "sha256": "5b278efe2e02fc71421b30159858bf6285e492c27deb1fe959b6dac7bd9ac305"
+    },
+    {
+      "path": "Lectern/App/TemplatePickerCard.swift",
+      "sha256": "bc038199708c5ed32c2f3227d994abe23de5c65bd04ac157bdd62d124afc30e2"
+    },
+    {
+      "path": "Lectern/App/TemplateSelectionModel.swift",
+      "sha256": "e246d2c1eb01121966066559006acd30e6ae2cdb5a4fe874109382f889cffebc"
+    },
+    {
+      "path": "Lectern/App/Theme.swift",
+      "sha256": "5e72df3582bd50941783cdc00800ba2f48a21c66a47a888b5066e4ce9b3c368e"
+    },
+    {
+      "path": "Lectern/AppTests/CredentialStateTests.swift",
+      "sha256": "2a7f6c93b88764f9ee7a3c1fb91b88de1ff99491e85d8a7d37a1aa86e0bcabbd"
+    },
+    {
+      "path": "Lectern/AppTests/KeychainStoreTests.swift",
+      "sha256": "abe4acf11c3d667ce374ce853edf1f1b28cfc6fd849fd3758a579066c5a42304"
+    },
+    {
+      "path": "Lectern/AppTests/AppStateTestContext.swift",
+      "sha256": "b32d771eaf8bb45f6bd42c48c50619f61c3b748b6d25a6e1904b39dd6e6aed23"
+    }
+  ]
+}

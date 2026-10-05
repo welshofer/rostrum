@@ -1,0 +1,70 @@
+{
+  "status": "PASS_S20_EXACT_PRODUCTION_AND_WHOLE_OUTPUT_PRESERVATION",
+  "baseline": "007efa9c5b1c56af36d5251937fe95244ffaa289",
+  "baselineSources": "11ead6fd725008f26757f839abda10aa97761adb",
+  "candidate": "20e4a3556724f20937fcbca7208728798b658fcd",
+  "candidateSources": "6d2e7cd2d2c057d4c9b916358882695cbe2c66d7",
+  "rootMatchingCommit": "5d3d888175d12f615a3f917e15d8c9b6a170f201",
+  "sourcePins": [
+    111,
+    112
+  ],
+  "baselineArchiveSHA256": "376f6dfe29a2cf29eea05846cb3c4be7dd1616a5e9727e4c19f8ab791acecd8a",
+  "historicalBudgetHelperResolution": {
+    "expectedInitialSHA256": "5eb6f4dcdc2c8690f786b02dbfd17a6ebc179703a7e681937f3d5200fe4d9353",
+    "initialPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-initial.swift",
+    "correctedPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift",
+    "correctedSHA256": "37c42f5fc192cae9067145e558fcc04f47e86eb115dab54740ba10321ea3913e",
+    "priorReadinessSHA256": "d062213c69275b5c2b4427b93c7e7b601bcb60576a5c21e5189702b37e253b3e"
+  },
+  "cases": 190,
+  "slides": 886,
+  "completeCorpusArtifactMapsRehashed": 8544,
+  "recordedFreshHelperRunsAndPythonReopens": 570,
+  "reviewerReopenedPackages": 0,
+  "preservedValueRecords": {
+    "mainShaping": 101022,
+    "supplementShaping": 288,
+    "layout": 1728
+  },
+  "budgetProbeRows": [
+    {
+      "cells": 10000,
+      "distinctAdmittedBorderIdentities": 0,
+      "name": "direct-unique-200x50",
+      "nonnilBorders": 40000,
+      "sharedBorderEncounters": 0,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 40000
+    },
+    {
+      "cells": 200,
+      "distinctAdmittedBorderIdentities": 24,
+      "name": "budget-near-20x10",
+      "nonnilBorders": 800,
+      "sharedBorderEncounters": 40,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 760
+    },
+    {
+      "cells": 36,
+      "distinctAdmittedBorderIdentities": 0,
+      "name": "oversize-bypass-6x6",
+      "nonnilBorders": 144,
+      "sharedBorderEncounters": 0,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 144
+    }
+  ],
+  "svgByteWorkloads": 22,
+  "findings": [],
+  "limits": [
+    "Proof artifact hashes and every complete map independently rechecked, all SVGs parsed; recorded570 reopens verified by scripts/receipts, not replayed.",
+    "No persistent caches/native-policy/output changes or whole historical recovery inferred. Debug internal budget probe is untimed and not a renderer decode count or216-entry saturation proof.",
+    "Actual source/build/module/helper pins checked with immutable Git snapshots; no production/helper builds/tests/benchmarks launched."
+  ],
+  "numericalReview": "/tmp/rostrum-s20-independent-performance-review.json",
+  "numericalReviewSHA256": "70285caec1b66968e3f2d48cf3f1abc3bd1a3313327602f70a1b1764cccaae11",
+  "script": "/tmp/review-s20-performance-preservation.py",
+  "scriptSHA256": "99211f9fee992ae88632c82847fb668c54ad85087b8d40200494ab600c9d2db2"
+}

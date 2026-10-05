@@ -1,0 +1,79 @@
+{
+  "cases": [
+    {
+      "id": "absent-cell-style",
+      "nativeIntervals": 4,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 9
+    },
+    {
+      "id": "empty-cell-style",
+      "nativeIntervals": 4,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 9
+    },
+    {
+      "id": "empty-cell-borders",
+      "nativeIntervals": 4,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 9
+    },
+    {
+      "id": "referenced-fill-only",
+      "nativeIntervals": 4,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 25
+    },
+    {
+      "id": "style-left-only",
+      "nativeIntervals": 4,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 25
+    },
+    {
+      "id": "style-empty-left-line",
+      "nativeIntervals": 3,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 15
+    },
+    {
+      "id": "style-left-noFill",
+      "nativeIntervals": 3,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 15
+    },
+    {
+      "id": "inline-fill-only",
+      "nativeIntervals": 4,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 25
+    },
+    {
+      "id": "fill-direct-left",
+      "nativeIntervals": 4,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 25
+    },
+    {
+      "id": "fill-direct-right-noFill",
+      "nativeIntervals": 3,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 15
+    },
+    {
+      "id": "partial-grid-whole",
+      "nativeIntervals": 6,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 64
+    },
+    {
+      "id": "partial-grid-first-row-fill",
+      "nativeIntervals": 6,
+      "maxEndpointError": 0,
+      "completeOpaquePaintRegionsCompared": 64
+    }
+  ],
+  "totalNativeIntervals": 49,
+  "scope": "Every opaque fill/stroke region in combined rectangle-edge arrangement; actual baseline fills, modeled default edges, native ordered PDF paths. No raster/antialias boundary claim.",
+  "originalPreEditProof": "model-proof.json retained before production edits; rerunning verifies the same modeled projection"
+}

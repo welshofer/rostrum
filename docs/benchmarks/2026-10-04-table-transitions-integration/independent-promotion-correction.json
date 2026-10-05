@@ -1,0 +1,42 @@
+{
+  "status": "APPROVE_BOUNDED_PROMOTION_BOOKKEEPING_CORRECTIONS_PENDING_FINAL_MANIFEST",
+  "originalManifestSHA256": "e899e962529ff39ae8bdc1b1816bf5beee94020c21d79e8afc76fb2f59cbc7d5",
+  "originalManifest": "/tmp/lectern-fidelity21-integration-accepted-performance/docs/benchmarks/2026-10-04-table-transitions-integration-verification.json",
+  "originalPhysicalPins": 2780,
+  "physicalPinsStillPresentAndExact": 2778,
+  "missingTransientLockPins": [
+    [
+      "/private/tmp/lectern-fidelity21-generated-native/alternative-false/~$tableTransitions.pptx",
+      "0377b9309e95a5433d463bba3d123dd9bf7d5c87d4f1f41dade21c9c99b5841e"
+    ],
+    [
+      "/private/tmp/lectern-fidelity21-generated-native/alternative-true/~$tableTransitions.pptx",
+      "0377b9309e95a5433d463bba3d123dd9bf7d5c87d4f1f41dade21c9c99b5841e"
+    ]
+  ],
+  "originalExportRows": 242,
+  "uniqueExportDestinations": 241,
+  "identicalDuplicateRows": {
+    "docs/benchmarks/2026-10-04-table-transitions-integration/manual-addendum-assembly.py": [
+      {
+        "draftCopy": "/tmp/lectern-fidelity21-integration-accepted-performance/docs/benchmarks/2026-10-04-table-transitions-integration/manual-addendum-assembly.py",
+        "proposedExport": "docs/benchmarks/2026-10-04-table-transitions-integration/manual-addendum-assembly.py",
+        "sha256": "1a039a81590672b69707562a6be5b5f48e82671628bab232abeba0d51af91cb1",
+        "source": "/private/tmp/lectern-fidelity21-integration-final-draft/docs/benchmarks/2026-10-04-table-transitions-integration/manual-addendum-assembly.py"
+      },
+      {
+        "draftCopy": "/tmp/lectern-fidelity21-integration-accepted-performance/docs/benchmarks/2026-10-04-table-transitions-integration/manual-addendum-assembly.py",
+        "proposedExport": "docs/benchmarks/2026-10-04-table-transitions-integration/manual-addendum-assembly.py",
+        "sha256": "1a039a81590672b69707562a6be5b5f48e82671628bab232abeba0d51af91cb1",
+        "source": "/private/tmp/assemble-fidelity21-integration-manual-addendum.py"
+      }
+    ]
+  },
+  "constraints": [
+    "Only omit the two transient PowerPoint owner-lock files from final reproducible physical evidence. Keep original assembly and explicit historical mappings intact.",
+    "Deduplicate the one identical destination, preserving both original copy-row history.",
+    "Retain failed promotion helper/log and additive correction receipt. No source/native/PDF/SVG/input/oracle mutation or change to accepted performance statistics."
+  ],
+  "driftReceipt": "/tmp/rostrum-s21-promotion-pin-drift.json",
+  "driftReceiptSHA256": "60d8bac0d7fd1484488f3996e354a7c06d02b283feb75563cbaca1c5a69b51e8"
+}

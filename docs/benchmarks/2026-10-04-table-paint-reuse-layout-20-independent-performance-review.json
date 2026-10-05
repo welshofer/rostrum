@@ -1,0 +1,445 @@
+{
+  "status": "PASS_BOUNDED_TARGET_GAIN_WITH_ADVERSE_CONTROLS",
+  "manifestSHA256": "a35b7df1a6db04af6a3a3a31a26e699a4a1c58fb2435fe85ab9802a4ba51dff1",
+  "reportSHA256": "3bb78807bf4d8c6b393ab663b8bbcb6ac43918e518bb98e2b1b91da6a8bbfee1",
+  "physicalPins": 144,
+  "exports": 52,
+  "artifactPins": 9861,
+  "inputPins": 122,
+  "children": 660,
+  "retainedChildSamples": 600,
+  "allPhasesRecomputed": 339,
+  "primaryComparisons": [
+    {
+      "key": "canonical/table-200x50/render",
+      "baselineMS": 177.718521,
+      "candidateMS": 178.3482715,
+      "pairedMedian": 1.7829927833952208,
+      "CI": [
+        -0.5068736801196683,
+        3.732152560627333
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.2421875
+    },
+    {
+      "key": "canonical/table-20x10/render",
+      "baselineMS": 3.5889585,
+      "candidateMS": 3.6276455,
+      "pairedMedian": 1.5962108042934298,
+      "CI": [
+        -6.393696368418928,
+        5.377553344755337
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.140625
+    },
+    {
+      "key": "canonical/shaped-table-100x20/render",
+      "baselineMS": 61.966021,
+      "candidateMS": 62.356271,
+      "pairedMedian": 0.7126091014245439,
+      "CI": [
+        -0.5446073148172359,
+        1.2729779098663685
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.0625
+    },
+    {
+      "key": "canonical/richtext-fit/render",
+      "baselineMS": 2.3918745,
+      "candidateMS": 2.388813,
+      "pairedMedian": -1.5404025604087324,
+      "CI": [
+        -4.010901219992125,
+        2.5817001412894003
+      ],
+      "faster": 6,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.1640625
+    },
+    {
+      "key": "canonical/richtext-fit/richtext-fitting",
+      "baselineMS": 9.254895999999999,
+      "candidateMS": 9.208375,
+      "pairedMedian": -0.42494095596269377,
+      "CI": [
+        -1.823447640005127,
+        0.22233291399733623
+      ],
+      "faster": 6,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.1640625
+    },
+    {
+      "key": "canonical/slides-10/render",
+      "baselineMS": 0.5155835,
+      "candidateMS": 0.512958,
+      "pairedMedian": -0.8207561030687371,
+      "CI": [
+        -2.7834014263113325,
+        2.814343638247885
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": 0.046875
+    },
+    {
+      "key": "supplement/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render",
+      "baselineMS": 116.51977049999999,
+      "candidateMS": 116.856979,
+      "pairedMedian": 0.3884211772191226,
+      "CI": [
+        -0.28883716048416774,
+        0.5489692880636277
+      ],
+      "faster": 2,
+      "p": 0.109375,
+      "RSSdeltaMiB": -0.328125
+    },
+    {
+      "key": "supplement/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render",
+      "baselineMS": 119.167104,
+      "candidateMS": 119.626542,
+      "pairedMedian": 0.5811962995555864,
+      "CI": [
+        0.08274098076025416,
+        1.6844100648876537
+      ],
+      "faster": 2,
+      "p": 0.109375,
+      "RSSdeltaMiB": 0.171875
+    },
+    {
+      "key": "supplement/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render",
+      "baselineMS": 382.4723745,
+      "candidateMS": 381.50179149999997,
+      "pairedMedian": 0.01710899122902565,
+      "CI": [
+        -1.8910718553251438,
+        0.8564028387022082
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": -0.34375
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/native-table-joins18-v1.pptx/render",
+      "baselineMS": 4.5094585,
+      "candidateMS": 4.5681875,
+      "pairedMedian": 2.0339993721620875,
+      "CI": [
+        0.27449264449581623,
+        4.058104042289667
+      ],
+      "faster": 2,
+      "p": 0.109375,
+      "RSSdeltaMiB": 0.0859375
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/ltr-single-100x20.pptx/render",
+      "baselineMS": 51.816084000000004,
+      "candidateMS": 52.1957295,
+      "pairedMedian": 0.7073906527332863,
+      "CI": [
+        -1.3703962939157988,
+        1.4203880004347913
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.0234375
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/rtl-single-100x20.pptx/render",
+      "baselineMS": 52.006187499999996,
+      "candidateMS": 52.200896,
+      "pairedMedian": 0.9573492561454899,
+      "CI": [
+        0.12277791303950125,
+        2.8339070993461446
+      ],
+      "faster": 2,
+      "p": 0.109375,
+      "RSSdeltaMiB": 0.046875
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/axis-colors-100x20.pptx/render",
+      "baselineMS": 51.581562,
+      "candidateMS": 52.368041500000004,
+      "pairedMedian": 0.9470571693079299,
+      "CI": [
+        0.5659737446176871,
+        1.7469401646067917
+      ],
+      "faster": 0,
+      "p": 0.001953125,
+      "RSSdeltaMiB": 0.015625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/horizontal-merges-100x20.pptx/render",
+      "baselineMS": 37.084312499999996,
+      "candidateMS": 36.9930625,
+      "pairedMedian": 0.21932205900582202,
+      "CI": [
+        -1.5478157008878501,
+        1.61080638583464
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": -0.0234375
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/vertical-merges-100x20.pptx/render",
+      "baselineMS": 36.5679375,
+      "candidateMS": 37.011270499999995,
+      "pairedMedian": 1.7428227426385834,
+      "CI": [
+        -0.819566543325323,
+        4.623950002793231
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.0
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-rtl-colors-100x20.pptx/render",
+      "baselineMS": 51.6555625,
+      "candidateMS": 51.8100205,
+      "pairedMedian": 0.5899860403923318,
+      "CI": [
+        -0.5274871170853734,
+        1.182782590441489
+      ],
+      "faster": 2,
+      "p": 0.109375,
+      "RSSdeltaMiB": 0.015625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-merge-colors-100x20.pptx/render",
+      "baselineMS": 36.1258125,
+      "candidateMS": 36.892624999999995,
+      "pairedMedian": 2.712412010659415,
+      "CI": [
+        0.0879639085686279,
+        3.7660113453089172
+      ],
+      "faster": 2,
+      "p": 0.109375,
+      "RSSdeltaMiB": -0.0078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/uniform-100x20.pptx/render",
+      "baselineMS": 51.8521255,
+      "candidateMS": 52.210229,
+      "pairedMedian": 0.4338211154786942,
+      "CI": [
+        -0.7086485306294188,
+        1.8747419340089944
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.0078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/native-table-style-fallback19-v1.pptx/render",
+      "baselineMS": 3.6038745,
+      "candidateMS": 3.6667915,
+      "pairedMedian": 1.5484702857983978,
+      "CI": [
+        -0.15059261084100495,
+        3.548555816054444
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.046875
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/partial-20x10.pptx/render",
+      "baselineMS": 5.9951875,
+      "candidateMS": 5.4535625,
+      "pairedMedian": -8.99527020951868,
+      "CI": [
+        -9.789762566747351,
+        -7.1296691125759875
+      ],
+      "faster": 10,
+      "p": 0.001953125,
+      "RSSdeltaMiB": 0.015625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/partial-100x20.pptx/render",
+      "baselineMS": 40.040791999999996,
+      "candidateMS": 33.667208,
+      "pairedMedian": -15.599454944678131,
+      "CI": [
+        -17.625156080167912,
+        -14.886314917643473
+      ],
+      "faster": 10,
+      "p": 0.001953125,
+      "RSSdeltaMiB": 0.046875
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/partial-200x50.pptx/render",
+      "baselineMS": 189.21381300000002,
+      "candidateMS": 161.630333,
+      "pairedMedian": -14.437745877205664,
+      "CI": [
+        -15.641115027731157,
+        -13.864068496886928
+      ],
+      "faster": 10,
+      "p": 0.001953125,
+      "RSSdeltaMiB": -1.1796875
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/explicit-empty-20x10.pptx/render",
+      "baselineMS": 4.9445415,
+      "candidateMS": 4.9574375,
+      "pairedMedian": 0.30347540974539067,
+      "CI": [
+        -0.5659323926505033,
+        1.3273471679514093
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": -0.0234375
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/explicit-noFill-20x10.pptx/render",
+      "baselineMS": 4.965896,
+      "candidateMS": 5.0518540000000005,
+      "pairedMedian": 2.1401251887905426,
+      "CI": [
+        -1.604610149283392,
+        3.8926238162716897
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.0
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/unresolved-20x10.pptx/render",
+      "baselineMS": 4.9252295,
+      "candidateMS": 4.926042000000001,
+      "pairedMedian": 0.24099955827225905,
+      "CI": [
+        -2.498089768799705,
+        1.124302149949985
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": -0.0625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/direct-override-20x10.pptx/render",
+      "baselineMS": 7.1467085,
+      "candidateMS": 7.2379999999999995,
+      "pairedMedian": 0.8968744892099312,
+      "CI": [
+        -0.17987347009095211,
+        1.9224972678562713
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.03125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/grid-line-constant-100x20.pptx/render",
+      "baselineMS": 52.655625,
+      "candidateMS": 52.976625,
+      "pairedMedian": 1.0470545236854534,
+      "CI": [
+        -0.5154423038471689,
+        2.1164642635061126
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.0234375
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/reject-collinear-transition-100x20.pptx/render",
+      "baselineMS": 52.0544165,
+      "candidateMS": 52.284479000000005,
+      "pairedMedian": 0.6498700477865271,
+      "CI": [
+        -0.7571932054979247,
+        1.1244192483767401
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.0
+    },
+    {
+      "key": "cache-controls/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/direct-unique-200x50.pptx/render",
+      "baselineMS": 250.986042,
+      "candidateMS": 253.768542,
+      "pairedMedian": 0.9649705128250474,
+      "CI": [
+        -0.1786654256056952,
+        1.4696899549778264
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": -1.265625
+    },
+    {
+      "key": "cache-controls/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/budget-near-20x10.pptx/render",
+      "baselineMS": 16.3108965,
+      "candidateMS": 16.165229,
+      "pairedMedian": -1.1952064275944196,
+      "CI": [
+        -5.035758241922572,
+        3.5667970617271227
+      ],
+      "faster": 6,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.015625
+    },
+    {
+      "key": "cache-controls/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/oversize-bypass-6x6.pptx/render",
+      "baselineMS": 261.0336035,
+      "candidateMS": 260.891646,
+      "pairedMedian": -0.34771046135557704,
+      "CI": [
+        -1.8847259502303593,
+        1.6112383873653324
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": -0.0546875
+    }
+  ],
+  "secondaryWhollyPositiveIntervals": 16,
+  "secondaryWhollyNegativeIntervals": 15,
+  "RSSMedianDeltaRangeMiB": [
+    -1.265625,
+    0.2421875
+  ],
+  "executionSeconds": 187.26740933401743,
+  "completionLogSeconds": 187.2675900000031,
+  "postwriteDifferenceSeconds": 0.00018066598568111658,
+  "hostRanges": {
+    "WindowServer": [
+      39.1,
+      43.6
+    ],
+    "backupd": [
+      60.0,
+      146.2
+    ],
+    "photolibraryd": [
+      0.0,
+      0.0
+    ],
+    "managedcorespotlightd": [
+      0.0,
+      0.0
+    ]
+  },
+  "scope": "Accepted bounded target partial-style render gains with explicit axis-color direct-border regression, other adverse and unresolved controls. No universal nonregression, cumulative recovery or cross-platform claim. Whole-process RSS does not isolate allocations; background host load limits causal attribution."
+}

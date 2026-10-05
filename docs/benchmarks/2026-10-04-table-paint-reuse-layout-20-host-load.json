@@ -1,0 +1,855 @@
+{
+  "snapshots": [
+    {
+      "snapshot": "process-cache-controls-during-15.txt",
+      "timestamp": "2026-10-04T19:04:41.573120-07:00",
+      "cpuPercent": {
+        "WindowServer": 43.1,
+        "backupd": 143.8,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 143.8,
+          "pid": 718
+        },
+        {
+          "process": "baseline-table-bench",
+          "cpuPercent": 93.8,
+          "pid": 78872
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 43.1,
+          "pid": 619
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.4,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 9.2,
+          "pid": 615
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 6.7,
+          "pid": 612
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 4.7,
+          "pid": 1330
+        },
+        {
+          "process": "MonitorControl",
+          "cpuPercent": 4.3,
+          "pid": 2692
+        }
+      ]
+    },
+    {
+      "snapshot": "process-cache-controls-during-30.txt",
+      "timestamp": "2026-10-04T19:04:56.900419-07:00",
+      "cpuPercent": {
+        "WindowServer": 39.9,
+        "backupd": 146.2,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 146.2,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 39.9,
+          "pid": 619
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 11.8,
+          "pid": 612
+        },
+        {
+          "process": "Google",
+          "cpuPercent": 9.9,
+          "pid": 77787
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 9.9,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 9.4,
+          "pid": 615
+        },
+        {
+          "process": "iOS",
+          "cpuPercent": 9.4,
+          "pid": 78993
+        },
+        {
+          "process": "Activity",
+          "cpuPercent": 5.6,
+          "pid": 1327
+        }
+      ]
+    },
+    {
+      "snapshot": "process-cache-controls-end.txt",
+      "timestamp": "2026-10-04T19:05:07.128993-07:00",
+      "cpuPercent": {
+        "WindowServer": 43.4,
+        "backupd": 134.3,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 134.3,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 43.4,
+          "pid": 619
+        },
+        {
+          "process": "iOS",
+          "cpuPercent": 24.0,
+          "pid": 79035
+        },
+        {
+          "process": "Activity",
+          "cpuPercent": 12.3,
+          "pid": 1327
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.4,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 7.3,
+          "pid": 615
+        },
+        {
+          "process": "sysmond",
+          "cpuPercent": 6.7,
+          "pid": 847
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 6.4,
+          "pid": 612
+        }
+      ]
+    },
+    {
+      "snapshot": "process-canonical-during-15.txt",
+      "timestamp": "2026-10-04T19:02:15.318715-07:00",
+      "cpuPercent": {
+        "WindowServer": 40.8,
+        "backupd": 89.9,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 89.9,
+          "pid": 718
+        },
+        {
+          "process": "iOS",
+          "cpuPercent": 53.2,
+          "pid": 78080
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 40.8,
+          "pid": 619
+        },
+        {
+          "process": "candidate-extended-bench",
+          "cpuPercent": 25.3,
+          "pid": 78081
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 9.5,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 9.4,
+          "pid": 615
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 4.5,
+          "pid": 612
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 4.0,
+          "pid": 1330
+        }
+      ]
+    },
+    {
+      "snapshot": "process-canonical-end.txt",
+      "timestamp": "2026-10-04T19:02:20.977988-07:00",
+      "cpuPercent": {
+        "WindowServer": 42.9,
+        "backupd": 111.1,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 111.1,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 42.9,
+          "pid": 619
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.9,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 9.8,
+          "pid": 615
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 5.3,
+          "pid": 1330
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 5.1,
+          "pid": 612
+        },
+        {
+          "process": "MonitorControl",
+          "cpuPercent": 3.7,
+          "pid": 2692
+        },
+        {
+          "process": "cfprefsd",
+          "cpuPercent": 3.5,
+          "pid": 622
+        }
+      ]
+    },
+    {
+      "snapshot": "process-end.txt",
+      "timestamp": "2026-10-04T19:05:07.186535-07:00",
+      "cpuPercent": {
+        "WindowServer": 43.4,
+        "backupd": 134.3,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 134.3,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 43.4,
+          "pid": 619
+        },
+        {
+          "process": "(facetimemessages)",
+          "cpuPercent": 24.0,
+          "pid": 79035
+        },
+        {
+          "process": "Activity",
+          "cpuPercent": 12.3,
+          "pid": 1327
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.4,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 7.3,
+          "pid": 615
+        },
+        {
+          "process": "sysmond",
+          "cpuPercent": 6.7,
+          "pid": 847
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 6.4,
+          "pid": 612
+        }
+      ]
+    },
+    {
+      "snapshot": "process-native-during-15.txt",
+      "timestamp": "2026-10-04T19:02:56.852415-07:00",
+      "cpuPercent": {
+        "WindowServer": 40.6,
+        "backupd": 104.4,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 104.4,
+          "pid": 718
+        },
+        {
+          "process": "baseline-table-bench",
+          "cpuPercent": 53.5,
+          "pid": 78345
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 40.6,
+          "pid": 619
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 9.6,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 8.1,
+          "pid": 615
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 6.6,
+          "pid": 612
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 5.1,
+          "pid": 1330
+        },
+        {
+          "process": "MonitorControl",
+          "cpuPercent": 3.3,
+          "pid": 2692
+        }
+      ]
+    },
+    {
+      "snapshot": "process-native-during-30.txt",
+      "timestamp": "2026-10-04T19:03:12.176522-07:00",
+      "cpuPercent": {
+        "WindowServer": 43.2,
+        "backupd": 112.7,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 112.7,
+          "pid": 718
+        },
+        {
+          "process": "(candidate-table-)",
+          "cpuPercent": 57.3,
+          "pid": 78417
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 43.2,
+          "pid": 619
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.1,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 7.2,
+          "pid": 615
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 6.7,
+          "pid": 612
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 5.2,
+          "pid": 1330
+        },
+        {
+          "process": "Google",
+          "cpuPercent": 3.6,
+          "pid": 77787
+        }
+      ]
+    },
+    {
+      "snapshot": "process-native-during-45.txt",
+      "timestamp": "2026-10-04T19:03:27.478612-07:00",
+      "cpuPercent": {
+        "WindowServer": 41.2,
+        "backupd": 110.3,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 110.3,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 41.2,
+          "pid": 619
+        },
+        {
+          "process": "Activity",
+          "cpuPercent": 10.2,
+          "pid": 1327
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 9.6,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 7.8,
+          "pid": 615
+        },
+        {
+          "process": "candidate-table-bench",
+          "cpuPercent": 7.1,
+          "pid": 78478
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 5.4,
+          "pid": 612
+        },
+        {
+          "process": "Google",
+          "cpuPercent": 5.0,
+          "pid": 77787
+        }
+      ]
+    },
+    {
+      "snapshot": "process-native-during-61.txt",
+      "timestamp": "2026-10-04T19:03:42.797681-07:00",
+      "cpuPercent": {
+        "WindowServer": 43.6,
+        "backupd": 109.6,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 109.6,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 43.6,
+          "pid": 619
+        },
+        {
+          "process": "Activity",
+          "cpuPercent": 34.6,
+          "pid": 1327
+        },
+        {
+          "process": "sysmond",
+          "cpuPercent": 20.3,
+          "pid": 847
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.2,
+          "pid": 93738
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 9.0,
+          "pid": 612
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 7.8,
+          "pid": 615
+        },
+        {
+          "process": "Google",
+          "cpuPercent": 6.5,
+          "pid": 77787
+        }
+      ]
+    },
+    {
+      "snapshot": "process-native-during-76.txt",
+      "timestamp": "2026-10-04T19:03:58.119599-07:00",
+      "cpuPercent": {
+        "WindowServer": 39.5,
+        "backupd": 111.9,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 111.9,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 39.5,
+          "pid": 619
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 9.9,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 7.7,
+          "pid": 615
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 5.1,
+          "pid": 1330
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 4.9,
+          "pid": 612
+        },
+        {
+          "process": "FluidVoice",
+          "cpuPercent": 4.9,
+          "pid": 3558
+        },
+        {
+          "process": "coreaudiod",
+          "cpuPercent": 3.3,
+          "pid": 744
+        }
+      ]
+    },
+    {
+      "snapshot": "process-native-during-91.txt",
+      "timestamp": "2026-10-04T19:04:13.455605-07:00",
+      "cpuPercent": {
+        "WindowServer": 39.1,
+        "backupd": 60.0,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "baseline-table-bench",
+          "cpuPercent": 60.3,
+          "pid": 78742
+        },
+        {
+          "process": "backupd",
+          "cpuPercent": 60.0,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 39.1,
+          "pid": 619
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 9.5,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 7.4,
+          "pid": 615
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 4.7,
+          "pid": 612
+        },
+        {
+          "process": "MonitorControl",
+          "cpuPercent": 3.0,
+          "pid": 2692
+        },
+        {
+          "process": "cfprefsd",
+          "cpuPercent": 2.8,
+          "pid": 622
+        }
+      ]
+    },
+    {
+      "snapshot": "process-native-end.txt",
+      "timestamp": "2026-10-04T19:04:26.246962-07:00",
+      "cpuPercent": {
+        "WindowServer": 40.3,
+        "backupd": 113.9,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 113.9,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 40.3,
+          "pid": 619
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.2,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 9.7,
+          "pid": 615
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 8.1,
+          "pid": 612
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 5.0,
+          "pid": 1330
+        },
+        {
+          "process": "MonitorControl",
+          "cpuPercent": 3.8,
+          "pid": 2692
+        },
+        {
+          "process": "Google",
+          "cpuPercent": 3.5,
+          "pid": 77787
+        }
+      ]
+    },
+    {
+      "snapshot": "process-start.txt",
+      "timestamp": "2026-10-04T19:01:59.971725-07:00",
+      "cpuPercent": {
+        "WindowServer": 42.1,
+        "backupd": 109.9,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 109.9,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 42.1,
+          "pid": 619
+        },
+        {
+          "process": "(proactiveeventtr)",
+          "cpuPercent": 14.5,
+          "pid": 78033
+        },
+        {
+          "process": "(mlhostd)",
+          "cpuPercent": 14.0,
+          "pid": 78034
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.7,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 7.9,
+          "pid": 615
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 7.7,
+          "pid": 612
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 5.7,
+          "pid": 1330
+        }
+      ]
+    },
+    {
+      "snapshot": "process-supplement-during-15.txt",
+      "timestamp": "2026-10-04T19:02:36.347987-07:00",
+      "cpuPercent": {
+        "WindowServer": 43.1,
+        "backupd": 112.5,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 112.5,
+          "pid": 718
+        },
+        {
+          "process": "baseline-supplement-bench",
+          "cpuPercent": 66.6,
+          "pid": 78247
+        },
+        {
+          "process": "iOS",
+          "cpuPercent": 62.3,
+          "pid": 78246
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 43.1,
+          "pid": 619
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.4,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 8.2,
+          "pid": 615
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 5.9,
+          "pid": 612
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 5.3,
+          "pid": 1330
+        }
+      ]
+    },
+    {
+      "snapshot": "process-supplement-end.txt",
+      "timestamp": "2026-10-04T19:02:41.501491-07:00",
+      "cpuPercent": {
+        "WindowServer": 40.4,
+        "backupd": 113.4,
+        "photolibraryd": 0.0,
+        "managedcorespotlightd": 0.0
+      },
+      "topCPU": [
+        {
+          "process": "backupd",
+          "cpuPercent": 113.4,
+          "pid": 718
+        },
+        {
+          "process": "WindowServer",
+          "cpuPercent": 40.4,
+          "pid": 619
+        },
+        {
+          "process": "Codex",
+          "cpuPercent": 10.0,
+          "pid": 93738
+        },
+        {
+          "process": "corebrightnessd",
+          "cpuPercent": 7.6,
+          "pid": 615
+        },
+        {
+          "process": "SystemUIServer",
+          "cpuPercent": 5.1,
+          "pid": 1330
+        },
+        {
+          "process": "bluetoothd",
+          "cpuPercent": 3.5,
+          "pid": 612
+        },
+        {
+          "process": "MonitorControl",
+          "cpuPercent": 3.0,
+          "pid": 2692
+        },
+        {
+          "process": "cfprefsd",
+          "cpuPercent": 2.8,
+          "pid": 622
+        }
+      ]
+    }
+  ],
+  "ranges": {
+    "WindowServer": [
+      39.1,
+      43.6
+    ],
+    "backupd": [
+      60.0,
+      146.2
+    ],
+    "photolibraryd": [
+      0.0,
+      0.0
+    ],
+    "managedcorespotlightd": [
+      0.0,
+      0.0
+    ]
+  },
+  "qualification": "Root/agent build/test/GUI pause; uncontrolled background load. Snapshots cannot establish continuous isolation or remove bias."
+}

@@ -1,0 +1,9 @@
+{
+  "status": "interrupted-not-accepted",
+  "exitCode": 143,
+  "sourceHead": "3d4bde195096cebe543d452187c372826ff2f9cb",
+  "stage": "Lectern app-hosted tests",
+  "logPath": "/tmp/rostrum-fidelity22-verify.log",
+  "logSHA256": "86309dc0959e71a873ffd5ee9f810dd7a020049d67d51fa69b8240636c14dd24",
+  "reason": "The assistant terminated the hosted process while it was being used for a demo. This interrupted gate is not accepted as a completed test run. No app-hosted restart occurred during the credential repair."
+}

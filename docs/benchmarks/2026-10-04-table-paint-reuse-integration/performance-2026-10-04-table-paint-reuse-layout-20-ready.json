@@ -1,0 +1,74 @@
+{
+  "status": "READY_FOR_INDEPENDENT_FINAL_PROTOCOL_REVIEW_NO_TIMING_AUTHORIZED",
+  "baselineSource": "007efa9c5b1c56af36d5251937fe95244ffaa289",
+  "baselineBuild": "Retained matching accepted S19 Release products copied byte for byte; not a newly built baseline. Original Git, all111 source files, compiler, object/module/helper pins verified. Includes accepted S15 ordinary inherited-style reuse.",
+  "candidateSource": "20e4a3556724f20937fcbca7208728798b658fcd",
+  "candidateSourceTree": "6d2e7cd2d2c057d4c9b916358882695cbe2c66d7",
+  "productionDiffFiles": [
+    "Sources/Rostrum/Presentation/SVGRenderer.swift",
+    "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift"
+  ],
+  "tests": {
+    "libraryTests": 1193,
+    "librarySuites": 174,
+    "layoutTests": 18,
+    "layoutSuites": 3
+  },
+  "candidateReleaseSeconds": 58.56,
+  "corpus": {
+    "cases": 190,
+    "slides": 886,
+    "freshProofProcesses": 570,
+    "freshExternalReopens": 570,
+    "changedCases": 0,
+    "changedArtifacts": 0,
+    "wholeSVGPackagesOrderedDiagnosticsInheritanceExact": true,
+    "candidateRepeatedExact": true
+  },
+  "cacheAudit": [
+    {
+      "cells": 10000,
+      "distinctAdmittedBorderIdentities": 0,
+      "name": "direct-unique-200x50",
+      "nonnilBorders": 40000,
+      "sharedBorderEncounters": 0,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 40000
+    },
+    {
+      "cells": 200,
+      "distinctAdmittedBorderIdentities": 24,
+      "name": "budget-near-20x10",
+      "nonnilBorders": 800,
+      "sharedBorderEncounters": 40,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 760
+    },
+    {
+      "cells": 36,
+      "distinctAdmittedBorderIdentities": 0,
+      "name": "oversize-bypass-6x6",
+      "nonnilBorders": 144,
+      "sharedBorderEncounters": 0,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 144
+    }
+  ],
+  "shapingRecords": 101310,
+  "layoutRecords": 1728,
+  "fixedPreservationExternalReopens": 6,
+  "children": 660,
+  "primaryComparisons": 31,
+  "allMeasuredPhaseComparisons": 339,
+  "physicalPins": 85,
+  "outputArtifactCount": 9861,
+  "rootIntegration": "Await root production-tree equality confirmation before any campaign. Root accepted19 prechange tree11ead verified; future integrated20 must equal candidate6d2e7.",
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/timing-plan.json": "c0de7aaa015a1bf28f5a8c3ff3aa2e4655201e4c7bf8f4f1e54e38eea4ce1454",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/run-authorized.py": "34ab5a476c52a8916034520b97377ecbb93878deaa0d09b915d8e7e3e4cc6845",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/preflight-verification.json": "79ceb41b6720211a50e7a06ec1141da5bf6d84ac07460a54f8e6fd2f0f29c606",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/output-artifact-pins.json": "6080dbe172f4e952cc1f680fa13999875d473059d3b5562714a6d193f43822ba",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/input-pins.json": "4b682625636367f8a70d7bef63ce0cc2a7d4e118330484ae475654082d195bea"
+  }
+}

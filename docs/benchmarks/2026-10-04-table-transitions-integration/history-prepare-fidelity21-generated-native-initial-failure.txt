@@ -1,0 +1,3 @@
+Initial preflight completed exact14 graphic-frame and first4-page text comparisons, then incorrectly compared obfuscated package font bytes against the decoded TTF hash. Tool returned:
+AssertionError: {'ppt/fonts/regular.fntdata': '3cd5e824967d66212859b7ccceb1111aa234fa97e1b11df5cf10acfc78f23569'}
+Original helper preserved at /tmp/prepare-fidelity21-generated-native.py. Corrected helper compares exact raw font-part bytes from both independently authored sources; decoded face verification remains in native fixture/font proof and Core checks. This is a harness correction, not a source-package or production change.

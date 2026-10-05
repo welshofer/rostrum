@@ -163,12 +163,12 @@ import Testing
         }
     }
 
-    @Test func uncapturedMixedJoinProfilesKeepPriorEndpoints() throws {
+    @Test func mixedJoinProfilesRespectCalibratedAndRejectedEndpoints() throws {
         let directory = root.deletingLastPathComponent().appendingPathComponent("NativeTableJoins")
-        for mode in ["alpha", "dash", "diagonal", "rtl", "multicolor", "merged", "ragged", "wide"] {
+        for mode in ["alpha", "dash", "diagonal", "rtl-colored", "multicolor", "rtl-merged", "ragged", "wide"] {
             let deck = try Presentation(contentsOf: directory.appendingPathComponent("native-table-joins-v1.pptx"))
             deck.registerEmbeddedFonts()
-            let multi = mode == "multicolor" || mode == "merged" || mode == "ragged"
+            let multi = mode == "multicolor" || mode == "rtl-merged" || mode == "ragged"
             let name = multi ? "mixed-shared-grid" : "unequal-four-edges"
             let frame = try #require(deck.slides[0].shapes.first { $0.name == name } as? TableFrame)
             let table = try #require(frame.table)
@@ -182,13 +182,18 @@ import Testing
             case "dash": left.appendElement(XML.Element("a:prstDash", attributes: [("val", "dash")]))
             case "diagonal":
                 let diagonal = left.deepCopy(); diagonal.name = "a:lnTlToBr"; properties.appendElement(diagonal)
-            case "rtl": table.rightToLeft = true
+            case "rtl-colored":
+                // RTL alone is now native-calibrated; its multicolor combination is not.
+                table.rightToLeft = true
+                left.firstChild(named: "a:solidFill")?.firstChild(named: "a:srgbClr")?[attribute: "val"] = "FF0000"
             case "multicolor": left.firstChild(named: "a:solidFill")?.firstChild(named: "a:srgbClr")?[attribute: "val"] = "FF0000"
             case "wide": left[attribute: "w"] = String(200 * EMU.perPoint)
             case "ragged":
                 let row = try #require(table.tbl.children(named: "a:tr").last)
                 row.children.removeLast()
             default:
+                // LTR one-axis merges are calibrated; combined RTL merges remain outside scope.
+                table.rightToLeft = true
                 cell.tc[attribute: "gridSpan"] = "2"
                 try table.cell(0, 1).tc[attribute: "hMerge"] = "1"
             }
@@ -199,7 +204,14 @@ import Testing
                 let x1 = try number($0, "x1"), x2 = try number($0, "x2"), y1 = try number($0, "y1")
                 return abs(x1 - 30) < 0.001 && x1 == x2 && abs(y1 - y) < 0.001
             }
-            #expect(!matching.isEmpty, "\(mode): retains raw mixed-width fallback endpoint")
+            if mode == "multicolor" {
+                let calibrated = try nodes(svg, "line").contains {
+                    try number($0, "x1") == 30 && number($0, "x2") == 30 && number($0, "y1") == 349.5
+                }
+                #expect(calibrated && matching.isEmpty, "unmerged LTR collinear color transition")
+            } else {
+                #expect(!matching.isEmpty, "\(mode): retains raw mixed-width fallback endpoint")
+            }
         }
     }
 

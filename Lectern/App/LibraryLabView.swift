@@ -18,7 +18,7 @@ struct LibraryLabView: View {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Library Lab").font(.largeTitle.bold())
-                    Text("Run Rostrum’s features, inspect the results, and open the actual PowerPoint files. All demos work offline.")
+                    Text("Run Rostrum’s features, inspect the results, and open the actual PowerPoint files. All demos work offline. Completed decks are saved to your library.")
                         .foregroundStyle(.secondary)
                 }
                 Picker("Demonstration", selection: $model.selection) {
@@ -121,10 +121,10 @@ struct LibraryLabView: View {
     }
 
     @ViewBuilder private var actions: some View {
-        Button("Run Demo", systemImage: "play.fill") { model.run([recipe.id]) }
+        Button("Run Demo", systemImage: "play.fill") { app.runLibraryDemos([recipe.id], model: model) }
             .buttonStyle(.borderedProminent).disabled(model.isRunning)
             .accessibilityIdentifier("libraryLab.run")
-        Button("Run All \(LibraryLab.catalog.count) Demos") { model.run(LibraryLab.catalog.map(\.id)) }
+        Button("Run All \(LibraryLab.catalog.count) Demos") { app.runLibraryDemos(LibraryLab.catalog.map(\.id), model: model) }
             .disabled(model.isRunning).accessibilityIdentifier("libraryLab.runAll")
     }
 
@@ -155,6 +155,17 @@ struct LibraryLabView: View {
                     .aspectRatio(SlidePreviewGeometry(svg: svg)?.aspectRatio ?? 16.0 / 9.0, contentMode: .fit)
                     .clipShape(.rect(cornerRadius: 8))
                     .accessibilityLabel("Slide \(result.coverSlideNumber ?? 1) of \(recipe.title)")
+            }
+            if let saved = model.savedDecks[result.id] {
+                Label("Saved to your library: " + saved.lastPathComponent, systemImage: "checkmark.circle")
+                    .font(.callout).textSelection(.enabled)
+                    .accessibilityIdentifier("libraryLab.savedDeck")
+            } else if let failure = model.saveFailures[result.id] {
+                Label("Couldn’t save this deck to your library", systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.orange)
+                Text(failure + " Use Save Deck below to keep a copy. You can still inspect this result.")
+                    .font(.callout).textSelection(.enabled)
+                    .accessibilityIdentifier("libraryLab.saveFailure")
             }
             ViewThatFits(in: .horizontal) {
                 HStack { artifactActions(result) }
@@ -191,7 +202,7 @@ struct LibraryLabView: View {
     }
 
     @ViewBuilder private func artifactActions(_ result: LibraryLabResult) -> some View {
-        Button("Inspect Result") { app.inspect(deckAt: result.afterURL) }
+        Button("Inspect Result") { app.inspect(deckAt: model.savedDecks[result.id] ?? result.afterURL) }
             .accessibilityIdentifier("libraryLab.inspectAfter")
         if let before = result.beforeURL {
             Button("Inspect Before") { app.inspect(deckAt: before) }

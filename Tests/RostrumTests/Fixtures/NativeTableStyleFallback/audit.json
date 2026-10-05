@@ -1,0 +1,13 @@
+{
+  "cases": 12,
+  "pages": 2,
+  "visibleGlyphs": 72,
+  "sourceSHA256": "e261b6864780fb021e914dfcd4a0e19b3aae9825cc33b94b0168933dcf057268",
+  "checks": [
+    "XML/ZIP/python-pptx validity",
+    "exact frame coordinates and physical cell counts",
+    "all body text and run face/size/kerning",
+    "no timing/animation nodes"
+  ],
+  "nativePDFSHA256": "02d7eb7e7e727717ddd4e9a56cecb65f619eec747041f51eade7b22819d766a5"
+}

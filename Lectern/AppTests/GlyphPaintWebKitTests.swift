@@ -315,8 +315,160 @@ import Rostrum
         }
     }
 
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
+    func tableJoinProfilesVariantsProduceFontReadyVectorEvidence() async throws {
+        let base = URL(fileURLWithPath: ProcessInfo.processInfo.environment["LECTERN_TABLE_JOIN_PROFILES_WEBKIT_OUTPUT"]
+            ?? "/tmp/lectern-table-join-profiles-webkit-20261004", isDirectory: true)
+        let directory = base.appendingPathComponent("table-join-profiles-" + UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let host = SnapshotHost()
+        defer { host.close() }
+        for alternative in [false, true] {
+            let result = try LibraryLab.run(.tableJoinProfiles, options: .init(alternative: alternative),
+                                           in: directory.appendingPathComponent("lab-\(alternative)", isDirectory: true))
+            #expect(result.passed && result.slideCount == 3)
+            let deck = try Presentation(contentsOf: result.afterURL)
+            #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
+            let size = CGSize(width: deck.slideSize.width.points, height: deck.slideSize.height.points)
+            #expect(size == CGSize(width: 720, height: 720))
+            let referenceURL = result.directory.appendingPathComponent("native-table-join-profiles-reference.json")
+            let reference = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: referenceURL)) as? [String: Any])
+            let cases = try #require(reference["cases"] as? [[String: Any]])
+            #expect(cases.count == 8)
+            // The third public authoring page has no native paint oracle.
+            for slideIndex in 0..<2 {
+                let selected = cases.filter { ($0["slide"] as? Int) == slideIndex }
+                #expect(selected.count == 4)
+                let inspectorSVG = result.directory.appendingPathComponent(String(format: "previews/slide-%02d.svg", slideIndex + 1))
+                let svg = try String(contentsOf: inspectorSVG, encoding: .utf8)
+                let groups = ["NativeTableJoinProfiles", "NativeTableJoinProfiles"]
+                let specimens: [[String: Any]] = try selected.map { sample in
+                    let id = try #require(sample["id"] as? String)
+                    let shape = try #require(deck.slides[slideIndex].shapes.first { $0.name == id })
+                    return ["sampleID": id, "frame": Self.frame(shape.frame), "referenceGroup": groups[slideIndex],
+                            "referenceID": id, "referenceSource": try #require(sample["source"] as? String),
+                            "referenceJSON": referenceURL.path]
+                }
+                try await capture(svg: svg, size: size, stem: "table-join-profiles-\(alternative)-slide-\(slideIndex + 1)",
+                                  source: result.afterURL, slideIndex: slideIndex, specimens: specimens,
+                                  expectedText: try #require(selected.first?["id"] as? String), host: host, directory: directory,
+                                  inspectorSVG: inspectorSVG)
+            }
+        }
+    }
+
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
+    func partialTableStylesVariantsProduceFontReadyVectorEvidence() async throws {
+        let base = URL(fileURLWithPath: ProcessInfo.processInfo.environment["LECTERN_PARTIAL_TABLE_STYLES_WEBKIT_OUTPUT"]
+            ?? "/tmp/lectern-partial-table-styles-webkit-20261004", isDirectory: true)
+        let directory = base.appendingPathComponent("partial-table-styles-" + UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let host = SnapshotHost()
+        defer { host.close() }
+        for alternative in [false, true] {
+            let result = try LibraryLab.run(.partialTableStyles, options: .init(alternative: alternative),
+                                           in: directory.appendingPathComponent("lab-\(alternative)", isDirectory: true))
+            #expect(result.passed && result.slideCount == 3)
+            let deck = try Presentation(contentsOf: result.afterURL)
+            #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
+            let size = CGSize(width: deck.slideSize.width.points, height: deck.slideSize.height.points)
+            #expect(size == CGSize(width: 720, height: 720))
+            let referenceURL = result.directory.appendingPathComponent("native-partial-table-styles-reference.json")
+            let reference = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: referenceURL)) as? [String: Any])
+            let cases = try #require(reference["cases"] as? [[String: Any]])
+            #expect(cases.count == 12)
+            // The third public authoring page has no native paint oracle.
+            for slideIndex in 0..<2 {
+                let selected = cases.filter { ($0["slide"] as? Int) == slideIndex }
+                #expect(selected.count == 6)
+                let inspectorSVG = result.directory.appendingPathComponent(String(format: "previews/slide-%02d.svg", slideIndex + 1))
+                let svg = try String(contentsOf: inspectorSVG, encoding: .utf8)
+                let groups = ["NativeTableStyleFallback", "NativeTableStyleFallback"]
+                let specimens: [[String: Any]] = try selected.map { sample in
+                    let id = try #require(sample["id"] as? String)
+                    let shape = try #require(deck.slides[slideIndex].shapes.first { $0.name == id })
+                    return ["sampleID": id, "frame": Self.frame(shape.frame), "referenceGroup": groups[slideIndex],
+                            "referenceID": id, "referenceSource": try #require(sample["source"] as? String),
+                            "referenceJSON": referenceURL.path]
+                }
+                try await capture(svg: svg, size: size, stem: "partial-table-styles-\(alternative)-slide-\(slideIndex + 1)",
+                                  source: result.afterURL, slideIndex: slideIndex, specimens: specimens,
+                                  expectedText: try #require(selected.first?["id"] as? String), host: host, directory: directory,
+                                  inspectorSVG: inspectorSVG)
+            }
+        }
+    }
+
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
+    func tableTransitionsVariantsProduceFontReadyVectorEvidence() async throws {
+        let base = URL(fileURLWithPath: ProcessInfo.processInfo.environment["LECTERN_TABLE_TRANSITIONS_WEBKIT_OUTPUT"]
+            ?? "/tmp/lectern-table-transitions-webkit-20261004", isDirectory: true)
+        let directory = base.appendingPathComponent("table-transitions-" + UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let host = SnapshotHost()
+        defer { host.close() }
+        for alternative in [false, true] {
+            let result = try LibraryLab.run(.tableTransitions, options: .init(alternative: alternative),
+                                           in: directory.appendingPathComponent("lab-\(alternative)", isDirectory: true))
+            #expect(result.passed && result.slideCount == 5)
+            let deck = try Presentation(contentsOf: result.afterURL)
+            #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
+            let size = CGSize(width: deck.slideSize.width.points, height: deck.slideSize.height.points)
+            #expect(size == CGSize(width: 720, height: 720))
+            let referenceURL = result.directory.appendingPathComponent("native-table-transitions-reference.json")
+            let reference = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: referenceURL)) as? [String: Any])
+            let cases = try #require(reference["cases"] as? [[String: Any]])
+            #expect(cases.count == 14)
+            // Page five is a public control; the excluded merged specimen retains fallback only.
+            for slideIndex in 0..<4 {
+                let selected = cases.filter { ($0["slide"] as? Int) == slideIndex }
+                #expect(!selected.isEmpty)
+                let inspectorSVG = result.directory.appendingPathComponent(String(format: "previews/slide-%02d.svg", slideIndex + 1))
+                let svg = try String(contentsOf: inspectorSVG, encoding: .utf8)
+                let groups = ["NativeTableTransitions/vertical", "NativeTableTransitions/vertical", "NativeTableTransitions/horizontal", "NativeTableTransitions/horizontal"]
+                let specimens: [[String: Any]] = try selected.map { sample in
+                    let id = try #require(sample["id"] as? String)
+                    let shape = try #require(deck.slides[slideIndex].shapes.first { $0.name == id })
+                    return ["sampleID": id, "frame": Self.frame(shape.frame), "referenceGroup": groups[slideIndex],
+                            "referenceID": id, "nativeBorderAdmitted": id != "merged-colored-rejection", "referenceSource": try #require(sample["source"] as? String),
+                            "referenceJSON": referenceURL.path]
+                }
+                try await capture(svg: svg, size: size, stem: "table-transitions-\(alternative)-slide-\(slideIndex + 1)",
+                                  source: result.afterURL, slideIndex: slideIndex, specimens: specimens,
+                                  expectedText: try #require(selected.first?["id"] as? String), host: host, directory: directory,
+                                  inspectorSVG: inspectorSVG)
+            }
+        }
+    }
+
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
+    func imageOwnerVariantsProduceActualVectorEvidence() async throws {
+        let base = URL(fileURLWithPath: ProcessInfo.processInfo.environment["LECTERN_IMAGE_OWNERS_WEBKIT_OUTPUT"] ?? "/tmp/lectern-image-owners-webkit-20261004")
+        let directory = base.appendingPathComponent("image-owners-" + UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let host = SnapshotHost(); defer { host.close() }
+        for alternative in [false, true] {
+            let result = try LibraryLab.run(.imageOwners, options: .init(alternative: alternative), in: directory.appendingPathComponent("lab-\(alternative)"))
+            #expect(result.passed && result.slideCount == 5)
+            let referenceURL = result.directory.appendingPathComponent("native-image-owners-reference.json")
+            let reference = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: referenceURL)) as? [String: Any])
+            let sources = try #require(reference["sources"] as? [[String: Any]])
+            try #require(sources.count == 4)
+            for index in 0..<4 {
+                let selected = try #require(sources[index]["paints"] as? [[String: Any]])
+                let inspectorSVG = result.directory.appendingPathComponent(String(format: "previews/slide-%02d.svg", index + 1))
+                let svg = try String(contentsOf: inspectorSVG, encoding: .utf8)
+                let specimens: [[String: Any]] = try selected.enumerated().map { offset, paint in
+                    let f = try #require(paint["frame"] as? [Double]); try #require(f.count == 4)
+                    return ["sampleID": "image-\(offset)", "frame": ["x": f[0], "y": f[1], "width": f[2] - f[0], "height": f[3] - f[1]], "referenceGroup": try #require(sources[index]["group"] as? String), "referenceJSON": referenceURL.path, "referenceSource": try #require(sources[index]["originalSource"] as? String), "nativeImageIndex": offset]
+                }
+                try await capture(svg: svg, size: CGSize(width: 864, height: 540), stem: "image-owners-\(alternative)-slide-\(index + 1)", source: result.afterURL, slideIndex: index, specimens: specimens, expectedText: nil, host: host, directory: directory, inspectorSVG: inspectorSVG)
+            }
+        }
+    }
+
     private func capture(svg: String, size: CGSize, stem: String, source: URL, slideIndex: Int,
-                         specimens: [[String: Any]], expectedText: String,
+                         specimens: [[String: Any]], expectedText: String?,
                          host: SnapshotHost, directory: URL, inspectorSVG: URL? = nil) async throws {
         let svgData = Data(svg.utf8)
         if let inspectorSVG {
@@ -338,14 +490,15 @@ import Rostrum
         let readiness = try #require(JSONSerialization.jsonObject(with: readinessData) as? [String: Any])
         let faces = try #require(readiness["faces"] as? [[String: Any]])
         #expect(readiness["status"] as? String == "loaded")
-        #expect(!faces.isEmpty && faces.allSatisfy { $0["status"] as? String == "loaded" })
+        #expect((expectedText == nil || !faces.isEmpty) && faces.allSatisfy { $0["status"] as? String == "loaded" })
         let pdf = try #require(PDFDocument(data: result.pdf))
         #expect(pdf.pageCount == 1)
         let page = try #require(pdf.page(at: 0))
         let bounds = page.bounds(for: .mediaBox)
         #expect(bounds.width > 0 && bounds.height > 0)
         #expect(abs(bounds.width / bounds.height - size.width / size.height) < 0.001)
-        #expect(page.string?.contains(expectedText) == true)
+        if let expectedText { #expect(page.string?.contains(expectedText) == true) }
+        else { #expect(svg.contains("data:image/png;base64,") && !specimens.isEmpty) }
         let records = specimens.map { specimen in
             specimen.merging(["svgFilename": svgURL.lastPathComponent, "pdfFilename": pdfURL.lastPathComponent]) { _, new in new }
         }
@@ -360,7 +513,7 @@ import Rostrum
             "pdfPointsPerSlidePoint": ["x": bounds.width / size.width, "y": bounds.height / size.height],
             "fontReadiness": readiness,
             "originalSpecimens": records,
-            "independentGlyphComparison": "pending; capture success alone is not native paint parity"
+            "independentGlyphComparison": expectedText == nil ? "not applicable; native image pixel and placement extraction pending" : "pending; capture success alone is not native paint parity"
         ]
         if let inspectorSVG {
             receipt["inputInspectorSVG"] = inspectorSVG.path

@@ -333,10 +333,22 @@ struct SVGRenderer {
         let preset = spPr.firstChild(named: "a:prstGeom")
         let prst = spPr.firstChild(named: "a:custGeom") != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
         let style = sp.firstChild(named: "p:style")
-        let fillProperties = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"))
-        let fill = fillProperties.firstChild(named: "a:blipFill").flatMap {
-            imagePattern($0, ownedBy: owner, box: f, defs: &defs)
-        } ?? paint(for: fillProperties, box: f, defs: &defs)
+        let selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner)
+        let fill: String?
+        if let blip = selectedFill.properties.firstChild(named: "a:blipFill") {
+            if selectedFill.properties !== spPr {
+                // Direct paint was inspected with the shape. Referenced paint
+                // belongs to the theme and must use that same owner for both
+                // diagnostics and drawing, including colliding relationship IDs.
+                let location = diagnostics.location
+                diagnostics.inspect(blip, owner: selectedFill.owner, slideIndex: slideNumber - 1,
+                    path: location.path + "/p:style/a:fillRef", package: package)
+                diagnostics.location = location
+            }
+            fill = imagePattern(blip, ownedBy: selectedFill.owner, box: f, defs: &defs)
+        } else {
+            fill = paint(for: selectedFill.properties, box: f, defs: &defs, ownedBy: selectedFill.owner)
+        }
         let lineProperties = effectiveLine(spPr, reference: style?.firstChild(named: "a:lnRef"))
         let stroke = strokeAttrs(lineProperties)
         if let notesContext, NotesPageRenderContext.placeholderType(sp) == "sldImg" {
@@ -1368,12 +1380,12 @@ struct SVGRenderer {
         }
         var borders = TableBorderSegments<BorderPaint>()
         var maximumBorderWidth = 0
-        func borderPaint(_ line: XML.Element?) -> BorderPaint? {
-            guard let line, line.firstChild(named: "a:noFill") == nil,
+        var decodedBorders = TableBorderPaintCache<BorderPaint>()
+        func decodeBorderPaint(_ line: XML.Element) -> BorderPaint? {
+            guard line.firstChild(named: "a:noFill") == nil,
                   let color = colorHex(in: line.firstChild(named: "a:solidFill")) else { return nil }
             let width = max(0, line.coordinate("w") ?? 12700)
             guard width > 0 else { return nil }
-            maximumBorderWidth = max(maximumBorderWidth, width)
             let pattern: String
             switch line.firstChild(named: "a:prstDash")?[attribute: "val"] {
             case "dot", "sysDot": pattern = "\(width) \(width * 2)"
@@ -1392,6 +1404,11 @@ struct SVGRenderer {
                 }
             return BorderPaint(color: color, width: width, pattern: pattern, simpleSolid: simpleSolid,
                                double: TableDoubleBorder.supports(line))
+        }
+        func borderPaint(_ line: XML.Element?) -> BorderPaint? {
+            let paint = decodedBorders.value(for: line, canReuse: styles.ownsSharedBorder, decode: decodeBorderPaint)
+            if let paint { maximumBorderWidth = max(maximumBorderWidth, paint.width) }
+            return paint
         }
         func lineSVG(_ paint: BorderPaint, _ endpoints: (Int, Int, Int, Int), offset: Int = 0,
                      startExtension: Double = 0, endExtension: Double = 0) -> String {
@@ -1511,21 +1528,35 @@ struct SVGRenderer {
             && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
             $0.paint.width == uniformWidth && $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
         }
-        // Native mixed-width controls cover opaque solid unmerged LTR grids.
-        // Keep the established uniform path and all other fallbacks unchanged.
-        let mixedJoinedGrid = !joinedGrid && !rtl && topology?.regions.isEmpty == true
+        // Native mixed-width profiles share the same signed donor extensions.
+        // Keep uniform geometry and uncaptured combinations on their old paths.
+        func admittedMixedProfile() -> Bool {
+            guard let topology else { return false }
+            let oneColor = segments.allSatisfy { $0.paint.color == segments.first?.paint.color }
+            if !topology.regions.isEmpty {
+                // Captured LTR merges share one orientation and one stroke color.
+                return !rtl && oneColor
+                    && (topology.regions.allSatisfy { $0.rowSpan == 1 }
+                        || topology.regions.allSatisfy { $0.columnSpan == 1 })
+            }
+            if oneColor { return true } // Both LTR and RTL are captured.
+            guard !rtl else { return false }
+            // The native transition corpus covers both axes, multiple
+            // junctions and noFill donors in unmerged opaque LTR grids.
+            // Existing outer guards bound paint and segment dimensions;
+            // donor ownership and the four paint groups remain unchanged.
+            return true
+        }
+        let mixedJoinedGrid = !joinedGrid
             // A segment cannot contract past its opposite endpoint: each
             // physical cell dimension exceeds the largest admitted stroke.
             && widths.allSatisfy { $0 > maximumBorderWidth }
             && heights.allSatisfy { $0 > maximumBorderWidth }
             && grid.cells.allSatisfy { $0.count == widths.count }
-            // The single-cell override proves distinct corner colors. Native
-            // multi-cell seam controls use one color, so keep that boundary.
-            && ((widths.count == 1 && heights.count == 1)
-                || segments.allSatisfy { $0.paint.color == segments.first?.paint.color })
             && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
                 $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
             }
+            && admittedMixedProfile()
         let orderedGrid = joinedGrid || mixedJoinedGrid
         func paintGroup(_ segment: TableBorderSegments<BorderPaint>.Segment) -> Int {
             let edge = segment.edge
@@ -1557,8 +1588,8 @@ struct SVGRenderer {
             var startExtension = start ? halfWidth : 0, endExtension = end ? halfWidth : 0
             if mixedJoinedGrid {
                 let extensions = borders.mixedWidthExtensions(segment, width: { $0.width })
-                startExtension = extensions.lower
-                endExtension = extensions.upper
+                startExtension = edge.axis == .horizontal && rtl ? extensions.upper : extensions.lower
+                endExtension = edge.axis == .horizontal && rtl ? extensions.lower : extensions.upper
             }
             if segment.paint.double {
                 // Collinear continuations suppress terminal extensions, but
@@ -1660,11 +1691,12 @@ struct SVGRenderer {
         return copy
     }
 
-    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?) -> XML.Element {
+    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?, ownedBy owner: Part)
+        -> (properties: XML.Element, owner: Part) {
         let fills = ["a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:grpFill", "a:noFill"]
         guard !properties.childElements.contains(where: { fills.contains($0.name) }),
-              let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return properties }
-        return XML.Element("p:spPr", children: [.element(fill)])
+              let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return (properties, owner) }
+        return (XML.Element("p:spPr", children: [.element(fill)]), theme.part)
     }
 
     private func effectiveLine(_ properties: XML.Element, reference: XML.Element?) -> XML.Element {

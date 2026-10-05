@@ -1,0 +1,187 @@
+{
+  "scope": "Original source renders before edit. Counts constant within each build across ten retained samples. Equal counts do not imply equal SVG bytes; full content classification is separate.",
+  "cases": [
+    {
+      "pool": "native",
+      "name": "native-table-joins18-v1.pptx",
+      "baselineSVGBytes": 2038996,
+      "candidateSVGBytes": 2038996,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "ltr-single-100x20.pptx",
+      "baselineSVGBytes": 1942663,
+      "candidateSVGBytes": 1942663,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "rtl-single-100x20.pptx",
+      "baselineSVGBytes": 1942764,
+      "candidateSVGBytes": 1942764,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "axis-colors-100x20.pptx",
+      "baselineSVGBytes": 1942663,
+      "candidateSVGBytes": 1942663,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "horizontal-merges-100x20.pptx",
+      "baselineSVGBytes": 1481055,
+      "candidateSVGBytes": 1481055,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "vertical-merges-100x20.pptx",
+      "baselineSVGBytes": 1477089,
+      "candidateSVGBytes": 1477089,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "reject-rtl-colors-100x20.pptx",
+      "baselineSVGBytes": 1942175,
+      "candidateSVGBytes": 1942175,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "reject-merge-colors-100x20.pptx",
+      "baselineSVGBytes": 1480607,
+      "candidateSVGBytes": 1480607,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "uniform-100x20.pptx",
+      "baselineSVGBytes": 1942785,
+      "candidateSVGBytes": 1942785,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "native-table-style-fallback19-v1.pptx",
+      "baselineSVGBytes": 2036196,
+      "candidateSVGBytes": 2036196,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "partial-20x10.pptx",
+      "baselineSVGBytes": 1118050,
+      "candidateSVGBytes": 1118050,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "partial-100x20.pptx",
+      "baselineSVGBytes": 2088209,
+      "candidateSVGBytes": 2088209,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "partial-200x50.pptx",
+      "baselineSVGBytes": 6424314,
+      "candidateSVGBytes": 6424314,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "explicit-empty-20x10.pptx",
+      "baselineSVGBytes": 1077241,
+      "candidateSVGBytes": 1077241,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "explicit-noFill-20x10.pptx",
+      "baselineSVGBytes": 1077241,
+      "candidateSVGBytes": 1077241,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "unresolved-20x10.pptx",
+      "baselineSVGBytes": 1077241,
+      "candidateSVGBytes": 1077241,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "direct-override-20x10.pptx",
+      "baselineSVGBytes": 1118029,
+      "candidateSVGBytes": 1118029,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "grid-line-constant-100x20.pptx",
+      "baselineSVGBytes": 1942663,
+      "candidateSVGBytes": 1942663,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "native",
+      "name": "reject-collinear-transition-100x20.pptx",
+      "baselineSVGBytes": 1942175,
+      "candidateSVGBytes": 1942663,
+      "deltaBytes": 488
+    },
+    {
+      "pool": "cache-controls",
+      "name": "direct-unique-200x50.pptx",
+      "baselineSVGBytes": 6424113,
+      "candidateSVGBytes": 6424113,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "cache-controls",
+      "name": "budget-near-20x10.pptx",
+      "baselineSVGBytes": 1118029,
+      "candidateSVGBytes": 1118029,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "cache-controls",
+      "name": "oversize-bypass-6x6.pptx",
+      "baselineSVGBytes": 1029560,
+      "candidateSVGBytes": 1029560,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "transitions",
+      "name": "native-table-transitions21-v1.pptx",
+      "baselineSVGBytes": 2040467,
+      "candidateSVGBytes": 2040467,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "transitions",
+      "name": "native-table-transitions21-horizontal-v1.pptx",
+      "baselineSVGBytes": 2038351,
+      "candidateSVGBytes": 2038351,
+      "deltaBytes": 0
+    },
+    {
+      "pool": "transitions",
+      "name": "vertical-transitions-100x20.pptx",
+      "baselineSVGBytes": 1942175,
+      "candidateSVGBytes": 1942740,
+      "deltaBytes": 565
+    },
+    {
+      "pool": "transitions",
+      "name": "horizontal-transitions-100x20.pptx",
+      "baselineSVGBytes": 1924595,
+      "candidateSVGBytes": 1925053,
+      "deltaBytes": 458
+    }
+  ]
+}

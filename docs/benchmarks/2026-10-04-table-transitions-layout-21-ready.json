@@ -1,0 +1,53 @@
+{
+  "status": "READY_FOR_INDEPENDENT_FINAL_PROTOCOL_REVIEW_NO_TIMING_AUTHORIZED",
+  "baselineSource": "1a84f4f0af2e1566828959bcc64c4daed92aca09",
+  "baselineBuild": "Retained matching accepted S20 Release products copied byte for byte; not a newly built baseline. Original Git, all112 source files, compiler, object/module/helper pins verified. S15 ordinary inheritance and S20 paint reuse included.",
+  "candidateSource": "73de22c42dc704c81f9fe8c03ee310def68c4dc3",
+  "candidateSourceTree": "d555de4fa405e9c03217ebb966125a360cdd7f78",
+  "productionDiffFiles": [
+    "Sources/Rostrum/Presentation/SVGRenderer.swift"
+  ],
+  "tests": {
+    "libraryTests": 1195,
+    "librarySuites": 175,
+    "layoutTests": 18,
+    "layoutSuites": 3
+  },
+  "candidateReleaseSeconds": 57.92,
+  "corpus": {
+    "cases": 194,
+    "slides": 892,
+    "freshProofProcesses": 582,
+    "freshExternalReopens": 582,
+    "changedCases": 5,
+    "changedSVGs": 7,
+    "savedPackagesOrderedDiagnosticsInheritanceExact": true,
+    "candidateRepeatedExact": true,
+    "completeActualNonLineTextFontFillExact": true,
+    "lineCountAllPaintAttributesExact": true,
+    "independentOrderedEndpointModelExact": true
+  },
+  "native": {
+    "cases": 14,
+    "bodyGlyphs": 240,
+    "admittedCases": 13,
+    "admittedIntervals": 107,
+    "rejectedMergedControlExact": true
+  },
+  "shapingRecords": 101310,
+  "layoutRecords": 1728,
+  "fixedPreservationExternalReopens": 6,
+  "children": 748,
+  "primaryComparisons": 35,
+  "allMeasuredPhaseComparisons": 383,
+  "physicalPins": 79,
+  "outputArtifactCount": 9982,
+  "rootIntegration": "Await additive confirmation of root integrated production-tree equality before launch; candidate d555de4 contains only approved89aa163 atop acceptedS20.",
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/timing-plan.json": "487cd24019eb59e9d510b5c9cd1c7f93281ba20588f26e46ddc09fabd60de29b",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/run-authorized.py": "47f9928a45c07c4b18ddd0dc00b71ed8a9637b8dde8456a97b7fc4fb92b9ec16",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/preflight-verification.json": "43e0b488f3c5eb525b4b81a2dd89f5236ee9ad4df7617ea0d882ec05c08dceac",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/output-artifact-pins.json": "cae599e9977ca51aa65687e18e611c435715b6c34d97e495d5591123e41e1b02",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/input-pins.json": "edac597c9868b67acdf824301bcbfb31720bcde8211c62c8ef9d78ee9eca8cfb"
+  }
+}

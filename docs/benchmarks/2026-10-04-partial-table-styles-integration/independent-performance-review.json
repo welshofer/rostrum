@@ -1,0 +1,431 @@
+{
+  "status": "PASS_BOUNDED_FIDELITY_COST_EVIDENCE",
+  "manifestSHA256": "2defcb7ebc68b2eeec59b744cb5fc380fad9798048a832ec19e677d305a66a37",
+  "reportSHA256": "af98508655edab94e0fbe1a76b38e50f9ffd69ea919d071279265589da3427fd",
+  "physicalPins": 126,
+  "exports": 44,
+  "artifactPins": 11223,
+  "inputPins": 119,
+  "children": 594,
+  "retainedChildSamples": 540,
+  "allPhasesRecomputed": 306,
+  "primaryComparisons": [
+    {
+      "key": "canonical/table-200x50/render",
+      "baselineMS": 181.9766875,
+      "candidateMS": 181.590417,
+      "pairedMedian": -0.7311140820246365,
+      "CI": [
+        -1.6658839725666286,
+        0.9865701002103933
+      ],
+      "faster": 7,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.046875
+    },
+    {
+      "key": "canonical/table-20x10/render",
+      "baselineMS": 3.740271,
+      "candidateMS": 3.7939165,
+      "pairedMedian": 1.165600647838061,
+      "CI": [
+        -0.37083362949393295,
+        3.731557272593833
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.109375
+    },
+    {
+      "key": "canonical/shaped-table-100x20/render",
+      "baselineMS": 63.020729,
+      "candidateMS": 63.286042,
+      "pairedMedian": 0.42285476281620493,
+      "CI": [
+        -0.2936987278864933,
+        1.708479672513974
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.0546875
+    },
+    {
+      "key": "canonical/richtext-fit/render",
+      "baselineMS": 2.566125,
+      "candidateMS": 2.5735,
+      "pairedMedian": -0.5402585926651826,
+      "CI": [
+        -1.1188372204339159,
+        2.86957840169042
+      ],
+      "faster": 6,
+      "p": 0.75390625,
+      "RSSdeltaMiB": -0.03125
+    },
+    {
+      "key": "canonical/richtext-fit/richtext-fitting",
+      "baselineMS": 9.758021,
+      "candidateMS": 9.737354499999999,
+      "pairedMedian": -0.21845885725129133,
+      "CI": [
+        -0.9357896520373776,
+        0.5804470078520807
+      ],
+      "faster": 6,
+      "p": 0.75390625,
+      "RSSdeltaMiB": -0.03125
+    },
+    {
+      "key": "canonical/slides-10/render",
+      "baselineMS": 0.5536875,
+      "candidateMS": 0.563604,
+      "pairedMedian": 1.305480284419147,
+      "CI": [
+        -2.26874013973406,
+        2.861647183814253
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": -0.0703125
+    },
+    {
+      "key": "supplement/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render",
+      "baselineMS": 119.7163545,
+      "candidateMS": 120.004708,
+      "pairedMedian": 0.2684732709047344,
+      "CI": [
+        -1.1400058726019457,
+        1.1972413850833474
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.1640625
+    },
+    {
+      "key": "supplement/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render",
+      "baselineMS": 122.06804149999999,
+      "candidateMS": 121.996896,
+      "pairedMedian": 0.07509423834459183,
+      "CI": [
+        -1.0646484128249978,
+        0.8350937751543053
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": 0.3125
+    },
+    {
+      "key": "supplement/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render",
+      "baselineMS": 390.53174950000005,
+      "candidateMS": 391.57691650000004,
+      "pairedMedian": 1.2858842486650701,
+      "CI": [
+        -1.0966180136051051,
+        3.034735721181958
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.15625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/native-table-joins18-v1.pptx/render",
+      "baselineMS": 4.5308329999999994,
+      "candidateMS": 4.6035415,
+      "pairedMedian": 1.47693580350573,
+      "CI": [
+        -1.1515850249369963,
+        3.8829643673674363
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": -0.078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/ltr-single-100x20.pptx/render",
+      "baselineMS": 51.9617085,
+      "candidateMS": 52.244729,
+      "pairedMedian": 0.7069598332469118,
+      "CI": [
+        -0.3664397180169643,
+        2.0500869062776372
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.046875
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/rtl-single-100x20.pptx/render",
+      "baselineMS": 52.1580415,
+      "candidateMS": 52.463958500000004,
+      "pairedMedian": 0.9470193045086339,
+      "CI": [
+        -0.2000334348837729,
+        2.3829881029269973
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.03125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/axis-colors-100x20.pptx/render",
+      "baselineMS": 52.123604,
+      "candidateMS": 52.129833500000004,
+      "pairedMedian": -0.27523223247808426,
+      "CI": [
+        -1.267900546742562,
+        0.9119307174147329
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": -0.046875
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/horizontal-merges-100x20.pptx/render",
+      "baselineMS": 36.708917,
+      "candidateMS": 36.5051245,
+      "pairedMedian": 0.010352508174771291,
+      "CI": [
+        -1.600691693970413,
+        0.8864176900857723
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": -0.0078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/vertical-merges-100x20.pptx/render",
+      "baselineMS": 36.8185835,
+      "candidateMS": 36.6031665,
+      "pairedMedian": -0.8813389641747382,
+      "CI": [
+        -2.252064353556893,
+        0.49826441187986736
+      ],
+      "faster": 7,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.0078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-rtl-colors-100x20.pptx/render",
+      "baselineMS": 51.7235625,
+      "candidateMS": 51.699332999999996,
+      "pairedMedian": 0.2111061008591042,
+      "CI": [
+        -0.8593797829009153,
+        0.7972651063425262
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": -0.0390625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-merge-colors-100x20.pptx/render",
+      "baselineMS": 36.345375000000004,
+      "candidateMS": 36.4333745,
+      "pairedMedian": 1.101103897688227,
+      "CI": [
+        -0.8502131403492541,
+        1.937738548123824
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.0546875
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/uniform-100x20.pptx/render",
+      "baselineMS": 51.836833,
+      "candidateMS": 51.7854375,
+      "pairedMedian": -0.03607105977336822,
+      "CI": [
+        -0.8335969619292172,
+        1.4857515373488672
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": -0.03125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/native-table-style-fallback19-v1.pptx/render",
+      "baselineMS": 3.384729,
+      "candidateMS": 3.653229,
+      "pairedMedian": 8.187538691798014,
+      "CI": [
+        4.511445908059386,
+        10.315493876047043
+      ],
+      "faster": 0,
+      "p": 0.001953125,
+      "RSSdeltaMiB": 0.578125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/partial-20x10.pptx/render",
+      "baselineMS": 5.410375,
+      "candidateMS": 5.99225,
+      "pairedMedian": 11.369004977656116,
+      "CI": [
+        9.044759874746955,
+        13.115878159019745
+      ],
+      "faster": 0,
+      "p": 0.001953125,
+      "RSSdeltaMiB": 0.0
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/partial-100x20.pptx/render",
+      "baselineMS": 35.339187499999994,
+      "candidateMS": 40.1066455,
+      "pairedMedian": 14.391824784955675,
+      "CI": [
+        11.42673766169583,
+        16.104083429683357
+      ],
+      "faster": 0,
+      "p": 0.001953125,
+      "RSSdeltaMiB": 0.453125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/partial-200x50.pptx/render",
+      "baselineMS": 167.5731455,
+      "candidateMS": 189.930229,
+      "pairedMedian": 13.337883839374442,
+      "CI": [
+        11.524658678960753,
+        14.96024887886167
+      ],
+      "faster": 0,
+      "p": 0.001953125,
+      "RSSdeltaMiB": 6.5078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/explicit-empty-20x10.pptx/render",
+      "baselineMS": 4.873521,
+      "candidateMS": 4.919229,
+      "pairedMedian": 0.8335635712497513,
+      "CI": [
+        -1.1804089068307544,
+        1.878438630586643
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.015625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/explicit-noFill-20x10.pptx/render",
+      "baselineMS": 5.016875000000001,
+      "candidateMS": 4.9458335,
+      "pairedMedian": -0.8019390859916598,
+      "CI": [
+        -3.725307267383726,
+        0.340663912601169
+      ],
+      "faster": 8,
+      "p": 0.109375,
+      "RSSdeltaMiB": -0.0234375
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/unresolved-20x10.pptx/render",
+      "baselineMS": 4.865125,
+      "candidateMS": 5.0216045000000005,
+      "pairedMedian": 3.353645903639524,
+      "CI": [
+        2.27449605401574,
+        4.981845217331749
+      ],
+      "faster": 1,
+      "p": 0.021484375,
+      "RSSdeltaMiB": -0.0078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/direct-override-20x10.pptx/render",
+      "baselineMS": 7.139812,
+      "candidateMS": 7.1757290000000005,
+      "pairedMedian": 0.5688174430100723,
+      "CI": [
+        -1.6311595978155013,
+        1.604673701770809
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": -0.0078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/grid-line-constant-100x20.pptx/render",
+      "baselineMS": 51.8088545,
+      "candidateMS": 52.651854,
+      "pairedMedian": 1.832887995220589,
+      "CI": [
+        0.9292314169792482,
+        2.9211932673964935
+      ],
+      "faster": 1,
+      "p": 0.021484375,
+      "RSSdeltaMiB": -0.0078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/reject-collinear-transition-100x20.pptx/render",
+      "baselineMS": 51.597271,
+      "candidateMS": 52.050375,
+      "pairedMedian": 0.6522163558090321,
+      "CI": [
+        0.15705041150633203,
+        1.549064301002523
+      ],
+      "faster": 1,
+      "p": 0.021484375,
+      "RSSdeltaMiB": -0.0546875
+    }
+  ],
+  "secondaryWhollyPositiveIntervals": 15,
+  "secondaryWhollyNegativeIntervals": 8,
+  "RSSMedianDeltaRangeMiB": [
+    -0.109375,
+    6.5078125
+  ],
+  "executionSeconds": 148.1358042919892,
+  "completionLogSeconds": 148.13597087498056,
+  "postwriteDifferenceSeconds": 0.00016658299136906862,
+  "hostRanges": {
+    "WindowServer": [
+      25.2,
+      38.3
+    ],
+    "backupd": [
+      45.1,
+      135.8
+    ],
+    "photolibraryd": [
+      0.0,
+      0.0
+    ],
+    "managedcorespotlightd": [
+      0.0,
+      0.0
+    ]
+  },
+  "scope": "Accepted honest bounded fidelity tradeoff evidence with material observed render and memory costs, including unchanged adverse controls. No speedup, universal nonregression, cumulative recovery or cross-platform claim. Whole-process RSS does not isolate allocations; background host load limits causal attribution.",
+  "preservationReview": {
+    "baselineSourceTree": "59c7beb3d5e49ebf49cecb361a36f5ce53b9b7b1",
+    "candidateSourceTree": "11ead6fd725008f26757f839abda10aa97761adb",
+    "baselineGitSourcePins": 111,
+    "candidateGitAndCurrentSourcePins": 111,
+    "baselineRetainedFilePins": 21,
+    "productionDiffOnly": [
+      "SVGRenderer.swift",
+      "TableStyleResolver.swift"
+    ],
+    "caseCount": 187,
+    "slides": 883,
+    "freshProofProcessesAndRecordedReopens": 561,
+    "reusedHistoricalArtifacts": 0,
+    "changedCases": 9,
+    "changedSVGs": 66,
+    "counterfactualSourceWhitelistAbsentBlack1ptEdges": 24295,
+    "counterfactualCandidateSVGsExact": 226,
+    "remainingJoinChangedSVGs": 65,
+    "shapingRecordsExact": 101310,
+    "layoutRecordsExact": 1728,
+    "fixedExternalReopensRecorded": 6,
+    "largePartialSVGDeltaBytes": 998010,
+    "limits": "Existing retained helpers/proof output hashes inspected; no benchmark/test/build/helper launches or new reopens. Source counterfactual and endpoint/order equivalence are explanatory checks, not native reference evidence."
+  }
+}

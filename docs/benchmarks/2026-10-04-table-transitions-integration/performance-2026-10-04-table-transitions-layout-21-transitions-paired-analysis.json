@@ -1,0 +1,110 @@
+{
+  "status": "S21 pending independent evidence review",
+  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/transitions-paired.json",
+  "sourceSHA256": "73e8a58d2a2fa4d99a5c366505fe5f677621651f6ff29e0cdc50c4850986b72c",
+  "bootstrapResamples": 100000,
+  "seed": 20261004,
+  "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
+  "results": {
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/native-table-transitions21-v1.pptx/render": {
+      "pairedPercentDeltas": [
+        0.4408949505607662,
+        3.2912706303187766,
+        0.025368514924206664,
+        2.25606934933702,
+        -1.1598241153949695,
+        -8.309703213784703,
+        -0.06055659408652492,
+        4.049507454428847,
+        -3.7565560949422316,
+        0.41100522263501915
+      ],
+      "medianPairedPercentDelta": 0.2181868687796129,
+      "percentileBootstrapMedian95PercentInterval": [
+        -1.9085563445143783,
+        2.25606934933702
+      ],
+      "fasterPairs": 4,
+      "slowerPairs": 6,
+      "twoSidedExactSignTestP": 0.75390625,
+      "baselineMedianMS": 4.7566875,
+      "candidateMedianMS": 4.823812,
+      "ratioOfMediansPercentDelta": 1.4111606028354817
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/native-table-transitions21-horizontal-v1.pptx/render": {
+      "pairedPercentDeltas": [
+        0.5454262638348695,
+        2.373110867187034,
+        4.800023115320307,
+        1.1261665168343926,
+        2.30015590657493,
+        -1.3196105384578605,
+        -2.2331089547454663,
+        1.8447838341026257,
+        -0.33934055878064306,
+        -0.004833161127881791
+      ],
+      "medianPairedPercentDelta": 0.835796390334631,
+      "percentileBootstrapMedian95PercentInterval": [
+        -0.6622218497928711,
+        2.30015590657493
+      ],
+      "fasterPairs": 4,
+      "slowerPairs": 6,
+      "twoSidedExactSignTestP": 0.75390625,
+      "baselineMedianMS": 4.309041499999999,
+      "candidateMedianMS": 4.3542085,
+      "ratioOfMediansPercentDelta": 1.048191343713012
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/vertical-transitions-100x20.pptx/render": {
+      "pairedPercentDeltas": [
+        1.4040171991002381,
+        0.6894861097160199,
+        -2.302911701988408,
+        2.186286188900577,
+        -13.278425062427413,
+        -0.2232472504864358,
+        0.35604924689598416,
+        -1.4918601667436526,
+        0.46478145685939776,
+        1.3814150965832939
+      ],
+      "medianPairedPercentDelta": 0.41041535187769096,
+      "percentileBootstrapMedian95PercentInterval": [
+        -1.4918601667436526,
+        1.3814150965832939
+      ],
+      "fasterPairs": 4,
+      "slowerPairs": 6,
+      "twoSidedExactSignTestP": 0.75390625,
+      "baselineMedianMS": 52.900479000000004,
+      "candidateMedianMS": 53.2831045,
+      "ratioOfMediansPercentDelta": 0.723293072639275
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/horizontal-transitions-100x20.pptx/render": {
+      "pairedPercentDeltas": [
+        2.804191710871251,
+        3.2492756006830215,
+        -0.001512441348272553,
+        -1.4501592016627929,
+        -0.6415791568928908,
+        1.0395160369925494,
+        0.692657495124327,
+        1.6117362879549901,
+        2.3839273433303054,
+        3.620799759466564
+      ],
+      "medianPairedPercentDelta": 1.3256261624737697,
+      "percentileBootstrapMedian95PercentInterval": [
+        -0.001512441348272553,
+        2.8166014720066634
+      ],
+      "fasterPairs": 3,
+      "slowerPairs": 7,
+      "twoSidedExactSignTestP": 0.34375,
+      "baselineMedianMS": 52.1740205,
+      "candidateMedianMS": 52.8652505,
+      "ratioOfMediansPercentDelta": 1.3248547713512027
+    }
+  }
+}

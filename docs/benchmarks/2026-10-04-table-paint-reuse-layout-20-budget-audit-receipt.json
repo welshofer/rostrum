@@ -1,0 +1,64 @@
+{
+  "status": "PASS_ACTUAL_INTERNAL_RENDERSESSION_ADMISSION",
+  "configuration": "Debug actual candidate module linked with @testable import; attribution/correctness only, never a timed campaign binary.",
+  "source": "20e4a3556724f20937fcbca7208728798b658fcd",
+  "sourceTree": "6d2e7cd2d2c057d4c9b916358882695cbe2c66d7",
+  "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "buildCommand": [
+    "swiftc",
+    "-swift-version",
+    "6",
+    "-I",
+    ".build/debug",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift",
+    ".build/debug/Rostrum.o",
+    "-o",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit"
+  ],
+  "inputs": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/direct-unique-200x50.pptx": "eb3e9bbdf3c4333ef5841cc7c45ef57abf39e55a297e6547a729a24647aaa00c",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/budget-near-20x10.pptx": "8b31940a41d044a820786e08584ae4ead1906d96d484ac546e7f8525d0c834b7",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/oversize-bypass-6x6.pptx": "d0bbdbff933c0d9d074a080b3bffc8075f43384ce08ff7bea75f5486f70dfd22"
+  },
+  "results": [
+    {
+      "cells": 10000,
+      "distinctAdmittedBorderIdentities": 0,
+      "name": "direct-unique-200x50",
+      "nonnilBorders": 40000,
+      "sharedBorderEncounters": 0,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 40000
+    },
+    {
+      "cells": 200,
+      "distinctAdmittedBorderIdentities": 24,
+      "name": "budget-near-20x10",
+      "nonnilBorders": 800,
+      "sharedBorderEncounters": 40,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 760
+    },
+    {
+      "cells": 36,
+      "distinctAdmittedBorderIdentities": 0,
+      "name": "oversize-bypass-6x6",
+      "nonnilBorders": 144,
+      "sharedBorderEncounters": 0,
+      "sourceUnchanged": true,
+      "unsharedBorderEncounters": 144
+    }
+  ],
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/audit-Rostrum.o": "0fbe1eaa8dbe64e39aac8ae898f1fdbc71f7bc93ce5caea442dd32442e9c66ab",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift": "37c42f5fc192cae9067145e558fcc04f47e86eb115dab54740ba10321ea3913e",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit": "9d267a65b6d10c8567d78e6a21a75ff401d5c95649471240a077ed4789c2006d",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.json": "9e4561b0945b99b8102c207c902df0a1468c82b887541e9c1888a465b397fa15",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/audit-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "f2bb7cedcece47befc93bfaa1949871973fef352f6bf3e838c3b8d67f9035679",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/audit-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "56a54150dfe6994bb3ff55315cbde643b9b9cfdf5ce502e7585137ee33559230",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/audit-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/audit-module/Rostrum.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo": "5c6add2b69639201ce21b392c5ee8a731018ca31dfda9f464def795f02cefdfd"
+  },
+  "initialCorrection": "Initial scratch probe failed compile because TableFrame.table is optional; unwrapping corrected only the audit helper. Initial source and diagnostics retained separately. No production changes."
+}

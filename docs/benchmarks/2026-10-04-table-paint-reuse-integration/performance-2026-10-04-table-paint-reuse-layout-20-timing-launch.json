@@ -1,0 +1,35 @@
+{
+  "planSHA256": "c0de7aaa015a1bf28f5a8c3ff3aa2e4655201e4c7bf8f4f1e54e38eea4ce1454",
+  "scriptSHA256": "34ab5a476c52a8916034520b97377ecbb93878deaa0d09b915d8e7e3e4cc6845",
+  "environment": {
+    "canonical": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    },
+    "supplement": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    },
+    "native": {
+      "ROSTRUM_BENCH_FONT": null,
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/native-inputs.json",
+      "ROSTRUM_BENCH_OUTPUT": null
+    },
+    "cache-controls": {
+      "ROSTRUM_BENCH_FONT": null,
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/native-inputs.json",
+      "ROSTRUM_BENCH_OUTPUT": null
+    }
+  },
+  "environmentRule": "These exact task variables replace inherited values. run.py sets its per-child temporary ROSTRUM_BENCH_OUTPUT itself. No unrelated shell environment or credentials are captured.",
+  "rootHeadAtLaunch": "20e4a3556724f20937fcbca7208728798b658fcd",
+  "binarySource": "20e4a3556724f20937fcbca7208728798b658fcd",
+  "grant": "Root coordinated no active build/test/helper/GUI jobs; independent protocol reviews approved exact plan with this explicit environment preflight.",
+  "timestamp": "2026-10-04T19:01:59.971476-07:00"
+}

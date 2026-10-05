@@ -1,0 +1,52 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "00006050-001E081E3E31401C",
+        "deviceName" : "My Mac",
+        "modelName" : "MacBook Pro",
+        "osBuildNumber" : "26A434",
+        "osVersion" : "27.0.1",
+        "platform" : "macOS"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 0,
+      "passedTests" : 130,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "Lectern · Built with macOS 27.0.1",
+  "expectedFailures" : 0,
+  "failedTests" : 0,
+  "finishTime" : 1791162032.66,
+  "passedTests" : 93,
+  "result" : "Passed",
+  "runtimeWarnings" : [
+
+  ],
+  "skippedTests" : 0,
+  "startTime" : 1791161804.845,
+  "statistics" : [
+    {
+      "subtitle" : "63 test runs",
+      "title" : "26 tests ran with dynamic parameters"
+    }
+  ],
+  "testFailures" : [
+
+  ],
+  "title" : "Test - Lectern",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "23% of duration",
+      "text" : "4 longest test runs with outlier durations exceeding 11.20s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 93
+}
