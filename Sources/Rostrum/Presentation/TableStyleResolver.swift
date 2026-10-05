@@ -9,6 +9,7 @@ public struct TableStyleResolver {
     let definition: XML.Element?
     let stylePart: Part?
     private let enabledFlags: Set<String>
+    private let defaultsMissingCustomBorders: Bool
 
     public init(table: Table, theme: Theme) {
         self.table = table; self.theme = theme
@@ -19,6 +20,8 @@ public struct TableStyleResolver {
         })
         let found = Self.definition(for: table.tbl, package: table.package)
         definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }; stylePart = found.1
+        defaultsMissingCustomBorders = found.0 != nil
+            && (found.1 != nil || flags?.firstChild(named: "a:tableStyle") != nil)
     }
 
     /// One live cell-fitting operation needs text regions and root cell attributes,
@@ -238,6 +241,9 @@ public struct TableStyleResolver {
         let properties = XML.Element("a:tcPr"), text = XML.Element("a:defRPr")
         var fillOwner = stylePart ?? table.part
         var borderRanks: [String: Int] = [:]
+        // An active but unresolved wrapper is not an absent declaration. Keep
+        // its previous behavior rather than supplying an invented black edge.
+        var declaredBorders = Set<String>()
         func rank(_ name: String) -> Int {
             switch name {
             case "wholeTbl": 0
@@ -277,8 +283,9 @@ public struct TableStyleResolver {
                 }
                 if let borders = style.firstChild(named: "a:tcBdr") {
                     for edge in TableCellBorder.allCases {
-                        guard let wrapper = wrapper(borders, region: name, row: row, column: column, edge: edge),
-                              let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
+                        guard let wrapper = wrapper(borders, region: name, row: row, column: column, edge: edge) else { continue }
+                        if defaultsMissingCustomBorders { declaredBorders.insert(edge.rawValue) }
+                        guard let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
                         let copy = line.deepCopy(); copy.name = edge.rawValue
                         properties.removeChildren(named: edge.rawValue); properties.appendElement(copy)
                         borderRanks[edge.rawValue] = rank(name)
@@ -302,11 +309,26 @@ public struct TableStyleResolver {
                 guard rank(name) > (borderRanks[edge.rawValue] ?? -1),
                       let borders = definition?.firstChild(named: "a:\(name)")?
                         .firstChild(named: "a:tcStyle")?.firstChild(named: "a:tcBdr") else { continue }
-                guard let wrapper = wrapper(borders, region: name, row: neighborRow, column: neighborColumn, edge: opposite),
-                      let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
+                guard let wrapper = wrapper(borders, region: name, row: neighborRow, column: neighborColumn, edge: opposite) else { continue }
+                if defaultsMissingCustomBorders { declaredBorders.insert(edge.rawValue) }
+                guard let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
                 let copy = line.deepCopy(); copy.name = edge.rawValue
                 properties.removeChildren(named: edge.rawValue); properties.appendElement(copy)
                 borderRanks[edge.rawValue] = rank(name)
+            }
+        }
+        if defaultsMissingCustomBorders {
+            // Native package/inline custom styles retain the black 1 pt grid
+            // only where no applicable edge was declared. Present empty lines,
+            // noFill and unresolved references must not acquire default paint.
+            for edge in [TableCellBorder.left, .right, .top, .bottom]
+                where !declaredBorders.contains(edge.rawValue)
+                    && properties.firstChild(named: edge.rawValue) == nil {
+                properties.appendElement(XML.Element(edge.rawValue, attributes: [("w", "12700")], children: [
+                    .element(XML.Element("a:solidFill", children: [
+                        .element(XML.Element("a:srgbClr", attributes: [("val", "000000")]))
+                    ]))
+                ]))
             }
         }
         return Effective(properties: properties, text: text, fillOwner: fillOwner)
