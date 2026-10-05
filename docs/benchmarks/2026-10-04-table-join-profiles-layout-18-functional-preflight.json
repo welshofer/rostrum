@@ -3,7 +3,7 @@
   "scope": "Functional validation only under uncontrolled overlap; rawphase durations retained but excluded from authoritative statistics and claims. One sample/build/input; no comparative estimates.",
   "cases": [
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/native-table-joins18-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/native-table-joins18-v1.pptx",
       "name": "native-profiles",
       "samples": {
         "baseline": {
@@ -49,7 +49,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/ltr-single-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/ltr-single-100x20.pptx",
       "name": "ltr-single",
       "samples": {
         "baseline": {
@@ -95,7 +95,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/rtl-single-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/rtl-single-100x20.pptx",
       "name": "rtl-single",
       "samples": {
         "baseline": {
@@ -141,7 +141,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/axis-colors-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/axis-colors-100x20.pptx",
       "name": "axis-colors",
       "samples": {
         "baseline": {
@@ -187,7 +187,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/horizontal-merges-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/horizontal-merges-100x20.pptx",
       "name": "horizontal-merges",
       "samples": {
         "baseline": {
@@ -233,7 +233,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/vertical-merges-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/vertical-merges-100x20.pptx",
       "name": "vertical-merges",
       "samples": {
         "baseline": {
@@ -279,7 +279,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-rtl-colors-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-rtl-colors-100x20.pptx",
       "name": "reject-rtl-colors",
       "samples": {
         "baseline": {
@@ -325,7 +325,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-merge-colors-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-merge-colors-100x20.pptx",
       "name": "reject-merge-colors",
       "samples": {
         "baseline": {
@@ -371,7 +371,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/uniform-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/uniform-100x20.pptx",
       "name": "uniform",
       "samples": {
         "baseline": {

@@ -148,14 +148,14 @@ these read-only calculations rewrites the saved body.
 
 Repeated-style attribute lookup, compact scalar storage, reserved glyph capacity
 and reuse of shaped line breaks reduce repeated layout work. The
-[latest integration record](LAYOUT-FIDELITY-20261004-9.md) and its linked benchmark
+[initial glyph integration record](LAYOUT-FIDELITY-20261004-9.md) and its linked benchmark
 retain source revisions, independent glyph/spacing evidence and tradeoffs.
 Lectern's paragraph demonstration has seven slides; the cell-appearance
 example has three. Both exercise saved-file inspection and the WebKit paint path.
 
 ## Later native corrections and demonstrations
 
-The reconciled update through `f568df9` also includes these bounded additions:
+The update reconciled with `main` at `4df1c71` includes these bounded additions:
 
 - List markers use native-calibrated sizing and continuation placement for the
   admitted profiles. Threshold-crossing sizes keep the earlier shaping path.
@@ -172,27 +172,39 @@ The reconciled update through `f568df9` also includes these bounded additions:
   the style-list insertion default is not treated as an applied style. Import
   preserves absent style IDs and properties. Bounded opaque solid, unmerged LTR
   borders with unequal widths use surviving perpendicular edges to determine
-  join endpoints. Other border profiles retain their existing behavior.
+  join endpoints. Later native cases extend bounded admission to axis-color
+  profiles, partial custom styles and unmerged LTR collinear color/width
+  transitions. Explicit empty edges, noFill and direct overrides retain their
+  distinct behavior; missing effective cardinal edges in resolved custom styles
+  receive native black 1 pt defaults without rewriting authored XML.
+- Selected image-fill inventory retains the owning slide, theme or style part
+  while resolving relationships. Shape/table fills, backgrounds and active
+  inherited furniture contribute selected resources to inspection and export.
+  Direct overrides suppress inherited selections; unresolved or external
+  resources produce deterministic warnings without fetching remote content.
 
 Ordered glyph-range assembly, indexed cell lookup, resolving only live cell text
 styles, operation-local marker parsing and reuse of ordinary inherited SVG
 attributes reduce repeated work. These changes preserve their own measured
 baselines and admission rules. See [performance measurements](PERFORMANCE.md).
 
-Lectern now has 30 offline recipes, including native list markers, text alignment,
-mixed-face spacing and table defaults/border joins. Each uses the saved-file,
-inspector and export workflow. The [latest table integration record](LAYOUT-FIDELITY-20261004-17.md)
-links fresh native and WebKit comparisons and manual workflow evidence; the
-[mixed-face record](LAYOUT-FIDELITY-20261004-16.md) and
-[alignment record](LAYOUT-FIDELITY-20261004-15.md) retain their exact scope.
+Lectern has 34 offline recipes, including native list markers, text alignment,
+mixed-face spacing, table defaults, join profiles, partial custom styles,
+border transitions and image ownership. Each uses saved-file checks and the
+inspector/export paths. The [table transitions record](LAYOUT-FIDELITY-20261004-21.md),
+[partial styles record](LAYOUT-FIDELITY-20261004-19.md) and
+[image inventory record](LAYOUT-FIDELITY-20261004-22.md) distinguish source,
+native, browser and manual acceptance. Later image-inventory integration has
+standalone AppState evidence; fresh native UI acceptance and comparative
+image-inventory performance remain deferred in that record.
 
 Acceptance remains bounded. Marker comparisons retain six explicit omissions;
-computed-fit pages do not prove native autofit choices. RTL/merged/multicolor
-border extensions and partial-custom-style missing-edge fallback remain open.
-Neither successful workflow checks nor the native specimen comparisons establish
-complete table or whole-slide visual equivalence. The
-[publication receipt](PUBLICATION-HYGIENE.md) distinguishes those upstream records
-from the checks rerun on the reconciled tree.
+computed-fit pages do not prove native autofit choices. Colored RTL/merged
+combinations, dashed or translucent transitions and compound borders retain
+separate fallback paths. Neither workflow checks nor the native specimens
+establish complete table or whole-slide equivalence. The
+[publication receipt](PUBLICATION-HYGIENE.md) distinguishes upstream records
+from checks rerun on this documentation and privacy update.
 
 ## Source and verification map
 

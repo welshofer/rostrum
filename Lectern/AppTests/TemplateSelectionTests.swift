@@ -140,7 +140,7 @@ import LecternCore
         #expect(model.selected?.name == initial.name && !model.isLoading && model.problem == nil)
     }
 
-    @Test func pendingTemplatePreventsDirectGenerationBeforeKeyValidation() async throws {
+    @Test func pendingTemplatePreventsDirectGenerationBeforeSessionValidation() async throws {
         let context = try AppStateTestContext()
         defer { context.remove() }
         let app = context.app
@@ -158,11 +158,12 @@ import LecternCore
         app.templateSelection.cancelImport()
         await worker.finish(.failure(TemplateTestError.controlled))
         await task.value
-        // With the import finished, the same action reaches the normal missing
-        // key check. No provider credentials or network call enter this test.
+        // With the import finished, the same action reaches the test-session
+        // guard. Isolation is not a missing key, and must never access credentials
+        // or start a provider request after the template finishes loading.
         app.generate()
-        #expect(app.lastFailure == .noKey)
-        if case .failed = app.phase {} else { Issue.record("Missing key should report a generation failure") }
+        #expect(app.lastFailure == nil)
+        #expect(app.phase == .failed(AppState.testSessionAdvice))
     }
 
     private var sourceURL: URL { URL(fileURLWithPath: "/owned-test-template.potx") }

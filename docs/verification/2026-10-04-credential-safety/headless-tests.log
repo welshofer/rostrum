@@ -1027,7 +1027,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
 [94 / 161]
 [97 / 161] Rostrum
 [98 / 161] Rostrum
-/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:29:5: warning: 'public' modifier is redundant for property declared in a public extension
+/path/to/user/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:29:5: warning: 'public' modifier is redundant for property declared in a public extension
  27 |     /// which is how two parts of one deck end up disagreeing about whether a
  28 |     /// background is dark.
  29 |     public var relativeLuminance: Double {
@@ -1035,7 +1035,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
  30 |         func linear(_ c: Int) -> Double {
  31 |             let s = Double(c) / 255
 
-/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:39:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+/path/to/user/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:39:5: warning: 'public' modifier is redundant for instance method declared in a public extension
  37 |     /// WCAG contrast ratio with `other`, 1 (identical) … 21 (black↔white).
  38 |     /// Symmetric.
  39 |     public func contrastRatio(with other: Color) -> Double {
@@ -1043,7 +1043,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
  40 |         let hi = Swift.max(relativeLuminance, other.relativeLuminance)
  41 |         let lo = Swift.min(relativeLuminance, other.relativeLuminance)
 
-/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:47:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+/path/to/user/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:47:5: warning: 'public' modifier is redundant for instance method declared in a public extension
  45 |     /// The more legible of `dark`/`light` to sit ON this color as a background.
  46 |     /// Ties favor `dark`.
  47 |     public func onColor(dark: Color = .black, light: Color = .white) -> Color {
@@ -1051,7 +1051,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
  48 |         contrastRatio(with: dark) >= contrastRatio(with: light) ? dark : light
  49 |     }
 
-/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:54:5: warning: 'public' modifier is redundant for static method declared in a public extension
+/path/to/user/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:54:5: warning: 'public' modifier is redundant for static method declared in a public extension
  52 |     /// text). Deterministic — the first of equally-good options wins; empty
  53 |     /// `options` yields `.black`.
  54 |     public static func bestTextColor(on background: Color,
@@ -1060,7 +1060,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
  56 |         var best = Color.black
 [99 / 161] Rostrum
 [101 / 161] Rostrum
-/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:29:5: warning: 'public' modifier is redundant for property declared in a public extension
+/path/to/user/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:29:5: warning: 'public' modifier is redundant for property declared in a public extension
  27 |     /// which is how two parts of one deck end up disagreeing about whether a
  28 |     /// background is dark.
  29 |     public var relativeLuminance: Double {
@@ -1068,7 +1068,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
  30 |         func linear(_ c: Int) -> Double {
  31 |             let s = Double(c) / 255
 
-/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:39:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+/path/to/user/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:39:5: warning: 'public' modifier is redundant for instance method declared in a public extension
  37 |     /// WCAG contrast ratio with `other`, 1 (identical) … 21 (black↔white).
  38 |     /// Symmetric.
  39 |     public func contrastRatio(with other: Color) -> Double {
@@ -1076,7 +1076,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
  40 |         let hi = Swift.max(relativeLuminance, other.relativeLuminance)
  41 |         let lo = Swift.min(relativeLuminance, other.relativeLuminance)
 
-/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:47:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+/path/to/user/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:47:5: warning: 'public' modifier is redundant for instance method declared in a public extension
  45 |     /// The more legible of `dark`/`light` to sit ON this color as a background.
  46 |     /// Ties favor `dark`.
  47 |     public func onColor(dark: Color = .black, light: Color = .white) -> Color {
@@ -1084,7 +1084,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
  48 |         contrastRatio(with: dark) >= contrastRatio(with: light) ? dark : light
  49 |     }
 
-/Users/welshofer/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:54:5: warning: 'public' modifier is redundant for static method declared in a public extension
+/path/to/user/Developer/rostrum/Sources/Rostrum/Drawing/ColorMath.swift:54:5: warning: 'public' modifier is redundant for static method declared in a public extension
  52 |     /// text). Deterministic — the first of equally-good options wins; empty
  53 |     /// `options` yields `.black`.
  54 |     public static func bestTextColor(on background: Color,
@@ -1100,7 +1100,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
 [114 / 161] Rostrum
 [115 / 161] Rostrum
 [116 / 161] Rostrum
-/Users/welshofer/Developer/rostrum/Sources/Rostrum/Presentation/RichTextLayout.swift:306:22: warning: immutable value 'piece' was never used; consider replacing with '_' or removing it [#NoUsage]
+/path/to/user/Developer/rostrum/Sources/Rostrum/Presentation/RichTextLayout.swift:306:22: warning: immutable value 'piece' was never used; consider replacing with '_' or removing it [#NoUsage]
  304 |             var spacingRunMetrics: [SpacingMetric?] = []
  305 |             func shapePieces() {
  306 |                 for (piece, text, originalStyle, metrics) in pieces {
@@ -1155,7 +1155,7 @@ warning: Stale file '/private/tmp/lectern-credential-state-headless-20261004/.bu
 [224 / 247] Lectern
 /private/tmp/lectern-credential-state-headless-20261004-final/Sources/Lectern/AppState.swift:764:85: warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
  724 |         let unreadableImageKey = Self.isUnreadable(imageKeyRead)
- 725 | 
+ 725 |
  726 |         task = Task {
      |                     |- note: 'self' implicitly strongly captured here
      |                     `- note: add 'self' as a capture list item to silence

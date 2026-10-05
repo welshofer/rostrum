@@ -1,7 +1,7 @@
 from pathlib import Path
 import json,hashlib,subprocess,copy,re
 from lxml import etree as E
-R=Path('/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum');C='89aa1633cbbd07c152eb9e456c12e15686f7dbb8';B='5d3d888175d12f615a3f917e15d8c9b6a170f201';F='Tests/RostrumTests/Fixtures/NativeTableTransitions/';D=R/'.build/table-transitions21-implementation';sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest();read=lambda p:json.loads(Path(p).read_text());git=lambda *a:subprocess.check_output(['git','-C',str(R),*a]);blob=lambda p:git('show',C+':'+p);bh=lambda p:hashlib.sha256(blob(p)).hexdigest();pins={}
+R=Path('/path/to/user/.codex/worktrees/rostrum-tables/rostrum');C='89aa1633cbbd07c152eb9e456c12e15686f7dbb8';B='5d3d888175d12f615a3f917e15d8c9b6a170f201';F='Tests/RostrumTests/Fixtures/NativeTableTransitions/';D=R/'.build/table-transitions21-implementation';sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest();read=lambda p:json.loads(Path(p).read_text());git=lambda *a:subprocess.check_output(['git','-C',str(R),*a]);blob=lambda p:git('show',C+':'+p);bh=lambda p:hashlib.sha256(blob(p)).hexdigest();pins={}
 proposal='/tmp/rostrum-s21-independent-native-proposal-review.json';assert sha(proposal)=='641504f6c934735107dc7ba3a2c3f52993d541b25aa1e48fe2c4326e3445b6f1';pins[proposal]=sha(proposal)
 changed=git('diff','--name-only',B,C).decode().splitlines();production=[p for p in changed if p.startswith('Sources/')];assert production==['Sources/Rostrum/Presentation/SVGRenderer.swift'];source=blob(production[0]);assert hashlib.sha256(source).hexdigest()=='5f720a8362e63d42107e43a35f551537cd76a928d42d82c9afa2b062ab5f98dd'
 fixturepins=json.loads(blob(F+'pins.json'));v=json.loads(blob(F+'verification.json'))

@@ -2,7 +2,7 @@ from pathlib import Path
 from io import BytesIO
 import hashlib,json,zipfile,subprocess
 from lxml import etree as E
-R=Path('/Users/welshofer/Developer/rostrum');BASE=Path('/tmp/lectern-fidelity21-generated-native');F=R/'Lectern/Sources/LecternCore/Resources/LibraryLab/TableTransitionsReferences.json';FONT=R/'Tests/RostrumTests/Fixtures/NativeListMarkers/fonts/DejaVuSans.ttf';H=Path('/tmp/verify-fidelity21-table-transition-paint-v2.py');PY='/Library/Frameworks/Python.framework/Versions/3.12/bin/python3';sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest();read=lambda p:json.loads(Path(p).read_text());ref=read(F);N={'p':'http://schemas.openxmlformats.org/presentationml/2006/main','a':'http://schemas.openxmlformats.org/drawingml/2006/main'};pins={str(F):sha(F),str(FONT):sha(FONT),str(H):sha(H)};rows=[]
+R=Path('/path/to/user/Developer/rostrum');BASE=Path('/tmp/lectern-fidelity21-generated-native');F=R/'Lectern/Sources/LecternCore/Resources/LibraryLab/TableTransitionsReferences.json';FONT=R/'Tests/RostrumTests/Fixtures/NativeListMarkers/fonts/DejaVuSans.ttf';H=Path('/tmp/verify-fidelity21-table-transition-paint-v2.py');PY='/Library/Frameworks/Python.framework/Versions/3.12/bin/python3';sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest();read=lambda p:json.loads(Path(p).read_text());ref=read(F);N={'p':'http://schemas.openxmlformats.org/presentationml/2006/main','a':'http://schemas.openxmlformats.org/drawingml/2006/main'};pins={str(F):sha(F),str(FONT):sha(FONT),str(H):sha(H)};rows=[]
 fixtures={}
 for source in ref['sources']:
  folder=R/source['fixture'];sourcefile=folder/source['source'];assert sha(sourcefile)==source['sourceSHA256'];fixturefont=folder/'fonts/DejaVuSans.ttf'

@@ -8,7 +8,7 @@ from pptx import Presentation
 import argparse
 parser=argparse.ArgumentParser();parser.add_argument('--root-gate-complete',action='store_true');parser.add_argument('--checkpoint',required=True);args=parser.parse_args()
 assert args.root_gate_complete, 'Root must confirm completed gate before running proof.'
-ROOT = Path('/Users/welshofer/Developer/rostrum')
+ROOT = Path('/path/to/user/Developer/rostrum')
 PRIOR = json.loads(Path('/tmp/lectern-fidelity20-external.json').read_text())
 KINDS = ['lab', 'alignment', 'markers', 'mixed', 'tables', 'table-pipeline', 'profiles', 'profiles-pipeline', 'partial', 'partial-pipeline', 'transitions', 'transitions-pipeline']
 DIRS = {k: Path(f'/tmp/lectern-fidelity21-{k}') for k in KINDS}

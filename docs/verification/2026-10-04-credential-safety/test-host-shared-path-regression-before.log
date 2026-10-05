@@ -1,4 +1,4 @@
-test_test_derived_data_ignores_production_override_and_accepts_its_own (scripts.tests.test_app_preflight.AppTestPreflightTests.test_test_derived_data_ignores_production_override_and_accepts_its_own) ... 
+test_test_derived_data_ignores_production_override_and_accepts_its_own (scripts.tests.test_app_preflight.AppTestPreflightTests.test_test_derived_data_ignores_production_override_and_accepts_its_own) ...
   test_test_derived_data_ignores_production_override_and_accepts_its_own (scripts.tests.test_app_preflight.AppTestPreflightTests.test_test_derived_data_ignores_production_override_and_accepts_its_own) (override=None) ... FAIL
   test_test_derived_data_ignores_production_override_and_accepts_its_own (scripts.tests.test_app_preflight.AppTestPreflightTests.test_test_derived_data_ignores_production_override_and_accepts_its_own) (override='/var/folders/f5/d9r1b8yn40dbl827trq2w67m0000gn/T/tmpdqv0w4mn/isolated test data') ... FAIL
 
@@ -6,7 +6,7 @@ test_test_derived_data_ignores_production_override_and_accepts_its_own (scripts.
 FAIL: test_test_derived_data_ignores_production_override_and_accepts_its_own (scripts.tests.test_app_preflight.AppTestPreflightTests.test_test_derived_data_ignores_production_override_and_accepts_its_own) (override=None)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Users/welshofer/Developer/rostrum/scripts/tests/test_app_preflight.py", line 82, in test_test_derived_data_ignores_production_override_and_accepts_its_own
+  File "/path/to/user/Developer/rostrum/scripts/tests/test_app_preflight.py", line 82, in test_test_derived_data_ignores_production_override_and_accepts_its_own
     self.assertEqual(args[args.index('-derivedDataPath') + 1], expected)
 AssertionError: '/var/folders/f5/d9r1b8yn40dbl827trq2w67m0000gn/T/tmpdqv0w4mn/production data' != '.build-xcode-tests'
 - /var/folders/f5/d9r1b8yn40dbl827trq2w67m0000gn/T/tmpdqv0w4mn/production data
@@ -17,7 +17,7 @@ AssertionError: '/var/folders/f5/d9r1b8yn40dbl827trq2w67m0000gn/T/tmpdqv0w4mn/pr
 FAIL: test_test_derived_data_ignores_production_override_and_accepts_its_own (scripts.tests.test_app_preflight.AppTestPreflightTests.test_test_derived_data_ignores_production_override_and_accepts_its_own) (override='/var/folders/f5/d9r1b8yn40dbl827trq2w67m0000gn/T/tmpdqv0w4mn/isolated test data')
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Users/welshofer/Developer/rostrum/scripts/tests/test_app_preflight.py", line 82, in test_test_derived_data_ignores_production_override_and_accepts_its_own
+  File "/path/to/user/Developer/rostrum/scripts/tests/test_app_preflight.py", line 82, in test_test_derived_data_ignores_production_override_and_accepts_its_own
     self.assertEqual(args[args.index('-derivedDataPath') + 1], expected)
 AssertionError: '/var[13 chars]9r1b8yn40dbl827trq2w67m0000gn/T/tmpdqv0w4mn/production data' != '/var[13 chars]9r1b8yn40dbl827trq2w67m0000gn/T/tmpdqv0w4mn/isolated test data'
 - /var/folders/f5/d9r1b8yn40dbl827trq2w67m0000gn/T/tmpdqv0w4mn/production data

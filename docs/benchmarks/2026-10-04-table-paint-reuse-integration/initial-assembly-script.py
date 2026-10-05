@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import datetime,timezone
 import json,hashlib,subprocess,re
-ROOT=Path('/Users/welshofer/Developer/rostrum');DRAFT=Path('/tmp/lectern-fidelity20-integration-draft');EXPORT=DRAFT/'docs/benchmarks/2026-10-04-table-paint-reuse-integration';EXPORT.mkdir(parents=True,exist_ok=True)
+ROOT=Path('/path/to/user/Developer/rostrum');DRAFT=Path('/tmp/lectern-fidelity20-integration-draft');EXPORT=DRAFT/'docs/benchmarks/2026-10-04-table-paint-reuse-integration';EXPORT.mkdir(parents=True,exist_ok=True)
 OUT=EXPORT.parent/'2026-10-04-table-paint-reuse-integration-verification.json'
 assert not OUT.exists(),'Preserve original draft and assembly script'
 checkpoint='5d3d888175d12f615a3f917e15d8c9b6a170f201'
@@ -25,7 +25,7 @@ for row in summary['groups']:primary['browser-'+row['group']]=row['receipt']
 primary={k:Path(v) for k,v in primary.items()}
 assert sha(primary['manual'])=='8297df11afa469112d6ddeb3d96581d0e43f8301560804dfde1d67fe5876274b'
 pins={};copies=[];resolutions=[];aliases={}
-roots=[ROOT,*[Path('/Users/welshofer/.codex/worktrees')/w/'rostrum' for w in ['rostrum-metadata','rostrum-tables','rostrum-fonts']]]
+roots=[ROOT,*[Path('/path/to/user/.codex/worktrees')/w/'rostrum' for w in ['rostrum-metadata','rostrum-tables','rostrum-fonts']]]
 revisions=[checkpoint,'8759edd1234318caed9e984efe0910d60ce46b53','3bab3d552ea016035921ce97671356152718ee05','119b1c107ff9911bdc86241e0e86a7a323a3b087','dc40a98b09d0db7c132c82c9e8f41b12dd4c5638','20e4a3556724f20937fcbca7208728798b658fcd','007efa9c5b1c56af36d5251937fe95244ffaa289']
 def pin(p,expected=None):
  p=Path(p).resolve();original=p

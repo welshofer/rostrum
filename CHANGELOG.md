@@ -19,8 +19,9 @@ Linux and Apple runs exercise the same measured profile.
 
 The later native checkpoints add list-marker sizing/continuation corrections,
 center/right alignment evidence, equivalent-metric mixed-face exact spacing,
-native absent-table-style behavior and bounded unequal-border joins. Lectern
-has 30 offline recipes covering the saved-file, inspector and export paths.
+native absent-table-style behavior, partial custom-style defaults, bounded
+color/width border transitions and selected image-fill ownership/export. Lectern
+has 34 offline recipes covering the saved-file, inspector and export paths.
 Separate performance experiments cover ordered atom assembly, indexed cell
 lookup, live text-style resolution, SVG inheritance and marker workflows;
 measured fidelity costs remain explicit in the performance ledger.

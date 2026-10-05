@@ -16,6 +16,14 @@ regressions for [mixed-face spacing](LAYOUT-FIDELITY-20261004-16.md),
 and exact-inspector WebKit evidence. Read the [layout guide](LAYOUT-ENGINE.md) for
 current admission rules; the historical records below retain their original bounds.
 
+Subsequent native evidence covers [table join profiles](LAYOUT-FIDELITY-20261004-18.md),
+[partial custom-style defaults](LAYOUT-FIDELITY-20261004-19.md) and
+[bounded border transitions](LAYOUT-FIDELITY-20261004-21.md).
+[Selected image-fill inventory and ownership](LAYOUT-FIDELITY-20261004-22.md)
+adds exact resource export and owner-aware relationship resolution. Its final
+combined source verification is distinct from deferred fresh native UI and
+comparative image-inventory performance checks.
+
 ## Operation-level evidence
 
 | Feature | Implemented operations and regression suites | Remaining acceptance work |

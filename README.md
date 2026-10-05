@@ -70,7 +70,9 @@ DrawingML curves, saved SmartArt drawings, bounded SVG artwork, inherited text
 and list formatting, corrected anchored text, and an explicit measured fallback
 for unavailable fonts. Native glyph placement, bounded mixed-font spacing and
 list-marker corrections, live table fitting, and native table defaults/border
-joins extend the shared engine. Source font names and untouched package content remain
+joins extend the shared engine. Later updates add partial custom-style defaults,
+bounded border transitions and selected image-fill ownership in inspection and
+export. Source font names and untouched package content remain
 preserved. These changes are **Unreleased**; the versioned installation below
 does not imply that version 0.4.0 includes them. Pin a reviewed commit revision
 when consuming these changes before the next release.

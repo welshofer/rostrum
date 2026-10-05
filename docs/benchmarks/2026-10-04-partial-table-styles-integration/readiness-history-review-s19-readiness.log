@@ -8,4 +8,4 @@ Traceback (most recent call last):
   File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py", line 1014, in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-IsADirectoryError: [Errno 21] Is a directory: '/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/baseline-module/Rostrum.swiftmodule'
+IsADirectoryError: [Errno 21] Is a directory: '/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/baseline-module/Rostrum.swiftmodule'

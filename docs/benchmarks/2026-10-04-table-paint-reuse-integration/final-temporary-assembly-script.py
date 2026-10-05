@@ -1,14 +1,14 @@
 from pathlib import Path
 from datetime import datetime,timezone
 import hashlib,json,re,subprocess
-ROOT=Path('/Users/welshofer/Developer/rostrum');DRAFT=Path('/tmp/lectern-fidelity20-integration-draft');FINAL=Path('/tmp/lectern-fidelity20-integration-final');DEST=FINAL/'docs/benchmarks/2026-10-04-table-paint-reuse-integration';DEST.mkdir(parents=True,exist_ok=True)
+ROOT=Path('/path/to/user/Developer/rostrum');DRAFT=Path('/tmp/lectern-fidelity20-integration-draft');FINAL=Path('/tmp/lectern-fidelity20-integration-final');DEST=FINAL/'docs/benchmarks/2026-10-04-table-paint-reuse-integration';DEST.mkdir(parents=True,exist_ok=True)
 OUT=DEST.parent/'2026-10-04-table-paint-reuse-integration-verification.json'
 INITIAL=DRAFT/'docs/benchmarks/2026-10-04-table-paint-reuse-integration-verification.json'
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def load(p):return json.loads(Path(p).read_text())
 assert sha(INITIAL)=='1d814cbf09c461ee04fd80e45677383a64650c28bc1cb77889c35c35123f2beb'
 original=load(INITIAL);pins=dict(original['pins']);copies=[];aliases={};resolutions=[]
-fonts=Path('/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum');packet=fonts/'.build/perf32-table-paint-reuse'
+fonts=Path('/path/to/user/.codex/worktrees/rostrum-fonts/rostrum');packet=fonts/'.build/perf32-table-paint-reuse'
 for old,new in [(fonts/'docs/TABLE-PAINT-REUSE-PERFORMANCE-20261004-20.md',packet/'report-before-acceptance.md'),(packet/'budget-audit.swift',packet/'budget-audit-initial.swift')]:
  aliases[(str(old.resolve()),sha(new))]=new
 

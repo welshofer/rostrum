@@ -1,6 +1,6 @@
 {
   "status": "APPROVE_FINAL_S20_INTEGRATION_WITH_EXACT_REPORT_CORRECTIONS_REPIN_PENDING",
-  "manifest": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-table-paint-reuse-integration-verification.json",
+  "manifest": "/path/to/user/Developer/rostrum/docs/benchmarks/2026-10-04-table-paint-reuse-integration-verification.json",
   "manifestSHA256": "3a68598895ff2730a1349d2b675b971736cfa26f786d59edeb34112ef929903c",
   "originalReportSHA256": "056993f1ec433e5f3f71d0ff9f0354495f1da7f001c40c02ab546303f402bf62",
   "correctedReportSHA256": "73d80080752b124e2bad996d00d680a1f1cd2366cd6bf1373eb25e70f249f089",
@@ -74,7 +74,7 @@
     "checkTerminology": "four offline checks and separate README snippet checks"
   },
   "allowedPostAssemblyPinDifference": [
-    "/Users/welshofer/Developer/rostrum/docs/LAYOUT-PERFORMANCE-20261004-20.md"
+    "/path/to/user/Developer/rostrum/docs/LAYOUT-PERFORMANCE-20261004-20.md"
   ],
   "findings": [],
   "finalization": "Root may preserve original report/manifest, repin corrected report and this acceptance receipt, and update acceptance wording. No source or original measurement changes authorized by this review.",

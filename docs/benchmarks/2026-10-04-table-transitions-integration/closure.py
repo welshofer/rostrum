@@ -1,6 +1,6 @@
 from pathlib import Path
 import json, hashlib, datetime
-root = Path('/Users/welshofer/Developer/rostrum')
+root = Path('/path/to/user/Developer/rostrum')
 manifest = root / 'docs/benchmarks/2026-10-04-table-transitions-integration-verification.json'
 folder = root / 'docs/benchmarks/2026-10-04-table-transitions-integration'
 sha = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()

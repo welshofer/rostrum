@@ -29,7 +29,7 @@ for group,suffix,nc,ng,no in GROUPS:
    comparison=out/f'{idx}-comparison.json';log=out/f'{idx}-capture.log'
    cmd=[PYTHON,extractor,'--svg',cap['svg'],'--pdf',cap['pdf']]
    if group in ['tables','profiles','partial']:
-    ref=cap['originalSpecimens'][0]['referenceJSON'];pin(ref);font='/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/fonts/DejaVuSans.ttf';pin(font)
+    ref=cap['originalSpecimens'][0]['referenceJSON'];pin(ref);font='/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/fonts/DejaVuSans.ttf';pin(font)
     cmd+=['--reference',ref,'--font',font,'--slide',str(cap['sourceSlideIndex']),'--page','0','--mode','browser']
     if group in ['profiles','partial']:cmd+=['--native-pages','3']
    else:

@@ -8,7 +8,7 @@
   "variants": [
     {
       "variant": "default",
-      "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance.pptx",
+      "source": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance.pptx",
       "sourceSHA256": "b7351a492cd0b3e9d0c29f2dec5ff4d6eb1954b92e05cf343c7d77929ee4022b",
       "sourceUnchangedFromBeforeInspectionThroughCompletedExport": true,
       "options": {
@@ -106,7 +106,7 @@
       "svgComparison": [
         {
           "page": 1,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-01.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-01.svg",
           "manualSHA256": "644bfc8275d56a49ff72ab3f567e86722876e16c0c6b776e7628b2b1e8e493da",
           "separateHeadlessPipelinePreview": "/tmp/lectern-fidelity20-appearance-pipeline/alternative-false/tableAppearance-DBDCCCE6-5B5E-4DBB-9D13-BD6EA5D10650/previews/slide-01.svg",
           "headlessSHA256": "644bfc8275d56a49ff72ab3f567e86722876e16c0c6b776e7628b2b1e8e493da",
@@ -114,7 +114,7 @@
         },
         {
           "page": 2,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-02.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-02.svg",
           "manualSHA256": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
           "separateHeadlessPipelinePreview": "/tmp/lectern-fidelity20-appearance-pipeline/alternative-false/tableAppearance-DBDCCCE6-5B5E-4DBB-9D13-BD6EA5D10650/previews/slide-02.svg",
           "headlessSHA256": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
@@ -122,7 +122,7 @@
         },
         {
           "page": 3,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-03.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-03.svg",
           "manualSHA256": "5364f515ad094c1d0c6a0ca1ae7bf28ced726614123969f6f5c8daf2fb0f8b1c",
           "separateHeadlessPipelinePreview": "/tmp/lectern-fidelity20-appearance-pipeline/alternative-false/tableAppearance-DBDCCCE6-5B5E-4DBB-9D13-BD6EA5D10650/previews/slide-03.svg",
           "headlessSHA256": "5364f515ad094c1d0c6a0ca1ae7bf28ced726614123969f6f5c8daf2fb0f8b1c",
@@ -131,18 +131,18 @@
       ],
       "files": {
         "/private/tmp/lectern-fidelity20-manual/default-before.json": "7639f966a962c3cb3550c5af9c3356bbe626ebc26a0eab3e7d1573665483d3ee",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance.pptx": "b7351a492cd0b3e9d0c29f2dec5ff4d6eb1954b92e05cf343c7d77929ee4022b",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance-before.pptx": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/report.json": "09e18ccdffe4e7e3ed07450ce73a04332272848cdad050b2caef28fa440981ad",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/extracted/tableAppearance/tableAppearance.md": "aa8a3da593612993d877bf26c3f2e36a5bf55f0bd551c040cb2b538ea4b0a8e3",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance.pptx": "b7351a492cd0b3e9d0c29f2dec5ff4d6eb1954b92e05cf343c7d77929ee4022b",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance-before.pptx": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/report.json": "09e18ccdffe4e7e3ed07450ce73a04332272848cdad050b2caef28fa440981ad",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/extracted/tableAppearance/tableAppearance.md": "aa8a3da593612993d877bf26c3f2e36a5bf55f0bd551c040cb2b538ea4b0a8e3",
         "/private/tmp/lectern-fidelity20-manual/default-export/tableAppearance/tableAppearance.md": "aa8a3da593612993d877bf26c3f2e36a5bf55f0bd551c040cb2b538ea4b0a8e3",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-false/tableAppearance-DBDCCCE6-5B5E-4DBB-9D13-BD6EA5D10650/tableAppearance.pptx": "b7351a492cd0b3e9d0c29f2dec5ff4d6eb1954b92e05cf343c7d77929ee4022b",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-false/tableAppearance-DBDCCCE6-5B5E-4DBB-9D13-BD6EA5D10650/tableAppearance-before.pptx": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-false/tableAppearance-DBDCCCE6-5B5E-4DBB-9D13-BD6EA5D10650/report.json": "33e9f21675825e8c929d0a6b3cda62d9937fc1b5c8b21f92237160262ed53bcc",
         "/tmp/lectern-fidelity20-appearance-pipeline/pipeline.json": "d8134d0779a74256c4d5d8fe5bbc38e85a3d4b0583fc9fc7813f6ba0c17fea31",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-01.svg": "644bfc8275d56a49ff72ab3f567e86722876e16c0c6b776e7628b2b1e8e493da",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-02.svg": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-03.svg": "5364f515ad094c1d0c6a0ca1ae7bf28ced726614123969f6f5c8daf2fb0f8b1c",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-01.svg": "644bfc8275d56a49ff72ab3f567e86722876e16c0c6b776e7628b2b1e8e493da",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-02.svg": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/previews/slide-03.svg": "5364f515ad094c1d0c6a0ca1ae7bf28ced726614123969f6f5c8daf2fb0f8b1c",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-false/tableAppearance-DBDCCCE6-5B5E-4DBB-9D13-BD6EA5D10650/previews/slide-01.svg": "644bfc8275d56a49ff72ab3f567e86722876e16c0c6b776e7628b2b1e8e493da",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-false/tableAppearance-DBDCCCE6-5B5E-4DBB-9D13-BD6EA5D10650/previews/slide-02.svg": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-false/tableAppearance-DBDCCCE6-5B5E-4DBB-9D13-BD6EA5D10650/previews/slide-03.svg": "5364f515ad094c1d0c6a0ca1ae7bf28ced726614123969f6f5c8daf2fb0f8b1c"
@@ -150,7 +150,7 @@
     },
     {
       "variant": "alternative",
-      "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance.pptx",
+      "source": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance.pptx",
       "sourceSHA256": "b53025b0f1de83b4febb9e4844b5a6fc12273f25acd1f1e32df28f28b7cf5834",
       "sourceUnchangedFromBeforeInspectionThroughCompletedExport": true,
       "options": {
@@ -248,7 +248,7 @@
       "svgComparison": [
         {
           "page": 1,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-01.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-01.svg",
           "manualSHA256": "ce08254f752c806b61ce1705e4c36a91f362c34907002187f978644f8846e8e7",
           "separateHeadlessPipelinePreview": "/tmp/lectern-fidelity20-appearance-pipeline/alternative-true/tableAppearance-392E7C96-1C79-4F72-A65A-E82F70C2F5C5/previews/slide-01.svg",
           "headlessSHA256": "ce08254f752c806b61ce1705e4c36a91f362c34907002187f978644f8846e8e7",
@@ -256,7 +256,7 @@
         },
         {
           "page": 2,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-02.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-02.svg",
           "manualSHA256": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
           "separateHeadlessPipelinePreview": "/tmp/lectern-fidelity20-appearance-pipeline/alternative-true/tableAppearance-392E7C96-1C79-4F72-A65A-E82F70C2F5C5/previews/slide-02.svg",
           "headlessSHA256": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
@@ -264,7 +264,7 @@
         },
         {
           "page": 3,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-03.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-03.svg",
           "manualSHA256": "7d2017e5ffcaa9e31606b1b0eac6fabee4991f34a28671cf88c4c53180c1008a",
           "separateHeadlessPipelinePreview": "/tmp/lectern-fidelity20-appearance-pipeline/alternative-true/tableAppearance-392E7C96-1C79-4F72-A65A-E82F70C2F5C5/previews/slide-03.svg",
           "headlessSHA256": "7d2017e5ffcaa9e31606b1b0eac6fabee4991f34a28671cf88c4c53180c1008a",
@@ -273,18 +273,18 @@
       ],
       "files": {
         "/private/tmp/lectern-fidelity20-manual/alternative-before.json": "dc619343b5af58ab0279839a1ee0e9f93c19573800cb6da4494391c3e3c1bb9e",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance.pptx": "b53025b0f1de83b4febb9e4844b5a6fc12273f25acd1f1e32df28f28b7cf5834",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance-before.pptx": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/report.json": "8367dc00a20141607393d14c6cedb8b5016c089f67d1b8a14b0f18d4ffb979b8",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/extracted/tableAppearance/tableAppearance.md": "aa8a3da593612993d877bf26c3f2e36a5bf55f0bd551c040cb2b538ea4b0a8e3",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance.pptx": "b53025b0f1de83b4febb9e4844b5a6fc12273f25acd1f1e32df28f28b7cf5834",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance-before.pptx": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/report.json": "8367dc00a20141607393d14c6cedb8b5016c089f67d1b8a14b0f18d4ffb979b8",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/extracted/tableAppearance/tableAppearance.md": "aa8a3da593612993d877bf26c3f2e36a5bf55f0bd551c040cb2b538ea4b0a8e3",
         "/private/tmp/lectern-fidelity20-manual/alternative-export/tableAppearance/tableAppearance.md": "aa8a3da593612993d877bf26c3f2e36a5bf55f0bd551c040cb2b538ea4b0a8e3",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-true/tableAppearance-392E7C96-1C79-4F72-A65A-E82F70C2F5C5/tableAppearance.pptx": "b53025b0f1de83b4febb9e4844b5a6fc12273f25acd1f1e32df28f28b7cf5834",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-true/tableAppearance-392E7C96-1C79-4F72-A65A-E82F70C2F5C5/tableAppearance-before.pptx": "2714ccd8c4ecd190b0319d45110bd962ce2b0d9b34f5f875f060f21b5d0185d4",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-true/tableAppearance-392E7C96-1C79-4F72-A65A-E82F70C2F5C5/report.json": "571d36422c7bf177d977033c3486d1e5965db95f136be3f5cf665bc893558637",
         "/tmp/lectern-fidelity20-appearance-pipeline/pipeline.json": "d8134d0779a74256c4d5d8fe5bbc38e85a3d4b0583fc9fc7813f6ba0c17fea31",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-01.svg": "ce08254f752c806b61ce1705e4c36a91f362c34907002187f978644f8846e8e7",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-02.svg": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-03.svg": "7d2017e5ffcaa9e31606b1b0eac6fabee4991f34a28671cf88c4c53180c1008a",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-01.svg": "ce08254f752c806b61ce1705e4c36a91f362c34907002187f978644f8846e8e7",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-02.svg": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/previews/slide-03.svg": "7d2017e5ffcaa9e31606b1b0eac6fabee4991f34a28671cf88c4c53180c1008a",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-true/tableAppearance-392E7C96-1C79-4F72-A65A-E82F70C2F5C5/previews/slide-01.svg": "ce08254f752c806b61ce1705e4c36a91f362c34907002187f978644f8846e8e7",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-true/tableAppearance-392E7C96-1C79-4F72-A65A-E82F70C2F5C5/previews/slide-02.svg": "be136ab95ad3f490c11875ff90ab43a8b0c984b1893fcbc3aff3f69aa898203f",
         "/tmp/lectern-fidelity20-appearance-pipeline/alternative-true/tableAppearance-392E7C96-1C79-4F72-A65A-E82F70C2F5C5/previews/slide-03.svg": "7d2017e5ffcaa9e31606b1b0eac6fabee4991f34a28671cf88c4c53180c1008a"

@@ -1,12 +1,12 @@
 {
   "status": "S21 pending independent evidence review",
-  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/transitions-paired.json",
+  "source": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/transitions-paired.json",
   "sourceSHA256": "73e8a58d2a2fa4d99a5c366505fe5f677621651f6ff29e0cdc50c4850986b72c",
   "bootstrapResamples": 100000,
   "seed": 20261004,
   "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/native-table-transitions21-v1.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/native-table-transitions21-v1.pptx/render": {
       "pairedPercentDeltas": [
         0.4408949505607662,
         3.2912706303187766,
@@ -31,7 +31,7 @@
       "candidateMedianMS": 4.823812,
       "ratioOfMediansPercentDelta": 1.4111606028354817
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/native-table-transitions21-horizontal-v1.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/native-table-transitions21-horizontal-v1.pptx/render": {
       "pairedPercentDeltas": [
         0.5454262638348695,
         2.373110867187034,
@@ -56,7 +56,7 @@
       "candidateMedianMS": 4.3542085,
       "ratioOfMediansPercentDelta": 1.048191343713012
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/vertical-transitions-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/vertical-transitions-100x20.pptx/render": {
       "pairedPercentDeltas": [
         1.4040171991002381,
         0.6894861097160199,
@@ -81,7 +81,7 @@
       "candidateMedianMS": 53.2831045,
       "ratioOfMediansPercentDelta": 0.723293072639275
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/horizontal-transitions-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/horizontal-transitions-100x20.pptx/render": {
       "pairedPercentDeltas": [
         2.804191710871251,
         3.2492756006830215,

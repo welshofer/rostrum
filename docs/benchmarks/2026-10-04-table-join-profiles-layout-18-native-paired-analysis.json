@@ -1,12 +1,12 @@
 {
   "status": "S18 pending independent evidence review",
-  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/native-paired.json",
+  "source": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/native-paired.json",
   "sourceSHA256": "1d58bff3efc91621ee3a3718d107b5475e6ee0c54c51784f004d7e882f6285af",
   "bootstrapResamples": 100000,
   "seed": 20261004,
   "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/native-table-joins18-v1.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/native-table-joins18-v1.pptx/render": {
       "pairedPercentDeltas": [
         -2.040302586286824,
         -1.7780269424411355,
@@ -31,7 +31,7 @@
       "candidateMedianMS": 4.497,
       "ratioOfMediansPercentDelta": -0.4322132012670843
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/ltr-single-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/ltr-single-100x20.pptx/render": {
       "pairedPercentDeltas": [
         -0.32339649239189194,
         0.27567263301204736,
@@ -56,7 +56,7 @@
       "candidateMedianMS": 51.9861255,
       "ratioOfMediansPercentDelta": 0.4553105767094001
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/rtl-single-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/rtl-single-100x20.pptx/render": {
       "pairedPercentDeltas": [
         -0.655160181526826,
         -0.5808465812288,
@@ -81,7 +81,7 @@
       "candidateMedianMS": 51.5113755,
       "ratioOfMediansPercentDelta": -0.37451972024148406
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/axis-colors-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/axis-colors-100x20.pptx/render": {
       "pairedPercentDeltas": [
         0.4750412874618526,
         -2.7167744833148766,
@@ -106,7 +106,7 @@
       "candidateMedianMS": 51.832813,
       "ratioOfMediansPercentDelta": -0.18314618705002061
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/horizontal-merges-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/horizontal-merges-100x20.pptx/render": {
       "pairedPercentDeltas": [
         -0.11795218846556432,
         -4.284345545745993,
@@ -131,7 +131,7 @@
       "candidateMedianMS": 36.346562000000006,
       "ratioOfMediansPercentDelta": 0.44394481482874504
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/vertical-merges-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/vertical-merges-100x20.pptx/render": {
       "pairedPercentDeltas": [
         -1.6424020524137717,
         2.1055912608527905,
@@ -156,7 +156,7 @@
       "candidateMedianMS": 36.206479,
       "ratioOfMediansPercentDelta": 0.6518375403091303
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-rtl-colors-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-rtl-colors-100x20.pptx/render": {
       "pairedPercentDeltas": [
         -0.8110778291355425,
         -2.274442030563384,
@@ -181,7 +181,7 @@
       "candidateMedianMS": 51.395729,
       "ratioOfMediansPercentDelta": -0.5751499454718645
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-merge-colors-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-merge-colors-100x20.pptx/render": {
       "pairedPercentDeltas": [
         -0.8860305762318887,
         6.214493888423678,
@@ -206,7 +206,7 @@
       "candidateMedianMS": 36.6109375,
       "ratioOfMediansPercentDelta": 1.1342533469442584
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/uniform-100x20.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/uniform-100x20.pptx/render": {
       "pairedPercentDeltas": [
         -3.84746457681876,
         -0.8349910198480859,
