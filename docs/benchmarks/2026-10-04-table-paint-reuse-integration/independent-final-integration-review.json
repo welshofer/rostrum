@@ -1,0 +1,90 @@
+{
+  "status": "APPROVE_FINAL_S20_INTEGRATION_WITH_EXACT_REPORT_CORRECTIONS_REPIN_PENDING",
+  "manifest": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-table-paint-reuse-integration-verification.json",
+  "manifestSHA256": "3a68598895ff2730a1349d2b675b971736cfa26f786d59edeb34112ef929903c",
+  "originalReportSHA256": "056993f1ec433e5f3f71d0ff9f0354495f1da7f001c40c02ab546303f402bf62",
+  "correctedReportSHA256": "73d80080752b124e2bad996d00d680a1f1cd2366cd6bf1373eb25e70f249f089",
+  "originalReportPreservedAt": "/tmp/lectern-fidelity20-integration-final/docs/benchmarks/2026-10-04-table-paint-reuse-integration/root-integration-report.md",
+  "physicalPins": 2291,
+  "sourceGitPins": 633,
+  "exports": 177,
+  "performanceExports": 56,
+  "sourceCheckpoint": "5d3d888175d12f615a3f917e15d8c9b6a170f201",
+  "sourcesTree": "6d2e7cd2d2c057d4c9b916358882695cbe2c66d7",
+  "sourceScope": {
+    "count": 633,
+    "distinctionFromS19": "The separate S19 manifest pinned four native fixture trees and three native test files in its 705-file source set. S20 keeps those historical acceptance records and independently verifies 71 fixture files through its external receipt; they are not silently included in this 633-file source count.",
+    "included": [
+      "Sources",
+      "Lectern/App",
+      "Lectern/AppTests",
+      "Lectern/Sources",
+      "Lectern/Tests",
+      "Tests/RostrumTests/TableBorderPaintReuseTests.swift",
+      "Lectern/scripts",
+      "scripts/verify.sh",
+      ".github/workflows/ci.yml"
+    ]
+  },
+  "gateCounts": {
+    "library": [
+      1193,
+      174
+    ],
+    "layout": [
+      18,
+      3
+    ],
+    "core": [
+      302,
+      46
+    ],
+    "appDefinitions": [
+      94,
+      28
+    ],
+    "totalAppExecutions": 132
+  },
+  "freshBrowser": {
+    "PDFs": 37,
+    "cases": 198,
+    "glyphs": 1810,
+    "explicitOmissions": 6
+  },
+  "outputPreservation": {
+    "allSVGBytesExact": 236,
+    "byteExact": 84,
+    "commentUUIDTimestampOnly": 4,
+    "nativeInputRowsExact": 21,
+    "noNewNativeExportsClaimed": true,
+    "packages": 88
+  },
+  "externalTotals": {
+    "checks": 1049,
+    "fileCount": 462,
+    "findings": 413,
+    "passedChecks": 1049,
+    "pptxReopens": 88,
+    "reopenedSlides": 289,
+    "reports": 38,
+    "xmlPartsParsed": 3293
+  },
+  "exactAuthorizedTextChanges": {
+    "executionTerminology": "132 parameter cases corrected to132 total test executions",
+    "checkTerminology": "four offline checks and separate README snippet checks"
+  },
+  "allowedPostAssemblyPinDifference": [
+    "/Users/welshofer/Developer/rostrum/docs/LAYOUT-PERFORMANCE-20261004-20.md"
+  ],
+  "findings": [],
+  "finalization": "Root may preserve original report/manifest, repin corrected report and this acceptance receipt, and update acceptance wording. No source or original measurement changes authorized by this review.",
+  "limits": [
+    "Target partial-table gain accepted with adverse direct axis-color cost, unresolved controls, mixed RSS and ambient host activity; no cumulative gain or universal nonregression claim.",
+    "Native PowerPoint acceptance transfers only through complete package/SVG input identity; no new native export claim.",
+    "633 source pins are an explicit scope, not a complete repository snapshot or comparable denominator to the S19 705 count.",
+    "Known table/style image-fill export omission remains visible and scoped for S22.",
+    "No tests/builds/GUI/benchmarks or repository source/evidence modifications by reviewer; no hosted final-head CI/merge/deployment approval implied."
+  ],
+  "script": "/tmp/review-s20-integration-final.py",
+  "scriptSHA256": "c95ad7e7ab3e2612658646f073d829c94af4d2553be0c66fc11311b91d0b3291"
+}

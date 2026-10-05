@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/tmp/review-s20-readiness.py", line 23, in <module>
+    base=read('baseline-pins.json');build=read('candidate-helper-build.json');pins(base['files']);pins(build['files'],S)
+                                                                              ^^^^^^^^^^^^^^^^^^^
+  File "/tmp/review-s20-readiness.py", line 16, in pins
+    for p,h in d.items():assert sha(root/p)==h,p
+                                ^^^^^^^^^^^
+  File "/tmp/review-s20-readiness.py", line 10, in sha
+    with p.open('rb') as f:
+         ^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py", line 1014, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/shaping-proof.swift'

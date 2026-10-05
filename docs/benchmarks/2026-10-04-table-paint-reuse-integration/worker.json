@@ -1,0 +1,40 @@
+{
+  "status": "PASS_FOCUSED_APP_TEST_ONLY_ROOT_FULL_GATE_PENDING",
+  "commit": "8759edd1234318caed9e984efe0910d60ce46b53",
+  "sourcesTree": "6d2e7cd2d2c057d4c9b916358882695cbe2c66d7",
+  "engineCommit": "3bab3d552ea016035921ce97671356152718ee05",
+  "engineDocumentationCommit": "119b1c107ff9911bdc86241e0e86a7a323a3b087",
+  "changedFiles": [
+    "Lectern/AppTests/LibraryLabTests.swift"
+  ],
+  "command": "LECTERN_DERIVED_DATA_PATH=/tmp/lectern-fidelity20-worker-xcode bash Lectern/scripts/test-app.sh -only-testing:LecternAppTests/LibraryLabAppTests/sharedCustomTableStylesReachFreshInspectorAndExport(alternative:)",
+  "signing": "Canonical script with inherited root .signing.local configuration; isolated derived data.",
+  "tests": 1,
+  "suites": 1,
+  "executions": 2,
+  "seconds": 9.432,
+  "exitCode": 0,
+  "failed": 0,
+  "skipped": 0,
+  "expectedFailures": 0,
+  "runtimeWarnings": 0,
+  "xcresult": "/tmp/lectern-fidelity20-worker-xcode/Logs/Test/Test-Lectern-2026.10.04_18-35-07--0700.xcresult",
+  "history": [
+    {
+      "log": "/tmp/lectern-fidelity20-worker-focused.log",
+      "xcresult": "/tmp/lectern-fidelity20-worker-xcode/Logs/Test/Test-Lectern-2026.10.04_18-34-10--0700.xcresult",
+      "status": "Build passed but selector omitted parameter label and selected zero tests; not counted as verification. Corrected selector rerun without source change."
+    }
+  ],
+  "checks": "Both existing tableAppearance options; exact all3 saved/actual/fresh same-profile SVGs; shared custom style identities and dependencies; exported distinct cell text; source bytes unchanged after inspection and export.",
+  "limits": "No timing/native parity claim, no new recipe, no GUI interaction; root full app/Core/library gate remains pending.",
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/AppTests/LibraryLabTests.swift": "ee13708e136ed30afa3ce760a63cfe1d725aef7c4bb56ca8765f46d61b7c817f",
+    "/tmp/lectern-fidelity20-worker-focused.log": "104d6ff6a7334fd699ebc5776d57c1ed7e59ebed1b97c341a58fe35ebc47df54",
+    "/tmp/lectern-fidelity20-worker-focused-corrected.log": "2b847b37c39abd6802f01827bc25cdc6ef6b844a627f3ba7411669398663fec2",
+    "/tmp/lectern-fidelity20-worker-test-summary.json": "df0c57c221392fbb3dfefc8858ae127be79cc43c2b652fac9e51559e8fb5f920",
+    "/tmp/lectern-fidelity20-worker-test-summary-corrected.json": "9a8616df548542d5d6ed3ee102651c1e255c973ea2c3ba93baa486a3015ffbc4",
+    "/tmp/lectern-fidelity20-worker-xcode/Build/Products/Debug/Lectern.app/Contents/MacOS/Lectern": "45a9d26dbabfd94a7c472e604ad70a805945c597c04f21dfcdfb9304dbdcdacb"
+  },
+  "unrelatedMetadataReviewPreserved": true
+}
