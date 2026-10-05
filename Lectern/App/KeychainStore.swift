@@ -2,6 +2,8 @@ import Foundation
 import LecternCore
 #if canImport(Security)
 import Security
+#else
+typealias OSStatus = Int32
 #endif
 
 /// The *only* home for API keys (invariant I1): a generic-password item per
@@ -19,79 +21,140 @@ import Security
 enum KeychainStore {
     private static let service = "com.lectern.app.apikeys"
 
+    enum Presence: Equatable {
+        case present
+        case missing
+        /// A failed query does not establish whether an item is stored.
+        case unavailable(OSStatus)
+    }
+
+    enum WriteProblem: Error, Equatable {
+        case failed(OSStatus)
+    }
+
+    #if canImport(Security)
+    /// Per-call injection keeps tests away from the user's Keychain. No global
+    /// replacement or mutable shared Security client is installed.
+    struct Operations {
+        var update: ([String: Any], [String: Any]) -> OSStatus
+        var add: ([String: Any]) -> OSStatus
+        var copyMatching: ([String: Any]) -> (OSStatus, CFTypeRef?)
+        var delete: ([String: Any]) -> OSStatus
+
+        static var live: Operations {
+            Operations(
+                update: { SecItemUpdate($0 as CFDictionary, $1 as CFDictionary) },
+                add: { SecItemAdd($0 as CFDictionary, nil) },
+                copyMatching: {
+                    var item: CFTypeRef?
+                    let status = SecItemCopyMatching($0 as CFDictionary, &item)
+                    return (status, item)
+                },
+                delete: { SecItemDelete($0 as CFDictionary) })
+        }
+    }
+
+    private static func query(account: String) -> [String: Any] {
+        [kSecClass as String: kSecClassGenericPassword,
+         kSecAttrService as String: service,
+         kSecAttrAccount as String: account]
+    }
+
+    static func saveOrFail(_ key: String, account: String, operations: Operations = .live) throws {
+        let match = query(account: account)
+        // Updating data preserves an existing item's access control. Never
+        // delete first: a denied/failed replacement must retain the old value.
+        let data = [kSecValueData as String: Data(key.utf8)]
+        let status = operations.update(match, data)
+        if status == errSecSuccess { return }
+        guard status == errSecItemNotFound else { throw WriteProblem.failed(status) }
+
+        var attributes = match
+        attributes[kSecValueData as String] = data[kSecValueData as String]
+        attributes[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlocked
+        let added = operations.add(attributes)
+        if added == errSecSuccess { return }
+        // Another writer may have added the account after the first update.
+        // Retry once without deleting that writer's item or changing its ACL.
+        guard added == errSecDuplicateItem else { throw WriteProblem.failed(added) }
+        let retried = operations.update(match, data)
+        guard retried == errSecSuccess else { throw WriteProblem.failed(retried) }
+    }
+    #else
+    static func saveOrFail(_ key: String, account: String) throws { throw WriteProblem.failed(-4) }
+    #endif
+
     // MARK: Account-based core
 
     @discardableResult
     static func save(_ key: String, account: String) -> Bool {
-        #if canImport(Security)
-        delete(account: account)
-        let attributes: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-            kSecValueData as String: Data(key.utf8),
-            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlocked,
-        ]
-        return SecItemAdd(attributes as CFDictionary, nil) == errSecSuccess
-        #else
-        return false
-        #endif
+        do { try saveOrFail(key, account: account); return true }
+        catch { return false }
     }
 
     static func read(account: String) -> String? {
         try? readOrFail(account: account)
     }
 
-    /// Why a key that is demonstrably there still cannot be read.
-    ///
-    /// The distinction matters because the two need opposite responses from the
-    /// user: one means "add a key", the other means "the key is fine, this
-    /// build cannot open it".
+    /// Absence and access failure need different recovery. An access failure
+    /// does not prove presence, absence, or a code-signature mismatch.
     enum ReadProblem: Error, Equatable {
         /// No item for this account at all.
         case missing
-        /// An item exists, but the keychain refused to hand over its contents —
-        /// on macOS this is the login keychain's access control, which is bound
-        /// to the signature of the build that saved it.
+        /// Keychain could not supply a valid value; retain the actual status.
         case unreadable(OSStatus)
     }
 
     /// Read the secret, saying which kind of failure occurred.
     ///
-    /// `exists` matches attributes and never decrypts; this decrypts. When a
-    /// build's signature differs from the one that saved the item — which is
-    /// what ad-hoc signing guarantees, since its cdhash changes every build —
-    /// the first succeeds and the second does not. Reporting that as "no key
-    /// stored" sent us looking for a save bug that was not there.
-    static func readOrFail(account: String) throws -> String {
-        #if canImport(Security)
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-            kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne,
-        ]
-        var item: CFTypeRef?
-        let status = SecItemCopyMatching(query as CFDictionary, &item)
+    /// Only errSecItemNotFound means missing. A second failed query cannot
+    /// turn a locked, cancelled, or denied read into evidence of absence.
+    #if canImport(Security)
+    static func readOrFail(account: String, operations: Operations = .live) throws -> String {
+        var match = query(account: account)
+        match[kSecReturnData as String] = true
+        match[kSecMatchLimit as String] = kSecMatchLimitOne
+        let (status, item) = operations.copyMatching(match)
         switch status {
         case errSecSuccess:
             guard let data = item as? Data,
                   let key = String(data: data, encoding: .utf8) else {
-                throw ReadProblem.unreadable(status)
+                throw ReadProblem.unreadable(errSecDecode)
             }
             return key
         case errSecItemNotFound:
             throw ReadProblem.missing
         default:
-            // errSecAuthFailed / errSecInteractionNotAllowed land here, and so
-            // does a user who declined the "wants to access" prompt.
-            throw exists(account: account) ? ReadProblem.unreadable(status) : ReadProblem.missing
+            throw ReadProblem.unreadable(status)
         }
-        #else
-        throw ReadProblem.missing
-        #endif
     }
+    #else
+    static func readOrFail(account: String) throws -> String { throw ReadProblem.unreadable(-4) }
+    #endif
+
+    #if canImport(Security)
+    static func presence(account: String, operations: Operations = .live) -> Presence {
+        var match = query(account: account)
+        match[kSecReturnData as String] = false
+        match[kSecMatchLimit as String] = kSecMatchLimitOne
+        let (status, _) = operations.copyMatching(match)
+        switch status {
+        case errSecSuccess: return .present
+        case errSecItemNotFound: return .missing
+        default: return .unavailable(status)
+        }
+    }
+
+    static func deleteOrFail(account: String, operations: Operations = .live) throws {
+        let status = operations.delete(query(account: account))
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw WriteProblem.failed(status)
+        }
+    }
+    #else
+    static func presence(account: String) -> Presence { .unavailable(-4) }
+    static func deleteOrFail(account: String) throws { throw WriteProblem.failed(-4) }
+    #endif
 
     /// Whether a key is stored, without decrypting it.
     ///
@@ -101,33 +164,13 @@ enum KeychainStore {
     /// keychain the same question with `kSecReturnData: false`, so the plaintext
     /// only ever leaves when it is genuinely about to be sent.
     static func exists(account: String) -> Bool {
-        #if canImport(Security)
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-            kSecReturnData as String: false,
-            kSecMatchLimit as String: kSecMatchLimitOne,
-        ]
-        return SecItemCopyMatching(query as CFDictionary, nil) == errSecSuccess
-        #else
-        return false
-        #endif
+        presence(account: account) == .present
     }
 
     @discardableResult
     static func delete(account: String) -> Bool {
-        #if canImport(Security)
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-        ]
-        let status = SecItemDelete(query as CFDictionary)
-        return status == errSecSuccess || status == errSecItemNotFound
-        #else
-        return false
-        #endif
+        do { try deleteOrFail(account: account); return true }
+        catch { return false }
     }
 
     // MARK: LLM providers

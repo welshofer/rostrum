@@ -67,6 +67,15 @@ struct ContentView: View {
             detail
         }
         .navigationSplitViewStyle(.balanced)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if app.isTestSession {
+                Label("Lectern test session · API keys and live generation are disabled", systemImage: "testtube.2")
+                    .font(.callout)
+                    .padding(8)
+                    .frame(maxWidth: .infinity)
+                    .background(.yellow.opacity(0.15))
+            }
+        }
         // The window's own width, which — unlike the detail column's — does not
         // change when the sidebar comes and goes. Read from a background so it
         // observes the layout without taking part in it.
@@ -545,7 +554,13 @@ struct ComposeView: View {
     private var generateBar: some View {
         HStack(spacing: 14) {
             VStack(alignment: .leading, spacing: 2) {
-                if !app.hasKey {
+                if app.isTestSession {
+                    Label(AppState.testSessionAdvice, systemImage: "testtube.2")
+                        .font(.callout).foregroundStyle(.secondary)
+                } else if app.keyStorageUnavailable {
+                    Label("Keychain access is unavailable. Retry in \(AppState.settingsHint).", systemImage: "lock")
+                        .font(.callout).foregroundStyle(.secondary)
+                } else if !app.hasKey {
                     Label("Add an API key in \(AppState.settingsHint) to generate", systemImage: "key")
                         .font(.callout).foregroundStyle(.secondary)
                 } else {

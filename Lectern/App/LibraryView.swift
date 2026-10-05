@@ -305,6 +305,21 @@ struct DeckGridView: View {
         if !query.isEmpty {
             ContentUnavailableView.search(text: query)
                 .frame(maxWidth: .infinity, minHeight: 320)
+        } else if app.isTestSession || app.keyStorageUnavailable {
+            ContentUnavailableView {
+                Label(app.isTestSession ? "Lectern test session" : "Keychain access unavailable",
+                      systemImage: app.isTestSession ? "testtube.2" : "lock")
+            } description: {
+                Text(app.isTestSession ? AppState.testSessionAdvice : AppState.unreadableKeyAdvice)
+            } actions: {
+                if !app.isTestSession {
+                    Button("Retry Keychain") { app.refreshKeyAvailability() }
+                        .buttonStyle(.borderedProminent)
+                }
+                Button("Inspect a deck") { app.chooseDeckToInspect() }
+                    .buttonStyle(.bordered)
+            }
+            .frame(maxWidth: .infinity, minHeight: 320)
         } else if !app.hasKey {
             // First run. Create needs a key and will fail on the first press
             // without one, and nothing used to say so — while Inspect works

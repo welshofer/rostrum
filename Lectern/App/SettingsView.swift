@@ -33,6 +33,11 @@ struct SettingsView: View {
 
     private var form: some View {
         Form {
+            if app.isTestSession {
+                Section {
+                    Label(AppState.testSessionAdvice, systemImage: "testtube.2")
+                }
+            }
             Section("Text generation · OpenAI") {
                 Picker("Model strength", selection: Binding(
                     get: { app.textStrength }, set: { app.setModel($0.modelID) })) {
@@ -54,18 +59,23 @@ struct SettingsView: View {
                 // prompt must carry the stored-state truth — a bare "Paste your
                 // key" placeholder reads as "no key saved" even when one is.
                 SecureField(text: $keyInput, prompt: Text(
-                    app.hasKey ? "••••••••••••••••••••  saved — paste to replace"
-                               : "Paste your \(app.providerID.label) key")) { EmptyView() }
+                    app.keyStorageUnavailable ? "Keychain unavailable — retry access"
+                    : app.hasKey ? "••••••••••••••••••••  saved — paste to replace"
+                    : "Paste your \(app.providerID.label) key")) { EmptyView() }
                     .disabled(!ProviderFactory.isWired(app.providerID))
                     .onSubmit(save)
                 HStack(spacing: 10) {
                     Button("Save", action: save).disabled(trimmed.isEmpty)
                     Button("Validate") { Task { await app.validateKey() } }.disabled(!app.hasKey)
                     if app.hasKey { Button("Remove", role: .destructive) { app.clearKey() } }
+                    if app.keyStorageUnavailable {
+                        Button("Retry Keychain") { app.refreshKeyAvailability() }
+                    }
                     Spacer()
                     statusView
                 }
             }
+            .disabled(app.isTestSession)
 
             Section("Images (optional)") {
                 Picker("Image model", selection: Binding(
@@ -79,20 +89,25 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.menu)
                 SecureField(text: $imageKeyInput, prompt: Text(
-                    app.hasImageKey ? "••••••••••••••••••••  saved — paste to replace"
-                                    : "Paste your \(app.imageProviderID.label) key")) { EmptyView() }
+                    app.imageKeyStorageUnavailable ? "Keychain unavailable — retry access"
+                    : app.hasImageKey ? "••••••••••••••••••••  saved — paste to replace"
+                    : "Paste your \(app.imageProviderID.label) key")) { EmptyView() }
                     .onSubmit(saveImageKey)
                 HStack(spacing: 10) {
                     Button("Save", action: saveImageKey).disabled(imageTrimmed.isEmpty)
                     Button("Validate") { Task { await app.validateImageKey() } }
                         .disabled(!app.hasImageKey || app.imageKeyStatus == .validating)
                     if app.hasImageKey { Button("Remove", role: .destructive) { app.clearImageKey() } }
+                    if app.imageKeyStorageUnavailable {
+                        Button("Retry Keychain") { app.refreshKeyAvailability() }
+                    }
                     Spacer()
                     imageStatusView
                 }
                 Text(imageFooterText)
                     .font(.caption).foregroundStyle(.secondary)
             }
+            .disabled(app.isTestSession)
 
             Section("Diagrams") {
                 Toggle("Use SmartArt", isOn: Binding(
@@ -112,13 +127,15 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .task(id: app.imageModel) {
-            if app.hasImageKey { await app.validateImageKey() }
+            if !app.isTestSession && app.hasImageKey && !app.imageKeyStorageUnavailable {
+                await app.validateImageKey()
+            }
         }
     }
 
     private func saveImageKey() {
         guard !imageTrimmed.isEmpty else { return }
-        app.saveImageKey(imageTrimmed)
+        guard app.saveImageKey(imageTrimmed) else { return }
         imageKeyInput = ""
         Task { await app.validateImageKey() }
     }
@@ -145,6 +162,8 @@ struct SettingsView: View {
     }
 
     private var imageFooterText: String {
+        if app.isTestSession { return AppState.testSessionAdvice }
+        if app.imageKeyStorageUnavailable { return AppState.unreadableKeyAdvice }
         switch app.imageKeyStatus {
         case .valid:
             return "Slides the model marks for a visual get an on-brand image in the selected style."
@@ -177,6 +196,8 @@ struct SettingsView: View {
     }
 
     private var footerText: String {
+        if app.isTestSession { return AppState.testSessionAdvice }
+        if app.keyStorageUnavailable { return AppState.unreadableKeyAdvice }
         return app.hasKey
             ? "Live \(app.providerID.label) generation is on. Keys are stored only in your Keychain."
             : "Add a key to generate — Lectern never runs on fake data."
@@ -184,7 +205,7 @@ struct SettingsView: View {
 
     private func save() {
         guard !trimmed.isEmpty else { return }
-        app.saveKey(trimmed)
+        guard app.saveKey(trimmed) else { return }
         keyInput = ""
         Task { await app.validateKey() }        // immediate feedback that the key works
     }
