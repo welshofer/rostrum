@@ -1,0 +1,276 @@
+{
+  "status": "PASS_BOUNDED_FIDELITY_COST_EVIDENCE",
+  "manifestSHA256": "60c06019a6763901762cc5f26fe4eb7d91f16dcc6472da484170e3f1e923aa7b",
+  "reportSHA256": "a77cff06819d9f3ba01d3c67699e7ef803bb9f7ed6311a75a81625fee92706ea",
+  "physicalPins": 117,
+  "exports": 40,
+  "artifactPins": 9540,
+  "inputPins": 109,
+  "children": 374,
+  "retainedChildSamples": 340,
+  "allPhasesRecomputed": 196,
+  "primaryComparisons": [
+    {
+      "key": "canonical/table-200x50/render",
+      "baselineMS": 178.2197705,
+      "candidateMS": 176.38352099999997,
+      "pairedMedian": -2.0218465521004427,
+      "CI": [
+        -3.095848900923132,
+        0.08213839362325448
+      ],
+      "faster": 7,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.0625
+    },
+    {
+      "key": "canonical/table-20x10/render",
+      "baselineMS": 3.5255415,
+      "candidateMS": 3.5254375,
+      "pairedMedian": 0.38793797596681223,
+      "CI": [
+        -0.41921344143519557,
+        1.0694369660888992
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.15625
+    },
+    {
+      "key": "canonical/shaped-table-100x20/render",
+      "baselineMS": 61.782229,
+      "candidateMS": 61.558479,
+      "pairedMedian": -0.4167112020569297,
+      "CI": [
+        -1.3283725658143397,
+        1.142683187672422
+      ],
+      "faster": 6,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.046875
+    },
+    {
+      "key": "canonical/richtext-fit/render",
+      "baselineMS": 2.3714585,
+      "candidateMS": 2.401729,
+      "pairedMedian": 1.1623678812364369,
+      "CI": [
+        -2.6833678616577594,
+        4.41381529550573
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.0390625
+    },
+    {
+      "key": "canonical/richtext-fit/richtext-fitting",
+      "baselineMS": 9.2307085,
+      "candidateMS": 9.246604,
+      "pairedMedian": 1.190446948759405,
+      "CI": [
+        -2.105300407604532,
+        4.283892801792111
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.0390625
+    },
+    {
+      "key": "canonical/slides-10/render",
+      "baselineMS": 0.528625,
+      "candidateMS": 0.5045625,
+      "pairedMedian": -4.637990014198112,
+      "CI": [
+        -7.5142595572434745,
+        -1.8207719273494072
+      ],
+      "faster": 8,
+      "p": 0.109375,
+      "RSSdeltaMiB": -0.015625
+    },
+    {
+      "key": "supplement/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render",
+      "baselineMS": 117.032479,
+      "candidateMS": 116.987604,
+      "pairedMedian": -0.1412075434692628,
+      "CI": [
+        -1.3709011496360668,
+        0.8584367730961939
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": 0.359375
+    },
+    {
+      "key": "supplement/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render",
+      "baselineMS": 119.708542,
+      "candidateMS": 119.516854,
+      "pairedMedian": 0.036225997027233836,
+      "CI": [
+        -0.7507692648644482,
+        1.100049815015458
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": -0.421875
+    },
+    {
+      "key": "supplement/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render",
+      "baselineMS": 384.3840625,
+      "candidateMS": 387.58133399999997,
+      "pairedMedian": 0.41662002465006065,
+      "CI": [
+        -0.9300774003594581,
+        2.7667057269747053
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.28125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/native-table-joins18-v1.pptx/render",
+      "baselineMS": 4.516521,
+      "candidateMS": 4.497,
+      "pairedMedian": -1.332150709177693,
+      "CI": [
+        -2.040302586286824,
+        0.6430763577744969
+      ],
+      "faster": 7,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.0625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/ltr-single-100x20.pptx/render",
+      "baselineMS": 51.7505,
+      "candidateMS": 51.9861255,
+      "pairedMedian": 0.3062424811323128,
+      "CI": [
+        -0.9095478864035111,
+        1.0359143744620658
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": 0.03125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/rtl-single-100x20.pptx/render",
+      "baselineMS": 51.705021,
+      "candidateMS": 51.5113755,
+      "pairedMedian": -0.3819128873822353,
+      "CI": [
+        -1.274916032000284,
+        0.8983975940396904
+      ],
+      "faster": 7,
+      "p": 0.34375,
+      "RSSdeltaMiB": 0.03125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/axis-colors-100x20.pptx/render",
+      "baselineMS": 51.927917,
+      "candidateMS": 51.832813,
+      "pairedMedian": -0.18614090334964084,
+      "CI": [
+        -1.281043225927575,
+        1.2127811846047054
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": 0.015625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/horizontal-merges-100x20.pptx/render",
+      "baselineMS": 36.1859165,
+      "candidateMS": 36.346562000000006,
+      "pairedMedian": 0.6528693506022809,
+      "CI": [
+        -1.6064653145501873,
+        2.1449091023310496
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": -0.0078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/vertical-merges-100x20.pptx/render",
+      "baselineMS": 35.972,
+      "candidateMS": 36.206479,
+      "pairedMedian": 0.8715652752924852,
+      "CI": [
+        -0.721397877873442,
+        2.1055912608527905
+      ],
+      "faster": 3,
+      "p": 0.34375,
+      "RSSdeltaMiB": -0.0078125
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-rtl-colors-100x20.pptx/render",
+      "baselineMS": 51.6930415,
+      "candidateMS": 51.395729,
+      "pairedMedian": -0.051145304889910204,
+      "CI": [
+        -0.8110778291355425,
+        0.7110868069458043
+      ],
+      "faster": 5,
+      "p": 1,
+      "RSSdeltaMiB": 0.015625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/reject-merge-colors-100x20.pptx/render",
+      "baselineMS": 36.200334,
+      "candidateMS": 36.6109375,
+      "pairedMedian": 1.181531276119574,
+      "CI": [
+        -1.1494740753885901,
+        4.688665648655721
+      ],
+      "faster": 4,
+      "p": 0.75390625,
+      "RSSdeltaMiB": -0.015625
+    },
+    {
+      "key": "native/file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/inputs/uniform-100x20.pptx/render",
+      "baselineMS": 52.671625,
+      "candidateMS": 51.636208499999995,
+      "pairedMedian": -0.9497089195704744,
+      "CI": [
+        -2.550421108501494,
+        -0.00040500315191538405
+      ],
+      "faster": 8,
+      "p": 0.109375,
+      "RSSdeltaMiB": 0.0546875
+    }
+  ],
+  "secondaryWhollyPositiveIntervals": 2,
+  "secondaryWhollyNegativeIntervals": 14,
+  "RSSMedianDeltaRangeMiB": [
+    -0.421875,
+    0.359375
+  ],
+  "executionSeconds": 100.02530400000978,
+  "completionLogSeconds": 100.02547079097712,
+  "postwriteDifferenceSeconds": 0.00016679096734151244,
+  "hostRanges": {
+    "WindowServer": [
+      35.7,
+      46.6
+    ],
+    "backupd": [
+      0.1,
+      135.9
+    ],
+    "photolibraryd": [
+      0.0,
+      0.0
+    ],
+    "managedcorespotlightd": [
+      0.0,
+      0.0
+    ]
+  },
+  "scope": "Accepted honest bounded fidelity evidence with unresolved costs; all newly admitted render CIs include zero, no speedup or universal nonregression. Uniform/ten-slide intervals partially favorable but sign tests inconclusive and attribution unsupported. Whole-process RSS mixed; background host bias unresolved."
+}

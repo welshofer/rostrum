@@ -1,0 +1,147 @@
+{
+  "status": "PASS",
+  "createdUTC": "2026-10-05T00:35:28.564602+00:00",
+  "script": "/tmp/verify-fidelity18-profiles-final-v6.py",
+  "scriptSHA256": "ac20da2761051deccfb22343ed0651c0e34526d05d24980651138a024d337db2",
+  "extractor": "/tmp/verify-fidelity18-table-profile-paint-v5.py",
+  "extractorSHA256": "d82d28ca929f5e6438c05b6a79bbb8ad8639d975218d06c1103cf8f2cd8f7446",
+  "inputSHA256": {
+    "/private/tmp/verify-fidelity18-table-profile-paint-v5.py": "d82d28ca929f5e6438c05b6a79bbb8ad8639d975218d06c1103cf8f2cd8f7446",
+    "/private/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+    "/private/tmp/fidelity17-table-verifier-controls-v4/controls-receipt.json": "f33fb7df205de3ff8d7da23a8f1e9277b6db73adcf3a14d1cec347c44fcacc6c",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-1-capture.json": "d4ec99fc53c3853065cc6d84052f71067da314161478c06b1dbfc31a282b6844",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/lab-false/tableJoinProfiles-D57C94E1-DC26-46B2-A77B-54C6DF2EA628/tableJoinProfiles.pptx": "f7cb904b094aeecc3c15f4daaad39dc109b2aabc56196cda52e7f6baabcd9ccf",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-1.svg": "ebec16e5c92e775454bf3dcdb0b4c07310d2e55d85bf370f8a66b45ab6c5a482",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-1.pdf": "086c0ee604c3833599750e321726c1633b47e009ff1e71328b70ce4adfaa4fcb",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/lab-false/tableJoinProfiles-D57C94E1-DC26-46B2-A77B-54C6DF2EA628/previews/slide-01.svg": "ebec16e5c92e775454bf3dcdb0b4c07310d2e55d85bf370f8a66b45ab6c5a482",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/lab-false/tableJoinProfiles-D57C94E1-DC26-46B2-A77B-54C6DF2EA628/native-table-join-profiles-reference.json": "bbff27c11da229684523fb6558f55f2c267adb1a258804acfbe5217f5a3e6765",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoinProfiles/paint-reference.json": "b30164d080661ebeda0b03af75d49d34b62420b74ab48f8892e3cf024f7d5574",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoinProfiles/native-table-joins18-v1.pptx": "39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e",
+    "/private/tmp/lectern-fidelity18-profiles-native/alternative-false/capture-receipt.json": "70009ddfeabd53c336b404cac5fe532d386714311f052c436a7adef80e448431",
+    "/private/tmp/lectern-fidelity18-profiles-native/alternative-false/tableJoinProfiles.pptx": "f7cb904b094aeecc3c15f4daaad39dc109b2aabc56196cda52e7f6baabcd9ccf",
+    "/private/tmp/lectern-fidelity18-profiles-native/alternative-false/powerpoint.pdf": "6392a90105ef7bebb2a8f26c1d28cfffe004d78806d0cd123ef2d441fe6bd3cc",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-2-capture.json": "268c2c7177a94476591d7f4f2d149d281584781a53faf7fb270bd1903262bae9",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-2.svg": "d00befc460def182cefef00734a4a918a8ed661e18cfd3c1200ec1aab4c97bb9",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-2.pdf": "2d93a172bf095ecee8b99db706c0faada04f09935c02c5f07475538cd64cc28a",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/lab-false/tableJoinProfiles-D57C94E1-DC26-46B2-A77B-54C6DF2EA628/previews/slide-02.svg": "d00befc460def182cefef00734a4a918a8ed661e18cfd3c1200ec1aab4c97bb9",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-1-capture.json": "b34b64ef96203df0dc330b57b011fd20c9edbc321658522d0be2506e682e7d57",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/lab-true/tableJoinProfiles-27CC1883-6397-4268-8EA2-A1C24193822B/tableJoinProfiles.pptx": "3743adc2e743906fb5db2666a40e1a4a0667beba54479dee8c5d2cf4da2ebab6",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-1.svg": "ebec16e5c92e775454bf3dcdb0b4c07310d2e55d85bf370f8a66b45ab6c5a482",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-1.pdf": "991b6419fb97ee87b2e3ea507f1d4463f7ebfb81cda5d80d532beae61e240ffd",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/lab-true/tableJoinProfiles-27CC1883-6397-4268-8EA2-A1C24193822B/previews/slide-01.svg": "ebec16e5c92e775454bf3dcdb0b4c07310d2e55d85bf370f8a66b45ab6c5a482",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/lab-true/tableJoinProfiles-27CC1883-6397-4268-8EA2-A1C24193822B/native-table-join-profiles-reference.json": "bbff27c11da229684523fb6558f55f2c267adb1a258804acfbe5217f5a3e6765",
+    "/private/tmp/lectern-fidelity18-profiles-native/alternative-true/capture-receipt.json": "5dd73efee3631b249fcc90dea1a1bfdc203c87aff1265698feea13fd1cb194a7",
+    "/private/tmp/lectern-fidelity18-profiles-native/alternative-true/tableJoinProfiles.pptx": "3743adc2e743906fb5db2666a40e1a4a0667beba54479dee8c5d2cf4da2ebab6",
+    "/private/tmp/lectern-fidelity18-profiles-native/alternative-true/powerpoint.pdf": "6e5fd4bed9e30648876e2b3fb27eb319902a831174b09aaceec8893aa20dc0e8",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-2-capture.json": "c5dc7d54081578c34c6f8c8a9b69ddab45e57abe633d95a556810312cdd1b305",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-2.svg": "d00befc460def182cefef00734a4a918a8ed661e18cfd3c1200ec1aab4c97bb9",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-2.pdf": "d51eb08df638dc9f72e7b6df51d1f59dcc5cd6914e06d813feab7cb1a3187f5e",
+    "/private/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/lab-true/tableJoinProfiles-27CC1883-6397-4268-8EA2-A1C24193822B/previews/slide-02.svg": "d00befc460def182cefef00734a4a918a8ed661e18cfd3c1200ec1aab4c97bb9"
+  },
+  "unchangedInputBytes": true,
+  "results": [
+    {
+      "capture": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-1-capture.json",
+      "captureSHA256": "d4ec99fc53c3853065cc6d84052f71067da314161478c06b1dbfc31a282b6844",
+      "mode": "browser",
+      "cases": 4,
+      "glyphs": 64,
+      "comparison": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/0-browser-comparison.json",
+      "comparisonSHA256": "d187d89850ba7c91b70c1d0d6ca336b49125ff2239f66f7371fa5dca320fca11",
+      "log": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/0-browser-log.txt",
+      "logSHA256": "9f2d356429dcdff534361b6c51be3075ad7182406d3b0dec80ced9ea7b5927f2"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-1-capture.json",
+      "captureSHA256": "d4ec99fc53c3853065cc6d84052f71067da314161478c06b1dbfc31a282b6844",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 64,
+      "comparison": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/0-native-comparison.json",
+      "comparisonSHA256": "6fcf9d7bf9ea20374c594a6ac2a30cc7495799d13c28ba9ea7937b8f265b7523",
+      "log": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/0-native-log.txt",
+      "logSHA256": "1a38af7b49c974021f3cc800c807ea94651452a7daf43ef53e6bf9058daa5ea9"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-2-capture.json",
+      "captureSHA256": "268c2c7177a94476591d7f4f2d149d281584781a53faf7fb270bd1903262bae9",
+      "mode": "browser",
+      "cases": 4,
+      "glyphs": 48,
+      "comparison": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/1-browser-comparison.json",
+      "comparisonSHA256": "bd2ecbbde8cb5991c9fe983cd9a8dcf2d817894b333707237ff0c9061c34c966",
+      "log": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/1-browser-log.txt",
+      "logSHA256": "7f4ae1e2c10a5ca8090c180bbe4e9c1a9b238d3b6e46f8d1b656bd96492c4551"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-2-capture.json",
+      "captureSHA256": "268c2c7177a94476591d7f4f2d149d281584781a53faf7fb270bd1903262bae9",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 48,
+      "comparison": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/1-native-comparison.json",
+      "comparisonSHA256": "f9b4ba601e7ec9804bee781a600c36d36471046da87cd697833e4030c0cc601b",
+      "log": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/1-native-log.txt",
+      "logSHA256": "ab7a5d15178e3279dc4c25a24f06aa9f061a80d6526bf660f100902d569cba71"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-1-capture.json",
+      "captureSHA256": "b34b64ef96203df0dc330b57b011fd20c9edbc321658522d0be2506e682e7d57",
+      "mode": "browser",
+      "cases": 4,
+      "glyphs": 64,
+      "comparison": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/2-browser-comparison.json",
+      "comparisonSHA256": "fa9e00b07b60929ca900e4645bf24efe35f685f2ada02de0d1de00f3b16900ba",
+      "log": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/2-browser-log.txt",
+      "logSHA256": "c50cc47454c1b76b610f74d263b0792933521dc544df4db0b25bdf6924e35856"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-1-capture.json",
+      "captureSHA256": "b34b64ef96203df0dc330b57b011fd20c9edbc321658522d0be2506e682e7d57",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 64,
+      "comparison": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/2-native-comparison.json",
+      "comparisonSHA256": "332ea49240e24509d9a3308ddf85af7c925616a9b9b74fb4a9185b141ed7697d",
+      "log": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/2-native-log.txt",
+      "logSHA256": "227af139302a6602c5a846b5fda08f3058f3a5af46cf417a306d28b3c71c7062"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-2-capture.json",
+      "captureSHA256": "c5dc7d54081578c34c6f8c8a9b69ddab45e57abe633d95a556810312cdd1b305",
+      "mode": "browser",
+      "cases": 4,
+      "glyphs": 48,
+      "comparison": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/3-browser-comparison.json",
+      "comparisonSHA256": "ded18f5d71f8b1cc7a5c0d94751bebb9a1d4ec0f4c1d05a13e25b6668714ae2b",
+      "log": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/3-browser-log.txt",
+      "logSHA256": "ab6280dc2e6cb9f88a6cd850e8ae52413b29eb27ab7327bafd274f83c2102f47"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-true-slide-2-capture.json",
+      "captureSHA256": "c5dc7d54081578c34c6f8c8a9b69ddab45e57abe633d95a556810312cdd1b305",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 48,
+      "comparison": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/3-native-comparison.json",
+      "comparisonSHA256": "9c69bfbea7f42726e0a10da69c9893f51eff087387d7e1f60c04ff00ced7e00b",
+      "log": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/3-native-log.txt",
+      "logSHA256": "b76616ff997e3d668a2dbbd655fa4058a316cabc3875bc4fbd6f91ab8f6e420d"
+    }
+  ],
+  "failures": [],
+  "totals": {
+    "browser": {
+      "PDFcomparisons": 4,
+      "cases": 16,
+      "glyphs": 224
+    },
+    "native": {
+      "PDFcomparisons": 4,
+      "cases": 16,
+      "glyphs": 224
+    }
+  },
+  "scope": "First two original pages only. Four fresh saved-inspector WebKit PDF comparisons and four pages of two generated PowerPoint PDFs. All 16 repeated cases/224 glyphs in each mode; all-glyph x tolerance tightened to .025pt; complete different-color ordered paint over every cell of the combined stroke-edge arrangement and all9 crossings is checked. Complete finite ordered fill/stroke paint and glyph origin/raw paint-size with source/subset outline equality; no trace-bbox ink, raster or third computed page native parity claim. UI provenance is root-observed; independent input identities and numeric extraction checked here."
+}

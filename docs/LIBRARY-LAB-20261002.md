@@ -620,3 +620,28 @@ native scope, observed costs, faster absent-style cases and background-load
 limitations. The public comparison also exposes a remaining partial custom-style
 missing-edge fallback gap. The successful file checks do not assert full custom
 style or whole-slide native parity.
+
+## October 4 RTL, color and merge profile integration
+
+The 31st recipe, Table join profiles, preserves eight native specimens and
+112 glyphs on two pages, then demonstrates public RTL, axis-color and merge
+APIs on a third. Its option changes only the public merge orientation. Both
+variants pass 44 saved-file checks with no findings.
+
+The local gate passes 1,183 library, 18 layout, 298 Core and 91 app test
+definitions / 127 executions, with successful macOS and iOS simulator builds.
+All 31 catalog recipes pass 649 checks and retain 413 findings; four additional
+table pipeline executions pass 214 checks. External checks reopen 80 packages
+and 268 slides. All 34 prior reference SVGs are byte-identical.
+
+Both generated PowerPoint decks and fresh exact-inspector browser captures pass
+16 case comparisons / 224 glyphs each at 0.025 pt x/y, with complete ordered
+border coverage and crossing checks. Both manual three-slide workflows preserve
+source bytes, exact app-gate previews and all 52 source text nodes per option.
+The public third page remains separate from numerical native acceptance.
+
+The [integration report](LAYOUT-FIDELITY-20261004-18.md) records the bounded
+admission rules and retained parser history. The separately measured performance
+intervals for all newly admitted targets include zero; speedup and universal
+nonregression are not established. Independent performance and final integration review pass. Custom-style missing-edge defaults are the next
+independently captured gap.

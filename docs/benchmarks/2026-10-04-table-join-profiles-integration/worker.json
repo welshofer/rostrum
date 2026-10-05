@@ -1,0 +1,75 @@
+{
+  "status": "workerCorePassed_appNativePending",
+  "engineSource": "b5407e49f1173edeeb3285fcef6ad763840d3f79",
+  "focused": {
+    "tests": 3,
+    "suites": 1,
+    "parameterExecutions": 5,
+    "seconds": 6.332,
+    "log": {
+      "path": "/tmp/lectern-table-profiles18-focused.log",
+      "sha256": "62fdad283dd0e775aea1a3bd66442ab2bc99f245021d3e869143b1f3fd069a72",
+      "bytes": 1553
+    }
+  },
+  "fullCore": {
+    "tests": 298,
+    "suites": 45,
+    "seconds": 101.12,
+    "exitCode": 0,
+    "log": {
+      "path": "/tmp/lectern-table-profiles18-core-full.log",
+      "sha256": "0302a3d9d9400e43f2986c194c8aeab6e4f172f94944429f87f2b0cc0986b172",
+      "bytes": 72190
+    }
+  },
+  "lab": {
+    "recipes": 31,
+    "checks": 649,
+    "findings": 413,
+    "failedChecks": 0,
+    "root": "/tmp/lectern-table-profiles18-all-lab"
+  },
+  "newRecipe": {
+    "checksPerOption": 44,
+    "findingsPerOption": 0,
+    "slides": 3,
+    "nativePages": 2,
+    "nativeCases": 8,
+    "nativeGlyphTraces": 112,
+    "orderedCrossingsPerColoredCase": 9
+  },
+  "resources": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/TableJoinProfilesReferences.json",
+      "sha256": "bbff27c11da229684523fb6558f55f2c267adb1a258804acfbe5217f5a3e6765",
+      "bytes": 82461
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/native-table-joins18-v1.pptx",
+      "sha256": "39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e",
+      "bytes": 411031
+    }
+  ],
+  "exactNativeProjection": true,
+  "generated": [
+    {
+      "path": "/tmp/lectern-table-profiles18-worker/alternative-false/tableJoinProfiles.pptx",
+      "sha256": "f7cb904b094aeecc3c15f4daaad39dc109b2aabc56196cda52e7f6baabcd9ccf",
+      "bytes": 468368,
+      "zipCRC": "PASS",
+      "uniqueEntries": "PASS",
+      "pythonPptxSlides": 3
+    },
+    {
+      "path": "/tmp/lectern-table-profiles18-worker/alternative-true/tableJoinProfiles.pptx",
+      "sha256": "3743adc2e743906fb5db2666a40e1a4a0667beba54479dee8c5d2cf4da2ebab6",
+      "bytes": 468364,
+      "zipCRC": "PASS",
+      "uniqueEntries": "PASS",
+      "pythonPptxSlides": 3
+    }
+  ],
+  "app": "Source syntax parsed only; no app build or GUI in worker lane. Root owns actual inspector/export and WebKit/native acceptance.",
+  "scope": "Bounded profiles only; same merge orientation across grid. Glyph trace origins/size, not outline ink. Custom-style default border gap separate."
+}
