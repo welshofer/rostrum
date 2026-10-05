@@ -200,7 +200,7 @@ extension PlatformLabRecipes {
         }
         try caption(options.alternative ? "Left: RTL. Center: colors by axis.\nRight: vertical merge." : "Left: RTL. Center: colors by axis.\nRight: horizontal merge.", y: 435)
         try caption("Native scope: single-color unmerged RTL; axis-uniform two-color unmerged LTR; single-color LTR merges with one orientation across the grid. Cells exceed the widest stroke; opaque solid centered borders, no diagonals.", y: 530, size: 16, height: 105)
-        try caption("Combined profiles and mixed merge orientations remain outside this evidence. Custom-style default borders are a separate limitation. No universal table parity claim.", y: 640, size: 14, height: 70)
+        try caption("Combined profiles and mixed merge orientations remain outside this evidence. Custom-style default borders are demonstrated separately. No universal table parity claim.", y: 640, size: 14, height: 70)
         var checks = try tableJoinProfilesChecks(deck, reference: reference)
         checks.append(.init("Public join controls applied", try tableJoinProfilesControlsMatch(deck, alternative: options.alternative), "The third page retains live RTL, axis-color borders and the selected merge topology."))
         let bytes = try deck.serializedData(), svgs = try (0..<3).map { try deck.renderSVG(slideAt: $0) }
