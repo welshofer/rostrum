@@ -11,7 +11,7 @@ import Rostrum
         defer { if retained == nil { try? FileManager.default.removeItem(at: parent) } }
         let result = try LibraryLab.run(.imageOwners, options: .init(alternative: alternative), in: parent)
         #expect(result.passed)
-        for check in result.checks { #expect(check.passed, Comment(rawValue: check.name + ": " + check.detail)) }
+        for check in result.checks { #expect(check.passed, "\(check.name): \(check.detail)") }
         #expect(result.findings.isEmpty && result.slideCount == 5)
         let bytes = try Data(contentsOf: result.afterURL), deck = try Presentation(data: bytes)
         #expect(deck.slideSize.width == .points(864) && deck.slideSize.height == .points(540))
