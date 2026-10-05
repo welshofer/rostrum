@@ -33,9 +33,10 @@ these defaults in document XML.
 The two partial grids add a separately calibrated join profile: unmerged LTR
 positive grids with opaque solid borders, where every individual grid line has
 one color and width. Existing donor, ownership, draw-order and uniform-grid
-paths are unchanged. Arbitrary collinear color/width transitions, combined
-colored RTL or merged grids, and the previous unsupported paint/geometry
-conditions retain their existing fallback. Earlier S17/S18 assertions and
+paths are unchanged. Arbitrary collinear color/width transitions outside the
+previously calibrated axis-color profiles, combined colored RTL or merged grids,
+and the previous unsupported paint/geometry conditions retain their existing
+fallback. Earlier S17/S18 assertions and
 bounds are unchanged.
 
 ## Independent references and strict checks
