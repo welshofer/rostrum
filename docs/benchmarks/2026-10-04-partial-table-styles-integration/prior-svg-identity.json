@@ -1,0 +1,850 @@
+{
+  "scope": "Exact prior/current special SVG comparison, including table defaults. Changed paint remains subject to independent native/browser acceptance, never normalized away.",
+  "pairs": [
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-false/slide-1.svg",
+      "priorSHA256": "49efeea0c517a3336b49648eb460466e672b55404d6ba65e2962a0bb47a5ce2b",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-false/slide-1.svg",
+      "currentSHA256": "49efeea0c517a3336b49648eb460466e672b55404d6ba65e2962a0bb47a5ce2b",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-false/slide-2.svg",
+      "priorSHA256": "f38d002235ef62d444da8e6a5d70394769eba36d06abcd4bc06a4e28f80177f3",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-false/slide-2.svg",
+      "currentSHA256": "f38d002235ef62d444da8e6a5d70394769eba36d06abcd4bc06a4e28f80177f3",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-false/slide-3.svg",
+      "priorSHA256": "c213ef680d9583b17604cadfaa705b1231552725cb191ab0fc271f093fe673ef",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-false/slide-3.svg",
+      "currentSHA256": "c213ef680d9583b17604cadfaa705b1231552725cb191ab0fc271f093fe673ef",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-false/slide-4.svg",
+      "priorSHA256": "2b02cf2d5ac3868a7a21c65d61cc23ee73e9e4317aaf242eeb0e6808a8e4a000",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-false/slide-4.svg",
+      "currentSHA256": "2b02cf2d5ac3868a7a21c65d61cc23ee73e9e4317aaf242eeb0e6808a8e4a000",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-false/slide-5.svg",
+      "priorSHA256": "f4211784060a799bd8e14b68d5449803fd569778f53e4c6239831a8df5b3cbd5",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-false/slide-5.svg",
+      "currentSHA256": "f4211784060a799bd8e14b68d5449803fd569778f53e4c6239831a8df5b3cbd5",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-true/slide-1.svg",
+      "priorSHA256": "49efeea0c517a3336b49648eb460466e672b55404d6ba65e2962a0bb47a5ce2b",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-true/slide-1.svg",
+      "currentSHA256": "49efeea0c517a3336b49648eb460466e672b55404d6ba65e2962a0bb47a5ce2b",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-true/slide-2.svg",
+      "priorSHA256": "f38d002235ef62d444da8e6a5d70394769eba36d06abcd4bc06a4e28f80177f3",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-true/slide-2.svg",
+      "currentSHA256": "f38d002235ef62d444da8e6a5d70394769eba36d06abcd4bc06a4e28f80177f3",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-true/slide-3.svg",
+      "priorSHA256": "c213ef680d9583b17604cadfaa705b1231552725cb191ab0fc271f093fe673ef",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-true/slide-3.svg",
+      "currentSHA256": "c213ef680d9583b17604cadfaa705b1231552725cb191ab0fc271f093fe673ef",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-true/slide-4.svg",
+      "priorSHA256": "2b02cf2d5ac3868a7a21c65d61cc23ee73e9e4317aaf242eeb0e6808a8e4a000",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-true/slide-4.svg",
+      "currentSHA256": "2b02cf2d5ac3868a7a21c65d61cc23ee73e9e4317aaf242eeb0e6808a8e4a000",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-alignment/alternative-true/slide-5.svg",
+      "priorSHA256": "c98438520c1dc7e7433f16f323b2377104efd72b8aab7432a4e118b1c1c327a5",
+      "current": "/tmp/lectern-fidelity19-alignment/alternative-true/slide-5.svg",
+      "currentSHA256": "c98438520c1dc7e7433f16f323b2377104efd72b8aab7432a4e118b1c1c327a5",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-false/slide-1.svg",
+      "priorSHA256": "4eef145e2f6a1fb776cb6078d785e73128623b97fd0ba0347576bd50c36daae3",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-false/slide-1.svg",
+      "currentSHA256": "4eef145e2f6a1fb776cb6078d785e73128623b97fd0ba0347576bd50c36daae3",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-false/slide-2.svg",
+      "priorSHA256": "0b6a145d9bdc80f9d9c681bb411c459521c4425d55c5ec22c12998142cf83f40",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-false/slide-2.svg",
+      "currentSHA256": "0b6a145d9bdc80f9d9c681bb411c459521c4425d55c5ec22c12998142cf83f40",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-false/slide-3.svg",
+      "priorSHA256": "b10fe02b242846875a786a3f8136a47f098b49f4375db421dbb27004be8fecfd",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-false/slide-3.svg",
+      "currentSHA256": "b10fe02b242846875a786a3f8136a47f098b49f4375db421dbb27004be8fecfd",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-false/slide-4.svg",
+      "priorSHA256": "d13aa85c5707e0dddf6fb12c491853a2b2de66d4af39191d983200d34098ad08",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-false/slide-4.svg",
+      "currentSHA256": "d13aa85c5707e0dddf6fb12c491853a2b2de66d4af39191d983200d34098ad08",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-false/slide-5.svg",
+      "priorSHA256": "c317bbfe0dbfa4164389a15d6a097177cacf46e9e91443d9cd91bf741fc03076",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-false/slide-5.svg",
+      "currentSHA256": "c317bbfe0dbfa4164389a15d6a097177cacf46e9e91443d9cd91bf741fc03076",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-true/slide-1.svg",
+      "priorSHA256": "4eef145e2f6a1fb776cb6078d785e73128623b97fd0ba0347576bd50c36daae3",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-true/slide-1.svg",
+      "currentSHA256": "4eef145e2f6a1fb776cb6078d785e73128623b97fd0ba0347576bd50c36daae3",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-true/slide-2.svg",
+      "priorSHA256": "0b6a145d9bdc80f9d9c681bb411c459521c4425d55c5ec22c12998142cf83f40",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-true/slide-2.svg",
+      "currentSHA256": "0b6a145d9bdc80f9d9c681bb411c459521c4425d55c5ec22c12998142cf83f40",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-true/slide-3.svg",
+      "priorSHA256": "b10fe02b242846875a786a3f8136a47f098b49f4375db421dbb27004be8fecfd",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-true/slide-3.svg",
+      "currentSHA256": "b10fe02b242846875a786a3f8136a47f098b49f4375db421dbb27004be8fecfd",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-true/slide-4.svg",
+      "priorSHA256": "d13aa85c5707e0dddf6fb12c491853a2b2de66d4af39191d983200d34098ad08",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-true/slide-4.svg",
+      "currentSHA256": "d13aa85c5707e0dddf6fb12c491853a2b2de66d4af39191d983200d34098ad08",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-markers/alternative-true/slide-5.svg",
+      "priorSHA256": "9cc8ca929b6de62a4196a629ee229ba4c316408f91471a4401fa3960e9fa5a3a",
+      "current": "/tmp/lectern-fidelity19-markers/alternative-true/slide-5.svg",
+      "currentSHA256": "9cc8ca929b6de62a4196a629ee229ba4c316408f91471a4401fa3960e9fa5a3a",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-mixed/alternative-false/slide-1.svg",
+      "priorSHA256": "fe8c1b89aabf38b745d6d734df5850f3c1e1925ad563a9634ee396f88137ceac",
+      "current": "/tmp/lectern-fidelity19-mixed/alternative-false/slide-1.svg",
+      "currentSHA256": "fe8c1b89aabf38b745d6d734df5850f3c1e1925ad563a9634ee396f88137ceac",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-mixed/alternative-false/slide-2.svg",
+      "priorSHA256": "d24065e3c8afd89a69264676ef37a20443fad6cc31f402e5a4f73f01ac3d5829",
+      "current": "/tmp/lectern-fidelity19-mixed/alternative-false/slide-2.svg",
+      "currentSHA256": "d24065e3c8afd89a69264676ef37a20443fad6cc31f402e5a4f73f01ac3d5829",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-mixed/alternative-false/slide-3.svg",
+      "priorSHA256": "7fb075fe298ce4a1fb3e580fd07e7a7ea1ebe7e396750b8746c9ea8d1812caea",
+      "current": "/tmp/lectern-fidelity19-mixed/alternative-false/slide-3.svg",
+      "currentSHA256": "7fb075fe298ce4a1fb3e580fd07e7a7ea1ebe7e396750b8746c9ea8d1812caea",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-mixed/alternative-true/slide-1.svg",
+      "priorSHA256": "fe8c1b89aabf38b745d6d734df5850f3c1e1925ad563a9634ee396f88137ceac",
+      "current": "/tmp/lectern-fidelity19-mixed/alternative-true/slide-1.svg",
+      "currentSHA256": "fe8c1b89aabf38b745d6d734df5850f3c1e1925ad563a9634ee396f88137ceac",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-mixed/alternative-true/slide-2.svg",
+      "priorSHA256": "d24065e3c8afd89a69264676ef37a20443fad6cc31f402e5a4f73f01ac3d5829",
+      "current": "/tmp/lectern-fidelity19-mixed/alternative-true/slide-2.svg",
+      "currentSHA256": "d24065e3c8afd89a69264676ef37a20443fad6cc31f402e5a4f73f01ac3d5829",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-mixed/alternative-true/slide-3.svg",
+      "priorSHA256": "911f41edb5e3b1dff60466cb778fcf83bce9c8299d0c3cf8cfe490e44e12eed3",
+      "current": "/tmp/lectern-fidelity19-mixed/alternative-true/slide-3.svg",
+      "currentSHA256": "911f41edb5e3b1dff60466cb778fcf83bce9c8299d0c3cf8cfe490e44e12eed3",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-tables/alternative-false/slide-1.svg",
+      "priorSHA256": "770de0dcee6b65d9004d26fa0d444ce2c710f449e9bafa494bd284779018d39c",
+      "current": "/tmp/lectern-fidelity19-tables/alternative-false/slide-1.svg",
+      "currentSHA256": "770de0dcee6b65d9004d26fa0d444ce2c710f449e9bafa494bd284779018d39c",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-tables/alternative-false/slide-2.svg",
+      "priorSHA256": "d90d711d4341968fb1683cd1b99e6fae0c79ee5e3257c097338b480fe0aaac30",
+      "current": "/tmp/lectern-fidelity19-tables/alternative-false/slide-2.svg",
+      "currentSHA256": "d90d711d4341968fb1683cd1b99e6fae0c79ee5e3257c097338b480fe0aaac30",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-tables/alternative-false/slide-3.svg",
+      "priorSHA256": "d163b40edbc7f89f131ee012d858afcab8ac078ec33a920e2c3269d404489f39",
+      "current": "/tmp/lectern-fidelity19-tables/alternative-false/slide-3.svg",
+      "currentSHA256": "d163b40edbc7f89f131ee012d858afcab8ac078ec33a920e2c3269d404489f39",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-tables/alternative-false/slide-4.svg",
+      "priorSHA256": "002983989d580bd8f8280f86c6d04f9d4cbf14bd69a32f2cd151e78d39a14454",
+      "current": "/tmp/lectern-fidelity19-tables/alternative-false/slide-4.svg",
+      "currentSHA256": "3a9b905bcc21ef45ede7890a813c75e6c97edf21d434506669c36b8a690d9f92",
+      "byteIdentical": false,
+      "priorNodeCount": 41,
+      "currentNodeCount": 45,
+      "changedNodes": [
+        {
+          "index": 14,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}line",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "transform": "translate(381000,3187700) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve",
+            "style": "font-feature-settings: 'liga' 0"
+          },
+          "currentAttributes": {
+            "x1": "381000",
+            "y1": "2787650",
+            "x2": "381000",
+            "y2": "4832350",
+            "stroke": "#000000",
+            "stroke-width": "12700"
+          }
+        },
+        {
+          "index": 15,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}line",
+          "priorText": "Agjp",
+          "currentText": null,
+          "priorAttributes": {
+            "x": "12 25.6250 38.3750 43.8750",
+            "font-size": "20",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif",
+            "kerning": "0"
+          },
+          "currentAttributes": {
+            "x1": "4064000",
+            "y1": "2787650",
+            "x2": "4064000",
+            "y2": "4832350",
+            "stroke": "#000000",
+            "stroke-width": "12700"
+          }
+        },
+        {
+          "index": 16,
+          "priorTag": "{http://www.w3.org/2000/svg}line",
+          "currentTag": "{http://www.w3.org/2000/svg}line",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "x1": "4826000",
+            "y1": "2774950",
+            "x2": "4826000",
+            "y2": "4851400",
+            "stroke": "#000000",
+            "stroke-width": "12700"
+          },
+          "currentAttributes": {
+            "x1": "374650",
+            "y1": "2794000",
+            "x2": "4070350",
+            "y2": "2794000",
+            "stroke": "#000000",
+            "stroke-width": "12700"
+          }
+        },
+        {
+          "index": 17,
+          "priorTag": "{http://www.w3.org/2000/svg}line",
+          "currentTag": "{http://www.w3.org/2000/svg}line",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "x1": "8509000",
+            "y1": "2774950",
+            "x2": "8509000",
+            "y2": "4851400",
+            "stroke": "#000000",
+            "stroke-width": "25400"
+          },
+          "currentAttributes": {
+            "x1": "374650",
+            "y1": "4826000",
+            "x2": "4070350",
+            "y2": "4826000",
+            "stroke": "#000000",
+            "stroke-width": "12700"
+          }
+        },
+        {
+          "index": 18,
+          "priorTag": "{http://www.w3.org/2000/svg}line",
+          "currentTag": "{http://www.w3.org/2000/svg}text",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "x1": "4819650",
+            "y1": "2794000",
+            "x2": "8521700",
+            "y2": "2794000",
+            "stroke": "#000000",
+            "stroke-width": "38100"
+          },
+          "currentAttributes": {
+            "transform": "translate(381000,3187700) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve",
+            "style": "font-feature-settings: 'liga' 0"
+          }
+        },
+        {
+          "index": 19,
+          "priorTag": "{http://www.w3.org/2000/svg}line",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": null,
+          "currentText": "Agjp",
+          "priorAttributes": {
+            "x1": "4819650",
+            "y1": "4826000",
+            "x2": "8521700",
+            "y2": "4826000",
+            "stroke": "#000000",
+            "stroke-width": "50800"
+          },
+          "currentAttributes": {
+            "x": "12 25.6250 38.3750 43.8750",
+            "font-size": "20",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif",
+            "kerning": "0"
+          }
+        },
+        {
+          "index": 20,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}line",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "transform": "translate(4826000,3081020) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve",
+            "style": "font-feature-settings: 'liga' 0"
+          },
+          "currentAttributes": {
+            "x1": "4826000",
+            "y1": "2774950",
+            "x2": "4826000",
+            "y2": "4851400",
+            "stroke": "#000000",
+            "stroke-width": "12700"
+          }
+        },
+        {
+          "index": 21,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}line",
+          "priorText": "Agjp",
+          "currentText": null,
+          "priorAttributes": {
+            "x": "7.2000 20.8250 33.5750 39.0750",
+            "font-size": "20",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif",
+            "kerning": "0"
+          },
+          "currentAttributes": {
+            "x1": "8509000",
+            "y1": "2774950",
+            "x2": "8509000",
+            "y2": "4851400",
+            "stroke": "#000000",
+            "stroke-width": "25400"
+          }
+        },
+        {
+          "index": 22,
+          "priorTag": "{http://www.w3.org/2000/svg}g",
+          "currentTag": "{http://www.w3.org/2000/svg}line",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "style": "font-feature-settings: 'liga' 0"
+          },
+          "currentAttributes": {
+            "x1": "4819650",
+            "y1": "2794000",
+            "x2": "8521700",
+            "y2": "2794000",
+            "stroke": "#000000",
+            "stroke-width": "38100"
+          }
+        },
+        {
+          "index": 23,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}line",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "transform": "translate(381000,5405120) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          },
+          "currentAttributes": {
+            "x1": "4819650",
+            "y1": "4826000",
+            "x2": "8521700",
+            "y2": "4826000",
+            "stroke": "#000000",
+            "stroke-width": "50800"
+          }
+        },
+        {
+          "index": 24,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}text",
+          "priorText": "Left: custom style explicitly applied.",
+          "currentText": null,
+          "priorAttributes": {
+            "x": "7.2000 16.8836 28.0086 34.0672 41.0672 47.1922 52.9422 62.8172 74.1922 83.5672 90.5672 101.5672 119.0672 124.8172 134.1922 141.1922 151.8172 156.8172 167.9422 173.6922 184.5008 195.1258 206.5008 211.5008 216.5008 226.3758 231.3758 238.3758 243.3758 254.0008 259.7508 270.7508 282.1258 293.5008 298.5008 303.5008 314.6258 326.0008",
+            "font-size": "18",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "transform": "translate(4826000,3081020) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve",
+            "style": "font-feature-settings: 'liga' 0"
+          }
+        },
+        {
+          "index": 25,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": null,
+          "currentText": "Agjp",
+          "priorAttributes": {
+            "transform": "translate(381000,5684520) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          },
+          "currentAttributes": {
+            "x": "7.2000 20.8250 33.5750 39.0750",
+            "font-size": "20",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif",
+            "kerning": "0"
+          }
+        },
+        {
+          "index": 26,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}g",
+          "priorText": "Right: public unequal opaque solid borders.",
+          "currentText": null,
+          "priorAttributes": {
+            "x": "7.2000 19.7000 24.7000 36.0750 47.4500 54.4500 60.5750 66.3250 77.7000 89.0750 100.4500 105.4500 110.4500 120.3250 126.0750 137.4500 148.8250 159.9500 171.3250 182.7000 193.7000 198.7000 204.4500 215.4500 226.8250 237.8250 249.2000 260.5750 271.7000 277.4500 286.8250 297.8250 302.8250 307.8250 319.2000 324.9500 336.3250 347.3250 354.3836 365.7586 376.8836 384.2586 393.6336",
+            "font-size": "18",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "style": "font-feature-settings: 'liga' 0"
+          }
+        },
+        {
+          "index": 27,
+          "priorTag": "{http://www.w3.org/2000/svg}g",
+          "currentTag": "{http://www.w3.org/2000/svg}text",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "style": "font-feature-settings: 'liga' 0"
+          },
+          "currentAttributes": {
+            "transform": "translate(381000,5405120) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          }
+        },
+        {
+          "index": 28,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": null,
+          "currentText": "Left: custom style explicitly applied.",
+          "priorAttributes": {
+            "transform": "translate(381000,6484620) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          },
+          "currentAttributes": {
+            "x": "7.2000 16.8836 28.0086 34.0672 41.0672 47.1922 52.9422 62.8172 74.1922 83.5672 90.5672 101.5672 119.0672 124.8172 134.1922 141.1922 151.8172 156.8172 167.9422 173.6922 184.5008 195.1258 206.5008 211.5008 216.5008 226.3758 231.3758 238.3758 243.3758 254.0008 259.7508 270.7508 282.1258 293.5008 298.5008 303.5008 314.6258 326.0008",
+            "font-size": "18",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          }
+        },
+        {
+          "index": 29,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}text",
+          "priorText": "A style-list default is an insertion choice. It is not an applied table style. ",
+          "currentText": null,
+          "priorAttributes": {
+            "x": "7.2000 19.5750 25.3250 34.7000 41.7000 52.3250 57.3250 68.4500 74.9500 79.9500 84.9500 94.3250 101.3250 107.0750 118.4500 129.5750 135.9500 146.9500 158.3250 163.3250 170.3250 176.0750 181.0750 190.4500 196.2000 207.2000 218.5750 224.3250 229.3250 240.7000 250.0750 261.2000 268.5750 275.5750 280.5750 291.5750 302.9500 308.7000 318.5750 329.9500 340.9500 345.9500 355.8250 366.9500 372.7000 378.4500 383.7000 390.7000 396.4500 401.4500 410.8250 416.5750 427.9500 438.9500 445.9500 451.7000 462.7000 474.0750 479.8250 490.8250 502.2000 513.5750 518.5750 523.5750 534.7000 546.0750 551.8250 558.8250 569.8250 581.2000 586.2000 597.3250 603.0750 612.4500 619.4500 630.0750 635.0750 646.2000 651.9500",
+            "font-size": "18",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "transform": "translate(381000,5684520) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          }
+        },
+        {
+          "index": 30,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": null,
+          "currentText": "Right: public unequal opaque solid borders.",
+          "priorAttributes": {
+            "transform": "translate(381000,6764020) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          },
+          "currentAttributes": {
+            "x": "7.2000 19.7000 24.7000 36.0750 47.4500 54.4500 60.5750 66.3250 77.7000 89.0750 100.4500 105.4500 110.4500 120.3250 126.0750 137.4500 148.8250 159.9500 171.3250 182.7000 193.7000 198.7000 204.4500 215.4500 226.8250 237.8250 249.2000 260.5750 271.7000 277.4500 286.8250 297.8250 302.8250 307.8250 319.2000 324.9500 336.3250 347.3250 354.3836 365.7586 376.8836 384.2586 393.6336",
+            "font-size": "18",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          }
+        },
+        {
+          "index": 31,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}g",
+          "priorText": "Direct formatting remains effective when the style is absent.",
+          "currentText": null,
+          "priorAttributes": {
+            "x": "7.2000 21.0750 26.0750 33.0545 44.1795 54.0545 61.0545 66.8045 73.1795 84.1795 91.2381 108.7381 119.7381 126.7381 133.7381 138.7381 150.1131 161.4881 167.2381 174.2176 185.3426 202.8426 213.8426 218.8426 230.2176 239.5926 245.3426 256.4676 262.8426 269.2176 280.3426 290.2176 297.2176 302.2176 312.8426 323.9676 329.7176 344.4676 355.8426 366.9676 378.3426 384.0926 391.0926 402.4676 413.5926 419.3426 428.7176 435.7176 446.3426 451.3426 462.4676 468.2176 473.2176 482.5926 488.3426 499.3426 510.7176 520.0926 531.2176 542.5926 549.5926",
+            "font-size": "18",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "style": "font-feature-settings: 'liga' 0"
+          }
+        },
+        {
+          "index": 32,
+          "priorTag": "{http://www.w3.org/2000/svg}g",
+          "currentTag": "{http://www.w3.org/2000/svg}text",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "style": "font-feature-settings: 'liga' 0"
+          },
+          "currentAttributes": {
+            "transform": "translate(381000,6484620) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          }
+        },
+        {
+          "index": 33,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": null,
+          "currentText": "A style-list default is an insertion choice. It is not an applied table style. ",
+          "priorAttributes": {
+            "transform": "translate(381000,7653020) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          },
+          "currentAttributes": {
+            "x": "7.2000 19.5750 25.3250 34.7000 41.7000 52.3250 57.3250 68.4500 74.9500 79.9500 84.9500 94.3250 101.3250 107.0750 118.4500 129.5750 135.9500 146.9500 158.3250 163.3250 170.3250 176.0750 181.0750 190.4500 196.2000 207.2000 218.5750 224.3250 229.3250 240.7000 250.0750 261.2000 268.5750 275.5750 280.5750 291.5750 302.9500 308.7000 318.5750 329.9500 340.9500 345.9500 355.8250 366.9500 372.7000 378.4500 383.7000 390.7000 396.4500 401.4500 410.8250 416.5750 427.9500 438.9500 445.9500 451.7000 462.7000 474.0750 479.8250 490.8250 502.2000 513.5750 518.5750 523.5750 534.7000 546.0750 551.8250 558.8250 569.8250 581.2000 586.2000 597.3250 603.0750 612.4500 619.4500 630.0750 635.0750 646.2000 651.9500",
+            "font-size": "18",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          }
+        },
+        {
+          "index": 34,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}text",
+          "priorText": "Native join scope: rectangular unmerged LTR tables with cell dimensions larger than ",
+          "currentText": null,
+          "priorAttributes": {
+            "x": "7.2000 18.4500 27.7000 33.5750 37.7000 46.5750 55.8250 60.5750 64.7000 73.8250 77.9500 87.4500 92.2000 100.0750 108.3250 117.4500 126.9500 136.2000 141.2000 145.9500 151.7454 160.9954 169.2454 175.1204 184.3704 193.8704 203.3704 212.8704 216.9954 226.2454 232.3704 237.1204 246.6204 256.1204 270.7454 279.9954 285.8567 295.3567 304.6067 314.1067 318.8567 325.1663 334.2913 344.6663 349.4163 355.2913 364.5413 374.0413 378.1663 387.4163 395.2913 400.0413 412.2913 416.4163 422.2913 431.7913 436.5413 444.7913 454.0413 458.1663 462.2913 467.0413 476.5413 480.6663 495.2913 504.5413 514.0413 521.9163 526.0413 535.1663 544.6663 552.5413 557.2913 561.4163 570.6663 576.5276 586.0276 595.2776 601.4026 606.1526 612.0276 621.5276 630.7776 640.2776",
+            "font-size": "15",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "transform": "translate(381000,6764020) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          }
+        },
+        {
+          "index": 35,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": null,
+          "currentText": "Direct formatting remains effective when the style is absent.",
+          "priorAttributes": {
+            "transform": "translate(381000,7881620) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          },
+          "currentAttributes": {
+            "x": "7.2000 21.0750 26.0750 33.0545 44.1795 54.0545 61.0545 66.8045 73.1795 84.1795 91.2381 108.7381 119.7381 126.7381 133.7381 138.7381 150.1131 161.4881 167.2381 174.2176 185.3426 202.8426 213.8426 218.8426 230.2176 239.5926 245.3426 256.4676 262.8426 269.2176 280.3426 290.2176 297.2176 302.2176 312.8426 323.9676 329.7176 344.4676 355.8426 366.9676 378.3426 384.0926 391.0926 402.4676 413.5926 419.3426 428.7176 435.7176 446.3426 451.3426 462.4676 468.2176 473.2176 482.5926 488.3426 499.3426 510.7176 520.0926 531.2176 542.5926 549.5926",
+            "font-size": "18",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          }
+        },
+        {
+          "index": 36,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}g",
+          "priorText": "the widest stroke, opaque solid borders and no diagonals. Multiple cells use one ",
+          "currentText": null,
+          "priorAttributes": {
+            "x": "7.2000 13.0750 22.5750 31.8250 36.5750 48.8250 52.9500 62.4500 71.7000 79.5750 85.4500 90.2000 98.0750 103.9500 109.7454 118.8704 126.9607 136.2107 140.9607 145.7107 154.8357 164.3357 173.5857 183.0857 192.5857 201.8357 206.5857 214.4607 223.5857 227.7107 231.8357 241.3357 246.0857 255.5857 264.7107 270.5721 280.0721 289.3221 295.4471 303.3221 308.0721 317.3221 326.8221 336.3221 341.0721 350.5721 359.6971 364.4471 373.9471 378.0721 387.3221 396.8221 405.9471 415.4471 424.6971 428.8221 436.6971 441.4471 446.1971 459.1971 468.6971 472.8221 478.6971 482.8221 492.3221 496.4471 505.6971 510.4471 518.6971 527.9471 532.0721 536.1971 544.0721 548.8221 558.3221 566.1971 575.4471 580.1971 589.3221 598.8221 608.0721",
+            "font-size": "15",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "style": "font-feature-settings: 'liga' 0"
+          }
+        },
+        {
+          "index": 37,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}text",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "transform": "translate(381000,8110220) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          },
+          "currentAttributes": {
+            "transform": "translate(381000,7653020) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          }
+        },
+        {
+          "index": 38,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": "border color. Other profiles retain their existing limitations; no universal table parity ",
+          "currentText": "Native join scope: rectangular unmerged LTR tables with cell dimensions larger than ",
+          "priorAttributes": {
+            "x": "7.2000 16.7000 25.8250 31.6863 41.1863 50.4363 56.5613 61.3113 69.5613 78.6863 82.8113 91.9363 96.6844 101.4344 106.1844 117.9344 123.8094 133.3094 142.5594 148.6844 153.4344 162.9344 168.7298 177.8548 183.1048 187.2298 191.3548 200.6048 208.4798 213.2298 219.0252 228.2752 234.1502 243.4002 247.5252 257.0252 261.7752 267.6502 277.1502 286.4002 290.5252 296.6502 301.4002 310.3865 319.2615 323.3865 331.2615 337.1365 341.2615 350.7615 360.2615 365.0115 369.1365 373.2615 387.8865 392.0115 397.8865 407.1365 413.0115 417.1365 426.2615 435.7615 443.6365 448.6365 453.3865 462.8865 472.0115 476.7615 486.2615 495.7615 499.8865 508.7615 518.0115 524.1365 532.0115 541.2615 545.3865 550.1365 556.0115 565.2615 574.7615 578.8865 588.1365 592.8865 602.3865 611.6365 617.7615 621.8865 627.7615 636.6365",
+            "font-size": "15",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "x": "7.2000 18.4500 27.7000 33.5750 37.7000 46.5750 55.8250 60.5750 64.7000 73.8250 77.9500 87.4500 92.2000 100.0750 108.3250 117.4500 126.9500 136.2000 141.2000 145.9500 151.7454 160.9954 169.2454 175.1204 184.3704 193.8704 203.3704 212.8704 216.9954 226.2454 232.3704 237.1204 246.6204 256.1204 270.7454 279.9954 285.8567 295.3567 304.6067 314.1067 318.8567 325.1663 334.2913 344.6663 349.4163 355.2913 364.5413 374.0413 378.1663 387.4163 395.2913 400.0413 412.2913 416.4163 422.2913 431.7913 436.5413 444.7913 454.0413 458.1663 462.2913 467.0413 476.5413 480.6663 495.2913 504.5413 514.0413 521.9163 526.0413 535.1663 544.6663 552.5413 557.2913 561.4163 570.6663 576.5276 586.0276 595.2776 601.4026 606.1526 612.0276 621.5276 630.7776 640.2776",
+            "font-size": "15",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          }
+        },
+        {
+          "index": 39,
+          "priorTag": "{http://www.w3.org/2000/svg}text",
+          "currentTag": "{http://www.w3.org/2000/svg}text",
+          "priorText": null,
+          "currentText": null,
+          "priorAttributes": {
+            "transform": "translate(381000,8338820) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          },
+          "currentAttributes": {
+            "transform": "translate(381000,7881620) scale(12700)",
+            "{http://www.w3.org/XML/1998/namespace}space": "preserve"
+          }
+        },
+        {
+          "index": 40,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": "claim.",
+          "currentText": "the widest stroke, opaque solid borders and no diagonals. Multiple cells use one ",
+          "priorAttributes": {
+            "x": "7.2000 15.4500 19.5750 28.8250 32.9500 47.5750",
+            "font-size": "15",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "x": "7.2000 13.0750 22.5750 31.8250 36.5750 48.8250 52.9500 62.4500 71.7000 79.5750 85.4500 90.2000 98.0750 103.9500 109.7454 118.8704 126.9607 136.2107 140.9607 145.7107 154.8357 164.3357 173.5857 183.0857 192.5857 201.8357 206.5857 214.4607 223.5857 227.7107 231.8357 241.3357 246.0857 255.5857 264.7107 270.5721 280.0721 289.3221 295.4471 303.3221 308.0721 317.3221 326.8221 336.3221 341.0721 350.5721 359.6971 364.4471 373.9471 378.0721 387.3221 396.8221 405.9471 415.4471 424.6971 428.8221 436.6971 441.4471 446.1971 459.1971 468.6971 472.8221 478.6971 482.8221 492.3221 496.4471 505.6971 510.4471 518.6971 527.9471 532.0721 536.1971 544.0721 548.8221 558.3221 566.1971 575.4471 580.1971 589.3221 598.8221 608.0721",
+            "font-size": "15",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          }
+        },
+        {
+          "index": 41,
+          "kind": "node count"
+        },
+        {
+          "index": 42,
+          "kind": "node count"
+        },
+        {
+          "index": 43,
+          "kind": "node count"
+        },
+        {
+          "index": 44,
+          "kind": "node count"
+        }
+      ],
+      "classification": "Raw difference retained for exact category-specific review; no visual acceptance inferred."
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-tables/alternative-true/slide-1.svg",
+      "priorSHA256": "770de0dcee6b65d9004d26fa0d444ce2c710f449e9bafa494bd284779018d39c",
+      "current": "/tmp/lectern-fidelity19-tables/alternative-true/slide-1.svg",
+      "currentSHA256": "770de0dcee6b65d9004d26fa0d444ce2c710f449e9bafa494bd284779018d39c",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-tables/alternative-true/slide-2.svg",
+      "priorSHA256": "d90d711d4341968fb1683cd1b99e6fae0c79ee5e3257c097338b480fe0aaac30",
+      "current": "/tmp/lectern-fidelity19-tables/alternative-true/slide-2.svg",
+      "currentSHA256": "d90d711d4341968fb1683cd1b99e6fae0c79ee5e3257c097338b480fe0aaac30",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-tables/alternative-true/slide-3.svg",
+      "priorSHA256": "d163b40edbc7f89f131ee012d858afcab8ac078ec33a920e2c3269d404489f39",
+      "current": "/tmp/lectern-fidelity19-tables/alternative-true/slide-3.svg",
+      "currentSHA256": "d163b40edbc7f89f131ee012d858afcab8ac078ec33a920e2c3269d404489f39",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-tables/alternative-true/slide-4.svg",
+      "priorSHA256": "96186ad780a60bf5bd885398cd74259448774e7fd7704444458014de23e3aee6",
+      "current": "/tmp/lectern-fidelity19-tables/alternative-true/slide-4.svg",
+      "currentSHA256": "96186ad780a60bf5bd885398cd74259448774e7fd7704444458014de23e3aee6",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-profiles/alternative-false/slide-1.svg",
+      "priorSHA256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a",
+      "current": "/tmp/lectern-fidelity19-profiles/alternative-false/slide-1.svg",
+      "currentSHA256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-profiles/alternative-false/slide-2.svg",
+      "priorSHA256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a",
+      "current": "/tmp/lectern-fidelity19-profiles/alternative-false/slide-2.svg",
+      "currentSHA256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-profiles/alternative-false/slide-3.svg",
+      "priorSHA256": "22500ac26f132a6aa9d09b872810fc6ecda86e0c0ba1edf7a786729f01a67aac",
+      "current": "/tmp/lectern-fidelity19-profiles/alternative-false/slide-3.svg",
+      "currentSHA256": "20b8a72038ff0e38f90c5df76f30499c1977133c635841e1195a123813a97c5c",
+      "byteIdentical": false,
+      "priorNodeCount": 86,
+      "currentNodeCount": 86,
+      "changedNodes": [
+        {
+          "index": 85,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": "style default borders are a separate limitation. No universal table parity claim.",
+          "currentText": "style default borders are demonstrated separately. No universal table parity claim.",
+          "priorAttributes": {
+            "x": "7.2000 14.4500 19.9500 28.2000 32.0750 40.7000 45.2000 54.0750 62.7000 67.5750 76.2000 85.0750 88.9500 94.4500 98.9500 107.8250 116.4500 121.9539 130.8289 139.4539 145.2039 152.4539 156.9539 165.5789 171.0213 179.6463 184.1463 192.7713 197.2713 204.5213 213.1463 222.0213 230.6463 236.3963 245.0213 250.5213 259.1463 263.6463 267.5213 271.3963 285.0213 288.8963 294.3963 303.0213 308.5213 312.3963 321.0213 329.8963 334.3963 338.8963 349.3963 358.0213 362.5213 371.3963 380.2713 384.1463 392.3963 401.0213 406.7713 414.0213 422.6463 426.5213 431.0213 436.5213 445.1463 454.0213 457.8963 466.5213 471.0213 479.8963 488.5213 494.2713 498.1463 503.6463 511.8963 516.3963 524.1463 528.0213 536.6463 540.5213 554.1463",
+            "font-size": "14",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "x": "7.2000 14.4500 19.9500 28.2000 32.0750 40.7000 45.2000 54.0750 62.7000 67.5750 76.2000 85.0750 88.9500 94.4500 98.9500 107.8250 116.4500 121.9539 130.8289 139.4539 145.2039 152.4539 156.9539 165.5789 171.0213 179.6463 184.1463 193.0213 201.6463 215.2713 223.8963 232.7713 240.0213 245.5213 251.2713 259.8963 265.3963 274.0213 282.8963 287.3963 294.6463 303.2713 312.1463 320.7713 326.5213 335.1463 340.6463 349.2713 353.1463 359.4002 363.9002 368.4002 378.9002 387.5252 392.0252 400.9002 409.7752 413.6502 421.9002 430.5252 436.2752 443.5252 452.1502 456.0252 460.5252 466.0252 474.6502 483.5252 487.4002 496.0252 500.5252 509.4002 518.0252 523.7752 527.6502 533.1502 541.4002 545.9002 553.6502 557.5252 566.1502 570.0252 583.6502",
+            "font-size": "14",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          }
+        }
+      ],
+      "classification": "Raw difference retained for exact category-specific review; no visual acceptance inferred."
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-profiles/alternative-true/slide-1.svg",
+      "priorSHA256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a",
+      "current": "/tmp/lectern-fidelity19-profiles/alternative-true/slide-1.svg",
+      "currentSHA256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-profiles/alternative-true/slide-2.svg",
+      "priorSHA256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a",
+      "current": "/tmp/lectern-fidelity19-profiles/alternative-true/slide-2.svg",
+      "currentSHA256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a",
+      "byteIdentical": true
+    },
+    {
+      "prior": "/tmp/lectern-fidelity18-profiles/alternative-true/slide-3.svg",
+      "priorSHA256": "835e48de1544b34093bda9c34dded4f668adca0da677c9e2ee90998e281c5bda",
+      "current": "/tmp/lectern-fidelity19-profiles/alternative-true/slide-3.svg",
+      "currentSHA256": "ab0717515f4c84ecbd0bf63f15ddd66cb2d98b6d7bd588d409322e2b396f689a",
+      "byteIdentical": false,
+      "priorNodeCount": 86,
+      "currentNodeCount": 86,
+      "changedNodes": [
+        {
+          "index": 85,
+          "priorTag": "{http://www.w3.org/2000/svg}tspan",
+          "currentTag": "{http://www.w3.org/2000/svg}tspan",
+          "priorText": "style default borders are a separate limitation. No universal table parity claim.",
+          "currentText": "style default borders are demonstrated separately. No universal table parity claim.",
+          "priorAttributes": {
+            "x": "7.2000 14.4500 19.9500 28.2000 32.0750 40.7000 45.2000 54.0750 62.7000 67.5750 76.2000 85.0750 88.9500 94.4500 98.9500 107.8250 116.4500 121.9539 130.8289 139.4539 145.2039 152.4539 156.9539 165.5789 171.0213 179.6463 184.1463 192.7713 197.2713 204.5213 213.1463 222.0213 230.6463 236.3963 245.0213 250.5213 259.1463 263.6463 267.5213 271.3963 285.0213 288.8963 294.3963 303.0213 308.5213 312.3963 321.0213 329.8963 334.3963 338.8963 349.3963 358.0213 362.5213 371.3963 380.2713 384.1463 392.3963 401.0213 406.7713 414.0213 422.6463 426.5213 431.0213 436.5213 445.1463 454.0213 457.8963 466.5213 471.0213 479.8963 488.5213 494.2713 498.1463 503.6463 511.8963 516.3963 524.1463 528.0213 536.6463 540.5213 554.1463",
+            "font-size": "14",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          },
+          "currentAttributes": {
+            "x": "7.2000 14.4500 19.9500 28.2000 32.0750 40.7000 45.2000 54.0750 62.7000 67.5750 76.2000 85.0750 88.9500 94.4500 98.9500 107.8250 116.4500 121.9539 130.8289 139.4539 145.2039 152.4539 156.9539 165.5789 171.0213 179.6463 184.1463 193.0213 201.6463 215.2713 223.8963 232.7713 240.0213 245.5213 251.2713 259.8963 265.3963 274.0213 282.8963 287.3963 294.6463 303.2713 312.1463 320.7713 326.5213 335.1463 340.6463 349.2713 353.1463 359.4002 363.9002 368.4002 378.9002 387.5252 392.0252 400.9002 409.7752 413.6502 421.9002 430.5252 436.2752 443.5252 452.1502 456.0252 460.5252 466.0252 474.6502 483.5252 487.4002 496.0252 500.5252 509.4002 518.0252 523.7752 527.6502 533.1502 541.4002 545.9002 553.6502 557.5252 566.1502 570.0252 583.6502",
+            "font-size": "14",
+            "fill": "#000000",
+            "font-family": "RostrumEmbeddedFace1, sans-serif"
+          }
+        }
+      ],
+      "classification": "Raw difference retained for exact category-specific review; no visual acceptance inferred."
+    }
+  ],
+  "total": 40,
+  "exact": 37,
+  "different": 3,
+  "script": "/tmp/verify-fidelity19-prior-svg.py",
+  "scriptSHA256": "416f53a0cdc1d290d0e457294ce628eef3ceae4fa379cfeafbdff211b0ea7641"
+}

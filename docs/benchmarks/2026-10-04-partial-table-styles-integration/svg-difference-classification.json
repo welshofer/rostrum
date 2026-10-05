@@ -1,0 +1,88 @@
+{
+  "status": "PASS_EXPLICIT_CHANGED_PAINT_AND_CAPTION_CLASSIFICATION",
+  "inputReceipt": "/tmp/lectern-fidelity19-prior-svg-identity.json",
+  "inputReceiptSHA256": "5ddecbe598ad4f2f7728913f6c2fc6182b0ffaef7475768f68bcf0b8c1700e6d",
+  "unchangedPairs": 37,
+  "classifiedPairs": [
+    {
+      "kind": "four restored default edges",
+      "addedLines": [
+        {
+          "x1": "381000",
+          "y1": "2787650",
+          "x2": "381000",
+          "y2": "4832350",
+          "stroke": "#000000",
+          "stroke-width": "12700"
+        },
+        {
+          "x1": "4064000",
+          "y1": "2787650",
+          "x2": "4064000",
+          "y2": "4832350",
+          "stroke": "#000000",
+          "stroke-width": "12700"
+        },
+        {
+          "x1": "374650",
+          "y1": "2794000",
+          "x2": "4070350",
+          "y2": "2794000",
+          "stroke": "#000000",
+          "stroke-width": "12700"
+        },
+        {
+          "x1": "374650",
+          "y1": "4826000",
+          "x2": "4070350",
+          "y2": "4826000",
+          "stroke": "#000000",
+          "stroke-width": "12700"
+        }
+      ],
+      "framePoints": [
+        30,
+        220,
+        290,
+        160
+      ],
+      "paint": "opaque black 1 pt, endpoints extended 0.5 pt",
+      "remainingXMLExact": true,
+      "scope": "Public custom-style control on S17 page4 only; no generic line removal or whole-page native parity asserted.",
+      "prior": "/tmp/lectern-fidelity18-tables/alternative-false/slide-4.svg",
+      "priorSHA256": "002983989d580bd8f8280f86c6d04f9d4cbf14bd69a32f2cd151e78d39a14454",
+      "current": "/tmp/lectern-fidelity19-tables/alternative-false/slide-4.svg",
+      "currentSHA256": "3a9b905bcc21ef45ede7890a813c75e6c97edf21d434506669c36b8a690d9f92"
+    },
+    {
+      "kind": "approved caption sentence",
+      "changedNodeIndex": 85,
+      "priorText": "style default borders are a separate limitation. No universal table parity claim.",
+      "currentText": "style default borders are demonstrated separately. No universal table parity claim.",
+      "priorX": "7.2000 14.4500 19.9500 28.2000 32.0750 40.7000 45.2000 54.0750 62.7000 67.5750 76.2000 85.0750 88.9500 94.4500 98.9500 107.8250 116.4500 121.9539 130.8289 139.4539 145.2039 152.4539 156.9539 165.5789 171.0213 179.6463 184.1463 192.7713 197.2713 204.5213 213.1463 222.0213 230.6463 236.3963 245.0213 250.5213 259.1463 263.6463 267.5213 271.3963 285.0213 288.8963 294.3963 303.0213 308.5213 312.3963 321.0213 329.8963 334.3963 338.8963 349.3963 358.0213 362.5213 371.3963 380.2713 384.1463 392.3963 401.0213 406.7713 414.0213 422.6463 426.5213 431.0213 436.5213 445.1463 454.0213 457.8963 466.5213 471.0213 479.8963 488.5213 494.2713 498.1463 503.6463 511.8963 516.3963 524.1463 528.0213 536.6463 540.5213 554.1463",
+      "currentX": "7.2000 14.4500 19.9500 28.2000 32.0750 40.7000 45.2000 54.0750 62.7000 67.5750 76.2000 85.0750 88.9500 94.4500 98.9500 107.8250 116.4500 121.9539 130.8289 139.4539 145.2039 152.4539 156.9539 165.5789 171.0213 179.6463 184.1463 193.0213 201.6463 215.2713 223.8963 232.7713 240.0213 245.5213 251.2713 259.8963 265.3963 274.0213 282.8963 287.3963 294.6463 303.2713 312.1463 320.7713 326.5213 335.1463 340.6463 349.2713 353.1463 359.4002 363.9002 368.4002 378.9002 387.5252 392.0252 400.9002 409.7752 413.6502 421.9002 430.5252 436.2752 443.5252 452.1502 456.0252 460.5252 466.0252 474.6502 483.5252 487.4002 496.0252 500.5252 509.4002 518.0252 523.7752 527.6502 533.1502 541.4002 545.9002 553.6502 557.5252 566.1502 570.0252 583.6502",
+      "otherNodeAttributesExact": true,
+      "scope": "Only this footer tspan text and its scalar x list change; every other node, baseline, frame, paint and font byte in this SVG is exact.",
+      "prior": "/tmp/lectern-fidelity18-profiles/alternative-false/slide-3.svg",
+      "priorSHA256": "22500ac26f132a6aa9d09b872810fc6ecda86e0c0ba1edf7a786729f01a67aac",
+      "current": "/tmp/lectern-fidelity19-profiles/alternative-false/slide-3.svg",
+      "currentSHA256": "20b8a72038ff0e38f90c5df76f30499c1977133c635841e1195a123813a97c5c"
+    },
+    {
+      "kind": "approved caption sentence",
+      "changedNodeIndex": 85,
+      "priorText": "style default borders are a separate limitation. No universal table parity claim.",
+      "currentText": "style default borders are demonstrated separately. No universal table parity claim.",
+      "priorX": "7.2000 14.4500 19.9500 28.2000 32.0750 40.7000 45.2000 54.0750 62.7000 67.5750 76.2000 85.0750 88.9500 94.4500 98.9500 107.8250 116.4500 121.9539 130.8289 139.4539 145.2039 152.4539 156.9539 165.5789 171.0213 179.6463 184.1463 192.7713 197.2713 204.5213 213.1463 222.0213 230.6463 236.3963 245.0213 250.5213 259.1463 263.6463 267.5213 271.3963 285.0213 288.8963 294.3963 303.0213 308.5213 312.3963 321.0213 329.8963 334.3963 338.8963 349.3963 358.0213 362.5213 371.3963 380.2713 384.1463 392.3963 401.0213 406.7713 414.0213 422.6463 426.5213 431.0213 436.5213 445.1463 454.0213 457.8963 466.5213 471.0213 479.8963 488.5213 494.2713 498.1463 503.6463 511.8963 516.3963 524.1463 528.0213 536.6463 540.5213 554.1463",
+      "currentX": "7.2000 14.4500 19.9500 28.2000 32.0750 40.7000 45.2000 54.0750 62.7000 67.5750 76.2000 85.0750 88.9500 94.4500 98.9500 107.8250 116.4500 121.9539 130.8289 139.4539 145.2039 152.4539 156.9539 165.5789 171.0213 179.6463 184.1463 193.0213 201.6463 215.2713 223.8963 232.7713 240.0213 245.5213 251.2713 259.8963 265.3963 274.0213 282.8963 287.3963 294.6463 303.2713 312.1463 320.7713 326.5213 335.1463 340.6463 349.2713 353.1463 359.4002 363.9002 368.4002 378.9002 387.5252 392.0252 400.9002 409.7752 413.6502 421.9002 430.5252 436.2752 443.5252 452.1502 456.0252 460.5252 466.0252 474.6502 483.5252 487.4002 496.0252 500.5252 509.4002 518.0252 523.7752 527.6502 533.1502 541.4002 545.9002 553.6502 557.5252 566.1502 570.0252 583.6502",
+      "otherNodeAttributesExact": true,
+      "scope": "Only this footer tspan text and its scalar x list change; every other node, baseline, frame, paint and font byte in this SVG is exact.",
+      "prior": "/tmp/lectern-fidelity18-profiles/alternative-true/slide-3.svg",
+      "priorSHA256": "835e48de1544b34093bda9c34dded4f668adca0da677c9e2ee90998e281c5bda",
+      "current": "/tmp/lectern-fidelity19-profiles/alternative-true/slide-3.svg",
+      "currentSHA256": "ab0717515f4c84ecbd0bf63f15ddd66cb2d98b6d7bd588d409322e2b396f689a"
+    }
+  ],
+  "script": "/tmp/classify-fidelity19-svg-differences.py",
+  "scriptSHA256": "c65ba339df91d42f63a7e18e6b0470e56ad758d37fd2d53d820d4331759052f3"
+}

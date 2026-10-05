@@ -1,0 +1,102 @@
+{
+  "status": "APPROVED_READINESS_ONLY_NO_TIMING_OR_QUIET_GRANT",
+  "scope": "Independent read-only physical/hash, Git source, retained proof-output and XML-semantic audit. No benchmark/helper processes launched; process freshness counts are supported by pinned generation scripts/logs and output sets, not independently rerun here. No performance acceptance or new native proof.",
+  "candidateSource": "a9776a1741b3ede7c7a8d9daac3ca131731ca6b5",
+  "candidateSourceTree": "11ead6fd725008f26757f839abda10aa97761adb",
+  "baselineSource": "a3766dbbff72447538037ea4c60015c74c50bfaf",
+  "baselineSourceTree": "59c7beb3d5e49ebf49cecb361a36f5ce53b9b7b1",
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/timing-plan.json": "b93ee2b8309b06c37b44bb9772229797309980870fc8507dc615d24a556488e6",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/ready.json": "8c3b26e3d9424d1f2b9d64444a02a8b61bcfbebd2ba4ebd849cddd05e68432aa",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/preflight-verification.json": "dbb835fae4217d8a971172aa21582be50573507ff35cade0df9eadf60a3b637f",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/output-artifact-pins.json": "f497b920b8bbdcdb4cb1ae82af011eea67a94e04f8a96880161aae49813036d8",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/input-pins.json": "859a59bb335458ff507eeb456c0d60eebcabf432375ff28cb907ee8fd2b9da87",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/corpus-proof.json": "f3be63d90311f6df7bf6b38212eeffdbe82b6387effb37a159f2f3b941e7f379",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/semantic-classification.json": "7db75367a418ab9d26818516417792ae101bbc3829cf903b43e7e4d0ca1cbc64",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/counterfactual-whitelist.json": "ae9f9e1e212a84010b51e717c3124beabb6f8e0e251e32ddffb331dfe6010852",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/baseline-pins.json": "88a2fcd068237bebe29a1d753d1a9c6a37a04c9c43fe23f42d77eed344d2ee40",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/candidate-helper-build.json": "10ddc621a87a55196263573ee113cd07359f46ea67d71bb62bcfe74a74f7b3a5",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/value-proof.json": "8bbab55f8a92945ce470e34b150a1e479e641f897bae09f3c6fd8329dbd77230",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/full-tests.log": "2b04736e2001ced12e3108c57da5455fc23e6f48f5c537eace0c80425ef458ef",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/candidate-release.log": "f29ade350aed30697ec438c5e9d8b8b9c329767893aec7c1f16e77975d27e2f3",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/run-authorized.py": "e848c776b8d2aed972302c2ab7a76c8083bd9b65cf00b09c4fc58a3683726d74"
+  },
+  "physicalPinSets": {
+    "timing-plan.json": 43,
+    "preflight-verification.json": 76,
+    "output-artifact-pins.json": 11223,
+    "input-pins.json": 119,
+    "ready.json": 5
+  },
+  "campaignBinaries": 6,
+  "candidateSources": 111,
+  "baselineSources": 111,
+  "productionDiffFiles": [
+    "Sources/Rostrum/Presentation/SVGRenderer.swift",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift"
+  ],
+  "baselineBuild": "Exact retained S18 candidate object/module/campaign binaries, matching full production source tree. New proof helper linking is distinct from rebuilding historical benchmark binaries.",
+  "corpus": {
+    "cases": 187,
+    "slides": 883,
+    "retainedFreshProofProcessOutputs": 561,
+    "reportedFreshPythonReopens": 561,
+    "unchangedCases": 178,
+    "changedCases": 9,
+    "changedSVGs": 66,
+    "candidateRepeatedOutputsExact": true,
+    "savedPackagesAndNonSVGArtifactsExact": true
+  },
+  "semantic": {
+    "publicReadOutputFiles": 14,
+    "counterfactualProcessOutputs": 18,
+    "counterfactualSVGsCompared": 226,
+    "nilToBlackOnePointCardinalEdges": 24295,
+    "activeOwnAndNeighborCustomWrappersAbsent": true,
+    "directEdgeAbsent": true,
+    "strictCounterfactualXMLInsertionWhitelist": true,
+    "allOtherPartsExact": true,
+    "candidateCounterfactualSVGExact": true,
+    "remainingJoinChangedSlides": 65,
+    "remainingLinePaintAttributeMultisetsAndCountsExact": true,
+    "allOriginalNonLineTreesFillsTextExact": true
+  },
+  "valueProof": {
+    "shapingRecords": 101310,
+    "layoutRecords": 1728,
+    "baselineAndTwoCandidateOutputsByteExact": true,
+    "fixedPreservationCases": 3,
+    "reportedFixedPythonReopens": 6
+  },
+  "protocol": {
+    "children": 594,
+    "primaryComparisons": 28,
+    "allPhaseComparisons": 306,
+    "phaseCountsDerivedFromUnchangedDriversAndFreshNativePreflight": {
+      "canonical": 61,
+      "supplement": 36,
+      "native": 209
+    },
+    "pools": {
+      "canonical": 5,
+      "supplement": 3,
+      "native": 19
+    },
+    "warmupsPerBinaryScenario": 1,
+    "retainedAlternatingPairs": 10,
+    "bootstrapResamples": 100000,
+    "bootstrapSeed": 20261004,
+    "signTest": "Exact two-sided; ties excluded",
+    "reporting": "All phase vectors, RSS and adverse controls; exploratory unadjusted.",
+    "execution": "No adaptive reruns; host snapshots; fresh subprocess pairs; source/input/module/font/binary pins; explicit root timing grant still required."
+  },
+  "auditHistory": "First audit run stopped on directory-vs-file traversal in reviewer module check; second completed semantic work but caught reviewer mistaken 66 vs actual 65 remaining-join pages (66 original changed SVGs). Both logs retained under /tmp/review-s19-readiness*.log; neither changed frozen packet or acceptance bounds. Final corrected audit derives exact counts.",
+  "findings": [
+    {
+      "severity": "informational",
+      "finding": "expanded-corpus-plan.json retains historical source labels 2e57a2d/bda2254 and an older scope sentence. Current timing-plan, candidate/baseline build receipts and source-tree/file pins unambiguously identify S19; the actual 187-case enumeration is audited. Do not cite that inherited header as current provenance."
+    }
+  ],
+  "script": "/private/tmp/review-s19-readiness.py",
+  "scriptSHA256": "a3d53019d9037996a8ea80d2089f6d48c925dcb03f43de0d08c2f825092b533a"
+}

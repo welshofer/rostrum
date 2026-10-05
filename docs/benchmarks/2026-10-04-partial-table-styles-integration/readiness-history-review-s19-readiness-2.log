@@ -1,0 +1,14 @@
+Pinned files, source trees, retained baseline products verified
+corpus/fallback/6 0 edges verified
+corpus/fallback/30 0 edges verified
+corpus/corpus-registered/6 0 edges verified
+corpus/corpus-registered/30 0 edges verified
+custom19-native-custom-edges 55 edges verified
+custom19-partial-20x10 400 edges verified
+custom19-partial-100x20 3940 edges verified
+custom19-partial-200x50 19900 edges verified
+custom19-grid-line-constant 0 edges verified
+Traceback (most recent call last):
+  File "/tmp/review-s19-readiness.py", line 148, in <module>
+    assert edgecount==24295 and len(publicpaths)==14 and joins==66
+AssertionError

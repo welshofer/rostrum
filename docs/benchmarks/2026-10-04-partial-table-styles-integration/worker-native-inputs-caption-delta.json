@@ -1,0 +1,158 @@
+{
+  "nativeProjectionExact": true,
+  "nativeCases": 12,
+  "nativeGlyphTraces": 72,
+  "resources": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/PartialTableStylesReferences.json",
+      "sha256": "cd0cc26a85fa311068c2ce0328536f028025209e28919106cce365c8b4d19cdd",
+      "bytes": 59306
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/Lectern/Sources/LecternCore/Resources/LibraryLab/native-table-style-fallback19-v1.pptx",
+      "sha256": "e261b6864780fb021e914dfcd4a0e19b3aae9825cc33b94b0168933dcf057268",
+      "bytes": 411097
+    }
+  ],
+  "generatedInputs": [
+    {
+      "path": "/tmp/lectern-partial-styles19-worker-final/alternative-false/partialTableStyles.pptx",
+      "sha256": "bcf0cf34bbae3f3dab612b3d867544cb7eea668dda865b5e7797518587285505",
+      "bytes": 468508
+    },
+    {
+      "path": "/tmp/lectern-partial-styles19-worker-final/alternative-true/partialTableStyles.pptx",
+      "sha256": "b6390b624d88ad492b64904a797e25369beca4b37bd7fdf40591da56f71e3d06",
+      "bytes": 468491
+    }
+  ],
+  "priorS18CaptionChanges": [
+    {
+      "variant": "false",
+      "old": {
+        "path": "/tmp/lectern-table-profiles18-worker/alternative-false/tableJoinProfiles.pptx",
+        "sha256": "f7cb904b094aeecc3c15f4daaad39dc109b2aabc56196cda52e7f6baabcd9ccf",
+        "bytes": 468368
+      },
+      "new": {
+        "path": "/tmp/lectern-partial-styles19-prior-profiles/alternative-false/tableJoinProfiles.pptx",
+        "sha256": "5b3e3c9cc490c1d244437db2b7db3c388eecbab57370d1f6151b08b34555f073",
+        "bytes": 468369
+      },
+      "changedParts": [
+        "ppt/slides/slide3.xml"
+      ],
+      "classification": "Only one approved caption sentence in slide3.xml changes. All other ZIP entry bytes, entire first two native slide nodes, masters/layouts and embedded fonts are exact. Third SVG differs; no raw whole-package identity claim.",
+      "svgs": [
+        {
+          "page": 1,
+          "old": {
+            "path": "/tmp/lectern-table-profiles18-worker/alternative-false/slide-1.svg",
+            "sha256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a",
+            "bytes": 1020271
+          },
+          "new": {
+            "path": "/tmp/lectern-partial-styles19-prior-profiles/alternative-false/slide-1.svg",
+            "sha256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a",
+            "bytes": 1020271
+          },
+          "byteIdentical": true
+        },
+        {
+          "page": 2,
+          "old": {
+            "path": "/tmp/lectern-table-profiles18-worker/alternative-false/slide-2.svg",
+            "sha256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a",
+            "bytes": 1018725
+          },
+          "new": {
+            "path": "/tmp/lectern-partial-styles19-prior-profiles/alternative-false/slide-2.svg",
+            "sha256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a",
+            "bytes": 1018725
+          },
+          "byteIdentical": true
+        },
+        {
+          "page": 3,
+          "old": {
+            "path": "/tmp/lectern-table-profiles18-worker/alternative-false/slide-3.svg",
+            "sha256": "22500ac26f132a6aa9d09b872810fc6ecda86e0c0ba1edf7a786729f01a67aac",
+            "bytes": 1024209
+          },
+          "new": {
+            "path": "/tmp/lectern-partial-styles19-prior-profiles/alternative-false/slide-3.svg",
+            "sha256": "20b8a72038ff0e38f90c5df76f30499c1977133c635841e1195a123813a97c5c",
+            "bytes": 1024229
+          },
+          "byteIdentical": false
+        }
+      ]
+    },
+    {
+      "variant": "true",
+      "old": {
+        "path": "/tmp/lectern-table-profiles18-worker/alternative-true/tableJoinProfiles.pptx",
+        "sha256": "3743adc2e743906fb5db2666a40e1a4a0667beba54479dee8c5d2cf4da2ebab6",
+        "bytes": 468364
+      },
+      "new": {
+        "path": "/tmp/lectern-partial-styles19-prior-profiles/alternative-true/tableJoinProfiles.pptx",
+        "sha256": "280fbd1ea54c443f963a2e331e6e4b5ee5f47062cb2972783982a2f71ce279a2",
+        "bytes": 468365
+      },
+      "changedParts": [
+        "ppt/slides/slide3.xml"
+      ],
+      "classification": "Only one approved caption sentence in slide3.xml changes. All other ZIP entry bytes, entire first two native slide nodes, masters/layouts and embedded fonts are exact. Third SVG differs; no raw whole-package identity claim.",
+      "svgs": [
+        {
+          "page": 1,
+          "old": {
+            "path": "/tmp/lectern-table-profiles18-worker/alternative-true/slide-1.svg",
+            "sha256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a",
+            "bytes": 1020271
+          },
+          "new": {
+            "path": "/tmp/lectern-partial-styles19-prior-profiles/alternative-true/slide-1.svg",
+            "sha256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a",
+            "bytes": 1020271
+          },
+          "byteIdentical": true
+        },
+        {
+          "page": 2,
+          "old": {
+            "path": "/tmp/lectern-table-profiles18-worker/alternative-true/slide-2.svg",
+            "sha256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a",
+            "bytes": 1018725
+          },
+          "new": {
+            "path": "/tmp/lectern-partial-styles19-prior-profiles/alternative-true/slide-2.svg",
+            "sha256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a",
+            "bytes": 1018725
+          },
+          "byteIdentical": true
+        },
+        {
+          "page": 3,
+          "old": {
+            "path": "/tmp/lectern-table-profiles18-worker/alternative-true/slide-3.svg",
+            "sha256": "835e48de1544b34093bda9c34dded4f668adca0da677c9e2ee90998e281c5bda",
+            "bytes": 1024189
+          },
+          "new": {
+            "path": "/tmp/lectern-partial-styles19-prior-profiles/alternative-true/slide-3.svg",
+            "sha256": "ab0717515f4c84ecbd0bf63f15ddd66cb2d98b6d7bd588d409322e2b396f689a",
+            "bytes": 1024209
+          },
+          "byteIdentical": false
+        }
+      ]
+    }
+  ],
+  "script": {
+    "path": "/tmp/verify-partial-styles19-worker.py",
+    "sha256": "75a42caf1e48092c1ea2b6cea8b2fb4b5b50429083b5cbda8a2cad4009cc83c9",
+    "bytes": 3044
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "status": "APPROVE_FINAL_S19_INTEGRATION",
+  "manifest": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-partial-table-styles-integration-verification.json",
+  "manifestSHA256": "35faf7dac151821cf03d368424c1f9f531726b9ed67c4746a3c054ed60ff81fe",
+  "sourceCheckpoint": "481586eda651f5eae6fa6bdbffb2361c664e585a",
+  "SourcesTree": "11ead6fd725008f26757f839abda10aa97761adb",
+  "physicalPins": 1517,
+  "GitSourcePins": 705,
+  "exactExports": 174,
+  "historicalGitSnapshots": 9,
+  "sourceAndPhysicalBytesUnchanged": true,
+  "external": {
+    "packages": 88,
+    "slides": 289,
+    "XMLRelationshipParts": 3293,
+    "inputHashes": 462,
+    "frozenFixtureFiles": 71,
+    "nativeInputIdentityChecks": 21,
+    "catalogReports": 32,
+    "catalogChecks": 711,
+    "catalogFindings": 413,
+    "additionalPipelineReports": 6,
+    "additionalPipelineChecks": 338,
+    "totalChecks": 1049
+  },
+  "priorSVGsExact": 37,
+  "priorSVGsWhitelistedChanges": 3,
+  "priorPackagesExact": 63,
+  "priorPackagesCommentOnly": [
+    {
+      "current": "/tmp/lectern-fidelity19-lab/comments-C51FB398-6532-4D50-9777-DF35ECAEA282/comments-before.pptx",
+      "changedParts": [
+        "ppt/authors.xml",
+        "ppt/comments/comment1.xml",
+        "ppt/comments/modernComment_1.xml"
+      ],
+      "bijectiveUUIDs": 2
+    },
+    {
+      "current": "/tmp/lectern-fidelity19-lab/comments-C51FB398-6532-4D50-9777-DF35ECAEA282/comments.pptx",
+      "changedParts": [
+        "ppt/authors.xml",
+        "ppt/comments/comment1.xml",
+        "ppt/comments/modernComment_1.xml"
+      ],
+      "bijectiveUUIDs": 7
+    },
+    {
+      "current": "/tmp/lectern-fidelity19-lab/slideImport-BFBA3561-075A-43C1-872A-B6F798BF7739/import-source.pptx",
+      "changedParts": [
+        "ppt/authors.xml",
+        "ppt/comments/comment1.xml",
+        "ppt/comments/comment2.xml",
+        "ppt/comments/comment3.xml",
+        "ppt/comments/comment4.xml",
+        "ppt/comments/modernComment_1.xml",
+        "ppt/comments/modernComment_2.xml",
+        "ppt/comments/modernComment_3.xml",
+        "ppt/comments/modernComment_4.xml"
+      ],
+      "bijectiveUUIDs": 5
+    },
+    {
+      "current": "/tmp/lectern-fidelity19-lab/slideImport-BFBA3561-075A-43C1-872A-B6F798BF7739/slideImport.pptx",
+      "changedParts": [
+        "ppt/authors.xml",
+        "ppt/comments/comment1.xml",
+        "ppt/comments/comment2.xml",
+        "ppt/comments/comment3.xml",
+        "ppt/comments/comment4.xml",
+        "ppt/comments/comment5.xml",
+        "ppt/comments/modernComment_1.xml",
+        "ppt/comments/modernComment_2.xml",
+        "ppt/comments/modernComment_3.xml",
+        "ppt/comments/modernComment_4.xml",
+        "ppt/comments/modernComment_5.xml"
+      ],
+      "bijectiveUUIDs": 6
+    }
+  ],
+  "priorPackagesCaptionOnly": 3,
+  "gate": {
+    "library": [
+      1189,
+      173
+    ],
+    "layout": [
+      18,
+      3
+    ],
+    "Core": [
+      302,
+      46
+    ],
+    "app": [
+      93,
+      28
+    ],
+    "appExecutions": 130,
+    "failures": 0,
+    "expectedFailures": 0,
+    "skips": 0,
+    "runtimeWarnings": 0,
+    "retainedClipboardErrorLines": 13,
+    "retainedPreferencesDaemonLines": 270,
+    "retainedAudioMessages": 13,
+    "compilerWarningColonLines": 74,
+    "explicitBuildSucceeded": 2,
+    "quietFailedExitZeroMessages": 0
+  },
+  "independentManualReview": {
+    "path": "/tmp/rostrum-s19-independent-manual-review.json",
+    "sha256": "456363e5dacc17bd1822ffebed743e01c03bb166cd72ac787db84ea2539e6085"
+  },
+  "performanceIndependentReview": {
+    "path": "/tmp/rostrum-s19-independent-performance-review.json",
+    "sha256": "307a3f5cf425878a5a6c227d7d7cce2c029f9ade9a14faf1bba66bb02f5bf9ad"
+  },
+  "performancePreacceptanceCopiesUnchanged": true,
+  "reportSHA256": "1637de391642ffdde32106617a999b95a7ac4fe6e544f3b0891c730741fc7900",
+  "LabDocumentSHA256": "5125dee5ea406230a0472e400117c4ebf68da704337a5894f363aec78ae453e2",
+  "PRBody": "/tmp/rostrum-pr39-body-fidelity19.md",
+  "PRBodySHA256": "9e782997c9a38736dded7e208f28d302d3d1549e8076db9ffc1ba3fefd8385be",
+  "script": "/tmp/review-s19-integration.py",
+  "scriptSHA256": "e00e3ca3567750cc066082acfcb66efcb309b271338d78f156ba71797c432d49",
+  "scope": "Read-only final source/docs/evidence review with fresh ZIP CRC/member uniqueness/XML/python-pptx reopens. Root owns GUI/native print/visual observations. First two partial/profile reference pages only numerical native acceptance; public third pages separate. All prior capture bounds, actual source/subset font and whole opaque ordered paint checks remain unchanged. S19 partial y .121 does not relax S18 profile .025xy. Material runtime/RSS/markup costs accepted as fidelity tradeoff, no gain/universal nonregression/cumulative recovery/whole-slide parity claim. Hosted code success limited to preceding S18, neutral skipped GitGuardian scan not a pass. Final S19 hosted checks remain pending. Acceptance-only wording and matching hash repins may follow; source/evidence stay immutable.",
+  "findings": [],
+  "retainedReviewerExpectationErrors": [
+    {
+      "path": "/tmp/rostrum-s19-integration-initial-review-failure.json",
+      "sha256": "50a7a29479d04970974882a7a18b4aceec44fa1f30ee9fd11b0fbddedbfdc90d"
+    },
+    {
+      "path": "/tmp/rostrum-s19-integration-intermediate-review-failure.json",
+      "sha256": "ea4bd5144eec09d2dce609b43dc3910a4a843e74f475e909ac6d2c4316b4dde5"
+    }
+  ]
+}

@@ -41,6 +41,9 @@ visible in Lectern and in its JSON report.
 | Edit a table grid | Merge topology, unmerge, insert/delete/move/reorder rows and columns; independent permutations and atomic refusals | Drawing |
 | 74 native table styles | Complete native enum gallery, headers/footers/banding/RTL | Drawing |
 | Cell appearance | Border edges/diagonals, fills, text, padding, direction, inheritance and custom styles | Drawing |
+| Table defaults and border joins | Twelve native specimens; absent applied styles, unequal border joins and public style comparison; preserved import defaults and exact saved previews | [Platform table defaults](../Lectern/Sources/LecternCore/LibraryLab/PlatformTableDefaultsRecipe.swift) |
+| Table join profiles | Eight native specimens; RTL grids, axis colors and one-orientation merges; public direction, border and merge controls | [Platform table profiles](../Lectern/Sources/LecternCore/LibraryLab/PlatformTableJoinProfilesRecipe.swift) |
+| Partial table styles | Twelve native specimens; missing custom-style edges, empty lines, noFill and direct overrides; clear a direct edge to restore inherited paint | [Platform partial styles](../Lectern/Sources/LecternCore/LibraryLab/PlatformPartialTableStylesRecipe.swift) |
 | Chart gallery | Every category kind, XY/scatter, bubbles, combo/secondary axis and native workbooks | Document |
 | Chart editing | Replace/add/remove series; multi-group combo replacement; explicit invalid-operation refusals | Document |
 | SmartArt | Every public layout: block list, process, cycle, experimental pyramid; layout URNs and extracted labels | Document |
@@ -645,3 +648,30 @@ admission rules and retained parser history. The separately measured performance
 intervals for all newly admitted targets include zero; speedup and universal
 nonregression are not established. Independent performance and final integration review pass. Custom-style missing-edge defaults are the next
 independently captured gap.
+
+## October 4 partial custom table styles integration
+
+The 32nd recipe, Partial table styles, preserves twelve native specimens and
+72 glyphs on two pages. A third page exercises referenced fill-only styles,
+explicit empty and noFill edges, and direct overrides. The alternative clears
+the direct blue left edge, restoring inherited black 1 pt while keeping the
+right edge suppressed. Both options pass 62 checks with zero findings.
+
+The full local gate passes 1,189 library, 18 layout, 302 Core and 93 app test
+definitions / 130 executions, with successful macOS and iOS simulator builds.
+All 32 catalog recipes pass 711 checks and retain 413 findings. Six additional
+pipeline reports pass 338 checks. External validation reopens 88 presentations
+and 289 slides with all 462 checked inputs unchanged.
+
+Both native and actual-inspector browser comparisons pass 24 case comparisons
+and 144 glyphs, including complete ordered fill/border paint. Refreshed profiles
+and prior typography/default-table browser regressions also pass their existing
+bounds. Both manual three-slide inspection/export workflows retain all 41
+source text nodes per option, exact previews and unchanged source bytes.
+
+The [integration report](LAYOUT-FIDELITY-20261004-19.md) records the captured
+scope and separate public-page controls. Independent performance review accepts
+the measured fidelity cost: partial-style tables slow approximately 11–14%,
+with 6.508 MiB additional peak process RSS for the largest case. Final independent
+integration review passes. The next optimization targets repeated border decoding
+without changing the rendered result.

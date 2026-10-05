@@ -1,0 +1,60 @@
+{
+  "status": "ROOT_VISUAL_REVIEW_PASS",
+  "utc": "2026-10-05T00:58:52.151381+00:00",
+  "pages": [
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-false/page-1.png",
+      "sha256": "7d35e24c2263b4981d4d2713416f1cf756cd4c728ee69a5a5c68ef2b1017ca5e"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-false/page-2.png",
+      "sha256": "066f68ac2251b8b5f1d036809e418cb5d344a87731b4a59e53f63141e7b28628"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-false/page-3.png",
+      "sha256": "9c87265012db4ca3078abd304df8838f9643344ef487f31ac1389b65fd2c7498"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-true/page-1.png",
+      "sha256": "7d35e24c2263b4981d4d2713416f1cf756cd4c728ee69a5a5c68ef2b1017ca5e"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-true/page-2.png",
+      "sha256": "066f68ac2251b8b5f1d036809e418cb5d344a87731b4a59e53f63141e7b28628"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/partialTableStyles/alternative-true/page-3.png",
+      "sha256": "d332b6d0555102e9307c866182335d1dc007c5ae813710ac70ed9bf71156f1f3"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/tableJoinProfiles/alternative-false/page-1.png",
+      "sha256": "a012284da63b1cf1cdbabd866aaddfbe72b142626f49e89cc8787e3c271977f5"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/tableJoinProfiles/alternative-false/page-2.png",
+      "sha256": "b738a5b9b74676a697303cbc68bbbe1cf3b79378ee10cb885257cbb202c3ce7d"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/tableJoinProfiles/alternative-false/page-3.png",
+      "sha256": "341143a99963efa687c97e12175446e60f8b90553941f7663c3a980e361117d3"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/tableJoinProfiles/alternative-true/page-1.png",
+      "sha256": "a012284da63b1cf1cdbabd866aaddfbe72b142626f49e89cc8787e3c271977f5"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/tableJoinProfiles/alternative-true/page-2.png",
+      "sha256": "b738a5b9b74676a697303cbc68bbbe1cf3b79378ee10cb885257cbb202c3ce7d"
+    },
+    {
+      "path": "/tmp/lectern-fidelity19-generated-native/tableJoinProfiles/alternative-true/page-3.png",
+      "sha256": "47e499ce1ed6ecc8db68cc220bb713a75bb24cb258d82b8be53b96ad858c7203"
+    }
+  ],
+  "observations": [
+    "All12rendered pages visually reviewed.",
+    "Both partial-style variants retain12native tables and clear labels; the public fourth control changes blue4ptleft to inheritedblack1pt while rightstayssuppressed.",
+    "Both refreshed profile variants preserve native first2pages and the public mergecontrol; footer now accurately points to separate customstyle demonstration."
+  ],
+  "limits": "Visual review separate from numeric native/browser comparisons; thirdpublicAPIpages outside numerical reference scope."
+}
