@@ -54,6 +54,34 @@ class AppTestPreflightTests(unittest.TestCase):
             self.assertFalse((root / 'built').exists())
             self.assertIn('Lectern is running', result.stderr)
 
+    def test_test_derived_data_ignores_production_override_and_accepts_its_own(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / 'scripts').mkdir()
+            shutil.copy(ROOT / 'Lectern/scripts/test-app.sh', root / 'scripts/test-app.sh')
+            (root / 'scripts/generate-project.sh').write_text('exit 0\n')
+            (root / 'bin').mkdir()
+            probe = root / 'bin/pgrep'
+            probe.write_text('#!/bin/bash\nexit 1\n')
+            probe.chmod(0o755)
+            builder = root / 'bin/xcodebuild'
+            builder.write_text('#!/bin/bash\nprintf "%s\\n" "$@" > build-arguments.txt\n')
+            builder.chmod(0o755)
+            production_path = str(root / 'production data')
+            test_path = str(root / 'isolated test data')
+            env = dict(os.environ, PATH=str(root / 'bin') + os.pathsep + os.environ['PATH'],
+                       LECTERN_DERIVED_DATA_PATH=production_path)
+            env.pop('LECTERN_TEST_DERIVED_DATA_PATH', None)
+            for override, expected in [(None, '.build-xcode-tests'), (test_path, test_path)]:
+                with self.subTest(override=override):
+                    if override is not None:
+                        env['LECTERN_TEST_DERIVED_DATA_PATH'] = override
+                    subprocess.run(['/bin/bash', str(root / 'scripts/test-app.sh')], env=env,
+                                   check=True, capture_output=True, text=True)
+                    args = (root / 'build-arguments.txt').read_text().splitlines()
+                    self.assertEqual(args[args.index('-derivedDataPath') + 1], expected)
+                    self.assertNotIn(production_path, args)
+
     @unittest.skipUnless(shutil.which('xcodegen'), 'XcodeGen required')
     def test_generated_test_host_is_separate_and_normal_identity_is_unchanged(self):
         with tempfile.TemporaryDirectory() as temp:

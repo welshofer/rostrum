@@ -18,6 +18,13 @@ The earlier S22 full verification run was interrupted during its hosted-app stag
 
 ## Hosted-test product separation
 
-`LecternTests` now builds and hosts tests in `LecternTestHost.app`, with bundle ID `com.lectern.app.testhost`, its own executable name, and the explicit test-session Info.plist flag. The normal app retains its identity and build settings. The test script defaults to `.build-xcode-tests`, preserves the stable signing configuration, and refuses to start if either app is already running or process inspection fails. It checks again after project generation and never terminates an app.
+`LecternTests` now builds and hosts tests in `LecternTestHost.app`, with bundle ID `com.lectern.app.testhost`, its own executable name, and the explicit test-session Info.plist flag. The normal app retains its identity and build settings. The test script defaults to `.build-xcode-tests`, preserves the stable signing configuration, and refuses to start if either app is already running or process inspection fails. It checks again after project generation and never terminates an app. A dedicated `LECTERN_TEST_DERIVED_DATA_PATH` override prevents the production `LECTERN_DERIVED_DATA_PATH` override from selecting the same products directory.
 
-Four mocked/static wrapper tests passed, including an app becoming active during project generation, process-query failure, preserved normal identity, and the generated test host/scheme mapping. These checks invoke XcodeGen in temporary directories and mocked build commands; they do not launch or build an app. Runtime hosted-test acceptance remains deferred.
+Five mocked/static wrapper tests passed, including an app becoming active during project generation, process-query failure, preserved normal identity, the generated test host/scheme mapping, and separate derived-data overrides. These checks invoke XcodeGen in temporary directories and mocked build commands; they do not launch or build an app. Runtime hosted-test acceptance remains deferred.
+
+
+## Integrated credential and demo persistence checks
+
+After integrating automatic demo persistence, the exact application source was compiled and tested again without an app entry point: **26 definitions, 33 executions, three suites passed** in 65.645 seconds. The full 33-demo catalog persisted a byte-exact saved deck for each completed result. Additional checks cover reopening through a fresh AppState and the inspector, preserving prior runs, failed-check results, save errors, cancellation and retired tasks. The four focused Core storage tests also passed.
+
+The normal macOS app builds successfully using the canonical script into a separate `/tmp/lectern-credential-repair-build-20261004` directory. Its designated signing requirement matches the pre-existing development-signed app. It was not opened or copied over an existing app. These checks add compile-time and headless workflow evidence; hosted testing, actual UI interaction, and user Keychain access remain unperformed. See the [combined receipt](verification/2026-10-04-credential-safety/persistence-and-credentials-headless.json).

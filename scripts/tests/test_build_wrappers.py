@@ -26,6 +26,7 @@ class BuildWrappersTests(unittest.TestCase):
                 builder.write_text('#!/bin/bash\nprintf "%s\\n" "$@" > build-arguments.txt\n')
                 builder.chmod(0o755)
                 env = dict(os.environ, PATH=str(bindir) + os.pathsep + os.environ['PATH'])
+                env.pop('LECTERN_TEST_DERIVED_DATA_PATH', None)
                 for marker in ['first', 'changed']:
                     (root / 'project.yml').write_text(f'''name: Lectern
 settings:

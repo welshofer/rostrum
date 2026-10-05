@@ -3,6 +3,7 @@
 # target, which SwiftPM's LecternCore tests cannot import.
 #
 # A separate test host and derived-data directory protect the user's app.
+# LECTERN_TEST_DERIVED_DATA_PATH is intentionally separate from the app override.
 # Signing still follows build.sh; this script never terminates running apps.
 #
 # Deliberately local-only: never add a hosted macOS Actions job for this repo.
@@ -39,7 +40,7 @@ require_idle_apps
 # Apply manual signing to SwiftPM resource bundles as well as the app.
 # Automatic bundle signing otherwise requests a team even for a local build.
 xcodebuild -project Lectern.xcodeproj -scheme LecternTests -configuration Debug \
-  -destination 'platform=macOS' -derivedDataPath "${LECTERN_DERIVED_DATA_PATH:-.build-xcode-tests}" \
+  -destination 'platform=macOS' -derivedDataPath "${LECTERN_TEST_DERIVED_DATA_PATH:-.build-xcode-tests}" \
   CODE_SIGN_STYLE=Manual \
   ${LECTERN_SIGN_IDENTITY:+CODE_SIGN_IDENTITY="$LECTERN_SIGN_IDENTITY"} \
   test "$@"
