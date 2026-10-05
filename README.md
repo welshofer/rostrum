@@ -35,6 +35,14 @@ Start with [Getting started](docs/GETTING-STARTED.md) for installation, file I/O
 tables, templates and preview diagnostics. See [Layout engine](docs/LAYOUT-ENGINE.md)
 for measurement and composition in depth.
 
+For a full worked example, explore **[Horseshoe Curve](Examples/HorseshoeCurve/)**:
+a researched, illustrated 28-slide presentation made entirely with **Swift,
+Rostrum and RostrumLayout**. The saved PowerPoint, complete builder, slide content,
+generated images and source citations are included. It demonstrates editable
+charts and tables, varied layouts, image crops, speaker notes, comments and sections.
+
+[![Horseshoe Curve — a complete Swift-authored presentation](Examples/HorseshoeCurve/overview.jpg)](Examples/HorseshoeCurve/)
+
 ## Create a presentation
 
 <!-- snippet:quickStart -->
@@ -250,6 +258,7 @@ each with a job:
 
 | Example | Slides | What it shows |
 |---|---|---|
+| [HorseshoeCurve](Examples/HorseshoeCurve/) | 28 | Full worked example with a saved deck, generated illustrations, 13 layout treatments, editable charts/tables, source-backed notes, comments and sections; authored entirely with Swift, Rostrum and RostrumLayout |
 | `ClimateDeck` | 15 | The showpiece — a data-driven briefing: stat callouts, charts, a full visual system |
 | `FlexDeck` | 13 | The API tour — one capability per slide (charts, process, cards, comments, SmartArt…) |
 | `SunflowerDeck` | 30 | A production-scale illustrated deck; pass an images directory for full-bleed photography |
@@ -259,6 +268,7 @@ each with a job:
 swift run ClimateDeck out.pptx
 swift run SunflowerDeck out.pptx path/to/images
 swift run ReadmeSnippets            # writes hello.pptx + review.pptx
+swift run --package-path Examples/HorseshoeCurve/Builder HorseshoeDeck # macOS: rebuilds the included worked example
 ```
 
 ## Verification and performance

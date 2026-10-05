@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-10-05",
+  "generation_method": "Built-in image_gen imagegen tool",
+  "credential_access": "No API key or credential was requested, read, or modified.",
+  "style": "Editorial railway heritage illustration; finely painted realistic forms with subtle brushwork, forest green, slate, cream and rust palette.",
+  "provenance_note": "All assets are generated illustrations. Dates and scenery are interpretive. Historical facts must be supported independently by cited sources.",
+  "assets": [
+    {
+      "id": "workers1853",
+      "file": "workers1853.png",
+      "use_case": "historical-scene",
+      "prompt": "Use case: historical-scene\nAsset type: widescreen 16:9 image for a carefully researched museum-quality presentation about Horseshoe Curve near Altoona, Pennsylvania.\nPrimary request: a dignified, historically plausible reconstruction of laborers excavating a mountain railway cutting in the Allegheny Mountains in 1853.\nScene/backdrop: wooded Allegheny hills; a rough rock ledge under construction, loose stone and freshly cut earth, forested ridges beyond.\nSubject: a small work gang of Irish and other immigrant laborers wearing plausible 1850s work clothing, working with picks, shovels and wooden wheelbarrows; one simple mule-drawn earth cart. Natural human poses, coherent limbs and tools, moderate distance, no recognizable individual portraits.\nStyle/medium: refined editorial railway heritage illustration, finely painted realistic forms with subtle brushwork and paper grain, elegant and grounded rather than sentimental.\nComposition/framing: wide cinematic landscape, 16:9; layered depth across the work site, workers in middle ground, enough terrain to communicate the scale of the work.\nLighting/mood: clear soft morning light, purposeful and respectful mood.\nColor palette: forest green, slate gray, warm cream, iron rust, restrained muted tones.\nConstraints: no text, letters, numerals, logos, signatures, or watermarks. No modern machinery, excavators, power tools, hard hats, paved roads, modern buildings, or explosives in use. This is an illustrative reconstruction, not a purported historical photograph. No modern train.",
+      "generation_id": "exec-5b19d7a9-bab0-42ea-9107-32162746dc08",
+      "caption": "AI-generated illustrative reconstruction of railway construction in the Alleghenies, circa 1853.",
+      "limitations": "Generic period scene; does not document a specific work gang, location, individual, or exact construction method.",
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "0a79d9124324d66de9cfe9b9307ffc7e60b919069e6303f4e6c3b1fb1630120b",
+      "size_bytes": 3216262,
+      "visual_review": "Reviewed at full-frame size for composition, coherent subject, period plausibility, and absence of logos/text."
+    },
+    {
+      "id": "steam1910",
+      "file": "steam1910.png",
+      "use_case": "historical-scene",
+      "prompt": "Use case: historical-scene\nAsset type: wide 16:9 editorial illustration for a fact-checked history presentation about Horseshoe Curve near Altoona, Pennsylvania.\nPrimary request: a generic steam freight train working around a broad FOUR-TRACK mountain railway curve in central Pennsylvania circa 1910.\nScene/backdrop: forested Allegheny hills, natural gray rock cut on the outside of the curve and a broad ordinary earth-and-rock embankment carrying the tracks. Clearly show FOUR separate parallel standard-gauge railroad tracks, eight rail lines total, each continuous and following the same gentle broad curve without merging. Trackbeds rest directly on gravel ballast and the earth embankment, not on a bridge.\nSubject: one plausible generic American circa-1910 dark iron steam freight locomotive with coal tender and period wooden freight cars on the farthest track, three empty parallel tracks in the foreground. The train is at moderate distance and entirely aligned to its own track, with coherent wheels and a soft steam plume. No exact locomotive class or railroad branding claimed.\nStyle/medium: refined editorial railway heritage illustration, finely painted realistic forms, subtle brushwork and fine paper grain.\nComposition/framing: wide16:9 landscape, three-quarter view from inside the curve that clearly reveals all four parallel tracks and the locomotive against the woods. Natural low hills in the background, a rock cutting on the right; no monumental structure.\nLighting/mood: calm soft late-afternoon light, industrial effort and reliable operation.\nColor palette: forest green, slate gray, warm cream, iron rust and muted earth.\nCritical constraints: FOUR tracks, one train; no masonry viaduct, no arches, no bridge, no monumental stone retaining wall. Plain railroad embankment only. No text, letters, numbers, logos, cab lettering, heralds, watermarks or signatures anywhere. No station buildings, modern reservoirs, modern vehicles, electric catenary or diesel locomotives. No crossing tracks or impossible junctions. This is a generic period railway illustration, not a claimed exact photograph of Horseshoe Curve.",
+      "generation_id": "exec-5b657a5f-8ff4-45ed-8d12-4e4ee427dff8",
+      "edits": [
+        {
+          "prompt": "Use case: precise-object-edit\nEdit only the tiny painted patches on the steam locomotive cab and tender in this image: make both completely plain matte black/dark iron, without gold paint, numbers, letters, emblems or markings. No text anywhere. Keep every other pixel and visual feature as close to the supplied illustration as possible: FOUR separate parallel railway tracks, one steam freight train on the farthest track, ordinary ballast and earth embankment, natural rock cutting, hills, forest, sky and steam. Preserve the full wide16:9 composition, lighting and refined painterly texture. Do not add structures, bridges or arches.",
+          "generation_id": "exec-d634b71f-4aaa-4efa-a3e5-2c896c5b5dd4",
+          "purpose": "Remove invented gold cab markings while preserving four parallel tracks."
+        }
+      ],
+      "caption": "AI-generated illustrative reconstruction of steam freight on a four-track Pennsylvania mountain railway, circa 1910.",
+      "limitations": "Four-track cut-and-fill scene reflects the period track count but remains a generic illustration, not an exact PRR locomotive class, surveyed view, or documentary photograph of Horseshoe Curve.",
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "342fa71ea29f701de5aa608369af67bc1f839b7e02375959717e99f3d650e482",
+      "size_bytes": 2957798,
+      "visual_review": "Reviewed at full-frame size: four separate continuous parallel tracks, one steam freight train on the farthest track, earth-and-rock embankment, natural rock cutting, no masonry viaduct or arches, no legible lettering or logos.",
+      "revision_reason": "Historical review rejected the original single-track masonry-arched setting as misleading for Horseshoe Curve circa 1910. Replaced with a four-track cut-and-fill railway illustration.",
+      "previous_versions": [
+        {
+          "id": "steam1910",
+          "file": "steam1910.png",
+          "use_case": "historical-scene",
+          "prompt": "Use case: historical-scene\nAsset type: wide 16:9 editorial illustration for a history presentation about Horseshoe Curve near Altoona, Pennsylvania.\nPrimary request: a powerful steam freight locomotive with its tender pulling period freight cars on a broad curving Pennsylvania mountain railway circa 1910.\nScene/backdrop: densely wooded Allegheny hills and a stone railway cutting, distant layered ridges; no station, no city.\nSubject: steam freight train at moderate distance, a plausible generic American circa-1910 locomotive and coal tender followed by period freight cars following the same rail curve; matte dark iron boiler and running gear, coherent wheel placement, steam plume rising and drifting behind. Avoid copying or labeling an exact PRR locomotive class.\nStyle/medium: refined editorial railway heritage illustration, finely painted realistic forms, subtle visible brushwork and delicate paper grain. Match forest green, slate gray, warm cream and iron-rust colors.\nComposition/framing: wide cinematic landscape, 16:9, low three-quarter side view showing the train rounding the mountainside; substantial landscape, no extreme close-up of mechanical details.\nLighting/mood: soft early morning light through steam, grounded sense of industrial effort.\nConstraints: no text, numbers, letters, logos, watermark, signature, heralds, diesel engines, modern infrastructure, electric catenary, modern containers, modern clothing. One consistent rail path beneath the train. Clearly an editorial reconstruction, not a historical photograph.",
+          "generation_id": "exec-a860903c-3e2e-4aa4-92c8-6ecab803abb5",
+          "edits": [
+            {
+              "prompt": "Use case: precise-object-edit\nEdit the provided railway illustration. Remove every letter, word, number, symbol, and painted marking from the locomotive cab side. Replace those tiny markings with plain, unmarked dark iron paint matching the cab. Make no other changes. Preserve the wide aspect ratio, forest, rock cutting, train and freight cars, steam, lighting, subtle painted texture, colors, and composition exactly. Final image must have no text, lettering, numbers, logos, watermark, or signature anywhere.",
+              "generation_id": "exec-152a229e-56b2-40c8-aa1e-ba4b1f09a74a",
+              "purpose": "Remove invented cab lettering."
+            }
+          ],
+          "caption": "AI-generated illustrative reconstruction of Pennsylvania steam freight, circa 1910.",
+          "limitations": "Generic locomotive and mountain railway; not an exact PRR class, surveyed view, or documentary photograph of Horseshoe Curve.",
+          "width_px": 1671,
+          "height_px": 941,
+          "sha256": "53b6b3935d39d11ccfe549f65175b35a46784beffa77945d1f168f7a52f3411e",
+          "size_bytes": 2907616,
+          "visual_review": "Reviewed at full-frame size for composition, coherent subject, period plausibility, and absence of logos/text. Steam cab lettering corrected with a targeted generated edit.",
+          "status": "Superseded; excluded from final presentation."
+        }
+      ]
+    },
+    {
+      "id": "shopfloor",
+      "file": "shopfloor.png",
+      "use_case": "historical-scene",
+      "prompt": "Use case: historical-scene\nAsset type: wide 16:9 editorial illustration for a history presentation about Altoona and Horseshoe Curve, Pennsylvania.\nPrimary request: a vast locomotive workshop in Altoona circa 1920, showing the craftsmanship and industrial scale behind a great railroad.\nScene/backdrop: a long brick industrial hall with tall multi-pane windows, timber and steel roof trusses, overhead shafting and large structural beams, soot-darkened surfaces, open work areas.\nSubject: generic steam locomotive frames and large driving wheels being worked on by a few craftspeople in plausible 1920 work clothes, work benches and hand tools; dignified natural working poses, people at moderate distance, coherent limbs and machinery. A partially assembled dark steam locomotive farther back. No specific named individual or exact workshop interior claimed.\nStyle/medium: refined editorial railway heritage illustration, finely painted realistic forms with subtle brushwork and paper grain.\nComposition/framing: wide cinematic landscape, 16:9, view across a broad shop floor with strong depth and overhead scale, machinery and craftspeople in the middle ground, warm window light raking across the working surfaces.\nLighting/mood: beautiful natural window light and soft dusty atmosphere, purposeful and industrious.\nColor palette: forest green, slate gray, warm cream, brick and iron rust, muted rich tones.\nConstraints: no text, letters, numbers, signs, logos, watermarks, or signatures. No modern tools, screens, modern clothing, high-visibility vests, electric locomotives, diesel locomotives, modern robots, or welding sparks. Clearly an editorial reconstruction, not a purported historical photograph.",
+      "generation_id": "exec-97d3747b-e965-4915-86cb-e1f04ff98e93",
+      "caption": "AI-generated illustrative reconstruction of locomotive shop work in Altoona, circa 1920.",
+      "limitations": "Generic period workshop; not an exact reconstruction of a documented Altoona shop interior or named workers.",
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "d479ca7603440c55c9f926f0332df6668e6f3c44bc8635833ba1b244e0ab4732",
+      "size_bytes": 2728712,
+      "visual_review": "Reviewed at full-frame size for composition, coherent subject, period plausibility, and absence of logos/text."
+    },
+    {
+      "id": "nightfreight",
+      "file": "nightfreight.png",
+      "use_case": "illustration-story",
+      "prompt": "Use case: illustration-story\nAsset type: wide 16:9 image for the closing section of a history presentation about Horseshoe Curve near Altoona, Pennsylvania.\nPrimary request: contemporary freight continuing through the Allegheny Mountains at night, a generic unbranded pair of dark diesel-electric freight locomotives rounding a three-track mountain curve with a long freight train behind them.\nScene/backdrop: lush wooded Pennsylvania hills silhouetted against a deep blue night sky, broad railway curve hugging the hillside. Three parallel railroad tracks stay geometrically coherent; the freight train runs on just one of them.\nSubject: two matte-black modern American diesel-electric freight locomotives, completely unmarked, realistic general forms seen at moderate distance, bright forward headlights, subtler warm lights reflecting along steel rails; dark freight cars curve away behind.\nStyle/medium: refined editorial railway heritage illustration, finely painted realistic forms, subtle brushwork and paper grain; artistic atmosphere rather than photoreal simulation.\nComposition/framing: widescreen 16:9, generous landscape and deep night sky, three-quarter perspective from the inside of the curve; the train on the right half and dark open woodland/sky on the left leaves usable space for deck typography.\nLighting/mood: atmospheric blue hour deepening into night, cool forest shadows, concentrated warm headlight glow and delicate rail reflections, continuity and quiet power.\nColor palette: midnight slate, deep forest green, warm cream lights, iron-rust accents.\nConstraints: no letters, text, numbers, logos, badges, signs, watermarks, signature, catenary, city skyline or steam engines. No false recognizable railroad branding. No merged or branching rails. Clearly an editorial illustration, not a documentary photograph.",
+      "generation_id": "exec-bedd9116-bae4-4979-8170-11b114e06864",
+      "caption": "AI-generated illustration of contemporary freight in the Alleghenies.",
+      "limitations": "Generic unbranded locomotives and landscape; not a documentary photograph or surveyed view of Horseshoe Curve.",
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "605c43bc5aafa696ffa8bc8bccc2f9898d7d10f84679d00126e83649ca04e1ad",
+      "size_bytes": 2377045,
+      "visual_review": "Reviewed at full-frame size for composition, coherent subject, period plausibility, and absence of logos/text."
+    },
+    {
+      "id": "landscape",
+      "file": "landscape.png",
+      "use_case": "historical-scene",
+      "prompt": "Use case: historical-scene\nAsset type: wide 16:9 editorial illustration for a carefully researched history presentation about Horseshoe Curve near Altoona, Pennsylvania.\nPrimary request: the Allegheny mountain barrier before railway construction in the early 1850s: a wide, uninterrupted panorama of wooded ridges and a broad valley.\nScene/backdrop: plausible central Pennsylvania Appalachian landscape, rounded densely forested hills and long layered ridges, naturally folded terrain, small glades and exposed rock, no dramatic alpine peaks. The terrain should communicate the engineering challenge of crossing successive ridges.\nStyle/medium: refined editorial railway heritage illustration; finely painted realistic natural forms with subtle brushwork and paper grain.\nComposition/framing: widescreen 16:9, elevated hillside view into a valley and across layered ridges, broad atmospheric depth, generous sky, calm foreground vegetation.\nLighting/mood: soft early morning light with restrained mist low in the valley, quiet untouched landscape.\nColor palette: forest green, slate gray, warm cream sky, subtle iron-rust autumn accents.\nConstraints: no railways, tracks, trains, roads, buildings, cities, utility poles, dams, reservoirs, modern structures, people, text, lettering, numbers, labels, logos, signatures or watermarks. This is a geographically plausible editorial reconstruction, not an exact surveyed historical view.",
+      "generation_id": "exec-2bc50f6c-59f4-4e75-b685-bc47366a43b3",
+      "caption": "AI-generated illustrative reconstruction of the Allegheny mountain barrier before railway construction.",
+      "limitations": "Geographically plausible regional landscape; not a surveyed view of Horseshoe Curve or an exact reconstruction of the early-1850s landscape.",
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "2db924e44523b3375ec01cae68ef3ec94634e692ce6ec81702a597a16bf66dd3",
+      "size_bytes": 2837981,
+      "visual_review": "Reviewed at full-frame size for composition, coherent subject, period plausibility, and absence of logos or legible text."
+    },
+    {
+      "id": "survey1850",
+      "file": "survey1850.png",
+      "use_case": "historical-scene",
+      "prompt": "Use case: historical-scene\nAsset type: wide 16:9 editorial illustration for a carefully researched history presentation about Horseshoe Curve near Altoona, Pennsylvania.\nPrimary request: an anonymous small team of railway surveyors on a wooded Allegheny hillside circa 1850, examining a possible route across the mountains.\nScene/backdrop: forested central Pennsylvania hill, a small natural clearing and exposed gray rock; broad wooded ridge and valley in the background; no existing railway.\nSubject: three plausible mid-19th-century American surveyors in wool coats or waistcoats, practical trousers and period hats, using a historically plausible small brass surveying transit with horizontal telescope mounted on a wooden tripod. One surveyor looks through the instrument, one holds a measuring chain at a distance, one studies a plain folded sheet with no visible lettering. Dignified people in natural poses at moderate distance, coherent hands, equipment and tripod with exactly three legs. No named or identifiable real person.\nStyle/medium: refined editorial railway heritage illustration; finely painted realistic forms with subtle brushwork and paper grain.\nComposition/framing: widescreen 16:9, view at human height across the working party to layered hills beyond; equipment clearly legible but not a technical diagram.\nLighting/mood: soft warm daylight, thoughtful and purposeful mood.\nColor palette: forest green, slate gray, warm cream, muted iron rust, aged brass.\nConstraints: no visible writing, letters, numerals, labels, signs, logos, signatures or watermark. No modern optical equipment, laser levels, hard hats, modern clothes, power lines, railway tracks, roads, or contemporary structures. Interpretive scene, not a purported historical photograph or a portrait of a named engineer.",
+      "generation_id": "exec-eb49efdb-0ddd-42d8-8046-d17c0a5c3fa2",
+      "caption": "AI-generated illustrative reconstruction of railway surveying in the Alleghenies, circa 1850.",
+      "limitations": "Anonymous interpretive survey party; does not portray a named engineer, documented work site, or exact historical surveying operation.",
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "75b885b402b89ac0260fffb63fd59da926a04dfa0bab03003c2cc3ba4e56f223",
+      "size_bytes": 3000901,
+      "visual_review": "Reviewed at full-frame size for composition, coherent subject, period plausibility, and absence of logos or legible text."
+    },
+    {
+      "id": "visitors1890",
+      "file": "visitors1890.png",
+      "use_case": "historical-scene",
+      "prompt": "Use case: historical-scene\nAsset type: wide 16:9 editorial illustration for a history presentation about Horseshoe Curve near Altoona, Pennsylvania.\nPrimary request: late-19th-century visitors enjoying the spectacle of a passing steam train from a safe grassy viewing park below a broad curving hillside railway, circa 1890.\nScene/backdrop: wooded rounded Allegheny hills, a broad railway curve on a raised embankment with a clearly separated park below; no lake or reservoir, no visitor center. The scene is plausible and interpretive, not an exact documented park layout.\nSubject: a few small groups of visitors, including adult men and women and a family, in plausible American circa-1890 outdoor dress, long skirts and modest hats, wool suits and period hats; people viewed mainly from behind or three-quarter backs, no close-up portraits. They stand or sit on simple benches in the foreground park well below and away from the rails. A generic dark steam locomotive with tender pulls a few period passenger cars around the hillside in the middle distance; all rail vehicles correctly follow one continuous track.\nStyle/medium: refined editorial railway heritage illustration; finely painted realistic forms with subtle brushwork and paper grain.\nComposition/framing: widescreen 16:9, visitors in lower foreground and train across the middle ground, wooded ridge beyond; warm sunlight and open sky.\nLighting/mood: inviting late-afternoon summer light, public wonder at engineering.\nColor palette: forest green, slate gray, warm cream, muted iron rust and subdued period clothing.\nConstraints: no text, numbers, letters, markings, signs, billboards, flags, logos, signatures or watermarks. No modern clothes, modern buildings, cars, smartphones, fences with modern warning signs, reservoirs, dams or diesel locomotives. No one stands on railway tracks or close to the train. This is a generated illustrative reconstruction, not a historical photograph.",
+      "generation_id": "exec-78505f3a-97a9-41a2-ba92-655d9a7bec40",
+      "edits": [
+        {
+          "prompt": "Use case: precise-object-edit\nEdit the supplied late-19th-century railway visitors illustration. Remove all tiny lettering, numbers, words and painted markings from the locomotive cab, its tender and every passenger car, replacing those areas with matching plain dark paint. Keep the people, clothing, faces, benches, grass, hillside, sky, train geometry, lighting, aspect ratio, painterly texture and full composition unchanged. No text, lettering, numbers, labels, logos, watermark or signature anywhere in the final illustration.",
+          "generation_id": "exec-11d61ea0-cd26-476f-a8fa-f217e0ae60a7",
+          "purpose": "Remove invented train markings."
+        }
+      ],
+      "caption": "AI-generated illustrative reconstruction of late-19th-century visitors enjoying the railway spectacle.",
+      "limitations": "Generic period park and railway scene; not a documented view of the actual park layout, visitors, train, or infrastructure at Horseshoe Curve.",
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "729872e9eb8dfad9debf0ad625a897b2d0d01781d666d7854cc0b3152586a324",
+      "size_bytes": 2868048,
+      "visual_review": "Reviewed at full-frame size for composition, coherent subject, period plausibility, and absence of logos or legible text."
+    },
+    {
+      "id": "hero-aerial",
+      "file": "hero-aerial.png",
+      "use_case": "historical-scene",
+      "prompt": "Use the provided aerial photograph solely as a geography and railroad alignment reference. Create a new finely painted editorial illustration of Horseshoe Curve near Altoona, Pennsylvania, for a museum-quality history presentation. Preserve the recognizable broad horseshoe open to the RIGHT, railway curving around the LEFT hillside and both arms running to the right, with the reservoir inside the curve at center-right. Three parallel tracks, no invented circular loop or crossing. Transform bare forest into rich early autumn Allegheny forest, deep forest green, burnt sienna, warm amber foliage, slate-blue reservoir. Very wide 16:9 elevated oblique aerial with believable topography, natural late-afternoon light, subtle painterly grain and precise forms. No text, logos, labels, borders or watermarks. Keep the full horseshoe and reservoir visible. The illustration fills the image; no blank canvas. Atmospheric but geographically grounded, clearly an artwork rather than an archival photograph.",
+      "generation_id": "exec-a6d048d5-1add-4837-b2b2-3ab58697cfac",
+      "caption": "AI-generated editorial illustration of Horseshoe Curve using a present-day aerial geography reference.",
+      "limitations": "Modern reservoir, park, roads and track arrangement are depicted interpretively. Not an archival photograph, historical 1854 view, surveyed plan, or exact infrastructure record.",
+      "reference_images": [
+        {
+          "source_url": "https://www.asce.org/-/media/asce-images-and-files/history-and-heritage/images/horseshoe-curve.jpg",
+          "source_credit": "American Society of Civil Engineers (ASCE), Horseshoe Curve aerial reference image.",
+          "role": "Geography and railroad alignment reference only. The original reference photograph is not embedded in the presentation.",
+          "sha256": "a809bcae8b74144fb8dd87e956bfbb89a4d0bd48ddcc90f1666808008067d318",
+          "reference_distribution": "Reference image was used for geographic context and is not included in this example."
+        }
+      ],
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "8dc90a6c53c4c0ce53db2190af9356d1d1bc9ec6f5019bc3b144941d832b2cfc",
+      "size_bytes": 3365968,
+      "visual_review": "Reviewed at full-frame size for clear composition, coherent subject and absence of legible text or logos. Historical, geographical and engineering limitations are explicitly documented."
+    },
+    {
+      "id": "portage1834",
+      "file": "portage1834.png",
+      "use_case": "historical-scene",
+      "prompt": "Create a museum-quality historical editorial illustration for a presentation about Pennsylvania's Allegheny Portage Railroad in the 1830s–1850s. A carefully plausible small canal-boat section supported on a wheeled railway flatcar is being hauled UP a STRAIGHT steep inclined railway toward a small stationary steam engine house. Show a visible hauling cable along the center of the rails. No locomotive on the incline. View obliquely from the side with wooded Allegheny slopes, a few small period workers supervising from safe positions, warm misty morning light. This is a conceptual historical reconstruction rather than a literal identified location. Finely painted realism, precise forms, subtle paper grain, muted forest green, slate blue, warm ivory and burnt sienna palette. Wide 16:9 composition, readable scene, no lettering, numbers, logos, watermarks, or borders. Do not depict a boat floating on land; boat section rests on a clear railcar chassis with railway wheels.",
+      "generation_id": "exec-166313bb-4a01-4dbd-9746-a47976dc7d8f",
+      "caption": "AI-generated conceptual reconstruction of canal-boat portage by inclined railway, 1830s–1850s.",
+      "limitations": "Conceptual boat-on-rail scene. Not a documented incline, exact engine-house mechanism, precise canal-boat construction, or evidence that the illustrated arrangement operated in 1834.",
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "2bdb99452cc7cec6fa5dfb0b5afb59ecf604edce6d0edbd17f50da6aac98c2b9",
+      "size_bytes": 2920659,
+      "visual_review": "Reviewed at full-frame size for clear composition, coherent subject and absence of legible text or logos. Historical, geographical and engineering limitations are explicitly documented."
+    },
+    {
+      "id": "trackdetail",
+      "file": "trackdetail.png",
+      "use_case": "illustration-story",
+      "prompt": "Create a finely painted editorial illustration, wide 16:9, of modern railroad infrastructure on a mountain curve in the Allegheny forest. Low oblique close view of steel rails, sturdy ties, metal fasteners and angular ballast bending gently away into deep forest. Emphasize the material interface between rail and fasteners in the foreground with credible engineering details, the second and third parallel tracks softly visible to the left. No people, no train, no overhead electric wires. Early autumn, soft directional late-afternoon light, restrained forest green, slate gray, warm ivory, subtle burnt sienna accents, subtle painterly grain, museum-quality realistic heritage illustration. Rich textural scene but clean composition. No words, no logos, no watermarks, no borders. Interpretive artwork, not an exact engineering survey.",
+      "generation_id": "exec-aa6a58e9-c591-4250-ba12-d0de88460d8e",
+      "caption": "AI-generated editorial illustration of contemporary railway track materials on a mountain curve.",
+      "limitations": "Interpretive track and fastener geometry. Not an engineering reference, verified fastening system, surveyed view, or documented construction detail of Horseshoe Curve.",
+      "width_px": 1672,
+      "height_px": 941,
+      "sha256": "c4338edfe6e4dfacb636e35beb9bed81001cde8776d9412475b4ab99264aa9a7",
+      "size_bytes": 3175860,
+      "visual_review": "Reviewed at full-frame size for clear composition, coherent subject and absence of legible text or logos. Historical, geographical and engineering limitations are explicitly documented."
+    }
+  ]
+}
