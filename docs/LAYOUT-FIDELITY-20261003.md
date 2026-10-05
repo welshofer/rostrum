@@ -65,5 +65,3 @@ supported scope and remaining limitations.
 For performance, profile repeated line-fragment shaping and table diagnostics
 next. Any reuse must be scoped to one layout/render so mutable source XML cannot
 leave stale geometry behind; require paired measurements and output identity.
-
-Integration verification is recorded in the accompanying burn-down report.
