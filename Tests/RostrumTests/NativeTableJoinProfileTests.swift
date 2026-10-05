@@ -182,7 +182,7 @@ import Testing
         #expect(try deck.renderSVG(slideAt: 0) == original)
     }
 
-    @Test func uncapturedCombinedProfilesRetainRawFallbackEndpoints() throws {
+    @Test func combinedProfilesPreserveCalibratedAdmissionBoundaries() throws {
         for mode in ["rtl-color", "rtl-merge", "merged-color", "two-axis-merge", "mixed-merge-orientations", "axis-color-transition"] {
             let (deck, _) = try read()
             let page = mode == "rtl-merge" || mode == "merged-color" ? 1 : 0
@@ -210,7 +210,14 @@ import Testing
                 let x1 = try point(node, "x1"), x2 = try point(node, "x2"), y1 = try point(node, "y1")
                 return x1 == left && x2 == left && y1 == 70
             }
-            #expect(raw, "\(mode): unchanged raw endpoint outside calibrated combinations")
+            if mode == "axis-color-transition" {
+                let calibrated = try nodes(svg, "line").contains { node in
+                    try point(node, "x1") == left && point(node, "x2") == left && point(node, "y1") == 69.5
+                }
+                #expect(calibrated && !raw, "new native collinear transition admission")
+            } else {
+                #expect(raw, "\(mode): unchanged raw endpoint outside calibrated combinations")
+            }
         }
     }
 

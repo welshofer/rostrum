@@ -299,7 +299,7 @@ import Testing
         #expect(try reopened.renderSVG(slideAt: 0) == deck.renderSVG(slideAt: 0))
     }
 
-    @Test func collinearWidthOrColorChangesRetainUncalibratedEndpoints() throws {
+    @Test func collinearTransitionsAndRejectedContextsUseTheirCalibratedEndpoints() throws {
         for mode in ["width", "color", "rtl", "merged"] {
             let (deck, _) = try read()
             let grid = try table(deck, name: "partial-grid-whole", page: 1)
@@ -312,7 +312,14 @@ import Testing
             let raw = try nodes(svg, "line").contains { node in
                 try point(node, "x1") == physicalLeft && point(node, "x2") == physicalLeft && point(node, "y1") == 495
             }
-            #expect(raw, "\(mode): preserve raw fallback outside constant per-grid-line paint")
+            if mode == "width" || mode == "color" {
+                let calibrated = try nodes(svg, "line").contains { node in
+                    try point(node, "x1") == physicalLeft && point(node, "x2") == physicalLeft && point(node, "y1") == 494.5
+                }
+                #expect(calibrated && !raw, "\(mode): native signed terminal extension")
+            } else {
+                #expect(raw, "\(mode): preserve rejected RTL/merged fallback")
+            }
         }
     }
 

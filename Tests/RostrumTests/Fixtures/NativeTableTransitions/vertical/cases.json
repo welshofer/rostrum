@@ -1,0 +1,1804 @@
+[
+  {
+    "id": "constant-grid-line-control",
+    "page": 0,
+    "x": 30,
+    "y": 95,
+    "width": 240,
+    "height": 180,
+    "columnWidths": [
+      90,
+      150
+    ],
+    "rowHeights": [
+      90,
+      90
+    ],
+    "cells": [
+      {
+        "row": 0,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          30,
+          95,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 0,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          120,
+          95,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          30,
+          185,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          120,
+          185,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      }
+    ],
+    "tableProperties": "<a:tblPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" firstRow=\"0\" bandRow=\"0\" rtl=\"0\"><a:tableStyleId>{5940675A-B579-460E-94D1-54222C63F5DA}</a:tableStyleId></a:tblPr>"
+  },
+  {
+    "id": "outer-width-transition",
+    "transition": "outer-width",
+    "page": 0,
+    "x": 390,
+    "y": 95,
+    "width": 240,
+    "height": 180,
+    "columnWidths": [
+      90,
+      150
+    ],
+    "rowHeights": [
+      90,
+      90
+    ],
+    "cells": [
+      {
+        "row": 0,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          390,
+          95,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 0,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          480,
+          95,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"50800\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 4,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          390,
+          185,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          480,
+          185,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      }
+    ],
+    "tableProperties": "<a:tblPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" firstRow=\"0\" bandRow=\"0\" rtl=\"0\"><a:tableStyleId>{5940675A-B579-460E-94D1-54222C63F5DA}</a:tableStyleId></a:tblPr>"
+  },
+  {
+    "id": "outer-color-transition",
+    "transition": "outer-color",
+    "page": 0,
+    "x": 30,
+    "y": 420,
+    "width": 240,
+    "height": 180,
+    "columnWidths": [
+      90,
+      150
+    ],
+    "rowHeights": [
+      90,
+      90
+    ],
+    "cells": [
+      {
+        "row": 0,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          30,
+          420,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 0,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          120,
+          420,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"CC2200\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "CC2200",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          30,
+          510,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          120,
+          510,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      }
+    ],
+    "tableProperties": "<a:tblPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" firstRow=\"0\" bandRow=\"0\" rtl=\"0\"><a:tableStyleId>{5940675A-B579-460E-94D1-54222C63F5DA}</a:tableStyleId></a:tblPr>"
+  },
+  {
+    "id": "outer-color-width-transition",
+    "transition": "outer-both",
+    "page": 0,
+    "x": 390,
+    "y": 420,
+    "width": 240,
+    "height": 180,
+    "columnWidths": [
+      90,
+      150
+    ],
+    "rowHeights": [
+      90,
+      90
+    ],
+    "cells": [
+      {
+        "row": 0,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          390,
+          420,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 0,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          480,
+          420,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"50800\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"CC2200\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 4,
+            "color": "CC2200",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          390,
+          510,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          480,
+          510,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      }
+    ],
+    "tableProperties": "<a:tblPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" firstRow=\"0\" bandRow=\"0\" rtl=\"0\"><a:tableStyleId>{5940675A-B579-460E-94D1-54222C63F5DA}</a:tableStyleId></a:tblPr>"
+  },
+  {
+    "id": "interior-narrow-to-wide",
+    "transition": "interior-up",
+    "page": 1,
+    "x": 30,
+    "y": 95,
+    "width": 240,
+    "height": 180,
+    "columnWidths": [
+      90,
+      150
+    ],
+    "rowHeights": [
+      90,
+      90
+    ],
+    "cells": [
+      {
+        "row": 0,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          30,
+          95,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 0,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          120,
+          95,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"50800\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"CC2200\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 4,
+            "color": "CC2200",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          30,
+          185,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"50800\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"CC2200\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 4,
+            "color": "CC2200",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          120,
+          185,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      }
+    ],
+    "tableProperties": "<a:tblPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" firstRow=\"0\" bandRow=\"0\" rtl=\"0\"><a:tableStyleId>{5940675A-B579-460E-94D1-54222C63F5DA}</a:tableStyleId></a:tblPr>"
+  },
+  {
+    "id": "interior-wide-to-narrow",
+    "transition": "interior-down",
+    "page": 1,
+    "x": 390,
+    "y": 95,
+    "width": 240,
+    "height": 180,
+    "columnWidths": [
+      90,
+      150
+    ],
+    "rowHeights": [
+      90,
+      90
+    ],
+    "cells": [
+      {
+        "row": 0,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"50800\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"CC2200\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 4,
+            "color": "CC2200",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          390,
+          95,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 0,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"50800\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"CC2200\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 4,
+            "color": "CC2200",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          480,
+          95,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          390,
+          185,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          480,
+          185,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      }
+    ],
+    "tableProperties": "<a:tblPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" firstRow=\"0\" bandRow=\"0\" rtl=\"0\"><a:tableStyleId>{5940675A-B579-460E-94D1-54222C63F5DA}</a:tableStyleId></a:tblPr>"
+  },
+  {
+    "id": "transition-noFill-donor",
+    "transition": "outer-both",
+    "suppressDonor": true,
+    "page": 1,
+    "x": 30,
+    "y": 420,
+    "width": 240,
+    "height": 180,
+    "columnWidths": [
+      90,
+      150
+    ],
+    "rowHeights": [
+      90,
+      90
+    ],
+    "cells": [
+      {
+        "row": 0,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:noFill/></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": true,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          30,
+          420,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 0,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          120,
+          420,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"50800\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"CC2200\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:noFill/></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 4,
+            "color": "CC2200",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": true,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          30,
+          510,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          120,
+          510,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      }
+    ],
+    "tableProperties": "<a:tblPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" firstRow=\"0\" bandRow=\"0\" rtl=\"0\"><a:tableStyleId>{5940675A-B579-460E-94D1-54222C63F5DA}</a:tableStyleId></a:tblPr>"
+  },
+  {
+    "id": "merged-colored-rejection",
+    "transition": "outer-both",
+    "merge": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "page": 1,
+    "x": 390,
+    "y": 420,
+    "width": 240,
+    "height": 180,
+    "columnWidths": [
+      90,
+      150
+    ],
+    "rowHeights": [
+      90,
+      90
+    ],
+    "cells": [
+      {
+        "row": 0,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": true,
+        "attributes": {
+          "gridSpan": "2"
+        },
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"008800\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "008800",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          390,
+          420,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 0,
+        "column": 1,
+        "spanned": true,
+        "mergeOrigin": false,
+        "attributes": {
+          "hMerge": "1"
+        },
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/></a:p></a:txBody>",
+        "text": "",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          480,
+          420,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 0,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"50800\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"CC2200\"/></a:solidFill></a:lnL><a:lnR w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 4,
+            "color": "CC2200",
+            "noFill": false,
+            "logicalBoundary": 0,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          390,
+          510,
+          90,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      },
+      {
+        "row": 1,
+        "column": 1,
+        "spanned": false,
+        "mergeOrigin": false,
+        "attributes": {},
+        "properties": "<a:tcPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" marL=\"0\" marR=\"0\" marT=\"0\" marB=\"0\"><a:lnL w=\"25400\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnL><a:lnR w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill></a:lnR><a:lnT w=\"38100\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnT><a:lnB w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:solidFill><a:srgbClr val=\"0044CC\"/></a:solidFill></a:lnB><a:noFill/></a:tcPr>",
+        "textBody": "<a:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><a:bodyPr anchor=\"t\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" wrap=\"none\"><a:normAutofit fontScale=\"100000\" lnSpcReduction=\"0\"/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn=\"ctr\"/><a:r><a:rPr sz=\"1450\" kern=\"0\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\"/></a:solidFill><a:latin typeface=\"DejaVu Sans\"/></a:rPr><a:t>Agjp</a:t></a:r></a:p></a:txBody>",
+        "text": "Agjp",
+        "edges": [
+          {
+            "edge": "lnL",
+            "widthPT": 2,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnR",
+            "widthPT": 1,
+            "color": "000000",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "vertical"
+          },
+          {
+            "edge": "lnT",
+            "widthPT": 3,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 1,
+            "axis": "horizontal"
+          },
+          {
+            "edge": "lnB",
+            "widthPT": 1,
+            "color": "0044CC",
+            "noFill": false,
+            "logicalBoundary": 2,
+            "axis": "horizontal"
+          }
+        ],
+        "sourceGridFrameLTR": [
+          480,
+          510,
+          150,
+          90
+        ],
+        "frameMeaning": "Physical LTR source grid; merged glyph origins and all join paint require native observation."
+      }
+    ],
+    "tableProperties": "<a:tblPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" firstRow=\"0\" bandRow=\"0\" rtl=\"0\"><a:tableStyleId>{5940675A-B579-460E-94D1-54222C63F5DA}</a:tableStyleId></a:tblPr>"
+  }
+]

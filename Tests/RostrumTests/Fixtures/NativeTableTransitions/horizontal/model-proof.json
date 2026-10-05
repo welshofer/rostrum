@@ -1,0 +1,60 @@
+{
+  "productionEdited": false,
+  "scope": "Exact vector intervals and complete opaque paint subdivision; raw native path order retained; no raster or antialias claim",
+  "cases": [
+    {
+      "id": "horizontal-outer-narrow-wide",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "horizontal-outer-wide-narrow",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "horizontal-interior-narrow-wide",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "horizontal-interior-wide-narrow",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "horizontal-noFill-donor",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "both-axes-multiple-transitions",
+      "nativeIntervals": 24,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 529,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    }
+  ]
+}

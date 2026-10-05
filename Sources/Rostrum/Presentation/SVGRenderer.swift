@@ -1529,31 +1529,10 @@ struct SVGRenderer {
             }
             if oneColor { return true } // Both LTR and RTL are captured.
             guard !rtl else { return false }
-            if widths.count == 1 && heights.count == 1 { return true }
-            // Two-color crossings are calibrated when each axis has one color.
-            // Arbitrary collinear color transitions retain their prior path.
-            var verticalColor: String?, horizontalColor: String?
-            var colorsMatchAxes = true
-            for segment in segments {
-                if segment.edge.axis == .vertical {
-                    if let verticalColor, verticalColor != segment.paint.color { colorsMatchAxes = false; break }
-                    verticalColor = segment.paint.color
-                } else {
-                    if let horizontalColor, horizontalColor != segment.paint.color { colorsMatchAxes = false; break }
-                    horizontalColor = segment.paint.color
-                }
-            }
-            if colorsMatchAxes { return true }
-            // The partial custom-style oracle additionally covers different
-            // grid-line colors when each line keeps one color AND width.
-            // Collinear transitions outside the axis-color profile stay out.
-            var gridPaint: [Int: (color: String, width: Int)] = [:]
-            for segment in segments {
-                let key = segment.edge.boundary * 2 + (segment.edge.axis == .vertical ? 0 : 1)
-                if let previous = gridPaint[key],
-                   previous.color != segment.paint.color || previous.width != segment.paint.width { return false }
-                gridPaint[key] = (segment.paint.color, segment.paint.width)
-            }
+            // The native transition corpus covers both axes, multiple
+            // junctions and noFill donors in unmerged opaque LTR grids.
+            // Existing outer guards bound paint and segment dimensions;
+            // donor ownership and the four paint groups remain unchanged.
             return true
         }
         let mixedJoinedGrid = !joinedGrid

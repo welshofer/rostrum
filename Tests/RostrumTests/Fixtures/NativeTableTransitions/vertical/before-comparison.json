@@ -1,0 +1,697 @@
+[
+  {
+    "id": "constant-grid-line-control",
+    "nativeIntervals": 6,
+    "failingIntervals": 0,
+    "maximumEndpointError": 0,
+    "glyphCount": 16,
+    "maximumGlyphXError": 0.0082244873046875,
+    "maximumGlyphYError": 0.03997802734375,
+    "maximumPaintSizeError": 1.9073486328125e-06,
+    "differences": []
+  },
+  {
+    "id": "outer-width-transition",
+    "nativeIntervals": 7,
+    "failingIntervals": 7,
+    "maximumEndpointError": 2.0,
+    "glyphCount": 16,
+    "maximumGlyphXError": 0.008209228515625,
+    "maximumGlyphYError": 0.03997802734375,
+    "maximumPaintSizeError": 1.9073486328125e-06,
+    "differences": [
+      {
+        "key": "(True, 390.0, 2.0, (0, 136, 0), 1.0)",
+        "before": [
+          95.0,
+          185.0
+        ],
+        "native": [
+          94.5,
+          183.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(True, 480.0, 2.0, (0, 0, 0), 1.0)",
+        "before": [
+          95.0,
+          275.0
+        ],
+        "native": [
+          94.5,
+          275.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(False, 95.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          389.0,
+          630.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(False, 185.0, 3.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          388.0,
+          630.5
+        ],
+        "error": 2.0
+      },
+      {
+        "key": "(True, 630.0, 1.0, (0, 0, 0), 1.0)",
+        "before": [
+          95.0,
+          275.0
+        ],
+        "native": [
+          94.5,
+          275.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(True, 390.0, 4.0, (0, 136, 0), 1.0)",
+        "before": [
+          185.0,
+          275.0
+        ],
+        "native": [
+          183.5,
+          275.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(False, 275.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          388.0,
+          630.5
+        ],
+        "error": 2.0
+      }
+    ]
+  },
+  {
+    "id": "outer-color-transition",
+    "nativeIntervals": 7,
+    "failingIntervals": 7,
+    "maximumEndpointError": 1.0,
+    "glyphCount": 16,
+    "maximumGlyphXError": 0.0082244873046875,
+    "maximumGlyphYError": 0.080078125,
+    "maximumPaintSizeError": 1.9073486328125e-06,
+    "differences": [
+      {
+        "key": "(True, 30.0, 2.0, (0, 136, 0), 1.0)",
+        "before": [
+          420.0,
+          510.0
+        ],
+        "native": [
+          419.5,
+          510.0
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(True, 120.0, 2.0, (0, 0, 0), 1.0)",
+        "before": [
+          420.0,
+          600.0
+        ],
+        "native": [
+          419.5,
+          600.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(False, 420.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          30.0,
+          270.0
+        ],
+        "native": [
+          29.0,
+          270.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(False, 510.0, 3.0, (0, 68, 204), 1.0)",
+        "before": [
+          30.0,
+          270.0
+        ],
+        "native": [
+          29.0,
+          270.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(True, 270.0, 1.0, (0, 0, 0), 1.0)",
+        "before": [
+          420.0,
+          600.0
+        ],
+        "native": [
+          419.5,
+          600.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(True, 30.0, 2.0, (204, 34, 0), 1.0)",
+        "before": [
+          510.0,
+          600.0
+        ],
+        "native": [
+          510.0,
+          600.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(False, 600.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          30.0,
+          270.0
+        ],
+        "native": [
+          29.0,
+          270.5
+        ],
+        "error": 1.0
+      }
+    ]
+  },
+  {
+    "id": "outer-color-width-transition",
+    "nativeIntervals": 7,
+    "failingIntervals": 7,
+    "maximumEndpointError": 2.0,
+    "glyphCount": 16,
+    "maximumGlyphXError": 0.008209228515625,
+    "maximumGlyphYError": 0.080078125,
+    "maximumPaintSizeError": 1.9073486328125e-06,
+    "differences": [
+      {
+        "key": "(True, 390.0, 2.0, (0, 136, 0), 1.0)",
+        "before": [
+          420.0,
+          510.0
+        ],
+        "native": [
+          419.5,
+          508.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(True, 480.0, 2.0, (0, 0, 0), 1.0)",
+        "before": [
+          420.0,
+          600.0
+        ],
+        "native": [
+          419.5,
+          600.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(False, 420.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          389.0,
+          630.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(False, 510.0, 3.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          388.0,
+          630.5
+        ],
+        "error": 2.0
+      },
+      {
+        "key": "(True, 630.0, 1.0, (0, 0, 0), 1.0)",
+        "before": [
+          420.0,
+          600.0
+        ],
+        "native": [
+          419.5,
+          600.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(True, 390.0, 4.0, (204, 34, 0), 1.0)",
+        "before": [
+          510.0,
+          600.0
+        ],
+        "native": [
+          508.5,
+          600.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(False, 600.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          388.0,
+          630.5
+        ],
+        "error": 2.0
+      }
+    ]
+  },
+  {
+    "id": "interior-narrow-to-wide",
+    "nativeIntervals": 7,
+    "failingIntervals": 7,
+    "maximumEndpointError": 1.5,
+    "glyphCount": 16,
+    "maximumGlyphXError": 0.0082244873046875,
+    "maximumGlyphYError": 0.03997802734375,
+    "maximumPaintSizeError": 1.9073486328125e-06,
+    "differences": [
+      {
+        "key": "(True, 30.0, 2.0, (0, 136, 0), 1.0)",
+        "before": [
+          95.0,
+          275.0
+        ],
+        "native": [
+          94.5,
+          275.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(True, 120.0, 2.0, (0, 136, 0), 1.0)",
+        "before": [
+          95.0,
+          185.0
+        ],
+        "native": [
+          94.5,
+          183.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(False, 95.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          30.0,
+          270.0
+        ],
+        "native": [
+          29.0,
+          270.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(False, 185.0, 3.0, (0, 68, 204), 1.0)",
+        "before": [
+          30.0,
+          270.0
+        ],
+        "native": [
+          29.0,
+          270.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(True, 270.0, 1.0, (0, 0, 0), 1.0)",
+        "before": [
+          95.0,
+          275.0
+        ],
+        "native": [
+          94.5,
+          275.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(True, 120.0, 4.0, (204, 34, 0), 1.0)",
+        "before": [
+          185.0,
+          275.0
+        ],
+        "native": [
+          183.5,
+          275.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(False, 275.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          30.0,
+          270.0
+        ],
+        "native": [
+          29.0,
+          270.5
+        ],
+        "error": 1.0
+      }
+    ]
+  },
+  {
+    "id": "interior-wide-to-narrow",
+    "nativeIntervals": 7,
+    "failingIntervals": 7,
+    "maximumEndpointError": 1.5,
+    "glyphCount": 16,
+    "maximumGlyphXError": 0.008209228515625,
+    "maximumGlyphYError": 0.03997802734375,
+    "maximumPaintSizeError": 1.9073486328125e-06,
+    "differences": [
+      {
+        "key": "(True, 390.0, 2.0, (0, 136, 0), 1.0)",
+        "before": [
+          95.0,
+          275.0
+        ],
+        "native": [
+          94.5,
+          275.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(True, 480.0, 4.0, (204, 34, 0), 1.0)",
+        "before": [
+          95.0,
+          185.0
+        ],
+        "native": [
+          94.5,
+          186.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(False, 95.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          389.0,
+          630.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(False, 185.0, 3.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          389.0,
+          630.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(True, 630.0, 1.0, (0, 0, 0), 1.0)",
+        "before": [
+          95.0,
+          275.0
+        ],
+        "native": [
+          94.5,
+          275.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(True, 480.0, 2.0, (0, 136, 0), 1.0)",
+        "before": [
+          185.0,
+          275.0
+        ],
+        "native": [
+          186.5,
+          275.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(False, 275.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          389.0,
+          630.5
+        ],
+        "error": 1.0
+      }
+    ]
+  },
+  {
+    "id": "transition-noFill-donor",
+    "nativeIntervals": 7,
+    "failingIntervals": 7,
+    "maximumEndpointError": 2.0,
+    "glyphCount": 16,
+    "maximumGlyphXError": 0.0082244873046875,
+    "maximumGlyphYError": 0.080078125,
+    "maximumPaintSizeError": 1.9073486328125e-06,
+    "differences": [
+      {
+        "key": "(True, 30.0, 2.0, (0, 136, 0), 1.0)",
+        "before": [
+          420.0,
+          510.0
+        ],
+        "native": [
+          419.5,
+          510.0
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(True, 120.0, 2.0, (0, 0, 0), 1.0)",
+        "before": [
+          420.0,
+          600.0
+        ],
+        "native": [
+          419.5,
+          600.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(False, 420.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          30.0,
+          270.0
+        ],
+        "native": [
+          29.0,
+          270.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(True, 270.0, 1.0, (0, 0, 0), 1.0)",
+        "before": [
+          420.0,
+          600.0
+        ],
+        "native": [
+          419.5,
+          600.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(False, 510.0, 3.0, (0, 68, 204), 1.0)",
+        "before": [
+          120.0,
+          270.0
+        ],
+        "native": [
+          119.0,
+          270.5
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(True, 30.0, 4.0, (204, 34, 0), 1.0)",
+        "before": [
+          510.0,
+          600.0
+        ],
+        "native": [
+          510.0,
+          600.5
+        ],
+        "error": 0.5
+      },
+      {
+        "key": "(False, 600.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          30.0,
+          270.0
+        ],
+        "native": [
+          28.0,
+          270.5
+        ],
+        "error": 2.0
+      }
+    ]
+  },
+  {
+    "id": "merged-colored-rejection",
+    "nativeIntervals": 8,
+    "failingIntervals": 8,
+    "maximumEndpointError": 2.0,
+    "glyphCount": 12,
+    "maximumGlyphXError": 0.008209228515625,
+    "maximumGlyphYError": 0.080078125,
+    "maximumPaintSizeError": 1.9073486328125e-06,
+    "differences": [
+      {
+        "key": "(True, 390.0, 2.0, (0, 136, 0), 1.0)",
+        "before": [
+          420.0,
+          510.0
+        ],
+        "native": [
+          419.5,
+          508.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(True, 630.0, 2.0, (0, 0, 0), 1.0)",
+        "before": [
+          420.0,
+          510.0
+        ],
+        "native": [
+          419.5,
+          511.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(False, 420.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          389.0,
+          631.0
+        ],
+        "error": 1.0
+      },
+      {
+        "key": "(False, 510.0, 3.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          388.0,
+          631.0
+        ],
+        "error": 2.0
+      },
+      {
+        "key": "(True, 390.0, 4.0, (204, 34, 0), 1.0)",
+        "before": [
+          510.0,
+          600.0
+        ],
+        "native": [
+          508.5,
+          600.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(True, 480.0, 2.0, (0, 0, 0), 1.0)",
+        "before": [
+          510.0,
+          600.0
+        ],
+        "native": [
+          508.5,
+          600.5
+        ],
+        "error": 1.5
+      },
+      {
+        "key": "(False, 600.0, 1.0, (0, 68, 204), 1.0)",
+        "before": [
+          390.0,
+          630.0
+        ],
+        "native": [
+          388.0,
+          630.5
+        ],
+        "error": 2.0
+      },
+      {
+        "key": "(True, 630.0, 1.0, (0, 0, 0), 1.0)",
+        "before": [
+          510.0,
+          600.0
+        ],
+        "native": [
+          511.5,
+          600.5
+        ],
+        "error": 1.5
+      }
+    ]
+  }
+]

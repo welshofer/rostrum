@@ -163,7 +163,7 @@ import Testing
         }
     }
 
-    @Test func uncapturedMixedJoinProfilesKeepPriorEndpoints() throws {
+    @Test func mixedJoinProfilesRespectCalibratedAndRejectedEndpoints() throws {
         let directory = root.deletingLastPathComponent().appendingPathComponent("NativeTableJoins")
         for mode in ["alpha", "dash", "diagonal", "rtl-colored", "multicolor", "rtl-merged", "ragged", "wide"] {
             let deck = try Presentation(contentsOf: directory.appendingPathComponent("native-table-joins-v1.pptx"))
@@ -204,7 +204,14 @@ import Testing
                 let x1 = try number($0, "x1"), x2 = try number($0, "x2"), y1 = try number($0, "y1")
                 return abs(x1 - 30) < 0.001 && x1 == x2 && abs(y1 - y) < 0.001
             }
-            #expect(!matching.isEmpty, "\(mode): retains raw mixed-width fallback endpoint")
+            if mode == "multicolor" {
+                let calibrated = try nodes(svg, "line").contains {
+                    try number($0, "x1") == 30 && number($0, "x2") == 30 && number($0, "y1") == 349.5
+                }
+                #expect(calibrated && matching.isEmpty, "unmerged LTR collinear color transition")
+            } else {
+                #expect(!matching.isEmpty, "\(mode): retains raw mixed-width fallback endpoint")
+            }
         }
     }
 
