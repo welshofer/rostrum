@@ -754,7 +754,7 @@
         "--jobs",
         "2"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum"
+      "cwd": "/path/to/user/Developer/rostrum"
     },
     "core": {
       "path": "/tmp/rostrum-20261002-final-core.log",
@@ -767,7 +767,7 @@
         "--jobs",
         "2"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum/Lectern"
+      "cwd": "/path/to/user/Developer/rostrum/Lectern"
     },
     "app-headless": {
       "path": "/tmp/rostrum-20261002-final-app-headless.log",
@@ -781,7 +781,7 @@
         "--output",
         "/tmp/rostrum-20261002-final-app-headless.json"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum",
+      "cwd": "/path/to/user/Developer/rostrum",
       "consoleLog": "/tmp/rostrum-20261002-final-app-headless-console.log",
       "note": "Rerun with console output separate from harness-owned log after initial wrapper redirect collided with that log."
     },
@@ -805,7 +805,7 @@
         "CODE_SIGNING_ALLOWED=NO",
         "build-for-testing"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum/Lectern",
+      "cwd": "/path/to/user/Developer/rostrum/Lectern",
       "preparation": [
         "xcodegen",
         "generate",
@@ -834,7 +834,7 @@
         "ONLY_ACTIVE_ARCH=NO",
         "build"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum/Lectern"
+      "cwd": "/path/to/user/Developer/rostrum/Lectern"
     },
     "release-build": {
       "path": "/tmp/rostrum-20261002-final-release-build.log",
@@ -849,7 +849,7 @@
         "--jobs",
         "2"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum"
+      "cwd": "/path/to/user/Developer/rostrum"
     },
     "semantic": {
       "path": "/tmp/rostrum-20261002-final-semantic.log",
@@ -861,7 +861,7 @@
         "Tools/conformance/release_gate.py",
         "--semantic-only"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum"
+      "cwd": "/path/to/user/Developer/rostrum"
     },
     "conformance-tools": {
       "path": "/tmp/rostrum-20261002-final-conformance-tools.log",
@@ -878,7 +878,7 @@
         "-p",
         "test_*.py"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum"
+      "cwd": "/path/to/user/Developer/rostrum"
     },
     "readme": {
       "path": "/tmp/rostrum-20261002-final-readme.log",
@@ -889,7 +889,7 @@
         ".build/out/Products/Debug/ReadmeSnippets",
         "/tmp/rostrum-readme-final-20261002"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum"
+      "cwd": "/path/to/user/Developer/rostrum"
     },
     "release-gate": {
       "path": "/tmp/rostrum-20261002-final-release-gate.log",
@@ -900,7 +900,7 @@
         "python3",
         "Tools/conformance/release_gate.py"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum"
+      "cwd": "/path/to/user/Developer/rostrum"
     },
     "benchmark": {
       "path": "/tmp/rostrum-20261002-final-benchmark.log",
@@ -919,7 +919,7 @@
         "--output",
         "/tmp/rostrum-20261002-final-macos.json"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum",
+      "cwd": "/path/to/user/Developer/rostrum",
       "environment": {
         "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf"
       }
@@ -929,7 +929,7 @@
         "docker",
         "info"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum",
+      "cwd": "/path/to/user/Developer/rostrum",
       "exitCode": 1,
       "path": "/tmp/rostrum-20261002-final-linux-docker.log",
       "sha256": "a55433fcae7ecea23ed271c2a0cce5ee35e539413b68c777bbdbd686ed99f1d8",
@@ -941,7 +941,7 @@
         "sdk",
         "list"
       ],
-      "cwd": "/Users/welshofer/Developer/rostrum",
+      "cwd": "/path/to/user/Developer/rostrum",
       "exitCode": 0,
       "path": "/tmp/rostrum-20261002-final-swift-sdks.log",
       "sha256": "b9d90b0b9d962d2fd92bef6e2157b5f17ecb370023bf8933ccbd2738674485a0",

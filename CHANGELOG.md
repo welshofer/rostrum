@@ -6,10 +6,47 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
 
 ## [Unreleased]
 
+The native glyph-placement update separates authored, measured and painted Latin
+text sizes, retains explicit scalar origins without glyph stretching, and uses
+live table-cell context for fitting. Repeated-style lookup and shaped-line reuse
+reduce layout overhead. See the [layout engine guide](docs/LAYOUT-ENGINE.md) for
+the calibrated profile, fallback boundaries, composition engines and acceptance
+scope. The saved-file kerning regression now embeds its licensed test font so
+Linux and Apple runs exercise the same measured profile.
+
 - Authored image slides share a left-aligned full-width header, with pictures placed below its measured bounds. Title and closing slides use typography and theme fills instead of generated background photos. Non-list text and stat tiles explicitly suppress inherited bullets and hanging indents. PowerPoint exports of the reported 33-slide deck verified the corrected composition; original text and slide identities are retained.
 
 
+The later native checkpoints add list-marker sizing/continuation corrections,
+center/right alignment evidence, equivalent-metric mixed-face exact spacing,
+native absent-table-style behavior, partial custom-style defaults, bounded
+color/width border transitions and selected image-fill ownership/export. Lectern
+has 34 offline recipes covering the saved-file, inspector and export paths.
+Separate performance experiments cover ordered atom assembly, indexed cell
+lookup, live text-style resolution, SVG inheritance and marker workflows;
+measured fidelity costs remain explicit in the performance ledger.
+
 ### Added
+
+- Imported-presentation previews now render bounded DrawingML custom lines and
+  quadratic/cubic curves, guide coordinates and independent stroke scaling;
+  basic self-contained SVG artwork, including Office SVG-only relationships;
+  and saved SmartArt drawing caches with their text bounds. Unsupported content
+  remains preserved and diagnosed. See the
+  [import guide](docs/IMPORTING-AND-PREVIEWING.md) and
+  [native/consumer acceptance record](docs/IMPORTED-FIDELITY-20261003.md).
+- `FontLibrary.previewFallbackFamily` optionally selects a registered family for
+  consistent measurement and drawing when a requested preview font is missing.
+  It defaults to `nil`, leaves exact lookup and source font names unchanged,
+  and retains missing-font reports and strict-rendering refusal. Lectern
+  inspection supplies an explicit Arial fallback.
+- Offline **Imported artwork and text** Library Lab demonstration with saved-file,
+  reopen, preservation and preview checks.
+- Bounded reuse of encoded font resources and a verified single-scalar ASCII
+  shaping fast path. Five interleaved Release runs of a private 22-slide workload
+  measured a warm full-deck median of 57.30 → 47.85 ms (16.5% lower) at the
+  optimization checkpoint. File I/O, font registration and viewer rasterization
+  are excluded; this is not a final-device or general performance claim.
 
 - Template-aware editable metrics, timelines, processes, cycles, pyramids,
   quadrants and bands, with measured text and native shapes.
@@ -83,6 +120,24 @@ Rostrum is **pre-1.0**: minor versions may change API. Format follows
   context and opaque XML, remapping conflicting GUIDs deterministically.
 
 ### Fixed
+
+- Imported text inherits body properties, placeholder list styles and all-caps
+  before measurement. Empty paragraphs keep spacing without drawing or advancing
+  list markers. Hidden shapes and groups no longer appear in previews.
+- Exact line spacing no longer adds a trailing interline gap to an anchored text
+  block. Four native-reference title positions moved from 9–13 pixels too high
+  to within 0–1 pixel at 960×540 in the scoped acceptance deck.
+- Bullet font/size alternatives inherit as groups. Automatic numbers use the
+  paragraph text face, as verified in PowerPoint; character bullets retain their
+  own face. Aligned markers follow their text without inheriting its underline
+  or baseline shift.
+- Unmeasured mixed-style runs follow viewer glyph advances, avoiding overlap
+  from estimated absolute positions. Measured fallback previews resolve the
+  reported iOS title/image collisions without claiming identical typography.
+- Publication cleanup removes private machine paths and contact details from
+  tracked records and replaces private author metadata in three test decks.
+  Slide, media and relationship members are unchanged; fixture hashes and
+  provenance distinguish sanitized inputs from earlier native acceptance.
 
 - Template charts and tables inherit the content typeface; table columns and
   rows account for wrapped content without stretching short rows to fill a slide.

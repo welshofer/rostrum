@@ -4,7 +4,7 @@ from lxml import etree as E
 from pptx import Presentation
 root=Path('/tmp/lectern-fidelity21-generated-native')
 worker=Path('/tmp/lectern-transitions21-worker/native-candidates')
-fixtures=Path('/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableTransitions')
+fixtures=Path('/path/to/user/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableTransitions')
 expected={'alternative-false':'5c5d1898ff750097b00e79d20fa0ee60500adaedf204d6f2e30a228893d64d20','alternative-true':'33554e0538f198d8be0600eb9088f16c1486874f610345a204aa9a89635f7cd1'}
 ns={'p':'http://schemas.openxmlformats.org/presentationml/2006/main','a':'http://schemas.openxmlformats.org/drawingml/2006/main'}
 def sha(b):return hashlib.sha256(b).hexdigest()

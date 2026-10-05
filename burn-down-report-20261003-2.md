@@ -15,9 +15,9 @@ worktrees were reused and given fresh branches sequentially before dispatch:
 
 | Lane | Worktree | Branch |
 | --- | --- | --- |
-| FUNC-2 engine | `/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum` | `codex/burndown/layout-tabs-20261003` |
-| FUNC-2 Lectern | `/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum` | `codex/burndown/lectern-tabs-20261003` |
-| PERF-1 | `/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum` | `codex/burndown/layout-perf2-20261003` |
+| FUNC-2 engine | `/path/to/user/.codex/worktrees/rostrum-tables/rostrum` | `codex/burndown/layout-tabs-20261003` |
+| FUNC-2 Lectern | `/path/to/user/.codex/worktrees/rostrum-metadata/rostrum` | `codex/burndown/lectern-tabs-20261003` |
+| PERF-1 | `/path/to/user/.codex/worktrees/rostrum-fonts/rostrum` | `codex/burndown/layout-perf2-20261003` |
 
 The Lectern lane briefly applied an engine source snapshot solely to compile
 its dependent work; the final engine commit replaces that snapshot before

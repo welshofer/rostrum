@@ -180,9 +180,9 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-macos.json"
         ],
@@ -205,7 +205,7 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-macos.json"
         ],

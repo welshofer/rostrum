@@ -63,6 +63,31 @@ with 149 more.)
 
 More recipes in the [cookbook](docs/COOKBOOK.md).
 
+## Imported presentation fidelity
+
+The current `main` branch includes a major preview and layout update: custom
+DrawingML curves, saved SmartArt drawings, bounded SVG artwork, inherited text
+and list formatting, corrected anchored text, and an explicit measured fallback
+for unavailable fonts. Native glyph placement, bounded mixed-font spacing and
+list-marker corrections, live table fitting, and native table defaults/border
+joins extend the shared engine. Later updates add partial custom-style defaults,
+bounded border transitions and selected image-fill ownership in inspection and
+export. Source font names and untouched package content remain
+preserved. These changes are **Unreleased**; the versioned installation below
+does not imply that version 0.4.0 includes them. Pin a reviewed commit revision
+when consuming these changes before the next release.
+
+The [layout-engine guide](docs/LAYOUT-ENGINE.md) explains shared text measurement,
+native glyph placement, table context, template selection, pagination and caches.
+
+Start with [Importing and previewing](docs/IMPORTING-AND-PREVIEWING.md) for font
+registration, fallback policy, diagnostics and acceptance checks. The
+[acceptance record](docs/IMPORTED-FIDELITY-20261003.md) covers native PowerPoint
+comparisons and a 22-slide iOS consumer review. A scoped Release benchmark
+measured **16.5% lower warm full-deck SVG rendering time** at the optimization
+checkpoint; see [performance measurements](docs/PERFORMANCE.md) for scope and
+limits. Neither result claims universal PowerPoint equivalence.
+
 ## Install
 
 Swift Package Manager:
@@ -82,7 +107,7 @@ then add `"Rostrum"` to your target's dependencies.
 | Area | Highlights |
 |---|---|
 | **Slides** | add, remove, **move, duplicate**, layouts & placeholder inheritance |
-| **Shapes** | 178 preset geometries, rounded rects (pill corners), transforms, rotation |
+| **Shapes** | 178 preset geometries for authoring; bounded custom line/curve previews, transforms, rotation and hidden-shape handling |
 | **Fills & lines** | solid, alpha, multi-stop gradients, outlines, soft shadows |
 | **Text** | paragraphs, runs, fonts, sizes, colours, alignment, spacing, tracking, **bullets, numbered lists, hyperlinks** |
 | **Pictures** | PNG/JPEG/GIF sniffing, content dedup, crop read/edit, isolated replacement, stretch/tile mapping, picture rotation/reflection and geometry clipping |
@@ -90,10 +115,10 @@ then add `"Rostrum"` to your target's dependencies.
 | **Charts** | bar / line / pie / area / doughnut / scatter / **radar / bubble / combo**, stacked & multi-series, titles, **data labels**, axis control, embedded Edit-Data workbook |
 | **Chart editing** | `deck.charts` reads any deck's charts; `replaceData` swaps every cache and the workbook or **refuses without writing a byte**; `addSeries` / `removeSeries` |
 | **Rendering** | `renderSVG(slideAt:)` / `exportSVG` — deterministic SVG previews with shared rich-text layout and master/layout inheritance; structured fidelity reports and opt-in `strictRendering` reject known gaps |
-| **SmartArt** | Basic Block List creation; **text extraction from any diagram** |
+| **SmartArt** | Basic Block List creation; **text extraction from any diagram**; bounded preview of saved drawing caches |
 | **Comments** | modern threads/replies, text editing, resolve/reopen/delete, slide/shape/text anchors; legacy comment read/create/edit/delete |
 | **Notes** | rich speaker notes, independent duplicates, source notes-master preservation on import; bounded notes-page SVG previews with fidelity diagnostics; incompatible masters are refused atomically |
-| **Fonts** | distinct regular/bold/italic faces, TTF/OTF embedding, bounded Swift kerning/ligature shaping with diagnostics for unsupported scripts; permitted registered fonts are embedded in SVG |
+| **Fonts** | distinct regular/bold/italic faces, TTF/OTF embedding, bounded Swift kerning/ligature shaping with diagnostics for unsupported scripts; permitted registered fonts are embedded in SVG; explicit measured preview fallback with missing-font diagnostics |
 | **Text fitting** | `shape.fitText(fonts: deck.fonts)` — shared mixed-run layout measures registered faces and writes computed `normAutofit`; inspect `renderSVGReportingProblems` for unsupported script/layout cases |
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import a slide from another deck with its images, charts and layout intact |

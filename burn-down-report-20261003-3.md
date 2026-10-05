@@ -15,9 +15,9 @@ the baseline; unrelated scratch remains intact.
 
 | Lane | Worktree | Branch |
 | --- | --- | --- |
-| PERF-1 common layout overhead | `/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum` | `codex/burndown/layout-perf3-20261003` |
-| FUNC-2 native line boundaries | `/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum` | `codex/burndown/layout-rounding-20261003` |
-| FUNC-2 Lectern demonstration | `/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum` | `codex/burndown/lectern-fidelity3-20261003` |
+| PERF-1 common layout overhead | `/path/to/user/.codex/worktrees/rostrum-fonts/rostrum` | `codex/burndown/layout-perf3-20261003` |
+| FUNC-2 native line boundaries | `/path/to/user/.codex/worktrees/rostrum-tables/rostrum` | `codex/burndown/layout-rounding-20261003` |
+| FUNC-2 Lectern demonstration | `/path/to/user/.codex/worktrees/rostrum-metadata/rostrum` | `codex/burndown/lectern-fidelity3-20261003` |
 
 The performance lane initially owns library source changes. The fidelity lane
 initially creates only independent fixtures and tests; engine edits serialize

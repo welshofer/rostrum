@@ -5,7 +5,7 @@
   "method": "Percentile bootstrap of median paired candidate/baseline percent ratios, pairs resampled together; exact two-sided binomial sign test excludes ties. Exploratory uncertainty from ten pairs, not corrected across workloads. Cannot remove shared load bias.",
   "backgroundLoad": "Start/during/end snapshots with coordinated pause of agent builds/GUI; uncontrolled background activity remains. Snapshots cannot establish continuous isolation or remove load bias. CPU ranges: {\"WindowServer\": [65.1, 71.5], \"photolibraryd\": [0.0, 0.0], \"managedcorespotlightd\": [0.0, 0.0], \"backupd\": [0.1, 1195.4]}",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx/render": {
       "pairedPercentDeltas": [
         -0.6641794633962084,
         5.430194656622911,
@@ -26,7 +26,7 @@
         5.430194656622911
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx/cell-fitting": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx/cell-fitting": {
       "pairedPercentDeltas": [
         -62.21830324879512,
         -63.472020263614624,
@@ -47,7 +47,7 @@
         -61.152136084959785
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx/render": {
       "pairedPercentDeltas": [
         -4.197002588475007,
         -1.7706449931806922,
@@ -68,7 +68,7 @@
         2.088692618193999
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx/cell-fitting": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx/cell-fitting": {
       "pairedPercentDeltas": [
         -64.61986348871555,
         -64.49041885403966,
@@ -89,7 +89,7 @@
         -64.36967594631963
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx/render": {
       "pairedPercentDeltas": [
         2.145481652216108,
         5.794481228233006,
@@ -110,7 +110,7 @@
         1.595114425995292
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx/cell-fitting": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx/cell-fitting": {
       "pairedPercentDeltas": [
         -71.05353703917801,
         -71.17167619690117,
@@ -131,7 +131,7 @@
         -70.91980091315645
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx/render": {
       "pairedPercentDeltas": [
         1.5974893862203299,
         4.316372667643109,
@@ -152,7 +152,7 @@
         2.9569310269317195
       ]
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx/cell-fitting": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx/cell-fitting": {
       "pairedPercentDeltas": [
         -22.140050347177166,
         -21.200513180140355,

@@ -42,4 +42,10 @@ core.*
 
 # Python test-tool caches
 __pycache__/
+
+# Local provider credentials; examples must contain synthetic values only.
+.env
+.env.*
+!.env.example
+!.env.sample
 /Lectern/.build-xcode-tests/

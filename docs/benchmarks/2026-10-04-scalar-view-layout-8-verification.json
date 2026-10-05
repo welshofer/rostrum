@@ -4,7 +4,7 @@
   "baselineRevision": "72b9b710e288eb295e6b9b26f47d8c641c181452",
   "candidateSourceCommit": null,
   "candidateMeasuredAsFrozenPatchBeforeCommit": true,
-  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research",
+  "retainedDirectory": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research",
   "files": {
     "TextShaper.swift": "146d215dbd9f25161ed63161b3786684082cc0155319779a789af79cb27455d0",
     "UnicodeScalarView-interface.txt": "b65fc195584784053cf5386939638c30eaa36efe225bd5bfd7c6f37d82aaec2f",
@@ -205,9 +205,9 @@
         "--warmups",
         "1",
         "--scenarios",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
         "--output",
         "docs/benchmarks/2026-10-04-scalar-view-layout-8-supplement-paired-macos.json"
       ]
@@ -259,9 +259,9 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-scalar-view-layout-8-supplement-paired-macos.json"
         ],

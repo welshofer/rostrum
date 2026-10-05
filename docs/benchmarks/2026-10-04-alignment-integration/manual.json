@@ -8,7 +8,7 @@
   "variants": [
     {
       "variant": "center",
-      "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/textAlignment.pptx",
+      "source": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/textAlignment.pptx",
       "sourceSHA256": "a0b5b05156f7331afd0d34c172924208158b9691636f0c4fb2957572f1882853",
       "sourceUnchangedFromBeforeInspectionThroughCompletedExport": true,
       "options": {
@@ -34,7 +34,7 @@
       "svgComparison": [
         {
           "page": 1,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-01.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-01.svg",
           "manualSHA256": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-false/textAlignment-F7E04E62-F85B-4667-8381-6D75377AC980/previews/slide-01.svg",
           "appGateSavedPreviewSHA256": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
@@ -45,7 +45,7 @@
         },
         {
           "page": 2,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-02.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-02.svg",
           "manualSHA256": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-false/textAlignment-F7E04E62-F85B-4667-8381-6D75377AC980/previews/slide-02.svg",
           "appGateSavedPreviewSHA256": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",
@@ -56,7 +56,7 @@
         },
         {
           "page": 3,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-03.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-03.svg",
           "manualSHA256": "1084896de0b3c2145d89d658d013267f94e31ee55c937b6b13c66f021293897e",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-false/textAlignment-F7E04E62-F85B-4667-8381-6D75377AC980/previews/slide-03.svg",
           "appGateSavedPreviewSHA256": "1084896de0b3c2145d89d658d013267f94e31ee55c937b6b13c66f021293897e",
@@ -67,7 +67,7 @@
         },
         {
           "page": 4,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-04.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-04.svg",
           "manualSHA256": "4a322d659fe6edea48ba697f24aaa7092828b0dc2bdfef2652088f9a6c5fc34f",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-false/textAlignment-F7E04E62-F85B-4667-8381-6D75377AC980/previews/slide-04.svg",
           "appGateSavedPreviewSHA256": "4a322d659fe6edea48ba697f24aaa7092828b0dc2bdfef2652088f9a6c5fc34f",
@@ -78,7 +78,7 @@
         },
         {
           "page": 5,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-05.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-05.svg",
           "manualSHA256": "e25eecfea18555556a53e0ece2137ce1021446b740dd2b67d7995ada5e7179ed",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-false/textAlignment-F7E04E62-F85B-4667-8381-6D75377AC980/previews/slide-05.svg",
           "appGateSavedPreviewSHA256": "e25eecfea18555556a53e0ece2137ce1021446b740dd2b67d7995ada5e7179ed",
@@ -90,19 +90,19 @@
       ],
       "files": {
         "/private/tmp/lectern-fidelity15-manual/center-before.json": "544cb905d9ea49977429dfa65814fd97ea65d3bc6e0822dc687784e323fa1b84",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/textAlignment.pptx": "a0b5b05156f7331afd0d34c172924208158b9691636f0c4fb2957572f1882853",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/textAlignment-before.pptx": "98c27b081f8ecb9c297d46e04019b83bcdc969ed3d42113f89491aa0b9d70dac",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/report.json": "40cf8e1d80dbed9d8d9d5c8f7430ee49d4621034871961156ed904107d95cd5d",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/native-alignment-reference.json": "8bf4c8d7962803aa7a139c3a1508e1b60e3e33fb70e36660c40d568e2a25ef20",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/extracted/textAlignment/textAlignment.md": "8656a102145a88eed910c65970cd6ded635c9a64b06cf006ca3f3996f8374300",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/textAlignment.pptx": "a0b5b05156f7331afd0d34c172924208158b9691636f0c4fb2957572f1882853",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/textAlignment-before.pptx": "98c27b081f8ecb9c297d46e04019b83bcdc969ed3d42113f89491aa0b9d70dac",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/report.json": "40cf8e1d80dbed9d8d9d5c8f7430ee49d4621034871961156ed904107d95cd5d",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/native-alignment-reference.json": "8bf4c8d7962803aa7a139c3a1508e1b60e3e33fb70e36660c40d568e2a25ef20",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/extracted/textAlignment/textAlignment.md": "8656a102145a88eed910c65970cd6ded635c9a64b06cf006ca3f3996f8374300",
         "/private/tmp/lectern-fidelity15-manual/center-export/textAlignment/textAlignment.md": "8656a102145a88eed910c65970cd6ded635c9a64b06cf006ca3f3996f8374300",
         "/tmp/lectern-fidelity15-alignment-native/alternative-false/textAlignment.pptx": "a0b5b05156f7331afd0d34c172924208158b9691636f0c4fb2957572f1882853",
         "/tmp/lectern-fidelity15-alignment/alternative-false/textAlignment.pptx": "a0b5b05156f7331afd0d34c172924208158b9691636f0c4fb2957572f1882853",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-01.svg": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-02.svg": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-03.svg": "1084896de0b3c2145d89d658d013267f94e31ee55c937b6b13c66f021293897e",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-04.svg": "4a322d659fe6edea48ba697f24aaa7092828b0dc2bdfef2652088f9a6c5fc34f",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-05.svg": "e25eecfea18555556a53e0ece2137ce1021446b740dd2b67d7995ada5e7179ed",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-01.svg": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-02.svg": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-03.svg": "1084896de0b3c2145d89d658d013267f94e31ee55c937b6b13c66f021293897e",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-04.svg": "4a322d659fe6edea48ba697f24aaa7092828b0dc2bdfef2652088f9a6c5fc34f",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-15BE29AB-7174-479E-82EC-B642B84E6257/previews/slide-05.svg": "e25eecfea18555556a53e0ece2137ce1021446b740dd2b67d7995ada5e7179ed",
         "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/alignment-false-slide-1-capture.json": "3c33928bd342b195e5593ad2fa37cbe559c29c33f39a42e940189f269f1ab333",
         "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-false/textAlignment-F7E04E62-F85B-4667-8381-6D75377AC980/previews/slide-01.svg": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
         "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-false/textAlignment-F7E04E62-F85B-4667-8381-6D75377AC980/previews/slide-02.svg": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",
@@ -118,7 +118,7 @@
     },
     {
       "variant": "right",
-      "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/textAlignment.pptx",
+      "source": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/textAlignment.pptx",
       "sourceSHA256": "aa4f07a0bfd60f43fd619f21611ccbd851707a161851b145f1427d5dc8b8c2a8",
       "sourceUnchangedFromBeforeInspectionThroughCompletedExport": true,
       "options": {
@@ -144,7 +144,7 @@
       "svgComparison": [
         {
           "page": 1,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-01.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-01.svg",
           "manualSHA256": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-true/textAlignment-816FF86F-9DFE-4F99-A38D-FF81B3BF961B/previews/slide-01.svg",
           "appGateSavedPreviewSHA256": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
@@ -155,7 +155,7 @@
         },
         {
           "page": 2,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-02.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-02.svg",
           "manualSHA256": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-true/textAlignment-816FF86F-9DFE-4F99-A38D-FF81B3BF961B/previews/slide-02.svg",
           "appGateSavedPreviewSHA256": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",
@@ -166,7 +166,7 @@
         },
         {
           "page": 3,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-03.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-03.svg",
           "manualSHA256": "1084896de0b3c2145d89d658d013267f94e31ee55c937b6b13c66f021293897e",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-true/textAlignment-816FF86F-9DFE-4F99-A38D-FF81B3BF961B/previews/slide-03.svg",
           "appGateSavedPreviewSHA256": "1084896de0b3c2145d89d658d013267f94e31ee55c937b6b13c66f021293897e",
@@ -177,7 +177,7 @@
         },
         {
           "page": 4,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-04.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-04.svg",
           "manualSHA256": "4a322d659fe6edea48ba697f24aaa7092828b0dc2bdfef2652088f9a6c5fc34f",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-true/textAlignment-816FF86F-9DFE-4F99-A38D-FF81B3BF961B/previews/slide-04.svg",
           "appGateSavedPreviewSHA256": "4a322d659fe6edea48ba697f24aaa7092828b0dc2bdfef2652088f9a6c5fc34f",
@@ -188,7 +188,7 @@
         },
         {
           "page": 5,
-          "manual": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-05.svg",
+          "manual": "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-05.svg",
           "manualSHA256": "68622faafdde4ffa372a0aeeb9fa2ff1ed0a27e8fe7b381d3eb2bd653e454d54",
           "appGateSavedPreview": "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-true/textAlignment-816FF86F-9DFE-4F99-A38D-FF81B3BF961B/previews/slide-05.svg",
           "appGateSavedPreviewSHA256": "68622faafdde4ffa372a0aeeb9fa2ff1ed0a27e8fe7b381d3eb2bd653e454d54",
@@ -200,19 +200,19 @@
       ],
       "files": {
         "/private/tmp/lectern-fidelity15-manual/right-before.json": "466cbfa47d27378aaf4692482eda88952b84356946d77abe4c8c041d1cb60847",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/textAlignment.pptx": "aa4f07a0bfd60f43fd619f21611ccbd851707a161851b145f1427d5dc8b8c2a8",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/textAlignment-before.pptx": "98c27b081f8ecb9c297d46e04019b83bcdc969ed3d42113f89491aa0b9d70dac",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/report.json": "e86530e67f6747f11d01d00e36e4f23825a8f24f77f32c36c1d1280ec36bbb4e",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/native-alignment-reference.json": "8bf4c8d7962803aa7a139c3a1508e1b60e3e33fb70e36660c40d568e2a25ef20",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/extracted/textAlignment/textAlignment.md": "cf6f804cd4373d3994ea6bf68e71b6bad5f95c25ab3e1b69876d9532f7dbf56f",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/textAlignment.pptx": "aa4f07a0bfd60f43fd619f21611ccbd851707a161851b145f1427d5dc8b8c2a8",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/textAlignment-before.pptx": "98c27b081f8ecb9c297d46e04019b83bcdc969ed3d42113f89491aa0b9d70dac",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/report.json": "e86530e67f6747f11d01d00e36e4f23825a8f24f77f32c36c1d1280ec36bbb4e",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/native-alignment-reference.json": "8bf4c8d7962803aa7a139c3a1508e1b60e3e33fb70e36660c40d568e2a25ef20",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/extracted/textAlignment/textAlignment.md": "cf6f804cd4373d3994ea6bf68e71b6bad5f95c25ab3e1b69876d9532f7dbf56f",
         "/private/tmp/lectern-fidelity15-manual/right-export/textAlignment/textAlignment.md": "cf6f804cd4373d3994ea6bf68e71b6bad5f95c25ab3e1b69876d9532f7dbf56f",
         "/tmp/lectern-fidelity15-alignment-native/alternative-true/textAlignment.pptx": "aa4f07a0bfd60f43fd619f21611ccbd851707a161851b145f1427d5dc8b8c2a8",
         "/tmp/lectern-fidelity15-alignment/alternative-true/textAlignment.pptx": "aa4f07a0bfd60f43fd619f21611ccbd851707a161851b145f1427d5dc8b8c2a8",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-01.svg": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-02.svg": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-03.svg": "1084896de0b3c2145d89d658d013267f94e31ee55c937b6b13c66f021293897e",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-04.svg": "4a322d659fe6edea48ba697f24aaa7092828b0dc2bdfef2652088f9a6c5fc34f",
-        "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-05.svg": "68622faafdde4ffa372a0aeeb9fa2ff1ed0a27e8fe7b381d3eb2bd653e454d54",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-01.svg": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-02.svg": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-03.svg": "1084896de0b3c2145d89d658d013267f94e31ee55c937b6b13c66f021293897e",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-04.svg": "4a322d659fe6edea48ba697f24aaa7092828b0dc2bdfef2652088f9a6c5fc34f",
+        "/path/to/user/Library/Application Support/Lectern/Diagnostics/Library Lab/textAlignment-21C1E392-3645-49B4-A97C-31416A7283E7/previews/slide-05.svg": "68622faafdde4ffa372a0aeeb9fa2ff1ed0a27e8fe7b381d3eb2bd653e454d54",
         "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/alignment-true-slide-1-capture.json": "da84389f77944f3da55bcda468215ae742fe5d8d3d1d823815ace1f3bf8d78d4",
         "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-true/textAlignment-816FF86F-9DFE-4F99-A38D-FF81B3BF961B/previews/slide-01.svg": "e11578133ec944d94ec560e981caf3afa119b134f7382fa7f01c34ec7b22ed72",
         "/tmp/lectern-alignment-webkit-20261004/alignment-2783FAEC-E000-4B8F-897B-20C0586F84D9/lab-true/textAlignment-816FF86F-9DFE-4F99-A38D-FF81B3BF961B/previews/slide-02.svg": "1a35c3589981c7e9ee517630c609b37e580d4e4bcfdbd844954a67076d0da5c1",

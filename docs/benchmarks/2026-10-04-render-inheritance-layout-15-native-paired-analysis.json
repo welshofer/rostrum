@@ -1,12 +1,12 @@
 {
   "status": "PERF15 pending independent evidence review",
-  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/native-paired.json",
+  "source": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/native-paired.json",
   "sourceSHA256": "0230e2d88771487ce7f4ecb8169df111cdb06c5d83b55d35f690a6caddbb7eea",
   "bootstrapResamples": 100000,
   "seed": 20261004,
   "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx/render": {
       "pairedPercentDeltas": [
         -11.057336279771302,
         -6.345333970507594,
@@ -31,7 +31,7 @@
       "candidateMedianMS": 3.200667,
       "ratioOfMediansPercentDelta": -7.874048044321757
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx/render": {
       "pairedPercentDeltas": [
         -37.226786092534866,
         -9.808343714875878,
@@ -56,7 +56,7 @@
       "candidateMedianMS": 2.492792,
       "ratioOfMediansPercentDelta": 0.0585630262995851
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx/render": {
       "pairedPercentDeltas": [
         3.7852925598810927,
         -14.31789715313081,
@@ -81,7 +81,7 @@
       "candidateMedianMS": 5.154833,
       "ratioOfMediansPercentDelta": -4.650849416432267
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx/render": {
       "pairedPercentDeltas": [
         0.4569609581088985,
         -8.01159058977433,
@@ -106,7 +106,7 @@
       "candidateMedianMS": 1.9940835,
       "ratioOfMediansPercentDelta": -1.098362338801795
     },
-    "file:/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx/render": {
+    "file:/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx/render": {
       "pairedPercentDeltas": [
         -6.8335581953600455,
         -6.3225609942409555,
@@ -131,7 +131,7 @@
       "candidateMedianMS": 4.001875,
       "ratioOfMediansPercentDelta": -4.220302100804929
     },
-    "file:/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx/render": {
+    "file:/path/to/user/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx/render": {
       "pairedPercentDeltas": [
         1.9872600220669279,
         30.077101855609257,
@@ -156,7 +156,7 @@
       "candidateMedianMS": 3.3335625,
       "ratioOfMediansPercentDelta": -2.044077134986222
     },
-    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-200.pptx/render": {
+    "file:/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-200.pptx/render": {
       "pairedPercentDeltas": [
         -17.859973515663974,
         -18.781420781052937,
@@ -181,7 +181,7 @@
       "candidateMedianMS": 5.8061665,
       "ratioOfMediansPercentDelta": -17.514813629099923
     },
-    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-large-style-200.pptx/render": {
+    "file:/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-large-style-200.pptx/render": {
       "pairedPercentDeltas": [
         -9.424481858038835,
         -13.150015709635653,
@@ -206,7 +206,7 @@
       "candidateMedianMS": 8.6358125,
       "ratioOfMediansPercentDelta": -14.239876056253554
     },
-    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-ascii-200.pptx/render": {
+    "file:/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-ascii-200.pptx/render": {
       "pairedPercentDeltas": [
         -16.576795630700847,
         -22.833734785598903,
@@ -231,7 +231,7 @@
       "candidateMedianMS": 6.0802499999999995,
       "ratioOfMediansPercentDelta": -19.635201110257494
     },
-    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-unicode-200.pptx/render": {
+    "file:/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-unicode-200.pptx/render": {
       "pairedPercentDeltas": [
         -7.783382117909021,
         -7.584554168927471,
@@ -256,7 +256,7 @@
       "candidateMedianMS": 12.692000499999999,
       "ratioOfMediansPercentDelta": -9.397189371288494
     },
-    "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/placeholder-inherited-bullet-200.pptx/render": {
+    "file:/path/to/user/Developer/rostrum/.build/native-marker14-root/controls/placeholder-inherited-bullet-200.pptx/render": {
       "pairedPercentDeltas": [
         2.1197485184850873,
         2.7320473229971887,

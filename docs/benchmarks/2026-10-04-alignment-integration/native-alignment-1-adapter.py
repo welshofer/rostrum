@@ -18,7 +18,7 @@ from fontTools.pens.transformPen import TransformPen
 from fontTools.svgLib.path import parse_path
 
 ROOT = Path(__file__).resolve().parent
-REPO = Path('/Users/welshofer/Developer/rostrum')
+REPO = Path('/path/to/user/Developer/rostrum')
 FONT = REPO / 'Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf'
 source = TTFont(FONT)
 source_glyphs = source.getGlyphSet()

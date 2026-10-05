@@ -9,13 +9,14 @@ objects are safe. PowerPoint remains the visual acceptance client.
 | --- | --- | --- |
 | PPTX / POTX / PPSX | Recognized document kinds; templates retain native master/layout/theme relationships | Macro-enabled document kinds are not recognized; legacy binary PPT is outside the OPC reader |
 | Masters, layouts, themes | Import, preserve and author; template-aware composition; preview resolves shape fill/line/font style references and paragraph run defaults | Broader real-template corpus; full effects, color-transform and text/rendering equivalence is not certified |
-| Groups | Read children and transforms; preview nested coordinate spaces, rotation and flips | Creation/ungroup APIs; native visual baselines for all transform/text combinations |
+| Groups | Read children and transforms; preview nested coordinate spaces, rotation and flips; honor hidden shapes and groups | Creation/ungroup APIs; native visual baselines for all transform/text combinations |
 | Connectors | Read connections; preview straight lines, flips, direct/theme-reference colors, basic dashes and arrowheads | Attached-connector authoring/routing; bent and curved previews currently use straight lines with warnings |
-| Shape geometry | Preset geometry authoring; preview 13 common outlines including diamonds, triangles, chevrons and directional arrows; literal adjustments and preset text regions | Other presets/custom geometry use rectangles with warnings; formula-based adjustments, effects and additional shape text rules remain; editable freeform API |
-| Text | Runs, paragraphs, fonts, bullets, spacing and autofit; CoreText measurement adapter in Lectern | Full rich-run shaping/measurement parity; portable metrics do not apply kerning, ligatures or complex-script shaping |
+| Shape geometry | Preset geometry authoring; common preset previews and bounded custom lines/quadratic/cubic curves with guide coordinates, per-path fill/stroke and scale-independent strokes | Unsupported presets/path commands retain diagnosed fallback; custom arcs, shaded path fills, custom text rectangles and a general editable freeform API remain |
+| Text | Shared fit/render layout, inherited body/list styles, all-caps, anchored exact spacing, empty-paragraph handling, measured registered faces and explicit preview fallback; bounded kerning/ligatures and script support | Full complex-script, bidi and PowerPoint typography parity; small capitals, text warps and columns |
 | Charts | Native classic chart APIs, chart-cache extraction and guarded replacement; embedded-workbook read fallback; editable workbooks | Date/number-format display, named or external workbook references, broader date-category editing, stock and ChartEx |
-| Tables | Native cells, formatting and merges; measured layout in Lectern | Broader native rendering baselines |
-| SmartArt | Block list, process, cycle and pyramid creation; text extraction | Broader layouts and multilevel data; preview uses a labeled placeholder |
+| Tables | Native cells, formatting and merges; embedded/custom regions and all 74 built-in table styles; shared measured layout | Broader native rendering baselines |
+| SmartArt | Block list, process, cycle and pyramid creation; text extraction; bounded saved drawing-cache preview | Broader layouts, multilevel data and nontrivial cache root transforms; absent/unsupported caches use a diagnosed placeholder |
+| SVG pictures | Bounded self-contained SVG, including Office SVG-only relationships; original image bytes preserved | General SVG/CSS and active/external content are rejected; unsupported artwork is diagnosed |
 | Audio/video | Embedding and read-back; basic transport timing | PowerPoint playback-effect sequences, autoplay and native acceptance |
 | Animation/transitions | Existing XML carried through preservation machinery | General authoring API and dedicated feature corpus |
 | OLE/other graphic payloads | Retained through package/XML preservation | Semantic editing; preview uses a labeled placeholder |
@@ -67,7 +68,9 @@ transforms. Ordinary outer shadows resolve direct or theme effects, color, opaci
 blur and offset; an explicit empty effect list suppresses theme effects. Scaled or
 skewed shadows are diagnosed. Text inherits presentation, master and matched
 placeholder run defaults per paragraph level, with local overrides merged by property.
-Missing explicit typefaces fall back to theme fonts and then sans-serif.
+Missing font resources are reported. Hosts can register exact faces or opt into
+`FontLibrary.previewFallbackFamily` for matching fallback measurement and drawing;
+the source typeface stays unchanged. See the [preview guide](IMPORTING-AND-PREVIEWING.md).
 Path-gradient geometry, tile rectangles and rotation-independent fills remain
 approximate. SVG definitions use a per-render counter for deterministic IDs,
 avoiding repeated scans of accumulated gradient or embedded-image data.
@@ -83,8 +86,8 @@ parity is not certified.
 Picture and picture-fill previews use saved asymmetric source crops, destination
 stretch rectangles and tile transforms instead of automatic center-cropping.
 Table previews resolve merged cells, direct padding/fills/edge borders and embedded
-table-style regions. Office built-in style IDs without an embedded style definition
-are not reconstructed. Classic chart previews honor explicit series/point colors,
+table-style regions. All 74 built-in Office style definitions are available when a deck stores only
+a style ID; native whole-slide equivalence still has open acceptance gaps. Classic chart previews honor explicit series/point colors,
 line width/dashes, legend presence/position, linear value-axis bounds, major gridlines
 and basic decimal/percent/currency tick formats. Advanced chart layouts and number
 format expressions remain approximate. Source parts are preserved unchanged.

@@ -1,8 +1,8 @@
 {
   "fixture": "ModernCustomXML.pptx",
-  "sha256": "cd0077157da9c681c0afa66a33ddcd9543b932ee1561a3290bb67e8d19d3957d",
+  "sha256": "440bed16550a656d7b9da8e1af49567d31d05abfd549ec833f9aa0b0d26323d9",
   "sourceFixture": "../RealDecks/MovieAndComments.pptx",
-  "sourceSHA256": "3e33e2455a21a6c1d3a38157eb1ebbd994a79d1005ec6c83435e93e0dec0ab8b",
+  "sourceSHA256": "4ae5dcd778bc990319effa34f6d0b0ee87f4a768f7a644c81ff55d5b00689216",
   "provenance": "Derived from the existing tracked PowerPoint-produced MovieAndComments fixture; import its first comment-bearing slide into a new Presentation after adding the documented synthetic extension below. No additional foreign deck was added.",
   "generator": {
     "test": "AuthorDependencyImportTests.realPowerPointAuthorsImportWithCustomExtensionGraph",
@@ -25,7 +25,9 @@
     "method": "Root agent opened the exact hashed fixture and generated source in PowerPoint through CUA; both opened without a repair dialog. Accessibility inspection reported imported slide 2 has one comment.",
     "slide2CommentCount": 1,
     "commentBodyVerified": false,
-    "sourceOpenWithoutRepair": true
+    "sourceOpenWithoutRepair": true,
+    "acceptedSHA256": "cd0077157da9c681c0afa66a33ddcd9543b932ee1561a3290bb67e8d19d3957d",
+    "scope": "Native acceptance applies to the original hash above. The current fixture has metadata-only publication sanitization; see publicationSanitization."
   },
   "bisect": {
     "original": "Opened normally. Unchanged Rostrum roundtrip preserves every uncompressed package member byte.",
@@ -33,5 +35,49 @@
     "arbitraryURNRelationship": "The synthetic r:id extension with relationship type urn:rel3-oracle repaired even in the augmented source before import. Extension-only and relationship-only variants opened normally; mc:Ignorable did not repair the combined fixture.",
     "standardCustomXMLRelationship": "Replacing only that relationship type with the standard customXml type opened normally. The pinned fixture uses this accepted combination.",
     "scope": "Unknown OPC graphs are preserved or refused according to import validation. This consumer check certifies the pinned customXml combination only; it does not certify arbitrary extension schemas/relationship types in Office."
+  },
+  "publicationSanitization": {
+    "date": "2026-10-04",
+    "changes": "Replaced private author display name, user ID and initials with synthetic fixture values. Every other uncompressed member is byte-identical.",
+    "proof": [
+      {
+        "fixture": "Tests/RostrumTests/Fixtures/AuthorDependencyImport/ModernCustomXML.pptx",
+        "previousSHA256": "cd0077157da9c681c0afa66a33ddcd9543b932ee1561a3290bb67e8d19d3957d",
+        "sha256": "440bed16550a656d7b9da8e1af49567d31d05abfd549ec833f9aa0b0d26323d9",
+        "changedParts": [
+          "ppt/authors.xml"
+        ],
+        "otherMembersUnchanged": true
+      },
+      {
+        "fixture": "Tests/RostrumTests/Fixtures/RealDecks/MovieAndComments.pptx",
+        "previousSHA256": "3e33e2455a21a6c1d3a38157eb1ebbd994a79d1005ec6c83435e93e0dec0ab8b",
+        "sha256": "4ae5dcd778bc990319effa34f6d0b0ee87f4a768f7a644c81ff55d5b00689216",
+        "changedParts": [
+          "ppt/authors.xml",
+          "docProps/core.xml"
+        ],
+        "otherMembersUnchanged": true
+      },
+      {
+        "fixture": "Tests/RostrumTests/Fixtures/RealDecks/SimplePowerPoint.pptx",
+        "previousSHA256": "84fd425655ded6454a8614b9fa948256d63fb6f911c1d9ae87a739061e02bed3",
+        "sha256": "6c0a7a24a8a8dadbd7961b45fe89d72f25f9af659c5b56061256b4bc3572347d",
+        "changedParts": [
+          "docProps/core.xml"
+        ],
+        "otherMembersUnchanged": true
+      }
+    ],
+    "nativeOpenCheck": {
+      "date": "2026-10-04",
+      "method": "Tools/ppt-check.sh, private copies in native PowerPoint; no repair dialog",
+      "acceptedSHA256": {
+        "Tests/RostrumTests/Fixtures/AuthorDependencyImport/ModernCustomXML.pptx": "440bed16550a656d7b9da8e1af49567d31d05abfd549ec833f9aa0b0d26323d9",
+        "Tests/RostrumTests/Fixtures/RealDecks/MovieAndComments.pptx": "4ae5dcd778bc990319effa34f6d0b0ee87f4a768f7a644c81ff55d5b00689216",
+        "Tests/RostrumTests/Fixtures/RealDecks/SimplePowerPoint.pptx": "6c0a7a24a8a8dadbd7961b45fe89d72f25f9af659c5b56061256b4bc3572347d"
+      },
+      "scope": "Successful opening only; no new raster parity or rendering claim."
+    }
   }
 }

@@ -27,3 +27,20 @@ on this repository. You should receive an acknowledgment within a week.
   stores API keys in the system Keychain only. A path that writes a key
   anywhere else (defaults, logs, network other than the key's own provider)
   is a security bug.
+
+## Publication hygiene
+
+Before publishing, review the complete tracked tree and proposed diff for
+credentials, private contact details and local machine paths. Inspect archived
+fixtures too: PPTX files can contain creator identities, comment-author IDs,
+notes and embedded documents. Keep private decks, proprietary fonts, provider
+responses and local signing settings outside version control. Use synthetic
+identities and reserved example domains for test data; retain required licenses
+and attribution.
+
+Run a redacted secret scan of both the publication snapshot and reachable Git
+history. Investigate matches without copying candidate secrets into logs or PRs;
+checksums and identifiers can be false positives. If a credential is found,
+revoke or rotate it before relying on removal. Removing a tracked value does
+not remove it from old commits, forks or caches. See the
+[publication audit](PUBLICATION-HYGIENE.md) for this update's scope and limitations.

@@ -42,6 +42,19 @@ Today all five live as directories inside the single `Rostrum` target; they
 split into SwiftPM targets when size justifies it. Dependencies point strictly
 downward.
 
+## Layout and composition
+
+The separate `RostrumLayout` product depends on `Rostrum` and owns native-template
+selection, measured composition, authored-slide finishing and pagination.
+`Rostrum` owns the shared read-only rich-text geometry used by fitting and SVG,
+explicit font registration and bounded shaping. Hosts supply platform measurement
+adapters; the portable layer does not discover fonts or access providers.
+
+See [Layout engine](LAYOUT-ENGINE.md) for component boundaries, inheritance,
+line metrics, candidate scoring, cache behavior, recent fixes and validation
+limits. [Importing and previewing](IMPORTING-AND-PREVIEWING.md) documents the
+font fallback API and the distinction between preservation and visual fidelity.
+
 ## Load-bearing mechanisms
 
 **Pristine-until-mutated.** Every `Part` holds its original blob and a dirty

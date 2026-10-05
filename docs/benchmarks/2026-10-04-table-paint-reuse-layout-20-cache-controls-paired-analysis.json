@@ -1,12 +1,12 @@
 {
   "status": "S20 pending independent evidence review",
-  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/cache-controls-paired.json",
+  "source": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/cache-controls-paired.json",
   "sourceSHA256": "699f5bcbd8d18d679a7a1733763682dfbfef98a5cb2c1c0be0c3fe4792dacc21",
   "bootstrapResamples": 100000,
   "seed": 20261004,
   "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/direct-unique-200x50.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/direct-unique-200x50.pptx/render": {
       "pairedPercentDeltas": [
         2.6669658277958863,
         1.4603233889038725,
@@ -31,7 +31,7 @@
       "candidateMedianMS": 253.768542,
       "ratioOfMediansPercentDelta": 1.1086273873349484
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/budget-near-20x10.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/budget-near-20x10.pptx/render": {
       "pairedPercentDeltas": [
         -0.7014728882687726,
         8.712688357399113,
@@ -56,7 +56,7 @@
       "candidateMedianMS": 16.165229,
       "ratioOfMediansPercentDelta": -0.8930686305317348
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/oversize-bypass-6x6.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/oversize-bypass-6x6.pptx/render": {
       "pairedPercentDeltas": [
         -1.2533266664740084,
         -2.9919185639171175,

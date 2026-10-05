@@ -128,11 +128,11 @@
   },
   "historicalBuildSourceResolution": [
     {
-      "originalPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift",
+      "originalPath": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift",
       "originalSHA256": "5eb6f4dcdc2c8690f786b02dbfd17a6ebc179703a7e681937f3d5200fe4d9353",
-      "retainedOriginal": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-initial.swift",
+      "retainedOriginal": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-initial.swift",
       "correctedPathSHA256": "37c42f5fc192cae9067145e558fcc04f47e86eb115dab54740ba10321ea3913e",
-      "finalAuthority": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-receipt.json",
+      "finalAuthority": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-receipt.json",
       "scope": "Scratch audit source changed after helper-build inventory; campaign helper sources/binaries unchanged. Both initial error and final actual-session probe independently pinned."
     }
   ],
@@ -148,24 +148,24 @@
     }
   ],
   "pins": {
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/timing-plan.json": "c0de7aaa015a1bf28f5a8c3ff3aa2e4655201e4c7bf8f4f1e54e38eea4ce1454",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/ready.json": "98106d6fe9aaf0abb70867ba4bdc731406beb8822c71d85dff74a8111906e580",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/preflight-verification.json": "79ceb41b6720211a50e7a06ec1141da5bf6d84ac07460a54f8e6fd2f0f29c606",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/root-integration.json": "70dfe731b78fff2732e73707bc50e54420916fc13ebe2b0f1b76fcaa2a174594",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/baseline-pins.json": "45f676082fcd0579a5bbf671a2ef726b9b21510b5544c7dcb01561a86649f0fb",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-helper-build.json": "af729e00f9b26582a5b7d70656326bef65b3303279ab7f1ed6311211907451ab",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-source-pins.json": "6dab4f7ffe5703ff8eed5390f28c6675d3b6a637fd1d4fdd41d9f7a7e8330e3a",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/corpus-proof.json": "5a27fb04a28be990229b9d8a5b118a9bca1239ed7b4ad85b31e6ea89b7a5cac6",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/value-proof.json": "d94d46bc26068513a52643220f82f8eb5e727f3784d456d0a58d81b1647ee68e",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-receipt.json": "a381a0aa7991946a0f494150e36b457443c3517d9a4d283680689611eaf22f59",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift": "37c42f5fc192cae9067145e558fcc04f47e86eb115dab54740ba10321ea3913e",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/generate-inputs.py": "67aad28bedb9b4a9f8833dd9705dbed5e537b6bf4b9e24d01fa9d3512796c3e5",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/input-reproduction.json": "b049756af4465ae76ac27b4e1634b07d7246a429e81b9331c8426d6ba91c894c",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/run-authorized.py": "34ab5a476c52a8916034520b97377ecbb93878deaa0d09b915d8e7e3e4cc6845",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/full-tests.log": "4e19d0860ad5efccf82f75caabe89ee18e8d2fec4f48eb19ab57f350932736f2",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-release.log": "d3b381d36d5202bf2e66a79da8814a90529796a17fcfb28a79a6ac1b45536088",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/output-artifact-pins.json": "6080dbe172f4e952cc1f680fa13999875d473059d3b5562714a6d193f43822ba",
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/input-pins.json": "4b682625636367f8a70d7bef63ce0cc2a7d4e118330484ae475654082d195bea"
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/timing-plan.json": "c0de7aaa015a1bf28f5a8c3ff3aa2e4655201e4c7bf8f4f1e54e38eea4ce1454",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/ready.json": "98106d6fe9aaf0abb70867ba4bdc731406beb8822c71d85dff74a8111906e580",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/preflight-verification.json": "79ceb41b6720211a50e7a06ec1141da5bf6d84ac07460a54f8e6fd2f0f29c606",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/root-integration.json": "70dfe731b78fff2732e73707bc50e54420916fc13ebe2b0f1b76fcaa2a174594",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/baseline-pins.json": "45f676082fcd0579a5bbf671a2ef726b9b21510b5544c7dcb01561a86649f0fb",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-helper-build.json": "af729e00f9b26582a5b7d70656326bef65b3303279ab7f1ed6311211907451ab",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-source-pins.json": "6dab4f7ffe5703ff8eed5390f28c6675d3b6a637fd1d4fdd41d9f7a7e8330e3a",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/corpus-proof.json": "5a27fb04a28be990229b9d8a5b118a9bca1239ed7b4ad85b31e6ea89b7a5cac6",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/value-proof.json": "d94d46bc26068513a52643220f82f8eb5e727f3784d456d0a58d81b1647ee68e",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-receipt.json": "a381a0aa7991946a0f494150e36b457443c3517d9a4d283680689611eaf22f59",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift": "37c42f5fc192cae9067145e558fcc04f47e86eb115dab54740ba10321ea3913e",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/generate-inputs.py": "67aad28bedb9b4a9f8833dd9705dbed5e537b6bf4b9e24d01fa9d3512796c3e5",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/input-reproduction.json": "b049756af4465ae76ac27b4e1634b07d7246a429e81b9331c8426d6ba91c894c",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/run-authorized.py": "34ab5a476c52a8916034520b97377ecbb93878deaa0d09b915d8e7e3e4cc6845",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/full-tests.log": "4e19d0860ad5efccf82f75caabe89ee18e8d2fec4f48eb19ab57f350932736f2",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-release.log": "d3b381d36d5202bf2e66a79da8814a90529796a17fcfb28a79a6ac1b45536088",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/output-artifact-pins.json": "6080dbe172f4e952cc1f680fa13999875d473059d3b5562714a6d193f43822ba",
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/input-pins.json": "4b682625636367f8a70d7bef63ce0cc2a7d4e118330484ae475654082d195bea"
   },
   "script": "/tmp/review-s20-readiness.py",
   "scriptSHA256": "81a580b3529e3ae5a4f8658bb9722bb5379b065c3d58c902e6f4ee63726b199d"

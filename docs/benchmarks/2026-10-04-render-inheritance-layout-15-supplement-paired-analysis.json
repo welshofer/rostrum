@@ -1,12 +1,12 @@
 {
   "status": "PERF15 pending independent evidence review",
-  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/supplement-paired.json",
+  "source": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/supplement-paired.json",
   "sourceSHA256": "a3c56a6662038ec58653bbe737fb41828139efe298e0b11672af7698cb2af683",
   "bootstrapResamples": 100000,
   "seed": 20261004,
   "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render": {
       "pairedPercentDeltas": [
         -2.7328368781890044,
         0.7472985096772522,
@@ -31,7 +31,7 @@
       "candidateMedianMS": 118.7145625,
       "ratioOfMediansPercentDelta": -0.6620326935873
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render": {
       "pairedPercentDeltas": [
         0.6371467431476319,
         0.47599610485729027,
@@ -56,7 +56,7 @@
       "candidateMedianMS": 122.6722915,
       "ratioOfMediansPercentDelta": 0.37023463585272864
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render": {
       "pairedPercentDeltas": [
         -0.1703094085710566,
         -4.296984773802947,

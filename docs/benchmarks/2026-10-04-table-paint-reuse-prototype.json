@@ -55,7 +55,7 @@
     "cases": [
       {
         "name": "native-table-default-builtin-v1",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/builtin/native-table-default-builtin-v1.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/builtin/native-table-default-builtin-v1.pptx",
         "inputSHA256": "3583235fd4a0caf7be17fad4e79d250ac1098e0a4f64ce462c9a396d91a5873b",
         "files": {
           "saved.pptx": "98f5852c774cef00be3ba9982c51735d8430a345c608587605a2c20d8717b68b",
@@ -65,7 +65,7 @@
       },
       {
         "name": "native-table-default-custom-v1",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/custom/native-table-default-custom-v1.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/custom/native-table-default-custom-v1.pptx",
         "inputSHA256": "5506d837f8a12b4f6a54cca287c9f2943b22d2537270aa084e83792aad65652e",
         "files": {
           "saved.pptx": "fd69ced7b0710600699774615ee86f8ad598bed68265fb4950d97dbc5723defd",
@@ -75,7 +75,7 @@
       },
       {
         "name": "native-table-joins-v1",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoins/native-table-joins-v1.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoins/native-table-joins-v1.pptx",
         "inputSHA256": "23b9cde5274eda35b5278042caf7a9b9d49f5557a4038be1c4646ffd73d42ede",
         "files": {
           "saved.pptx": "99b6c053c9110a249c83ccb6d7c9411890b1fc17fa375ea11ed13c4b4c40a414",
@@ -85,7 +85,7 @@
       },
       {
         "name": "native-table-joins18-v1",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoinProfiles/native-table-joins18-v1.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoinProfiles/native-table-joins18-v1.pptx",
         "inputSHA256": "39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e",
         "files": {
           "saved.pptx": "50237402c019b86e2c6dad22971a639b500c8688a000c9758ece7df878e1611d",
@@ -97,7 +97,7 @@
       },
       {
         "name": "native-table-style-fallback19-v1",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyleFallback/native-table-style-fallback19-v1.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyleFallback/native-table-style-fallback19-v1.pptx",
         "inputSHA256": "e261b6864780fb021e914dfcd4a0e19b3aae9825cc33b94b0168933dcf057268",
         "files": {
           "saved.pptx": "203ed802668fa609e918a93db60c6f025a5084ba079395e9b000655c11df90ae",
@@ -109,7 +109,7 @@
       },
       {
         "name": "partial-custom",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/partial-custom/saved.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/partial-custom/saved.pptx",
         "inputSHA256": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f",
         "files": {
           "saved.pptx": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f",
@@ -119,7 +119,7 @@
       },
       {
         "name": "builtin-grid",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/builtin-grid/saved.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/builtin-grid/saved.pptx",
         "inputSHA256": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e",
         "files": {
           "saved.pptx": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e",
@@ -129,7 +129,7 @@
       },
       {
         "name": "direct-unique",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/direct-unique/saved.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/direct-unique/saved.pptx",
         "inputSHA256": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421",
         "files": {
           "saved.pptx": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421",
@@ -139,7 +139,7 @@
       },
       {
         "name": "empty",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/empty/saved.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/empty/saved.pptx",
         "inputSHA256": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726",
         "files": {
           "saved.pptx": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726",
@@ -149,7 +149,7 @@
       },
       {
         "name": "noFill",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/noFill/saved.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/noFill/saved.pptx",
         "inputSHA256": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0",
         "files": {
           "saved.pptx": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0",
@@ -159,7 +159,7 @@
       },
       {
         "name": "budget-saturation",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/budget-saturation.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/budget-saturation.pptx",
         "inputSHA256": "6bd5dcf6602c1c798b2a7e6e0ade8f51fc92a8c22efba3f9d54f0e214b96e675",
         "files": {
           "saved.pptx": "42406cc1d08d1f785af72530cfce968dc40c646a8e0df297bbf5b01952aaf91a",
@@ -169,7 +169,7 @@
       },
       {
         "name": "oversize-bypass",
-        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/oversize-bypass.pptx",
+        "input": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/oversize-bypass.pptx",
         "inputSHA256": "952e6d4ebee3d8e40498ce13759870bd6810fbcecf7e4aaca467800acb96612f",
         "files": {
           "saved.pptx": "8cbe88e9a38117f286896bbb0c723b5db4568dd8c9d8fbc1c56325166383c96c",
@@ -222,6 +222,6 @@
     }
   ],
   "candidateObjectPath": ".build/table-paint-reuse20/candidate-Rostrum.o",
-  "artifactRoot": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum",
+  "artifactRoot": "/path/to/user/.codex/worktrees/rostrum-tables/rostrum",
   "artifactRetentionNote": "Candidate object copied after review request from .build/debug/Rostrum.o only after exact equality to the pre-existing receipt hash; baseline/candidate original production Sources archives retained from immutable Git commits. Instrumented copies remain separate."
 }

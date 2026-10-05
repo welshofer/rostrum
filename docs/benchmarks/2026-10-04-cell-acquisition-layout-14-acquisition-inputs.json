@@ -1,19 +1,19 @@
 {
   "scope": "Acquisition controls, separate from perf13 retained-cell fitting. Coordinate-unique cell labels;10k row-major lookups each for10x10/40x25/200x50 and1k last-cell lookups for200x50-last. Parsed table, dimensions and array capacity prepared before acquisition timer; text consumption and render separate.",
   "files": {
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx": {
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx": {
       "SHA256": "2cb40f40470687b29a907337ef9ca84ac7763ce8fd57f2c4c25305f7309656cb",
       "lookups": 10000
     },
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx": {
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx": {
       "SHA256": "44ff60834a619b4b90ea445bed406eebfbb23fa145d7aafcab6a517ddc80a1fa",
       "lookups": 10000
     },
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx": {
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx": {
       "SHA256": "a4cd4d8957bbe7d310857036ef05f43b378e76584aa30b6110405d0294fc8f93",
       "lookups": 10000
     },
-    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx": {
+    "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx": {
       "SHA256": "a4cd4d8957bbe7d310857036ef05f43b378e76584aa30b6110405d0294fc8f93",
       "lookups": 1000
     }

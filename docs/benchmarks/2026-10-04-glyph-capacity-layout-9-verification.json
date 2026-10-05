@@ -5,7 +5,7 @@
   "rootEquivalentBaseline": "d494e55",
   "candidateSourceCommit": "850a9185babafa3ba555b05d18bfe13f2b04056e",
   "candidateMeasuredAsFrozenPatchBeforeCommit": true,
-  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf19-glyph-capacity",
+  "retainedDirectory": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf19-glyph-capacity",
   "files": {
     "analyze-profile.py": "034f49da2a7292d90b58d3c7c55b81f92eb3f70abeedecd34eb58fc839d49b11",
     "artifact-hash-check.json": "5e5549e79972152cf81b2d57bc1af7b8c4215b7f38ea0e046c7199a8d7d58e2d",
@@ -214,9 +214,9 @@
         "--warmups",
         "1",
         "--scenarios",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
         "--output",
         "docs/benchmarks/2026-10-04-glyph-capacity-layout-9-supplement-paired-macos.json"
       ]
@@ -268,9 +268,9 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-glyph-capacity-layout-9-supplement-paired-macos.json"
         ],

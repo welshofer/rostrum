@@ -3,7 +3,7 @@
   "scope": "Functional validation only under uncontrolled overlap; rawphase durations retained but excluded from authoritative statistics and claims. One sample/build/input; no comparative estimates.",
   "cases": [
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-builtin-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-builtin-v1.pptx",
       "name": "native-builtin",
       "samples": {
         "baseline": {
@@ -49,7 +49,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-custom-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-default-custom-v1.pptx",
       "name": "native-custom",
       "samples": {
         "baseline": {
@@ -95,7 +95,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-joins-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/native-table-joins-v1.pptx",
       "name": "native-joins",
       "samples": {
         "baseline": {
@@ -141,7 +141,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-20x10.pptx",
       "name": "absent-20x10",
       "samples": {
         "baseline": {
@@ -187,7 +187,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-100x20.pptx",
       "name": "absent-100x20",
       "samples": {
         "baseline": {
@@ -233,7 +233,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-200x50.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/absent-200x50.pptx",
       "name": "absent-200x50",
       "samples": {
         "baseline": {
@@ -279,7 +279,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-20x10.pptx",
       "name": "explicit-20x10",
       "samples": {
         "baseline": {
@@ -325,7 +325,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-200x50.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/explicit-200x50.pptx",
       "name": "explicit-200x50",
       "samples": {
         "baseline": {
@@ -371,7 +371,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-absent-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-absent-20x10.pptx",
       "name": "custom-absent-20x10",
       "samples": {
         "baseline": {
@@ -417,7 +417,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-explicit-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/custom-explicit-20x10.pptx",
       "name": "custom-explicit-20x10",
       "samples": {
         "baseline": {
@@ -463,7 +463,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-20x10.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-20x10.pptx",
       "name": "mixed-joins-20x10",
       "samples": {
         "baseline": {
@@ -509,7 +509,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/mixed-joins-100x20.pptx",
       "name": "mixed-joins-100x20",
       "samples": {
         "baseline": {
@@ -555,7 +555,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/uniform-joins-100x20.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf29-table-fidelity/inputs/uniform-joins-100x20.pptx",
       "name": "uniform-joins-100x20",
       "samples": {
         "baseline": {

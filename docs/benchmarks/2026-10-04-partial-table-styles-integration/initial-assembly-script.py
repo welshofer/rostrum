@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import datetime, timezone
 import json,hashlib,subprocess,re
-ROOT=Path('/Users/welshofer/Developer/rostrum')
+ROOT=Path('/path/to/user/Developer/rostrum')
 DRAFT=Path('/tmp/lectern-fidelity19-integration-draft')
 EXPORT=DRAFT/'docs/benchmarks/2026-10-04-partial-table-styles-integration'
 EXPORT.mkdir(parents=True,exist_ok=True)
@@ -43,7 +43,7 @@ for recipe in ['partialTableStyles','tableJoinProfiles']:
 primary={k:Path(v) for k,v in primary.items()}
 assert sha(primary['manual'])=='cbea605ae51c5b5f03823a4fe48b59b6b5b9290996d37bfaf7e3181ac4212709'
 pins={};copies=[];resolutions=[];snapshots={}
-roots=[ROOT,Path('/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum'),Path('/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum'),Path('/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum')]
+roots=[ROOT,Path('/path/to/user/.codex/worktrees/rostrum-metadata/rostrum'),Path('/path/to/user/.codex/worktrees/rostrum-tables/rostrum'),Path('/path/to/user/.codex/worktrees/rostrum-fonts/rostrum')]
 revisions=['fada328527acabccebfcd0da4ea8b2c5a92105ef','85e1e3946f9d34a93e500cd977e4741e249a8425','dc40a98b09d0db7c132c82c9e8f41b12dd4c5638','481586eda651f5eae6fa6bdbffb2361c664e585a','e9b65363fd7a2614139543093b8b6e988807d554']
 def archive(original,expected,preferred=None):
  original=Path(original).resolve();key=(str(original),expected)

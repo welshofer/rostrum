@@ -4,7 +4,7 @@
   "candidateLibraryGitTree": "17b721dacf82e8f7a08fbfbcb6e56bd00cc52293",
   "rootLibraryGitTree": "17b721dacf82e8f7a08fbfbcb6e56bd00cc52293",
   "sourceEqualityCheck": "git diff 301a6c2 -- Sources/Rostrum Tools/rostrum-bench returned empty output; identical library Git tree",
-  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf8-combined",
+  "retainedDirectory": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf8-combined",
   "files": {
     "candidate-Rostrum.o": "79208d290a760bfd2c3c1b846ca5b2f5fa521eda50442e9ef3d161277b8aa8a7",
     "candidate-bench": "72717e82bc09607c79fe9db0254b1061bf1e7931e4c0680cd8fa70a0a3ba5d42",
@@ -18,7 +18,7 @@
   "baselines": {
     "current": {
       "revision": "5654d1b09e43d26f93a195270f8832b6be3a21e4",
-      "directory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf5",
+      "directory": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf5",
       "files": {
         "baseline-Rostrum.o": "d1c58102341eb35012580f71b239c4f63c925c8b5d930bd65896698e38bd913c",
         "baseline-extended-bench": "d5d85a51b80de125e2b5edb2f7222918a604127322b9a73542b616007a3f8b10"
@@ -26,7 +26,7 @@
     },
     "preTab": {
       "revision": "cf1b8a0cec2cf680383cb683603785aeaa0f2011",
-      "directory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf4",
+      "directory": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf4",
       "files": {
         "baseline-Rostrum.o": "4e54243c71c0fba80a251195c1224cbbf417f1bf694441e9a6637b52dcb9df75",
         "baseline-extended-bench": "39455d6d17672947c0af314581aa4adaa43e548bee0900fbba1d9c7629a54782"

@@ -1,12 +1,12 @@
 {
   "status": "S20 pending independent evidence review",
-  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/supplement-paired.json",
+  "source": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/supplement-paired.json",
   "sourceSHA256": "f5402586d96eaa0f28af91d368f8cf0bae39a79e84a468380908c6ed33114d8e",
   "bootstrapResamples": 100000,
   "seed": 20261004,
   "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render": {
       "pairedPercentDeltas": [
         0.43069380026752313,
         0.4494901538441676,
@@ -31,7 +31,7 @@
       "candidateMedianMS": 116.856979,
       "ratioOfMediansPercentDelta": 0.2894002438839305
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render": {
       "pairedPercentDeltas": [
         1.5684097075109316,
         0.6467495208868801,
@@ -56,7 +56,7 @@
       "candidateMedianMS": 119.626542,
       "ratioOfMediansPercentDelta": 0.38554096271401495
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render": {
       "pairedPercentDeltas": [
         1.1290773462049986,
         -2.357168039031543,

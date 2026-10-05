@@ -1,7 +1,7 @@
 from pathlib import Path
 import json,hashlib,subprocess,collections
 from lxml import etree as E
-R=Path('/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum');ROOT=Path('/Users/welshofer/Developer/rostrum');S=R/'.build/perf33-table-transitions';read=lambda p:json.loads(Path(p).read_text());sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest();git=lambda repo,*args:subprocess.check_output(['git','-C',str(repo),*args])
+R=Path('/path/to/user/.codex/worktrees/rostrum-fonts/rostrum');ROOT=Path('/path/to/user/Developer/rostrum');S=R/'.build/perf33-table-transitions';read=lambda p:json.loads(Path(p).read_text());sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest();git=lambda repo,*args:subprocess.check_output(['git','-C',str(repo),*args])
 p=read(S/'timing-plan.json');ready=read(S/'ready.json');assert sha(S/'timing-plan.json')=='487cd24019eb59e9d510b5c9cd1c7f93281ba20588f26e46ddc09fabd60de29b';assert sha(S/'ready.json')=='76e7117eff3807a0664d1694e57447d92c247976bca8a5f459de2f3a7fa6e195'
 for obj in (p,ready,read(S/'preflight-verification.json')):
  for x,h in obj['pins'].items():assert sha(x)==h,x

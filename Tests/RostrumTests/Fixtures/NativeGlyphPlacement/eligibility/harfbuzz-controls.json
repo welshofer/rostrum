@@ -7,7 +7,7 @@
       "kerning": false,
       "command": [
         "hb-shape",
-        "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7-eligibility/fonts/DejaVuSans.ttf",
+        "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7-eligibility/fonts/DejaVuSans.ttf",
         "AVATAR ToTo",
         "--no-glyph-names",
         "--output-format=json",
@@ -108,7 +108,7 @@
       "kerning": true,
       "command": [
         "hb-shape",
-        "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7-eligibility/fonts/DejaVuSans.ttf",
+        "/path/to/user/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7-eligibility/fonts/DejaVuSans.ttf",
         "AVATAR ToTo",
         "--no-glyph-names",
         "--output-format=json",

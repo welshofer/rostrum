@@ -3,7 +3,7 @@
   "scope": "Functional validation only under uncontrolled overlap; rawphase durations retained but excluded from authoritative statistics and claims. One sample/build/input; no comparative estimates.",
   "cases": [
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-v1.pptx",
       "name": "native-base",
       "samples": {
         "baseline": {
@@ -49,7 +49,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-anchors-v1.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-anchors-v1.pptx",
       "name": "native-anchors",
       "samples": {
         "baseline": {
@@ -95,7 +95,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-exact-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-exact-200.pptx",
       "name": "mixed-exact",
       "samples": {
         "baseline": {
@@ -143,7 +143,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/same-face-exact-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/same-face-exact-200.pptx",
       "name": "same-face-exact",
       "samples": {
         "baseline": {
@@ -191,7 +191,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-percentage-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-percentage-200.pptx",
       "name": "mixed-percentage",
       "samples": {
         "baseline": {
@@ -239,7 +239,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-table-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-table-200.pptx",
       "name": "mixed-table",
       "samples": {
         "baseline": {
@@ -289,7 +289,7 @@
       }
     },
     {
-      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/unequal-signature-200.pptx",
+      "input": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/unequal-signature-200.pptx",
       "name": "unequal-signature",
       "samples": {
         "baseline": {

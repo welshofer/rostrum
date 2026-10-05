@@ -6,8 +6,9 @@ This project adopts the
 In short: be respectful, be constructive, assume good faith. Harassment,
 personal attacks, and sustained disruption are not tolerated.
 
-Reports: contact the maintainer at welshofer@gmail.com. All reports are
-reviewed and investigated, and confidentiality is respected.
+For confidential reports, contact the maintainers through the contact options
+on their GitHub profiles. Do not post personal information in public issues.
+Reports are reviewed and investigated with respect for confidentiality.
 
 For the complete text of the standard — examples of expected and unacceptable
 behavior, enforcement guidelines, and attribution — see the link above.

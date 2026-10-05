@@ -2,7 +2,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 import hashlib, json, subprocess
 
-root = Path('/Users/welshofer/Developer/rostrum')
+root = Path('/path/to/user/Developer/rostrum')
 draft = Path('/tmp/lectern-fidelity21-integration-accepted-performance/docs/benchmarks/2026-10-04-table-transitions-integration-verification.json')
 review = Path('/tmp/rostrum-s21-integration-independent-review.json')
 report = root / 'docs/LAYOUT-FIDELITY-20261004-21.md'

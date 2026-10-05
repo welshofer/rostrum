@@ -7,7 +7,7 @@ from pypdf.generic import ContentStream
 from lxml import etree as E
 from fontTools.ttLib import TTFont
 from fontTools.pens.recordingPen import DecomposingRecordingPen
-ROOT=Path('/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum');sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest();read=lambda p:json.loads(Path(p).read_text());A='http://schemas.openxmlformats.org/drawingml/2006/main';P='http://schemas.openxmlformats.org/presentationml/2006/main';N={'a':A,'p':P};S='http://www.w3.org/2000/svg'
+ROOT=Path('/path/to/user/.codex/worktrees/rostrum-tables/rostrum');sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest();read=lambda p:json.loads(Path(p).read_text());A='http://schemas.openxmlformats.org/drawingml/2006/main';P='http://schemas.openxmlformats.org/presentationml/2006/main';N={'a':A,'p':P};S='http://www.w3.org/2000/svg'
 spec=importlib.util.spec_from_file_location('reviewed_paint','/tmp/verify-webkit-paint.py');helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
 fontpath=ROOT/'Tests/RostrumTests/Fixtures/NativeListMarkers/fonts/DejaVuSans.ttf';fontbytes=fontpath.read_bytes();sourcefont=TTFont(BytesIO(fontbytes));assert sha(fontpath)=='7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954'
 def outline(font,name):

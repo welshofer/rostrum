@@ -2,28 +2,28 @@
   "schema": 1,
   "purpose": "Existing 5000-slide construction diagnostic, not comparative timing",
   "trace": {
-    "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/profile-owned/sample.txt",
+    "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/profile-owned/sample.txt",
     "sha256": "702ee938f26a80de7116ce98344127871ff55ee2c9bd935add0719b83f1bc1c4",
     "bytes": 190283
   },
   "attributionScript": {
-    "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/attribute_construction_sample.py",
+    "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/attribute_construction_sample.py",
     "sha256": "1a6a19825a0e411ad25a3d79a1835cb727bda548fdb77dd86a0a0c4ade1ba355",
     "bytes": 12679
   },
   "parserOrigin": {
-    "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/attribute_table_sample.py",
+    "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage3/attribute_table_sample.py",
     "sha256": "d4351ce05c39b7ab0ff63ddce0fdfee253b1c24ae0c3005d6129e7c814a9f5af",
     "bytes": 9290,
     "parseGraphFunctionSHA256": "e3b5b24b19efc8a9a656edf741414e76acff8b4eb68ca0183841b2f14e29eae6",
     "verbatimCopyVerified": true
   },
   "profileProvenance": {
-    "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/profile-owned/provenance.json",
+    "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/profile-owned/provenance.json",
     "sha256": "818502690ff0777a1c2e7be20fe4b1695a8a01a4acdb7af19ee4dd140bdee1dd",
     "bytes": 441,
     "record": {
-      "binary": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/ca522-rostrum-bench",
+      "binary": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/ca522-rostrum-bench",
       "binarySHA256": "8686dcecacc7ecc862eb781c242c094d41683f730250dd4f23d7190ad80945e0",
       "ownedChildPID": 39233,
       "scenario": "slides-5000",
@@ -35,27 +35,27 @@
     }
   },
   "benchmarkOutput": {
-    "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/profile-owned/stdout.json",
+    "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/profile-owned/stdout.json",
     "sha256": "40a80a05edc105c3ddc0d66ad5dfd931bdc816f87702e6af77dd6c510a5ae4b0",
     "bytes": 334
   },
   "buildProvenance": {
-    "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/reference-builds.json",
+    "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/reference-builds.json",
     "sha256": "0107832aad228ca3b71bf402b10685ff84f3bd9f27d36bccf6e4e0a7ee6628a7",
     "bytes": 3764,
     "record": {
       "revision": "ca522e8be30dfff9ac4c5bc17b74d4128008c9e9",
-      "source": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-ca522",
+      "source": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-ca522",
       "gitTrackedBuildSourceFilesVerified": 97,
-      "binary": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/ca522-rostrum-bench",
+      "binary": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/ca522-rostrum-bench",
       "binarySHA256": "8686dcecacc7ecc862eb781c242c094d41683f730250dd4f23d7190ad80945e0",
-      "command": "env CLANG_MODULE_CACHE_PATH=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --package-path /Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-ca522 --scratch-path .isolated-construction-ca522-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
-      "workingDirectory": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "command": "env CLANG_MODULE_CACHE_PATH=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --package-path /path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-ca522 --scratch-path .isolated-construction-ca522-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
+      "workingDirectory": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "flags": "--disable-sandbox -c release -debug-info-format none --product rostrum-bench -j 2; isolated scratch and module caches"
     }
   },
   "source": {
-    "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-ca522",
+    "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-ca522",
     "revision": "ca522e8be30dfff9ac4c5bc17b74d4128008c9e9",
     "files": {
       "Package.swift": {
@@ -83,7 +83,7 @@
   "sampleHeader": [
     "Analysis of sampling ca522-rostrum-bench (pid 39233) every 1 millisecond",
     "Process:         ca522-rostrum-bench [39233]",
-    "Path:            /Users/USER/Documents/*/ca522-rostrum-bench",
+    "Path:            /path/to/user/Documents/*/ca522-rostrum-bench",
     "Load Address:    0x102694000",
     "Identifier:      ca522-rostrum-bench",
     "Version:         0",

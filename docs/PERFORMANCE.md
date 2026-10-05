@@ -1,6 +1,44 @@
 # Performance measurements
 
-The latest [October 4 comparison](INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-UPSTREAM.md)
+## Latest reconciled measurements
+
+The [table-default and border-join experiment](TABLE-DEFAULT-JOINS-PERFORMANCE-20261004-17.md)
+retains fidelity costs: custom native table rendering observes a 4.852% paired
+slowdown, and the 2,000-cell mixed-width join workload 0.976%. Corrected absent-style
+scaling cases observe 7.84–9.75% faster paired medians while intentionally drawing
+different paint. An unchanged mixed-RTL control also slows down; substantial
+background load prevents general causal or allocation claims.
+
+Separate [ordinary SVG inheritance](RENDER-INHERITANCE-PERFORMANCE-20261004-15.md)
+experiments measured 9.09–18.12% lower paired rendering medians for four
+200-shape controls. The [Lectern marker workflow](LECTERN-MARKER-PERFORMANCE-20261004-15.md)
+measured about 51% lower complete headless recipe times. These have different
+baselines from each other and from [mixed-face fidelity costs](MIXED-FACE-SPACING-PERFORMANCE-20261004-16.md).
+Their percentages must not be added. The linked reports retain raw measurements,
+preservation checks, adverse controls and scope; no universal speedup is claimed.
+
+## Imported-deck rendering checkpoint
+
+The [imported-fidelity update](IMPORTED-FIDELITY-20261003.md) measured a warm
+22-slide full-deck SVG median of **57.30 → 47.85 ms (16.5% lower)** across five
+interleaved Release runs, with 15 warm passes per run. Both binaries include the
+new artwork support. The comparison spans bounded font-resource caching, an
+ASCII shaping fast path and a small marker-style correction; it predates later
+font and anchoring follow-ups. It excludes file I/O, font registration and
+WebKit rasterization. It does not measure startup, scrolling, memory or final
+iOS performance, and its improvement must not be added to the table results below.
+
+## Table and text-layout checkpoints
+
+The earlier [glyph-placement checkpoint](LAYOUT-FIDELITY-20261004-9.md)
+measured registered 2,000-cell table SVG rendering at **67.71 → 64.82 ms**
+(4.26% lower ratio of medians; 3.90% median paired improvement), with all ten
+matched pairs faster. SVG size decreased 10.36% and peak process RSS by
+3.125 MiB for that workload. Rich-text fitting's small measured slowdown is
+inconclusive. These results use their own baseline and cannot be accumulated
+with earlier percentages. See the checkpoint for native acceptance limits.
+
+An earlier [October 4 comparison](INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-UPSTREAM.md)
 compares integrated source `2953dc1` with its measured baseline `6a1f56f`.
 Large fallback rendering is **3.97% slower** and registered-table rendering
 **2.51% slower**, each in nine of ten matched pairs, with about 2 MiB additional

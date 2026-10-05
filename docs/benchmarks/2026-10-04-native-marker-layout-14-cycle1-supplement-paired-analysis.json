@@ -1,12 +1,12 @@
 {
   "status": "WITHHELD cycle1",
-  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf25-marker-cycle1/retained/supplement-paired.json",
+  "source": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf25-marker-cycle1/retained/supplement-paired.json",
   "sourceSHA256": "c99effdd761ce6987bae8fecf0e009681468531f2bc6fee9c0046a40db02d4ee",
   "bootstrapResamples": 100000,
   "seed": 20261004,
   "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render": {
       "pairedPercentDeltas": [
         -0.39920513199824814,
         0.9413934184618,
@@ -31,7 +31,7 @@
       "candidateMedianMS": 117.881729,
       "ratioOfMediansPercentDelta": 0.6427569632168062
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render": {
       "pairedPercentDeltas": [
         -0.6512207760193234,
         1.1295652520121768,
@@ -56,7 +56,7 @@
       "candidateMedianMS": 121.18633299999999,
       "ratioOfMediansPercentDelta": 1.5638217697522272
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render": {
       "pairedPercentDeltas": [
         -2.6365282674898904,
         0.20197321060915208,

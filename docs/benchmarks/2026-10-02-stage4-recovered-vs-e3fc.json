@@ -4,12 +4,12 @@
     "binaries": {
       "baseline": {
         "bytes": 2959024,
-        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "sha256": "0d576500422a2528dacb909bdb47e93c598c95d9a6f9e1f85104e8a614681bd7"
       },
       "candidate": {
         "bytes": 3564832,
-        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "sha256": "a30b5aa14c6af30389e2dea9f768a47d75c7ed41698b0ed3828ea7f0b69847e3"
       }
     },
@@ -20,7 +20,7 @@
     },
     "runner": {
       "bytes": 16857,
-      "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
+      "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
       "sha256": "b7358ce2ca75c67834dfedbeb500a4e3e6ef92fa3364583eaf17722204ea5dc5"
     },
     "sources": {
@@ -376,7 +376,7 @@
           }
         },
         "manifestSHA256": "bab77ae6c1ffe2ff88656c9173008df3c2efec36ffc3146dc90a442c77b0fba0",
-        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
+        "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
       },
       "candidate": {
         "files": {
@@ -770,7 +770,7 @@
           }
         },
         "manifestSHA256": "e4b2e9fba64a885744bf78cb1c84248614297f6903c6aa1619af95b67fad80da",
-        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated"
+        "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated"
       }
     }
   },
@@ -778,12 +778,12 @@
     "binaries": {
       "baseline": {
         "bytes": 2959024,
-        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "sha256": "0d576500422a2528dacb909bdb47e93c598c95d9a6f9e1f85104e8a614681bd7"
       },
       "candidate": {
         "bytes": 3564832,
-        "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "sha256": "a30b5aa14c6af30389e2dea9f768a47d75c7ed41698b0ed3828ea7f0b69847e3"
       }
     },
@@ -794,7 +794,7 @@
     },
     "runner": {
       "bytes": 16857,
-      "path": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
+      "path": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/Tools/render-regression/compare_construction.py",
       "sha256": "b7358ce2ca75c67834dfedbeb500a4e3e6ef92fa3364583eaf17722204ea5dc5"
     },
     "sources": {
@@ -1150,7 +1150,7 @@
           }
         },
         "manifestSHA256": "bab77ae6c1ffe2ff88656c9173008df3c2efec36ffc3146dc90a442c77b0fba0",
-        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
+        "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc"
       },
       "candidate": {
         "files": {
@@ -1544,19 +1544,19 @@
           }
         },
         "manifestSHA256": "e4b2e9fba64a885744bf78cb1c84248614297f6903c6aa1619af95b67fad80da",
-        "root": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated"
+        "root": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated"
       }
     }
   },
   "comparison": "Paired fresh-process construction with identical serialized PPTX output",
   "declaredBuilds": {
     "baseline": {
-      "command": "env CLANG_MODULE_CACHE_PATH=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --package-path /Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc --scratch-path .isolated-construction-e3fc-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
+      "command": "env CLANG_MODULE_CACHE_PATH=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --package-path /path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc --scratch-path .isolated-construction-e3fc-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
       "flags": "--disable-sandbox -c release -debug-info-format none --product rostrum-bench -j 2; isolated scratch and module caches",
       "revision": "e3fc99bc790d7d7c23ca2acacd8f5274d3bdf3cd"
     },
     "candidate": {
-      "command": "env CLANG_MODULE_CACHE_PATH=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --scratch-path .isolated-stage4-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
+      "command": "env CLANG_MODULE_CACHE_PATH=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/clang SWIFTPM_MODULECACHE_OVERRIDE=/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/.isolated-cache/modules swift build --disable-sandbox --scratch-path .isolated-stage4-build --cache-path .isolated-cache --config-path .isolated-cache/config --security-path .isolated-cache/security -c release -debug-info-format none --product rostrum-bench -j 2",
       "flags": "--disable-sandbox -c release -debug-info-format none --product rostrum-bench -j 2; isolated scratch and module caches",
       "revision": "6dd6eb6c14712bb40d22e9c92126fc93001ec424"
     }
@@ -1565,12 +1565,12 @@
   "invocations": [
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": true,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -1602,22 +1602,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 350,
         "sha256": "c06408aa1946527ebfc3d5bbc752ff7f1767f9ceb470b526a0da51ab39df558a"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": true,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-candidate.pptx",
       "outputRetained": false,
       "pair": 0,
       "returnCode": 0,
@@ -1649,22 +1649,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "dffce0084ffa889f0e45b77b9eac96d37ddeb965e265a7899f2308af7579554f"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -1696,22 +1696,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 350,
         "sha256": "6e2625745e318ac391f70b6126d607276eafa5cc70c8226079f01be3da687ca4"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate.pptx",
       "outputRetained": true,
       "pair": 0,
       "returnCode": 0,
@@ -1743,22 +1743,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 355,
         "sha256": "f3074a65e5dd99c2e502211317294f1a83bc17601a4521970907fc5ed8403359"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-candidate.pptx",
       "outputRetained": false,
       "pair": 1,
       "returnCode": 0,
@@ -1790,22 +1790,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 346,
         "sha256": "4934b5d11e302d15eb1970a75cb337ef0f1c90d94cbc1481be86ed9b98a40460"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-baseline.pptx",
       "outputRetained": false,
       "pair": 1,
       "returnCode": 0,
@@ -1837,22 +1837,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 346,
         "sha256": "7431a62d849e5dfa4b20fff47db46ffe554e7ef45a3e157f85db46e0b18e7b66"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-001-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-baseline.pptx",
       "outputRetained": false,
       "pair": 2,
       "returnCode": 0,
@@ -1884,22 +1884,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 355,
         "sha256": "3e577653ff0a34419ff65f97459aba7d00e63452d73d51e8429e8e9939b2d19c"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-candidate.pptx",
       "outputRetained": false,
       "pair": 2,
       "returnCode": 0,
@@ -1931,22 +1931,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 354,
         "sha256": "341e1c1f626a08a702ea3c9e686cad7b18d4f6ea120fe4328fd1230d8a00e8db"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-002-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-candidate.pptx",
       "outputRetained": false,
       "pair": 3,
       "returnCode": 0,
@@ -1978,22 +1978,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 349,
         "sha256": "aa7427c487a4081f0b686ef7f57c713a97327d6ee323f88b24ec91ea16d49e71"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-baseline.pptx",
       "outputRetained": false,
       "pair": 3,
       "returnCode": 0,
@@ -2025,22 +2025,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "eb2b1185a6f1985a8e5ea42b46d3341a524b2c5936984c6e64bda036d216f96a"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-003-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-baseline.pptx",
       "outputRetained": false,
       "pair": 4,
       "returnCode": 0,
@@ -2072,22 +2072,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 353,
         "sha256": "5eb394c62edf3a84efd1ad4067ee52b7738844b5bce72bff5e78f1752bdcedaa"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-candidate.pptx",
       "outputRetained": false,
       "pair": 4,
       "returnCode": 0,
@@ -2119,22 +2119,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 349,
         "sha256": "1b736aa568f3e5db61784d7c1b8aab0c51ed7dff5c2ba111987442818305bff4"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-004-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-candidate.pptx",
       "outputRetained": false,
       "pair": 5,
       "returnCode": 0,
@@ -2166,22 +2166,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 348,
         "sha256": "4de7f0ff074da56476fb59f1596d467d13761986507ba9e150df295b1d19a25e"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-baseline.pptx",
       "outputRetained": false,
       "pair": 5,
       "returnCode": 0,
@@ -2213,22 +2213,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 352,
         "sha256": "4d9e57d14c1b1fc23cc811f1af98c4028c2416afbdf4fbaaf305f900aeb1f5f0"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-005-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-baseline.pptx",
       "outputRetained": false,
       "pair": 6,
       "returnCode": 0,
@@ -2260,22 +2260,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 350,
         "sha256": "f1d0bb00636e0557387f6fb744da65c6c1f586209b84705e3db6fa7553a8ce2a"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-candidate.pptx",
       "outputRetained": false,
       "pair": 6,
       "returnCode": 0,
@@ -2307,22 +2307,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 353,
         "sha256": "bfc3dd94b0e600b851da975e36cc4ffe773836f25bda7dce19d97b06f6c6ec68"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-006-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-candidate.pptx",
       "outputRetained": false,
       "pair": 7,
       "returnCode": 0,
@@ -2354,22 +2354,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "4854ae3b4dbfa24ecc4f2604d81b273508478b7f56a87956ad2dc479a95e3c62"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-baseline.pptx",
       "outputRetained": false,
       "pair": 7,
       "returnCode": 0,
@@ -2401,22 +2401,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "a228d413c098839eb7d51a0d64ffaf8546ffeb40a01a463688396fb0e6547cc8"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-007-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-baseline.pptx",
       "outputRetained": false,
       "pair": 8,
       "returnCode": 0,
@@ -2448,22 +2448,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 349,
         "sha256": "f127647d2785225013ca75b95fb9de9e036d913264b7182f6998aa6fbacaaf18"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-candidate.pptx",
       "outputRetained": false,
       "pair": 8,
       "returnCode": 0,
@@ -2495,22 +2495,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 355,
         "sha256": "7ff0f5a975c931c653823fc50cbd89ff01389fab9a216740ab08a40ca9128d15"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-008-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-candidate.pptx",
       "outputRetained": false,
       "pair": 9,
       "returnCode": 0,
@@ -2542,22 +2542,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 354,
         "sha256": "d42a48f30a35e05a6c0425db522b3225911f9a5d24a97dc60ed341c7a2abbdec"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-baseline.pptx",
       "outputRetained": false,
       "pair": 9,
       "returnCode": 0,
@@ -2589,22 +2589,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 351,
         "sha256": "edf71418674a83f703424262632b31c35d7d33750fb294d4f5b7fc7c90fe4c61"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-009-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-baseline.pptx",
       "outputRetained": false,
       "pair": 10,
       "returnCode": 0,
@@ -2636,22 +2636,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 355,
         "sha256": "fc0fdf84c6d845289be243e60f8d8d7ee7821b49a7b2d15bbecfe302bb5c0a79"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-baseline-stdout.json",
       "variant": "baseline"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-candidate.pptx",
       "outputRetained": false,
       "pair": 10,
       "returnCode": 0,
@@ -2683,22 +2683,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 347,
         "sha256": "8ced4d17f63c2cd70f746d65d5d16ebad654dc84ad51617cde9f07749073a418"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-010-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/candidate-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-candidate.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-candidate.pptx",
       "outputRetained": false,
       "pair": 11,
       "returnCode": 0,
@@ -2730,22 +2730,22 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-candidate-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-candidate-stderr.log",
       "stdoutIdentity": {
         "bytes": 347,
         "sha256": "b06236493d1a65a07d6495a789f6374abee0bf4829af50658372492ab37cc49f"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-candidate-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-candidate-stdout.json",
       "variant": "candidate"
     },
     {
       "command": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/e3fc-rostrum-bench",
         "slides-1000"
       ],
-      "cwd": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
+      "cwd": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-construction-e3fc",
       "excludedWarmup": false,
-      "outputPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-baseline.pptx",
+      "outputPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-baseline.pptx",
       "outputRetained": false,
       "pair": 11,
       "returnCode": 0,
@@ -2777,12 +2777,12 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "stderrPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-baseline-stderr.log",
+      "stderrPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-baseline-stderr.log",
       "stdoutIdentity": {
         "bytes": 353,
         "sha256": "0a23de9c90acd4e2dcb3f77af11281c672ca06babb315cb55d0388899a055c4b"
       },
-      "stdoutPath": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-baseline-stdout.json",
+      "stdoutPath": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-011-baseline-stdout.json",
       "variant": "baseline"
     }
   ],
@@ -3212,10 +3212,10 @@
         ]
       },
       "primaryPhase": "construct",
-      "referencePPTX": "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline.pptx",
+      "referencePPTX": "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/warmup-000-baseline.pptx",
       "representativePPTXs": [
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline.pptx",
-        "/Users/welshofer/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate.pptx"
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-baseline.pptx",
+        "/path/to/user/Documents/Codex/2026-10-01/task-4/rostrum-isolated/evidence/stage4/recovered-vs-e3fc/slides-1000/pair-000-candidate.pptx"
       ],
       "serializedPPTX": {
         "bytes": 1178991,

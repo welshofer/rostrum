@@ -1,12 +1,12 @@
 {
   "status": "S16 pending independent evidence review",
-  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/native-paired.json",
+  "source": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/native-paired.json",
   "sourceSHA256": "e153dc8dc19d8c58d2db0217928bdfc5f2f7741d5eb3cbfb4874965aac737736",
   "bootstrapResamples": 100000,
   "seed": 20261004,
   "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
   "results": {
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-v1.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-v1.pptx/render": {
       "pairedPercentDeltas": [
         -0.9182591525789485,
         -7.005202460604309,
@@ -31,7 +31,7 @@
       "candidateMedianMS": 2.290937,
       "ratioOfMediansPercentDelta": -1.5946740250044944
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-anchors-v1.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-anchors-v1.pptx/render": {
       "pairedPercentDeltas": [
         -2.1368910982244693,
         0.18073635872226657,
@@ -56,7 +56,7 @@
       "candidateMedianMS": 2.532229,
       "ratioOfMediansPercentDelta": -2.188035766121532
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-exact-200.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-exact-200.pptx/render": {
       "pairedPercentDeltas": [
         -0.07768527204502496,
         3.0205767737669253,
@@ -81,7 +81,7 @@
       "candidateMedianMS": 34.0720625,
       "ratioOfMediansPercentDelta": 0.9349440492994798
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-exact-200.pptx/spacing-fitting": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-exact-200.pptx/spacing-fitting": {
       "pairedPercentDeltas": [
         2.047692483206154,
         4.3240401813863905,
@@ -106,7 +106,7 @@
       "candidateMedianMS": 18.762541499999998,
       "ratioOfMediansPercentDelta": 2.204206903781536
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/same-face-exact-200.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/same-face-exact-200.pptx/render": {
       "pairedPercentDeltas": [
         -10.128920255686925,
         -0.5183631690285129,
@@ -131,7 +131,7 @@
       "candidateMedianMS": 33.225125500000004,
       "ratioOfMediansPercentDelta": 0.6394404462189085
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/same-face-exact-200.pptx/spacing-fitting": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/same-face-exact-200.pptx/spacing-fitting": {
       "pairedPercentDeltas": [
         -17.692486690412913,
         0.4036617226553574,
@@ -156,7 +156,7 @@
       "candidateMedianMS": 18.299729499999998,
       "ratioOfMediansPercentDelta": 0.5776678552044778
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-percentage-200.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-percentage-200.pptx/render": {
       "pairedPercentDeltas": [
         -0.1335849304518799,
         1.4159601108691966,
@@ -181,7 +181,7 @@
       "candidateMedianMS": 34.1643125,
       "ratioOfMediansPercentDelta": 0.4409908329030543
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-percentage-200.pptx/spacing-fitting": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-percentage-200.pptx/spacing-fitting": {
       "pairedPercentDeltas": [
         1.1890193299940233,
         -0.387375125427758,
@@ -206,7 +206,7 @@
       "candidateMedianMS": 129.6682495,
       "ratioOfMediansPercentDelta": -0.008129702503689717
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-table-200.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-table-200.pptx/render": {
       "pairedPercentDeltas": [
         0.27468369474303866,
         -0.530666801474744,
@@ -231,7 +231,7 @@
       "candidateMedianMS": 34.005437,
       "ratioOfMediansPercentDelta": -0.623743474909666
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-table-200.pptx/spacing-fitting": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-table-200.pptx/spacing-fitting": {
       "pairedPercentDeltas": [
         -0.04665081960396611,
         -1.698479095032368,
@@ -256,7 +256,7 @@
       "candidateMedianMS": 37.5155625,
       "ratioOfMediansPercentDelta": -0.6841676814740238
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/unequal-signature-200.pptx/render": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/unequal-signature-200.pptx/render": {
       "pairedPercentDeltas": [
         -1.5042682953112618,
         -4.778339538741161,
@@ -281,7 +281,7 @@
       "candidateMedianMS": 33.983896,
       "ratioOfMediansPercentDelta": -0.16310796392311477
     },
-    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/unequal-signature-200.pptx/spacing-fitting": {
+    "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/unequal-signature-200.pptx/spacing-fitting": {
       "pairedPercentDeltas": [
         -1.3137253571105845,
         -3.6930540911175536,

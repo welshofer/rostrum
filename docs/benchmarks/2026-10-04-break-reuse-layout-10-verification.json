@@ -7,7 +7,7 @@
   "candidateSourceCommit": "4118c97ae0c18c2053eeaae5163e990d3e7a0f05",
   "candidateMeasuredAsFrozenPatchBeforeCommit": true,
   "candidateSourcesGitTree": "e339cfabc3f64dbe61f3556493e4c4bfc8caaaf5",
-  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf20-break-reuse",
+  "retainedDirectory": "/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf20-break-reuse",
   "files": {
     "analyze-profile.py": "66c787d818043b6809178389cf829b495fab8b5470e467d3956aa49a76d079ad",
     "artifact-hash-check.json": "5e1780b212c05a93bd021c88407b7826dc3ed43d1bc3d4fc997559b36b995ae2",
@@ -230,9 +230,9 @@
         "--warmups",
         "1",
         "--scenarios",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
         "--output",
         "docs/benchmarks/2026-10-04-break-reuse-layout-10-supplement-paired-macos.json"
       ]
@@ -284,9 +284,9 @@
           "--warmups",
           "1",
           "--scenarios",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
-          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/path/to/user/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
           "--output",
           "docs/benchmarks/2026-10-04-break-reuse-layout-10-supplement-paired-macos.json"
         ],

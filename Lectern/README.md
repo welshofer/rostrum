@@ -1,12 +1,10 @@
 # Lectern
 
-The demo application for **Rostrum** — prove the full loop in one window: a
-prompt, optional PDF grounding, a few intent parameters, and one of many bundled
-`design.md` styles go in; a native `.pptx` written entirely by Rostrum comes out.
-Everything runs on-device except text and optional image-provider calls. (Section references like §8.3
-`design.md` styles or a PowerPoint template go in; a native `.pptx` written entirely by Rostrum comes out.
-Everything runs on-device except the LLM call. (Section references like §8.3
-below cite the internal Lectern spec, which is not part of this repository.)
+The demo application for **Rostrum** takes a prompt, optional PDF grounding,
+intent parameters, and either a bundled `design.md` style or a PowerPoint
+template, then produces an editable `.pptx`. Parsing, layout, rendering and file
+creation run on-device. Configured text and optional image providers receive
+the generation requests; API keys are stored in the system Keychain.
 
 ## Layout
 
@@ -24,7 +22,7 @@ Lectern/
 └── Tests/LecternCoreTests/  # the acceptance core, fixture-backed
 ```
 
-Rostrum is a **local path dependency** (`../`), resolving OQ-4.
+Rostrum is a **local path dependency** (`../`).
 
 ## Library Lab
 
@@ -60,6 +58,20 @@ uniform row between independently recorded native wrap boundaries. The specimens
 use separate Latin letter glyphs, matching the native references, and retain
 their font sizes and fitting settings through saving and reopening.
 
+The **Imported artwork and text** demo exercises custom curves, SVG artwork,
+saved SmartArt drawings, inherited text and empty numbered paragraphs. It uses
+redistributable bundled fonts and verifies saved/reopened content and source
+preservation. See the [imported-fidelity acceptance record](../docs/IMPORTED-FIDELITY-20261003.md)
+for native PowerPoint and separate iOS consumer results and their limits.
+
+The catalog now includes **Native list markers**, **Text alignment**, **Mixed
+faces and exact spacing**, and **Table defaults and border joins**. These preserve
+native specimens while separate pages exercise public fitting and editing APIs.
+They validate saved files, actual inspector previews and exports. Their support
+bounds and independent PowerPoint/WebKit comparisons are documented in the
+[layout guide](../docs/LAYOUT-ENGINE.md) and
+[latest table checkpoint](../docs/LAYOUT-FIDELITY-20261004-17.md).
+
 See the [coverage and verification record](../docs/LIBRARY-LAB-20261002.md).
 
 ## Choose a PowerPoint template
@@ -93,7 +105,10 @@ sections and complete comment text alongside the original media bytes.
 Preview geometry follows each slide's aspect ratio. macOS snapshots have bounded
 dimensions, queue depth and completion time; cache identity includes the full SVG
 and output size. Installed font lookup validates actual families and styles,
-preserves embedded faces, and reports unavailable metrics. Rendering limitations
+preserves embedded faces, and reports unavailable metrics. Inspection registers
+Arial as an explicit measured preview fallback so missing fonts use consistent
+layout and drawing; original document font names remain unchanged. The missing
+font still appears in the fidelity report. Rendering limitations
 remain visible separately from schema findings.
 
 The deterministic [feature pipeline fixture](Tests/LecternCoreTests/Fixtures/FeaturePipeline/README.md)

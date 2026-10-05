@@ -1,6 +1,6 @@
 from pathlib import Path
 import json,copy,importlib.util,hashlib,fitz
-H=Path('/tmp/verify-fidelity21-table-transition-paint-v3.py');spec=importlib.util.spec_from_file_location('transition_audit',H);h=importlib.util.module_from_spec(spec);spec.loader.exec_module(h);R=Path('/Users/welshofer/Developer/rostrum');F=R/'Lectern/Sources/LecternCore/Resources/LibraryLab/TableTransitionsReferences.json';ref=json.loads(F.read_text());c=ref['cases'][0];actual={k:copy.deepcopy(c[k])for k in('lines','fills')};h.check_vectors(copy.deepcopy(actual),c);results=[]
+H=Path('/tmp/verify-fidelity21-table-transition-paint-v3.py');spec=importlib.util.spec_from_file_location('transition_audit',H);h=importlib.util.module_from_spec(spec);spec.loader.exec_module(h);R=Path('/path/to/user/Developer/rostrum');F=R/'Lectern/Sources/LecternCore/Resources/LibraryLab/TableTransitionsReferences.json';ref=json.loads(F.read_text());c=ref['cases'][0];actual={k:copy.deepcopy(c[k])for k in('lines','fills')};h.check_vectors(copy.deepcopy(actual),c);results=[]
 def reject(name,value,expected=c):
  try:h.check_vectors(value,expected)
  except AssertionError:results.append(dict(name=name,rejected=True));return
