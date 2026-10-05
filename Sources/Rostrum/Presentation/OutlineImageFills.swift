@@ -132,15 +132,18 @@ struct OutlineImageFills {
                     if direct.name == "{\(TableStyleXML.drawing)}blipFill" {
                         image(direct, owner: owner, path: location + "/tableBackground", alt: alt)
                     }
-                } else {
-                    let background = resolver.background()
+                } else if let background = resolver.definition?.firstChild(named: "a:tblBg") {
+                    let styleOwner = resolver.stylePart ?? owner
                     let selected: Node?
-                    if background.owner === theme.part,
-                       let reference = resolver.definition?.firstChild(named: "a:tblBg")?.firstChild(named: "a:fillRef") {
-                        selected = themeFill(node(reference, owner: resolver.stylePart ?? owner))
-                    } else { selected = node(background.properties, owner: background.owner).child("blipFill") }
+                    let selectedOwner: Part
+                    if let direct = background.firstChild(named: "a:fill")?.childElements.first {
+                        selected = node(direct, owner: styleOwner); selectedOwner = styleOwner
+                    } else {
+                        selected = themeFill(background.firstChild(named: "a:fillRef").map { node($0, owner: styleOwner) })
+                        selectedOwner = theme.part
+                    }
                     if let selected, selected.name == "{\(TableStyleXML.drawing)}blipFill" {
-                        image(selected, owner: background.owner, path: location + "/tableBackground", alt: alt)
+                        image(selected, owner: selectedOwner, path: location + "/tableBackground", alt: alt)
                     }
                 }
                 var session = TableStyleResolver.ImageFillSession(resolver, namespaces: tableNode.scope)

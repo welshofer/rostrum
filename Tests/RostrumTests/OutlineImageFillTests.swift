@@ -464,4 +464,49 @@ import Testing
         }
     }
 
+    @Test func tableBackgroundThemeAliasesResolveBeforeOwnerSelection() throws {
+        for prefix in ["d:", ""] {
+            let deck = try Presentation(), slide = try deck.slides[0]
+            try setBackground(slide.part, id: nil) // Isolate the table from the slide's default theme background.
+            let table = try slide.shapes.addTable(rows: 1, columns: 1, frame: frame)
+            try table.setStyleDefinition(style("<a:noFill/>"))
+            let resolver = TableStyleResolver(table: table, theme: deck.theme)
+            let owner = try #require(resolver.stylePart)
+            let definition = try #require(TableStyleXML.definitions(in: try owner.dom()).first)
+            let background = XML.Element("a:tblBg", children: [.element(XML.Element("a:fillRef", attributes: [("idx", "1001")]))])
+            definition.appendElement(background); owner.markDirty()
+            let (wrong, ownerID) = addImage(deck, owner: owner, name: "background-wrong-owner.png")
+            let (expected, themeID) = addImage(deck, owner: deck.theme.part, name: "background-theme.png")
+            #expect(ownerID == themeID && wrong.uri != expected.uri)
+            let themeRoot = try deck.theme.part.dom()
+            let elements = try #require(themeRoot.firstChild(named: "a:themeElements"))
+            let list = try #require(elements.firstChild(named: "a:fmtScheme")?.firstChild(named: "a:bgFillStyleLst"))
+            list.children = [.element(Fill.blipFill(rId: themeID, fit: .stretch))]
+            elements[attribute: prefix.isEmpty ? "xmlns" : "xmlns:d"] = TableStyleXML.drawing
+            func rename(_ node: XML.Element) {
+                if node.name.hasPrefix("a:") { node.name = prefix + node.name.dropFirst(2) }
+                for child in node.childElements { rename(child) }
+            }
+            rename(elements); deck.theme.part.markDirty()
+            #expect(deck.outline().slides[0].assets.map(\.partName) == [expected.uri.value])
+            background.children.insert(.element(XML.Element("a:fill", children: [.element(XML.Element("a:noFill"))])), at: 0)
+            #expect(deck.outline().assetCount == 0)
+            background.firstChild(named: "a:fill")?.children = [.element(Fill.blipFill(rId: ownerID, fit: .stretch))]
+            #expect(deck.outline().slides[0].assets.map(\.partName) == [wrong.uri.value])
+            let properties = try #require(table.tbl.firstChild(named: "a:tblPr"))
+            properties.appendElement(XML.Element("a:noFill")); slide.part.markDirty()
+            #expect(deck.outline().assetCount == 0)
+            properties.removeChildren(named: "a:noFill")
+            let (direct, directID) = addImage(deck, owner: slide.part, name: "background-direct.png")
+            properties.appendElement(Fill.blipFill(rId: directID, fit: .stretch)); slide.part.markDirty()
+            #expect(deck.outline().slides[0].assets.map(\.partName) == [direct.uri.value])
+            properties.removeChildren(named: "a:blipFill"); background.removeChildren(named: "a:fill")
+            slide.part.markDirty(); owner.markDirty()
+            let saved = try deck.serializedData(), result = deck.outline()
+            #expect(result.slides[0].assets.map(\.partName) == [expected.uri.value] && result.warnings.isEmpty)
+            #expect(try deck.serializedData() == saved)
+            #expect(try Presentation(data: saved).outline() == result)
+        }
+    }
+
 }
