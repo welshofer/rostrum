@@ -306,3 +306,25 @@ Cell dimensions must exceed the widest stroke in the admitted rectangular,
 unmerged LTR join profile. Glyph first-origin grouping is specific to the
 captured unwrapped Agjp strings, one per cell. The fourth public authoring page
 is outside the native numerical corpus.
+
+## Table join profiles (31st recipe)
+
+`native-table-joins18-v1.pptx` is copied byte-for-byte from
+`Tests/RostrumTests/Fixtures/NativeTableJoinProfiles` (source SHA-256
+`39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e`).
+`TableJoinProfilesReferences.json` projects all eight cases and 112 glyph traces
+without changing native values; its source, PDF and licensed DejaVu Sans hashes
+are pinned in the resource. The PDF hash is
+`76fb8fb6e663efe692e15873ee51d21bc1e6a85e759d0a4527c02742a1874e46`.
+The first two generated pages preserve entire specimen nodes and their frames,
+master bindings and font bytes. Outside captions use bundled DejaVu Sans, so
+whole pages are not source-byte-identical. The third page is public authoring,
+with horizontal/vertical merge options, and has no native numeric oracle.
+
+The admitted profiles are single-color unmerged RTL, axis-uniform two-color
+unmerged LTR, and single-color LTR merges with one orientation across the entire
+grid. Cells exceed the widest stroke; opaque solid centered borders have no
+diagonals. Mixed orientations and combined profiles are excluded. Native vector
+checks retain all intervals and nine ordered colored crossings per colored case.
+Glyph trace scalar origins/size are separate evidence, not outline ink parity.
+Custom-style default borders remain a separate limitation.
