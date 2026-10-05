@@ -7,13 +7,14 @@ candidate based on `8c069ec37a69cb39424af90b7099422bb7d0ea70`.
 
 | Review | Result |
 | --- | --- |
-| Git-selected source and documentation | No matched profanity, private-key material, provider-credential candidate, Google-key candidate or personal home path |
+| Git-selected release tree | 3,476 files; no matched profanity, private-key material, provider-credential candidate, Google-key candidate or personal home path |
 | Archived documents | 104 ZIP/PPTX packages; 4,429 textual members inspected |
 | PDF evidence | Metadata and extracted text inspected in all 54 tracked PDFs |
 | Gitleaks working-tree snapshot | 738 heuristic findings, all recorded SHA-256 checksums |
 | Gitleaks reachable history | 1,521 heuristic findings: 1,520 recorded SHA-256 checksums and one historical Keychain access-group identifier |
 | Unresolved credential candidates | None after contextual review |
 | Attribution | python-pptx acknowledgment and licensing retained |
+| Downloadable demo archive | 34 PowerPoint decks with 168 presentation slides; manifest sizes, SHA-256 values and ZIP CRCs verified |
 
 The history scan covered every locally reachable reference, including work
 branches. Its larger count is not comparable to a scan restricted to `main`.
@@ -27,6 +28,18 @@ checked against the upstream SHA-256 list. Both scans used full redaction.
 The current-tree scan used an isolated copy of Git-selected files, including
 the nonignored release additions, with archive traversal enabled. Local raw
 scanner reports are not included in the release.
+
+The final scan includes all three documentation screenshots and the release
+validation record. Screenshot pixels were visually reviewed separately; the
+text scanner does not inspect pixels. The downloadable archive, its embedded
+README and manifest, the separate manifest and `SHA256SUMS` were also scanned
+in an isolated temporary Git scope: 54 archives including nested Office packages,
+1,596 textual members, and no focused-check findings or extraction failures.
+The combined repository-and-assets Gitleaks scan still reported only the same
+738 reviewed checksum matches. The outer archive checksum matches `SHA256SUMS`,
+and its embedded manifest matches the separate downloadable manifest. Slide
+counts use each presentation's active slide list rather than counting retained
+package parts.
 
 ## Repeatable focused check
 
