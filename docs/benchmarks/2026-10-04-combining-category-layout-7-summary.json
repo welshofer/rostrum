@@ -1,0 +1,84 @@
+{
+  "status": "Cycle1 accepted bounded registered and fitting results; independent raw/stat review pending; substantial variable host load",
+  "baselineRevision": "474a08d952435b02960aaba3872aa1b3dd744790",
+  "candidateWasFrozenUncommittedPatchAtTiming": true,
+  "measurements": {
+    "table-200x50": {
+      "peakRSSMedianBytes": {
+        "baseline": 189849600.0,
+        "candidate": 189718528.0
+      },
+      "peakRSSMedianDeltaBytes": -131072.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 193.23091649999998,
+          "candidateMedianMS": 191.812,
+          "ratioOfMediansPercentDelta": -0.7343113233124754
+        }
+      }
+    },
+    "table-20x10": {
+      "peakRSSMedianBytes": {
+        "baseline": 18423808.0,
+        "candidate": 18038784.0
+      },
+      "peakRSSMedianDeltaBytes": -385024.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 3.9321665,
+          "candidateMedianMS": 3.893687,
+          "ratioOfMediansPercentDelta": -0.9785826719189039
+        }
+      }
+    },
+    "shaped-table-100x20": {
+      "peakRSSMedianBytes": {
+        "baseline": 57352192.0,
+        "candidate": 57171968.0
+      },
+      "peakRSSMedianDeltaBytes": -180224.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 75.2025625,
+          "candidateMedianMS": 71.8618965,
+          "ratioOfMediansPercentDelta": -4.44222362768556
+        }
+      }
+    },
+    "richtext-fit": {
+      "peakRSSMedianBytes": {
+        "baseline": 22224896.0,
+        "candidate": 22315008.0
+      },
+      "peakRSSMedianDeltaBytes": 90112.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 3.474813,
+          "candidateMedianMS": 3.316875,
+          "ratioOfMediansPercentDelta": -4.54522300912309
+        },
+        "richtext-fitting": {
+          "baselineMedianMS": 14.222354,
+          "candidateMedianMS": 13.2483125,
+          "ratioOfMediansPercentDelta": -6.8486658397055695
+        }
+      }
+    },
+    "slides-10": {
+      "peakRSSMedianBytes": {
+        "baseline": 16105472.0,
+        "candidate": 16089088.0
+      },
+      "peakRSSMedianDeltaBytes": -16384.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 0.6121455,
+          "candidateMedianMS": 0.611417,
+          "ratioOfMediansPercentDelta": -0.1190076542259999
+        }
+      }
+    }
+  },
+  "scope": "Current post-bidi baseline only. Source targets shaping; fallback variation cannot be attributed to this guard. No cumulative/historical recovery, clean-host/general/cross-platform or lower-memory claim.",
+  "candidateSourceCommit": "cbe830dca5090e6d2984873dea3fade30251b95b"
+}

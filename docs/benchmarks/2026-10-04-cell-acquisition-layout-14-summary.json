@@ -1,0 +1,207 @@
+{
+  "status": "Streaming table-cell acquisition candidate measured once; evidence acceptance pending; uncontrolled background load",
+  "baselineRevision": "e5bd10729e63e32e1bbea1f59c4c2039be45ef10",
+  "candidateSourceCommit": "d64ddb31e7790b002bcfa819059ed657deb1a527",
+  "measurements": {
+    "canonical": {
+      "table-200x50": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 181.269646,
+            "candidateMedianMS": 181.2786875,
+            "ratioOfMediansPercentDelta": 0.004987873148931676
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 189612032.0,
+          "candidate": 189579264.0
+        },
+        "peakRSSMedianDeltaBytes": -32768.0
+      },
+      "table-20x10": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 3.6317085000000002,
+            "candidateMedianMS": 3.6077285,
+            "ratioOfMediansPercentDelta": -0.660295285263135
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 18227200.0,
+          "candidate": 18251776.0
+        },
+        "peakRSSMedianDeltaBytes": 24576.0
+      },
+      "shaped-table-100x20": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 62.178375,
+            "candidateMedianMS": 62.0947915,
+            "ratioOfMediansPercentDelta": -0.13442535286585233
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 53903360.0,
+          "candidate": 53952512.0
+        },
+        "peakRSSMedianDeltaBytes": 49152.0
+      },
+      "richtext-fit": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 2.450229,
+            "candidateMedianMS": 2.4211045,
+            "ratioOfMediansPercentDelta": -1.1886440002138565
+          },
+          "richtext-fitting": {
+            "baselineMedianMS": 9.262395999999999,
+            "candidateMedianMS": 9.214833500000001,
+            "ratioOfMediansPercentDelta": -0.5135010422788855
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 22216704.0,
+          "candidate": 22069248.0
+        },
+        "peakRSSMedianDeltaBytes": -147456.0
+      },
+      "slides-10": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 0.5233955,
+            "candidateMedianMS": 0.5183125,
+            "ratioOfMediansPercentDelta": -0.9711585216151231
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 16138240.0,
+          "candidate": 15990784.0
+        },
+        "peakRSSMedianDeltaBytes": -147456.0
+      }
+    },
+    "supplement": {
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 117.477542,
+            "candidateMedianMS": 117.6321875,
+            "ratioOfMediansPercentDelta": 0.13163835177960603
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 52183040.0,
+          "candidate": 51888128.0
+        },
+        "peakRSSMedianDeltaBytes": -294912.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 119.9972915,
+            "candidateMedianMS": 119.776375,
+            "ratioOfMediansPercentDelta": -0.18410123865171268
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 50511872.0,
+          "candidate": 50118656.0
+        },
+        "peakRSSMedianDeltaBytes": -393216.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 392.0816875,
+            "candidateMedianMS": 384.974729,
+            "ratioOfMediansPercentDelta": -1.8126218914521375
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 43253760.0,
+          "candidate": 43253760.0
+        },
+        "peakRSSMedianDeltaBytes": 0.0
+      }
+    },
+    "acquisition": {
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 4.1484585,
+            "candidateMedianMS": 4.147729,
+            "ratioOfMediansPercentDelta": -0.017584845069562594
+          },
+          "cell-acquisition": {
+            "baselineMedianMS": 23.7045,
+            "candidateMedianMS": 0.742875,
+            "ratioOfMediansPercentDelta": -96.866101373157
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 20045824.0,
+          "candidate": 20021248.0
+        },
+        "peakRSSMedianDeltaBytes": -24576.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 24.7005415,
+            "candidateMedianMS": 24.539082999999998,
+            "ratioOfMediansPercentDelta": -0.6536638073298962
+          },
+          "cell-acquisition": {
+            "baselineMedianMS": 142.9095835,
+            "candidateMedianMS": 1.182521,
+            "ratioOfMediansPercentDelta": -99.1725390480898
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 26329088.0,
+          "candidate": 26198016.0
+        },
+        "peakRSSMedianDeltaBytes": -131072.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 276.3489795,
+            "candidateMedianMS": 276.707229,
+            "ratioOfMediansPercentDelta": 0.1296366285296946
+          },
+          "cell-acquisition": {
+            "baselineMedianMS": 1067.8362295,
+            "candidateMedianMS": 3.345063,
+            "ratioOfMediansPercentDelta": -99.68674381823828
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 155959296.0,
+          "candidate": 155893760.0
+        },
+        "peakRSSMedianDeltaBytes": -65536.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 277.382,
+            "candidateMedianMS": 276.0820415,
+            "ratioOfMediansPercentDelta": -0.4686527965044651
+          },
+          "cell-acquisition": {
+            "baselineMedianMS": 107.86185449999999,
+            "candidateMedianMS": 0.576333,
+            "ratioOfMediansPercentDelta": -99.46567486469463
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 155041792.0,
+          "candidate": 154992640.0
+        },
+        "peakRSSMedianDeltaBytes": -49152.0
+      }
+    }
+  },
+  "scope": "Unchanged canonical/supplementary176 processes plus separate88-process acquisition controls. No cumulative/historical, universal or clean-host claim."
+}

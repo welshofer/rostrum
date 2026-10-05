@@ -1,0 +1,207 @@
+{
+  "status": "Live cell-fitting candidate measured once; evidence acceptance pending; uncontrolled background load",
+  "baselineRevision": "7c26656adbf56e4c03967bd894752c3022fda2f5",
+  "candidateWasFrozenUncommittedPatchAtTiming": true,
+  "measurements": {
+    "canonical": {
+      "table-200x50": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 190.24849999999998,
+            "candidateMedianMS": 191.631646,
+            "ratioOfMediansPercentDelta": 0.7270207123840633
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 189579264.0,
+          "candidate": 189652992.0
+        },
+        "peakRSSMedianDeltaBytes": 73728.0
+      },
+      "table-20x10": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 3.806458,
+            "candidateMedianMS": 3.861125,
+            "ratioOfMediansPercentDelta": 1.4361645393171196
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 18169856.0,
+          "candidate": 18219008.0
+        },
+        "peakRSSMedianDeltaBytes": 49152.0
+      },
+      "shaped-table-100x20": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 102.5586875,
+            "candidateMedianMS": 105.7507495,
+            "ratioOfMediansPercentDelta": 3.1124247763018476
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 56614912.0,
+          "candidate": 55705600.0
+        },
+        "peakRSSMedianDeltaBytes": -909312.0
+      },
+      "richtext-fit": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 4.500438,
+            "candidateMedianMS": 4.1662289999999995,
+            "ratioOfMediansPercentDelta": -7.426143855331424
+          },
+          "richtext-fitting": {
+            "baselineMedianMS": 15.7835415,
+            "candidateMedianMS": 15.114042000000001,
+            "ratioOfMediansPercentDelta": -4.241757149369796
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 23314432.0,
+          "candidate": 23126016.0
+        },
+        "peakRSSMedianDeltaBytes": -188416.0
+      },
+      "slides-10": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 1.0365630000000001,
+            "candidateMedianMS": 1.037021,
+            "ratioOfMediansPercentDelta": 0.044184482756937093
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 16490496.0,
+          "candidate": 16629760.0
+        },
+        "peakRSSMedianDeltaBytes": 139264.0
+      }
+    },
+    "supplement": {
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 174.61308350000002,
+            "candidateMedianMS": 175.787667,
+            "ratioOfMediansPercentDelta": 0.6726778294365188
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 53846016.0,
+          "candidate": 54312960.0
+        },
+        "peakRSSMedianDeltaBytes": 466944.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 124.7375,
+            "candidateMedianMS": 125.225583,
+            "ratioOfMediansPercentDelta": 0.39128810502053746
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 50511872.0,
+          "candidate": 50511872.0
+        },
+        "peakRSSMedianDeltaBytes": 0.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 408.548729,
+            "candidateMedianMS": 401.7802085,
+            "ratioOfMediansPercentDelta": -1.6567229364700786
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 43220992.0,
+          "candidate": 43270144.0
+        },
+        "peakRSSMedianDeltaBytes": 49152.0
+      }
+    },
+    "cell": {
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 3.6619165000000002,
+            "candidateMedianMS": 3.7408955,
+            "ratioOfMediansPercentDelta": 2.1567668186863287
+          },
+          "cell-fitting": {
+            "baselineMedianMS": 26.986458,
+            "candidateMedianMS": 10.2249375,
+            "ratioOfMediansPercentDelta": -62.11085760124578
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 20037632.0,
+          "candidate": 19808256.0
+        },
+        "peakRSSMedianDeltaBytes": -229376.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 19.86675,
+            "candidateMedianMS": 20.104,
+            "ratioOfMediansPercentDelta": 1.1942064001409403
+          },
+          "cell-fitting": {
+            "baselineMedianMS": 277.4376665,
+            "candidateMedianMS": 98.1541045,
+            "ratioOfMediansPercentDelta": -64.621204561638
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 26378240.0,
+          "candidate": 24117248.0
+        },
+        "peakRSSMedianDeltaBytes": -2260992.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 205.41075,
+            "candidateMedianMS": 205.3405205,
+            "ratioOfMediansPercentDelta": -0.03418978802229855
+          },
+          "cell-fitting": {
+            "baselineMedianMS": 3753.4309169999997,
+            "candidateMedianMS": 1083.739833,
+            "ratioOfMediansPercentDelta": -71.12668763686213
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 140959744.0,
+          "candidate": 118308864.0
+        },
+        "peakRSSMedianDeltaBytes": -22650880.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 20.149875,
+            "candidateMedianMS": 20.1604375,
+            "ratioOfMediansPercentDelta": 0.052419680022830484
+          },
+          "cell-fitting": {
+            "baselineMedianMS": 140.860854,
+            "candidateMedianMS": 108.73460399999999,
+            "ratioOfMediansPercentDelta": -22.80708166088501
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 22577152.0,
+          "candidate": 22716416.0
+        },
+        "peakRSSMedianDeltaBytes": 139264.0
+      }
+    }
+  },
+  "scope": "Unchanged canonical/supplementary176 processes plus separate88-process retained-cell fitting controls. No cumulative/historical, universal or clean-host claim."
+}

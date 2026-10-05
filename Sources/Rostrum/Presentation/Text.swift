@@ -32,10 +32,12 @@ public enum VerticalAnchor: String, Sendable {
 public final class TextFrame {
     let txBody: XML.Element
     let part: Part
+    let tableCell: TableCell?
 
-    init(txBody: XML.Element, part: Part) {
+    init(txBody: XML.Element, part: Part, tableCell: TableCell? = nil) {
         self.txBody = txBody
         self.part = part
+        self.tableCell = tableCell
     }
 
     private var bodyPr: XML.Element {

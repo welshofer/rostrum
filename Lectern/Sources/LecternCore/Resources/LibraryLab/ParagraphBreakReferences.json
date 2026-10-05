@@ -1,0 +1,82 @@
+{
+  "source": "Tests/RostrumTests/Fixtures/NativeBreakMetrics/native-break-metrics-v1.pptx",
+  "sourceSHA256": "3620121ad15fe85abb65e28cb686d454a0fad7b160cfdab7933543960ba087fe",
+  "nativePDF": "Tests/RostrumTests/Fixtures/NativeBreakMetrics/powerpoint.pdf",
+  "nativePDFSHA256": "aa98866ab87866e985a7444790ec538b7b050abb5fba08885e9cd2f50e4c0c60",
+  "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+  "scope": "Native PowerPoint 16.113.3 local print PDF; DejaVu Sans regular, top anchor, zero insets, 12 pt markers. Explicit empty break and paragraph-end styles only. Both fit APIs are Rostrum choices, not native-selected autofit.",
+  "cases": [
+    {
+      "id": "consecutive-36-6",
+      "large": false,
+      "title": "Two breaks, a 6 pt blank line",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "textBodyXML": "<p:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit /></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\" /><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"3600\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr></a:br><a:br><a:rPr sz=\"600\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr></a:br><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr><a:t>B</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "baseline": 11.0400390625
+        },
+        {
+          "text": "B",
+          "baseline": 32.8800048828125
+        }
+      ]
+    },
+    {
+      "id": "trailing-br36-end6",
+      "large": false,
+      "title": "Trailing break, a 6 pt paragraph end",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "textBodyXML": "<p:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit /></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\" /><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"3600\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr></a:br><a:endParaRPr sz=\"600\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:endParaRPr></a:p><a:p><a:pPr algn=\"l\" lvl=\"0\" /><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr><a:t>Z</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "baseline": 10.9599609375
+        },
+        {
+          "text": "Z",
+          "baseline": 33.03997802734375
+        }
+      ]
+    },
+    {
+      "id": "consecutive-6-36",
+      "large": true,
+      "title": "Two breaks, a 36 pt blank line",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "textBodyXML": "<p:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit /></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\" /><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"600\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr></a:br><a:br><a:rPr sz=\"3600\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr></a:br><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr><a:t>B</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "baseline": 10.8800048828125
+        },
+        {
+          "text": "B",
+          "baseline": 68.9599609375
+        }
+      ]
+    },
+    {
+      "id": "trailing-br36-end36",
+      "large": true,
+      "title": "Trailing break, a 36 pt paragraph end",
+      "widthPoints": 290,
+      "heightPoints": 160,
+      "textBodyXML": "<p:txBody xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"><a:bodyPr wrap=\"square\" lIns=\"0\" rIns=\"0\" tIns=\"0\" bIns=\"0\" anchor=\"t\"><a:noAutofit /></a:bodyPr><a:lstStyle><a:lvl1pPr><a:defRPr sz=\"1800\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:defRPr></a:lvl1pPr></a:lstStyle><a:p><a:pPr algn=\"l\" lvl=\"0\" /><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr><a:t>A</a:t></a:r><a:br><a:rPr sz=\"3600\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr></a:br><a:endParaRPr sz=\"3600\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:endParaRPr></a:p><a:p><a:pPr algn=\"l\" lvl=\"0\" /><a:r><a:rPr sz=\"1200\" b=\"0\" i=\"0\" lang=\"en-US\"><a:solidFill><a:srgbClr val=\"000000\" /></a:solidFill><a:latin typeface=\"DejaVu Sans\" /></a:rPr><a:t>Z</a:t></a:r></a:p></p:txBody>",
+      "nativeMarkers": [
+        {
+          "text": "A",
+          "baseline": 10.9599609375
+        },
+        {
+          "text": "Z",
+          "baseline": 69.03997802734375
+        }
+      ]
+    }
+  ]
+}

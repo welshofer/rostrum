@@ -1,0 +1,22 @@
+{
+  "status": "Scope clarification; source approval unchanged",
+  "prototypeBaseline": "dc40a98b09d0db7c132c82c9e8f41b12dd4c5638",
+  "prototypeSourceTree": "f808358b87f88b58427d1440bf80005f3b6a7e61",
+  "integratedS19Root": "481586eda651f5eae6fa6bdbffb2361c664e585a",
+  "integratedS19SourceTree": "11ead6fd725008f26757f839abda10aa97761adb",
+  "differentSourceAndTestFiles": [
+    "Sources/Rostrum/Presentation/SVGRenderer.swift",
+    "Tests/RostrumTests/SVGInheritedDefaultsReuseTests.swift"
+  ],
+  "scope": "S20 review approved exact branch prototype against its stated dc40a98 baseline. It does not assert equality to integrated S19 root Sources. Root retains prior accepted ordinary-inherited-default renderer reuse and its four tests. Formal S20 must be cherry-picked onto accepted root, then use exact root baseline and fresh integrated gates/proofs/timing.",
+  "workerCount": {
+    "libraryTests": 1189,
+    "librarySuites": 173
+  },
+  "rootExpectedTests": 1193,
+  "rootExpectedCountIsNotExecutedEvidence": true,
+  "priorClosureReceipt": {
+    "path": "/tmp/rostrum-s20-independent-source-review-closure.json",
+    "sha256": "3ec7853471dbfbd6c1f506a2709ccbdc51c8d0c20bcb998f5c10c44c9d45e88b"
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "baselineCommit": "2da1a0530177dd2b736cfff9e6177a2a2e18093a",
+  "sourceFile": {
+    "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Sources/Rostrum/Presentation/SVGRenderer.swift",
+    "bytes": 115007,
+    "sha256": "4b2b3f5792e9e0c19c5caee83eb5f90e02bd9c63f234b9ad9ee08d4a8bf932ff"
+  },
+  "testFile": {
+    "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/ShapeImageOwnerTests.swift",
+    "bytes": 9835,
+    "sha256": "4b75fd06784824dca700f927409ba4e21dd885f1964962062e49de3fef7de71c"
+  },
+  "gates": {
+    "focused": "13 tests / 2 suites passed",
+    "library": "1218 tests / 177 suites passed",
+    "layout": "18 tests / 3 suites passed"
+  },
+  "native": {
+    "sourceDecks": 4,
+    "nativeImages": 7,
+    "decodedRGBExact": true,
+    "matrixAndFramesExact": true,
+    "sourceAndPDFPins": true,
+    "pngCRCs": true
+  },
+  "beforeSemanticIssues": 15,
+  "logs": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/fail-before.log",
+      "bytes": 14440,
+      "sha256": "966779768631d5d21259a012de6cb4e0702e780820f574b922d6e7e910aa38f0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/fail-before-corrected.log",
+      "bytes": 5932,
+      "sha256": "929eb5d6dcb1bed62853f97aaed6a3e73f508bcf2e133e5889e3bba42dd50033"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/focused-live.log",
+      "bytes": 9323,
+      "sha256": "b656ac2192da060864ff61d3f862b178181f72096f7afdd245826c206d4d16a6"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/focused-live-corrected.log",
+      "bytes": 3283,
+      "sha256": "a22eaeae9725fd7cb5e15d3f46d3a83b06b661e9a1b25d8f491f14cfbaea360d"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/native-focused.log",
+      "bytes": 3545,
+      "sha256": "a7b24a2db2fde463b2aaafda1e79354c54ce83b3d3df9bf4c98083e70a4f5caa"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/native-full.log",
+      "bytes": 233691,
+      "sha256": "8463d35af9b894aefd29734bf27570ea4f02b8ef0faeac5262daacf2081065e0"
+    }
+  ],
+  "testHarnessCorrections": [
+    "Initial harness used Slide instead of the existing Presentation rendering API.",
+    "A later added live-relationship test initially omitted the required isExternal initializer argument."
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/candidate-Rostrum.o",
+      "bytes": 8693120,
+      "sha256": "08bd2c5218c6f7bd3043bb13cb02b6b1ec8ac01d892bba672b7efc953f9e621a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/render-probe.swift",
+      "bytes": 1122,
+      "sha256": "c5f4ca696760fd673c27e1427db2f8265adc38873fb31888635d80fbd3f5fedb"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/render-probe",
+      "bytes": 6834128,
+      "sha256": "f5f5132c9167f4064ea1863d37505e5d76865a17e7452936b4935a51ce60c85a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/output-delta.json",
+      "bytes": 2528,
+      "sha256": "83bc09cf2dc1623f84a09950aed3861a848eb72c16d5c749692bedf1b61fd03b"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/reproduction.json",
+      "bytes": 532,
+      "sha256": "71ad808bebea2fd89eccfd9e94aa9daed1ddf70f0c0f4080b53db1d132da3e7d"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/theme-image-owner23/baseline-renderer-identity.json",
+      "bytes": 231,
+      "sha256": "ea03b6a0bb4b0774997ab5ff123fb22f3848679489897bf5540e5c944b3526b4"
+    }
+  ],
+  "outputDelta": {
+    "baseline": "Frozen S21 helper; SVGRenderer source identical to S22 2da1, full Sources tree differs in inventory-only files.",
+    "cases": [
+      {
+        "source": "theme-collision",
+        "savedBytesExact": true,
+        "orderedIssuesExact": true,
+        "beforeImages": [
+          "7c3c919026a6f27ace0891b608cc0697fec53dedc25562bfd1443285557cdf8f"
+        ],
+        "afterImages": [
+          "97a3a410c9bca540512251c37ce63982edccbed54c6f2e1d06ec717b9f753e29"
+        ],
+        "beforeSVG_SHA256": "d5a745ed46acc4bc18a5630f56a1978afbec5af44ced7dec6e447a1e4aa9af71",
+        "afterSVG_SHA256": "d7e0f2828f76193c89a78095780884bc9615b2a479db2f6a52b204033eff4fe5"
+      },
+      {
+        "source": "theme-missing-slide-id",
+        "savedBytesExact": true,
+        "orderedIssuesExact": true,
+        "beforeImages": [],
+        "afterImages": [
+          "97a3a410c9bca540512251c37ce63982edccbed54c6f2e1d06ec717b9f753e29"
+        ],
+        "beforeSVG_SHA256": "140a6c17d6eebacfed3013fd67bbc8096ebb3e62b11030a956a78698f3974346",
+        "afterSVG_SHA256": "d7e0f2828f76193c89a78095780884bc9615b2a479db2f6a52b204033eff4fe5"
+      },
+      {
+        "source": "direct-slide-control",
+        "savedBytesExact": true,
+        "orderedIssuesExact": true,
+        "beforeImages": [
+          "7c3c919026a6f27ace0891b608cc0697fec53dedc25562bfd1443285557cdf8f"
+        ],
+        "afterImages": [
+          "7c3c919026a6f27ace0891b608cc0697fec53dedc25562bfd1443285557cdf8f"
+        ],
+        "beforeSVG_SHA256": "d5a745ed46acc4bc18a5630f56a1978afbec5af44ced7dec6e447a1e4aa9af71",
+        "afterSVG_SHA256": "d5a745ed46acc4bc18a5630f56a1978afbec5af44ced7dec6e447a1e4aa9af71"
+      },
+      {
+        "source": "native-theme-image-owners-v1",
+        "savedBytesExact": true,
+        "orderedIssuesExact": true,
+        "beforeImages": [
+          "7c3c919026a6f27ace0891b608cc0697fec53dedc25562bfd1443285557cdf8f",
+          "7c3c919026a6f27ace0891b608cc0697fec53dedc25562bfd1443285557cdf8f",
+          "7c3c919026a6f27ace0891b608cc0697fec53dedc25562bfd1443285557cdf8f"
+        ],
+        "afterImages": [
+          "7c3c919026a6f27ace0891b608cc0697fec53dedc25562bfd1443285557cdf8f",
+          "7c3c919026a6f27ace0891b608cc0697fec53dedc25562bfd1443285557cdf8f",
+          "97a3a410c9bca540512251c37ce63982edccbed54c6f2e1d06ec717b9f753e29",
+          "97a3a410c9bca540512251c37ce63982edccbed54c6f2e1d06ec717b9f753e29"
+        ],
+        "beforeSVG_SHA256": "17fd5fb1e3f1de4c83996a83b9392a95ebb5a197f659fabdfa67d37f49d535fc",
+        "afterSVG_SHA256": "fb74e38d7797c297755a9f3e5dc9de8b91fb040ba41f6520d6bac9927c6fda8f"
+      }
+    ]
+  },
+  "runtimeClaims": "No formal speed or universal raster-fidelity claim."
+}

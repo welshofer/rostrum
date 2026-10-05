@@ -1,0 +1,36 @@
+{
+  "status": "PASS_FRESH_NONQUIET_BUILD_CONFIRMATIONS_WITH_ORIGINAL_DIAGNOSTICS_RETAINED",
+  "createdUTC": "2026-10-04T23:29:18.852364+00:00",
+  "sourceCheckpoint": "1660253",
+  "sourcesTree": "b1bf2a54dfdea0c983ba52b36709e59093af63dd",
+  "originalGateLog": "/tmp/rostrum-fidelity16-verify.log",
+  "originalGateLogSHA256": "990492c2f17787eed0eb97523ff475523795b9a49fb19e7314cdcfd4f584bbf4",
+  "originalContradictoryQuietDiagnosticCount": 11,
+  "originalTestedApp": "/tmp/lectern-fidelity16-xcode/Build/Products/Debug/Lectern.app/Contents/MacOS/Lectern",
+  "originalTestedAppSHA256": "706792b0836c5185991aef85430a92f1627276395ad11372bd4ece3709cc26e5",
+  "results": [
+    {
+      "platform": "macos",
+      "log": "/tmp/lectern-fidelity16-nonquiet-macos.log",
+      "logSHA256": "e1ededff31ad2ae3f30fa16299beadf92b898962144714f5738209a33f7f0e51",
+      "toolExitCodeObserved": 0,
+      "explicitBuildSucceededMarkers": 1,
+      "errorDiagnosticLines": [],
+      "derivedData": "/tmp/lectern-fidelity16-nonquiet-macos",
+      "mode": "Fresh derived data, serial nonquiet build; original gate artifact directory unchanged."
+    },
+    {
+      "platform": "ios",
+      "log": "/tmp/lectern-fidelity16-nonquiet-ios.log",
+      "logSHA256": "20005e41e26d5c4599887348d653bb317c9e9b89bb8a36b91bc6c10ce90b91e8",
+      "toolExitCodeObserved": 0,
+      "explicitBuildSucceededMarkers": 1,
+      "errorDiagnosticLines": [],
+      "derivedData": "/tmp/lectern-fidelity16-nonquiet-ios",
+      "mode": "Fresh derived data, serial nonquiet build; original gate artifact directory unchanged."
+    }
+  ],
+  "script": "/tmp/verify-fidelity16-nonquiet-builds.py",
+  "scriptSHA256": "2e9bd825efb786f0b0bc5985eaa96741eb5c8ff2aa629442ef0f928c4c97ed62",
+  "scope": "Independent build confirmations, no test or timing reruns. Original quiet build stage commands exited zero despite contradictory diagnostics; these successful fresh builds do not erase those messages."
+}

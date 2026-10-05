@@ -51,14 +51,15 @@ import Testing
             #expect(input.name == native.name)
             let shape = try #require(deck.slides[input.page].shapes.first { $0.name == input.name })
             let frame = try #require(shape.textFrame)
-            let layout = RichTextLayout(textBody: frame.txBody, width: input.width, height: input.height, fonts: fonts)
+            let inherited = RichTextLayout.inheritedStyles(for: shape.element, owner: shape.part, package: try #require(shape.package))
+            let layout = RichTextLayout(textBody: frame.txBody, width: input.width, height: input.height, fonts: fonts, inheritedStyles: inherited)
             let actual = layout.lines.map { $0.spans.map(\.run.text).joined() }
             let expected = native.lines.map(\.text)
             observations.append(Observation(name: input.name, native: expected, actual: actual, widths: layout.lines.map(\.width)))
             #expect(actual == expected, "\(input.name): native \(expected), actual \(actual)")
-            if input.name == "dejavu-office-0" {
-                #expect(layout.diagnostics.contains(.unsupportedLayoutFeature("Native advance rounding outside single-scalar left-to-right ASCII glyphs is not verified")))
-            } else {
+            // NativeLigatureLayout directly establishes individual office glyphs,
+            // so this earlier control now receives the same geometry assertions.
+            do {
                 var characterOffset = 0
                 for (line, expectedLine) in zip(layout.lines, native.lines) {
                     let first = try #require(line.spans.first)
@@ -125,7 +126,7 @@ extension LineBreakBoundaryTests {
         let font = try FontMetrics(contentsOf: fontURL)
         let xml = try XML.parse(Data("""
         <p:txBody><a:bodyPr lIns="0" rIns="0" tIns="0" bIns="0"/><a:p>
-        <a:r><a:rPr sz="1800"/><a:t>m</a:t></a:r><a:r><a:rPr sz="1800"/><a:t>ffi</a:t></a:r>
+        <a:r><a:rPr sz="1800"/><a:t>m</a:t></a:r><a:r><a:rPr sz="1800"/><a:t>ffi</a:t></a:r><a:r><a:rPr sz="1800"/><a:t>x́</a:t></a:r>
         </a:p></p:txBody>
         """.utf8))
         let before = xml.serialized()

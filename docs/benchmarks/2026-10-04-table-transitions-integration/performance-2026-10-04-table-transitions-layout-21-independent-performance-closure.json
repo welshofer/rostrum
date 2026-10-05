@@ -1,0 +1,91 @@
+{
+  "status": "APPROVE_BOUNDED_FIDELITY_COST_EVIDENCE",
+  "numericalReview": "/tmp/rostrum-s21-independent-performance-review.json",
+  "numericalReviewSHA256": "1e1c413501fac9e82c7dad1b4ea0be3e949d3ea1619d995e37ba632e1d20461a",
+  "reportSHA256": "f6761efa51ada865c084f6e51e2453e529c190f10333f673badccc242eec43db",
+  "wrapperSHA256": "1fef0ea13d99ec5ba0ec9e26c37a0a5d93f1d86461c66fe9a292815fef253de1",
+  "physicalManifestSHA256": "995952388979417eeb5e120cb05dda363bacbe57df5c1eb76a006062b0bd8a13",
+  "baselineSource": "1a84f4f0af2e1566828959bcc64c4daed92aca09",
+  "candidateSource": "73de22c42dc704c81f9fe8c03ee310def68c4dc3",
+  "sourcePins": [
+    112,
+    112
+  ],
+  "cases": 194,
+  "slides": 892,
+  "actualCorpusArtifactMapsRehashed": 8610,
+  "recordedFreshReopens": 582,
+  "supplementaryPreservationReopens": 6,
+  "changedCases": [
+    {
+      "name": "custom19-reject-collinear-transition",
+      "SVGs": [
+        "slide-0.svg"
+      ]
+    },
+    {
+      "name": "transition21-native-transitions-vertical",
+      "SVGs": [
+        "slide-0.svg",
+        "slide-1.svg"
+      ]
+    },
+    {
+      "name": "transition21-native-transitions-horizontal",
+      "SVGs": [
+        "slide-0.svg",
+        "slide-1.svg"
+      ]
+    },
+    {
+      "name": "transition21-vertical-transitions",
+      "SVGs": [
+        "slide-0.svg"
+      ]
+    },
+    {
+      "name": "transition21-horizontal-transitions",
+      "SVGs": [
+        "slide-0.svg"
+      ]
+    }
+  ],
+  "SVGByteChanges": [
+    {
+      "pool": "native",
+      "name": "reject-collinear-transition-100x20.pptx",
+      "baselineSVGBytes": 1942175,
+      "candidateSVGBytes": 1942663,
+      "deltaBytes": 488
+    },
+    {
+      "pool": "transitions",
+      "name": "vertical-transitions-100x20.pptx",
+      "baselineSVGBytes": 1942175,
+      "candidateSVGBytes": 1942740,
+      "deltaBytes": 565
+    },
+    {
+      "pool": "transitions",
+      "name": "horizontal-transitions-100x20.pptx",
+      "baselineSVGBytes": 1924595,
+      "candidateSVGBytes": 1925053,
+      "deltaBytes": 458
+    }
+  ],
+  "frozenReadinessReview": {
+    "path": "/tmp/rostrum-s21-independent-readiness-review.json",
+    "sha256": "909d2b15d3815616d316b2f8617f64ce67e5286d0a298a23f9a1a515f39a1d15",
+    "scope": "Exact plan/ready hashes and all proof pins remain unchanged; prior independent complete non-line and signed-donor endpoint model remains applicable."
+  },
+  "findings": [],
+  "limits": [
+    "All 35 primary intervals include zero; neither speedup nor nonregression established. Dense horizontal +1.326% with upper bound +2.817% remains unresolved.",
+    "All 348 secondary vectors retained, including 18 positive and 18 negative bootstrap intervals; exploratory unadjusted multiplicity and uncontrolled host load limit causal attribution.",
+    "Whole-process RSS ranges -0.15625 to +0.140625 MiB, no general allocation/memory improvement claim.",
+    "Recorded helper/python reopens inspected, not replayed; all actual artifact maps and source/binary/input pins rehashed. No tests, builds, timings or GUI by reviewer.",
+    "Completion console duration is the later observation recorded in summary and parent handoff, not a separately retained console log; exact execution receipt duration independently pinned."
+  ],
+  "script": "/tmp/review-s21-performance-closure.py",
+  "scriptSHA256": "1730dc44284ab4370961f1aae98da92714641c82fca63d640ff27af7fdd9a51e"
+}

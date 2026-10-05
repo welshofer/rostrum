@@ -1,0 +1,733 @@
+{
+  "packagePayloadChecks": [
+    {
+      "case": "canonical/table-200x50",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "canonical/table-20x10",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "canonical/shaped-table-100x20",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "canonical/richtext-fit",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "canonical/slides-10",
+      "partCount": 37,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "supplement/unicode-latin",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "supplement/mixed-rtl",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "supplement/long-combining",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "native/primary",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "native/autofit",
+      "partCount": 41,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "native/eligibility",
+      "partCount": 46,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "native/kern-v2",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/0",
+      "partCount": 50,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/1",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/2",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/3",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/4",
+      "partCount": 94,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/5",
+      "partCount": 108,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/6",
+      "partCount": 108,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/7",
+      "partCount": 61,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/8",
+      "partCount": 61,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/9",
+      "partCount": 61,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/10",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/11",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/12",
+      "partCount": 59,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/13",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/14",
+      "partCount": 61,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/15",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/16",
+      "partCount": 41,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/17",
+      "partCount": 46,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/18",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/19",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/20",
+      "partCount": 45,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/21",
+      "partCount": 51,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/22",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/23",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/24",
+      "partCount": 41,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/25",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/26",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/27",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/28",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/29",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/30",
+      "partCount": 334,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/31",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/32",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/33",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/34",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/35",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/36",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/37",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/38",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/39",
+      "partCount": 49,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/40",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/41",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/42",
+      "partCount": 86,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/43",
+      "partCount": 84,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/44",
+      "partCount": 44,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/45",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/46",
+      "partCount": 46,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/47",
+      "partCount": 40,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/48",
+      "partCount": 40,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/49",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/50",
+      "partCount": 46,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/51",
+      "partCount": 40,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/52",
+      "partCount": 40,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/53",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/54",
+      "partCount": 44,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/55",
+      "partCount": 120,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/56",
+      "partCount": 42,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/57",
+      "partCount": 269,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/58",
+      "partCount": 37,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/59",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/fallback/60",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/0",
+      "partCount": 50,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/1",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/2",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/3",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/4",
+      "partCount": 94,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/5",
+      "partCount": 108,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/6",
+      "partCount": 108,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/7",
+      "partCount": 61,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/8",
+      "partCount": 61,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/9",
+      "partCount": 61,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/10",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/11",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/12",
+      "partCount": 59,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/13",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/14",
+      "partCount": 61,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/15",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/16",
+      "partCount": 41,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/17",
+      "partCount": 46,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/18",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/19",
+      "partCount": 43,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/20",
+      "partCount": 45,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/21",
+      "partCount": 51,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/22",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/23",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/24",
+      "partCount": 41,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/25",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/26",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/27",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/28",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/29",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/30",
+      "partCount": 334,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/31",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/32",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/33",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/34",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/35",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/36",
+      "partCount": 39,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/37",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/38",
+      "partCount": 24,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/39",
+      "partCount": 49,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/40",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/41",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/42",
+      "partCount": 86,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/43",
+      "partCount": 84,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/44",
+      "partCount": 44,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/45",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/46",
+      "partCount": 46,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/47",
+      "partCount": 40,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/48",
+      "partCount": 40,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/49",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/50",
+      "partCount": 46,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/51",
+      "partCount": 40,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/52",
+      "partCount": 40,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/53",
+      "partCount": 38,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/54",
+      "partCount": 44,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/55",
+      "partCount": 120,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/56",
+      "partCount": 42,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/57",
+      "partCount": 269,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/58",
+      "partCount": 37,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/59",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    },
+    {
+      "case": "corpus/corpus-registered/60",
+      "partCount": 19,
+      "allPartPayloadsPreserved": true
+    }
+  ],
+  "packageChecks": 134,
+  "diagnosticChanges": [
+    {
+      "case": "native/eligibility",
+      "file": "slide-2-issues.json",
+      "added": [
+        {
+          "code": "unsupportedTextProperty",
+          "impact": "approximation",
+          "location": {
+            "partURI": "/ppt/slides/slide3.xml",
+            "path": "/p:cSld/p:spTree/p:graphicFrame[10]",
+            "shapeID": "9",
+            "slideIndex": 2
+          },
+          "message": "Native table cells ignore stored fontScale; rendering at full size"
+        }
+      ],
+      "remainingOrderUnchanged": true
+    },
+    {
+      "case": "corpus/fallback/17",
+      "file": "slide-2-issues.json",
+      "added": [
+        {
+          "code": "unsupportedTextProperty",
+          "impact": "approximation",
+          "location": {
+            "partURI": "/ppt/slides/slide3.xml",
+            "path": "/p:cSld/p:spTree/p:graphicFrame[10]",
+            "shapeID": "9",
+            "slideIndex": 2
+          },
+          "message": "Native table cells ignore stored fontScale; rendering at full size"
+        }
+      ],
+      "remainingOrderUnchanged": true
+    },
+    {
+      "case": "corpus/corpus-registered/17",
+      "file": "slide-2-issues.json",
+      "added": [
+        {
+          "code": "unsupportedTextProperty",
+          "impact": "approximation",
+          "location": {
+            "partURI": "/ppt/slides/slide3.xml",
+            "path": "/p:cSld/p:spTree/p:graphicFrame[10]",
+            "shapeID": "9",
+            "slideIndex": 2
+          },
+          "message": "Native table cells ignore stored fontScale; rendering at full size"
+        }
+      ],
+      "remainingOrderUnchanged": true
+    }
+  ],
+  "scalarXListsFiniteAndCountMatchesText": true,
+  "changedConcatenatedSVGText": []
+}

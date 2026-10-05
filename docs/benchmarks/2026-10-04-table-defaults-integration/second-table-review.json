@@ -1,0 +1,194 @@
+{
+  "status": "FAIL",
+  "createdUTC": "2026-10-05T00:02:29.460283+00:00",
+  "script": "/tmp/verify-fidelity17-tables-final-v2.py",
+  "scriptSHA256": "241ad85392ca68ffb2f09ca88f19c526f8174776dd7c305409c6874ae3fbca8f",
+  "extractor": "/tmp/verify-fidelity17-table-paint-v2.py",
+  "extractorSHA256": "9ec42bfd3be55f4844eff9d29f5321cc063a7d9e24ce3103feecb8f7ba14b803",
+  "inputSHA256": {
+    "/private/tmp/verify-fidelity17-table-paint-v2.py": "9ec42bfd3be55f4844eff9d29f5321cc063a7d9e24ce3103feecb8f7ba14b803",
+    "/private/tmp/verify-webkit-paint.py": "e4f5433152953381e9f1a226163d6f60d9ae77f7d17948af7e13cabf39c77f48",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/fonts/DejaVuSans.ttf": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+    "/private/tmp/fidelity17-table-verifier-controls-v2/controls-receipt.json": "161004b76e650aebc5401a68acd5915a4269a7aadd057317c7482873c65eddc4",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-1-capture.json": "68da803652835a0371ca1a8e192ac7230c811853dcc3e77204e0c52ecb4d6068",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-false/tableDefaults-6A61173D-8CF8-4EDF-ADE3-43AB5A0021DD/tableDefaults.pptx": "0dde749bb953b478df7a029b708c18e0b2475426e7c9ff769a0d685b0daef84b",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-1.svg": "d5bc2be04650d1d606292c8601ca1259ff6b92cd97d10fc642ac7975d22c59c5",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-1.pdf": "352cee26115d31d0f3d59964ce6128ff6d8ffa42eebcfac0be491016565003b8",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-false/tableDefaults-6A61173D-8CF8-4EDF-ADE3-43AB5A0021DD/previews/slide-01.svg": "d5bc2be04650d1d606292c8601ca1259ff6b92cd97d10fc642ac7975d22c59c5",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-false/tableDefaults-6A61173D-8CF8-4EDF-ADE3-43AB5A0021DD/native-table-defaults-reference.json": "7bb8b268ea2afc69d1ad8766a097679367648a9d534d626301ef5fa05391c2ab",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/builtin/paint-reference.json": "19f317e7c46cfe994da3d0afa51339c86fdafc2365e79ab64652d3b7b2a95038",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/builtin/native-table-default-builtin-v1.pptx": "3583235fd4a0caf7be17fad4e79d250ac1098e0a4f64ce462c9a396d91a5873b",
+    "/private/tmp/lectern-fidelity17-tables-native/alternative-false/capture-receipt.json": "e0f74c8c53e582a6ffcc1db83def22abef6f6baf4c74b20f2ac18b43b74c1540",
+    "/private/tmp/lectern-fidelity17-tables-native/alternative-false/tableDefaults.pptx": "0dde749bb953b478df7a029b708c18e0b2475426e7c9ff769a0d685b0daef84b",
+    "/private/tmp/lectern-fidelity17-tables-native/alternative-false/powerpoint.pdf": "bcc1292e19b73d5335954d1a51bdc72ea56365554597728a1095e1f3f968b832",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-2-capture.json": "16be3bfde3f1d2288230d9c181f2adaeba27113a7722b826648e319b18c9cce8",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-2.svg": "e9a4ef83ae3205077b08a31dc6cb6b15b913f28c1bf9767f959f8e8a03d83e0a",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-2.pdf": "43e6599cdd5fa08064391a6b92835098f39cc22352f607721dca9b00a93d655e",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-false/tableDefaults-6A61173D-8CF8-4EDF-ADE3-43AB5A0021DD/previews/slide-02.svg": "e9a4ef83ae3205077b08a31dc6cb6b15b913f28c1bf9767f959f8e8a03d83e0a",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/custom/paint-reference.json": "225b7956f4130216569a48ef7af31c754c9d9c6cd533d54b2b42be9c53e9d046",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/custom/native-table-default-custom-v1.pptx": "5506d837f8a12b4f6a54cca287c9f2943b22d2537270aa084e83792aad65652e",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-3-capture.json": "d703b92bdc6595f67b37b7d8cc450e90b44403fac49a36ea8850745fef2ae34e",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-3.svg": "2087c0c0cf74538dbb99b9ed299fb6d1a8c26692a34ca38232aa73e6558ae56c",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-3.pdf": "40d969346ed268cd83d46d5d23c82f457d7e6dcf6d69f1b86941b6a3af9169c2",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-false/tableDefaults-6A61173D-8CF8-4EDF-ADE3-43AB5A0021DD/previews/slide-03.svg": "2087c0c0cf74538dbb99b9ed299fb6d1a8c26692a34ca38232aa73e6558ae56c",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoins/paint-reference.json": "775f24e2dd24b5d1160d23398d844c7096ed2e74292cefe09607f3d3504dac68",
+    "/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoins/native-table-joins-v1.pptx": "23b9cde5274eda35b5278042caf7a9b9d49f5557a4038be1c4646ffd73d42ede",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-1-capture.json": "4e4cd23b49df4ddbbfe55ce239a4f0e211bf7caaf4de4f30b4d1848e52502bfe",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-true/tableDefaults-014C7251-40E9-4D4B-9B98-C6F08B9690CF/tableDefaults.pptx": "a7e045b286900c3e8e8a5f45f873019afedac29924dee6d4720696b6054508b5",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-1.svg": "d5bc2be04650d1d606292c8601ca1259ff6b92cd97d10fc642ac7975d22c59c5",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-1.pdf": "c005718645239afd294daadf9fc48c8b166c9ea46afbc597701996b166341ffb",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-true/tableDefaults-014C7251-40E9-4D4B-9B98-C6F08B9690CF/previews/slide-01.svg": "d5bc2be04650d1d606292c8601ca1259ff6b92cd97d10fc642ac7975d22c59c5",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-true/tableDefaults-014C7251-40E9-4D4B-9B98-C6F08B9690CF/native-table-defaults-reference.json": "7bb8b268ea2afc69d1ad8766a097679367648a9d534d626301ef5fa05391c2ab",
+    "/private/tmp/lectern-fidelity17-tables-native/alternative-true/capture-receipt.json": "85a379fadc1c9eb9415cb31f0e52fbf5f59d9597b467f6fd168ca5065d6275dc",
+    "/private/tmp/lectern-fidelity17-tables-native/alternative-true/tableDefaults.pptx": "a7e045b286900c3e8e8a5f45f873019afedac29924dee6d4720696b6054508b5",
+    "/private/tmp/lectern-fidelity17-tables-native/alternative-true/powerpoint.pdf": "a0dca60e3dbba238478e207c90b97908cd2ee71c4ffa4be1e518e82fb1a07a25",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-2-capture.json": "3f1cf49d3662774df50612377c5480620fc15309daf8eeb4a6408a636c6c4ec5",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-2.svg": "e9a4ef83ae3205077b08a31dc6cb6b15b913f28c1bf9767f959f8e8a03d83e0a",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-2.pdf": "a6fad025febdd78da8038885d035fd9394598ae685ad1c1049d36aabd90935b3",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-true/tableDefaults-014C7251-40E9-4D4B-9B98-C6F08B9690CF/previews/slide-02.svg": "e9a4ef83ae3205077b08a31dc6cb6b15b913f28c1bf9767f959f8e8a03d83e0a",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-3-capture.json": "56b5fc59debfce1cac5816c909a112cd3322e6d34b47603e4c6762de3e6e8e05",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-3.svg": "2087c0c0cf74538dbb99b9ed299fb6d1a8c26692a34ca38232aa73e6558ae56c",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-3.pdf": "8f430ec6866292efa6ea33069587d3a846ee922d73d22e2619510686741c1b10",
+    "/private/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/lab-true/tableDefaults-014C7251-40E9-4D4B-9B98-C6F08B9690CF/previews/slide-03.svg": "2087c0c0cf74538dbb99b9ed299fb6d1a8c26692a34ca38232aa73e6558ae56c"
+  },
+  "unchangedInputBytes": true,
+  "results": [
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-1-capture.json",
+      "captureSHA256": "68da803652835a0371ca1a8e192ac7230c811853dcc3e77204e0c52ecb4d6068",
+      "mode": "browser",
+      "cases": 4,
+      "glyphs": 16,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/0-browser-comparison.json",
+      "comparisonSHA256": "39105a7ac30a1ce89f6090f06905765cae6b4e5ffecae2f4dfae44d7a269f4fa",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/0-browser-log.txt",
+      "logSHA256": "125733db37bbbe7a3840fb6aedafea806ca3bdcb1c01e82ffbd8601cf93922a7"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-1-capture.json",
+      "captureSHA256": "68da803652835a0371ca1a8e192ac7230c811853dcc3e77204e0c52ecb4d6068",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 16,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/0-native-comparison.json",
+      "comparisonSHA256": "c122d049a598330abbc1da9ec3720f4cde3562a01420ea059bb1f64d0c5c7dae",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/0-native-log.txt",
+      "logSHA256": "9cea763e88fe54955fb0bc50a29347910f95166f12a5b4115638dffedbcbaa7d"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-2-capture.json",
+      "captureSHA256": "16be3bfde3f1d2288230d9c181f2adaeba27113a7722b826648e319b18c9cce8",
+      "mode": "browser",
+      "cases": 4,
+      "glyphs": 16,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/1-browser-comparison.json",
+      "comparisonSHA256": "8a3e2c0cf7b8ccef5ba04a37f07afcbfd3e1362e047b7d6e9cc73dfdeeb29b76",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/1-browser-log.txt",
+      "logSHA256": "98b85b92a0256dd527cb55ebe9e47a2b35606adb9fe7584b3c17520be65389b8"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-2-capture.json",
+      "captureSHA256": "16be3bfde3f1d2288230d9c181f2adaeba27113a7722b826648e319b18c9cce8",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 16,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/1-native-comparison.json",
+      "comparisonSHA256": "1f0164e7794a0e37ceb034eb7ae20d95b99e1f4f096c8e6c89a0f34ae9a0122a",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/1-native-log.txt",
+      "logSHA256": "a12321b69bbe80076ddf642ab4bcefab909d6906ac07e230db49516f3cad643a"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-3-capture.json",
+      "captureSHA256": "d703b92bdc6595f67b37b7d8cc450e90b44403fac49a36ea8850745fef2ae34e",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 40,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/2-native-comparison.json",
+      "comparisonSHA256": "6ec74cbb573277501e98809f35a17b54b4b832663f8069271a7de2830957d0a2",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/2-native-log.txt",
+      "logSHA256": "199ad5c7901af5e6516b0400d6888cbf58a38437a9066c9e72f6d76bed9f28a6"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-1-capture.json",
+      "captureSHA256": "4e4cd23b49df4ddbbfe55ce239a4f0e211bf7caaf4de4f30b4d1848e52502bfe",
+      "mode": "browser",
+      "cases": 4,
+      "glyphs": 16,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/3-browser-comparison.json",
+      "comparisonSHA256": "b7078896155810362d99efac88c3cbaaf7f4aa5c69e1d5eb6d3b7ff4a3c9d66d",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/3-browser-log.txt",
+      "logSHA256": "c0922d375923e21aae9cd91eb99355d15117ccef45bd132810c2d9ff7cd8bc15"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-1-capture.json",
+      "captureSHA256": "4e4cd23b49df4ddbbfe55ce239a4f0e211bf7caaf4de4f30b4d1848e52502bfe",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 16,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/3-native-comparison.json",
+      "comparisonSHA256": "9e07baec934df987de4fced4d1aabaeafc9593a744844b665602b772b55657dd",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/3-native-log.txt",
+      "logSHA256": "7a9e719be9edc679be72b1b0eeff394d6f8296f76c06fefb5051e0ccec14cd25"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-2-capture.json",
+      "captureSHA256": "3f1cf49d3662774df50612377c5480620fc15309daf8eeb4a6408a636c6c4ec5",
+      "mode": "browser",
+      "cases": 4,
+      "glyphs": 16,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/4-browser-comparison.json",
+      "comparisonSHA256": "bf3417159b94666db2d0f765eb70952055d03320e266498dc376e1c59f56f6c1",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/4-browser-log.txt",
+      "logSHA256": "1cc2891f7598c75f7df7886449463dc28d74aad9f97f1f4b31c1bca64373c7dd"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-2-capture.json",
+      "captureSHA256": "3f1cf49d3662774df50612377c5480620fc15309daf8eeb4a6408a636c6c4ec5",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 16,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/4-native-comparison.json",
+      "comparisonSHA256": "e13162fe9a8d3c66c512f4aaa070f96b16eb93ca7413a16156f8daa4592c24a0",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/4-native-log.txt",
+      "logSHA256": "ccc00dac6462e1d1efe2b1b4c5cf920a628cbcb95047f7f793bebd5dce206974"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-3-capture.json",
+      "captureSHA256": "56b5fc59debfce1cac5816c909a112cd3322e6d34b47603e4c6762de3e6e8e05",
+      "mode": "native",
+      "cases": 4,
+      "glyphs": 40,
+      "comparison": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/5-native-comparison.json",
+      "comparisonSHA256": "05741570a98e7ff0e315f85795c15060d25a7a0338cfa29f8068c79762633881",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/5-native-log.txt",
+      "logSHA256": "439873153e32fa5e3a06a6d1faecda58663340090593ba92a16ad9ea02c1eb3e"
+    }
+  ],
+  "failures": [
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-false-slide-3-capture.json",
+      "mode": "browser",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/2-browser-log.txt",
+      "logSHA256": "de28656e040d3ab9105cc209dbdb5049a75021cea13a3e21738a9f0ebc9a4124"
+    },
+    {
+      "capture": "/tmp/lectern-fidelity17-tables-webkit/table-defaults-628D6722-EA1F-4003-85FF-ECD6F4C82BCC/table-defaults-true-slide-3-capture.json",
+      "mode": "browser",
+      "log": "/tmp/lectern-fidelity17-tables-webkit/independent-final-v2/5-browser-log.txt",
+      "logSHA256": "de28656e040d3ab9105cc209dbdb5049a75021cea13a3e21738a9f0ebc9a4124"
+    }
+  ],
+  "totals": {
+    "browser": {
+      "PDFcomparisons": 4,
+      "cases": 16,
+      "glyphs": 64
+    },
+    "native": {
+      "PDFcomparisons": 6,
+      "cases": 24,
+      "glyphs": 144
+    }
+  },
+  "scope": "First three original pages only. Six fresh saved-inspector WebKit PDF comparisons and six pages of two generated PowerPoint PDFs. Complete finite ordered fill/stroke paint and glyph origin/raw paint-size with source/subset outline equality; no trace-bbox ink, raster or fourth computed page native parity claim. UI provenance is root-observed; independent input identities and numeric extraction checked here."
+}

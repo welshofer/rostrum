@@ -1,0 +1,164 @@
+{
+  "status": "PASS_COMPLETED_GATE_AND_XCRESULT",
+  "createdUTC": "2026-10-04T23:53:47.499843+00:00",
+  "checkpoint": "4795efa0dfe20ac0cff3235c2fbd03bcb0dd57cd",
+  "completion": "Root confirmed PTY54896 reaped exit0; log final All green and successful stage markers independently checked.",
+  "log": {
+    "path": "/tmp/rostrum-fidelity17-verify.log",
+    "sha256": "33f11b10db5ff6b9a965ff44bbb143c8f2328b0e609df52afeee2a694c45f283"
+  },
+  "xcresult": "/tmp/lectern-fidelity17-xcode/Logs/Test/Test-Lectern-2026.10.04_16-46-59--0700.xcresult",
+  "summary": {
+    "path": "/tmp/lectern-fidelity17-test-summary.json",
+    "sha256": "7be10666a601c85e1c7698de9a800d9d98e754fe91bae2a9fc90710f710bc5fd"
+  },
+  "suiteRuns": [
+    {
+      "line": 2989,
+      "tests": 1180,
+      "suites": 171,
+      "seconds": 58.593
+    },
+    {
+      "line": 3035,
+      "tests": 18,
+      "suites": 3,
+      "seconds": 0.071
+    },
+    {
+      "line": 4023,
+      "tests": 295,
+      "suites": 44,
+      "seconds": 94.791
+    },
+    {
+      "line": 9203,
+      "tests": 89,
+      "suites": 26,
+      "seconds": 186.41
+    }
+  ],
+  "appExecutions": 124,
+  "xcresultFailed": 0,
+  "xcresultExpected": 0,
+  "xcresultSkipped": 0,
+  "xcresultRuntimeWarnings": 0,
+  "stages": [
+    {
+      "name": "Offline workflow checks",
+      "startLine": 2,
+      "endLine": 8,
+      "buildSucceeded": 0,
+      "testSucceeded": 0,
+      "errorLines": 0
+    },
+    {
+      "name": "Rostrum build + tests",
+      "startLine": 9,
+      "endLine": 3036,
+      "buildSucceeded": 0,
+      "testSucceeded": 0,
+      "errorLines": 0
+    },
+    {
+      "name": "LecternCore build + tests",
+      "startLine": 3037,
+      "endLine": 4024,
+      "buildSucceeded": 0,
+      "testSucceeded": 0,
+      "errorLines": 0
+    },
+    {
+      "name": "README snippets (docs can't rot)",
+      "startLine": 4025,
+      "endLine": 4036,
+      "buildSucceeded": 0,
+      "testSucceeded": 0,
+      "errorLines": 0
+    },
+    {
+      "name": "Lectern macOS app",
+      "startLine": 4037,
+      "endLine": 6070,
+      "buildSucceeded": 1,
+      "testSucceeded": 0,
+      "errorLines": 0
+    },
+    {
+      "name": "Lectern iOS app (simulator)",
+      "startLine": 6071,
+      "endLine": 7362,
+      "buildSucceeded": 1,
+      "testSucceeded": 0,
+      "errorLines": 0
+    },
+    {
+      "name": "Lectern app-hosted tests (AppTests \u2014 invisible to swift test)",
+      "startLine": 7363,
+      "endLine": 9217,
+      "buildSucceeded": 0,
+      "testSucceeded": 1,
+      "errorLines": 11
+    }
+  ],
+  "offlineTests": 4,
+  "readmeSnippetsMatch": true,
+  "errorLines": [
+    {
+      "line": 8337,
+      "text": "2026-10-04 16:47:13.206304-0700 Lectern[42804:7397213] [general] WebContent[42814] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 8378,
+      "text": "2026-10-04 16:47:15.675123-0700 Lectern[42804:7397213] [general] WebContent[42818] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 8419,
+      "text": "2026-10-04 16:47:18.460916-0700 Lectern[42804:7397213] [general] WebContent[42820] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 8466,
+      "text": "2026-10-04 16:47:22.287910-0700 Lectern[42804:7397213] [general] WebContent[42825] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 8532,
+      "text": "2026-10-04 16:47:29.974377-0700 Lectern[42804:7397213] [general] WebContent[42830] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 8623,
+      "text": "2026-10-04 16:47:44.314111-0700 Lectern[42804:7397213] [general] WebContent[42862] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 8703,
+      "text": "2026-10-04 16:47:55.703261-0700 Lectern[42804:7397213] [general] WebContent[42884] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 8789,
+      "text": "2026-10-04 16:48:04.693988-0700 Lectern[42804:7397213] [general] WebContent[42892] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 9019,
+      "text": "2026-10-04 16:50:09.435255-0700 Lectern[42804:7397213] [general] WebContent[43175] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 9053,
+      "text": "2026-10-04 16:50:09.493721-0700 Lectern[42804:7397213] [general] WebContent[43176] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    },
+    {
+      "line": 9137,
+      "text": "2026-10-04 16:50:10.154193-0700 Lectern[42804:7397213] [general] WebContent[43178] Connection to 'pboard' server had an error: <dictionary: 0x1ec714b60> { count = 1, transaction: 0, voucher = 0x0, contents ="
+    }
+  ],
+  "consoleDiagnosticCounts": {
+    "pboardError": 11,
+    "cfprefsdLines": 228,
+    "audioComponentLines": 11,
+    "warningColonLines": 74,
+    "contradictoryQuietExitCodeZero": 0
+  },
+  "scope": "Retains actual app console diagnostics and compile warnings; xcresult runtime warning count is a separate zero measure. No further build/test/GUI was run.",
+  "script": {
+    "path": "/tmp/audit-fidelity17-gate.py",
+    "sha256": "ae36955ed25b8567deff7616ac86c9d51e7b356bae9227d464587f148a0336da"
+  }
+}

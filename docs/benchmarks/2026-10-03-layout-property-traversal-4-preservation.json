@@ -1,0 +1,60 @@
+{
+  "baselineRevision": "e94ff88e3e4094ab5f637297c8115e774870df04",
+  "cases": [
+    {
+      "scenario": "slides-10",
+      "inputSHA256": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+      "inputBytes": 20501,
+      "slideCount": 10,
+      "artifacts": {
+        "roundtrip.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+        "slide-9.svg": "8e154a89885f8a8c1f4daf1a19bd4652b2f5d69b018363bb365c2e1c8cf8162d",
+        "slide-8.svg": "258f18e837fd29673285367f70d6b6d46d73a2e3cd9c51464b19df86f214c323",
+        "slide-6.svg": "03e99ba10f642bb122a0a160e7c39461e44a97df1bcc24d09b0686c6fa12c99e",
+        "slide-7.svg": "5a9b37c93ce0cfaf64abdafcdc3619ef3a0bd7202ce28e0627af21158a08f1e0",
+        "slide-5.svg": "cc652964bc96513296835563878af6d7b622a0f709ca4bc318d7e852ff3564ff",
+        "slide-4.svg": "0a893ad29c268e595170a74fce9a1a469c7933b4f9307570da71b950adbe3d1f",
+        "slide-1.svg": "b3a3652e56e1964d7a24f7408e359492214b43a20726032ca04ea8b405c533ae",
+        "slide-3.svg": "3c02d20d2c366d9e7d242a51489186582d7d655f85137a1eef28b828b472d433",
+        "slide-2.svg": "0ba3ec8e5ae6e1d8305b9bc3474aab5d3f04ef44f3267551de9206b3d36fb7c5",
+        "slide-10.svg": "37ef613fd54da55049ceba521314ab1e70a4d47c037c90466ea7386cebd0bb23"
+      },
+      "allPartPayloadsPreserved": true,
+      "deterministicSave": true,
+      "reopenedSVGsMatch": true,
+      "crossVersionArtifactsIdentical": true,
+      "pythonPptxReopens": 2
+    },
+    {
+      "scenario": "table-200x50",
+      "inputSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+      "inputBytes": 74767,
+      "slideCount": 1,
+      "artifacts": {
+        "roundtrip.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+        "slide-1.svg": "daacf238a4d8c90aa157aa9063eb856b7cd2fd765fd0eabbfc9d5ad64be9f5d3"
+      },
+      "allPartPayloadsPreserved": true,
+      "deterministicSave": true,
+      "reopenedSVGsMatch": true,
+      "crossVersionArtifactsIdentical": true,
+      "pythonPptxReopens": 2
+    },
+    {
+      "scenario": "images-unique",
+      "inputSHA256": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+      "inputBytes": 62353,
+      "slideCount": 1,
+      "artifacts": {
+        "roundtrip.pptx": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+        "slide-1.svg": "cc4e6991e5f655021bffb339765f157a95a4fd4dda83126a5f0b80e947079bb2"
+      },
+      "allPartPayloadsPreserved": true,
+      "deterministicSave": true,
+      "reopenedSVGsMatch": true,
+      "crossVersionArtifactsIdentical": true,
+      "pythonPptxReopens": 2
+    }
+  ],
+  "scope": "Preservation checks only; single-sample timings ran amid other checks and do not support performance claims. Authoritative performance uses separate ten-pair quiet-window measurements."
+}

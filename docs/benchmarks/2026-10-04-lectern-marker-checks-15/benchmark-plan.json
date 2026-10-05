@@ -1,0 +1,41 @@
+{
+  "createdUTC": "2026-10-04T22:15:48.255553+00:00",
+  "status": "FROZEN_BEFORE_TIMING",
+  "scope": "LibraryLab.run(.listMarkers) complete headless operation, including render/native checks, saved reopen, inspection and export; excludes native GUI interaction and does not measure library render in isolation",
+  "baseline": "accepted14 source, baseline-products/MarkerAuditProbe",
+  "candidate": "identicallibrary, oneLecternhelper parses each SVG once within markerNativeChecks",
+  "alternatives": [
+    false,
+    true
+  ],
+  "pairsPerAlternative": 11,
+  "excludedWarmupPair": 0,
+  "retainedPairs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "freshProcesses": 44,
+  "order": "false then true; each pair alternates baseline/candidate order, baseline first for even pair indices",
+  "primaryMetric": "driver DispatchTime seconds spanning exactly LibraryLab.run; no sample or profiler in timed children",
+  "analysis": "paired candidate/baseline deltas; median paired ratio distinct from ratio of medians; percentile bootstrap100000 seed20261004; exact two-sided sign test excluding ties; both alternatives reported without selection",
+  "preservation": "every run requires58checks/5slides/0findings; all output file sets/bytes identical per alternative except report.json elapsedSeconds; reports compare every other field; input/product hashes rechecked before and after; no ignored output glyph/font changes",
+  "load": "Task builds/tests/GUI paused for campaign; root records filtered process snapshots; system background load remains uncontrolled",
+  "sourcePins": {
+    "baseline-source-pins.json": "bcc380ab714588bb2ee55b4a10ad5a635fafe3f95725938db59d2fd0e7569b94",
+    "baseline-products-pins.json": "918173b44895a74c62ec9cb9d8245da568023d3b6be89194efc0f7d51a32acf7",
+    "candidate-products-pins.json": "0023cd2e34325866a2d4f4f01b43e5fd087b42c3d2573a9f6159a154c2b2da07",
+    "profile-summary.json": "f0168a98d2354da280553257b0d46b82210d67e555eaf00478748fa067e55fb2"
+  },
+  "driverFiles": {
+    "driver-package/Package.swift": "98941de2dae699be84f7a7bdbdd0621901e82a1b55756be5d7b30bc98ed71f42",
+    "driver-package/Sources/MarkerAuditProbe/main.swift": "e79b241e39e18c5cc1b1f9e262f7d9e10e206d19259750c23434d8233262e736"
+  }
+}

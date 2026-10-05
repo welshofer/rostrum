@@ -1,0 +1,10 @@
+test_active_apps_or_failed_inspection_stop_before_any_generation (scripts.tests.test_app_preflight.AppTestPreflightTests.test_active_apps_or_failed_inspection_stop_before_any_generation) ... ok
+test_app_starting_during_generation_still_prevents_test_execution (scripts.tests.test_app_preflight.AppTestPreflightTests.test_app_starting_during_generation_still_prevents_test_execution) ... ok
+test_generated_test_host_is_separate_and_normal_identity_is_unchanged (scripts.tests.test_app_preflight.AppTestPreflightTests.test_generated_test_host_is_separate_and_normal_identity_is_unchanged) ... ok
+test_test_derived_data_ignores_production_override_and_accepts_its_own (scripts.tests.test_app_preflight.AppTestPreflightTests.test_test_derived_data_ignores_production_override_and_accepts_its_own) ... ok
+test_fresh_and_changed_project_for_every_wrapper (scripts.tests.test_build_wrappers.BuildWrappersTests.test_fresh_and_changed_project_for_every_wrapper) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.614s
+
+OK

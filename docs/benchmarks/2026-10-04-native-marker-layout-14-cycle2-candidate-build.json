@@ -1,0 +1,100 @@
+{
+  "candidateSource": "c522a9dacef797697c7b860ec1884dd84cced35b",
+  "candidateSourceTree": "dda66f4a098cb995b6aa75e09e1e9d0dee4aa482",
+  "worker": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum",
+  "productionDiffFromCycle1": "Sources/Rostrum/Presentation/RichTextLayout.swift | 39 ++++++++++++++++++-----\n 1 file changed, 31 insertions(+), 8 deletions(-)",
+  "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "commands": [
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/extended-main.swift",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "-o",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-extended-bench"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/native-main.swift",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "-o",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-native-bench"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/supplement-main.swift",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "-o",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-supplement-bench"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/shaping-proof.swift",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "-o",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-shaping-proof"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/supplement-shaping.swift",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "-o",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-supplement-shaping"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-module",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/layout-proof.swift",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-Rostrum.o",
+      "-o",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf26-marker-cycle2/candidate-layout-proof"
+    ]
+  ],
+  "products": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/list-marker-projection-release/out/Products/Release",
+  "buildLogSHA256": "acab8c439bb64f704ac04b40df6dbe37190775474b5d4411cac154bfecc2e6c2",
+  "files": {
+    "candidate-RichTextLayout.swift": "65ea20231352915ffa16fcc7c5f4de81c423841552da0066bc1c3c2dd00784d2",
+    "candidate-Rostrum.o": "22bc41519f91bb153abb01367df8bb201c25fe91adfa04dfc0766acbd433265a",
+    "candidate-preservation": "bd1146febb621be940fe8887a5aac4963b80df062db179ee3898310e787a3c95",
+    "candidate-native-bench": "df516122726aab955591f942b2286cf53362f655d6e5fcafb919bbd8393f47f7",
+    "candidate-layout-proof": "a6e79f16d9bb81121b1ec8eb8a9d84308379d02af42651aaae00e802888515d4",
+    "candidate-extended-bench": "be9fd18efd073cc71c628693cbc3c36ee0374dcc612f3877383d210df25ebd2b",
+    "candidate-supplement-shaping": "e2fbc4d59d29bb4eac53b19f4b0ceb6fb6faab1d2916a58c07d513152ab29df6",
+    "candidate-Tables.swift": "2b6cdbbbd5d5849785f79958c2d8f070aab16761675b78dbed256209bf9594a4",
+    "candidate-shaping-proof": "de856bf8cb5034080b0bdb05866035fa6019ec0a7b933279ed8459b0d5badfca",
+    "candidate-supplement-bench": "bdc684f6623946e1780fdd41b5ac39ff2776722ad49693152425a84c2b7c8f83",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "7fec40cf32b2e97699bd65f207ba2189ecbbc9c9f4a407a3dfff0e367877328a",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "dcd1d2b276b666064bb40c8fae9cae0bdd2b8849647fc08be442697eb4a4114a",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728"
+  },
+  "TableCellAcquisitionAbsent": true,
+  "baselineRebuilt": false
+}

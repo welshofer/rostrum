@@ -1,0 +1,648 @@
+{
+  "status": "Source, preservation, statistics and final report/manifest independently accepted for bounded retained-cell fitting benefit.",
+  "baselineRevision": "7c26656adbf56e4c03967bd894752c3022fda2f5",
+  "baselineSourceCommit": "8503f44b31115488c915fa61449a9a3922cca876",
+  "baselineSourceTree": "e1b7a510acd496f68b0fb11489fc422a823f3f75",
+  "candidateSourceCommit": "308f20d3a7b870011bdbdb769fa399a0246b6014",
+  "candidateSourceTree": "1fed769a7817b8da2c1381828dd6db5e364f0e81",
+  "candidateMeasuredAsFrozenUncommittedPatch": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Fonts/TextMeasurer.swift": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "752484dbc6e074de3edb20c3a9b26cd5fbdb665f72ce4f2473f628025392cf32",
+    "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886",
+    "Tools/table-style-catalog/generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
+    "Tests/RostrumTests/TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f"
+  },
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting",
+  "files": {
+    "10x10-baseline-proof-sample.json": "e2c6ee152350951c99e5ccdd0111d24c73bf069e7754ada264b198130b282cda",
+    "10x10-candidate-1-proof-sample.json": "c16751e3db3a031db86ced67a542bcb46ff35805fcbc3d844d6bda980e8930c4",
+    "10x10-candidate-2-proof-sample.json": "c4fa66b36ddb1aab00bd88e1bd09ab3c1b611298ed2fd56e1d0a74a967b0c861",
+    "10x10-driver.log": "6a5941b8c892edcb2e5282aee0fe6e7f0378d0a7dabf3fd327f91d0a1f1ed503",
+    "10x10-profile.txt": "fe06732ceb77618c811050b30c9048a61eba7be2f0a70e6b709811b116785a3a",
+    "10x10-sampler.log": "5c04c9f57802f6d581f3c13fff17d914abb9cded68a0d1e01385d8cd59e2f682",
+    "10x10.pptx": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
+    "10x10.ready": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+    "200x50-baseline-proof-sample.json": "effd0aa1372509cbab6d40bf0d72945f88a9f1341c70190c2f5615b5a809cb8c",
+    "200x50-candidate-1-proof-sample.json": "7df8809e42b6afe8eb0d74a5c7124fb41d40ea989e568ef34c023878c54cd0b4",
+    "200x50-candidate-2-proof-sample.json": "8fabd64a684fe8aaa9c03527ae7f3d37bb2c08478b6426596664ac2360640f1d",
+    "200x50-driver.log": "e782e0c58a301c7c5f185f3a2136e44b808b283d5a9ec1b7d3cbaccc9c9cbdf2",
+    "200x50-profile.txt": "34948fdcc67b128d70addc9ef962cfd64a72767d2aae1a79fbbe0b263c64eaef",
+    "200x50-sampler.log": "7bf90991435cabe6f65564e107f37b0f9c3d7a5011c6af534b7fd18696fc66b9",
+    "200x50.pptx": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
+    "200x50.ready": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+    "40x25-baseline-proof-sample.json": "ee8e042ecb86932842a3d1073c05803caad56bca6453b1211d6931c91354e8ee",
+    "40x25-candidate-1-proof-sample.json": "0d4e5635460d78d0e12968f8dfe1fdc266c0d78b7a7c82e1fdfdf9b0197a4cce",
+    "40x25-candidate-2-proof-sample.json": "59ea5f49c6d7365aed9588e0e917d750250076929bf7ce263cf979eafaee93db",
+    "40x25-driver.log": "2c53326d40d16b7238df29569935677a1316485e848347b34ec3a9f043a5d2f0",
+    "40x25-inline-baseline-proof-sample.json": "523f799f7ec371773b1d32f7a71d99c03477f5953af0cdb65739841706b0aa04",
+    "40x25-inline-candidate-1-proof-sample.json": "f87a0b48da6c69c285def4f8e3a6ee765a92c3f63e74751db2e0dbfb97752d4a",
+    "40x25-inline-candidate-2-proof-sample.json": "210f250f9100de903b814c05a6bb566fa428c95faecc21015118b88a312b41c5",
+    "40x25-inline.pptx": "a5aa98715bc7c71d17d969ac43bede3322fde4807b9550e155a00a5b497c35f8",
+    "40x25-profile.txt": "5e739d205937c307fa8e7958903a720e1362f7caf0b3df2dae29108856220728",
+    "40x25-sampler.log": "2284a2f79de68ed4d6341cf484e5e9a76a6effc3622dd9f6f14a8d2a04cc73d8",
+    "40x25.pptx": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
+    "40x25.ready": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+    "TableGridSnapshot.swift": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2",
+    "TableStyleResolver.swift": "3e8fbd43dcb1065e04fafe1a4eb395ce80e2d0a139906ae6b783a429e8a96c83",
+    "TextMeasurer.swift": "1436e1ff500c584ef8a453db103cab19d8f77723909073be95b9c929ae122856",
+    "actual-metadata.swift": "989b3d27c35cd7e0e6e55412034d32e7532a886779ec7377b233fa3837e35db6",
+    "analyze-profile.py": "ee7975f689537e2d331fbdfc7d82897e5598a0b8f9c0b675f02f822d725cb3c0",
+    "baseline-BuiltInTableStyle.swift": "06f8e56195e344344d8bee27aad899c410adb077d6e57dff98a745e57c5090a2",
+    "baseline-Rostrum.o": "8b711910121067393e042c9f5718541fb8b6d7509db82473bcd5bfc7d8f98a48",
+    "baseline-actual-metadata": "cc1ec35a0c2dc19d3e6122f478edbb2e6d4d3bd4398c290d09767a2df7cbfe40",
+    "baseline-actual-metadata.json": "c8ad08ff27a1d0bf402b4dc43ff77e00266c7551d2fbd1841ebbad4a3df63e20",
+    "baseline-bench": "d50c73188eb554393fe9b016897f344248dc804afa446e59f75d21ddc885455d",
+    "baseline-cell-bench": "3b25779876d4155354093e5d6a7fd9da9c3ba26b4e47c691c7d0d30e06de12fc",
+    "baseline-extended-bench": "65e7a3056fb08c5c336a04b130ce23a35f38c4043c70814fc3e0a9dd96d1bd61",
+    "baseline-generate.py": "f492e493912f360db534329864df765356d84bd02bf1c448b263514e1c0c14c7",
+    "baseline-layout-1.jsonl": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+    "baseline-layout-2.jsonl": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+    "baseline-layout-proof": "2de743af787da16c241df935bbe8eef3ffd7e59760d8bf11223d28a96ae58a99",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "7fec40cf32b2e97699bd65f207ba2189ecbbc9c9f4a407a3dfff0e367877328a",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "677fb17232a9333d57c9e424438da8d9e56a8ced054e845c5c2522b22eac6ede",
+    "baseline-native-bench": "25b8ae0c10f1c6201aeffc9a995326d31211d478005e6123ea57e6a975d72902",
+    "baseline-pins.json": "4bbf94c9f374f979b8b8f47e054d2101a56f3d876604bdd195e5f0a1c9b1f460",
+    "baseline-preservation": "9eab2796cbddeec9c387abddd71ad735436d519b4c5349c6ab5e56f6a1f5861e",
+    "baseline-profile": "b20f7d1fafe7c3ef3cb7b6da6b1c35e128ad874e448a58bcbb3ee434b59b6048",
+    "baseline-shaping.jsonl": "254e2f8b8d1581154ec6cbde5f5f9d685322e4b110e1c54d03387d0bea6a18e3",
+    "baseline-supplement-bench": "b96cdd6f3b2111ae91ba016d1ccdb9d078b4cfb5da3d576f98a2f81dca274167",
+    "baseline-supplement-shaping.jsonl": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+    "candidate-BuiltInTableStyle.swift": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886",
+    "candidate-Rostrum.o": "43a7f4c442b6ec9345faf80e22e518217dd31c4eda1132764ac55b5ef6933993",
+    "candidate-TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f",
+    "candidate-TableStyleResolver.swift": "752484dbc6e074de3edb20c3a9b26cd5fbdb665f72ce4f2473f628025392cf32",
+    "candidate-TextMeasurer.swift": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba",
+    "candidate-actual-metadata": "1ce4e6d02290b4658b9d427c3d205b80f4be7ee357d579f190bf2e6ca2dba7e2",
+    "candidate-actual-metadata.json": "c8ad08ff27a1d0bf402b4dc43ff77e00266c7551d2fbd1841ebbad4a3df63e20",
+    "candidate-bench": "93c39d9e66abeba66069a24c9fb4f1cc2e71774a42edf3ce19ca4b404fb71ff1",
+    "candidate-build.json": "632a00abf6542c6175c83208da66225d41315967a6c9b7553333ac0d880909ec",
+    "candidate-cell-bench": "a3f1a4f523318054209075c63becb897ea6553699b6c989d5f861657a10ca12b",
+    "candidate-extended-bench": "0f9dd899f4e24ebb53869e601f78ab46eb2e9dab80e67651e279130b7a393a55",
+    "candidate-generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
+    "candidate-layout-1.jsonl": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+    "candidate-layout-2.jsonl": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+    "candidate-layout-proof": "dc77fc350727d2a1bfd1d94a775e3e223a988b1b96c68ac5cc1b2f1f26d0c15e",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "7fec40cf32b2e97699bd65f207ba2189ecbbc9c9f4a407a3dfff0e367877328a",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "6e8007c0a9ec97a9422f9372e2419c2c107fb749f60fcac80be60ae5b6fe8992",
+    "candidate-native-bench": "2f91b7d1342a7500c4d2854ab7c6ae4c3d0c910a72f1d72d6ce6b2516c180c90",
+    "candidate-preservation": "afc9049e929492fffe2788225d39b3d0a27b6670b1ed413ae5eb64eceddd3650",
+    "candidate-shaping-proof": "c8be7132d7014fc643581e56980ffc3892cf97acb6fb42f58792a3dfc3e13408",
+    "candidate-shaping.jsonl": "254e2f8b8d1581154ec6cbde5f5f9d685322e4b110e1c54d03387d0bea6a18e3",
+    "candidate-supplement-bench": "7849ec3eb3efdff6c51ab40ca2d8469ad0f7cf2271c7d877b48bc1843004025e",
+    "candidate-supplement-shaping": "d75a2826cbea2408281445acb76503631cd21ef091dd20799e5051456a0fb338",
+    "candidate-supplement-shaping.jsonl": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+    "candidate.patch": "0de983281da0a0e9a189acf74668be86918feb5f201f9fd12fe93b4ec6a0e738",
+    "canonical-paired.log": "217eb84dadd1394980fc493fc3563cc072b6d721834ae55789a91c8c3cd6018c",
+    "cell-inputs.json": "0c182e6cf989c07d35ae68fe6872fc186705c539bcb778d3b772bb7f09b72e68",
+    "cell-main.swift": "b8026d81beb8df480901740a813beb7f17bc44d9066018b79aec5b4e3ba57053",
+    "cell-paired.log": "34c15942e61772ff72402074b6998203c722d5177bdc45b791cfe0640b77834d",
+    "cell-proof.json": "c7220cd9ab0b0c9391d235fc26be0d5a8750e1c0f48d85259084162ddfb904d3",
+    "cell-proof.log": "0fb80b604c007dd66e82ded4ff4cb74133c31047954a90019974e91751237b73",
+    "cell-proof.py": "acb0e68b0f02f7a2975f00cb94fe3d824d1cb14106ff6502c10ad6922db1c559",
+    "context-10x10-end.txt": "37c1ed00e1e33888381184ed6f991c3f185a51007d80b79a04ca87c9feddd0c1",
+    "context-40x25-end.txt": "a13e21b3eecbe7a9bdc08dbd1dfc9c5ac599b655da97ce4c92f5e95cd4b5a101",
+    "context-large-end.txt": "06d5fec442c3df32160b672bda36e704381bf06412aadbc3c449875c1ebf0cd7",
+    "context-start.txt": "9e41149d10c3e2e82fe40e5eed194c3cc7895e0c71f1cd23d299791ac99134ea",
+    "fixed-inputs/images-unique.pptx": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+    "fixed-inputs/slides-10.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+    "fixed-inputs/table-200x50.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+    "fixed-inputs/table-20x10.pptx": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
+    "focused-tests-2.log": "8e4c6344a981a71d1488aa56203f591970ce3c77a08e58408c206ec9c30deb14",
+    "focused-tests.log": "a85576c1dd5cb5bac01491a48fd3c22fbd871894d5a53b47b39e6871212fcbf8",
+    "frozen-source.json": "3e058c337528adaf990ecee63d7ef3adc3700809ea87cc460c3efc97051dff50",
+    "full-tests-final.log": "b8386398b3e963dba9c46d206b9f02fee5c4da51f2beaefe25cf1373adebee83",
+    "full-tests.log": "5360239ed781ca3592b57f390d4f895490b4e70db7543fbe3153eaed82c2b876",
+    "generator-reproducibility.json": "44ee54fa48a31be527e144440ba7c8daae3809be43d249b17e27d06f5ac9f499",
+    "host-load.json": "a1fc8c9be7c7e826fd7c4c6ae9d28c1e353da3292c6def57884803fcfb9bcc64",
+    "layout-proof.swift": "bb944b71b1c4cda64a033d1953ec416f2b8a5a28213f3f0c07546c6a4cd82a74",
+    "native-inputs.json": "291a800b58ef3224e671faa0934a8a2a37e97245bc2af06f250c00b7d4b9938d",
+    "native-main.swift": "198ac9508943ecfb2027c862af6205f99433d166fd10ee60d56d555db63fd114",
+    "output-proof.json": "5cb0af7fa292b7aae72c001baa5bbf347f3dfc86470da51d40fc8f211a7c57f8",
+    "output-proof.log": "ae9486838d16c3aa148ba7b0ea0a9b195814597ede6c9450ff79ab3c6ad5036d",
+    "output-proof.py": "17d486165c24ecfa989498fcb87414a4a596cd1584ba355e97acafbc485c7b86",
+    "paired-analysis.log": "f1b2890e172e60b289052caa80d097799f23dab0660ca9695e868505469ab901",
+    "paired-analysis.py": "a398695f3e6de49ca19be847c647fbae1d450cb07392e591880ba4892ac0fbf3",
+    "prepare-candidate.log": "e57b3d93a303fcdacfb15e4e397087d546eb7523070a7396dfc7b528a7ad97e9",
+    "prepare-candidate.py": "60a862f32b5ec819f96f13c63d12a5ac2d46a471ca47b2df7af322a4d9ca5817",
+    "prepare-evidence.py": "e07f6fed35cb9d21d3c741140beaeedf371e9eb93fb2527777c69045960da24c",
+    "preservation-images-unique-baseline.log": "a61628ba33bb58e23e12a699b0cb130564a7e310abe00180159ec753e3491c6e",
+    "preservation-images-unique-candidate.log": "3dddbc9a8a173d61294c13888126d539236ac893ccd2f1cd481f63166848ca95",
+    "preservation-slides-10-baseline.log": "d27c0a1f9778b3b26777fed3ec476cedcb86584ad464face4991eec86c2b888a",
+    "preservation-slides-10-candidate.log": "20e681cf1648cc9a04d557a8212fc84787a585f27cb9df1864dfccf7b6b49f83",
+    "preservation-table-200x50-baseline.log": "149e2cd598a1c07512b479cc5b3bbec28782a9712c63ea0df81dd5282b0a43ad",
+    "preservation-table-200x50-candidate.log": "e3373dfc7446b35cd07bf69e575c124b510922d4499dc82f4c48e7a1bed526df",
+    "preservation.json": "430bb365249f1594b0bfc3d8782a97d68724fd92dd030d7cd27b98f9aa6affa8",
+    "preservation.log": "b74c878da023f6dc464e20038508885498d4947fa17fe97ea34825947b6c56f8",
+    "preservation.py": "39421836dc3fb90ed81db168ac9140e10d684eb2d3fd80acbb3e95ba0ce4fee7",
+    "process-canonical-during-15.txt": "496de45dec7186eabe68fad86524ced85e53d515b5222611f15e565e03c4b0d3",
+    "process-canonical-end.txt": "6f6dc43636384a06e835652114a47ebffbd008f3e858185f5e0fb155047b14db",
+    "process-cell-during-15.txt": "8b1e1b938a1c669417a9472c8643b32dfce0b0ae38f914080e412e3efd9830c7",
+    "process-cell-during-30.txt": "988ec3e4c2023fd45a95b0de5b51b881ebcffa6c1723bc22bce64b0b1a93a65e",
+    "process-cell-during-45.txt": "54cc4b3b3390e8a06a246a901c75a33a8ee2f6268ce14f4913e0abeb33f408a9",
+    "process-cell-during-60.txt": "bdc38f263bedd23d365178de2d359c9dca56a786b5aab6dfefa0cbf37dab688d",
+    "process-cell-during-75.txt": "ae7e93b6e6fd137e752f165d469bb23f588e609c2aa9c2e5f1885574a19e59e2",
+    "process-cell-during-91.txt": "bd777297be5c726264ccfd9a904db1d408210d1da4543e1a71ec370b9b395881",
+    "process-cell-end.txt": "4fc5bf934ef3dd9f446b7960de6b8efe2df91acfe22ab95abf9966d66a117f76",
+    "process-end.txt": "89d0931b54d20b320a1bed57a59aeee7e11efad6f0259616fbd9e74978a9790a",
+    "process-start.txt": "d2d84cdeb41c361b7b438788e4a00809463dbdb781370331dbb7aa825ce9b231",
+    "process-supplement-during-15.txt": "0a31b7549cec047b54dfbb1e83dc9abfeb33975b898b4cb6f449b1e235d021df",
+    "process-supplement-end.txt": "16e2315563a335f50c73d7411c1bf283b7fd8eb547898250eaa28a8eefc20404",
+    "profile-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "profile-commands.json": "a97ca6a6fac2aac74358e4c1b6ef32799122f9186c7ef91755a3f125af3a3642",
+    "profile-run.py": "09a5f72e96b1d7db372b1d0f422037f7ee1ad33690339d38dda26c172a255e03",
+    "profile-summary.json": "538cc3fda8284c0562863aba2d763eb100dad15e333b73d5df6a1922adeaabf0",
+    "profile.swift": "37ae8582cb5fb306ae60c2fd97ba3503c8744585ae00c9ae5d81fa45fe612106",
+    "release-build.log": "a7dfff786ae595af48149ff036298969703913a1ef7e26fa0b8028cef8acf433",
+    "run-authorized.py": "4a2c8dc995b41aaa8759bb3d82211ebbef97d4b27bbdf73f2719db56718c6f16",
+    "shaping-proof.swift": "217ec45d7b4e524799707e445b3b4151094d7a0c40ff5bb4b2490cf95990ba17",
+    "supplement-inputs.json": "3fa3702f1264eda7bc85110ce39af1416d801feb6d36e7a82bb08f5649b56ce2",
+    "supplement-main.swift": "6b27eda99b23232d4a04a8e71dd48ccba789313361456137d750c570a7753da1",
+    "supplement-paired.log": "3904c150b3ae55d1da24ad0eeddd09228d7f2804e0142c87abdc3ba5912eb351",
+    "supplement-shaping.swift": "690cb41febd6eba9de5624227253758d72ef0554cee868734843793d41101006",
+    "timing-execution.json": "4d14145ad20ec0bcdf92665ba2704c429a1e7d22fc902a20d56547019995f325",
+    "timing-plan.json": "487d2c07a081633f044bd93b1c521507ecf72328c206109b37f4ad3b7b45b843",
+    "timing-run.log": "974a8f930a53b2e50557b192d082c8dc2944a706768335bc110f7177aeff049a",
+    "timing-validation.json": "ec6d59f0e4114d77c2622525ca099d580d2ef54a71840c124d5bf090a40953d5"
+  },
+  "receipts": {
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-candidate-build.json": "bd9b4a2f0d5052732c4367565fe53198f2ec495689e49776629167708c6d03ed",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-canonical-paired-analysis.json": "c963af13bded2fcebf5dee5e8f327dd784d794363a844b2c2d6d66874290ac52",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-cell-inputs.json": "61dc2f725bd29cd45696171fa0bab27416f5c8360a6a9a1a12d922e43cde895d",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-cell-paired-analysis.json": "ceed76a7c29b2e250c994cc68ee07ad04f19dcd3ecd400f8d2a0c4aaf5d6640e",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-cell-paired-macos.json": "bfb06c87ed286794d2ed8f5e172f805cbb7e2c410d94c774e4ded744a076ba83",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-cell-proof.json": "fa1857a52ec1eb4d396b4051a81528735aa3ffc4179ea032000be0592e69479c",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-generator-reproducibility.json": "f1e22c49e646937ddb887663bb8fc49cbcd9a264681f9b77932430dd54e3962a",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-host-load.json": "3093e0d30a7a11e1a591f119c1e37e3e0615d37b9710077df1b7c7c04cde3498",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-output-proof.json": "e2d2339ec73755af31cc610fe90a070f6725901d61c9d88bd8745b259a5d629f",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-paired-macos.json": "c3ec7e8e57362d9c3db83a6cf834f5009ffafc3f8de39e23b5853e527959e53d",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-preservation.json": "8413e64a2dea3e041788229b05d6669010b1cc1547466351c47cb4d00a9c3b7b",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-profile-commands.json": "9cb4ce5f7ff4e154a7d17d4da55b12ee0ea81762a1cbd629a98262ac9dcd5e46",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-profile-summary.json": "49db34dc3ca2ec7a1a326bf03b542ceecba618b0ed94c27121c12db28762b164",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-summary.json": "3601b14819d6f35030856602bdac83788be1842496fb2469b50aa1e86aa3e4c6",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-supplement-paired-analysis.json": "cf770b6042070d23376ba91b0cab6598e6b9a48a69cf9d5ed30cf06819eeb549",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-supplement-paired-macos.json": "62f1978188dd19b14faffd1b04bff69ad8cac3490f34ab1dc72bbf6cb96bc778",
+    "docs/benchmarks/2026-10-04-cell-fitting-layout-13-timing-validation.json": "9ce7c67d1a8fe66f96e3c13373e9e96e5aa0f4093c2487f33c39f4af68d4b7a0"
+  },
+  "reportSHA256": {
+    "docs/CELL-FITTING-PERFORMANCE-20261004-13.md": "3be2b9e34c32055fb3d3841b747eecda9f2877f40f7d95a7480a5da4127754f8"
+  },
+  "artifactHashChecks": 7896,
+  "timingPlan": {
+    "status": "Frozen, source reviewed; comparative timing awaits explicit root quiet grant",
+    "baselineRevision": "7c26656adbf56e4c03967bd894752c3022fda2f5",
+    "baselineSourceCommit": "8503f44b31115488c915fa61449a9a3922cca876",
+    "baselineSourceTree": "e1b7a510acd496f68b0fb11489fc422a823f3f75",
+    "candidateRevision": "7c26656adbf56e4c03967bd894752c3022fda2f5",
+    "candidateUncommittedPatch": ".build/perf23-cell-fitting/candidate.patch",
+    "candidatePatchSHA256": "0de983281da0a0e9a189acf74668be86918feb5f201f9fd12fe93b4ec6a0e738",
+    "candidateSourceHashes": {
+      "Sources/Rostrum/Fonts/TextMeasurer.swift": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba",
+      "Sources/Rostrum/Presentation/TableStyleResolver.swift": "752484dbc6e074de3edb20c3a9b26cd5fbdb665f72ce4f2473f628025392cf32",
+      "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886",
+      "Tools/table-style-catalog/generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
+      "Tests/RostrumTests/TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f"
+    },
+    "processes": {
+      "canonical": 110,
+      "supplement": 66,
+      "cell": 88
+    },
+    "runs": 10,
+    "warmups": 1,
+    "commands": {
+      "canonical": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        ".build/perf23-cell-fitting/candidate-extended-bench",
+        "--paired-binary",
+        ".build/perf23-cell-fitting/baseline-extended-bench",
+        "--paired-revision",
+        "7c26656adbf56e4c03967bd894752c3022fda2f5",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "table-200x50",
+        "table-20x10",
+        "shaped-table-100x20",
+        "richtext-fit",
+        "slides-10",
+        "--output",
+        "docs/benchmarks/2026-10-04-cell-fitting-layout-13-paired-macos.json"
+      ],
+      "supplement": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        ".build/perf23-cell-fitting/candidate-supplement-bench",
+        "--paired-binary",
+        ".build/perf23-cell-fitting/baseline-supplement-bench",
+        "--paired-revision",
+        "7c26656adbf56e4c03967bd894752c3022fda2f5",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "--output",
+        "docs/benchmarks/2026-10-04-cell-fitting-layout-13-supplement-paired-macos.json"
+      ],
+      "cell": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        ".build/perf23-cell-fitting/candidate-cell-bench",
+        "--paired-binary",
+        ".build/perf23-cell-fitting/baseline-cell-bench",
+        "--paired-revision",
+        "7c26656adbf56e4c03967bd894752c3022fda2f5",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
+        "--output",
+        "docs/benchmarks/2026-10-04-cell-fitting-layout-13-cell-paired-macos.json"
+      ]
+    },
+    "binaries": {
+      "baseline-extended-bench": "65e7a3056fb08c5c336a04b130ce23a35f38c4043c70814fc3e0a9dd96d1bd61",
+      "baseline-supplement-bench": "b96cdd6f3b2111ae91ba016d1ccdb9d078b4cfb5da3d576f98a2f81dca274167",
+      "baseline-cell-bench": "3b25779876d4155354093e5d6a7fd9da9c3ba26b4e47c691c7d0d30e06de12fc",
+      "candidate-extended-bench": "0f9dd899f4e24ebb53869e601f78ab46eb2e9dab80e67651e279130b7a393a55",
+      "candidate-supplement-bench": "7849ec3eb3efdff6c51ab40ca2d8469ad0f7cf2271c7d877b48bc1843004025e",
+      "candidate-cell-bench": "a3f1a4f523318054209075c63becb897ea6553699b6c989d5f861657a10ca12b"
+    },
+    "inputSourceDriverPins": {
+      "Sources/Rostrum/Fonts/TextMeasurer.swift": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba",
+      "Sources/Rostrum/Presentation/TableStyleResolver.swift": "752484dbc6e074de3edb20c3a9b26cd5fbdb665f72ce4f2473f628025392cf32",
+      "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886",
+      "Tools/table-style-catalog/generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
+      "Tests/RostrumTests/TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f",
+      "Sources/Rostrum/Presentation/RichTextLayout.swift": "6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055",
+      "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+      "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+      ".build/perf23-cell-fitting/supplement-main.swift": "6b27eda99b23232d4a04a8e71dd48ccba789313361456137d750c570a7753da1",
+      ".build/perf23-cell-fitting/cell-main.swift": "b8026d81beb8df480901740a813beb7f17bc44d9066018b79aec5b4e3ba57053",
+      "/System/Library/Fonts/Supplemental/Arial.ttf": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx": "a5aa98715bc7c71d17d969ac43bede3322fde4807b9550e155a00a5b497c35f8"
+    },
+    "scope": "One frozen264-child run. Existing canonical+supplementary176 unchanged; four separate retained-cell controls88. Fonts and frame acquisition before fitting timer; render is a separate genuine measured phase. Background load retained; no adaptive reruns."
+  },
+  "timingExecution": {
+    "commands": [
+      {
+        "name": "canonical",
+        "command": [
+          "python3",
+          "Tools/rostrum-bench/run.py",
+          "--binary",
+          ".build/perf23-cell-fitting/candidate-extended-bench",
+          "--paired-binary",
+          ".build/perf23-cell-fitting/baseline-extended-bench",
+          "--paired-revision",
+          "7c26656adbf56e4c03967bd894752c3022fda2f5",
+          "--runs",
+          "10",
+          "--warmups",
+          "1",
+          "--scenarios",
+          "table-200x50",
+          "table-20x10",
+          "shaped-table-100x20",
+          "richtext-fit",
+          "slides-10",
+          "--output",
+          "docs/benchmarks/2026-10-04-cell-fitting-layout-13-paired-macos.json"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 27.854024666012265
+      },
+      {
+        "name": "supplement",
+        "command": [
+          "python3",
+          "Tools/rostrum-bench/run.py",
+          "--binary",
+          ".build/perf23-cell-fitting/candidate-supplement-bench",
+          "--paired-binary",
+          ".build/perf23-cell-fitting/baseline-supplement-bench",
+          "--paired-revision",
+          "7c26656adbf56e4c03967bd894752c3022fda2f5",
+          "--runs",
+          "10",
+          "--warmups",
+          "1",
+          "--scenarios",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "--output",
+          "docs/benchmarks/2026-10-04-cell-fitting-layout-13-supplement-paired-macos.json"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 24.315506583021488
+      },
+      {
+        "name": "cell",
+        "command": [
+          "python3",
+          "Tools/rostrum-bench/run.py",
+          "--binary",
+          ".build/perf23-cell-fitting/candidate-cell-bench",
+          "--paired-binary",
+          ".build/perf23-cell-fitting/baseline-cell-bench",
+          "--paired-revision",
+          "7c26656adbf56e4c03967bd894752c3022fda2f5",
+          "--runs",
+          "10",
+          "--warmups",
+          "1",
+          "--scenarios",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
+          "--output",
+          "docs/benchmarks/2026-10-04-cell-fitting-layout-13-cell-paired-macos.json"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 94.7295313749928
+      }
+    ],
+    "elapsedSeconds": 147.01371350005502,
+    "explicitQuietWindow": true,
+    "knownLoad": "Root and lanes paused; actual process snapshots retained. No settings altered."
+  },
+  "timingValidation": {
+    "checks": [
+      {
+        "scope": "canonical",
+        "scenario": "table-200x50",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "canonical",
+        "scenario": "table-20x10",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "canonical",
+        "scenario": "shaped-table-100x20",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "canonical",
+        "scenario": "richtext-fit",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "canonical",
+        "scenario": "slides-10",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "supplement",
+        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "supplement",
+        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "supplement",
+        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "cell",
+        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/10x10.pptx",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "cell",
+        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25.pptx",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "cell",
+        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/200x50.pptx",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      },
+      {
+        "scope": "cell",
+        "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf23-cell-fitting/40x25-inline.pptx",
+        "retainedPairs": 10,
+        "savedOutputConstant": true
+      }
+    ],
+    "retainedProcesses": 240,
+    "totalIncludingWarmups": 264,
+    "allBinaryRunnerSourcePinsMatch": true
+  },
+  "hostLoad": {
+    "snapshotCount": 13,
+    "percentCPURanges": {
+      "WindowServer": [
+        65.1,
+        71.5
+      ],
+      "photolibraryd": [
+        0.0,
+        0.0
+      ],
+      "managedcorespotlightd": [
+        0.0,
+        0.0
+      ],
+      "backupd": [
+        0.1,
+        1195.4
+      ]
+    },
+    "startTimestamp": "2026-10-04T13:23:22.763598-07:00",
+    "endTimestamp": "2026-10-04T13:25:49.722444-07:00",
+    "qualification": "Root/worker builds and GUI paused; uncontrolled user/background activity. Snapshots cannot prove continuous isolation or remove shared-load bias.",
+    "samples": [
+      {
+        "file": "process-canonical-during-15.txt",
+        "timestamp": "2026-10-04T13:23:37.950403-07:00",
+        "percentCPU": {
+          "WindowServer": 68.6,
+          "backupd": 0.1,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-canonical-end.txt",
+        "timestamp": "2026-10-04T13:23:50.574626-07:00",
+        "percentCPU": {
+          "WindowServer": 71.3,
+          "backupd": 1195.4,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-cell-during-15.txt",
+        "timestamp": "2026-10-04T13:24:30.117522-07:00",
+        "percentCPU": {
+          "WindowServer": 70.1,
+          "backupd": 2.1,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-cell-during-30.txt",
+        "timestamp": "2026-10-04T13:24:45.284904-07:00",
+        "percentCPU": {
+          "WindowServer": 69.4,
+          "backupd": 2.0,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-cell-during-45.txt",
+        "timestamp": "2026-10-04T13:25:00.465314-07:00",
+        "percentCPU": {
+          "WindowServer": 68.5,
+          "backupd": 0.4,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-cell-during-60.txt",
+        "timestamp": "2026-10-04T13:25:15.645941-07:00",
+        "percentCPU": {
+          "WindowServer": 65.1,
+          "backupd": 0.5,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-cell-during-75.txt",
+        "timestamp": "2026-10-04T13:25:30.839770-07:00",
+        "percentCPU": {
+          "WindowServer": 68.2,
+          "backupd": 144.8,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-cell-during-91.txt",
+        "timestamp": "2026-10-04T13:25:46.055023-07:00",
+        "percentCPU": {
+          "WindowServer": 71.5,
+          "backupd": 156.6,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-cell-end.txt",
+        "timestamp": "2026-10-04T13:25:49.664611-07:00",
+        "percentCPU": {
+          "WindowServer": 71.1,
+          "backupd": 149.7,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-end.txt",
+        "timestamp": "2026-10-04T13:25:49.722444-07:00",
+        "percentCPU": {
+          "WindowServer": 70.1,
+          "backupd": 149.7,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-start.txt",
+        "timestamp": "2026-10-04T13:23:22.763598-07:00",
+        "percentCPU": {
+          "WindowServer": 70.2,
+          "backupd": 30.8,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-supplement-during-15.txt",
+        "timestamp": "2026-10-04T13:24:05.791332-07:00",
+        "percentCPU": {
+          "WindowServer": 67.5,
+          "backupd": 91.6,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "file": "process-supplement-end.txt",
+        "timestamp": "2026-10-04T13:24:14.931520-07:00",
+        "percentCPU": {
+          "WindowServer": 68.5,
+          "backupd": 68.7,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      }
+    ]
+  },
+  "proofCounts": {
+    "cases": 134,
+    "slides": 824,
+    "cellControls": 4,
+    "cellFitsPerVariant": 12100,
+    "independentPptxReopens": 435,
+    "standaloneShapingRecords": 101310,
+    "fullLayoutRecords": 1728,
+    "builtInStyles": 74,
+    "flagCombinations": 128,
+    "positionsPerStyleFlag": 6
+  },
+  "runtimeAndRSS": "Scoped retained-cell gains; wide canonical intervals leave unresolved regression risk. Rendering controls inconclusive, RSS mixed, backupd high. No unrelated combining benefit attribution, historical recovery, universal nonregression, lower-memory or clean-host claim.",
+  "independentReview": {
+    "outcome": "accepted",
+    "reviewedEvidenceCommit": "e5bd10729e63e32e1bbea1f59c4c2039be45ef10",
+    "rootEquivalentCommit": "08fc737",
+    "reviewedReportSHA256": "1f460698d0f2541b7a63c9d261278351a81fc08e44d5483756790367aa19dc00",
+    "reviewedManifestSHA256": "d1c9e44118182d8a081d15f7065571599b61817ae5f9dbadd265fd0e8cf79832",
+    "scope": "Source, both output repetitions, per-cell preservation, raw statistics, protocol and all report qualifications. Acceptance wording only; raw measurements and proof inputs are unchanged."
+  }
+}

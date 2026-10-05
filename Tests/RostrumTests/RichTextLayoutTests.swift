@@ -231,7 +231,13 @@ import Testing
         #expect(layout.fits)
         let before = try deck.serializedData()
         let svg = try deck.renderSVG(slideAt: 0)
-        #expect(svg.contains("<tspan") && svg.contains("#FF0000") && svg.contains("textLength="))
+        #expect(svg.contains("<tspan") && svg.contains("#FF0000") && !svg.contains("textLength="))
+        for span in layout.lines.flatMap(\.spans) {
+            let positions = span.scalarPositions ?? [span.x]
+            #expect(positions.count == span.run.text.unicodeScalars.count)
+            let expected = positions.map(SVGNumber.decimal).joined(separator: " ")
+            #expect(svg.contains(" x=\"\(expected)\""))
+        }
         #expect(svg.components(separatedBy: "<text").count - 1 == layout.lines.count)
         #expect(try deck.serializedData() == before)
         #expect(svg == (try deck.renderSVG(slideAt: 0)))

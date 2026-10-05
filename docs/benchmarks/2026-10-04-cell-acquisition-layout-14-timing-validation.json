@@ -1,0 +1,85 @@
+{
+  "checks": [
+    {
+      "scope": "canonical",
+      "scenario": "table-200x50",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "canonical",
+      "scenario": "table-20x10",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "canonical",
+      "scenario": "shaped-table-100x20",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "canonical",
+      "scenario": "richtext-fit",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "canonical",
+      "scenario": "slides-10",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "supplement",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "supplement",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "supplement",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "acquisition",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "acquisition",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "acquisition",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "acquisition",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    }
+  ],
+  "retainedProcesses": 240,
+  "totalIncludingWarmups": 264,
+  "allBinaryRunnerSourcePinsMatch": true,
+  "candidateSourceCommit": "d64ddb31e7790b002bcfa819059ed657deb1a527",
+  "candidateCommittedBeforeTiming": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Presentation/Tables.swift": "eee820115188d8bfa3e1adcf8f37276dedb4441ee78063f69db7e6602ad4b06f",
+    "Tests/RostrumTests/TableCellLookupTests.swift": "887168d98079c690838cee2e1c9f630d29af95c7f670367a3768df0a7a7348e4"
+  }
+}

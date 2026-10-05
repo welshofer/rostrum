@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/review-s20-readiness.py", line 30, in <module>
+    for rev,tree,files,n,current in [(base['revision'],base['sourceTree'],base['sourceFiles'],111,False),(plan['candidateSource'],plan['candidateSourceTree'],build['sources'],112,True)]:
+                                      ~~~~^^^^^^^^^^^^
+KeyError: 'revision'

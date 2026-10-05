@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "script": "/tmp/verify-fidelity18-profile-paint-controls.py",
+  "scriptSHA256": "0fb43bcc2857cf096ecfe039ef6efda87fe35411a9685ec1ad071ad1e2f03c74",
+  "extractor": "/tmp/verify-fidelity18-table-profile-paint-v4.py",
+  "extractorSHA256": "85018c71758c67170bb16ead6f5a771b18e7664c61e3b749d6ce9dc8d429e28f",
+  "inputSVG": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/table-join-profiles-false-slide-1.svg",
+  "inputSVGSHA256": "ebec16e5c92e775454bf3dcdb0b4c07310d2e55d85bf370f8a66b45ab6c5a482",
+  "reference": "/tmp/lectern-fidelity18-profiles-webkit/table-join-profiles-92DC7520-3A35-45AB-82BA-53920624C25B/lab-false/tableJoinProfiles-D57C94E1-DC26-46B2-A77B-54C6DF2EA628/native-table-join-profiles-reference.json",
+  "referenceSHA256": "bbff27c11da229684523fb6558f55f2c267adb1a258804acfbe5217f5a3e6765",
+  "positiveOpaqueTouchingSubdivision": true,
+  "negativeControls": [
+    {
+      "label": "extra-stroke",
+      "rejected": true,
+      "error": "('stroke coverage', 'colored-vertical-red', 12, 11)"
+    },
+    {
+      "label": "missing-stroke",
+      "rejected": true,
+      "error": "('stroke coverage', 'colored-vertical-red', 10, 11)"
+    },
+    {
+      "label": "gap",
+      "rejected": true,
+      "error": "('stroke', 'colored-vertical-red', {'points': [120.0, 369.0, 120.0, 428.48], 'color': [0.8, 0.13333333333333333, 0.0], 'opacity': 1.0, 'width': 2.0}, {'points': [120.0, 369.0, 120.0, 428.5], 'color': [0.800000011920929, 0.13331808149814606, 0.0], 'opacity': 1.0, 'width': 2.0, 'sequence': 47})"
+    },
+    {
+      "label": "changed-width",
+      "rejected": true,
+      "error": "('stroke', 'colored-vertical-red', {'points': [120.0, 369.0, 120.0, 428.5], 'color': [0.8, 0.13333333333333333, 0.0], 'opacity': 1.0, 'width': 2.02}, {'points': [120.0, 369.0, 120.0, 428.5], 'color': [0.800000011920929, 0.13331808149814606, 0.0], 'opacity': 1.0, 'width': 2.0, 'sequence': 47})"
+    },
+    {
+      "label": "changed-color",
+      "rejected": true,
+      "error": "('stroke', 'colored-vertical-red', {'points': [120.0, 369.0, 120.0, 428.5], 'color': [0, 1, 0], 'opacity': 1.0, 'width': 2.0}, {'points': [120.0, 369.0, 120.0, 428.5], 'color': [0.800000011920929, 0.13331808149814606, 0.0], 'opacity': 1.0, 'width': 2.0, 'sequence': 47})"
+    },
+    {
+      "label": "incorrect-colored-crossing-order",
+      "rejected": true,
+      "error": "('color-run count', 'colored-vertical-red')"
+    }
+  ],
+  "scope": "Complete interval/color-run coverage and full combined stroke-edge arrangement remain at .001pt/.0001RGB; midpoint crossing controls additive. No native input, SVG, PDF, original helper or bounds changed."
+}

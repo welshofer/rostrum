@@ -1,0 +1,326 @@
+{
+  "status": "Cycle1 frozen and NOT ACCEPTED: registered-table regression unresolved; second-source proposal pending authorization",
+  "baselineRevision": "76aa45d3520276854b4344dfb54473820449f4fc",
+  "candidateUncommittedSource": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "18d5b0adc5939e6befabbf0d4a22a4146b50941ee8bf9e0098ede5b7549cc849",
+    "Tests/RostrumTests/LayoutOrderedGlyphRangesTests.swift": "af0fe65c9a876ee0b6b45a6d44f2dd5e20812977ecc2b5b6224ff5a80594fd11"
+  },
+  "candidatePatchSHA256": "64b194dac632f3e94a5923910ca382d31b8baaea634b7c5e6536e4fff455d071",
+  "files": {
+    "shaping-proof.swift": "217ec45d7b4e524799707e445b3b4151094d7a0c40ff5bb4b2490cf95990ba17",
+    "preservation-slides-10-baseline.log": "f445c2a206c716a8d105e0661fc382035dab4baf10f4b22663db1256036e0dd2",
+    "profile-context-end.txt": "42d1e892f7772d1d57cfa21ff9a9e0a15a833d148ee29f269b219a5601996fe6",
+    "baseline-bench": "f0d81b0133239d670b1194632a29cc5b79e70e55bbdea02f948e9e613be68a42",
+    "preservation-slides-10-candidate.log": "9d1ed2181ded8d7e974f0072be5d6a9128f18412d82509ea6cd9905d7667c938",
+    "baseline-supplement-bench": "3ec88a36dcb394f9f7cc82610585f2bfeeeeabb34ac70068ab033bbe0ba09db7",
+    "process-canonical-end.txt": "547d22e7ad997f698c4de2f0206dee5195a64beb97af5e9610b44b17df223b9c",
+    "candidate-build.json": "73c4236cb21ac48b6149814836d6b1beeb84a1007701b75e2b50b1fb5d4e6515",
+    "process-late-combining-end.txt": "a0ce185f2d76bba15bb394169c04f2b51721f555657020ddd00369b0e3dd506c",
+    "native-inputs.json": "291a800b58ef3224e671faa0934a8a2a37e97245bc2af06f250c00b7d4b9938d",
+    "fitting-input.pptx": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+    "run-authorized.py": "9636c7109ac9446f32421b72b9ba38b8edba04417d332ec7eaeb1b695fd336d4",
+    "supplement-shaping.swift": "690cb41febd6eba9de5624227253758d72ef0554cee868734843793d41101006",
+    "process-end.txt": "1fca90a8fd565603d9eaf071b36e8039b17d8f02c510a8487b0cb0b9a688d7ed",
+    "baseline-profile": "af9c120cf32452dd0536cb2acd630e208fe682d9984fee9d8e1c806922f86d51",
+    "baseline-actual-metadata": "4b61e80426106cad1d2d6d0343e642e147f62f53490e906b55d93898de2cc42b",
+    "output-proof.json": "6434185dcb21312cffcc0a8673cd7a1282a60afa6befc6ba77d539e88ad63d02",
+    "profile-summary.json": "8c1177e5c76c6b251fcf7aae3ec661b49dedf7d4ae90a151719684efe297596d",
+    "candidate-appendSegment-lines.txt": "db8be6618a18457e6d03295f7020c3a1667ea60ef6a0c826095d736b47e20122",
+    "candidate-actual-metadata": "6519e8aff6bcd71f5959e4b3475344dc1165e768cccd71484de20c80b45f4c3b",
+    "canonical-paired.log": "24282ab969794ddbed2fd9f9e6c95080bdb0d9878bd9ce93020609cb1cb8b8be",
+    "focused-tests.log": "f0dde70101b9c27ec52b7bb70122178674e30cad79dae4aa461b2399581c14d0",
+    "layout-proof.swift": "bb944b71b1c4cda64a033d1953ec416f2b8a5a28213f3f0c07546c6a4cd82a74",
+    "assembly-comparison.json": "f24050d71c69be63d71a7ed105d15cefbfb3554aecc6da83bd1b6a99219fc463",
+    "candidate.patch": "64b194dac632f3e94a5923910ca382d31b8baaea634b7c5e6536e4fff455d071",
+    "candidate-tests.swift": "af0fe65c9a876ee0b6b45a6d44f2dd5e20812977ecc2b5b6224ff5a80594fd11",
+    "fit-profile.txt": "700e20fd53a7e63a4767cd78d2a3f537943b5c1c3827fdb19a72b49ae52e56fa",
+    "baseline-layout-2.jsonl": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+    "actual-metadata.swift": "989b3d27c35cd7e0e6e55412034d32e7532a886779ec7377b233fa3837e35db6",
+    "timing-plan.json": "31b9c2e0ea9a57c0d48950965bb69efddc441a930ed4046bef5ed6e75a12d782",
+    "preservation-table-200x50-candidate.log": "c31ae897e3be7115aa50e1478f5fd57c06f9987ac8e05cdd96ece584f86f8568",
+    "candidate-bench": "c22058952a5cc6b8a96eaaa3f4ff93d1981e5da4f160b67f1d38f5c803a26df3",
+    "late-combining-range-proof": "8bfb5bb0baa78d9a5c158aebff838b667e1e48eb5adbe5b0937c858c58f2746f",
+    "baseline-extended-bench": "b131c4cab3717dbfb119cc09c3a7cfb4f3a738e3b61ba279ecd753094a371bd3",
+    "late-combining-proof.json": "7115617617d9d33f0a205b731a0eb0e033ba4ae366847fa9826a0f5b3f452488",
+    "candidate-Rostrum.o": "2b1ffd9f89acc54ced0d5b86a36c2ae82aa0c9332b54fef4fe53d226fb3700d4",
+    "profile-commands.json": "125e57b0ec74f42d6a9c8574d4fc696638493d88a2a0fe5ed1bd1b6f1914a0a3",
+    "candidate-preservation": "450baebbbd376bb129fb679220dfd2d63ee696fda8fae37c7a809f5fcfb47b6f",
+    "render-profile.txt": "08bfbb39a58af635962d23b3332bc09dbd58845630887887513b571d1df9fb39",
+    "fit-profile-output.log": "355800f6dee7d69997bf9866f4e8ab274697e2824c14a10c6c0fe1dc0173bc46",
+    "preservation.json": "d6074f761c88747653f5cd17092138cc1d9035f5b9edd3bbe5922816681abe7a",
+    "baseline-shaping.jsonl": "254e2f8b8d1581154ec6cbde5f5f9d685322e4b110e1c54d03387d0bea6a18e3",
+    "candidate-actual-metadata.json": "c8ad08ff27a1d0bf402b4dc43ff77e00266c7551d2fbd1841ebbad4a3df63e20",
+    "preservation.py": "d12780816577a7f087db872ced5312640480a098e82013846c711cc2c2de0dc3",
+    "analyze-profile.py": "049b8fcf0b80560d8bd12adcb17890fd651b15ff051d128ad7ffed567f2b3600",
+    "supplement-main.swift": "6b27eda99b23232d4a04a8e71dd48ccba789313361456137d750c570a7753da1",
+    "profile.swift": "e63b9c75623f2e8ff1213c14e0696abc1d3300d5fefb8348bb237fe292845624",
+    "timing-run.log": "12c1703632853b600af299e89735b2fd76948d23ec06da0619553598c7073638",
+    "baseline-supplement-shaping.jsonl": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+    "candidate-native-bench": "51c3ec5475231919e00c74135955a17faf8e3b64d1757d681e1b55ee944a79a8",
+    "focused-capture.swift": "22549cd5a9e6f73ff51c511d627d89195c34c9ed712f79b3a55feb0a9f2ef93f",
+    "baseline-layout-1.jsonl": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+    "baseline-layout-proof": "335c158add613b3a713ed2854ad95556fd15708c5687a20cad383a435cf48a4a",
+    "late-combining-range-proof.json": "175e7376a50615b52dc7e681fc48c87e0e9540cedcb0b1ddec8a349dab71b338",
+    "profile-context-start.txt": "8407090bbdd50ce0bc3071a97c84e867178acc990452938826414ccf6a46ed93",
+    "baseline-appendSegment-lines.txt": "a4359e602cb79e352f21c324280ed32d8ad620ff0ecd662a427bd008ea6ea13e",
+    "paired-analysis.log": "455a0e1982c8087bcec0e1c054158775f825a0c397fe957c11f0c93a407eab58",
+    "candidate-appendSegment-assembly.txt": "30a1fbac1079a983202cfb79a5d6fcd90022cb5594917038da2915f7d048e4b1",
+    "svg-cost.py": "4eaa4717584eaffc8693dfbe891fac996638da8c4a045a4ecd8120da580824be",
+    "candidate-layout-proof": "6f7654082210ebdc26f7d6747f8b60688915469a733eb85a90ec585b18325165",
+    "baseline-focused-capture": "73046d4d5ba3f09de0c309e962eb852dcf453e52d760bc1aeb338a790f2e55b5",
+    "late-combining-input.py": "b37423a101aa673da7f29ac4022858afe84d2b0012aeeb367c49dfa4c703ecd3",
+    "baseline-native-bench": "aa175e37909c0410b8541e7aa343a6063fde4c17d0cb87924d4dbdea38c184d8",
+    "release-build.log": "21ea82594aeae81ab1a7dbbb2f18e2809816b73fddf05f3aafc2badeae4d4e16",
+    "preservation-images-unique-baseline.log": "c41b018c27eb487d6e72532a6466f88ac970c80bdabc71dcccfc3d032b706548",
+    "candidate-extended-bench": "9fb00b778bf35c9a81e344f13d69267b43aca991c6a958764c01ed855ac51a86",
+    "late-combining-proof.py": "13388255ac7eb5b72a554e74cef211fc4d4c7f3a48f65bbe6baad3b01ed36c80",
+    "full-tests.log": "84b44f771e08a2c980139252c9c1c405bf0a63b89c72c330ebfd15ee9b9b28cc",
+    "baseline-Rostrum.o": "06814ff38c1c75f32f3101f31916efe61988dbcc9efca537470af837f8009e90",
+    "baseline-focused.json": "7df3a488723ba144d5568787b478fa6c24fc370be0948225486b111e4b789778",
+    "baseline-pins.json": "b1c8c20d5439c4b4af2dd50daa8ba80f0992737dbbaed61947c071f12a093679",
+    "supplement-inputs.json": "3fa3702f1264eda7bc85110ce39af1416d801feb6d36e7a82bb08f5649b56ce2",
+    "frozen-source.json": "075a771447b7a9dfd461c252b84b86db7d73f4a786273e7b1367cb5cf204fd21",
+    "preservation.log": "b74c878da023f6dc464e20038508885498d4947fa17fe97ea34825947b6c56f8",
+    "prepare-candidate.py": "cb02fe9af00f0335f5acc33782e599b257992e3b18385ae394fff1cd62a22817",
+    "baseline-RichTextLayout.swift": "03d208c3be0a8a766378572c52527cbd0d0df98526f91b138853774811736dbc",
+    "output-proof.log": "ae9486838d16c3aa148ba7b0ea0a9b195814597ede6c9450ff79ab3c6ad5036d",
+    "candidate-layout-1.jsonl": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+    "candidate-supplement-shaping": "9212cfda4bda0a20c17918f662bda3dcc0037a52b487cc4f0eb8162b5b3d02f0",
+    "baseline-preservation": "0ca750d8b4e8006325615517ee840f6249961f1b6f47ed9cfde681f1eb1d6039",
+    "timing-execution.json": "067b35e790263935f6181d5268dc65b962efb516f783ddcdaa623a42d83edeb8",
+    "paired-analysis.py": "dc6b729f3d1f893be0ee2ea613f55cee698049c492f85ac1e56d1cdea8ab995d",
+    "process-supplement-end.txt": "c88ffa9ef8f284d9ba474fbd234b39ede084d4a5e0ac9aa0a1bef13ac6e180c7",
+    "supplement-paired.log": "efda02e8b521731d5359558d9ae077768430b6be2eef78f1a6ffc7d846fb55ae",
+    "late-combining-paired.log": "d035777bb527486b1da11ac0b722fe2238e727fd0776ee5dfabcb42a3dfa20ec",
+    "process-supplement-during-15.txt": "97e33ec14bc0a062785f3915f3791c3409e4a6aebb69123f3c3f79e1da31354e",
+    "baseline-nm.txt": "05fdfbe93f4eb14b98aa4fb6ec62d2a073d6c54f7069a7649e7c998e47f51f74",
+    "preservation-table-200x50-baseline.log": "1051f06e1962c1fdbf48ffc571a6ac0d1fd38da065da8d4ee26e963d0ba3b7d4",
+    "render-profile-output.log": "296f0201212e1db110af20d0f4c910b6ba62c69c6ac453c6bd3d4a770980b930",
+    "native-main.swift": "198ac9508943ecfb2027c862af6205f99433d166fd10ee60d56d555db63fd114",
+    "fit-sampler.log": "cc93f21c8f95261f68e1148a2a4a4fec4f362e03b822fc31a4fe624a6eec77f8",
+    "candidate-shaping-proof": "2b99ca564da59f716266ddbbfb937793ea3cc7e4211bba4aca8da10e3b650cd3",
+    "prepare-candidate.log": "e57b3d93a303fcdacfb15e4e397087d546eb7523070a7396dfc7b528a7ad97e9",
+    "host-load.json": "3407b129f2fa43cba6d5cb9a294bf6231ed05307ce32c11566594be668d4ee4e",
+    "candidate-supplement-shaping.jsonl": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+    "late-combining-range-proof.swift": "fbbc63354860d3cecca883f5e70024a12f5ffa76147fda9a3e3e03d32b2edd9e",
+    "native-driver.diff": "8d3a2d5b84b9ac8048924ca17552af7a4da52263253f9f87beb09448723a8fbe",
+    "candidate-supplement-bench": "3157fdf3170fa9807f7ecb5aa82c542139a3b96c7a4725befd5e5b48cd0b5f2a",
+    "late-combining.pptx": "6aced35ad3f5f02e38f6383f331b2e1fb7144e2848f4d5ed1f942d7630e1ca0a",
+    "render-sampler.log": "dbc315c44e45920f85fe9cca94d53ba10dc81055df871c8e43e2432ceae36de4",
+    "baseline-appendSegment-assembly.txt": "4a6233cc68820491b6854651e45bf7e1075a9f71b7f02b639f2162e5df6fe607",
+    "output-proof.py": "c9a1289eb86d61b1413b7ef18c08c1537c4c40068afb6b3ab9bda060bedf07c4",
+    "profile-run.py": "2894d070a2d1fe3e49d666758727aeddfbf045b194feefa320ac3f11f66eb631",
+    "candidate-layout-2.jsonl": "68b2c51cc0b920c10262ff206e0e6dd04a1f46fd9d9a4d4d5d217a861006f233",
+    "process-start.txt": "d92e5984cc8fa95475e77bd86d38f9a83066da752b28471fbff279ae26f98dd4",
+    "late-combining-input.json": "5d4c20ffd56c5e3413e79bdb8051b4b7751e83274100b844e176d8176677ee29",
+    "preservation-images-unique-candidate.log": "c938b0916ed7d6681c5019c31caab747a6f83d3a313bbdbd542bd36cb4ab28e1",
+    "candidate-nm.txt": "9bba972936aae23f5e1cf94e583cc29072698fa2da425b23c067025344b5e5fb",
+    "baseline-actual-metadata.json": "c8ad08ff27a1d0bf402b4dc43ff77e00266c7551d2fbd1841ebbad4a3df63e20",
+    "candidate-shaping.jsonl": "254e2f8b8d1581154ec6cbde5f5f9d685322e4b110e1c54d03387d0bea6a18e3",
+    "process-canonical-during-15.txt": "1693b5ac4812929c3dbb7677996a3f3094332a7d2e9c7da2c45d05cac08229e8",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "7fec40cf32b2e97699bd65f207ba2189ecbbc9c9f4a407a3dfff0e367877328a",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "677fb17232a9333d57c9e424438da8d9e56a8ced054e845c5c2522b22eac6ede",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "7fec40cf32b2e97699bd65f207ba2189ecbbc9c9f4a407a3dfff0e367877328a",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "677fb17232a9333d57c9e424438da8d9e56a8ced054e845c5c2522b22eac6ede",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "candidate-source.swift": "18d5b0adc5939e6befabbf0d4a22a4146b50941ee8bf9e0098ede5b7549cc849"
+  },
+  "rawAndAnalysisReceipts": {
+    "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-paired-macos.json": "84ba73b3048e5aaed66a64b86f236700b4924874066414a90457ecd3d867ee60",
+    "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-analysis.json": "c96a8f09e35b47d68845c796847f21ac18cc723be074c65b138dcc34a6950294",
+    "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-macos.json": "f78c5e326fa670715720998292c49f744a3ea318faa845421db530b1a2e2d7cb",
+    "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-canonical-paired-analysis.json": "fa024415d5cbdb7ab571f4b415b3a2d6d5ee934e4e503f08afbc3fb39e1c8152",
+    "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-analysis.json": "fb9ee6e88143dc71bd081f39d970f58c15dea792f9b96ea32b949f90eddfa9e6",
+    "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-summary.json": "1d2dd61943f9320d8aa7720fbc940821786e1891f2602d52e169baf7da294184",
+    "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-macos.json": "139f6e2c512063c47d826aefbda763a4ee8753fd69e92cd0822f1fd668cfc402"
+  },
+  "timingExecution": {
+    "commands": [
+      {
+        "name": "canonical",
+        "command": [
+          "python3",
+          "Tools/rostrum-bench/run.py",
+          "--binary",
+          ".build/perf22-ordered-atoms/candidate-extended-bench",
+          "--paired-binary",
+          ".build/perf22-ordered-atoms/baseline-extended-bench",
+          "--paired-revision",
+          "76aa45d3520276854b4344dfb54473820449f4fc",
+          "--runs",
+          "10",
+          "--warmups",
+          "1",
+          "--scenarios",
+          "table-200x50",
+          "table-20x10",
+          "shaped-table-100x20",
+          "richtext-fit",
+          "slides-10",
+          "--output",
+          "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-paired-macos.json"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 24.472364499990363
+      },
+      {
+        "name": "supplement",
+        "command": [
+          "python3",
+          "Tools/rostrum-bench/run.py",
+          "--binary",
+          ".build/perf22-ordered-atoms/candidate-supplement-bench",
+          "--paired-binary",
+          ".build/perf22-ordered-atoms/baseline-supplement-bench",
+          "--paired-revision",
+          "76aa45d3520276854b4344dfb54473820449f4fc",
+          "--runs",
+          "10",
+          "--warmups",
+          "1",
+          "--scenarios",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "--output",
+          "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-supplement-paired-macos.json"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 21.90598262497224
+      },
+      {
+        "name": "late-combining",
+        "command": [
+          "python3",
+          "Tools/rostrum-bench/run.py",
+          "--binary",
+          ".build/perf22-ordered-atoms/candidate-supplement-bench",
+          "--paired-binary",
+          ".build/perf22-ordered-atoms/baseline-supplement-bench",
+          "--paired-revision",
+          "76aa45d3520276854b4344dfb54473820449f4fc",
+          "--runs",
+          "10",
+          "--warmups",
+          "1",
+          "--scenarios",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
+          "--output",
+          "docs/benchmarks/2026-10-04-ordered-atoms-layout-12-late-combining-paired-macos.json"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 4.1236394589650445
+      }
+    ],
+    "elapsedSeconds": 50.62903050001478,
+    "explicitQuietWindow": true,
+    "knownLoad": "Root and lanes paused; actual process snapshots retained. No settings altered."
+  },
+  "hostLoad": {
+    "snapshots": [
+      {
+        "snapshot": ".build/perf22-ordered-atoms/process-canonical-during-15.txt",
+        "cpuPercent": {
+          "WindowServer": 99.0,
+          "backupd": 49.1,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "snapshot": ".build/perf22-ordered-atoms/process-canonical-end.txt",
+        "cpuPercent": {
+          "WindowServer": 98.6,
+          "backupd": 139.6,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "snapshot": ".build/perf22-ordered-atoms/process-end.txt",
+        "cpuPercent": {
+          "WindowServer": 99.7,
+          "backupd": 133.9,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "snapshot": ".build/perf22-ordered-atoms/process-late-combining-end.txt",
+        "cpuPercent": {
+          "WindowServer": 99.7,
+          "backupd": 133.9,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "snapshot": ".build/perf22-ordered-atoms/process-start.txt",
+        "cpuPercent": {
+          "WindowServer": 98.3,
+          "backupd": 90.3,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "snapshot": ".build/perf22-ordered-atoms/process-supplement-during-15.txt",
+        "cpuPercent": {
+          "WindowServer": 96.9,
+          "backupd": 131.7,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      },
+      {
+        "snapshot": ".build/perf22-ordered-atoms/process-supplement-end.txt",
+        "cpuPercent": {
+          "WindowServer": 97.5,
+          "backupd": 129.9,
+          "photolibraryd": 0.0,
+          "managedcorespotlightd": 0.0
+        }
+      }
+    ],
+    "ranges": {
+      "WindowServer": [
+        96.9,
+        99.7
+      ],
+      "photolibraryd": [
+        0.0,
+        0.0
+      ],
+      "managedcorespotlightd": [
+        0.0,
+        0.0
+      ],
+      "backupd": [
+        49.1,
+        139.6
+      ]
+    },
+    "scope": "Start/during/end snapshots with coordinated pause of agent builds/GUI; uncontrolled background activity remains. Snapshots cannot establish continuous isolation or remove load bias."
+  },
+  "correctness": {
+    "RostrumTests": 1151,
+    "RostrumSuites": 163,
+    "RostrumLayoutTests": 18,
+    "RostrumLayoutSuites": 3,
+    "focusedTests": 3,
+    "focusedParameterCases": 6,
+    "layoutRecords": 1728,
+    "shapingRecords": 101310,
+    "outputCases": 134,
+    "outputSlides": 824,
+    "independentPptxReopens": 426,
+    "lateControlGuardFirstRejectionGlyph": 1350
+  },
+  "assessment": "Useful fitting and accented/CJK gains do not erase registered ASCII slowdown. No acceptance, historical recovery, universal nonregression, lower-memory or clean-host claim.",
+  "historicalSourceReconstruction": {
+    "path": ".build/perf22-ordered-atoms/candidate-source.swift",
+    "method": "Apply retained unified candidate.patch to retained baseline-RichTextLayout.swift; recovered hash equals pre-timing frozen-source.json pin",
+    "SHA256": "18d5b0adc5939e6befabbf0d4a22a4146b50941ee8bf9e0098ede5b7549cc849"
+  }
+}

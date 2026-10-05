@@ -1,8 +1,19 @@
 # Performance measurements
 
-The latest [combined fidelity and performance checkpoint](INTEGRATED-LAYOUT-PERFORMANCE-20261003-3.md)
+The latest [October 4 comparison](INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-UPSTREAM.md)
+compares integrated source `2953dc1` with its measured baseline `6a1f56f`.
+Large fallback rendering is **3.97% slower** and registered-table rendering
+**2.51% slower**, each in nine of ten matched pairs, with about 2 MiB additional
+peak process RSS. Substantial background load limits attribution. This is an
+explicit fidelity tradeoff; performance recovery remains open. Inherited SVG
+styling removes 2.03 MB versus the first unhoisted implementation while retaining
+470,000 bytes over the large-table baseline. See the October 4 section below.
+The later `a47d94b` merge incorporates preview fallback work from main `40f28e5`;
+its functional verification is recorded separately, and it was not retimed.
+
+The historical [October 3 combined checkpoint](INTEGRATED-LAYOUT-PERFORMANCE-20261003-3.md)
 measures **4.44% faster registered-font table rendering and 5.92% faster fitting**
-against this pass's `5654d1b` baseline. Both improve in all ten matched pairs with
+against that pass's `5654d1b` baseline. Both improve in all ten matched pairs with
 nonoverlapping observed ranges, including the new native-calibrated geometry.
 Fallback rendering has overlapping ranges. Against the older `cf1b8a0` baseline,
 registered rendering improves 5.94%; fitting's 3.73% lower median has overlapping
@@ -19,7 +30,7 @@ finds **2.26% slower fallback table rendering and 3.01% slower rich-text fitting
 against `cf1b8a0`, with both slower in all ten matched pairs. Registered-font
 table rendering is 0.75% faster with overlapping ranges; there is no meaningful
 net speedup claim. One [bounded fast-path attempt](INTEGRATED-LAYOUT-PERFORMANCE-20261003-ATTEMPT.md)
-failed to remove these regressions and was discarded. The latest pass above
+failed to remove these regressions and was discarded. That October 3 pass
 profiles and reduces common layout copying while separately measuring the
 additional fidelity work.
 
@@ -261,3 +272,23 @@ baseline. Median table process peak RSS is 199.578 MiB versus 199.375 MiB at the
 previous checkpoint; 1,000-slide RSS is 41.0 MiB. There is no measured net memory
 reduction. The current style cache retains at most 36 templates and approximately
 1 MiB per render. Linux/iOS timings and regression thresholds remain open.
+
+
+## October 4 native Latin fidelity tradeoff
+
+The [latest matched comparison](INTEGRATED-LAYOUT-PERFORMANCE-20261004-4-UPSTREAM.md)
+uses fresh current-main `6a1f56f` and integrated source `2953dc1`. It does **not**
+establish performance recovery: large fallback rendering is 3.97% slower and
+registered-table rendering 2.51% slower in the observed run; both are slower in
+nine of ten pairs. Median process RSS increases by 2.01 and 2.23 MiB respectively.
+Substantial variable Time Machine and WindowServer load limits attribution, and
+the directional results remain explicit. No general or clean-host speedup,
+lower-memory or cross-platform performance claim is made.
+
+The native Latin policy fixes independently measured PowerPoint wrap boundaries.
+Its first implementation repeated 2.5 MB of SVG style markup in the large-table
+fixture. Inherited styling removes exactly 2.03 MB of that addition while
+preserving effective policy and geometry, leaving 470,000 bytes over baseline.
+The final pipeline keeps that bounded fidelity cost visible. The fallback-only
+optimization and earlier failed experiment remain documented separately;
+PERF-1 fallback recovery and clean-host confirmation remain open.

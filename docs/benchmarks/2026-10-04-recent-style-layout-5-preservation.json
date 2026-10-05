@@ -1,0 +1,90 @@
+{
+  "baselineRevision": "59efb229c94f484666c9dd2a7e0ea7044f54f94b",
+  "cases": [
+    {
+      "scenario": "slides-10",
+      "inputSHA256": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+      "inputBytes": 20501,
+      "slideCount": 10,
+      "artifacts": {
+        "baseline": {
+          "roundtrip.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+          "slide-9.svg": "f24bedeb4ef1d4726a0db796bf7764a8031586abd9d383bbcb227a3797a8a9af",
+          "slide-8.svg": "0835d892345fe14ec1525f577d3474e0534473c5e5ba60bf89ab8bb06662db04",
+          "slide-6.svg": "3acd50c7124af6150afaffa80951ad9ab24f9e03a70e05b037899ae3452bcd4b",
+          "slide-7.svg": "0c431030a534799f43877fa67a275770e2d9f48f81fae736cda72df328c54d15",
+          "slide-5.svg": "73802c27dd7854ab5866ab28c07ad0b40c31b0efb34e30868250b111e2ffa2c7",
+          "slide-4.svg": "40a67b890d7e8d44e56e13c57edadba41060bfd59c796c937f0f5a45895fe177",
+          "slide-1.svg": "2c5b34197ed93ea158bbaf0fb037ca2391dc3eeb30cc95589e48580857eb58ae",
+          "slide-3.svg": "7e50dc5090b8257ef808e832aac90d7df0107c3516a08da5fabd3dc925c8b89d",
+          "slide-2.svg": "e56210053083a1268f7853e01dec46e7ef118640998d557fbcc442f3dd275ce7",
+          "slide-10.svg": "658cc3aa9794b0b29fe7a8495762989b0c2b77320f9dd69e384d51cab80cc91a"
+        },
+        "candidate": {
+          "roundtrip.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+          "slide-9.svg": "f24bedeb4ef1d4726a0db796bf7764a8031586abd9d383bbcb227a3797a8a9af",
+          "slide-8.svg": "0835d892345fe14ec1525f577d3474e0534473c5e5ba60bf89ab8bb06662db04",
+          "slide-6.svg": "3acd50c7124af6150afaffa80951ad9ab24f9e03a70e05b037899ae3452bcd4b",
+          "slide-7.svg": "0c431030a534799f43877fa67a275770e2d9f48f81fae736cda72df328c54d15",
+          "slide-5.svg": "73802c27dd7854ab5866ab28c07ad0b40c31b0efb34e30868250b111e2ffa2c7",
+          "slide-4.svg": "40a67b890d7e8d44e56e13c57edadba41060bfd59c796c937f0f5a45895fe177",
+          "slide-1.svg": "2c5b34197ed93ea158bbaf0fb037ca2391dc3eeb30cc95589e48580857eb58ae",
+          "slide-3.svg": "7e50dc5090b8257ef808e832aac90d7df0107c3516a08da5fabd3dc925c8b89d",
+          "slide-2.svg": "e56210053083a1268f7853e01dec46e7ef118640998d557fbcc442f3dd275ce7",
+          "slide-10.svg": "658cc3aa9794b0b29fe7a8495762989b0c2b77320f9dd69e384d51cab80cc91a"
+        }
+      },
+      "changedArtifactsAgainstBaseline": [],
+      "allPartPayloadsPreserved": true,
+      "deterministicSave": true,
+      "reopenedSVGsMatch": true,
+      "crossVersionArtifactsIdentical": true,
+      "pythonPptxReopens": 2
+    },
+    {
+      "scenario": "table-200x50",
+      "inputSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+      "inputBytes": 74767,
+      "slideCount": 1,
+      "artifacts": {
+        "baseline": {
+          "roundtrip.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+          "slide-1.svg": "fc591510e51a499bf956da8cb0a8b745b4ed769504280565102345b637024f14"
+        },
+        "candidate": {
+          "roundtrip.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+          "slide-1.svg": "fc591510e51a499bf956da8cb0a8b745b4ed769504280565102345b637024f14"
+        }
+      },
+      "changedArtifactsAgainstBaseline": [],
+      "allPartPayloadsPreserved": true,
+      "deterministicSave": true,
+      "reopenedSVGsMatch": true,
+      "crossVersionArtifactsIdentical": true,
+      "pythonPptxReopens": 2
+    },
+    {
+      "scenario": "images-unique",
+      "inputSHA256": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+      "inputBytes": 62353,
+      "slideCount": 1,
+      "artifacts": {
+        "baseline": {
+          "roundtrip.pptx": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+          "slide-1.svg": "cc4e6991e5f655021bffb339765f157a95a4fd4dda83126a5f0b80e947079bb2"
+        },
+        "candidate": {
+          "roundtrip.pptx": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+          "slide-1.svg": "cc4e6991e5f655021bffb339765f157a95a4fd4dda83126a5f0b80e947079bb2"
+        }
+      },
+      "changedArtifactsAgainstBaseline": [],
+      "allPartPayloadsPreserved": true,
+      "deterministicSave": true,
+      "reopenedSVGsMatch": true,
+      "crossVersionArtifactsIdentical": true,
+      "pythonPptxReopens": 2
+    }
+  ],
+  "scope": "Preservation checks only; Two-sample timings are for preservation checks and do not support performance claims. Authoritative performance uses separate ten-pair quiet-window measurements."
+}

@@ -1,0 +1,114 @@
+{
+  "status": "APPROVE_FINAL_S18_INTEGRATION",
+  "createdUTC": "2026-10-05T00:50:43.653716+00:00",
+  "manifest": "/Users/welshofer/Developer/rostrum/docs/benchmarks/2026-10-04-table-join-profiles-integration-verification.json",
+  "manifestSHA256": "b6f666bb6980a1643cfaff2179d0aa18a6193570a59c38340f3387d75881290a",
+  "sourceCheckpoint": "c8f91dcbb41a658b7862f92eee28f338f9565e37",
+  "SourcesTree": "59c7beb3d5e49ebf49cecb361a36f5ce53b9b7b1",
+  "script": "/tmp/review-s18-integration.py",
+  "scriptSHA256": "1b243f5b1f1ec6950321e479dc9ced1c9c3322d792277932ae0d8fe790036380",
+  "physicalPins": 1041,
+  "GitSourcePins": 677,
+  "exactExports": 176,
+  "historicalResourceGitSnapshots": 2,
+  "supplementalExactGitPins": 11,
+  "sourceAndPhysicalBytesUnchanged": true,
+  "external": {
+    "packages": 80,
+    "slides": 268,
+    "XMLRelationshipParts": 2979,
+    "inputHashes": 430,
+    "frozenFixtureFiles": 49,
+    "nativeInputIdentityChecks": 16,
+    "catalogReports": 31,
+    "catalogChecks": 649,
+    "catalogFindings": 413,
+    "additionalPipelineReports": 4,
+    "additionalPipelineChecks": 214,
+    "totalChecks": 863
+  },
+  "priorSVGsExact": 34,
+  "priorPackagesExact": 60,
+  "priorPackagesCommentOnly": [
+    {
+      "current": "/tmp/lectern-fidelity18-lab/comments-2C62A42F-9285-49C4-9AB4-289C77B2E6E0/comments-before.pptx",
+      "changedAttributes": 5,
+      "consistentBijectiveUUIDs": 2
+    },
+    {
+      "current": "/tmp/lectern-fidelity18-lab/comments-2C62A42F-9285-49C4-9AB4-289C77B2E6E0/comments.pptx",
+      "changedAttributes": 18,
+      "consistentBijectiveUUIDs": 7
+    },
+    {
+      "current": "/tmp/lectern-fidelity18-lab/slideImport-F2536D4D-5571-4A5E-85BB-2D541FEC4CAC/import-source.pptx",
+      "changedAttributes": 17,
+      "consistentBijectiveUUIDs": 5
+    },
+    {
+      "current": "/tmp/lectern-fidelity18-lab/slideImport-F2536D4D-5571-4A5E-85BB-2D541FEC4CAC/slideImport.pptx",
+      "changedAttributes": 21,
+      "consistentBijectiveUUIDs": 6
+    }
+  ],
+  "gate": {
+    "library": [
+      1183,
+      172
+    ],
+    "layout": [
+      18,
+      3
+    ],
+    "core": [
+      298,
+      45
+    ],
+    "app": [
+      91,
+      27
+    ],
+    "appExecutions": 127,
+    "failures": 0,
+    "expectedFailures": 0,
+    "skips": 0,
+    "runtimeWarnings": 0,
+    "retainedClipboardErrorLines": 12,
+    "retainedPreferencesDaemonLines": 249,
+    "retainedAudioMessages": 12,
+    "explicitBuildSucceeded": 2,
+    "quietFailedExitZeroMessages": 0
+  },
+  "manual": [
+    {
+      "option": false,
+      "checks": 44,
+      "slides": 3,
+      "all52SourceTextNodesPresent": true,
+      "exactSavedSVGs": 3,
+      "rawSVGViewportOnly": true
+    },
+    {
+      "option": true,
+      "checks": 44,
+      "slides": 3,
+      "all52SourceTextNodesPresent": true,
+      "exactSavedSVGs": 3,
+      "rawSVGViewportOnly": true
+    }
+  ],
+  "finalNativeAndWebKitReceipt": "/tmp/lectern-fidelity18-profiles-webkit/independent-final-v6/review-receipt.json",
+  "finalNativeAndWebKitReceiptSHA256": "7724c3db12a52b1c43e952237429402a2170e2138eb98682a51defb9c3820f0c",
+  "initialFailedHarnessRetained": true,
+  "finalBounds": {
+    "vectorPT": 0.001,
+    "RGB": 0.0001,
+    "allGlyphXAndYPT": 0.025,
+    "paintSizePT": 0.002
+  },
+  "performanceIndependentReceipt": "/tmp/rostrum-s18-independent-performance-review.json",
+  "performanceIndependentReceiptSHA256": "2485c37af6131f215717075312b01000ab93a780ba0341687ddbeae8e48ac8e5",
+  "reportSHA256": "fb129db7e7ea76d5c3c7b78a064a2a170942696bf648f31e896c38ecf39788de",
+  "LabDocumentSHA256": "8635d4f556b633957688910709153ae1ffa544a639702da601bc81e02b6ffa82",
+  "scope": "Final docs/source/evidence review only. No tests/build/GUI/timing launched. All physical/source/export pins, fresh package reopens, manual exported content, exact inspector SVGs, comment-only structural deltas and gate diagnostics independently checked. Root owns actual GUI observations. First two original pages only numerical native acceptance; third public API page separate. All newly admitted performance intervals include zero; no speedup, universal nonregression, glyph-ink/raster/whole-slide parity or final-head hosted CI claim. Acceptance-only wording and related report/receipt hash repins may follow."
+}

@@ -3,7 +3,7 @@ import Testing
 @testable import Rostrum
 
 @Suite struct TableTextLayoutTests {
-    @Test func cellGeometryOverridesPreserveAutofitWrappingAndRotation() throws {
+    @Test func cellGeometryOverridesIgnoreStoredScaleAndPreserveWrappingAndRotation() throws {
         let deck = try Presentation(), slide = try deck.slides[0]
         let table = try slide.shapes.addTable(rows: 1, columns: 1,
             frame: Rect(x: .points(10), y: .points(20), width: .points(80), height: .points(60)))
@@ -45,29 +45,30 @@ import Testing
                         : "translate(127000 1016000) rotate(-90)"))
                 }
                 let texts = container.children(named: "text")
-                // The 126pt run exceeds both horizontal and rotated widths;
+                // The full-size 252pt run exceeds both horizontal and rotated widths;
                 // wrap="none" must survive the cell geometry override.
                 #expect(texts.count == 1)
                 let text = try #require(texts.first)
                 let span = try #require(text.firstChild(named: "tspan"))
                 #expect(span.textContent == content)
-                #expect(span[attribute: "font-size"] == "10")
+                #expect(span[attribute: "font-size"] == "20")
                 #expect(span[attribute: "x"].flatMap(Double.init) == 3)
                 // Approximate layout advances must not distort the viewer's
-                // actual fallback font by forcing its glyphs into 126 points.
+                // actual fallback font by forcing its glyphs into 252 points.
                 #expect(span[attribute: "textLength"] == nil)
                 // 3pt before + 12pt * .75 advance + 4pt after = 16pt.
-                // The 10pt fallback ascent puts the unanchored baseline at 13pt.
+                // Stored cell scale is ignored: the 20pt fallback ascent puts
+                // the unanchored baseline at 23pt. Reduction remains diagnosed.
                 let localBaseline: Int
                 switch anchor {
-                case "ctr": localBaseline = direction == "horz" ? 34 : 44
-                case "b": localBaseline = direction == "horz" ? 53 : 73
-                default: localBaseline = 15
+                case "ctr": localBaseline = direction == "horz" ? 44 : 54
+                case "b": localBaseline = direction == "horz" ? 63 : 83
+                default: localBaseline = 25
                 }
                 let x = direction == "horz" ? 10 * EMU.perPoint : 0
                 let y = (localBaseline + (direction == "horz" ? 20 : 0)) * EMU.perPoint
                 #expect(text[attribute: "transform"] == "translate(\(x),\(y)) scale(12700)")
-                #expect(result.problems.fidelityIssues.map(\.code) == [.missingFont, .viewerFontDependency])
+                #expect(result.problems.fidelityIssues.map(\.code) == [.unsupportedTextProperty, .unsupportedTextProperty, .missingFont, .viewerFontDependency])
                 #expect(try deck.serializedData() == before)
             }
         }

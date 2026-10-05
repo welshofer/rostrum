@@ -1,0 +1,354 @@
+{
+  "status": "Representation costs verified; runtime/RSS recorded separately in paired receipts",
+  "groups": [
+    {
+      "scenario": "canonical/table-200x50",
+      "baseline": {
+        "slideCount": 1,
+        "svgBytes": 11997344,
+        "textElementCount": 62500,
+        "tspanCount": 62500,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 0,
+        "bytesExcludingBase64Payloads": 11997344
+      },
+      "candidate-1": {
+        "slideCount": 1,
+        "svgBytes": 11997344,
+        "textElementCount": 62500,
+        "tspanCount": 62500,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 0,
+        "bytesExcludingBase64Payloads": 11997344
+      }
+    },
+    {
+      "scenario": "canonical/table-20x10",
+      "baseline": {
+        "slideCount": 1,
+        "svgBytes": 59384,
+        "textElementCount": 200,
+        "tspanCount": 200,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 0,
+        "bytesExcludingBase64Payloads": 59384
+      },
+      "candidate-1": {
+        "slideCount": 1,
+        "svgBytes": 59384,
+        "textElementCount": 200,
+        "tspanCount": 200,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 0,
+        "bytesExcludingBase64Payloads": 59384
+      }
+    },
+    {
+      "scenario": "canonical/shaped-table-100x20",
+      "baseline": {
+        "slideCount": 1,
+        "svgBytes": 5277230,
+        "textElementCount": 16800,
+        "tspanCount": 16800,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 16800,
+        "lengthAdjustAttributeCount": 16800,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 4246246
+      },
+      "candidate-1": {
+        "slideCount": 1,
+        "svgBytes": 4730430,
+        "textElementCount": 16800,
+        "tspanCount": 16800,
+        "multiPositionCoordinateCount": 40800,
+        "multiPositionTspanCount": 14800,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 3699446
+      }
+    },
+    {
+      "scenario": "canonical/richtext-fit",
+      "baseline": {
+        "slideCount": 1,
+        "svgBytes": 1039569,
+        "textElementCount": 22,
+        "tspanCount": 22,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 22,
+        "lengthAdjustAttributeCount": 22,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 8585
+      },
+      "candidate-1": {
+        "slideCount": 1,
+        "svgBytes": 1039569,
+        "textElementCount": 22,
+        "tspanCount": 22,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 22,
+        "lengthAdjustAttributeCount": 22,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 8585
+      }
+    },
+    {
+      "scenario": "canonical/slides-10",
+      "baseline": {
+        "slideCount": 10,
+        "svgBytes": 5480,
+        "textElementCount": 10,
+        "tspanCount": 20,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 0,
+        "bytesExcludingBase64Payloads": 5480
+      },
+      "candidate-1": {
+        "slideCount": 10,
+        "svgBytes": 5480,
+        "textElementCount": 10,
+        "tspanCount": 20,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 0,
+        "bytesExcludingBase64Payloads": 5480
+      }
+    },
+    {
+      "scenario": "supplement/unicode-latin",
+      "baseline": {
+        "slideCount": 1,
+        "svgBytes": 6038730,
+        "textElementCount": 20000,
+        "tspanCount": 20000,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 20000,
+        "lengthAdjustAttributeCount": 20000,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 5007746
+      },
+      "candidate-1": {
+        "slideCount": 1,
+        "svgBytes": 6038730,
+        "textElementCount": 20000,
+        "tspanCount": 20000,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 20000,
+        "lengthAdjustAttributeCount": 20000,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 5007746
+      }
+    },
+    {
+      "scenario": "supplement/mixed-rtl",
+      "baseline": {
+        "slideCount": 1,
+        "svgBytes": 5483690,
+        "textElementCount": 18000,
+        "tspanCount": 18000,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 18000,
+        "lengthAdjustAttributeCount": 18000,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 4452706
+      },
+      "candidate-1": {
+        "slideCount": 1,
+        "svgBytes": 5483690,
+        "textElementCount": 18000,
+        "tspanCount": 18000,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 18000,
+        "lengthAdjustAttributeCount": 18000,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 4452706
+      }
+    },
+    {
+      "scenario": "supplement/long-combining",
+      "baseline": {
+        "slideCount": 1,
+        "svgBytes": 1931090,
+        "textElementCount": 2000,
+        "tspanCount": 2000,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 2000,
+        "lengthAdjustAttributeCount": 2000,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 900106
+      },
+      "candidate-1": {
+        "slideCount": 1,
+        "svgBytes": 1931090,
+        "textElementCount": 2000,
+        "tspanCount": 2000,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 2000,
+        "lengthAdjustAttributeCount": 2000,
+        "embeddedBase64PayloadBytes": 1030984,
+        "bytesExcludingBase64Payloads": 900106
+      }
+    },
+    {
+      "scenario": "native/primary",
+      "baseline": {
+        "slideCount": 3,
+        "svgBytes": 3041127,
+        "textElementCount": 42,
+        "tspanCount": 43,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 25,
+        "lengthAdjustAttributeCount": 25,
+        "embeddedBase64PayloadBytes": 3028308,
+        "bytesExcludingBase64Payloads": 12819
+      },
+      "candidate-1": {
+        "slideCount": 3,
+        "svgBytes": 3041651,
+        "textElementCount": 42,
+        "tspanCount": 43,
+        "multiPositionCoordinateCount": 292,
+        "multiPositionTspanCount": 23,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 3028308,
+        "bytesExcludingBase64Payloads": 13343
+      }
+    },
+    {
+      "scenario": "native/autofit",
+      "baseline": {
+        "slideCount": 2,
+        "svgBytes": 2023990,
+        "textElementCount": 16,
+        "tspanCount": 16,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 9,
+        "lengthAdjustAttributeCount": 9,
+        "embeddedBase64PayloadBytes": 2018872,
+        "bytesExcludingBase64Payloads": 5118
+      },
+      "candidate-1": {
+        "slideCount": 2,
+        "svgBytes": 2024044,
+        "textElementCount": 16,
+        "tspanCount": 16,
+        "multiPositionCoordinateCount": 114,
+        "multiPositionTspanCount": 7,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 2018872,
+        "bytesExcludingBase64Payloads": 5172
+      }
+    },
+    {
+      "scenario": "native/eligibility",
+      "baseline": {
+        "slideCount": 3,
+        "svgBytes": 4325425,
+        "textElementCount": 45,
+        "tspanCount": 54,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 36,
+        "lengthAdjustAttributeCount": 36,
+        "embeddedBase64PayloadBytes": 4309152,
+        "bytesExcludingBase64Payloads": 16273
+      },
+      "candidate-1": {
+        "slideCount": 3,
+        "svgBytes": 4324989,
+        "textElementCount": 45,
+        "tspanCount": 54,
+        "multiPositionCoordinateCount": 251,
+        "multiPositionTspanCount": 29,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 4309152,
+        "bytesExcludingBase64Payloads": 15837
+      }
+    },
+    {
+      "scenario": "native/kern-v2",
+      "baseline": {
+        "slideCount": 1,
+        "svgBytes": 1011840,
+        "textElementCount": 8,
+        "tspanCount": 8,
+        "multiPositionCoordinateCount": 0,
+        "multiPositionTspanCount": 0,
+        "textLengthAttributeCount": 3,
+        "lengthAdjustAttributeCount": 3,
+        "embeddedBase64PayloadBytes": 1009436,
+        "bytesExcludingBase64Payloads": 2404
+      },
+      "candidate-1": {
+        "slideCount": 1,
+        "svgBytes": 1011963,
+        "textElementCount": 8,
+        "tspanCount": 8,
+        "multiPositionCoordinateCount": 37,
+        "multiPositionTspanCount": 4,
+        "textLengthAttributeCount": 0,
+        "lengthAdjustAttributeCount": 0,
+        "embeddedBase64PayloadBytes": 1009436,
+        "bytesExcludingBase64Payloads": 2527
+      }
+    }
+  ],
+  "baselineMetadata": {
+    "ResolvedTextRun": {
+      "alignment": 8,
+      "size": 106,
+      "stride": 112
+    },
+    "RichTextSpan": {
+      "alignment": 8,
+      "size": 129,
+      "stride": 136
+    }
+  },
+  "candidateMetadata": {
+    "ResolvedTextRun": {
+      "alignment": 8,
+      "size": 107,
+      "stride": 112
+    },
+    "RichTextSpan": {
+      "alignment": 8,
+      "size": 144,
+      "stride": 144
+    }
+  },
+  "scope": "Offline proof artifacts; no comparative timing or heap-allocation attribution. All native decks render all slides with exact embedded font bytes."
+}

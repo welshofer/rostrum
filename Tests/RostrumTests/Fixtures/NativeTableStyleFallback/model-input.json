@@ -1,0 +1,988 @@
+{
+  "reads": [
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "nil",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "absent-cell-style",
+      "page": 0,
+      "styleID": "{19000000-0000-4000-8000-000000000001}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "nil",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "empty-cell-style",
+      "page": 0,
+      "styleID": "{19000000-0000-4000-8000-000000000002}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "nil",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "empty-cell-borders",
+      "page": 0,
+      "styleID": "{19000000-0000-4000-8000-000000000003}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "referenced-fill-only",
+      "page": 0,
+      "styleID": "{19000000-0000-4000-8000-000000000004}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "color": "008800",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 25400
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "style-left-only",
+      "page": 0,
+      "styleID": "{19000000-0000-4000-8000-000000000005}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "color": null,
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": null
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "style-empty-left-line",
+      "page": 0,
+      "styleID": "{19000000-0000-4000-8000-000000000006}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "color": null,
+              "none": true,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 25400
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "style-left-noFill",
+      "page": 1,
+      "styleID": "{19000000-0000-4000-8000-000000000007}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "inline-fill-only",
+      "page": 1,
+      "styleID": null
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 50800
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 50800
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "fill-direct-left",
+      "page": 1,
+      "styleID": "{19000000-0000-4000-8000-000000000009}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "color": null,
+              "none": true,
+              "present": true,
+              "scheme": null,
+              "widthEMU": null
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "color": null,
+              "none": true,
+              "present": true,
+              "scheme": null,
+              "widthEMU": null
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 0
+        }
+      ],
+      "hasDefinition": true,
+      "id": "fill-direct-right-noFill",
+      "page": 1,
+      "styleID": "{19000000-0000-4000-8000-000000000010}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 38100
+            },
+            "a:lnL": {
+              "color": "008800",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 25400
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 0
+        },
+        {
+          "column": 1,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 38100
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 0
+        },
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "color": "008800",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 25400
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 38100
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 1
+        },
+        {
+          "column": 1,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 38100
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 1
+        }
+      ],
+      "hasDefinition": true,
+      "id": "partial-grid-whole",
+      "page": 1,
+      "styleID": "{19000000-0000-4000-8000-000000000011}"
+    },
+    {
+      "cells": [
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 38100
+            },
+            "a:lnL": {
+              "color": "008800",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 25400
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"FFCC66\"), alpha: 1.0))",
+          "row": 0
+        },
+        {
+          "column": 1,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 38100
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"FFCC66\"), alpha: 1.0))",
+          "row": 0
+        },
+        {
+          "column": 0,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "color": "008800",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 25400
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 38100
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 1
+        },
+        {
+          "column": 1,
+          "directBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "present": false
+            }
+          },
+          "resolvedBorders": {
+            "a:lnB": {
+              "present": false
+            },
+            "a:lnL": {
+              "present": false
+            },
+            "a:lnR": {
+              "present": false
+            },
+            "a:lnT": {
+              "color": "0044CC",
+              "none": false,
+              "present": true,
+              "scheme": null,
+              "widthEMU": 38100
+            }
+          },
+          "resolvedFill": "Optional(Rostrum.ReadFill.solid(Rostrum.Color(hex: \"CC44AA\"), alpha: 1.0))",
+          "row": 1
+        }
+      ],
+      "hasDefinition": true,
+      "id": "partial-grid-first-row-fill",
+      "page": 1,
+      "styleID": "{19000000-0000-4000-8000-000000000012}"
+    }
+  ],
+  "fills": {
+    "absent-cell-style": [],
+    "empty-cell-style": [],
+    "empty-cell-borders": [],
+    "referenced-fill-only": [
+      {
+        "bounds": [
+          390.0,
+          280.0,
+          630.0,
+          420.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ],
+    "style-left-only": [
+      {
+        "bounds": [
+          30.0,
+          495.0,
+          270.0,
+          635.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ],
+    "style-empty-left-line": [
+      {
+        "bounds": [
+          390.0,
+          495.0,
+          630.0,
+          635.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ],
+    "style-left-noFill": [
+      {
+        "bounds": [
+          30.0,
+          65.0,
+          270.0,
+          205.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ],
+    "inline-fill-only": [
+      {
+        "bounds": [
+          390.0,
+          65.0,
+          630.0,
+          205.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ],
+    "fill-direct-left": [
+      {
+        "bounds": [
+          30.0,
+          280.0,
+          270.0,
+          420.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ],
+    "fill-direct-right-noFill": [
+      {
+        "bounds": [
+          390.0,
+          280.0,
+          630.0,
+          420.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ],
+    "partial-grid-whole": [
+      {
+        "bounds": [
+          30.0,
+          495.0,
+          150.0,
+          565.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      },
+      {
+        "bounds": [
+          150.0,
+          495.0,
+          270.0,
+          565.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      },
+      {
+        "bounds": [
+          30.0,
+          565.0,
+          150.0,
+          635.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      },
+      {
+        "bounds": [
+          150.0,
+          565.0,
+          270.0,
+          635.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ],
+    "partial-grid-first-row-fill": [
+      {
+        "bounds": [
+          390.0,
+          495.0,
+          510.0,
+          565.0
+        ],
+        "color": [
+          1.0,
+          0.8,
+          0.4
+        ]
+      },
+      {
+        "bounds": [
+          510.0,
+          495.0,
+          630.0,
+          565.0
+        ],
+        "color": [
+          1.0,
+          0.8,
+          0.4
+        ]
+      },
+      {
+        "bounds": [
+          390.0,
+          565.0,
+          510.0,
+          635.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      },
+      {
+        "bounds": [
+          510.0,
+          565.0,
+          630.0,
+          635.0
+        ],
+        "color": [
+          0.8,
+          0.26666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ]
+  }
+}

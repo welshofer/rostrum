@@ -1,0 +1,15 @@
+{
+  "sourceSHA256": "39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e",
+  "cases": 8,
+  "pages": 2,
+  "visibleBodyGlyphs": 112,
+  "checks": [
+    "ZIP CRC; every XML/rels parses",
+    "python-pptx opens 2 slides",
+    "4 named frames per page; 90/150 columns; 60/100 rows; explicit RTL flags",
+    "all merge attributes and body text match pinned physical cell descriptors"
+  ],
+  "generatorSHA256": "28b8c0300e2c7d09ba6055d7894defc21fd1554f4a620d0d0e2419f3d7643bc0",
+  "captureSHA256": "8ae13bc8bff4e7042e99b1b1d6604ade03cb42b4c68eca47ee048e4974865494",
+  "nativeCapture": "pending"
+}

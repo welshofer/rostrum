@@ -1,0 +1,24 @@
+Building for debugging...
+[1 / 13] RostrumLayout
+[2 / 13] LecternCoreTests-product
+[4 / 15] LecternCoreTests-product
+[10 / 14] LecternCoreTests-product
+Build complete! (1.47 sec)
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite TableTransitionsRecipeTests started.
+􀟈  Test auditRejectsPaintAndGlyphChanges() started.
+􀟈  Test nativeTransitionsAndExcludedFallbackSurviveSaving(alternative:) started.
+􀟈  Test actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test publicNoFillChangesOnlyAuthoredPage() started.
+􀟈  Test case passing 1 argument alternative → false to nativeTransitionsAndExcludedFallbackSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to nativeTransitionsAndExcludedFallbackSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􁁛  Test auditRejectsPaintAndGlyphChanges() passed after 4.473 seconds.
+􁁛  Test publicNoFillChangesOnlyAuthoredPage() passed after 4.976 seconds.
+􁁛  Test actualInspectorPreviewsMatchSavedFiles(alternative:) with 2 test cases passed after 9.168 seconds.
+􁁛  Test nativeTransitionsAndExcludedFallbackSurviveSaving(alternative:) with 2 test cases passed after 11.576 seconds.
+􁁛  Suite TableTransitionsRecipeTests passed after 11.576 seconds.
+􁁛  Test run with 4 tests in 1 suite passed after 11.576 seconds.

@@ -1,0 +1,18 @@
+{
+  "baseline": "a9d870b",
+  "performancePrerequisite": "0a26b86431b285857162ed189c8ddb084f033d34",
+  "command": "ROSTRUM_LIGATURE_ARTIFACT_DIR=/tmp/rostrum-ligature-viewer swift test --jobs 2",
+  "exitCode": 0,
+  "rostrumTests": 1104,
+  "rostrumSuites": 153,
+  "rostrumLayoutTests": 18,
+  "rostrumLayoutSuites": 3,
+  "logSHA256": "b114e99137d1cd1d6a55ed595cb09566c4aec46590d373255c995e55e2ce63ca",
+  "nativeCases": 24,
+  "nativeCasesWithoutDiagnostics": 23,
+  "nativeHorizontalOnlyCasesWithRetainedDiagnostic": [
+    "hard-break"
+  ],
+  "browserSpecimen": "not executed: local-file URL security policy",
+  "modelProvenance": "Requested gpt-6-astra/high; actual runtime unattested"
+}

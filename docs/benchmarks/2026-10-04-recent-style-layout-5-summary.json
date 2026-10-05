@@ -1,0 +1,84 @@
+{
+  "status": "Cycle1 accepted bounded target improvement, subject independent evidence review; observed under substantial variable host load",
+  "baselineRevision": "59efb229c94f484666c9dd2a7e0ea7044f54f94b",
+  "candidateSourceCommit": "5a4cebfd84392c058474c7bd1a2473c052a7eced",
+  "candidateWasFrozenUncommittedPatchAtTiming": true,
+  "measurements": {
+    "table-200x50": {
+      "peakRSSMedianBytes": {
+        "baseline": 189595648.0,
+        "candidate": 189743104.0
+      },
+      "peakRSSMedianDeltaBytes": 147456.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 193.0468335,
+          "candidateMedianMS": 185.8117295,
+          "ratioOfMediansPercentDelta": -3.7478490938314124
+        }
+      }
+    },
+    "table-20x10": {
+      "peakRSSMedianBytes": {
+        "baseline": 18153472.0,
+        "candidate": 18276352.0
+      },
+      "peakRSSMedianDeltaBytes": 122880.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 3.749833,
+          "candidateMedianMS": 3.742187,
+          "ratioOfMediansPercentDelta": -0.2039024137875045
+        }
+      }
+    },
+    "shaped-table-100x20": {
+      "peakRSSMedianBytes": {
+        "baseline": 57303040.0,
+        "candidate": 57253888.0
+      },
+      "peakRSSMedianDeltaBytes": -49152.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 79.200875,
+          "candidateMedianMS": 77.4137085,
+          "ratioOfMediansPercentDelta": -2.256498428836795
+        }
+      }
+    },
+    "richtext-fit": {
+      "peakRSSMedianBytes": {
+        "baseline": 22274048.0,
+        "candidate": 22429696.0
+      },
+      "peakRSSMedianDeltaBytes": 155648.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 3.368542,
+          "candidateMedianMS": 3.3681875000000003,
+          "ratioOfMediansPercentDelta": -0.01052384087832925
+        },
+        "richtext-fitting": {
+          "baselineMedianMS": 14.486625,
+          "candidateMedianMS": 14.3435625,
+          "ratioOfMediansPercentDelta": -0.9875488597240523
+        }
+      }
+    },
+    "slides-10": {
+      "peakRSSMedianBytes": {
+        "baseline": 16023552.0,
+        "candidate": 16089088.0
+      },
+      "peakRSSMedianDeltaBytes": 65536.0,
+      "phases": {
+        "render": {
+          "baselineMedianMS": 0.5965419999999999,
+          "candidateMedianMS": 0.5937915,
+          "ratioOfMediansPercentDelta": -0.4610739897609739
+        }
+      }
+    }
+  },
+  "scope": "Only current59 baseline supports this comparison. No claim of whole historical slowdown recovery, clean-host/general/cross-platform speedup or lower memory."
+}

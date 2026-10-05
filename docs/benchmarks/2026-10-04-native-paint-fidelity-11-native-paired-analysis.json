@@ -1,0 +1,93 @@
+{
+  "source": "docs/benchmarks/2026-10-04-native-paint-fidelity-11-native-paired-macos.json",
+  "bootstrapResamples": 100000,
+  "seed": 20261004,
+  "method": "Percentile bootstrap of median paired candidate/baseline percent ratios, pairs resampled together; exact two-sided binomial sign test excludes ties. Exploratory uncertainty from ten pairs, not corrected across workloads. Cannot remove shared load bias.",
+  "backgroundLoad": "Seven retained start/during/end snapshots; no agent builds/GUI by coordination. Background load substantial; snapshots do not establish clean-host isolation or remove load bias. CPU ranges: {\"WindowServer\": [96.5, 99.6], \"photolibraryd\": [84.6, 103.1], \"managedcorespotlightd\": [2.1, 34.3], \"backupd\": [0.0, 0.0]}",
+  "results": {
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx/render": {
+      "pairedPercentDeltas": [
+        1.1400848150293852,
+        -5.745754069339992,
+        4.316809272200439,
+        -3.1090330250424625,
+        15.291918005982662,
+        -6.619987392609483,
+        -1.3824913085445423,
+        0.34663983003466736,
+        7.395424599459233,
+        10.056777199502065
+      ],
+      "medianPairedPercentDelta": 0.7433623225320263,
+      "fasterPairs": 4,
+      "twoSidedExactSignTestP": 0.75390625,
+      "percentileBootstrapMedian95PercentInterval": [
+        -3.564122688942267,
+        7.395424599459233
+      ]
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx/render": {
+      "pairedPercentDeltas": [
+        1.7461056340875025,
+        4.963663523561124,
+        4.435909745559297,
+        -4.80387632671897,
+        -15.332173044093755,
+        -10.940602275262101,
+        2.147040933168576,
+        -7.209215617305665,
+        -0.16999549793772495,
+        -3.0853106025578114
+      ],
+      "medianPairedPercentDelta": -1.6276530502477682,
+      "fasterPairs": 6,
+      "twoSidedExactSignTestP": 0.75390625,
+      "percentileBootstrapMedian95PercentInterval": [
+        -7.872239300990536,
+        3.0910076898233996
+      ]
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx/render": {
+      "pairedPercentDeltas": [
+        10.765240108929074,
+        1.8509536238873636,
+        -6.928107097630109,
+        0.8887603729629268,
+        1.1420655636625199,
+        -4.316990046848057,
+        -4.09597932042729,
+        3.4489102103964386,
+        1.9585934242868142,
+        -6.646297354016861
+      ],
+      "medianPairedPercentDelta": 1.0154129683127233,
+      "fasterPairs": 4,
+      "twoSidedExactSignTestP": 0.75390625,
+      "percentileBootstrapMedian95PercentInterval": [
+        -5.371138337222075,
+        2.649931917141901
+      ]
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx/render": {
+      "pairedPercentDeltas": [
+        -7.913458710053578,
+        35.5290122372504,
+        25.558185022512568,
+        -10.348134716658464,
+        2.3782760456723784,
+        0.1733430774801592,
+        -18.231191302336335,
+        0.06336514567941709,
+        -2.1931931720095887,
+        1.0293900076322249
+      ],
+      "medianPairedPercentDelta": 0.11835411157978815,
+      "fasterPairs": 4,
+      "twoSidedExactSignTestP": 0.75390625,
+      "percentileBootstrapMedian95PercentInterval": [
+        -7.913458710053578,
+        13.293787515072395
+      ]
+    }
+  }
+}

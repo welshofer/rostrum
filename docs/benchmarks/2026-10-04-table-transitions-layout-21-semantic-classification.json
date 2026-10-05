@@ -1,0 +1,92 @@
+{
+  "status": "PASS_EXACT_NONLINE_PAINT_AND_ORDERED_SOURCE_BOUNDED_ENDPOINT_MODEL",
+  "changedCases": 5,
+  "changedSVGs": 7,
+  "cases": [
+    {
+      "name": "custom19-reject-collinear-transition",
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf31-table-custom-edges/inputs/reject-collinear-transition-100x20.pptx",
+      "inputSHA256": "243c229297941150b8de598ba670d05b3a7076a21fb4142c4527599f3e3b9039",
+      "slides": [
+        {
+          "slide": "slide-0.svg",
+          "proofPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/semantic/custom19-reject-collinear-transition/slide-0.json",
+          "proofSHA256": "18547412f77279be5cb2e63cabe30a9893e58b310d4b5cd04296088482d25fd8",
+          "newlyAdmittedTables": 1,
+          "lines": 4120
+        }
+      ]
+    },
+    {
+      "name": "transition21-native-transitions-vertical",
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/native-table-transitions21-v1.pptx",
+      "inputSHA256": "5db74899fc18508281bc6787e4618a7bd471d27df213a2982cf86dfdccd022d2",
+      "slides": [
+        {
+          "slide": "slide-0.svg",
+          "proofPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/semantic/transition21-native-transitions-vertical/slide-0.json",
+          "proofSHA256": "1a8e742f79a7601b46db2ca633d04eac17118ff0734bc470aad1bbb035880697",
+          "newlyAdmittedTables": 3,
+          "lines": 48
+        },
+        {
+          "slide": "slide-1.svg",
+          "proofPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/semantic/transition21-native-transitions-vertical/slide-1.json",
+          "proofSHA256": "d80c84be094b0c2bf1c9c7da8af6c5547d3daf36bf38e371179047f2d855ad7f",
+          "newlyAdmittedTables": 3,
+          "lines": 45
+        }
+      ]
+    },
+    {
+      "name": "transition21-native-transitions-horizontal",
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/native-table-transitions21-horizontal-v1.pptx",
+      "inputSHA256": "166cc0173a0ce1c899a1e11a29fc6d7f3d00d2da9d40818a7852249c4be07824",
+      "slides": [
+        {
+          "slide": "slide-0.svg",
+          "proofPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/semantic/transition21-native-transitions-horizontal/slide-0.json",
+          "proofSHA256": "2737a4f3a800d5f9a43603e1d9a2933525a1fa67c26252b6380dd0e6e6c5048c",
+          "newlyAdmittedTables": 4,
+          "lines": 48
+        },
+        {
+          "slide": "slide-1.svg",
+          "proofPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/semantic/transition21-native-transitions-horizontal/slide-1.json",
+          "proofSHA256": "608a0ad4026e5a7c52cc8574c427f958c5e7e041f3e1322168aa1ebfc55a1552",
+          "newlyAdmittedTables": 2,
+          "lines": 35
+        }
+      ]
+    },
+    {
+      "name": "transition21-vertical-transitions",
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/vertical-transitions-100x20.pptx",
+      "inputSHA256": "9dc72ed81356f4b8e49d9e70516a4fb4d5acb2828adbb73eb469f804c7a5bd26",
+      "slides": [
+        {
+          "slide": "slide-0.svg",
+          "proofPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/semantic/transition21-vertical-transitions/slide-0.json",
+          "proofSHA256": "b3b65c132800084fed95ad2e2a8d00ce29733a25b227e0660d58665cf134ebe9",
+          "newlyAdmittedTables": 1,
+          "lines": 4120
+        }
+      ]
+    },
+    {
+      "name": "transition21-horizontal-transitions",
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/inputs/horizontal-transitions-100x20.pptx",
+      "inputSHA256": "904857cf377a0ec34b4ecae9a8f97cbed8ae7fe1eef57acd7e544820752b384b",
+      "slides": [
+        {
+          "slide": "slide-0.svg",
+          "proofPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/semantic/transition21-horizontal-transitions/slide-0.json",
+          "proofSHA256": "e03f75a46b9a8e42b33247baa0b6113bd65a895c73e618a0e73bc6afdefef433",
+          "newlyAdmittedTables": 1,
+          "lines": 3937
+        }
+      ]
+    }
+  ],
+  "scope": "Independent Python signed donor model derives expected geometry/order only from baseline primitives and independently validated source table dimensions, no merge/RTL, explicit simple opaque direct cardinal paint and absent diagonals. Entire actual non-line SVG trees and line count/all non-coordinate attributes exact. This attribution proof is separate from captured native interval/ordered-paint tests. Old reject-collinear workload is newly admitted; original input name is retained without calling it unchanged."
+}

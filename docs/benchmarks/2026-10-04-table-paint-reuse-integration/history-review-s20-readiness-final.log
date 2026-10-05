@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/review-s20-readiness.py", line 23, in <module>
+    base=read('baseline-pins.json');build=read('candidate-helper-build.json');pins(base['files'],S);pins(build['files'],S)
+                                                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/review-s20-readiness.py", line 16, in pins
+    for p,h in d.items():assert sha(root/p)==h,p
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: budget-audit.swift

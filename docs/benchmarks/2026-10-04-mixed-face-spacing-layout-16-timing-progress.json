@@ -1,0 +1,101 @@
+[
+  {
+    "name": "canonical",
+    "argv": [
+      "python3",
+      "Tools/rostrum-bench/run.py",
+      "--binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/candidate-extended-bench",
+      "--paired-binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/baseline-extended-bench",
+      "--paired-revision",
+      "9ccc87e575b8edbe5096db09e48a38a6667c19f7",
+      "--runs",
+      "10",
+      "--warmups",
+      "1",
+      "--scenarios",
+      "table-200x50",
+      "table-20x10",
+      "shaped-table-100x20",
+      "richtext-fit",
+      "slides-10",
+      "--output",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/canonical-paired.json"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 21.323552958026994,
+    "environment": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    }
+  },
+  {
+    "name": "supplement",
+    "argv": [
+      "python3",
+      "Tools/rostrum-bench/run.py",
+      "--binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/candidate-supplement-bench",
+      "--paired-binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/baseline-supplement-bench",
+      "--paired-revision",
+      "9ccc87e575b8edbe5096db09e48a38a6667c19f7",
+      "--runs",
+      "10",
+      "--warmups",
+      "1",
+      "--scenarios",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+      "--output",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/supplement-paired.json"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 20.832884999981616,
+    "environment": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    }
+  },
+  {
+    "name": "native",
+    "argv": [
+      "python3",
+      "Tools/rostrum-bench/run.py",
+      "--binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/candidate-spacing-bench",
+      "--paired-binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/baseline-spacing-bench",
+      "--paired-revision",
+      "9ccc87e575b8edbe5096db09e48a38a6667c19f7",
+      "--runs",
+      "10",
+      "--warmups",
+      "1",
+      "--scenarios",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-v1.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/native-mixed-face-spacing-anchors-v1.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-exact-200.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/same-face-exact-200.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-percentage-200.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/mixed-table-200.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/inputs/unequal-signature-200.pptx",
+      "--output",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/native-paired.json"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 29.408638667024206,
+    "environment": {
+      "ROSTRUM_BENCH_FONT": null,
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/native-inputs.json",
+      "ROSTRUM_BENCH_OUTPUT": null
+    }
+  }
+]

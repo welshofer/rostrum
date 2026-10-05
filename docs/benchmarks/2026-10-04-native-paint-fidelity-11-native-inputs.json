@@ -1,0 +1,142 @@
+{
+  "status": "Prepared exact accepted native inputs; no rendering/timing yet",
+  "inputs": [
+    {
+      "name": "primary",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx",
+      "originalPath": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7/native-paint-placement-v2.pptx",
+      "sourceSHA256": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+      "inputBytes": 411434,
+      "caseCount": 18,
+      "slideCount": 3,
+      "fonts": [
+        {
+          "family": "DejaVu Sans",
+          "bold": false,
+          "italic": false,
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/fonts/DejaVuSans.ttf",
+          "sfntSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "sfntBytes": 757076,
+          "embeddedPart": "ppt/fonts/paint-probe.fntdata",
+          "embeddedPartSHA256": "3cd5e824967d66212859b7ccceb1111aa234fa97e1b11df5cf10acfc78f23569",
+          "embeddedPartBytes": 757252,
+          "EOTLiteFlags": 0,
+          "EOTLiteMagic": "0x504c"
+        }
+      ]
+    },
+    {
+      "name": "autofit",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx",
+      "originalPath": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7-autofit/native-paint-autofit-controls-v1.pptx",
+      "sourceSHA256": "7d87a20e746c15c19a4c0c6f2252debe1884b80fd1187e9ec51f98dadffb4f0e",
+      "inputBytes": 409921,
+      "caseCount": 7,
+      "slideCount": 2,
+      "fonts": [
+        {
+          "family": "DejaVu Sans",
+          "bold": false,
+          "italic": false,
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/fonts/DejaVuSans.ttf",
+          "sfntSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "sfntBytes": 757076,
+          "embeddedPart": "ppt/fonts/paint-probe.fntdata",
+          "embeddedPartSHA256": "3cd5e824967d66212859b7ccceb1111aa234fa97e1b11df5cf10acfc78f23569",
+          "embeddedPartBytes": 757252,
+          "EOTLiteFlags": 0,
+          "EOTLiteMagic": "0x504c"
+        }
+      ]
+    },
+    {
+      "name": "eligibility",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx",
+      "originalPath": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7-eligibility/native-paint-eligibility-v1.pptx",
+      "sourceSHA256": "05b6fb205df285c38997467dbf22a64b44edde9dd916399f4360c62e31d9852b",
+      "inputBytes": 1299673,
+      "caseCount": 18,
+      "slideCount": 3,
+      "fonts": [
+        {
+          "family": "DejaVu Sans",
+          "bold": false,
+          "italic": false,
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/fonts/DejaVuSans.ttf",
+          "sfntSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "sfntBytes": 757076,
+          "embeddedPart": "ppt/fonts/regular.fntdata",
+          "embeddedPartSHA256": "3cd5e824967d66212859b7ccceb1111aa234fa97e1b11df5cf10acfc78f23569",
+          "embeddedPartBytes": 757252,
+          "EOTLiteFlags": 0,
+          "EOTLiteMagic": "0x504c"
+        },
+        {
+          "family": "DejaVu Sans",
+          "bold": true,
+          "italic": false,
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/fonts/DejaVuSans-Bold.ttf",
+          "sfntSHA256": "b184b89e3c1075f22f6b71575b6fc20d4972b3cfd3b23322ca6fd596dcaef167",
+          "sfntBytes": 704128,
+          "embeddedPart": "ppt/fonts/bold.fntdata",
+          "embeddedPartSHA256": "ce8145e239e0390030eee2ea572b2cf6cdde0d595e9c353baeee52a465425faf",
+          "embeddedPartBytes": 704304,
+          "EOTLiteFlags": 0,
+          "EOTLiteMagic": "0x504c"
+        },
+        {
+          "family": "DejaVu Sans",
+          "bold": false,
+          "italic": true,
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/fonts/DejaVuSans-Oblique.ttf",
+          "sfntSHA256": "ccdf74b350f11fd3dd5774de50e5e6346a1a5da1f5b7d5fb83590665e97a5213",
+          "sfntBytes": 633840,
+          "embeddedPart": "ppt/fonts/oblique.fntdata",
+          "embeddedPartSHA256": "9ddbe9c07e070bda598840b4856835bd4d025729b119452c44ed11ac9c5c646c",
+          "embeddedPartBytes": 634022,
+          "EOTLiteFlags": 0,
+          "EOTLiteMagic": "0x504c"
+        },
+        {
+          "family": "DejaVu Serif",
+          "bold": false,
+          "italic": false,
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/fonts/DejaVuSerif.ttf",
+          "sfntSHA256": "107244956e9962b9e96faccdc551825e0ae0898ae13737133e1b921a2fd35ffa",
+          "sfntBytes": 379740,
+          "embeddedPart": "ppt/fonts/serif.fntdata",
+          "embeddedPartSHA256": "78357d57e5371f0689d0eb52a55113fd8413c4e9276affe087943a94f7a65d40",
+          "embeddedPartBytes": 379920,
+          "EOTLiteFlags": 0,
+          "EOTLiteMagic": "0x504c"
+        }
+      ]
+    },
+    {
+      "name": "kern-v2",
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx",
+      "originalPath": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/paint-fidelity7-kern/native-paint-omitted-kern-v2.pptx",
+      "sourceSHA256": "149e991e629901a967383a8064e7dfd9f40977ce132e7730e0c14f7d434ec7e0",
+      "inputBytes": 408721,
+      "caseCount": 4,
+      "slideCount": 1,
+      "fonts": [
+        {
+          "family": "DejaVu Sans",
+          "bold": false,
+          "italic": false,
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/fonts/DejaVuSans.ttf",
+          "sfntSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+          "sfntBytes": 757076,
+          "embeddedPart": "ppt/fonts/paint-probe.fntdata",
+          "embeddedPartSHA256": "3cd5e824967d66212859b7ccceb1111aa234fa97e1b11df5cf10acfc78f23569",
+          "embeddedPartBytes": 757252,
+          "EOTLiteFlags": 0,
+          "EOTLiteMagic": "0x504c"
+        }
+      ]
+    }
+  ],
+  "totalCases": 47,
+  "totalSlides": 9
+}

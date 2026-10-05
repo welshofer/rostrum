@@ -1,0 +1,30 @@
+{
+  "baselineRevision": "c1b7edf56f8025734d0509a1c7c1ae646eba004f",
+  "recordCount": 1728,
+  "fontModes": {
+    "0": "registered face",
+    "1": "explicit fallback metrics",
+    "2": "unregistered estimate"
+  },
+  "textCases": 12,
+  "sizeScaleCases": 8,
+  "widths": [
+    12,
+    45,
+    300
+  ],
+  "capsModes": 2,
+  "baselineCandidateByteIdentical": true,
+  "candidateRepeatedDeterministically": true,
+  "everyInputDOMUnchanged": true,
+  "serialization": "Swift reflected complete RichTextLayout value graph, including internal ligature/adjacency fields; exact byte equality under matched Swift6.4. Finite layout doubles use round-trip representations. Separate full shaping oracle compares advance/offset bit patterns.",
+  "files": {
+    ".build/perf20-break-reuse/baseline-layout.jsonl": "300f4733253d50174c1451b199c335013f1ff7a32e1ec53b0dd85a6e0d8e8809",
+    ".build/perf20-break-reuse/candidate-layout-1.jsonl": "300f4733253d50174c1451b199c335013f1ff7a32e1ec53b0dd85a6e0d8e8809",
+    ".build/perf20-break-reuse/candidate-layout-2.jsonl": "300f4733253d50174c1451b199c335013f1ff7a32e1ec53b0dd85a6e0d8e8809",
+    ".build/perf20-break-reuse/layout-proof.swift": "bb944b71b1c4cda64a033d1953ec416f2b8a5a28213f3f0c07546c6a4cd82a74",
+    ".build/perf20-break-reuse/baseline-layout-proof": "61e41eb416a07c7bd66a0b8f36986c1267cc500f669872ab4c364e7a369d7a22",
+    ".build/perf20-break-reuse/candidate-layout-proof": "1ac33e37fbadf5d5b217731b5f186211b1274ac0bc31bc166115b6bb50ba834e"
+  },
+  "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+}

@@ -1,0 +1,73 @@
+{
+  "baseline": "104a4c05aab18bc81b210b3b4c7f739465bbadea",
+  "platform": "macOS worker; Linux and iOS integration gates belong to root",
+  "nativeCases": {
+    "new": 85,
+    "bundledDejaVu": 83,
+    "systemArial": 2,
+    "priorBreakMetrics": 18,
+    "total": 103,
+    "systemArialPolicy": "Skip two controls when the system Arial path is unavailable; bundled cases remain portable."
+  },
+  "checks": [
+    {
+      "command": "swift test --jobs 2 --filter 'NativeLineSpacingTests|NativeBreakMetricsTests|DrawingMLLineMetricsTests|RichTextParagraphMetricsTests'",
+      "result": "passed",
+      "tests": 19,
+      "suites": 4
+    },
+    {
+      "command": "swift test --jobs 2",
+      "result": "passed",
+      "RostrumTests": 1130,
+      "RostrumSuites": 158,
+      "RostrumLayoutTests": 18,
+      "RostrumLayoutSuites": 3,
+      "knownIssues": 0
+    },
+    {
+      "command": "python3 Tests/RostrumTests/Fixtures/NativeLineSpacing/math-proof.py",
+      "result": "103/103; rejected models retained"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    },
+    {
+      "command": "SHA256 source/PDF verification against native-metrics.json",
+      "result": "all nine source/PDF pairs match"
+    }
+  ],
+  "beforeEvidence": {
+    "originalLibrary": "8/71 cases passed;120 marker-baseline failures",
+    "zeroCoreInitialGate": "71 native cases passed;4 resolved known-issue assertions and38 prior synthetic expectation assertions required independently grounded updates",
+    "reductionFittingBefore": "both public fitting paths failed the new computed shared-geometry expectations;6 assertions"
+  },
+  "scope": "Vertical explicit spacing only. Normal/100%, generic fallback, standalone shaping, painting/horizontal size behavior preserved. Actual selected registry identity; conservative mixed aliases. No private-import-native equivalence claim.",
+  "modelProvenance": {
+    "requested": "gpt-6-astra/high",
+    "runtime": "unattested"
+  },
+  "logs": {
+    "cycle1-focused.log": {
+      "sha256": "1690f096a2482514a80fc2e69d5cf7c5ef4b346cd00c671191a7cc9cefafc61c",
+      "retainedPath": ".build/spacing-fidelity6/cycle1-focused.log"
+    },
+    "zero-reduction-full.log": {
+      "sha256": "02dda5307a608be48cc0fdc1c16a329009e483993b7124edd46c11e2c294d3e0",
+      "retainedPath": ".build/spacing-fidelity6/zero-reduction-full.log"
+    },
+    "reduction-fitting-before.log": {
+      "sha256": "c487fffbb847ad3781f63349c5df99bc35b803043fc333504d4e18a6b36bf1d8",
+      "retainedPath": ".build/spacing-fidelity6/reduction-fitting-before.log"
+    },
+    "final-focused.log": {
+      "sha256": "3204f695f7b4a4f00a66c9813d4b36d3532fe5d2c53e5c530a9f93f882c605f5",
+      "retainedPath": ".build/spacing-fidelity6/final-focused.log"
+    },
+    "final-full.log": {
+      "sha256": "4659d0f27cb34170220e820414c1d1a638e764832f179c2c135028c224bfad69",
+      "retainedPath": ".build/spacing-fidelity6/final-full.log"
+    }
+  }
+}

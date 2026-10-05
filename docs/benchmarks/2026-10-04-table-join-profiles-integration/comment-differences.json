@@ -1,0 +1,198 @@
+{
+  "status": "PASS_CLASSIFIED_COMMENT_NONDETERMINISM",
+  "inputReceipt": "/tmp/lectern-fidelity18-external.json",
+  "inputReceiptSHA256": "e28507c50e1a3c6149a1260e5631dbb1bc5627923857146b16405f723316d0a7",
+  "packages": [
+    {
+      "current": "/tmp/lectern-fidelity18-lab/comments-2C62A42F-9285-49C4-9AB4-289C77B2E6E0/comments-before.pptx",
+      "currentSHA256": "d39b5d3dd5331c14dbc905ebae9a5e93bbe7d2a6d5790b53c960ac1569d1b9c4",
+      "prior": "/tmp/lectern-fidelity17-lab/comments-3164EA12-F7A7-4469-98B0-4113ADEEC920/comments-before.pptx",
+      "priorSHA256": "744b11cdf8fa4394206f8bc45ab58ceb3c135576138180e4d63d6e2783cc576c",
+      "changedParts": [
+        "ppt/authors.xml",
+        "ppt/comments/comment1.xml",
+        "ppt/comments/modernComment_1.xml"
+      ],
+      "uuidMappingBijectiveAndReferencesConsistent": true,
+      "differences": [
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}author",
+          "attribute": "id",
+          "count": 1
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "authorId",
+          "count": 1
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "created",
+          "count": 1
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "id",
+          "count": 1
+        },
+        {
+          "tag": "{http://schemas.openxmlformats.org/presentationml/2006/main}cm",
+          "attribute": "dt",
+          "count": 1
+        }
+      ],
+      "classification": "Only valid comment/author UUIDs and timestamps differ; mapping is bijective and consistent. All tags, text, tails, other attributes, part sets and other part bytes are exact."
+    },
+    {
+      "current": "/tmp/lectern-fidelity18-lab/comments-2C62A42F-9285-49C4-9AB4-289C77B2E6E0/comments.pptx",
+      "currentSHA256": "7fe6a1ebf338a20d28fe986ccacfb6af92198f551782dbfbfbda60ed6ee251f3",
+      "prior": "/tmp/lectern-fidelity17-lab/comments-3164EA12-F7A7-4469-98B0-4113ADEEC920/comments.pptx",
+      "priorSHA256": "360e953b90457d32d467519eae99730fb924f83242c22a0cdca5b3fbfb8312b2",
+      "changedParts": [
+        "ppt/authors.xml",
+        "ppt/comments/comment1.xml",
+        "ppt/comments/modernComment_1.xml"
+      ],
+      "uuidMappingBijectiveAndReferencesConsistent": true,
+      "differences": [
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}author",
+          "attribute": "id",
+          "count": 2
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "authorId",
+          "count": 1
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "created",
+          "count": 1
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "id",
+          "count": 1
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}reply",
+          "attribute": "authorId",
+          "count": 4
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}reply",
+          "attribute": "created",
+          "count": 4
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}reply",
+          "attribute": "id",
+          "count": 4
+        },
+        {
+          "tag": "{http://schemas.openxmlformats.org/presentationml/2006/main}cm",
+          "attribute": "dt",
+          "count": 1
+        }
+      ],
+      "classification": "Only valid comment/author UUIDs and timestamps differ; mapping is bijective and consistent. All tags, text, tails, other attributes, part sets and other part bytes are exact."
+    },
+    {
+      "current": "/tmp/lectern-fidelity18-lab/slideImport-F2536D4D-5571-4A5E-85BB-2D541FEC4CAC/import-source.pptx",
+      "currentSHA256": "430e7d2b520da42988b5f41584f32dd2eb32012d229d547a4d3c5da99499f5ef",
+      "prior": "/tmp/lectern-fidelity17-lab/slideImport-565866F1-3B66-45A7-A8A1-9C4DA31F4E51/import-source.pptx",
+      "priorSHA256": "d69929d0e45dc2f5622dc7c12b36cc19cb4f4a609ffeb501a11b162c7fc37078",
+      "changedParts": [
+        "ppt/authors.xml",
+        "ppt/comments/comment1.xml",
+        "ppt/comments/comment2.xml",
+        "ppt/comments/comment3.xml",
+        "ppt/comments/comment4.xml",
+        "ppt/comments/modernComment_1.xml",
+        "ppt/comments/modernComment_2.xml",
+        "ppt/comments/modernComment_3.xml",
+        "ppt/comments/modernComment_4.xml"
+      ],
+      "uuidMappingBijectiveAndReferencesConsistent": true,
+      "differences": [
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}author",
+          "attribute": "id",
+          "count": 1
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "authorId",
+          "count": 4
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "created",
+          "count": 4
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "id",
+          "count": 4
+        },
+        {
+          "tag": "{http://schemas.openxmlformats.org/presentationml/2006/main}cm",
+          "attribute": "dt",
+          "count": 4
+        }
+      ],
+      "classification": "Only valid comment/author UUIDs and timestamps differ; mapping is bijective and consistent. All tags, text, tails, other attributes, part sets and other part bytes are exact."
+    },
+    {
+      "current": "/tmp/lectern-fidelity18-lab/slideImport-F2536D4D-5571-4A5E-85BB-2D541FEC4CAC/slideImport.pptx",
+      "currentSHA256": "e2cf73a59d3e61bff3fa2cb5c6793ca2cd2d9b9f22299004ec0b6c4622f1ea46",
+      "prior": "/tmp/lectern-fidelity17-lab/slideImport-565866F1-3B66-45A7-A8A1-9C4DA31F4E51/slideImport.pptx",
+      "priorSHA256": "e860459b291011230c82767876ee29fe8435490aef51503db3a32e3aa252e729",
+      "changedParts": [
+        "ppt/authors.xml",
+        "ppt/comments/comment1.xml",
+        "ppt/comments/comment2.xml",
+        "ppt/comments/comment3.xml",
+        "ppt/comments/comment4.xml",
+        "ppt/comments/comment5.xml",
+        "ppt/comments/modernComment_1.xml",
+        "ppt/comments/modernComment_2.xml",
+        "ppt/comments/modernComment_3.xml",
+        "ppt/comments/modernComment_4.xml",
+        "ppt/comments/modernComment_5.xml"
+      ],
+      "uuidMappingBijectiveAndReferencesConsistent": true,
+      "differences": [
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}author",
+          "attribute": "id",
+          "count": 1
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "authorId",
+          "count": 5
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "created",
+          "count": 5
+        },
+        {
+          "tag": "{http://schemas.microsoft.com/office/powerpoint/2018/8/main}cm",
+          "attribute": "id",
+          "count": 5
+        },
+        {
+          "tag": "{http://schemas.openxmlformats.org/presentationml/2006/main}cm",
+          "attribute": "dt",
+          "count": 5
+        }
+      ],
+      "classification": "Only valid comment/author UUIDs and timestamps differ; mapping is bijective and consistent. All tags, text, tails, other attributes, part sets and other part bytes are exact."
+    }
+  ],
+  "script": "/tmp/verify-fidelity18-comment-differences.py",
+  "scriptSHA256": "5dabb40d2ff54c58c2709a304d770b0d879b13797b512e8dfe25c6698b177af7"
+}

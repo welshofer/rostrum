@@ -270,3 +270,12 @@ certify complex clusters, native-selected autofit scales, every font or general
 typography raster parity. Unsupported boundaries remain diagnosed, and the
 standalone shaping contract remains unchanged. Earlier raster failures above
 have not been reclassified as passing by these numeric checks.
+
+The [October 4 continuation](LAYOUT-FIDELITY-20261004-4.md) adds 24 native common
+Latin ligature cases and upgrades the earlier `office` control to horizontal
+geometry assertions. DrawingML ASCII/LTR paragraphs suppress optional `liga`
+consistently in layout and SVG; public standalone shaping retains its defaults.
+23 new cases have no diagnostics. The hard-break case retains its pre-existing
+unresolved-face warning and establishes horizontal geometry only. These bounded
+checks do not certify all fonts, vertical control metrics, or whole-slide raster
+equivalence.

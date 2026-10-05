@@ -1,0 +1,221 @@
+{
+  "status": "ACCEPTED_BOUNDED_FIDELITY_TRADEOFF",
+  "independentSourceAndProtocolReview": "APPROVED; independent final numeric/evidence review also approved. All unresolved adverse bounds, mixed memory observations and host-load qualifications remain explicit.",
+  "baselineSource": "ce8551e69350ba5f5808df1c2337e40add9548d2",
+  "candidateSource": "e8c8b1642635c7542e5e075f0a904c8bf908e0ea",
+  "reportPath": "docs/TABLE-JOIN-PROFILES-PERFORMANCE-20261004-18.md",
+  "reportSHA256": "a70be12edf12c3afbc7d8ae19b9a296777d8e2c7cffc34eb894ccd2c1b6d4676",
+  "originalVerificationSHA256": "60c06019a6763901762cc5f26fe4eb7d91f16dcc6472da484170e3f1e923aa7b",
+  "exports": [
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/canonical-paired.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-canonical-paired.json",
+      "SHA256": "ceb9a070de83fa3a15b049dbd5089d44ec9af2bbe140d607ffe6551cfbc86356"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/supplement-paired.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-supplement-paired.json",
+      "SHA256": "49bf94dddffffa7e8e356c1e8ab97f82cd359ce16c7739f38f4a2fe6b16fb162"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/native-paired.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-native-paired.json",
+      "SHA256": "1d58bff3efc91621ee3a3718d107b5475e6ee0c54c51784f004d7e882f6285af"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/canonical-paired-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-canonical-paired-analysis.json",
+      "SHA256": "051d506fe269ec2283cfc35510a5a5c070c6e177fee8499b2e735e7375a6af54"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/supplement-paired-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-supplement-paired-analysis.json",
+      "SHA256": "03a2f02b4e4a34ae1d037a8f1b4d1ac41ce08e6696c0f907c4b32a690f292359"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/native-paired-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-native-paired-analysis.json",
+      "SHA256": "471dfe3577b4b56acb27c5076f7510d7954c2a9874103e0ecf591e7d5e50c6b1"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/summary.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-summary.json",
+      "SHA256": "5f32e2d3ca62ec97c45028ac4cf1f5883ccb8e251b0948e687f30438526e22e2"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/all-phase-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-all-phase-analysis.json",
+      "SHA256": "4c0fd36ba762894ca3e0de8e51adfc27790753c5a4821c088bd1b8b30d5e7f0f"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/APPENDIX.md",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-APPENDIX.md",
+      "SHA256": "9457efc49ee59602ddff1b662259ca3d3b21fc8351b24196220ec2df9e038e27"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/host-load.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-host-load.json",
+      "SHA256": "77dfa252ba75e3bda5334135e9fe834737448faa08a01ffaf4ecd3586d1c98b5"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/timing-plan.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-timing-plan.json",
+      "SHA256": "70049f06a5d86f9b5e30eebc5f695cbc4e3962af4e66579729a2f5c19d1084de"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/timing-execution.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-timing-execution.json",
+      "SHA256": "1720ad7ed52b8a1a8499b6f14e6e38c4624338e6b868ce2a32fcb0bfdb9a77df"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/timing-launch.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-timing-launch.json",
+      "SHA256": "a1f81dbedb8fcf99b1abd0b5cdb7709f5a43f01870a73254de1f4ce55407a631"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/timing-progress.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-timing-progress.json",
+      "SHA256": "0cb548b73d4ab96e039f35ff74f7d12e7e37896e6bcb3cc65a78d55d58e95b8b"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/ready.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-ready.json",
+      "SHA256": "40ddefab6181c371e9e3e9031673bb5a1d389b0b3c8c2245caef0a39b6da8333"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/verification.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-verification.json",
+      "SHA256": "60c06019a6763901762cc5f26fe4eb7d91f16dcc6472da484170e3f1e923aa7b"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/preflight-verification.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-preflight-verification.json",
+      "SHA256": "6d3248e0d04d8a7e09a60602c64554cca5c0fb0e5d93e0ab7e8cba1ec29160cc"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/candidate-helper-build.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-candidate-helper-build.json",
+      "SHA256": "afce7303aa17e2a71b17105b11c16bc265fac230d02fcd87104cd40c216b7599"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/baseline-pins.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-baseline-pins.json",
+      "SHA256": "4a5f47ec264fc6c88d9eb6914259ff5c483bb70f2f490149ec38a198a83f707e"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/candidate-source-pins.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-candidate-source-pins.json",
+      "SHA256": "7f007a784d5e2722dc4ce1528184b23f307e9f6eaf30fdc9e6a335883967d7b1"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/expanded-corpus-plan.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-expanded-corpus-plan.json",
+      "SHA256": "6dfd2b2841d2978828b888aecb45ae0360d3f0fff75d64fd9c6d067b034f6935"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/corpus-proof.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-corpus-proof.json",
+      "SHA256": "46c96b802d5c5c80555d117a03f5bd25b2d844d2e41bfa7e44e708366ad124e1"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/semantic-classification.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-semantic-classification.json",
+      "SHA256": "5f3a230ef0c6efe29ac07ec9eeabcb52c838a5a330b50d0b7269e77825483f8b"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/value-proof.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-value-proof.json",
+      "SHA256": "a035c32663d553eb90bcc9f6da1b8ec6be9433e9ea56701f7481d29a658148dd"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/preservation.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-preservation.json",
+      "SHA256": "66c71f8e4c2a3641bc1a9110052f3d42d13ee9005134b4170ac979c486d204b2"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/functional-preflight.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-functional-preflight.json",
+      "SHA256": "6f060db9d62736266e4fd2ba37bd3e87736a8b23de1c6f0c3e7d094c66cc36e6"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/svg-byte-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-svg-byte-analysis.json",
+      "SHA256": "e3027e7db32cde773a1f0160ce42260bc266b5b91dcaf6c6747bcc3f9b0ab55b"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/input-pins.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-input-pins.json",
+      "SHA256": "175e1b951175932ac3ab5673faebbe79b331ab2910980e25a2b37b501f50efa0"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/input-reproduction.json",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-input-reproduction.json",
+      "SHA256": "b7c8a72f562045989067fb122de2c777a31200017b8d0dedb256e640b6c54c71"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/PROTOCOL-PROPOSAL.md",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-PROTOCOL-PROPOSAL.md",
+      "SHA256": "587e74373cae5c7a0dc429f5d9687c9a8e8996c7ea3e78c3dcd23e41e565d5a3"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-canonical-end.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-canonical-end.txt",
+      "SHA256": "c4564e4dec466c9012cba67c27392c54394ed81f78ff45164cb497ab2236f907"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-end.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-end.txt",
+      "SHA256": "7aa1cad46af941e1b627e88cf1ee35c5fb76f6fb21ec3e683a7cb7cacc20415e"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-native-during-15.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-native-during-15.txt",
+      "SHA256": "8ad0e477738c35bd1fb1614c8e07af50cfd005aaaba805eb30be8cd67cdc459a"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-native-end.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-native-end.txt",
+      "SHA256": "a3af81550bf4b9712a82279667cb737c5ef2657ad6cbd1484610a6cdb5b5a59d"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-native-during-30.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-native-during-30.txt",
+      "SHA256": "dede3707d44fd93ca2d9f84ee57d3a894f4102c3590b541c4ced4039c6e91e5d"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-supplement-end.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-supplement-end.txt",
+      "SHA256": "c885f83e3c415469b329534aeea73cba3d081b96dbd04109d031be380273bc1f"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-supplement-during-15.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-supplement-during-15.txt",
+      "SHA256": "722a2ba9150d245aa3e30aab4c424d73e9ebe6f8ca2bf807a2f9f04f40679748"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-start.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-start.txt",
+      "SHA256": "43eef73440eccb26cf57dcd2747a84cd9f2ce93268f27efdb0a04bfced4fc9db"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-native-during-45.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-native-during-45.txt",
+      "SHA256": "29cdf57f4792c0f5027b4cf0c3f1babb7cd8b35c68a816aea3e631a4b186e8b3"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/process-canonical-during-15.txt",
+      "tracked": "docs/benchmarks/2026-10-04-table-join-profiles-layout-18-process-canonical-during-15.txt",
+      "SHA256": "181cc04686b16c35508a20e97a9f7b3819376a1bc8948312eef542ebf09fd809"
+    }
+  ],
+  "scope": "Bounded table-profile fidelity cost. All admitted target intervals cross zero; merged/rejected adverse bounds and host load explicit. No universal nonregression, speedup or memory claim. One campaign; retained matching baseline not falsely claimed as new build.",
+  "independentFinalReview": {
+    "path": "/tmp/rostrum-s18-independent-performance-review.json",
+    "SHA256": "2485c37af6131f215717075312b01000ab93a780ba0341687ddbeae8e48ac8e5",
+    "verdict": "APPROVE"
+  },
+  "originalPreAcceptanceReport": {
+    "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf30-table-join-profiles/report-before-acceptance.md",
+    "SHA256": "a77cff06819d9f3ba01d3c67699e7ef803bb9f7ed6311a75a81625fee92706ea"
+  }
+}

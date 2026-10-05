@@ -1,0 +1,169 @@
+{
+  "commands": [
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      ".build/perf24-cell-acquisition/baseline-module",
+      ".build/perf24-cell-acquisition/acquisition-main.swift",
+      ".build/perf24-cell-acquisition/baseline-Rostrum.o",
+      "-o",
+      ".build/perf24-cell-acquisition/baseline-acquisition-bench"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      ".build/perf24-cell-acquisition/baseline-module",
+      ".build/perf24-cell-acquisition/lookup-proof.swift",
+      ".build/perf24-cell-acquisition/baseline-Rostrum.o",
+      "-o",
+      ".build/perf24-cell-acquisition/baseline-lookup-proof"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      ".build/perf24-cell-acquisition/candidate-module",
+      ".build/perf24-cell-acquisition/acquisition-main.swift",
+      ".build/perf24-cell-acquisition/candidate-Rostrum.o",
+      "-o",
+      ".build/perf24-cell-acquisition/candidate-acquisition-bench"
+    ],
+    [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      ".build/perf24-cell-acquisition/candidate-module",
+      ".build/perf24-cell-acquisition/lookup-proof.swift",
+      ".build/perf24-cell-acquisition/candidate-Rostrum.o",
+      "-o",
+      ".build/perf24-cell-acquisition/candidate-lookup-proof"
+    ]
+  ],
+  "cases": [
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/10x10.pptx",
+      "inputSHA256": "2cb40f40470687b29a907337ef9ca84ac7763ce8fd57f2c4c25305f7309656cb",
+      "lookupCount": 10000,
+      "artifacts": {
+        "baseline": {
+          "saved.pptx": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520",
+          "slide.svg": "e56cb91ee56ddc5a1daaa55cdae91f375bef765546443f2dbabd6f64bd25b096",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "30b2d5e89f709b59908f08b15be912dad3f66526c9c627a0ddccc42a1c03802c"
+        },
+        "candidate-1": {
+          "saved.pptx": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520",
+          "slide.svg": "e56cb91ee56ddc5a1daaa55cdae91f375bef765546443f2dbabd6f64bd25b096",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "30b2d5e89f709b59908f08b15be912dad3f66526c9c627a0ddccc42a1c03802c"
+        },
+        "candidate-2": {
+          "saved.pptx": "376d7bccbcae3511d9bd500a2d9373a647737c930429ca69f93f1e07af746520",
+          "slide.svg": "e56cb91ee56ddc5a1daaa55cdae91f375bef765546443f2dbabd6f64bd25b096",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "30b2d5e89f709b59908f08b15be912dad3f66526c9c627a0ddccc42a1c03802c"
+        }
+      },
+      "cellTextsSVGDiagnosticsAndSavedBytesIdentical": true
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/40x25.pptx",
+      "inputSHA256": "44ff60834a619b4b90ea445bed406eebfbb23fa145d7aafcab6a517ddc80a1fa",
+      "lookupCount": 10000,
+      "artifacts": {
+        "baseline": {
+          "saved.pptx": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b",
+          "slide.svg": "41ab06f82b58df2ec9246251db3becde773f51814632a2a53c7f06b868ff7f03",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "9ac141d0838fed560542abbfa0ff39a0f61da7047beb3f288c208867fd190165"
+        },
+        "candidate-1": {
+          "saved.pptx": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b",
+          "slide.svg": "41ab06f82b58df2ec9246251db3becde773f51814632a2a53c7f06b868ff7f03",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "9ac141d0838fed560542abbfa0ff39a0f61da7047beb3f288c208867fd190165"
+        },
+        "candidate-2": {
+          "saved.pptx": "fd8e5f81779193ae2e6e81eba24e592eeab036080f5469fb7fa5916afe168c0b",
+          "slide.svg": "41ab06f82b58df2ec9246251db3becde773f51814632a2a53c7f06b868ff7f03",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "9ac141d0838fed560542abbfa0ff39a0f61da7047beb3f288c208867fd190165"
+        }
+      },
+      "cellTextsSVGDiagnosticsAndSavedBytesIdentical": true
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50.pptx",
+      "inputSHA256": "a4cd4d8957bbe7d310857036ef05f43b378e76584aa30b6110405d0294fc8f93",
+      "lookupCount": 10000,
+      "artifacts": {
+        "baseline": {
+          "saved.pptx": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2",
+          "slide.svg": "4040b1ebb67178c65868a99c6fb6d768e9d6d6a198f6d3f72970b94823f30070",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "4302532ffc51f3faefa601796a0a37e573cfd6079fb3db88df02e605357db888"
+        },
+        "candidate-1": {
+          "saved.pptx": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2",
+          "slide.svg": "4040b1ebb67178c65868a99c6fb6d768e9d6d6a198f6d3f72970b94823f30070",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "4302532ffc51f3faefa601796a0a37e573cfd6079fb3db88df02e605357db888"
+        },
+        "candidate-2": {
+          "saved.pptx": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2",
+          "slide.svg": "4040b1ebb67178c65868a99c6fb6d768e9d6d6a198f6d3f72970b94823f30070",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "4302532ffc51f3faefa601796a0a37e573cfd6079fb3db88df02e605357db888"
+        }
+      },
+      "cellTextsSVGDiagnosticsAndSavedBytesIdentical": true
+    },
+    {
+      "input": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf24-cell-acquisition/inputs/200x50-last.pptx",
+      "inputSHA256": "a4cd4d8957bbe7d310857036ef05f43b378e76584aa30b6110405d0294fc8f93",
+      "lookupCount": 1000,
+      "artifacts": {
+        "baseline": {
+          "saved.pptx": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2",
+          "slide.svg": "4040b1ebb67178c65868a99c6fb6d768e9d6d6a198f6d3f72970b94823f30070",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "84f75d6b74d09b39948ad3181db7cdf571d255fc678721bf06f4acabf4383efa"
+        },
+        "candidate-1": {
+          "saved.pptx": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2",
+          "slide.svg": "4040b1ebb67178c65868a99c6fb6d768e9d6d6a198f6d3f72970b94823f30070",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "84f75d6b74d09b39948ad3181db7cdf571d255fc678721bf06f4acabf4383efa"
+        },
+        "candidate-2": {
+          "saved.pptx": "e254cdff840dca90ba3ae5a49eacabbde83bc3d557aa483896ab3759e962a2a2",
+          "slide.svg": "4040b1ebb67178c65868a99c6fb6d768e9d6d6a198f6d3f72970b94823f30070",
+          "issues.json": "2f63e2105e556f8d1702276c37dc9dfc65898d37be7f31ee9ae02d7495add3b3",
+          "cell-texts.json": "84f75d6b74d09b39948ad3181db7cdf571d255fc678721bf06f4acabf4383efa"
+        }
+      },
+      "cellTextsSVGDiagnosticsAndSavedBytesIdentical": true
+    }
+  ],
+  "lookupMutationRecords": 972,
+  "lookupMutationStates": 12,
+  "repeatedBothSides": true,
+  "pythonPptxReopens": 12,
+  "scope": "Proof only, not authoritative timing. Frozen same public acquisition helper, coordinate-unique cells, candidate repeated twice. Separate mutation/error oracle uses retained accepted baseline.",
+  "candidateSourceCommit": "d64ddb31e7790b002bcfa819059ed657deb1a527",
+  "candidateCommittedBeforeTiming": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Presentation/Tables.swift": "eee820115188d8bfa3e1adcf8f37276dedb4441ee78063f69db7e6602ad4b06f",
+    "Tests/RostrumTests/TableCellLookupTests.swift": "887168d98079c690838cee2e1c9f630d29af95c7f670367a3768df0a7a7348e4"
+  }
+}

@@ -61,6 +61,7 @@ final class AppState {
     private var keyRevision = UUID()
     private var imageKeyRevision = UUID()
     private(set) var hasKey = false
+    private(set) var keyStorageUnavailable = false
 
     enum KeyStatus: Equatable { case unknown, validating, valid(Int), invalid(String) }
     private(set) var keyStatus: KeyStatus = .unknown
@@ -73,6 +74,7 @@ final class AppState {
     private(set) var imageModel: ImageModel = .flare
     private(set) var imageQuality: ImageQuality = .auto
     private(set) var hasImageKey = false
+    private(set) var imageKeyStorageUnavailable = false
 
     // MARK: Style catalog
     var styles: [Style] = []
@@ -107,6 +109,17 @@ final class AppState {
 
     func dismissMigrationNotice() { migrationNotice = nil }
 
+    /// Actual app-run demos become durable library documents. Core recipe runs
+    /// remain diagnostics-only unless this app boundary explicitly requests it.
+    @discardableResult
+    func runLibraryDemos(_ ids: [LibraryDemoID], model: LibraryLabModel, in directory: URL? = nil) -> Task<Void, Never> {
+        let parent = directory ?? (injectedDiagnosticsDirectory ?? Self.diagnosticsDirectory())
+            .appendingPathComponent("Library Lab", isDirectory: true)
+        return model.run(ids, in: parent, savingTo: libraryDirectory) { [weak self] _ in
+            self?.refreshLibrary()
+        }
+    }
+
     func acceptRecoveredDeck(_ result: DeckResult) {
         phase = .result(result)
         recoveryURL = result.recoveryURL; recoverySourceURL = result.url
@@ -117,7 +130,7 @@ final class AppState {
 
     /// Import a previously saved render session without touching model settings.
     func importRenderSnapshot(_ url: URL) async throws {
-        let directory = Self.diagnosticsDirectory()
+        let directory = injectedDiagnosticsDirectory ?? Self.diagnosticsDirectory()
         let copied = try await Task.detached {
             let access = url.startAccessingSecurityScopedResource()
             defer { if access { url.stopAccessingSecurityScopedResource() } }
@@ -302,7 +315,8 @@ final class AppState {
 
     // Explicit dependencies keep tests out of the user's preferences, keychain
     // and document library; omitted arguments preserve the app's usual behavior.
-    private let skipKeychain: Bool
+    let isTestSession: Bool
+    private let credentials: CredentialStore
     private let injectedLibraryDirectory: URL?
     private let injectedLegacyDirectory: URL?
     private let injectedDiagnosticsDirectory: URL?
@@ -318,16 +332,17 @@ final class AppState {
         static let effort = "reasoningEffort", imageModel = "imageModel", imageQuality = "imageQuality"
     }
 
-    /// - Parameter skipKeychain: pass `true` from tests. Reading the login
-    ///   keychain from a test process is slow at best and a modal prompt at
-    ///   worst, and no test here is about whether a key is stored.
+    /// `skipKeychain` isolates every credential operation and disables live
+    /// generation. A fake store can be injected to test storage failures without
+    /// accessing the user's Keychain.
     init(skipKeychain: Bool = false, defaults: UserDefaults? = nil,
-         libraryDirectory: URL? = nil,
+         libraryDirectory: URL? = nil, credentials: CredentialStore? = nil,
          deletingDeck: @escaping (DeckFile) throws -> Void = { try DeckLibrary.delete($0) },
          legacyDirectory: URL? = nil, diagnosticsDirectory: URL? = nil,
          readingLibrary: @escaping @Sendable (URL) async -> [DeckFile] = { DeckLibrary.decks(in: $0) },
          preparingLibrary: @escaping @Sendable (LibraryStartupPaths) async -> Int = { AppState.prepareLibrary($0) }) {
-        self.skipKeychain = skipKeychain
+        isTestSession = skipKeychain
+        self.credentials = credentials ?? (skipKeychain ? .disabled : .keychain)
         injectedLibraryDirectory = libraryDirectory
         self.deletingDeck = deletingDeck
         injectedLegacyDirectory = legacyDirectory
@@ -352,16 +367,15 @@ final class AppState {
         favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])
         recents = d.stringArray(forKey: Keys.recents) ?? []
         useSmartArt = d.bool(forKey: Keys.useSmartArt)
-        guard !skipKeychain else { return }
-        hasKey = KeychainStore.hasKey(for: providerID)
-        hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
+        refreshKeyAvailability()
     }
 
     /// The test scheme changes storage/keychain dependencies, not startup
     /// behavior: it still runs the real migration, pruning and library scan.
     static func forLaunch(environment: [String: String] = ProcessInfo.processInfo.environment,
-                          testRoot: URL? = nil, testDefaults: UserDefaults? = nil) -> AppState {
-        guard environment["LECTERN_TEST_HOST"] == "1" else { return AppState() }
+                          testRoot: URL? = nil, testDefaults: UserDefaults? = nil,
+                          isTestHostBundle: Bool = AppState.testHostFlag(Bundle.main.object(forInfoDictionaryKey: "LecternTestHost"))) -> AppState {
+        guard environment["LECTERN_TEST_HOST"] == "1" || isTestHostBundle else { return AppState() }
         let identity = "Lectern.HostedTests.\(UUID().uuidString)"
         let root = testRoot ?? FileManager.default.temporaryDirectory.appendingPathComponent(identity, isDirectory: true)
         let defaults = testDefaults ?? UserDefaults(suiteName: identity)!
@@ -374,6 +388,11 @@ final class AppState {
                 try FileManager.default.removeItem(at: deck.url)
             }, legacyDirectory: root.appendingPathComponent("Legacy", isDirectory: true),
             diagnosticsDirectory: root.appendingPathComponent("Diagnostics", isDirectory: true))
+    }
+
+    static func testHostFlag(_ value: Any?) -> Bool {
+        if let value = value as? Bool { return value }
+        return (value as? NSString)?.boolValue == true
     }
 
     nonisolated static func prepareLibrary(_ paths: LibraryStartupPaths) -> Int {
@@ -423,7 +442,7 @@ final class AppState {
         setReasoningEffort(reasoningEffort)
         preferences.set(model, forKey: Keys.model)
         keyRevision = UUID()
-        keyStatus = .unknown
+        keyStatus = keyStorageUnavailable ? .invalid(Self.unreadableKeyAdvice) : .unknown
     }
 
     func setReasoningEffort(_ value: ReasoningEffort) {
@@ -436,17 +455,58 @@ final class AppState {
         preferences.set(value, forKey: Keys.useSmartArt)
     }
 
-    func saveKey(_ key: String) {
+    /// Availability is metadata only. Access failures do not establish absence.
+    func refreshKeyAvailability() {
         keyRevision = UUID()
-        let ok = KeychainStore.save(key, for: providerID)
-        hasKey = KeychainStore.hasKey(for: providerID)
-        keyStatus = ok && hasKey ? .unknown : .invalid("Couldn't write to the Keychain.")
+        imageKeyRevision = UUID()
+        switch credentials.presence(providerID.rawValue) {
+        case .present:
+            hasKey = true; keyStorageUnavailable = false
+            keyStatus = .unknown
+        case .missing:
+            hasKey = false; keyStorageUnavailable = false
+            keyStatus = .unknown
+        case .unavailable:
+            keyStorageUnavailable = true
+            keyStatus = .invalid(Self.unreadableKeyAdvice)
+        }
+        switch credentials.presence("image:\(imageProviderID.rawValue)") {
+        case .present:
+            hasImageKey = true; imageKeyStorageUnavailable = false
+            imageKeyStatus = .unknown
+        case .missing:
+            hasImageKey = false; imageKeyStorageUnavailable = false
+            imageKeyStatus = .unknown
+        case .unavailable:
+            imageKeyStorageUnavailable = true
+            imageKeyStatus = .invalid(Self.unreadableKeyAdvice)
+        }
     }
 
-    func clearKey() {
+    @discardableResult
+    func saveKey(_ key: String) -> Bool {
         keyRevision = UUID()
-        KeychainStore.delete(for: providerID)
-        hasKey = false; keyStatus = .unknown
+        do {
+            try credentials.save(key, providerID.rawValue)
+            hasKey = true; keyStorageUnavailable = false; keyStatus = .unknown
+            return true
+        } catch {
+            keyStatus = .invalid(Self.saveKeyFailure)
+            return false
+        }
+    }
+
+    @discardableResult
+    func clearKey() -> Bool {
+        keyRevision = UUID()
+        do {
+            try credentials.delete(providerID.rawValue)
+            hasKey = false; keyStorageUnavailable = false; keyStatus = .unknown
+            return true
+        } catch {
+            keyStatus = .invalid("Couldn't remove the key from Keychain. Try again when Keychain is available.")
+            return false
+        }
     }
 
     // MARK: - Image provider (optional)
@@ -455,7 +515,7 @@ final class AppState {
         imageModel = value
         preferences.set(value.rawValue, forKey: Keys.imageModel)
         imageKeyRevision = UUID()
-        imageKeyStatus = .unknown
+        imageKeyStatus = imageKeyStorageUnavailable ? .invalid(Self.unreadableKeyAdvice) : .unknown
     }
 
     func setImageQuality(_ value: ImageQuality) {
@@ -463,57 +523,69 @@ final class AppState {
         preferences.set(value.rawValue, forKey: Keys.imageQuality)
     }
 
-    func saveImageKey(_ key: String) {
+    @discardableResult
+    func saveImageKey(_ key: String) -> Bool {
         imageKeyRevision = UUID()
-        let ok = KeychainStore.save(key, forImage: imageProviderID)
-        hasImageKey = KeychainStore.hasKey(forImage: imageProviderID)
-        imageKeyStatus = ok && hasImageKey ? .unknown : .invalid("Couldn't write to the Keychain.")
+        do {
+            try credentials.save(key, "image:\(imageProviderID.rawValue)")
+            hasImageKey = true; imageKeyStorageUnavailable = false; imageKeyStatus = .unknown
+            return true
+        } catch {
+            imageKeyStatus = .invalid(Self.saveKeyFailure)
+            return false
+        }
     }
 
-    func clearImageKey() {
+    @discardableResult
+    func clearImageKey() -> Bool {
         imageKeyRevision = UUID()
-        KeychainStore.delete(forImage: imageProviderID)
-        hasImageKey = false
-        imageKeyStatus = .unknown
+        do {
+            try credentials.delete("image:\(imageProviderID.rawValue)")
+            hasImageKey = false; imageKeyStorageUnavailable = false; imageKeyStatus = .unknown
+            return true
+        } catch {
+            imageKeyStatus = .invalid("Couldn't remove the key from Keychain. Try again when Keychain is available.")
+            return false
+        }
     }
 
-    /// What to do when the keychain has the key but will not hand it over.
-    ///
-    /// On macOS the login keychain gates an item by the signature of the build
-    /// that saved it. A build signed differently — which every ad-hoc build is,
-    /// since its cdhash changes each time — can still *find* the item and
-    /// cannot read it. Re-saving rewrites the access control for the build in
-    /// front of the user, which is the one action that fixes it.
     static let unreadableKeyAdvice =
-        "A key is saved, but this build of Lectern can't open it — paste it again to re-save."
+        "Keychain access is unavailable. Unlock your login Keychain if needed, then retry. This does not mean your key is missing."
+    static let saveKeyFailure =
+        "Couldn't save the key in Keychain. Try again; Lectern did not delete any stored key."
+    static let testSessionAdvice =
+        "API keys and live generation are disabled in this test session."
 
-    /// Whether a keychain read failed because the item is there but sealed to a
-    /// different build, as opposed to simply not existing.
+    /// Only an explicit missing-item error establishes absence.
     static func isUnreadable(_ result: Result<String, Error>) -> Bool {
-        guard case .failure(let error) = result,
-              case KeychainStore.ReadProblem.unreadable = error else { return false }
+        guard case .failure(let error) = result else { return false }
+        if case KeychainStore.ReadProblem.missing = error { return false }
         return true
     }
 
     /// Validate authentication and access to the exact image model Lectern uses.
     func validateImageKey() async {
+        guard !isTestSession else { imageKeyStatus = .invalid(Self.testSessionAdvice); return }
         let revision = imageKeyRevision
         let chosenImageModel = imageModel
         let id = imageProviderID
         let key: String
         do {
-            key = try KeychainStore.readOrFail(forImage: id)
+            key = try credentials.read("image:\(id.rawValue)")
         } catch KeychainStore.ReadProblem.unreadable {
-            // The item is there; this build just cannot open it. Saying "no key
-            // stored" here sent us hunting a save bug that did not exist.
             imageKeyStatus = .invalid(Self.unreadableKeyAdvice)
-            hasImageKey = true
+            imageKeyStorageUnavailable = true
+            return
+        } catch KeychainStore.ReadProblem.missing {
+            imageKeyStatus = .invalid("No image key stored.")
+            hasImageKey = false; imageKeyStorageUnavailable = false
             return
         } catch {
-            imageKeyStatus = .invalid("No image key stored.")
-            hasImageKey = false
+            imageKeyStorageUnavailable = true
+            imageKeyStatus = .invalid(Self.unreadableKeyAdvice)
             return
         }
+        hasImageKey = true; imageKeyStorageUnavailable = false
         imageKeyStatus = .validating
         do {
             try await ImageProviderFactory.validate(id: id, apiKey: key, model: chosenImageModel.rawValue)
@@ -527,20 +599,28 @@ final class AppState {
 
     /// Check authentication and access to the selected text model without generating.
     func validateKey() async {
+        guard !isTestSession else { keyStatus = .invalid(Self.testSessionAdvice); return }
         let revision = keyRevision
         let chosenModel = model
         // Ignore a result if the key or selected model changed during the request.
         let id = providerID
         let key: String
         do {
-            key = try KeychainStore.readOrFail(for: id)
+            key = try credentials.read(id.rawValue)
         } catch KeychainStore.ReadProblem.unreadable {
+            keyStorageUnavailable = true
             keyStatus = .invalid(Self.unreadableKeyAdvice)
             return
-        } catch {
+        } catch KeychainStore.ReadProblem.missing {
+            hasKey = false; keyStorageUnavailable = false
             keyStatus = .invalid("No key stored.")
             return
+        } catch {
+            keyStorageUnavailable = true
+            keyStatus = .invalid(Self.unreadableKeyAdvice)
+            return
         }
+        hasKey = true; keyStorageUnavailable = false
         keyStatus = .validating
         do {
             let models = try await OpenAIModels.list(apiKey: key)
@@ -599,7 +679,7 @@ final class AppState {
     // MARK: - Generate
 
     var canGenerate: Bool {
-        phase != .generating && !templateLoading && !templateSelection.isLoading && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !isTestSession && !keyStorageUnavailable && phase != .generating && !templateLoading && !templateSelection.isLoading && hasKey && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     /// Where Settings lives on this platform, for user-facing hints.
@@ -611,6 +691,12 @@ final class AppState {
 
     func generate() {
         guard phase != .generating, !templateLoading && !templateSelection.isLoading else { return }
+        guard !isTestSession else { phase = .failed(Self.testSessionAdvice); return }
+        guard !keyStorageUnavailable else {
+            lastFailure = .keyUnreadable
+            phase = .failed(Self.unreadableKeyAdvice)
+            return
+        }
         guard hasKey else {
             lastFailure = .noKey
             phase = .failed("Add your \(providerID.label) API key in \(Self.settingsHint) to generate.")
@@ -628,9 +714,9 @@ final class AppState {
                                   styleSlug: selectedStyleSlug ?? "default")
         let template = selectedTemplate
         let designURL = template == nil ? selectedStyle?.designURL : nil
-        let directory = Self.decksDirectory()
-        let diagnostics = Self.diagnosticsDirectory()
-        let keyRead = Result { try KeychainStore.readOrFail(for: providerID) }
+        let directory = libraryDirectory
+        let diagnostics = injectedDiagnosticsDirectory ?? Self.diagnosticsDirectory()
+        let keyRead = Result { try credentials.read(providerID.rawValue) }
         let id = providerID, chosenModel = model
         let chosenEffort = reasoningEffort
         let style = template == nil ? selectedStyle : nil
@@ -638,7 +724,7 @@ final class AppState {
         let imageID = imageProviderID
         let chosenImageModel = imageModel, chosenImageQuality = imageQuality
         let imageRevision = imageKeyRevision
-        let imageKeyRead = Result { try KeychainStore.readOrFail(forImage: imageProviderID) }
+        let imageKeyRead = Result { try credentials.read("image:\(imageProviderID.rawValue)") }
         // An unreadable key is not a missing one. Treated as missing, the text
         // key fails the run as "no key" while one sits in the keychain, and the
         // image key silently drops every picture from a paid deck — which is

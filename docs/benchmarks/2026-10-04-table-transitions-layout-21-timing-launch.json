@@ -1,0 +1,41 @@
+{
+  "planSHA256": "487cd24019eb59e9d510b5c9cd1c7f93281ba20588f26e46ddc09fabd60de29b",
+  "scriptSHA256": "47f9928a45c07c4b18ddd0dc00b71ed8a9637b8dde8456a97b7fc4fb92b9ec16",
+  "environment": {
+    "canonical": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    },
+    "supplement": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    },
+    "native": {
+      "ROSTRUM_BENCH_FONT": null,
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/native-inputs.json",
+      "ROSTRUM_BENCH_OUTPUT": null
+    },
+    "cache-controls": {
+      "ROSTRUM_BENCH_FONT": null,
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/native-inputs.json",
+      "ROSTRUM_BENCH_OUTPUT": null
+    },
+    "transitions": {
+      "ROSTRUM_BENCH_FONT": null,
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf33-table-transitions/native-inputs.json",
+      "ROSTRUM_BENCH_OUTPUT": null
+    }
+  },
+  "environmentRule": "These exact task variables replace inherited values. run.py sets its per-child temporary ROSTRUM_BENCH_OUTPUT itself. No unrelated shell environment or credentials are captured.",
+  "rootHeadAtLaunch": "73de22c42dc704c81f9fe8c03ee310def68c4dc3",
+  "binarySource": "73de22c42dc704c81f9fe8c03ee310def68c4dc3",
+  "grant": "Root coordinated no active build/test/helper/GUI jobs; independent protocol reviews approved exact plan with this explicit environment preflight.",
+  "timestamp": "2026-10-04T19:52:48.181519-07:00"
+}

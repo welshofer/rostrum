@@ -1,0 +1,203 @@
+{
+  "status": "CYCLE1 ACCEPTED BOUNDED PROFILE-BACKED TARGET IMPROVEMENT; independent evidence review pending; host-load qualified",
+  "baselineRevision": "59efb229c94f484666c9dd2a7e0ea7044f54f94b",
+  "candidateSourceCommit": "5a4cebfd84392c058474c7bd1a2473c052a7eced",
+  "candidateSourcesGitTree": "e613517bf3a8446270f22c6dda105073b0e2d596",
+  "candidateMeasuredAsFrozenPatchBeforeCommit": true,
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf14-profile",
+  "files": {
+    "baseline-Rostrum.o": "92755a1c5804845bcd0588a7662045720c1a45e99e1ef39253f754b773ed0c5e",
+    "baseline-bench": "8c76c4f9e82132b47c451efa16cd18d3a9c87be2c7f95cbc45ab1886d9c4f56a",
+    "baseline-build.log": "3141b352164fc3cd38a329b0128a6d509d6ec165816c2cb7871dd2cb3ca7b271",
+    "baseline-extended-bench": "7f285cbe6d5df0bb670325b5fbb7a7c9defdfc13239cb157cd3160782312f042",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "aca9ae14c246f45914c70cfd5a68e65b5226fdc071ec3684cf500eba553122f8",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "90c6d78d146ba387192e063b15b732e07efad7117a29f87fe56aae80efb43954",
+    "baseline-pin.json": "f72280edb584d29a10d17174c1eb40c64a5375b02d51d73308c592aff84e67b0",
+    "baseline-preservation": "8aacd2da642eea5fd60a21149b7fd2da403830b49139f7d9003912f01a56c39e",
+    "baseline-profile": "55209ab79f4315166230fe50feb4a1043442cac99af2bf597684376bba919c68",
+    "candidate-Rostrum.o": "11e89c897e0e8533858722b52bfe523f20ece08e45a75a1de3f43849d1dde108",
+    "candidate-bench": "4bcf9598cbb231536d1ce018fd1f1db09a5994a7e277bdcfc947d9ab5fb4006f",
+    "candidate-build.log": "4a062dd1d463290f9df6e84da0c28b8e7748b51191d0d335f2a7cf89b1f69ea4",
+    "candidate-extended-bench": "50cc13e06753ac36a44601f33db04ccecac9f6136b16208aadc3dc8d5252e163",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "aca9ae14c246f45914c70cfd5a68e65b5226fdc071ec3684cf500eba553122f8",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "5d129e499949f5d6607a620a47ef2a43dd0679a3850d5a3ed965fe085a547e49",
+    "candidate-preservation": "3b6e1ef04a132b821de904708c724b306711b73e53b91579b47a15b3a2af2d45",
+    "candidate.patch": "d6166df86e9f28c1a6d19bb305f958de086b5bb991661873852f71e052b685a9",
+    "canonical-main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "canonical-run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+    "fixed-inputs/images-unique.pptx": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+    "fixed-inputs/slides-10.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+    "fixed-inputs/table-200x50.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+    "fixed-inputs/table-20x10.pptx": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
+    "focused-tests.log": "d06e7dacbafdc09850ae1df7a4557206c3b4e2dd776ab5506e41df9cdf3a8223",
+    "frozen-source.json": "dd5218ce27da3353731fd9ccba47a1bad5cff3313ad14a99f2a667afea0a0d60",
+    "full-tests.log": "78bc29ee383b6faf325eb20b703c43395bb1d62a6ad67dd2afc402e668b5300b",
+    "identity.log": "2ada960835b6c599f398c3bf9d36261e06369412b73daf59fb8b20a49b4e4ec8",
+    "identity.py": "e12f374c6f94a648602e15bab40f919a9c25ed2231dd13e0c97b8c4dc1e906cd",
+    "output-proof.log": "fb63b23831144a019d8e389706b89c93e64851efd7aa5a7323f65042245e27a1",
+    "paired-analysis.log": "bf1f2fec768309566bd5af2e3e0a44e09643ed3153540766f2c769d98198bc0e",
+    "paired-analysis.py": "d951aea02242892590f49231bbcccb6da0a513bcee12415af27fae8f7fef1be4",
+    "paired.log": "9059467da13a62ea6cf955916b3d3032935d9de944d010b418751d2a539c7c8f",
+    "preservation-images-unique-baseline.log": "90e2c6b08193b33fe98dd5e6402d2d44a43ccf53d6cb28ce3ed90aa422da01a6",
+    "preservation-images-unique-candidate.log": "1552feffb8b2d274c2f1a37d21b84aed583690ad33229e982edcac54b0588eee",
+    "preservation-slides-10-baseline.log": "84e99cba13103b182fffbfabf191dcb4eee1b9ca8575a0d15ab1117265e530de",
+    "preservation-slides-10-candidate.log": "f5a50c47a3d2572834ffa6664f216defdb03cb07cfaf56d1c8adb5cd546ac0c9",
+    "preservation-table-200x50-baseline.log": "bec14474efc0a9405f1db238bd5a3db64b1555207accc5cc1d45446041ca7f94",
+    "preservation-table-200x50-candidate.log": "4097d9ffb635186a353de9e7f1cd3c3932c3781affb25f51ced87142132bfa10",
+    "preservation.log": "b74c878da023f6dc464e20038508885498d4947fa17fe97ea34825947b6c56f8",
+    "preservation.py": "10bd42e0df7eaf43ce90eb90612f64d3f8f8aba2026cfaba6d86436fb69ee443",
+    "process-during.txt": "dd46938f15a9baab6691fe9687499f4454cb9f2acf2a112adccdc5bfa104f544",
+    "process-end.txt": "ea2f68c88401015795fd4d1b4b3b28dd173d78ecb12cf01257ff43367361e1c7",
+    "process-start.txt": "284c69363b507d000e52a9c1c8d28cc98d03905ac55f2781c138616354d9a352",
+    "profile-commands.json": "27caf81307a83181431ed0070b3354481bea00aa040d062b42f4e291ade11189",
+    "profile-context.txt": "0bf46f33a1bdc0ab623642c444e3648928000d7edf526cc097aea77223469053",
+    "profile-inputs/shaped-table-100x20.pptx": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+    "profile-inputs/table-200x50.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+    "profile-summary.json": "c08f340fcedaaea3ad448842ad1375fb95034c8bfc4d2e51c1f600e15026468b",
+    "profile-summary.py": "3ca0655572a9c2b3c980ca9d9f83f18047be787fd47d1ff98e34b595e22c129f",
+    "profile.swift": "348316772c4a417d11f40fab13a5cbdf8d47d708f74d6326043a9f485d772e4b",
+    "protocol.json": "2c1bc74eceb0fbfacc06ae1e5227d66925d19f8ec6bfca69958d23a04451af1d",
+    "run-authorized.py": "febf3a437736c8070ea168e959397a046af0da2dcf0bd02613046ac6361dd745",
+    "shaped-table-100x20-profile-output.log": "234ec4b7e447ee5b72a71084bd6f3ac24a10450b0c8afba8eb79e813603aa372",
+    "shaped-table-100x20-profile.txt": "95977e72751036cd4f724e4874c25c1b4dff27c5e08bda3d68164a4bfed77fea",
+    "shaped-table-100x20-sample.log": "d5bd54706d3d2ee1d1ae5cd9b3cf0a8111ba75d992f889bab20374457c2451df",
+    "table-200x50-profile-output.log": "b5e6b5d2fc4c38dceec791d285633e4c5cadd307b831188989f623dc36012e0b",
+    "table-200x50-profile.txt": "503dde5ea364bbc8bdc45b829b42f6f477c838b2aaa441f5a492786f28f26821",
+    "table-200x50-sample.log": "ea5dfdfd6b6bd88ef9eee39fbb37d44252a1ef93cd4ba331a93de1dbf6b713f7",
+    "timing-execution.json": "d7820f83476ee75a3c140912b23a1c13f7c7c784cec6345dcf6fbadcd9fc9e84",
+    "timing-plan.json": "1c3f5acc7c1cb7b58fe879278f9de2ef8fa11a5811c786326c715a1a41f639ff",
+    "workload-proof.py": "a3a9dba5016037b81598983a2c44765651dc82c4822482e3ac519382bbee0ded"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/RenderTextAttributes.swift": "fc1f6f7a182d2bc4ac26b722da98c856879873d463009cbbc0ddc16a97c7ca31",
+    "Tests/RostrumTests/RenderTextAttributesTests.swift": "b8b190b9ad3d394ed8cd8242ae4909551ad1a571ea8cebf753920e1e13178b50",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+    "Tools/rostrum-benchmark/main.swift": "9ca197e948dd5a4cb8e47d360f071f696e140255cc71e3b07a867b66cfc73180",
+    "Package.swift": "b2a0e2cbf3710f5f003e19caee55bdc2c5a70a4ed152573c6216df4740c27e22"
+  },
+  "receiptSHA256": {
+    "docs/benchmarks/2026-10-04-recent-style-layout-5-output-identity.json": "0252a74c3c5a9538d160767d3ae64651ff31327a8c8e1e04d959db4062b607e0",
+    "docs/benchmarks/2026-10-04-recent-style-layout-5-output-proof.json": "13846a9d2374269349f542f377cc3be72bc73a64f2d583a5ed13d854275df257",
+    "docs/benchmarks/2026-10-04-recent-style-layout-5-paired-analysis.json": "e72e861e2bbb8b010830eb255702ffa5251e5f609d3d9ad67db131a297e52aaf",
+    "docs/benchmarks/2026-10-04-recent-style-layout-5-paired-macos.json": "6ad489b600a239e48597247f86ea9619bc38754de0a84a12759b990f7762a758",
+    "docs/benchmarks/2026-10-04-recent-style-layout-5-preservation.json": "dbefcc6904be0b78ce0e997eee29de4168cfceb0bef6527ae6d9c094edf1cfcd",
+    "docs/benchmarks/2026-10-04-recent-style-layout-5-summary.json": "1d49f2df193e5de61cdf477fdc378cfee911d62a89fa5afa7ecfd919e9d5fceb"
+  },
+  "reportSHA256": {
+    "docs/LAYOUT-PERFORMANCE-20261004-5.md": "864b8df4eb4608908461984902ff4e0137dd2a814843083d564074f5c097dd6b"
+  },
+  "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+  "verification": {
+    "retainedPrimaryHashes": 63,
+    "sourceHashes": 6,
+    "receiptHashes": 6,
+    "reportHashes": 1,
+    "additionalInputAndArtifactHashesVerifiedAgainstReceipts": 4920
+  },
+  "profile": {
+    "table-200x50": {
+      "mainThreadSamples": 3569,
+      "inclusiveSamplesExcludingNestedDuplicates": {
+        "layout": 792,
+        "textAttributes": 125,
+        "embeddedFamily": 124,
+        "previewFace": 32,
+        "textResolve": 162,
+        "fontKeyNormalize": 0,
+        "shaping": 0,
+        "renderText": 1735
+      },
+      "note": "Counts overlap across categories and are sampling attribution, not speed measurements."
+    },
+    "shaped-table-100x20": {
+      "mainThreadSamples": 3689,
+      "inclusiveSamplesExcludingNestedDuplicates": {
+        "layout": 2129,
+        "textAttributes": 111,
+        "embeddedFamily": 23,
+        "previewFace": 51,
+        "textResolve": 120,
+        "fontKeyNormalize": 0,
+        "shaping": 1000,
+        "renderText": 2873
+      },
+      "note": "Counts overlap across categories and are sampling attribution, not speed measurements."
+    }
+  },
+  "timingPlan": {
+    "status": "Cycle1 recent-style candidate correctness underway; no authoritative timing until explicit root quiet grant",
+    "baselineRevision": "59efb229c94f484666c9dd2a7e0ea7044f54f94b",
+    "candidateSource": "Frozen uncommitted two-file patch against59efb22; source hashes and patch retained",
+    "candidateSHA256": "50cc13e06753ac36a44601f33db04ccecac9f6136b16208aadc3dc8d5252e163",
+    "baselineSHA256": "7f285cbe6d5df0bb670325b5fbb7a7c9defdfc13239cb157cd3160782312f042",
+    "runs": 10,
+    "warmups": 1,
+    "scenarios": [
+      "table-200x50",
+      "table-20x10",
+      "shaped-table-100x20",
+      "richtext-fit",
+      "slides-10"
+    ],
+    "exactSamplePlan": "110 fresh processes;100 retained samples",
+    "estimatedWallTimeSeconds": 30,
+    "timingCommand": "ROSTRUM_BENCH_FONT=/System/Library/Fonts/Supplemental/Arial.ttf python3 Tools/rostrum-bench/run.py --binary .build/perf14-profile/candidate-extended-bench --paired-binary .build/perf14-profile/baseline-extended-bench --paired-revision 59efb229c94f484666c9dd2a7e0ea7044f54f94b --runs 10 --warmups 1 --scenarios table-200x50 table-20x10 shaped-table-100x20 richtext-fit slides-10 --output docs/benchmarks/2026-10-04-recent-style-layout-5-paired-macos.json"
+  },
+  "execution": {
+    "command": [
+      "python3",
+      "Tools/rostrum-bench/run.py",
+      "--binary",
+      ".build/perf14-profile/candidate-extended-bench",
+      "--paired-binary",
+      ".build/perf14-profile/baseline-extended-bench",
+      "--paired-revision",
+      "59efb229c94f484666c9dd2a7e0ea7044f54f94b",
+      "--runs",
+      "10",
+      "--warmups",
+      "1",
+      "--scenarios",
+      "table-200x50",
+      "table-20x10",
+      "shaped-table-100x20",
+      "richtext-fit",
+      "slides-10",
+      "--output",
+      "docs/benchmarks/2026-10-04-recent-style-layout-5-paired-macos.json"
+    ],
+    "elapsedSeconds": 24.283858500013594,
+    "exitCode": 0,
+    "explicitQuietWindow": true,
+    "knownLoad": "Root and native lane explicitly idle/paused; actual start/during/end process snapshots retained. No settings altered."
+  },
+  "backgroundLoad": {
+    "backupCPU": [
+      124.9,
+      22.8,
+      124.5
+    ],
+    "WindowServerCPU": [
+      76.6,
+      78.2,
+      76.2
+    ],
+    "coverage": "start/during/end snapshots, not continuous",
+    "noExternalCompilerBuildTestObserved": true,
+    "systemSettingsChanged": false
+  },
+  "localVerification": [
+    "6 focused tests",
+    "1113 Rostrum tests/154 suites plus18 RostrumLayout tests/3 suites",
+    "Release baseline/candidate builds",
+    "94 corpus cases742slides exact identity",
+    "5 workload14slides exact baseline/repeatedcandidate identity",
+    "small/large/image-heavy preservation",
+    "224 independent python-pptx reopens",
+    "source/evidence/artifact hashes and diff checks"
+  ],
+  "disposition": "Observed large fallback-3.75% and registered-2.26%,10/10 faster each againstcurrent59 baseline. Profiles locate common cache-hit work. No clean-host/general/cross-platform/fullhistorical-recovery/lower-memory claim. No extra source cycles or retiming."
+}

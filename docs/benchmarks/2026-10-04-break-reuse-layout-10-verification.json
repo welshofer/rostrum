@@ -1,0 +1,527 @@
+{
+  "status": "ACCEPTED BOUNDED TARGET RESULTS; independent source/statistics/evidence review approved",
+  "cycle": 1,
+  "baselineRevision": "c1b7edf56f8025734d0509a1c7c1ae646eba004f",
+  "baselineSourceCommit": "850a9185babafa3ba555b05d18bfe13f2b04056e",
+  "rootEquivalentBaseline": "051cf5b",
+  "candidateSourceCommit": "4118c97ae0c18c2053eeaae5163e990d3e7a0f05",
+  "candidateMeasuredAsFrozenPatchBeforeCommit": true,
+  "candidateSourcesGitTree": "e339cfabc3f64dbe61f3556493e4c4bfc8caaaf5",
+  "retainedDirectory": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf20-break-reuse",
+  "files": {
+    "analyze-profile.py": "66c787d818043b6809178389cf829b495fab8b5470e467d3956aa49a76d079ad",
+    "artifact-hash-check.json": "5e1780b212c05a93bd021c88407b7826dc3ed43d1bc3d4fc997559b36b995ae2",
+    "baseline-RichTextLayout.swift": "62ed6c8ef620c1e7557a07d41b611ac99cb41174beed30a186755780a630b0be",
+    "baseline-Rostrum.o": "5ecd53df9edc4b70c3bd946e2222406659d89c3f3419a409a30dae8cc878b85d",
+    "baseline-artifacts.json": "42800beb8b56516c6d6f2090c92052c7abbf69f9ae0ae9fa62ccb5c1422a7a8c",
+    "baseline-bench": "d3c18767ee9e7ffa0b097c2f76953314cd7d9bc467361141631978227a8774ca",
+    "baseline-build.log": "189682b6d1eb89d6b6f063ee139a5574e878f9641d21f9792a0ce198e516a492",
+    "baseline-extended-bench": "294035167524dc5fff0540f2cfaad54648367f43893ca655cc4ea0d103f0791c",
+    "baseline-layout-proof": "61e41eb416a07c7bd66a0b8f36986c1267cc500f669872ab4c364e7a369d7a22",
+    "baseline-layout.jsonl": "300f4733253d50174c1451b199c335013f1ff7a32e1ec53b0dd85a6e0d8e8809",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "aca9ae14c246f45914c70cfd5a68e65b5226fdc071ec3684cf500eba553122f8",
+    "baseline-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "a0f20d9e420d14e7753c533a291e40169d1ed5d6812729ac9bd7a084adaba86a",
+    "baseline-pin.json": "a30d7df32484a4e50bb4e2ab056cbe16980dab0dcd13738785d7d354c663a509",
+    "baseline-preservation": "84f90aa816ba5fcf3ac59a5678238a180cb960b72a50da0b643d6d9129b82658",
+    "baseline-profile": "348d3e20d4afc62f940783d0c447134bbd2c391531101e2cd84f69e26807354b",
+    "baseline-shaping-proof": "199c94ab793ba296d5d95f61605308cdb88f2f51dfcd5ed2bcd6192fd182a9f1",
+    "baseline-shaping.jsonl": "254e2f8b8d1581154ec6cbde5f5f9d685322e4b110e1c54d03387d0bea6a18e3",
+    "baseline-supplement-bench": "c50e43f64e373a2289c895a8e88f97097a5e1a3525ad47b76a2bd8ef745d8d43",
+    "baseline-supplement-shaping": "0407f0caeef7a83c106e7ccc72f5f324a9593865855e06f5c9e3f11fd70657f2",
+    "baseline-supplement-shaping.jsonl": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+    "candidate-Rostrum.o": "4529d4feb667a489924115ded23cf38abcf6c96aaa316bbe98db370af9bb2d43",
+    "candidate-artifacts.json": "b9c3e137b10389f1bd297b08792818b21928550dbb933e27c55b4b4d0fd7acbb",
+    "candidate-bench": "bb1958a6896041f49020b0c4a10f93531a397aedf2c3dc8d1d9bc8f3ff07228c",
+    "candidate-build.log": "8610c1260ed28bc5997a53d28aa036db6f4c116ac0a2e50948fb7eb3d28d92c0",
+    "candidate-extended-bench": "1b51da901ff68732a4c2cc85376d34a29473da27feac41ecd3ad20dedbacb76d",
+    "candidate-layout-1.jsonl": "300f4733253d50174c1451b199c335013f1ff7a32e1ec53b0dd85a6e0d8e8809",
+    "candidate-layout-2.jsonl": "300f4733253d50174c1451b199c335013f1ff7a32e1ec53b0dd85a6e0d8e8809",
+    "candidate-layout-proof": "1ac33e37fbadf5d5b217731b5f186211b1274ac0bc31bc166115b6bb50ba834e",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.abi.json": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftdoc": "aca9ae14c246f45914c70cfd5a68e65b5226fdc071ec3684cf500eba553122f8",
+    "candidate-module/Rostrum.swiftmodule/arm64-apple-macos.swiftmodule": "a0f20d9e420d14e7753c533a291e40169d1ed5d6812729ac9bd7a084adaba86a",
+    "candidate-preservation": "cf59ee664899e5f85708e0060a1601f6846ea65f717cb5ec63433e0f2c7ecae3",
+    "candidate-shaping-proof": "a87e001747029576f200dc1c164a99fc6ec3810ad3ec5b6abf67c526614786b3",
+    "candidate-shaping.jsonl": "254e2f8b8d1581154ec6cbde5f5f9d685322e4b110e1c54d03387d0bea6a18e3",
+    "candidate-supplement-bench": "9f2b9dcf3df6cb3c749b1bd03aa6f1c669b8ff612509dce20b0e49d865d2d189",
+    "candidate-supplement-shaping": "d25bb88fbf5dbc27043df511d928b237039c851a075ae5cf097ecb239024679c",
+    "candidate-supplement-shaping.jsonl": "bbdfa06cc691b8bf1bee3ffc71a42082407f5b0900a6826694a8046a7a6da079",
+    "candidate-tests.swift": "9a89c04ce9541de7f080c16331bae9566f45ad33b688812157282c85b8270925",
+    "candidate.patch": "7b72fcc574cf0325966e761ec595fc18ebf0e117d1a48fd644105c77cab7f5e2",
+    "canonical-main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "canonical-paired.log": "7fd5075c0cf91ec3b67854b39ce678095d4dc71156a6614252e024a4a9a142f0",
+    "canonical-run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+    "finalize-evidence.py": "6854ad6d748166a795317feaccc4893a86cf87c6ed723852e9dc65a5246c23e7",
+    "fixed-inputs/images-unique.pptx": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+    "fixed-inputs/slides-10.pptx": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+    "fixed-inputs/table-200x50.pptx": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+    "fixed-inputs/table-20x10.pptx": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
+    "focused-tests.log": "d7b2824c8262266541457e8b4411037f977f8752dec3817aa6d6aa556a3bdb1d",
+    "frozen-source.json": "49f27bb942e0486444bd8210f5e77b31623fbb98cbd74d7b4916341d995d0024",
+    "full-tests.log": "1e0e357b608a31e82e1d0a9c3ad78d5f7bd0f62b7814a110db99e71a3114fdeb",
+    "identity.log": "1cf79d3f7bcd5e6d9c1c68d521f2a583eb12dacac970b7235dbea2e505bb94a3",
+    "identity.py": "8567e4d9e622d44212b0f9842c1d968d860f6a14841fb87ead80a7554c816c42",
+    "layout-proof.swift": "bb944b71b1c4cda64a033d1953ec416f2b8a5a28213f3f0c07546c6a4cd82a74",
+    "load-summary.json": "933c1af22fa484d2c6b4ae076eff78e59048e42218569c2f410d7f40fff3297a",
+    "paired-analysis.log": "2765421963441a491d1f6e55a38589d7b303aca5e499debaa136969d99c8d94d",
+    "paired-analysis.py": "8385250d7720b4c3ca00f6e452e6c9596b0a7be2749c595fc2478cf07cf860fa",
+    "prepare-candidate.py": "cf4a5f18d94537b26d0e7f3770f06c851a63be21f764e6fe9e0d37ed49010619",
+    "preservation-images-unique-baseline.log": "b36474baa190bc997cda696c91edcee907a613b7b6ea11b8ab0ea62efd5f3f63",
+    "preservation-images-unique-candidate.log": "12b0b4a7e5e634e8a5c2f2fc6388c59d8f44ba29b06fd8a3e1cb88549c9a4128",
+    "preservation-slides-10-baseline.log": "f5d27e79ef360a15eeab78547e766d406619c6938578204986197b90d406b36c",
+    "preservation-slides-10-candidate.log": "3ebeae2c64ab762a9807ba2c86097412837f6fcd898dbf9477c6ae3a71e8fbf0",
+    "preservation-table-200x50-baseline.log": "f87eec736cb10b53aeda99d8d4803baa6a5ad6d0e714243cd265c1132872a780",
+    "preservation-table-200x50-candidate.log": "50c6d2ba02cc68873da88ecfbac189fcb3692b067a53053fbf8e49d74aad4264",
+    "preservation.log": "b74c878da023f6dc464e20038508885498d4947fa17fe97ea34825947b6c56f8",
+    "preservation.py": "fec94be8ae1e8b1467c666fbaee393322686ff2df3a8264645d23b3fc8e848c5",
+    "process-canonical-during-15.txt": "f8d5626ca1942f81c92ac9e6683baca77aae642bc0e09305deb48dd0c490ad8f",
+    "process-canonical-end.txt": "af8aacd6a289865c792b02983fbe821a179769cff713c2ca007c934482d7275e",
+    "process-end.txt": "c722ee585f74180cd23a5ea4bd6d919d146c0cff16dab7df8d5b0976d32327da",
+    "process-start.txt": "175204752af2f0e6d7a74139c9cd8319b1e0e859ecc3fe4ed47b1cd1291a5976",
+    "process-supplement-during-15.txt": "1e6c4f994653a94bb493adb36f3973a19341c65363c6603666d4089e9f7b762a",
+    "process-supplement-end.txt": "4062c1a89617c74b4da33d168c1689d806375cc10f5fc8b9ceebc7168dba83d1",
+    "profile-command.json": "3e89332a25b260b10dee960578539a61f8e404535dfc7f2a60ffbbc5235e8888",
+    "profile-context-end.txt": "e80c138e0390fc31ccc106666060cb145103ea20b107571577179aaa6e71e092",
+    "profile-context-start.txt": "39145b95e81076ec614e74c40279adb037153a0cde54c7e7ef409dd2bfc4590b",
+    "profile-output.log": "7acba1ae249399d34250184e603d2f35aa05c749c17c9c0cd3c32425268db635",
+    "profile-summary.json": "a45e1d846d4140e44bfc9711c859ac1dca3759a4336df31ba8b2c4c191d45383",
+    "profile.swift": "348316772c4a417d11f40fab13a5cbdf8d47d708f74d6326043a9f485d772e4b",
+    "protocol.json": "7625b37937ee38bae1be7753f8c83a402d0faa55a397cbd0696ab9de77beb89c",
+    "registered-profile.txt": "16dbbbb05307ea370b0bdd4172d63cbedb81958a4d3e2a1ca6fe766b100ddecc",
+    "research-manifest.json": "2813814ed8eafdff6d07820a68405aeec37bd649ce15288e631ac8dc36e2e8d8",
+    "return-path-audit.json": "382c9b0457b79ccde0a2c5759a06c92856722ecfaa8b6d2b10cc70f7d2250eeb",
+    "run-authorized.py": "36c0025072914745113decec8f2f6efc481e9e058c9425a9610c407514c0fcc2",
+    "sampler.log": "674d131160e41c11a58663b1b182968d5fb0929bdaed87532074f7b2289e192b",
+    "shaping-proof.swift": "217ec45d7b4e524799707e445b3b4151094d7a0c40ff5bb4b2490cf95990ba17",
+    "supplement-inputs.json": "3fa3702f1264eda7bc85110ce39af1416d801feb6d36e7a82bb08f5649b56ce2",
+    "supplement-main.swift": "6b27eda99b23232d4a04a8e71dd48ccba789313361456137d750c570a7753da1",
+    "supplement-paired.log": "c2af499cb6e8af193b4b92bd5d27b20d2fc3f9ad7fb7992bd603ecc480c50c35",
+    "supplement-proof.log": "1cca47551bd7374df8de746a6b922cb77ccf488ff27630435ac9e8620f280d34",
+    "supplement-proof.py": "c868ae5005672f7db81ade1b163401e7ea3c6ebbbd82320893f0c37cc272932b",
+    "supplement-shaping.swift": "690cb41febd6eba9de5624227253758d72ef0554cee868734843793d41101006",
+    "timing-execution.json": "e5d7a22700068c7ed0a451ff764236927447a2c74928200445999e50cae8494d",
+    "timing-plan.json": "234e9203bd7a7cb948388975cbf14dbfa7bc7666ccd98929523a8f8fca5e8090",
+    "verify-artifacts.py": "2ea83a05dbcbec089357b7c108435bd8b786d4f0b05eaef6cb3e85832a82e573",
+    "workload-proof.log": "fb63b23831144a019d8e389706b89c93e64851efd7aa5a7323f65042245e27a1",
+    "workload-proof.py": "0c4e1dab2e5dbb71eedd863c64f4e22813e30fb1f147290796b47b77f86bfbd9"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "23afddab7d87b1744913dcd0fc6f9bbb646bdb0df78e484262a52bcd6ce35d81",
+    "Tests/RostrumTests/LayoutShapedBreakReuseTests.swift": "9a89c04ce9541de7f080c16331bae9566f45ad33b688812157282c85b8270925",
+    "Tools/rostrum-bench/main.swift": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "Tools/rostrum-bench/run.py": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+    "Sources/Rostrum/Fonts/TextShaper.swift": "69fb59db1bf9f5bae03504b63b45f18771e76ab106f6ef47a1d2c6918b5c2771",
+    "Sources/Rostrum/Fonts/ArabicTextShaper.swift": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a",
+    "Tools/rostrum-benchmark/main.swift": "9ca197e948dd5a4cb8e47d360f071f696e140255cc71e3b07a867b66cfc73180",
+    "Package.swift": "b2a0e2cbf3710f5f003e19caee55bdc2c5a70a4ed152573c6216df4740c27e22"
+  },
+  "receiptSHA256": {
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-canonical-paired-analysis.json": "ad948bd190ba01e77a47eceef536fcf202b4625ff4bd66fe5d4003f11fcbccfd",
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-layout-proof.json": "1152519d54c8b47acd6eb4bb42b7f2b8fe68346c5105ea33f443a685f408e7ce",
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-output-identity.json": "6f16b788da4f4f4466a1fece6ce4d4e6ae5cddb6ae33967b52d7b928f2576d99",
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-output-proof.json": "a5f37a91ed3b0f3e879ecc37482732f236f0646997c4938aa5916c5d9736c796",
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-paired-macos.json": "737a13841aeb5b6f7bd0a0f94f56a7ce63bbcc5e483eee5bd8671534dd2c4d6e",
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-preservation.json": "7e24671ad7beeb39ae3f77402b2dc9bc42350577e5df7913c73398dfd26a37d7",
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-summary.json": "7c831ea788c539cd1b062e6781953a7bcff7d1d48b650b4773f987200a0bb1d8",
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-supplement-output-proof.json": "094621c4c4601a49f91e249233820ed5d240215ecba999f2092ba81e9ec2e0b5",
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-supplement-paired-analysis.json": "3c2445c99812f2f9da8bcca64963dce54bc29c61a8857f6172495de946ddbed1",
+    "docs/benchmarks/2026-10-04-break-reuse-layout-10-supplement-paired-macos.json": "0c73b781d3390b8a7605f51ac14ecbd5c3148b279e27c22f4154a771f2aa4b78"
+  },
+  "reportSHA256": {
+    "docs/LAYOUT-PERFORMANCE-20261004-10.md": "f2418985b675114a56d3297b464c0e8058d0549a29fbd6c6e917828f676ac853"
+  },
+  "tests": {
+    "focused": 4,
+    "focusedParameterCases": 12,
+    "Rostrum": 1140,
+    "RostrumSuites": 161,
+    "RostrumLayout": 18,
+    "RostrumLayoutSuites": 3,
+    "fullCommand": "swift test --jobs 2",
+    "releaseCommand": "swift build -c release --jobs 2",
+    "layoutRecords": 1728,
+    "canonicalShapingRecords": 101022,
+    "supplementShapingRecords": 288,
+    "corpusCases": 114,
+    "corpusSlides": 780,
+    "independentPythonPptxReopens": 273
+  },
+  "verification": {
+    "retainedPrimaryHashes": 96,
+    "sourceHashes": 8,
+    "receiptHashes": 10,
+    "reportHashes": 1,
+    "layoutRecords": 1728,
+    "inputAndArtifactHashesVerified": 5250,
+    "frozenSourceVerified": true,
+    "canonicalShapingRecords": 101022,
+    "supplementShapingRecords": 288
+  },
+  "protocol": {
+    "baselineRevision": "c1b7edf56f8025734d0509a1c7c1ae646eba004f",
+    "sourcesTree": "914f4e9b6da3020299d316582fc4c9bfdd3101bf",
+    "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+    "driverSHA256": "9c792a6cc94974d5c996b76cf6a12dfe0b455b7198ee239f7c57b108953f257e",
+    "runnerSHA256": "da0e53f9760cee1beedb38dd21dae2229ad97e7aa3effc87fd7ac865623e0792",
+    "compilation": [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-O",
+      "-I",
+      "<variant>-module",
+      "Tools/rostrum-bench/main.swift",
+      "<variant>-Rostrum.o",
+      "-o",
+      "<variant>-extended-bench"
+    ],
+    "baselineRetainedFrom": "Accepted perf9 candidate object/module/binaries; source tree matches root051cf5b; no rebuild or historic timing substitution.",
+    "baselineSourceCommit": "850a9185babafa3ba555b05d18bfe13f2b04056e"
+  },
+  "timingPlan": {
+    "status": "Frozen correctness/proof/source review complete; awaiting explicit single timing grant",
+    "baselineRevision": "c1b7edf56f8025734d0509a1c7c1ae646eba004f",
+    "binaries": {
+      "baseline-extended-bench": "294035167524dc5fff0540f2cfaad54648367f43893ca655cc4ea0d103f0791c",
+      "candidate-extended-bench": "1b51da901ff68732a4c2cc85376d34a29473da27feac41ecd3ad20dedbacb76d",
+      "baseline-supplement-bench": "c50e43f64e373a2289c895a8e88f97097a5e1a3525ad47b76a2bd8ef745d8d43",
+      "candidate-supplement-bench": "9f2b9dcf3df6cb3c749b1bd03aa6f1c669b8ff612509dce20b0e49d865d2d189"
+    },
+    "canonicalProcesses": 110,
+    "supplementProcesses": 66,
+    "retainedSamples": 160,
+    "runs": 10,
+    "warmups": 1,
+    "commands": {
+      "canonical": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        ".build/perf20-break-reuse/candidate-extended-bench",
+        "--paired-binary",
+        ".build/perf20-break-reuse/baseline-extended-bench",
+        "--paired-revision",
+        "c1b7edf56f8025734d0509a1c7c1ae646eba004f",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "table-200x50",
+        "table-20x10",
+        "shaped-table-100x20",
+        "richtext-fit",
+        "slides-10",
+        "--output",
+        "docs/benchmarks/2026-10-04-break-reuse-layout-10-paired-macos.json"
+      ],
+      "supplement": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        ".build/perf20-break-reuse/candidate-supplement-bench",
+        "--paired-binary",
+        ".build/perf20-break-reuse/baseline-supplement-bench",
+        "--paired-revision",
+        "c1b7edf56f8025734d0509a1c7c1ae646eba004f",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "--output",
+        "docs/benchmarks/2026-10-04-break-reuse-layout-10-supplement-paired-macos.json"
+      ]
+    },
+    "supplementDriverDifference": "Only adds scenario == file to the existing registered-font condition; all timers/calls/serialization otherwise identical. Canonical driver and Python runner unchanged."
+  },
+  "timingExecution": {
+    "commands": [
+      {
+        "name": "canonical",
+        "command": [
+          "python3",
+          "Tools/rostrum-bench/run.py",
+          "--binary",
+          ".build/perf20-break-reuse/candidate-extended-bench",
+          "--paired-binary",
+          ".build/perf20-break-reuse/baseline-extended-bench",
+          "--paired-revision",
+          "c1b7edf56f8025734d0509a1c7c1ae646eba004f",
+          "--runs",
+          "10",
+          "--warmups",
+          "1",
+          "--scenarios",
+          "table-200x50",
+          "table-20x10",
+          "shaped-table-100x20",
+          "richtext-fit",
+          "slides-10",
+          "--output",
+          "docs/benchmarks/2026-10-04-break-reuse-layout-10-paired-macos.json"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 24.481436665984802
+      },
+      {
+        "name": "supplement",
+        "command": [
+          "python3",
+          "Tools/rostrum-bench/run.py",
+          "--binary",
+          ".build/perf20-break-reuse/candidate-supplement-bench",
+          "--paired-binary",
+          ".build/perf20-break-reuse/baseline-supplement-bench",
+          "--paired-revision",
+          "c1b7edf56f8025734d0509a1c7c1ae646eba004f",
+          "--runs",
+          "10",
+          "--warmups",
+          "1",
+          "--scenarios",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+          "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+          "--output",
+          "docs/benchmarks/2026-10-04-break-reuse-layout-10-supplement-paired-macos.json"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 22.45037933299318
+      }
+    ],
+    "elapsedSeconds": 47.05768662504852,
+    "explicitQuietWindow": true,
+    "knownLoad": "Root and lanes paused; actual process snapshots retained. No settings altered."
+  },
+  "profile": {
+    "mainThreadSamples": 2627,
+    "lineBreakSamples": 36,
+    "directLayoutLineBreakSamples": {
+      "269": 9
+    },
+    "shapeReturnedLineBreakSamples": {
+      "512": 14,
+      "271": 13
+    },
+    "firstExactShapingFrameBySourceLine": {
+      "114": 71,
+      "271": 54,
+      "-1": 49,
+      "342": 28,
+      "278": 28,
+      "178": 24,
+      "297": 21,
+      "0": 20,
+      "168": 17,
+      "275": 17,
+      "89": 15,
+      "111": 10,
+      "183": 9,
+      "35": 6,
+      "170": 6,
+      "38": 4,
+      "94": 3,
+      "184": 2,
+      "58": 2,
+      "280": 2,
+      "283": 1,
+      "341": 1,
+      "344": 1,
+      "279": 1,
+      "300": 1,
+      "340": 1,
+      "120": 1,
+      "261": 1
+    },
+    "growthDescendantsByFirstShapingSourceLine": {
+      "114": 56,
+      "168": 13,
+      "342": 12
+    },
+    "breakerFrames": [
+      {
+        "samples": 7,
+        "layoutLine": "512",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1852  [0x104b89558]  TextShaper.swift:360"
+      },
+      {
+        "samples": 2,
+        "layoutLine": "512",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 48  [0x104b88e4c]  TextShaper.swift:352"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "512",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 24  [0x104b88e34]  TextShaper.swift:349"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "512",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1516  [0x104b89408]  TextShaper.swift:355"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "512",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1776  [0x104b8950c]  TextShaper.swift:359"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "512",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1820  [0x104b89538]  TextShaper.swift:360"
+      },
+      {
+        "samples": 6,
+        "layoutLine": "271",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1920  [0x104b8959c]  TextShaper.swift:360"
+      },
+      {
+        "samples": 3,
+        "layoutLine": "271",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 48  [0x104b88e4c]  TextShaper.swift:352"
+      },
+      {
+        "samples": 2,
+        "layoutLine": "271",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1476,1516  [0x104b893e0,0x104b89408]  TextShaper.swift:355"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "271",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1796  [0x104b89520]  TextShaper.swift:359"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "271",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1820  [0x104b89538]  TextShaper.swift:360"
+      },
+      {
+        "samples": 3,
+        "layoutLine": "269",
+        "throughShape": false,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1920  [0x104b8959c]  TextShaper.swift:360"
+      },
+      {
+        "samples": 2,
+        "layoutLine": "269",
+        "throughShape": false,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1776,1804  [0x104b8950c,0x104b89528]  TextShaper.swift:359"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "269",
+        "throughShape": false,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 48  [0x104b88e4c]  TextShaper.swift:352"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "269",
+        "throughShape": false,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1488  [0x104b893ec]  TextShaper.swift:355"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "269",
+        "throughShape": false,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1852  [0x104b89558]  TextShaper.swift:360"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "269",
+        "throughShape": false,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 1424  [0x104b893ac]  TextShaper.swift:360"
+      },
+      {
+        "samples": 1,
+        "layoutLine": "512",
+        "throughShape": true,
+        "frame": "specialized static TextShaper.lineBreaks(in:)  (in baseline-profile) + 24  [0x104b88e34]  TextShaper.swift:349"
+      }
+    ],
+    "scope": "Fresh accepted-perf9 registered profile attribution only; counts are not predicted timing savings. Source frame attribution and sample variability limit conclusions."
+  },
+  "returnPathAudit": {
+    "sourceCommit": "850a9185babafa3ba555b05d18bfe13f2b04056e",
+    "sourceSHA256": {
+      "Sources/Rostrum/Fonts/TextShaper.swift": "69fb59db1bf9f5bae03504b63b45f18771e76ab106f6ef47a1d2c6918b5c2771",
+      "Sources/Rostrum/Fonts/ArabicTextShaper.swift": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a",
+      "Sources/Rostrum/Presentation/RichTextLayout.swift": "62ed6c8ef620c1e7557a07d41b611ac99cb41174beed30a186755780a630b0be"
+    },
+    "returns": [
+      {
+        "source": "TextShaper.swift:34",
+        "result": "Arabic delegation keeps original text and pointSize."
+      },
+      {
+        "source": "TextShaper.swift:40-42",
+        "result": "Invalid nonfinite/negative pointSize returns empty breaks; unreachable from RichTextLayout resolved run sizes."
+      },
+      {
+        "source": "TextShaper.swift:342",
+        "result": "Successful non-Arabic return calls Self.lineBreaks(in: original text), independent of glyph substitutions/normalization."
+      },
+      {
+        "source": "ArabicTextShaper.swift:22-24",
+        "result": "Invalid-size return empty breaks; same unreachable condition."
+      },
+      {
+        "source": "ArabicTextShaper.swift:122",
+        "result": "All valid-size Arabic paths, including bounded-execution failure caught as diagnostics, return TextShaper.lineBreaks(in: original text)."
+      }
+    ],
+    "layoutPreconditions": {
+      "RichTextLayout.swift:82": "fontScale bounded to0.1...100 then divided100 => finite0.001...1; nonfinite maps lower bound.",
+      "RichTextLayout.swift:834": "Authored/default font size bounded100...400000 then divided100 and multiplied scale => finite positive0.001...4000pt.",
+      "RichTextLayout.swift:251-272": "Nonempty current segment passed unchanged to direct breaker and shaper; no intervening mutation. Capitalization and control splitting occur before both."
+    },
+    "proposedChange": {
+      "writeSet": [
+        "Sources/Rostrum/Presentation/RichTextLayout.swift",
+        "Tests/RostrumTests/LayoutShapedBreakReuseTests.swift (new)"
+      ],
+      "registeredOrExplicitMetrics": "Build existing break-offset Set from shaped.breaks after shape returns.",
+      "unregistered": "Move existing direct lineBreaks Set construction into non-ASCII fallback branch; ASCII fallback shortcut remains untouched.",
+      "invariants": [
+        "Source-coordinate break offsets",
+        "Ordered diagnostics and glyph values",
+        "Same line geometry/arithmetic",
+        "Same fallback behavior",
+        "No cache/lifetime/invalidation state"
+      ]
+    },
+    "focusedProof": [
+      "Arabic with ZWJ/ZWNJ/ZWSP and controls",
+      "CJK opening/closing punctuation, NBSP and word joiner",
+      "NFC combining and uppercase expansions",
+      "Explicit CR/LF/CRLF/tab segmentation",
+      "Malformed/nonfinite size/default/scale normalization",
+      "Registered fonts, explicit fallbackMetrics and unregistered fallback",
+      "Full baseline/candidate RichTextLayout line/width/span/diagnostic records plus SVG/package identity"
+    ],
+    "assessment": "Fresh profile finds9 direct duplicate-break samples of2627 (0.343%). This is a real but small target, not evidence for a material speedup. A minimal measured experiment could be justified by exact local reuse; reject timing claims if paired evidence is inconclusive. More invasive cluster specialization is not justified by this audit."
+  },
+  "limitations": [
+    "Small registered gain; stronger fitting/accented-CJK/long-combining results are separately scoped.",
+    "Mixed RTL bootstrap/sign-test evidence; no universal/nonregression claim.",
+    "Mixed whole-process RSS, including accented/CJK +0.0859375MiB and long-combining +0.1640625MiB; no lower-memory or isolated allocation claim.",
+    "WindowServer97.1\u201399.4% CPU; backupd0.0 in snapshots; snapshots cannot establish continuous isolation or remove load bias.",
+    "Fallback path unchanged; fallback timings are not attributed to this candidate.",
+    "No historical recovery, clean-host or cross-platform claim.",
+    "Exactly one measured experiment; no retiming or second cycle."
+  ]
+}

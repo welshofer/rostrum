@@ -1,0 +1,87 @@
+{
+  "status": "Locally verified; independent review, integrated app/native acceptance and performance remain parent-owned",
+  "baseline": "b5407e49f1173edeeb3285fcef6ad763840d3f79",
+  "branch": "codex/burndown/table-style-fallback19-20261004",
+  "model": {
+    "requested": "gpt-6-astra",
+    "reasoning": "high",
+    "runtime": "unattested"
+  },
+  "productionScope": [
+    "TableStyleResolver actual custom definition absent cardinal edge defaults",
+    "SVGRenderer unmerged LTR constant color and width per grid line admission"
+  ],
+  "unchanged": [
+    "raw source XML",
+    "built-in and unknown styles",
+    "import algorithms",
+    "text and font bytes",
+    "border donors and ownership",
+    "uniform path",
+    "prior native assertions/tolerances"
+  ],
+  "native": {
+    "cases": 12,
+    "pages": 2,
+    "glyphs": 72,
+    "fills": 15,
+    "intervals": 49,
+    "sourceSHA256": "e261b6864780fb021e914dfcd4a0e19b3aae9825cc33b94b0168933dcf057268",
+    "pdfSHA256": "02d7eb7e7e727717ddd4e9a56cecb65f619eec747041f51eade7b22819d766a5",
+    "vectorTolerancePT": 0.001,
+    "colorToleranceNormalized": 0.0001,
+    "glyphXTolerancePT": 0.025,
+    "glyphYTolerancePT": 0.121,
+    "paintSizeTolerancePT": 0.002,
+    "originalLibraryBodyTextExact": true,
+    "fontBytesExact": true,
+    "rawTraceNotOutlineInkProof": true
+  },
+  "failBefore": {
+    "command": "swift test --jobs 2 --filter NativeTableStyleFallbackTests",
+    "issues": 30,
+    "detail": "12 interval counts, 12 complete-paint comparisons, 6 existing endpoint comparisons; glyph/fill checks passed",
+    "log": ".build/table-style-fallback19/swift-fail-before.log"
+  },
+  "checks": [
+    {
+      "command": "swift test --jobs 2 --filter NativeTableStyleFallbackTests",
+      "result": "6 tests / 1 suite passed",
+      "log": ".build/table-style-fallback19/final-focused.log"
+    },
+    {
+      "command": "swift test --jobs 2",
+      "result": "1185 tests / 172 suites plus 18 RostrumLayout tests / 3 suites passed",
+      "log": ".build/table-style-fallback19/full.log"
+    },
+    {
+      "command": "isolated generator + capture + model reproduction",
+      "result": "passed",
+      "receipt": ".build/table-style-fallback19/reproduction/receipt.json"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    }
+  ],
+  "retainedLogSHA256": {
+    ".build/table-style-fallback19/swift-fail-before.log": "0b4f9277f1ced9f7a055a24d50b085cab3fea45f39218c94f24cd998d76f813a",
+    ".build/table-style-fallback19/first-focused.log": "6a1bc5619df027bdf5a2710fb51362e572a6472319db431d453c3303668fe081",
+    ".build/table-style-fallback19/final-focused.log": "2889d6ae680fd927d5b3c61c77603fd603bf852e838c4273082add133750c291",
+    ".build/table-style-fallback19/full.log": "a7fe5d5d4018c5940e731c6f278e914125eb99d3269dfc3b3bc920ed2e21c671",
+    ".build/table-style-fallback19/model-proof.json": "b394d270483c6c6ed4b53650b2a56d9639a414efbb369e8a8a37c1d72d87e911",
+    ".build/table-style-fallback19/baseline-receipt.json": "ef4565945fd318e660e6a1b1f13e1556d87d608da12fa04593e6f7caf91a32cf",
+    ".build/table-style-fallback19/reproduction/receipt.json": "ff2452a2f074fdf4eb07a071ec69b292139a4cdd44e55d03b10ca1f216e44f7e"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "08d2abf1b0a797b50b19061867bbf39f6d94f09965b1156afb8eeca3dbf7ee88",
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "ec213eb0ea15ca480564c745daa1f466a519e4ec8ef41d6686f1345953b55a6a"
+  },
+  "finalScriptsSHA256": {
+    "generate.py": "aab37d08ca7ef059f5d48d6266da89977124b33298ec20f1343715c4fa77cb70",
+    "capture.py": "e42e15e4f06404d0f173c028d9f0c30ebeccd5b58e4235ed013e631013f8eea9",
+    "model.py": "6247c7551be5a56be060026496550420b9d0af7d07b0098a188d1defc38316ab"
+  },
+  "lint": "No configured lint command; diff check performed",
+  "performance": "Not measured in this lane; no performance or memory claim"
+}

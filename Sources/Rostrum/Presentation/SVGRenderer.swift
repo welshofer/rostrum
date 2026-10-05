@@ -1,5 +1,17 @@
 import Foundation
 
+/// Scratch storage for one render. It retains no style nodes between calls,
+/// including when an internal renderer value is reused after direct DOM edits.
+private final class SVGOrdinaryInheritedDefaults {
+    var resolved = false
+    var value: XML.Element?
+
+    func clear() {
+        resolved = false
+        value = nil
+    }
+}
+
 /// Locale-independent SVG numbers without invoking a locale/ICU formatter for
 /// every text coordinate. Four fractional digits exceed the layout precision.
 enum SVGNumber {
@@ -37,8 +49,11 @@ struct SVGRenderer {
 
     private let emuPerPoint = 12700
     private let diagnostics = RenderDiagnosticCollector()
+    private let ordinaryInheritedDefaults = SVGOrdinaryInheritedDefaults()
 
     func render(pixelWidth: Int) throws -> (svg: String, problems: SlideRenderProblems) {
+        ordinaryInheritedDefaults.clear()
+        defer { ordinaryInheritedDefaults.clear() }
         // Not for the value: this is the one call that surfaces a malformed
         // slide part as a thrown error. Everything below reaches the tree
         // through `existingSpTree`, which swallows the parse with `try?` and
@@ -318,10 +333,22 @@ struct SVGRenderer {
         let preset = spPr.firstChild(named: "a:prstGeom")
         let prst = spPr.firstChild(named: "a:custGeom") != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
         let style = sp.firstChild(named: "p:style")
-        let fillProperties = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"))
-        let fill = fillProperties.firstChild(named: "a:blipFill").flatMap {
-            imagePattern($0, ownedBy: owner, box: f, defs: &defs)
-        } ?? paint(for: fillProperties, box: f, defs: &defs)
+        let selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner)
+        let fill: String?
+        if let blip = selectedFill.properties.firstChild(named: "a:blipFill") {
+            if selectedFill.properties !== spPr {
+                // Direct paint was inspected with the shape. Referenced paint
+                // belongs to the theme and must use that same owner for both
+                // diagnostics and drawing, including colliding relationship IDs.
+                let location = diagnostics.location
+                diagnostics.inspect(blip, owner: selectedFill.owner, slideIndex: slideNumber - 1,
+                    path: location.path + "/p:style/a:fillRef", package: package)
+                diagnostics.location = location
+            }
+            fill = imagePattern(blip, ownedBy: selectedFill.owner, box: f, defs: &defs)
+        } else {
+            fill = paint(for: selectedFill.properties, box: f, defs: &defs, ownedBy: selectedFill.owner)
+        }
         let lineProperties = effectiveLine(spPr, reference: style?.firstChild(named: "a:lnRef"))
         let stroke = strokeAttrs(lineProperties)
         if let notesContext, NotesPageRenderContext.placeholderType(sp) == "sldImg" {
@@ -484,10 +511,21 @@ struct SVGRenderer {
     /// applying a template is supposed to change.
     private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
         guard owner === slidePart else { return nil }
+        // Ordinary slide shapes share the same final master style. Placeholder
+        // matching and notes inheritance remain specific to each shape.
+        let ordinary = notesContext == nil && Placeholders.phElement(of: sp) == nil
+        if ordinary && ordinaryInheritedDefaults.resolved { return ordinaryInheritedDefaults.value }
         let styles = notesContext?.styles(for: sp) ?? RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
-        guard !styles.isEmpty else { return nil }
+        guard !styles.isEmpty else {
+            if ordinary { ordinaryInheritedDefaults.resolved = true }
+            return nil
+        }
         let resolved = XML.Element("rostrum:inheritedStyles")
         for style in styles { resolved.appendElement(style) }
+        if ordinary {
+            ordinaryInheritedDefaults.value = resolved
+            ordinaryInheritedDefaults.resolved = true
+        }
         return resolved
     }
 
@@ -510,7 +548,7 @@ struct SVGRenderer {
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
                             inheriting defaults: XML.Element? = nil, fontReference: XML.Element? = nil, respectInsets: Bool = false,
                             insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
-                            verticalAnchor: String? = nil) -> String {
+                            verticalAnchor: String? = nil, context: RichTextLayout.Context = .shape) -> String {
         var inherited = defaults.map { $0.name == "rostrum:inheritedStyles" ? $0.childElements : [$0] } ?? []
         if let reference = fontReference {
             let properties = XML.Element("a:defRPr")
@@ -527,12 +565,22 @@ struct SVGRenderer {
         let layout = RichTextLayout(textBody: txBody,
             width: Double(f.2) / Double(emuPerPoint), height: Double(f.3) / Double(emuPerPoint),
             fonts: fonts, theme: theme, inheritedStyles: inherited,
-            slideNumber: slideNumber, maxLines: 64, insets: insets, verticalAnchor: verticalAnchor)
+            slideNumber: slideNumber, maxLines: 64, insets: insets, verticalAnchor: verticalAnchor, context: context)
         diagnostics.text(layout)
         let decimal = SVGNumber.decimal
-        return layout.lines.map { line in
+        // A narrow table cell can produce many one-span lines. Scope one
+        // inherited policy to this text body when every emitted run agrees.
+        let blockDisablesLigatures = layout.lines.count > 1
+            && layout.lines.contains { !$0.spans.isEmpty }
+            && layout.lines.allSatisfy { $0.spans.allSatisfy { !$0.run.usesStandardLigatures } }
+        let ligatureStyle = " style=\"font-feature-settings: 'liga' 0\""
+        let text = layout.lines.map { line in
+            let lineDisablesLigatures = !blockDisablesLigatures && !line.spans.isEmpty
+                && line.spans.allSatisfy { !$0.run.usesStandardLigatures }
+            let inheritsDisabled = blockDisablesLigatures || lineDisablesLigatures
             let baseline = Double(f.1) + line.baseline * Double(emuPerPoint)
-            var result = "<text transform=\"translate(\(f.0),\(decimal(baseline))) scale(\(emuPerPoint))\" xml:space=\"preserve\">"
+            var result = "<text transform=\"translate(\(f.0),\(decimal(baseline))) scale(\(emuPerPoint))\" xml:space=\"preserve\""
+                + (lineDisablesLigatures ? ligatureStyle : "") + ">"
             var usesViewerAdvances = false
             for span in line.spans {
                 let run = span.run
@@ -547,17 +595,21 @@ struct SVGRenderer {
                 // Once a run uses an unregistered viewer font, let adjacent
                 // runs follow its actual advance. An estimated absolute x can
                 // overlap the preceding glyphs. Tabs and bullets reset flow.
-                if !usesViewerAdvances { result += " x=\"\(decimal(span.x))\"" }
-                result += diagnostics.textAttributes.attributes(for: run, family: embedded ?? previewFace?.family ?? run.fontFamily)
+                if !usesViewerAdvances {
+                    let positions = span.scalarPositions.map { $0.map(decimal).joined(separator: " ") } ?? decimal(span.x)
+                    result += " x=\"\(positions)\""
+                }
+                result += diagnostics.textAttributes.attributes(for: run, family: embedded ?? previewFace?.family ?? run.fontFamily, inheritsDisabledStandardLigatures: inheritsDisabled)
                 // An estimated width is useful for wrapping, but must not
                 // squeeze the viewer's real glyphs into that estimate.
                 let measured = previewFace != nil
-                if measured, span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
+                if measured, run.nativeSizing == nil, span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
                 usesViewerAdvances = usesViewerAdvances || !measured
                 result += ">" + escape(run.text) + "</tspan>"
             }
             return result + "</text>"
         }.joined()
+        return blockDisablesLigatures ? "<g" + ligatureStyle + ">" + text + "</g>" : text
     }
 
     // MARK: - Text emission
@@ -1328,12 +1380,12 @@ struct SVGRenderer {
         }
         var borders = TableBorderSegments<BorderPaint>()
         var maximumBorderWidth = 0
-        func borderPaint(_ line: XML.Element?) -> BorderPaint? {
-            guard let line, line.firstChild(named: "a:noFill") == nil,
+        var decodedBorders = TableBorderPaintCache<BorderPaint>()
+        func decodeBorderPaint(_ line: XML.Element) -> BorderPaint? {
+            guard line.firstChild(named: "a:noFill") == nil,
                   let color = colorHex(in: line.firstChild(named: "a:solidFill")) else { return nil }
             let width = max(0, line.coordinate("w") ?? 12700)
             guard width > 0 else { return nil }
-            maximumBorderWidth = max(maximumBorderWidth, width)
             let pattern: String
             switch line.firstChild(named: "a:prstDash")?[attribute: "val"] {
             case "dot", "sysDot": pattern = "\(width) \(width * 2)"
@@ -1352,6 +1404,11 @@ struct SVGRenderer {
                 }
             return BorderPaint(color: color, width: width, pattern: pattern, simpleSolid: simpleSolid,
                                double: TableDoubleBorder.supports(line))
+        }
+        func borderPaint(_ line: XML.Element?) -> BorderPaint? {
+            let paint = decodedBorders.value(for: line, canReuse: styles.ownsSharedBorder, decode: decodeBorderPaint)
+            if let paint { maximumBorderWidth = max(maximumBorderWidth, paint.width) }
+            return paint
         }
         func lineSVG(_ paint: BorderPaint, _ endpoints: (Int, Int, Int, Int), offset: Int = 0,
                      startExtension: Double = 0, endExtension: Double = 0) -> String {
@@ -1453,10 +1510,10 @@ struct SVGRenderer {
                     if direction == "vert" || direction == "vert270" {
                         let transform = direction == "vert" ? "translate(\(cx + cw) \(cy)) rotate(90)" : "translate(\(cx) \(cy + rh)) rotate(-90)"
                         textContent += "<g transform=\"\(transform)\">" + renderText(body, box: (0, 0, rh, cw), inheriting: effective.text,
-                            insets: insets, verticalAnchor: anchor) + "</g>"
+                            insets: insets, verticalAnchor: anchor, context: .tableCell) + "</g>"
                     } else {
                         textContent += renderText(body, box: frame, inheriting: effective.text,
-                            insets: insets, verticalAnchor: anchor)
+                            insets: insets, verticalAnchor: anchor, context: .tableCell)
                     }
                 }
             }
@@ -1464,13 +1521,43 @@ struct SVGRenderer {
         let segments = borders.resolved()
         // The pinned Office v3 vector reference establishes this geometry and
         // paint order for uniform-width, opaque solid grids. Keep the previous
-        // path for dashes, alpha, mixed widths and diagonals until comparable
-        // independent references establish their intersection behavior.
+        // path for dashes, alpha and diagonals. The bounded mixed-width
+        // path below has a separate native reference.
         let uniformWidth = segments.first?.paint.width
         let joinedGrid = topology != nil && widths.allSatisfy { $0 > 0 } && heights.allSatisfy { $0 > 0 }
             && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
             $0.paint.width == uniformWidth && $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
         }
+        // Native mixed-width profiles share the same signed donor extensions.
+        // Keep uniform geometry and uncaptured combinations on their old paths.
+        func admittedMixedProfile() -> Bool {
+            guard let topology else { return false }
+            let oneColor = segments.allSatisfy { $0.paint.color == segments.first?.paint.color }
+            if !topology.regions.isEmpty {
+                // Captured LTR merges share one orientation and one stroke color.
+                return !rtl && oneColor
+                    && (topology.regions.allSatisfy { $0.rowSpan == 1 }
+                        || topology.regions.allSatisfy { $0.columnSpan == 1 })
+            }
+            if oneColor { return true } // Both LTR and RTL are captured.
+            guard !rtl else { return false }
+            // The native transition corpus covers both axes, multiple
+            // junctions and noFill donors in unmerged opaque LTR grids.
+            // Existing outer guards bound paint and segment dimensions;
+            // donor ownership and the four paint groups remain unchanged.
+            return true
+        }
+        let mixedJoinedGrid = !joinedGrid
+            // A segment cannot contract past its opposite endpoint: each
+            // physical cell dimension exceeds the largest admitted stroke.
+            && widths.allSatisfy { $0 > maximumBorderWidth }
+            && heights.allSatisfy { $0 > maximumBorderWidth }
+            && grid.cells.allSatisfy { $0.count == widths.count }
+            && diagonals.isEmpty && !segments.isEmpty && segments.allSatisfy {
+                $0.paint.simpleSolid && $0.paint.color.hasPrefix("#")
+            }
+            && admittedMixedProfile()
+        let orderedGrid = joinedGrid || mixedJoinedGrid
         func paintGroup(_ segment: TableBorderSegments<BorderPaint>.Segment) -> Int {
             let edge = segment.edge
             let outer = edge.boundary == 0 || edge.boundary == (edge.axis == .vertical ? widths.count : heights.count)
@@ -1478,8 +1565,8 @@ struct SVGRenderer {
         }
         // Linear passes avoid sorting the potentially large grid. Interior
         // verticals precede horizontals, then the outer vertical/horizontal rim.
-        for group in 0..<(joinedGrid ? 4 : 1) {
-          for segment in segments where !joinedGrid || paintGroup(segment) == group {
+        for group in 0..<(orderedGrid ? 4 : 1) {
+          for segment in segments where !orderedGrid || paintGroup(segment) == group {
             let edge = segment.edge, lower = segment.range.lowerBound, upper = segment.range.upperBound
             let endpoints: (Int, Int, Int, Int)
             let offset: Int
@@ -1499,6 +1586,11 @@ struct SVGRenderer {
             let start = edge.axis == .horizontal && rtl ? joins.upper : joins.lower
             let end = edge.axis == .horizontal && rtl ? joins.lower : joins.upper
             var startExtension = start ? halfWidth : 0, endExtension = end ? halfWidth : 0
+            if mixedJoinedGrid {
+                let extensions = borders.mixedWidthExtensions(segment, width: { $0.width })
+                startExtension = edge.axis == .horizontal && rtl ? extensions.upper : extensions.lower
+                endExtension = edge.axis == .horizontal && rtl ? extensions.lower : extensions.upper
+            }
             if segment.paint.double {
                 // Collinear continuations suppress terminal extensions, but
                 // cannot suppress diagnostics at an interior crossing.
@@ -1599,11 +1691,12 @@ struct SVGRenderer {
         return copy
     }
 
-    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?) -> XML.Element {
+    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?, ownedBy owner: Part)
+        -> (properties: XML.Element, owner: Part) {
         let fills = ["a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:grpFill", "a:noFill"]
         guard !properties.childElements.contains(where: { fills.contains($0.name) }),
-              let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return properties }
-        return XML.Element("p:spPr", children: [.element(fill)])
+              let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return (properties, owner) }
+        return (XML.Element("p:spPr", children: [.element(fill)]), theme.part)
     }
 
     private func effectiveLine(_ properties: XML.Element, reference: XML.Element?) -> XML.Element {

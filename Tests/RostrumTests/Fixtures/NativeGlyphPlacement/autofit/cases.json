@@ -1,0 +1,173 @@
+[
+  {
+    "name": "wide-14p50-omitted",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Agjp BBBBBBBBBBBBZ",
+            "size": 14.5
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "wrap": false,
+    "autofit": "omitted",
+    "page": 0,
+    "x": 30,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "wide-14p50-norm100",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Agjp BBBBBBBBBBBBZ",
+            "size": 14.5
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "wrap": false,
+    "fontScale": 100,
+    "lineSpacingReduction": 0,
+    "page": 0,
+    "x": 380,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "wide-14p50-norm-bare",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Agjp BBBBBBBBBBBBZ",
+            "size": 14.5
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "wrap": false,
+    "autofit": "bare",
+    "page": 0,
+    "x": 30,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "wrap-14p50-norm100-w120.01",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "BBBBBBBBBBBBZ",
+            "size": 14.5
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "wrap": true,
+    "width": 120.01,
+    "fontScale": 100,
+    "lineSpacingReduction": 0,
+    "page": 0,
+    "x": 380,
+    "y": 270,
+    "height": 160
+  },
+  {
+    "name": "wrap-14p50-noautofit-w120.01",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "BBBBBBBBBBBBZ",
+            "size": 14.5
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "wrap": true,
+    "width": 120.01,
+    "page": 0,
+    "x": 30,
+    "y": 490,
+    "height": 160
+  },
+  {
+    "name": "wide-14p50-scale99p99",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Agjp BBBBBBBBBBBBZ",
+            "size": 14.5
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "wrap": false,
+    "fontScale": 99.99,
+    "lineSpacingReduction": 0,
+    "page": 0,
+    "x": 380,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "wide-29-scale50-exact-tie",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Agjp BBBBBBBBBBBBZ",
+            "size": 29
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "wrap": false,
+    "fontScale": 50,
+    "lineSpacingReduction": 0,
+    "page": 1,
+    "x": 30,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "status": "APPROVE frozen S20 source/tests/prototype documentation and preservation evidence; no performance acceptance",
+  "sourceCommit": "3bab3d552ea016035921ce97671356152718ee05",
+  "documentationFollowup": "119b1c107ff9911bdc86241e0e86a7a323a3b087",
+  "priorReceipt": {
+    "path": "/tmp/rostrum-s20-independent-source-review.json",
+    "sha256": "15ebced6f369787ea3f998dd01b01ff083d9f7e92a44f4d72b871c559126fc70"
+  },
+  "sourceUnchanged": true,
+  "retainedPinsVerified": 17,
+  "archives": [
+    {
+      "variant": "baseline",
+      "sourceTree": "f808358b87f88b58427d1440bf80005f3b6a7e61",
+      "archive": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-sources.tar",
+      "archiveSHA256": "fcaaec2b5a6e5110279fa9c65f99283925189501a8ebd51f5bf50e71db04ec9c",
+      "exactGitFiles": 111,
+      "object": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-Rostrum.o",
+      "objectSHA256": "2b6813f35148e8fd54923bb89d9e006fb86c85ce1beadb3fe1354191044cf1a5"
+    },
+    {
+      "variant": "candidate",
+      "sourceTree": "f1dca1cd58dd5fe33e8a782d663fe1816bc42492",
+      "archive": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/candidate-sources.tar",
+      "archiveSHA256": "d6f38b4fb9289394c0bdb5fcbcf9fb1dcfc4e660010227fd56d7fc566e3ae4dd",
+      "exactGitFiles": 112,
+      "object": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/candidate-Rostrum.o",
+      "objectSHA256": "8f914f2f682d5c7aab9812d9c04e03b0c765bad53f0d2d47a5d7e393391af90d"
+    }
+  ],
+  "correctionClosed": "The previously pathless pre-existing candidate object hash now matches its retained object. Both newly retained source archives exactly match every immutable Sources Git blob. Correction is docs/evidence only; original source and proof receipts unchanged.",
+  "findings": [],
+  "limits": [
+    "Untimed Debug preservation/instrumentation research; no elapsed-time or process-memory conclusion.",
+    "Integrated platform/native acceptance and any formal timing protocol remain pending outside this source review."
+  ],
+  "manifestSHA256": "4d5bd97ce27f7e62575f2ddf16c293c746979bb10f271958df1e3cb3ba86f130",
+  "reportSHA256": "c9e85e21c1cb83e285f9a88ea9a823847ad560b85b6762434c2655564bc71f21"
+}

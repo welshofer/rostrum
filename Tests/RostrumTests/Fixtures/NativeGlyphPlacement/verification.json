@@ -1,0 +1,61 @@
+{
+  "baselineCommit": "7fbb9bc",
+  "branch": "codex/burndown/glyph-placement7-20261004",
+  "requestedModel": "gpt-6-astra/high",
+  "actualRuntimeModel": "not attested",
+  "checks": [
+    {
+      "command": "swift test --jobs 2 --filter NativeGlyphPlacementTests",
+      "stage": "baseline before production changes",
+      "outcome": "299 expected native issues on baseline"
+    },
+    {
+      "command": "swift test --jobs 2 --filter 'NativeGlyphPlacementTests|NativeLineSpacingTests|NativeLigatureLayoutTests|TabLayoutTests|LineBreakBoundaryTests|DrawingMLLineMetricsTests|NativeBreakMetricsTests'",
+      "stage": "focused native regression",
+      "outcome": "41 tests / 7 suites passed"
+    },
+    {
+      "command": "swift test --jobs 2",
+      "stage": "final source including empty insertion eligibility and diagnostics",
+      "outcome": "1148 Rostrum tests / 162 suites and 18 RostrumLayout tests / 3 suites passed; exit 0"
+    },
+    {
+      "command": "git diff --check",
+      "outcome": "passed"
+    },
+    {
+      "command": "fixture pin, complete scalar, outline identity and Python AST verification",
+      "outcome": "47 cases; 669 glyphs; 8 source/PDF pins; 4 font pins; all passed"
+    }
+  ],
+  "sourceSHA256": {
+    "Sources/Rostrum/Fonts/TextMeasurer.swift": "1436e1ff500c584ef8a453db103cab19d8f77723909073be95b9c929ae122856",
+    "Sources/Rostrum/Presentation/RenderDiagnostics.swift": "af8d37b16fb460313461b99c328abb12e598760328044292b20669bd5f60b6f0",
+    "Sources/Rostrum/Presentation/RenderTextAttributes.swift": "824d127766740e24703c74e5fdb88e7c366a37f883efedfc4c295333398d09fa",
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "03d208c3be0a8a766378572c52527cbd0d0df98526f91b138853774811736dbc",
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "33c8cef10de6d8e928997841c661406c027504e9d22c114ebb69b4ad95397e9d",
+    "Sources/Rostrum/Presentation/Tables.swift": "2b6cdbbbd5d5849785f79958c2d8f070aab16761675b78dbed256209bf9594a4",
+    "Sources/Rostrum/Presentation/Text.swift": "3d863744eb0a9139a78e934bf571e0983e343128fe19c18f367cf3d9f59a54c9",
+    "Tests/RostrumTests/ImportedGeometryRegressionTests.swift": "543a87eaea279a309fb390cc6fc4a7cab78c13a4f6db67a08172159dc47bee5f",
+    "Tests/RostrumTests/KerningThresholdTests.swift": "c04916f24b116b84f159c8a0d3a3489e0925524e02c78ac4e5b24549f98587f0",
+    "Tests/RostrumTests/LineBreakBoundaryTests.swift": "f7db89276073faaf3bdd6763aee6582d3325315d77e6ec2b79195e312af64b7c",
+    "Tests/RostrumTests/ParagraphJustificationTests.swift": "24b4371cdec2661509e54f1c346f57d40ef5c36a3a8cac4961c9cdd4110be35f",
+    "Tests/RostrumTests/RichTextLayoutTests.swift": "403758bbe03d3749228a6d8aabae87478f6f51739150ed1933c2ba5f2e07a7a2",
+    "Tests/RostrumTests/TabLayoutTests.swift": "55c87086bc0b8caf9deea01d62d26a2c6e398113adf25f3250003b9d876d8696",
+    "Tests/RostrumTests/TableTextLayoutTests.swift": "50c517b9926976a9fb08d660738ff652a199c459a4174f59934a2071f0fe2960",
+    "Tests/RostrumTests/NativeGlyphPlacementTests.swift": "758561cdfb703a1aadde5e9d0d16f9b905538e457fad096c06299b58de244b6b"
+  },
+  "retainedLogs": {
+    ".build/paint-fidelity7-eligibility/baseline-tests.log": "79d38c814cb0cb631de22ff2920679cd1ca059f2a7751a5ad6b21a648f8d2acf",
+    ".build/paint-fidelity7-eligibility/cycle2-focused.log": "77c81d2aaae50b058e5786f2d191e472602344f7e704a1738ff36524a0cac557",
+    ".build/paint-fidelity7-eligibility/cycle3-contracts.log": "af139cd4d47a2c53353644507f9031c0f04f204fea11705072573f68206825b6",
+    ".build/paint-fidelity7-eligibility/review-empty-controls.log": "0bfaa2401ce11b3391d066545403beb796a866ab52cf14124a13943fa5a1095c",
+    ".build/paint-fidelity7-eligibility/review-final-full.log": "b845e6b76d692f1f3eaa2d8a757da7470af2115f55d5fe381d352b6630b02abc"
+  },
+  "limitations": [
+    "No configured lint target; diff check used.",
+    "Native GUI capture operated by root, not this worker.",
+    "Root owns combined Release performance, WebKit/app rendering, iOS build and native generated-output acceptance.",
+    "This receipt establishes local source verification, not shipped or native-selected autofit parity."
+  ]
+}

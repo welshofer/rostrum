@@ -14,15 +14,10 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-# Linux only, on purpose. GitHub's hosted macOS runners bill at 10x the Linux
-# rate, and this workflow runs on every push to every branch — which made the
-# Apple-platform jobs by far the most expensive thing in the repository.
-#
-# Nothing is unverified as a result; the verification moved rather than
-# vanished. `scripts/verify.sh` runs the whole gate locally, including the two
-# things a Linux runner genuinely cannot do: build the SwiftUI app targets, and
-# open a generated deck in PowerPoint (`Tools/ppt-check.sh`). Run it before
-# opening a PR — see CONTRIBUTING.md.
+# Linux checks run on every push; the macOS job below covers pull requests.
+# `scripts/verify.sh` adds local iOS simulator builds and app-hosted tests.
+# Native PowerPoint verification remains a separate local step for relevant
+# package/rendering changes — see CONTRIBUTING.md.
 jobs:
   linux:
     name: Linux (Swift ${{ matrix.swift }})
@@ -70,13 +65,8 @@ jobs:
           python3 scripts/readme-snippets.py
           swift run ReadmeSnippets "$RUNNER_TEMP"
 
-  # The one thing "Linux only" genuinely could not see: Apple platforms are
-  # what the library primarily ships on, and Linux compiles neither the
-  # Darwin side of the XML bridge (core Foundation's XMLParser), the
-  # CoreText/CoreGraphics half of LecternCore's renderer, nor the SwiftUI
-  # app targets at all. One macOS job on pull requests only — not per-push;
-  # hosted macOS bills ~10x the Linux rate — closes that hole where it
-  # matters: before a merge.
+  # Linux does not compile the Darwin XML bridge, CoreText/CoreGraphics
+  # rendering, or SwiftUI app targets. Check these on pull requests.
   macos:
     name: macOS (PR gate)
     if: github.event_name == 'pull_request'
@@ -93,4 +83,4 @@ jobs:
       - name: Build the Lectern app (compiled by nothing else)
         run: |
           brew install xcodegen
-          Lectern/scripts/build.sh -quiet
+          Lectern/scripts/build.sh

@@ -1,0 +1,618 @@
+{
+  "approval": "All119 primary and440 output pins,62 before/after product pins,all four100000-bootstrap statistics and88 independent package reopens verified. Report equality applies within each alternative. All scope and host-load limitations retained.",
+  "copies": [
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/analysis.log",
+      "sha256": "c2d7177b5e9449bb58949db196192c67a4f2372a176d46c56ec573d55260a496",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/analysis.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/analyze.py",
+      "sha256": "c5e04022a740056c2dca28abf086658d6e65642f227cef1236c8af1e37a2a67c",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/analyze.py"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/baseline-build.log",
+      "sha256": "3e896d8bb270ca223397cde8d86b5493e1cce9b017720943c1a00da51d3a4d07",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/baseline-build.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/baseline-products-pins.json",
+      "sha256": "918173b44895a74c62ec9cb9d8245da568023d3b6be89194efc0f7d51a32acf7",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/baseline-products-pins.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/baseline-profile/launch.json",
+      "sha256": "90ec06f452dfa5f1ea65889b14c67a113beaecc966a6a2957542e5ed42828ccc",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/baseline-profile/launch.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/baseline-profile/sample.txt",
+      "sha256": "008bc8367c3ce11903b0c4dc6c7f68a142aeac5a12fbaf8895b3dfa7ca355077",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/baseline-profile/sample.txt"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/baseline-profile/sampler.log",
+      "sha256": "9b97a89045cd48e5f70c4cc3bd19b8939d9469c274994fd9209ca57ae8d5dad0",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/baseline-profile/sampler.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/baseline-profile/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/baseline-profile/stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/baseline-profile/stdout.json",
+      "sha256": "5e73ebe4b6471034f271b826404653935fe2fb8447530021c1f11323a36dd38c",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/baseline-profile/stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/baseline-source-pins.json",
+      "sha256": "bcc380ab714588bb2ee55b4a10ad5a635fafe3f95725938db59d2fd0e7569b94",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/baseline-source-pins.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/benchmark-memory-addendum.json",
+      "sha256": "23e3894cf4c4e60346a68d4df74d5282b5070eab6d96f6900bc321b8585f37d2",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/benchmark-memory-addendum.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/benchmark-plan.json",
+      "sha256": "61795be921f0fc7ce865e29bd075882da5db9156a91565d1d2a5f6a56b0b1bb5",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/benchmark-plan.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/candidate-build.log",
+      "sha256": "0508f7ac4942a150745a9fa95bcd63a1bc4c1c1485bf07fca062f34d113e1bbc",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/candidate-build.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/candidate-focused-tests.log",
+      "sha256": "94e33fb59314cefafe996d081c4f032cbea5ba144eeb86dc76ed4bd11a123a5e",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/candidate-focused-tests.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/candidate-products-pins.json",
+      "sha256": "0023cd2e34325866a2d4f4f01b43e5fd087b42c3d2573a9f6159a154c2b2da07",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/candidate-products-pins.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/driver-package/Package.swift",
+      "sha256": "98941de2dae699be84f7a7bdbdd0621901e82a1b55756be5d7b30bc98ed71f42",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/driver-package/Package.swift"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/driver-package/Sources/MarkerAuditProbe/main.swift",
+      "sha256": "e79b241e39e18c5cc1b1f9e262f7d9e10e206d19259750c23434d8233262e736",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/driver-package/Sources/MarkerAuditProbe/main.swift"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired-run.log",
+      "sha256": "8e50823647ae4884587d2dca6598fb411b96d4d963c729d3a2dc52778a63bef7",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired-run.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/analysis.json",
+      "sha256": "f11d917074a91c2d6734cc4c1b8730dc7dd4c552adc9e44fb85b8ee8a493052d",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/analysis.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/execution-receipt.json",
+      "sha256": "b2c8f7746aa7a061633da588e0a8df3d70e3e05a6b602ac9bd416f2a8f4b7929",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/execution-receipt.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-00-baseline-stderr.log",
+      "sha256": "2a38f715052fef1d3c78043397a94dc4e27d371546830412b8cae34e6449403f",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-00-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-00-baseline-stdout.json",
+      "sha256": "6fcc6e71a41690848369ca40ab08f98aac573db1462e9958eeed43a9831fdfe8",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-00-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-00-candidate-stderr.log",
+      "sha256": "51e595ca9f6914d240476c7739507cd9db0b6f8f1e57570cdf08d65da9996683",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-00-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-00-candidate-stdout.json",
+      "sha256": "8fc15d21065914a33eb88e2b773da1bc6dc2c1a7183c6879776361507a421022",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-00-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-01-baseline-stderr.log",
+      "sha256": "22a4a3978adf049a967db71606b3493598faaf2ced11434d9b455742912422b1",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-01-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-01-baseline-stdout.json",
+      "sha256": "af6db25fbdb7d9176124de950a09550ea9ef1d1b3ab9030b8b60607b90b71fde",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-01-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-01-candidate-stderr.log",
+      "sha256": "7a1d5d45d2bc3715fa6d49b48c9e8d6812297c3bbd1a5779846c3ebfef5fb891",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-01-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-01-candidate-stdout.json",
+      "sha256": "75b8c35bafa96ba9e46f62e15db12fb9c7baeb8a9df5c57cefbdd24d2efeda4c",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-01-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-02-baseline-stderr.log",
+      "sha256": "9d0b710bcd0fd26b2d84661feacc871231b010a999ac0d8c869e7fc3021ff7bf",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-02-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-02-baseline-stdout.json",
+      "sha256": "216dee18cff42589527a140f6a25f9a38e8e7abef10adbcb67dbb949437fe806",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-02-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-02-candidate-stderr.log",
+      "sha256": "ec9d70ea73d0784357cdade7afbdfb203e31583b96c13e0dde53316efcd982ce",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-02-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-02-candidate-stdout.json",
+      "sha256": "2b34ad3b51a48efdb13cc834a1a7b915d0cfbf80276dc1292511cef5ab6772a8",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-02-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-03-baseline-stderr.log",
+      "sha256": "94fec5dc3c9581a5f14c8ae295e5016e5e36ad23ce1236c8a7867b346b4bafc6",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-03-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-03-baseline-stdout.json",
+      "sha256": "849f2660a4e967cf9e8b03c500e927698948bc230d718fe296191f71ba4ef9eb",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-03-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-03-candidate-stderr.log",
+      "sha256": "de9c5bf1955733cd3f65065585942d1f7446ec218db2c2d197c37869dace8557",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-03-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-03-candidate-stdout.json",
+      "sha256": "2e480d3dbdc857747136254d6b0a1cdee52f24d363a6719b5d90860921a7f89d",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-03-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-04-baseline-stderr.log",
+      "sha256": "0844392f543c3d0bfefb40b90bb2e3960798118b23971baa8ca35a9258a41e11",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-04-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-04-baseline-stdout.json",
+      "sha256": "5bcfb76642a0064c805ee005dbfc9e2ad908ad135363595ea51328cdefe0a29b",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-04-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-04-candidate-stderr.log",
+      "sha256": "798865175204893731566f9e635245bbb7333bacfe89e4a58b5f81d0b1fa23ba",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-04-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-04-candidate-stdout.json",
+      "sha256": "629816345e31988877d478e22ce14ff486b7b464bb513d757dc1e87d02659799",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-04-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-05-baseline-stderr.log",
+      "sha256": "edc2144481f4a62063aae84bda18b2dd8c7df5d171197450d63d26652a677593",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-05-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-05-baseline-stdout.json",
+      "sha256": "811165617423e1a88d3696e7d483fa77eecfb8310f6adfb5cfe50775a874fc0c",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-05-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-05-candidate-stderr.log",
+      "sha256": "e9717b8b9e98f714db75558280c46a63a94e8709b29e5c86f95abe9737576bbb",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-05-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-05-candidate-stdout.json",
+      "sha256": "99635882700346521ab81b78d25f2e9b879d473db4ece34e7813a9ac06dfd38e",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-05-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-06-baseline-stderr.log",
+      "sha256": "710169a9df5841a76754a2843b4f54fb47547d45dda9f703e5a9e9b2fb6f4afd",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-06-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-06-baseline-stdout.json",
+      "sha256": "2a278489786b9ab2f5f042072496338b1dddb8c00fd09eeed9b96ab570c9521d",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-06-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-06-candidate-stderr.log",
+      "sha256": "20eef81de42198a481038ab8c6c5a8add95563da73f9d477aca740f2ab5a30f8",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-06-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-06-candidate-stdout.json",
+      "sha256": "9a5d2a96cd014ba2e1df331830aedfbf2e6da30397faf61d8c01b134333bf421",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-06-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-07-baseline-stderr.log",
+      "sha256": "529fcfa6703c377f4b0f8f1e9fa5b1162e58d61b8287fd427fab3caf1ef27667",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-07-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-07-baseline-stdout.json",
+      "sha256": "807f826529f26ff4771709512638ed5072b9da0da6f68b2ed9191c2f517de34f",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-07-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-07-candidate-stderr.log",
+      "sha256": "3dbefe874b7c13890842509958953d057c5f810f22581ca45624b331f83561aa",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-07-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-07-candidate-stdout.json",
+      "sha256": "98d3142b77de738010eb391aae75d03fbabcac8c4c64be4919b719a6860cada4",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-07-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-08-baseline-stderr.log",
+      "sha256": "480ed9ecf9c22d2872de0a324ffd9de536456858202c2e35388baf0c01aea73e",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-08-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-08-baseline-stdout.json",
+      "sha256": "45075d75e2563ed3468a1810cac991939e3e4e4f3e96606e0f81eb1048d13bcd",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-08-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-08-candidate-stderr.log",
+      "sha256": "20d292207f101c815c6ce423b555f958688d764fa158e25e057f9abf2d48c77f",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-08-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-08-candidate-stdout.json",
+      "sha256": "9be882c2da364211e1714a962d2446b49ca7d9c5d76300fa895949032246d636",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-08-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-09-baseline-stderr.log",
+      "sha256": "0da130b88de311f7ed5f560d16d6179078c363327672e1789c211aab7e7bb7f5",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-09-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-09-baseline-stdout.json",
+      "sha256": "f801faff373a4ea950defea609a82ca2b9520df876262f3c428f37186d756992",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-09-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-09-candidate-stderr.log",
+      "sha256": "e88b0718912f2439f77b32ffbcf50126862842fb5b5123d4fb9e02e92a0d9b8a",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-09-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-09-candidate-stdout.json",
+      "sha256": "fe9a06580531c502104e133bc51b0fe79cd5ad045984dee19ef802322c28c008",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-09-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-10-baseline-stderr.log",
+      "sha256": "9ceba575339aab78dd00331ec9bbd0b3b88f81c7252532feaefded07ff8c5c6a",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-10-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-10-baseline-stdout.json",
+      "sha256": "a50ae86c736db8d798827a6915e41d632defd7e032501dc4e519181d9c3bb84a",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-10-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-10-candidate-stderr.log",
+      "sha256": "19e7d792bfc2bbd1ede523ba48a045416f7867c5afa3dd179f76e28725ecd20c",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-10-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/false-10-candidate-stdout.json",
+      "sha256": "b2113242ea93b28a409f0dba911daffe6a19d213faaf01c0381c74b7e6589abc",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/false-10-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/host-end.json",
+      "sha256": "bdc9ebdf7d936fce0b19bd2a16915b7dd6241320884007d0d3009706ea2bf8f2",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/host-end.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/host-false-complete.json",
+      "sha256": "aedeafc4a2a4bb2aa88ea56ebe819cff3e778fe8a8d0ab2531e1e701fd6f26b7",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/host-false-complete.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/host-false-midpoint.json",
+      "sha256": "5eddf176f70bdd954803687565be02fb0f8681243a66a93c41fe0aa385b093e3",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/host-false-midpoint.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/host-start.json",
+      "sha256": "13660b2ce9bee61abe88763e2d82bff948135daa89fe4c7417b6114c117a839f",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/host-start.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/host-true-complete.json",
+      "sha256": "0ad480020e2da307e9e4f97940837c9a5debb87ac85e91a7f0fa01f36e25d6b5",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/host-true-complete.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/host-true-midpoint.json",
+      "sha256": "a77a5d9925ab2de6839e444e13dbe804d0b79cfefced4b8e43ece4f9058cb95a",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/host-true-midpoint.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/pins-after.json",
+      "sha256": "ccd64d79aa6ea8a9f807bd3acc2daefddb1fc3760cc6b0ca07ee5cf82713de59",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/pins-after.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/pins-before.json",
+      "sha256": "ccd64d79aa6ea8a9f807bd3acc2daefddb1fc3760cc6b0ca07ee5cf82713de59",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/pins-before.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/raw.json",
+      "sha256": "78f5ba6d9154539e44197e993758812c26ba4b3469316eda82f6b8e997b5453e",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/raw.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-00-baseline-stderr.log",
+      "sha256": "c21de69bb02210b9c6480497ea4157204be2b11ca3bbad63ce39592b958c11cb",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-00-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-00-baseline-stdout.json",
+      "sha256": "f416894a10871966fbc81a478c8fb3791b0e6aae3fccb4120ba94feb7cad6af0",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-00-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-00-candidate-stderr.log",
+      "sha256": "61a433eade63378fa37aca4b90ac7cac53dcef6c74a0d18e92d8572d4724f0a0",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-00-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-00-candidate-stdout.json",
+      "sha256": "c5f0994f949920a8819f1179e647bd471a74feaf236849ae68ce39e8271265f6",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-00-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-01-baseline-stderr.log",
+      "sha256": "74b068b0231db08768887bca5fbdd29ceaf52be10b8774ac776b60b85c4a5489",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-01-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-01-baseline-stdout.json",
+      "sha256": "ff91c88348209731cffaaf71e07c1e093f9b49280873ea6e4b10de7e19300f96",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-01-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-01-candidate-stderr.log",
+      "sha256": "f5247cf527a87bc798be3ae2a8d8f7a1b4e358b29854f5725ccad9ad53ce8f6e",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-01-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-01-candidate-stdout.json",
+      "sha256": "dfdcec440ce8719d45d93d749810a76728cef7c1b8b9827759459ed55d43697d",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-01-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-02-baseline-stderr.log",
+      "sha256": "9bbe5d8dd3b387e6303c9a912fedfa2c1e9b87cbf524f315b4988916437a763d",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-02-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-02-baseline-stdout.json",
+      "sha256": "604c24da73609d0d2fd3975807b8ecaf5ba3c76615c33c5b044aad32423456c7",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-02-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-02-candidate-stderr.log",
+      "sha256": "4ac20fb4c6f62d5be2e8a9bb738025f8146aaf184fb86c5e7a3463ac5d81bb84",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-02-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-02-candidate-stdout.json",
+      "sha256": "6c14a2e53f0251bf15633edc08af428fc561d67a547883103fdbc6889d296fea",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-02-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-03-baseline-stderr.log",
+      "sha256": "00d67993fd1be265c3befe5e185aa686c6b5444ea96392356d5d107714735e39",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-03-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-03-baseline-stdout.json",
+      "sha256": "aa780b9c0ea63f2538353c838d380460d4190e9efe1bbf99ea413f885d56ca92",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-03-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-03-candidate-stderr.log",
+      "sha256": "a9c4b65baa4b09928a420a47b50231654e6b2e9e58dccb661a00834bcde00fe1",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-03-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-03-candidate-stdout.json",
+      "sha256": "acf51225b7b43824beccb3adc97f4edf89a2879f49bbc7d1754dfe2ad99d2de0",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-03-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-04-baseline-stderr.log",
+      "sha256": "71c39975d89bf862aa68bae7f46212da5541db2820a0f63007aec92757c2fac9",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-04-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-04-baseline-stdout.json",
+      "sha256": "5fac96cfdce75c75023cb1740c12390418f28e36f231fcfc7fe6c355cc9ae92e",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-04-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-04-candidate-stderr.log",
+      "sha256": "490e3c468074a059585955ec150206c777de10c425a52e7a496534ee095358ad",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-04-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-04-candidate-stdout.json",
+      "sha256": "420ff28a31de5351b91b7c3da9423a1414afe6295878088d550c15bd3963da82",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-04-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-05-baseline-stderr.log",
+      "sha256": "479a07346ce24261c224d4bb0bd049ca479798effec9c445e2e39bdf1aac6cfc",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-05-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-05-baseline-stdout.json",
+      "sha256": "1f7966cca5038e562ad19161f369487fb701f25bd6e885bed43d3a223a44d688",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-05-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-05-candidate-stderr.log",
+      "sha256": "0f860c6c4b5300cac42aa349019d1e33195c3fec255a01baf2d36a9d90963d6c",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-05-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-05-candidate-stdout.json",
+      "sha256": "01cafabc0cac3bdbebc4fac36e23253f3186ec0b0eda401f46de80bc47222cd4",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-05-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-06-baseline-stderr.log",
+      "sha256": "9f937ac5583cf9d970af5936f5dbdd2a15ba7a56f35f53b6b5391db6f958e590",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-06-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-06-baseline-stdout.json",
+      "sha256": "91b6d592ba5e8d232689806e1eb9e867a5c12890e5f52ce286ab91751bcf4088",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-06-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-06-candidate-stderr.log",
+      "sha256": "edb8428e9c3fdc2f166a328ff324ae044cde27f6e445735496e0416e0ef85a3b",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-06-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-06-candidate-stdout.json",
+      "sha256": "4a67d220848a37c66e16211cf9c4dc86bd5e47b9648101f8c7bb56cac411896f",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-06-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-07-baseline-stderr.log",
+      "sha256": "6c6a08267bea4fb2c80e64f3b3f2c5f79425ca0aea7320ebc39ed2561980c62d",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-07-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-07-baseline-stdout.json",
+      "sha256": "7a7b2864d87e47efae32f9f9523a3ebbe2ec6c16f8ccb8adc981847d1532c414",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-07-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-07-candidate-stderr.log",
+      "sha256": "a72a68a1408e9c8b783f740989a3e7426eb11bdc90c61ce7fe509adc0231668a",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-07-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-07-candidate-stdout.json",
+      "sha256": "96172429d5380eeec4083eeafa6a05cee15162ae70361fc3cddae0432be188e8",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-07-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-08-baseline-stderr.log",
+      "sha256": "6e667ed1d690472ad51b380c9e8ac436545712c30605b248bf2d5003a18ccd4c",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-08-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-08-baseline-stdout.json",
+      "sha256": "4cb6d90cb8877ba93eba35a3309130daab7f5fb2749a5705dc8b5557e2f42c33",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-08-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-08-candidate-stderr.log",
+      "sha256": "98c0320a370a7edf7fa5c47b012f94fef89515d284716d64825ce1beb1a9e899",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-08-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-08-candidate-stdout.json",
+      "sha256": "2cb12837d5d91bdaeebd7d67f3b874182ebd8907de8aaeba0c5c69f7d359b087",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-08-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-09-baseline-stderr.log",
+      "sha256": "e8d0a612c0e3186371e0331da9cf8700cb087b499ce25118dc46b13f66375069",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-09-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-09-baseline-stdout.json",
+      "sha256": "c2e5cf946150e7ac86c5f46971bf6b8a3c4d2f76df890a093ae15c702c15fe64",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-09-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-09-candidate-stderr.log",
+      "sha256": "03b69f4c9a601884095979d58ba965680072bd5580dfdc09cae0c3e4ef747b24",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-09-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-09-candidate-stdout.json",
+      "sha256": "9b59e7c320eeb6b4ccd9a24293a3c8481eb5c2cb652c9250dcb57944943bc0bb",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-09-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-10-baseline-stderr.log",
+      "sha256": "d62b2d16ac87d0516a1c18823f932615b5e1588703ea050a0d20e82acdbf9c0e",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-10-baseline-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-10-baseline-stdout.json",
+      "sha256": "ab63bc330a31f9f7c74ab12b5c26ce90ae56045c7420dcf0c879b09e8a7b5520",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-10-baseline-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-10-candidate-stderr.log",
+      "sha256": "79436f883d38e165f89d8a2ab5e6d2ca3063763b667da360740489373615bf8c",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-10-candidate-stderr.log"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/paired/true-10-candidate-stdout.json",
+      "sha256": "73c86d2d220306e8a1b85e841dbdb5a31a26c9872dd49e0056e7c4500d0e6c39",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/paired/true-10-candidate-stdout.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/profile-summary.json",
+      "sha256": "f0168a98d2354da280553257b0d46b82210d67e555eaf00478748fa067e55fb2",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/profile-summary.json"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/run-paired.py",
+      "sha256": "1a244347ae86df44a23286be20dd133e9324d138245cab7df3b7967e508357b6",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/run-paired.py"
+    },
+    {
+      "export": "docs/benchmarks/2026-10-04-lectern-marker-checks-15/verification.json",
+      "sha256": "d9395925f1a732369b61434308f165f3a8ae6bc858472419c0b13861bea13f26",
+      "source": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/verification.json"
+    }
+  ],
+  "date": "2026-10-04",
+  "originalVerification": {
+    "path": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/verification.json",
+    "sha256": "d9395925f1a732369b61434308f165f3a8ae6bc858472419c0b13861bea13f26"
+  },
+  "originalsModified": false,
+  "remaining": "Combined application acceptance is tracked by the fidelity15 integration checkpoint.",
+  "report": {
+    "path": "docs/LECTERN-MARKER-PERFORMANCE-20261004-15.md",
+    "sha256": "ee5b839cc52a25d82eee789b3f103a6383cefb96f5efda02d87ac2511e53d6b0"
+  },
+  "reviewer": "layout_independent_review_oct03",
+  "status": "APPROVED_BOUNDED_PERFORMANCE_EVIDENCE"
+}

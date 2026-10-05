@@ -1,0 +1,457 @@
+{
+  "baselineRevision": "6a1f56f0a79049a3223a6a42f9d506492f324749",
+  "cases": [
+    {
+      "scenario": "table-200x50",
+      "artifact": "saved.pptx",
+      "baselineBytes": 74767,
+      "candidateBytes": 74767,
+      "baselineSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+      "candidateSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "table-200x50",
+      "artifact": "slide-0-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "table-200x50",
+      "artifact": "slide-0-issues.json",
+      "baselineBytes": 951,
+      "candidateBytes": 951,
+      "baselineSHA256": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962",
+      "candidateSHA256": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "table-200x50",
+      "artifact": "slide-0.svg",
+      "baselineBytes": 11527344,
+      "candidateBytes": 11997344,
+      "baselineSHA256": "31a5c54d1da3ac0d4d5e1ce2215395b85afc7c91acc591d4cc29a7588c3a4ac0",
+      "candidateSHA256": "9e5fd3557dc0640ebbb51f1ffa90232b8d705dc3aa3d89116e795bae3ddd184f",
+      "byteIdentical": false,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": false
+    },
+    {
+      "scenario": "table-20x10",
+      "artifact": "saved.pptx",
+      "baselineBytes": 11559,
+      "candidateBytes": 11559,
+      "baselineSHA256": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
+      "candidateSHA256": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "table-20x10",
+      "artifact": "slide-0-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "table-20x10",
+      "artifact": "slide-0-issues.json",
+      "baselineBytes": 951,
+      "candidateBytes": 951,
+      "baselineSHA256": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962",
+      "candidateSHA256": "62da2a14386620eab7976d6c77982a4aa7e8697d4d3f3cbe80955b1c60f45962",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "table-20x10",
+      "artifact": "slide-0.svg",
+      "baselineBytes": 51384,
+      "candidateBytes": 59384,
+      "baselineSHA256": "089d5b51f1d561b837c364b433b2cff2fed44265a2934e24e52aeb5b8d9f5f10",
+      "candidateSHA256": "6b39dddde914b9409de91e017e1288556387b98b2fdbd9b906d3fd6b136ac118",
+      "byteIdentical": false,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": false
+    },
+    {
+      "scenario": "shaped-table-100x20",
+      "artifact": "saved.pptx",
+      "baselineBytes": 21862,
+      "candidateBytes": 21862,
+      "baselineSHA256": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+      "candidateSHA256": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "shaped-table-100x20",
+      "artifact": "slide-0-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "shaped-table-100x20",
+      "artifact": "slide-0-issues.json",
+      "baselineBytes": 2,
+      "candidateBytes": 2,
+      "baselineSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "candidateSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "shaped-table-100x20",
+      "artifact": "slide-0.svg",
+      "baselineBytes": 5183230,
+      "candidateBytes": 5277230,
+      "baselineSHA256": "9a1fd232c17b5f1c73e8c089860b32319242aaf7125451b8fc6e7f39f8195f9e",
+      "candidateSHA256": "50031b2185da0ffd5e07e543f1ec70561304fe379f224d789e09a50f85262822",
+      "byteIdentical": false,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": false
+    },
+    {
+      "scenario": "richtext-fit",
+      "artifact": "saved.pptx",
+      "baselineBytes": 10039,
+      "candidateBytes": 10039,
+      "baselineSHA256": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+      "candidateSHA256": "d0c5a89d6ceb49fe03d55dbe9ff7aec5a04432e4ce48b0554f01c2b9c0e8d296",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "richtext-fit",
+      "artifact": "slide-0-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "richtext-fit",
+      "artifact": "slide-0-issues.json",
+      "baselineBytes": 304,
+      "candidateBytes": 304,
+      "baselineSHA256": "0c4f945cac7ae6c028501f148150c11665a95ca9704694eb88abbb00d660e155",
+      "candidateSHA256": "0c4f945cac7ae6c028501f148150c11665a95ca9704694eb88abbb00d660e155",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "richtext-fit",
+      "artifact": "slide-0.svg",
+      "baselineBytes": 1039569,
+      "candidateBytes": 1039569,
+      "baselineSHA256": "f32752bddaf85d3213a200c2468139e0243df7534d644c2d41d22c72563a2367",
+      "candidateSHA256": "f32752bddaf85d3213a200c2468139e0243df7534d644c2d41d22c72563a2367",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "saved.pptx",
+      "baselineBytes": 20501,
+      "candidateBytes": 20501,
+      "baselineSHA256": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+      "candidateSHA256": "1b6ce3098167472127c5e7ccc118684aab559c73ed589727de971ef52fdad557",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-0-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-0-issues.json",
+      "baselineBytes": 895,
+      "candidateBytes": 895,
+      "baselineSHA256": "fb36a23c3d64bbf5321dcfd6ee50addc2a1da99dc3ae80f8ef855e92b7763a30",
+      "candidateSHA256": "fb36a23c3d64bbf5321dcfd6ee50addc2a1da99dc3ae80f8ef855e92b7763a30",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-0.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "18c23b8d582578025e2b8ebe06f11817af7bcd1d01fedc2b97d8718964099f2b",
+      "candidateSHA256": "18c23b8d582578025e2b8ebe06f11817af7bcd1d01fedc2b97d8718964099f2b",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-1-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-1-issues.json",
+      "baselineBytes": 895,
+      "candidateBytes": 895,
+      "baselineSHA256": "214b27a6830107657e45e9082119faa38c6ea5a0741054bcf83d418546fff3bd",
+      "candidateSHA256": "214b27a6830107657e45e9082119faa38c6ea5a0741054bcf83d418546fff3bd",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-1.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "03f9e354829d06bef9e97a63371170d68735608428ab5ba4314bf75dc43f3069",
+      "candidateSHA256": "03f9e354829d06bef9e97a63371170d68735608428ab5ba4314bf75dc43f3069",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-2-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-2-issues.json",
+      "baselineBytes": 895,
+      "candidateBytes": 895,
+      "baselineSHA256": "d4dd23a56b9624aca058121885fc0d9d267f6479269d51bc84cf560e576056d9",
+      "candidateSHA256": "d4dd23a56b9624aca058121885fc0d9d267f6479269d51bc84cf560e576056d9",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-2.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "e557a09ed503f16a2124307aacb8cafb2ff717bccb338ac0279e62c57735a1c4",
+      "candidateSHA256": "e557a09ed503f16a2124307aacb8cafb2ff717bccb338ac0279e62c57735a1c4",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-3-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-3-issues.json",
+      "baselineBytes": 895,
+      "candidateBytes": 895,
+      "baselineSHA256": "f1590b8a4a628fe8bddeddc4f1fd982721b6928a5696ea12b1afdf8bca0cd9c0",
+      "candidateSHA256": "f1590b8a4a628fe8bddeddc4f1fd982721b6928a5696ea12b1afdf8bca0cd9c0",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-3.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "5e8b20b567c90614fb35997073a8a4e075cfa3cb4345ce475f8841c89598d778",
+      "candidateSHA256": "5e8b20b567c90614fb35997073a8a4e075cfa3cb4345ce475f8841c89598d778",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-4-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-4-issues.json",
+      "baselineBytes": 895,
+      "candidateBytes": 895,
+      "baselineSHA256": "47f6bb6a77a6f760586a047ccc36cb25496c2db56c5792bf4b71a4c22c5c3868",
+      "candidateSHA256": "47f6bb6a77a6f760586a047ccc36cb25496c2db56c5792bf4b71a4c22c5c3868",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-4.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "d9d3de21e468e82725210867920ff85ff47ba332356c6ded14d5c5558ee2d536",
+      "candidateSHA256": "d9d3de21e468e82725210867920ff85ff47ba332356c6ded14d5c5558ee2d536",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-5-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-5-issues.json",
+      "baselineBytes": 895,
+      "candidateBytes": 895,
+      "baselineSHA256": "9889ff64b4b56d633142c7ff4ea373eb464637abc35223024abe02ae3110f23b",
+      "candidateSHA256": "9889ff64b4b56d633142c7ff4ea373eb464637abc35223024abe02ae3110f23b",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-5.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "a9f9b536e6a22bca84be30fcfa4875a2a076fbcf0051644ef5f615e6bc5e3b0b",
+      "candidateSHA256": "a9f9b536e6a22bca84be30fcfa4875a2a076fbcf0051644ef5f615e6bc5e3b0b",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-6-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-6-issues.json",
+      "baselineBytes": 895,
+      "candidateBytes": 895,
+      "baselineSHA256": "16060d21d4d912303fbd7801f04f222c0adb8a2589fc8613347e8d83fcb20ea7",
+      "candidateSHA256": "16060d21d4d912303fbd7801f04f222c0adb8a2589fc8613347e8d83fcb20ea7",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-6.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "dc17c1115d0cee34304833dd5611668798d101ec8eb131c80b33caed2d2046a8",
+      "candidateSHA256": "dc17c1115d0cee34304833dd5611668798d101ec8eb131c80b33caed2d2046a8",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-7-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-7-issues.json",
+      "baselineBytes": 895,
+      "candidateBytes": 895,
+      "baselineSHA256": "d830d933c76436cafd5cefa51e71a4b50b606d378855c6eacf967611417f0c3f",
+      "candidateSHA256": "d830d933c76436cafd5cefa51e71a4b50b606d378855c6eacf967611417f0c3f",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-7.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "17b3022a5aaab734de11f54937e6b0a454c9a1de066b70bd470f554c2d398eee",
+      "candidateSHA256": "17b3022a5aaab734de11f54937e6b0a454c9a1de066b70bd470f554c2d398eee",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-8-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-8-issues.json",
+      "baselineBytes": 895,
+      "candidateBytes": 895,
+      "baselineSHA256": "8c5073dac6f09559230c37182b9a882c99a79b7a54de85aab57df4e03084115c",
+      "candidateSHA256": "8c5073dac6f09559230c37182b9a882c99a79b7a54de85aab57df4e03084115c",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-8.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "9eba85ace1fc49fd5bb4d9b95389a24f74741b9e9b34dfd0879dc94191e9d2e8",
+      "candidateSHA256": "9eba85ace1fc49fd5bb4d9b95389a24f74741b9e9b34dfd0879dc94191e9d2e8",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-9-inheritance.json",
+      "baselineBytes": 51,
+      "candidateBytes": 51,
+      "baselineSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "candidateSHA256": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-9-issues.json",
+      "baselineBytes": 899,
+      "candidateBytes": 899,
+      "baselineSHA256": "d936f6dabcc3c6b59079c0b89ec0443cd31d634a94f1e5a16d7f1233e8c1c74b",
+      "candidateSHA256": "d936f6dabcc3c6b59079c0b89ec0443cd31d634a94f1e5a16d7f1233e8c1c74b",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "slides-10",
+      "artifact": "slide-9.svg",
+      "baselineBytes": 548,
+      "candidateBytes": 548,
+      "baselineSHA256": "62440191bf8187c0c1b2137f051a7d215ce4e3505280fd0e90308619e3163b5b",
+      "candidateSHA256": "62440191bf8187c0c1b2137f051a7d215ce4e3505280fd0e90308619e3163b5b",
+      "byteIdentical": true,
+      "geometryIdenticalIgnoringIntentionalPolicy": true,
+      "effectivePolicyAndGeometryIdentical": true
+    }
+  ],
+  "scope": "Whole SVG tree; policy-only wrappers removed, inherited font-feature-settings resolved. Baseline differences explicitly retained; geometry comparison excludes intentional policy."
+}

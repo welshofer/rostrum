@@ -1,0 +1,85 @@
+{
+  "commands": [
+    {
+      "name": "canonical",
+      "command": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        ".build/perf21-native-paint/candidate-extended-bench",
+        "--paired-binary",
+        ".build/perf21-native-paint/baseline-extended-bench",
+        "--paired-revision",
+        "e958499775f38334c66ec2ba6bdb8d285002380f",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "table-200x50",
+        "table-20x10",
+        "shaped-table-100x20",
+        "richtext-fit",
+        "slides-10",
+        "--output",
+        "docs/benchmarks/2026-10-04-native-paint-fidelity-11-paired-macos.json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 23.930475874978583
+    },
+    {
+      "name": "supplement",
+      "command": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        ".build/perf21-native-paint/candidate-supplement-bench",
+        "--paired-binary",
+        ".build/perf21-native-paint/baseline-supplement-bench",
+        "--paired-revision",
+        "e958499775f38334c66ec2ba6bdb8d285002380f",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "--output",
+        "docs/benchmarks/2026-10-04-native-paint-fidelity-11-supplement-paired-macos.json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 21.926304291991983
+    },
+    {
+      "name": "native",
+      "command": [
+        "python3",
+        "Tools/rostrum-bench/run.py",
+        "--binary",
+        ".build/perf21-native-paint/candidate-native-bench",
+        "--paired-binary",
+        ".build/perf21-native-paint/baseline-native-bench",
+        "--paired-revision",
+        "e958499775f38334c66ec2ba6bdb8d285002380f",
+        "--runs",
+        "10",
+        "--warmups",
+        "1",
+        "--scenarios",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx",
+        "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx",
+        "--output",
+        "docs/benchmarks/2026-10-04-native-paint-fidelity-11-native-paired-macos.json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 9.182036792044528
+    }
+  ],
+  "elapsedSeconds": 55.16647791699506,
+  "explicitQuietWindow": true,
+  "knownLoad": "Root and lanes paused; actual process snapshots retained. No settings altered."
+}

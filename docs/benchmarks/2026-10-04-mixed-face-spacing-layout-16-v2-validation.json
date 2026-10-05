@@ -1,0 +1,3032 @@
+{
+  "status": "PASS",
+  "V1FilesUnchanged": true,
+  "productionUnchanged": true,
+  "originalRenderedSVGExactToCorpus": true,
+  "postFitSavedBytesExactToV1AndAcrossBuilds": true,
+  "paragraphAndGeometryUnchangedByFit": true,
+  "freshExternalReopens": 14,
+  "cases": [
+    {
+      "name": "native-base",
+      "variants": {
+        "baseline": {
+          "renderSVG": {
+            "slide-0.svg": "815d337f77b4dcc15aa4c1991f4813346df9bf6ad50102c22e9ea37fc03460d1"
+          },
+          "postFitSavedSHA256": "11034c004850f06f8e0e80bd2ec9b20e4ec515c6bc925c8792a1c875100f2d48",
+          "postFitNormAutofit": [],
+          "paragraphAndGeometryUnchanged": true
+        },
+        "candidate": {
+          "renderSVG": {
+            "slide-0.svg": "08a553773127ac7507489388ad11bc3b5aa4466aa0712719f242abbe9ade8038"
+          },
+          "postFitSavedSHA256": "11034c004850f06f8e0e80bd2ec9b20e4ec515c6bc925c8792a1c875100f2d48",
+          "postFitNormAutofit": [],
+          "paragraphAndGeometryUnchanged": true
+        }
+      }
+    },
+    {
+      "name": "native-anchors",
+      "variants": {
+        "baseline": {
+          "renderSVG": {
+            "slide-0.svg": "c18d23f13cb296bbf8c3d38913c26c5a4366aa806fac5170a5f8bbb0585ecc2c"
+          },
+          "postFitSavedSHA256": "7899e5321f4cfec1ce445ca055c99ea79d58c44237b8538aec49eb692e7c5c06",
+          "postFitNormAutofit": [
+            {
+              "fontScale": "100000",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "100000",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "72500",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "72500",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "100000",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "100000",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "72500",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "72500",
+              "lnSpcReduction": "0"
+            }
+          ],
+          "paragraphAndGeometryUnchanged": true
+        },
+        "candidate": {
+          "renderSVG": {
+            "slide-0.svg": "5c8926c53e2476acd2490d2133165996a3a7a42616173328c4acf76d6e6c23f8"
+          },
+          "postFitSavedSHA256": "7899e5321f4cfec1ce445ca055c99ea79d58c44237b8538aec49eb692e7c5c06",
+          "postFitNormAutofit": [
+            {
+              "fontScale": "100000",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "100000",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "72500",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "72500",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "100000",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "100000",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "72500",
+              "lnSpcReduction": "0"
+            },
+            {
+              "fontScale": "72500",
+              "lnSpcReduction": "0"
+            }
+          ],
+          "paragraphAndGeometryUnchanged": true
+        }
+      }
+    },
+    {
+      "name": "mixed-exact",
+      "variants": {
+        "baseline": {
+          "renderSVG": {
+            "slide-0.svg": "638f2a81b167f030c45dacc4f9d0becba24490044388f67b8652d73e8723fe93"
+          },
+          "postFitSavedSHA256": "339a51b7abe39c3cf14965757cdd3ffae9a59792bc5def65074c78fe5ff28d18",
+          "postFitNormAutofit": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "paragraphAndGeometryUnchanged": true
+        },
+        "candidate": {
+          "renderSVG": {
+            "slide-0.svg": "5e0601a93ea2f9abe9acca72eacfbb76aca9a02e3d97b5ef22418620f7db003a"
+          },
+          "postFitSavedSHA256": "339a51b7abe39c3cf14965757cdd3ffae9a59792bc5def65074c78fe5ff28d18",
+          "postFitNormAutofit": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "paragraphAndGeometryUnchanged": true
+        }
+      }
+    },
+    {
+      "name": "same-face-exact",
+      "variants": {
+        "baseline": {
+          "renderSVG": {
+            "slide-0.svg": "53108481b9a0e38efdc73e072fdefdc3f7051d109c208ee975e47937c8bbe75a"
+          },
+          "postFitSavedSHA256": "54071c87dbcb57c9186dd4b1c93740fb73368ab9b57128a850d6d4176f48a16d",
+          "postFitNormAutofit": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "paragraphAndGeometryUnchanged": true
+        },
+        "candidate": {
+          "renderSVG": {
+            "slide-0.svg": "53108481b9a0e38efdc73e072fdefdc3f7051d109c208ee975e47937c8bbe75a"
+          },
+          "postFitSavedSHA256": "54071c87dbcb57c9186dd4b1c93740fb73368ab9b57128a850d6d4176f48a16d",
+          "postFitNormAutofit": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "paragraphAndGeometryUnchanged": true
+        }
+      }
+    },
+    {
+      "name": "mixed-percentage",
+      "variants": {
+        "baseline": {
+          "renderSVG": {
+            "slide-0.svg": "2c5a823f1321086c847002fb6a1087c40acf9aeedd5dce3a8c949e17cb45e26f"
+          },
+          "postFitSavedSHA256": "9b132769be06b977110796d07f6de8f86a78f5e6a41e13a469e92212c133d896",
+          "postFitNormAutofit": [
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            }
+          ],
+          "paragraphAndGeometryUnchanged": true
+        },
+        "candidate": {
+          "renderSVG": {
+            "slide-0.svg": "2c5a823f1321086c847002fb6a1087c40acf9aeedd5dce3a8c949e17cb45e26f"
+          },
+          "postFitSavedSHA256": "9b132769be06b977110796d07f6de8f86a78f5e6a41e13a469e92212c133d896",
+          "postFitNormAutofit": [
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            },
+            {
+              "fontScale": "55000",
+              "lnSpcReduction": "20000"
+            }
+          ],
+          "paragraphAndGeometryUnchanged": true
+        }
+      }
+    },
+    {
+      "name": "mixed-table",
+      "variants": {
+        "baseline": {
+          "renderSVG": {
+            "slide-0.svg": "2441a43b987d1418e8bf7ea1b5deaa79a4a57582ec1e63e29d3879b67ab0144a"
+          },
+          "postFitSavedSHA256": "04ea525b35ca50e1482508b6bb6746564d5d81a7502f57a7fbde0d0716e1d3e7",
+          "postFitNormAutofit": [],
+          "paragraphAndGeometryUnchanged": true
+        },
+        "candidate": {
+          "renderSVG": {
+            "slide-0.svg": "2441a43b987d1418e8bf7ea1b5deaa79a4a57582ec1e63e29d3879b67ab0144a"
+          },
+          "postFitSavedSHA256": "04ea525b35ca50e1482508b6bb6746564d5d81a7502f57a7fbde0d0716e1d3e7",
+          "postFitNormAutofit": [],
+          "paragraphAndGeometryUnchanged": true
+        }
+      }
+    },
+    {
+      "name": "unequal-signature",
+      "variants": {
+        "baseline": {
+          "renderSVG": {
+            "slide-0.svg": "186affc20445707fb80f19f3334f022a187ff912293029fd3fcb4d285412b9e3"
+          },
+          "postFitSavedSHA256": "c9fb847ca38542efc2d8900f2516bea5eeb2961a79e938983b25e1966ea1bf78",
+          "postFitNormAutofit": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "paragraphAndGeometryUnchanged": true
+        },
+        "candidate": {
+          "renderSVG": {
+            "slide-0.svg": "186affc20445707fb80f19f3334f022a187ff912293029fd3fcb4d285412b9e3"
+          },
+          "postFitSavedSHA256": "c9fb847ca38542efc2d8900f2516bea5eeb2961a79e938983b25e1966ea1bf78",
+          "postFitNormAutofit": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "paragraphAndGeometryUnchanged": true
+        }
+      }
+    }
+  ]
+}

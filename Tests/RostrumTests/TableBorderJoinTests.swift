@@ -95,7 +95,7 @@ import Testing
         }
     }
 
-    @Test func unverifiedJunctionStylesKeepPreviousGeometry() throws {
+    @Test func verifiedMixedWidthsAndUnverifiedJunctionStylesStayDistinct() throws {
         for variant in ["mixed-width", "alpha", "unsupported-dash", "custom-dash", "compound", "round-cap"] {
             let deck = try Presentation()
             let table = try deck.slides[0].shapes.addTable(rows: 1, columns: 1,
@@ -120,8 +120,16 @@ import Testing
             }
             let lines = try strokes(deck.renderSVG(slideAt: 0))
             #expect(lines.count == 2)
-            #expect(lines.allSatisfy { $0.y1 == 200000 })
-            #expect(lines.first { !$0.vertical }?.x2 == 1100000)
+            if variant == "mixed-width" {
+                // NativeTableJoins independently establishes perpendicular
+                // half-width extensions; keep the original numeric L control.
+                #expect(lines.first { $0.vertical }?.y1 == 187300)
+                #expect(lines.first { !$0.vertical }?.y1 == 200000)
+                #expect(lines.first { !$0.vertical }?.x2 == 1106350)
+            } else {
+                #expect(lines.allSatisfy { $0.y1 == 200000 })
+                #expect(lines.first { !$0.vertical }?.x2 == 1100000)
+            }
         }
     }
 }

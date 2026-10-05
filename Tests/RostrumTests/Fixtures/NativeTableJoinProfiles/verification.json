@@ -1,0 +1,81 @@
+{
+  "status": "locally verified; independent review, integrated app/native acceptance and performance remain parent-owned",
+  "baseline": "5d3d3b5a8d88c685c80c03813a3e13e4522d57fe",
+  "branch": "codex/burndown/table-joins18-20261004",
+  "model": {
+    "requested": "gpt-6-astra",
+    "reasoning": "high",
+    "runtime": "unattested"
+  },
+  "productionScope": [
+    "SVGRenderer mixed-profile admission",
+    "horizontal RTL logical-to-physical extension mapping"
+  ],
+  "unchanged": [
+    "uniform path",
+    "TableBorderSegments donor lookup",
+    "merge/edge ownership",
+    "text layout",
+    "styles",
+    "raw source XML"
+  ],
+  "native": {
+    "cases": 8,
+    "pages": 2,
+    "glyphs": 112,
+    "sourceSHA256": "39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e",
+    "pdfSHA256": "76fb8fb6e663efe692e15873ee51d21bc1e6a85e759d0a4527c02742a1874e46",
+    "coordinateTolerancePT": 0.001,
+    "colorToleranceNormalized": 0.0001,
+    "glyphOriginTolerancePT": 0.025,
+    "paintSizeTolerancePT": 0.002,
+    "rawTraceNotOutlineInkProof": true
+  },
+  "failBefore": {
+    "command": "swift test --jobs 2 --filter NativeTableJoinProfileTests",
+    "issues": 71,
+    "detail": "69 interval endpoint expectations and2 crossing-order expectations; all112glyphs already matched",
+    "log": ".build/table-joins18/swift-fail-before.log"
+  },
+  "checks": [
+    {
+      "command": "swift test --jobs 2 --filter 'NativeTableJoinProfileTests|NativeTableDefaultTests|TableBorderJoinTests'",
+      "result": "12 tests / 3 suites passed",
+      "log": ".build/table-joins18/final-focused.log"
+    },
+    {
+      "command": "swift test --jobs 2",
+      "result": "1179 tests / 171 suites plus18 RostrumLayout tests / 3 suites passed",
+      "log": ".build/table-joins18/final-full.log"
+    },
+    {
+      "command": "isolated generator + native capture extraction rerun",
+      "result": "source PPTX/cases and native-vectors/paint-reference JSON reproduced exactly",
+      "receipt": ".build/table-joins18/reproduction/receipt.json"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    }
+  ],
+  "retainedLogSHA256": {
+    ".build/table-joins18/swift-fail-before.log": "0fbcecb0e0233df048e8c767e4a143156f2029ec1c52808ad1984cf7f5a0acb4",
+    ".build/table-joins18/first-focused.log": "510f1addd34c65c485476d21cbd3c5afa25f472f048d66b2f6a908d36131e1ed",
+    ".build/table-joins18/final-focused.log": "ffd473f7d7878b5bda85f39d2fa03912649edbe9ff9ab822011e16ad4a00ec18",
+    ".build/table-joins18/full.log": "8950eacb193c72eb0c44b6f466715648a7e1980acc61d6e8853e394b69348662",
+    ".build/table-joins18/final-full.log": "8cf8d7f41e9a46988fba0defe9ee0c944f6cba43281f79f7e655d3a40467df1a",
+    ".build/table-joins18/strict-fail-before.log": "bffa6d4bb33aa84f3240e09496759da5ce4797952dca9928e8f76445c66e84cb",
+    ".build/table-joins18/reproduction/receipt.json": "c8e25e79b28254529c5fa9a9016b0b9ff830201ef1cc33c8b7c75550dc4c591a",
+    ".build/table-joins18/baseline-comparison.json": "29adb46f0bc2d2db3b3d6848bd04b90e005e41779698bc9024fc292f044ef156",
+    ".build/table-joins18/model-proof.json": "000029bf08f1bd620ab00d61be3fb3ca2b6ef851004015065834e110bac7a4dd"
+  },
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "3fd99d4cb03f8f19a64a301e86974323b317b50ed3251c6b20b0311520298140"
+  },
+  "finalScriptsSHA256": {
+    "generate.py": "c97520316c993d7f45e664a37db4b320df74943ba9befe0d9b1fc43d713563d7",
+    "capture.py": "8db95139ddf5ecefa0288747ec76016ae93b9a615100fa1cbae839aca8d2a5e1"
+  },
+  "lint": "No configured lint command; diff check performed",
+  "performance": "No performance or memory claim. Existing uniform common path short-circuits mixed admission."
+}

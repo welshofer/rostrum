@@ -77,6 +77,32 @@ struct TableBorderSegments<Paint> {
         return (joins(segment.range.lowerBound, preceding: true),
                 joins(segment.range.upperBound, preceding: false))
     }
+    /// Signed endpoint extensions for opaque mixed-width unmerged grids.
+    /// A thicker collinear owner occupies the crossing; its thinner neighbor
+    /// ends at the same seam. Only the two perpendicular donors are inspected.
+    func mixedWidthExtensions(_ segment: Segment, width: (Paint) -> Int) -> (lower: Double, upper: Double) {
+        let vertical = segment.edge.axis == .vertical
+        let boundary = segment.edge.boundary
+        let ownWidth = width(segment.paint)
+        func extensionAt(_ position: Int, preceding: Bool) -> Double {
+            var perpendicularWidth = 0
+            for neighbor in (boundary - 1)...boundary {
+                if let owner = owners[Key(vertical: !vertical, boundary: position, position: neighbor)],
+                   let paint = edges[owner].paint {
+                    perpendicularWidth = max(perpendicularWidth, width(paint))
+                }
+            }
+            let halfWidth = Double(perpendicularWidth) / 2
+            guard let continuation = owners[Key(vertical: vertical, boundary: boundary,
+                                                 position: preceding ? position - 1 : position)],
+                  let paint = edges[continuation].paint else { return halfWidth }
+            let otherWidth = width(paint)
+            return ownWidth == otherWidth ? 0 : (ownWidth > otherWidth ? halfWidth : -halfWidth)
+        }
+        return (extensionAt(segment.range.lowerBound, preceding: true),
+                extensionAt(segment.range.upperBound, preceding: false))
+    }
+
     /// Perpendicular donors at a terminal, excluding collinear continuations.
     /// Each endpoint has at most two neighbors; no grid scan is required.
     func terminalPaints(_ segment: Segment) -> (lower: [Paint], upper: [Paint]) {

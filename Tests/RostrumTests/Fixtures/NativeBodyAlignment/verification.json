@@ -1,0 +1,51 @@
+{
+  "baseline": "05613d0",
+  "purpose": "Finite independent native regression calibration; no production behavior change",
+  "nativeCases": 24,
+  "visibleGlyphs": 172,
+  "allPlatforms": "Only exact bundled embedded DejaVu faces; no system font skips",
+  "checks": [
+    {
+      "command": "swift test --jobs 2 --filter NativeBodyAlignmentTests",
+      "result": "passed",
+      "tests": 1,
+      "suites": 1,
+      "log": ".build/body-alignment15/focused-final.log",
+      "logSHA256": "56bbed6e3873b6780af1bb8d5e19564d84d006cf6dc9e89b733f1f5e4c0443d9"
+    },
+    {
+      "command": "python3 Tests/RostrumTests/Fixtures/NativeBodyAlignment/audit.py",
+      "result": "passed: source text, widths, alignment, body child order, package XML/relationships and exact embedded sfnt payloads"
+    },
+    {
+      "command": "python3 Tests/RostrumTests/Fixtures/NativeBodyAlignment/capture.py",
+      "result": "passed: 24 cases,172 visible glyphs, exact per-case actual face outlines, raw matrices"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    }
+  ],
+  "fullGate": "Not run in worker; root owns combined gate",
+  "modelProvenance": {
+    "requested": "gpt-6-astra/high",
+    "runtime": "unattested"
+  },
+  "files": {
+    "README.md": "35bc55b2e5d3724da3a79721e178ec3458c6b46828ce73e72c982b996e9b0d4c",
+    "audit.json": "45935b7ea24dc03fccd2ac39bb6f1bab4336286fac833e25ea3213e4ed2abc0c",
+    "audit.py": "878589f78d05b1931fe0eb3a348f846b0b17efc2295daf1a4f76e52de75604c5",
+    "capture-receipt.json": "c7381977e2fbb4dc94ce2820f415ba333658473b8d4918d2c7020dab102c090f",
+    "capture.py": "1675f52b2ea1b6def0c56444dd0dd59a54a3560b77123187d90be6b56e7f2ab2",
+    "cases.json": "5f51310592a87a7d137959710ca48f0badb817578a6a19a8ccac5f97ebb07640",
+    "generate.py": "20dc91a2de76580d7526b77fe7dd55a22581d5a33030eb1cda7c60b23107778f",
+    "manifest.json": "bf91aa941c77b4b01a6772bef072bf6a1b7f04bcbbd313f167f0eb407eabddbe",
+    "native-alignment-metrics.json": "d0f08ad5a14c633cfc86adec85aecd3431a860214de7f9a8d440c6d229e8792e",
+    "native-body-alignment-v1.pptx": "98c27b081f8ecb9c297d46e04019b83bcdc969ed3d42113f89491aa0b9d70dac",
+    "page-1-content.txt": "9133759905ee6b8b4bcb08f952849505b3b7df44e1850eaf2eb4f750ae3bb386",
+    "page-2-content.txt": "d1b2ed5b3e770208f82410c4944bea5bcac63c81d3498451f049b034c363a505",
+    "page-3-content.txt": "9d2b28a0eb3042d5aba1320f53ecfac624120e169d5c53fbb8cc981a76570201",
+    "page-4-content.txt": "12863d0c1b15884ba9854f2442d29b4468238bc5880de42f886d6f60960d2e90",
+    "powerpoint.pdf": "49b3001cee2777ec1c319c191f40836c4c20391a65224b49f6289d54908b6b66"
+  }
+}

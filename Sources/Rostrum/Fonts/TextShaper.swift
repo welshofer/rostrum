@@ -25,6 +25,13 @@ public struct TextShaper: Sendable {
     /// joining, bidi and unsupported-feature diagnostics remain unchanged.
     public func shape(_ text: String, pointSize: Double,
                       direction: TextDirection = .automatic, kerning: Bool) -> ShapedGlyphRun {
+        shape(text, pointSize: pointSize, direction: direction, kerning: kerning, standardLigatures: true)
+    }
+
+    /// DrawingML's bounded Latin policy controls optional `liga` separately from
+    /// this general shaper's public defaults. Required script shaping is retained.
+    func shape(_ text: String, pointSize: Double, direction: TextDirection = .automatic,
+               kerning: Bool, standardLigatures: Bool) -> ShapedGlyphRun {
         if text.unicodeScalars.contains(where: { ArabicJoining.isArabic($0.value) }) {
             return ArabicTextShaper(metrics: metrics).shape(text, pointSize: pointSize, direction: direction, kerning: kerning)
         }
@@ -34,14 +41,50 @@ public struct TextShaper: Sendable {
             return ShapedGlyphRun(glyphs: [], breaks: [], diagnostics: [.invalidPointSize], direction: direction)
         }
         let scale = pointSize / Double(metrics.unitsPerEm)
+        // Normalized singletons need no heap allocation. Complex clusters keep
+        // decoded arrays so repeated shaping passes do not decode UTF-8 again.
+        enum Scalars: RandomAccessCollection {
+            typealias Index = Int
+            case single(Unicode.Scalar)
+            case multiple([Unicode.Scalar])
+
+            init(_ view: String.UnicodeScalarView) {
+                let start = view.startIndex
+                if start != view.endIndex, view.index(after: start) == view.endIndex {
+                    self = .single(view[start])
+                } else {
+                    self = .multiple(Array(view))
+                }
+            }
+            var startIndex: Int { 0 }
+            var endIndex: Int {
+                switch self {
+                case .single: return 1
+                case .multiple(let values): return values.count
+                }
+            }
+            func index(after i: Int) -> Int { i + 1 }
+            func index(before i: Int) -> Int { i - 1 }
+            func index(_ i: Int, offsetBy distance: Int) -> Int { i + distance }
+            func distance(from start: Int, to end: Int) -> Int { end - start }
+            subscript(index: Int) -> Unicode.Scalar {
+                switch self {
+                case .single(let scalar):
+                    precondition(index == 0)
+                    return scalar
+                case .multiple(let values): return values[index]
+                }
+            }
+        }
         struct Cluster {
             let range: Range<Int>
-            let scalars: [Unicode.Scalar]
+            let scalars: Scalars
             var kind: Int // 0 Latin/CJK, 1 Hebrew, 2 digit, -1 neutral
             var level = 0
         }
         var clusters: [Cluster] = [], offset = 0
         var combining: [Range<Int>] = []
+        var initialGlyphCount = 0
         for character in text {
             let original = String(character), count = original.unicodeScalars.count
             let range = offset..<(offset + count); offset += count
@@ -49,11 +92,12 @@ public struct TextShaper: Sendable {
             // Foundation normalization/bridging round trip for these clusters;
             // any non-ASCII scalar still takes the full normalization path.
             let normalized = original.utf8.allSatisfy { $0 < 0x80 }
-                ? Array(original.unicodeScalars)
-                : Array(original.precomposedStringWithCanonicalMapping.unicodeScalars)
+                ? Scalars(original.unicodeScalars)
+                : Scalars(original.precomposedStringWithCanonicalMapping.unicodeScalars)
             var kind = -1
             for scalar in normalized {
                 let value = scalar.value
+                if value != 0xA && value != 0xD && value != 0x200B { initialGlyphCount += 1 }
                 if (0x05D0...0x05EA).contains(value) { kind = 1 }
                 else if (0x30...0x39).contains(value) { if kind == -1 { kind = 2 } }
                 else if Self.isLatin(value) || Self.isCJK(value) { kind = 0 }
@@ -64,7 +108,7 @@ public struct TextShaper: Sendable {
                     diagnostics.append(.unsupportedScript(scalar: value))
                 }
             }
-            if (normalized.count > 1 || normalized.first.map { [.nonspacingMark, .spacingMark, .enclosingMark].contains($0.properties.generalCategory) } == true) && original != "\r\n" {
+            if (normalized.count > 1 || normalized.first.map { $0.value >= 0x80 && [.nonspacingMark, .spacingMark, .enclosingMark].contains($0.properties.generalCategory) } == true) && original != "\r\n" {
                 combining.append(range)
             }
             clusters.append(Cluster(range: range, scalars: normalized, kind: kind))
@@ -84,38 +128,44 @@ public struct TextShaper: Sendable {
                 diagnostics.append(.unsupportedBidirectionalControl(scalar: scalar.value))
             }
         }
-        // Restricted UAX #9 profile: no embeddings, isolates, marks or brackets.
-        // Digits inherit the preceding strong context (EN after L resolves L).
-        var precedingStrong = base
-        var effective = clusters.map(\.kind)
-        for i in clusters.indices {
-            if effective[i] == 0 || effective[i] == 1 { precedingStrong = effective[i] }
-            else if effective[i] == 2 { effective[i] = precedingStrong == 0 ? 0 : 2 }
-        }
-        var preceding = Array(repeating: base, count: clusters.count)
-        var following = preceding, strong = base
-        for i in clusters.indices {
-            preceding[i] = strong
-            if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
-        }
-        strong = base
-        for i in clusters.indices.reversed() {
-            following[i] = strong
-            if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
-        }
-        for i in clusters.indices {
-            var kind = effective[i]
-            if kind == -1 {
-                kind = preceding[i] == following[i] ? preceding[i] : base
+        // With a left-to-right base and no RTL cluster, digits and neutrals
+        // resolve to level zero, which every cluster already has.
+        if hasRTL {
+            // Restricted UAX #9 profile: no embeddings, isolates, marks or brackets.
+            // Digits inherit the preceding strong context (EN after L resolves L).
+            var precedingStrong = base
+            var effective = clusters.map(\.kind)
+            for i in clusters.indices {
+                if effective[i] == 0 || effective[i] == 1 { precedingStrong = effective[i] }
+                else if effective[i] == 2 { effective[i] = precedingStrong == 0 ? 0 : 2 }
             }
-            clusters[i].level = kind == 1 ? 1 : (kind == 2 || base == 1 ? 2 : 0)
-        }
-        // Trailing whitespace has the paragraph embedding level (UAX #9 L1).
-        for i in clusters.indices.reversed() {
-            guard clusters[i].scalars.allSatisfy({ $0.value == 0x20 }) else { break }
-            clusters[i].level = base
+            var preceding = Array(repeating: base, count: clusters.count)
+            var following = preceding, strong = base
+            for i in clusters.indices {
+                preceding[i] = strong
+                if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
+            }
+            strong = base
+            for i in clusters.indices.reversed() {
+                following[i] = strong
+                if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
+            }
+            for i in clusters.indices {
+                var kind = effective[i]
+                if kind == -1 {
+                    kind = preceding[i] == following[i] ? preceding[i] : base
+                }
+                clusters[i].level = kind == 1 ? 1 : (kind == 2 || base == 1 ? 2 : 0)
+            }
+            // Trailing whitespace has the paragraph embedding level (UAX #9 L1).
+            for i in clusters.indices.reversed() {
+                guard clusters[i].scalars.allSatisfy({ $0.value == 0x20 }) else { break }
+                clusters[i].level = base
+            }
         }
         var glyphs: [ShapedGlyph] = []
+        // Count normalized emitting scalars, preserving source ranges separately.
+        glyphs.reserveCapacity(initialGlyphCount)
         var compositionInput: [ArabicTextShaper.Glyph] = []
         for cluster in clusters {
             for scalar in cluster.scalars {
@@ -164,7 +214,7 @@ public struct TextShaper: Sendable {
             }
             return links
         }
-        for lookup in tables.ligatureLookups {
+        for lookup in tables.ligatureLookups where standardLigatures {
             let links = successors(lookup.filter)
             var next: [ShapedGlyph] = [], i = 0
             while i < glyphs.count {
@@ -272,16 +322,18 @@ public struct TextShaper: Sendable {
                 }
             }
         }
-        // Reverse maximal runs at each embedding level, retaining source clusters.
-        let maximum = glyphs.map(\.bidiLevel).max() ?? 0
-        if maximum > 0 {
-            for level in stride(from: maximum, through: 1, by: -1) {
-                var i = 0
-                while i < glyphs.count {
-                    guard glyphs[i].bidiLevel >= level else { i += 1; continue }
-                    let start = i
-                    while i < glyphs.count && glyphs[i].bidiLevel >= level { i += 1 }
-                    glyphs.replaceSubrange(start..<i, with: glyphs[start..<i].reversed())
+        if hasRTL {
+            // Reverse maximal runs at each embedding level, retaining source clusters.
+            let maximum = glyphs.map(\.bidiLevel).max() ?? 0
+            if maximum > 0 {
+                for level in stride(from: maximum, through: 1, by: -1) {
+                    var i = 0
+                    while i < glyphs.count {
+                        guard glyphs[i].bidiLevel >= level else { i += 1; continue }
+                        let start = i
+                        while i < glyphs.count && glyphs[i].bidiLevel >= level { i += 1 }
+                        glyphs.replaceSubrange(start..<i, with: glyphs[start..<i].reversed())
+                    }
                 }
             }
         }

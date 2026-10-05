@@ -1,0 +1,144 @@
+{
+  "baseCommit": "dbda96d877d91da92ccc786177828ae6331464c6",
+  "scope": "Inventory-only table background declaration and owner selection before theme resolution. Renderer unchanged.",
+  "sourceFiles": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Sources/Rostrum/Presentation/OutlineImageFills.swift",
+      "bytes": 16018,
+      "sha256": "d0fc8572619178cf06f53d29ca6463b09c34ff215054e45c5d52c59df492f2f3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/OutlineImageFillTests.swift",
+      "bytes": 36371,
+      "sha256": "372fb5be6a2c89cfc02dba12829677102d65cd2b3ea740dc08c71385a02b3ca7"
+    }
+  ],
+  "gates": {
+    "focused": "36 tests / 2 suites passed",
+    "library": "1213 tests / 176 suites passed",
+    "layout": "18 tests / 3 suites passed"
+  },
+  "failBeforeIssues": 4,
+  "initialTestCaveat": "Initial test did not suppress the separate slide default theme background. Isolated fixture explicitly sets slide noFill before testing table background selection; both logs retained.",
+  "logs": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-fail-before.log",
+      "bytes": 4290,
+      "sha256": "2e03e1e9bcf9ebd505c5b1222ade485f6a775d880b9275e32fd841e59f09fb69"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-fail-before-isolated.log",
+      "bytes": 3047,
+      "sha256": "444d30fc727897c482a2aaa3548d26c0de142c1160164a334f0ceb335c394bf6"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-focused.log",
+      "bytes": 9272,
+      "sha256": "465ecd08ce8de7e0f5e68abc840add0b78f1ff81d152ea1f37166af4abafff28"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-full.log",
+      "bytes": 232651,
+      "sha256": "a535803748de980e25f727fce5f50686a6c7bd31e82f38d5957ea413e11e9296"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-Rostrum.o",
+      "bytes": 8693056,
+      "sha256": "05a9fa5962eadbbea1fbd18b502a407a7df4192a86dc66c0f7c51829700b2adb"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-export-probe",
+      "bytes": 6879200,
+      "sha256": "4cac9f37f8adc46b2197b5e2d10e7b228bb353092d88d2b4d2478467666cdf3b"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/export-probe.swift",
+      "bytes": 2286,
+      "sha256": "ef2517d63d9dfdf794116406c126acaf7c9051a09ca7545f77afd3b7706f257f"
+    }
+  ],
+  "variants": [
+    {
+      "assetCount": 2,
+      "assets": [
+        {
+          "bytes": 84,
+          "filename": "image1.png",
+          "partName": "/ppt/media/image1.png",
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-actual-false/slide-01/image1.png",
+          "slide": 1,
+          "filePin": {
+            "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-actual-false/slide-01/image1.png",
+            "bytes": 84,
+            "sha256": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76"
+          }
+        },
+        {
+          "bytes": 84,
+          "filename": "image1.png",
+          "partName": "/ppt/media/image1.png",
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-actual-false/slide-02/image1.png",
+          "slide": 2,
+          "filePin": {
+            "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-actual-false/slide-02/image1.png",
+            "bytes": 84,
+            "sha256": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76"
+          }
+        }
+      ],
+      "readOnlySerialization": true,
+      "reopenedOutlineExact": true,
+      "repeatedExportBytesExact": true,
+      "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance.pptx",
+      "sourceBytesUnchanged": true,
+      "warnings": [],
+      "sourcePin": {
+        "path": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance.pptx",
+        "bytes": 444535,
+        "sha256": "b7351a492cd0b3e9d0c29f2dec5ff4d6eb1954b92e05cf343c7d77929ee4022b"
+      }
+    },
+    {
+      "assetCount": 2,
+      "assets": [
+        {
+          "bytes": 84,
+          "filename": "image1.png",
+          "partName": "/ppt/media/image1.png",
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-actual-true/slide-01/image1.png",
+          "slide": 1,
+          "filePin": {
+            "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-actual-true/slide-01/image1.png",
+            "bytes": 84,
+            "sha256": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76"
+          }
+        },
+        {
+          "bytes": 84,
+          "filename": "image1.png",
+          "partName": "/ppt/media/image1.png",
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-actual-true/slide-02/image1.png",
+          "slide": 2,
+          "filePin": {
+            "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/theme-background-actual-true/slide-02/image1.png",
+            "bytes": 84,
+            "sha256": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76"
+          }
+        }
+      ],
+      "readOnlySerialization": true,
+      "reopenedOutlineExact": true,
+      "repeatedExportBytesExact": true,
+      "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance.pptx",
+      "sourceBytesUnchanged": true,
+      "warnings": [],
+      "sourcePin": {
+        "path": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance.pptx",
+        "bytes": 444541,
+        "sha256": "b53025b0f1de83b4febb9e4844b5a6fc12273f25acd1f1e32df28f28b7cf5834"
+      }
+    }
+  ]
+}

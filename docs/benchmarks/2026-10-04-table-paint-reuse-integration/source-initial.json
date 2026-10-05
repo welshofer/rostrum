@@ -1,0 +1,677 @@
+{
+  "status": "APPROVE source correctness and retained output-preservation proof; documentation object-path correction pending",
+  "commit": "3bab3d552ea016035921ce97671356152718ee05",
+  "baseline": "dc40a98b09d0db7c132c82c9e8f41b12dd4c5638",
+  "reviewer": {
+    "requestedModel": "gpt-6.1-sol",
+    "requestedReasoning": "high",
+    "runtimeIdentity": "unattested"
+  },
+  "scope": "Read-only source/tests/docs/hash review. No builds, tests, benchmark launches, GUI, native recapture or repository modifications.",
+  "changedFiles": [
+    "Sources/Rostrum/Presentation/SVGRenderer.swift",
+    "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+    "Tests/RostrumTests/TableBorderPaintReuseTests.swift",
+    "docs/TABLE-PAINT-REUSE-PROTOTYPE-20261004.md",
+    "docs/benchmarks/2026-10-04-table-paint-reuse-prototype.json"
+  ],
+  "sourcePins": [
+    {
+      "path": "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+      "sha256": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559"
+    },
+    {
+      "path": "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+      "sha256": "cf6fe3ce7a1659644ab6ba7c60d6dd549e3e202d06c6c550a0bbdb96a0d18d4d"
+    },
+    {
+      "path": "Sources/Rostrum/Presentation/SVGRenderer.swift",
+      "sha256": "0bd173591ba750f25f879da2aad78f2c13ff65bea670200ea2ed319e5ad51a81"
+    },
+    {
+      "path": "Tests/RostrumTests/TableBorderPaintReuseTests.swift",
+      "sha256": "070bfa5bf549d21bcb36889c8e661ce0a6784e41724428a056660fed89cf5e8c"
+    }
+  ],
+  "retainedPins": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/probe.swift",
+      "sha256": "913532b743c524b7b78112e884459340a5b6d70675e6d499a48e6dbb05fb1b4c"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof.py",
+      "sha256": "cdc6267bc00e45806418d444e704b05e7f51ac999ff5676473dcde6316941a64"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-Rostrum.o",
+      "sha256": "2b6813f35148e8fd54923bb89d9e006fb86c85ce1beadb3fe1354191044cf1a5"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-probe",
+      "sha256": "c5dee62c396338ef8ffb3cc2f86810a0a97422f11f93f57e7465ab3039c660bc"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/candidate-probe",
+      "sha256": "16b6692af2098e42ac87a2cfb7eb2f5867ecd9abcab37acc0147aeedbc34e212"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/calls-before.log",
+      "sha256": "8852b470c60641d6d138e061ef8aefd838c5a93480a5b8c752c5b7e1c4bed474"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/calls-after.log",
+      "sha256": "a03c3a7d59d0aa60c8e839d8c7739f855ec29a375f3015839bcc06c7535374ce"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/diagnostic-preservation.json",
+      "sha256": "76172e11cf9d3e7bcf8a20090af45b4df76e589f805771ea7261fd331aca3f0c"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/diagnostic-after-preservation.json",
+      "sha256": "d3ef668baf1cae08d4ca4d12668da54eb04161f9455ba5ef7b71056df1e9af33"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof.json",
+      "sha256": "7fa92375a0a367fdd56560eb100dce6556659780a76af19f27c261d0350da937"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/focused.log",
+      "sha256": "c19ea26173ef59ec3ba8dc5754b7819aa3edce66c77808eb7ab33346f6a676a0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/focused-final.log",
+      "sha256": "0e0400ca696a4a1a71ce3a13f6a35c23faac499b2f9c2982f50a874bcaeebbdf"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/full.log",
+      "sha256": "8c3d02bcd82d0be82349ec4e726981b74fa96f1e84c38cb36983674a6ba6c298"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof-final.log",
+      "sha256": "105d04e1cc0d588a79bc47c5c0ee2cdb467ba42e9abae39be97a512fd329d6b4"
+    }
+  ],
+  "inputPins": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/builtin/native-table-default-builtin-v1.pptx",
+      "sha256": "3583235fd4a0caf7be17fad4e79d250ac1098e0a4f64ce462c9a396d91a5873b"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/custom/native-table-default-custom-v1.pptx",
+      "sha256": "5506d837f8a12b4f6a54cca287c9f2943b22d2537270aa084e83792aad65652e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoins/native-table-joins-v1.pptx",
+      "sha256": "23b9cde5274eda35b5278042caf7a9b9d49f5557a4038be1c4646ffd73d42ede"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoinProfiles/native-table-joins18-v1.pptx",
+      "sha256": "39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyleFallback/native-table-style-fallback19-v1.pptx",
+      "sha256": "e261b6864780fb021e914dfcd4a0e19b3aae9825cc33b94b0168933dcf057268"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/partial-custom/saved.pptx",
+      "sha256": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/builtin-grid/saved.pptx",
+      "sha256": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/direct-unique/saved.pptx",
+      "sha256": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/empty/saved.pptx",
+      "sha256": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/noFill/saved.pptx",
+      "sha256": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/budget-saturation.pptx",
+      "sha256": "6bd5dcf6602c1c798b2a7e6e0ade8f51fc92a8c22efba3f9d54f0e214b96e675"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/oversize-bypass.pptx",
+      "sha256": "952e6d4ebee3d8e40498ce13759870bd6810fbcecf7e4aaca467800acb96612f"
+    }
+  ],
+  "outputPins": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-default-builtin-v1/saved.pptx",
+      "sha256": "98f5852c774cef00be3ba9982c51735d8430a345c608587605a2c20d8717b68b"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-default-builtin-v1/slide-0.svg",
+      "sha256": "770de0dcee6b65d9004d26fa0d444ce2c710f449e9bafa494bd284779018d39c"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-default-builtin-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-default-builtin-v1/saved.pptx",
+      "sha256": "98f5852c774cef00be3ba9982c51735d8430a345c608587605a2c20d8717b68b"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-default-builtin-v1/slide-0.svg",
+      "sha256": "770de0dcee6b65d9004d26fa0d444ce2c710f449e9bafa494bd284779018d39c"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-default-builtin-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-default-custom-v1/saved.pptx",
+      "sha256": "fd69ced7b0710600699774615ee86f8ad598bed68265fb4950d97dbc5723defd"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-default-custom-v1/slide-0.svg",
+      "sha256": "d90d711d4341968fb1683cd1b99e6fae0c79ee5e3257c097338b480fe0aaac30"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-default-custom-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-default-custom-v1/saved.pptx",
+      "sha256": "fd69ced7b0710600699774615ee86f8ad598bed68265fb4950d97dbc5723defd"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-default-custom-v1/slide-0.svg",
+      "sha256": "d90d711d4341968fb1683cd1b99e6fae0c79ee5e3257c097338b480fe0aaac30"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-default-custom-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-joins-v1/saved.pptx",
+      "sha256": "99b6c053c9110a249c83ccb6d7c9411890b1fc17fa375ea11ed13c4b4c40a414"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-joins-v1/slide-0.svg",
+      "sha256": "d163b40edbc7f89f131ee012d858afcab8ac078ec33a920e2c3269d404489f39"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-joins-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-joins-v1/saved.pptx",
+      "sha256": "99b6c053c9110a249c83ccb6d7c9411890b1fc17fa375ea11ed13c4b4c40a414"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-joins-v1/slide-0.svg",
+      "sha256": "d163b40edbc7f89f131ee012d858afcab8ac078ec33a920e2c3269d404489f39"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-joins-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-joins18-v1/saved.pptx",
+      "sha256": "50237402c019b86e2c6dad22971a639b500c8688a000c9758ece7df878e1611d"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-joins18-v1/slide-0.svg",
+      "sha256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-joins18-v1/slide-1.svg",
+      "sha256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-joins18-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-joins18-v1/issues-1.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-joins18-v1/saved.pptx",
+      "sha256": "50237402c019b86e2c6dad22971a639b500c8688a000c9758ece7df878e1611d"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-joins18-v1/slide-0.svg",
+      "sha256": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-joins18-v1/slide-1.svg",
+      "sha256": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-joins18-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-joins18-v1/issues-1.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-style-fallback19-v1/saved.pptx",
+      "sha256": "203ed802668fa609e918a93db60c6f025a5084ba079395e9b000655c11df90ae"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-style-fallback19-v1/slide-0.svg",
+      "sha256": "2de56851f8a7e5eed6073cdc37299bca5aefaf398a35214f689ec60aefdfffd7"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-style-fallback19-v1/slide-1.svg",
+      "sha256": "9114ac5533aad2e8b183173aafcc29d04e937fcd78346fb5f90033a9367241de"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-style-fallback19-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/native-table-style-fallback19-v1/issues-1.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-style-fallback19-v1/saved.pptx",
+      "sha256": "203ed802668fa609e918a93db60c6f025a5084ba079395e9b000655c11df90ae"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-style-fallback19-v1/slide-0.svg",
+      "sha256": "2de56851f8a7e5eed6073cdc37299bca5aefaf398a35214f689ec60aefdfffd7"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-style-fallback19-v1/slide-1.svg",
+      "sha256": "9114ac5533aad2e8b183173aafcc29d04e937fcd78346fb5f90033a9367241de"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-style-fallback19-v1/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/native-table-style-fallback19-v1/issues-1.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/partial-custom/saved.pptx",
+      "sha256": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/partial-custom/slide-0.svg",
+      "sha256": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/partial-custom/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/partial-custom/saved.pptx",
+      "sha256": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/partial-custom/slide-0.svg",
+      "sha256": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/partial-custom/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/builtin-grid/saved.pptx",
+      "sha256": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/builtin-grid/slide-0.svg",
+      "sha256": "f219269d2e153e4ad842ff2284f0c7f08175fd8ef0f58c590b93d856d25d64fa"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/builtin-grid/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/builtin-grid/saved.pptx",
+      "sha256": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/builtin-grid/slide-0.svg",
+      "sha256": "f219269d2e153e4ad842ff2284f0c7f08175fd8ef0f58c590b93d856d25d64fa"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/builtin-grid/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/direct-unique/saved.pptx",
+      "sha256": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/direct-unique/slide-0.svg",
+      "sha256": "4eeb09cfe383821a677742f4c44dd2567315ba10d551c65d11652d2ac09a7276"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/direct-unique/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/direct-unique/saved.pptx",
+      "sha256": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/direct-unique/slide-0.svg",
+      "sha256": "4eeb09cfe383821a677742f4c44dd2567315ba10d551c65d11652d2ac09a7276"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/direct-unique/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/empty/saved.pptx",
+      "sha256": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/empty/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/empty/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/empty/saved.pptx",
+      "sha256": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/empty/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/empty/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/noFill/saved.pptx",
+      "sha256": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/noFill/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/noFill/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/noFill/saved.pptx",
+      "sha256": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/noFill/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/noFill/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/budget-saturation/saved.pptx",
+      "sha256": "42406cc1d08d1f785af72530cfce968dc40c646a8e0df297bbf5b01952aaf91a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/budget-saturation/slide-0.svg",
+      "sha256": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/budget-saturation/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/budget-saturation/saved.pptx",
+      "sha256": "42406cc1d08d1f785af72530cfce968dc40c646a8e0df297bbf5b01952aaf91a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/budget-saturation/slide-0.svg",
+      "sha256": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/budget-saturation/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/oversize-bypass/saved.pptx",
+      "sha256": "8cbe88e9a38117f286896bbb0c723b5db4568dd8c9d8fbc1c56325166383c96c"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/oversize-bypass/slide-0.svg",
+      "sha256": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/baseline/oversize-bypass/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/oversize-bypass/saved.pptx",
+      "sha256": "8cbe88e9a38117f286896bbb0c723b5db4568dd8c9d8fbc1c56325166383c96c"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/oversize-bypass/slide-0.svg",
+      "sha256": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/proof/candidate/oversize-bypass/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    }
+  ],
+  "instrumentedOutputPins": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/direct-unique/saved.pptx",
+      "sha256": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/direct-unique/saved.pptx",
+      "sha256": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/direct-unique/saved.pptx",
+      "sha256": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/direct-unique/slide-0.svg",
+      "sha256": "4eeb09cfe383821a677742f4c44dd2567315ba10d551c65d11652d2ac09a7276"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/direct-unique/slide-0.svg",
+      "sha256": "4eeb09cfe383821a677742f4c44dd2567315ba10d551c65d11652d2ac09a7276"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/direct-unique/slide-0.svg",
+      "sha256": "4eeb09cfe383821a677742f4c44dd2567315ba10d551c65d11652d2ac09a7276"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/direct-unique/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/direct-unique/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/direct-unique/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/empty/saved.pptx",
+      "sha256": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/empty/saved.pptx",
+      "sha256": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/empty/saved.pptx",
+      "sha256": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/empty/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/empty/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/empty/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/empty/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/empty/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/empty/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/noFill/saved.pptx",
+      "sha256": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/noFill/saved.pptx",
+      "sha256": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/noFill/saved.pptx",
+      "sha256": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/noFill/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/noFill/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/noFill/slide-0.svg",
+      "sha256": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/noFill/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/noFill/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/noFill/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/builtin-grid/saved.pptx",
+      "sha256": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/builtin-grid/saved.pptx",
+      "sha256": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/builtin-grid/saved.pptx",
+      "sha256": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/builtin-grid/slide-0.svg",
+      "sha256": "f219269d2e153e4ad842ff2284f0c7f08175fd8ef0f58c590b93d856d25d64fa"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/builtin-grid/slide-0.svg",
+      "sha256": "f219269d2e153e4ad842ff2284f0c7f08175fd8ef0f58c590b93d856d25d64fa"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/builtin-grid/slide-0.svg",
+      "sha256": "f219269d2e153e4ad842ff2284f0c7f08175fd8ef0f58c590b93d856d25d64fa"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/builtin-grid/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/builtin-grid/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/builtin-grid/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/partial-custom/saved.pptx",
+      "sha256": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/partial-custom/saved.pptx",
+      "sha256": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/partial-custom/saved.pptx",
+      "sha256": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/partial-custom/slide-0.svg",
+      "sha256": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/partial-custom/slide-0.svg",
+      "sha256": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/partial-custom/slide-0.svg",
+      "sha256": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/partial-custom/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-output/partial-custom/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/instrumented-after-output/partial-custom/issues-0.txt",
+      "sha256": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+    }
+  ],
+  "counts": {
+    "sameInputCases": 12,
+    "sameInputArtifactsPerBuild": 40,
+    "instrumentedArtifactsPerBuild": 15,
+    "sourcePins": 4,
+    "retainedPins": 14,
+    "focusedTests": 22,
+    "focusedSuites": 5,
+    "libraryTests": 1189,
+    "librarySuites": 173,
+    "layoutTests": 18,
+    "layoutSuites": 3
+  },
+  "findings": [],
+  "reasoning": [
+    "Render-scoped cache stores only identities of immutable template border descendants admitted by existing bounded RenderSession. Strong Entry owner prevents address reuse; nil decoded result is cached distinctly.",
+    "216-entry hard ceiling plus estimated per-border template budget allowance; direct overlays and overbudget templates bypass retention. A negative remainingCost-paintCost cannot admit nonempty roots: cost exceeds the negative limit on first node and returns nil.",
+    "Decoder arithmetic, color/style predicates and paint order unchanged. colorHex calls read-only SVGPaint.resolve; diagnostic emission remains outside cache. maximumBorderWidth is updated on every nonnil result including hits.",
+    "Public resolution/fitting remain uncached; fresh per-render session sees direct/style/theme/alias edits. Tests exercise live edits, object lifetime, refusal, nil, wide lines, dash/alpha/double and same-input diagnostics.",
+    "Proof hashes independently confirm 12 inputs and 40 baseline/candidate output artifacts each, plus 15 artifacts for each instrumented version. Initial three invalid cross-authored diagnostic equality assumptions remain in pinned failed log."
+  ],
+  "limitations": [
+    "No comparative timing, memory measurement, integrated platform or new native geometry acceptance.",
+    "candidateObjectSHA256 currently lacks a retained path and report objects/source-snapshots location prose requires docs-only correction; source verdict does not depend on that metadata claim."
+  ],
+  "pinsVerified": true,
+  "receiptReportSHA256": "dcaf24dd5e907e2664cee9130c99bc79d56e5f5aeca59fe47d039216181ba772",
+  "receiptManifestSHA256": "f92304965f0cf3797f37d388b66447ae4f87469536eb7ffc0f1fa94e2b2c2d3b"
+}

@@ -1,0 +1,105 @@
+[
+  {
+    "name": "canonical",
+    "argv": [
+      "python3",
+      "Tools/rostrum-bench/run.py",
+      "--binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/candidate-extended-bench",
+      "--paired-binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/baseline-extended-bench",
+      "--paired-revision",
+      "6a3f61b5fb85f767096e87d3c14a2a1ceb74d410",
+      "--runs",
+      "10",
+      "--warmups",
+      "1",
+      "--scenarios",
+      "table-200x50",
+      "table-20x10",
+      "shaped-table-100x20",
+      "richtext-fit",
+      "slides-10",
+      "--output",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/canonical-paired.json"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 22.509112042025663,
+    "environment": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    }
+  },
+  {
+    "name": "supplement",
+    "argv": [
+      "python3",
+      "Tools/rostrum-bench/run.py",
+      "--binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/candidate-supplement-bench",
+      "--paired-binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/baseline-supplement-bench",
+      "--paired-revision",
+      "6a3f61b5fb85f767096e87d3c14a2a1ceb74d410",
+      "--runs",
+      "10",
+      "--warmups",
+      "1",
+      "--scenarios",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+      "--output",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/supplement-paired.json"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 21.488546292006504,
+    "environment": {
+      "ROSTRUM_BENCH_FONT": "/System/Library/Fonts/Supplemental/Arial.ttf",
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": null,
+      "ROSTRUM_BENCH_OUTPUT": null
+    }
+  },
+  {
+    "name": "native",
+    "argv": [
+      "python3",
+      "Tools/rostrum-bench/run.py",
+      "--binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/candidate-native-bench",
+      "--paired-binary",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/baseline-native-bench",
+      "--paired-revision",
+      "6a3f61b5fb85f767096e87d3c14a2a1ceb74d410",
+      "--runs",
+      "10",
+      "--warmups",
+      "1",
+      "--scenarios",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-placement-v2.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-autofit-controls-v1.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-eligibility-v1.pptx",
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf21-native-paint/inputs/native-paint-omitted-kern-v2.pptx",
+      "file:/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx",
+      "file:/Users/welshofer/Developer/rostrum/Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx",
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-200.pptx",
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-buNone-large-style-200.pptx",
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-ascii-200.pptx",
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/ordinary-inherited-bullet-unicode-200.pptx",
+      "file:/Users/welshofer/Developer/rostrum/.build/native-marker14-root/controls/placeholder-inherited-bullet-200.pptx",
+      "--output",
+      "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/native-paired.json"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 31.18298391700955,
+    "environment": {
+      "ROSTRUM_BENCH_FONT": null,
+      "ROSTRUM_PROFILE_FONTS": null,
+      "ROSTRUM_BENCH_NATIVE_INPUTS": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/native-inputs.json",
+      "ROSTRUM_BENCH_OUTPUT": null
+    }
+  }
+]

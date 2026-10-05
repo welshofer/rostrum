@@ -1,0 +1,97 @@
+{
+  "scope": "Attribution only with possible GUI/review overlap and uncontrolled host load. Inclusive categories may nest; do not add them or infer timing savings. Source-line attribution approximate; identity scan is narrow direct source-line samples, not a separately instrumented timer.",
+  "profiles": {
+    "10x10": {
+      "inclusiveSamples": {
+        "mainThread": 2250,
+        "context": 2205,
+        "definition": 1105,
+        "drawingView": 630,
+        "grid": 17,
+        "directOverlay": 132,
+        "effectiveStyle": 33
+      },
+      "outerContextSourceLineSamples": {
+        "303": 1925,
+        "306": 165,
+        "unknown": 64,
+        "296": 21,
+        "295": 20,
+        "297": 10
+      },
+      "driverResult": {
+        "rows": 10,
+        "columns": 10,
+        "passes": 240,
+        "checksum": 2424000,
+        "savedBytesUnchanged": true
+      }
+    },
+    "40x25": {
+      "inclusiveSamples": {
+        "mainThread": 2338,
+        "context": 2297,
+        "definition": 1137,
+        "drawingView": 615,
+        "grid": 92,
+        "directOverlay": 115,
+        "effectiveStyle": 48
+      },
+      "outerContextSourceLineSamples": {
+        "303": 2001,
+        "306": 164,
+        "unknown": 88,
+        "295": 18,
+        "297": 15,
+        "296": 10,
+        "305": 1
+      },
+      "driverResult": {
+        "rows": 40,
+        "columns": 25,
+        "passes": 24,
+        "checksum": 2424000,
+        "savedBytesUnchanged": true
+      }
+    },
+    "200x50": {
+      "inclusiveSamples": {
+        "mainThread": 2298,
+        "context": 2264,
+        "definition": 770,
+        "grid": 486,
+        "drawingView": 471,
+        "directOverlay": 93,
+        "effectiveStyle": 28
+      },
+      "outerContextSourceLineSamples": {
+        "303": 1873,
+        "unknown": 232,
+        "306": 121,
+        "297": 10,
+        "295": 9,
+        "305": 9,
+        "296": 7,
+        "298": 1,
+        "315": 1,
+        "316": 1
+      },
+      "driverResult": {
+        "rows": 200,
+        "columns": 50,
+        "passes": 2,
+        "checksum": 2020000,
+        "savedBytesUnchanged": true
+      }
+    }
+  },
+  "candidateSourceCommit": "308f20d3a7b870011bdbdb769fa399a0246b6014",
+  "candidateMeasuredAsFrozenUncommittedPatch": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Fonts/TextMeasurer.swift": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "752484dbc6e074de3edb20c3a9b26cd5fbdb665f72ce4f2473f628025392cf32",
+    "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886",
+    "Tools/table-style-catalog/generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
+    "Tests/RostrumTests/TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f"
+  }
+}

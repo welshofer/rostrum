@@ -153,7 +153,9 @@ final class RenderDiagnosticCollector {
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Unregistered font face:"):
                 record(.missingFont, .missingResource, reason)
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Paragraph alignment") || reason.hasPrefix("Justification")
-                || reason.hasPrefix("Tab alignment") || reason.hasPrefix("Unknown tab alignment"):
+                || reason.hasPrefix("Tab alignment") || reason.hasPrefix("Unknown tab alignment")
+                || reason.hasPrefix("Native explicit line spacing") || reason.hasPrefix("Native table")
+                || reason.hasPrefix("Native glyph paint"):
                 record(.unsupportedTextProperty, .approximation, reason)
             default:
                 record(.unsupportedShaping, .approximation, String(describing: diagnostic))
@@ -323,13 +325,12 @@ final class RenderDiagnosticCollector {
     private static func hasTableStyle(_ table: XML.Element, package: OPCPackage) -> Bool {
         let properties = table.firstChild(named: "a:tblPr")
         if properties?.firstChild(named: "a:tableStyle") != nil { return true }
-        var id = properties?.firstChild(named: "a:tableStyleId")?.textContent
+        guard let id = properties?.firstChild(named: "a:tableStyleId")?.textContent else { return true }
         if let presentation = try? package.mainDocumentPart(),
            let styles = try? presentation.related(by: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles", in: package),
            let root = try? styles.dom() {
-            id = id ?? root[attribute: "def"]
-            if TableStyleXML.definitions(in: root).contains(where: { $0[attribute: "styleId"]?.lowercased() == id?.lowercased() }) { return true }
+            if TableStyleXML.definitions(in: root).contains(where: { $0[attribute: "styleId"]?.lowercased() == id.lowercased() }) { return true }
         }
-        return id == nil || id.flatMap(BuiltInTableStyle.init(id:)) != nil
+        return BuiltInTableStyle(id: id) != nil
     }
 }

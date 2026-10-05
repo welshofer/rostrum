@@ -1,0 +1,295 @@
+[
+  {
+    "id": "absent-cell-style",
+    "fills": 0,
+    "fillsMatch": true,
+    "nativeIntervals": 4,
+    "actualIntervals": 0,
+    "missingPaintKeys": [
+      "(False, 65.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 205.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 30.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 270.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.0400390625
+  },
+  {
+    "id": "empty-cell-style",
+    "fills": 0,
+    "fillsMatch": true,
+    "nativeIntervals": 4,
+    "actualIntervals": 0,
+    "missingPaintKeys": [
+      "(False, 65.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 205.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 390.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 630.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.0400390625
+  },
+  {
+    "id": "empty-cell-borders",
+    "fills": 0,
+    "fillsMatch": true,
+    "nativeIntervals": 4,
+    "actualIntervals": 0,
+    "missingPaintKeys": [
+      "(False, 280.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 420.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 30.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 270.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.008209228515625
+  },
+  {
+    "id": "referenced-fill-only",
+    "fills": 1,
+    "fillsMatch": true,
+    "nativeIntervals": 4,
+    "actualIntervals": 0,
+    "missingPaintKeys": [
+      "(False, 280.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 420.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 390.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 630.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.0081787109375
+  },
+  {
+    "id": "style-left-only",
+    "fills": 1,
+    "fillsMatch": true,
+    "nativeIntervals": 4,
+    "actualIntervals": 1,
+    "missingPaintKeys": [
+      "(False, 495.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 635.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 270.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [
+      {
+        "key": "(True, 30.0, 2.0, (0, 136, 0), 1.0)",
+        "actual": [
+          [
+            495.0,
+            635.0
+          ]
+        ],
+        "native": [
+          [
+            494.5,
+            635.5
+          ]
+        ]
+      }
+    ],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.0400390625
+  },
+  {
+    "id": "style-empty-left-line",
+    "fills": 1,
+    "fillsMatch": true,
+    "nativeIntervals": 3,
+    "actualIntervals": 0,
+    "missingPaintKeys": [
+      "(False, 495.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 635.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 630.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.0400390625
+  },
+  {
+    "id": "style-left-noFill",
+    "fills": 1,
+    "fillsMatch": true,
+    "nativeIntervals": 3,
+    "actualIntervals": 0,
+    "missingPaintKeys": [
+      "(False, 65.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 205.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 270.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.0400390625
+  },
+  {
+    "id": "inline-fill-only",
+    "fills": 1,
+    "fillsMatch": true,
+    "nativeIntervals": 4,
+    "actualIntervals": 0,
+    "missingPaintKeys": [
+      "(False, 65.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 205.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 390.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 630.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.0400390625
+  },
+  {
+    "id": "fill-direct-left",
+    "fills": 1,
+    "fillsMatch": true,
+    "nativeIntervals": 4,
+    "actualIntervals": 1,
+    "missingPaintKeys": [
+      "(False, 280.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 420.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 270.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [
+      {
+        "key": "(True, 30.0, 4.0, (0, 68, 204), 1.0)",
+        "actual": [
+          [
+            280.0,
+            420.0
+          ]
+        ],
+        "native": [
+          [
+            279.5,
+            420.5
+          ]
+        ]
+      }
+    ],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.008209228515625
+  },
+  {
+    "id": "fill-direct-right-noFill",
+    "fills": 1,
+    "fillsMatch": true,
+    "nativeIntervals": 3,
+    "actualIntervals": 0,
+    "missingPaintKeys": [
+      "(False, 280.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 420.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 390.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [],
+    "glyphs": 4,
+    "maximumGlyphOriginError": 0.0081787109375
+  },
+  {
+    "id": "partial-grid-whole",
+    "fills": 4,
+    "fillsMatch": true,
+    "nativeIntervals": 6,
+    "actualIntervals": 2,
+    "missingPaintKeys": [
+      "(False, 495.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 635.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 150.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 270.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [
+      {
+        "key": "(False, 565.0, 3.0, (0, 68, 204), 1.0)",
+        "actual": [
+          [
+            29.0,
+            270.0
+          ]
+        ],
+        "native": [
+          [
+            29.0,
+            270.5
+          ]
+        ]
+      },
+      {
+        "key": "(True, 30.0, 2.0, (0, 136, 0), 1.0)",
+        "actual": [
+          [
+            495.0,
+            635.0
+          ]
+        ],
+        "native": [
+          [
+            494.5,
+            635.5
+          ]
+        ]
+      }
+    ],
+    "glyphs": 16,
+    "maximumGlyphOriginError": 0.1199951171875
+  },
+  {
+    "id": "partial-grid-first-row-fill",
+    "fills": 4,
+    "fillsMatch": true,
+    "nativeIntervals": 6,
+    "actualIntervals": 2,
+    "missingPaintKeys": [
+      "(False, 495.0, 1.0, (0, 0, 0), 1.0)",
+      "(False, 635.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 510.0, 1.0, (0, 0, 0), 1.0)",
+      "(True, 630.0, 1.0, (0, 0, 0), 1.0)"
+    ],
+    "extraPaintKeys": [],
+    "existingEndpointDifferences": [
+      {
+        "key": "(False, 565.0, 3.0, (0, 68, 204), 1.0)",
+        "actual": [
+          [
+            389.0,
+            630.0
+          ]
+        ],
+        "native": [
+          [
+            389.0,
+            630.5
+          ]
+        ]
+      },
+      {
+        "key": "(True, 390.0, 2.0, (0, 136, 0), 1.0)",
+        "actual": [
+          [
+            495.0,
+            635.0
+          ]
+        ],
+        "native": [
+          [
+            494.5,
+            635.5
+          ]
+        ]
+      }
+    ],
+    "glyphs": 16,
+    "maximumGlyphOriginError": 0.1199951171875
+  }
+]

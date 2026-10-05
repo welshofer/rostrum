@@ -9,6 +9,7 @@ public struct TableStyleResolver {
     let definition: XML.Element?
     let stylePart: Part?
     private let enabledFlags: Set<String>
+    private let defaultsMissingCustomBorders: Bool
 
     public init(table: Table, theme: Theme) {
         self.table = table; self.theme = theme
@@ -19,6 +20,54 @@ public struct TableStyleResolver {
         })
         let found = Self.definition(for: table.tbl, package: table.package)
         definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }; stylePart = found.1
+        defaultsMissingCustomBorders = found.0 != nil
+            && (found.1 != nil || flags?.firstChild(named: "a:tableStyle") != nil)
+    }
+
+    /// One live cell-fitting operation needs text regions and root cell attributes,
+    /// not paint/border properties or a materialized array for every table cell.
+    /// Identity lookup remains row-major and operation-local, including aliases.
+    static func fittingStyle(for cell: XML.Element, in table: Table,
+                             theme: Theme) -> (properties: XML.Element, text: XML.Element)? {
+        let properties = table.tbl.firstChild(named: "a:tblPr")
+        let flags = Set(["rtl", "firstRow", "lastRow", "firstCol", "lastCol", "bandRow", "bandCol"].filter { name in
+            properties.map { TableMergeTopology.flag($0, name) } ?? false
+        })
+        let found = definition(for: table.tbl, package: table.package, fittingOnly: true)
+        let definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }
+        var rowCount = 0
+        var position: (row: Int, column: Int)?
+        for node in table.tbl.children {
+            guard case .element(let row) = node, row.name == "a:tr" else { continue }
+            if position == nil {
+                var column = 0
+                for child in row.children {
+                    guard case .element(let candidate) = child, candidate.name == "a:tc" else { continue }
+                    if candidate === cell { position = (rowCount, column); break }
+                    column += 1
+                }
+            }
+            rowCount += 1
+        }
+        guard let position else { return nil }
+        var columnCount = 0
+        for node in table.tbl.firstChild(named: "a:tblGrid")?.children ?? [] {
+            if case .element(let column) = node, column.name == "a:gridCol" { columnCount += 1 }
+        }
+        let text = XML.Element("a:defRPr")
+        for name in regionNames(row: position.row, column: position.column,
+                                rowCount: rowCount, columnCount: columnCount, flags: flags) {
+            if let style = definition?.firstChild(named: "a:" + name)?.firstChild(named: "a:tcTxStyle") {
+                mergeText(style, into: text, theme: theme)
+            }
+        }
+        resolveColors(in: text, theme: theme)
+        let direct = XML.Element("a:tcPr")
+        // Match applyingCell's ordered overlay, including duplicate attributes.
+        for attribute in cell.firstChild(named: "a:tcPr")?.attributes ?? [] {
+            direct[attribute: attribute.name] = attribute.value
+        }
+        return (direct, text)
     }
 
     /// True when an inline, package-owned or recognized native style is resolved.
@@ -49,6 +98,62 @@ public struct TableStyleResolver {
         }
         resolveColors(in: properties)
         return (properties, owner)
+    }
+
+    /// Fill-only, operation-local selection for asset inventory. Reuse region
+    /// winners without constructing borders, text or effective cell properties.
+    struct ImageFillSession {
+        struct Selection {
+            let fill: XML.Element?
+            let owner: Part
+            let namespaces: [String: String]?
+            init(fill: XML.Element?, owner: Part, namespaces: [String: String]? = nil) {
+                self.fill = fill; self.owner = owner; self.namespaces = namespaces
+            }
+        }
+        let resolver: TableStyleResolver
+        private var selections: [Int: Selection] = [:]
+        private let namespaces: [String: String]
+        init(_ resolver: TableStyleResolver, namespaces: [String: String]) {
+            self.resolver = resolver; self.namespaces = namespaces
+        }
+
+        mutating func selected(row: Int, column: Int) -> Selection {
+            let rowScope = TableStyleXML.bindings(resolver.grid.rows[row], inheriting: namespaces)
+            let cell = resolver.grid.cells[row][column]
+            let cellScope = TableStyleXML.bindings(cell, inheriting: rowScope)
+            if let properties = cell.childElements.first(where: { TableStyleXML.isDrawing($0, "tcPr", namespaces: cellScope) }) {
+                let scope = TableStyleXML.bindings(properties, inheriting: cellScope)
+                if let direct = properties.childElements.last(where: { child in
+                    Fill.choiceNames.contains { TableStyleXML.isDrawing(child, String($0.dropFirst(2)), namespaces: scope) }
+                }) {
+                    return Selection(fill: direct, owner: resolver.table.part, namespaces: scope)
+                }
+            }
+            func category(_ index: Int, _ count: Int) -> Int {
+                (index == 0 ? 1 : 0) | (index == count - 1 ? 2 : 0)
+                    | (index == 1 ? 4 : 0) | (index == count - 2 ? 8 : 0) | ((index & 1) << 4)
+            }
+            let key = category(row, resolver.grid.rows.count) | (category(column, resolver.grid.columns.count) << 5)
+            if let previous = selections[key] { return previous }
+            var chosen = Selection(fill: nil, owner: resolver.stylePart ?? resolver.table.part)
+            for name in resolver.regionNames(row: row, column: column) {
+                guard let style = resolver.definition?.firstChild(named: "a:" + name)?.firstChild(named: "a:tcStyle") else { continue }
+                if let fill = style.firstChild(named: "a:fill")?.childElements.first {
+                    chosen = Selection(fill: fill, owner: resolver.stylePart ?? resolver.table.part)
+                } else if let selected = referenceFill(style) {
+                    chosen = selected
+                }
+            }
+            selections[key] = chosen
+            return chosen
+        }
+        private func referenceFill(_ style: XML.Element) -> Selection? {
+            guard let reference = style.firstChild(named: "a:fillRef"),
+                  let index = reference[attribute: "idx"].flatMap(Int.init),
+                  let selected = OutlineImageFills.themeSelection(index: index, theme: resolver.theme) else { return nil }
+            return Selection(fill: selected.element, owner: resolver.theme.part, namespaces: selected.namespaces)
+        }
     }
 
     /// A bounded approximation of a table-background outer shadow. The source
@@ -106,8 +211,14 @@ public struct TableStyleResolver {
     }
 
     private func regionNames(row: Int, column: Int) -> [String] {
-        func enabled(_ flag: String) -> Bool { enabledFlags.contains(flag) }
-        let lastRow = grid.rows.count - 1, lastColumn = grid.columns.count - 1
+        Self.regionNames(row: row, column: column, rowCount: grid.rows.count,
+                         columnCount: grid.columns.count, flags: enabledFlags)
+    }
+
+    private static func regionNames(row: Int, column: Int, rowCount: Int,
+                                    columnCount: Int, flags: Set<String>) -> [String] {
+        func enabled(_ flag: String) -> Bool { flags.contains(flag) }
+        let lastRow = rowCount - 1, lastColumn = columnCount - 1
         let firstR = enabled("firstRow"), lastR = enabled("lastRow")
         let firstC = enabled("firstCol"), lastC = enabled("lastCol")
         var regions = ["wholeTbl"]
@@ -186,6 +297,9 @@ public struct TableStyleResolver {
         let properties = XML.Element("a:tcPr"), text = XML.Element("a:defRPr")
         var fillOwner = stylePart ?? table.part
         var borderRanks: [String: Int] = [:]
+        // An active but unresolved wrapper is not an absent declaration. Keep
+        // its previous behavior rather than supplying an invented black edge.
+        var declaredBorders = Set<String>()
         func rank(_ name: String) -> Int {
             switch name {
             case "wholeTbl": 0
@@ -225,8 +339,9 @@ public struct TableStyleResolver {
                 }
                 if let borders = style.firstChild(named: "a:tcBdr") {
                     for edge in TableCellBorder.allCases {
-                        guard let wrapper = wrapper(borders, region: name, row: row, column: column, edge: edge),
-                              let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
+                        guard let wrapper = wrapper(borders, region: name, row: row, column: column, edge: edge) else { continue }
+                        if defaultsMissingCustomBorders { declaredBorders.insert(edge.rawValue) }
+                        guard let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
                         let copy = line.deepCopy(); copy.name = edge.rawValue
                         properties.removeChildren(named: edge.rawValue); properties.appendElement(copy)
                         borderRanks[edge.rawValue] = rank(name)
@@ -250,11 +365,26 @@ public struct TableStyleResolver {
                 guard rank(name) > (borderRanks[edge.rawValue] ?? -1),
                       let borders = definition?.firstChild(named: "a:\(name)")?
                         .firstChild(named: "a:tcStyle")?.firstChild(named: "a:tcBdr") else { continue }
-                guard let wrapper = wrapper(borders, region: name, row: neighborRow, column: neighborColumn, edge: opposite),
-                      let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
+                guard let wrapper = wrapper(borders, region: name, row: neighborRow, column: neighborColumn, edge: opposite) else { continue }
+                if defaultsMissingCustomBorders { declaredBorders.insert(edge.rawValue) }
+                guard let line = wrapper.firstChild(named: "a:ln") ?? referenceLine(wrapper) else { continue }
                 let copy = line.deepCopy(); copy.name = edge.rawValue
                 properties.removeChildren(named: edge.rawValue); properties.appendElement(copy)
                 borderRanks[edge.rawValue] = rank(name)
+            }
+        }
+        if defaultsMissingCustomBorders {
+            // Native package/inline custom styles retain the black 1 pt grid
+            // only where no applicable edge was declared. Present empty lines,
+            // noFill and unresolved references must not acquire default paint.
+            for edge in [TableCellBorder.left, .right, .top, .bottom]
+                where !declaredBorders.contains(edge.rawValue)
+                    && properties.firstChild(named: edge.rawValue) == nil {
+                properties.appendElement(XML.Element(edge.rawValue, attributes: [("w", "12700")], children: [
+                    .element(XML.Element("a:solidFill", children: [
+                        .element(XML.Element("a:srgbClr", attributes: [("val", "000000")]))
+                    ]))
+                ]))
             }
         }
         return Effective(properties: properties, text: text, fillOwner: fillOwner)
@@ -290,9 +420,16 @@ public struct TableStyleResolver {
     struct RenderSession {
         private let resolver: TableStyleResolver
         private var templates: [Int: Effective] = [:]
+        private var sharedBorders = Set<ObjectIdentifier>()
         private var remainingCost = 1_048_576
 
         init(_ resolver: TableStyleResolver) { self.resolver = resolver }
+
+        /// Only admitted template descendants have the stable read-only lifetime
+        /// needed by the renderer's decoded-paint reuse. Direct overlays bypass it.
+        func ownsSharedBorder(_ line: XML.Element) -> Bool {
+            sharedBorders.contains(ObjectIdentifier(line))
+        }
 
         mutating func effective(row: Int, column: Int) -> Effective {
             // Region membership and whole-table edge selection depend only on
@@ -311,8 +448,14 @@ public struct TableStyleResolver {
                 resolver.resolveColors(in: base.text)
                 // Bound estimated retained nodes/strings as well as the variant count.
                 // A large custom style still renders normally without caching.
-                if let cost = Self.cost(of: [base.properties, base.text], limit: remainingCost) {
-                    templates[key] = base; remainingCost -= cost
+                let borders = TableCellBorder.allCases.compactMap { base.properties.firstChild(named: $0.rawValue) }
+                // Reserve an estimated 512 bytes per border for identity sets,
+                // retained decoded entries and their bounded CSS/pattern strings.
+                // At most 36 templates x 6 borders can be admitted per render.
+                let paintCost = borders.count * 512
+                if let cost = Self.cost(of: [base.properties, base.text], limit: remainingCost - paintCost) {
+                    templates[key] = base; remainingCost -= cost + paintCost
+                    for border in borders { sharedBorders.insert(ObjectIdentifier(border)) }
                 }
             }
             if let direct = resolver.grid.cells[row][column].firstChild(named: "a:tcPr"),
@@ -354,6 +497,10 @@ public struct TableStyleResolver {
     }
 
     private func mergeText(_ source: XML.Element, into target: XML.Element) {
+        Self.mergeText(source, into: target, theme: theme)
+    }
+
+    private static func mergeText(_ source: XML.Element, into target: XML.Element, theme: Theme) {
         for name in ["b", "i"] {
             if let value = source[attribute: name], value != "def" { target[attribute: name] = value == "on" ? "1" : value == "off" ? "0" : value }
         }
@@ -404,6 +551,10 @@ public struct TableStyleResolver {
     }
 
     private func resolveColors(in root: XML.Element) {
+        Self.resolveColors(in: root, theme: theme)
+    }
+
+    private static func resolveColors(in root: XML.Element, theme: Theme) {
         var stack = [root]
         while let node = stack.popLast() {
             if node.name == "a:srgbClr", node.childElements.isEmpty { continue }
@@ -424,20 +575,26 @@ public struct TableStyleResolver {
         }
     }
 
-    static func definition(for table: XML.Element, package: OPCPackage?) -> (XML.Element?, Part?) {
+    static func definition(for table: XML.Element, package: OPCPackage?,
+                           fittingOnly: Bool = false) -> (XML.Element?, Part?) {
         let properties = table.firstChild(named: "a:tblPr")
         if let inline = properties?.firstChild(named: "a:tableStyle") { return (inline, nil) }
-        var desired = properties?.firstChild(named: "a:tableStyleId")?.textContent
+        // tblStyleLst@def is an insertion preference, not an applied style.
+        // Native absent-ID tables use the transparent grid, before direct cells.
+        guard let desired = properties?.firstChild(named: "a:tableStyleId")?.textContent else {
+            let plain = BuiltInTableStyle.noStyleTableGrid
+            return (fittingOnly ? plain.textDefinition() : plain.definition(), nil)
+        }
         if let package, let presentation = try? package.mainDocumentPart(),
            let styles = try? presentation.related(by: RelType.tableStyles, in: package), let root = try? styles.dom() {
-            desired = desired ?? root[attribute: "def"]
-            if let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired?.lowercased() }) { return (definition, styles) }
+            if let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired.lowercased() }) { return (definition, styles) }
         }
         if let package {
             for part in package.parts.values.sorted(by: { $0.uri.value < $1.uri.value }) where part.contentType == ContentType.tableStyles {
-                if let root = try? part.dom(), let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired?.lowercased() }) { return (definition, part) }
+                if let root = try? part.dom(), let definition = TableStyleXML.definitions(in: root).first(where: { $0[attribute: "styleId"]?.lowercased() == desired.lowercased() }) { return (definition, part) }
             }
         }
-        return (desired.flatMap(BuiltInTableStyle.init(id:))?.definition(), nil)
+        let builtIn = BuiltInTableStyle(id: desired)
+        return (fittingOnly ? builtIn?.textDefinition() : builtIn?.definition(), nil)
     }
 }

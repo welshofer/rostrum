@@ -1,0 +1,456 @@
+{
+  "artifactVerification": {
+    "allHashesMatched": true,
+    "artifactPins": 38,
+    "artifactPlusScriptAppPins": 40,
+    "scope": "Read-only hash and exact XML comparisons; root performed GUI and independent reviewer approved manual receipt. No builds/GUI/source changes in docs lane."
+  },
+  "hostedCI": {
+    "checkpoint": "8d1714b2f66987cd737fdd22befe7031d7ec3f50",
+    "checks": [
+      {
+        "conclusion": "failure",
+        "id": 111527728994,
+        "name": "GitGuardian Security Checks",
+        "status": "completed",
+        "url": "https://github.com/welshofer/rostrum/runs/111527728994"
+      },
+      {
+        "conclusion": "skipped",
+        "id": 111527701610,
+        "name": "Linux (Swift ${{ matrix.swift }})",
+        "status": "completed",
+        "url": "https://github.com/welshofer/rostrum/actions/runs/37233423808/job/111527701610"
+      },
+      {
+        "conclusion": "success",
+        "id": 111527700710,
+        "name": "macOS (PR gate)",
+        "status": "completed",
+        "url": "https://github.com/welshofer/rostrum/actions/runs/37233423808/job/111527700710"
+      },
+      {
+        "conclusion": "skipped",
+        "id": 111527690537,
+        "name": "macOS (PR gate)",
+        "status": "completed",
+        "url": "https://github.com/welshofer/rostrum/actions/runs/37233419824/job/111527690537"
+      },
+      {
+        "conclusion": "success",
+        "id": 111527689896,
+        "name": "Linux (Swift 6.0)",
+        "status": "completed",
+        "url": "https://github.com/welshofer/rostrum/actions/runs/37233419824/job/111527689896"
+      },
+      {
+        "conclusion": "success",
+        "id": 111527689708,
+        "name": "Linux (Swift 6.1)",
+        "status": "completed",
+        "url": "https://github.com/welshofer/rostrum/actions/runs/37233419824/job/111527689708"
+      }
+    ],
+    "completedSnapshot": {
+      "path": "/tmp/rostrum-fidelity13-github-check-runs-completed.json",
+      "sha256": "9e3dede5a1acfbb1fe6f02e42a90be40d6726a5045abced6b5f032f1afd58a8b"
+    },
+    "gitGuardian": {
+      "checkRun": 111527728994,
+      "classification": "Both historical occurrences are the same SHA256 of named TemplateAuthoring.swift source, not credentials. Check remains failed; no bypass/dismissal.",
+      "classificationReceipt": {
+        "path": "/tmp/rostrum-fidelity13-gitguardian-classification.json",
+        "sha256": "e08cd8ceb9debfd56a17830c527a6d840ef8d6cc34dba9a9a474314d54b6452e"
+      },
+      "conclusion": "failure",
+      "independentlyRecomputed": true,
+      "occurrences": 2
+    },
+    "status": "macOS PR gate, Linux Swift6.0 build/README and Linux Swift6.1 tests passed"
+  },
+  "limits": [
+    "Hashes recorded after inspection and before export; unchanged through export. No claim for source state before inspection.",
+    "Slide7 differs in root viewport plus18 childless empty text transforms; all painting nodes and remaining XML exact. No raw or viewport-only SVG identity.",
+    "Export text verification unescapes only pipe escapes and specified line continuations;165/169 source text nodes retained.",
+    "No new PowerPoint capture, whole-deck native raster or native autofit choice. Marker correction remains separate future work."
+  ],
+  "manual": {
+    "app": "/tmp/lectern-fidelity13-xcode/Build/Products/Debug/Lectern.app/Contents/MacOS/Lectern",
+    "appSHA256": "f4da5419f9349c444baa4d1ea4cf4453ae6b0e2f96c6a45468a538cc8a244b4c",
+    "observations": [
+      "Both variants explicitly selected; each displayed all 74 checks passed and seven slides.",
+      "Both inspectors showed seven loaded thumbnail images. Default initial screenshot had two transient loading placeholders; subsequent screenshot and accessibility state showed all seven loaded.",
+      "Both actual folder exports displayed EXPORTED 7 slides, 0 media files, 0 chart CSVs."
+    ],
+    "observedBy": "Root through native CUA controls: Library Lab Run Demo, Inspect Result, and Export Everything native folder picker.",
+    "publishedCheckpoint": "8d1714b",
+    "retainedIssues": [
+      "Initial literal source-text substring assertion rejected Markdown pipe escapes and line continuations. Corrected verification decodes only those two syntax forms, retaining all remaining characters. Original verification script retained.",
+      "Initial viewport-only SVG assertion also failed: all 18 empty text elements have different transforms. Their tags, absence of children/text, and every other attribute are checked explicitly; all painting elements remain exact. The attempted verification is retained; no raw or viewport-only SVG identity is claimed."
+    ],
+    "scope": "Manual workflow acceptance and file verification. Source hashes were taken after inspection and before export, then verified after export. No new PowerPoint capture, whole-deck native raster claim, or native autofit-choice claim.",
+    "script": "/tmp/lectern-fidelity13-manual/verify-paragraph-workflows.py",
+    "scriptSHA256": "fb36bc9db206ad9b06a71198a0362e8c2a7746ac336f4cca224362eb8f4c9055",
+    "sourceCommit": "2e57a2d",
+    "status": "PASS_FOR_BOTH_PARAGRAPH_UI_WORKFLOWS",
+    "variants": [
+      {
+        "changedPackagePartsAgainstGate": [
+          "ppt/slides/slide1.xml"
+        ],
+        "checks": 74,
+        "exportContainsEveryNonemptySourceTextNodeAfterMarkdownUnescape": true,
+        "exportSummaryObserved": "7 slides \u00b7 0 media files \u00b7 0 chart CSVs",
+        "files": {
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/extracted/paragraphLayout/paragraphLayout.md": "e21ef0b9c95daf30de4256412828de02a9efc4b3ba3ea0f99de26122783f852b",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/native-boundary-reference.json": "97db4199372c926a4c95779a96ec3b76ef83c43230691f573793b0bb6633a8de",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/native-break-reference.json": "68612a081d10f893cf29b44b42d004a5cc8c99f6543ad76eb9f14ecc3e9296ec",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/native-glyph-reference.json": "1731d4deccb0698b67f2a6bd25eb3b99afe798bde2508bb738eb1d744a2b6371",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/native-ligature-reference.json": "5693cec65e3b34e29fa8366857be5bdbbe22562a1ce5c45d5716758280c78b5d",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/native-spacing-reference.json": "ae5c7218853037c8e9bc92a467f658863afbdcb84b5345992e02f45aa20ac23e",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/paragraphLayout-before.pptx": "76cf48e1e1d8be752127dcb86913f0a610da27994d4486881285be42421d7301",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/paragraphLayout.pptx": "6404e3dc4b9844ace2bcc6fb722569c6200589362e7ecb184e78bf5ae3964f43",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/previews/slide-01.svg": "e724668eed6437a9ef721e2d55f75bcc454ec2f38ae4ae5ec87b24a7dd99ee7d",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/previews/slide-02.svg": "dc63193a1aa8477d95354f9a28d9db7909c79ab98cbb4d4382c2a8b0e342f836",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/previews/slide-03.svg": "f168338383207de94565f6ac8d4e0f6819d3bc7564b9c93a82824aa26f86dfb6",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/previews/slide-04.svg": "7e40041e661e371e0a8e5c6142df247e1772369b357811abae02f1a38e73496d",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/previews/slide-05.svg": "bc6de87b5c1092d2fad107426f09297b5cf63baae93b0a2bf8c988080e3747ca",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/previews/slide-06.svg": "edeffe9590bfd353fd52f7ac9d8a6b2d46b258365c834b1a23358e2ed4282c0c",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/previews/slide-07.svg": "bc6d003807143774996b2690e1c0392fb46ea255af84572d5f45e04dfaed3fd5",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/report.json": "6c8beb037800c68f6d0987d307b644ea5853240ef867d0f6c0a01335e41061b5",
+          "/tmp/lectern-fidelity13-manual/paragraph-default-export/paragraphLayout/paragraphLayout.md": "e21ef0b9c95daf30de4256412828de02a9efc4b3ba3ea0f99de26122783f852b",
+          "/tmp/lectern-fidelity13-paint-verified/alternative-false-976D8DD3-EACC-4411-9EC1-16348544C865/paragraphLayout.pptx": "5546b1f7e6d056ab5e4708bf25b2bd1edbaf068a6b38bdeb9e33ab7bf7bcb4d3",
+          "/tmp/lectern-fidelity13-paint-verified/alternative-false-976D8DD3-EACC-4411-9EC1-16348544C865/slide-07.svg": "54e489d89e59b23198f7fe7a91e6245448186661f7fe29aaa3158c3e4aa1abbd"
+        },
+        "findings": 0,
+        "inspectorPreviewsObserved": 7,
+        "manualAndRecipeMarkdownIdentical": true,
+        "markdownUnescapeScope": "Only backslash pipe escapes and backslash newline plus two-space continuations are decoded; all remaining characters are compared literally",
+        "options": {
+          "accentHex": "276D89",
+          "alternative": false,
+          "sampleSize": 4,
+          "text": "Rostrum in Lectern"
+        },
+        "slide2Through7XMLAndAllOtherPartsMatchGate": true,
+        "slide7AllPaintingElementsAndOtherXMLIdentical": true,
+        "slide7RawSVGIdentity": false,
+        "slide7SVGDifferences": {
+          "emptyTextTransforms": [
+            {
+              "elementIndex": 9,
+              "gate": "translate(548640,1645920) scale(12700)",
+              "manual": "translate(548640,1633220) scale(12700)"
+            },
+            {
+              "elementIndex": 15,
+              "gate": "translate(621792,2788920) scale(12700)",
+              "manual": "translate(621792,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 23,
+              "gate": "translate(2514600,2788920) scale(12700)",
+              "manual": "translate(2514600,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 33,
+              "gate": "translate(4389120,1645920) scale(12700)",
+              "manual": "translate(4389120,1633220) scale(12700)"
+            },
+            {
+              "elementIndex": 39,
+              "gate": "translate(4462272,2788920) scale(12700)",
+              "manual": "translate(4462272,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 47,
+              "gate": "translate(6355080,2788920) scale(12700)",
+              "manual": "translate(6355080,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 57,
+              "gate": "translate(8229600,1645920) scale(12700)",
+              "manual": "translate(8229600,1633220) scale(12700)"
+            },
+            {
+              "elementIndex": 63,
+              "gate": "translate(8302752,2788920) scale(12700)",
+              "manual": "translate(8302752,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 71,
+              "gate": "translate(10195560,2788920) scale(12700)",
+              "manual": "translate(10195560,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 81,
+              "gate": "translate(548640,4114800) scale(12700)",
+              "manual": "translate(548640,4102100) scale(12700)"
+            },
+            {
+              "elementIndex": 90,
+              "gate": "translate(621792,5257800) scale(12700)",
+              "manual": "translate(621792,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 98,
+              "gate": "translate(2514600,5257800) scale(12700)",
+              "manual": "translate(2514600,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 108,
+              "gate": "translate(4389120,4114800) scale(12700)",
+              "manual": "translate(4389120,4102100) scale(12700)"
+            },
+            {
+              "elementIndex": 117,
+              "gate": "translate(4462272,5257800) scale(12700)",
+              "manual": "translate(4462272,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 125,
+              "gate": "translate(6355080,5257800) scale(12700)",
+              "manual": "translate(6355080,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 135,
+              "gate": "translate(8229600,4114800) scale(12700)",
+              "manual": "translate(8229600,4102100) scale(12700)"
+            },
+            {
+              "elementIndex": 141,
+              "gate": "translate(8302752,5257800) scale(12700)",
+              "manual": "translate(8302752,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 149,
+              "gate": "translate(10195560,5257800) scale(12700)",
+              "manual": "translate(10195560,5245100) scale(12700)"
+            }
+          ],
+          "rootViewport": "manual 640x360 versus raw gate 1280x720"
+        },
+        "slides": 7,
+        "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-7758472F-0E5C-43A0-807E-1FDB473004D0/paragraphLayout.pptx",
+        "sourceSHA256": "6404e3dc4b9844ace2bcc6fb722569c6200589362e7ecb184e78bf5ae3964f43",
+        "sourceTextNodes": 165,
+        "sourceUnchangedBetweenInspectorAndCompletedExport": true,
+        "variant": "default"
+      },
+      {
+        "changedPackagePartsAgainstGate": [
+          "ppt/slides/slide1.xml"
+        ],
+        "checks": 74,
+        "exportContainsEveryNonemptySourceTextNodeAfterMarkdownUnescape": true,
+        "exportSummaryObserved": "7 slides \u00b7 0 media files \u00b7 0 chart CSVs",
+        "files": {
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/extracted/paragraphLayout/paragraphLayout.md": "169818e97e00a3c2e1d67c9b381ee4afc499990cf476f0173421ebca071945aa",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/native-boundary-reference.json": "97db4199372c926a4c95779a96ec3b76ef83c43230691f573793b0bb6633a8de",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/native-break-reference.json": "68612a081d10f893cf29b44b42d004a5cc8c99f6543ad76eb9f14ecc3e9296ec",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/native-glyph-reference.json": "1731d4deccb0698b67f2a6bd25eb3b99afe798bde2508bb738eb1d744a2b6371",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/native-ligature-reference.json": "5693cec65e3b34e29fa8366857be5bdbbe22562a1ce5c45d5716758280c78b5d",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/native-spacing-reference.json": "ae5c7218853037c8e9bc92a467f658863afbdcb84b5345992e02f45aa20ac23e",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/paragraphLayout-before.pptx": "76cf48e1e1d8be752127dcb86913f0a610da27994d4486881285be42421d7301",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/paragraphLayout.pptx": "83be7ac39884e0cff60f477117098cbd4954961b28d0063d4e1470ae1875ba77",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/previews/slide-01.svg": "dba186547068ae1e93de8e0ef763a7dfe272f9d6108b1bfebf0cdd2627de14f3",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/previews/slide-02.svg": "3ba86e3aec7e1bb8e0eef3b5228d843944d1ed48e1f8ad0230c11d49e3e115c9",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/previews/slide-03.svg": "ef5cf53e0b1f90b79b013e8cefe1fd1b09bf848c1fbdb6b0893eb3aa66b5f4d3",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/previews/slide-04.svg": "28f174bc32c9a403bad4af1925ad68fb4a3d4dcfa06a7df82f0f223973cd0a13",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/previews/slide-05.svg": "6ca60dddfa8fa3d41ef9fd81b96881ff723a53ab6ae8363dd0e5f0ca63a1faee",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/previews/slide-06.svg": "33b88bb7dea90c0c19a7877cf8f6b128d8522c19f342a0192e3f0278d18c798c",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/previews/slide-07.svg": "71ab5f9593323ed329558246306d15804e4e19e247666fbab71d2f3022fe8000",
+          "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/report.json": "93b3e2f7f2b9d2cb718d2db49c80dbeafc891ba78647113fb99c62301c9edc6e",
+          "/tmp/lectern-fidelity13-manual/paragraph-alternative-export/paragraphLayout/paragraphLayout.md": "169818e97e00a3c2e1d67c9b381ee4afc499990cf476f0173421ebca071945aa",
+          "/tmp/lectern-fidelity13-paint-verified/alternative-true-96748C96-CA94-492D-B040-DE6B6979C9CD/paragraphLayout.pptx": "08da250b13304ff138bd44b04fa4f726680806c9c4b5d292bc7de2661210f2d9",
+          "/tmp/lectern-fidelity13-paint-verified/alternative-true-96748C96-CA94-492D-B040-DE6B6979C9CD/slide-07.svg": "a9baec01a884f4c089b707824d667212ee8cbd2e543ae5bd88cbb70cae6841fc"
+        },
+        "findings": 0,
+        "inspectorPreviewsObserved": 7,
+        "manualAndRecipeMarkdownIdentical": true,
+        "markdownUnescapeScope": "Only backslash pipe escapes and backslash newline plus two-space continuations are decoded; all remaining characters are compared literally",
+        "options": {
+          "accentHex": "276D89",
+          "alternative": true,
+          "sampleSize": 4,
+          "text": "Rostrum in Lectern"
+        },
+        "slide2Through7XMLAndAllOtherPartsMatchGate": true,
+        "slide7AllPaintingElementsAndOtherXMLIdentical": true,
+        "slide7RawSVGIdentity": false,
+        "slide7SVGDifferences": {
+          "emptyTextTransforms": [
+            {
+              "elementIndex": 9,
+              "gate": "translate(548640,1645920) scale(12700)",
+              "manual": "translate(548640,1633220) scale(12700)"
+            },
+            {
+              "elementIndex": 15,
+              "gate": "translate(621792,2788920) scale(12700)",
+              "manual": "translate(621792,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 23,
+              "gate": "translate(2514600,2788920) scale(12700)",
+              "manual": "translate(2514600,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 33,
+              "gate": "translate(4389120,1645920) scale(12700)",
+              "manual": "translate(4389120,1633220) scale(12700)"
+            },
+            {
+              "elementIndex": 39,
+              "gate": "translate(4462272,2788920) scale(12700)",
+              "manual": "translate(4462272,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 47,
+              "gate": "translate(6355080,2788920) scale(12700)",
+              "manual": "translate(6355080,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 57,
+              "gate": "translate(8229600,1645920) scale(12700)",
+              "manual": "translate(8229600,1633220) scale(12700)"
+            },
+            {
+              "elementIndex": 63,
+              "gate": "translate(8302752,2788920) scale(12700)",
+              "manual": "translate(8302752,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 71,
+              "gate": "translate(10195560,2788920) scale(12700)",
+              "manual": "translate(10195560,2776220) scale(12700)"
+            },
+            {
+              "elementIndex": 81,
+              "gate": "translate(548640,4114800) scale(12700)",
+              "manual": "translate(548640,4102100) scale(12700)"
+            },
+            {
+              "elementIndex": 90,
+              "gate": "translate(621792,5257800) scale(12700)",
+              "manual": "translate(621792,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 98,
+              "gate": "translate(2514600,5257800) scale(12700)",
+              "manual": "translate(2514600,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 108,
+              "gate": "translate(4389120,4114800) scale(12700)",
+              "manual": "translate(4389120,4102100) scale(12700)"
+            },
+            {
+              "elementIndex": 117,
+              "gate": "translate(4462272,5257800) scale(12700)",
+              "manual": "translate(4462272,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 125,
+              "gate": "translate(6355080,5257800) scale(12700)",
+              "manual": "translate(6355080,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 135,
+              "gate": "translate(8229600,4114800) scale(12700)",
+              "manual": "translate(8229600,4102100) scale(12700)"
+            },
+            {
+              "elementIndex": 141,
+              "gate": "translate(8302752,5257800) scale(12700)",
+              "manual": "translate(8302752,5245100) scale(12700)"
+            },
+            {
+              "elementIndex": 149,
+              "gate": "translate(10195560,5257800) scale(12700)",
+              "manual": "translate(10195560,5245100) scale(12700)"
+            }
+          ],
+          "rootViewport": "manual 640x360 versus raw gate 1280x720"
+        },
+        "slides": 7,
+        "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/paragraphLayout-5D962ACB-A123-4C34-8E54-23D34A8ACDC6/paragraphLayout.pptx",
+        "sourceSHA256": "83be7ac39884e0cff60f477117098cbd4954961b28d0063d4e1470ae1875ba77",
+        "sourceTextNodes": 169,
+        "sourceUnchangedBetweenInspectorAndCompletedExport": true,
+        "variant": "alternative"
+      }
+    ]
+  },
+  "manualReceipt": {
+    "path": "/tmp/lectern-fidelity13-manual/manual-paragraph-verification.json",
+    "sha256": "1651d0a6861c5cdf53573cbbaa8b8b83acbb1870a1cf1af13fc77f32f7e13694"
+  },
+  "packageDifferenceProof": [
+    {
+      "changedParts": [
+        "ppt/slides/slide1.xml"
+      ],
+      "classification": "Title, two body paragraphs (sampleSize4 versus2), caption; all other XML content and package parts exact.",
+      "textChanges": [
+        {
+          "elementIndex": 35,
+          "gateText": "Native glyph painting",
+          "manualText": "Rostrum in Lectern"
+        },
+        {
+          "elementIndex": 91,
+          "gateText": "Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. A short last line.",
+          "manualText": "Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. A short last line."
+        },
+        {
+          "elementIndex": 147,
+          "gateText": "Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. A short last line.",
+          "manualText": "Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. A short last line."
+        },
+        {
+          "elementIndex": 170,
+          "gateText": "2 sentences | 5.7-inch columns | regular DejaVu Sans\nFinal paragraph lines retain natural spacing. Bounded left-to-right Latin text only.",
+          "manualText": "4 sentences | 5.7-inch columns | regular DejaVu Sans\nFinal paragraph lines retain natural spacing. Bounded left-to-right Latin text only."
+        }
+      ],
+      "variant": "default"
+    },
+    {
+      "changedParts": [
+        "ppt/slides/slide1.xml"
+      ],
+      "classification": "Title, two body paragraphs (sampleSize4 versus2), caption; all other XML content and package parts exact.",
+      "textChanges": [
+        {
+          "elementIndex": 35,
+          "gateText": "Native glyph painting",
+          "manualText": "Rostrum in Lectern"
+        },
+        {
+          "elementIndex": 91,
+          "gateText": "Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. A short last line.",
+          "manualText": "Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. A short last line."
+        },
+        {
+          "elementIndex": 147,
+          "gateText": "Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. A short last line.",
+          "manualText": "Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. Careful spacing makes each line easy to follow while preserving the words and their individual colors. A short last line."
+        },
+        {
+          "elementIndex": 170,
+          "gateText": "2 sentences | 4.5-inch columns | regular DejaVu Sans\nFinal paragraph lines retain natural spacing. Bounded left-to-right Latin text only.",
+          "manualText": "4 sentences | 4.5-inch columns | regular DejaVu Sans\nFinal paragraph lines retain natural spacing. Bounded left-to-right Latin text only."
+        }
+      ],
+      "variant": "alternative"
+    }
+  ],
+  "previousIntegration": {
+    "path": "/Users/welshofer/.codex/worktrees/rostrum-metadata/rostrum/docs/benchmarks/2026-10-04-cell-fitting-integration-verification.json",
+    "sha256": "04e7bc0b5733c8c09b266b3014e7776712eb228d92a5ac1d65409ec4aff7f291"
+  },
+  "publishedCheckpoint": "8d1714b2f66987cd737fdd22befe7031d7ec3f50",
+  "schemaVersion": 1,
+  "status": "BOTH_MANUAL_PARAGRAPH_WORKFLOWS_PASS"
+}

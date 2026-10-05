@@ -1,0 +1,630 @@
+[
+  {
+    "name": "unstyled-between-12",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": null
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 0,
+    "x": 30,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "br6-between-12",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 6
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 0,
+    "x": 380,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "br36-between-12",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 0,
+    "x": 30,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "consecutive-36-6",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          },
+          {
+            "kind": "break",
+            "size": 6
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 0,
+    "x": 380,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "consecutive-6-36",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 6
+          },
+          {
+            "kind": "break",
+            "size": 36
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 0,
+    "x": 30,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "leading-br36",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "break",
+            "size": 36
+          },
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 0,
+    "x": 380,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "trailing-br36-end6",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          }
+        ],
+        "default": null,
+        "end": 6,
+        "spacing": null
+      },
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 1,
+    "x": 30,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "trailing-br36-end36",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          }
+        ],
+        "default": null,
+        "end": 36,
+        "spacing": null
+      },
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 1,
+    "x": 380,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "unstyled-consecutive-local24",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": null
+          },
+          {
+            "kind": "break",
+            "size": null
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": 24,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 1,
+    "x": 30,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "unstyled-consecutive-local18",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": null
+          },
+          {
+            "kind": "break",
+            "size": null
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": 18,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 1,
+    "x": 380,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "unstyled-consecutive-list24",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": null
+          },
+          {
+            "kind": "break",
+            "size": null
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "listSize": 24,
+    "page": 1,
+    "x": 30,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "empty-paragraph-end36",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      },
+      {
+        "nodes": [],
+        "default": null,
+        "end": 36,
+        "spacing": null
+      },
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 1,
+    "x": 380,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "empty-paragraph-end6",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      },
+      {
+        "nodes": [],
+        "default": null,
+        "end": 6,
+        "spacing": null
+      },
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "page": 2,
+    "x": 30,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "br36-exact12",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "points": 12
+        }
+      }
+    ],
+    "page": 2,
+    "x": 380,
+    "y": 50,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "br36-150percent",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": {
+          "percent": 150
+        }
+      }
+    ],
+    "page": 2,
+    "x": 30,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "center-consecutive-36-6",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          },
+          {
+            "kind": "break",
+            "size": 6
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "anchor": "ctr",
+    "page": 2,
+    "x": 380,
+    "y": 270,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "bottom-trailing-br36-end6",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          }
+        ],
+        "default": null,
+        "end": 6,
+        "spacing": null
+      },
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "Z",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "anchor": "b",
+    "page": 2,
+    "x": 30,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  },
+  {
+    "name": "table-consecutive-36-6",
+    "paragraphs": [
+      {
+        "nodes": [
+          {
+            "kind": "run",
+            "text": "A",
+            "size": 12
+          },
+          {
+            "kind": "break",
+            "size": 36
+          },
+          {
+            "kind": "break",
+            "size": 6
+          },
+          {
+            "kind": "run",
+            "text": "B",
+            "size": 12
+          }
+        ],
+        "default": null,
+        "end": null,
+        "spacing": null
+      }
+    ],
+    "table": true,
+    "page": 2,
+    "x": 380,
+    "y": 490,
+    "width": 290,
+    "height": 160
+  }
+]

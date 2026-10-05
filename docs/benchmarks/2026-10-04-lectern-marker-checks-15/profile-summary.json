@@ -1,0 +1,11 @@
+{
+  "purpose": "Inclusive attribution, not predicted speedup or controlled latency",
+  "profile": "/Users/welshofer/Developer/rostrum/.build/marker-audit15/baseline-profile/sample.txt",
+  "profileSHA256": "008bc8367c3ce11903b0c4dc6c7f68a142aeac5a12fbaf8895b3dfa7ca355077",
+  "mainThreadSamplesIncludingStartup": 2182,
+  "applicationMainSamples": 2041,
+  "samplesInSVGParseBelowMarkerGlyphAudit": 1221,
+  "fractionOfApplicationSamples": 0.5982361587457129,
+  "concurrentActivity": "Other worker library tests and Release build could overlap; no comparative measurement claimed",
+  "singleRunSeconds": 2.561851125
+}

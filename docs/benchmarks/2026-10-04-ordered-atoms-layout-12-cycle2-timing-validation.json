@@ -1,0 +1,67 @@
+{
+  "checks": [
+    {
+      "scope": "canonical",
+      "scenario": "table-200x50",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "canonical",
+      "scenario": "table-20x10",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "canonical",
+      "scenario": "shaped-table-100x20",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "canonical",
+      "scenario": "richtext-fit",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "canonical",
+      "scenario": "slides-10",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "supplement",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "supplement",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "supplement",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    },
+    {
+      "scope": "late-combining",
+      "scenario": "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx",
+      "retainedPairs": 10,
+      "savedOutputConstant": true
+    }
+  ],
+  "retainedProcesses": 180,
+  "totalIncludingWarmups": 198,
+  "allBinaryRunnerSourcePinsMatch": true,
+  "candidateSourceCommit": "8503f44b31115488c915fa61449a9a3922cca876",
+  "candidateMeasuredAsFrozenUncommittedPatch": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "6e4e1567395526cef9bddd7d755e8a847c428394cfdf2b55e8295fb15a7da055",
+    "Tests/RostrumTests/LayoutOrderedGlyphRangesTests.swift": "af0fe65c9a876ee0b6b45a6d44f2dd5e20812977ecc2b5b6224ff5a80594fd11"
+  }
+}

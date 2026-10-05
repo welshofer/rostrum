@@ -1,0 +1,227 @@
+{
+  "status": "prototype; no formal timing or memory claim",
+  "baseline": "dc40a98b09d0db7c132c82c9e8f41b12dd4c5638",
+  "branch": "codex/burndown/table-paint-reuse20-20261004",
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/TableBorderPaintCache.swift": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "cf6fe3ce7a1659644ab6ba7c60d6dd549e3e202d06c6c550a0bbdb96a0d18d4d",
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "0bd173591ba750f25f879da2aad78f2c13ff65bea670200ea2ed319e5ad51a81",
+    "Tests/RostrumTests/TableBorderPaintReuseTests.swift": "070bfa5bf549d21bcb36889c8e661ce0a6784e41724428a056660fed89cf5e8c"
+  },
+  "retainedSHA256": {
+    ".build/table-paint-reuse20/probe.swift": "913532b743c524b7b78112e884459340a5b6d70675e6d499a48e6dbb05fb1b4c",
+    ".build/table-paint-reuse20/proof.py": "cdc6267bc00e45806418d444e704b05e7f51ac999ff5676473dcde6316941a64",
+    ".build/table-paint-reuse20/baseline-Rostrum.o": "2b6813f35148e8fd54923bb89d9e006fb86c85ce1beadb3fe1354191044cf1a5",
+    ".build/table-paint-reuse20/baseline-probe": "c5dee62c396338ef8ffb3cc2f86810a0a97422f11f93f57e7465ab3039c660bc",
+    ".build/table-paint-reuse20/candidate-probe": "16b6692af2098e42ac87a2cfb7eb2f5867ecd9abcab37acc0147aeedbc34e212",
+    ".build/table-paint-reuse20/calls-before.log": "8852b470c60641d6d138e061ef8aefd838c5a93480a5b8c752c5b7e1c4bed474",
+    ".build/table-paint-reuse20/calls-after.log": "a03c3a7d59d0aa60c8e839d8c7739f855ec29a375f3015839bcc06c7535374ce",
+    ".build/table-paint-reuse20/diagnostic-preservation.json": "76172e11cf9d3e7bcf8a20090af45b4df76e589f805771ea7261fd331aca3f0c",
+    ".build/table-paint-reuse20/diagnostic-after-preservation.json": "d3ef668baf1cae08d4ca4d12668da54eb04161f9455ba5ef7b71056df1e9af33",
+    ".build/table-paint-reuse20/proof.json": "7fa92375a0a367fdd56560eb100dce6556659780a76af19f27c261d0350da937",
+    ".build/table-paint-reuse20/focused.log": "c19ea26173ef59ec3ba8dc5754b7819aa3edce66c77808eb7ab33346f6a676a0",
+    ".build/table-paint-reuse20/focused-final.log": "0e0400ca696a4a1a71ce3a13f6a35c23faac499b2f9c2982f50a874bcaeebbdf",
+    ".build/table-paint-reuse20/full.log": "8c3d02bcd82d0be82349ec4e726981b74fa96f1e84c38cb36983674a6ba6c298",
+    ".build/table-paint-reuse20/proof-final.log": "105d04e1cc0d588a79bc47c5c0ee2cdb467ba42e9abae39be97a512fd329d6b4",
+    ".build/table-paint-reuse20/candidate-Rostrum.o": "8f914f2f682d5c7aab9812d9c04e03b0c765bad53f0d2d47a5d7e393391af90d",
+    ".build/table-paint-reuse20/baseline-sources.tar": "fcaaec2b5a6e5110279fa9c65f99283925189501a8ebd51f5bf50e71db04ec9c",
+    ".build/table-paint-reuse20/candidate-sources.tar": "d6f38b4fb9289394c0bdb5fcbcf9fb1dcfc4e660010227fd56d7fc566e3ae4dd"
+  },
+  "candidateObjectSHA256": "8f914f2f682d5c7aab9812d9c04e03b0c765bad53f0d2d47a5d7e393391af90d",
+  "diagnostics": {
+    "cellsPerControl": 10000,
+    "callsPerControl": 40250,
+    "nilPerControl": 20000,
+    "sharedControls": {
+      "names": [
+        "partial-custom",
+        "builtin-grid",
+        "empty",
+        "noFill"
+      ],
+      "beforeDecodes": 20250,
+      "distinctNodes": 84,
+      "afterDecodes": 84
+    },
+    "directUnique": {
+      "beforeDecodes": 20250,
+      "distinctNodes": 20250,
+      "afterDecodes": 20250
+    },
+    "instrumentedArtifactsExact": 15
+  },
+  "proof": {
+    "scope": "Untimed exact same-input SVG, packages and ordered problems across frozen19 and20 prototype; SVG includes every text/font attribute",
+    "cases": [
+      {
+        "name": "native-table-default-builtin-v1",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/builtin/native-table-default-builtin-v1.pptx",
+        "inputSHA256": "3583235fd4a0caf7be17fad4e79d250ac1098e0a4f64ce462c9a396d91a5873b",
+        "files": {
+          "saved.pptx": "98f5852c774cef00be3ba9982c51735d8430a345c608587605a2c20d8717b68b",
+          "slide-0.svg": "770de0dcee6b65d9004d26fa0d444ce2c710f449e9bafa494bd284779018d39c",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "native-table-default-custom-v1",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableDefault/custom/native-table-default-custom-v1.pptx",
+        "inputSHA256": "5506d837f8a12b4f6a54cca287c9f2943b22d2537270aa084e83792aad65652e",
+        "files": {
+          "saved.pptx": "fd69ced7b0710600699774615ee86f8ad598bed68265fb4950d97dbc5723defd",
+          "slide-0.svg": "d90d711d4341968fb1683cd1b99e6fae0c79ee5e3257c097338b480fe0aaac30",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "native-table-joins-v1",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoins/native-table-joins-v1.pptx",
+        "inputSHA256": "23b9cde5274eda35b5278042caf7a9b9d49f5557a4038be1c4646ffd73d42ede",
+        "files": {
+          "saved.pptx": "99b6c053c9110a249c83ccb6d7c9411890b1fc17fa375ea11ed13c4b4c40a414",
+          "slide-0.svg": "d163b40edbc7f89f131ee012d858afcab8ac078ec33a920e2c3269d404489f39",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "native-table-joins18-v1",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableJoinProfiles/native-table-joins18-v1.pptx",
+        "inputSHA256": "39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e",
+        "files": {
+          "saved.pptx": "50237402c019b86e2c6dad22971a639b500c8688a000c9758ece7df878e1611d",
+          "slide-0.svg": "fcb6c5b1219500af40a6e09115b0ebdc1bd3bc6a01963ba0e3bc9e085c6f5d2a",
+          "slide-1.svg": "2bf48efcddcee0165e7cefc32330ab9342dc1765275cbe14e35ab58a0dbe385a",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0",
+          "issues-1.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "native-table-style-fallback19-v1",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/Fixtures/NativeTableStyleFallback/native-table-style-fallback19-v1.pptx",
+        "inputSHA256": "e261b6864780fb021e914dfcd4a0e19b3aae9825cc33b94b0168933dcf057268",
+        "files": {
+          "saved.pptx": "203ed802668fa609e918a93db60c6f025a5084ba079395e9b000655c11df90ae",
+          "slide-0.svg": "2de56851f8a7e5eed6073cdc37299bca5aefaf398a35214f689ec60aefdfffd7",
+          "slide-1.svg": "9114ac5533aad2e8b183173aafcc29d04e937fcd78346fb5f90033a9367241de",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0",
+          "issues-1.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "partial-custom",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/partial-custom/saved.pptx",
+        "inputSHA256": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f",
+        "files": {
+          "saved.pptx": "add8252fd98af2e35750905397019ced50cb71911bc642b0773c23d06c004e2f",
+          "slide-0.svg": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "builtin-grid",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/builtin-grid/saved.pptx",
+        "inputSHA256": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e",
+        "files": {
+          "saved.pptx": "6ffdd1233f7b9656ce600b3bc574bd6e99ab029490c8c4c629f1dbbea84a898e",
+          "slide-0.svg": "f219269d2e153e4ad842ff2284f0c7f08175fd8ef0f58c590b93d856d25d64fa",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "direct-unique",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/direct-unique/saved.pptx",
+        "inputSHA256": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421",
+        "files": {
+          "saved.pptx": "f16ced714ead1261a64319afb383b4653eff556bfb737de4d63d1756c7203421",
+          "slide-0.svg": "4eeb09cfe383821a677742f4c44dd2567315ba10d551c65d11652d2ac09a7276",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "empty",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/empty/saved.pptx",
+        "inputSHA256": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726",
+        "files": {
+          "saved.pptx": "9600ea050b2291ff497a8fcaf476d5ab110fa5330757e60fa4c4025330f18726",
+          "slide-0.svg": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "noFill",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/baseline-output/noFill/saved.pptx",
+        "inputSHA256": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0",
+        "files": {
+          "saved.pptx": "25cd1a53901234d407572f13d72766c4385f31bc2649cc797639788504d480a0",
+          "slide-0.svg": "a1686963ec583295db4cba5cdf0e696ca02c2d489b6a8ca1c57918f2d2f0c7c3",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "budget-saturation",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/budget-saturation.pptx",
+        "inputSHA256": "6bd5dcf6602c1c798b2a7e6e0ade8f51fc92a8c22efba3f9d54f0e214b96e675",
+        "files": {
+          "saved.pptx": "42406cc1d08d1f785af72530cfce968dc40c646a8e0df297bbf5b01952aaf91a",
+          "slide-0.svg": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      },
+      {
+        "name": "oversize-bypass",
+        "input": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/table-paint-reuse20/oversize-bypass.pptx",
+        "inputSHA256": "952e6d4ebee3d8e40498ce13759870bd6810fbcecf7e4aaca467800acb96612f",
+        "files": {
+          "saved.pptx": "8cbe88e9a38117f286896bbb0c723b5db4568dd8c9d8fbc1c56325166383c96c",
+          "slide-0.svg": "9e8ab81012281ccc04d1034df90214f4454111a8ca4eb75fe7a18ba450258a7a",
+          "issues-0.txt": "678696a3ced67fd869368d211b1661b26451b98a12b4007d2e51a62a00f173e0"
+        }
+      }
+    ]
+  },
+  "checks": [
+    {
+      "command": "swift test --jobs 2 --filter 'TableBorderPaintReuseTests|TableRenderSessionTests|NativeTableStyleFallbackTests|NativeTableJoinProfileTests|NativeTableDefaultTests'",
+      "result": "22 tests / 5 suites passed"
+    },
+    {
+      "command": "swift test --jobs 2",
+      "result": "1189 tests / 173 suites plus 18 / 3 passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    }
+  ],
+  "initialTestCorrection": "Three incorrect diagnostic-equality assumptions across different authored declarations; raw failed log retained; exact per-input/reopen and same-input old/new ordered diagnostics verified",
+  "model": {
+    "requested": "gpt-6-astra",
+    "reasoning": "high",
+    "runtime": "unattested"
+  },
+  "retainedBuildArtifacts": [
+    {
+      "variant": "baseline",
+      "commit": "dc40a98b09d0db7c132c82c9e8f41b12dd4c5638",
+      "sourceTree": "f808358b87f88b58427d1440bf80005f3b6a7e61",
+      "sourceArchivePath": ".build/table-paint-reuse20/baseline-sources.tar",
+      "sourceArchiveSHA256": "fcaaec2b5a6e5110279fa9c65f99283925189501a8ebd51f5bf50e71db04ec9c",
+      "objectPath": ".build/table-paint-reuse20/baseline-Rostrum.o",
+      "objectSHA256": "2b6813f35148e8fd54923bb89d9e006fb86c85ce1beadb3fe1354191044cf1a5",
+      "buildConfiguration": "Debug; used only for untimed preservation/diagnostic research"
+    },
+    {
+      "variant": "candidate",
+      "commit": "3bab3d552ea016035921ce97671356152718ee05",
+      "sourceTree": "f1dca1cd58dd5fe33e8a782d663fe1816bc42492",
+      "sourceArchivePath": ".build/table-paint-reuse20/candidate-sources.tar",
+      "sourceArchiveSHA256": "d6f38b4fb9289394c0bdb5fcbcf9fb1dcfc4e660010227fd56d7fc566e3ae4dd",
+      "objectPath": ".build/table-paint-reuse20/candidate-Rostrum.o",
+      "objectSHA256": "8f914f2f682d5c7aab9812d9c04e03b0c765bad53f0d2d47a5d7e393391af90d",
+      "buildConfiguration": "Debug; used only for untimed preservation/diagnostic research"
+    }
+  ],
+  "candidateObjectPath": ".build/table-paint-reuse20/candidate-Rostrum.o",
+  "artifactRoot": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum",
+  "artifactRetentionNote": "Candidate object copied after review request from .build/debug/Rostrum.o only after exact equality to the pre-existing receipt hash; baseline/candidate original production Sources archives retained from immutable Git commits. Instrumented copies remain separate."
+}

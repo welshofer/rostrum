@@ -1,0 +1,948 @@
+Building for debugging...
+[1 / 5] LecternCore
+Build complete! (0.22 sec)
+Test Suite 'All tests' started at 2026-10-04 19:16:18.111.
+Test Suite 'All tests' passed at 2026-10-04 19:16:18.112.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite TemplateRenderingTests started.
+􀟈  Suite RenderContentCheckTests started.
+􀟈  Suite ParagraphSpacingRecipeTests started.
+􀟈  Suite RenderedDeckTitlesTests started.
+􀟈  Suite PreviewFontMeasurementTests started.
+􀟈  Suite DeckInspectionDetailTests started.
+􀟈  Suite PreviewDiagnosticsTests started.
+􀟈  Suite PlatformTabRecipeTests started.
+􀟈  Suite ListMarkerRecipeTests started.
+􀟈  Suite MixedFaceSpacingRecipeTests started.
+􀟈  Suite AuthoredPaginationTests started.
+􀟈  Suite "Drawing Library Lab recipes" started.
+􀟈  Suite "Background scrim" started.
+􀟈  Suite RequestContractTests started.
+􀟈  Suite DeckExporterTests started.
+􀟈  Suite TemplateGenerationTests started.
+􀟈  Suite TextAlignmentRecipeTests started.
+􀟈  Suite DeckRenameTests started.
+􀟈  Suite OpenAIModelChoiceTests started.
+􀟈  Suite TableTransitionsRecipeTests started.
+􀟈  Suite TableContextRecipeTests started.
+􀟈  Suite OpenAIProviderTests started.
+􀟈  Suite PartialTableStylesRecipeTests started.
+􀟈  Suite SlidePreviewGeometryTests started.
+􀟈  Suite RunGateTests started.
+􀟈  Suite FeaturePipelineTests started.
+􀟈  Suite InspectionFontsTests started.
+􀟈  Suite LecternCoreTests started.
+􀟈  Suite TableJoinProfilesRecipeTests started.
+􀟈  Suite InstalledFontsTests started.
+􀟈  Suite CompositionRecoveryTests started.
+􀟈  Suite TableDefaultsRecipeTests started.
+􀟈  Suite PlatformLabRecipesTests started.
+􀟈  Suite DocumentLabRecipesTests started.
+􀟈  Suite TableTextExtractionTests started.
+􀟈  Suite DeckInspectorTests started.
+􀟈  Suite "Library Lab file pipeline" started.
+􀟈  Suite DeckNormalizerTests started.
+􀟈  Suite ParagraphPaintRecipeTests started.
+􀟈  Suite NotesPageInspectionTests started.
+􀟈  Suite DeckLibraryTests started.
+􀟈  Suite ParagraphLigatureRecipeTests started.
+􀟈  Suite RejectedDraftProtectionTests started.
+􀟈  Suite DeckStorageTests started.
+􀟈  Test continuationReadBackAndWholeDeckRecoveryPreserveContent() started.
+􀟈  Test comparisonLeadSurvivesAuthoredRendering() started.
+􀟈  Test independentSpacingReferencesRetainOriginalProperties() started.
+􀟈  Test missingVisibleTextCannotHideInNotesOrAnotherSlide() started.
+􀟈  Test oversizedCaptionContinuesWithoutLosingTextOrSectionMembership() started.
+􀟈  Suite PromptSafetyTests started.
+􀟈  Test nativeGlyphAdvancesDistinguishWideAndNarrowTextWithoutChangingFile() started.
+􀟈  Test oneBrokenSlideDoesNotHideTheRestOfTheDeck() started.
+􀟈  Test wrappedTableRowsReserveSpaceBeforeTheCaption() started.
+􀟈  Test themedDeckPublishesLayoutsAndNativeObjects() started.
+􀟈  Test changedNativeDataAndMissingNotesFailReadBack() started.
+􀟈  Suite ParagraphBreakRecipeTests started.
+􀟈  Test templateSurvivesEndToEndAndDoesNotReceiveThemeOverrides() started.
+􀟈  Suite ParagraphBoundaryRecipeTests started.
+􀟈  Test skippingPreviewsCostsNothingElse() started.
+􀟈  Test longObjectCaptionsAreMeasuredBeforeAllocatingChartAndTable() started.
+􀟈  Test reportsTemplateAndSlideShowKinds() started.
+􀟈  Test fidelityFindingsKeepTheirSourceLocationsWithoutBlockingPreviews() started.
+􀟈  Test generatedDiagramKeepsItsWholeAspectInsideThePlaceholder() started.
+􀟈  Test opensAndDescribesARealPresentation() started.
+􀟈  Test nativeMarkerReferencesAndStrictSVGAuditRemainIndependent() started.
+􀟈  Test nativeSpacingAndAnchorsSurviveSaving(alternative:) started.
+􀟈  Test inspectionReportsAFailedPreviewWithoutRenumberingLaterSlides() started.
+􀟈  Test rendersPreviewsWhenAsked() started.
+􀟈  Test healthyBlankPreviewStaysQuietAndKeepsTheSameSVG() started.
+􀟈  Test justifiedTabAndTableExpandSpacesAfterTheirAnchor(moved:) started.
+􀟈  Test enforcesTheUntrustedFileReadBudget() started.
+􀟈  Test boundedRowsAndMovedStopsReachSavedGeometry(moved:rows:) started.
+􀟈  Test aRenderedDeckHasRealTitlesOnEverySlide() started.
+􀟈  Test denseAuthoredDeckRendersAndRecoveryKeepsAllPages() started.
+􀟈  Test recoveryAddsPagesToTheExistingSection() started.
+􀟈  Test eachControlChangesTheRealArtifact() started.
+􀟈  Test perGlyphFacesAndNativeResourcePinsAreStrict() started.
+􀟈  Test wrappedComparisonHeadingReservesSpaceAboveBody() started.
+􀟈  Test nativeFacesAndPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test allNativeMarkersAndBothPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test paginationPreservesContentImagesAndSections() started.
+􀟈  Test generatedDeckRetainsChartDiagnosticsAndExistingWarningCategories() started.
+􀟈  Test fileLimitIsEnforcedBeforeReadingPayload() started.
+􀟈  Test exportingTwiceRefreshesRatherThanDuplicates() started.
+􀟈  Test malformedTemplateFailsBeforeProviderWork() started.
+􀟈  Test exportsADeckIntoAFolderBesideIt() started.
+􀟈  Test unsupportedCanvasSizesFailBeforeGridConstruction() started.
+􀟈  Test editorialContractFitsTheGoal(goal:count:) started.
+􀟈  Test everyStageSendsTheOriginalContract(strength:notes:) started.
+􀟈  Test renamingToTheSameNameIsANoOp() started.
+􀟈  Test inspectionSurfacesFidelitySeparatelyAndSkippingPreviewsDoesNotClaimACheck() started.
+􀟈  Test everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test reportsTheFontsADeckLeansOn() started.
+􀟈  Test "an empty sample falls back to the safe end" started.
+􀟈  Test longChartSourcesMoveToReadableFollowingPages() started.
+􀟈  Test templateSurvivesProviderRepairAndQAIntoSavedPresentation() started.
+􀟈  Test "a background of the kind we now ask for comes out legible throughout" started.
+􀟈  Test nativeReferencesAndStrictSVGAuditRemainIndependent() started.
+􀟈  Test secondaryMastersAreRetainedAndTheirSelectionBoundaryIsVisible() started.
+􀟈  Test charactersAFilenameCannotCarryAreStrippedNotRejected() started.
+􀟈  Test imageDimensionsKeepEveryRequestedAspectRatio() started.
+􀟈  Test emptyTemplateAndSectionlessGeneratedContentWork() started.
+􀟈  Test renamingMovesTheFileTheUserSeesInFinder() started.
+􀟈  Test nativeAlignmentAndPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test "a blown-out image is dimmed hard" started.
+􀟈  Test "Galleries stay bounded at maximum input" started.
+􀟈  Test overflowAndUnverifiedReductionRefuseWithoutChangingTheCell() started.
+􀟈  Test "a light scrim serves dark text" started.
+􀟈  Test aNameAlreadyTakenIsRefusedRatherThanOverwriting() started.
+􀟈  Test actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test "a bright image needs more scrim than a dark one" started.
+􀟈  Test aBadKeyIsAnAuthFailureNotAGenericError() started.
+􀟈  Test sourceOnlyPayloadsAreRemovedWhileMasterAndUnknownRootsKeepSharedAssets() started.
+􀟈  Test "alpha always stays within the floor and ceiling" started.
+􀟈  Test aTruncatedDraftIsReportedNotReturnedShort() started.
+􀟈  Test modelValidationUsesOpenAIAuthentication() started.
+􀟈  Test nativeTransitionsAndExcludedFallbackSurviveSaving(alternative:) started.
+􀟈  Test theRequestIsShapedForOpenAI() started.
+􀟈  Test "even a hostile frame is more legible than the flat wash it replaced" started.
+􀟈  Test cancellationDoesNotRetry() started.
+􀟈  Test theFactoryNowBuildsIt() started.
+􀟈  Test geminiAndCustomStillSayWhatTheyAre() started.
+􀟈  Test allocationIsBoundedWithoutChangingAspectRatio() started.
+􀟈  Test "Every recipe reopens and checks both variants" started.
+􀟈  Test missingInheritanceKeepsSpecificFlagsAndAUsablePreview() started.
+􀟈  Test "one specular highlight does not darken the whole frame" started.
+􀟈  Test aReplacedRunIsNoLongerCurrent() started.
+􀟈  Test noIssuedRunIsCurrentBeforeTheFirstBegin() started.
+􀟈  Test publicNoFillChangesOnlyAuthoredPage() started.
+􀟈  Test idsDoNotRepeatAcrossManyRuns() started.
+􀟈  Test proseInsteadOfADeckIsNamed() started.
+􀟈  Test theRunItStartedIsTheCurrentOne() started.
+􀟈  Test unsupportedPreviewFormattingRemainsDiagnosedWithoutLosingExportedContent() started.
+􀟈  Test incompleteOrUnexpectedResponsesNeverBecomeDecks(kind:) started.
+􀟈  Test authoredFeaturesSurviveInspectionExtractionAndReopen() started.
+􀟈  Test independentOfficeTableImportKeepsMergeNotesAndSourceBytes() started.
+􀟈  Test aServerFaultIsRetriedRatherThanEndingTheDraft() started.
+􀟈  Test "an already-dark image is barely touched" started.
+􀟈  Test theFolderTakesTheDecksOwnName() started.
+􀟈  Test tableShadowAndKerningSurviveFileBackedPreviewAndExport(threshold:) started.
+􀟈  Test auditRejectsPaintAndGlyphChanges() started.
+􀟈  Test downgradesUnknownLayoutWithBulletsBody() started.
+􀟈  Test onlyMultiSeriesChartsGetALegend() started.
+􀟈  Test auditRejectsPaintOrderAndUnmodeledPositions() started.
+􀟈  Test liveCellContextSurvivesTheSavedFilePipeline(alternative:) started.
+􀟈  Test factoryBuildsOpenAIWithAKey() started.
+􀟈  Test publicOverrideRestorationChangesOnlyAuthoredPage() started.
+􀟈  Test actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test discoversInheritedFamiliesWithoutRewritingSource() started.
+􀟈  Test aDraftComesBackAsTheForcedCallsArguments() started.
+􀟈  Test nativeProfilesAndPublicControlsSurviveSaving(alternative:) started.
+􀟈  Test decodesDeckMissingIrVersion() started.
+􀟈  Test abandoningOrphansTheRunWithoutStartingAnother() started.
+􀟈  Test generatedImagesCarryTheirBriefAsAltText() started.
+􀟈  Test auditRejectsPaintOrderAndUnmodeledPositions() started.
+􀟈  Test rendersAValidPptxFromIR() started.
+􀟈  Test loadsStylesFromADirectory() started.
+􀟈  Test aNameThatIsOnlyPunctuationIsNotAName() started.
+􀟈  Test listingModelsStillFailsFastOnARejectedKey() started.
+􀟈  Test failsUnknownLayoutWithoutBulletsBody() started.
+􀟈  Test nativeProfilesAndPublicControlsSurviveSaving(alternative:) started.
+􀟈  Test contentThatExceedsABuilderCapIsReportedNotSilentlyDropped() started.
+􀟈  Test aStringThatIsNotSlidesJSONStillFails() started.
+􀟈  Test statementAndCalloutRenderAndOpenClean() started.
+􀟈  Test aDroppedConnectionIsRetriedRatherThanEndingTheDraft() started.
+􀟈  Test bandsWithEmptyItemsFallsBackToItsBulletsRatherThanRenderingBlank() started.
+􀟈  Test aStructuredLayoutWithNothingToSalvageStillFails() started.
+􀟈  Test wrongFamilyAndWrongStyleNeverBecomeAliasesOrSyntheticFaces() started.
+􀟈  Test inspectionMeasuresInstalledStylesAndStillReportsUnknownFonts() started.
+􀟈  Test imageProviderEndpointsSurviveHostileModelIdentifiers() started.
+􀟈  Test renderingTheSameIRTwiceProducesTheSameBytes() started.
+􀟈  Test preflightEstimateScalesWithDeckSize() started.
+􀟈  Test registeredEmbeddedFaceWinsAndMissingStylesCanStillBeAdded() started.
+􀟈  Test foundryAliasesRequireGenerationOptInAndCannotOverwriteEmbeddedNames() started.
+􀟈  Test rejectsStructuralViolations() started.
+􀟈  Test costMatchesTheRateCard() started.
+􀟈  Test imageFactoryBuildsEachProvider() started.
+􀟈  Test notesToggleControlsNotesParts() started.
+􀟈  Test aDecodeFailureTellsTheRepairWhereToLook() started.
+􀟈  Test collectionSelectionUsesTheResolvedPostScriptFaceNotTheFirstRegularFace() started.
+􀟈  Test imageRequestsRespectTheProvidersBurstCeiling() started.
+􀟈  Test imageFactoryRequiresAKey() started.
+􀟈  Test rendersTableSlideAndOpensClean() started.
+􀟈  Test slideDecodesOptionalImageBrief() started.
+􀟈  Test actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test aProperSlidesArrayIsUnaffected() started.
+􀟈  Test qaPassCanBeDisabled() started.
+􀟈  Test imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test decodesTheExampleIR() started.
+􀟈  Test dimensionsSurviveSVGAndPlaceholder(_:) started.
+􀟈  Test localArialAndOfficeCalibriResolveAllRealStylesWhenAvailable() started.
+􀟈  Test splitLegacyFamilyCannotPolluteTypographicRegularAlias() started.
+􀟈  Test tableWithNoBodyRowsIsRejectedLikeAnEmptyChart() started.
+􀟈  Test snapshotDoesNotDependOnTheSourceFileAfterSelection() started.
+􀟈  Test malformedDimensionsUseSafeFallback() started.
+􀟈  Test validatesACleanDeck() started.
+􀟈  Test retryingStopsAtTheOverallDeadline() started.
+􀟈  Test transientTransportFailuresAreRetriableAndOfflineIsNot() started.
+􀟈  Test mockPipelineHappyPath() started.
+􀟈  Test postScriptMetadataRejectsOversizeAndInvalidNames() started.
+􀟈  Test retryChangesOnlyTheSelectedSlideAndKeepsNotesAndOriginalFile() started.
+􀟈  Test rendersTimelineAndQuadrantLayouts() started.
+􀟈  Test validatesEachActualFaceAndLeavesPresentationBytesUnchanged() started.
+􀟈  Test generatedObjectTypographyScalesWithTemplateCanvas() started.
+􀟈  Test officeFallbackRejectsBlackFaceEvenWithMatchingFamilyAndBoldFlag() started.
+􀟈  Test openAIProviderWithoutKeyThrowsNoKey() started.
+􀟈  Test snapshotRetentionAndAssetsRoundTrip() started.
+􀟈  Test rejectsEmptyAndNonPowerPointData() started.
+􀟈  Test aLayoutUsedPastItsShareIsThinnedToBullets() started.
+􀟈  Test aFoundrySuffixDoesNotHideAnInstalledFamily() started.
+􀟈  Test agendaRowsLinkToTheirSection() started.
+􀟈  Test rendersBandsSlide() started.
+􀟈  Test cancelledRecoveryCreatesNoOutput() started.
+􀟈  Test vectorAuditRejectsWrongPaintAndMissingGeometry() started.
+􀟈  Test galleryContainsEveryPlotFamilyAndTwoAxisCombo() started.
+􀟈  Test aMalformedChartSaysWhyItBecameSomethingElse() started.
+􀟈  Test beingOfflineFailsImmediatelyWithoutRetrying() started.
+􀟈  Test explanatoryColumnsReceiveMoreWidth() started.
+􀟈  Test structuredTemplateContentIsEditableAndNeverFlattened() started.
+􀟈  Test denseComparisonFitsAuthoredThemeWithoutDroppingText() started.
+􀟈  Test everyOfferedChartKindOpensWithoutRepair() started.
+􀟈  Test notesImportsAndCopiesCannotMutateTheirSources() started.
+􀟈  Test promptTemplatesReflectGoalNotesAndLength() started.
+􀟈  Test everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test fileAndParseBudgetsRefuseWithoutMutatingRegistry() started.
+􀟈  Test actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test aQuadrantWithoutFourCellsBecomesBandsInsteadOfFailing() started.
+􀟈  Test embeddedWorkbookHasResolvableNativePreview() started.
+􀟈  Test nativePaintAndPublicStyleImportSurviveSaving(alternative:) started.
+􀟈  Test sectionsSharingAFirstSlideDoNotAbortTheProcess() started.
+􀟈  Test authoredRetryKeepsExistingMastersAndOtherSlides() started.
+􀟈  Test percentStackedUsesNativePercentageAxis(sampleSize:) started.
+􀟈  Test backoffIsExponentialCappedAndDefersToRetryAfter() started.
+􀟈  Test chartEditingHasIndependentExpectedDataAndAtomicRefusals() started.
+􀟈  Test catalogIsCompleteAndUnique() started.
+􀟈  Test catalogIsCompleteAndInputsAreBounded() started.
+􀟈  Test commentsPreserveUnicodeAnchorAndDeletedItemsStayDeleted() started.
+􀟈  Test fontWrappingAcceptsMultilineAndLongInput(_:) started.
+􀟈  Test paragraphControlsChangeGeometryAndSurviveSaving(narrow:) started.
+􀟈  Test qaPassAdoptsAValidRevision() started.
+􀟈  Test resolvesInstalledFontsAndRefusesSubstitutes() started.
+􀟈  Test ownedMediaHasActualContainerHeadersAndLicensedFontWorksWithoutPlatformFonts() started.
+􀟈  Test theOutputBudgetGrowsWithTheDeckAndStaysInBounds() started.
+􀟈  Test styleDirectiveIsOnBrandAndTextFree() started.
+􀟈  Test aTimelineWithoutMilestonesFallsBackToItsBullets() started.
+􀟈  Test countsWhatTheDeckIsMadeOf() started.
+􀟈  Test imagePlacementPolicyKeepsPicturesOffText() started.
+􀟈  Test openingAndClosingIgnoreSavedDecorativeImages() started.
+􀟈  Test everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test sectionsStartingAfterTheTitleSlideAreKeptNotDiscarded() started.
+􀟈  Test glyphReferencesRetainMatricesOutlinesAndSourceBodies() started.
+􀟈  Test factoryThrowsWithoutAKey() started.
+􀟈  Test nativeGlyphPaintAndComputedFitsSurviveSaving(alternative:) started.
+􀟈  Test rendersChartAndMetricsSlides() started.
+􀟈  Test failedMiddlePreviewPreservesOriginalSlideIdentity() started.
+􀟈  Test parsesRichStyleMetadata() started.
+􀟈  Test rendersOnePreviewPerSlideAndReportsProgress() started.
+􀟈  Test bulkImportRetainsOriginalDestinationAndUneditedSource() started.
+􀟈  Test unpricedModelYieldsNoNumber() started.
+􀟈  Test paintComparisonRejectsGlyphStretchingAndMissingScalarOrigins() started.
+􀟈  Test costFormattingNeverReadsAsFree() started.
+􀟈  Test promptImageLayoutListsComeFromTheRenderer() started.
+􀟈  Test factoryThrowsForUnwiredProviders() started.
+􀟈  Test sizesAreReadable() started.
+􀟈  Test catalogIsCompleteAndUnambiguous() started.
+􀟈  Test alreadyCancelledRequestDoesNotOpenTheFile() started.
+􀟈  Test notesUseInspectionReadLimitAndRejectInvalidSlideNumbers() started.
+􀟈  Test smartArtGalleryIncludesEveryLayoutAndWarnsAboutPyramid(alternative:) started.
+􀟈  Test aFileThatIsNotADeckFailsRatherThanReturningNonsense() started.
+􀟈  Test fileBackedNotesPreviewMatchesLibraryAndDoesNotChangeSource() started.
+􀟈  Test aStringifiedSlidesArrayStillDecodes() started.
+􀟈  Test fontDiscoveryIncludesNotesAndTheirMaster() started.
+􀟈  Test repairLoopRecoversOnceThenFails() started.
+􀟈  Test aTruncatedDraftIsReportedNotReturnedShort() started.
+􀟈  Test workbookOnlyChartDataReachesInspectionAndPreviewWithoutEditingTheFile() started.
+􀟈  Test previewLimitationsAreDistinctFromFileDamageAndReachAccessibility() started.
+􀟈  Test emptyNotesRemainDiscoverableAndMissingNotesAreNotCreated() started.
+􀟈  Test decksWrittenInTheSameSecondStillComeBackInAStableOrder() started.
+􀟈  Test deletingRemovesTheDeckFromTheLibrary() started.
+􀟈  Test aMissingOrEmptyDirectoryIsAnEmptyLibraryNotAnError() started.
+􀟈  Test malformedChartFallsBackInsteadOfCrashing() started.
+􀟈  Test preflightEstimateCountsThePromptAndTheQAPass() started.
+􀟈  Test digestsCarryTheSlidesWords() started.
+􀟈  Test nativeCommonWordReferenceRetainsNamedEvidence() started.
+􀟈  Test listingModelsRetriesADroppedConnection() started.
+􀟈  Test reportsWhichFontsWereEstimatedRatherThanMeasured() started.
+􀟈  Test rendersOnePreviewPerSlideFromTheWrittenDeck() started.
+􀟈  Test nativeCommonWordsSurviveBothFitsAndSaving(narrow:) started.
+􀟈  Test stampsDocumentPropertiesFromTheIR() started.
+􀟈  Test imageLeftAndImageRightMirrorEachOther() started.
+􀟈  Test ignoresEverythingThatIsNotADeck() started.
+􀟈  Test listsDecksNewestFirst() started.
+􀟈  Test case passing 1 argument alternative → false to nativeSpacingAndAnchorsSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to nativeSpacingAndAnchorsSurviveSaving(alternative:) started.
+􀟈  Test aMissingKeyNamesTheKeyAndThePath() started.
+􀟈  Test exportFailureKeepsTheAcceptedRevisionForOfflineRecovery() started.
+􀟈  Test theWrittenDeckPassesRostrumsOwnLint() started.
+􀟈  Test rendersDiagramSlides() started.
+􀟈  Test rejectedDraftOnDiskIsOwnerReadableOnly() started.
+􀟈  Test case passing 1 argument moved → false to justifiedTabAndTableExpandSpacesAfterTheirAnchor(moved:) started.
+􀟈  Test case passing 1 argument moved → true to justifiedTabAndTableExpandSpacesAfterTheirAnchor(moved:) started.
+􀟈  Test aQuadrantWithNothingToSalvageIsStillRejected() started.
+􀟈  Test oldRejectedDraftsArePrunedAndRecentOnesKept() started.
+􀟈  Test case passing 2 arguments moved → false, rows → 2 to boundedRowsAndMovedStopsReachSavedGeometry(moved:rows:) started.
+􀟈  Test officeCoreFontsAreMeasuredNotReportedMissing() started.
+􀟈  Test case passing 2 arguments moved → false, rows → 12 to boundedRowsAndMovedStopsReachSavedGeometry(moved:rows:) started.
+􀟈  Test case passing 2 arguments moved → true, rows → 2 to boundedRowsAndMovedStopsReachSavedGeometry(moved:rows:) started.
+􀟈  Test case passing 2 arguments moved → true, rows → 12 to boundedRowsAndMovedStopsReachSavedGeometry(moved:rows:) started.
+􀟈  Test case passing 1 argument alternative → false to nativeFacesAndPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test migratingAFolderOntoItselfDoesNothing() started.
+􀟈  Test aLayoutWithinItsShareIsUntouched() started.
+􀟈  Test case passing 1 argument alternative → true to nativeFacesAndPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test theTimestampIsSortableAndFilenameSafe() started.
+􀟈  Test case passing 1 argument alternative → false to allNativeMarkersAndBothPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test scrimmingAPhotographDoesNotInflateIt() started.
+􀟈  Test case passing 1 argument alternative → true to allNativeMarkersAndBothPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test statementWithoutAClaimIsRejected() started.
+􀟈  Test nothingToMoveIsNotAnError() started.
+􀟈  Test aFolderWithNoDecksIsUntouched() started.
+􀟈  Test aRejectedKeyIsNotRetried() started.
+􀟈  Test contentInsideEveryCapReportsNothing() started.
+􀟈  Test onlyDecksMoveAndAppDataStaysBehind() started.
+􀟈  Test case passing 2 arguments goal → "inform", count → 3 to editorialContractFitsTheGoal(goal:count:) started.
+􀟈  Test pruningAMissingDirectoryIsNotAnError() started.
+􀟈  Test case passing 2 arguments strength → .astra, notes → false to everyStageSendsTheOriginalContract(strength:notes:) started.
+􀟈  Test case passing 2 arguments goal → "inform", count → 24 to editorialContractFitsTheGoal(goal:count:) started.
+􀟈  Test case passing 2 arguments strength → .astra, notes → true to everyStageSendsTheOriginalContract(strength:notes:) started.
+􀟈  Test case passing 2 arguments goal → "persuade", count → 3 to editorialContractFitsTheGoal(goal:count:) started.
+􀟈  Test case passing 2 arguments strength → .astra, effort → .none to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments goal → "persuade", count → 24 to editorialContractFitsTheGoal(goal:count:) started.
+􀟈  Test case passing 2 arguments strength → .sol, notes → false to everyStageSendsTheOriginalContract(strength:notes:) started.
+􀟈  Test pruningTouchesOnlyOurOwnDrafts() started.
+􀟈  Test case passing 2 arguments strength → .astra, effort → .low to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments strength → .sol, notes → true to everyStageSendsTheOriginalContract(strength:notes:) started.
+􀟈  Test case passing 2 arguments goal → "entertain", count → 3 to editorialContractFitsTheGoal(goal:count:) started.
+􀟈  Test case passing 2 arguments strength → .astra, effort → .medium to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments goal → "entertain", count → 24 to editorialContractFitsTheGoal(goal:count:) started.
+􀟈  Test case passing 2 arguments strength → .luna, notes → false to everyStageSendsTheOriginalContract(strength:notes:) started.
+􀟈  Test case passing 2 arguments strength → .astra, effort → .high to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments goal → "inspire", count → 3 to editorialContractFitsTheGoal(goal:count:) started.
+􀟈  Test case passing 2 arguments strength → .luna, notes → true to everyStageSendsTheOriginalContract(strength:notes:) started.
+􀟈  Test decksMoveToTheNewHomeAndTheOldFolderGoes() started.
+􀟈  Test case passing 2 arguments strength → .astra, effort → .xhigh to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments goal → "inspire", count → 24 to editorialContractFitsTheGoal(goal:count:) started.
+􀟈  Test aNameCollisionNeverOverwritesTheDeckAlreadyThere() started.
+􀟈  Test case passing 2 arguments strength → .astra, effort → .max to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments strength → .sol, effort → .none to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments strength → .sol, effort → .low to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments strength → .sol, effort → .medium to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments strength → .sol, effort → .high to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments strength → .sol, effort → .xhigh to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments strength → .sol, effort → .max to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 1 argument alternative → false to nativeAlignmentAndPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test case passing 2 arguments strength → .luna, effort → .none to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 1 argument alternative → true to nativeAlignmentAndPublicFitsSurviveSaving(alternative:) started.
+􀟈  Test case passing 2 arguments strength → .luna, effort → .low to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments strength → .luna, effort → .medium to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 2 arguments strength → .luna, effort → .high to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 1 argument alternative → false to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 2 arguments strength → .luna, effort → .xhigh to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 1 argument alternative → true to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 2 arguments strength → .luna, effort → .max to everyTextChoiceHasASupportedWireContract(strength:effort:) started.
+􀟈  Test case passing 1 argument alternative → false to nativeTransitionsAndExcludedFallbackSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to nativeTransitionsAndExcludedFallbackSurviveSaving(alternative:) started.
+􀟈  Test case passing 2 arguments id → .shapes, sample → "Independent specimen <&>" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 2 arguments id → .shapes, sample → "First line <&>
+Second line — Ω" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 2 arguments id → .fillsAndLines, sample → "Independent specimen <&>" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 2 arguments id → .fillsAndLines, sample → "First line <&>
+Second line — Ω" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 2 arguments id → .text, sample → "Independent specimen <&>" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 1 argument kind → "refusal" to incompleteOrUnexpectedResponsesNeverBecomeDecks(kind:) started.
+􀟈  Test case passing 2 arguments id → .text, sample → "First line <&>
+Second line — Ω" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 1 argument kind → "wrongFunction" to incompleteOrUnexpectedResponsesNeverBecomeDecks(kind:) started.
+􀟈  Test case passing 1 argument kind → "multipleCalls" to incompleteOrUnexpectedResponsesNeverBecomeDecks(kind:) started.
+􀟈  Test case passing 2 arguments id → .pictures, sample → "Independent specimen <&>" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 1 argument kind → "failed" to incompleteOrUnexpectedResponsesNeverBecomeDecks(kind:) started.
+􀟈  Test case passing 2 arguments id → .pictures, sample → "First line <&>
+Second line — Ω" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 1 argument kind → "incompleteCall" to incompleteOrUnexpectedResponsesNeverBecomeDecks(kind:) started.
+􀟈  Test case passing 2 arguments id → .tableStructure, sample → "Independent specimen <&>" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 2 arguments id → .tableStructure, sample → "First line <&>
+Second line — Ω" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 2 arguments id → .tableStyles, sample → "Independent specimen <&>" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 1 argument threshold → nil to tableShadowAndKerningSurviveFileBackedPreviewAndExport(threshold:) started.
+􀟈  Test case passing 2 arguments id → .tableStyles, sample → "First line <&>
+Second line — Ω" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 1 argument threshold → "0" to tableShadowAndKerningSurviveFileBackedPreviewAndExport(threshold:) started.
+􀟈  Test case passing 2 arguments id → .tableAppearance, sample → "Independent specimen <&>" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 1 argument threshold → "1200" to tableShadowAndKerningSurviveFileBackedPreviewAndExport(threshold:) started.
+􀟈  Test case passing 2 arguments id → .tableAppearance, sample → "First line <&>
+Second line — Ω" to "Every recipe reopens and checks both variants" started.
+􀟈  Test case passing 1 argument alternative → false to liveCellContextSurvivesTheSavedFilePipeline(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to liveCellContextSurvivesTheSavedFilePipeline(alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to nativeProfilesAndPublicControlsSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to nativeProfilesAndPublicControlsSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to nativeProfilesAndPublicControlsSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to nativeProfilesAndPublicControlsSurviveSaving(alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 1 argument dimensions → (16.0, 9.0) to dimensionsSurviveSVGAndPlaceholder(_:) started.
+􀟈  Test case passing 2 arguments model → .flare, quality → .auto to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 1 argument dimensions → (4.0, 3.0) to dimensionsSurviveSVGAndPlaceholder(_:) started.
+􀟈  Test case passing 2 arguments model → .flare, quality → .low to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 1 argument dimensions → (9.0, 16.0) to dimensionsSurviveSVGAndPlaceholder(_:) started.
+􀟈  Test case passing 2 arguments model → .flare, quality → .medium to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments model → .flare, quality → .high to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments model → .flare, quality → .xhigh to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments model → .flare, quality → .max to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments model → .sunburst, quality → .auto to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments model → .sunburst, quality → .low to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments model → .sunburst, quality → .medium to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments model → .sunburst, quality → .high to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments model → .sunburst, quality → .xhigh to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments model → .sunburst, quality → .max to imageChoicesUseImagesAPI(model:quality:) started.
+􀟈  Test case passing 2 arguments id → .slides, alternative → false to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .slides, alternative → true to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to actualInspectorPreviewsMatchSavedFiles(alternative:) started.
+􀟈  Test case passing 2 arguments id → .charts, alternative → false to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to nativePaintAndPublicStyleImportSurviveSaving(alternative:) started.
+􀟈  Test case passing 2 arguments id → .charts, alternative → true to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to nativePaintAndPublicStyleImportSurviveSaving(alternative:) started.
+􀟈  Test case passing 2 arguments id → .chartEditing, alternative → false to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .chartEditing, alternative → true to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 1 argument sampleSize → 2 to percentStackedUsesNativePercentageAxis(sampleSize:) started.
+􀟈  Test case passing 2 arguments id → .smartArt, alternative → false to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 1 argument sampleSize → 12 to percentStackedUsesNativePercentageAxis(sampleSize:) started.
+􀟈  Test case passing 2 arguments id → .smartArt, alternative → true to everyVariantSavesAndReopens(id:alternative:) started.
+􀢄  Test catalogIsCompleteAndInputsAreBounded() recorded an issue at PlatformLabRecipesTests.swift:77:9: Expectation failed: Set(PlatformLabRecipes.catalog.map(\.id)) == Set(Self.ids)
+􀄵  Set(PlatformLabRecipes.catalog.map(\.id)) == Set(Self.ids) → false
+􀄵    Set(PlatformLabRecipes.catalog.map(\.id)) → [LecternCore.LibraryDemoID.mixedFaceSpacing, LecternCore.LibraryDemoID.textAlignment, LecternCore.LibraryDemoID.extractionAndRendering, LecternCore.LibraryDemoID.tableTransitions, LecternCore.LibraryDemoID.theme, LecternCore.LibraryDemoID.listMarkers, LecternCore.LibraryDemoID.partialTableStyles, LecternCore.LibraryDemoID.tabLayout, LecternCore.LibraryDemoID.layouts, LecternCore.LibraryDemoID.fontsAndFitting, LecternCore.LibraryDemoID.mediaAndAttachments, LecternCore.LibraryDemoID.paragraphLayout, LecternCore.LibraryDemoID.package, LecternCore.LibraryDemoID.tableJoinProfiles, LecternCore.LibraryDemoID.design, LecternCore.LibraryDemoID.tableDefaults, LecternCore.LibraryDemoID.templates]
+􀄵    Set(Self.ids) → [LecternCore.LibraryDemoID.layouts, LecternCore.LibraryDemoID.fontsAndFitting, LecternCore.LibraryDemoID.tabLayout, LecternCore.LibraryDemoID.theme, LecternCore.LibraryDemoID.mixedFaceSpacing, LecternCore.LibraryDemoID.mediaAndAttachments, LecternCore.LibraryDemoID.extractionAndRendering, LecternCore.LibraryDemoID.tableDefaults, LecternCore.LibraryDemoID.paragraphLayout, LecternCore.LibraryDemoID.partialTableStyles, LecternCore.LibraryDemoID.design, LecternCore.LibraryDemoID.package, LecternCore.LibraryDemoID.listMarkers, LecternCore.LibraryDemoID.tableJoinProfiles, LecternCore.LibraryDemoID.textAlignment, LecternCore.LibraryDemoID.templates]
+􀟈  Test case passing 2 arguments id → .notes, alternative → false to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .notes, alternative → true to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .comments, alternative → false to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .comments, alternative → true to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 1 argument text → "Hello
+World" to fontWrappingAcceptsMultilineAndLongInput(_:) started.
+􀟈  Test case passing 2 arguments id → .sections, alternative → false to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 1 argument narrow → false to paragraphControlsChangeGeometryAndSurviveSaving(narrow:) started.
+􀟈  Test case passing 1 argument text → "Hello
+World	Again" to fontWrappingAcceptsMultilineAndLongInput(_:) started.
+􀟈  Test case passing 1 argument narrow → true to paragraphControlsChangeGeometryAndSurviveSaving(narrow:) started.
+􀟈  Test case passing 2 arguments id → .sections, alternative → true to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 1 argument text → "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" to fontWrappingAcceptsMultilineAndLongInput(_:) started.
+􀟈  Test case passing 2 arguments id → .slideImport, alternative → false to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .slideImport, alternative → true to everyVariantSavesAndReopens(id:alternative:) started.
+􀟈  Test aliasedSlideAndNestedGroupAreSupportedButForeignTablePayloadsAreNot() started.
+􀟈  Test scopedAliasesDefaultNamespacesFieldsAndLookalikesAreReadWithoutMutation() started.
+􀟈  Test partiallyReadableTableExportReplacesConflictingProjectionWithExactSemanticText() started.
+􀟈  Test foreignNamespaceTableProjectionIsRemovedAndReportedWithoutChangingSource() started.
+􀟈  Test inspectionAndRefreshExportRestoreAliasedTableTextAndKeepSourceExact() started.
+􀟈  Test theSameMaterialFencesTheSameWayEveryTime() started.
+􀟈  Test sharedCellBudgetRefusesDenseRaggedTablesWithoutAllocation() started.
+􀟈  Test case passing 2 arguments id → .layouts, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test theCapStillAppliesWellInsideTheDeadline() started.
+􀟈  Test identicalOrdinaryTablesAreNotSupplementedAndMergeContinuationPolicyMatchesOutline() started.
+􀟈  Test case passing 2 arguments id → .layouts, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test groundingIsFencedAndLabelledAsData() started.
+􀟈  Test case passing 2 arguments id → .slides, alternative → false to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test columnCountIsInitializedOnceForRaggedAndEmptyInspectionValues() started.
+􀟈  Test case passing 2 arguments id → .slides, alternative → true to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .fontsAndFitting, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .charts, alternative → false to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .fontsAndFitting, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to nativeGlyphPaintAndComputedFitsSurviveSaving(alternative:) started.
+􀟈  Test case passing 2 arguments id → .charts, alternative → true to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .paragraphLayout, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to nativeGlyphPaintAndComputedFitsSurviveSaving(alternative:) started.
+􀟈  Test noGroundingAddsNoFence() started.
+􀟈  Test inspectionAndExportRefuseOversizedDenseProjectionBeforeWriting(foreignNamespace:) started.
+􀟈  Test case passing 2 arguments id → .chartEditing, alternative → false to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .paragraphLayout, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test embeddedFakeDelimiterDoesNotCloseTheSourceBlock() started.
+􀟈  Test case passing 2 arguments id → .chartEditing, alternative → true to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .listMarkers, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .listMarkers, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .smartArt, alternative → false to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test aRequestCannotOutliveTheDeadlineItStartedUnder() started.
+􀟈  Test case passing 2 arguments id → .smartArt, alternative → true to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .textAlignment, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .notes, alternative → false to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .textAlignment, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test leavesBandsWithinCapAlone() started.
+􀟈  Test case passing 2 arguments id → .notes, alternative → true to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .mixedFaceSpacing, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .comments, alternative → false to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .mixedFaceSpacing, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .comments, alternative → true to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .tableDefaults, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .sections, alternative → false to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .tableDefaults, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .sections, alternative → true to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .tableJoinProfiles, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .tableJoinProfiles, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .slideImport, alternative → false to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .slideImport, alternative → true to everyRecipeAcceptsMultilineText(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .partialTableStyles, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test splitsOverLongBulletSlide() started.
+􀟈  Test leavesShortBulletSlideAlone() started.
+􀟈  Test leavesSevenItemAgendaAlone() started.
+􀟈  Test case passing 2 arguments id → .partialTableStyles, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .tabLayout, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test nativeBreakReferenceRetainsIndependentEvidenceAndProperties() started.
+􀟈  Test leavesProseBulletsAlone() started.
+􀟈  Test case passing 2 arguments id → .tabLayout, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .theme, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .theme, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .templates, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .templates, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test promotesNumericBulletsToMetrics() started.
+􀟈  Test case passing 2 arguments id → .design, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 1 argument alternative → false to smartArtGalleryIncludesEveryLayoutAndWarnsAboutPyramid(alternative:) started.
+􀟈  Test case passing 2 arguments id → .design, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 1 argument alternative → true to smartArtGalleryIncludesEveryLayoutAndWarnsAboutPyramid(alternative:) started.
+􀟈  Test nativeEmptyLinesSurviveBothFitsAndSaving(large:) started.
+􀟈  Test case passing 2 arguments id → .mediaAndAttachments, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test isDeterministic() started.
+􀟈  Test loneNumberIsNotAMetric() started.
+􀟈  Test case passing 2 arguments id → .mediaAndAttachments, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test chunkSizesStayThreeToFive() started.
+􀟈  Test capsExcessBandsToDiagrams() started.
+􀟈  Test case passing 2 arguments id → .package, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test splitsOverLongAgendaIntoBulletSlides() started.
+􀟈  Test splitDeckRendersToAValidFile() started.
+􀟈  Test case passing 2 arguments id → .package, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test normalizedDeckStillValidates() started.
+􀟈  Test case passing 2 arguments id → .extractionAndRendering, alternative → false to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test case passing 2 arguments id → .extractionAndRendering, alternative → true to everyRecipeExecutesSerializesAndVerifies(id:alternative:) started.
+􀟈  Test nativeReferenceKeepsSourceAndFontProvenance() started.
+􀟈  Test nativeBoundariesSurvivePublicFittingAndReopening(narrow:) started.
+􀟈  Test case passing 1 argument narrow → false to nativeCommonWordsSurviveBothFitsAndSaving(narrow:) started.
+􀟈  Test case passing 1 argument narrow → true to nativeCommonWordsSurviveBothFitsAndSaving(narrow:) started.
+􁁛  Test generatedDiagramKeepsItsWholeAspectInsideThePlaceholder() passed after 51.576 seconds.
+􁁛  Test independentSpacingReferencesRetainOriginalProperties() passed after 51.576 seconds.
+􁁛  Test nativeGlyphAdvancesDistinguishWideAndNarrowTextWithoutChangingFile() passed after 51.576 seconds.
+􁁛  Test fidelityFindingsKeepTheirSourceLocationsWithoutBlockingPreviews() passed after 51.576 seconds.
+􁁛  Test oneBrokenSlideDoesNotHideTheRestOfTheDeck() passed after 51.595 seconds.
+􁁛  Test healthyBlankPreviewStaysQuietAndKeepsTheSameSVG() passed after 51.595 seconds.
+􁁛  Test reportsTemplateAndSlideShowKinds() passed after 51.652 seconds.
+􁁛  Test opensAndDescribesARealPresentation() passed after 51.652 seconds.
+􁁛  Test skippingPreviewsCostsNothingElse() passed after 51.652 seconds.
+􁁛  Test enforcesTheUntrustedFileReadBudget() passed after 51.652 seconds.
+􁁛  Test templateSurvivesEndToEndAndDoesNotReceiveThemeOverrides() passed after 51.653 seconds.
+􁁛  Test comparisonLeadSurvivesAuthoredRendering() passed after 51.653 seconds.
+􁁛  Test themedDeckPublishesLayoutsAndNativeObjects() passed after 51.672 seconds.
+􁁛  Test recoveryAddsPagesToTheExistingSection() passed after 51.672 seconds.
+􁁛  Test wrappedTableRowsReserveSpaceBeforeTheCaption() passed after 51.672 seconds.
+􁁛  Test longObjectCaptionsAreMeasuredBeforeAllocatingChartAndTable() passed after 51.672 seconds.
+􁁛  Test changedNativeDataAndMissingNotesFailReadBack() passed after 51.672 seconds.
+􁁛  Test inspectionReportsAFailedPreviewWithoutRenumberingLaterSlides() passed after 51.672 seconds.
+􁁛  Test aRenderedDeckHasRealTitlesOnEverySlide() passed after 51.672 seconds.
+􁁛  Test missingVisibleTextCannotHideInNotesOrAnotherSlide() passed after 51.672 seconds.
+􁁛  Test rendersPreviewsWhenAsked() passed after 51.673 seconds.
+􁁛  Test justifiedTabAndTableExpandSpacesAfterTheirAnchor(moved:) with 2 test cases passed after 51.673 seconds.
+􁁛  Test paginationPreservesContentImagesAndSections() passed after 51.741 seconds.
+􁁛  Test wrappedComparisonHeadingReservesSpaceAboveBody() passed after 51.742 seconds.
+􁁛  Test fileLimitIsEnforcedBeforeReadingPayload() passed after 51.742 seconds.
+􁁛  Test exportingTwiceRefreshesRatherThanDuplicates() passed after 51.742 seconds.
+􁁛  Test eachControlChangesTheRealArtifact() passed after 51.742 seconds.
+􁁛  Test exportsADeckIntoAFolderBesideIt() passed after 51.742 seconds.
+􁁛  Test malformedTemplateFailsBeforeProviderWork() passed after 51.742 seconds.
+􁁛  Test editorialContractFitsTheGoal(goal:count:) with 8 test cases passed after 52.287 seconds.
+􁁛  Test renamingToTheSameNameIsANoOp() passed after 52.287 seconds.
+􁁛  Test continuationReadBackAndWholeDeckRecoveryPreserveContent() passed after 52.287 seconds.
+􁁛  Test everyStageSendsTheOriginalContract(strength:notes:) with 6 test cases passed after 52.287 seconds.
+􁁛  Test reportsTheFontsADeckLeansOn() passed after 52.288 seconds.
+􁁛  Test "an empty sample falls back to the safe end" passed after 52.287 seconds.
+􁁛  Test everyTextChoiceHasASupportedWireContract(strength:effort:) with 18 test cases passed after 52.287 seconds.
+􁁛  Test unsupportedCanvasSizesFailBeforeGridConstruction() passed after 52.287 seconds.
+􁁛  Test generatedDeckRetainsChartDiagnosticsAndExistingWarningCategories() passed after 52.289 seconds.
+􁁛  Test "a background of the kind we now ask for comes out legible throughout" passed after 52.288 seconds.
+􁁛  Test templateSurvivesProviderRepairAndQAIntoSavedPresentation() passed after 52.288 seconds.
+􁁛  Test oversizedCaptionContinuesWithoutLosingTextOrSectionMembership() passed after 52.289 seconds.
+􁁛  Test imageDimensionsKeepEveryRequestedAspectRatio() passed after 52.290 seconds.
+􁁛  Test charactersAFilenameCannotCarryAreStrippedNotRejected() passed after 52.290 seconds.
+􁁛  Test renamingMovesTheFileTheUserSeesInFinder() passed after 52.290 seconds.
+􁁛  Test nativeSpacingAndAnchorsSurviveSaving(alternative:) with 2 test cases passed after 52.290 seconds.
+􁁛  Test "a blown-out image is dimmed hard" passed after 52.290 seconds.
+􁁛  Test inspectionSurfacesFidelitySeparatelyAndSkippingPreviewsDoesNotClaimACheck() passed after 52.290 seconds.
+􁁛  Test longChartSourcesMoveToReadableFollowingPages() passed after 52.290 seconds.
+􁁛  Test boundedRowsAndMovedStopsReachSavedGeometry(moved:rows:) with 4 test cases passed after 52.290 seconds.
+􁁛  Test "a light scrim serves dark text" passed after 52.290 seconds.
+􁁛  Test aNameAlreadyTakenIsRefusedRatherThanOverwriting() passed after 52.290 seconds.
+􁁛  Test "a bright image needs more scrim than a dark one" passed after 52.290 seconds.
+􁁛  Test aBadKeyIsAnAuthFailureNotAGenericError() passed after 52.290 seconds.
+􁁛  Test secondaryMastersAreRetainedAndTheirSelectionBoundaryIsVisible() passed after 52.290 seconds.
+􁁛  Test "alpha always stays within the floor and ceiling" passed after 52.290 seconds.
+􁁛  Test aTruncatedDraftIsReportedNotReturnedShort() passed after 52.290 seconds.
+􁁛  Test modelValidationUsesOpenAIAuthentication() passed after 52.290 seconds.
+􁁛  Test theRequestIsShapedForOpenAI() passed after 52.290 seconds.
+􁁛  Test "even a hostile frame is more legible than the flat wash it replaced" passed after 52.290 seconds.
+􁁛  Test denseAuthoredDeckRendersAndRecoveryKeepsAllPages() passed after 52.290 seconds.
+􁁛  Test cancellationDoesNotRetry() passed after 52.290 seconds.
+􁁛  Test theFactoryNowBuildsIt() passed after 52.290 seconds.
+􁁛  Test geminiAndCustomStillSayWhatTheyAre() passed after 52.290 seconds.
+􁁛  Test allocationIsBoundedWithoutChangingAspectRatio() passed after 52.290 seconds.
+􁁛  Test missingInheritanceKeepsSpecificFlagsAndAUsablePreview() passed after 52.290 seconds.
+􁁛  Test "one specular highlight does not darken the whole frame" passed after 52.290 seconds.
+􁁛  Test aReplacedRunIsNoLongerCurrent() passed after 52.290 seconds.
+􁁛  Test emptyTemplateAndSectionlessGeneratedContentWork() passed after 52.290 seconds.
+􁁛  Test noIssuedRunIsCurrentBeforeTheFirstBegin() passed after 52.290 seconds.
+􁁛  Test "Galleries stay bounded at maximum input" passed after 52.290 seconds.
+􁁛  Test sourceOnlyPayloadsAreRemovedWhileMasterAndUnknownRootsKeepSharedAssets() passed after 52.290 seconds.
+􁁛  Test idsDoNotRepeatAcrossManyRuns() passed after 52.290 seconds.
+􁁛  Test proseInsteadOfADeckIsNamed() passed after 52.290 seconds.
+􁁛  Test theRunItStartedIsTheCurrentOne() passed after 52.290 seconds.
+􁁛  Test "Every recipe reopens and checks both variants" with 14 test cases passed after 52.290 seconds.
+􁁛  Test overflowAndUnverifiedReductionRefuseWithoutChangingTheCell() passed after 52.290 seconds.
+􁁛  Test incompleteOrUnexpectedResponsesNeverBecomeDecks(kind:) with 5 test cases passed after 52.290 seconds.
+􁁛  Test perGlyphFacesAndNativeResourcePinsAreStrict() passed after 52.290 seconds.
+􁁛  Test "an already-dark image is barely touched" passed after 52.290 seconds.
+􁁛  Test theFolderTakesTheDecksOwnName() passed after 52.290 seconds.
+􁁛  Test unsupportedPreviewFormattingRemainsDiagnosedWithoutLosingExportedContent() passed after 52.290 seconds.
+􁁛  Test nativeReferencesAndStrictSVGAuditRemainIndependent() passed after 52.290 seconds.
+􁁛  Test independentOfficeTableImportKeepsMergeNotesAndSourceBytes() passed after 52.290 seconds.
+􁁛  Test nativeMarkerReferencesAndStrictSVGAuditRemainIndependent() passed after 52.291 seconds.
+􁁛  Test authoredFeaturesSurviveInspectionExtractionAndReopen() passed after 52.290 seconds.
+􁁛  Test downgradesUnknownLayoutWithBulletsBody() passed after 52.290 seconds.
+􁁛  Test onlyMultiSeriesChartsGetALegend() passed after 52.290 seconds.
+􁁛  Test auditRejectsPaintAndGlyphChanges() passed after 52.290 seconds.
+􁁛  Test publicNoFillChangesOnlyAuthoredPage() passed after 52.290 seconds.
+􁁛  Test auditRejectsPaintOrderAndUnmodeledPositions() passed after 52.290 seconds.
+􁁛  Test factoryBuildsOpenAIWithAKey() passed after 52.290 seconds.
+􁁛  Test discoversInheritedFamiliesWithoutRewritingSource() passed after 52.290 seconds.
+􁁛  Test liveCellContextSurvivesTheSavedFilePipeline(alternative:) with 2 test cases passed after 52.290 seconds.
+􁁛  Test aDraftComesBackAsTheForcedCallsArguments() passed after 52.290 seconds.
+􁁛  Test nativeFacesAndPublicFitsSurviveSaving(alternative:) with 2 test cases passed after 52.291 seconds.
+􁁛  Test decodesDeckMissingIrVersion() passed after 52.290 seconds.
+􁁛  Test abandoningOrphansTheRunWithoutStartingAnother() passed after 52.290 seconds.
+􁁛  Test nativeAlignmentAndPublicFitsSurviveSaving(alternative:) with 2 test cases passed after 52.290 seconds.
+􁁛  Test loadsStylesFromADirectory() passed after 52.290 seconds.
+􁁛  Test aNameThatIsOnlyPunctuationIsNotAName() passed after 52.290 seconds.
+􁁛  Test listingModelsStillFailsFastOnARejectedKey() passed after 52.290 seconds.
+􁁛  Test failsUnknownLayoutWithoutBulletsBody() passed after 52.290 seconds.
+􁁛  Test aStringThatIsNotSlidesJSONStillFails() passed after 52.290 seconds.
+􁁛  Test tableShadowAndKerningSurviveFileBackedPreviewAndExport(threshold:) with 3 test cases passed after 52.290 seconds.
+􁁛  Test generatedImagesCarryTheirBriefAsAltText() passed after 52.290 seconds.
+􁁛  Test contentThatExceedsABuilderCapIsReportedNotSilentlyDropped() passed after 52.290 seconds.
+􁁛  Test aStructuredLayoutWithNothingToSalvageStillFails() passed after 52.290 seconds.
+􁁛  Test wrongFamilyAndWrongStyleNeverBecomeAliasesOrSyntheticFaces() passed after 52.290 seconds.
+􁁛  Test publicOverrideRestorationChangesOnlyAuthoredPage() passed after 52.290 seconds.
+􁁛  Test imageProviderEndpointsSurviveHostileModelIdentifiers() passed after 52.290 seconds.
+􁁛  Test rendersAValidPptxFromIR() passed after 52.290 seconds.
+􁁛  Test preflightEstimateScalesWithDeckSize() passed after 52.290 seconds.
+􁁛  Test registeredEmbeddedFaceWinsAndMissingStylesCanStillBeAdded() passed after 52.290 seconds.
+􁁛  Test foundryAliasesRequireGenerationOptInAndCannotOverwriteEmbeddedNames() passed after 52.290 seconds.
+􁁛  Test rejectsStructuralViolations() passed after 52.290 seconds.
+􁁛  Test costMatchesTheRateCard() passed after 52.290 seconds.
+􁁛  Test imageFactoryBuildsEachProvider() passed after 52.290 seconds.
+􁁛  Test statementAndCalloutRenderAndOpenClean() passed after 52.290 seconds.
+􁁛  Test aDecodeFailureTellsTheRepairWhereToLook() passed after 52.290 seconds.
+􁁛  Test bandsWithEmptyItemsFallsBackToItsBulletsRatherThanRenderingBlank() passed after 52.290 seconds.
+􁁛  Test imageFactoryRequiresAKey() passed after 52.290 seconds.
+􁁛  Test slideDecodesOptionalImageBrief() passed after 52.290 seconds.
+􁁛  Test collectionSelectionUsesTheResolvedPostScriptFaceNotTheFirstRegularFace() passed after 52.290 seconds.
+􁁛  Test allNativeMarkersAndBothPublicFitsSurviveSaving(alternative:) with 2 test cases passed after 52.291 seconds.
+􁁛  Test aProperSlidesArrayIsUnaffected() passed after 52.290 seconds.
+􁁛  Test inspectionMeasuresInstalledStylesAndStillReportsUnknownFonts() passed after 52.290 seconds.
+􁁛  Test auditRejectsPaintOrderAndUnmodeledPositions() passed after 52.290 seconds.
+􁁛  Test decodesTheExampleIR() passed after 52.290 seconds.
+􁁛  Test dimensionsSurviveSVGAndPlaceholder(_:) with 3 test cases passed after 52.290 seconds.
+􁁛  Test splitLegacyFamilyCannotPolluteTypographicRegularAlias() passed after 52.290 seconds.
+􁁛  Test imageChoicesUseImagesAPI(model:quality:) with 12 test cases passed after 52.290 seconds.
+􁁛  Test tableWithNoBodyRowsIsRejectedLikeAnEmptyChart() passed after 52.290 seconds.
+􁁛  Test rendersTableSlideAndOpensClean() passed after 52.290 seconds.
+􁁛  Test malformedDimensionsUseSafeFallback() passed after 52.290 seconds.
+􁁛  Test validatesACleanDeck() passed after 52.290 seconds.
+􁁛  Test transientTransportFailuresAreRetriableAndOfflineIsNot() passed after 52.290 seconds.
+􁁛  Test renderingTheSameIRTwiceProducesTheSameBytes() passed after 52.290 seconds.
+􁁛  Test retryingStopsAtTheOverallDeadline() passed after 52.290 seconds.
+􁁛  Test postScriptMetadataRejectsOversizeAndInvalidNames() passed after 52.290 seconds.
+􁁛  Test validatesEachActualFaceAndLeavesPresentationBytesUnchanged() passed after 52.290 seconds.
+􁁛  Test qaPassCanBeDisabled() passed after 52.290 seconds.
+􁁛  Test snapshotDoesNotDependOnTheSourceFileAfterSelection() passed after 52.290 seconds.
+􁁛  Test generatedObjectTypographyScalesWithTemplateCanvas() passed after 52.290 seconds.
+􁁛  Test openAIProviderWithoutKeyThrowsNoKey() passed after 52.290 seconds.
+􁁛  Test aLayoutUsedPastItsShareIsThinnedToBullets() passed after 52.290 seconds.
+􁁛  Test snapshotRetentionAndAssetsRoundTrip() passed after 52.290 seconds.
+􁁛  Test officeFallbackRejectsBlackFaceEvenWithMatchingFamilyAndBoldFlag() passed after 52.290 seconds.
+􁁛  Test aFoundrySuffixDoesNotHideAnInstalledFamily() passed after 52.290 seconds.
+􁁛  Test localArialAndOfficeCalibriResolveAllRealStylesWhenAvailable() passed after 52.290 seconds.
+􁁛  Test notesToggleControlsNotesParts() passed after 52.290 seconds.
+􁁛  Test mockPipelineHappyPath() passed after 52.290 seconds.
+􁁛  Test galleryContainsEveryPlotFamilyAndTwoAxisCombo() passed after 52.290 seconds.
+􁁛  Test rejectsEmptyAndNonPowerPointData() passed after 52.291 seconds.
+􁁛  Test rendersTimelineAndQuadrantLayouts() passed after 52.290 seconds.
+􁁛  Test beingOfflineFailsImmediatelyWithoutRetrying() passed after 52.290 seconds.
+􁁛  Test agendaRowsLinkToTheirSection() passed after 52.290 seconds.
+􁁛  Test nativeProfilesAndPublicControlsSurviveSaving(alternative:) with 2 test cases passed after 52.290 seconds.
+􁁛  Test explanatoryColumnsReceiveMoreWidth() passed after 52.290 seconds.
+􁁛  Test denseComparisonFitsAuthoredThemeWithoutDroppingText() passed after 52.290 seconds.
+􁁛  Test notesImportsAndCopiesCannotMutateTheirSources() passed after 52.290 seconds.
+􁁛  Test promptTemplatesReflectGoalNotesAndLength() passed after 52.290 seconds.
+􁁛  Test fileAndParseBudgetsRefuseWithoutMutatingRegistry() passed after 52.290 seconds.
+􁁛  Test aMalformedChartSaysWhyItBecameSomethingElse() passed after 52.290 seconds.
+􁁛  Test aQuadrantWithoutFourCellsBecomesBandsInsteadOfFailing() passed after 52.290 seconds.
+􁁛  Test structuredTemplateContentIsEditableAndNeverFlattened() passed after 52.290 seconds.
+􁁛  Test everyVariantSavesAndReopens(id:alternative:) with 16 test cases passed after 52.290 seconds.
+􁁛  Test embeddedWorkbookHasResolvableNativePreview() passed after 52.290 seconds.
+􁁛  Test rendersBandsSlide() passed after 52.290 seconds.
+􁁛  Test retryChangesOnlyTheSelectedSlideAndKeepsNotesAndOriginalFile() passed after 52.290 seconds.
+􁁛  Test nativeProfilesAndPublicControlsSurviveSaving(alternative:) with 2 test cases passed after 52.290 seconds.
+􁁛  Test percentStackedUsesNativePercentageAxis(sampleSize:) with 2 test cases passed after 52.290 seconds.
+􁁛  Test backoffIsExponentialCappedAndDefersToRetryAfter() passed after 52.290 seconds.
+􁁛  Test catalogIsCompleteAndUnique() passed after 52.290 seconds.
+􁁛  Test sectionsSharingAFirstSlideDoNotAbortTheProcess() passed after 52.290 seconds.
+􀢄  Test catalogIsCompleteAndInputsAreBounded() failed after 52.290 seconds with 1 issue.
+􁁛  Test chartEditingHasIndependentExpectedDataAndAtomicRefusals() passed after 52.290 seconds.
+􁁛  Test commentsPreserveUnicodeAnchorAndDeletedItemsStayDeleted() passed after 52.290 seconds.
+􁁛  Test actualInspectorPreviewsMatchSavedFiles(alternative:) with 2 test cases passed after 52.291 seconds.
+􁁛  Test vectorAuditRejectsWrongPaintAndMissingGeometry() passed after 52.290 seconds.
+􁁛  Test authoredRetryKeepsExistingMastersAndOtherSlides() passed after 52.290 seconds.
+􁁛  Test resolvesInstalledFontsAndRefusesSubstitutes() passed after 52.290 seconds.
+􁁛  Test qaPassAdoptsAValidRevision() passed after 52.290 seconds.
+􁁛  Test ownedMediaHasActualContainerHeadersAndLicensedFontWorksWithoutPlatformFonts() passed after 52.290 seconds.
+􁁛  Test fontWrappingAcceptsMultilineAndLongInput(_:) with 3 test cases passed after 52.290 seconds.
+􁁛  Test styleDirectiveIsOnBrandAndTextFree() passed after 52.290 seconds.
+􁁛  Test theOutputBudgetGrowsWithTheDeckAndStaysInBounds() passed after 52.290 seconds.
+􁁛  Test aTimelineWithoutMilestonesFallsBackToItsBullets() passed after 52.290 seconds.
+􁁛  Test imagePlacementPolicyKeepsPicturesOffText() passed after 52.291 seconds.
+􁁛  Test countsWhatTheDeckIsMadeOf() passed after 52.413 seconds.
+􁁛  Test glyphReferencesRetainMatricesOutlinesAndSourceBodies() passed after 52.424 seconds.
+􁁛  Test everyRecipeAcceptsMultilineText(id:alternative:) with 16 test cases passed after 52.466 seconds.
+􁁛  Test openingAndClosingIgnoreSavedDecorativeImages() passed after 52.466 seconds.
+􁁛  Test factoryThrowsWithoutAKey() passed after 52.466 seconds.
+􁁛  Test sectionsStartingAfterTheTitleSlideAreKeptNotDiscarded() passed after 52.467 seconds.
+􁁛  Test paragraphControlsChangeGeometryAndSurviveSaving(narrow:) with 2 test cases passed after 52.466 seconds.
+􀟈  Test case passing 1 argument foreignNamespace → false to inspectionAndExportRefuseOversizedDenseProjectionBeforeWriting(foreignNamespace:) started.
+􀟈  Test case passing 1 argument foreignNamespace → true to inspectionAndExportRefuseOversizedDenseProjectionBeforeWriting(foreignNamespace:) started.
+􁁛  Test everyOfferedChartKindOpensWithoutRepair() passed after 52.609 seconds.
+􁁛  Test rendersChartAndMetricsSlides() passed after 52.609 seconds.
+􁁛  Test parsesRichStyleMetadata() passed after 52.609 seconds.
+􁁛  Test failedMiddlePreviewPreservesOriginalSlideIdentity() passed after 52.609 seconds.
+􁁛  Test nativeTransitionsAndExcludedFallbackSurviveSaving(alternative:) with 2 test cases passed after 52.610 seconds.
+􁁛  Test bulkImportRetainsOriginalDestinationAndUneditedSource() passed after 52.609 seconds.
+􁁛  Test unpricedModelYieldsNoNumber() passed after 52.609 seconds.
+􁁛  Test paintComparisonRejectsGlyphStretchingAndMissingScalarOrigins() passed after 52.609 seconds.
+􁁛  Test rendersOnePreviewPerSlideAndReportsProgress() passed after 52.609 seconds.
+􁁛  Test nativeGlyphPaintAndComputedFitsSurviveSaving(alternative:) with 2 test cases passed after 52.609 seconds.
+􁁛  Test costFormattingNeverReadsAsFree() passed after 52.609 seconds.
+􁁛  Test actualInspectorPreviewsMatchSavedFiles(alternative:) with 2 test cases passed after 52.610 seconds.
+􁁛  Test promptImageLayoutListsComeFromTheRenderer() passed after 52.609 seconds.
+􁁛  Test factoryThrowsForUnwiredProviders() passed after 52.609 seconds.
+􁁛  Test sizesAreReadable() passed after 52.609 seconds.
+􁁛  Test nativePaintAndPublicStyleImportSurviveSaving(alternative:) with 2 test cases passed after 52.610 seconds.
+􁁛  Test catalogIsCompleteAndUnambiguous() passed after 52.609 seconds.
+􁁛  Test actualInspectorPreviewsMatchSavedFiles(alternative:) with 2 test cases passed after 52.612 seconds.
+􁁛  Test notesUseInspectionReadLimitAndRejectInvalidSlideNumbers() passed after 52.612 seconds.
+􀟈  Test case passing 1 argument large → false to nativeEmptyLinesSurviveBothFitsAndSaving(large:) started.
+􀟈  Test case passing 1 argument large → true to nativeEmptyLinesSurviveBothFitsAndSaving(large:) started.
+􁁛  Test smartArtGalleryIncludesEveryLayoutAndWarnsAboutPyramid(alternative:) with 2 test cases passed after 52.732 seconds.
+􁁛  Test aStringifiedSlidesArrayStillDecodes() passed after 52.732 seconds.
+􁁛  Test aFileThatIsNotADeckFailsRatherThanReturningNonsense() passed after 52.732 seconds.
+􁁛  Test fontDiscoveryIncludesNotesAndTheirMaster() passed after 52.733 seconds.
+􁁛  Test aTruncatedDraftIsReportedNotReturnedShort() passed after 52.907 seconds.
+􁁛  Test repairLoopRecoversOnceThenFails() passed after 52.907 seconds.
+􁁛  Test workbookOnlyChartDataReachesInspectionAndPreviewWithoutEditingTheFile() passed after 52.907 seconds.
+􁁛  Test decksWrittenInTheSameSecondStillComeBackInAStableOrder() passed after 52.907 seconds.
+􁁛  Test deletingRemovesTheDeckFromTheLibrary() passed after 52.907 seconds.
+􁁛  Test aMissingOrEmptyDirectoryIsAnEmptyLibraryNotAnError() passed after 52.907 seconds.
+􁁛  Test previewLimitationsAreDistinctFromFileDamageAndReachAccessibility() passed after 52.907 seconds.
+􁁛  Test preflightEstimateCountsThePromptAndTheQAPass() passed after 52.907 seconds.
+􀟈  Test case passing 1 argument narrow → false to nativeBoundariesSurvivePublicFittingAndReopening(narrow:) started.
+􀟈  Test case passing 1 argument narrow → true to nativeBoundariesSurvivePublicFittingAndReopening(narrow:) started.
+􁁛  Test digestsCarryTheSlidesWords() passed after 53.109 seconds.
+􁁛  Test nativeCommonWordReferenceRetainsNamedEvidence() passed after 53.109 seconds.
+􁁛  Test malformedChartFallsBackInsteadOfCrashing() passed after 53.109 seconds.
+􁁛  Test reportsWhichFontsWereEstimatedRatherThanMeasured() passed after 53.109 seconds.
+􁁛  Test emptyNotesRemainDiscoverableAndMissingNotesAreNotCreated() passed after 53.109 seconds.
+􁁛  Test ignoresEverythingThatIsNotADeck() passed after 53.109 seconds.
+􁁛  Test listsDecksNewestFirst() passed after 53.109 seconds.
+􁁛  Test aMissingKeyNamesTheKeyAndThePath() passed after 53.080 seconds.
+􁁛  Test rendersOnePreviewPerSlideFromTheWrittenDeck() passed after 53.109 seconds.
+􁁛  Test fileBackedNotesPreviewMatchesLibraryAndDoesNotChangeSource() passed after 53.109 seconds.
+􁁛  Test rejectedDraftOnDiskIsOwnerReadableOnly() passed after 52.999 seconds.
+􁁛  Test aQuadrantWithNothingToSalvageIsStillRejected() passed after 52.924 seconds.
+􁁛  Test oldRejectedDraftsArePrunedAndRecentOnesKept() passed after 52.899 seconds.
+􁁛  Test migratingAFolderOntoItselfDoesNothing() passed after 51.355 seconds.
+􁁛  Test aLayoutWithinItsShareIsUntouched() passed after 51.355 seconds.
+􁁛  Test theTimestampIsSortableAndFilenameSafe() passed after 51.317 seconds.
+􁁛  Test statementWithoutAClaimIsRejected() passed after 50.127 seconds.
+􁁛  Test nothingToMoveIsNotAnError() passed after 50.126 seconds.
+􁁛  Test aFolderWithNoDecksIsUntouched() passed after 49.907 seconds.
+􁁛  Test aRejectedKeyIsNotRetried() passed after 49.907 seconds.
+􁁛  Test officeCoreFontsAreMeasuredNotReportedMissing() passed after 51.628 seconds.
+􁁛  Test onlyDecksMoveAndAppDataStaysBehind() passed after 49.907 seconds.
+􁁛  Test pruningAMissingDirectoryIsNotAnError() passed after 49.831 seconds.
+􁁛  Test pruningTouchesOnlyOurOwnDrafts() passed after 49.515 seconds.
+􁁛  Test decksMoveToTheNewHomeAndTheOldFolderGoes() passed after 48.723 seconds.
+􁁛  Test aNameCollisionNeverOverwritesTheDeckAlreadyThere() passed after 48.721 seconds.
+􁁛  Test aliasedSlideAndNestedGroupAreSupportedButForeignTablePayloadsAreNot() passed after 19.470 seconds.
+􁁛  Test scopedAliasesDefaultNamespacesFieldsAndLookalikesAreReadWithoutMutation() passed after 19.470 seconds.
+􁁛  Test partiallyReadableTableExportReplacesConflictingProjectionWithExactSemanticText() passed after 19.365 seconds.
+􁁛  Test foreignNamespaceTableProjectionIsRemovedAndReportedWithoutChangingSource() passed after 19.365 seconds.
+􁁛  Test theSameMaterialFencesTheSameWayEveryTime() passed after 19.360 seconds.
+􁁛  Test sharedCellBudgetRefusesDenseRaggedTablesWithoutAllocation() passed after 19.360 seconds.
+􁁛  Test theCapStillAppliesWellInsideTheDeadline() passed after 18.965 seconds.
+􁁛  Test groundingIsFencedAndLabelledAsData() passed after 18.800 seconds.
+􁁛  Test columnCountIsInitializedOnceForRaggedAndEmptyInspectionValues() passed after 18.675 seconds.
+􁁛  Test noGroundingAddsNoFence() passed after 16.981 seconds.
+􁁛  Test identicalOrdinaryTablesAreNotSupplementedAndMergeContinuationPolicyMatchesOutline() passed after 18.963 seconds.
+􁁛  Test inspectionAndRefreshExportRestoreAliasedTableTextAndKeepSourceExact() passed after 19.361 seconds.
+􁁛  Test embeddedFakeDelimiterDoesNotCloseTheSourceBlock() passed after 15.310 seconds.
+􁁛  Test aRequestCannotOutliveTheDeadlineItStartedUnder() passed after 13.613 seconds.
+􁁛  Test leavesBandsWithinCapAlone() passed after 12.796 seconds.
+􁁛  Test splitsOverLongBulletSlide() passed after 11.005 seconds.
+􁁛  Test leavesShortBulletSlideAlone() passed after 11.005 seconds.
+􁁛  Test leavesSevenItemAgendaAlone() passed after 11.005 seconds.
+􁁛  Test nativeBreakReferenceRetainsIndependentEvidenceAndProperties() passed after 9.406 seconds.
+􁁛  Test leavesProseBulletsAlone() passed after 9.406 seconds.
+􁁛  Test promotesNumericBulletsToMetrics() passed after 6.092 seconds.
+􁁛  Test inspectionAndExportRefuseOversizedDenseProjectionBeforeWriting(foreignNamespace:) with 2 test cases passed after 16.981 seconds.
+􁁛  Test isDeterministic() passed after 5.782 seconds.
+􁁛  Test loneNumberIsNotAMetric() passed after 5.782 seconds.
+􁁛  Test chunkSizesStayThreeToFive() passed after 5.698 seconds.
+􁁛  Test capsExcessBandsToDiagrams() passed after 5.698 seconds.
+􁁛  Test splitsOverLongAgendaIntoBulletSlides() passed after 5.605 seconds.
+􁁛  Test exportFailureKeepsTheAcceptedRevisionForOfflineRecovery() passed after 53.082 seconds.
+􁁛  Test normalizedDeckStillValidates() passed after 5.442 seconds.
+􁁛  Test nativeReferenceKeepsSourceAndFontProvenance() passed after 3.739 seconds.
+􁁛  Test theWrittenDeckPassesRostrumsOwnLint() passed after 53.001 seconds.
+􁁛  Suite TemplateRenderingTests passed after 53.114 seconds.
+􁁛  Suite ParagraphSpacingRecipeTests passed after 53.114 seconds.
+􁁛  Suite PreviewFontMeasurementTests passed after 53.114 seconds.
+􁁛  Suite PreviewDiagnosticsTests passed after 53.114 seconds.
+􁁛  Suite DeckInspectionDetailTests passed after 53.114 seconds.
+􁁛  Suite RenderContentCheckTests passed after 53.114 seconds.
+􁁛  Suite AuthoredPaginationTests passed after 53.114 seconds.
+􁁛  Suite RenderedDeckTitlesTests passed after 53.114 seconds.
+􁁛  Suite PlatformTabRecipeTests passed after 53.114 seconds.
+􁁛  Suite TemplateGenerationTests passed after 53.114 seconds.
+􁁛  Suite DeckExporterTests passed after 53.114 seconds.
+􁁛  Suite RequestContractTests passed after 53.114 seconds.
+􁁛  Suite DeckRenameTests passed after 53.114 seconds.
+􁁛  Suite "Background scrim" passed after 53.114 seconds.
+􁁛  Suite OpenAIModelChoiceTests passed after 53.114 seconds.
+􁁛  Suite SlidePreviewGeometryTests passed after 53.114 seconds.
+􁁛  Suite RunGateTests passed after 53.114 seconds.
+􁁛  Suite "Drawing Library Lab recipes" passed after 53.115 seconds.
+􁁛  Suite TableContextRecipeTests passed after 53.114 seconds.
+􁁛  Suite MixedFaceSpacingRecipeTests passed after 53.115 seconds.
+􁁛  Suite FeaturePipelineTests passed after 53.114 seconds.
+􁁛  Suite TextAlignmentRecipeTests passed after 53.115 seconds.
+􁁛  Test aServerFaultIsRetriedRatherThanEndingTheDraft() passed after 53.113 seconds.
+􁁛  Suite ListMarkerRecipeTests passed after 53.115 seconds.
+􁁛  Suite TableTransitionsRecipeTests passed after 53.115 seconds.
+􁁛  Suite TableJoinProfilesRecipeTests passed after 53.115 seconds.
+􁁛  Suite InspectionFontsTests passed after 53.115 seconds.
+􁁛  Suite InstalledFontsTests passed after 53.115 seconds.
+􁁛  Suite PartialTableStylesRecipeTests passed after 53.115 seconds.
+􁁛  Test cancelledRecoveryCreatesNoOutput() passed after 53.113 seconds.
+􁁛  Suite DocumentLabRecipesTests passed after 53.115 seconds.
+􁁛  Suite DeckInspectorTests passed after 53.115 seconds.
+􁁛  Suite ParagraphPaintRecipeTests passed after 53.115 seconds.
+􁁛  Test alreadyCancelledRequestDoesNotOpenTheFile() passed after 53.113 seconds.
+􁁛  Suite DeckLibraryTests passed after 53.115 seconds.
+􁁛  Suite RejectedDraftProtectionTests passed after 53.115 seconds.
+􁁛  Suite DeckStorageTests passed after 53.115 seconds.
+􁁛  Suite TableTextExtractionTests passed after 53.115 seconds.
+􁁛  Suite PromptSafetyTests passed after 53.115 seconds.
+􁁛  Suite OpenAIProviderTests passed after 53.115 seconds.
+􁁛  Suite CompositionRecoveryTests passed after 53.115 seconds.
+􀟈  Test "Every app demo saves, reopens, previews and extracts" started.
+􁁛  Suite NotesPageInspectionTests passed after 53.115 seconds.
+􀟈  Test case passing 1 argument id → .slides to "Every app demo saves, reopens, previews and extracts" started.
+􁁛  Test stampsDocumentPropertiesFromTheIR() passed after 53.151 seconds.
+􁁛  Test rendersDiagramSlides() passed after 53.048 seconds.
+􁁛  Test contentInsideEveryCapReportsNothing() passed after 50.001 seconds.
+􁁛  Test scrimmingAPhotographDoesNotInflateIt() passed after 50.430 seconds.
+􁁛  Test splitDeckRendersToAValidFile() passed after 6.483 seconds.
+􁁛  Suite DeckNormalizerTests passed after 53.992 seconds.
+􁁛  Test imageLeftAndImageRightMirrorEachOther() passed after 54.196 seconds.
+􀟈  Test case passing 1 argument id → .layouts to "Every app demo saves, reopens, previews and extracts" started.
+􁁛  Test nativeCommonWordsSurviveBothFitsAndSaving(narrow:) with 2 test cases passed after 55.378 seconds.
+􁁛  Suite ParagraphLigatureRecipeTests passed after 55.380 seconds.
+􁁛  Test everyRecipeExecutesSerializesAndVerifies(id:alternative:) with 32 test cases passed after 55.383 seconds.
+􀢄  Suite PlatformLabRecipesTests failed after 55.385 seconds with 1 issue.
+􁁛  Test imageRequestsRespectTheProvidersBurstCeiling() passed after 55.857 seconds.
+􀟈  Test case passing 1 argument id → .importedFidelity to "Every app demo saves, reopens, previews and extracts" started.
+􁁛  Test actualInspectorPreviewsMatchSavedFiles(alternative:) with 2 test cases passed after 56.160 seconds.
+􁁛  Suite TableDefaultsRecipeTests passed after 56.162 seconds.
+􁁛  Test nativeEmptyLinesSurviveBothFitsAndSaving(large:) with 2 test cases passed after 9.124 seconds.
+􁁛  Suite ParagraphBreakRecipeTests passed after 56.422 seconds.
+􁁛  Test nativeBoundariesSurvivePublicFittingAndReopening(narrow:) with 2 test cases passed after 7.128 seconds.
+􁁛  Suite ParagraphBoundaryRecipeTests passed after 56.503 seconds.
+􀟈  Test case passing 1 argument id → .shapes to "Every app demo saves, reopens, previews and extracts" started.
+􁁛  Test listingModelsRetriesADroppedConnection() passed after 57.148 seconds.
+􁁛  Test aDroppedConnectionIsRetriedRatherThanEndingTheDraft() passed after 57.150 seconds.
+􁁛  Suite LecternCoreTests passed after 57.151 seconds.
+􀟈  Test case passing 1 argument id → .fillsAndLines to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .text to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .fontsAndFitting to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .paragraphLayout to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .listMarkers to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .textAlignment to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .mixedFaceSpacing to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .tabLayout to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .pictures to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .tableStructure to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .tableStyles to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .tableAppearance to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .tableDefaults to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .tableJoinProfiles to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .partialTableStyles to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .tableTransitions to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .charts to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .chartEditing to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .smartArt to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .notes to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .comments to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .sections to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .slideImport to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .theme to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .templates to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .design to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .mediaAndAttachments to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .package to "Every app demo saves, reopens, previews and extracts" started.
+􀟈  Test case passing 1 argument id → .extractionAndRendering to "Every app demo saves, reopens, previews and extracts" started.
+􁁛  Test "Every app demo saves, reopens, previews and extracts" with 33 test cases passed after 66.086 seconds.
+􀟈  Test invalidInputDoesNotCreateFiles() started.
+􁁛  Test invalidInputDoesNotCreateFiles() passed after 0.001 seconds.
+􀟈  Test hiddenInputsCannotInvalidateADifferentRecipe() started.
+􁁛  Test hiddenInputsCannotInvalidateADifferentRecipe() passed after 0.489 seconds.
+􀟈  Test cancellationDoesNotCreateFiles() started.
+􁁛  Test cancellationDoesNotCreateFiles() passed after 0.001 seconds.
+􀟈  Test repeatedRunsKeepIndependentArtifacts() started.
+􁁛  Test repeatedRunsKeepIndependentArtifacts() passed after 0.971 seconds.
+􀟈  Test failedArtifactWriteRemovesOnlyItsOwnRun() started.
+􁁛  Test failedArtifactWriteRemovesOnlyItsOwnRun() passed after 0.014 seconds.
+􁁛  Suite "Library Lab file pipeline" passed after 120.679 seconds.
+􀢄  Test run with 306 tests in 47 suites failed after 120.679 seconds with 1 issue.
+Note: Some test targets reported failures:
+  - LecternCoreTests (Swift Testing)

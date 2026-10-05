@@ -1,0 +1,158 @@
+{
+  "baselineCommit": "89aa1633cbbd07c152eb9e456c12e15686f7dbb8",
+  "scope": "Selected image-fill resource inventory and original-byte export; post-change headless proof, not new GUI acceptance or performance measurement.",
+  "sourceFiles": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Sources/Rostrum/Presentation/DeckOutline.swift",
+      "bytes": 28057,
+      "sha256": "c0fbfd72067843951327e0bb05fc3ee1bbe0e6bce9cdecc8b4f327d193d0d409"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Sources/Rostrum/Presentation/OutlineImageFills.swift",
+      "bytes": 13914,
+      "sha256": "12cb852118158759ddded13999d9ae41488ec5b1abcbb5b9f8fa2c7f3022a7d7"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Sources/Rostrum/Presentation/TableStyleResolver.swift",
+      "bytes": 34709,
+      "sha256": "fdf4acca8fa49a757a59754426a91570dc3b65c831e10e5208d8ed38b4d506a7"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/Tests/RostrumTests/OutlineImageFillTests.swift",
+      "bytes": 24045,
+      "sha256": "e38e793a56412df3af054dad9eaa7238404953cdb1b3f7df32cd3cf765287c8d"
+    }
+  ],
+  "gates": {
+    "focused": "30 tests / 2 suites passed",
+    "library": "1207 tests / 176 suites passed",
+    "layout": "18 tests / 3 suites passed"
+  },
+  "logs": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/fail-before.log",
+      "bytes": 2644,
+      "sha256": "3662e71fd34f85f82bef4284aa2b9b5a5d66031c375fd19f0bba6e08b4205aed"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/focused-expanded.log",
+      "bytes": 7235,
+      "sha256": "e2524cdbbeb0285870b55407b05278cc922b89ce922478f174d863b4c4468e49"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/focused-scope.log",
+      "bytes": 8454,
+      "sha256": "e63ee3148f0f10abb8f11096167cd05e5349008f6461b7880a648e3ded385f7f"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/full-reviewed.log",
+      "bytes": 231557,
+      "sha256": "6d65cac2d1e3f3dab886dcb22dab0c476d35ba0ff0b36eeb06b5b7586b6ad18b"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/probe-link.log",
+      "bytes": 750,
+      "sha256": "c9c7d48aa40a63346ade370aaf0b5b1b9bc1963af70ce5ad698398ef0275b6fc"
+    }
+  ],
+  "historicalFailure": "focused-expanded.log retains a test-authoring mistake: a blipFill was appended after existing noFill; the fixture was corrected to select one fill before final green gates.",
+  "artifacts": [
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/candidate-Rostrum.o",
+      "bytes": 8684544,
+      "sha256": "c5c0a532dac59710f492ea4d18c37caeb5f04549f20d95d210a5a9623b4474b3"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/export-probe.swift",
+      "bytes": 2286,
+      "sha256": "ef2517d63d9dfdf794116406c126acaf7c9051a09ca7545f77afd3b7706f257f"
+    },
+    {
+      "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/export-probe",
+      "bytes": 6877136,
+      "sha256": "62b934e8e142815b8fe636d05088407d908a899e49d25733e468c9ac07a51c0f"
+    }
+  ],
+  "variants": [
+    {
+      "assetCount": 2,
+      "assets": [
+        {
+          "bytes": 84,
+          "filename": "image1.png",
+          "partName": "/ppt/media/image1.png",
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/actual-false/slide-01/image1.png",
+          "slide": 1,
+          "filePin": {
+            "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/actual-false/slide-01/image1.png",
+            "bytes": 84,
+            "sha256": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76"
+          }
+        },
+        {
+          "bytes": 84,
+          "filename": "image1.png",
+          "partName": "/ppt/media/image1.png",
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/actual-false/slide-02/image1.png",
+          "slide": 2,
+          "filePin": {
+            "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/actual-false/slide-02/image1.png",
+            "bytes": 84,
+            "sha256": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76"
+          }
+        }
+      ],
+      "readOnlySerialization": true,
+      "reopenedOutlineExact": true,
+      "repeatedExportBytesExact": true,
+      "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance.pptx",
+      "sourceBytesUnchanged": true,
+      "warnings": [],
+      "sourcePin": {
+        "path": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-7328CE6D-C56A-40DA-AB7B-CF751F3EAA0D/tableAppearance.pptx",
+        "bytes": 444535,
+        "sha256": "b7351a492cd0b3e9d0c29f2dec5ff4d6eb1954b92e05cf343c7d77929ee4022b"
+      }
+    },
+    {
+      "assetCount": 2,
+      "assets": [
+        {
+          "bytes": 84,
+          "filename": "image1.png",
+          "partName": "/ppt/media/image1.png",
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/actual-true/slide-01/image1.png",
+          "slide": 1,
+          "filePin": {
+            "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/actual-true/slide-01/image1.png",
+            "bytes": 84,
+            "sha256": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76"
+          }
+        },
+        {
+          "bytes": 84,
+          "filename": "image1.png",
+          "partName": "/ppt/media/image1.png",
+          "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/actual-true/slide-02/image1.png",
+          "slide": 2,
+          "filePin": {
+            "path": "/Users/welshofer/.codex/worktrees/rostrum-tables/rostrum/.build/image-fill-assets22/actual-true/slide-02/image1.png",
+            "bytes": 84,
+            "sha256": "0b090deb14404ac5d5c245d2633c69c7a988867ec37de2b35a81d14ecfd51e76"
+          }
+        }
+      ],
+      "readOnlySerialization": true,
+      "reopenedOutlineExact": true,
+      "repeatedExportBytesExact": true,
+      "source": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance.pptx",
+      "sourceBytesUnchanged": true,
+      "warnings": [],
+      "sourcePin": {
+        "path": "/Users/welshofer/Library/Application Support/Lectern/Diagnostics/Library Lab/tableAppearance-454A309E-7128-4BDA-B2B5-F0E3DC12BEF5/tableAppearance.pptx",
+        "bytes": 444541,
+        "sha256": "b53025b0f1de83b4febb9e4844b5a6fc12273f25acd1f1e32df28f28b7cf5834"
+      }
+    }
+  ]
+}

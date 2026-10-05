@@ -1,0 +1,66 @@
+[
+  {
+    "id": "ltr-unequal-grid",
+    "intervals": 11,
+    "failedIntervals": 0,
+    "maxEndpointError": 0,
+    "glyphs": 16,
+    "maxGlyphOriginError": 0.0082244873046875
+  },
+  {
+    "id": "rtl-unequal-grid",
+    "intervals": 11,
+    "failedIntervals": 11,
+    "maxEndpointError": 1.5,
+    "glyphs": 16,
+    "maxGlyphOriginError": 0.008209228515625
+  },
+  {
+    "id": "colored-vertical-red",
+    "intervals": 11,
+    "failedIntervals": 11,
+    "maxEndpointError": 1.5,
+    "glyphs": 16,
+    "maxGlyphOriginError": 0.0082244873046875
+  },
+  {
+    "id": "colored-vertical-blue",
+    "intervals": 11,
+    "failedIntervals": 11,
+    "maxEndpointError": 1.5,
+    "glyphs": 16,
+    "maxGlyphOriginError": 0.008209228515625
+  },
+  {
+    "id": "horizontal-merge-matching",
+    "intervals": 8,
+    "failedIntervals": 8,
+    "maxEndpointError": 1.5,
+    "glyphs": 12,
+    "maxGlyphOriginError": 0.0082244873046875
+  },
+  {
+    "id": "horizontal-merge-conflicting",
+    "intervals": 8,
+    "failedIntervals": 8,
+    "maxEndpointError": 1.5,
+    "glyphs": 12,
+    "maxGlyphOriginError": 0.008209228515625
+  },
+  {
+    "id": "vertical-merge-matching",
+    "intervals": 10,
+    "failedIntervals": 10,
+    "maxEndpointError": 1.5,
+    "glyphs": 12,
+    "maxGlyphOriginError": 0.0082244873046875
+  },
+  {
+    "id": "vertical-merge-conflicting",
+    "intervals": 10,
+    "failedIntervals": 10,
+    "maxEndpointError": 1.5,
+    "glyphs": 12,
+    "maxGlyphOriginError": 0.008209228515625
+  }
+]

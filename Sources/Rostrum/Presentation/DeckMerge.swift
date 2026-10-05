@@ -136,18 +136,22 @@ final class SlideCopier {
         let sourceStyles = try presentation.related(by: RelType.tableStyles, in: source)
         let root = try sourceStyles.dom()
         for (table, scope) in tables {
-            let existingProperties = table.childElements.first { TableStyleXML.isDrawing($0, "tblPr", namespaces: scope) }
-            let properties = existingProperties ?? XML.Element("a:tblPr", attributes: [("xmlns:a", TableStyleXML.drawing)])
+            guard let properties = table.childElements.first(where: {
+                TableStyleXML.isDrawing($0, "tblPr", namespaces: scope)
+            }) else { continue }
             let propertyScope = TableStyleXML.bindings(properties, inheriting: scope)
             if properties.childElements.contains(where: { TableStyleXML.isDrawing($0, "tableStyle", namespaces: propertyScope) }) { continue }
-            let reference = properties.childElements.first { TableStyleXML.isDrawing($0, "tableStyleId", namespaces: propertyScope) }
-            guard let id = reference?.textContent ?? root[attribute: "def"] else { continue }
+            // An insertion default is not applied to an existing table. Keep
+            // omitted properties/IDs omitted, even across different defaults.
+            guard let reference = properties.childElements.first(where: {
+                TableStyleXML.isDrawing($0, "tableStyleId", namespaces: propertyScope)
+            }) else { continue }
+            let id = reference.textContent
             let matches = TableStyleXML.definitions(in: root).filter { $0[attribute: "styleId"]?.lowercased() == id.lowercased() }
             guard matches.count <= 1 else { throw RostrumError.packageInvalid("ambiguous source table style ID") }
-            // An implicit native default still needs an explicit reference in
-            // the destination, even when no embedded definition is available.
+            // Explicit native IDs survive even without an embedded definition.
             let mapped = try matches.first.map { try importTableStyle($0, from: sourceStyles) } ?? id
-            let target = reference ?? XML.Element("a:tableStyleId", attributes: [("xmlns:a", TableStyleXML.drawing)])
+            let target = reference
             var wroteText = false
             target.children = target.children.compactMap { node in
                 guard case .text = node else { return node }
@@ -156,12 +160,6 @@ final class SlideCopier {
                 return .text(mapped)
             }
             if !wroteText { target.children.insert(.text(mapped), at: 0) }
-            if existingProperties == nil {
-                table.insertChild(properties, beforeAnyOf: table.childElements.filter {
-                    TableStyleXML.isDrawing($0, "tblGrid", namespaces: scope) || TableStyleXML.isDrawing($0, "tr", namespaces: scope)
-                }.map(\.name))
-            }
-            if reference == nil { properties.insertChild(target, beforeAnyOf: properties.childElements.filter { TableStyleXML.isDrawing($0, "extLst", namespaces: propertyScope) }.map(\.name)) }
             part.markDirty()
         }
     }

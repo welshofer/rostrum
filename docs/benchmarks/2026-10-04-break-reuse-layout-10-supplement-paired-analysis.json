@@ -1,0 +1,72 @@
+{
+  "source": "docs/benchmarks/2026-10-04-break-reuse-layout-10-supplement-paired-macos.json",
+  "bootstrapResamples": 100000,
+  "seed": 20261004,
+  "method": "Percentile bootstrap of median paired candidate/baseline percent ratios, pairs resampled together; exact two-sided binomial sign test excludes ties. Exploratory uncertainty from ten pairs, not corrected across workloads. Cannot remove shared load bias.",
+  "backgroundLoad": "WindowServer97.1\u201399.4 percent CPU across six start/during/end snapshots; backupd0.0 throughout. No external compiler/xcodebuild/xctest observed. Snapshots are not continuous isolation monitoring and cannot remove host-load bias.",
+  "results": {
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx/render": {
+      "pairedPercentDeltas": [
+        -4.803556686053801,
+        -5.795325843947907,
+        -5.855947121406457,
+        -5.1358860248054805,
+        -7.021266348934086,
+        -4.894221629219375,
+        -3.02879000886348,
+        -4.983054218992788,
+        -4.08487345051658,
+        -5.387698308984867
+      ],
+      "medianPairedPercentDelta": -5.0594701218991345,
+      "fasterPairs": 10,
+      "twoSidedExactSignTestP": 0.001953125,
+      "percentileBootstrapMedian95PercentInterval": [
+        -5.795325843947907,
+        -4.489547539867978
+      ]
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx/render": {
+      "pairedPercentDeltas": [
+        -2.045157855342994,
+        -4.726619370108032,
+        0.26082775459672636,
+        -4.287727829738596,
+        -3.0285549851041593,
+        -3.430555555555548,
+        -2.2408853049494803,
+        -4.0173420171487955,
+        0.7854925999773554,
+        -1.7712164893793236
+      ],
+      "medianPairedPercentDelta": -2.6347201450268196,
+      "fasterPairs": 8,
+      "twoSidedExactSignTestP": 0.109375,
+      "percentileBootstrapMedian95PercentInterval": [
+        -4.0173420171487955,
+        -0.8921650503731338
+      ]
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx/render": {
+      "pairedPercentDeltas": [
+        -3.707699743951165,
+        -8.12171387548366,
+        -3.5904627261868716,
+        4.378108273648196,
+        -2.1533856433270437,
+        -4.255995880162001,
+        -2.384844541605191,
+        -3.4591789489989866,
+        -3.745049535193856,
+        -3.5745898874539273
+      ],
+      "medianPairedPercentDelta": -3.5825263068203994,
+      "fasterPairs": 9,
+      "twoSidedExactSignTestP": 0.021484375,
+      "percentileBootstrapMedian95PercentInterval": [
+        -3.981847812056583,
+        -2.384844541605191
+      ]
+    }
+  }
+}

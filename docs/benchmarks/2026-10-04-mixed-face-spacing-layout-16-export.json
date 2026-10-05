@@ -1,0 +1,245 @@
+{
+  "status": "APPROVED_BOUNDED_FIDELITY_COST",
+  "independentSourceAndV2ProtocolReview": "APPROVED; independent final numeric/evidence review recomputed all 173 vectors, 21 primary comparisons, 152 secondary comparisons, 188 pins, 9,178 outputs, 87 inputs and 44 exports.",
+  "baselineSource": "9ccc87e575b8edbe5096db09e48a38a6667c19f7",
+  "candidateSource": "bba9c700921b33107a39920f8d05f0b325454c0f",
+  "reportPath": "docs/MIXED-FACE-SPACING-PERFORMANCE-20261004-16.md",
+  "reportSHA256": "625fe9617884e16e95d1b9771fe250183990fc9356d339a9eee334b58e92304b",
+  "originalVerificationSHA256": "c1186c393a0362e994e9e4e70b3eb015bc8baf743dd50987cd1cbbffcd3fe2a8",
+  "exports": [
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/canonical-paired.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-canonical-paired.json",
+      "SHA256": "2cc44a96921c7d4e3f3a12779728f1f7610653f2558ef981153fb42bfef20de4"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/supplement-paired.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-supplement-paired.json",
+      "SHA256": "c6e741d10674f46f3e4deccff0fed93626de748b6c0a8d49e1cfd4224e704f23"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/native-paired.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-native-paired.json",
+      "SHA256": "e153dc8dc19d8c58d2db0217928bdfc5f2f7741d5eb3cbfb4874965aac737736"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/canonical-paired-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-canonical-paired-analysis.json",
+      "SHA256": "0b1d765794d1e54947f444fc09d610b725ee137fbe71619a3cc2c43950a1ae32"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/supplement-paired-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-supplement-paired-analysis.json",
+      "SHA256": "467335f9b4554737c273fe57baf017d5191b8b6f7f6ce1a86131b983fb5fd465"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/native-paired-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-native-paired-analysis.json",
+      "SHA256": "2ba4413549a232edd707e5186d937a2071b0dcab91192442ea0b4eb51cc40453"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/summary.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-summary.json",
+      "SHA256": "789bede0d0fae854b99af37df0e8a17ec3c0a6ffd0a3be0058ce477014096528"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/all-phase-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-all-phase-analysis.json",
+      "SHA256": "869fa49ca305eacdd8d3994aaf9db0c0596c3a10869bbafb6fdd597b43e04008"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/APPENDIX.md",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-APPENDIX.md",
+      "SHA256": "9462556dd56be189f931fd1a10e5816df717bc22dc84500e1a1fb9ead431e448"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/host-load.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-host-load.json",
+      "SHA256": "a37a1b4513862542cad3fb01ac51d42b31cff6606f6c1754f500a992a2066615"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/timing-plan.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-timing-plan.json",
+      "SHA256": "65b2c5303674f1d203c1e844efe9ee5a7835ab6297e6220673366b7beb823b68"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/timing-execution.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-timing-execution.json",
+      "SHA256": "2ab722685fb3071bc679fe27a97b2a099e7dea5b597953d75c61fedd2ab1fa91"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/timing-launch.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-timing-launch.json",
+      "SHA256": "0f57dca351fab84a3e4465fedc034234ba9883dddc4525f57ff11dce65b8a86c"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/timing-progress.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-timing-progress.json",
+      "SHA256": "c42e225c5386014f6dcedc6ed011d2ffea1d839bc0d5a9f456bb3e99acebba9a"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/ready.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-ready.json",
+      "SHA256": "ccce786885d548bd36298d0f3130b9e6375fdc326291ca39dfdf9286fcc74361"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/verification.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-verification.json",
+      "SHA256": "c1186c393a0362e994e9e4e70b3eb015bc8baf743dd50987cd1cbbffcd3fe2a8"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/v1-preservation.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-v1-preservation.json",
+      "SHA256": "cf58bb0f0d8ec8e1d0d836913edef08a75cc1f86032bc11a67e849d2dc4671c0"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/v2-validation.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-v2-validation.json",
+      "SHA256": "9bdede19d9820e976368392140ea80239acc985536437151d45c7f5894c93cd4"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/helper-build.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-helper-build.json",
+      "SHA256": "2a70b606216f28b6a137a7a729c4ebee909230e5d1687da3f3268cf0e8b6caf8"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/functional-preflight.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-functional-preflight.json",
+      "SHA256": "22d9908094e16f5aa5bedbff096dbb8654cc1f6c37b04d64526ba1199e1f3081"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/svg-byte-analysis.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-svg-byte-analysis.json",
+      "SHA256": "70fffe08306615bc64833f5de1ac6ca05539bc3c9abe1bfd02122010c8488682"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/input-pins.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-input-pins.json",
+      "SHA256": "2d27c53df3c0aae83807c0efed10548168a57a1c0d683acd09e4547418c07f26"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/baseline-pins.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-baseline-pins.json",
+      "SHA256": "3adf2f4f82b6615c3e446d95a36cd8c2ea237b4edaa63f4a09dae71802624c12"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/candidate-source-pins.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-candidate-source-pins.json",
+      "SHA256": "7c2cb44f91b85985def5f99e689ec903d48ab1d9a246034e398f369790c98d33"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/expanded-corpus-plan.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-expanded-corpus-plan.json",
+      "SHA256": "7a3a8af393cda63fcf7212e6192454352b067cc7c45dbcf5352bbe37bdf9ee29"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/corpus-proof.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-corpus-proof.json",
+      "SHA256": "1251f7f20c62023eaa4fd33039dcf526dfdc165afdcf22fe8ab83daaeb29acdd"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/output-classification.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-output-classification.json",
+      "SHA256": "b6d11bdb2a9d176fb16a16e62c2edb90eb0833d2f07edd24fc8c945ec4eb4371"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/value-proof.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-value-proof.json",
+      "SHA256": "ec1cb9dbb303bfc00160c396fb7ac3fbbec82b2421d4813898f0356d7de149d1"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/preservation.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-preservation.json",
+      "SHA256": "66c71f8e4c2a3641bc1a9110052f3d42d13ee9005134b4170ac979c486d204b2"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/fit40-proof.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-fit40-proof.json",
+      "SHA256": "2dd88b4d2cf642dbc746b308e4a027cba1437c2ec0cb5d448749dc99cd7e0586"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/input-reproduction.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-input-reproduction.json",
+      "SHA256": "31b8d8049cab026a2f5e80903b28781c0923b046625b7cbec1928f0a43792456"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/profile-summary.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-profile-summary.json",
+      "SHA256": "f013dcc41650bc49d94613c1ac4eb47761a6f4274db63f61f3913c2abde18bb3"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/candidate-storage.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-candidate-storage.json",
+      "SHA256": "a9b7439e3592d919a5989fd1abbcab626ebf17433a0034f1e1eeb6901db3f5ce"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/timing-plan.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-v1-timing-plan.json",
+      "SHA256": "610188711ae00ed6018f2aa9421b5510fd96070586415fc0627f816c90e8d180"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/ready.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-v1-ready.json",
+      "SHA256": "db91cd53a9892861c11501545086fba0dd7cb6b7f266635040e3c7026cb9e264"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing/helper-build.json",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-v1-helper-build.json",
+      "SHA256": "b122ce506e9e4f72ab49f3f0f643f15c79083bfc15d15f01729e80bf89418e99"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/process-canonical-end.txt",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-process-canonical-end.txt",
+      "SHA256": "91fdb2678c32f63a54eee477deadd9ef560a4d433981089258205dd85f918f27"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/process-end.txt",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-process-end.txt",
+      "SHA256": "903dbf67f3aa18f6da0b8d9f0d98407b31b700d662839e570cf01376a31ec827"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/process-native-during-15.txt",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-process-native-during-15.txt",
+      "SHA256": "e1a1188617e92e0dad107eb7d356771eadf6cf52aa1636e03fc844d5df291823"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/process-native-end.txt",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-process-native-end.txt",
+      "SHA256": "4954ae499fd95c80ac07eb4295268ba64e3994fb1a8f424f6977bc58c6c0c167"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/process-supplement-end.txt",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-process-supplement-end.txt",
+      "SHA256": "116292b2f6cd67232cb8d0fceb196de599afe0dbb53f158739046463f0910d91"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/process-supplement-during-15.txt",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-process-supplement-during-15.txt",
+      "SHA256": "98e2ac083bd65a2484d7a493a883de6f23aa0a6e8d352e0405db65aea085a8df"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/process-start.txt",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-process-start.txt",
+      "SHA256": "e21fcd6f5a2ab106c5d3512391098d36509ec3b99f416653da4dcc8835b89cb8"
+    },
+    {
+      "original": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/process-canonical-during-15.txt",
+      "tracked": "docs/benchmarks/2026-10-04-mixed-face-spacing-layout-16-process-canonical-during-15.txt",
+      "SHA256": "8ca3d4adf7732e724c1892dd22b42d593f6172cddf672fa220e3c69669dd3e04"
+    }
+  ],
+  "scope": "Fidelity cost, adversefitting/combiningintervals andmixedRSS foregrounded. No universalnonregression or gainclaim. V1fullyretaineduntimed; V2singlecampaign.",
+  "reportBeforeAcceptance": {
+    "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf28-mixed-face-spacing-v2/report-before-acceptance.md",
+    "SHA256": "cef67ad0b1b5f8796c93791334cb617660de615a91a9bea3a86a073098b45c49"
+  },
+  "acceptanceLimits": "Warm fitting and long-combining adverse intervals remain explicit, with inconclusive exact sign tests, mixed RSS and uncontrolled background load. No speedup, universal nonregression or cumulative recovery claim.",
+  "runtimeDefinitions": {
+    "executionReceiptWallSeconds": 71.66209854197223,
+    "completionLogWallSeconds": 71.66224804200465,
+    "laterLogSampleDeltaSeconds": 0.00014950003242120147,
+    "sumOfRecordedPoolWallSeconds": 71.56507662503282,
+    "bothRoundedSeconds": 71.66,
+    "note": "Two successive wall-clock samples around receipt serialization; no rerun or altered raw timing."
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "status": "Ordered-range candidate measured once; evidence acceptance pending; uncontrolled background load",
+  "baselineRevision": "76aa45d3520276854b4344dfb54473820449f4fc",
+  "candidateWasFrozenUncommittedPatchAtTiming": true,
+  "measurements": {
+    "canonical": {
+      "table-200x50": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 193.3351665,
+            "candidateMedianMS": 194.1180835,
+            "ratioOfMediansPercentDelta": 0.4049532292408786
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 189669376.0,
+          "candidate": 189865984.0
+        },
+        "peakRSSMedianDeltaBytes": 196608.0
+      },
+      "table-20x10": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 3.8203750000000003,
+            "candidateMedianMS": 3.813333,
+            "ratioOfMediansPercentDelta": -0.184327454765576
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 18284544.0,
+          "candidate": 18350080.0
+        },
+        "peakRSSMedianDeltaBytes": 65536.0
+      },
+      "shaped-table-100x20": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 65.502458,
+            "candidateMedianMS": 66.3101045,
+            "ratioOfMediansPercentDelta": 1.2330018210919613
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 53952512.0,
+          "candidate": 53788672.0
+        },
+        "peakRSSMedianDeltaBytes": -163840.0
+      },
+      "richtext-fit": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 2.902042,
+            "candidateMedianMS": 2.7031665,
+            "ratioOfMediansPercentDelta": -6.8529504397248475
+          },
+          "richtext-fitting": {
+            "baselineMedianMS": 11.2093125,
+            "candidateMedianMS": 9.4431665,
+            "ratioOfMediansPercentDelta": -15.756059972455926
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 22102016.0,
+          "candidate": 22142976.0
+        },
+        "peakRSSMedianDeltaBytes": 40960.0
+      },
+      "slides-10": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 0.6099585000000001,
+            "candidateMedianMS": 0.6111875,
+            "ratioOfMediansPercentDelta": 0.2014891177022582
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 16056320.0,
+          "candidate": 16187392.0
+        },
+        "peakRSSMedianDeltaBytes": 131072.0
+      }
+    },
+    "supplement": {
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 128.7612915,
+            "candidateMedianMS": 123.500729,
+            "ratioOfMediansPercentDelta": -4.085515482733404
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 52215808.0,
+          "candidate": 51822592.0
+        },
+        "peakRSSMedianDeltaBytes": -393216.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 125.7500005,
+            "candidateMedianMS": 125.5400835,
+            "ratioOfMediansPercentDelta": -0.16693200728854496
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 50421760.0,
+          "candidate": 50184192.0
+        },
+        "peakRSSMedianDeltaBytes": -237568.0
+      },
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 402.516146,
+            "candidateMedianMS": 404.9796875,
+            "ratioOfMediansPercentDelta": 0.6120354486351509
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 43393024.0,
+          "candidate": 43008000.0
+        },
+        "peakRSSMedianDeltaBytes": -385024.0
+      }
+    },
+    "late-combining": {
+      "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf22-ordered-atoms/late-combining.pptx": {
+        "phases": {
+          "render": {
+            "baselineMedianMS": 142.8961875,
+            "candidateMedianMS": 142.264854,
+            "ratioOfMediansPercentDelta": -0.44181269706722315
+          }
+        },
+        "peakRSSMedianBytes": {
+          "baseline": 28975104.0,
+          "candidate": 28909568.0
+        },
+        "peakRSSMedianDeltaBytes": -65536.0
+      }
+    }
+  },
+  "scope": "Unchanged canonical/supplementary176 processes plus separate22-process late-combining guard-rejection control. No cumulative/historical, universal or clean-host claim."
+}

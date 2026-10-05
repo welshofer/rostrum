@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "script": "/tmp/verify-fidelity19-partial-paint-controls.py",
+  "scriptSHA256": "665fd3e8c88a280517e115de3b7a4e53442dab4a682a7ad62f13ea96fcc232b7",
+  "extractor": "/tmp/verify-fidelity19-partial-table-paint.py",
+  "extractorSHA256": "486a6fb19fe11b57ffecab8804b4160ba8e85daf4b6d172fbeddd7ed4f39776e",
+  "inputSVG": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/partial-table-styles-false-slide-2.svg",
+  "inputSVGSHA256": "fc06e0cdef2bae70581a9de3338dc3eb32b58a340171b1ac02a5a27e118533fe",
+  "reference": "/tmp/lectern-fidelity19-partial-webkit/partial-table-styles-6BCFD74B-95BA-49CA-9EFB-DCF670B93A3E/lab-false/partialTableStyles-64742738-AC8A-4D01-925D-E87C0198D9F1/native-partial-table-styles-reference.json",
+  "referenceSHA256": "cd0cc26a85fa311068c2ce0328536f028025209e28919106cce365c8b4d19cdd",
+  "positiveOpaqueTouchingSubdivision": true,
+  "negativeControls": [
+    {
+      "label": "extra-stroke",
+      "rejected": true,
+      "error": "('complete stroke coverage', 'partial-grid-whole', 7, 6)"
+    },
+    {
+      "label": "missing-stroke",
+      "rejected": true,
+      "error": "('stroke', 'partial-grid-whole', {'points': [150.0, 565.0, 150.0, 635.5], 'color': [0.0, 0.0, 0.0], 'opacity': 1.0, 'width': 1.0}, {'points': [150.0, 494.5, 150.0, 635.5], 'color': [0.0, 0.0, 0.0], 'opacity': 1.0, 'width': 1.0, 'sequence': 55})"
+    },
+    {
+      "label": "gap",
+      "rejected": true,
+      "error": "('complete stroke coverage', 'partial-grid-whole', 7, 6)"
+    },
+    {
+      "label": "changed-width",
+      "rejected": true,
+      "error": "('complete stroke coverage', 'partial-grid-whole', 7, 6)"
+    },
+    {
+      "label": "changed-color",
+      "rejected": true,
+      "error": "('complete stroke coverage', 'partial-grid-whole', 7, 6)"
+    },
+    {
+      "label": "incorrect-colored-crossing-order",
+      "rejected": true,
+      "error": "('ordered fill/stroke arrangement color', 'partial-grid-whole', 29.5, 494.75, [0.0, 0.5333333333333333, 0.0], [0.0, 0.0, 0.0])"
+    },
+    {
+      "label": "missing-fill",
+      "rejected": true,
+      "error": "('fill count', 'partial-grid-whole')"
+    },
+    {
+      "label": "extra-fill",
+      "rejected": true,
+      "error": "('fill count', 'partial-grid-whole')"
+    },
+    {
+      "label": "changed-fill-color",
+      "rejected": true,
+      "error": "('fill', 'partial-grid-whole', {'bounds': [30.0, 495.0, 150.0, 565.0], 'color': [0, 1, 0], 'opacity': 1.0}, {'bounds': [30.0, 495.0, 150.0, 565.0], 'color': [0.800000011920929, 0.2666666805744171, 0.6666666865348816], 'opacity': 1.0})"
+    },
+    {
+      "label": "changed-opacity",
+      "rejected": true,
+      "error": "('complete stroke coverage', 'partial-grid-whole', 7, 6)"
+    }
+  ],
+  "scope": "Complete interval coverage and full combined opaque fill/stroke edge arrangement remain at .001pt/.0001RGB; midpoint crossing controls additive. No native input, SVG, PDF, original helper or bounds changed."
+}

@@ -1,0 +1,46 @@
+{
+  "status": "PASS_FOR_VALID_POSITIVE_AND_THREE_NEGATIVE_CONTROLS",
+  "extractor": "/tmp/verify-webkit-mixed-face-paint16-v3.py",
+  "extractorSHA256": "6f1ea5db5fe503a7cc08104c18f9b81aefccf1457631cc3d4ee6ecaa04522b1b",
+  "scope": "Additive S16 actual per-glyph font extension; native4cases32glyphs positive, wrongactualface/actualspecimenAgjpspantextLength/wrongorigin negative controls. Original helper unchanged. No browser acceptance claim.",
+  "retainedInvalidNegativeControls": "Initial textLength.svg and textLength-v2.svg affected non-specimen geometry/caption nodes; extractor success reflects unaffected specimens. Both invalid attempts retained and excluded. A subsequent preparation assertion incorrectly expected2 rather than4 Agjp text nodes; no extractor invocation occurred. Valid textLength-v3 targets the exact first control body line and fails.",
+  "results": [
+    {
+      "control": "positive",
+      "expectedSuccess": true,
+      "actualSuccess": true
+    },
+    {
+      "control": "wrong-actual-face",
+      "expectedSuccess": false,
+      "actualSuccess": false
+    },
+    {
+      "control": "textLength-v3",
+      "expectedSuccess": false,
+      "actualSuccess": false
+    },
+    {
+      "control": "wrong-origin",
+      "expectedSuccess": false,
+      "actualSuccess": false
+    }
+  ],
+  "files": {
+    "/tmp/lectern-mixed-face16-verifier-controls/textLength.svg": "3298b59c4a27612cabca22232c07e1358776745e1e520e1a9b33c877aeb9fc04",
+    "/tmp/lectern-mixed-face16-verifier-controls/textLength-log.txt": "6f9e12ee1acef79d4c52f21daf58404c640ec80e6c429595bd03b5421744eeaa",
+    "/tmp/lectern-mixed-face16-verifier-controls/positive-log.txt": "e18f1f727ad70d91342e572d0347ff5460d2e1df302cb82e99626d73917475fe",
+    "/tmp/lectern-mixed-face16-verifier-controls/positive-cases.json": "3edd8f8a62c84302963b28118e751d2648fd81dc7ace7d3b9d37f006b5636884",
+    "/tmp/lectern-mixed-face16-verifier-controls/textLength-v2-comparison.json": "d4b6cf20419eb6ff49df23aa3ea7f5a79bed8ca0df95edd36a057eab3ddbe90a",
+    "/tmp/lectern-mixed-face16-verifier-controls/wrong-actual-face-log.txt": "770ac191513059850183a0cd6c81558c2cbd08f77fb5dd473ccda68c6b58d6ea",
+    "/tmp/lectern-mixed-face16-verifier-controls/wrong-origin-log.txt": "06b270706b3e34a36a338245d0584f5f436dd11ad5a1b3e105212771a7b93591",
+    "/tmp/lectern-mixed-face16-verifier-controls/shifted-cases.json": "d7027dcfcf9f3f158e0bb9333784a21a0fc0cbb8543024c3461249a6c7bc7dd3",
+    "/tmp/lectern-mixed-face16-verifier-controls/textLength-v3-log.txt": "f0d804daec6a2a3fa6811cdb2ce62c29a0fe80ef72ca37bc1aa1f456669916cc",
+    "/tmp/lectern-mixed-face16-verifier-controls/positive-comparison.json": "fd7a1f3e08d8c777225ae55cb05becf26fd9478ca284c13ee9c417a070b4d9de",
+    "/tmp/lectern-mixed-face16-verifier-controls/wrong-face-cases.json": "9c951942cbd0fa19399e038d2c6dcee373bbe0312f9e546964a49d9f93846dd5",
+    "/tmp/lectern-mixed-face16-verifier-controls/textLength-v3.svg": "18c9a62c11522b772a8f4ab24e1693f810019283d052fe669ace992efa1a2898",
+    "/tmp/lectern-mixed-face16-verifier-controls/textLength-comparison.json": "8bb969bb427611809c3f6a4ee11f5a0a3aca3c2231ec7d78a916b9040d373110",
+    "/tmp/lectern-mixed-face16-verifier-controls/textLength-v2.svg": "ee30793a558b761ce0b049f42fbb06749400a3bb1e812948038ae8c4ace1e026",
+    "/tmp/lectern-mixed-face16-verifier-controls/textLength-v2-log.txt": "4b6281f39f635cf70f8ef6cada999ace4e74ce9884ddd1b6e0d36c0d5027473c"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "baselineCommit": "2e57a2d",
+  "preFixGeometryHelperCommit": "83a1c72be443b51f05070f1b3858c3665aa71efb",
+  "preFixGeometryNote": "Retained compiled helper from accepted glyph source; parent independently proved perf12/13 output identity. Failing Swift regression targets2e57a2d.",
+  "branch": "codex/burndown/list-markers8-20261004",
+  "requestedModel": "gpt-6-astra/high",
+  "actualRuntimeModel": "not attested",
+  "checks": [
+    {
+      "command": "swift test --jobs 2 --filter NativeListMarkerTests",
+      "stage": "pre-fix",
+      "outcome": "372 expected native failures at2e57a2d before production changes"
+    },
+    {
+      "command": "swift test --jobs 2 --filter 'NativeListMarkerTests|NativeGlyphPlacementTests'",
+      "stage": "native plus prior glyph regression",
+      "outcome": "10 tests/2 suites passed before final eligibility guard refinements"
+    },
+    {
+      "command": "swift test --jobs 2",
+      "stage": "final source including all eligibility controls",
+      "outcome": "1158 Rostrum tests/165 suites plus18 RostrumLayout tests/3 suites passed; exit0"
+    },
+    {
+      "command": "git diff --check",
+      "outcome": "passed; no configured lint target"
+    },
+    {
+      "command": "offline source/PDF/font pins, complete glyph accounting and Python AST audit",
+      "outcome": "24 cases,277 visible glyphs,3 explicitly absent marker scalars; all passed"
+    }
+  ],
+  "sourceSHA256": {
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "1e2a291bc6f9c4efc3ac4d0a969ca201c5008e497b93aa32fb215899b35f2b38",
+    "Tests/RostrumTests/NativeGlyphPlacementTests.swift": "330d1a801c3d479f9320fb034e7c32ae6ef6f0524cee946b1ceb951137f9f8c5",
+    "Tests/RostrumTests/NativeListMarkerTests.swift": "c56871556fe555803821544b44251f555733d62be2a717102e11099f1021a146"
+  },
+  "retainedLogs": {
+    ".build/list-markers8/fail-before.log": "51fe0488368177a4f5485ea2dfbb22dd771a6e0d5f5b4d0d57e479d8d23ee6a5",
+    ".build/list-markers8/cycle1-full.log": "7d451571046fa597a7a64b45ef620dfe11bee095fac2dfdc754444726776b7ea",
+    ".build/list-markers8/cycle2-native.log": "3bf905ea2dadb4b82bdfc0e49a6e6facaf1b4d2cb5c14dba67e16af3dfdaf922",
+    ".build/list-markers8/cycle2-guards.log": "ced746e7f12e4bf37adfd385db00831d80993273ea5d6efb1f2883c260502e1f",
+    ".build/list-markers8/cycle2-full.log": "9a7aba2a26de1c87d8bd7c3736ebde9d88f0c2864819616e94ade38432deb744"
+  },
+  "native": [
+    {
+      "folder": ".",
+      "cases": 18,
+      "glyphs": 214,
+      "omissions": 2,
+      "sourceSHA256": "db317bc89840fc1dea1d4abf11fdd26e8c08c470dd86dee822ed8f01987a92d8",
+      "pdfSHA256": "4153ef4949c6aa554497ab16958f62016d8406d06d6cc88b1842e9d40920f1ea"
+    },
+    {
+      "folder": "followup",
+      "cases": 6,
+      "glyphs": 63,
+      "omissions": 1,
+      "sourceSHA256": "6baeaa1cb40ccd22f512aa6e9f14dcc9b21024139bde29cc14d96ed03095b1dd",
+      "pdfSHA256": "745576408a02c63c21dca8c243847ef1cf89163758e948e3c3faec61ee59452c"
+    }
+  ],
+  "limitations": [
+    "Native origin tolerances describe finite captured strings, not arbitrary accumulated PDF TJ drift.",
+    "Identical regular/Serif bullet outlines remain explicitly ambiguous.",
+    "New glyph calibration retains fallback for untested scripts/forms/styles, leading controls, invalid sizes, tables and explicit spacing.",
+    "Root owns independent final review, Lectern/app/native generated-output checks, combined integration and Release performance.",
+    "Local verification does not claim shipping or native-selected fit parity."
+  ]
+}

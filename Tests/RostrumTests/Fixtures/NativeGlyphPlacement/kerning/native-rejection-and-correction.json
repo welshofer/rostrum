@@ -1,0 +1,30 @@
+{
+  "rejectedSource": "native-paint-omitted-kern-v1.pptx",
+  "rejectedSHA256": "65c4909647cd72b23d60b77d22500ddfc7f5713fb2a0638b9aa369a5bd8eeda6",
+  "nativeOutcome": "PowerPoint repair prompt; root canceled without repair, no PDF or source save",
+  "concreteSchemaViolation": "fontScale100 below official minimum1000",
+  "schemaSource": "https://raw.githubusercontent.com/dotnet/Open-XML-SDK/main/data/schemas/schemas_openxmlformats_org_drawingml_2006_main.json",
+  "schemaLines": "6480-6506",
+  "correctedSource": "native-paint-omitted-kern-v2.pptx",
+  "correctedSHA256": "149e991e629901a967383a8064e7dfd9f40977ce132e7730e0c14f7d434ec7e0",
+  "changedPackageMembers": [
+    "ppt/slides/slide1.xml"
+  ],
+  "changes": [
+    "case visible label",
+    "case shape name",
+    "fontScale100\u21921000"
+  ],
+  "unboundIgnorablePrefixes": [],
+  "remainingKerningAttributes": [],
+  "scales": [
+    {
+      "part": "ppt/slides/slide1.xml",
+      "value": 72500
+    },
+    {
+      "part": "ppt/slides/slide1.xml",
+      "value": 1000
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "status": "S20 pending independent evidence review",
+  "source": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/cache-controls-paired.json",
+  "sourceSHA256": "699f5bcbd8d18d679a7a1733763682dfbfef98a5cb2c1c0be0c3fe4792dacc21",
+  "bootstrapResamples": 100000,
+  "seed": 20261004,
+  "method": "Median paired candidate/baseline percent ratios. Percentile bootstrap of100000 resampled pair ratios, indices2499/97499; two-sided exact binomial sign test excludes ties. Exploratory, unadjusted multiplicity; shared-load bias unresolved. Other phases retained in immutable raw.",
+  "results": {
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/direct-unique-200x50.pptx/render": {
+      "pairedPercentDeltas": [
+        2.6669658277958863,
+        1.4603233889038725,
+        -0.1786654256056952,
+        0.11279415232727796,
+        1.539288884320844,
+        0.5775888536518892,
+        1.4000910256348087,
+        1.3523521719982057,
+        -0.23708373613026135,
+        -0.538788125646561
+      ],
+      "medianPairedPercentDelta": 0.9649705128250474,
+      "percentileBootstrapMedian95PercentInterval": [
+        -0.1786654256056952,
+        1.4696899549778264
+      ],
+      "fasterPairs": 3,
+      "slowerPairs": 7,
+      "twoSidedExactSignTestP": 0.34375,
+      "baselineMedianMS": 250.986042,
+      "candidateMedianMS": 253.768542,
+      "ratioOfMediansPercentDelta": 1.1086273873349484
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/budget-near-20x10.pptx/render": {
+      "pairedPercentDeltas": [
+        -0.7014728882687726,
+        8.712688357399113,
+        -2.805303819128413,
+        -5.035758241922572,
+        6.698087261092556,
+        1.2293955809099089,
+        0.4355068623616898,
+        -5.335084141887192,
+        -1.6889399669200666,
+        -7.123062855146478
+      ],
+      "medianPairedPercentDelta": -1.1952064275944196,
+      "percentileBootstrapMedian95PercentInterval": [
+        -5.035758241922572,
+        3.5667970617271227
+      ],
+      "fasterPairs": 6,
+      "slowerPairs": 4,
+      "twoSidedExactSignTestP": 0.75390625,
+      "baselineMedianMS": 16.3108965,
+      "candidateMedianMS": 16.165229,
+      "ratioOfMediansPercentDelta": -0.8930686305317348
+    },
+    "file:/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/inputs/oversize-bypass-6x6.pptx/render": {
+      "pairedPercentDeltas": [
+        -1.2533266664740084,
+        -2.9919185639171175,
+        -0.777533336543601,
+        1.39332953587612,
+        -0.7653443842363661,
+        1.0254989558946104,
+        2.1969778188360545,
+        0.069923461525212,
+        3.770091172303247,
+        -3.213291384125161
+      ],
+      "medianPairedPercentDelta": -0.34771046135557704,
+      "percentileBootstrapMedian95PercentInterval": [
+        -1.8847259502303593,
+        1.6112383873653324
+      ],
+      "fasterPairs": 5,
+      "slowerPairs": 5,
+      "twoSidedExactSignTestP": 1,
+      "baselineMedianMS": 261.0336035,
+      "candidateMedianMS": 260.891646,
+      "ratioOfMediansPercentDelta": -0.05438284500410839
+    }
+  }
+}

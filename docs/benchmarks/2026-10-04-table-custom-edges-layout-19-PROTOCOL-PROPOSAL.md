@@ -1,0 +1,13 @@
+# S19 partial custom table styles: approved preparation proposal
+
+Compare retained matching accepted S18 Release products with frozen engine85e1e394 plus documentation-only dc40a98. Only TableStyleResolver.swift and SVGRenderer.swift differ in production. Baseline object/module/helper/compiler/source pins are verified byte for byte; no new baseline build is claimed. S20 work is excluded.
+
+The finite approved campaign has594 children: unchanged canonical110, Unicode66, nine retained S18 native/profile inputs198, and ten new S19 files220. Each workload has one excluded warmup pair and ten alternating retained pairs. There are28 primary render/richtext-fitting comparisons and306 total measured phases. Retain all samples, adverse controls and RSS; no adaptive rerun or universal claim.
+
+New files are the captured12-case/two-slide native source; partial-custom20x10,100x20 and200x50 scaling; four separate20x10 controls with explicit empty, noFill, unresolved or direct override borders; and100x20 constant-per-grid-line colors versus rejected collinear transition. Small separate suppression controls retain useful attribution without multiplying large10,000-cell work. Prior S18 inputs remain identical. Every new stress file is a performance input, not a new native reference.
+
+The unchanged accepted table helper renders the original deck before cell edits. Font registration and exact embedded DejaVu Sans byte verification remain outside rendering. Canonical and Unicode helpers/inputs are unchanged. No extra fitting phase is added.
+
+Fresh preservation covers187 cases/883 slides, baseline plus two candidate processes. Packages, ordered issues, inheritance, actual fills, glyph/text and the entire non-line tree must remain exact. Any new borders must be nil-to-black1pt cardinal defaults from an actual custom definition with no direct or applicable own/neighbor wrapper. A retained source counterfactual explicitly declares only these edges. A structural XML whitelist proves all other source values/parts unchanged, and original candidate SVG must equal counterfactual candidate SVG byte for byte. Remaining differences require unchanged line counts/paint properties and differ only in endpoints/order. Native12 cases/72 glyphs/49 intervals/15 fills are separate from this source attribution.
+
+Protocol review and explicit root quiet grant are required before any comparative timed campaign. Host snapshots retain ambient/user load. Statistics use100000 median bootstrap resamples, seed20261004, exact two-sided sign tests excluding ties, all phases, process RSS and exact SVG bytes. No speedup is presumed.

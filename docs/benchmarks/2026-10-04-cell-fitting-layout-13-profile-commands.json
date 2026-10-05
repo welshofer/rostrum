@@ -1,0 +1,80 @@
+{
+  "scope": "Attribution only. Root builds stopped; GUI/review work and uncontrolled background load may overlap. Retained frame acquisition and saving are outside sampled loop. No comparative timing.",
+  "commands": [
+    {
+      "rows": 10,
+      "columns": 10,
+      "driverCommand": [
+        ".build/perf23-cell-fitting/baseline-profile",
+        "10",
+        "10",
+        ".build/perf23-cell-fitting/10x10.ready"
+      ],
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "86533",
+        "4",
+        "1",
+        "-file",
+        ".build/perf23-cell-fitting/10x10-profile.txt"
+      ],
+      "setupSecondsDiagnosticOnly": 0.1652654999634251,
+      "driverExit": 0,
+      "sampleExit": 0,
+      "inputSHA256": "4a34591a5ab075adc01c13443d90637f77c6687bcb8da414654b84837636ac19"
+    },
+    {
+      "rows": 40,
+      "columns": 25,
+      "driverCommand": [
+        ".build/perf23-cell-fitting/baseline-profile",
+        "40",
+        "25",
+        ".build/perf23-cell-fitting/40x25.ready"
+      ],
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "86540",
+        "4",
+        "1",
+        "-file",
+        ".build/perf23-cell-fitting/40x25-profile.txt"
+      ],
+      "setupSecondsDiagnosticOnly": 0.05280674999812618,
+      "driverExit": 0,
+      "sampleExit": 0,
+      "inputSHA256": "c4e61292006e8d33dc5c25a5031a8f37de0a64cbc4493dd7cab641976b773a2b"
+    },
+    {
+      "rows": 200,
+      "columns": 50,
+      "driverCommand": [
+        ".build/perf23-cell-fitting/baseline-profile",
+        "200",
+        "50",
+        ".build/perf23-cell-fitting/200x50.ready"
+      ],
+      "sampleCommand": [
+        "/usr/bin/sample",
+        "86814",
+        "4",
+        "1",
+        "-file",
+        ".build/perf23-cell-fitting/200x50-profile.txt"
+      ],
+      "setupSecondsDiagnosticOnly": 1.1476008750032634,
+      "driverExit": 0,
+      "sampleExit": 0,
+      "inputSHA256": "1f830a5a0b0d501f816f26023843072bd0360dc9bccf97c9d0a087ecc550e8a4"
+    }
+  ],
+  "candidateSourceCommit": "308f20d3a7b870011bdbdb769fa399a0246b6014",
+  "candidateMeasuredAsFrozenUncommittedPatch": true,
+  "candidateSourceHashes": {
+    "Sources/Rostrum/Fonts/TextMeasurer.swift": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "752484dbc6e074de3edb20c3a9b26cd5fbdb665f72ce4f2473f628025392cf32",
+    "Sources/Rostrum/Presentation/BuiltInTableStyle.swift": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886",
+    "Tools/table-style-catalog/generate.py": "afd2964d71f85c624e83aa82316098541fca9c845d437feec6e3491a1a7b06f8",
+    "Tests/RostrumTests/TableCellFittingProjectionTests.swift": "676175736da4e87214281b891c3ebafcceecb720640c20f2806d9f92d5bc753f"
+  }
+}

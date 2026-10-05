@@ -1,0 +1,443 @@
+[
+  {
+    "name": "default-fi",
+    "runs": [
+      {
+        "text": "fi",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 0,
+    "x": 30,
+    "y": 45,
+    "height": 120
+  },
+  {
+    "name": "default-fl",
+    "runs": [
+      {
+        "text": "fl",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 0,
+    "x": 380,
+    "y": 45,
+    "height": 120
+  },
+  {
+    "name": "default-ff",
+    "runs": [
+      {
+        "text": "ff",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 0,
+    "x": 30,
+    "y": 215,
+    "height": 120
+  },
+  {
+    "name": "default-ffi",
+    "runs": [
+      {
+        "text": "ffi",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 0,
+    "x": 380,
+    "y": 215,
+    "height": 120
+  },
+  {
+    "name": "default-ffl",
+    "runs": [
+      {
+        "text": "ffl",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 0,
+    "x": 30,
+    "y": 385,
+    "height": 120
+  },
+  {
+    "name": "default-office-final-waffle",
+    "runs": [
+      {
+        "text": "office final waffle",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 0,
+    "x": 380,
+    "y": 385,
+    "height": 120
+  },
+  {
+    "name": "office-12-reference",
+    "runs": [
+      {
+        "text": "office",
+        "size": 12,
+        "kern": 1200,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 1,
+    "x": 30,
+    "y": 45,
+    "height": 120
+  },
+  {
+    "name": "kern-zero",
+    "runs": [
+      {
+        "text": "office final waffle",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 1,
+    "x": 380,
+    "y": 45,
+    "height": 120
+  },
+  {
+    "name": "tracking-positive",
+    "runs": [
+      {
+        "text": "office final waffle",
+        "size": 18,
+        "kern": null,
+        "tracking": 0.3,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 1,
+    "x": 30,
+    "y": 215,
+    "height": 120
+  },
+  {
+    "name": "tracking-negative",
+    "runs": [
+      {
+        "text": "office final waffle",
+        "size": 18,
+        "kern": null,
+        "tracking": -0.2,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 1,
+    "x": 380,
+    "y": 215,
+    "height": 120
+  },
+  {
+    "name": "color-split",
+    "runs": [
+      {
+        "text": "of",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "AA3300"
+      },
+      {
+        "text": "fice",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "0033AA"
+      }
+    ],
+    "width": 290.0,
+    "page": 1,
+    "x": 30,
+    "y": 385,
+    "height": 120
+  },
+  {
+    "name": "same-style-split",
+    "runs": [
+      {
+        "text": "of",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      },
+      {
+        "text": "fice",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "page": 1,
+    "x": 380,
+    "y": 385,
+    "height": 120
+  },
+  {
+    "name": "office-edge-below",
+    "runs": [
+      {
+        "text": "officeZ",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 49.74,
+    "page": 2,
+    "x": 30,
+    "y": 45,
+    "height": 120
+  },
+  {
+    "name": "ffi-component-edge-below",
+    "runs": [
+      {
+        "text": "ffiZ",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 12.74,
+    "page": 2,
+    "x": 380,
+    "y": 45,
+    "height": 120
+  },
+  {
+    "name": "scaled-office-edge-below",
+    "runs": [
+      {
+        "text": "officeZ",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 24.74,
+    "fontScale": 50000,
+    "page": 2,
+    "x": 30,
+    "y": 215,
+    "height": 120
+  },
+  {
+    "name": "office-edge-above",
+    "runs": [
+      {
+        "text": "officeZ",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 49.76,
+    "page": 2,
+    "x": 380,
+    "y": 215,
+    "height": 120
+  },
+  {
+    "name": "ffi-component-edge-above",
+    "runs": [
+      {
+        "text": "ffiZ",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 12.76,
+    "page": 2,
+    "x": 30,
+    "y": 385,
+    "height": 120
+  },
+  {
+    "name": "scaled-office-edge-above",
+    "runs": [
+      {
+        "text": "officeZ",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 24.76,
+    "fontScale": 50000,
+    "page": 2,
+    "x": 380,
+    "y": 385,
+    "height": 120
+  },
+  {
+    "name": "mixed-size",
+    "runs": [
+      {
+        "text": "of",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "AA3300"
+      },
+      {
+        "text": "fice",
+        "size": 12,
+        "kern": 0,
+        "tracking": null,
+        "color": "0033AA"
+      }
+    ],
+    "width": 290.0,
+    "page": 3,
+    "x": 30,
+    "y": 45,
+    "height": 120
+  },
+  {
+    "name": "mixed-size-edge",
+    "runs": [
+      {
+        "text": "of",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      },
+      {
+        "text": "ficeZ",
+        "size": 12,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 39.01,
+    "page": 3,
+    "x": 380,
+    "y": 45,
+    "height": 120
+  },
+  {
+    "name": "table-default",
+    "runs": [
+      {
+        "text": "office final waffle",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 120.0,
+    "table": true,
+    "page": 3,
+    "x": 30,
+    "y": 215,
+    "height": 120
+  },
+  {
+    "name": "table-edge",
+    "runs": [
+      {
+        "text": "officeZ",
+        "size": 18,
+        "kern": 0,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 49.76,
+    "table": true,
+    "page": 3,
+    "x": 380,
+    "y": 215,
+    "height": 120
+  },
+  {
+    "name": "tab-field",
+    "runs": [
+      {
+        "text": "Label\toffice final waffle",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 290.0,
+    "tab": 90,
+    "page": 3,
+    "x": 30,
+    "y": 385,
+    "height": 120
+  },
+  {
+    "name": "hard-break",
+    "runs": [
+      {
+        "text": "office\nfinal waffle",
+        "size": 18,
+        "kern": null,
+        "tracking": null,
+        "color": "000000"
+      }
+    ],
+    "width": 150.0,
+    "page": 3,
+    "x": 380,
+    "y": 385,
+    "height": 120
+  }
+]

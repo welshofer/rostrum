@@ -1,0 +1,41 @@
+{
+  "status": "ANCILLARY_UNTIMED_HELPER_HISTORY_RESOLVED_PENDING_FINAL_ACCEPTANCE",
+  "originalBuildReceipt": {
+    "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/candidate-helper-build.json",
+    "SHA256": "af729e00f9b26582a5b7d70656326bef65b3303279ab7f1ed6311211907451ab",
+    "historicalEntry": "files[budget-audit.swift]",
+    "expectedSHA256": "5eb6f4dcdc2c8690f786b02dbfd17a6ebc179703a7e681937f3d5200fe4d9353"
+  },
+  "resolution": {
+    "originalRecordedPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift",
+    "retainedOriginalPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-initial.swift",
+    "retainedOriginalSHA256": "5eb6f4dcdc2c8690f786b02dbfd17a6ebc179703a7e681937f3d5200fe4d9353",
+    "currentCorrectedPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit.swift",
+    "currentCorrectedSHA256": "37c42f5fc192cae9067145e558fcc04f47e86eb115dab54740ba10321ea3913e",
+    "exactChange": "Unwrap known fixture TableFrame.table optional: .table becomes .table!; no other source bytes changed.",
+    "originalSource": "import Foundation\n@testable import Rostrum\nstruct Row: Codable {\n let name: String\n let cells: Int\n let nonnilBorders: Int\n let sharedBorderEncounters: Int\n let unsharedBorderEncounters: Int\n let distinctAdmittedBorderIdentities: Int\n let sourceUnchanged: Bool\n}\nvar rows: [Row] = []\nfor input in CommandLine.arguments.dropFirst() {\n let path = URL(fileURLWithPath: input)\n let deck = try Presentation(data: Data(contentsOf: path))\n let before = try deck.serializedData()\n let table = (try deck.slides[0].shapes.first { $0 is TableFrame } as! TableFrame).table\n var session = TableStyleResolver.RenderSession(TableStyleResolver(table: table, theme: deck.theme))\n var shared = 0, unshared = 0\n var ids = Set<ObjectIdentifier>()\n for row in 0..<table.rowCount { for column in 0..<table.columnCount {\n  let effective = session.effective(row: row, column: column)\n  for edge in TableCellBorder.allCases {\n   guard let line = effective.properties.firstChild(named: edge.rawValue) else { continue }\n   if session.ownsSharedBorder(line) { shared += 1; ids.insert(ObjectIdentifier(line)) }\n   else { unshared += 1 }\n  }\n } }\n let name = path.deletingPathExtension().lastPathComponent\n if name.hasPrefix(\"budget-near\") { precondition(shared > 0 && unshared > 0) }\n if name.hasPrefix(\"oversize\") || name.hasPrefix(\"direct-unique\") { precondition(shared == 0 && unshared > 0) }\n let after = try deck.serializedData(); precondition(after == before)\n rows.append(Row(name: name, cells: table.rowCount * table.columnCount, nonnilBorders: shared + unshared, sharedBorderEncounters: shared, unsharedBorderEncounters: unshared, distinctAdmittedBorderIdentities: ids.count, sourceUnchanged: true))\n}\nlet encoder = JSONEncoder(); encoder.outputFormatting = [.prettyPrinted, .sortedKeys]\nFileHandle.standardOutput.write(try encoder.encode(rows))\n",
+    "correctedSource": "import Foundation\n@testable import Rostrum\nstruct Row: Codable {\n let name: String\n let cells: Int\n let nonnilBorders: Int\n let sharedBorderEncounters: Int\n let unsharedBorderEncounters: Int\n let distinctAdmittedBorderIdentities: Int\n let sourceUnchanged: Bool\n}\nvar rows: [Row] = []\nfor input in CommandLine.arguments.dropFirst() {\n let path = URL(fileURLWithPath: input)\n let deck = try Presentation(data: Data(contentsOf: path))\n let before = try deck.serializedData()\n let table = (try deck.slides[0].shapes.first { $0 is TableFrame } as! TableFrame).table!\n var session = TableStyleResolver.RenderSession(TableStyleResolver(table: table, theme: deck.theme))\n var shared = 0, unshared = 0\n var ids = Set<ObjectIdentifier>()\n for row in 0..<table.rowCount { for column in 0..<table.columnCount {\n  let effective = session.effective(row: row, column: column)\n  for edge in TableCellBorder.allCases {\n   guard let line = effective.properties.firstChild(named: edge.rawValue) else { continue }\n   if session.ownsSharedBorder(line) { shared += 1; ids.insert(ObjectIdentifier(line)) }\n   else { unshared += 1 }\n  }\n } }\n let name = path.deletingPathExtension().lastPathComponent\n if name.hasPrefix(\"budget-near\") { precondition(shared > 0 && unshared > 0) }\n if name.hasPrefix(\"oversize\") || name.hasPrefix(\"direct-unique\") { precondition(shared == 0 && unshared > 0) }\n let after = try deck.serializedData(); precondition(after == before)\n rows.append(Row(name: name, cells: table.rowCount * table.columnCount, nonnilBorders: shared + unshared, sharedBorderEncounters: shared, unsharedBorderEncounters: unshared, distinctAdmittedBorderIdentities: ids.count, sourceUnchanged: true))\n}\nlet encoder = JSONEncoder(); encoder.outputFormatting = [.prettyPrinted, .sortedKeys]\nFileHandle.standardOutput.write(try encoder.encode(rows))\n"
+  },
+  "initialCompileDiagnostics": {
+    "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-initial-build.log",
+    "SHA256": "44a76e5e2db639e5b3a514d5c8898ee1dc0422f0dfe9ceabfef9e7e27c4286a6",
+    "reason": "Scratch audit failed to compile because TableFrame.table is optional; no binary was measured or executed from the failing source."
+  },
+  "successfulUntimedAudit": {
+    "receiptPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/budget-audit-receipt.json",
+    "receiptSHA256": "a381a0aa7991946a0f494150e36b457443c3517d9a4d283680689611eaf22f59",
+    "correctedBuildLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "configuration": "Actual Debug candidate module with @testable import; budget admission attribution only; never a timed campaign binary."
+  },
+  "invariants": {
+    "originalBuildReceiptUnmodified": true,
+    "originalVerificationPath": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf32-table-paint-reuse/verification.json",
+    "originalVerificationSHA256": "a35b7df1a6db04af6a3a3a31a26e699a4a1c58fb2435fe85ab9802a4ba51dff1",
+    "timingPlanUnmodifiedSHA256": "c0de7aaa015a1bf28f5a8c3ff3aa2e4655201e4c7bf8f4f1e54e38eea4ce1454",
+    "allSixTimedBinariesMatchFrozenPlan": true,
+    "all112ProductionSourcesMatchFrozenPins": true,
+    "sourceTree": "6d2e7cd2d2c057d4c9b916358882695cbe2c66d7",
+    "productionOrTimedHelperDelta": false
+  },
+  "note": "The build receipt enumerated ancillary Swift files present when it was written. Its initial audit-source pin now resolves to the retained initial copy. Original plan/ready/build/verification/raw receipts remain immutable; this is an additive history map, not a new experiment or timing run."
+}

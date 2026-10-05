@@ -1,0 +1,373 @@
+{
+  "caseCount": 25,
+  "independentlyPredictedWrapCaseCount": 8,
+  "visibleScalarCount": 393,
+  "fontAscentShare": 0.7973993288590604,
+  "model": "Scale100: authored metric size and nearest-even paint; scale below100: nearest-half-up metric/paint. Normal baseline from1.2 metric size times Windows ascent share, cumulative line advance, then whole point. Print-grid comparison is extraction context only, not proposed SVG snapping.",
+  "maxima": {
+    "maxOriginResidual": 0.0150299072265625,
+    "maxPaintScaleResidual": 1.6000000009341875e-06,
+    "maxInkDimensionResidual": 1.5484375097685188e-06,
+    "maxWholePointBaselineResidual": 0.1199951171875,
+    "maxPrintGridBaselineResidual": 7.812500007275958e-05
+  },
+  "cases": [
+    {
+      "name": "wide-authored-13p49",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.010528564453125,
+      "maxPaintScaleResidual": 1.6000000009341875e-06,
+      "maxInkDimensionResidual": 1.5484375097685188e-06,
+      "maxWholePointBaselineResidual": 0.1199951171875,
+      "maxPrintGridBaselineResidual": 4.8828125045474735e-06,
+      "baselineResiduals": [
+        -0.1199951171875
+      ]
+    },
+    {
+      "name": "wide-authored-13p50",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.01336669921875,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187548842594e-07,
+      "maxWholePointBaselineResidual": 0.1199951171875,
+      "maxPrintGridBaselineResidual": 4.8828125045474735e-06,
+      "baselineResiduals": [
+        -0.1199951171875
+      ]
+    },
+    {
+      "name": "wide-authored-13p51",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.0133819580078125,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07,
+      "maxWholePointBaselineResidual": 0.0400390625,
+      "maxPrintGridBaselineResidual": 3.906249997953637e-05,
+      "baselineResiduals": [
+        -0.0400390625
+      ]
+    },
+    {
+      "name": "wide-scaled-13p49",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.0067138671875,
+      "maxPaintScaleResidual": 1.6000000009341875e-06,
+      "maxInkDimensionResidual": 1.5484374671359546e-06,
+      "maxWholePointBaselineResidual": 0.0,
+      "maxPrintGridBaselineResidual": 0.0,
+      "baselineResiduals": [
+        0.0
+      ]
+    },
+    {
+      "name": "wide-scaled-13p50",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.0150299072265625,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07,
+      "maxWholePointBaselineResidual": 0.0400390625,
+      "maxPrintGridBaselineResidual": 3.906250003637979e-05,
+      "baselineResiduals": [
+        0.0400390625
+      ]
+    },
+    {
+      "name": "wide-scaled-13p51",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.0150146484375,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07,
+      "maxWholePointBaselineResidual": 0.0400390625,
+      "maxPrintGridBaselineResidual": 3.906250003637979e-05,
+      "baselineResiduals": [
+        0.0400390625
+      ]
+    },
+    {
+      "name": "wrap-authored-13p49-w110.99",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": [
+        "BBBBBBBBBBB",
+        "BZ"
+      ],
+      "maxOriginResidual": 0.0050048828125,
+      "maxPaintScaleResidual": 1.6000000009341875e-06,
+      "maxInkDimensionResidual": 1.1664062498084604e-06,
+      "maxWholePointBaselineResidual": 0.1199951171875,
+      "maxPrintGridBaselineResidual": 3.9062499993747224e-05,
+      "baselineResiduals": [
+        -0.1199951171875,
+        -0.0400390625
+      ]
+    },
+    {
+      "name": "wrap-authored-13p49-w111.01",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": [
+        "BBBBBBBBBBBB",
+        "Z"
+      ],
+      "maxOriginResidual": 0.0054931640625,
+      "maxPaintScaleResidual": 1.6000000009341875e-06,
+      "maxInkDimensionResidual": 1.1664062498084604e-06,
+      "maxWholePointBaselineResidual": 0.1199951171875,
+      "maxPrintGridBaselineResidual": 3.9062499993747224e-05,
+      "baselineResiduals": [
+        -0.1199951171875,
+        -0.0400390625
+      ]
+    },
+    {
+      "name": "wrap-authored-13p51-w110.99",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": [
+        "BBBBBBBBBBB",
+        "BZ"
+      ],
+      "maxOriginResidual": 0.00200653076171875,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 5.832031320096576e-07,
+      "maxWholePointBaselineResidual": 0.0400390625,
+      "maxPrintGridBaselineResidual": 3.906250003637979e-05,
+      "baselineResiduals": [
+        -0.0400390625,
+        0.0400390625
+      ]
+    },
+    {
+      "name": "wrap-authored-13p51-w111.01",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": [
+        "BBBBBBBBBBBB",
+        "Z"
+      ],
+      "maxOriginResidual": 0.002197265625,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 5.832031320096576e-07,
+      "maxWholePointBaselineResidual": 0.0400390625,
+      "maxPrintGridBaselineResidual": 3.906250003637979e-05,
+      "baselineResiduals": [
+        -0.0400390625,
+        0.0400390625
+      ]
+    },
+    {
+      "name": "wrap-scaled-13p50-w110.99",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": [
+        "BBBBBBBBBBB",
+        "BZ"
+      ],
+      "maxOriginResidual": 7.62939453125e-06,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 5.832031320096576e-07,
+      "maxWholePointBaselineResidual": 0.080078125,
+      "maxPrintGridBaselineResidual": 7.812500007275958e-05,
+      "baselineResiduals": [
+        0.0400390625,
+        0.080078125
+      ]
+    },
+    {
+      "name": "wrap-scaled-13p50-w111.01",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": [
+        "BBBBBBBBBBB",
+        "BZ"
+      ],
+      "maxOriginResidual": 0.0,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 5.832031320096576e-07,
+      "maxWholePointBaselineResidual": 0.080078125,
+      "maxPrintGridBaselineResidual": 7.812500007275958e-05,
+      "baselineResiduals": [
+        0.0400390625,
+        0.080078125
+      ]
+    },
+    {
+      "name": "wide-integer-13",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.006683349609375,
+      "maxPaintScaleResidual": 1.6000000009341875e-06,
+      "maxInkDimensionResidual": 1.5484375097685188e-06,
+      "maxWholePointBaselineResidual": 0.08001708984375,
+      "maxPrintGridBaselineResidual": 1.7089843744599875e-05,
+      "baselineResiduals": [
+        -0.08001708984375
+      ]
+    },
+    {
+      "name": "wide-integer-14",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.0150146484375,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187548842594e-07,
+      "maxWholePointBaselineResidual": 0.1199951171875,
+      "maxPrintGridBaselineResidual": 4.8828125045474735e-06,
+      "baselineResiduals": [
+        -0.1199951171875
+      ]
+    },
+    {
+      "name": "wide-mixed-13p49-13p51",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.002410888671875,
+      "maxPaintScaleResidual": 1.6000000009341875e-06,
+      "maxInkDimensionResidual": 1.5484374671359546e-06,
+      "maxWholePointBaselineResidual": 0.0400390625,
+      "maxPrintGridBaselineResidual": 3.906249997953637e-05,
+      "baselineResiduals": [
+        -0.0400390625
+      ]
+    },
+    {
+      "name": "wide-tracking-13p50",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.00799560546875,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07,
+      "maxWholePointBaselineResidual": 0.0400390625,
+      "maxPrintGridBaselineResidual": 3.906249997953637e-05,
+      "baselineResiduals": [
+        -0.0400390625
+      ]
+    },
+    {
+      "name": "wide-authored-14p50",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.01200103759765625,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07,
+      "maxWholePointBaselineResidual": 0.0,
+      "maxPrintGridBaselineResidual": 0.0,
+      "baselineResiduals": [
+        0.0
+      ]
+    },
+    {
+      "name": "wide-scaled-14p50",
+      "group": "paint-fidelity7",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.008544921875,
+      "maxPaintScaleResidual": 0.0,
+      "maxInkDimensionResidual": 0.0,
+      "maxWholePointBaselineResidual": 0.0,
+      "maxPrintGridBaselineResidual": 0.0,
+      "baselineResiduals": [
+        0.0
+      ]
+    },
+    {
+      "name": "wide-14p50-omitted",
+      "group": "paint-fidelity7-autofit",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.01200103759765625,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187548842594e-07,
+      "maxWholePointBaselineResidual": 0.0799560546875,
+      "maxPrintGridBaselineResidual": 4.39453124982947e-05,
+      "baselineResiduals": [
+        0.0799560546875
+      ]
+    },
+    {
+      "name": "wide-14p50-norm100",
+      "group": "paint-fidelity7-autofit",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.011993408203125,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187548842594e-07,
+      "maxWholePointBaselineResidual": 0.0799560546875,
+      "maxPrintGridBaselineResidual": 4.39453124982947e-05,
+      "baselineResiduals": [
+        0.0799560546875
+      ]
+    },
+    {
+      "name": "wide-14p50-norm-bare",
+      "group": "paint-fidelity7-autofit",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.01200103759765625,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07,
+      "maxWholePointBaselineResidual": 0.0799560546875,
+      "maxPrintGridBaselineResidual": 4.394531248408384e-05,
+      "baselineResiduals": [
+        -0.0799560546875
+      ]
+    },
+    {
+      "name": "wrap-14p50-norm100-w120.01",
+      "group": "paint-fidelity7-autofit",
+      "independentlyPredictedWrapLines": [
+        "BBBBBBBBBBBB",
+        "Z"
+      ],
+      "maxOriginResidual": 0.002197265625,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 5.832031320096576e-07,
+      "maxWholePointBaselineResidual": 0.0799560546875,
+      "maxPrintGridBaselineResidual": 4.394531248408384e-05,
+      "baselineResiduals": [
+        -0.0799560546875,
+        -0.0400390625
+      ]
+    },
+    {
+      "name": "wrap-14p50-noautofit-w120.01",
+      "group": "paint-fidelity7-autofit",
+      "independentlyPredictedWrapLines": [
+        "BBBBBBBBBBBB",
+        "Z"
+      ],
+      "maxOriginResidual": 0.002197265625,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 5.832031320096576e-07,
+      "maxWholePointBaselineResidual": 0.0400390625,
+      "maxPrintGridBaselineResidual": 3.906250003637979e-05,
+      "baselineResiduals": [
+        0.0,
+        0.0400390625
+      ]
+    },
+    {
+      "name": "wide-14p50-scale99p99",
+      "group": "paint-fidelity7-autofit",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.0150146484375,
+      "maxPaintScaleResidual": 8.000000004670937e-07,
+      "maxInkDimensionResidual": 7.742187904113962e-07,
+      "maxWholePointBaselineResidual": 0.0400390625,
+      "maxPrintGridBaselineResidual": 3.906250003637979e-05,
+      "baselineResiduals": [
+        0.0400390625
+      ]
+    },
+    {
+      "name": "wide-29-scale50-exact-tie",
+      "group": "paint-fidelity7-autofit",
+      "independentlyPredictedWrapLines": null,
+      "maxOriginResidual": 0.0085296630859375,
+      "maxPaintScaleResidual": 0.0,
+      "maxInkDimensionResidual": 0.0,
+      "maxWholePointBaselineResidual": 0.0799560546875,
+      "maxPrintGridBaselineResidual": 4.39453124982947e-05,
+      "baselineResiduals": [
+        0.0799560546875
+      ]
+    }
+  ]
+}

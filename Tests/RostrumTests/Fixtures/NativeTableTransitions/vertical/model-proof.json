@@ -1,0 +1,78 @@
+{
+  "productionEdited": false,
+  "scope": "Exact vector intervals and complete opaque paint subdivision; raw native path order retained; no raster or antialias claim",
+  "cases": [
+    {
+      "id": "constant-grid-line-control",
+      "nativeIntervals": 6,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 36,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "outer-width-transition",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "outer-color-transition",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 36,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "outer-color-width-transition",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "interior-narrow-to-wide",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "interior-wide-to-narrow",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "transition-noFill-donor",
+      "nativeIntervals": 7,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 48,
+      "paintMismatches": [],
+      "scope": "unmerged LTR transition research"
+    },
+    {
+      "id": "merged-colored-rejection",
+      "nativeIntervals": 8,
+      "maximumEndpointError": 0,
+      "endpointMismatches": [],
+      "opaquePaintRegions": 50,
+      "paintMismatches": [],
+      "scope": "rejected merged interaction; not proposed for admission"
+    }
+  ]
+}

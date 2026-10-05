@@ -83,7 +83,7 @@ import Testing
         #expect(try fillColor(0) == Color("FEDCBA"))
     }
 
-    @Test func embeddedDefinitionsOverrideNativeFallbackAndDefaultReferencesResolve() throws {
+    @Test func embeddedDefinitionsOverrideNativeFallbackButInsertionDefaultsDoNotApply() throws {
         let (deck, table) = try make()
         let definition = try #require(BuiltInTableStyle.noStyleNoGrid.definition())
         let whole = try #require(definition.firstChild(named: "a:wholeTbl")?.firstChild(named: "a:tcStyle"))
@@ -97,6 +97,7 @@ import Testing
         root[attribute: "def"] = BuiltInTableStyle.mediumStyle2Accent1.rawValue
         table.styleID = nil
         #expect(TableStyleResolver(table: table, theme: deck.theme).hasStyleDefinition)
+        #expect(try TableStyleResolver(table: table, theme: deck.theme).fill(row: 2, column: 2) == .noFill)
         #expect(try !deck.renderSVGReportingProblems(slideAt: 0).problems.fidelityIssues.contains { $0.code == .unresolvedTableStyle })
     }
 

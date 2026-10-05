@@ -28,7 +28,7 @@ Rostrum is a **local path dependency** (`../`), resolving OQ-4.
 
 ## Library Lab
 
-Choose **Library Lab** in the sidebar to exercise the library offline. Its 25
+Choose **Library Lab** in the sidebar to exercise the library offline. Its 34
 configurable demonstrations cover drawing, text/fonts, paragraph justification, standard tab stops, tables, charts, SmartArt,
 notes, comments, sections, imports, layouts/themes/templates, design builders,
 media, packages and extraction. **Run All** saves and reopens every example,
@@ -36,6 +36,13 @@ checks its content, renders previews and extracts its files. Use **Inspect Resul
 **Inspect Before** and **All Files** to examine the real artifacts on macOS or iOS.
 No provider key is required. File checks and preview limitations are reported
 separately; passing a demo is not a claim of perfect PowerPoint rendering.
+
+Every completed **Run Demo** or **Run All** result is automatically saved as a
+new PowerPoint deck in your library, including results with reported findings
+or failed checks. Filenames include the demo title, timestamp and a unique ID;
+rerunning a demo preserves earlier decks. **Inspect Result** opens that saved
+copy. If saving fails, the report shows the error and the diagnostic deck remains
+available for inspection or manual saving.
 
 The tab-stop demo shows left, center, right and period-decimal fields against
 visible guides, plus tab-aware Latin justification in text boxes and a table cell.
@@ -47,6 +54,11 @@ The paragraph demo also reproduces two native-measured wrapping boundaries:
 a 0.02-point width change moves a character between lines, including across
 mixed-size runs. Its shorter fitted copies display the scale computed through
 both public fit paths; they do not claim PowerPoint chose that same scale.
+A fourth slide applies the same comparison to `officeZ`, with a uniform 18-point
+run and fixed-width mixed 18/12-point runs. The narrower option switches the
+uniform row between independently recorded native wrap boundaries. The specimens
+use separate Latin letter glyphs, matching the native references, and retain
+their font sizes and fitting settings through saving and reopening.
 
 See the [coverage and verification record](../docs/LIBRARY-LAB-20261002.md).
 
@@ -90,12 +102,13 @@ duplication and import. Run the core and app checks from the repository root:
 
 ```sh
 swift test --package-path Lectern --jobs 2
-python3 Lectern/scripts/test-inspection-headless.py --all-app-tests
+python3 Lectern/scripts/test-inspection-headless.py --all-app-tests --output /tmp/lectern-app-headless.json
 Lectern/scripts/test-app.sh -parallel-testing-enabled NO
 ```
 
-The Xcode Test action isolates defaults, library folders and diagnostics and skips
-keychain reads while exercising the production startup tasks. It also enables
+The **LecternTests** scheme uses a separate **LecternTestHost** app with isolated
+defaults, library folders and diagnostics, disabled credential operations and
+disabled live generation. It still exercises the production startup tasks and enables
 real WebKit portrait/4:3 snapshot tests. The headless harness exercises app state
 and view compilation; it does not replace native UI or WebKit checks. Normal app
 launches retain their usual storage and keychain behavior. See the
@@ -219,6 +232,12 @@ scripts/build.sh       # generates the project as needed; honors .signing.local
 scripts/test-app.sh    # app-hosted tests, with the same signing configuration
 ```
 
+Hosted tests refuse to start while Lectern or LecternTestHost is running. Finish
+your work and close the app yourself before running them; the script never
+terminates an app. Test products use `.build-xcode-tests` or the separate
+`LECTERN_TEST_DERIVED_DATA_PATH` override. Production build products retain their
+usual `.build-xcode` directory and `LECTERN_DERIVED_DATA_PATH` override.
+
 ## The iOS/iPadOS app
 
 The same SwiftUI shell builds as a second target, **`Lectern-iOS`** (iPhone +
@@ -298,6 +317,9 @@ Keys and provider choice are wired end-to-end (§10 / invariant I1):
 - **`KeychainStore`** — API keys live *only* in the login keychain (a
   generic-password item per provider). Never UserDefaults, never logged; the
   `SecureField` is write-only, so a stored key never round-trips through the UI.
+  Replacing a key updates the existing item without deleting it first; failed
+  saves and removals remain visible, and access failures are distinct from a
+  missing key.
 - **`SettingsView`** — OpenAI text strength (Astra, Sol, Luna), reasoning effort,
   image model (Sunburst, Flare), and image quality dropdowns. Optional image
   generation has its own OpenAI key entry; it may use the same key as text. The

@@ -1,0 +1,93 @@
+{
+  "application": "Microsoft PowerPoint 16.113.3 for macOS",
+  "operator": "root agent via CUA",
+  "export": "Local PDF, Best for printing; online option deselected",
+  "openedWithoutRepair": true,
+  "sourceSavedByPowerPoint": false,
+  "sourceHashesVerifiedUnchanged": true,
+  "caseCount": 85,
+  "slideCount": 16,
+  "captures": [
+    {
+      "folder": "base",
+      "source": "native-spacing-metrics-v1.pptx",
+      "sourceSHA256": "f2607f1ac458652e9876053e98d9145aa87347455d60691dd7255438dd72a6fe",
+      "pdf": "powerpoint.pdf",
+      "pdfSHA256": "1b8e25158d20f972c879eea17ca5e4c00cbc0e0f83c8120642a494d415afed4f",
+      "slides": 7,
+      "cases": 37
+    },
+    {
+      "folder": "compatibility",
+      "source": "native-spacing-final-v1.pptx",
+      "sourceSHA256": "cee93ef0a05ed50b83b7590eb7deef0e976d2527a41108319596f157fc447bf2",
+      "pdf": "powerpoint.pdf",
+      "pdfSHA256": "6fe124b1f68f337c5a1fbf4fd39aa3ef939b203ffc293e177f7c2b212220e767",
+      "slides": 1,
+      "cases": 6
+    },
+    {
+      "folder": "descent",
+      "source": "native-spacing-descent-v1.pptx",
+      "sourceSHA256": "42cfd040e861ca5c788f1d08fb0a4bf4526b2d9ec3298cbfb9280e1792966d22",
+      "pdf": "powerpoint.pdf",
+      "pdfSHA256": "9f417ed51c4fc66369557e0dda2bc7095398002a5fdbba005e3f2d012a8796cc",
+      "slides": 1,
+      "cases": 4
+    },
+    {
+      "folder": "followup",
+      "source": "native-spacing-followup-v1.pptx",
+      "sourceSHA256": "fc460f7a0984230a589daf2535c329e39944d135a13e6a05bbf8dc42a7e74f0d",
+      "pdf": "powerpoint.pdf",
+      "pdfSHA256": "e2b5b5f580520a50f079165309a58dc473d38b2606a57f55808f94d9cbef4768",
+      "slides": 2,
+      "cases": 12
+    },
+    {
+      "folder": "fractional",
+      "source": "native-spacing-fractional-v1.pptx",
+      "sourceSHA256": "3aedbb0fe53fd15f36c050817cf8162b1398e142481177104e62ecb941f07d19",
+      "pdf": "powerpoint.pdf",
+      "pdfSHA256": "1d1eecfda6e8351acd41a2ac859ad4458d0938185f89afe4976ede049346aa21",
+      "slides": 1,
+      "cases": 6
+    },
+    {
+      "folder": "percentage-anchor",
+      "source": "native-spacing-percentage-anchor-v1.pptx",
+      "sourceSHA256": "e530a494658cda4a13fc40889c6ec5a1643fe8f817f510b08c862a47f7b414c0",
+      "pdf": "powerpoint.pdf",
+      "pdfSHA256": "21be0875e4ab3b8edca064244596ea1dbf446455d4387426febc1247c5122fed",
+      "slides": 1,
+      "cases": 4
+    },
+    {
+      "folder": "reduction",
+      "source": "native-spacing-reduction-v1.pptx",
+      "sourceSHA256": "93bdeb4c0df5249999d2440cad441f361d131891029b598394fdd719776708e3",
+      "pdf": "powerpoint.pdf",
+      "pdfSHA256": "6b0994c6148aa9eaca7c9eadd2d8502d475f2872fc9dfd300e82cc547a0301eb",
+      "slides": 1,
+      "cases": 6
+    },
+    {
+      "folder": "reduction-anchor",
+      "source": "native-spacing-reduction-anchor-v1.pptx",
+      "sourceSHA256": "28c1929e7fab8e63c07cc9dafc28a2036477f5dabf244b3406ee352bda92343f",
+      "pdf": "powerpoint.pdf",
+      "pdfSHA256": "3737fb6176e26cc01e38dab7a8073d619508cef5f0cc7cf5a525463cd945bc2a",
+      "slides": 1,
+      "cases": 4
+    },
+    {
+      "folder": "scale",
+      "source": "native-spacing-scale-v1.pptx",
+      "sourceSHA256": "faffd204755918f41ac6d1a43e82e094360e9b696dbe21f8a74912c133892450",
+      "pdf": "powerpoint.pdf",
+      "pdfSHA256": "f0584f84db3ed197080b7a170708a342cf8b0286d4cfee453628b5c386c0ea87",
+      "slides": 1,
+      "cases": 6
+    }
+  ]
+}

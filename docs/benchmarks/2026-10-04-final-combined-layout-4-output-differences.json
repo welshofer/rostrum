@@ -1,0 +1,65 @@
+{
+  "cases": [
+    {
+      "scenario": "table-200x50",
+      "allSavedPPTXBytesMatch": true,
+      "changedArtifacts": [
+        "slide-0.svg"
+      ],
+      "svgDifferences": [
+        {
+          "artifact": "slide-0.svg",
+          "baselineBytes": 11527344,
+          "candidateBytes": 14027344,
+          "extraBytes": 2500000,
+          "onlyAddedLigatureSuppressionAttribute": true
+        }
+      ]
+    },
+    {
+      "scenario": "table-20x10",
+      "allSavedPPTXBytesMatch": true,
+      "changedArtifacts": [
+        "slide-0.svg"
+      ],
+      "svgDifferences": [
+        {
+          "artifact": "slide-0.svg",
+          "baselineBytes": 51384,
+          "candidateBytes": 59384,
+          "extraBytes": 8000,
+          "onlyAddedLigatureSuppressionAttribute": true
+        }
+      ]
+    },
+    {
+      "scenario": "shaped-table-100x20",
+      "allSavedPPTXBytesMatch": true,
+      "changedArtifacts": [
+        "slide-0.svg"
+      ],
+      "svgDifferences": [
+        {
+          "artifact": "slide-0.svg",
+          "baselineBytes": 5183230,
+          "candidateBytes": 5855230,
+          "extraBytes": 672000,
+          "onlyAddedLigatureSuppressionAttribute": true
+        }
+      ]
+    },
+    {
+      "scenario": "richtext-fit",
+      "allSavedPPTXBytesMatch": true,
+      "changedArtifacts": [],
+      "svgDifferences": []
+    },
+    {
+      "scenario": "slides-10",
+      "allSavedPPTXBytesMatch": true,
+      "changedArtifacts": [],
+      "svgDifferences": []
+    }
+  ],
+  "scope": "Five benchmark workloads. No wrap/geometry change remains after removing the intended liga attribute on these inputs; native ligature boundary acceptance is covered by separate root/engine fixtures."
+}

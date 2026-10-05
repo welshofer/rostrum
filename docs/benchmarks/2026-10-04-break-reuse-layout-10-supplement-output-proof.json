@@ -1,0 +1,108 @@
+{
+  "baselineRevision": "c1b7edf56f8025734d0509a1c7c1ae646eba004f",
+  "cases": [
+    {
+      "name": "unicode-latin",
+      "input": {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/unicode-latin.pptx",
+        "SHA256": "9897f3190dfb1872086bc07a47a45e8816a53624d3f0826c7a45f4cd04d323a3",
+        "textNodesChanged": 2000,
+        "text": "café naïve é Ångström 中文",
+        "generation": "Replace only original a:t payloads, preserving XML prefixes and all other package payloads"
+      },
+      "artifacts": {
+        "baseline": {
+          "slide-0-issues.json": "d497bf8915d7ffa8d4ac86a275c81c29edd757235ebe65ae5db276f54e9c1906",
+          "saved.pptx": "f884d56a2c4757adc782fe12c75d17cef645362b3431388ab4b4b53850676359",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0.svg": "e575b175d7d05e173b99046f4bd9c1da4c0f8790d1e525128f6d20bf14eea7fd"
+        },
+        "candidate-1": {
+          "slide-0-issues.json": "d497bf8915d7ffa8d4ac86a275c81c29edd757235ebe65ae5db276f54e9c1906",
+          "saved.pptx": "f884d56a2c4757adc782fe12c75d17cef645362b3431388ab4b4b53850676359",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0.svg": "e575b175d7d05e173b99046f4bd9c1da4c0f8790d1e525128f6d20bf14eea7fd"
+        },
+        "candidate-2": {
+          "slide-0-issues.json": "d497bf8915d7ffa8d4ac86a275c81c29edd757235ebe65ae5db276f54e9c1906",
+          "saved.pptx": "f884d56a2c4757adc782fe12c75d17cef645362b3431388ab4b4b53850676359",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0.svg": "e575b175d7d05e173b99046f4bd9c1da4c0f8790d1e525128f6d20bf14eea7fd"
+        }
+      },
+      "svgBytes": 6038730,
+      "textElements": 20000,
+      "byteIdentical": true,
+      "deterministicCandidate": true
+    },
+    {
+      "name": "mixed-rtl",
+      "input": {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/mixed-rtl.pptx",
+        "SHA256": "b5620bfaf63d81c89b8b920526b6df9818a5d9f25acdc5b20dcd47c86ecd855d",
+        "textNodesChanged": 2000,
+        "text": "שלום אבג 123 café אב 45",
+        "generation": "Replace only original a:t payloads, preserving XML prefixes and all other package payloads"
+      },
+      "artifacts": {
+        "baseline": {
+          "slide-0-issues.json": "e0142a45b706979f8aa77aa11383b487afc761ecdb01c9170d1a25989445c352",
+          "saved.pptx": "db071408e33b544fe93617a7ddf95ee73afea19cb96de4c59af4c59f896c8537",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0.svg": "e8d165ed3c56e94f2ed4533dab982947ce237065cef3226a9d9cb55f84dd84da"
+        },
+        "candidate-1": {
+          "slide-0-issues.json": "e0142a45b706979f8aa77aa11383b487afc761ecdb01c9170d1a25989445c352",
+          "saved.pptx": "db071408e33b544fe93617a7ddf95ee73afea19cb96de4c59af4c59f896c8537",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0.svg": "e8d165ed3c56e94f2ed4533dab982947ce237065cef3226a9d9cb55f84dd84da"
+        },
+        "candidate-2": {
+          "slide-0-issues.json": "e0142a45b706979f8aa77aa11383b487afc761ecdb01c9170d1a25989445c352",
+          "saved.pptx": "db071408e33b544fe93617a7ddf95ee73afea19cb96de4c59af4c59f896c8537",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0.svg": "e8d165ed3c56e94f2ed4533dab982947ce237065cef3226a9d9cb55f84dd84da"
+        }
+      },
+      "svgBytes": 5483690,
+      "textElements": 18000,
+      "byteIdentical": true,
+      "deterministicCandidate": true
+    },
+    {
+      "name": "long-combining",
+      "input": {
+        "path": "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf17-research/supplement-inputs/long-combining.pptx",
+        "SHA256": "ebb7229f6ebe5fa8deaf8a8ec0ac10806f9e6c633e6250c67d54892e69ac7567",
+        "textNodesChanged": 2000,
+        "text": "Á́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́ é",
+        "generation": "Replace only original a:t payloads, preserving XML prefixes and all other package payloads"
+      },
+      "artifacts": {
+        "baseline": {
+          "slide-0-issues.json": "de8d765274ca05a80d857ff7faee7868b6f2e93ea29266b4dd134157f24621a7",
+          "saved.pptx": "f45d4235afab2dd1a3c262029fd4d378944295d9ae7f425b071700bbca6567e7",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0.svg": "1b37c79a7db57ef66fe7264ad9e07239e46963746001439214b171840ad14eff"
+        },
+        "candidate-1": {
+          "slide-0-issues.json": "de8d765274ca05a80d857ff7faee7868b6f2e93ea29266b4dd134157f24621a7",
+          "saved.pptx": "f45d4235afab2dd1a3c262029fd4d378944295d9ae7f425b071700bbca6567e7",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0.svg": "1b37c79a7db57ef66fe7264ad9e07239e46963746001439214b171840ad14eff"
+        },
+        "candidate-2": {
+          "slide-0-issues.json": "de8d765274ca05a80d857ff7faee7868b6f2e93ea29266b4dd134157f24621a7",
+          "saved.pptx": "f45d4235afab2dd1a3c262029fd4d378944295d9ae7f425b071700bbca6567e7",
+          "slide-0-inheritance.json": "47caef8f9ac223044c6370317342e90e89c2c4ff63f69f60d48a1e06aaf86ded",
+          "slide-0.svg": "1b37c79a7db57ef66fe7264ad9e07239e46963746001439214b171840ad14eff"
+        }
+      },
+      "svgBytes": 1931090,
+      "textElements": 2000,
+      "byteIdentical": true,
+      "deterministicCandidate": true
+    }
+  ],
+  "independentPythonPptxReopens": 9
+}

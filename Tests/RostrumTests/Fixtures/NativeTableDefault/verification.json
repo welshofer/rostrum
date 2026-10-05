@@ -1,0 +1,67 @@
+{
+  "status": "worker verified; independent review, integrated app gates, generated-output native acceptance and performance remain parent-owned",
+  "baseline": "1b5125b84ec396d68348217a0dad4734216417e2",
+  "branch": "codex/burndown/table-default17-20261004",
+  "model": {
+    "requested": "gpt-6-astra",
+    "reasoning": "high",
+    "runtime": "unattested"
+  },
+  "native": {
+    "powerpoint": "16.113.3",
+    "cases": 12,
+    "glyph_traces_consumed": 72,
+    "scope": "Vector fill/stroke paint and complete trace consumption; no new glyph-outline or raster parity claim",
+    "coordinate_tolerance_pt": 0.001,
+    "normalized_color_tolerance": 0.0001
+  },
+  "checks": [
+    {
+      "command": "swift test --jobs 2 --filter 'NativeTableDefaultTests|TableBorder|TableStyleImportTests|BuiltInTableStyleTests'",
+      "result": "33 tests / 5 suites passed",
+      "log": ".build/table-joins17/broader-final.log"
+    },
+    {
+      "command": "swift test --jobs 2",
+      "result": "1176 tests / 170 suites and 18 RostrumLayout tests / 3 suites passed",
+      "log": ".build/table-joins17/full.log"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    },
+    {
+      "command": "fresh isolated generator reproduction",
+      "result": "all 3 captured source PPTX SHA256 values and case JSON reproduced exactly",
+      "receipt": ".build/table-joins17/reproduction/receipt.json"
+    }
+  ],
+  "fail_before": [
+    {
+      "log": ".build/table-default17/fail-before.log",
+      "issues": 10,
+      "scope": "native absent-style/import checks"
+    },
+    {
+      "log": ".build/table-joins17/fail-before.log",
+      "issues": 29,
+      "scope": "native mixed-width interval checks"
+    }
+  ],
+  "retained_log_hashes": {
+    ".build/table-default17/fail-before.log": "07634e8db89e7a9c5b1a3e86e97c8d4471e39adac6e17d3f7dafec0b48debe58",
+    ".build/table-joins17/fail-before.log": "9c3d42f741130ea7992afb099e7e81abd10cdbe42dd1d64c6113d63fcba55ff3",
+    ".build/table-joins17/broader-final.log": "f08db83a19ba970a7e7b31330b1639f544cd8cd1a33809faf7f72043a4adf62c",
+    ".build/table-joins17/full.log": "b01a53dcce3c5a0ef804b941b6b6dc3f4d4576016722663f61e9d367671d134d",
+    ".build/table-joins17/reproduction/receipt.json": "f22541253cb7af96dc2b90c384f2f854fb0ac1f6b241d11bb31821601f33a118"
+  },
+  "source_sha256": {
+    "Sources/Rostrum/Presentation/RenderDiagnostics.swift": "b55873b2fc131db7aadd48b473497dcce6ca549476dea3af31a149dd3e550bb5",
+    "Sources/Rostrum/Presentation/TableStyleResolver.swift": "f8a3110252a00774f25bb4d629250718c5e38e4ecc2a1557142fed78f124cc7d",
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "ec0b48f7efe08ab4ae1cc28084dcce46b9e4a088004a650cb99c58ef4c4a93f5",
+    "Sources/Rostrum/Presentation/TableBorderSegments.swift": "43d97e5954cb41628c9c67389bda1e378fdb27400ee6b08819062c10eafd8820",
+    "Sources/Rostrum/Presentation/DeckMerge.swift": "a83c026f41447da9ab172e3e8e9edfb1c97258d37bc5e2992c910ad34d6c7535"
+  },
+  "lint": "No configured lint command; git diff --check performed",
+  "performance": "No performance claim; parent-controlled matched verification pending"
+}

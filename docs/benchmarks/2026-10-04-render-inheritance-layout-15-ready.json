@@ -1,0 +1,43 @@
+{
+  "status": "READY_AWAITING_REVIEW_AND_EXPLICIT_GRANT",
+  "baselineSource": "6a3f61b5fb85f767096e87d3c14a2a1ceb74d410",
+  "sourceReview": "independently approved by root relay",
+  "tests": {
+    "library": 1169,
+    "librarySuites": 168,
+    "layout": 18,
+    "layoutSuites": 3,
+    "focused": 4
+  },
+  "corpus": {
+    "cases": 148,
+    "slides": 842,
+    "freshProcesses": 444,
+    "freshReopens": 444,
+    "exactBaselineCandidateRepeated": true
+  },
+  "mutationProof": {
+    "states": 80,
+    "rendererInvocations": 320,
+    "freshReopens": 140,
+    "expectedMissingLayoutExclusions": 20
+  },
+  "preservation": {
+    "decks": 3,
+    "variants": 2,
+    "freshReopens": 6
+  },
+  "artifactCount": 9606,
+  "pins": {
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/timing-plan.json": "54fc96ed4cbfa6a0d467c8236818ed90b4deb4118500adad2fedbcafb5f90554",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/run-authorized.py": "4f2cec298e3267b76b70d2c731ff4d62e41f6f24afa13a71687ca7eb8946fe96",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/output-artifact-pins.json": "adf4a27589727d5952fb3d878cf034106e6e2a2cdd8d589b2eaec1eeb945207d",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/candidate-source-pins.json": "efc9458355c1bca4478568cdd684f41f3421f02aeed42ecbb51e9119840d5326",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/helper-build.json": "802ba9f2dbfa012d0db946f243cfd6d710f91fcffae6bc6a354421a5caa9425e",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/corpus-proof.json": "d9f8052f6f6b01eb70bb645119da9290c3b3c56206671d7021ccbb7b53db60ea",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/mutation-proof.json": "be4840986279cbf93acc924ad98ba874c69762ba215210f5f7ceae7b21c41e51",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/value-proof.json": "ac0320b085852bb3895349bcb37d1d54284c41aecb16942c3289c9b9216cc71d",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/preservation.json": "66c71f8e4c2a3641bc1a9110052f3d42d13ee9005134b4170ac979c486d204b2",
+    "/Users/welshofer/.codex/worktrees/rostrum-fonts/rostrum/.build/perf27-render-inheritance/profile-summary.json": "76a871e99429a8f6152ae00581b8aed7cd4959d05140aecffcc1bcc83d71d160"
+  }
+}
