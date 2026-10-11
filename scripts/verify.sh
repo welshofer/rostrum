@@ -34,12 +34,18 @@ report() {
 }
 trap report EXIT
 
+step "Portable oracle dependencies"
+python3 Tools/conformance/check_dependencies.py
+
 step "Offline workflow checks"
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests
 
 step "Rostrum build + tests"
 swift build
 swift test
+
+step "Portable fidelity references"
+bash scripts/check-fidelity.sh
 
 step "LecternCore build + tests"
 (cd Lectern && swift build && swift test)

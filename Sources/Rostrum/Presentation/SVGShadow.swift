@@ -6,8 +6,8 @@ enum SVGShadow {
     /// ten-percent crop. All coordinates are bounded before filter allocation.
     static func wrap(_ content: String, shadow: XML.Element, frame: (Int, Int, Int, Int),
                      theme: Theme, rotation: Double, flipH: Bool, flipV: Bool,
-                     defs: inout SVGDefinitions) -> String {
-        guard !content.isEmpty, let paint = SVGPaint.resolve(in: shadow, theme: theme), paint.opacity > 0 else { return content }
+                     defs: inout SVGDefinitions) -> String? {
+        guard !content.isEmpty, let paint = SVGPaint.resolve(in: shadow, theme: theme), paint.opacity > 0 else { return nil }
         let limit = Double(max(1, max(frame.2, frame.3)))
         let blur = min(limit, Double(max(0, shadow.coordinate("blurRad") ?? 0))) / 2
         let distance = min(limit * 2, Double(max(0, shadow.coordinate("dist") ?? 0)))

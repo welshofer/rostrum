@@ -6,6 +6,20 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Render diagnostics distinguish painted ordinary shape shadows from omitted
+  effects while retaining strict-mode refusal. Nested group children retain
+  their own shape IDs, XML paths and part ownership, so sibling warnings do
+  not merge or hide omitted effects. Supported connector strokes and suppressed
+  inherited placeholders no longer produce false group warnings; malformed
+  nested groups and connectors retain structured omissions.
+- Portable CI and local verification require pinned oracle tools and compare
+  all 36 saved PowerPoint image references. The font-aware comparison adapter
+  accepts the renderer's explicit ligature controls without allowing arbitrary CSS.
+- Diagnostic traversal queues children in one pass while preserving ordered
+  issues and source paths. Release benchmarks now report process CPU time
+  alongside elapsed time, including backward-compatible paired comparisons.
+  The pull-request gate also builds the iOS simulator app.
+
 ## [1.0.0] — 2026-10-04
 
 The first major release adds the `RostrumLayout` product for template-aware

@@ -37,6 +37,24 @@ held SVGs and the independent ZIP/fidelity checks; it is not the peak allocation
 of an isolated library operation. Compare repeated runs on the same machine and
 inputs before setting regression budgets or claiming a speedup.
 
+For per-operation CPU and elapsed time, use the scenario driver in
+`Tools/rostrum-bench`. Preserve a baseline Release binary before editing the
+library, then compare it with the candidate using alternating fresh processes:
+
+```sh
+python3 Tools/rostrum-bench/run.py --binary .build/release/rostrum-bench \
+  --paired-binary /path/to/baseline/rostrum-bench --paired-revision BASELINE \
+  --runs 15 --warmups 2 --scenarios table-200x50 images-unique \
+  --output /tmp/rostrum-paired.json
+```
+
+`phases` contains elapsed milliseconds; `cpuPhases` contains process CPU
+milliseconds summed across threads. CPU measurements help identify scheduling
+noise but do not eliminate machine or frequency variation. A CPU comparison
+requires both binaries to support the CPU clock; older baselines retain their
+elapsed measurements without fabricated CPU values. Keep raw samples and check
+SVGs, ordered diagnostics and saved bytes separately before claiming a speedup.
+
 For Lectern's native preview geometry and bitmap-cache checks:
 
 ```sh

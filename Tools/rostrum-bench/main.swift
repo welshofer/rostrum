@@ -1,11 +1,17 @@
 import Foundation
 import Rostrum
+#if canImport(Darwin)
+import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#endif
 
 // Emits one JSON sample per invocation. The Python driver repeats fresh
 // processes, records RSS and computes distributions without timing the build.
 struct Sample: Codable {
     var scenario: String
     var phases: [String: Double] = [:]
+    var cpuPhases: [String: Double] = [:]
     var outputBytes = 0
     var slideCount = 0
     var checksum = 0
@@ -43,11 +49,18 @@ if scenario == "proof", args.count == 3 {
 }
 var sample = Sample(scenario: scenario)
 let clock = ContinuousClock()
+func processCPUTime() -> Double {
+    var time = timespec()
+    precondition(clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time) == 0, "Process CPU clock unavailable")
+    return Double(time.tv_sec) * 1_000 + Double(time.tv_nsec) / 1e6
+}
 @MainActor func measure<T>(_ name: String, _ body: () throws -> T) rethrows -> T {
+    let cpuStart = processCPUTime()
     let start = clock.now
     let result = try body()
     let d = start.duration(to: clock.now).components
     sample.phases[name] = Double(d.seconds) * 1_000 + Double(d.attoseconds) / 1e15
+    sample.cpuPhases[name] = processCPUTime() - cpuStart
     return result
 }
 let frame = Rect(x: .inches(1), y: .inches(1), width: .inches(10), height: .inches(5))

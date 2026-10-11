@@ -183,7 +183,7 @@ struct SVGRenderer {
         for (index, child) in tree.childElements.enumerated() {
             if Placeholders.phElement(of: child) != nil { continue }
             diagnostics.inspect(child, owner: part, slideIndex: slideNumber - 1,
-                path: "/p:cSld/p:spTree/\(child.name)[\(index + 1)]", package: package)
+                path: "/p:cSld/p:spTree/\(child.name)[\(index + 1)]", package: package, ignoringPlaceholders: true)
             out += renderNode(child, ownedBy: part, defs: &defs, problems: &problems, inherited: true)
         }
         return out
@@ -208,8 +208,18 @@ struct SVGRenderer {
         switch node.name {
         case "p:nvGrpSpPr", "p:grpSpPr", "p:extLst": return ""
         case "p:grpSp":
-            let children = node.childElements.map {
-                renderNode($0, ownedBy: owner, defs: &defs, problems: &problems,
+            let groupLocation = diagnostics.location
+            var occurrences: [String: Int] = [:]
+            let children = node.childElements.map { child in
+                occurrences[child.name, default: 0] += 1
+                // Match the scanner's same-name indices, including hidden
+                // siblings, and restore the group before visiting the next child.
+                diagnostics.location = FidelityLocation(slideIndex: groupLocation.slideIndex,
+                    partURI: owner.uri.description,
+                    shapeID: child.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"],
+                    path: groupLocation.path + "/\(child.name)[\(occurrences[child.name]!)]")
+                defer { diagnostics.location = groupLocation }
+                return renderNode(child, ownedBy: owner, defs: &defs, problems: &problems,
                            inherited: inherited, depth: depth + 1, flippedTextH: textFlipH, flippedTextV: textFlipV)
             }.joined()
             let transform = ShapeTransform.element(of: node)
@@ -327,6 +337,7 @@ struct SVGRenderer {
             diagnostics.inspect(sp, owner: owner, slideIndex: slideNumber - 1, path: location.path, package: package)
         }
         guard let spPr = sp.firstChild(named: "p:spPr") else { return "" }
+        let shapeLocation = diagnostics.location
         diagnoseReferencedEffects(of: sp, properties: spPr)
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
@@ -393,18 +404,33 @@ struct SVGRenderer {
             } else { out += text }
         }
         // An explicit empty effect list suppresses the theme's shadow.
-        let effects = spPr.firstChild(named: "a:effectLst")
-            ?? (spPr.firstChild(named: "a:effectDag") == nil
-                ? styleEntry(style?.firstChild(named: "a:effectRef"), list: "a:effectStyleLst")?.firstChild(named: "a:effectLst") : nil)
+        let directEffects = spPr.firstChild(named: "a:effectLst")
+        let inheritedEffects = directEffects == nil && spPr.firstChild(named: "a:effectDag") == nil
+            ? styleEntry(style?.firstChild(named: "a:effectRef"), list: "a:effectStyleLst") : nil
+        let effects = directEffects ?? inheritedEffects?.firstChild(named: "a:effectLst")
         if let shadow = effects?.firstChild(named: "a:outerShdw") {
             let ordinary = ["sx", "sy"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "100000" }
                 && ["kx", "ky"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "0" }
             if ordinary {
                 let transform = spPr.firstChild(named: "a:xfrm")
-                out = SVGShadow.wrap(out, shadow: shadow, frame: f, theme: theme,
+                if let painted = SVGShadow.wrap(out, shadow: shadow, frame: f, theme: theme,
                     rotation: ShapeTransform.rotation(of: sp),
                     flipH: ["1", "true"].contains(transform?[attribute: "flipH"] ?? ""),
-                    flipV: ["1", "true"].contains(transform?[attribute: "flipV"] ?? ""), defs: &defs)
+                    flipV: ["1", "true"].contains(transform?[attribute: "flipV"] ?? ""), defs: &defs) {
+                    out = painted
+                    // A mixed list still omits effects. A theme-reference issue
+                    // also covers other active components, including 3D effects.
+                    let otherInheritedEffects = inheritedEffects?.childElements.contains { component in
+                        ["a:effectDag", "a:scene3d", "a:sp3d"].contains(component.name)
+                            && spPr.firstChild(named: component.name) == nil
+                            && RenderDiagnosticCollector.hasEffectContent(component)
+                    } ?? false
+                    if effects?.childElements.count == 1 && !otherInheritedEffects {
+                        let suffix = directEffects == nil ? "/p:style/a:effectRef" : "/p:spPr[1]/a:effectLst[1]"
+                        diagnostics.renderedOuterShadow(at: FidelityLocation(slideIndex: shapeLocation.slideIndex,
+                            partURI: shapeLocation.partURI, shapeID: shapeLocation.shapeID, path: shapeLocation.path + suffix))
+                    }
+                }
             } else { problems.record("Preview omitted a scaled or skewed outer shadow.") }
         }
         }

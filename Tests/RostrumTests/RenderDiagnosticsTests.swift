@@ -272,6 +272,7 @@ import Testing
                 let issues = try deck.renderSVGReportingProblems(slideAt: index).problems.fidelityIssues
                 if version == "v1" && (7...9).contains(index) {
                     #expect(issues.count == 1 && issues[0].code == .omittedEffect)
+                    #expect(issues[0].impact == .approximation)
                     #expect(issues[0].location.path.hasSuffix("/p:style/a:effectRef"))
                 } else {
                     #expect(issues.isEmpty)
