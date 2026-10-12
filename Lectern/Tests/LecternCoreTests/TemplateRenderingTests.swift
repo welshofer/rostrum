@@ -33,9 +33,21 @@ import RostrumLayout
         let frame = try #require(slide.effectiveFrame(of: shape))
         let caption = try #require(slide.shapes.all.first { $0.textFrame?.text == input.slides[0].body?.source })
         #expect(slide.effectiveFrame(of: caption)!.y.points >= frame.maxY.points + 7.9)
-        let heights = TemplateRendering.tableRowHeights(table, width: frame.width.points,
-            style: DeckStyle(theme: slide.master!.theme!), engine: TemplateLayoutEngine(presentation: deck, measure: TemplateRendering.measurer))
-        #expect(frame.height.points >= heights.reduce(0, +) - 0.01)
+        let native = try #require((shape as? TableFrame)?.table)
+        // Generation registers installed faces; a reopened registry starts empty.
+        // Reuse the same lookup policy before comparing saved cell geometry.
+        let firstCell = try native.cell(0, 0)
+        let family = try #require(firstCell.existingTextFrame?.paragraphs.first?.runs.first?.fontName)
+        _ = InstalledFonts.registerForGeneration(in: deck, families: [family])
+        let measured = try TableLayoutEngine(presentation: deck).plan(native)
+        #expect(measured.fits)
+        #expect(frame.height >= measured.totalHeight)
+        for row in measured.rowHeights.indices { for column in measured.columnWidths.indices {
+            let cell = try native.cell(row, column)
+            #expect(try #require(cell.existingTextFrame).fitText(in: Rect(x: .zero, y: .zero,
+                width: measured.columnWidths[column], height: measured.rowHeights[row]), fonts: deck.fonts,
+                theme: slide.master?.theme).fits)
+        } }
         #expect(result.schemaIssues.isEmpty)
     }
 
@@ -76,7 +88,7 @@ import RostrumLayout
             #expect(frame.height.points > 72)
             #expect(frame.y.points >= objectFrame.maxY.points + 8)
             #expect(frame.maxY <= deck.bounds.maxY)
-            #expect(objectFrame.height.points >= (index == 0 ? 144 : 3 * 36))
+            #expect(objectFrame.height.points >= (index == 0 ? 144 : 3 * 30))
             #expect(text.textFrame?.paragraphs.first?.runs.first?.fontSize == 13)
         }
         #expect(result.schemaIssues.isEmpty)

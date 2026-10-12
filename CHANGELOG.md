@@ -6,6 +6,14 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- `TableLayoutEngine` plans native table row heights using resolved cell fonts,
+  styles, padding and shared rich-text geometry. Template composition measures
+  the cells it writes, reserves caption space and rechecks before adding a slide.
+  Read-only plans report unsupported cells and overflow; repeated measurements
+  are reused within a bounded operation-local cache. The Templates Library Lab
+  includes a saved/reopened example. Merges, vertical/rotated text, dynamic
+  fields, pagination and native table autofit are outside this first version.
+
 - Template and authored autofit reuse paragraph styles, font selection and
   Unicode preparation within each body's shrink trials. Reuse is bounded and
   discarded after fitting; size-dependent shaping and geometry remain unchanged.

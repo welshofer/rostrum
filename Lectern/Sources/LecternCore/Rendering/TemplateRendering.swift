@@ -48,7 +48,7 @@ enum TemplateRendering {
             func objectPlan(_ caption: String) throws -> TemplateSlidePlan {
                 try engine.plan(title: slide.title ?? "", columns: [], preferredTypes: preferred,
                     object: kind, masterURI: template.selectedMasterID, objectCaption: caption,
-                    minimumObjectHeight: minimum, measureObjectHeight: tableMeasurer(body.table, engine: engine))
+                    minimumObjectHeight: minimum, table: slide.kind == .table ? body.table.map { TemplateTableContent(rows: $0.grid) } : nil)
             }
             do {
                 _ = try objectPlan(source)
@@ -129,7 +129,7 @@ enum TemplateRendering {
         let plan: TemplateSlidePlan
         do {
             plan = try engine.plan(title: title, columns: columns, preferredTypes: preferred, object: object,
-                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, measureObjectHeight: tableMeasurer(body?.table, engine: engine), imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, validateObject: structure.map { structure in
+                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, table: input.kind == .table ? body?.table.map { TemplateTableContent(rows: $0.grid) } : nil, validateObject: structure.map { structure in
                                        { frame, style in try StructuredLayout.validate(kind: structure.0, items: structure.1,
                                            in: frame, style: style, engine: engine) }
                                    })
@@ -139,7 +139,7 @@ enum TemplateRendering {
             guard columns.count > 1 else { throw error }
             columns = [columns.flatMap { $0 }]
             plan = try engine.plan(title: title, columns: columns, preferredTypes: preferred, object: object,
-                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, measureObjectHeight: tableMeasurer(body?.table, engine: engine), imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, validateObject: structure.map { structure in
+                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, table: input.kind == .table ? body?.table.map { TemplateTableContent(rows: $0.grid) } : nil, validateObject: structure.map { structure in
                                        { frame, style in try StructuredLayout.validate(kind: structure.0, items: structure.1,
                                            in: frame, style: style, engine: engine) }
                                    })
@@ -177,27 +177,8 @@ enum TemplateRendering {
                         valueAxis: AxisOptions(gridlines: false),
                         text: ChartTextStyle(font: style.bodyFont, color: style.ink, sizePt: 16 * engine.objectScale)))
                 try slide.replacePlaceholder(index: slot.index, with: shape)
-            } else if let table = body?.table, input.kind == .table {
-                guard !table.headers.isEmpty else { throw LayoutError.cannotFit("\(title): table has no columns.") }
-                let heights = tableRowHeights(table, width: objectFrame.width.points, style: style, engine: engine)
-                let tableFrame = Rect(x: objectFrame.x, y: objectFrame.y, width: objectFrame.width,
-                    height: .points(heights.reduce(0, +)))
-                let native = try slide.shapes.addTable(rows: table.grid.count, columns: table.headers.count, frame: tableFrame)
-                native.setContents(table.grid)
-                native.columnWidths(tableColumnWidths(table, width: objectFrame.width.points).map { .points($0) })
-                native.rowHeights(heights.map { .points($0) })
-                for r in 0..<native.rowCount {
-                    for c in 0..<native.columnCount {
-                        for p in try native.cell(r, c).textFrame.paragraphs {
-                            for run in p.runs { run.fontSize = 18 * engine.objectScale; run.fontName = style.bodyFont }
-                        }
-                    }
-                }
-                // Retain native table styles/theme references rather than baking
-                // per-cell RGB values into a corporate template.
-                let shape = slide.shapes.all.last!
-                try slide.replacePlaceholder(index: slot.index, with: shape)
             }
+
             if let caption = plan.captionFrame {
                 let shape = try slide.addText(source, in: caption, role: .caption, style: style)
                 try AuthoredLayoutEngine(presentation: deck, measure: measurer).fitText(in: slide, only: [shape.shapeID!])
@@ -225,38 +206,6 @@ enum TemplateRendering {
         return Rect(x: .points(frame.x.points + (frame.width.points - width) / 2),
                     y: .points(frame.y.points + (frame.height.points - height) / 2),
                     width: .points(width), height: .points(height))
-    }
-
-    private static func tableMeasurer(_ table: IRTable?, engine: TemplateLayoutEngine) -> ((Double, DeckStyle) -> Double)? {
-        guard let table else { return nil }
-        return { width, style in tableRowHeights(table, width: width, style: style, engine: engine).reduce(0, +) }
-    }
-
-    static func tableRowHeights(_ table: IRTable, width: Double, style: DeckStyle, engine: TemplateLayoutEngine) -> [Double] {
-        let widths = tableColumnWidths(table, width: width)
-        return table.grid.enumerated().map { index, row in
-            var textStyle = style.type(.body)
-            textStyle.sizePt = 18 * engine.objectScale
-            textStyle.weight = index == 0 ? 700 : 400
-            textStyle.lineHeight = 1.2
-            // PowerPoint's default table-cell margins: 7.2pt horizontally,
-            // 3.6pt vertically. Leave additional rounding/font fallback slack.
-            return max(30, row.enumerated().map { column, text in
-                engine.measuredHeight(text, style: textStyle, width: max(1, widths[min(column, widths.count - 1)] - 14.4)) + 10
-            }.max() ?? 30)
-        }
-    }
-
-    static func tableColumnWidths(_ table: IRTable, width: Double) -> [Double] {
-        guard !table.headers.isEmpty else { return [] }
-        let weights = table.headers.indices.map { column in
-            let lengths = table.grid.map { column < $0.count ? $0[column].count : 0 }
-            return sqrt(Double(max(4, min(160, lengths.max() ?? 4))))
-        }
-        let total = weights.reduce(0, +)
-        // Half equal share keeps short headers legible; half content-weighted
-        // gives explanatory columns room without starving numeric columns.
-        return weights.map { width * (0.5 / Double(weights.count) + 0.5 * $0 / total) }
     }
 
     static func structuredContent(_ slide: IRSlide) -> (StructuredKind, [StructuredItem])? {

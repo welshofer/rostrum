@@ -36,6 +36,7 @@ import Testing
                     flags[attribute: name] = bits & (1 << bit) == 0 ? "0" : "1"
                 }
                 let resolver = TableStyleResolver(table: table, theme: deck.theme)
+                var session = TableStyleResolver.FittingSession(table: table, theme: deck.theme)
                 for (index, position) in positions.enumerated() {
                     let full = resolver.effective(row: position.0, column: position.1)
                     let projected = try #require(TableStyleResolver.fittingStyle(
@@ -43,6 +44,9 @@ import Testing
                     #expect(projected.text.serialized() == full.text.serialized())
                     #expect(projected.properties.serialized()
                         == XML.Element("a:tcPr", attributes: full.properties.attributes).serialized())
+                    let bulk = session.effective(row: position.0, column: position.1)
+                    #expect(bulk.text.serialized() == projected.text.serialized())
+                    #expect(bulk.properties.serialized() == projected.properties.serialized())
                 }
             }
         }

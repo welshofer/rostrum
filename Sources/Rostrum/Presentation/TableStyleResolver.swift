@@ -414,6 +414,53 @@ public struct TableStyleResolver {
         return Effective(properties: properties, text: text, fillOwner: fillOwner)
     }
 
+    /// Bulk fitting uses the same text projection as single-cell fitting, with
+    /// one indexed grid and bounded region reuse. Paint and borders are irrelevant
+    /// to text geometry and can be expensive to materialize on small tables.
+    struct FittingSession {
+        let grid: TableGridSnapshot
+        private let theme: Theme
+        private let definition: XML.Element?
+        private let flags: Set<String>
+        private var templates: [[String]: XML.Element] = [:]
+        private var remainingCost = 262_144
+
+        init(table: Table, theme: Theme) {
+            grid = TableGridSnapshot(table.tbl)
+            self.theme = theme
+            let properties = table.tbl.firstChild(named: "a:tblPr")
+            flags = Set(["rtl", "firstRow", "lastRow", "firstCol", "lastCol", "bandRow", "bandCol"].filter { name in
+                properties.map { TableMergeTopology.flag($0, name) } ?? false
+            })
+            let found = TableStyleResolver.definition(for: table.tbl, package: table.package, fittingOnly: true)
+            definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }
+        }
+
+        mutating func effective(row: Int, column: Int) -> (properties: XML.Element, text: XML.Element) {
+            let regions = TableStyleResolver.regionNames(row: row, column: column,
+                rowCount: grid.rows.count, columnCount: grid.columns.count, flags: flags)
+            let text: XML.Element
+            if let cached = templates[regions] { text = cached }
+            else {
+                text = XML.Element("a:defRPr")
+                for name in regions {
+                    if let style = definition?.firstChild(named: "a:" + name)?.firstChild(named: "a:tcTxStyle") {
+                        TableStyleResolver.mergeText(style, into: text, theme: theme)
+                    }
+                }
+                TableStyleResolver.resolveColors(in: text, theme: theme)
+                if templates.count < 64, let cost = RenderSession.cost(of: [text], limit: remainingCost) {
+                    templates[regions] = text; remainingCost -= cost
+                }
+            }
+            let properties = XML.Element("a:tcPr")
+            for attribute in grid.cells[row][column].firstChild(named: "a:tcPr")?.attributes ?? [] {
+                properties[attribute: attribute.name] = attribute.value
+            }
+            return (properties, text)
+        }
+    }
+
     /// A single synchronous table render may reuse style-only templates. Public
     /// resolution remains uncached because callers can edit exposed XML/themes.
     /// Entries are read-only to the renderer and expire at the end of renderTable.
@@ -470,7 +517,7 @@ public struct TableStyleResolver {
             return base
         }
 
-        private static func cost(of roots: [XML.Element], limit: Int) -> Int? {
+        fileprivate static func cost(of roots: [XML.Element], limit: Int) -> Int? {
             var pending = roots, total = 0
             while let node = pending.popLast() {
                 total += 128 + node.name.utf8.count

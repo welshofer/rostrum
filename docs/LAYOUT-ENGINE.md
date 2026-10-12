@@ -21,6 +21,7 @@ and [conformance record](CONFORMANCE.md).
 | `shape.fitText(fonts:)` | Use shared rich-text geometry to compute saved normal autofit | Explicit editing operation; writes computed fit settings |
 | `SVGRenderer` | Draw resolved content using text geometry and collect fidelity issues | Read-only preview; does not repair or relayout the saved document |
 | `TemplateLayoutEngine` in `RostrumLayout` | Evaluate native layouts, measure content, score compatible candidates and fill placeholders | Composes new slide content; retains the supplied master/layout/theme |
+| `TableLayoutEngine` in `RostrumLayout` | Measure native cell styles and rich text at caller-selected column widths | Returns a read-only row plan and cell issues; no shrinking or pagination |
 | `AuthoredLayoutEngine` in `RostrumLayout` | Check and fit design-authored text regions, then publish a reusable layout | May adjust authored typography and spacing; not used to rewrite imported templates |
 | `StructuredLayout` in `RostrumLayout` | Preflight and compose editable metrics, process, cycle, pyramid, timeline, quadrant and band structures | Adds native shapes and text inside the chosen region |
 | `MeasuredPaginator` in `RostrumLayout` | Partition ordered content according to a caller's actual fit predicate | Returns partitions without dropping or reordering content |
@@ -37,10 +38,10 @@ flowchart TD
     Candidates --> Compose["Fill native placeholders or report cannotFit"]
 ```
 
-Template composition can accept a `TextHeightMeasurer` supplied by the host,
-such as Lectern's Apple measurement adapter. Its measurement path is still
-distinct from `RichTextLayout`. Authored fitting uses shared rich-text geometry;
-an optional host callback adds a conservative height check. A computed fit does
+Template and authored text composition can accept a `TextHeightMeasurer`
+supplied by the host, such as Lectern's Apple measurement adapter. Both use shared
+rich-text geometry; an optional host callback adds a conservative height check.
+Table planning uses the portable geometry and explicitly registered fonts. A computed fit does
 not establish that PowerPoint would select the same autofit.
 
 ## Choose the right operation
@@ -52,6 +53,63 @@ not establish that PowerPoint would select the same autofit.
 | Start from a `.potx` | `Presentation.fromTemplate(data:)`, then `TemplateLayoutEngine` | New PPTX slides connected to the source template's layouts and masters |
 | Finish slides built from a `Design` or `DeckStyle` | `AuthoredLayoutEngine` | Checked/adjusted authored text and optional published native layouts |
 | Break ordered content across pages | `MeasuredPaginator` | Fitting partitions; the caller creates slides and retains document context |
+
+### Native table row planning
+
+```swift
+let planner = TableLayoutEngine(presentation: deck)
+let plan = try planner.plan(table,
+    columnWidths: [.points(160), .points(320)],
+    minimumRowHeight: .points(30), maximumHeight: .points(360))
+if plan.fits {
+    table.columnWidths(plan.columnWidths).rowHeights(plan.rowHeights)
+}
+```
+
+The planner reads current cell padding, table-region styles, mixed run faces,
+paragraph spacing, tabs and breaks using the renderer's table-cell context.
+It preserves full-size text: stored table `fontScale` is ignored and diagnosed.
+Each cell result includes its row/column, required height, issues and shaping
+diagnostics. `fits` checks geometry and the optional total-height limit; callers
+must also review diagnostics for unsupported shaping or substituted fonts.
+Unsupported geometry that prevents measurement reports a zero required height
+and a cell issue. Oversized rejected plans cap the reported total at the measurement
+limit; never apply row heights from a non-fitting plan.
+Dimensions are bounded to one million points; invalid/ragged grids throw.
+Row heights round upward to an integer EMU. Planning does not mutate source XML.
+
+For template composition, supply the cells directly:
+
+```swift
+let content = TemplateTableContent(rows: [
+    ["Term", "Meaning"], ["Shared geometry", "Measure the cells that will be saved"]
+], columnWeights: [1, 2])
+let engine = TemplateLayoutEngine(presentation: deck)
+let plan = try engine.plan(title: "Vocabulary", columns: [], preferredTypes: ["obj"],
+    object: "tbl", objectCaption: "Definitions remain editable.", table: content)
+let slide = try engine.compose(plan, title: "Vocabulary", columns: [])
+```
+
+`plan.tableLayout` exposes the accepted grid. Composition writes the native table
+and rechecks it before creating a slide, so changed fonts or template styles
+cannot reuse an overflowing fit. As with other objects, the caller writes the
+caption into `plan.captionFrame`; planning reserves its measured height and an
+eight-point gap. The native table retains theme/style references. Column weights
+default to half equal share and half bounded text-length weight; this is a
+starting allocation, not an optimal column-width solver.
+
+The first version supports rectangular, unmerged horizontal cells. Merges,
+vertical/rotated text, multiple text columns, dynamic fields and nonzero stored
+line-spacing reduction return explicit issues. It does not paginate rows,
+repeat headers, choose native autofit or certify PowerPoint visual equivalence.
+The Templates Library Lab demonstrates composition and existing-table planning,
+including custom padding, saved-cell fit, caption clearance and SVG preservation.
+
+Repeated identical cells reuse exact-byte text/style measurements within one
+operation (64 entries, 256 KiB estimated payload budget). Style resolution uses
+one indexed grid and a bounded text-only projection of the renderer's region styles. Template candidate
+plans share at most 64 entries/8,192 cell results within one planning call. No
+measurement cache survives table edits or font registration between operations.
 
 ### Measurement contract
 
