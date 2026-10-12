@@ -17,9 +17,10 @@ package struct TableLayoutSource {
         rowCount = grid.rows.count
     }
 
-    package mutating func cell(row: Int, column: Int) -> TableLayoutCell {
+    package mutating func cell(row: Int, column: Int, styleRow: Int? = nil,
+                               styleRowCount: Int? = nil) -> TableLayoutCell {
         let cell = grid.cells[row][column]
-        let effective = styles.effective(row: row, column: column)
+        let effective = styles.effective(row: row, column: column, styleRow: styleRow, styleRowCount: styleRowCount)
         func inset(_ name: String, _ fallback: Int) -> Double {
             Double(effective.properties.coordinate(name) ?? fallback) / Double(EMU.perPoint)
         }

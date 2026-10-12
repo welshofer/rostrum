@@ -41,11 +41,11 @@ public struct TemplateTableContent: Sendable {
     }
 
     func planned(in presentation: Presentation, width: EMU, font: String, size: Double,
-                 theme: Theme) throws -> TableLayoutPlan {
+                 theme: Theme, pagination: Bool = false) throws -> TableLayoutPlan {
         guard size.isFinite, (1...4000).contains(size) else { throw LayoutError.cannotFit("Invalid table font size.") }
         let widths = try widths(for: width)
         let prototype = try Table.layoutPrototype(contents: rows, width: width, font: font, size: size, package: presentation.package)
         return try TableLayoutEngine(presentation: presentation).plan(prototype, columnWidths: widths,
-            minimumRowHeight: .points(30), theme: theme)
+            minimumRowHeight: .points(30), theme: theme, pagination: pagination)
     }
 }

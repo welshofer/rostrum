@@ -36,6 +36,15 @@ public final class TableLayoutEngine {
     public func plan(_ table: Table, columnWidths: [EMU]? = nil,
                      minimumRowHeight: EMU = .zero, maximumHeight: EMU? = nil,
                      theme: Theme? = nil) throws -> TableLayoutPlan {
+        try plan(table, columnWidths: columnWidths, minimumRowHeight: minimumRowHeight,
+                 maximumHeight: maximumHeight, theme: theme, pagination: false)
+    }
+
+    // Pagination repeats row zero and may move body rows between band/edge
+    // regions. Measure each distinct effective style once per cell, reserving
+    // the largest height. This bounded envelope keeps partitioning linear.
+    func plan(_ table: Table, columnWidths: [EMU]?, minimumRowHeight: EMU,
+              maximumHeight: EMU? = nil, theme: Theme?, pagination: Bool) throws -> TableLayoutPlan {
         let theme = theme ?? table.layoutTheme(fallback: presentation.theme)
         var source = try TableLayoutSource(table: table, theme: theme)
         let widths = columnWidths ?? source.columnWidths
@@ -59,48 +68,61 @@ public final class TableLayoutEngine {
         var heights = [EMU](repeating: minimumRowHeight, count: source.rowCount)
         var cells: [TableCellLayout] = []
         for row in 0..<source.rowCount { for column in widths.indices {
-            let cell = source.cell(row: row, column: column), margins = cell.insets
-            let body = cell.body.firstChild(named: "a:bodyPr")
-            var issues: [TableLayoutIssue] = []
-            if cell.merged { issues.append(.mergedCell) }
-            if cell.direction != "horz" || (body?[attribute: "vert"].map { $0 != "horz" } ?? false) { issues.append(.verticalText) }
-            if Double(body?[attribute: "rot"] ?? "0") != 0 { issues.append(.rotatedText) }
-            if Int(body?[attribute: "numCol"] ?? "1") != 1 { issues.append(.multipleTextColumns) }
-            if cell.body.children(named: "a:p").contains(where: { !$0.children(named: "a:fld").isEmpty }) { issues.append(.dynamicField) }
-            if (body?.firstChild(named: "a:normAutofit")?[attribute: "lnSpcReduction"].flatMap(Double.init) ?? 0) != 0 {
-                issues.append(.lineSpacingReduction)
-            }
-            if [margins.left, margins.top, margins.right, margins.bottom].contains(where: { !$0.isFinite || $0 < 0 }) {
-                issues.append(.invalidInsets)
-            }
-            let measurement: Measurement
-            if !issues.isEmpty { measurement = Measurement(height: .zero, issues: issues, diagnostics: []) }
-            else {
-                let key = Key(body: Data(cell.body.serialized().utf8), style: Data(cell.textStyle.serialized().utf8), width: widths[column],
-                    left: margins.left, top: margins.top, right: margins.right, bottom: margins.bottom)
-                if let cached = cache[key] { measurement = cached }
+            let positions: [(Int, Int)] = pagination
+                ? (row == 0 ? [(0, source.rowCount == 1 ? 1 : 2)] : [(1, 3), (2, 4), (1, 2), (2, 3)])
+                : [(row, source.rowCount)]
+            var seenStyles = Set<Data>()
+            var cellHeight = EMU.zero
+            var cellIssues: [TableLayoutIssue] = [], diagnostics: [ShapingDiagnostic] = []
+            for (styleRow, count) in positions {
+                let cell = source.cell(row: row, column: column, styleRow: styleRow, styleRowCount: count), margins = cell.insets
+                let styleBytes = Data(cell.textStyle.serialized().utf8)
+                guard seenStyles.insert(styleBytes).inserted else { continue }
+                let body = cell.body.firstChild(named: "a:bodyPr")
+                var issues: [TableLayoutIssue] = []
+                if cell.merged { issues.append(.mergedCell) }
+                if cell.direction != "horz" || (body?[attribute: "vert"].map { $0 != "horz" } ?? false) { issues.append(.verticalText) }
+                if Double(body?[attribute: "rot"] ?? "0") != 0 { issues.append(.rotatedText) }
+                if Int(body?[attribute: "numCol"] ?? "1") != 1 { issues.append(.multipleTextColumns) }
+                if cell.body.children(named: "a:p").contains(where: { !$0.children(named: "a:fld").isEmpty }) { issues.append(.dynamicField) }
+                if (body?.firstChild(named: "a:normAutofit")?[attribute: "lnSpcReduction"].flatMap(Double.init) ?? 0) != 0 {
+                    issues.append(.lineSpacingReduction)
+                }
+                if [margins.left, margins.top, margins.right, margins.bottom].contains(where: { !$0.isFinite || $0 < 0 }) {
+                    issues.append(.invalidInsets)
+                }
+                let measurement: Measurement
+                if !issues.isEmpty { measurement = Measurement(height: .zero, issues: issues, diagnostics: []) }
                 else {
-                    let geometry = RichTextLayout(textBody: cell.body, width: widths[column].points, height: limit.points,
-                        fonts: presentation.fonts, theme: theme, inheritedStyles: [cell.textStyle], maxLines: 65,
-                        insets: margins, verticalAnchor: "t", context: .tableCell)
-                    if geometry.truncated || geometry.lines.count > 64 { issues.append(.lineLimit) }
-                    if !geometry.fits { issues.append(.horizontalOverflow) }
-                    if margins.left + margins.right >= widths[column].points { issues.append(.horizontalOverflow) }
-                    let required = geometry.contentHeight + margins.top + margins.bottom
-                    if !required.isFinite || required > limit.points { issues.append(.heightLimit) }
-                    // Round upwards at EMU precision so serialization cannot make
-                    // a measured cell shorter than the accepted line geometry.
-                    measurement = Measurement(height: .points(ceil(required * Double(EMU.perPoint)) / Double(EMU.perPoint)),
-                        issues: issues, diagnostics: geometry.diagnostics)
-                    let cost = key.body.count + key.style.count + 256
-                    if cache.count < 64 && cost <= remainingBytes {
-                        cache[key] = measurement; remainingBytes -= cost
+                    let key = Key(body: Data(cell.body.serialized().utf8), style: styleBytes, width: widths[column],
+                        left: margins.left, top: margins.top, right: margins.right, bottom: margins.bottom)
+                    if let cached = cache[key] { measurement = cached }
+                    else {
+                        let geometry = RichTextLayout(textBody: cell.body, width: widths[column].points, height: limit.points,
+                            fonts: presentation.fonts, theme: theme, inheritedStyles: [cell.textStyle], maxLines: 65,
+                            insets: margins, verticalAnchor: "t", context: .tableCell)
+                        if geometry.truncated || geometry.lines.count > 64 { issues.append(.lineLimit) }
+                        if !geometry.fits { issues.append(.horizontalOverflow) }
+                        if margins.left + margins.right >= widths[column].points { issues.append(.horizontalOverflow) }
+                        let required = geometry.contentHeight + margins.top + margins.bottom
+                        if !required.isFinite || required > limit.points { issues.append(.heightLimit) }
+                        // Round upwards at EMU precision so serialization cannot make
+                        // a measured cell shorter than the accepted line geometry.
+                        measurement = Measurement(height: .points(ceil(required * Double(EMU.perPoint)) / Double(EMU.perPoint)),
+                            issues: issues, diagnostics: geometry.diagnostics)
+                        let cost = key.body.count + key.style.count + 256
+                        if cache.count < 64 && cost <= remainingBytes {
+                            cache[key] = measurement; remainingBytes -= cost
+                        }
                     }
                 }
+                cellHeight = max(cellHeight, measurement.height)
+                for issue in measurement.issues where !cellIssues.contains(issue) { cellIssues.append(issue) }
+                for diagnostic in measurement.diagnostics where !diagnostics.contains(diagnostic) { diagnostics.append(diagnostic) }
             }
-            heights[row] = max(heights[row], measurement.height)
-            cells.append(TableCellLayout(row: row, column: column, requiredHeight: measurement.height,
-                issues: measurement.issues, diagnostics: measurement.diagnostics))
+            heights[row] = max(heights[row], cellHeight)
+            cells.append(TableCellLayout(row: row, column: column, requiredHeight: cellHeight,
+                issues: cellIssues, diagnostics: diagnostics))
         } }
         let total = heights.reduce(0.0) { $0 + $1.points }
         let totalHeight = EMU.points(min(total, limit.points))
