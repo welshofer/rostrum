@@ -2,6 +2,11 @@
 
 ## Latest reconciled measurements
 
+The [authored rich-text fitting record](AUTHORED-FITTING-20261011.md) measures
+composition fitting separately from rendering. Bounded reuse improves repeated
+bodies, while distinct text retains a measured correctness cost. Raw CPU,
+elapsed, RSS and saved-output checks are retained; no general speedup is claimed.
+
 The [October 11 diagnostic traversal pass](DIAGNOSTIC-TRAVERSAL-PERFORMANCE-20261011.md)
 measures 1.77% lower process CPU median for a 10,000-cell fallback table
 (14/15 faster pairs) and 4.73% for an image control (15/15), with identical

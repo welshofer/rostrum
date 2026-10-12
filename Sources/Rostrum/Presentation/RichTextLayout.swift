@@ -953,7 +953,7 @@ public struct RichTextLayout: Sendable {
     }
 
     /// Shared placeholder inheritance chain, in closest-first order.
-    static func inheritedStyles(for shape: XML.Element, owner: Part, package: OPCPackage) -> [XML.Element] {
+    package static func inheritedStyles(for shape: XML.Element, owner: Part, package: OPCPackage) -> [XML.Element] {
         guard let layout = try? owner.related(by: RelType.slideLayout, in: package) else { return [] }
         let ph = Placeholders.phElement(of: shape)
         let index = ph?[attribute: "idx"].flatMap(Int.init) ?? 0
