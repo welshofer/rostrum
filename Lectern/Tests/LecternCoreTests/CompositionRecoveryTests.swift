@@ -128,16 +128,23 @@ import RostrumLayout
         source.slideSize = (width: .points(1920), height: .points(1080))
         let engine = TemplateLayoutEngine(presentation: source)
         #expect(engine.objectScale == 2)
-        let style = engine.objectStyle(layout: try #require(source.layout(type: "obj")), slot: 1)
         let table = IRTable(headers: ["Label"], rows: [["Value"]])
-        let heights = TemplateRendering.tableRowHeights(table, width: 800, style: style, engine: engine)
-        #expect(heights.allSatisfy { $0 >= 50 })
+        let plan = try engine.plan(title: "Table", columns: [], preferredTypes: ["obj"], object: "tbl",
+            table: TemplateTableContent(rows: table.grid))
+        let slide = try engine.compose(plan, title: "Table", columns: [])
+        let tables = slide.shapes.all.compactMap { ($0 as? TableFrame)?.table }
+        let saved = try #require(tables.first)
+        #expect(try saved.cell(1, 0).textFrame.paragraphs.first?.runs.first?.fontSize == 36)
+        #expect(try #require(plan.tableLayout).rowHeights.allSatisfy { $0.points >= 43 })
     }
 
-    @Test func explanatoryColumnsReceiveMoreWidth() {
+    @Test func explanatoryColumnsReceiveMoreWidth() throws {
         let table = IRTable(headers: ["Year", "Explanation"], rows: [["2024", "A considerably longer explanation that needs more width"]])
-        let widths = TemplateRendering.tableColumnWidths(table, width: 600)
+        let deck = try Presentation()
+        let plan = try TemplateLayoutEngine(presentation: deck).plan(title: "Table", columns: [], preferredTypes: ["obj"],
+            object: "tbl", table: TemplateTableContent(rows: table.grid))
+        let widths = try #require(plan.tableLayout).columnWidths
         #expect(widths[1] > widths[0])
-        #expect(abs(widths.reduce(0, +) - 600) < 0.01)
+        #expect(widths.reduce(.zero, +) == plan.objectFrame?.width)
     }
 }

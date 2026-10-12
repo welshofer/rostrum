@@ -2,6 +2,11 @@
 
 ## Latest reconciled measurements
 
+The [shared table layout record](TABLE-LAYOUT-20261012.md) measures actual native
+cell planning and complete small-table composition. It retains the correctness
+cost against the former fixed-style estimate, registered-font scaling through
+10,000 cells, an independent geometry reference, memory scope and raw samples.
+
 The [prepared fitting record](PREPARED-FITTING-20261012.md) measures 16–18% lower
 paired CPU during template shrinking and 18% for distinct mixed-size authored
 text, against the shared-geometry implementation. All 26 benchmark decks and

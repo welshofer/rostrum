@@ -53,6 +53,8 @@ public struct TemplateSlidePlan {
     public let combinesTitleAndBody: Bool
     public let textFits: [Int: TemplateTextFit]
     public var score = CompositionScore(penalty: 0, reasons: [])
+    public internal(set) var tableLayout: TableLayoutPlan? = nil
+    var tableContent: TemplateTableContent? = nil
 }
 
 /// Chooses and fills actual template layouts. Geometry and typography belong
@@ -109,11 +111,18 @@ public final class TemplateLayoutEngine {
                      minimumObjectHeight: Double = 144,
                      measureObjectHeight: ((Double, DeckStyle) -> Double)? = nil,
                      imageAspect: Double? = nil, variant: Int = 0, layoutURI: String? = nil,
+                     table: TemplateTableContent? = nil,
                      validateObject: ((Rect, DeckStyle) throws -> Void)? = nil) throws -> TemplateSlidePlan {
+        guard table == nil || object == "tbl" else { throw LayoutError.cannotFit("Table content requires a table object slot.") }
+        // Reject malformed content before selecting or mutating any slide.
+        if let table { _ = try table.widths(for: presentation.bounds.width) }
         textContexts.removeAll(keepingCapacity: true)
         defer { textContexts.removeAll(keepingCapacity: true) }
         var failures: [String] = []
         var candidates: [TemplateSlidePlan] = []
+        struct TableKey: Hashable { let width: EMU; let font: Data; let theme: PackURI }
+        var tablePlans: [TableKey: TableLayoutPlan] = [:]
+        var remainingTableCells = 8192
         func combinedCover(_ layout: SlideLayout) -> TemplatePlaceholder? {
             let text = layout.placeholders.filter { !$0.isFurniture && ["title", "ctrTitle", "body", "obj", "subTitle"].contains($0.type) }
             guard text.count == 1, let slot = text.first, slot.type == "body" else { return nil }
@@ -197,8 +206,24 @@ public final class TemplateLayoutEngine {
             var objectFrame = objectSlot?.frame
             var captionFrame: Rect?
             let style = objectStyle(layout: layout, slot: objectSlot?.index)
+            var tableLayout: TableLayoutPlan?
+            if let table, let frame = objectFrame {
+                let theme = layout.master?.theme ?? presentation.theme
+                let key = TableKey(width: frame.width, font: Data(style.bodyFont.utf8), theme: theme.part.uri)
+                do {
+                    if let cached = tablePlans[key] { tableLayout = cached }
+                    else {
+                        tableLayout = try table.planned(in: presentation, width: frame.width, font: style.bodyFont,
+                            size: 18 * objectScale, theme: theme)
+                        if let tableLayout, tablePlans.count < 64, tableLayout.cells.count <= remainingTableCells {
+                            tablePlans[key] = tableLayout; remainingTableCells -= tableLayout.cells.count
+                        }
+                    }
+                } catch { failures.append("\(layout.name): \(error)"); continue }
+                guard tableLayout?.fits == true else { failures.append("\(layout.name): unsupported or overflowing table cells"); continue }
+            }
             let requiredObjectHeight = objectFrame.map {
-                max(minimumObjectHeight, measureObjectHeight?($0.width.points, style) ?? 0)
+                max(minimumObjectHeight, tableLayout?.totalHeight.points ?? measureObjectHeight?($0.width.points, style) ?? 0)
             } ?? minimumObjectHeight
             if let frame = objectFrame, frame.height.points < requiredObjectHeight {
                 failures.append("\(layout.name): object region is too short"); continue
@@ -231,8 +256,10 @@ public final class TemplateLayoutEngine {
                 j > i && min(frames[i].maxX, frames[j].maxX) > max(frames[i].x, frames[j].x)
                     && min(frames[i].maxY, frames[j].maxY) > max(frames[i].y, frames[j].y)
             } }) else { failures.append("\(layout.name): fitted content collides"); continue }
-            candidates.append(TemplateSlidePlan(layout: layout, title: titleSlot, textSlots: Array(texts.prefix(columns.count)),
-                                     objectSlot: objectSlot, pictureSlot: pictureSlot, objectFrame: objectFrame, captionFrame: captionFrame, combinesTitleAndBody: false, textFits: textFits))
+            var candidate = TemplateSlidePlan(layout: layout, title: titleSlot, textSlots: Array(texts.prefix(columns.count)),
+                                     objectSlot: objectSlot, pictureSlot: pictureSlot, objectFrame: objectFrame, captionFrame: captionFrame, combinesTitleAndBody: false, textFits: textFits)
+            candidate.tableLayout = tableLayout; candidate.tableContent = table
+            candidates.append(candidate)
         }
         for i in candidates.indices {
             let candidate = candidates[i]
@@ -315,6 +342,20 @@ public final class TemplateLayoutEngine {
             }
             prepared.append((index, body))
         }
+        var tableLayout: TableLayoutPlan?
+        let tableStyle = plan.tableContent.map { _ in objectStyle(layout: plan.layout, slot: plan.objectSlot?.index) }
+        if let table = plan.tableContent, let tableStyle {
+            guard let frame = plan.objectFrame, valid(frame), let slot = plan.objectSlot,
+                  plan.layout.placeholders.first(where: { $0.index == slot.index })?.frame == slot.frame else {
+                throw LayoutError.cannotFit("The planned table slot is unavailable.")
+            }
+            let current = try table.planned(in: presentation, width: frame.width, font: tableStyle.bodyFont,
+                size: 18 * objectScale, theme: plan.layout.master?.theme ?? presentation.theme)
+            guard current.fits, current.totalHeight <= frame.height else {
+                throw LayoutError.cannotFit("The table no longer fits its plan. Plan the slide again before composing it.")
+            }
+            tableLayout = current
+        }
         let slide = try presentation.slides.add(clonedFrom: plan.layout)
         for (index, body) in prepared {
             guard let shape = slide.placeholder(idx: index) else { continue }
@@ -325,6 +366,13 @@ public final class TemplateLayoutEngine {
             }
         }
         slide.part.markDirty()
+        if let table = plan.tableContent, let tableStyle, let tableLayout, let frame = plan.objectFrame, let slot = plan.objectSlot {
+            let native = try slide.shapes.addTable(rows: table.rows.count, columns: tableLayout.columnWidths.count,
+                frame: Rect(x: frame.x, y: frame.y, width: frame.width, height: tableLayout.totalHeight))
+            native.setLayoutContents(table.rows, font: tableStyle.bodyFont, size: 18 * objectScale)
+            native.columnWidths(tableLayout.columnWidths).rowHeights(tableLayout.rowHeights)
+            if let shape = slide.shapes.all.last { try slide.replacePlaceholder(index: slot.index, with: shape) }
+        }
         return slide
     }
 
