@@ -34,6 +34,11 @@ import RostrumLayout
         let caption = try #require(slide.shapes.all.first { $0.textFrame?.text == input.slides[0].body?.source })
         #expect(slide.effectiveFrame(of: caption)!.y.points >= frame.maxY.points + 7.9)
         let native = try #require((shape as? TableFrame)?.table)
+        // Generation registers installed faces; a reopened registry starts empty.
+        // Reuse the same lookup policy before comparing saved cell geometry.
+        let firstCell = try native.cell(0, 0)
+        let family = try #require(firstCell.existingTextFrame?.paragraphs.first?.runs.first?.fontName)
+        _ = InstalledFonts.registerForGeneration(in: deck, families: [family])
         let measured = try TableLayoutEngine(presentation: deck).plan(native)
         #expect(measured.fits)
         #expect(frame.height >= measured.totalHeight)
