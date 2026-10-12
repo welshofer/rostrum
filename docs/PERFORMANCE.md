@@ -2,6 +2,12 @@
 
 ## Latest reconciled measurements
 
+The [template rich-text fitting record](TEMPLATE-FITTING-20261011.md) compares
+forty layout plans or fit checks per sample. Shared geometry and operation-local
+reuse reduce layout-selection CPU medians from about 59–60 ms to 37–38 ms;
+shrinking increases from about 39 ms to 69–79 ms. The record retains this
+correctness cost, raw paired samples, RSS and saved-output checks.
+
 The [authored rich-text fitting record](AUTHORED-FITTING-20261011.md) measures
 composition fitting separately from rendering. Bounded reuse improves repeated
 bodies, while distinct text retains a measured correctness cost. Raw CPU,

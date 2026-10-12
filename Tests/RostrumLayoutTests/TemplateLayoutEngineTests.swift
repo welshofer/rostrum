@@ -171,12 +171,20 @@ import Testing
         let plan = try engine.plan(title: title, columns: columns, preferredTypes: ["obj"])
         #expect(plan.layout.part.uri == layout.part.uri)
         let slide = try engine.compose(plan, title: title, columns: columns)
-        #expect(slide.title?.frame.height == .points(72))
+        let height = try #require(plan.textFits[0]).frame.height
+        #expect(height >= .points(72) && height <= .points(150))
+        #expect(slide.title?.frame.height == height)
         #expect(slide.title?.textFrame?.text == title)
         #expect(try layout.part.dom().serialized() == before)
         let reopened = try Presentation(data: deck.serializedData())
         let saved = try reopened.slides[reopened.slides.count - 1]
-        #expect(saved.title?.frame.height == .points(72))
+        #expect(saved.title?.frame.height == height)
+        let savedTitle = try #require(saved.title)
+        let body = try #require(savedTitle.element.firstChild(named: "p:txBody"))
+        let geometry = RichTextLayout(textBody: body, width: savedTitle.frame.width.points, height: height.points,
+            fonts: reopened.fonts, theme: saved.master?.theme,
+            inheritedStyles: RichTextLayout.inheritedStyles(for: savedTitle.element, owner: saved.part, package: reopened.package))
+        #expect(geometry.fits)
         #expect(saved.title?.textFrame?.paragraphs.first?.runs.first?.fontSize == nil)
         #expect(try reopened.validate().isEmpty)
     }

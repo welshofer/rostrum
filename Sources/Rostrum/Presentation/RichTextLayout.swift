@@ -955,6 +955,12 @@ public struct RichTextLayout: Sendable {
     /// Shared placeholder inheritance chain, in closest-first order.
     package static func inheritedStyles(for shape: XML.Element, owner: Part, package: OPCPackage) -> [XML.Element] {
         guard let layout = try? owner.related(by: RelType.slideLayout, in: package) else { return [] }
+        return inheritedStyles(for: shape, layout: layout, package: package)
+    }
+
+    /// Resolve a prospective slide placeholder without adding a temporary slide
+    /// or changing package relationships. The same chain is used after saving.
+    package static func inheritedStyles(for shape: XML.Element, layout: Part, package: OPCPackage) -> [XML.Element] {
         let ph = Placeholders.phElement(of: shape)
         let index = ph?[attribute: "idx"].flatMap(Int.init) ?? 0
         var kind = ph?[attribute: "type"] ?? "obj", result: [XML.Element] = []

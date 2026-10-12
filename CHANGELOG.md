@@ -6,6 +6,14 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Template planning, autofit and box growth now use the same rich-text geometry
+  as rendering, including inherited faces, tabs, bullets, margins and spacing.
+  Composition rechecks content before adding a slide; incompatible columns or
+  stale fits fail without leaving a partial slide. Master/layout/theme parts
+  remain unchanged. The Templates Library Lab saves a complete POTX-to-PPTX
+  example. Paired benchmarks show faster layout selection and a higher cost for
+  shrinking; native PowerPoint acceptance remains separate.
+
 - Authored text fitting now checks complete shared rich-text geometry, including
   mixed-size runs, fields, explicit breaks, inherited styles and horizontal
   overflow. Accepted fits preserve run formatting and save normal autofit;

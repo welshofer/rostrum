@@ -31,6 +31,9 @@ public enum LayoutError: Error, CustomStringConvertible {
 public struct TemplateTextFit {
     public let frame: Rect
     public let fontScale: Double
+    // Only present when planning writes a new scale; otherwise inheritance stays intact.
+    var autofit: XML.Element? = nil
+    var occupiedHeight: Double = 0
 }
 
 public struct CompositionScore: Sendable, Equatable {
@@ -61,13 +64,22 @@ public final class TemplateLayoutEngine {
     public var objectScale: Double { presentation.bounds.height.points / 540 }
     private let measure: TextHeightMeasurer?
     private var measurements: [TextMeasureRequest: Double] = [:]
-    private lazy var layouts = presentation.allLayouts
+    private struct ContextKey: Hashable { let layout: PackURI; let slot: Int }
+    private var textContexts: [ContextKey: TemplateTextContext] = [:]
+    private func context(_ layout: SlideLayout, slot: Int) -> TemplateTextContext? {
+        let key = ContextKey(layout: layout.part.uri, slot: slot)
+        if let value = textContexts[key] { return value }
+        guard let value = TemplateTextContext(layout: layout, slot: slot, presentation: presentation) else { return nil }
+        if textContexts.count < 64 { textContexts[key] = value }
+        return value
+    }
     public private(set) var measurementCacheHits = 0
 
     private func height(_ request: TextMeasureRequest) -> Double? {
         guard let measure else { return nil }
         if let cached = measurements[request] { measurementCacheHits += 1; return cached }
         let value = measure(request)
+        guard value.isFinite, value >= 0 else { return value }
         // Bound memory on large decks; a cache miss never changes layout behavior.
         if measurements.count >= 8192 { measurements.removeAll(keepingCapacity: true) }
         measurements[request] = value
@@ -98,6 +110,8 @@ public final class TemplateLayoutEngine {
                      measureObjectHeight: ((Double, DeckStyle) -> Double)? = nil,
                      imageAspect: Double? = nil, variant: Int = 0, layoutURI: String? = nil,
                      validateObject: ((Rect, DeckStyle) throws -> Void)? = nil) throws -> TemplateSlidePlan {
+        textContexts.removeAll(keepingCapacity: true)
+        defer { textContexts.removeAll(keepingCapacity: true) }
         var failures: [String] = []
         var candidates: [TemplateSlidePlan] = []
         func combinedCover(_ layout: SlideLayout) -> TemplatePlaceholder? {
@@ -127,7 +141,7 @@ public final class TemplateLayoutEngine {
             return typeRank * 10 + (picture == hasPicture ? 0 : 100)
                 + max(0, count - required) * 40
         }
-        let layouts = self.layouts.enumerated().filter {
+        let layouts = presentation.allLayouts.enumerated().filter {
             (masterURI == nil || $0.element.master?.part.uri.value == masterURI) && (layoutURI == nil || $0.element.part.uri.value == layoutURI)
         }.sorted { a, b in
             let ar = rank(a.element), br = rank(b.element)
@@ -147,7 +161,7 @@ public final class TemplateLayoutEngine {
             guard let titleSlot = slots.first(where: \.isTitle) ?? cover, let titleFrame = titleSlot.frame else { continue }
             if cover != nil {
                 guard columns.count <= 1, object == nil, valid(titleFrame) else { continue }
-                let paragraphs = [LayoutParagraph(title)] + (columns.first ?? []).map { LayoutParagraph($0.text, level: min(8, $0.level + 1)) }
+                let paragraphs = coverParagraphs(title: title, columns: columns)
                 guard let fit = textFit(paragraphs, in: titleFrame, layout: layout, slot: titleSlot.index) else {
                     failures.append("\(layout.name): cover text exceeds its placeholder"); continue
                 }
@@ -246,7 +260,9 @@ public final class TemplateLayoutEngine {
             // Object slides benefit strongly from usable area, while body text
             // also considers column balance. Empty canvas is not itself a defect.
             penalty -= (object == nil ? 20 : 100) * area / max(1, canvas)
-            let heights = zip(columns, candidate.textSlots).map { textHeight($0.0, frame: $0.1.frame!, layout: candidate.layout, slot: $0.1.index, scale: 1) }
+            // Fitting already measured each accepted body at its saved scale.
+            // Ranking must not repeat shaping or measure an unfitted version.
+            let heights = candidate.textSlots.compactMap { candidate.textFits[$0.index]?.occupiedHeight }
             if heights.count > 1, let hi = heights.max(), let lo = heights.min() {
                 penalty += 15 * (hi - lo) / max(1, hi)
             }
@@ -268,54 +284,95 @@ public final class TemplateLayoutEngine {
             : detail) + " Shorten the content or choose a roomier template layout.")
     }
 
-    public func compose(_ plan: TemplateSlidePlan, title: String, columns: [[LayoutParagraph]]) throws -> Slide {
-        let slide = try presentation.slides.add(clonedFrom: plan.layout)
-        let titleParagraphs = [(title, 0)] + (plan.combinesTitleAndBody
-            ? (columns.first ?? []).map { ($0.text, min(8, $0.level + 1)) } : [])
-        try slide.fillPlaceholder(index: plan.title.index, paragraphs: titleParagraphs)
-        for (slot, paragraphs) in zip(plan.textSlots, columns) {
-            try slide.fillPlaceholder(index: slot.index, paragraphs: paragraphs.map { ($0.text, $0.level) })
-            if let text = slide.placeholder(idx: slot.index)?.textFrame {
-                for (p, item) in zip(text.paragraphs, paragraphs) {
-                    if let role = item.role {
-                        for run in p.runs {
-                            run.fontSize = paragraphSize(item, layout: plan.layout, slot: slot.index)
-                            run.bold = role != .caption
-                        }
-                        p.setNoBullet()
-                    }
-                }
-            }
+    private func coverParagraphs(title: String, columns: [[LayoutParagraph]]) -> [LayoutParagraph] {
+        [LayoutParagraph(title)] + (columns.first ?? []).map {
+            LayoutParagraph($0.text, level: max(0, min(7, $0.level) + 1))
         }
-        for (index, fit) in plan.textFits {
+    }
+
+    public func compose(_ plan: TemplateSlidePlan, title: String, columns: [[LayoutParagraph]]) throws -> Slide {
+        textContexts.removeAll(keepingCapacity: true)
+        defer { textContexts.removeAll(keepingCapacity: true) }
+        guard plan.combinesTitleAndBody ? columns.count <= 1 : columns.count == plan.textSlots.count else {
+            throw LayoutError.cannotFit("The supplied columns do not match the planned placeholders.")
+        }
+        let titleParagraphs = plan.combinesTitleAndBody ? coverParagraphs(title: title, columns: columns) : [LayoutParagraph(title)]
+        var prepared: [(Int, XML.Element)] = []
+        let contents = [(plan.title.index, titleParagraphs)] + zip(plan.textSlots, columns).map { ($0.index, $1) }
+        // Validate the exact written bodies before adding a slide. Content,
+        // template styles or registered fonts may have changed since planning.
+        for (index, paragraphs) in contents {
+            guard let context = context(plan.layout, slot: index), context.supported,
+                  let fit = plan.textFits[index], valid(fit.frame) else {
+                throw LayoutError.cannotFit("The planned text placeholder is unavailable or unsupported.")
+            }
+            let body = context.textBody(paragraphs, objectScale: objectScale).deepCopy()
+            if let autofit = fit.autofit {
+                body.firstChild(named: "a:bodyPr")?.appendElement(autofit.deepCopy())
+            }
+            guard measured(body, width: fit.frame.width.points, context: context).height <= fit.frame.height.points + 0.01 else {
+                throw LayoutError.cannotFit("The supplied text no longer fits its plan. Plan the slide again before composing it.")
+            }
+            prepared.append((index, body))
+        }
+        let slide = try presentation.slides.add(clonedFrom: plan.layout)
+        for (index, body) in prepared {
             guard let shape = slide.placeholder(idx: index) else { continue }
-            if fit.frame != plan.layout.placeholders.first(where: { $0.index == index })?.frame {
+            shape.element.removeChildren(named: "p:txBody")
+            shape.element.appendElement(body)
+            if let fit = plan.textFits[index], fit.frame != plan.layout.placeholders.first(where: { $0.index == index })?.frame {
                 shape.frame = fit.frame
             }
-            if fit.fontScale < 1 { shape.textFrame?.setAutoFit(fontScale: fit.fontScale) }
         }
+        slide.part.markDirty()
         return slide
     }
 
     /// Height for a zero-inset, styled text block, including explicit newlines.
-    /// Uses the same shaping adapter as placeholder fitting and preserves type size.
+    /// Uses shared rich-text geometry and an optional conservative host check.
     public func measuredHeight(_ text: String, style: TextStyle, width: Double) -> Double {
-        guard width > 0 else { return .infinity }
-        let value = style.uppercase ? text.uppercased() : text
-        let request = TextMeasureRequest(text: value, font: style.font, size: style.sizePt,
-            bold: style.bold, tracking: style.trackingPt, width: width)
-        let measured: Double
-        if let value = self.height(request) { measured = value }
-        else if let metrics = presentation.fonts.metrics(for: style.font) {
-            measured = Double(max(1, TextMeasurer(metrics).wrap(value, pointSize: style.sizePt,
-                width: width * (style.bold ? 0.94 : 1)).count)) * max(style.sizePt * 1.2, metrics.lineHeight(pointSize: style.sizePt))
-        } else {
-            let lines = value.components(separatedBy: "\n").reduce(0) { total, line in
-                total + max(1, Int(ceil(Double(line.count) * style.sizePt * 0.56 / width)))
+        guard width.isFinite, width > 0, style.sizePt.isFinite, (1...4000).contains(style.sizePt),
+              style.trackingPt.isFinite, abs(style.trackingPt) <= 4000,
+              style.lineHeight.isFinite, (0...100).contains(style.lineHeight) else { return .infinity }
+        let properties = XML.Element("a:pPr", children: [.element(XML.Element("a:lnSpc", children: [
+            .element(XML.Element("a:spcPct", attributes: [("val", String(Int((style.lineHeight * 100000).rounded())))]))]))])
+        let run = XML.Element("a:r", children: [.element(XML.Element("a:rPr", attributes: [
+            ("sz", String(Int((style.sizePt * 100).rounded()))), ("b", style.bold ? "1" : "0"),
+            ("spc", String(Int((style.trackingPt * 100).rounded())))], children: [
+                .element(XML.Element("a:latin", attributes: [("typeface", style.font)]))])),
+            .element(XML.Element("a:t", children: [.text(style.uppercase ? text.uppercased() : text)]))])
+        let body = XML.Element("p:txBody", children: [
+            .element(XML.Element("a:bodyPr", attributes: [("lIns", "0"), ("rIns", "0"), ("tIns", "0"), ("bIns", "0")])),
+            .element(XML.Element("a:lstStyle")), .element(XML.Element("a:p", children: [.element(properties), .element(run)]))])
+        return ceil(measured(body, width: width, context: nil).height)
+    }
+
+    private func measured(_ body: XML.Element, width: Double, context: TemplateTextContext?) -> (layout: RichTextLayout, height: Double) {
+        let geometry = RichTextLayout(textBody: body, width: width, height: 1e9,
+            fonts: presentation.fonts, theme: context?.theme ?? presentation.theme,
+            inheritedStyles: context?.styles ?? [], maxLines: 65)
+        // The renderer emits at most 64 lines. Height is measured independently
+        // of the candidate frame so native vertical flow can grow into safe space.
+        guard geometry.fits, geometry.lines.count <= 64 else { return (geometry, .infinity) }
+        let left = context?.inset("lIns", default: 7.2) ?? 0
+        let right = context?.inset("rIns", default: 7.2) ?? 0
+        var height = geometry.contentHeight
+        if measure != nil {
+            for line in geometry.lines {
+                var hostHeight = line.height
+                for span in line.spans where !span.run.text.isEmpty {
+                    let run = span.run
+                    guard let value = self.height(TextMeasureRequest(text: run.text,
+                        font: run.fontFamily ?? context?.theme?.minorFont ?? presentation.theme.minorFont ?? "Arial",
+                        size: run.fontSize, bold: run.bold, tracking: run.tracking, width: max(0, width - left - right))),
+                          value.isFinite, value >= 0 else { return (geometry, .infinity) }
+                    hostHeight = max(hostHeight, value)
+                }
+                height += hostHeight - line.height
             }
-            measured = Double(lines) * style.sizePt * 1.25
         }
-        return ceil(measured * style.lineHeight) + 2
+        height += (context?.inset("tIns", default: 3.6) ?? 0) + (context?.inset("bIns", default: 3.6) ?? 0)
+        return (geometry, height)
     }
 
     private func valid(_ frame: Rect?) -> Bool {
@@ -336,7 +393,9 @@ public final class TemplateLayoutEngine {
     }
 
     public func fits(_ paragraphs: [LayoutParagraph], in frame: Rect, layout: SlideLayout, slot: Int) -> Bool {
-        textFit(paragraphs, in: frame, layout: layout, slot: slot) != nil
+        textContexts.removeAll(keepingCapacity: true)
+        defer { textContexts.removeAll(keepingCapacity: true) }
+        return textFit(paragraphs, in: frame, layout: layout, slot: slot) != nil
     }
 
     private func titleFit(_ title: String, frame: Rect, layout: SlideLayout, slot: Int) -> TemplateTextFit? {
@@ -358,26 +417,36 @@ public final class TemplateLayoutEngine {
     }
 
     private func textFit(_ paragraphs: [LayoutParagraph], in frame: Rect, layout: SlideLayout, slot: Int) -> TemplateTextFit? {
-        let body = layout.textDefaults(for: slot).body
-        let required = textHeight(paragraphs, frame: frame, layout: layout, slot: slot, scale: 1)
-        if required <= frame.height.points { return TemplateTextFit(frame: frame, fontScale: 1) }
-        if body.firstChild(named: "a:normAutofit") != nil {
-            // Keep native autofit on the slide, without flattening the template's
-            // font, bullet or theme properties into individual runs.
-            let sizes = paragraphs.map { item in
-                (layout.textDefaults(for: slot, level: item.level).paragraph.firstChild(named: "a:defRPr")?[attribute: "sz"].flatMap(Double.init) ?? 1800) / 100
+        guard valid(frame), let context = context(layout, slot: slot), context.supported else { return nil }
+        let text = context.textBody(paragraphs, objectScale: objectScale)
+        let body = context.body
+        let original = measured(text, width: frame.width.points, context: context)
+        let required = original.height
+        let scale = context.storedScale
+        if required <= frame.height.points + 0.01 {
+            return TemplateTextFit(frame: frame, fontScale: Double(scale) / 100000, occupiedHeight: required)
+        }
+        if context.autofit != nil {
+            let minimum = original.layout.lines.lazy.flatMap(\.spans).map(\.run.fontSize).min()
+                .map { $0 / (Double(scale) / 100000) } ?? 18
+            let readable = context.isTitle ? 18.0 : 12.0
+            let lower = min(scale, max(60000, Int(ceil(readable / max(1, minimum) * 100000))))
+            func height(_ scale: Int) -> Double {
+                let candidate = context.scaled(text, scale: scale).body
+                return measured(candidate, width: frame.width.points, context: context).height
             }
-            let minimum = sizes.min() ?? 18
-            let readable = layout.placeholders.first(where: { $0.index == slot })?.isTitle == true ? 18.0 : 12.0
-            let lower = max(0.6, min(1, readable / max(1, minimum)))
-            guard textHeight(paragraphs, frame: frame, layout: layout, slot: slot, scale: lower) <= frame.height.points else { return nil }
-            var low = lower, high = 1.0
-            for _ in 0..<12 {
-                let mid = (low + high) / 2
-                if textHeight(paragraphs, frame: frame, layout: layout, slot: slot, scale: mid) <= frame.height.points { low = mid }
-                else { high = mid }
+            var lowHeight = height(lower)
+            guard lowHeight <= frame.height.points + 0.01 else { return nil }
+            var low = lower, high = scale
+            for _ in 0..<12 where low < high {
+                let mid = (low + high + 1) / 2
+                let candidateHeight = height(mid)
+                if candidateHeight <= frame.height.points + 0.01 { low = mid; lowHeight = candidateHeight }
+                else { high = mid - 1 }
             }
-            return TemplateTextFit(frame: frame, fontScale: floor(low * 100000) / 100000)
+            // low is an accepted integer scale at the exact saved precision.
+            return TemplateTextFit(frame: frame, fontScale: Double(low) / 100000,
+                autofit: context.scaled(text, scale: low).autofit, occupiedHeight: lowHeight)
         }
         // noAutofit means do not shrink, not prohibit wrapping. Default vertical
         // overflow may flow into available space; spAutoFit explicitly grows the
@@ -395,70 +464,11 @@ public final class TemplateLayoutEngine {
         var expanded = frame
         expanded.height = .points(ceil(required))
         guard expanded.maxY.points <= bottom else { return nil }
-        return TemplateTextFit(frame: expanded, fontScale: 1)
+        return TemplateTextFit(frame: expanded, fontScale: Double(scale) / 100000, occupiedHeight: required)
     }
 
     private func paragraphSize(_ item: LayoutParagraph, layout: SlideLayout, slot: Int) -> Double {
-        let run = layout.textDefaults(for: slot, level: item.level).paragraph.firstChild(named: "a:defRPr")
-        let inherited = min(4000, max(1, (run?[attribute: "sz"].flatMap(Double.init) ?? 1800) / 100))
-        switch item.role {
-        case .caption: return 14 * objectScale
-        case .some: return max(24, inherited * 1.15)
-        case .none: return inherited
-        }
+        context(layout, slot: slot)?.size(item, objectScale: objectScale) ?? 18
     }
 
-    private func textHeight(_ paragraphs: [LayoutParagraph], frame: Rect, layout: SlideLayout, slot: Int, scale: Double) -> Double {
-        var height = 0.0
-        let base = layout.textDefaults(for: slot)
-        func inset(_ name: String, _ fallback: Double) -> Double {
-            base.body[attribute: name].flatMap(Double.init).map { $0 / Double(EMU.perPoint) } ?? fallback
-        }
-        let width = frame.width.points - inset("lIns", 7.2) - inset("rIns", 7.2)
-
-        for item in paragraphs {
-            let defaults = layout.textDefaults(for: slot, level: item.level).paragraph
-            let run = defaults.firstChild(named: "a:defRPr")
-            let size = paragraphSize(item, layout: layout, slot: slot) * scale
-            let rawFont = run?.firstChild(named: "a:latin")?[attribute: "typeface"] ?? "+mn-lt"
-            let font = rawFont.hasPrefix("+mj") ? layout.master?.theme?.majorFont ?? "Arial"
-                : rawFont.hasPrefix("+mn") ? layout.master?.theme?.minorFont ?? "Arial" : rawFont
-            let margin = (defaults[attribute: "marL"].flatMap(Double.init) ?? 0) / Double(EMU.perPoint)
-            let usable = width - margin
-            guard usable > 0 else { return .infinity }
-            let request = TextMeasureRequest(text: item.text, font: font, size: size,
-                                             bold: item.role.map { $0 != .caption } ?? (run?[attribute: "b"] == "1"),
-                                             tracking: (run?[attribute: "spc"].flatMap(Double.init) ?? 0) / 100,
-                                             width: usable)
-            if base.body[attribute: "wrap"] == "none" {
-                let widest = item.text.components(separatedBy: "\n").map {
-                    presentation.fonts.metrics(for: font)?.width(of: $0, pointSize: size) ?? Double($0.count) * size * 0.56
-                }.max() ?? 0
-                if widest > usable { return .infinity }
-            }
-            let measured: Double
-            if let value = self.height(request) { measured = value }
-            else if let metrics = presentation.fonts.metrics(for: font) {
-                let lines = TextMeasurer(metrics).wrap(item.text, pointSize: size, width: usable * (request.bold ? 0.94 : 1)).count
-                measured = Double(max(1, lines)) * max(size * 1.2, metrics.lineHeight(pointSize: size))
-            } else {
-                // Conservative portable fallback; callers should register fonts
-                // or provide a shaping adapter for final-client acceptance.
-                let lines = item.text.components(separatedBy: "\n").reduce(0) { total, line in
-                    total + max(1, Int(ceil(Double(line.count) * size * 0.56 / usable)))
-                }
-                measured = Double(lines) * size * 1.25
-            }
-            let lineSpacing = defaults.firstChild(named: "a:lnSpc")
-            let multiple = (lineSpacing?.firstChild(named: "a:spcPct")?[attribute: "val"].flatMap(Double.init) ?? 100000) / 100000
-            let fixed = lineSpacing?.firstChild(named: "a:spcPts")?[attribute: "val"].flatMap(Double.init).map { $0 / 100 }
-            height += fixed.map { measured * $0 / (size * 1.2) } ?? measured * multiple
-            for name in ["a:spcBef", "a:spcAft"] {
-                let spacing = defaults.firstChild(named: name)
-                height += (spacing?.firstChild(named: "a:spcPts")?[attribute: "val"].flatMap(Double.init) ?? 0) / 100
-                height += size * (spacing?.firstChild(named: "a:spcPct")?[attribute: "val"].flatMap(Double.init) ?? 0) / 100000
-            }
-        }
-        return height + inset("tIns", 3.6) + inset("bIns", 3.6)
-    }
 }

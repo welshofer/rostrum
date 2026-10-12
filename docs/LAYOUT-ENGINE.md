@@ -57,12 +57,11 @@ not establish that PowerPoint would select the same autofit.
 
 `TextHeightMeasurer` receives a `TextMeasureRequest`: text, family name, point
 size, bold flag, tracking and available width in points. Return the occupied
-height in points for that request. Template composition applies its own
-paragraph/body spacing rules around this measurement. Authored fitting invokes
+height in points for that request. Template and authored fitting invoke
 the callback on positioned rich-text spans using the body's available width
 after insets, and conservatively accounts for a host height larger than the
-shared line height; it does not replace shared line
-breaking. The legacy callback has no italic flag and is not a complete rich-text
+shared line height. Shared geometry controls line breaking, inherited paragraph
+spacing, margins, tabs and bullets. The legacy callback has no italic flag and is not a complete rich-text
 shaping adapter. Keep the adapter deterministic and the font environment fixed
 while an engine is in use.
 
@@ -156,8 +155,22 @@ flowchart TD
 A plan records the layout and its selected title/body/object/picture slots,
 measured text frames and font scales, separate object/caption frames and scoring
 reasons. Build and compose with the same title and column content. Planning does
-not create a slide; `compose` creates and fills text placeholders. The caller
+not create a slide; `compose` rechecks the exact text bodies at their planned
+frames before creating and filling placeholders. Changed content or inheritance
+that no longer fits, missing slots and incompatible column counts throw before
+adding a slide. The caller
 adds the requested picture or structured object in the returned region.
+
+Template fitting builds prospective text with the same layout/master inheritance
+chain used by the renderer. Already-fitting normal autofit stays inherited;
+new scales retain inherited line-spacing reduction and other autofit markup.
+Original run sizes remain inherited unless an explicit `LayoutParagraph.role`
+requires a local size/weight. Native box growth still respects the existing
+collision and slide-boundary rules. Vertical text, multiple text columns,
+horizontal overflow and bodies beyond the renderer's 64-line limit cannot be
+approved. `measuredHeight` uses the same geometry for zero-inset styled blocks
+and returns infinity for unsupported or invalid measurements. These checks do
+not establish PowerPoint visual equivalence.
 
 Call `validateTemplateBindings()` before saving to check the resulting
 slide → layout → master → theme chain. This verifies package relationships,
@@ -272,11 +285,15 @@ selects how to redistribute comments or notes.
 
 ## Performance and determinism
 
-Template measurement caching is scoped to an engine and keyed by text, font,
+Template host-measurement caching is scoped to an engine and keyed by text, font,
 size, bold, tracking and width. It clears at 8,192 entries; a cache miss does not
 change the layout rule. Use a stable measurement adapter and font environment
-for an engine's lifetime, and create a new engine after changing them or the
-template layouts it evaluates.
+for an engine's lifetime, and create a new engine after changing the adapter's
+font environment. Template inheritance and prospective bodies are retained only
+during one operation, capped at 64 contexts; subsequent calls see edited or
+newly imported layouts. Candidate ranking reuses accepted occupied heights.
+The [template fitting benchmark](TEMPLATE-FITTING-20261011.md) records faster
+layout selection and the additional cost of complete geometry during shrinking.
 
 Font-resource encoding retains at most 4 MiB of cached base64 data and invalidates
 on registration. Ordered single-scalar ASCII shaping avoids unnecessary lookup

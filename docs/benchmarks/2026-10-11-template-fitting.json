@@ -1,0 +1,3148 @@
+{
+  "host": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "affinityCPUs": 5,
+  "compiler": "Swift 6.1.3 Release (-O)",
+  "baseline": "9b934937b1a79a9804c4037494e6701bbd85e3ef",
+  "baselineMethod": "Original template fitting algorithm compiled as LegacyTemplateLayoutEngine; its original related value types are retained in the harness. Both executables link the same Release Rostrum objects.",
+  "binaries": {
+    "legacy-controls": "4efd3d8cdb7a53e0de34dca867a7cc5e945fdda7e55b16cf5f0f85301d3e5686",
+    "candidate": "aa326b6aedf7305f7905ea7495b4493b916456eb4dc02fac5eb2295f354d9fa9"
+  },
+  "driverSHA256": "40a97bcfa9549298d5116a7214b5f039fdfdc67bda440125d248c06747a5d752",
+  "fontSHA256": {
+    "DejaVuSans": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+    "DejaVuSans-Bold": "b184b89e3c1075f22f6b71575b6fc20d4972b3cfd3b23322ca6fd596dcaef167",
+    "DejaVuSans-Oblique": "ccdf74b350f11fd3dd5774de50e5e6346a1a5da1f5b7d5fb83590665e97a5213"
+  },
+  "sourceSHA256": {
+    "Sources/RostrumLayout/TemplateLayoutEngine.swift": "a0dd5bc39a44efd31538a8199945ef9d9eadde7f6fd2db276d5c98f98c68cc84",
+    "Sources/RostrumLayout/TemplateTextContext.swift": "18e8ff394217e4f3811a3b34a85deb4ddc8d50b31db1338ef7b6742b05cd20a5",
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "b42061a0e087dcc4ff88b48ff20669e1f7165141a9dee288a953d3dae443d466"
+  },
+  "summary": {
+    "plan-plain": {
+      "legacy-controls": {
+        "cpuMedianMS": 59.858645,
+        "elapsedMedianMS": 59.864081000341685,
+        "elapsedP95MS": 68.24454399975366,
+        "peakRSSMedianKiB": 23268,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "candidate": {
+        "cpuMedianMS": 36.968610999999996,
+        "elapsedMedianMS": 37.029405999419396,
+        "elapsedP95MS": 41.78433699962625,
+        "peakRSSMedianKiB": 23208,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "paired": {
+        "medianCPUImprovementPercent": 38.0102331394117,
+        "fasterPairs": 15,
+        "pairs": 15
+      }
+    },
+    "plan-unique": {
+      "legacy-controls": {
+        "cpuMedianMS": 59.194548,
+        "elapsedMedianMS": 59.199717001320096,
+        "elapsedP95MS": 70.23961699997017,
+        "peakRSSMedianKiB": 23236,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "candidate": {
+        "cpuMedianMS": 37.980053,
+        "elapsedMedianMS": 37.98537400143687,
+        "elapsedP95MS": 42.1476920000714,
+        "peakRSSMedianKiB": 23232,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "paired": {
+        "medianCPUImprovementPercent": 35.03470299654825,
+        "fasterPairs": 15,
+        "pairs": 15
+      }
+    },
+    "fit-shrink": {
+      "legacy-controls": {
+        "cpuMedianMS": 38.696599,
+        "elapsedMedianMS": 38.701319999745465,
+        "elapsedP95MS": 41.81568200147012,
+        "peakRSSMedianKiB": 23276,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "candidate": {
+        "cpuMedianMS": 68.614385,
+        "elapsedMedianMS": 68.61833600123646,
+        "elapsedP95MS": 75.55064799998945,
+        "peakRSSMedianKiB": 23240,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "paired": {
+        "medianCPUImprovementPercent": -81.033465184249,
+        "fasterPairs": 0,
+        "pairs": 15
+      }
+    },
+    "fit-shrink-unique": {
+      "legacy-controls": {
+        "cpuMedianMS": 39.300757000000004,
+        "elapsedMedianMS": 39.35088800062658,
+        "elapsedP95MS": 43.893423999179504,
+        "peakRSSMedianKiB": 23316,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "candidate": {
+        "cpuMedianMS": 79.01019199999999,
+        "elapsedMedianMS": 79.01442299953487,
+        "elapsedP95MS": 83.17237499977637,
+        "peakRSSMedianKiB": 23220,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "paired": {
+        "medianCPUImprovementPercent": -97.86498743430086,
+        "fasterPairs": 0,
+        "pairs": 15
+      }
+    },
+    "fit-tabs": {
+      "legacy-controls": {
+        "cpuMedianMS": 3.027001000000001,
+        "elapsedMedianMS": 3.0506839993904578,
+        "elapsedP95MS": 3.633329999502166,
+        "peakRSSMedianKiB": 23208,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "candidate": {
+        "cpuMedianMS": 2.451595000000001,
+        "elapsedMedianMS": 2.454638000926934,
+        "elapsedP95MS": 2.91833899973426,
+        "peakRSSMedianKiB": 23192,
+        "errors": 0,
+        "fittingShapes": [
+          2
+        ],
+        "outputShapes": [
+          2
+        ],
+        "accepted": [
+          40
+        ],
+        "sourcePreserved": true
+      },
+      "paired": {
+        "medianCPUImprovementPercent": 18.816008074704193,
+        "fasterPairs": 14,
+        "pairs": 15
+      }
+    }
+  },
+  "samples": [
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 59.375026000000005,
+      "elapsedMS": 59.37892500151065,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23360
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 36.926086999999995,
+      "elapsedMS": 36.94736499892315,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23052
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 36.381477000000004,
+      "elapsedMS": 36.38567599955422,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23212
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 58.263724,
+      "elapsedMS": 58.267786998840165,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23100
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 59.858645,
+      "elapsedMS": 59.864081000341685,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23116
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 36.50481,
+      "elapsedMS": 36.50861700043606,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23292
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 35.360899,
+      "elapsedMS": 35.3654810005537,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23328
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 65.429885,
+      "elapsedMS": 65.43443299960927,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23200
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 61.941066,
+      "elapsedMS": 61.9502530007594,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23296
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 37.266873000000004,
+      "elapsedMS": 37.28731699993659,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23116
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 36.968610999999996,
+      "elapsedMS": 37.029405999419396,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23164
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 59.63663499999999,
+      "elapsedMS": 59.64110199965944,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23248
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 68.239758,
+      "elapsedMS": 68.24454399975366,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23268
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 36.803584,
+      "elapsedMS": 36.808479999308474,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23232
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 37.288774999999994,
+      "elapsedMS": 37.29300399936619,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23356
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 58.722305000000006,
+      "elapsedMS": 58.72591500155977,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23308
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 65.177788,
+      "elapsedMS": 65.56177399943408,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 22984
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 39.174167999999995,
+      "elapsedMS": 39.184772000226076,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 23052
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 35.933641,
+      "elapsedMS": 35.93994800030487,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23164
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 57.452087000000006,
+      "elapsedMS": 57.45601499984332,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23172
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 56.978973,
+      "elapsedMS": 57.17829599961988,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23200
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 36.136362000000005,
+      "elapsedMS": 36.14179500073078,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23292
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 34.919803,
+      "elapsedMS": 34.92489100062812,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23052
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 63.722199999999994,
+      "elapsedMS": 63.726391999807674,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23504
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 59.414601,
+      "elapsedMS": 59.41845400047896,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23508
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 41.779453,
+      "elapsedMS": 41.78433699962625,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23256
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 35.763618,
+      "elapsedMS": 35.76709200024197,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23052
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 63.692816000000015,
+      "elapsedMS": 63.69780000022729,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23172
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 57.883418000000006,
+      "elapsedMS": 57.88721199860447,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23300
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 38.353298,
+      "elapsedMS": 38.357272000212106,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23208
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 40.487492,
+      "elapsedMS": 40.492100999472314,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23356
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 60.33132799999999,
+      "elapsedMS": 60.33662400113826,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23300
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 56.226794999999996,
+      "elapsedMS": 56.231470000057016,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23300
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 37.994364000000004,
+      "elapsedMS": 37.99896400050784,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-plain",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23076
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 57.213272,
+      "elapsedMS": 57.21781499960343,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23192
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 43.96376,
+      "elapsedMS": 43.96822600028827,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23076
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 40.567711,
+      "elapsedMS": 40.57282999929157,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23168
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 72.268999,
+      "elapsedMS": 72.27341599900683,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23132
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 57.896498,
+      "elapsedMS": 57.9732989990589,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23180
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 37.935277000000006,
+      "elapsedMS": 37.94003700022586,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23352
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 37.074887000000004,
+      "elapsedMS": 37.07978900092712,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23228
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 57.067145,
+      "elapsedMS": 57.07157899996673,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23204
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 59.194548,
+      "elapsedMS": 59.199717001320096,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23288
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 42.14329400000001,
+      "elapsedMS": 42.1476920000714,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23116
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 37.980053,
+      "elapsedMS": 37.98537400143687,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23284
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 70.23507400000001,
+      "elapsedMS": 70.23961699997017,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23056
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 63.85673,
+      "elapsedMS": 63.86120199931611,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23136
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 37.790130999999995,
+      "elapsedMS": 37.79437199955282,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23244
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 39.974799000000004,
+      "elapsedMS": 39.97902400078601,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23164
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 63.65989799999999,
+      "elapsedMS": 63.66450099994836,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23236
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 61.074303,
+      "elapsedMS": 61.08082100035972,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 23264
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 37.589423,
+      "elapsedMS": 37.592986000163364,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 23208
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 39.101731,
+      "elapsedMS": 39.105615998778376,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23108
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 57.674297,
+      "elapsedMS": 57.67768199984857,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23348
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 58.223604,
+      "elapsedMS": 58.22739399991406,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23288
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 37.23174999999999,
+      "elapsedMS": 37.23595900009968,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23220
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 38.49030200000001,
+      "elapsedMS": 38.49458600052458,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23232
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 57.29477299999999,
+      "elapsedMS": 57.29805300143198,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23192
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 55.923845,
+      "elapsedMS": 55.92803299987281,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23268
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 36.331092000000005,
+      "elapsedMS": 36.33543099931558,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23256
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 40.246699,
+      "elapsedMS": 40.251471000374295,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23208
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 61.73767900000001,
+      "elapsedMS": 61.742425999909756,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23348
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 60.658775,
+      "elapsedMS": 60.66265499975998,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23204
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 36.31947400000001,
+      "elapsedMS": 36.32389399899694,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23332
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 42.137425,
+      "elapsedMS": 42.1438470002613,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23240
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 59.083913,
+      "elapsedMS": 59.089184000185924,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23180
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 65.858026,
+      "elapsedMS": 65.86211200010439,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23268
+    },
+    {
+      "accepted": 40,
+      "choices": [
+        "/ppt/slideLayouts/slideLayout4.xml 0:831850,2743200,10515600,1143000@1.0;1:831850,3962400,10515600,914400@1.0"
+      ],
+      "cpuMS": 39.449218,
+      "elapsedMS": 39.45355900032155,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "plan-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23292
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 41.160723000000004,
+      "elapsedMS": 41.164161999404314,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23328
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 78.801422,
+      "elapsedMS": 78.81378099955327,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23340
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 70.21529600000001,
+      "elapsedMS": 70.2468970011978,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23192
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 40.519625000000005,
+      "elapsedMS": 40.524193000237574,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23420
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.756936,
+      "elapsedMS": 39.781331999620306,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23276
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 72.315608,
+      "elapsedMS": 72.32886800011329,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23156
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 68.317583,
+      "elapsedMS": 68.32191899957252,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23348
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 38.185444,
+      "elapsedMS": 38.20347500004573,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23344
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 41.247332,
+      "elapsedMS": 41.25198099973204,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23144
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 66.84759700000001,
+      "elapsedMS": 66.85113000094134,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23236
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 71.21393900000001,
+      "elapsedMS": 71.21832099983294,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23240
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 37.363316,
+      "elapsedMS": 37.36661100083438,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23276
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 40.130931000000004,
+      "elapsedMS": 40.135413999450975,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23088
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 72.650415,
+      "elapsedMS": 72.65356599964434,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23348
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 73.87600800000001,
+      "elapsedMS": 73.88053499926173,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23172
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.80945400000001,
+      "elapsedMS": 39.8142710000684,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23332
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 41.0248,
+      "elapsedMS": 41.029382999113295,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 23280
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 67.913993,
+      "elapsedMS": 67.91802299994742,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 23240
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 74.783327,
+      "elapsedMS": 74.7878230013157,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23152
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 37.815449,
+      "elapsedMS": 37.8191389991116,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23312
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 41.811429999999994,
+      "elapsedMS": 41.81568200147012,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23200
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 67.990187,
+      "elapsedMS": 67.99407600010454,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23380
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 75.54628199999999,
+      "elapsedMS": 75.55064799998945,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23176
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 37.753606999999995,
+      "elapsedMS": 37.757849000627175,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23204
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 38.696599,
+      "elapsedMS": 38.701319999745465,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23292
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 66.0218,
+      "elapsedMS": 66.02567299887596,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23212
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 68.25917600000001,
+      "elapsedMS": 68.26257099965005,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23212
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 37.663883,
+      "elapsedMS": 37.66703499968571,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23180
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 37.589763,
+      "elapsedMS": 37.59375600020576,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23316
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 67.213652,
+      "elapsedMS": 67.2982599990064,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23240
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 73.421523,
+      "elapsedMS": 73.42556500043429,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23244
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 37.172332000000004,
+      "elapsedMS": 37.17532999871764,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23200
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.467376,
+      "elapsedMS": 39.489451999543235,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23164
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 68.614385,
+      "elapsedMS": 68.61833600123646,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23368
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.849422999999994,
+      "elapsedMS": 39.852978001363226,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23192
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 78.758968,
+      "elapsedMS": 78.76256499912415,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23364
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 79.04239,
+      "elapsedMS": 79.04560300084995,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23212
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.310582000000004,
+      "elapsedMS": 39.31453499899362,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23332
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 40.172323999999996,
+      "elapsedMS": 40.17611400013266,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23316
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 79.19065,
+      "elapsedMS": 79.19352000135405,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23288
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 77.60165799999999,
+      "elapsedMS": 77.60510800108023,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23292
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.300757000000004,
+      "elapsedMS": 39.35088800062658,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23352
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 40.394263,
+      "elapsedMS": 40.397471999312984,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23168
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 78.92112999999999,
+      "elapsedMS": 78.92455399996834,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23180
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 79.050983,
+      "elapsedMS": 79.05436500004726,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23172
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.994828999999996,
+      "elapsedMS": 39.999083999646246,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23288
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.12748,
+      "elapsedMS": 39.13063399886596,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23208
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 77.291246,
+      "elapsedMS": 77.33528100106923,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23180
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 79.68186100000001,
+      "elapsedMS": 79.68566699855728,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23304
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 38.909025,
+      "elapsedMS": 38.91136000129336,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23344
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.630398,
+      "elapsedMS": 39.633493999645,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 23316
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 81.728534,
+      "elapsedMS": 81.73298799920303,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 23344
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 79.01019199999999,
+      "elapsedMS": 79.01442299953487,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23344
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 38.795235,
+      "elapsedMS": 38.79806400072994,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23380
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 38.948884,
+      "elapsedMS": 38.95222099890816,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23344
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 79.624555,
+      "elapsedMS": 79.62760500049626,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23316
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 78.584109,
+      "elapsedMS": 78.58789700003399,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23152
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 43.88967,
+      "elapsedMS": 43.893423999179504,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23092
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.868852,
+      "elapsedMS": 39.87178299939842,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23260
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 78.886499,
+      "elapsedMS": 78.93283399971551,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23244
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 76.724674,
+      "elapsedMS": 76.72866400025669,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23192
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 40.702832,
+      "elapsedMS": 40.70719000083045,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23352
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 39.011306999999995,
+      "elapsedMS": 39.015103999190615,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23332
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 82.320644,
+      "elapsedMS": 82.32465900073294,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23220
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 77.95844900000002,
+      "elapsedMS": 77.96197700008634,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23180
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 38.713133,
+      "elapsedMS": 38.71634400093171,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23188
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 38.959348999999996,
+      "elapsedMS": 38.96334700039006,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23208
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 83.169216,
+      "elapsedMS": 83.17237499977637,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-shrink-unique",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23180
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.997877000000003,
+      "elapsedMS": 3.0005799999344163,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23332
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.450514000000001,
+      "elapsedMS": 2.4541370003134944,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 23012
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.5124150000000003,
+      "elapsedMS": 2.5153480000881245,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23344
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.8851099999999996,
+      "elapsedMS": 2.888395998525084,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 1,
+      "warmup": true,
+      "peakRSSKiB": 23128
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.9166059999999985,
+      "elapsedMS": 3.064153999730479,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23276
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.3837940000000017,
+      "elapsedMS": 2.3870190016168635,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 23156
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.3540699999999997,
+      "elapsedMS": 2.3570150005980395,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23240
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 3.027001000000001,
+      "elapsedMS": 3.0506839993904578,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 23208
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.9267020000000032,
+      "elapsedMS": 2.9290450002008583,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23276
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.363083000000002,
+      "elapsedMS": 2.3660980004933663,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 23156
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.5424900000000012,
+      "elapsedMS": 2.545650999309146,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23260
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.8704980000000027,
+      "elapsedMS": 2.872862998628989,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 23192
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.937729,
+      "elapsedMS": 2.9401009996945504,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23080
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.7897280000000015,
+      "elapsedMS": 2.7924940004595555,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 23104
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.451595000000001,
+      "elapsedMS": 2.454638000926934,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23208
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 3.019800999999999,
+      "elapsedMS": 3.0225430000427878,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 23288
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 3.063235000000001,
+      "elapsedMS": 3.0897109991201432,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 23284
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.4892310000000015,
+      "elapsedMS": 2.4922539996623527,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 23120
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.4370239999999996,
+      "elapsedMS": 2.4403770003118552,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23240
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 3.0825639999999996,
+      "elapsedMS": 3.0857660003675846,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 23132
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.901975000000001,
+      "elapsedMS": 2.904850000049919,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23164
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.914693999999999,
+      "elapsedMS": 2.91833899973426,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 23192
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.5955200000000005,
+      "elapsedMS": 2.604538000014145,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23224
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 3.064986999999998,
+      "elapsedMS": 3.067888999794377,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 11,
+      "warmup": false,
+      "peakRSSKiB": 23196
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 3.6297580000000003,
+      "elapsedMS": 3.633329999502166,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23136
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.4445249999999996,
+      "elapsedMS": 2.4481079999532085,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 12,
+      "warmup": false,
+      "peakRSSKiB": 23260
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.6318029999999983,
+      "elapsedMS": 2.6347929997427855,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23152
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 3.6268629999999975,
+      "elapsedMS": 3.6299149996921187,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 13,
+      "warmup": false,
+      "peakRSSKiB": 23272
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 3.238857000000001,
+      "elapsedMS": 3.2453900003019953,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23320
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.400669000000001,
+      "elapsedMS": 2.4038639985519694,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 14,
+      "warmup": false,
+      "peakRSSKiB": 23188
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.369744,
+      "elapsedMS": 2.372707000176888,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23152
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.9851289999999997,
+      "elapsedMS": 2.9877409997425275,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 15,
+      "warmup": false,
+      "peakRSSKiB": 23312
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 3.0432050000000004,
+      "elapsedMS": 3.0465479994745692,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "legacy-controls",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23164
+    },
+    {
+      "accepted": 40,
+      "choices": [],
+      "cpuMS": 2.787194000000003,
+      "elapsedMS": 2.7907620005862555,
+      "iterations": 40,
+      "outputFittingShapes": 2,
+      "outputShapes": 2,
+      "scenario": "fit-tabs",
+      "sourcePreserved": true,
+      "binary": "candidate",
+      "pair": 16,
+      "warmup": false,
+      "peakRSSKiB": 23224
+    }
+  ],
+  "outputProof": {
+    "files": [
+      {
+        "file": "proof/fit-shrink-candidate.pptx",
+        "sha256": "ef11f4fbb30798a1b7d914da72afc0cd75cc7e2b7a44717c24e5a76b39a0ebaf",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "proof/fit-shrink-legacy-controls.pptx",
+        "sha256": "d4e38075d922355c04d98a1ae9445005438d52913cd4ac1ae69ba5a78b48ea41",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "proof/fit-shrink-unique-candidate.pptx",
+        "sha256": "cffe06f7940ef61fc64714fea7bef973f47d3161cf2e928d048e8ca526667d63",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "proof/fit-shrink-unique-legacy-controls.pptx",
+        "sha256": "30abc938cf50dff7666aab54e1b8f17395d78103b0324f65c27161af4b777548",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "proof/fit-tabs-candidate.pptx",
+        "sha256": "630017c9156a14593ec83ecf913bd8847845111f3c77fe6838d7eec288de3ee2",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "proof/fit-tabs-legacy-controls.pptx",
+        "sha256": "630017c9156a14593ec83ecf913bd8847845111f3c77fe6838d7eec288de3ee2",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "proof/plan-plain-candidate.pptx",
+        "sha256": "084d9e46a376437969ac17e75b8f9848a51a32594a974e896aa9fe039552b339",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "proof/plan-plain-legacy-controls.pptx",
+        "sha256": "4afb91c59c87a5362e325bd5dd9a0db7b1588862b836cfdd32b9e5f2a1fa28bd",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "proof/plan-unique-candidate.pptx",
+        "sha256": "910dd3b21577745de28dd0df836e3f3bf4843cd85ebff06ba3fd3bea17991c90",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "proof/plan-unique-legacy-controls.pptx",
+        "sha256": "ae86edf6c3b6be12bd793b91150cc970191b6496972954c56b9a39fd58520155",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          0,
+          2
+        ]
+      },
+      {
+        "file": "lab/templates-57870460-7E50-46C4-8D32-C3DA087E91F5/planned-template-output.pptx",
+        "sha256": "ff335032b3d6cc967be32b9df214ca878780edb6b3633d4c03f6b3f102e6697e",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 1,
+        "shapes": [
+          3
+        ]
+      },
+      {
+        "file": "lab/templates-57870460-7E50-46C4-8D32-C3DA087E91F5/templates-before.pptx",
+        "sha256": "52047af7d6c258179defe6aac3df8059f02ab2346a27a2828ec4f92f80a0db31",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 1,
+        "shapes": [
+          0
+        ]
+      },
+      {
+        "file": "lab/templates-57870460-7E50-46C4-8D32-C3DA087E91F5/templates.pptx",
+        "sha256": "61c769272a6df10b5327b1546602be8f97a33098ff59b35f0e71e7f2635ecf99",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          1,
+          3
+        ]
+      },
+      {
+        "file": "lab/templates-596B6BC3-CAAF-4F2B-BE7B-03393B5BED02/planned-template-output.pptx",
+        "sha256": "05f6747f2e3fedce7b243a104c6df46efb651db8e21d0b6d8bf4f844cf23bf26",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 1,
+        "shapes": [
+          3
+        ]
+      },
+      {
+        "file": "lab/templates-596B6BC3-CAAF-4F2B-BE7B-03393B5BED02/templates-before.pptx",
+        "sha256": "52047af7d6c258179defe6aac3df8059f02ab2346a27a2828ec4f92f80a0db31",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 1,
+        "shapes": [
+          0
+        ]
+      },
+      {
+        "file": "lab/templates-596B6BC3-CAAF-4F2B-BE7B-03393B5BED02/templates.pptx",
+        "sha256": "39bed67fde29af6f6583df90de61c9d3ffdfcd092f890408db16b9a6ebe8c2e1",
+        "zipCRC": true,
+        "pythonPPTX": true,
+        "slides": 2,
+        "shapes": [
+          1,
+          3
+        ]
+      },
+      {
+        "file": "lab/templates-57870460-7E50-46C4-8D32-C3DA087E91F5/fitting-template.potx",
+        "sha256": "02c278e9361b4eed78a835a36dca43d690d813539e4166d88a86f56c55593a8d",
+        "zipCRC": true,
+        "pythonPPTX": "not checked: POTX is not supported by this reader"
+      },
+      {
+        "file": "lab/templates-57870460-7E50-46C4-8D32-C3DA087E91F5/template.potx",
+        "sha256": "b0f67c8c4a6eb8b28a05bfb57b7d9af2081f2569ab13507e8163c3731cb730a5",
+        "zipCRC": true,
+        "pythonPPTX": "not checked: POTX is not supported by this reader"
+      },
+      {
+        "file": "lab/templates-596B6BC3-CAAF-4F2B-BE7B-03393B5BED02/fitting-template.potx",
+        "sha256": "4f9decde6162024ecd00e2f27e2b4753df7efae637b6faaee21d19ac15dec9c8",
+        "zipCRC": true,
+        "pythonPPTX": "not checked: POTX is not supported by this reader"
+      },
+      {
+        "file": "lab/templates-596B6BC3-CAAF-4F2B-BE7B-03393B5BED02/template.potx",
+        "sha256": "c143e21593b697961fdb99b1e200bef3b506ef430a725f836fe8f849258bfe76",
+        "zipCRC": true,
+        "pythonPPTX": "not checked: POTX is not supported by this reader"
+      }
+    ],
+    "comparison": {
+      "plan-plain": {
+        "byteIdentical": false,
+        "changedParts": [
+          "ppt/slides/slide2.xml"
+        ]
+      },
+      "plan-unique": {
+        "byteIdentical": false,
+        "changedParts": [
+          "ppt/slides/slide2.xml"
+        ]
+      },
+      "fit-shrink": {
+        "byteIdentical": false,
+        "changedParts": [
+          "ppt/slides/slide2.xml"
+        ]
+      },
+      "fit-shrink-unique": {
+        "byteIdentical": false,
+        "changedParts": [
+          "ppt/slides/slide2.xml"
+        ]
+      },
+      "fit-tabs": {
+        "byteIdentical": true,
+        "changedParts": []
+      }
+    }
+  }
+}
