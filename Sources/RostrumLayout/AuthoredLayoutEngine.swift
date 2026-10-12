@@ -124,10 +124,11 @@ public final class AuthoredLayoutEngine {
                   (bodyAttribute("numCol") ?? "1") == "1" else {
                 throw cannotFit("uses vertical or multi-column text that authored fitting does not support.")
             }
+            var preparation: RichTextLayout.Preparation?
             func layout(_ body: XML.Element) -> RichTextLayout {
                 RichTextLayout(textBody: body, width: frame.width.points, height: frame.height.points,
                     fonts: presentation.fonts, theme: theme, inheritedStyles: inherited,
-                    slideNumber: slideNumber, maxLines: 4096)
+                    slideNumber: slideNumber, maxLines: 4096, preparation: preparation)
             }
             func accepted(_ value: RichTextLayout) -> Bool {
                 // SVG currently emits at most 64 lines. Never approve content
@@ -177,6 +178,7 @@ public final class AuthoredLayoutEngine {
                 fit.attributes = autofit.attributes
                 fit.children = autofit.deepCopy().children
             }
+            preparation = RichTextLayout.Preparation()
             var scale = currentScale
             while true {
                 try Task.checkCancellation()

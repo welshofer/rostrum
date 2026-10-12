@@ -268,6 +268,7 @@ private func everyView(of shapes: ShapeCollection)
         #expect(Slide.existingSpTree(of: part) == nil)
     }
 
+    #if DEBUG
     /// The structural claim R-PERF-1 exists to make: reading `count`, and
     /// reading one shape by index, builds no facade the caller did not ask
     /// for. Asserted by counting `Shape` initialisations, not by a clock.
@@ -297,6 +298,7 @@ private func everyView(of shapes: ShapeCollection)
             #expect(tally.built - beforeAll == 6)
         }
     }
+    #endif
 }
 
 /// A 1×1 PNG, enough for `addPicture` to sniff dimensions and embed a part.

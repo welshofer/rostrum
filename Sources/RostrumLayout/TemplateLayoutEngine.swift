@@ -347,10 +347,10 @@ public final class TemplateLayoutEngine {
         return ceil(measured(body, width: width, context: nil).height)
     }
 
-    private func measured(_ body: XML.Element, width: Double, context: TemplateTextContext?) -> (layout: RichTextLayout, height: Double) {
+    private func measured(_ body: XML.Element, width: Double, context: TemplateTextContext?, preparation: RichTextLayout.Preparation? = nil) -> (layout: RichTextLayout, height: Double) {
         let geometry = RichTextLayout(textBody: body, width: width, height: 1e9,
             fonts: presentation.fonts, theme: context?.theme ?? presentation.theme,
-            inheritedStyles: context?.styles ?? [], maxLines: 65)
+            inheritedStyles: context?.styles ?? [], maxLines: 65, preparation: preparation)
         // The renderer emits at most 64 lines. Height is measured independently
         // of the candidate frame so native vertical flow can grow into safe space.
         guard geometry.fits, geometry.lines.count <= 64 else { return (geometry, .infinity) }
@@ -431,9 +431,10 @@ public final class TemplateLayoutEngine {
                 .map { $0 / (Double(scale) / 100000) } ?? 18
             let readable = context.isTitle ? 18.0 : 12.0
             let lower = min(scale, max(60000, Int(ceil(readable / max(1, minimum) * 100000))))
+            let preparation = RichTextLayout.Preparation()
             func height(_ scale: Int) -> Double {
                 let candidate = context.scaled(text, scale: scale).body
-                return measured(candidate, width: frame.width.points, context: context).height
+                return measured(candidate, width: frame.width.points, context: context, preparation: preparation).height
             }
             var lowHeight = height(lower)
             guard lowHeight <= frame.height.points + 0.01 else { return nil }

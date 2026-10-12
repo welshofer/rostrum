@@ -2,6 +2,13 @@
 
 ## Latest reconciled measurements
 
+The [prepared fitting record](PREPARED-FITTING-20261012.md) measures 16–18% lower
+paired CPU during template shrinking and 18% for distinct mixed-size authored
+text, against the shared-geometry implementation. All 26 benchmark decks and
+1,248 independent layout/shaping snapshots are identical. Already-fitting and
+small repeated controls show no consistent gain; the record retains their
+regressions, memory costs and raw samples.
+
 The [template rich-text fitting record](TEMPLATE-FITTING-20261011.md) compares
 forty layout plans or fit checks per sample. Shared geometry and operation-local
 reuse reduce layout-selection CPU medians from about 59–60 ms to 37–38 ms;

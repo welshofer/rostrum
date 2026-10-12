@@ -295,6 +295,16 @@ newly imported layouts. Candidate ranking reuses accepted occupied heights.
 The [template fitting benchmark](TEMPLATE-FITTING-20261011.md) records faster
 layout selection and the additional cost of complete geometry during shrinking.
 
+When a body needs shrinking, both fitters retain its scale-independent paragraph
+inputs and non-Arabic Unicode preparation across that body's trials. The scratch
+object is discarded after fitting; styles, themes and font registrations cannot
+leak into a later operation. Retention is capped at 64 paragraphs, 512 pieces and
+64 KiB of run text, plus 64 shaped-text inputs totaling at most 64 KiB. These are
+input limits, not a total-memory budget. Unicode cache keys compare exact UTF-8
+bytes so canonical equivalence cannot change original scalar offsets. Each trial
+still recomputes scaled glyph advances, kerning, wrapping, geometry and diagnostics;
+Arabic and over-budget input retain the ordinary path.
+
 Font-resource encoding retains at most 4 MiB of cached base64 data and invalidates
 on registration. Ordered single-scalar ASCII shaping avoids unnecessary lookup
 construction and sorting while retaining the general path for other input.
