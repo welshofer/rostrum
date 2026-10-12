@@ -271,7 +271,7 @@ public final class ShapeCollection: Sequence {
 /// exhaustive in practice while the taxonomy stays free to grow in a minor
 /// version. `kind` is the cheap discriminator when you only need to filter.
 public class Shape {
-    let element: XML.Element
+    package let element: XML.Element
     let part: Part
     /// The owning package, when known — required to embed image fills. `nil` for
     /// shapes built without package context (chart/SmartArt graphic frames).

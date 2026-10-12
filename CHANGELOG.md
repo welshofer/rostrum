@@ -6,6 +6,13 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Authored text fitting now checks complete shared rich-text geometry, including
+  mixed-size runs, fields, explicit breaks, inherited styles and horizontal
+  overflow. Accepted fits preserve run formatting and save normal autofit;
+  failed bodies remain unchanged. Bounded operation-local reuse avoids repeated
+  fitting of identical bodies. The Fonts and Fitting Library Lab includes a
+  saved/reopened mixed-size example. Native autofit equivalence remains unverified.
+
 - Render diagnostics distinguish painted ordinary shape shadows from omitted
   effects while retaining strict-mode refusal. Nested group children retain
   their own shape IDs, XML paths and part ownership, so sibling warnings do

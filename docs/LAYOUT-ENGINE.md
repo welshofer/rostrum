@@ -37,10 +37,11 @@ flowchart TD
     Candidates --> Compose["Fill native placeholders or report cannotFit"]
 ```
 
-The composition adapters are distinct from `RichTextLayout`. They can accept a
-`TextHeightMeasurer` supplied by the host, such as Lectern's Apple measurement
-adapter. Do not assume that every composition decision is made by the portable
-rich-text algorithm or that a computed fit matches PowerPoint's chosen autofit.
+Template composition can accept a `TextHeightMeasurer` supplied by the host,
+such as Lectern's Apple measurement adapter. Its measurement path is still
+distinct from `RichTextLayout`. Authored fitting uses shared rich-text geometry;
+an optional host callback adds a conservative height check. A computed fit does
+not establish that PowerPoint would select the same autofit.
 
 ## Choose the right operation
 
@@ -56,9 +57,13 @@ rich-text algorithm or that a computed fit matches PowerPoint's chosen autofit.
 
 `TextHeightMeasurer` receives a `TextMeasureRequest`: text, family name, point
 size, bold flag, tracking and available width in points. Return the occupied
-height in points for that request. The engine applies its own paragraph/body
-spacing and fit rules around this measurement. Keep the adapter deterministic
-and the font environment fixed while an engine is in use.
+height in points for that request. Template composition applies its own
+paragraph/body spacing rules around this measurement. Authored fitting invokes
+the callback on positioned rich-text spans and conservatively accounts for a
+host height larger than the shared line height; it does not replace shared line
+breaking. The legacy callback has no italic flag and is not a complete rich-text
+shaping adapter. Keep the adapter deterministic and the font environment fixed
+while an engine is in use.
 
 Lectern's [adapter](../Lectern/Sources/LecternCore/Rendering/TemplateRendering.swift)
 uses CoreText when available. The portable library does not discover installed
@@ -198,11 +203,27 @@ slide. Native tables, charts and pictures remain editable slide objects with
 insertion placeholders in the layout. Use this flow for authored designs;
 imported POTX content follows the template engine's inheritance path.
 
-`AuthoredLayoutEngine` is the final pass for design-authored slides. It rejects
-text frames outside the slide and checks occupied height within the insets.
-Where needed it compacts spacing and reduces type within readable bounds,
-preserving intentionally small captions. A failed fit is reported; it does not
-silently discard text. `finish` fits the slide and publishes its layout.
+`AuthoredLayoutEngine` is the final pass for design-authored slides. It measures
+complete DrawingML bodies with `RichTextLayout`, including mixed runs, fields,
+explicit breaks, inherited styles, spacing, insets and wrapping. It rejects
+empty/outside frames, horizontal overflow and bodies exceeding the preview's
+64-line limit. Vertical and multi-column text are explicitly unsupported.
+
+Where needed it compacts explicit percentage line spacing and point paragraph
+gaps, then searches a bounded descending font-scale ladder. Exact line spacing
+and inherited styles stay intact. Normal autofit stores the selected scale;
+original run sizes, colors, tracking, field identities and text remain editable.
+The smallest visible run stays at least 17 pt (24 pt for titles), or retains its
+original size if already smaller. A failed body is unchanged; earlier successful
+bodies in the same call remain fitted. Repeating a successful fit is a no-op.
+
+Identical bodies can reuse fit decisions within one call, bounded to 64 entries
+and 256 KiB of serialized keys; keys over 64 KiB bypass retention. The cache
+includes inherited styles, dimensions and title policy and is discarded before
+later text, font or theme edits. Custom host callbacks bypass this cache.
+`finish` fits the slide and publishes its layout. Missing fonts still use the
+shared engine's estimated geometry and remain visible in rendering diagnostics;
+registered exact faces are necessary for font-dependent acceptance.
 
 `MeasuredPaginator.pages` accepts a deterministic, monotonic fit predicate and
 finds fitting prefixes without changing their order. A single item that cannot

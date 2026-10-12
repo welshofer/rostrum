@@ -26,14 +26,14 @@ extension XML.Element {
     }
 
     /// The get-or-add pattern for ZeroOrOne children.
-    func getOrAddChild(_ name: String, beforeAnyOf successors: [String] = []) -> XML.Element {
+    package func getOrAddChild(_ name: String, beforeAnyOf successors: [String] = []) -> XML.Element {
         if let existing = firstChild(named: name) { return existing }
         let element = XML.Element(name)
         insertChild(element, beforeAnyOf: successors)
         return element
     }
 
-    func removeChildren(named name: String) {
+    package func removeChildren(named name: String) {
         children.removeAll {
             if case .element(let e) = $0 { return e.name == name }
             return false
@@ -100,7 +100,7 @@ extension XML.Element {
     /// A structural copy, new nodes all the way down. `XML.Element` is a
     /// reference type, so cloning a subtree by hand is the only way to edit
     /// the copy without the edits reaching back into the original.
-    func deepCopy() -> XML.Element {
+    package func deepCopy() -> XML.Element {
         XML.Element(name, attributes: attributes, children: children.map { node in
             switch node {
             case .text(let text): return .text(text)

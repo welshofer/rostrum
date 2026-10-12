@@ -1,0 +1,504 @@
+{
+  "host": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "affinityCPUs": 5,
+  "compiler": "Swift 6.1.3 Release (-O)",
+  "baseline": "783d1fe2a8e6ddd02d08d585fdf74fb6326c91f1",
+  "baselineMethod": "Original fitting algorithm compiled as LegacyAuthoredLayoutEngine; identical TextMeasureRequest and callback alias copied for external harness visibility. Both executables link the same Release Rostrum objects.",
+  "binaries": {
+    "legacy-controls": "449937f78a67b0170e0d5fba9d47f45fd9d37f31a45385465cb166e749aa89a1",
+    "candidate": "9a052926a033a22a4e2613bba2b6f5b792d4dca6dddb4b678ee80f47860e5fbd"
+  },
+  "driverSHA256": "19f04b99bfc1b3399f3b98cf040e605554023b9902770f314e8d27f4fb2ba323",
+  "fontSHA256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+  "sourceSHA256": {
+    "Sources/RostrumLayout/AuthoredLayoutEngine.swift": "edb78dbfc49c68b8bb668d65604eced2cec80fd1dc16707199a07cbeab92d78b",
+    "Sources/Rostrum/Presentation/RichTextLayout.swift": "ff266421c3899beb49efb76a651ea1bb257b91c96761f6b597ec6ecad20aaf32"
+  },
+  "summary": {
+    "plain-fallback": {
+      "legacy-controls": {
+        "cpuMedianMS": 1.4538319999999987,
+        "elapsedMedianMS": 1.456309999412042,
+        "elapsedP95MS": 3.428221999456582,
+        "peakRSSMedianKiB": 17960,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      },
+      "candidate": {
+        "cpuMedianMS": 1.060176999999999,
+        "elapsedMedianMS": 1.0626889998093247,
+        "elapsedP95MS": 1.2331510006333701,
+        "peakRSSMedianKiB": 17972,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      }
+    },
+    "plain-registered": {
+      "legacy-controls": {
+        "cpuMedianMS": 1.6758309999999992,
+        "elapsedMedianMS": 1.6796400004750467,
+        "elapsedP95MS": 2.128301999618998,
+        "peakRSSMedianKiB": 20056,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      },
+      "candidate": {
+        "cpuMedianMS": 1.0643230000000024,
+        "elapsedMedianMS": 1.067356000021391,
+        "elapsedP95MS": 1.2496350000219536,
+        "peakRSSMedianKiB": 20076,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      }
+    },
+    "mixed": {
+      "legacy-controls": {
+        "cpuMedianMS": 1.7396669999999967,
+        "elapsedMedianMS": 1.7424329998902977,
+        "elapsedP95MS": 5.797179999717628,
+        "peakRSSMedianKiB": 20188,
+        "errors": 0,
+        "fittingShapes": [
+          0
+        ]
+      },
+      "candidate": {
+        "cpuMedianMS": 1.5335999999999996,
+        "elapsedMedianMS": 1.536099000077229,
+        "elapsedP95MS": 4.857697999796073,
+        "peakRSSMedianKiB": 20256,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      }
+    },
+    "shrink": {
+      "legacy-controls": {
+        "cpuMedianMS": 15.988302,
+        "elapsedMedianMS": 15.99720200010779,
+        "elapsedP95MS": 19.7272890000022,
+        "peakRSSMedianKiB": 20204,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      },
+      "candidate": {
+        "cpuMedianMS": 2.287220999999999,
+        "elapsedMedianMS": 2.2904420002305415,
+        "elapsedP95MS": 3.863354999339208,
+        "peakRSSMedianKiB": 20068,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      }
+    },
+    "plain-fallback-unique": {
+      "legacy-controls": {
+        "cpuMedianMS": 1.4885439999999979,
+        "elapsedMedianMS": 1.491171999987273,
+        "elapsedP95MS": 1.8263760002810159,
+        "peakRSSMedianKiB": 17872,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      },
+      "candidate": {
+        "cpuMedianMS": 2.6049239999999982,
+        "elapsedMedianMS": 2.6075499999933527,
+        "elapsedP95MS": 3.847821999443113,
+        "peakRSSMedianKiB": 18016,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      }
+    },
+    "plain-registered-unique": {
+      "legacy-controls": {
+        "cpuMedianMS": 1.6241149999999989,
+        "elapsedMedianMS": 1.6267519995381008,
+        "elapsedP95MS": 2.2673280000162777,
+        "peakRSSMedianKiB": 20068,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      },
+      "candidate": {
+        "cpuMedianMS": 3.7736910000000026,
+        "elapsedMedianMS": 3.777006999371224,
+        "elapsedP95MS": 6.796266000492324,
+        "peakRSSMedianKiB": 20144,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      }
+    },
+    "mixed-unique": {
+      "legacy-controls": {
+        "cpuMedianMS": 4.6436150000000005,
+        "elapsedMedianMS": 4.646010999749706,
+        "elapsedP95MS": 5.265624000458047,
+        "peakRSSMedianKiB": 20192,
+        "errors": 0,
+        "fittingShapes": [
+          0
+        ]
+      },
+      "candidate": {
+        "cpuMedianMS": 42.585602,
+        "elapsedMedianMS": 42.58849599955283,
+        "elapsedP95MS": 48.57930199978,
+        "peakRSSMedianKiB": 20284,
+        "errors": 0,
+        "fittingShapes": [
+          100
+        ]
+      }
+    },
+    "shrink-unique": {
+      "legacy-controls": {
+        "cpuMedianMS": 0.3787129999999993,
+        "elapsedMedianMS": 0.3812929999185144,
+        "elapsedP95MS": 0.5030120000810712,
+        "peakRSSMedianKiB": 20096,
+        "errors": 15,
+        "fittingShapes": [
+          0
+        ]
+      },
+      "candidate": {
+        "cpuMedianMS": 2.2008719999999995,
+        "elapsedMedianMS": 2.2043250000933767,
+        "elapsedP95MS": 4.410943000038969,
+        "peakRSSMedianKiB": 20148,
+        "errors": 15,
+        "fittingShapes": [
+          0
+        ]
+      }
+    }
+  },
+  "preservation": [
+    {
+      "scenario": "plain-fallback",
+      "candidateSHA256": "becef768aaf4be694c089595f2ad77675822e4157df4d12ccfb66d673e11ae74",
+      "uncachedBytesIdentical": true,
+      "legacyBytesIdentical": true,
+      "zipCRC": "passed",
+      "pythonPptxShapes": 100
+    },
+    {
+      "scenario": "plain-registered",
+      "candidateSHA256": "becef768aaf4be694c089595f2ad77675822e4157df4d12ccfb66d673e11ae74",
+      "uncachedBytesIdentical": true,
+      "legacyBytesIdentical": true,
+      "zipCRC": "passed",
+      "pythonPptxShapes": 100
+    },
+    {
+      "scenario": "mixed",
+      "candidateSHA256": "5ec23888f4926f5c9e9ddddf3534493b62d3abe83e813c755993d542fc37a91d",
+      "uncachedBytesIdentical": true,
+      "legacyBytesIdentical": false,
+      "zipCRC": "passed",
+      "pythonPptxShapes": 100
+    },
+    {
+      "scenario": "shrink",
+      "candidateSHA256": "0bce56ae2cbb0ee09ee89395a6bb401871f74d41260055490f01a2a19b6d471e",
+      "uncachedBytesIdentical": true,
+      "legacyBytesIdentical": false,
+      "zipCRC": "passed",
+      "pythonPptxShapes": 100
+    }
+  ],
+  "samples": [
+    {"cpuMS":1.4644179999999987,"elapsedMS":1.4671369999632589,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":0,"warmup":true,"peakRSSKiB":17680},
+    {"cpuMS":1.0431810000000006,"elapsedMS":1.0466949997862685,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":0,"warmup":true,"peakRSSKiB":17996},
+    {"cpuMS":1.1139359999999994,"elapsedMS":1.116509000894439,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":1,"warmup":true,"peakRSSKiB":17816},
+    {"cpuMS":1.4793900000000006,"elapsedMS":1.4822289995208848,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":1,"warmup":true,"peakRSSKiB":17816},
+    {"cpuMS":1.415274000000001,"elapsedMS":1.417894000041997,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":2,"warmup":false,"peakRSSKiB":17816},
+    {"cpuMS":0.9540380000000008,"elapsedMS":0.9564420006427099,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":2,"warmup":false,"peakRSSKiB":17892},
+    {"cpuMS":0.954919999999998,"elapsedMS":0.957954000114114,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":3,"warmup":false,"peakRSSKiB":18032},
+    {"cpuMS":1.4538319999999987,"elapsedMS":1.456309999412042,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":3,"warmup":false,"peakRSSKiB":17968},
+    {"cpuMS":1.6559629999999999,"elapsedMS":1.6592499996477272,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":4,"warmup":false,"peakRSSKiB":17968},
+    {"cpuMS":1.2239699999999978,"elapsedMS":1.2331510006333701,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":4,"warmup":false,"peakRSSKiB":18080},
+    {"cpuMS":1.1162000000000012,"elapsedMS":1.1197130006621592,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":5,"warmup":false,"peakRSSKiB":17824},
+    {"cpuMS":1.3955849999999979,"elapsedMS":1.3988049995532492,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":5,"warmup":false,"peakRSSKiB":17968},
+    {"cpuMS":1.4012530000000016,"elapsedMS":1.4037129994903808,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":6,"warmup":false,"peakRSSKiB":17728},
+    {"cpuMS":1.117191,"elapsedMS":1.1202440000488423,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":6,"warmup":false,"peakRSSKiB":17880},
+    {"cpuMS":1.0176829999999983,"elapsedMS":1.0210079999524169,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":7,"warmup":false,"peakRSSKiB":18080},
+    {"cpuMS":1.5503250000000017,"elapsedMS":1.552953999635065,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":7,"warmup":false,"peakRSSKiB":17980},
+    {"cpuMS":1.3659820000000016,"elapsedMS":1.368991999697755,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":8,"warmup":false,"peakRSSKiB":17672},
+    {"cpuMS":1.1407959999999995,"elapsedMS":1.1434790003477247,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":8,"warmup":false,"peakRSSKiB":17836},
+    {"cpuMS":1.009751999999999,"elapsedMS":1.0127450004802085,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":9,"warmup":false,"peakRSSKiB":18080},
+    {"cpuMS":1.5446170000000017,"elapsedMS":1.548186999571044,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":9,"warmup":false,"peakRSSKiB":17920},
+    {"cpuMS":1.4428949999999996,"elapsedMS":1.4462059998550103,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":10,"warmup":false,"peakRSSKiB":18000},
+    {"cpuMS":1.1188439999999973,"elapsedMS":1.1219170000913437,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":10,"warmup":false,"peakRSSKiB":17888},
+    {"cpuMS":0.9410490000000028,"elapsedMS":0.943934000133595,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":11,"warmup":false,"peakRSSKiB":18024},
+    {"cpuMS":1.3980079999999993,"elapsedMS":1.401088999955391,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":11,"warmup":false,"peakRSSKiB":17960},
+    {"cpuMS":1.8021299999999991,"elapsedMS":1.8044939997707843,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":12,"warmup":false,"peakRSSKiB":17928},
+    {"cpuMS":1.0361009999999977,"elapsedMS":1.0396850002507563,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":12,"warmup":false,"peakRSSKiB":17920},
+    {"cpuMS":1.0351899999999983,"elapsedMS":1.0380329995314241,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":13,"warmup":false,"peakRSSKiB":17984},
+    {"cpuMS":3.4256240000000022,"elapsedMS":3.428221999456582,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":13,"warmup":false,"peakRSSKiB":17968},
+    {"cpuMS":1.5340910000000014,"elapsedMS":1.5371389999927487,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":14,"warmup":false,"peakRSSKiB":18000},
+    {"cpuMS":1.2114920000000016,"elapsedMS":1.213893000567623,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":14,"warmup":false,"peakRSSKiB":17740},
+    {"cpuMS":1.1509510000000007,"elapsedMS":1.1535339999682037,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":15,"warmup":false,"peakRSSKiB":18060},
+    {"cpuMS":1.4768759999999985,"elapsedMS":1.4805360005993862,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":15,"warmup":false,"peakRSSKiB":17872},
+    {"cpuMS":1.3819950000000005,"elapsedMS":1.384494000376435,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"legacy-controls","pair":16,"warmup":false,"peakRSSKiB":17692},
+    {"cpuMS":1.060176999999999,"elapsedMS":1.0626889998093247,"fittingShapes":100,"scenario":"plain-fallback","shapes":100,"binary":"candidate","pair":16,"warmup":false,"peakRSSKiB":17972},
+    {"cpuMS":1.5896539999999995,"elapsedMS":1.5921109998089378,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":0,"warmup":true,"peakRSSKiB":20092},
+    {"cpuMS":0.9811389999999989,"elapsedMS":0.98406300003262,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":0,"warmup":true,"peakRSSKiB":20040},
+    {"cpuMS":0.9563829999999982,"elapsedMS":0.9594459997970262,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":1,"warmup":true,"peakRSSKiB":19912},
+    {"cpuMS":1.591396999999998,"elapsedMS":1.5944939996188623,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":1,"warmup":true,"peakRSSKiB":19828},
+    {"cpuMS":2.125369999999998,"elapsedMS":2.128301999618998,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":2,"warmup":false,"peakRSSKiB":20128},
+    {"cpuMS":1.1499399999999986,"elapsedMS":1.1526519992912654,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":2,"warmup":false,"peakRSSKiB":20064},
+    {"cpuMS":0.985395,"elapsedMS":0.9891999998217216,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":3,"warmup":false,"peakRSSKiB":19952},
+    {"cpuMS":1.709332000000001,"elapsedMS":1.7123489997175056,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":3,"warmup":false,"peakRSSKiB":19844},
+    {"cpuMS":1.7051749999999997,"elapsedMS":1.7083430002458044,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":4,"warmup":false,"peakRSSKiB":20012},
+    {"cpuMS":1.2471549999999998,"elapsedMS":1.2496350000219536,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":4,"warmup":false,"peakRSSKiB":19960},
+    {"cpuMS":1.169679,"elapsedMS":1.1728620002031676,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":5,"warmup":false,"peakRSSKiB":20068},
+    {"cpuMS":1.841759000000002,"elapsedMS":1.8450940006005112,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":5,"warmup":false,"peakRSSKiB":20064},
+    {"cpuMS":1.8870459999999998,"elapsedMS":1.8902310002886225,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":6,"warmup":false,"peakRSSKiB":19912},
+    {"cpuMS":1.1538060000000003,"elapsedMS":1.1568680001801113,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":6,"warmup":false,"peakRSSKiB":20088},
+    {"cpuMS":0.9053470000000008,"elapsedMS":0.9083909999390016,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":7,"warmup":false,"peakRSSKiB":20028},
+    {"cpuMS":1.7091920000000018,"elapsedMS":1.7120969996540225,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":7,"warmup":false,"peakRSSKiB":20188},
+    {"cpuMS":1.578666999999999,"elapsedMS":1.5814050002518343,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":8,"warmup":false,"peakRSSKiB":20188},
+    {"cpuMS":0.9224019999999993,"elapsedMS":0.9255459999621962,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":8,"warmup":false,"peakRSSKiB":20224},
+    {"cpuMS":0.997093000000001,"elapsedMS":1.0000669999499223,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":9,"warmup":false,"peakRSSKiB":20252},
+    {"cpuMS":1.6547509999999994,"elapsedMS":1.6580980000071577,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":9,"warmup":false,"peakRSSKiB":20056},
+    {"cpuMS":1.841928999999999,"elapsedMS":1.844954000262078,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":10,"warmup":false,"peakRSSKiB":20220},
+    {"cpuMS":1.0643230000000024,"elapsedMS":1.067356000021391,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":10,"warmup":false,"peakRSSKiB":20076},
+    {"cpuMS":1.1155890000000002,"elapsedMS":1.119372999710322,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":11,"warmup":false,"peakRSSKiB":20160},
+    {"cpuMS":1.6452370000000007,"elapsedMS":1.6481330003443873,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":11,"warmup":false,"peakRSSKiB":20100},
+    {"cpuMS":1.64131,"elapsedMS":1.6444790007881238,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":12,"warmup":false,"peakRSSKiB":20020},
+    {"cpuMS":1.0208179999999998,"elapsedMS":1.0246729998470983,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":12,"warmup":false,"peakRSSKiB":20252},
+    {"cpuMS":1.1284779999999988,"elapsedMS":1.1313900004097377,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":13,"warmup":false,"peakRSSKiB":20044},
+    {"cpuMS":1.5621219999999991,"elapsedMS":1.5645900002709823,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":13,"warmup":false,"peakRSSKiB":19816},
+    {"cpuMS":1.593810000000001,"elapsedMS":1.5978889996404178,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":14,"warmup":false,"peakRSSKiB":20080},
+    {"cpuMS":0.9032229999999981,"elapsedMS":0.9065189997272682,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":14,"warmup":false,"peakRSSKiB":19932},
+    {"cpuMS":1.1025290000000014,"elapsedMS":1.1066340002798825,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":15,"warmup":false,"peakRSSKiB":20120},
+    {"cpuMS":1.6758309999999992,"elapsedMS":1.6796400004750467,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":15,"warmup":false,"peakRSSKiB":20048},
+    {"cpuMS":1.60068,"elapsedMS":1.6195210000660154,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"legacy-controls","pair":16,"warmup":false,"peakRSSKiB":19840},
+    {"cpuMS":1.0082489999999993,"elapsedMS":1.0117740002897335,"fittingShapes":100,"scenario":"plain-registered","shapes":100,"binary":"candidate","pair":16,"warmup":false,"peakRSSKiB":20160},
+    {"cpuMS":1.678525,"elapsedMS":1.6814530008559814,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":0,"warmup":true,"peakRSSKiB":20180},
+    {"cpuMS":1.4272520000000004,"elapsedMS":1.4300209995781188,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":0,"warmup":true,"peakRSSKiB":20208},
+    {"cpuMS":1.469695,"elapsedMS":1.4727649995620595,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":1,"warmup":true,"peakRSSKiB":20156},
+    {"cpuMS":1.7379640000000016,"elapsedMS":1.7411510007150355,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":1,"warmup":true,"peakRSSKiB":20036},
+    {"cpuMS":1.7156009999999973,"elapsedMS":1.717997000014293,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":2,"warmup":false,"peakRSSKiB":20188},
+    {"cpuMS":1.4604920000000008,"elapsedMS":1.4639319997513667,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":2,"warmup":false,"peakRSSKiB":20244},
+    {"cpuMS":1.8043930000000015,"elapsedMS":1.8082799997500842,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":3,"warmup":false,"peakRSSKiB":20360},
+    {"cpuMS":1.81541,"elapsedMS":1.8185250000897213,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":3,"warmup":false,"peakRSSKiB":20352},
+    {"cpuMS":1.980675000000001,"elapsedMS":1.9837390000247979,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":4,"warmup":false,"peakRSSKiB":20188},
+    {"cpuMS":1.4801499999999996,"elapsedMS":1.4830099999016966,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":4,"warmup":false,"peakRSSKiB":20144},
+    {"cpuMS":1.6835530000000007,"elapsedMS":1.6873009999471833,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":5,"warmup":false,"peakRSSKiB":20144},
+    {"cpuMS":1.8079980000000015,"elapsedMS":1.8113449996235431,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":5,"warmup":false,"peakRSSKiB":20220},
+    {"cpuMS":1.7039540000000006,"elapsedMS":1.7073819999495754,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":6,"warmup":false,"peakRSSKiB":19948},
+    {"cpuMS":2.619303999999999,"elapsedMS":2.6223419999951147,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":6,"warmup":false,"peakRSSKiB":20196},
+    {"cpuMS":1.5073910000000004,"elapsedMS":1.5104600006452529,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":7,"warmup":false,"peakRSSKiB":20372},
+    {"cpuMS":5.792242000000003,"elapsedMS":5.797179999717628,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":7,"warmup":false,"peakRSSKiB":20376},
+    {"cpuMS":1.7884400000000023,"elapsedMS":1.7912349994730903,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":8,"warmup":false,"peakRSSKiB":20356},
+    {"cpuMS":1.550636000000001,"elapsedMS":1.553854000121646,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":8,"warmup":false,"peakRSSKiB":20256},
+    {"cpuMS":1.5217320000000014,"elapsedMS":1.5248910003720084,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":9,"warmup":false,"peakRSSKiB":20276},
+    {"cpuMS":1.8523639999999988,"elapsedMS":1.855499999692256,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":9,"warmup":false,"peakRSSKiB":20184},
+    {"cpuMS":1.9759579999999999,"elapsedMS":1.9791619997704402,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":10,"warmup":false,"peakRSSKiB":20188},
+    {"cpuMS":1.6556520000000006,"elapsedMS":1.6588389999014908,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":10,"warmup":false,"peakRSSKiB":20164},
+    {"cpuMS":1.5232249999999996,"elapsedMS":1.5259639994837926,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":11,"warmup":false,"peakRSSKiB":20176},
+    {"cpuMS":1.723592999999999,"elapsedMS":1.726780000353756,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":11,"warmup":false,"peakRSSKiB":20148},
+    {"cpuMS":1.7065480000000022,"elapsedMS":1.7100450004363665,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":12,"warmup":false,"peakRSSKiB":20072},
+    {"cpuMS":1.469144000000002,"elapsedMS":1.471622999815736,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":12,"warmup":false,"peakRSSKiB":20256},
+    {"cpuMS":1.4548430000000008,"elapsedMS":1.4579229991795728,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":13,"warmup":false,"peakRSSKiB":20376},
+    {"cpuMS":1.7396669999999967,"elapsedMS":1.7424329998902977,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":13,"warmup":false,"peakRSSKiB":20116},
+    {"cpuMS":1.6964419999999993,"elapsedMS":1.6987779999908525,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":14,"warmup":false,"peakRSSKiB":20180},
+    {"cpuMS":1.762591000000001,"elapsedMS":1.7655269994065748,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":14,"warmup":false,"peakRSSKiB":20196},
+    {"cpuMS":1.5335999999999996,"elapsedMS":1.536099000077229,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":15,"warmup":false,"peakRSSKiB":20360},
+    {"cpuMS":1.6950199999999984,"elapsedMS":1.6977370005406556,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":15,"warmup":false,"peakRSSKiB":20180},
+    {"cpuMS":1.7351599999999996,"elapsedMS":1.7392379995726515,"fittingShapes":0,"scenario":"mixed","shapes":100,"binary":"legacy-controls","pair":16,"warmup":false,"peakRSSKiB":20356},
+    {"cpuMS":4.854634,"elapsedMS":4.857697999796073,"fittingShapes":100,"scenario":"mixed","shapes":100,"binary":"candidate","pair":16,"warmup":false,"peakRSSKiB":20284},
+    {"cpuMS":15.780064000000003,"elapsedMS":15.783245999955398,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":0,"warmup":true,"peakRSSKiB":20416},
+    {"cpuMS":2.756148,"elapsedMS":2.7593340000748867,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":0,"warmup":true,"peakRSSKiB":20068},
+    {"cpuMS":2.2998689999999997,"elapsedMS":2.302599999893573,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":1,"warmup":true,"peakRSSKiB":20216},
+    {"cpuMS":15.101264,"elapsedMS":15.104854000128398,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":1,"warmup":true,"peakRSSKiB":20420},
+    {"cpuMS":15.742447000000004,"elapsedMS":15.745830000014394,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":2,"warmup":false,"peakRSSKiB":20348},
+    {"cpuMS":2.1563560000000015,"elapsedMS":2.1595090001937933,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":2,"warmup":false,"peakRSSKiB":19992},
+    {"cpuMS":2.5280090000000013,"elapsedMS":2.5305959998149774,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":3,"warmup":false,"peakRSSKiB":20248},
+    {"cpuMS":16.732539999999997,"elapsedMS":16.73539100011112,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":3,"warmup":false,"peakRSSKiB":20176},
+    {"cpuMS":16.221830000000004,"elapsedMS":16.225839000071574,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":4,"warmup":false,"peakRSSKiB":20204},
+    {"cpuMS":2.4584059999999996,"elapsedMS":2.461774999574118,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":4,"warmup":false,"peakRSSKiB":20048},
+    {"cpuMS":2.2505860000000024,"elapsedMS":2.257403000839986,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":5,"warmup":false,"peakRSSKiB":19948},
+    {"cpuMS":19.723167000000004,"elapsedMS":19.7272890000022,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":5,"warmup":false,"peakRSSKiB":20116},
+    {"cpuMS":16.254299000000003,"elapsedMS":16.256984999927226,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":6,"warmup":false,"peakRSSKiB":20204},
+    {"cpuMS":2.337064999999999,"elapsedMS":2.340236000236473,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":6,"warmup":false,"peakRSSKiB":20232},
+    {"cpuMS":2.5254050000000015,"elapsedMS":2.52818299941282,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":7,"warmup":false,"peakRSSKiB":20016},
+    {"cpuMS":16.514446000000003,"elapsedMS":16.517840000233264,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":7,"warmup":false,"peakRSSKiB":20208},
+    {"cpuMS":15.325277999999997,"elapsedMS":15.32835400030308,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":8,"warmup":false,"peakRSSKiB":19944},
+    {"cpuMS":2.233431000000001,"elapsedMS":2.2501119992739405,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":8,"warmup":false,"peakRSSKiB":20028},
+    {"cpuMS":2.287220999999999,"elapsedMS":2.2904420002305415,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":9,"warmup":false,"peakRSSKiB":20064},
+    {"cpuMS":17.229289,"elapsedMS":17.232114999387704,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":9,"warmup":false,"peakRSSKiB":20220},
+    {"cpuMS":15.980901999999999,"elapsedMS":15.984342999217915,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":10,"warmup":false,"peakRSSKiB":20448},
+    {"cpuMS":2.9494759999999993,"elapsedMS":2.952019000076689,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":10,"warmup":false,"peakRSSKiB":20132},
+    {"cpuMS":2.1642380000000023,"elapsedMS":2.166889999898558,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":11,"warmup":false,"peakRSSKiB":20068},
+    {"cpuMS":15.013603999999999,"elapsedMS":15.016132000710058,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":11,"warmup":false,"peakRSSKiB":20240},
+    {"cpuMS":15.695568,"elapsedMS":15.698660999987624,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":12,"warmup":false,"peakRSSKiB":19948},
+    {"cpuMS":2.6940860000000018,"elapsedMS":2.6971629995387048,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":12,"warmup":false,"peakRSSKiB":20148},
+    {"cpuMS":2.2166460000000026,"elapsedMS":2.219257000433572,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":13,"warmup":false,"peakRSSKiB":20148},
+    {"cpuMS":15.373428999999998,"elapsedMS":15.375813999526144,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":13,"warmup":false,"peakRSSKiB":20420},
+    {"cpuMS":15.988302,"elapsedMS":15.99720200010779,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":14,"warmup":false,"peakRSSKiB":19972},
+    {"cpuMS":2.201834,"elapsedMS":2.2048760001780465,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":14,"warmup":false,"peakRSSKiB":20068},
+    {"cpuMS":3.8603000000000005,"elapsedMS":3.863354999339208,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":15,"warmup":false,"peakRSSKiB":20064},
+    {"cpuMS":15.865490999999999,"elapsedMS":15.868442000282812,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":15,"warmup":false,"peakRSSKiB":20240},
+    {"cpuMS":16.817417000000003,"elapsedMS":16.820998000184773,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"legacy-controls","pair":16,"warmup":false,"peakRSSKiB":20180},
+    {"cpuMS":2.1787300000000003,"elapsedMS":2.18173199937155,"fittingShapes":100,"scenario":"shrink","shapes":100,"binary":"candidate","pair":16,"warmup":false,"peakRSSKiB":20272},
+    {"cpuMS":1.710152999999999,"elapsedMS":1.7127589999290649,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":0,"warmup":true,"peakRSSKiB":17724},
+    {"cpuMS":2.597452,"elapsedMS":2.6093129999935627,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":0,"warmup":true,"peakRSSKiB":17972},
+    {"cpuMS":2.6644719999999977,"elapsedMS":2.6673490001485334,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":1,"warmup":true,"peakRSSKiB":17892},
+    {"cpuMS":1.5593380000000003,"elapsedMS":1.561715999741864,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":1,"warmup":true,"peakRSSKiB":17728},
+    {"cpuMS":1.4280729999999984,"elapsedMS":1.4300220000222907,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":2,"warmup":false,"peakRSSKiB":17712},
+    {"cpuMS":2.5606380000000004,"elapsedMS":2.5636860000304296,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":2,"warmup":false,"peakRSSKiB":18008},
+    {"cpuMS":2.475741,"elapsedMS":2.477779000400915,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":3,"warmup":false,"peakRSSKiB":18092},
+    {"cpuMS":1.6224629999999975,"elapsedMS":1.625910999791813,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":3,"warmup":false,"peakRSSKiB":17860},
+    {"cpuMS":1.5224739999999994,"elapsedMS":1.5256730002874974,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":4,"warmup":false,"peakRSSKiB":17692},
+    {"cpuMS":2.621478,"elapsedMS":2.6239539993184735,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":4,"warmup":false,"peakRSSKiB":18044},
+    {"cpuMS":2.6049239999999982,"elapsedMS":2.6075499999933527,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":5,"warmup":false,"peakRSSKiB":17952},
+    {"cpuMS":1.4488949999999987,"elapsedMS":1.4513830001305905,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":5,"warmup":false,"peakRSSKiB":17968},
+    {"cpuMS":1.7511540000000012,"elapsedMS":1.7539800001031836,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":6,"warmup":false,"peakRSSKiB":17976},
+    {"cpuMS":2.550593,"elapsedMS":2.5546619999659015,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":6,"warmup":false,"peakRSSKiB":18096},
+    {"cpuMS":2.685943999999999,"elapsedMS":2.6883300006375066,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":7,"warmup":false,"peakRSSKiB":17904},
+    {"cpuMS":1.475353999999998,"elapsedMS":1.4785829998800182,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":7,"warmup":false,"peakRSSKiB":17872},
+    {"cpuMS":1.4885439999999979,"elapsedMS":1.491171999987273,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":8,"warmup":false,"peakRSSKiB":17876},
+    {"cpuMS":2.803167999999998,"elapsedMS":2.8063839999958873,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":8,"warmup":false,"peakRSSKiB":17892},
+    {"cpuMS":2.5368009999999983,"elapsedMS":2.5514869994367473,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":9,"warmup":false,"peakRSSKiB":18020},
+    {"cpuMS":1.4112779999999985,"elapsedMS":1.4133059994492214,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":9,"warmup":false,"peakRSSKiB":17728},
+    {"cpuMS":1.380672999999999,"elapsedMS":1.3829620002070442,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":10,"warmup":false,"peakRSSKiB":18012},
+    {"cpuMS":2.566446,"elapsedMS":2.568842999608023,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":10,"warmup":false,"peakRSSKiB":17704},
+    {"cpuMS":3.8450469999999974,"elapsedMS":3.847821999443113,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":11,"warmup":false,"peakRSSKiB":17888},
+    {"cpuMS":1.6258680000000025,"elapsedMS":1.628835000701656,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":11,"warmup":false,"peakRSSKiB":17692},
+    {"cpuMS":1.8231410000000003,"elapsedMS":1.8263760002810159,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":12,"warmup":false,"peakRSSKiB":17960},
+    {"cpuMS":2.616521,"elapsedMS":2.619257999867841,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":12,"warmup":false,"peakRSSKiB":17952},
+    {"cpuMS":2.5118849999999986,"elapsedMS":2.5149940001938376,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":13,"warmup":false,"peakRSSKiB":18124},
+    {"cpuMS":1.6499840000000001,"elapsedMS":1.652750000175729,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":13,"warmup":false,"peakRSSKiB":17680},
+    {"cpuMS":1.3932120000000012,"elapsedMS":1.395551000314299,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":14,"warmup":false,"peakRSSKiB":17872},
+    {"cpuMS":2.6437810000000015,"elapsedMS":2.6464270003998536,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":14,"warmup":false,"peakRSSKiB":18020},
+    {"cpuMS":2.5463060000000017,"elapsedMS":2.5494050005363533,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":15,"warmup":false,"peakRSSKiB":18152},
+    {"cpuMS":1.617175000000002,"elapsedMS":1.6200529998968705,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":15,"warmup":false,"peakRSSKiB":17960},
+    {"cpuMS":1.4305370000000026,"elapsedMS":1.4338069995574187,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"legacy-controls","pair":16,"warmup":false,"peakRSSKiB":17692},
+    {"cpuMS":2.6948879999999993,"elapsedMS":2.7020099996661884,"fittingShapes":100,"scenario":"plain-fallback-unique","shapes":100,"binary":"candidate","pair":16,"warmup":false,"peakRSSKiB":18016},
+    {"cpuMS":1.78911,"elapsedMS":1.7918760004249634,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":0,"warmup":true,"peakRSSKiB":20132},
+    {"cpuMS":6.620754,"elapsedMS":6.6244310000911355,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":0,"warmup":true,"peakRSSKiB":20244},
+    {"cpuMS":3.591831,"elapsedMS":3.5944370001743664,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":1,"warmup":true,"peakRSSKiB":19992},
+    {"cpuMS":1.646458,"elapsedMS":1.6498859995408566,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":1,"warmup":true,"peakRSSKiB":19844},
+    {"cpuMS":1.6241149999999989,"elapsedMS":1.6267519995381008,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":2,"warmup":false,"peakRSSKiB":20076},
+    {"cpuMS":3.5649310000000005,"elapsedMS":3.567767999811622,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":2,"warmup":false,"peakRSSKiB":20112},
+    {"cpuMS":3.8155739999999985,"elapsedMS":3.819079000095371,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":3,"warmup":false,"peakRSSKiB":20132},
+    {"cpuMS":2.2644870000000026,"elapsedMS":2.2673280000162777,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":3,"warmup":false,"peakRSSKiB":20060},
+    {"cpuMS":1.6143599999999987,"elapsedMS":1.6165269998964504,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":4,"warmup":false,"peakRSSKiB":20068},
+    {"cpuMS":3.9894620000000027,"elapsedMS":3.9922050000313902,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":4,"warmup":false,"peakRSSKiB":20132},
+    {"cpuMS":3.6265429999999994,"elapsedMS":3.6298610002631904,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":5,"warmup":false,"peakRSSKiB":20152},
+    {"cpuMS":1.6047060000000009,"elapsedMS":1.6070530000433791,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":5,"warmup":false,"peakRSSKiB":20096},
+    {"cpuMS":1.6672089999999993,"elapsedMS":1.6701759996067267,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":6,"warmup":false,"peakRSSKiB":20128},
+    {"cpuMS":3.8010519999999994,"elapsedMS":3.803836999395571,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":6,"warmup":false,"peakRSSKiB":20116},
+    {"cpuMS":3.9203389999999985,"elapsedMS":3.922882999177091,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":7,"warmup":false,"peakRSSKiB":20144},
+    {"cpuMS":1.610524000000002,"elapsedMS":1.6134830002556555,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":7,"warmup":false,"peakRSSKiB":19820},
+    {"cpuMS":1.620319000000002,"elapsedMS":1.6224560004047817,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":8,"warmup":false,"peakRSSKiB":20224},
+    {"cpuMS":3.5943940000000008,"elapsedMS":3.5972320001746994,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":8,"warmup":false,"peakRSSKiB":19932},
+    {"cpuMS":3.7736910000000026,"elapsedMS":3.777006999371224,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":9,"warmup":false,"peakRSSKiB":20144},
+    {"cpuMS":1.6668989999999995,"elapsedMS":1.6698449999239529,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":9,"warmup":false,"peakRSSKiB":19988},
+    {"cpuMS":1.593309000000001,"elapsedMS":1.596056999915163,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":10,"warmup":false,"peakRSSKiB":20016},
+    {"cpuMS":3.8035759999999996,"elapsedMS":3.807822999988275,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":10,"warmup":false,"peakRSSKiB":20148},
+    {"cpuMS":4.408044,"elapsedMS":4.411094000715821,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":11,"warmup":false,"peakRSSKiB":20156},
+    {"cpuMS":2.0100590000000014,"elapsedMS":2.0139139996899758,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":11,"warmup":false,"peakRSSKiB":20020},
+    {"cpuMS":1.6357419999999991,"elapsedMS":1.6380980005124002,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":12,"warmup":false,"peakRSSKiB":20012},
+    {"cpuMS":3.60452,"elapsedMS":3.607636999731767,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":12,"warmup":false,"peakRSSKiB":20244},
+    {"cpuMS":6.793841999999998,"elapsedMS":6.796266000492324,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":13,"warmup":false,"peakRSSKiB":20328},
+    {"cpuMS":1.7270880000000015,"elapsedMS":1.731035999910091,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":13,"warmup":false,"peakRSSKiB":20052},
+    {"cpuMS":1.6284109999999998,"elapsedMS":1.6313790001731832,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":14,"warmup":false,"peakRSSKiB":20228},
+    {"cpuMS":3.5803829999999994,"elapsedMS":3.5829509997711284,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":14,"warmup":false,"peakRSSKiB":20240},
+    {"cpuMS":3.643467000000001,"elapsedMS":3.646283999842126,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":15,"warmup":false,"peakRSSKiB":19960},
+    {"cpuMS":1.6019619999999986,"elapsedMS":1.6050100002757972,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":15,"warmup":false,"peakRSSKiB":20236},
+    {"cpuMS":1.618676999999999,"elapsedMS":1.6208429997277563,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"legacy-controls","pair":16,"warmup":false,"peakRSSKiB":20096},
+    {"cpuMS":3.692780999999999,"elapsedMS":3.6959880007998436,"fittingShapes":100,"scenario":"plain-registered-unique","shapes":100,"binary":"candidate","pair":16,"warmup":false,"peakRSSKiB":19924},
+    {"cpuMS":4.802251,"elapsedMS":4.805315999874438,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":0,"warmup":true,"peakRSSKiB":20432},
+    {"cpuMS":41.038761,"elapsedMS":41.05973900004756,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":0,"warmup":true,"peakRSSKiB":20260},
+    {"cpuMS":42.964685,"elapsedMS":42.9728540002543,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":1,"warmup":true,"peakRSSKiB":20192},
+    {"cpuMS":4.589415,"elapsedMS":4.592031000356656,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":1,"warmup":true,"peakRSSKiB":20316},
+    {"cpuMS":4.616754,"elapsedMS":4.6202129997254815,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":2,"warmup":false,"peakRSSKiB":20180},
+    {"cpuMS":44.411235999999995,"elapsedMS":44.559045999449154,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":2,"warmup":false,"peakRSSKiB":20284},
+    {"cpuMS":41.229155000000006,"elapsedMS":41.23204400002578,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":3,"warmup":false,"peakRSSKiB":20192},
+    {"cpuMS":5.077388999999995,"elapsedMS":5.08109299971693,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":3,"warmup":false,"peakRSSKiB":20228},
+    {"cpuMS":4.6436150000000005,"elapsedMS":4.646010999749706,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":4,"warmup":false,"peakRSSKiB":19992},
+    {"cpuMS":43.12542400000001,"elapsedMS":43.12844300056895,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":4,"warmup":false,"peakRSSKiB":20256},
+    {"cpuMS":41.585454000000006,"elapsedMS":41.59258599975146,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":5,"warmup":false,"peakRSSKiB":20284},
+    {"cpuMS":5.261834,"elapsedMS":5.265624000458047,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":5,"warmup":false,"peakRSSKiB":20416},
+    {"cpuMS":4.529645999999998,"elapsedMS":4.532873000243853,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":6,"warmup":false,"peakRSSKiB":20192},
+    {"cpuMS":43.863391,"elapsedMS":43.866613000318466,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":6,"warmup":false,"peakRSSKiB":20352},
+    {"cpuMS":41.177358,"elapsedMS":41.218453000510635,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":7,"warmup":false,"peakRSSKiB":20360},
+    {"cpuMS":4.3350360000000006,"elapsedMS":4.337445000601292,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":7,"warmup":false,"peakRSSKiB":20172},
+    {"cpuMS":4.4541530000000025,"elapsedMS":4.4563799992829445,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":8,"warmup":false,"peakRSSKiB":20116},
+    {"cpuMS":45.591171,"elapsedMS":45.594614999572514,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":8,"warmup":false,"peakRSSKiB":20276},
+    {"cpuMS":44.66877,"elapsedMS":44.69368499940174,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":9,"warmup":false,"peakRSSKiB":20164},
+    {"cpuMS":4.8558499999999984,"elapsedMS":4.858795000473037,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":9,"warmup":false,"peakRSSKiB":20224},
+    {"cpuMS":4.555864,"elapsedMS":4.5594619996336405,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":10,"warmup":false,"peakRSSKiB":19976},
+    {"cpuMS":44.625725,"elapsedMS":44.628679000197735,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":10,"warmup":false,"peakRSSKiB":20360},
+    {"cpuMS":41.454379,"elapsedMS":41.45738599981996,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":11,"warmup":false,"peakRSSKiB":20200},
+    {"cpuMS":5.110719,"elapsedMS":5.1142519996574265,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":11,"warmup":false,"peakRSSKiB":20192},
+    {"cpuMS":4.833456999999999,"elapsedMS":4.837071999645559,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":12,"warmup":false,"peakRSSKiB":20188},
+    {"cpuMS":41.604422,"elapsedMS":41.60721699918213,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":12,"warmup":false,"peakRSSKiB":20184},
+    {"cpuMS":48.57657,"elapsedMS":48.57930199978,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":13,"warmup":false,"peakRSSKiB":20196},
+    {"cpuMS":4.5702050000000005,"elapsedMS":4.573703999994905,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":13,"warmup":false,"peakRSSKiB":20192},
+    {"cpuMS":4.7728769999999985,"elapsedMS":4.775061000145797,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":14,"warmup":false,"peakRSSKiB":20328},
+    {"cpuMS":42.585602,"elapsedMS":42.58849599955283,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":14,"warmup":false,"peakRSSKiB":20348},
+    {"cpuMS":42.027742,"elapsedMS":42.0302319998882,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":15,"warmup":false,"peakRSSKiB":20360},
+    {"cpuMS":4.805775999999998,"elapsedMS":4.8096619993884815,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":15,"warmup":false,"peakRSSKiB":20260},
+    {"cpuMS":4.310718999999998,"elapsedMS":4.312938000111899,"fittingShapes":0,"scenario":"mixed-unique","shapes":100,"binary":"legacy-controls","pair":16,"warmup":false,"peakRSSKiB":19984},
+    {"cpuMS":41.251198,"elapsedMS":41.2541660007264,"fittingShapes":100,"scenario":"mixed-unique","shapes":100,"binary":"candidate","pair":16,"warmup":false,"peakRSSKiB":20352},
+    {"cpuMS":0.3854529999999974,"elapsedMS":0.3884329998982139,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":0,"warmup":true,"peakRSSKiB":20244},
+    {"cpuMS":2.5771020000000013,"elapsedMS":2.580580000540067,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":0,"warmup":true,"peakRSSKiB":20056},
+    {"cpuMS":2.1197620000000006,"elapsedMS":2.122263999808638,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":1,"warmup":true,"peakRSSKiB":20064},
+    {"cpuMS":0.3460940000000017,"elapsedMS":0.34893500014732126,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":1,"warmup":true,"peakRSSKiB":19980},
+    {"cpuMS":0.47829100000000224,"elapsedMS":0.480779999634251,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":2,"warmup":false,"peakRSSKiB":20040},
+    {"cpuMS":2.0290570000000008,"elapsedMS":2.0317100006650435,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":2,"warmup":false,"peakRSSKiB":19996},
+    {"cpuMS":2.251909,"elapsedMS":2.254719999655208,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":3,"warmup":false,"peakRSSKiB":20148},
+    {"cpuMS":0.500142999999998,"elapsedMS":0.5030120000810712,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":3,"warmup":false,"peakRSSKiB":20264},
+    {"cpuMS":0.3787129999999993,"elapsedMS":0.3812929999185144,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":4,"warmup":false,"peakRSSKiB":20184},
+    {"cpuMS":2.089677000000002,"elapsedMS":2.0939220003128867,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":4,"warmup":false,"peakRSSKiB":20124},
+    {"cpuMS":2.288142,"elapsedMS":2.291283000886324,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":5,"warmup":false,"peakRSSKiB":19996},
+    {"cpuMS":0.3502509999999993,"elapsedMS":0.35241000023233937,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":5,"warmup":false,"peakRSSKiB":20096},
+    {"cpuMS":0.3849629999999986,"elapsedMS":0.38704199960193364,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":6,"warmup":false,"peakRSSKiB":20164},
+    {"cpuMS":2.3649859999999996,"elapsedMS":2.369128000282217,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":6,"warmup":false,"peakRSSKiB":20240},
+    {"cpuMS":4.406272000000003,"elapsedMS":4.410943000038969,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":7,"warmup":false,"peakRSSKiB":20104},
+    {"cpuMS":0.4166490000000016,"elapsedMS":0.4196999998384854,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":7,"warmup":false,"peakRSSKiB":20180},
+    {"cpuMS":0.3441920000000001,"elapsedMS":0.34639200021047145,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":8,"warmup":false,"peakRSSKiB":20044},
+    {"cpuMS":1.991962,"elapsedMS":1.9948560002376325,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":8,"warmup":false,"peakRSSKiB":20028},
+    {"cpuMS":2.032222,"elapsedMS":2.035206000073231,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":9,"warmup":false,"peakRSSKiB":20208},
+    {"cpuMS":0.35468699999999936,"elapsedMS":0.3576680001060595,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":9,"warmup":false,"peakRSSKiB":19952},
+    {"cpuMS":0.3997949999999979,"elapsedMS":0.40277500011143275,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":10,"warmup":false,"peakRSSKiB":19952},
+    {"cpuMS":2.537213,"elapsedMS":2.541223000662285,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":10,"warmup":false,"peakRSSKiB":20224},
+    {"cpuMS":2.2381580000000003,"elapsedMS":2.241359999970882,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":11,"warmup":false,"peakRSSKiB":20132},
+    {"cpuMS":0.3418179999999972,"elapsedMS":0.3446989994699834,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":11,"warmup":false,"peakRSSKiB":20096},
+    {"cpuMS":0.3552179999999974,"elapsedMS":0.35840900000039255,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":12,"warmup":false,"peakRSSKiB":20380},
+    {"cpuMS":2.325138000000001,"elapsedMS":2.3287980002351105,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":12,"warmup":false,"peakRSSKiB":20232},
+    {"cpuMS":2.2008719999999995,"elapsedMS":2.2043250000933767,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":13,"warmup":false,"peakRSSKiB":20180},
+    {"cpuMS":0.3574219999999996,"elapsedMS":0.3603120003390359,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":13,"warmup":false,"peakRSSKiB":20040},
+    {"cpuMS":0.36191899999999877,"elapsedMS":0.36452800031838706,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":14,"warmup":false,"peakRSSKiB":20072},
+    {"cpuMS":2.0757160000000017,"elapsedMS":2.079289999528555,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":14,"warmup":false,"peakRSSKiB":20144},
+    {"cpuMS":2.046163,"elapsedMS":2.04888500047673,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":15,"warmup":false,"peakRSSKiB":20228},
+    {"cpuMS":0.38449200000000017,"elapsedMS":0.3870509999615024,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":15,"warmup":false,"peakRSSKiB":20120},
+    {"cpuMS":0.47028000000000003,"elapsedMS":0.4739089999930002,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"legacy-controls","pair":16,"warmup":false,"peakRSSKiB":20104},
+    {"cpuMS":2.0638179999999986,"elapsedMS":2.066512000055809,"error":"\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.","fittingShapes":0,"scenario":"shrink-unique","shapes":100,"binary":"candidate","pair":16,"warmup":false,"peakRSSKiB":20236}
+  ]
+}

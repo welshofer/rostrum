@@ -17,6 +17,14 @@ observation of that run, not a comparative benchmark.
 
 ## Executable coverage
 
+The Fonts, Shaping and Fitting recipe also exercises
+`AuthoredLayoutEngine.fitText` on a second slide. Original 24/48 pt mixed-size
+runs overflow a compact frame; the fitted copy retains both run sizes and saves
+normal autofit. Both frame-height options verify reopened rich-text lines and
+editable run content using the embedded DejaVu face. The normal Lab pipeline
+produces inspector SVGs and extracted artifacts for both slides. These are
+computed-fit checks, not native PowerPoint autofit or pixel-equivalence evidence.
+
 The stable [catalog IDs](../Lectern/Sources/LecternCore/LibraryLab/LibraryLabTypes.swift)
 are routed exhaustively through the [runner](../Lectern/Sources/LecternCore/LibraryLab/LibraryLab.swift).
 Tests require a unique recipe for every ID and run every recipe through the same
