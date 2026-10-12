@@ -93,7 +93,7 @@ extension XML.Element {
     }
 
     /// A coordinate or extent attribute, bounded to `OOXMLBounds.coordinate`.
-    func coordinate(_ attribute: String) -> Int? {
+    package func coordinate(_ attribute: String) -> Int? {
         boundedInt(attribute, in: OOXMLBounds.coordinate)
     }
 

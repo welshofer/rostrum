@@ -12,10 +12,10 @@ and text. Explicit percentage line spacing and point paragraph gaps may be
 compacted; exact line spacing and inherited styles remain intact. Failed bodies
 are unchanged. The read-only layout and renderer algorithms do not change.
 
-Fifteen focused regressions cover mixed sizes, inherited sizes, breaks, fields,
+Seventeen focused regressions cover mixed sizes, inherited sizes, breaks, fields,
 no-wrap overflow, exact spacing, retained run facades, unknown markup, selection,
-host measurements, slide-number field substitution, unsupported vertical/column
-text and operation-local reuse.
+host measurements and available width, slide-number field substitution,
+malformed autofit attributes, unsupported vertical/column text and operation-local reuse.
 The initial seven tests reproduced six failed expectations against the old code.
 The Fonts and Fitting Library Lab includes an original/fitted mixed-size page,
 with reopened geometry, formatting and normal preview/extraction checks.
@@ -37,13 +37,13 @@ retained and measured before implementation.
 
 | 100-shape workload | Legacy → shared fitting, median CPU ms | Shared geometry accepted after fitting |
 | --- | ---: | --- |
-| Repeated plain text, fallback | 1.454 → 1.060 | 100 → 100 |
-| Repeated plain text, registered DejaVu | 1.676 → 1.064 | 100 → 100 |
-| Repeated mixed-size text | 1.740 → 1.534 | 0 → 100 |
-| Repeated paragraphs requiring shrinking | 15.988 → 2.287 | 100 → 100 |
-| Distinct plain text, fallback | 1.489 → 2.605 | 100 → 100 |
-| Distinct plain text, registered DejaVu | 1.624 → 3.774 | 100 → 100 |
-| Distinct mixed-size text | 4.644 → 42.586 | 0 → 100 |
+| Repeated plain text, fallback | 1.447 → 1.042 | 100 → 100 |
+| Repeated plain text, registered DejaVu | 1.658 → 1.008 | 100 → 100 |
+| Repeated mixed-size text | 1.806 → 1.590 | 0 → 100 |
+| Repeated paragraphs requiring shrinking | 15.246 → 2.268 | 100 → 100 |
+| Distinct plain text, fallback | 1.415 → 2.701 | 100 → 100 |
+| Distinct plain text, registered DejaVu | 1.694 → 3.692 | 100 → 100 |
+| Distinct mixed-size text | 4.414 → 42.081 | 0 → 100 |
 
 The repeated cases benefit from bounded per-operation fit reuse. The first
 uncached implementation measured about 34 ms for repeated mixed-size text and
@@ -51,16 +51,16 @@ uncached implementation measured about 34 ms for repeated mixed-size text and
 changing saved bytes. Cache retention is limited to 64 entries and 256 KiB of
 serialized keys, not a claim about total heap allocation.
 
-Distinct text remains slower. Plain registered text adds about 2.2 ms per 100
+Distinct text remains slower. Plain registered text adds about 2.0 ms per 100
 shapes; mixed-size fitting does substantially more work to produce correct
 geometry. This is a correctness/performance tradeoff, not a general speedup.
 The distinct shrinking control fails at the first unfit body in both versions;
 its timings are retained separately and are not a 100-shape throughput result.
 
-Median whole-process peak RSS stays near 17.5–19.9 MiB across these cases. That
+Median whole-process peak RSS stays near 17.4–19.8 MiB across these cases. That
 includes the document, fonts and post-timing verification; no lower-memory claim
 is made. Elapsed tails vary on this shared host: the distinct mixed-size case
-has an observed nearest-rank p95 of 48.6 ms. These samples do not establish a
+has an observed nearest-rank p95 of 45.0 ms. These samples do not establish a
 regression budget or cross-platform performance.
 
 ## Preservation and reproduction

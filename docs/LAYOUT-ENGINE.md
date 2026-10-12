@@ -59,8 +59,9 @@ not establish that PowerPoint would select the same autofit.
 size, bold flag, tracking and available width in points. Return the occupied
 height in points for that request. Template composition applies its own
 paragraph/body spacing rules around this measurement. Authored fitting invokes
-the callback on positioned rich-text spans and conservatively accounts for a
-host height larger than the shared line height; it does not replace shared line
+the callback on positioned rich-text spans using the body's available width
+after insets, and conservatively accounts for a host height larger than the
+shared line height; it does not replace shared line
 breaking. The legacy callback has no italic flag and is not a complete rich-text
 shaping adapter. Keep the adapter deterministic and the font environment fixed
 while an engine is in use.

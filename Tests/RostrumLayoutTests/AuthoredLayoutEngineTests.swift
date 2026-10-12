@@ -132,7 +132,7 @@ import RostrumLayout
     }
 
     @Test func fittingPreservesRunFacadesAndUnknownMarkup() throws {
-        let (deck, slide, shape) = try specimen("<a:p>" + run("Small ", size: 24) + run("LARGE", size: 48) + "<a:extLst><private:kept value=\"original\"/></a:extLst></a:p>", height: 45)
+        let (deck, slide, shape) = try specimen("<a:p>" + run("Small ", size: 24) + run("LARGE", size: 48) + "<a:extLst><private:kept xmlns:private=\"urn:rostrum:test:private\" value=\"original\"/></a:extLst></a:p>", height: 45)
         let frame = try #require(shape.textFrame)
         let retained = try #require(frame.paragraphs.first?.runs.last)
         try AuthoredLayoutEngine(presentation: deck).fitText(in: slide)
@@ -206,6 +206,33 @@ import RostrumLayout
         #expect(!RichTextLayout(textBody: body, width: 15, height: 100, fonts: deck.fonts, theme: deck.theme, slideNumber: 10).fits)
         let before = try deck.serializedData()
         #expect(throws: LayoutError.self) { try AuthoredLayoutEngine(presentation: deck).fitText(in: slide) }
+        #expect(try deck.serializedData() == before)
+    }
+
+    @Test func irrelevantAutofitAttributesCannotLowerTheReadableFloor() throws {
+        let (deck, slide, shape) = try specimen("<a:p>" + run("A", size: 24) + "</a:p>", height: 20)
+        let body = try #require(shape.element.firstChild(named: "p:txBody")?.firstChild(named: "a:bodyPr"))
+        body.appendElement(XML.Element("a:noAutofit", attributes: [("fontScale", "80000")]))
+        slide.part.markDirty()
+        #expect(try !layout(shape, deck: deck).fits)
+        let before = try deck.serializedData()
+        #expect(throws: LayoutError.self) { try AuthoredLayoutEngine(presentation: deck).fitText(in: slide) }
+        #expect(try deck.serializedData() == before)
+    }
+
+    @Test(arguments: [0.0, 20.0]) func hostMeasurementUsesAvailableWidthRatherThanTightGlyphAdvance(inset: Double) throws {
+        let (deck, slide, shape) = try specimen("<a:p>" + run("Short", size: 17) + "</a:p>", width: 300, height: 40)
+        shape.textFrame?.setMargins(left: .points(inset), top: .zero, right: .points(inset), bottom: .zero)
+        let before = try deck.serializedData()
+        var requests: [TextMeasureRequest] = []
+        try AuthoredLayoutEngine(presentation: deck, measure: { request in
+            requests.append(request)
+            // A host can legitimately wrap in the glyph advance computed by a
+            // different shaping policy, even though the actual box is roomy.
+            return request.width < 100 ? 100 : 20
+        }).fitText(in: slide)
+        #expect(!requests.isEmpty)
+        #expect(requests.allSatisfy { $0.width == 300 - 2 * inset })
         #expect(try deck.serializedData() == before)
     }
 }

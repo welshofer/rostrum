@@ -115,6 +115,11 @@ public final class AuthoredLayoutEngine {
             func bodyAttribute(_ name: String) -> String? {
                 bodies.lazy.compactMap { $0[attribute: name] }.first
             }
+            func inset(_ name: String, default fallback: Double) -> Double {
+                bodies.first { $0[attribute: name] != nil }?.coordinate(name)
+                    .map { Double($0) / Double(EMU.perPoint) } ?? fallback
+            }
+            let availableWidth = max(0, frame.width.points - inset("lIns", default: 7.2) - inset("rIns", default: 7.2))
             guard (bodyAttribute("vert") ?? "horz") == "horz",
                   (bodyAttribute("numCol") ?? "1") == "1" else {
                 throw cannotFit("uses vertical or multi-column text that authored fitting does not support.")
@@ -134,16 +139,19 @@ public final class AuthoredLayoutEngine {
                     var hostHeight = line.height
                     for span in line.spans where !span.run.text.isEmpty {
                         let run = span.run
+                        // A tight glyph advance from one shaping policy can
+                        // wrap in another. Give the host the actual text-box
+                        // width; shared layout already checks line geometry.
                         let height = measure(TextMeasureRequest(text: run.text,
                             font: run.fontFamily ?? theme.minorFont ?? "Arial", size: run.fontSize,
-                            bold: run.bold, tracking: run.tracking, width: max(1, span.width)))
+                            bold: run.bold, tracking: run.tracking, width: availableWidth))
                         guard height.isFinite, height >= 0 else { return false }
                         hostHeight = max(hostHeight, height)
                     }
                     extraHeight += hostHeight - line.height
                 }
-                let top = bodyAttribute("tIns").flatMap(Double.init).map { $0 / Double(EMU.perPoint) } ?? 3.6
-                let bottom = bodyAttribute("bIns").flatMap(Double.init).map { $0 / Double(EMU.perPoint) } ?? 3.6
+                let top = inset("tIns", default: 3.6)
+                let bottom = inset("bIns", default: 3.6)
                 return value.contentHeight + extraHeight <= frame.height.points - top - bottom + 0.01
             }
             let original = layout(text)
@@ -156,7 +164,8 @@ public final class AuthoredLayoutEngine {
             let autofit = bodies.lazy.compactMap { source in
                 source.childElements.first { ["a:normAutofit", "a:noAutofit", "a:spAutoFit"].contains($0.name) }
             }.first
-            let currentScale = min(100000, max(100, Int(autofit?[attribute: "fontScale"] ?? "100000") ?? 100000))
+            let storedScale = autofit?.name == "a:normAutofit" ? autofit?[attribute: "fontScale"] : nil
+            let currentScale = min(100000, max(100, Int(storedScale ?? "100000") ?? 100000))
             let minimumScale = min(currentScale, Int(ceil(Double(currentScale) * minimumRatio)))
             let candidate = text.deepCopy()
             compact(candidate)
