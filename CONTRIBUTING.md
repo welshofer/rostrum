@@ -13,8 +13,8 @@ coherent — most are also documented in [`CLAUDE.md`](CLAUDE.md) and
 - **Three platforms.** macOS, iOS, and Linux. Never use an API that is absent
   on any of them — notably `XMLDocument`/`XMLNode` (iOS lacks them; use
   `Sources/Rostrum/XML`). CI builds on Linux with Swift 6.0 and 6.1, runs the
-  package tests on 6.1, and checks macOS on pull requests. The local
-  `./scripts/verify.sh` gate adds iOS simulator builds and app-hosted tests
+  package tests on 6.1, and checks macOS and iOS simulator builds on pull requests. The local
+  `./scripts/verify.sh` gate also runs app-hosted tests
   (see [Before a PR](#before-a-pr)).
 - **Lossless round-trip is sacred.** Opening a file and saving it must never
   drop or corrupt XML we do not model. A part you never touch re-emits its
@@ -35,8 +35,16 @@ swift test
 Everything runs with the standard toolchain — no setup script. A few tests
 shell out to external oracles (`unzip`, `zip`, `python3`) to validate our
 output against independent tools; install those to run the full suite
-(`apt-get install zip unzip python3` on Debian/Ubuntu). The pure-Swift suite
-passes without them.
+(`apt-get install zip unzip python3 python3-venv` on Debian/Ubuntu). The
+pure-Swift suite passes without them, but CI and `scripts/verify.sh` require
+the pinned portable oracles so missing tools cannot silently skip checks:
+
+```sh
+python3 -m venv .build/oracles
+source .build/oracles/bin/activate
+python3 -m pip install -r Tools/conformance/requirements.txt
+python3 Tools/conformance/check_dependencies.py
+```
 
 ### The acceptance oracle
 
@@ -73,9 +81,14 @@ Run the helper's offline checks with `python3 -m unittest discover -s scripts/te
 CI builds with Swift 6.0 and 6.1 on Linux on every push, runs the Rostrum,
 RostrumLayout and LecternCore tests on 6.1, and runs the README examples on both
 toolchains. The macOS 26 pull-request gate runs the package tests and builds
-the Lectern app. See [the workflow](.github/workflows/ci.yml) for the exact
-commands. The local `verify.sh` gate also builds the iOS simulator target and
-runs app-hosted tests, alongside the package suites and README examples.
+the Lectern macOS and iOS simulator apps. See [the workflow](.github/workflows/ci.yml)
+for the exact commands. The local `verify.sh` gate also runs app-hosted tests,
+alongside both app builds, the package suites and README examples.
+Linux 6.1, macOS and the local gate run `bash scripts/check-fidelity.sh` after
+the root tests: semantic checks, 14 exact image probes and 36 comparisons with
+hash-pinned PowerPoint image exports. Each run keeps fresh evidence under
+`.build/fidelity-checks/`; CI uploads it even on failure. These portable checks
+do not replace live PowerPoint acceptance or the separate font-dependent gates.
 
 Those app targets are not part of any SwiftPM target, so `swift test` never
 compiles them. The full gate also runs the app-hosted tests. Use

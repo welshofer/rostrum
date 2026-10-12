@@ -52,6 +52,12 @@ with stable category, impact, slide index, part URI, shape ID and XML path.
 when known omissions, approximations or missing resources are encountered.
 Strict mode detects known gaps; passing it is not a full OOXML certification.
 
+Nested group warnings identify the child shape, its owning slide/layout/master
+part, and its path within the group. Siblings retain separate diagnostics even
+when a producer reuses a shape ID. Child path indices include hidden siblings.
+Suppressed inherited placeholders do not create preview warnings; malformed
+nested groups and connectors remain structured omissions.
+
 Register exact font faces on `deck.fonts` before rendering. An explicitly
 registered `previewFallbackFamily` can keep unavailable-font previews readable;
 it does not make exact lookup succeed or suppress missing-font diagnostics.
@@ -120,6 +126,14 @@ python3 Tools/conformance/release_gate.py --semantic-only
 python3 -m unittest discover -s Tools/conformance -p 'test_*.py'
 ```
 
+Install `Tools/conformance/requirements.txt` in an isolated Python environment
+as described in [CONTRIBUTING.md](../CONTRIBUTING.md). After `swift test`, run
+`bash scripts/check-fidelity.sh` for the portable CI gate. It requires the pinned
+dependencies, checks semantics and image probes, and compares all 36 available
+image-only PowerPoint exports (v1 at two sizes, v2 at one). Reports and candidate
+rasters remain under `.build/fidelity-checks/`. Font-dependent whole-slide
+comparisons and live PowerPoint acceptance remain separate.
+
 Image mappings also have an independent raster check. Install the pinned
 development-only `resvg-py==0.5.0` and `Pillow==12.3.0` in an isolated Python
 environment, then run:
@@ -162,6 +176,10 @@ ROSTRUM_BENCH_FONT=/path/to/font.ttf python3 Tools/rostrum-bench/run.py --output
 The release driver records one warmup plus five fresh process samples by
 default, median/p95, peak RSS, compiler/OS, input/output/font hashes and independent
 python-pptx parsing. Cold unchanged save and warm cached save are separate phases.
+Each phase includes elapsed time (`phases`) and process CPU time (`cpuPhases`).
+CPU time covers all process threads and helps distinguish work from scheduling
+delays; it is still affected by the machine and CPU frequency. Paired reports
+omit CPU comparisons when either binary predates CPU measurements.
 Compare like-for-like platforms, corpora, fonts and build configuration; measure
 variance before setting regression limits.
 
@@ -224,11 +242,14 @@ References are immutable evidence, not adjusted to match library output. The
 ## Additional native evidence — October 2
 
 The [image corpus](IMAGE-OFFICE-20261002.md) has 12 independent, text-free cases
-covering pictures and shape/table fills. All v2 mapping cases pass the unchanged
-whole-PNG gate; three original v1 cases remain failing because their inherited
-shadows are omitted. Strict diagnostics now expose those active effects and
-unsupported format-scheme theme overrides. Empty direct overrides and namespace
-aliases do not create false effect reports. Broader effects remain unsupported.
+covering pictures and shape/table fills. That historical record retains three
+v1 shadow failures. An October 11 Linux rerun at `15315cc3` passes all 36 existing
+whole-PNG comparisons: v1 at 1200×700 and 2400×1400, and v2 at 1200×700, with
+unchanged references and channel-16 / fraction-0.005 limits. Ordinary shape
+shadows are already drawn. Their diagnostics now report an approximation after
+painting, retaining strict refusal; unsupported or unpainted effects remain
+omissions. Empty direct overrides and namespace aliases do not create false
+effect reports. Broader effects remain unsupported.
 
 The [double-border corpus](../Tests/RostrumTests/Fixtures/DoubleTableBorders/README.md)
 verifies 29 PDF geometry cases and 216 stable style-boundary PNG probes across

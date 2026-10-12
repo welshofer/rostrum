@@ -47,6 +47,19 @@ class TextRenderingInputs(unittest.TestCase):
         with self.assertRaises(ValueError):
             check.prepare(self.svg, {}, 1200, 700)
 
+    def test_renderer_ligature_control_is_preserved_without_allowing_other_css(self):
+        style = "font-feature-settings: 'liga' 0"
+        svg = self.svg.replace('<text>', f'<text style="{style}">')
+        group = self.svg.replace('<text>', f'<g style="{style}"><text>').replace('</text>', '</text></g>')
+        span = self.svg.replace('<tspan ', f'<tspan style="{style}" ')
+        for candidate in (svg, group, span, span.replace(style, 'font-feature-settings: normal')):
+            _, _, corrected, _ = check.prepare(candidate, self.fonts, 1200, 700)
+            self.assertIn('font-feature-settings:', corrected)
+        for declaration in (style + ';font-family:Unknown', style + ';fill:url(https://example.com/x)',
+                            "font-feature-settings: 'liga' 1"):
+            with self.subTest(declaration=declaration), self.assertRaises(ValueError):
+                check.prepare(svg.replace(style, declaration), self.fonts, 1200, 700)
+
     def test_bad_or_mismatched_geometry_refuses(self):
         for view in ['0 0 0 700', '0 0 nan 700', '0 0 1200', '0 0 1200 800']:
             with self.subTest(view=view), self.assertRaises(ValueError):

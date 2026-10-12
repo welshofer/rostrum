@@ -2,6 +2,13 @@
 
 ## Latest reconciled measurements
 
+The [October 11 diagnostic traversal pass](DIAGNOSTIC-TRAVERSAL-PERFORMANCE-20261011.md)
+measures 1.77% lower process CPU median for a 10,000-cell fallback table
+(14/15 faster pairs) and 4.73% for an image control (15/15), with identical
+output and ordered diagnostics across 265 slides. Registered-font table timing
+remains inconclusive. The benchmark now records CPU and elapsed time separately;
+this result uses its own baseline and does not close cross-platform gates.
+
 The [table-default and border-join experiment](TABLE-DEFAULT-JOINS-PERFORMANCE-20261004-17.md)
 retains fidelity costs: custom native table rendering observes a 4.852% paired
 slowdown, and the 2,000-cell mixed-width join workload 0.976%. Corrected absent-style

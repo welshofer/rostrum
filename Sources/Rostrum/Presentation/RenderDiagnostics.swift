@@ -56,6 +56,7 @@ final class RenderDiagnosticCollector {
     var location = FidelityLocation(slideIndex: 0, partURI: "", path: "/")
     private(set) var issues: [FidelityIssue] = []
     private var seen: Set<FidelityIssue> = []
+    private var omittedEffectIndices: [FidelityLocation: Int] = [:]
     private struct RecentIssue: Equatable {
         let code: FidelityIssueCode
         let impact: FidelityImpact
@@ -80,7 +81,7 @@ final class RenderDiagnosticCollector {
     private var embeddedFaces: [EmbeddedFace] = []
     private var resolvedFaces: [FontFaceKey: String] = [:]
     private var unavailableFaces: [FontFaceKey: (FidelityIssueCode, FidelityImpact, String)] = [:]
-    func reset() { images.reset(); textAttributes.reset(); themeEffectOverrideProblem = nil; recentLocation = nil; recentIssues = []; issues = []; seen = []; embeddedFaces = []; resolvedFaces = [:]; unavailableFaces = [:] }
+    func reset() { images.reset(); textAttributes.reset(); themeEffectOverrideProblem = nil; recentLocation = nil; recentIssues = []; issues = []; seen = []; omittedEffectIndices = [:]; embeddedFaces = []; resolvedFaces = [:]; unavailableFaces = [:] }
 
     /// Names point at renderer-owned CSS faces, so aliases use one resource and
     /// the SVG does not accidentally pick a similarly named platform font.
@@ -142,7 +143,23 @@ final class RenderDiagnosticCollector {
         if recentIssues.count == 4 { recentIssues.removeFirst() }
         recentIssues.append(recent)
         let issue = FidelityIssue(code: code, impact: impact, location: resolvedLocation, message: message)
-        if seen.insert(issue).inserted { issues.append(issue) }
+        if seen.insert(issue).inserted {
+            if code == .omittedEffect && impact == .omission { omittedEffectIndices[resolvedLocation] = issues.count }
+            issues.append(issue)
+        }
+    }
+
+    /// The scanner conservatively reports effects before painting. Refine that
+    /// same ordered issue only after the renderer has drawn the entire effect.
+    func renderedOuterShadow(at location: FidelityLocation) {
+        guard let index = omittedEffectIndices.removeValue(forKey: location) else { return }
+        let replacement = FidelityIssue(code: .omittedEffect, impact: .approximation, location: location,
+            message: "Shape outer shadow is approximated with an SVG Gaussian blur.")
+        seen.remove(issues[index])
+        issues[index] = replacement
+        seen.insert(replacement)
+        recentLocation = nil
+        recentIssues.removeAll(keepingCapacity: true)
     }
 
     func text(_ layout: RichTextLayout) {
@@ -167,7 +184,8 @@ final class RenderDiagnosticCollector {
     /// Inspect only the shapes selected for rendering, not hidden placeholders.
     /// Traversal is iterative and document ordered; paths include same-name indices.
     func inspect(_ shape: XML.Element, owner: Part, slideIndex: Int, path: String, package: OPCPackage,
-                 tableStyleReference: Bool = false, approximatedTableEffect: XML.Element? = nil) {
+                 tableStyleReference: Bool = false, approximatedTableEffect: XML.Element? = nil,
+                 ignoringPlaceholders: Bool = false) {
         guard !ShapeCollection.isHidden(shape) else { return }
         let id = shape.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"]
         location = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: id, path: path)
@@ -175,28 +193,35 @@ final class RenderDiagnosticCollector {
             if ShapeCollection.isShape(shape) { record(.omittedShape, .omission, "The SVG renderer does not draw \(shape.name).") }
             return
         }
-        if shape.name == "p:grpSp", ShapeTransform.childSpace(ShapeTransform.element(of: shape)) == nil {
-            record(.omittedShape, .omission, "Malformed p:grpSp has no usable child coordinate space.")
-        }
-        if shape.name == "p:cxnSp", shape.firstChild(named: "p:spPr") == nil {
-            record(.omittedShape, .omission, "Malformed p:cxnSp has no shape properties.")
-        }
         // Most visited nodes have no issue. Carry path components through the
         // same document-order traversal instead of allocating a full XPath for
         // every descendant (notably every run/color/border in large tables).
-        var stack: [(element: XML.Element, occurrence: Int, depth: Int, parent: String)] = [(shape, 0, 0, "")]
+        var stack: [(element: XML.Element, occurrence: Int, depth: Int, parent: String, sourceShape: XML.Element)] = [(shape, 0, 0, "", shape)]
         var components: [(name: String, occurrence: Int)] = []
         let tableStyle = tableStyleReference || shape.name == "a:tblStyle" || shape.name == "a:tableStyle"
-        while let (element, occurrence, depth, parent) = stack.popLast() {
+        while let (element, occurrence, depth, parent, enclosingShape) = stack.popLast() {
             if ShapeCollection.isHidden(element) { continue }
+            if ignoringPlaceholders && parent == "p:grpSp" && Placeholders.phElement(of: element) != nil { continue }
+            // A group's child owns its properties. Carry that identity through
+            // descendants without attributing every issue to the outer group.
+            let currentShape = parent == "p:grpSp" && ShapeCollection.isShape(element) ? element : enclosingShape
             if components.count > depth { components.removeLast(components.count - depth) }
             if occurrence > 0 { components.append((element.name, occurrence)) }
             func issue(_ code: FidelityIssueCode, _ impact: FidelityImpact, _ text: String) {
                 let elementPath = path + components.map { "/\($0.name)[\($0.occurrence)]" }.joined()
-                let here = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: id, path: elementPath)
+                let shapeID = currentShape === shape ? id : currentShape.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"]
+                let here = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: shapeID, path: elementPath)
                 record(code, impact, text, at: here)
             }
             switch element.name {
+            case "p:grpSp":
+                if ShapeTransform.childSpace(ShapeTransform.element(of: element)) == nil {
+                    issue(.omittedShape, .omission, "Malformed p:grpSp has no usable child coordinate space.")
+                }
+            case "p:cxnSp":
+                if element.firstChild(named: "p:spPr") == nil {
+                    issue(.omittedShape, .omission, "Malformed p:cxnSp has no shape properties.")
+                }
             case "a:prstGeom":
                 let preset = element[attribute: "prst"] ?? "rect"
                 if !SVGPresetGeometry.supported.contains(preset) && !["line", "straightConnector1"].contains(preset) {
@@ -281,7 +306,7 @@ final class RenderDiagnosticCollector {
                 if let alignment = element[attribute: "algn"], !["l", "ctr", "r", "dec"].contains(alignment) { issue(.unsupportedTextProperty, .approximation, "Unknown tab alignment is approximated as a left tab.") }
             case "a:buBlip": issue(.unsupportedTextProperty, .omission, "Picture bullets are not rendered.")
             case "a:ln":
-                if shape.name == "p:cxnSp" { break }
+                if currentShape.name == "p:cxnSp" { break }
                 if (element[attribute: "cmpd"].map({ $0 != "sng" }) == true
                     && !(tableStyle && TableDoubleBorder.supports(element)))
                     || (!tableStyle && element.firstChild(named: "a:prstDash").map { $0[attribute: "val"] != "solid" } == true)
@@ -303,21 +328,26 @@ final class RenderDiagnosticCollector {
             if nodes.count == 1 {
                 if case .element(let child) = nodes[0],
                    element.name != "a:tblPr" || child.name != "a:tableStyle" {
-                    stack.append((child, 1, components.count, element.name))
+                    stack.append((child, 1, components.count, element.name, currentShape))
                 }
                 continue
             }
-            let children = element.childElements
-            if !children.isEmpty {
-                var counts: [String: Int] = [:]
-                for child in children { counts[child.name, default: 0] += 1 }
-                for child in children.reversed() {
-                    let occurrence = counts[child.name]!
-                    counts[child.name] = occurrence - 1
-                    // Table rendering inspects only enabled style regions.
-                    if element.name == "a:tblPr", child.name == "a:tableStyle" { continue }
-                    stack.append((child, occurrence, components.count, element.name))
-                }
+            // Assign same-name indices in one forward pass without a temporary
+            // child array. Reverse only the newly queued entries so the LIFO
+            // traversal still visits them in document order.
+            let firstAdded = stack.count
+            var counts: [String: Int] = [:]
+            for case .element(let child) in nodes {
+                let occurrence = (counts[child.name] ?? 0) + 1
+                counts[child.name] = occurrence
+                // Table rendering inspects only enabled style regions.
+                if element.name == "a:tblPr", child.name == "a:tableStyle" { continue }
+                stack.append((child, occurrence, components.count, element.name, currentShape))
+            }
+            var left = firstAdded, right = stack.count - 1
+            while left < right {
+                stack.swapAt(left, right)
+                left += 1; right -= 1
             }
         }
     }

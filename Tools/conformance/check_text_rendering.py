@@ -120,7 +120,13 @@ def prepare(svg, fonts, width, height):
     stripped = ET.tostring(root, encoding='unicode')
     used = set()
     def visit(node, family=None, inside_text=False):
-        require('style' not in node.attrib, 'Inline CSS is outside the generated-SVG oracle profile')
+        # The renderer disables browser ligature substitution when it supplies
+        # shaped glyph positions. Preserve its exact declarations; arbitrary
+        # CSS could override the verified family or load external resources.
+        inline = node.attrib.get('style')
+        require(inline is None or (node.tag in {'{' + SVG + '}' + tag for tag in ('g', 'text', 'tspan')}
+                                  and inline in ("font-feature-settings: 'liga' 0", 'font-feature-settings: normal')),
+                'Inline CSS is outside the generated-SVG oracle profile')
         for key, value in node.attrib.items():
             if key.split('}')[-1] == 'href':
                 require(value.startswith(('#', 'data:')), 'External SVG resources are not permitted')

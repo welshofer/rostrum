@@ -1,0 +1,1802 @@
+{
+  "compiler": "Swift version 6.1.3 (swift-6.1.3-RELEASE)\nTarget: x86_64-unknown-linux-gnu",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "machine": "x86_64",
+  "processor": "",
+  "revision": "15315cc3cdb3fa90b27d1b011791654be2b83fe8",
+  "fontSHA256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9",
+  "warmups": 2,
+  "runs": 15,
+  "processOrder": "Alternating AB/BA pairs",
+  "pairedRevision": "validated-group-diagnostics-workspace",
+  "binarySHA256": {
+    "baseline": "96717e8addbcd5f174a32ff7b92fca6577f97db3c917abde733e0e4c8713e07b",
+    "candidate": "9eab21876903dbc00a704564b55f6b6a17323e85d6926ab95e28d609862fb0cd"
+  },
+  "runnerSHA256": "699c8a1700378e0066afc0bf3b69087e83c2490b1df92de94a5057df8a839c64",
+  "baselineScope": "Validated grouped-diagnostic workspace, including earlier uncommitted fidelity work; not clean git HEAD.",
+  "cpuAffinityCount": 5,
+  "cpuModel": "AMD EPYC 9V45 96-Core Processor",
+  "font": "User-supplied Arial regular; font bytes are not included.",
+  "baselineRenderSourceSHA256": {
+    "Sources/Rostrum/Presentation/RenderDiagnostics.swift": "937242947b1dad3eeb0f5f1cf354e155c4260c5b135193f8bcd575e54ac370ff",
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c",
+    "Sources/Rostrum/Presentation/SVGShadow.swift": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+  },
+  "candidateRenderSourceSHA256": {
+    "Sources/Rostrum/Presentation/RenderDiagnostics.swift": "e963d0e68547efe4229de358d16d51e755edb62c41311bcff693a345662dc370",
+    "Sources/Rostrum/Presentation/SVGRenderer.swift": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c",
+    "Sources/Rostrum/Presentation/SVGShadow.swift": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+  },
+  "driverSHA256": "f6a14c25eb845635e12efebd8a731e01ec657b1842e3a0d137e42d8c3c3a3be6",
+  "sourceChange": "Only RenderDiagnostics.swift changes between the performance baseline and candidate. Both binaries use the same CPU-capable driver.",
+  "scenarios": {
+    "table-20x10": {
+      "savedOutputSHA256": "f5585c60d3d0a891fbe256fec6000f8a1c9ee00f66414bdf1bc9fa5ee6488553",
+      "peakRSSMedianBytes": {
+        "baseline": 34840576,
+        "candidate": 34840576
+      },
+      "render": {
+        "elapsed": {
+          "baseline": {
+            "medianMS": 4.505341,
+            "p95MS": 7.224369,
+            "minMS": 4.471749,
+            "maxMS": 7.224369,
+            "relativeSpread": 0.6109681819866688
+          },
+          "candidate": {
+            "medianMS": 4.455284,
+            "p95MS": 5.181031,
+            "minMS": 4.289303,
+            "maxMS": 5.181031,
+            "relativeSpread": 0.20015065257343856
+          },
+          "medianChangePercent": -1.111059074107812,
+          "medianPairedChangePercent": -1.2893410954880724,
+          "fasterPairs": 10,
+          "pairs": 15
+        },
+        "cpu": {
+          "baseline": {
+            "medianMS": 4.506631999999998,
+            "p95MS": 7.226128000000003,
+            "minMS": 4.473011999999999,
+            "maxMS": 7.226128000000003,
+            "relativeSpread": 0.6109032199655985
+          },
+          "candidate": {
+            "medianMS": 4.456758000000001,
+            "p95MS": 5.18271,
+            "minMS": 4.290659,
+            "maxMS": 5.18271,
+            "relativeSpread": 0.20015693021698738
+          },
+          "medianChangePercent": -1.1066801105570012,
+          "medianPairedChangePercent": -1.2831116204141568,
+          "fasterPairs": 10,
+          "pairs": 15
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMS": 4.514554,
+            "cpuMS": 4.515974999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.572942,
+            "cpuMS": 4.574263,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.505341,
+            "cpuMS": 4.506631999999998,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.486982,
+            "cpuMS": 4.4884450000000005,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 7.224369,
+            "cpuMS": 7.226128000000003,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.488725,
+            "cpuMS": 4.490097000000002,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.477668,
+            "cpuMS": 4.479031000000001,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.585993,
+            "cpuMS": 4.587392999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.471749,
+            "cpuMS": 4.473011999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.63723,
+            "cpuMS": 4.639178999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.479751,
+            "cpuMS": 4.480953999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.557399,
+            "cpuMS": 4.558869,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.486882,
+            "cpuMS": 4.4885040000000025,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.642587,
+            "cpuMS": 4.643986999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.493202,
+            "cpuMS": 4.494532999999999,
+            "peakRSSBytes": 34840576
+          }
+        ],
+        "candidate": [
+          {
+            "elapsedMS": 4.456346,
+            "cpuMS": 4.458030000000001,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.656628,
+            "cpuMS": 4.658167999999996,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.498409,
+            "cpuMS": 4.5017749999999985,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.3929,
+            "cpuMS": 4.394245,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.430718,
+            "cpuMS": 4.432180999999998,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.395574,
+            "cpuMS": 4.396898,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.62454,
+            "cpuMS": 4.625939999999998,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.289303,
+            "cpuMS": 4.290659,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.455284,
+            "cpuMS": 4.456758000000001,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.381723,
+            "cpuMS": 4.383077,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 5.181031,
+            "cpuMS": 5.18271,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.324166,
+            "cpuMS": 4.325592000000002,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.685923,
+            "cpuMS": 4.687351,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.324607,
+            "cpuMS": 4.325991999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 4.500382,
+            "cpuMS": 4.501674999999999,
+            "peakRSSBytes": 34840576
+          }
+        ]
+      }
+    },
+    "table-200x50": {
+      "savedOutputSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+      "peakRSSMedianBytes": {
+        "baseline": 143450112,
+        "candidate": 143245312
+      },
+      "render": {
+        "elapsed": {
+          "baseline": {
+            "medianMS": 261.426712,
+            "p95MS": 281.254065,
+            "minMS": 257.032241,
+            "maxMS": 281.254065,
+            "relativeSpread": 0.0926524447891921
+          },
+          "candidate": {
+            "medianMS": 256.783295,
+            "p95MS": 276.944793,
+            "minMS": 249.431962,
+            "maxMS": 276.944793,
+            "relativeSpread": 0.1071441621621064
+          },
+          "medianChangePercent": -1.776183070381887,
+          "medianPairedChangePercent": -1.8356914308985672,
+          "fasterPairs": 14,
+          "pairs": 15
+        },
+        "cpu": {
+          "baseline": {
+            "medianMS": 261.410453,
+            "p95MS": 281.257596,
+            "minMS": 257.027447,
+            "maxMS": 281.257596,
+            "relativeSpread": 0.0926900539818887
+          },
+          "candidate": {
+            "medianMS": 256.77945700000004,
+            "p95MS": 276.93723300000005,
+            "minMS": 249.42654000000005,
+            "maxMS": 276.93723300000005,
+            "relativeSpread": 0.10713743740022007
+          },
+          "medianChangePercent": -1.771542012514693,
+          "medianPairedChangePercent": -2.30300652401626,
+          "fasterPairs": 14,
+          "pairs": 15
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMS": 261.426712,
+            "cpuMS": 261.410453,
+            "peakRSSBytes": 143511552
+          },
+          {
+            "elapsedMS": 259.171844,
+            "cpuMS": 259.17551,
+            "peakRSSBytes": 143425536
+          },
+          {
+            "elapsedMS": 263.23603,
+            "cpuMS": 263.23779,
+            "peakRSSBytes": 143495168
+          },
+          {
+            "elapsedMS": 269.95561,
+            "cpuMS": 269.929891,
+            "peakRSSBytes": 143310848
+          },
+          {
+            "elapsedMS": 270.972637,
+            "cpuMS": 270.97429800000003,
+            "peakRSSBytes": 143425536
+          },
+          {
+            "elapsedMS": 264.904033,
+            "cpuMS": 264.890323,
+            "peakRSSBytes": 143544320
+          },
+          {
+            "elapsedMS": 262.578587,
+            "cpuMS": 262.572187,
+            "peakRSSBytes": 143347712
+          },
+          {
+            "elapsedMS": 281.254065,
+            "cpuMS": 281.257596,
+            "peakRSSBytes": 143466496
+          },
+          {
+            "elapsedMS": 261.149676,
+            "cpuMS": 261.151888,
+            "peakRSSBytes": 143462400
+          },
+          {
+            "elapsedMS": 261.355749,
+            "cpuMS": 261.3588060000001,
+            "peakRSSBytes": 143450112
+          },
+          {
+            "elapsedMS": 257.032241,
+            "cpuMS": 257.027447,
+            "peakRSSBytes": 143405056
+          },
+          {
+            "elapsedMS": 270.590668,
+            "cpuMS": 270.58567899999997,
+            "peakRSSBytes": 143413248
+          },
+          {
+            "elapsedMS": 261.012143,
+            "cpuMS": 261.001754,
+            "peakRSSBytes": 143478784
+          },
+          {
+            "elapsedMS": 258.712585,
+            "cpuMS": 258.591618,
+            "peakRSSBytes": 143355904
+          },
+          {
+            "elapsedMS": 259.768832,
+            "cpuMS": 259.77134800000005,
+            "peakRSSBytes": 143572992
+          }
+        ],
+        "candidate": [
+          {
+            "elapsedMS": 252.876835,
+            "cpuMS": 252.87879900000001,
+            "peakRSSBytes": 143220736
+          },
+          {
+            "elapsedMS": 258.118881,
+            "cpuMS": 258.120597,
+            "peakRSSBytes": 143241216
+          },
+          {
+            "elapsedMS": 249.431962,
+            "cpuMS": 249.42654000000005,
+            "peakRSSBytes": 143216640
+          },
+          {
+            "elapsedMS": 265.000058,
+            "cpuMS": 263.713388,
+            "peakRSSBytes": 143351808
+          },
+          {
+            "elapsedMS": 251.481461,
+            "cpuMS": 251.48307599999998,
+            "peakRSSBytes": 143208448
+          },
+          {
+            "elapsedMS": 251.807343,
+            "cpuMS": 251.80927300000002,
+            "peakRSSBytes": 143298560
+          },
+          {
+            "elapsedMS": 259.71646,
+            "cpuMS": 259.720203,
+            "peakRSSBytes": 143228928
+          },
+          {
+            "elapsedMS": 273.306823,
+            "cpuMS": 273.30861,
+            "peakRSSBytes": 143220736
+          },
+          {
+            "elapsedMS": 276.944793,
+            "cpuMS": 276.93723300000005,
+            "peakRSSBytes": 143294464
+          },
+          {
+            "elapsedMS": 256.783295,
+            "cpuMS": 256.77945700000004,
+            "peakRSSBytes": 143245312
+          },
+          {
+            "elapsedMS": 252.933301,
+            "cpuMS": 252.93652399999996,
+            "peakRSSBytes": 143286272
+          },
+          {
+            "elapsedMS": 254.059567,
+            "cpuMS": 254.06165200000004,
+            "peakRSSBytes": 143286272
+          },
+          {
+            "elapsedMS": 257.942205,
+            "cpuMS": 257.94662700000003,
+            "peakRSSBytes": 143290368
+          },
+          {
+            "elapsedMS": 257.768048,
+            "cpuMS": 257.76457500000004,
+            "peakRSSBytes": 143294464
+          },
+          {
+            "elapsedMS": 252.826357,
+            "cpuMS": 252.828824,
+            "peakRSSBytes": 143220736
+          }
+        ]
+      }
+    },
+    "shaped-table-100x20": {
+      "savedOutputSHA256": "b49efeaaad61ab44673914282545fe3e0b1930018da7353e0ab3456a4231e657",
+      "peakRSSMedianBytes": {
+        "baseline": 44097536,
+        "candidate": 43892736
+      },
+      "render": {
+        "elapsed": {
+          "baseline": {
+            "medianMS": 101.4957,
+            "p95MS": 186.879104,
+            "minMS": 95.34661,
+            "maxMS": 186.879104,
+            "relativeSpread": 0.9018361763109177
+          },
+          "candidate": {
+            "medianMS": 103.196786,
+            "p95MS": 134.86992,
+            "minMS": 94.934397,
+            "maxMS": 134.86992,
+            "relativeSpread": 0.3869841741001508
+          },
+          "medianChangePercent": 1.6760178017393823,
+          "medianPairedChangePercent": -2.222914715125035,
+          "fasterPairs": 8,
+          "pairs": 15
+        },
+        "cpu": {
+          "baseline": {
+            "medianMS": 101.49987100000001,
+            "p95MS": 186.873439,
+            "minMS": 95.33802,
+            "maxMS": 186.873439,
+            "relativeSpread": 0.9018279343428917
+          },
+          "candidate": {
+            "medianMS": 103.20114899999999,
+            "p95MS": 134.86395000000002,
+            "minMS": 94.93674200000001,
+            "maxMS": 134.86395000000002,
+            "relativeSpread": 0.3868872428930032
+          },
+          "medianChangePercent": 1.6761380908552725,
+          "medianPairedChangePercent": -2.2208079397343927,
+          "fasterPairs": 8,
+          "pairs": 15
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMS": 127.093774,
+            "cpuMS": 127.089619,
+            "peakRSSBytes": 44097536
+          },
+          {
+            "elapsedMS": 101.435794,
+            "cpuMS": 101.466972,
+            "peakRSSBytes": 44068864
+          },
+          {
+            "elapsedMS": 113.880448,
+            "cpuMS": 113.88543399999999,
+            "peakRSSBytes": 44191744
+          },
+          {
+            "elapsedMS": 102.577918,
+            "cpuMS": 102.581964,
+            "peakRSSBytes": 44097536
+          },
+          {
+            "elapsedMS": 100.047606,
+            "cpuMS": 100.053233,
+            "peakRSSBytes": 44093440
+          },
+          {
+            "elapsedMS": 104.481514,
+            "cpuMS": 104.486425,
+            "peakRSSBytes": 44060672
+          },
+          {
+            "elapsedMS": 101.4957,
+            "cpuMS": 101.49987100000001,
+            "peakRSSBytes": 44060672
+          },
+          {
+            "elapsedMS": 186.879104,
+            "cpuMS": 186.873439,
+            "peakRSSBytes": 44191744
+          },
+          {
+            "elapsedMS": 97.374155,
+            "cpuMS": 97.378614,
+            "peakRSSBytes": 44216320
+          },
+          {
+            "elapsedMS": 110.063606,
+            "cpuMS": 110.06953200000001,
+            "peakRSSBytes": 44212224
+          },
+          {
+            "elapsedMS": 101.356835,
+            "cpuMS": 101.361174,
+            "peakRSSBytes": 44150784
+          },
+          {
+            "elapsedMS": 98.37642,
+            "cpuMS": 98.38103899999999,
+            "peakRSSBytes": 44191744
+          },
+          {
+            "elapsedMS": 97.698374,
+            "cpuMS": 97.559283,
+            "peakRSSBytes": 44081152
+          },
+          {
+            "elapsedMS": 106.379328,
+            "cpuMS": 106.382854,
+            "peakRSSBytes": 44101632
+          },
+          {
+            "elapsedMS": 95.34661,
+            "cpuMS": 95.33802,
+            "peakRSSBytes": 44081152
+          }
+        ],
+        "candidate": [
+          {
+            "elapsedMS": 110.427123,
+            "cpuMS": 110.43444699999999,
+            "peakRSSBytes": 43892736
+          },
+          {
+            "elapsedMS": 116.435873,
+            "cpuMS": 116.43954,
+            "peakRSSBytes": 44081152
+          },
+          {
+            "elapsedMS": 102.773905,
+            "cpuMS": 102.75475200000001,
+            "peakRSSBytes": 44077056
+          },
+          {
+            "elapsedMS": 100.204744,
+            "cpuMS": 100.20947699999999,
+            "peakRSSBytes": 43819008
+          },
+          {
+            "elapsedMS": 123.862664,
+            "cpuMS": 123.857098,
+            "peakRSSBytes": 43909120
+          },
+          {
+            "elapsedMS": 99.219125,
+            "cpuMS": 99.22407700000002,
+            "peakRSSBytes": 43843584
+          },
+          {
+            "elapsedMS": 106.48683,
+            "cpuMS": 106.492547,
+            "peakRSSBytes": 43970560
+          },
+          {
+            "elapsedMS": 134.86992,
+            "cpuMS": 134.86395000000002,
+            "peakRSSBytes": 43872256
+          },
+          {
+            "elapsedMS": 104.443721,
+            "cpuMS": 104.44879000000002,
+            "peakRSSBytes": 43823104
+          },
+          {
+            "elapsedMS": 96.965357,
+            "cpuMS": 96.971086,
+            "peakRSSBytes": 43847680
+          },
+          {
+            "elapsedMS": 99.103759,
+            "cpuMS": 99.11013700000001,
+            "peakRSSBytes": 43900928
+          },
+          {
+            "elapsedMS": 101.139916,
+            "cpuMS": 101.14621399999999,
+            "peakRSSBytes": 43864064
+          },
+          {
+            "elapsedMS": 103.196786,
+            "cpuMS": 103.20114899999999,
+            "peakRSSBytes": 43876352
+          },
+          {
+            "elapsedMS": 94.934397,
+            "cpuMS": 94.93674200000001,
+            "peakRSSBytes": 44003328
+          },
+          {
+            "elapsedMS": 105.820272,
+            "cpuMS": 105.81712000000002,
+            "peakRSSBytes": 44023808
+          }
+        ]
+      }
+    },
+    "images-unique": {
+      "savedOutputSHA256": "9966335bca671778e491ef2c99c73770bc9cb0ab1cf000e8b33b8c0dc3ac9d52",
+      "peakRSSMedianBytes": {
+        "baseline": 34840576,
+        "candidate": 34840576
+      },
+      "render": {
+        "elapsed": {
+          "baseline": {
+            "medianMS": 3.527472,
+            "p95MS": 5.194535,
+            "minMS": 3.472879,
+            "maxMS": 5.194535,
+            "relativeSpread": 0.48807077703239043
+          },
+          "candidate": {
+            "medianMS": 3.360199,
+            "p95MS": 3.469695,
+            "minMS": 3.294826,
+            "maxMS": 3.469695,
+            "relativeSpread": 0.05204126303233831
+          },
+          "medianChangePercent": -4.742007874194321,
+          "medianPairedChangePercent": -3.892570688249619,
+          "fasterPairs": 15,
+          "pairs": 15
+        },
+        "cpu": {
+          "baseline": {
+            "medianMS": 3.528603000000004,
+            "p95MS": 5.195759999999993,
+            "minMS": 3.47408200000001,
+            "maxMS": 5.195759999999993,
+            "relativeSpread": 0.4879205736661169
+          },
+          "candidate": {
+            "medianMS": 3.3616130000000055,
+            "p95MS": 3.4707769999999982,
+            "minMS": 3.295774999999992,
+            "maxMS": 3.4707769999999982,
+            "relativeSpread": 0.05205893718283634
+          },
+          "medianChangePercent": -4.73246777832469,
+          "medianPairedChangePercent": -3.8941332286089647,
+          "fasterPairs": 15,
+          "pairs": 15
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMS": 3.622526,
+            "cpuMS": 3.623945000000006,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.653743,
+            "cpuMS": 3.6550619999999867,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.472879,
+            "cpuMS": 3.47408200000001,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.527472,
+            "cpuMS": 3.528603000000004,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.585861,
+            "cpuMS": 3.587130000000002,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.507051,
+            "cpuMS": 3.508021999999997,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.553667,
+            "cpuMS": 3.554731999999987,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.504343,
+            "cpuMS": 3.5054580000000044,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 5.194535,
+            "cpuMS": 5.195759999999993,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.493746,
+            "cpuMS": 3.4947229999999934,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.473175,
+            "cpuMS": 3.474261999999996,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.578354,
+            "cpuMS": 3.579529000000008,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.515139,
+            "cpuMS": 3.516143999999997,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.546567,
+            "cpuMS": 3.547772000000009,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.491453,
+            "cpuMS": 3.4924589999999966,
+            "peakRSSBytes": 34840576
+          }
+        ],
+        "candidate": [
+          {
+            "elapsedMS": 3.317666,
+            "cpuMS": 3.318650000000005,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.34033,
+            "cpuMS": 3.341324,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.345728,
+            "cpuMS": 3.346751999999995,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.469695,
+            "cpuMS": 3.4707769999999982,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.32719,
+            "cpuMS": 3.3281940000000105,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.360199,
+            "cpuMS": 3.3616130000000055,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.415338,
+            "cpuMS": 3.4163059999999916,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.407576,
+            "cpuMS": 3.4088250000000073,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.344281,
+            "cpuMS": 3.3460510000000028,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.370661,
+            "cpuMS": 3.3718899999999934,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.42975,
+            "cpuMS": 3.4309570000000065,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.294826,
+            "cpuMS": 3.295774999999992,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.349248,
+            "cpuMS": 3.3502769999999913,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.419855,
+            "cpuMS": 3.4208819999999918,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 3.422729,
+            "cpuMS": 3.423827000000003,
+            "peakRSSBytes": 34840576
+          }
+        ]
+      }
+    },
+    "grouped-shadow-200.pptx": {
+      "savedOutputSHA256": "f25774bcdd3679109249610496e1bf78a46606adeb6eb6451226d7355e36c01b",
+      "peakRSSMedianBytes": {
+        "baseline": 34840576,
+        "candidate": 34840576
+      },
+      "render": {
+        "elapsed": {
+          "baseline": {
+            "medianMS": 8.479827,
+            "p95MS": 10.070369,
+            "minMS": 8.340156,
+            "maxMS": 10.070369,
+            "relativeSpread": 0.20403871446905686
+          },
+          "candidate": {
+            "medianMS": 8.313425,
+            "p95MS": 9.018971,
+            "minMS": 8.125812,
+            "maxMS": 9.018971,
+            "relativeSpread": 0.10743574399239791
+          },
+          "medianChangePercent": -1.9623277691868002,
+          "medianPairedChangePercent": -1.9623277691868002,
+          "fasterPairs": 10,
+          "pairs": 15
+        },
+        "cpu": {
+          "baseline": {
+            "medianMS": 8.48123,
+            "p95MS": 10.075537999999998,
+            "minMS": 8.341272,
+            "maxMS": 10.075537999999998,
+            "relativeSpread": 0.2044828403427331
+          },
+          "candidate": {
+            "medianMS": 8.314792,
+            "p95MS": 9.021405999999999,
+            "minMS": 8.127151999999999,
+            "maxMS": 9.021405999999999,
+            "relativeSpread": 0.10754977394503676
+          },
+          "medianChangePercent": -1.962427619578755,
+          "medianPairedChangePercent": -1.962427619578755,
+          "fasterPairs": 10,
+          "pairs": 15
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMS": 8.34291,
+            "cpuMS": 8.344256000000001,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.392174,
+            "cpuMS": 8.393800000000002,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.38927,
+            "cpuMS": 8.390684999999998,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.385885,
+            "cpuMS": 8.387601,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.352565,
+            "cpuMS": 8.354030000000002,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.790666,
+            "cpuMS": 8.792154,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.340156,
+            "cpuMS": 8.341272,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.524604,
+            "cpuMS": 8.526237000000002,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.479827,
+            "cpuMS": 8.48123,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.704656,
+            "cpuMS": 8.707718,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.716354,
+            "cpuMS": 8.718193,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.352224,
+            "cpuMS": 8.35342,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 10.070369,
+            "cpuMS": 10.075537999999998,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.886791,
+            "cpuMS": 8.883671,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.49532,
+            "cpuMS": 8.498104999999999,
+            "peakRSSBytes": 34840576
+          }
+        ],
+        "candidate": [
+          {
+            "elapsedMS": 8.209509,
+            "cpuMS": 8.210877,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.468961,
+            "cpuMS": 8.467229,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.125812,
+            "cpuMS": 8.127151999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.156088,
+            "cpuMS": 8.157326999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.243029,
+            "cpuMS": 8.244307,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.154556,
+            "cpuMS": 8.155774000000001,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.988165,
+            "cpuMS": 8.991019999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.294627,
+            "cpuMS": 8.295933999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.313425,
+            "cpuMS": 8.314792,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.279404,
+            "cpuMS": 8.282263,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.426035,
+            "cpuMS": 8.427349,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.362981,
+            "cpuMS": 8.364294999999998,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.536672,
+            "cpuMS": 8.537993999999998,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 9.018971,
+            "cpuMS": 9.021405999999999,
+            "peakRSSBytes": 34840576
+          },
+          {
+            "elapsedMS": 8.621151,
+            "cpuMS": 8.623723000000002,
+            "peakRSSBytes": 34840576
+          }
+        ]
+      },
+      "inputSHA256": "23c4e4100cb33042055b967359353f2442aee2513d237914a94381e159916282"
+    }
+  },
+  "outputPreservation": {
+    "passed": true,
+    "fixtures": 20,
+    "slides": 265,
+    "filesCompared": 815,
+    "savedPPTXByteEquality": true,
+    "svgByteEquality": true,
+    "orderedDiagnosticEquality": true,
+    "inheritanceReportEquality": true
+  },
+  "proofFixtures": [
+    {
+      "fixture": "image-mapping-v1.pptx",
+      "slides": 12,
+      "sourceSHA256": "9b5ce6d88c3c074641df256d1b2f9cbeaef3b1742a1c006dd5b7b3679c5eea8c",
+      "savedSHA256": "9779bba86991a316ab2bd49105849bf0bc446418ea53a1ab0c37f0cd8cc1b9c1"
+    },
+    {
+      "fixture": "image-mapping-v2.pptx",
+      "slides": 12,
+      "sourceSHA256": "3aaf45277c7ae8b7b411390ae8d7a55c8f2b9ac7b83e15a60504387475b7aac8",
+      "savedSHA256": "63ec87ef96cb13f59b2aa75dd9e7ad99c09300d70ea6576bcff75127ef850e23"
+    },
+    {
+      "fixture": "text-baseline-v1.pptx",
+      "slides": 3,
+      "sourceSHA256": "e6ae71b1228c362eb9d1917df413e49d6850a92ffcb5416f2b9efdcc02393079",
+      "savedSHA256": "49607b604f9148a2def7a0bf597f51c6fe1c903509c03eabbd2d15524018ead3"
+    },
+    {
+      "fixture": "python-tables-v3.pptx",
+      "slides": 1,
+      "sourceSHA256": "3f7d5427de26934424329ef6e739b6fe92db26c0c23f260fa9bea1adf6dcd7dd",
+      "savedSHA256": "ef8fabb7c57c4ab9d93e11f3e00c5f83e708d9a43bb072368312f25283851ed5"
+    },
+    {
+      "fixture": "native-paint-placement-v2.pptx",
+      "slides": 3,
+      "sourceSHA256": "ecd75d702254c18b52374914d78bf070534fea98212996d255bc95c0f474c9b5",
+      "savedSHA256": "09f2b4aa1bb3eca33fdf94d066b1355c929b5326b420c1e9551de9d78f617684"
+    },
+    {
+      "fixture": "native-body-alignment-v1.pptx",
+      "slides": 4,
+      "sourceSHA256": "98c27b081f8ecb9c297d46e04019b83bcdc969ed3d42113f89491aa0b9d70dac",
+      "savedSHA256": "38838af96364e7944f39a2c2529266874c583dab8d7da3cf2d010ead18884e15"
+    },
+    {
+      "fixture": "grouped-shadow-200.pptx",
+      "slides": 1,
+      "sourceSHA256": "23c4e4100cb33042055b967359353f2442aee2513d237914a94381e159916282",
+      "savedSHA256": "f25774bcdd3679109249610496e1bf78a46606adeb6eb6451226d7355e36c01b"
+    },
+    {
+      "fixture": "table-200x50.pptx",
+      "slides": 1,
+      "sourceSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03",
+      "savedSHA256": "1c0faea36f45a66a022ba7fe326b3b74715cd9066f8e9c1dccb491eef4727d03"
+    },
+    {
+      "fixture": "native-styles.pptx",
+      "slides": 74,
+      "sourceSHA256": "b55368f1c7ebfb28444da93d912858afd6afe08781ca8fd9a95cde87124011c9",
+      "savedSHA256": "76bf61323f5007c481a46ba71941eba387de94332db1ba3a927b48ba6704c4d5"
+    },
+    {
+      "fixture": "native-table-style-fallback19-v1.pptx",
+      "slides": 2,
+      "sourceSHA256": "e261b6864780fb021e914dfcd4a0e19b3aae9825cc33b94b0168933dcf057268",
+      "savedSHA256": "203ed802668fa609e918a93db60c6f025a5084ba079395e9b000655c11df90ae"
+    },
+    {
+      "fixture": "native-table-default-custom-v1.pptx",
+      "slides": 1,
+      "sourceSHA256": "5506d837f8a12b4f6a54cca287c9f2943b22d2537270aa084e83792aad65652e",
+      "savedSHA256": "fd69ced7b0710600699774615ee86f8ad598bed68265fb4950d97dbc5723defd"
+    },
+    {
+      "fixture": "native-table-default-builtin-v1.pptx",
+      "slides": 1,
+      "sourceSHA256": "3583235fd4a0caf7be17fad4e79d250ac1098e0a4f64ce462c9a396d91a5873b",
+      "savedSHA256": "98f5852c774cef00be3ba9982c51735d8430a345c608587605a2c20d8717b68b"
+    },
+    {
+      "fixture": "native-table-joins-v1.pptx",
+      "slides": 1,
+      "sourceSHA256": "23b9cde5274eda35b5278042caf7a9b9d49f5557a4038be1c4646ffd73d42ede",
+      "savedSHA256": "99b6c053c9110a249c83ccb6d7c9411890b1fc17fa375ea11ed13c4b4c40a414"
+    },
+    {
+      "fixture": "native-table-joins18-v1.pptx",
+      "slides": 2,
+      "sourceSHA256": "39a1ed0ccef5faeda6608bb74528b541dc197a6f4ab3f6d6a05e54cfdd0a663e",
+      "savedSHA256": "50237402c019b86e2c6dad22971a639b500c8688a000c9758ece7df878e1611d"
+    },
+    {
+      "fixture": "native-table-transitions21-v1.pptx",
+      "slides": 2,
+      "sourceSHA256": "5db74899fc18508281bc6787e4618a7bd471d27df213a2982cf86dfdccd022d2",
+      "savedSHA256": "26293ef27764353d1035fbf7e8c95d4f7bcbb8e3a3c1e83dfa18008e38a9eba6"
+    },
+    {
+      "fixture": "native-table-transitions21-horizontal-v1.pptx",
+      "slides": 2,
+      "sourceSHA256": "166cc0173a0ce1c899a1e11a29fc6d7f3d00d2da9d40818a7852249c4be07824",
+      "savedSHA256": "c7d89eb07ffc2f98af478b298a61e7bd4c6ab2edd69901567fbdef409ba267f5"
+    },
+    {
+      "fixture": "double-borders.pptx",
+      "slides": 29,
+      "sourceSHA256": "0aa0fab8a89bef4e40eec910dc02d4a2b95acfdb8b564aa7c2f291b2b3ed2834",
+      "savedSHA256": "bd9c6532a3ac7961271c5c7e11d4076fa39779512d04040c25471f548fa9000d"
+    },
+    {
+      "fixture": "style-precedence.pptx",
+      "slides": 36,
+      "sourceSHA256": "58446fe12b21fe075f088c4655e4415466419e8f3b4cdf212d28fe436e8f8d30",
+      "savedSHA256": "800d7a31be35b32ff109abd3587516182eb69b9a29a55ba0b7379e61e13aef85"
+    },
+    {
+      "fixture": "style-precedence-rtl.pptx",
+      "slides": 36,
+      "sourceSHA256": "6d2be07ce538a5bddff9906b77d2d815b82cd0685d5e6752975a1360b54ea836",
+      "savedSHA256": "4eb79439a507c0d8675244f5a80b5c744c5dc2578ceb02302bd7fc89575ea62a"
+    },
+    {
+      "fixture": "border-conflicts.pptx",
+      "slides": 42,
+      "sourceSHA256": "50131639635a6f6b1046c2da105b8c5b823856e2c1b0f48bc8e2b2260eae7b19",
+      "savedSHA256": "dd4483b7a82c7331f2ca0ec897af963ea64fe91370313f40a0b57efad2c2995b"
+    }
+  ],
+  "initialProfile": {
+    "table-20x10": {
+      "cell-style": {
+        "calls": 200,
+        "cpuMS": 0.5955509999999506,
+        "wallMS": 0.595652986317873
+      },
+      "diagnostic-scan": {
+        "calls": 10,
+        "cpuMS": 1.1680240000000062,
+        "wallMS": 1.1976290084421635
+      },
+      "render-total": {
+        "calls": 1,
+        "cpuMS": 7.3237530000000035,
+        "wallMS": 7.2972100004553795
+      },
+      "table-total": {
+        "calls": 1,
+        "cpuMS": 3.736381999999999,
+        "wallMS": 3.797520000487566
+      },
+      "text-diagnostics": {
+        "calls": 200,
+        "cpuMS": 0.09938999999998543,
+        "wallMS": 0.10248301550745964
+      },
+      "text-layout": {
+        "calls": 200,
+        "cpuMS": 1.3276370000000028,
+        "wallMS": 1.3278990127146244
+      },
+      "text-svg": {
+        "calls": 200,
+        "cpuMS": 0.3460990000000024,
+        "wallMS": 0.34832099452614784
+      }
+    },
+    "table-200x50": {
+      "cell-style": {
+        "calls": 10000,
+        "cpuMS": 17.874153999999123,
+        "wallMS": 17.864643834531307
+      },
+      "diagnostic-scan": {
+        "calls": 10,
+        "cpuMS": 49.64356699999996,
+        "wallMS": 49.85116299986839
+      },
+      "render-total": {
+        "calls": 1,
+        "cpuMS": 282.393486,
+        "wallMS": 282.36703800037503
+      },
+      "table-total": {
+        "calls": 1,
+        "cpuMS": 228.882227,
+        "wallMS": 228.88754300028086
+      },
+      "text-diagnostics": {
+        "calls": 10000,
+        "cpuMS": 3.3576209999946514,
+        "wallMS": 3.3536869548261166
+      },
+      "text-layout": {
+        "calls": 10000,
+        "cpuMS": 80.08031199999976,
+        "wallMS": 80.20646685734391
+      },
+      "text-svg": {
+        "calls": 10000,
+        "cpuMS": 70.25889500000079,
+        "wallMS": 70.39545429497957
+      }
+    }
+  },
+  "interpretation": "Large fallback table CPU median decreases 1.77%, with 14/15 faster pairs; image control decreases 4.73%, with 15/15 faster pairs. Registered-font table has a 1.68% higher ratio of medians but a 2.22% lower median paired time with broad overlap: inconclusive. No general, cross-platform, allocation, or live PowerPoint claim.",
+  "measurementLimits": [
+    "No builds or tests ran concurrently with paired timing.",
+    "CPU time helps distinguish descheduling but remains affected by processor frequency and shared-host contention.",
+    "Profile phases are inclusive and instrumented; do not add nested totals or compare instrumented totals directly with production timings.",
+    "RSS is whole-process peak, not per-render allocation.",
+    "Only render-phase raw samples are copied here; the complete local benchmark also retains other operation phases."
+  ],
+  "profileFollowup": {
+    "scenario": "table-200x50",
+    "runs": 5,
+    "warmups": 1,
+    "processOrder": "Alternating AB/BA pairs",
+    "binarySHA256": {
+      "baseline": "2d732eb517cb6922aad44226ad1c65c36430de11169afa7c98cf4f716c814d2c",
+      "candidate": "48b8c7efb9fbec32fe0e59beef69f501a33fc0cac1e6d3abaa1d55bff09ea12d"
+    },
+    "samples": {
+      "baseline": [
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 18.242857999997966,
+            "wallMS": 18.21666857227683
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 48.60320500000006,
+            "wallMS": 48.605767000466585
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 285.62783499999995,
+            "wallMS": 285.5984909981489
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 233.898278,
+            "wallMS": 233.90407399833202
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.499904000008314,
+            "wallMS": 3.4191721715033054
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 81.47420800000253,
+            "wallMS": 81.31989576295018
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 72.33062599999704,
+            "wallMS": 72.32038889452815
+          }
+        },
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 18.103694999999618,
+            "wallMS": 18.08194090425968
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 49.113283999999965,
+            "wallMS": 49.11572000011802
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 287.900675,
+            "wallMS": 287.9363240003586
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 235.96320800000007,
+            "wallMS": 236.0415159985423
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.3208350000001587,
+            "wallMS": 3.3337408117949963
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 78.98594800000313,
+            "wallMS": 79.03624291718006
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 69.98648599999802,
+            "wallMS": 70.12295396253467
+          }
+        },
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 18.64145700000512,
+            "wallMS": 18.592541825026274
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 49.54816200000005,
+            "wallMS": 49.55118100345135
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 280.74790599999994,
+            "wallMS": 280.72128900140524
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 228.04128200000002,
+            "wallMS": 228.0471359975636
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.3177320000020245,
+            "wallMS": 3.326614111661911
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 79.43881899999951,
+            "wallMS": 79.48918487131596
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 70.51183700000053,
+            "wallMS": 70.6701271533966
+          }
+        },
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 18.438484000001665,
+            "wallMS": 18.438176974654198
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 49.01750900000002,
+            "wallMS": 49.03072799369693
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 280.249142,
+            "wallMS": 280.29396300017834
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 228.038658,
+            "wallMS": 228.10900899767876
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.2862280000027226,
+            "wallMS": 3.317938160151243
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 80.54123100000339,
+            "wallMS": 80.61821534484625
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 70.0903730000054,
+            "wallMS": 70.21601187065244
+          }
+        },
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 17.17786099999887,
+            "wallMS": 17.16379227861762
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 51.424053000000015,
+            "wallMS": 51.42828098684549
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 284.15936500000004,
+            "wallMS": 284.1310930028558
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 229.49488099999996,
+            "wallMS": 229.50228599831462
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.3799070000011397,
+            "wallMS": 3.3573343753814697
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 81.21493300000111,
+            "wallMS": 81.25073020532727
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 70.64921199999753,
+            "wallMS": 70.81894717365503
+          }
+        }
+      ],
+      "candidate": [
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 16.848760999992294,
+            "wallMS": 16.79686615243554
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 44.205122000000074,
+            "wallMS": 44.20678600668907
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 296.53574399999997,
+            "wallMS": 296.5083330050111
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 249.58251199999995,
+            "wallMS": 249.58923499658704
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.5645419999978003,
+            "wallMS": 3.585623223334551
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 80.83345200000315,
+            "wallMS": 80.83220237866044
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 70.31961699999908,
+            "wallMS": 70.43815697729588
+          }
+        },
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 17.15952200000237,
+            "wallMS": 17.167395003139973
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 44.406916000000024,
+            "wallMS": 44.40980499237776
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 273.780043,
+            "wallMS": 273.8037699982524
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 226.27374600000002,
+            "wallMS": 226.33003399893641
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.3677099999932807,
+            "wallMS": 3.3807419277727604
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 78.5621660000017,
+            "wallMS": 78.60164804011583
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 70.45863999999654,
+            "wallMS": 70.64978911727667
+          }
+        },
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 18.70087700000437,
+            "wallMS": 18.720370143651962
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 45.170762999999965,
+            "wallMS": 45.17202801257372
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 282.64100900000005,
+            "wallMS": 282.72230400145054
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 234.32475399999998,
+            "wallMS": 234.44166800379753
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.40217800000039,
+            "wallMS": 3.4169530980288982
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 82.33125100000416,
+            "wallMS": 82.44652885571122
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 72.05430900000175,
+            "wallMS": 72.21782181039453
+          }
+        },
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 17.571462000001475,
+            "wallMS": 17.47293084487319
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 44.223769000000004,
+            "wallMS": 44.23299500346184
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 280.234901,
+            "wallMS": 280.22489900141954
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 233.02667699999995,
+            "wallMS": 233.04315800219774
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.5150609999987523,
+            "wallMS": 3.4113641306757927
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 83.04464299999404,
+            "wallMS": 83.03199992701411
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 71.3858399999998,
+            "wallMS": 71.52986992150545
+          }
+        },
+        {
+          "cell-style": {
+            "calls": 10000,
+            "cpuMS": 17.76672700000239,
+            "wallMS": 17.756785966455936
+          },
+          "diagnostic-scan": {
+            "calls": 10,
+            "cpuMS": 44.89794599999993,
+            "wallMS": 45.43886699527502
+          },
+          "render-total": {
+            "calls": 1,
+            "cpuMS": 276.74408500000004,
+            "wallMS": 277.27595200017095
+          },
+          "table-total": {
+            "calls": 1,
+            "cpuMS": 228.885311,
+            "wallMS": 228.9115829989314
+          },
+          "text-diagnostics": {
+            "calls": 10000,
+            "cpuMS": 3.3623959999989097,
+            "wallMS": 3.3616440035402775
+          },
+          "text-layout": {
+            "calls": 10000,
+            "cpuMS": 80.54938600000258,
+            "wallMS": 80.5448813252151
+          },
+          "text-svg": {
+            "calls": 10000,
+            "cpuMS": 70.99071199999997,
+            "wallMS": 71.08083803579211
+          }
+        }
+      ]
+    },
+    "medians": {
+      "baseline": {
+        "cell-style": {
+          "calls": 10000,
+          "cpuMS": 18.242857999997966,
+          "wallMS": 18.21666857227683
+        },
+        "diagnostic-scan": {
+          "calls": 10,
+          "cpuMS": 49.113283999999965,
+          "wallMS": 49.11572000011802
+        },
+        "render-total": {
+          "calls": 1,
+          "cpuMS": 284.15936500000004,
+          "wallMS": 284.1310930028558
+        },
+        "table-total": {
+          "calls": 1,
+          "cpuMS": 229.49488099999996,
+          "wallMS": 229.50228599831462
+        },
+        "text-diagnostics": {
+          "calls": 10000,
+          "cpuMS": 3.3208350000001587,
+          "wallMS": 3.3337408117949963
+        },
+        "text-layout": {
+          "calls": 10000,
+          "cpuMS": 80.54123100000339,
+          "wallMS": 80.61821534484625
+        },
+        "text-svg": {
+          "calls": 10000,
+          "cpuMS": 70.51183700000053,
+          "wallMS": 70.6701271533966
+        }
+      },
+      "candidate": {
+        "cell-style": {
+          "calls": 10000,
+          "cpuMS": 17.571462000001475,
+          "wallMS": 17.47293084487319
+        },
+        "diagnostic-scan": {
+          "calls": 10,
+          "cpuMS": 44.406916000000024,
+          "wallMS": 44.40980499237776
+        },
+        "render-total": {
+          "calls": 1,
+          "cpuMS": 280.234901,
+          "wallMS": 280.22489900141954
+        },
+        "table-total": {
+          "calls": 1,
+          "cpuMS": 233.02667699999995,
+          "wallMS": 233.04315800219774
+        },
+        "text-diagnostics": {
+          "calls": 10000,
+          "cpuMS": 3.40217800000039,
+          "wallMS": 3.4113641306757927
+        },
+        "text-layout": {
+          "calls": 10000,
+          "cpuMS": 80.83345200000315,
+          "wallMS": 80.83220237866044
+        },
+        "text-svg": {
+          "calls": 10000,
+          "cpuMS": 70.99071199999997,
+          "wallMS": 71.08083803579211
+        }
+      }
+    }
+  },
+  "profileInstrumentationSHA256": "d156b0eb3c8487f0b33dd8762cfee6edcafa5a6481b77d7edda97313f26eac75",
+  "validation": {
+    "verifyFastPassed": true,
+    "rootSwiftTests": 1249,
+    "LecternCoreSwiftTests": 309,
+    "conformancePythonTests": 12,
+    "workflowPythonTestsPassed": 12,
+    "workflowPythonTestsSkipped": 2,
+    "READMEExamples": "Created and reopened both decks",
+    "workflowYAMLParsed": true,
+    "macOSAndIOSExecution": "Not available locally; remote execution pending",
+    "livePowerPoint": "Not available locally"
+  },
+  "nativeImageComparisons": [
+    {
+      "variant": "v1",
+      "sourceSHA256": "9b5ce6d88c3c074641df256d1b2f9cbeaef3b1742a1c006dd5b7b3679c5eea8c",
+      "referenceArchiveSHA256": "10081e3da5b135472f18ed37c594b2751bc244ee3bd1f5f833e82ef563a48058",
+      "versions": {
+        "resvg-py": "0.5.0",
+        "Pillow": "12.3.0"
+      },
+      "width": 1200,
+      "height": 700,
+      "channelTolerance": 16,
+      "fractionTolerance": 0.005,
+      "passed": true,
+      "cases": 12,
+      "maximumDifferingPixelFraction": 0.0017892857142857142
+    },
+    {
+      "variant": "v1",
+      "sourceSHA256": "9b5ce6d88c3c074641df256d1b2f9cbeaef3b1742a1c006dd5b7b3679c5eea8c",
+      "referenceArchiveSHA256": "10081e3da5b135472f18ed37c594b2751bc244ee3bd1f5f833e82ef563a48058",
+      "versions": {
+        "resvg-py": "0.5.0",
+        "Pillow": "12.3.0"
+      },
+      "width": 2400,
+      "height": 1400,
+      "channelTolerance": 16,
+      "fractionTolerance": 0.005,
+      "passed": true,
+      "cases": 12,
+      "maximumDifferingPixelFraction": 0.003730059523809524
+    },
+    {
+      "variant": "v2",
+      "sourceSHA256": "3aaf45277c7ae8b7b411390ae8d7a55c8f2b9ac7b83e15a60504387475b7aac8",
+      "referenceArchiveSHA256": "10081e3da5b135472f18ed37c594b2751bc244ee3bd1f5f833e82ef563a48058",
+      "versions": {
+        "resvg-py": "0.5.0",
+        "Pillow": "12.3.0"
+      },
+      "width": 1200,
+      "height": 700,
+      "channelTolerance": 16,
+      "fractionTolerance": 0.005,
+      "passed": true,
+      "cases": 12,
+      "maximumDifferingPixelFraction": 0.0011297619047619047
+    }
+  ]
+}

@@ -34,6 +34,18 @@ report = {'schema':1,'compiler':subprocess.check_output(['swift','--version'],te
           'fontSHA256':hashlib.sha256(Path(os.environ['ROSTRUM_BENCH_FONT']).read_bytes()).hexdigest() if os.environ.get('ROSTRUM_BENCH_FONT') else None,
           'warmups':a.warmups,'runs':a.runs,
           'corpus':{f.name:hashlib.sha256(f.read_bytes()).hexdigest() for f in corpus},'scenarios':{}}
+def distribution(values):
+    values = sorted(values)
+    median = statistics.median(values)
+    return {'medianMS':median,'p95MS':values[min(len(values)-1,int(.95*len(values)))],
+            'minMS':min(values),'maxMS':max(values),
+            'relativeSpread':(max(values)-min(values))/median if median else 0}
+
+# Older baseline binaries only report wall time. Never substitute wall time
+# or zero for missing CPU measurements; omit the CPU comparison in that case.
+def has_cpu_samples(samples):
+    return all('cpuPhases' in s and s['cpuPhases'].keys() == s['phases'].keys() for s in samples)
+
 # Paired mode uses the same scenario calls and per-child RSS capture as the
 # original single-binary mode. SVG/diagnostic equality belongs to the proof
 # command; the checksum alone is not an output-identity gate.
@@ -71,13 +83,13 @@ if a.paired_binary:
         for phase in samples['baseline'][0]['phases']:
             phases[phase]={}
             for variant in binaries:
-                values=sorted(s['phases'][phase] for s in samples[variant])
-                median=statistics.median(values)
-                phases[phase][variant]={'medianMS':median,'p95MS':values[min(len(values)-1,int(.95*len(values)))],
-                    'minMS':min(values),'maxMS':max(values),
-                    'relativeSpread':(max(values)-min(values))/median if median else 0}
+                phases[phase][variant]=distribution(s['phases'][phase] for s in samples[variant])
         report['scenarios'][scenario]={'phases':phases,'samples':samples,'savedOutputSHA256':output_hash,
             'peakRSSMedianBytes':{v:statistics.median(s['peakRSSBytes'] for s in samples[v]) for v in binaries}}
+        if all(has_cpu_samples(samples[v]) for v in binaries):
+            report['scenarios'][scenario]['cpuPhases']={
+                phase:{v:distribution(s['cpuPhases'][phase] for s in samples[v]) for v in binaries}
+                for phase in phases}
         a.output.write_text(json.dumps(report,indent=2)+'\n')
         print(scenario+': '+json.dumps(phases['render']),file=sys.stderr)
     sys.exit(0)
@@ -110,11 +122,10 @@ for scenario in scenarios:
                         for cell in row.cells: _=cell.text
         phases={}
         for phase in samples[0]['phases']:
-            values=sorted(s['phases'][phase] for s in samples)
-            median=statistics.median(values)
-            phases[phase]={'medianMS':median,'p95MS':values[min(len(values)-1,int(.95*len(values)))],
-                           'minMS':min(values),'maxMS':max(values),
-                           'relativeSpread':(max(values)-min(values))/median if median else 0}
+            phases[phase]=distribution(s['phases'][phase] for s in samples)
         report['scenarios'][scenario]={'phases':phases,'samples':samples}
+        if has_cpu_samples(samples):
+            report['scenarios'][scenario]['cpuPhases']={
+                phase:distribution(s['cpuPhases'][phase] for s in samples) for phase in phases}
         a.output.write_text(json.dumps(report,indent=2)+'\n')
         print(scenario+': '+json.dumps(phases),file=sys.stderr)

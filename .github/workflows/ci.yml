@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 # Linux checks run on every push; the macOS job below covers pull requests.
-# `scripts/verify.sh` adds local iOS simulator builds and app-hosted tests.
+# `scripts/verify.sh` also runs local app-hosted tests.
 # Native PowerPoint verification remains a separate local step for relevant
 # package/rendering changes — see CONTRIBUTING.md.
 jobs:
@@ -39,9 +39,14 @@ jobs:
       # Oracle tests shell out to these; the pure-Swift suite passes without them.
       # fonts-dejavu-core feeds the real-font sanity oracle in FontMetricsTests.
       - name: Install oracle tools
-        run: apt-get update && apt-get install -y --no-install-recommends zip unzip python3 python3-pip fonts-dejavu-core
-      - name: Install python-pptx (oracle gate)
-        run: python3 -m pip install --break-system-packages python-pptx || python3 -m pip install python-pptx
+        run: apt-get update && apt-get install -y --no-install-recommends zip unzip python3 python3-venv fonts-dejavu-core
+      - name: Install pinned portable oracles
+        run: |
+          python3 -m venv "$RUNNER_TEMP/oracles"
+          "$RUNNER_TEMP/oracles/bin/python3" -m pip install -r Tools/conformance/requirements.txt
+          echo "$RUNNER_TEMP/oracles/bin" >> "$GITHUB_PATH"
+      - name: Require oracle dependencies
+        run: python3 Tools/conformance/check_dependencies.py
       - name: Swift version
         run: swift --version
       - name: Build
@@ -53,6 +58,16 @@ jobs:
         # runs on 6.1+. The Build step above still proves the library itself
         # compiles on Swift 6.0.
         if: matrix.swift != '6.0'
+      - name: Check portable fidelity references
+        run: bash scripts/check-fidelity.sh
+        if: matrix.swift != '6.0'
+      - name: Retain fidelity evidence
+        uses: actions/upload-artifact@v4
+        if: always() && matrix.swift != '6.0'
+        with:
+          name: fidelity-linux-${{ matrix.swift }}
+          path: .build/fidelity-checks/
+          include-hidden-files: true
       - name: Test LecternCore (sample app core)
         run: swift test
         working-directory: Lectern
@@ -73,10 +88,29 @@ jobs:
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned portable oracles
+        run: |
+          python3 -m venv "$RUNNER_TEMP/oracles"
+          "$RUNNER_TEMP/oracles/bin/python3" -m pip install -r Tools/conformance/requirements.txt
+          echo "$RUNNER_TEMP/oracles/bin" >> "$GITHUB_PATH"
+      - name: Require oracle dependencies
+        run: python3 Tools/conformance/check_dependencies.py
       - name: Swift version
         run: swift --version
       - name: Test Rostrum (Darwin XML branch)
         run: swift test
+      - name: Check portable fidelity references
+        run: bash scripts/check-fidelity.sh
+      - name: Retain fidelity evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fidelity-macos
+          path: .build/fidelity-checks/
+          include-hidden-files: true
       - name: Build and validate the Horseshoe Curve worked example
         run: swift run --package-path Examples/HorseshoeCurve/Builder HorseshoeDeck
       - name: Test LecternCore (CoreText/CoreGraphics half included)
@@ -86,6 +120,8 @@ jobs:
         run: |
           brew install xcodegen
           Lectern/scripts/build.sh
+      - name: Build the Lectern iOS simulator app
+        run: Lectern/scripts/build-ios.sh
 
 
   published-release-smoke:
