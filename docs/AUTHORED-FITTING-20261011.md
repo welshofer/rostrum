@@ -5,7 +5,9 @@ and measured it with the first run's style. A 24 pt run followed by 48 pt text
 could be accepted even though the rendered body overflowed. Fields, explicit
 breaks and no-wrap width checks also had gaps. Authored fitting now measures the
 complete body with `RichTextLayout`, including its inheritance and registered
-faces. Template planning remains a separate measurement path.
+faces. At this checkpoint, template planning remained a separate measurement
+path; the subsequent [template fitting pass](TEMPLATE-FITTING-20261011.md)
+also uses shared geometry.
 
 Accepted fits save normal autofit and retain original run sizes, styles, fields
 and text. Explicit percentage line spacing and point paragraph gaps may be

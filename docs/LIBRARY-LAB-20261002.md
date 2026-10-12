@@ -17,6 +17,15 @@ observation of that run, not a comparative benchmark.
 
 ## Executable coverage
 
+The Templates and Properties recipe also runs a complete
+`Presentation.fromTemplate` → `TemplateLayoutEngine.plan` → `compose` flow.
+Its second slide uses inherited tabs, bullets, paragraph levels and normal
+autofit. Both canvas options retain a separate source POTX and composed PPTX,
+check byte-identical master/layout/theme parts, and compare saved/reopened text
+and geometry with an embedded DejaVu face. The normal inspector SVG and export
+pipeline runs for both slides. These computed specimens still require native
+PowerPoint open-without-repair and visual acceptance.
+
 The Fonts, Shaping and Fitting recipe also exercises
 `AuthoredLayoutEngine.fitText` on a second slide. Original 24/48 pt mixed-size
 runs overflow a compact frame; the fitted copy retains both run sizes and saves
@@ -61,7 +70,7 @@ visible in Lectern and in its JSON report.
 | Sections | Membership through slide changes; rename, reorder and remove | Document |
 | Import slides | Single/all slides; dependency-preserving image, note, comment, layout and table-style import | Document |
 | Theme palette and fonts | Color slots, accent, scheme resolution, major/minor fonts | Platform document |
-| Templates and properties | PPTX/POTX/PPSX, canvas sizes and typed document properties | Platform document |
+| Templates and properties | PPTX/POTX/PPSX, canvas sizes, typed properties; POTX template planning/composition, inherited tabs/bullets/spacing, autofit, source-part preservation and reopened geometry | [Template fitting](../Lectern/Sources/LecternCore/LibraryLab/TemplateFittingRecipe.swift) and Platform document |
 | Design system and slide builders | All 19 builders; parsed design, tokens, grid/split geometry, contrast and reusable components | [Platform design](../Lectern/Sources/LecternCore/LibraryLab/PlatformDesignRecipes.swift) |
 | Media and foreign shapes | Owned valid audio/video, extraction, group transforms, connector targets, owned OLE spreadsheet preservation | [Platform assets](../Lectern/Sources/LecternCore/LibraryLab/PlatformAssetRecipes.swift) |
 | ZIP, XML and package inspection | Bounded lazy reads/cache, promotion, parts/relationships, independent XML, unknown extensions and limit refusal | Platform assets |
