@@ -6,6 +6,10 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Template and authored autofit reuse paragraph styles, font selection and
+  Unicode preparation within each body's shrink trials. Reuse is bounded and
+  discarded after fitting; size-dependent shaping and geometry remain unchanged.
+
 - Template planning, autofit and box growth now use the same rich-text geometry
   as rendering, including inherited faces, tabs, bullets, margins and spacing.
   Composition rechecks content before adding a slide; incompatible columns or

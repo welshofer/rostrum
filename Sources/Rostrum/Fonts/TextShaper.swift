@@ -16,34 +16,20 @@ public struct TextShaper: Sendable {
     public let metrics: FontMetrics
     public init(_ metrics: FontMetrics) { self.metrics = metrics }
 
-    public func shape(_ text: String, pointSize: Double,
-                      direction: TextDirection = .automatic) -> ShapedGlyphRun {
-        shape(text, pointSize: pointSize, direction: direction, kerning: true)
-    }
-
-    /// Disabling kerning suppresses only pair adjustments; substitutions,
-    /// joining, bidi and unsupported-feature diagnostics remain unchanged.
-    public func shape(_ text: String, pointSize: Double,
-                      direction: TextDirection = .automatic, kerning: Bool) -> ShapedGlyphRun {
-        shape(text, pointSize: pointSize, direction: direction, kerning: kerning, standardLigatures: true)
-    }
-
-    /// DrawingML's bounded Latin policy controls optional `liga` separately from
-    /// this general shaper's public defaults. Required script shaping is retained.
-    func shape(_ text: String, pointSize: Double, direction: TextDirection = .automatic,
-               kerning: Bool, standardLigatures: Bool) -> ShapedGlyphRun {
-        if text.unicodeScalars.contains(where: { ArabicJoining.isArabic($0.value) }) {
-            return ArabicTextShaper(metrics: metrics).shape(text, pointSize: pointSize, direction: direction, kerning: kerning)
-        }
-        let tables = metrics.layoutTables
-        var diagnostics = tables.diagnostics.map { ShapingDiagnostic.unsupportedLayoutFeature($0) }
-        guard pointSize.isFinite, pointSize >= 0 else {
-            return ShapedGlyphRun(glyphs: [], breaks: [], diagnostics: [.invalidPointSize], direction: direction)
-        }
-        let scale = pointSize / Double(metrics.unitsPerEm)
+    /// Scale-independent Unicode preparation. Arabic keeps its dedicated path.
+    /// A fitting operation may retain this value across point-size trials.
+    struct PreparedText: Sendable {
+        let direction: TextDirection
+        let resolvedDirection: TextDirection
+        let clusters: [Cluster]
+        let combining: [Range<Int>]
+        let initialGlyphCount: Int
+        let hasRTL: Bool
+        let diagnostics: [ShapingDiagnostic]
+        let breaks: [TextBreakOpportunity]
         // Normalized singletons need no heap allocation. Complex clusters keep
         // decoded arrays so repeated shaping passes do not decode UTF-8 again.
-        enum Scalars: RandomAccessCollection {
+        enum Scalars: RandomAccessCollection, Sendable {
             typealias Index = Int
             case single(Unicode.Scalar)
             case multiple([Unicode.Scalar])
@@ -76,93 +62,145 @@ public struct TextShaper: Sendable {
                 }
             }
         }
-        struct Cluster {
+        struct Cluster: Sendable {
             let range: Range<Int>
             let scalars: Scalars
             var kind: Int // 0 Latin/CJK, 1 Hebrew, 2 digit, -1 neutral
             var level = 0
         }
-        var clusters: [Cluster] = [], offset = 0
-        var combining: [Range<Int>] = []
-        var initialGlyphCount = 0
-        for character in text {
-            let original = String(character), count = original.unicodeScalars.count
-            let range = offset..<(offset + count); offset += count
-            // ASCII is already NFC, including the CR/LF grapheme. Avoid a
-            // Foundation normalization/bridging round trip for these clusters;
-            // any non-ASCII scalar still takes the full normalization path.
-            let normalized = original.utf8.allSatisfy { $0 < 0x80 }
-                ? Scalars(original.unicodeScalars)
-                : Scalars(original.precomposedStringWithCanonicalMapping.unicodeScalars)
-            var kind = -1
-            for scalar in normalized {
-                let value = scalar.value
-                if value != 0xA && value != 0xD && value != 0x200B { initialGlyphCount += 1 }
-                if (0x05D0...0x05EA).contains(value) { kind = 1 }
-                else if (0x30...0x39).contains(value) { if kind == -1 { kind = 2 } }
-                else if Self.isLatin(value) || Self.isCJK(value) { kind = 0 }
-                else if value == 0x200E || value == 0x200F || (0x202A...0x202E).contains(value)
-                            || (0x2066...0x2069).contains(value) {
-                    diagnostics.append(.unsupportedBidirectionalControl(scalar: value))
-                } else if !Self.isCommon(value) && ![.nonspacingMark, .spacingMark, .enclosingMark].contains(scalar.properties.generalCategory) {
-                    diagnostics.append(.unsupportedScript(scalar: value))
+        init(_ text: String, direction: TextDirection) {
+            var diagnostics: [ShapingDiagnostic] = []
+            var clusters: [Cluster] = [], offset = 0
+            var combining: [Range<Int>] = []
+            var initialGlyphCount = 0
+            for character in text {
+                let original = String(character), count = original.unicodeScalars.count
+                let range = offset..<(offset + count); offset += count
+                // ASCII is already NFC, including the CR/LF grapheme. Avoid a
+                // Foundation normalization/bridging round trip for these clusters;
+                // any non-ASCII scalar still takes the full normalization path.
+                let normalized = original.utf8.allSatisfy { $0 < 0x80 }
+                    ? Scalars(original.unicodeScalars)
+                    : Scalars(original.precomposedStringWithCanonicalMapping.unicodeScalars)
+                var kind = -1
+                for scalar in normalized {
+                    let value = scalar.value
+                    if value != 0xA && value != 0xD && value != 0x200B { initialGlyphCount += 1 }
+                    if (0x05D0...0x05EA).contains(value) { kind = 1 }
+                    else if (0x30...0x39).contains(value) { if kind == -1 { kind = 2 } }
+                    else if TextShaper.isLatin(value) || TextShaper.isCJK(value) { kind = 0 }
+                    else if value == 0x200E || value == 0x200F || (0x202A...0x202E).contains(value)
+                                || (0x2066...0x2069).contains(value) {
+                        diagnostics.append(.unsupportedBidirectionalControl(scalar: value))
+                    } else if !TextShaper.isCommon(value) && ![.nonspacingMark, .spacingMark, .enclosingMark].contains(scalar.properties.generalCategory) {
+                        diagnostics.append(.unsupportedScript(scalar: value))
+                    }
+                }
+                if (normalized.count > 1 || normalized.first.map { $0.value >= 0x80 && [.nonspacingMark, .spacingMark, .enclosingMark].contains($0.properties.generalCategory) } == true) && original != "\r\n" {
+                    combining.append(range)
+                }
+                clusters.append(Cluster(range: range, scalars: normalized, kind: kind))
+            }
+            let base: Int
+            switch direction {
+            case .leftToRight: base = 0
+            case .rightToLeft: base = 1
+            case .automatic: base = clusters.first(where: { $0.kind == 0 || $0.kind == 1 })?.kind ?? 0
+            }
+            let resolvedDirection: TextDirection = base == 1 ? .rightToLeft : .leftToRight
+            let hasRTL = base == 1 || clusters.contains { $0.kind == 1 }
+            if hasRTL {
+                for scalar in text.unicodeScalars where !TextShaper.isLatin(scalar.value)
+                    && !(0x05D0...0x05EA).contains(scalar.value) && !(0x30...0x39).contains(scalar.value)
+                    && scalar.value != 0x20 {
+                    diagnostics.append(.unsupportedBidirectionalControl(scalar: scalar.value))
                 }
             }
-            if (normalized.count > 1 || normalized.first.map { $0.value >= 0x80 && [.nonspacingMark, .spacingMark, .enclosingMark].contains($0.properties.generalCategory) } == true) && original != "\r\n" {
-                combining.append(range)
-            }
-            clusters.append(Cluster(range: range, scalars: normalized, kind: kind))
-        }
-        let base: Int
-        switch direction {
-        case .leftToRight: base = 0
-        case .rightToLeft: base = 1
-        case .automatic: base = clusters.first(where: { $0.kind == 0 || $0.kind == 1 })?.kind ?? 0
-        }
-        let resolvedDirection: TextDirection = base == 1 ? .rightToLeft : .leftToRight
-        let hasRTL = base == 1 || clusters.contains { $0.kind == 1 }
-        if hasRTL {
-            for scalar in text.unicodeScalars where !Self.isLatin(scalar.value)
-                && !(0x05D0...0x05EA).contains(scalar.value) && !(0x30...0x39).contains(scalar.value)
-                && scalar.value != 0x20 {
-                diagnostics.append(.unsupportedBidirectionalControl(scalar: scalar.value))
-            }
-        }
-        // With a left-to-right base and no RTL cluster, digits and neutrals
-        // resolve to level zero, which every cluster already has.
-        if hasRTL {
-            // Restricted UAX #9 profile: no embeddings, isolates, marks or brackets.
-            // Digits inherit the preceding strong context (EN after L resolves L).
-            var precedingStrong = base
-            var effective = clusters.map(\.kind)
-            for i in clusters.indices {
-                if effective[i] == 0 || effective[i] == 1 { precedingStrong = effective[i] }
-                else if effective[i] == 2 { effective[i] = precedingStrong == 0 ? 0 : 2 }
-            }
-            var preceding = Array(repeating: base, count: clusters.count)
-            var following = preceding, strong = base
-            for i in clusters.indices {
-                preceding[i] = strong
-                if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
-            }
-            strong = base
-            for i in clusters.indices.reversed() {
-                following[i] = strong
-                if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
-            }
-            for i in clusters.indices {
-                var kind = effective[i]
-                if kind == -1 {
-                    kind = preceding[i] == following[i] ? preceding[i] : base
+            // With a left-to-right base and no RTL cluster, digits and neutrals
+            // resolve to level zero, which every cluster already has.
+            if hasRTL {
+                // Restricted UAX #9 profile: no embeddings, isolates, marks or brackets.
+                // Digits inherit the preceding strong context (EN after L resolves L).
+                var precedingStrong = base
+                var effective = clusters.map(\.kind)
+                for i in clusters.indices {
+                    if effective[i] == 0 || effective[i] == 1 { precedingStrong = effective[i] }
+                    else if effective[i] == 2 { effective[i] = precedingStrong == 0 ? 0 : 2 }
                 }
-                clusters[i].level = kind == 1 ? 1 : (kind == 2 || base == 1 ? 2 : 0)
+                var preceding = Array(repeating: base, count: clusters.count)
+                var following = preceding, strong = base
+                for i in clusters.indices {
+                    preceding[i] = strong
+                    if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
+                }
+                strong = base
+                for i in clusters.indices.reversed() {
+                    following[i] = strong
+                    if effective[i] != -1 { strong = effective[i] == 2 ? 1 : effective[i] }
+                }
+                for i in clusters.indices {
+                    var kind = effective[i]
+                    if kind == -1 {
+                        kind = preceding[i] == following[i] ? preceding[i] : base
+                    }
+                    clusters[i].level = kind == 1 ? 1 : (kind == 2 || base == 1 ? 2 : 0)
+                }
+                // Trailing whitespace has the paragraph embedding level (UAX #9 L1).
+                for i in clusters.indices.reversed() {
+                    guard clusters[i].scalars.allSatisfy({ $0.value == 0x20 }) else { break }
+                    clusters[i].level = base
+                }
             }
-            // Trailing whitespace has the paragraph embedding level (UAX #9 L1).
-            for i in clusters.indices.reversed() {
-                guard clusters[i].scalars.allSatisfy({ $0.value == 0x20 }) else { break }
-                clusters[i].level = base
-            }
+            self.direction = direction
+            self.resolvedDirection = resolvedDirection
+            self.clusters = clusters
+            self.combining = combining
+            self.initialGlyphCount = initialGlyphCount
+            self.hasRTL = hasRTL
+            self.diagnostics = diagnostics
+            self.breaks = TextShaper.lineBreaks(in: text)
         }
+    }
+
+    public func shape(_ text: String, pointSize: Double,
+                      direction: TextDirection = .automatic) -> ShapedGlyphRun {
+        shape(text, pointSize: pointSize, direction: direction, kerning: true)
+    }
+
+    /// Disabling kerning suppresses only pair adjustments; substitutions,
+    /// joining, bidi and unsupported-feature diagnostics remain unchanged.
+    public func shape(_ text: String, pointSize: Double,
+                      direction: TextDirection = .automatic, kerning: Bool) -> ShapedGlyphRun {
+        shape(text, pointSize: pointSize, direction: direction, kerning: kerning, standardLigatures: true)
+    }
+
+    /// DrawingML's bounded Latin policy controls optional `liga` separately from
+    /// this general shaper's public defaults. Required script shaping is retained.
+    func shape(_ text: String, pointSize: Double, direction: TextDirection = .automatic,
+               kerning: Bool, standardLigatures: Bool) -> ShapedGlyphRun {
+        if text.unicodeScalars.contains(where: { ArabicJoining.isArabic($0.value) }) {
+            return ArabicTextShaper(metrics: metrics).shape(text, pointSize: pointSize, direction: direction, kerning: kerning)
+        }
+        guard pointSize.isFinite, pointSize >= 0 else {
+            return ShapedGlyphRun(glyphs: [], breaks: [], diagnostics: [.invalidPointSize], direction: direction)
+        }
+        return shape(PreparedText(text, direction: direction), pointSize: pointSize,
+                     kerning: kerning, standardLigatures: standardLigatures)
+    }
+
+    func shape(_ prepared: PreparedText, pointSize: Double,
+               kerning: Bool, standardLigatures: Bool) -> ShapedGlyphRun {
+        let tables = metrics.layoutTables
+        var diagnostics = tables.diagnostics.map { ShapingDiagnostic.unsupportedLayoutFeature($0) } + prepared.diagnostics
+        guard pointSize.isFinite, pointSize >= 0 else {
+            return ShapedGlyphRun(glyphs: [], breaks: [], diagnostics: [.invalidPointSize], direction: prepared.direction)
+        }
+        let scale = pointSize / Double(metrics.unitsPerEm)
+        let clusters = prepared.clusters
+        let combining = prepared.combining
+        let initialGlyphCount = prepared.initialGlyphCount
+        let hasRTL = prepared.hasRTL
+        let resolvedDirection = prepared.resolvedDirection
         var glyphs: [ShapedGlyph] = []
         // Count normalized emitting scalars, preserving source ranges separately.
         glyphs.reserveCapacity(initialGlyphCount)
@@ -332,14 +370,20 @@ public struct TextShaper: Sendable {
                         guard glyphs[i].bidiLevel >= level else { i += 1; continue }
                         let start = i
                         while i < glyphs.count && glyphs[i].bidiLevel >= level { i += 1 }
-                        glyphs.replaceSubrange(start..<i, with: glyphs[start..<i].reversed())
+                        // Reverse in place; a lazy reversed slice aliases the
+                        // destination and can overwrite unread glyphs in Release.
+                        var left = start, right = i - 1
+                        while left < right {
+                            glyphs.swapAt(left, right)
+                            left += 1; right -= 1
+                        }
                     }
                 }
             }
         }
         var unique: [ShapingDiagnostic] = [], seen: Set<ShapingDiagnostic> = []
         for diagnostic in diagnostics where seen.insert(diagnostic).inserted { unique.append(diagnostic) }
-        return ShapedGlyphRun(glyphs: glyphs, breaks: Self.lineBreaks(in: text),
+        return ShapedGlyphRun(glyphs: glyphs, breaks: prepared.breaks,
                               diagnostics: unique, direction: resolvedDirection)
     }
 

@@ -79,6 +79,22 @@ public struct RichTextLayout: Sendable {
                 slideNumber: Int? = nil, maxLines: Int = 4096,
                 insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
                 verticalAnchor: String? = nil, context: Context = .shape) {
+        self.init(textBody: textBody, width: width, height: height, fonts: fonts,
+            fallbackMetrics: fallbackMetrics, theme: theme, inheritedStyles: inheritedStyles,
+            defaultPointSize: defaultPointSize, lineSpacing: lineSpacing, fontScale: fontScale,
+            lineSpacingReduction: lineSpacingReduction, slideNumber: slideNumber,
+            maxLines: maxLines, insets: insets, verticalAnchor: verticalAnchor,
+            context: context, preparation: nil)
+    }
+
+    package init(textBody: XML.Element, width: Double, height: Double,
+                fonts: FontLibrary? = nil, fallbackMetrics: FontMetrics? = nil,
+                theme: Theme? = nil, inheritedStyles: [XML.Element] = [],
+                defaultPointSize: Double = 18, lineSpacing: Double = 1,
+                fontScale: Double? = nil, lineSpacingReduction: Double? = nil,
+                slideNumber: Int? = nil, maxLines: Int = 4096,
+                insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
+                verticalAnchor: String? = nil, context: Context = .shape, preparation: Preparation?) {
         let bodies = [textBody.firstChild(named: "a:bodyPr")].compactMap { $0 }
             + inheritedStyles.filter { $0.name == "a:bodyPr" }
         let body = XML.Element("a:bodyPr")
@@ -160,55 +176,33 @@ public struct RichTextLayout: Sendable {
         }
         for (paragraphIndex, paragraph) in paragraphs.enumerated() {
             if output.count >= lineLimit { didTruncate = true; break }
-            let own = paragraph.firstChild(named: "a:pPr")
-            let level = Int(Self.bounded(Self.number(own, "lvl", 0), 0...8))
-            var properties = [own, textBody.firstChild(named: "a:lstStyle")?.firstChild(named: "a:lvl\(level + 1)pPr"), textBody.firstChild(named: "a:lstStyle")?.firstChild(named: "a:defPPr")].compactMap { $0 }
-            for style in inheritedStyles {
-                if style.name == "a:defRPr" { continue }
-                if let p = style.firstChild(named: "a:lvl\(level + 1)pPr") { properties.append(p) }
-                if let p = style.firstChild(named: "a:defPPr") { properties.append(p) }
+            func prepare(at scale: Double) -> Preparation.Paragraph {
+                Self.prepareParagraph(paragraph, textBody: textBody, fonts: fonts, fallbackMetrics: fallbackMetrics,
+                    theme: theme, inheritedStyles: inheritedStyles, defaultSize: defaultPointSize,
+                    scale: scale, slideNumber: slideNumber)
             }
-            func attribute(_ name: String) -> String? {
-                properties.lazy.compactMap { $0[attribute: name] }.first
-            }
-            func child(_ name: String) -> XML.Element? {
-                properties.lazy.compactMap { $0.firstChild(named: name) }.first
-            }
+            let input = preparation?.paragraph(for: paragraph) { prepare(at: 1) } ?? prepare(at: scale)
+            let level = input.level, properties = input.properties, defaults = input.defaults, emptyDefaults = input.emptyDefaults
+            func attribute(_ name: String) -> String? { properties.lazy.compactMap { $0[attribute: name] }.first }
+            func child(_ name: String) -> XML.Element? { properties.lazy.compactMap { $0.firstChild(named: name) }.first }
             func choice(_ names: [String]) -> XML.Element? {
-                properties.lazy.compactMap { property in
-                    property.childElements.first { names.contains($0.name) }
-                }.first
+                properties.lazy.compactMap { property in property.childElements.first { names.contains($0.name) } }.first
             }
-            let defaults = properties.compactMap { $0.firstChild(named: "a:defRPr") }
-                + inheritedStyles.filter { $0.name == "a:defRPr" }
-            var indent = Self.bounded(attribute("indent").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
-            var left = Self.bounded(attribute("marL").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
-            var right = Self.bounded(attribute("marR").flatMap(Double.init) ?? 0, -1e9...1e9) / Double(EMU.perPoint)
-            let defaultTab = Self.bounded(attribute("defTabSz").flatMap(Double.init) ?? 914400, 1...Double(Int32.max)) / Double(EMU.perPoint)
-            let tabs = child("a:tabLst")?.children(named: "a:tab").compactMap { tab -> (position: Double, alignment: String)? in
-                guard let position = tab.coordinate("pos") else { return nil }
-                return (Double(position) / Double(EMU.perPoint), tab[attribute: "algn"] ?? "l")
-            }.sorted { $0.position < $1.position } ?? []
-            // These properties belong to the paragraph, not each wrapped line.
-            // Preserve the arithmetic order for percentage spacing so repeated
-            // lines remain byte-identical when their coordinates are serialized.
-            let declaredSpacing = child("a:lnSpc")
-            let fixedSpacing = declaredSpacing?.firstChild(named: "a:spcPts").map {
-                Self.bounded(Self.number($0, "val", 0), 0...1e8) / 100
+            var indent = input.indent, left = input.left, right = input.right
+            let defaultTab = input.defaultTab, tabs = input.tabs
+            let fixedSpacing = input.fixedSpacing, percentageSpacing = input.percentageSpacing
+            var baseStyle = input.baseStyle, baseSize = input.baseSize, pieces = input.pieces
+            if preparation != nil {
+                // Preserve resolve's arithmetic order: bounds / 100, then scale.
+                baseStyle?.fontSize *= scale
+                baseStyle?.tracking *= scale
+                baseSize *= scale
+                for i in pieces.indices {
+                    pieces[i].style.fontSize *= scale
+                    pieces[i].style.tracking *= scale
+                }
             }
-            let percentageSpacing = declaredSpacing?.firstChild(named: "a:spcPct").map {
-                Self.bounded(Self.number($0, "val", 0), 0...1e7)
-            }
-            let hasText = paragraph.childElements.contains { ["a:r", "a:fld"].contains($0.name) && !($0.firstChild(named: "a:t")?.textContent ?? "").isEmpty }
-            let emptyDefaults = hasText ? defaults : [paragraph.firstChild(named: "a:endParaRPr")].compactMap { $0 } + defaults
-            // Without metrics, the empty-line box needs only the inherited size.
-            // Avoid resolving paint and font properties that cannot affect it.
-            let baseStyle = hasRegisteredFonts || fallbackMetrics != nil
-                ? Self.resolve(text: "", properties: emptyDefaults,
-                    theme: theme, defaultSize: defaultPointSize, scale: scale) : nil
-            let baseSize = baseStyle?.fontSize ?? Self.bounded(
-                emptyDefaults.lazy.compactMap { $0[attribute: "sz"] }.first.flatMap(Double.init)
-                    ?? defaultPointSize * 100, 100...400000) / 100 * scale
+            let baseMetrics = input.baseMetrics
             func face(_ style: ResolvedTextRun) -> FontMetrics? {
                 if hasRegisteredFonts, let name = style.fontFamily,
                    let library = fonts,
@@ -217,7 +211,6 @@ public struct RichTextLayout: Sendable {
                 }
                 return fallbackMetrics
             }
-            let baseMetrics = baseStyle.flatMap(face)
             func lineMetrics(_ metrics: FontMetrics?, size: Double) -> (ascent: Double, height: Double, drawingML: Bool) {
                 if let share = metrics?.drawingMLAscentShare {
                     let height = size * 1.2
@@ -235,20 +228,11 @@ public struct RichTextLayout: Sendable {
                 return 0
             }
             var atoms: [Atom] = [], source = 0, hasTabs = false
-            let nativeLeftToRight = !["1", "true"].contains(attribute("rtl") ?? "0")
+            let nativeLeftToRight = input.nativeLeftToRight
             var usesNativeAdvanceGrid = nativeLeftToRight
             // Each nonempty piece owns one resolved style for this paragraph.
             // Atoms share its index instead of retaining all style strings per glyph.
             var runStyles: [ResolvedTextRun] = []
-            let pieces = paragraph.childElements.compactMap { piece -> (element: XML.Element, text: String, style: ResolvedTextRun, metrics: FontMetrics?)? in
-                guard ["a:r", "a:fld", "a:br"].contains(piece.name) else { return nil }
-                let text = piece.name == "a:br" ? "\n" : (piece.name == "a:fld" && piece[attribute: "type"] == "slidenum" && slideNumber != nil
-                    ? String(slideNumber!) : piece.firstChild(named: "a:t")?.textContent ?? "")
-                let style = Self.resolve(text: text,
-                    properties: [piece.firstChild(named: "a:rPr")].compactMap { $0 } + defaults,
-                    theme: theme, defaultSize: defaultPointSize, scale: scale)
-                return (piece, text, style, face(style))
-            }
             // Native PowerPoint draws individual common Latin ligature components.
             // One policy covers all source text after field substitution, before
             // case conversion. Non-ASCII and RTL paragraphs retain general shaping.
@@ -303,9 +287,10 @@ public struct RichTextLayout: Sendable {
             let emptySpacingMetric = spacingMetric(baseMetrics, size: baseSize, style: baseStyle)
             var spacingRunMetrics: [SpacingMetric?] = []
             func shapePieces() {
-                for (piece, text, originalStyle, metrics) in pieces {
+                for piece in pieces {
+                    let text = piece.text, metrics = piece.metrics
                     source += 1
-                    var style = originalStyle
+                    var style = piece.style
                     style.usesStandardLigatures = !nativeLatinLigatures
                     if nativePaint { style.nativeSizing = scale == 1 ? .authored : .scaled }
                     let styleIndex = runStyles.count
@@ -339,13 +324,19 @@ public struct RichTextLayout: Sendable {
                             return
                         }
                         if let metrics {
-                            let shaped = TextShaper(metrics).shape(segment, pointSize: style.measurementPointSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
-                            let breaks = Set(shaped.breaks.map(\.scalarOffset))
+                            let input = preparation?.segment(segment)
+                            let shaper = TextShaper(metrics)
+                            let shaped = input.map {
+                                shaper.shape($0.input, pointSize: style.measurementPointSize,
+                                    kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
+                            } ?? shaper.shape(segment, pointSize: style.measurementPointSize,
+                                kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
+                            let breaks = input?.breaks ?? Set(shaped.breaks.map(\.scalarOffset))
                             warnings.append(contentsOf: shaped.diagnostics)
                             if shaped.glyphs.contains(where: { $0.bidiLevel > 0 }) {
                                 warnings.append(.unsupportedLayoutFeature("Rich-text bidirectional span ordering requires a verified paragraph renderer"))
                             }
-                            let scalars = Array(segment.unicodeScalars)
+                            let scalars = input?.scalars ?? Array(segment.unicodeScalars)
                             let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: segment)
                             if !nativeGrid {
                                 usesNativeAdvanceGrid = false
@@ -795,7 +786,7 @@ public struct RichTextLayout: Sendable {
                     let percentage = calibratedMetric == nil ? percentageSpacing : percentageSpacing - reduction * 100000
                     spacingAdvance = naturalHeight * percentage / 100000
                 }
-                else { spacingAdvance = declaredSpacing == nil ? naturalHeight * defaultSpacing : 0 }
+                else { spacingAdvance = input.hasDeclaredSpacing ? 0 : naturalHeight * defaultSpacing }
                 if calibratedMetric != nil { ascent = spacingAdvance * 0.75 }
                 let advance = calibratedMetric == nil ? spacingAdvance * (1 - reduction) : spacingAdvance
                 // Explicit line spacing determines the next baseline, not an
@@ -1062,13 +1053,13 @@ public struct RichTextLayout: Sendable {
         return (base * 8).rounded() / 8 + (glyph.advance - base)
     }
 
-    private static func number(_ element: XML.Element?, _ attribute: String, _ fallback: Double) -> Double {
+    static func number(_ element: XML.Element?, _ attribute: String, _ fallback: Double) -> Double {
         element?[attribute: attribute].flatMap(Double.init).flatMap { $0.isFinite ? $0 : nil } ?? fallback
     }
-    private static func bounded(_ value: Double, _ range: ClosedRange<Double>) -> Double {
+    static func bounded(_ value: Double, _ range: ClosedRange<Double>) -> Double {
         value.isFinite ? min(range.upperBound, max(range.lowerBound, value)) : range.lowerBound
     }
-    private static func resolve(text: String, properties: [XML.Element], theme: Theme?,
+    static func resolve(text: String, properties: [XML.Element], theme: Theme?,
                                 defaultSize: Double, scale: Double) -> ResolvedTextRun {
         func attr(_ name: String) -> String? { properties.lazy.compactMap { $0[attribute: name] }.first }
         let named = properties.lazy.compactMap { $0.firstChild(named: "a:latin")?[attribute: "typeface"] }.first
