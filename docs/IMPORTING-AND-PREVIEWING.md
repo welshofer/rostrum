@@ -51,6 +51,28 @@ serialized typeface names or register an alias under a missing source family.
 Lectern inspection explicitly registers Arial; the offline Library Lab recipe
 uses its licensed bundled DejaVu face. Other hosts choose their own policy.
 
+## Embedded fonts during slide import
+
+`destination.slides.import(from:at:)` and `importAll(from:)` preserve every source
+embedded family and style. Font declarations belong to the presentation, so
+copying only the slide's relationships would lose them. All embedded families
+travel with a nonempty import, including fonts used through inherited themes,
+notes, or unmodeled content.
+
+Matching family/style declarations with identical payloads and compatible
+metadata are reused. Missing styles are added. Different bytes for the same
+case-insensitive family/style, incompatible opaque metadata, or broken font
+relationships throw before any imported parts are installed. Even different
+subsets of the same font can conflict; import does not rewrite or combine font
+binaries. The source remains unchanged.
+
+After importing, call `destination.registerEmbeddedFonts()` to make decodable
+embedded faces available to measurement and SVG rendering. This remains explicit:
+import does not change your live font registry or find unembedded system fonts.
+Opaque compressed fonts are retained in the saved deck even when registration
+cannot decode them. Callers remain free to use any supported font family; the
+fonts in tests and sample decks impose no library font policy.
+
 ## Keep diagnostics visible
 
 `renderSVGReportingProblems` returns the SVG and a `SlideRenderProblems` report.

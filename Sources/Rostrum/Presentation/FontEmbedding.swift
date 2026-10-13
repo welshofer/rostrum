@@ -182,18 +182,25 @@ extension Presentation {
     @discardableResult
     public func registerEmbeddedFonts() -> [String] {
         guard let dom = try? presentationPart.dom() else { return [] }
-        let embeddedFonts = dom.firstChild(named: "p:embeddedFontLst")?
-            .children(named: "p:embeddedFont") ?? []
+        guard let list = EmbeddedFontXML.children(dom, "embeddedFontLst").first else { return [] }
+        let rootScope = EmbeddedFontXML.scope(dom)
+        let listScope = EmbeddedFontXML.scope(list, rootScope)
+        let embeddedFonts = EmbeddedFontXML.children(list, "embeddedFont", inheriting: rootScope)
         var registered: [String] = []
         for embedded in embeddedFonts {
-            guard let typeface = embedded.firstChild(named: "p:font")?[attribute: "typeface"] else {
+            let embeddedScope = EmbeddedFontXML.scope(embedded, listScope)
+            guard let typeface = EmbeddedFontXML.children(embedded, "font", inheriting: listScope).first?[attribute: "typeface"] else {
                 continue
             }
-            let variants = [("p:regular", false, false), ("p:bold", true, false),
-                            ("p:italic", false, true), ("p:boldItalic", true, true)]
+            let variants = [("regular", false, false), ("bold", true, false),
+                            ("italic", false, true), ("boldItalic", true, true)]
             for (tag, bold, italic) in variants {
-                guard let rId = embedded.firstChild(named: tag)?[attribute: "r:id"],
-                      let rel = presentationPart.rels.relationship(withId: rId) else { continue }
+                guard let face = EmbeddedFontXML.children(embedded, tag, inheriting: listScope).first else { continue }
+                let scope = EmbeddedFontXML.scope(face, embeddedScope)
+                guard let rId = face.attributes.first(where: {
+                    EmbeddedFontXML.expanded($0.name, scope, attribute: true) == "{\(EmbeddedFontXML.relationships)}id"
+                })?.value, let rel = presentationPart.rels.relationship(withId: rId),
+                      rel.type == RelType.font, !rel.isExternal else { continue }
                 let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
                 guard let part = try? package.part(at: uri),
                       let sfnt = EOTLite.unwrap(part.blob),

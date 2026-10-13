@@ -6,6 +6,12 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Slide imports preserve presentation-owned embedded font families and styles.
+  Identical faces are reused, missing styles are merged, and conflicting bytes
+  or metadata refuse the import without modifying the destination. Unknown font
+  payloads and extension dependencies remain intact; registration for measurement
+  stays explicit. See [font import behavior](docs/IMPORTING-AND-PREVIEWING.md#embedded-fonts-during-slide-import).
+
 - General measured pagination searches around each page boundary instead of
   repeatedly copying and measuring the complete remaining input. Maximal pages,
   exact source text and ordering are preserved for deterministic monotonic fit

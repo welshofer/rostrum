@@ -68,7 +68,7 @@ visible in Lectern and in its JSON report.
 | Rich speaker notes | Format, append, duplicate, import, independently edit and render notes pages | Document |
 | Comments and anchors | Modern and legacy comments, replies, status, text/shape anchors, positions, editing and deletion | Document |
 | Sections | Membership through slide changes; rename, reorder and remove | Document |
-| Import slides | Single/all slides; dependency-preserving image, note, comment, layout and table-style import | Document |
+| Import slides | Single/all slides; dependency-preserving embedded-font, image, note, comment, layout and table-style import; exact reopened font bytes/advances and repeated-import deduplication | Document |
 | Theme palette and fonts | Color slots, accent, scheme resolution, major/minor fonts | Platform document |
 | Templates and properties | PPTX/POTX/PPSX, canvas sizes, typed properties; POTX template text/table planning and composition, inherited tabs/bullets/spacing, autofit, native cell padding, caption clearance, source-part preservation and reopened geometry. Plain table continuations repeat native headers and preserve exact source row order, notes and captions on 16:9 and 4:3 canvases. Measured column sizing honors hard bounds, compares retained baseline/optimized decks and checks saved widths, full-size fit and previews. Grouped headers and horizontal body spans repeat or move with their source row; saved merge topology, exact words, combined-width fit and previews are checked. Covered input cells must be empty; vertical spans remain unsupported. Native PowerPoint visual acceptance remains pending. | [Template fitting](../Lectern/Sources/LecternCore/LibraryLab/TemplateFittingRecipe.swift), [table layout](../Lectern/Sources/LecternCore/LibraryLab/TableLayoutRecipe.swift), [pagination](../Lectern/Sources/LecternCore/LibraryLab/TablePaginationRecipe.swift), [measured columns](../Lectern/Sources/LecternCore/LibraryLab/TableColumnsRecipe.swift), [horizontal spans](../Lectern/Sources/LecternCore/LibraryLab/TableHorizontalSpansRecipe.swift) and Platform document |
 | Design system and slide builders | All 19 builders; parsed design, tokens, grid/split geometry, contrast and reusable components | [Platform design](../Lectern/Sources/LecternCore/LibraryLab/PlatformDesignRecipes.swift) |
@@ -770,3 +770,21 @@ reopening. Imported cells retain their existing top, middle, bottom or absent
 alignment; the renderer continues to honor those authored values.
 The [credential safety and persistence record](KEYCHAIN-SAFETY-20261004.md)
 records the headless workflow checks and the explicit native-app validation hold.
+
+### Embedded fonts during slide import
+
+The Import slides recipe embeds the existing licensed fixture only in its source
+deck, then exercises single and bulk imports. Its saved-file checks register the
+imported font, compare exact raw font bytes and a measured advance, and require
+one presentation font relationship after both imports. The normal Library Lab
+pipeline also inspects previews and exports the reopened deck.
+
+Slide import conservatively transfers all source embedded families, including
+those inherited through themes or used in notes. It reuses identical faces and
+merges missing styles. Conflicting same-family/style bytes or opaque metadata
+refuse the complete import without changing the destination. Unknown font
+payloads are preserved even if the portable measurement engine cannot decode
+them; registration remains explicit. Missing system fonts are not acquired or
+substituted by import. The fixture is not a library font policy. These checks do
+not establish native PowerPoint visual acceptance, including the reported
+DejaVu spacing problem in PowerPoint for Mac's slide view.
