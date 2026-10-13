@@ -29,8 +29,9 @@ enum DocumentLabRecipes {
         .init(.sections, title: "Sections", summary: "Maintain section membership through slide edits, reorder sections and remove one.",
               operations: ["setSections", "addSection", "Section.name", "Sections.move", "Sections.remove", "slides.add", "slides.duplicate", "slides.move", "slides.remove"],
               inputs: [.text, .sampleSize, .alternative], alternativeLabel: "Move the first section last"),
-        .init(.slideImport, title: "Import slides", summary: "Import one slide and a whole deck, preserving images, notes, comments, layouts and table styles.",
-              operations: ["slides.import", "slides.importAll", "addPicture", "setNotes", "addComment", "addLegacyComment", "Table.applyBuiltInStyle"],
+        .init(.slideImport, title: "Import slides", summary: "Import one slide and a whole deck, preserving embedded fonts, images, notes, comments, layouts and table styles.",
+              operations: ["slides.import", "slides.importAll", "Presentation.embedFont", "Presentation.registerEmbeddedFonts", "addPicture", "setNotes", "addComment", "addLegacyComment", "Table.applyBuiltInStyle"],
+              limitations: ["The bundled licensed font is an offline preservation fixture, not a required library font. All source embedded families are copied; conflicting faces or metadata refuse the import atomically.", "Exact saved font bytes and measured advances are checked. This does not establish native PowerPoint rendering; the bundled DejaVu face has a reported PowerPoint for Mac slide-view spacing issue."],
               inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Insert the single import before the destination slide")
     ]
 
@@ -444,6 +445,11 @@ enum DocumentLabRecipes {
 
     private static func slideImport(_ options: LibraryLabOptions) throws -> LibraryLabDraft {
         let source = try LibraryLabSupport.deck(title: "Import source")
+        let fontData = try PlatformLabRecipes.resource("DejaVuSans", "ttf")
+        let fontFamily = "DejaVu Sans"
+        try source.embedFont(fontFamily, faces: FontFaces(regular: fontData))
+        source.registerEmbeddedFonts()
+        let sourceAdvance = source.fonts.metrics(for: fontFamily)?.advance(of: "W")
         let n = count(options)
         let style: BuiltInTableStyle = .themedStyle1Accent1
         for i in 0..<n {
@@ -452,6 +458,7 @@ enum DocumentLabRecipes {
             try slide.setBackground(.solid(color(options)))
             for run in slide.shapes.all.flatMap({ $0.textFrame?.paragraphs.flatMap(\.runs) ?? [] }) {
                 run.color = Color.bestTextColor(on: color(options))
+                run.fontName = fontFamily
             }
             try slide.shapes.addPicture(LibraryLabSupport.pixels, frame: LibraryLabSupport.frame(0.8, 1.1, 2, 2))
             let table = try slide.shapes.addTable(rows: 2, columns: 2, frame: LibraryLabSupport.frame(3.2, 1.1, 6, 2))
@@ -481,7 +488,15 @@ enum DocumentLabRecipes {
             let images = copiedSlides.flatMap { $0.shapes.all.compactMap { $0 as? Picture } }
             let tables = copiedSlides.flatMap { $0.shapes.all.compactMap { ($0 as? TableFrame)?.table } }
             let layouts = try copiedSlides.map { try $0.part.related(by: RelType.slideLayout, in: reopened.package) }
-            return [.init("Import ordering and destination survive", all.count == n + 2 && text(all[destinationIndex]) == "Destination original" && bulk.enumerated().allSatisfy { text($0.element).contains("\(options.text) · Source \($0.offset + 1)") }, "Single import uses the selected position; bulk import preserves source order."),
+            let registered = reopened.registerEmbeddedFonts()
+            let face = FontFaceKey(family: fontFamily)
+            let fontRelationships = try reopened.package.mainDocumentPart().rels.all(ofType: RelType.font)
+            return [.init("Embedded font survives repeated imports", registered == [fontFamily]
+                            && reopened.fonts.data(for: face) == fontData
+                            && sourceAdvance != nil && reopened.fonts.metrics(for: face)?.advance(of: "W") == sourceAdvance
+                            && fontRelationships.count == 1,
+                          "Single and bulk imports retain the exact embedded face once, without separately embedding it into the destination."),
+                    .init("Import ordering and destination survive", all.count == n + 2 && text(all[destinationIndex]) == "Destination original" && bulk.enumerated().allSatisfy { text($0.element).contains("\(options.text) · Source \($0.offset + 1)") }, "Single import uses the selected position; bulk import preserves source order."),
                     .init("Images and table styles survive", images.count == n + 1 && images.allSatisfy { $0.imageData == LibraryLabSupport.pixels } && tables.count == n + 1 && tables.allSatisfy { $0.builtInStyle == style }, "All imported slides retain exact image bytes and the native table style."),
                     .init("Layouts and backgrounds survive", layouts.count == n + 1 && layouts.allSatisfy { $0.contentType == ContentType.slideLayout } && copiedSlides.allSatisfy { $0.solidBackground == color(options) }, "Every imported slide resolves its copied layout and selected background."),
                     .init("Notes and modern comments independent", savedSingle.notesParagraphs == ["Speaker notes 1", options.text, "Single import only"] && savedSingle.comments.first?.text == "Single import edited" && bulk.enumerated().allSatisfy { $0.element.notesParagraphs == ["Speaker notes \($0.offset + 1)", options.text] && $0.element.comments.first?.text == "Review source \($0.offset + 1)" }, "Editing the single import did not change any bulk import."),

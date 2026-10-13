@@ -82,3 +82,18 @@ original deck. The recovery preview shows the resulting count and layout adjustm
 
 Passing schema checks and content comparisons does not establish visual quality.
 Inspect the final exports in PowerPoint before marking a manifest reviewed.
+
+## Measured tables through generation
+
+`--tables` selects a production fixture with 28 evidence rows and a second table
+with long source notes. It checks table pagination and caption spill using the
+same renderer as app generation and recovery:
+
+```
+swift run -c release --package-path Lectern CompositionRegression /tmp/lectern-tables --tables
+```
+
+Append a POTX or design.md path to retain its fonts and styling. The saved-content
+check concatenates body rows from every native table in the original slide group,
+requires the exact repeated header on each page, and rejects reordered, duplicated
+or missing cells. Source-note pages follow the table group and retain sections.

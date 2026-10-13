@@ -26,7 +26,7 @@ public struct RenderContentCheck: Sendable, Codable {
             guard name.hasPrefix("Lectern:") else { continue }
             let id = String(name.dropFirst("Lectern:".count))
             let root = originals.contains(id) ? id : roots.first {
-                id.hasPrefix($0 + "-continued-") || id.hasPrefix($0 + "-source-notes")
+                id.hasPrefix($0 + "-continued-") || id.hasPrefix($0 + "-source-notes") || id.hasPrefix($0 + "-notes-")
             }
             if let root { groups[root, default: []].append(page) }
         }
@@ -88,7 +88,10 @@ public struct RenderContentCheck: Sendable, Codable {
                 let grid = table.grid.map { row in
                     row.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } + Array(repeating: "", count: width - row.count)
                 }
-                if !pages.flatMap(\.tables).contains(where: { $0.rows == grid }) {
+                let tables = pages.flatMap(\.tables)
+                let headersMatch = !tables.isEmpty && tables.allSatisfy { $0.rows.first == grid.first }
+                let body = tables.flatMap { $0.rows.dropFirst() }
+                if !headersMatch || body != Array(grid.dropFirst()) {
                     result.issues.append("Slide \(slide.id): native table cells changed.")
                 }
             }

@@ -20,6 +20,21 @@ import LecternCore
             IRSlide(id: "closing", layout: "closing", title: "Choose the next action", body: Body(callToAction: "Name an owner and a date."))
         ])
     }
+    /// Runs the real new-deck path without model calls or an API key.
+    static func tableFixture() -> DeckIR {
+        let rows = (1...28).map { ["R\($0)", "Observation \($0) preserves every original word and needs room to wrap naturally.", "1,234"] }
+        let source = (1...60).map { "Source \($0) preserves its evidence and publication details." }.joined(separator: "\n")
+        return DeckIR(meta: Meta(title: "Lectern measured tables"),
+            sections: [.init(id: "evidence", title: "Evidence", slideIds: ["cover", "table", "sources"])], slides: [
+                IRSlide(id: "cover", layout: "title", title: "Evidence with room to read",
+                    body: Body(subtitle: "Editable tables, repeated headers and preserved sources")),
+                IRSlide(id: "table", layout: "table", title: "Every record remains editable",
+                    body: Body(table: .init(headers: ["ID", "Observation", "Value"], rows: rows),
+                        source: "Synthetic regression records; retain all 28 rows."), notes: "Keep these speaker notes on every table page."),
+                IRSlide(id: "sources", layout: "table", title: "Long sources stay with their evidence",
+                    body: Body(table: .init(headers: ["Record", "Value"], rows: [["First", "12.5"], ["Second", "38.0"]]), source: source),
+                    notes: "Full source details follow the native table.")])
+    }
     static func main() async {
         do { try await run() }
         catch {
@@ -34,14 +49,16 @@ import LecternCore
     static func run() async throws {
         let args = Array(CommandLine.arguments.dropFirst())
         guard let output = args.first else {
-            throw Failure.usage("Usage: CompositionRegression OUTPUT [template.potx | design.md ...] [--replay deck.json]")
+            throw Failure.usage("Usage: CompositionRegression OUTPUT [template.potx | design.md ...] [--tables | --replay deck.json]")
         }
         let root = URL(fileURLWithPath: output)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         var deck = fixture(), images: [String: Data] = ["image-fit": try Data(contentsOf: Bundle.module.url(forResource: "image-fit", withExtension: "png", subdirectory: "Resources")!)], styles: [String] = []
         var i = 1
         while i < args.count {
-            if args[i] == "--replay" {
+            if args[i] == "--tables" {
+                deck = tableFixture(); images = [:]; i += 1
+            } else if args[i] == "--replay" {
                 guard i + 1 < args.count else { throw Failure.usage("--replay requires a saved-content file") }
                 let data = try Data(contentsOf: URL(fileURLWithPath: args[i + 1]))
                 if let snapshot = try? JSONDecoder().decode(RenderSnapshot.self, from: data) { deck = snapshot.deck; images = snapshot.images }

@@ -41,6 +41,12 @@ editable run content using the embedded DejaVu face. The normal Lab pipeline
 produces inspector SVGs and extracted artifacts for both slides. These are
 computed-fit checks, not native PowerPoint autofit or pixel-equivalence evidence.
 
+The same recipe repeats `embedFont` before saving and after reopening, checking
+byte-identical no-ops, exact recovered font bytes and a single font relationship.
+An attempted different payload under the same family/style must fail without changing
+any saved bytes. The bundled font is an offline test fixture; callers choose their
+own font families. These package checks do not certify native PowerPoint rendering.
+
 The stable [catalog IDs](../Lectern/Sources/LecternCore/LibraryLab/LibraryLabTypes.swift)
 are routed exhaustively through the [runner](../Lectern/Sources/LecternCore/LibraryLab/LibraryLab.swift).
 Tests require a unique recipe for every ID and run every recipe through the same
@@ -55,7 +61,7 @@ visible in Lectern and in its JSON report.
 | 178 shape presets | Complete enum gallery; frame, rotation, naming and rounded corners | [Drawing](../Lectern/Sources/LecternCore/LibraryLab/DrawingLabRecipes.swift) |
 | Fills, outlines and shadows | Solid/alpha/theme/none/linear/radial/image fills; every dash and compound line; shadow | Drawing |
 | Rich text and live fields | Runs, paragraphs, list numbering/bullets, margins, alignment, spacing, tracking, superscript/subscript, links and fields | Drawing |
-| Fonts, shaping and fitting | Licensed bundled font; exact face lookup, measure/wrap/shape/fit; embed and recover bytes | Platform document |
+| Fonts, shaping and fitting | Licensed bundled font; exact face lookup, measure/wrap/shape/fit; atomic embedding, identical-face reuse and exact reopened bytes | Platform document |
 | Paragraph spacing and justification | Side-by-side mixed-size left/justified paragraphs; adjustable sentence count and width; both fit APIs; embedded-font recovery; exact span positions after reopening; shared table-cell layout; native-captured narrow wrap boundaries and public fitting across styled runs | [Platform paragraphs](../Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphRecipe.swift) |
 | List markers and hanging indents | All 24 independent native marker specimens; distinct imported masters; separate character/number size and face rules; three absent inherited markers; body continuation margins; both computed fit APIs; saved font bytes and complete glyph SVG checks | [Platform markers](../Lectern/Sources/LecternCore/LibraryLab/PlatformListMarkerRecipe.swift) |
 | Text alignment | 24 native center/right cases and 172 glyphs; fractional widths, wrapping, spaces, insets, actual faces, kerning and table cells; both computed fitting APIs; exact saved inspector previews and extracted text | [Platform alignment](../Lectern/Sources/LecternCore/LibraryLab/PlatformTextAlignmentRecipe.swift) |
@@ -75,7 +81,7 @@ visible in Lectern and in its JSON report.
 | Rich speaker notes | Format, append, duplicate, import, independently edit and render notes pages | Document |
 | Comments and anchors | Modern and legacy comments, replies, status, text/shape anchors, positions, editing and deletion | Document |
 | Sections | Membership through slide changes; rename, reorder and remove | Document |
-| Import slides | Single/all slides; dependency-preserving image, note, comment, layout and table-style import | Document |
+| Import slides | Single/all slides; dependency-preserving embedded-font, image, note, comment, layout and table-style import; exact reopened font bytes/advances and repeated-import deduplication | Document |
 | Theme palette and fonts | Color slots, accent, scheme resolution, major/minor fonts | Platform document |
 | Templates and properties | PPTX/POTX/PPSX, canvas sizes, typed properties; POTX template text/table planning and composition, inherited tabs/bullets/spacing, autofit, native cell padding, caption clearance, source-part preservation and reopened geometry. Plain table continuations repeat native headers and preserve exact source row order, notes and captions on 16:9 and 4:3 canvases. Measured column sizing honors hard bounds, compares retained baseline/optimized decks and checks saved widths, full-size fit and previews. Grouped headers and horizontal body spans repeat or move with their source row; saved merge topology, exact words, combined-width fit and previews are checked. Covered input cells must be empty; vertical spans remain unsupported. Native PowerPoint visual acceptance remains pending. | [Template fitting](../Lectern/Sources/LecternCore/LibraryLab/TemplateFittingRecipe.swift), [table layout](../Lectern/Sources/LecternCore/LibraryLab/TableLayoutRecipe.swift), [pagination](../Lectern/Sources/LecternCore/LibraryLab/TablePaginationRecipe.swift), [measured columns](../Lectern/Sources/LecternCore/LibraryLab/TableColumnsRecipe.swift), [horizontal spans](../Lectern/Sources/LecternCore/LibraryLab/TableHorizontalSpansRecipe.swift) and Platform document |
 | Design system and slide builders | All 19 builders; parsed design, tokens, grid/split geometry, contrast and reusable components | [Platform design](../Lectern/Sources/LecternCore/LibraryLab/PlatformDesignRecipes.swift) |
@@ -777,3 +783,34 @@ reopening. Imported cells retain their existing top, middle, bottom or absent
 alignment; the renderer continues to honor those authored values.
 The [credential safety and persistence record](KEYCHAIN-SAFETY-20261004.md)
 records the headless workflow checks and the explicit native-app validation hold.
+
+### Embedded fonts during slide import
+
+The Import slides recipe embeds the existing licensed fixture only in its source
+deck, then exercises single and bulk imports. Its saved-file checks register the
+imported font, compare exact raw font bytes and a measured advance, and require
+one presentation font relationship after both imports. The normal Library Lab
+pipeline also inspects previews and exports the reopened deck.
+
+Slide import conservatively transfers all source embedded families, including
+those inherited through themes or used in notes. It reuses identical faces and
+merges missing styles. Conflicting same-family/style bytes or opaque metadata
+refuse the complete import without changing the destination. Unknown font
+payloads are preserved even if the portable measurement engine cannot decode
+them; registration remains explicit. Missing system fonts are not acquired or
+substituted by import. The fixture is not a library font policy. These checks do
+not establish native PowerPoint visual acceptance, including the reported
+DejaVu spacing problem in PowerPoint for Mac's slide view.
+
+## October 13 Lectern generation integration
+
+Plain tables now use measured column sizing and row pagination in the production
+renderer, for both authored designs and supplied templates. This includes saved
+content recovery, repeated headers/notes, stable columns, caption reservation and
+source-note continuations. Embedded template fonts register before installed-font
+lookup. The existing Templates Lab remains the library API demonstration;
+`CompositionRegression --tables` exercises app generation offline. Saved-file
+checks cover the inspector/exporter, exact ordered rows, section membership,
+recovery comments and identities, and refusal to erase old continuation pages.
+Generated IR does not express merged cells; vertical spans and native table autofit
+remain outside this path. PowerPoint visual acceptance remains a separate check.

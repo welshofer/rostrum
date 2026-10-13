@@ -23,6 +23,7 @@ final class SlideCopier {
     private var authorImport: AnnotationAuthorImport?
     private var legacyAuthorImport: LegacyAnnotationAuthorImport?
     private var tableStyleImport: TableStyleImport?
+    private var embeddedFontImport: EmbeddedFontImport?
     private var reservedStyleURIs: Set<PackURI> = []
     private var newNotesMaster: PackURI?
     private var sourceNotesSize: XML.Element?
@@ -175,6 +176,11 @@ final class SlideCopier {
         return try tableStyleImport!.transfer(definition, from: owner) { try self.copy($0) }
     }
 
+    func importEmbeddedFonts() throws {
+        embeddedFontImport = try EmbeddedFontImport(source: source, destination: dest,
+            presentation: destPresentation, copying: copy)
+    }
+
     /// Allocate a fresh id in the sldMasterId/sldLayoutId namespace, unique
     /// across every master, layout, and the presentation's master list.
     func allocBigId() -> Int {
@@ -319,6 +325,7 @@ final class SlideCopier {
             registerContentType(part.uri, part.contentType)
         }
         tableStyleImport?.commit()
+        embeddedFontImport?.commit()
         authorImport?.commit()
         legacyAuthorImport?.commit()
         if let uri = newNotesMaster, let dom = try? destPresentation.dom() {
@@ -426,6 +433,10 @@ extension Slides {
     /// Import a deep copy of `source.slides[index]` into this deck, bringing
     /// its whole reachable graph — images (deduped by content), charts and
     /// their workbooks, its slide layout + master family + theme, and notes.
+    /// All source embedded font families/faces travel with the import, including
+    /// fonts referenced through themes or notes. Matching faces are reused;
+    /// conflicting bytes or metadata for the same family/style throw atomically.
+    /// Call `registerEmbeddedFonts()` explicitly for in-process measurement.
     /// `insertAt` positions it in the slide order (nil appends).
     @discardableResult
     public func `import`(from source: Presentation, at index: Int, insertAt: Int? = nil) throws -> Slide {
@@ -439,7 +450,8 @@ extension Slides {
     }
 
     /// Import a range of slides (or all) atomically, sharing one copy pass so
-    /// masters/themes/images referenced by several slides copy exactly once.
+    /// masters/themes/images/fonts referenced by several slides copy exactly once.
+    /// Embedded fonts follow the same preservation/conflict rules as `import`.
     @discardableResult
     public func importAll(from source: Presentation, at indices: Range<Int>? = nil) throws -> [Slide] {
         let range = indices ?? 0..<source.slides.count
@@ -460,6 +472,7 @@ extension Slides {
         let list = try destSldIdLst()
         let copier = SlideCopier(source: source.package, dest: destPackage,
                                  destPresentation: destPresentationPart)
+        try copier.importEmbeddedFonts()
         var copied: [(uri: PackURI, id: Int)] = []
         for (offset, sourceSlide) in sourceSlides.enumerated() {
             let uri = try copier.copy(sourceSlide.part.uri)

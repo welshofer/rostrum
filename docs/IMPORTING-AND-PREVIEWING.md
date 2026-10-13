@@ -51,6 +51,47 @@ serialized typeface names or register an alias under a missing source family.
 Lectern inspection explicitly registers Arial; the offline Library Lab recipe
 uses its licensed bundled DejaVu face. Other hosts choose their own policy.
 
+## Embedding fonts safely
+
+`deck.embedFont("Your Family", faces: FontFaces(regular: regularBytes, bold: boldBytes))`
+accepts caller-supplied font bytes. It validates all supplied faces before changing
+the package, including embedding-license restrictions. Repeating a request with
+identical raw bytes for the same case-insensitive family/style is a byte-identical
+no-op, including after reopening. Existing EOT wrappers, metadata and omitted
+styles remain intact; missing styles are added in schema order.
+
+Different bytes for an existing style, ambiguous declarations and broken font
+references throw without modifying the package. Compressed/opaque embedded fonts
+cannot be compared with raw sfnt bytes and are conservatively refused. Embedding
+does not silently replace a face already used by other slides. Names and payloads
+that exceed EOT's integer size limits also throw before mutation.
+
+Call `registerEmbeddedFonts()` explicitly to enable local measurement with
+decodable embedded faces. Embedding cannot guarantee identical rendering in every
+PowerPoint version; native slide-view acceptance remains a separate check.
+
+## Embedded fonts during slide import
+
+`destination.slides.import(from:at:)` and `importAll(from:)` preserve every source
+embedded family and style. Font declarations belong to the presentation, so
+copying only the slide's relationships would lose them. All embedded families
+travel with a nonempty import, including fonts used through inherited themes,
+notes, or unmodeled content.
+
+Matching family/style declarations with identical payloads and compatible
+metadata are reused. Missing styles are added. Different bytes for the same
+case-insensitive family/style, incompatible opaque metadata, or broken font
+relationships throw before any imported parts are installed. Even different
+subsets of the same font can conflict; import does not rewrite or combine font
+binaries. The source remains unchanged.
+
+After importing, call `destination.registerEmbeddedFonts()` to make decodable
+embedded faces available to measurement and SVG rendering. This remains explicit:
+import does not change your live font registry or find unembedded system fonts.
+Opaque compressed fonts are retained in the saved deck even when registration
+cannot decode them. Callers remain free to use any supported font family; the
+fonts in tests and sample decks impose no library font policy.
+
 ## Keep diagnostics visible
 
 `renderSVGReportingProblems` returns the SVG and a `SlideRenderProblems` report.

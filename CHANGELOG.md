@@ -6,6 +6,25 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Lectern generation and recovery now use measured column sizing and native
+  table pagination. Full rows, repeated headers, notes and section membership
+  survive saved-file read-back; long captions flow to source-note pages.
+  Embedded template fonts register before installed-font lookup. Run
+  `CompositionRegression --tables` for an offline production-path fixture.
+
+- Font embedding validates all supplied faces before changing the package.
+  Repeated identical family/style requests reuse the original parts and leave
+  saved bytes unchanged; missing styles are added in order. Conflicting faces,
+  ambiguous declarations, broken references and unrepresentable EOT sizes fail
+  without partial writes. Font choice and metric registration remain explicit.
+  See the [embedding validation and performance record](docs/FONT-EMBEDDING-20261013.md).
+
+- Slide imports preserve presentation-owned embedded font families and styles.
+  Identical faces are reused, missing styles are merged, and conflicting bytes
+  or metadata refuse the import without modifying the destination. Unknown font
+  payloads and extension dependencies remain intact; registration for measurement
+  stays explicit. See [font import behavior](docs/IMPORTING-AND-PREVIEWING.md#embedded-fonts-during-slide-import).
+
 - Template paragraphs now save embedded line endings as native DrawingML soft
   breaks, preventing PowerPoint from adding paragraph spacing and clipping the
   final line. Plain-text reads retain breaks and cached fields. New masters

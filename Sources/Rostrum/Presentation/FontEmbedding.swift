@@ -115,56 +115,24 @@ enum EOTLite {
 }
 
 extension Presentation {
-    /// Embed a font so text in `typeface` renders identically on machines
-    /// lacking it. Pass the raw `.ttf`/`.otf` file bytes for each style; each
-    /// is EOT-Lite-wrapped into a `/ppt/fonts/fontN.fntdata` part, related
-    /// from `presentation.xml`, and listed in `p:embeddedFontLst`. The
-    /// presentation is marked `embedTrueTypeFonts="1"`.
+    /// Embed raw `.ttf`/`.otf` faces in EOT-Lite parts for use by PowerPoint.
+    /// Family names are caller-owned; native rendering depends on the consuming
+    /// application. Embedding does not register fonts for local measurement.
     ///
-    /// Throws `RostrumError.fontEmbeddingRestricted` if a face's OS/2 `fsType`
-    /// forbids embedding, unless `allowRestrictedLicense` is true.
+    /// Reuses identical raw font bytes for an existing case-insensitive family
+    /// and style, preserving its original wrapper and metadata. Adds missing
+    /// styles without removing omitted ones. Different bytes for an existing
+    /// style, ambiguous declarations or broken references throw `packageInvalid`.
+    /// A repeated request with identical faces leaves the package byte-identical.
+    ///
+    /// Throws `fontEmbeddingRestricted` if a supplied face's OS/2 `fsType` forbids
+    /// embedding, unless `allowRestrictedLicense` is true. Size limits throw
+    /// `fontCorrupt`. All validation finishes before any package mutation.
     public func embedFont(_ typeface: String, faces: FontFaces,
                           allowRestrictedLicense: Bool = false) throws {
-        let variants: [(tag: String, style: String, weight: UInt32, italic: Bool, data: Data?)] = [
-            ("p:regular", "Regular", 400, false, faces.regular),
-            ("p:bold", "Bold", 700, false, faces.bold),
-            ("p:italic", "Italic", 400, true, faces.italic),
-            ("p:boldItalic", "Bold Italic", 700, true, faces.boldItalic),
-        ]
-
-        package.contentTypes.setDefault(extension: "fntdata", contentType: "application/x-fontdata")
-
-        let embeddedFont = XML.Element("p:embeddedFont")
-        embeddedFont.appendElement(XML.Element("p:font", attributes: [("typeface", typeface)]))
-
-        for v in variants {
-            guard let data = v.data else { continue }
-            if !allowRestrictedLicense, let fsType = EOTLite.fsType(of: data),
-               fsType & EOTLite.fsTypeRestricted != 0 {
-                throw RostrumError.fontEmbeddingRestricted(typeface)
-            }
-            var n = 1
-            while package.parts[PackURI("/ppt/fonts/font\(n).fntdata")] != nil { n += 1 }
-            let uri = PackURI("/ppt/fonts/font\(n).fntdata")
-            let wrapped = EOTLite.wrap(data, typeface: typeface, style: v.style,
-                                       weight: v.weight, italic: v.italic)
-            package.addPart(uri: uri, contentType: "application/x-fontdata", blob: wrapped)
-            package.contentTypes.removeOverride(partName: uri)   // rides the Default
-            let rId = presentationPart.rels.add(
-                type: RelType.font, target: presentationPart.uri.relativeReference(to: uri))
-            embeddedFont.appendElement(XML.Element(v.tag, attributes: [("r:id", rId)]))
-        }
-
-        let dom = try presentationPart.dom()
-        dom[attribute: "embedTrueTypeFonts"] = "1"
-        dom[attribute: "saveSubsetFonts"] = "0"
-        // embeddedFontLst sits after sldSz/notesSz, before custShowLst… .
-        let list = dom.getOrAddChild("p:embeddedFontLst", beforeAnyOf: [
-            "p:custShowLst", "p:photoAlbum", "p:custDataLst", "p:kinsoku",
-            "p:defaultTextStyle", "p:modifyVerifier", "p:extLst",
-        ])
-        list.appendElement(embeddedFont)
-        presentationPart.markDirty()
+        let plan = try FontEmbeddingPlan(typeface: typeface, faces: faces,
+            allowRestrictedLicense: allowRestrictedLicense, presentation: presentationPart, package: package)
+        plan.commit(to: package, presentation: presentationPart)
     }
 }
 
@@ -182,18 +150,25 @@ extension Presentation {
     @discardableResult
     public func registerEmbeddedFonts() -> [String] {
         guard let dom = try? presentationPart.dom() else { return [] }
-        let embeddedFonts = dom.firstChild(named: "p:embeddedFontLst")?
-            .children(named: "p:embeddedFont") ?? []
+        guard let list = EmbeddedFontXML.children(dom, "embeddedFontLst").first else { return [] }
+        let rootScope = EmbeddedFontXML.scope(dom)
+        let listScope = EmbeddedFontXML.scope(list, rootScope)
+        let embeddedFonts = EmbeddedFontXML.children(list, "embeddedFont", inheriting: rootScope)
         var registered: [String] = []
         for embedded in embeddedFonts {
-            guard let typeface = embedded.firstChild(named: "p:font")?[attribute: "typeface"] else {
+            let embeddedScope = EmbeddedFontXML.scope(embedded, listScope)
+            guard let typeface = EmbeddedFontXML.children(embedded, "font", inheriting: listScope).first?[attribute: "typeface"] else {
                 continue
             }
-            let variants = [("p:regular", false, false), ("p:bold", true, false),
-                            ("p:italic", false, true), ("p:boldItalic", true, true)]
+            let variants = [("regular", false, false), ("bold", true, false),
+                            ("italic", false, true), ("boldItalic", true, true)]
             for (tag, bold, italic) in variants {
-                guard let rId = embedded.firstChild(named: tag)?[attribute: "r:id"],
-                      let rel = presentationPart.rels.relationship(withId: rId) else { continue }
+                guard let face = EmbeddedFontXML.children(embedded, tag, inheriting: listScope).first else { continue }
+                let scope = EmbeddedFontXML.scope(face, embeddedScope)
+                guard let rId = face.attributes.first(where: {
+                    EmbeddedFontXML.expanded($0.name, scope, attribute: true) == "{\(EmbeddedFontXML.relationships)}id"
+                })?.value, let rel = presentationPart.rels.relationship(withId: rId),
+                      rel.type == RelType.font, !rel.isExternal else { continue }
                 let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
                 guard let part = try? package.part(at: uri),
                       let sfnt = EOTLite.unwrap(part.blob),
