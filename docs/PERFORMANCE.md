@@ -2,6 +2,14 @@
 
 ## Latest reconciled measurements
 
+The [table fragment reuse record](TABLE-SHAPING-20261013.md) measures 13.24% lower
+paired planning CPU and 13.02% lower composition CPU for a 1,000-row distinct-text
+merged table. All five pairs improve; all 1,480 comparison artifacts preserve
+geometry, ordered diagnostics, saved decks and SVGs. Small/estimated controls
+include observed slowdowns, and peak RSS shows no general reduction. The record
+retains all CPU, elapsed-time and memory samples and bounds the result to this
+workload.
+
 The [shared table layout record](TABLE-LAYOUT-20261012.md) measures actual native
 cell planning and complete small-table composition. It retains the correctness
 cost against the former fixed-style estimate, registered-font scaling through

@@ -154,10 +154,17 @@ canonically distinct strings and different native band styles. After the first
 allocation, changing column widths can reuse up to 1,024 text preparations / 1 MiB
 of estimated source-key payload. A search that stops at its starting allocation
 does not create those text preparations. Each preparation retains the existing
-bounded paragraph/segment caches; glyph advances and line layout remain fresh at
-each width. Budget exhaustion uses ordinary measurement with identical results.
+bounded paragraph/segment caches. Initial glyph shaping and line layout remain
+fresh at each width. Complete line-fragment advances can reuse a shared cache
+of at most 2,048 entries / 256 KiB of source-text and family-name bytes. Exact
+UTF-8 text, requested face/style, effective measurement size, kerning, ligatures
+and native rounding policy identify each advance; tracking and positioning
+remain outside the cache. Novel fragments still reshape at their actual line
+boundaries. Budget exhaustion uses ordinary measurement with identical results.
 These limits describe retained entries/payload, not total process memory. See the
 [CPU, elapsed-time, memory and exact-output comparison](TABLE-PREPARATION-20261012.md).
+The [fragment profiling and reuse record](TABLE-SHAPING-20261013.md) retains the
+subsequent merged/unmerged comparison and the measured memory tradeoff.
 
 Single-slide composition freshly measures the accepted widths. Pagination
 composition repeats the bounded search with live fonts/styles and verifies the

@@ -102,8 +102,13 @@ import Testing
         table.setLayoutContents([["Header", "Value"], ["Words need wrapping", "42"]], font: "Registered later", size: 18)
         let engine = TableLayoutEngine(presentation: deck)
         func fresh() throws -> TableLayoutPlan {
-            try engine.plan(table, columnWidths: [.points(110), .points(210)], minimumRowHeight: .points(30),
-                theme: deck.theme, pagination: true, reuse: TableColumnMeasurements(table: table, theme: deck.theme))
+            let reuse = try TableColumnMeasurements(table: table, theme: deck.theme)
+            for width in [90.0, 100] {
+                _ = try engine.plan(table, columnWidths: [.points(width), .points(320 - width)], minimumRowHeight: .points(30),
+                    theme: deck.theme, pagination: true, reuse: reuse)
+            }
+            return try engine.plan(table, columnWidths: [.points(110), .points(210)], minimumRowHeight: .points(30),
+                theme: deck.theme, pagination: true, reuse: reuse)
         }
         let before = try fresh()
         let missing = ShapingDiagnostic.unsupportedLayoutFeature("Unregistered font face: Registered later")
@@ -118,6 +123,13 @@ import Testing
         let changed = try fresh()
         #expect(changed.rowHeights[1] > after.rowHeights[1])
         equal(changed, try engine.plan(table, columnWidths: [.points(110), .points(210)],
+            minimumRowHeight: .points(30), theme: deck.theme, pagination: true))
+        // Re-register a different real face under the same requested family.
+        // A later width search must not reuse advances from the earlier font.
+        let serif = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts/DejaVuSerif.ttf")
+        try deck.fonts.register(contentsOf: serif, aliases: ["Registered later"])
+        equal(try fresh(), try engine.plan(table, columnWidths: [.points(110), .points(210)],
             minimumRowHeight: .points(30), theme: deck.theme, pagination: true))
     }
 }

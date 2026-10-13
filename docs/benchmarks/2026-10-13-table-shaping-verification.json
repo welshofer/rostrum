@@ -1,0 +1,125 @@
+{
+  "apple_app_builds": "PR CI; not available in Linux local gate",
+  "baseline_commit": "d6aaefdd695db18502109cbed3030f1e82ba9473",
+  "candidate_source_sha256": "0205ac0916798093f5d53660f35ad418426f839425fc0ef378c94832bfa2975f",
+  "library_lab": [
+    {
+      "alternative": false,
+      "archives_crc_validated": 12,
+      "checks": 26,
+      "identical_decks_and_previews": 30,
+      "identical_files": 31,
+      "identical_report_except_elapsed_time": true,
+      "independently_reopened_pptx": 8,
+      "slides": 13
+    },
+    {
+      "alternative": true,
+      "archives_crc_validated": 12,
+      "checks": 26,
+      "identical_decks_and_previews": 36,
+      "identical_files": 37,
+      "identical_report_except_elapsed_time": true,
+      "independently_reopened_pptx": 8,
+      "slides": 16
+    }
+  ],
+  "local_gate": {
+    "command": "scripts/verify.sh --fast",
+    "lectern_core_tests": 309,
+    "library_tests": 1326,
+    "offline_workflows": true,
+    "oracle_preflight": true,
+    "passed": true,
+    "readme_examples": true,
+    "release_tests": 52,
+    "saved_powerpoint_references": 36
+  },
+  "native_powerpoint_visual_acceptance": "pending",
+  "preservation": [
+    {
+      "case": "unmerged-24-distinct-measured",
+      "exact": true,
+      "files": 12,
+      "independent_geometry_text_and_topology": true,
+      "pages": 4
+    },
+    {
+      "case": "unmerged-30-mixed-measured",
+      "exact": true,
+      "files": 12,
+      "independent_geometry_text_and_topology": true,
+      "pages": 4
+    },
+    {
+      "case": "unmerged-1000-repeated-measured",
+      "exact": true,
+      "files": 338,
+      "independent_geometry_text_and_topology": true,
+      "pages": 167
+    },
+    {
+      "case": "unmerged-1000-distinct-measured",
+      "exact": true,
+      "files": 338,
+      "independent_geometry_text_and_topology": true,
+      "pages": 167
+    },
+    {
+      "case": "unmerged-100-distinct-measured",
+      "exact": true,
+      "files": 24,
+      "independent_geometry_text_and_topology": true,
+      "pages": 10
+    },
+    {
+      "case": "unmerged-24-distinct-estimated",
+      "exact": true,
+      "files": 16,
+      "independent_geometry_text_and_topology": true,
+      "pages": 6
+    },
+    {
+      "case": "spans-24-distinct-measured",
+      "exact": true,
+      "files": 12,
+      "independent_geometry_text_and_topology": true,
+      "pages": 4
+    },
+    {
+      "case": "spans-30-mixed-measured",
+      "exact": true,
+      "files": 12,
+      "independent_geometry_text_and_topology": true,
+      "pages": 4
+    },
+    {
+      "case": "spans-1000-repeated-measured",
+      "exact": true,
+      "files": 338,
+      "independent_geometry_text_and_topology": true,
+      "pages": 167
+    },
+    {
+      "case": "spans-1000-distinct-measured",
+      "exact": true,
+      "files": 338,
+      "independent_geometry_text_and_topology": true,
+      "pages": 167
+    },
+    {
+      "case": "spans-100-distinct-measured",
+      "exact": true,
+      "files": 24,
+      "independent_geometry_text_and_topology": true,
+      "pages": 10
+    },
+    {
+      "case": "spans-24-distinct-estimated",
+      "exact": true,
+      "files": 16,
+      "independent_geometry_text_and_topology": true,
+      "pages": 6
+    }
+  ]
+}

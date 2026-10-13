@@ -4,7 +4,8 @@ extension RichTextLayout {
     /// Scratch input reuse for one body's width or autofit trials. Only body autofit
     /// values may change while this object is in use; discard it after fitting.
     /// Paragraphs, inherited styles, theme and font registration stay fixed.
-    /// It retains no layout results or size-dependent glyph measurements.
+    /// It retains no layout results. Table searches may supply a shared, bounded
+    /// cache of complete fragment advances, keyed by effective size and features.
     package final class Preparation {
         struct Piece {
             let text: String
@@ -53,7 +54,9 @@ extension RichTextLayout {
         private var pieceCount = 0
         private var segmentBytes = 0
 
-        package init() {}
+        let fragments: FragmentMeasurements?
+
+        package init(fragments: FragmentMeasurements? = nil) { self.fragments = fragments }
 
         func paragraph(for node: XML.Element, create: () -> Paragraph) -> Paragraph {
             let key = ObjectIdentifier(node)
@@ -80,6 +83,50 @@ extension RichTextLayout {
                                 breaks: Set(input.breaks.map(\.scalarOffset)))
             segments[key] = value
             segmentBytes += bytes
+            return value
+        }
+    }
+
+    /// Complete line-fragment advances for one immutable font environment.
+    /// Requested face/style identifies metrics only while registered fonts and
+    /// fallback metrics stay fixed. Discard this cache when those inputs change.
+    /// Width, tracking and paragraph positioning are applied outside the cache.
+    package final class FragmentMeasurements {
+        private struct Key: Hashable {
+            let text: String
+            let family: String?
+            let size: UInt64
+            let bold: Bool, italic: Bool, kerning: Bool, ligatures: Bool, nativeLTR: Bool
+
+            static func == (lhs: Self, rhs: Self) -> Bool {
+                lhs.size == rhs.size && lhs.family == rhs.family && lhs.bold == rhs.bold
+                    && lhs.italic == rhs.italic && lhs.kerning == rhs.kerning
+                    && lhs.ligatures == rhs.ligatures && lhs.nativeLTR == rhs.nativeLTR
+                    && lhs.text.utf8.elementsEqual(rhs.text.utf8)
+            }
+            func hash(into hasher: inout Hasher) {
+                hasher.combine(text); hasher.combine(family); hasher.combine(size)
+                hasher.combine(bold); hasher.combine(italic); hasher.combine(kerning)
+                hasher.combine(ligatures); hasher.combine(nativeLTR)
+            }
+        }
+        private var advances: [Key: Double] = [:]
+        private(set) var retainedBytes = 0
+        var count: Int { advances.count }
+
+        package init() {}
+
+        func advance(_ text: String, style: ResolvedTextRun, nativeLTR: Bool,
+                     create: () -> Double) -> Double {
+            let key = Key(text: text, family: style.fontFamily, size: style.measurementPointSize.bitPattern,
+                bold: style.bold, italic: style.italic, kerning: style.usesKerning,
+                ligatures: style.usesStandardLigatures, nativeLTR: nativeLTR)
+            if let cached = advances[key] { return cached }
+            let value = create()
+            let bytes = text.utf8.count + (style.fontFamily?.utf8.count ?? 0)
+            if advances.count < 2048, bytes <= 262_144 - retainedBytes {
+                advances[key] = value; retainedBytes += bytes
+            }
             return value
         }
     }

@@ -58,12 +58,13 @@ final class TableCellPreparation {
     private struct Position: Hashable { let row: Int, column: Int; let pagination: Bool }
     private struct Text {
         let body: XML.Element, style: XML.Element
-        let preparation = RichTextLayout.Preparation()
+        let preparation: RichTextLayout.Preparation
     }
     private struct Cell { let inputs: [TableCellInput]; let prepared: Bool }
     private var cells: [Position: Cell] = [:]
     private var texts: [TableCellInput.Key: Text] = [:]
     private var remainingCells = 2_097_152, remainingText = 1_048_576
+    private let fragments = RichTextLayout.FragmentMeasurements()
     var cellCount: Int { cells.count }
     var textCount: Int { texts.count }
 
@@ -100,7 +101,8 @@ final class TableCellPreparation {
         guard texts.count < 1024, bytes <= remainingText else { return nil }
         // Equal bytes share one canonical read-only body. Preparation keys
         // paragraphs by identity, and each inherited style has its own Text.
-        let text = Text(body: input.body, style: input.style)
+        let text = Text(body: input.body, style: input.style,
+            preparation: .init(fragments: fragments))
         texts[key] = text; remainingText -= bytes
         return text
     }

@@ -677,11 +677,15 @@ public struct RichTextLayout: Sendable {
                         let style = runStyles[lineAtoms[fragmentStart].styleIndex]
                         if let font = face(style) {
                             let value = fragment.map(\.text).joined()
-                            let shaped = TextShaper(font).shape(value, pointSize: style.measurementPointSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
-                            let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: value)
-                            let advance = nativeGrid ? shaped.glyphs.reduce(0) {
-                                $0 + Self.nativeAdvance($1, font: font, pointSize: style.measurementPointSize)
-                            } : shaped.width
+                            func measureFragment() -> Double {
+                                let shaped = TextShaper(font).shape(value, pointSize: style.measurementPointSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
+                                let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: value)
+                                return nativeGrid ? shaped.glyphs.reduce(0) {
+                                    $0 + Self.nativeAdvance($1, font: font, pointSize: style.measurementPointSize)
+                                } : shaped.width
+                            }
+                            let advance = preparation?.fragments?.advance(value, style: style,
+                                nativeLTR: nativeLeftToRight, create: measureFragment) ?? measureFragment()
                             let exact = advance + Double(value.count) * style.tracking
                             let adjustment = exact - fragment.reduce(0) { $0 + $1.width }
                             lineAtoms[end - 1].width += adjustment; lineWidth += adjustment
