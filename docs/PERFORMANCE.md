@@ -2,6 +2,14 @@
 
 ## Latest reconciled measurements
 
+The [general pagination record](PAGINATION-PREFIX-20261013.md) measures 74–90% lower
+paired CPU for long paragraph fixtures and 47–79% for long continuous-text
+fixtures. Later pages start their search near the previous page’s size instead
+of repeatedly measuring long remaining suffixes. All 187 saved-output artifacts
+match. Short controls retain observed variation/slowdowns, and there is no
+general peak-memory claim. The record includes the rejected first attempt,
+final raw CPU/elapsed/RSS samples and fresh callback cancellation regressions.
+
 The [table fragment reuse record](TABLE-SHAPING-20261013.md) measures 13.24% lower
 paired planning CPU and 13.02% lower composition CPU for a 1,000-row distinct-text
 merged table. All five pairs improve; all 1,480 comparison artifacts preserve

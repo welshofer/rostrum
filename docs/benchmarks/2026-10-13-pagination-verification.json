@@ -1,0 +1,77 @@
+{
+  "apple_app_builds": "PR CI; not available in Linux local gate",
+  "authored": {
+    "baseline_layout_build": "Debug WMO module from a71153a sources; unchanged Rostrum and LecternCore objects",
+    "embedded_png_verified": true,
+    "identical_files": 15,
+    "identical_ordered_diagnostics": true,
+    "identical_pptx_and_svgs": true,
+    "independent_source_words_notes_images_sections": true,
+    "pptx_sha256": "294a51ced4b28e652ddfc012655d1dfbf828cede9acd7d01313c68b8d72478b4",
+    "slides": 11
+  },
+  "baseline_commit": "a71153ab96aa9d1877421ed1405b2e88d56b86a0",
+  "binary_sha256": {
+    "baseline": "9cd4bb518995241aa52ba438e4eef176e2b9359f671302afa4ed1791416c4d1c",
+    "baseline-authored": "14075841a1008526ad39cabec7d3064dcbde39b69e3c7c8a25755757c003bf3b",
+    "candidate": "311c9de3d9deb2bb2fb0d082ed9e27ab1f6614bf7a02274758ba99fdc2a3cbf8",
+    "candidate-authored": "f65bc9e4219526bd1e387db92d7bd4522f1f3e8199ce50fb4bccac639626e2fe"
+  },
+  "candidate_source_sha256": "9d59501d727bf4b9890a53f31c449b02aee02770fd5ebc24576f1640eb3d8bb8",
+  "cases": [
+    {
+      "case": "paragraphs-4-180",
+      "files": 6,
+      "identical": true,
+      "independent_text_geometry_notes": true,
+      "pages": 1
+    },
+    {
+      "case": "paragraphs-24-180",
+      "files": 16,
+      "identical": true,
+      "independent_text_geometry_notes": true,
+      "pages": 6
+    },
+    {
+      "case": "paragraphs-120-180",
+      "files": 64,
+      "identical": true,
+      "independent_text_geometry_notes": true,
+      "pages": 30
+    },
+    {
+      "case": "paragraphs-120-260",
+      "files": 44,
+      "identical": true,
+      "independent_text_geometry_notes": true,
+      "pages": 20
+    },
+    {
+      "case": "text-30-180",
+      "files": 8,
+      "identical": true,
+      "independent_text_geometry_notes": true,
+      "pages": 2
+    },
+    {
+      "case": "text-300-180",
+      "files": 34,
+      "identical": true,
+      "independent_text_geometry_notes": true,
+      "pages": 15
+    }
+  ],
+  "local_gate": {
+    "command": "scripts/verify.sh --fast",
+    "lectern_core_tests": 309,
+    "library_tests": 1333,
+    "offline_workflows": true,
+    "oracle_preflight": true,
+    "passed": true,
+    "readme_examples": true,
+    "release_tests": 63,
+    "saved_powerpoint_references": 36
+  },
+  "native_powerpoint_visual_acceptance": "not expanded by output-preserving optimization"
+}

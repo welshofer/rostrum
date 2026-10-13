@@ -445,7 +445,11 @@ registered exact faces are necessary for font-dependent acceptance.
 finds fitting prefixes without changing their order. A single item that cannot
 fit produces an error. `MeasuredPaginator.text` splits at word boundaries into
 exact substrings whose concatenation reproduces the original. Cancellation is
-checked during partitioning. The consumer remains responsible for creating
+checked before and after every fit callback. A successful whole-input fit still
+uses one callback. Longer inputs find the first boundary, then use the preceding
+page’s size to seed fresh probes and refine each subsequent boundary without
+repeatedly copying long remaining suffixes; predicate call order/count can change. See the [prefix-search record](PAGINATION-PREFIX-20261013.md)
+for performance and saved-output checks. The consumer remains responsible for creating
 continuation slides and retaining notes and other document context.
 
 ### Paginate with the same fit rule
