@@ -299,14 +299,15 @@ public actor DeckRenderer {
             var layoutWarnings: [String] = []
             let templateEngine = TemplateLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
             var deck = try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings, engine: templateEngine) } ?? deck
+            let tables = try TableRendering.prepare(deck, engine: templateEngine,
+                masterURI: template?.selectedMasterID, templateBacked: template != nil)
+            deck = tables.deck
+            layoutWarnings += tables.warnings
             var images = images
             if template == nil {
                 let prepared = try Self.paginate(deck, images: images, in: presentation, useSmartArt: useSmartArt)
                 deck = prepared.deck; images = prepared.images; layoutWarnings += prepared.warnings
             }
-            let tables = try TableRendering.prepare(deck, engine: templateEngine, masterURI: template?.selectedMasterID)
-            deck = tables.deck
-            layoutWarnings += tables.warnings
             var tablePages: [String: Slide] = [:]
             var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {

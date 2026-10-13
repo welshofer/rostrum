@@ -115,17 +115,27 @@ import RostrumLayout
         #expect(try Data(contentsOf: initial.url) == bytes)
     }
 
-    @Test func longCaptionFlowsAfterEveryTableRowAndDetectsDuplicateRows() async throws {
+    @Test(arguments: [false, true])
+    func longCaptionFlowsAfterEveryTableRowAndDetectsDuplicateRows(templateBacked: Bool) async throws {
         let root = try directory(); defer { try? FileManager.default.removeItem(at: root) }
         let input = fixture(source: (1...90).map { "Source \($0) retains its exact evidence and publication details." }.joined(separator: "\n"))
         let result = try await DeckRenderer().render(input, designURL: nil, notesEnabled: true, into: root,
-            template: template(wide: false))
+            template: templateBacked ? template(wide: false) : nil)
         #expect(try RenderContentCheck.inspect(result.url, expected: input).issues.isEmpty)
         let deck = try Presentation(contentsOf: result.url)
         let names = try deck.slides.map { try $0.part.dom().firstChild(named: "p:cSld")?[attribute: "name"] ?? "" }
         let firstNote = try #require(names.firstIndex { $0.hasPrefix("Lectern:table-source-notes") })
         #expect(deck.slides.prefix(firstNote).allSatisfy { $0.shapes.all.contains { $0 is TableFrame } })
         #expect(try deck.sections[0].slideCount == deck.slides.count)
+        if !templateBacked {
+            for slide in deck.slides.dropFirst(firstNote).dropLast() {
+                let footer = try #require(slide.shapes.all.first { $0.textFrame?.text == input.meta.title })
+                let footerFrame = try #require(slide.effectiveFrame(of: footer))
+                for shape in slide.shapes.all where shape.textFrame?.text.contains("Source ") == true {
+                    #expect(try #require(slide.effectiveFrame(of: shape)).maxY <= footerFrame.y)
+                }
+            }
+        }
         // Tokens alone cannot catch a duplicated row: the native-cell oracle must.
         let frame = try #require(deck.slides[0].shapes.all.compactMap { $0 as? TableFrame }.first)
         let table = try #require(frame.table)
