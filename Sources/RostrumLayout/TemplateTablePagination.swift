@@ -29,7 +29,7 @@ extension TemplateLayoutEngine {
                                caption: String = "", preferredTypes: [String] = ["obj"],
                                masterURI: String? = nil, layoutURI: String? = nil) throws -> TemplateTablePaginationPlan {
         _ = try table.widths(for: presentation.bounds.width)
-        struct Key: Hashable { let width: EMU; let font: Data; let theme: PackURI }
+        struct Key: Hashable { let width: EMU; let font: Data; let theme: PackURI; let availableHeight: EMU? }
         var measured: [Key: TableLayoutPlan] = [:], remainingCells = 8192
         var best: TemplateTablePaginationPlan?, bestScore = Double.infinity
         var failures: [String] = []
@@ -43,12 +43,13 @@ extension TemplateLayoutEngine {
                 guard let frame = base.objectFrame else { continue }
                 let style = objectStyle(layout: layout, slot: base.objectSlot?.index)
                 let theme = layout.master?.theme ?? presentation.theme
-                let key = Key(width: frame.width, font: Data(style.bodyFont.utf8), theme: theme.part.uri)
+                let key = Key(width: frame.width, font: Data(style.bodyFont.utf8), theme: theme.part.uri,
+                    availableHeight: table.measuresColumns ? frame.height : nil)
                 let geometry: TableLayoutPlan
                 if let cached = measured[key] { geometry = cached }
                 else {
                     geometry = try table.planned(in: presentation, width: frame.width, font: style.bodyFont,
-                        size: 18 * objectScale, theme: theme, pagination: true)
+                        size: 18 * objectScale, theme: theme, pagination: true, availableHeight: key.availableHeight)
                     if measured.count < 64, geometry.cells.count <= remainingCells {
                         measured[key] = geometry; remainingCells -= geometry.cells.count
                     }
@@ -73,7 +74,7 @@ extension TemplateLayoutEngine {
                     page.tableContent = TemplateTableContent(rows: indices.map { table.rows[$0] },
                         columnWeights: geometry.columnWidths.map { Double($0.rawValue) })
                     page.tableLayout = TableLayoutPlan(columnWidths: geometry.columnWidths, rowHeights: heights,
-                        cells: cells, totalHeight: heights.reduce(.zero, +), fits: true)
+                        cells: cells, totalHeight: heights.reduce(.zero, +), fits: true, columnSearch: geometry.columnSearch)
                     return TemplateTablePagePlan(slide: page, bodyRows: range)
                 }
                 if best == nil || pages.count < best!.pages.count

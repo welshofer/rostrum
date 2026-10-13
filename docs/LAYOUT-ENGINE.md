@@ -95,8 +95,8 @@ and rechecks it before creating a slide, so changed fonts or template styles
 cannot reuse an overflowing fit. As with other objects, the caller writes the
 caption into `plan.captionFrame`; planning reserves its measured height and an
 eight-point gap. The native table retains theme/style references. Column weights
-default to half equal share and half bounded text-length weight; this is a
-starting allocation, not an optimal column-width solver.
+default to half equal share and half bounded text-length weight. Existing callers
+retain this estimated allocation; measured sizing is an explicit option below.
 
 The first version supports rectangular, unmerged horizontal cells. Merges,
 vertical/rotated text, multiple text columns, dynamic fields and nonzero stored
@@ -110,6 +110,51 @@ operation (64 entries, 256 KiB estimated payload budget). Style resolution uses
 one indexed grid and a bounded text-only projection of the renderer's region styles. Template candidate
 plans share at most 64 entries/8,192 cell results within one planning call. No
 measurement cache survives table edits or font registration between operations.
+
+### Measured table column widths
+
+```swift
+let content = TemplateTableContent(rows: rows, columnSizing: .measured(constraints: [
+    .init(minimum: .points(40), maximum: .points(120)),
+    .init(minimum: .points(200)),
+    .init(minimum: .points(55), maximum: .points(140), preferred: .points(75))
+]))
+let continuation = try engine.planTablePages(title: "Evidence", table: content,
+    caption: "Source: original evidence.")
+let search = continuation.pages.first?.slide.tableLayout?.columnSearch
+```
+
+Both single-slide planning and table continuations accept `.measured()`. It
+measures actual wrapped native cells using registered fonts, inherited styles and
+padding. Explicit `columnWeights`, or the default text-length weights, seed the
+search. Empty constraints use a 24-point minimum per column; otherwise supply
+one constraint per column. Minimum and maximum widths are hard bounds; preferred
+widths are soft tie-breaks. Invalid or infeasible constraints throw before mutation.
+The total always equals the slot width, including integer-EMU residuals.
+
+The bounded local search prefers supported fitting cells, placeable rows, fewer
+pages, less total row height, then proximity to preferred widths. A feasible
+constrained starting allocation is retained unless a candidate scores better;
+equal scores keep the earlier allocation. Hard constraints can force a different
+starting allocation from the default heuristic. Fewer pages can take priority
+over a smaller sum of row heights. This is not a global optimum or PowerPoint's
+native autofit, and text never shrinks to improve the score.
+
+Each search evaluates at most 24 allocations and 32,768 additional cell visits
+beyond its starting allocation. Pagination may measure up to four native style
+positions per visit. Unchanged column measurements reuse at most 128 entries /
+32,768 retained cell results, with no cache surviving the operation. Large grids
+may exhaust the search budget early. `columnSearch` reports candidates, additional
+and reused cell measurements, and budget exhaustion; `.estimated` leaves it nil.
+These are per-search budgets, not a wall-time limit across all template layouts.
+
+Single-slide composition freshly measures the accepted widths. Pagination
+composition repeats the bounded search with live fonts/styles and verifies the
+accepted widths, row heights and page boundaries before inserting any slides.
+Measurement has an explicit performance cost; see the
+[Release measurements and saved-file evidence](TABLE-COLUMNS-20261012.md).
+Shaping diagnostics and native PowerPoint visual acceptance remain separate from
+portable fit, including when width search succeeds.
 
 ### Table continuations in templates
 
