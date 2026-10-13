@@ -6,6 +6,12 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- General measured pagination searches around each page boundary instead of
+  repeatedly copying and measuring the complete remaining input. Maximal pages,
+  exact source text and ordering are preserved for deterministic monotonic fit
+  predicates. Cancellation during a successful measurement now throws before
+  returning pages. See the [pagination record](docs/PAGINATION-PREFIX-20261013.md).
+
 - Measured table width searches reuse complete line-fragment advances within a
   bounded operation-local cache. Font size, face, shaping features and native
   rounding policy remain part of the identity; new operations recheck live

@@ -1,0 +1,5112 @@
+{
+  "baseline_commit": "a71153ab96aa9d1877421ed1405b2e88d56b86a0",
+  "binary_sha256": {
+    "baseline": "9cd4bb518995241aa52ba438e4eef176e2b9359f671302afa4ed1791416c4d1c",
+    "candidate": "311c9de3d9deb2bb2fb0d082ed9e27ab1f6614bf7a02274758ba99fdc2a3cbf8"
+  },
+  "candidate_source_sha256": "9d59501d727bf4b9890a53f31c449b02aee02770fd5ebc24576f1640eb3d8bb8",
+  "pairs": [
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13568.0,
+        "peak_rss_kib": 21840.0,
+        "samples": [
+          {
+            "calls": 1219,
+            "cpu_ms": 1.7439539999999987,
+            "elapsed_ms": 1.7436929941177368,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 2.0069739999999996,
+            "elapsed_ms": 2.007311999797821,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.619098000000001,
+            "elapsed_ms": 1.6191890090703964,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.6963620000000006,
+            "elapsed_ms": 1.696612998843193,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.7582149999999999,
+            "elapsed_ms": 1.7586150020360947,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 128102
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13568.0,
+        "peak_rss_kib": 21872.0,
+        "samples": [
+          {
+            "calls": 627,
+            "cpu_ms": 0.28196900000000014,
+            "elapsed_ms": 0.28163599967956543,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.2178939999999976,
+            "elapsed_ms": 0.2179110050201416,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.21875499999999803,
+            "elapsed_ms": 0.2187419980764389,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.3747770000000017,
+            "elapsed_ms": 0.3749630004167557,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.3122340000000001,
+            "elapsed_ms": 0.3124009966850281,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 8791
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 1000,
+      "mode": "count",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13568.0,
+        "peak_rss_kib": 24568.0,
+        "samples": [
+          {
+            "calls": 16326,
+            "cpu_ms": 133.481796,
+            "elapsed_ms": 133.85865899920464,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 150.025537,
+            "elapsed_ms": 150.1501870006323,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 132.78509200000002,
+            "elapsed_ms": 132.93416500091553,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 132.30593899999997,
+            "elapsed_ms": 132.38711799681187,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 131.92877800000008,
+            "elapsed_ms": 132.07544799149036,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 12529601
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13568.0,
+        "peak_rss_kib": 24588.0,
+        "samples": [
+          {
+            "calls": 6256,
+            "cpu_ms": 2.432817,
+            "elapsed_ms": 2.4325790107250214,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.5185449999999996,
+            "elapsed_ms": 2.5189469903707504,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.588649,
+            "elapsed_ms": 2.589259997010231,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.3491029999999995,
+            "elapsed_ms": 2.349226012825966,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.3912049999999994,
+            "elapsed_ms": 2.3916079998016357,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 88661
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24632.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.05450100000000191,
+            "elapsed_ms": 0.053739994764328,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.003765999999998826,
+            "elapsed_ms": 0.003505989909172058,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0016119999999979484,
+            "elapsed_ms": 0.0015230029821395874,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0010310000000011144,
+            "elapsed_ms": 0.0009710043668746948,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0009109999999985519,
+            "elapsed_ms": 0.0008109956979751587,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24612.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.035402000000001266,
+            "elapsed_ms": 0.034832000732421875,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0018029999999988888,
+            "elapsed_ms": 0.0016330033540725708,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0008719999999975414,
+            "elapsed_ms": 0.0008220076560974121,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0006810000000001537,
+            "elapsed_ms": 0.0006210058927536011,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0007409999999978822,
+            "elapsed_ms": 0.00067099928855896,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "capacity": 10000,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22212.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.37044999999999995,
+            "elapsed_ms": 0.37013600766658783,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.2050850000000004,
+            "elapsed_ms": 0.20515300333499908,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18996199999999774,
+            "elapsed_ms": 0.19001099467277527,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18582600000000227,
+            "elapsed_ms": 0.1858839988708496,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18410400000000138,
+            "elapsed_ms": 0.18418198823928833,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22020.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.34068599999999805,
+            "elapsed_ms": 0.33987200260162354,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.2017099999999985,
+            "elapsed_ms": 0.20174700021743774,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.4332140000000031,
+            "elapsed_ms": 0.4334290027618408,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.28165899999999766,
+            "elapsed_ms": 0.2821270078420639,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.19638199999999983,
+            "elapsed_ms": 0.19644999504089355,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 4,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22264.0,
+        "samples": [
+          {
+            "calls": 27,
+            "cpu_ms": 10.798468,
+            "elapsed_ms": 10.803460001945496,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 11.314853999999997,
+            "elapsed_ms": 11.32540899515152,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 9.846572000000002,
+            "elapsed_ms": 9.849932998418808,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 9.985866999999999,
+            "elapsed_ms": 9.9898099899292,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 10.049622999999997,
+            "elapsed_ms": 10.049987986683846,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 194
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22100.0,
+        "samples": [
+          {
+            "calls": 23,
+            "cpu_ms": 8.400872,
+            "elapsed_ms": 8.400695011019707,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 7.860277999999997,
+            "elapsed_ms": 7.860707998275757,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 8.179120999999999,
+            "elapsed_ms": 8.17951899766922,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 7.949801000000001,
+            "elapsed_ms": 7.950208991765976,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 8.209095999999995,
+            "elapsed_ms": 8.209342002868652,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 150
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 24,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 23600.0,
+        "samples": [
+          {
+            "calls": 203,
+            "cpu_ms": 173.24229799999998,
+            "elapsed_ms": 173.46420401334763,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 181.60395100000002,
+            "elapsed_ms": 181.6710529923439,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 176.13561899999996,
+            "elapsed_ms": 176.31652601063251,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 175.94221199999993,
+            "elapsed_ms": 176.37191900610924,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 169.82086000000004,
+            "elapsed_ms": 170.06881900131702,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 3860
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 23252.0,
+        "samples": [
+          {
+            "calls": 121,
+            "cpu_ms": 44.13179,
+            "elapsed_ms": 44.13178399205208,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 43.997211,
+            "elapsed_ms": 43.997676998376846,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 43.660589999999985,
+            "elapsed_ms": 43.66083000600338,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 45.52506199999999,
+            "elapsed_ms": 45.525081008672714,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 43.308006000000006,
+            "elapsed_ms": 43.30825899541378,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 892
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 120,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 28912.0,
+        "samples": [
+          {
+            "calls": 1045,
+            "cpu_ms": 1794.661212,
+            "elapsed_ms": 1796.323061004281,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1821.963188,
+            "elapsed_ms": 1823.4958530068398,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1857.7185759999998,
+            "elapsed_ms": 1858.9332949966192,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1867.647137,
+            "elapsed_ms": 1869.2079160064459,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1821.8542779999998,
+            "elapsed_ms": 1822.938164010644,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 58559
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 28884.0,
+        "samples": [
+          {
+            "calls": 483,
+            "cpu_ms": 175.341649,
+            "elapsed_ms": 175.40682999789715,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 174.12489000000002,
+            "elapsed_ms": 174.12395799160004,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 176.981087,
+            "elapsed_ms": 176.98931600153446,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 176.2365000000001,
+            "elapsed_ms": 176.23543299734592,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 188.46792200000004,
+            "elapsed_ms": 188.47706300020218,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 3682
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 480,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22316.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 6.330732999999999,
+            "elapsed_ms": 6.330732002854347,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.935755999999998,
+            "elapsed_ms": 5.936180993914604,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.9843779999999995,
+            "elapsed_ms": 5.984852001070976,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.769559000000001,
+            "elapsed_ms": 5.770176008343697,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 6.944395,
+            "elapsed_ms": 6.94505900144577,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22304.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 8.591659,
+            "elapsed_ms": 8.591504007577896,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 7.520983000000001,
+            "elapsed_ms": 7.52131000161171,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 8.889158000000002,
+            "elapsed_ms": 8.890048995614052,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 7.709263,
+            "elapsed_ms": 7.70966799557209,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 13.218449999999997,
+            "elapsed_ms": 13.218864008784294,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 30,
+      "mode": "text",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22672.0,
+        "samples": [
+          {
+            "calls": 139,
+            "cpu_ms": 203.22185199999998,
+            "elapsed_ms": 203.41717399656773,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 195.215641,
+            "elapsed_ms": 195.36747799813747,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 221.976747,
+            "elapsed_ms": 222.13363200426102,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 185.716135,
+            "elapsed_ms": 185.8815179914236,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 182.61249099999998,
+            "elapsed_ms": 182.61080199480057,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22684.0,
+        "samples": [
+          {
+            "calls": 104,
+            "cpu_ms": 110.09497300000001,
+            "elapsed_ms": 110.1184090077877,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 108.757554,
+            "elapsed_ms": 108.77690999209881,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 105.376326,
+            "elapsed_ms": 105.3757099956274,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 108.96035599999999,
+            "elapsed_ms": 108.96010200679302,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 102.45083599999998,
+            "elapsed_ms": 102.4579389989376,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 300,
+      "mode": "text",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24324.0,
+        "samples": [
+          {
+            "calls": 661,
+            "cpu_ms": 1904.01818,
+            "elapsed_ms": 1905.3496240079403,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1778.641155,
+            "elapsed_ms": 1779.9079309999943,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1758.0779860000002,
+            "elapsed_ms": 1758.1881619989872,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1792.4257690000004,
+            "elapsed_ms": 1792.6002080142498,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1973.3515670000006,
+            "elapsed_ms": 1973.346736997366,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24368.0,
+        "samples": [
+          {
+            "calls": 408,
+            "cpu_ms": 385.675239,
+            "elapsed_ms": 385.69457499682903,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 385.46022899999997,
+            "elapsed_ms": 385.4609189927578,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 365.93730000000005,
+            "elapsed_ms": 365.96395398676395,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 372.60826,
+            "elapsed_ms": 372.6547140032053,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 365.04509400000006,
+            "elapsed_ms": 365.04145200550556,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 1200,
+      "mode": "text",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 21988.0,
+        "samples": [
+          {
+            "calls": 1219,
+            "cpu_ms": 1.7096419999999988,
+            "elapsed_ms": 1.7091120034456253,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.6013310000000018,
+            "elapsed_ms": 1.6015530079603195,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.9299999999999997,
+            "elapsed_ms": 1.9303479939699173,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.782399999999999,
+            "elapsed_ms": 1.782820001244545,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.7229409999999987,
+            "elapsed_ms": 1.7232220023870468,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 128102
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 21956.0,
+        "samples": [
+          {
+            "calls": 627,
+            "cpu_ms": 0.3805960000000006,
+            "elapsed_ms": 0.3797899931669235,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.2185750000000013,
+            "elapsed_ms": 0.21858300268650055,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.2172930000000015,
+            "elapsed_ms": 0.21731999516487122,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.23356700000000075,
+            "elapsed_ms": 0.2336849868297577,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.26388299999999987,
+            "elapsed_ms": 0.2641099989414215,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 8791
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 1000,
+      "mode": "count",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24540.0,
+        "samples": [
+          {
+            "calls": 16326,
+            "cpu_ms": 128.806706,
+            "elapsed_ms": 128.80962000787258,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 125.51607299999998,
+            "elapsed_ms": 125.5152989923954,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 127.68686000000002,
+            "elapsed_ms": 127.68559999763966,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 125.22368799999998,
+            "elapsed_ms": 125.22270599007607,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 125.593928,
+            "elapsed_ms": 125.59279200434685,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 12529601
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24628.0,
+        "samples": [
+          {
+            "calls": 6256,
+            "cpu_ms": 2.363385000000001,
+            "elapsed_ms": 2.362975999712944,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.459798000000003,
+            "elapsed_ms": 2.460078999400139,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.3431940000000004,
+            "elapsed_ms": 2.343538001179695,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.224326999999999,
+            "elapsed_ms": 2.224462002515793,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.217897999999998,
+            "elapsed_ms": 2.2182230055332184,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 88661
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24720.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.0598390000000002,
+            "elapsed_ms": 0.05936799943447113,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.002653999999999712,
+            "elapsed_ms": 0.0023630112409591675,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.00143200000000121,
+            "elapsed_ms": 0.0014120042324066162,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0017719999999989966,
+            "elapsed_ms": 0.0014919936656951904,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0012120000000024334,
+            "elapsed_ms": 0.0011819899082183838,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24568.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.025697999999998444,
+            "elapsed_ms": 0.024976998567581177,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0014620000000000744,
+            "elapsed_ms": 0.0012409985065460205,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.001022000000002521,
+            "elapsed_ms": 0.0009420067071914673,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0009409999999974161,
+            "elapsed_ms": 0.0008819997310638428,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0010619999999974539,
+            "elapsed_ms": 0.0009309947490692139,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "capacity": 10000,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22052.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.3793439999999997,
+            "elapsed_ms": 0.3794199973344803,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.2051449999999999,
+            "elapsed_ms": 0.20513299107551575,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18954199999999943,
+            "elapsed_ms": 0.18960000574588776,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18442399999999992,
+            "elapsed_ms": 0.18444299697875977,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.21512000000000064,
+            "elapsed_ms": 0.2153880000114441,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22116.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.3396049999999988,
+            "elapsed_ms": 0.33942100405693054,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.2360609999999994,
+            "elapsed_ms": 0.23624899983406067,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.19025299999999845,
+            "elapsed_ms": 0.1902810037136078,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18311200000000127,
+            "elapsed_ms": 0.183120995759964,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18139000000000038,
+            "elapsed_ms": 0.1813880056142807,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 4,
+      "mode": "paragraphs",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22128.0,
+        "samples": [
+          {
+            "calls": 27,
+            "cpu_ms": 12.017399000000001,
+            "elapsed_ms": 12.017013996839523,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 10.836794000000001,
+            "elapsed_ms": 10.837344005703926,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 11.556973999999997,
+            "elapsed_ms": 11.557346001267433,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 12.853241999999995,
+            "elapsed_ms": 12.853550001978874,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 10.171114000000003,
+            "elapsed_ms": 10.171321004629135,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 194
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22144.0,
+        "samples": [
+          {
+            "calls": 23,
+            "cpu_ms": 8.190679,
+            "elapsed_ms": 8.191698998212814,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 7.753679000000002,
+            "elapsed_ms": 7.754123002290726,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 7.847338999999998,
+            "elapsed_ms": 7.847772002220154,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 8.256297000000004,
+            "elapsed_ms": 8.256935998797417,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 7.9887489999999985,
+            "elapsed_ms": 7.989220008254051,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 150
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 24,
+      "mode": "paragraphs",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 23748.0,
+        "samples": [
+          {
+            "calls": 203,
+            "cpu_ms": 168.29412,
+            "elapsed_ms": 168.29240900278091,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 164.745274,
+            "elapsed_ms": 164.74368199706078,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 167.30176500000005,
+            "elapsed_ms": 167.30066499114037,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 168.90641100000005,
+            "elapsed_ms": 168.90504398941994,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 169.920659,
+            "elapsed_ms": 169.9192799925804,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 3860
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 23300.0,
+        "samples": [
+          {
+            "calls": 121,
+            "cpu_ms": 47.518887,
+            "elapsed_ms": 47.51848900318146,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 43.112263999999996,
+            "elapsed_ms": 43.112305998802185,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 45.384343,
+            "elapsed_ms": 45.392882004380226,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 43.663094,
+            "elapsed_ms": 43.68599200248718,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 43.752837,
+            "elapsed_ms": 43.75321099162102,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 892
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 120,
+      "mode": "paragraphs",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 29024.0,
+        "samples": [
+          {
+            "calls": 1045,
+            "cpu_ms": 1763.261116,
+            "elapsed_ms": 1764.437434002757,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1739.447744,
+            "elapsed_ms": 1739.4983399957418,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1718.3362929999998,
+            "elapsed_ms": 1718.332711994648,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1921.4680900000003,
+            "elapsed_ms": 1921.4634380042553,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1962.907051000001,
+            "elapsed_ms": 1962.9217419922352,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 58559
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 28852.0,
+        "samples": [
+          {
+            "calls": 483,
+            "cpu_ms": 175.723467,
+            "elapsed_ms": 175.733579993248,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 173.14023600000002,
+            "elapsed_ms": 173.13943299651146,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 169.93006399999996,
+            "elapsed_ms": 169.95258900523186,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 168.469511,
+            "elapsed_ms": 168.46831899881363,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 170.40757299999996,
+            "elapsed_ms": 170.40610799193382,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 3682
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 480,
+      "mode": "paragraphs",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22308.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 5.404375999999999,
+            "elapsed_ms": 5.404424995183945,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.118461,
+            "elapsed_ms": 5.137210994958878,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.994236000000001,
+            "elapsed_ms": 4.994751006364822,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 6.844706999999996,
+            "elapsed_ms": 6.8449210077524185,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.501901000000004,
+            "elapsed_ms": 5.5025200098752975,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22436.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 6.007031999999999,
+            "elapsed_ms": 6.006894007325172,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 6.26783,
+            "elapsed_ms": 6.286376997828484,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.703110000000002,
+            "elapsed_ms": 5.703405991196632,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.307672000000004,
+            "elapsed_ms": 5.308103010058403,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.2907360000000025,
+            "elapsed_ms": 5.291138008236885,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 30,
+      "mode": "text",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22692.0,
+        "samples": [
+          {
+            "calls": 139,
+            "cpu_ms": 212.191633,
+            "elapsed_ms": 212.18943199515343,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 188.76096299999998,
+            "elapsed_ms": 188.759206995368,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 198.89477200000005,
+            "elapsed_ms": 198.8930819928646,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 199.72134200000005,
+            "elapsed_ms": 199.73580498993397,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 194.528279,
+            "elapsed_ms": 194.52663800120354,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22740.0,
+        "samples": [
+          {
+            "calls": 104,
+            "cpu_ms": 105.182579,
+            "elapsed_ms": 105.18109300732613,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 102.867075,
+            "elapsed_ms": 102.8734679967165,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 99.18875499999999,
+            "elapsed_ms": 99.21148300170898,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 100.05598499999996,
+            "elapsed_ms": 100.05534899234772,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 103.59084100000001,
+            "elapsed_ms": 103.59015500545502,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 300,
+      "mode": "text",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24372.0,
+        "samples": [
+          {
+            "calls": 661,
+            "cpu_ms": 1880.432588,
+            "elapsed_ms": 1880.4449729919434,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1798.438851,
+            "elapsed_ms": 1798.5576139986515,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1896.165297,
+            "elapsed_ms": 1896.1711309999228,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1959.3235940000004,
+            "elapsed_ms": 1959.3268180042505,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1886.6233279999997,
+            "elapsed_ms": 1886.8947820067406,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24284.0,
+        "samples": [
+          {
+            "calls": 408,
+            "cpu_ms": 406.98873,
+            "elapsed_ms": 406.99084800481796,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 392.923882,
+            "elapsed_ms": 392.95138700306416,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 404.86700600000006,
+            "elapsed_ms": 404.8629689961672,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 406.49926300000016,
+            "elapsed_ms": 406.50687400996685,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 412.73371399999996,
+            "elapsed_ms": 412.7643190026283,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 1200,
+      "mode": "text",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 21988.0,
+        "samples": [
+          {
+            "calls": 1219,
+            "cpu_ms": 1.7186459999999997,
+            "elapsed_ms": 1.71841499209404,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.6766729999999974,
+            "elapsed_ms": 1.6770339906215668,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.5567349999999998,
+            "elapsed_ms": 1.556887999176979,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.719656999999998,
+            "elapsed_ms": 1.7199580073356628,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.7153399999999976,
+            "elapsed_ms": 1.7156819999217987,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 128102
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 21832.0,
+        "samples": [
+          {
+            "calls": 627,
+            "cpu_ms": 0.2764109999999995,
+            "elapsed_ms": 0.2754269987344742,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.21197500000000247,
+            "elapsed_ms": 0.21201300621032715,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.2110839999999996,
+            "elapsed_ms": 0.21108201146125793,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.21017300000000105,
+            "elapsed_ms": 0.21020999550819397,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.23445899999999753,
+            "elapsed_ms": 0.23463700711727142,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 8791
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 1000,
+      "mode": "count",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24560.0,
+        "samples": [
+          {
+            "calls": 16326,
+            "cpu_ms": 136.092769,
+            "elapsed_ms": 136.09120199084282,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 136.395049,
+            "elapsed_ms": 136.41574200987816,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 131.54451800000004,
+            "elapsed_ms": 131.55074299871922,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 132.60570400000006,
+            "elapsed_ms": 132.6050280034542,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 151.018147,
+            "elapsed_ms": 151.01679100096226,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 12529601
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24732.0,
+        "samples": [
+          {
+            "calls": 6256,
+            "cpu_ms": 2.28716,
+            "elapsed_ms": 2.286743998527527,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 6.003046000000001,
+            "elapsed_ms": 6.003297999501228,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.190336000000002,
+            "elapsed_ms": 2.190551996231079,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.3892820000000015,
+            "elapsed_ms": 2.389825999736786,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.212328999999997,
+            "elapsed_ms": 2.212685003876686,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 88661
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24532.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.06325400000000059,
+            "elapsed_ms": 0.06285199522972107,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0026639999999993336,
+            "elapsed_ms": 0.0022829920053482056,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.00143200000000121,
+            "elapsed_ms": 0.0014120042324066162,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0012319999999981235,
+            "elapsed_ms": 0.0011920034885406494,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.000890999999999309,
+            "elapsed_ms": 0.0008510053157806396,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24528.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.0809110000000004,
+            "elapsed_ms": 0.07996800541877747,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.09781600000000168,
+            "elapsed_ms": 0.09458999335765839,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.003114000000003614,
+            "elapsed_ms": 0.0019530057907104492,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0010320000000021423,
+            "elapsed_ms": 0.000961005687713623,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0007810000000034734,
+            "elapsed_ms": 0.0007009953260421753,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "capacity": 10000,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22140.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.46206699999999934,
+            "elapsed_ms": 0.4616609960794449,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.21018300000000067,
+            "elapsed_ms": 0.21018999814987183,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.19084300000000098,
+            "elapsed_ms": 0.19089099764823914,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.255589999999998,
+            "elapsed_ms": 0.2559169977903366,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.2656349999999996,
+            "elapsed_ms": 0.2659120112657547,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22152.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.3471660000000014,
+            "elapsed_ms": 0.34647099673748016,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.26681699999999964,
+            "elapsed_ms": 0.26697400212287903,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.19187499999999957,
+            "elapsed_ms": 0.19191399216651917,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18245100000000036,
+            "elapsed_ms": 0.1824989914894104,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18482400000000254,
+            "elapsed_ms": 0.18487299978733063,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 4,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22156.0,
+        "samples": [
+          {
+            "calls": 27,
+            "cpu_ms": 11.379490000000004,
+            "elapsed_ms": 11.379180997610092,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 13.227619000000004,
+            "elapsed_ms": 13.228388994932175,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 11.609402000000003,
+            "elapsed_ms": 11.609841004014015,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 10.263280999999992,
+            "elapsed_ms": 10.264256000518799,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 11.045393000000004,
+            "elapsed_ms": 11.046130001544952,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 194
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22216.0,
+        "samples": [
+          {
+            "calls": 23,
+            "cpu_ms": 10.098506,
+            "elapsed_ms": 10.098681002855301,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 8.608038999999998,
+            "elapsed_ms": 8.608992993831635,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 11.298038999999996,
+            "elapsed_ms": 11.298781991004944,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 9.225197000000001,
+            "elapsed_ms": 9.22623398900032,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 12.487677999999995,
+            "elapsed_ms": 12.487887009978294,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 150
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 24,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 23720.0,
+        "samples": [
+          {
+            "calls": 203,
+            "cpu_ms": 223.033999,
+            "elapsed_ms": 223.0587650090456,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 177.61972699999998,
+            "elapsed_ms": 177.61844900250435,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 177.77661999999998,
+            "elapsed_ms": 177.7824510037899,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 173.02966100000003,
+            "elapsed_ms": 173.02839601039886,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 169.69125800000006,
+            "elapsed_ms": 169.72347900271416,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 3860
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 23300.0,
+        "samples": [
+          {
+            "calls": 121,
+            "cpu_ms": 47.922957999999994,
+            "elapsed_ms": 47.92221300303936,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 46.025015999999994,
+            "elapsed_ms": 46.025164008140564,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 50.071022,
+            "elapsed_ms": 50.07079300284386,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 48.49031099999999,
+            "elapsed_ms": 48.490030989050865,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 44.09235199999998,
+            "elapsed_ms": 44.092182010412216,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 892
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 120,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 28932.0,
+        "samples": [
+          {
+            "calls": 1045,
+            "cpu_ms": 1847.036141,
+            "elapsed_ms": 1847.056147992611,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1791.1830960000002,
+            "elapsed_ms": 1791.2141529917717,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1742.9267479999999,
+            "elapsed_ms": 1742.9424929916859,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1739.4775289999998,
+            "elapsed_ms": 1739.4681269973516,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1752.4659010000005,
+            "elapsed_ms": 1752.5224220007658,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 58559
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 28920.0,
+        "samples": [
+          {
+            "calls": 483,
+            "cpu_ms": 184.136788,
+            "elapsed_ms": 184.1566700041294,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 173.122219,
+            "elapsed_ms": 173.12100300192833,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 171.15045799999996,
+            "elapsed_ms": 171.14986300468445,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 171.90072299999997,
+            "elapsed_ms": 171.90959499776363,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 175.22372899999993,
+            "elapsed_ms": 175.22241999208927,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 3682
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 480,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22444.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 5.506888,
+            "elapsed_ms": 5.506787002086639,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.984831999999997,
+            "elapsed_ms": 4.985117003321648,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.833857999999999,
+            "elapsed_ms": 4.834123998880386,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.780768999999999,
+            "elapsed_ms": 4.781046003103256,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.793136999999994,
+            "elapsed_ms": 4.793864995241165,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22392.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 6.279588,
+            "elapsed_ms": 6.279027000069618,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.608930000000001,
+            "elapsed_ms": 5.609549000859261,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.9681150000000045,
+            "elapsed_ms": 5.968878999352455,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.963460000000005,
+            "elapsed_ms": 4.963876008987427,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.8936160000000015,
+            "elapsed_ms": 4.893903002142906,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 30,
+      "mode": "text",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22632.0,
+        "samples": [
+          {
+            "calls": 139,
+            "cpu_ms": 177.89106999999998,
+            "elapsed_ms": 177.93503899872303,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 173.309307,
+            "elapsed_ms": 173.30786800384521,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 177.08106600000002,
+            "elapsed_ms": 177.08833800256252,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 174.01038000000005,
+            "elapsed_ms": 174.01527199149132,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 170.51325099999997,
+            "elapsed_ms": 170.52316899597645,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22440.0,
+        "samples": [
+          {
+            "calls": 104,
+            "cpu_ms": 92.02198999999999,
+            "elapsed_ms": 92.02098099887371,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 95.239524,
+            "elapsed_ms": 95.23873999714851,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 91.20833999999999,
+            "elapsed_ms": 91.20780000090599,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 90.346428,
+            "elapsed_ms": 90.3459479957819,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 91.30557400000004,
+            "elapsed_ms": 91.30501300096512,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 300,
+      "mode": "text",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24328.0,
+        "samples": [
+          {
+            "calls": 661,
+            "cpu_ms": 1797.101402,
+            "elapsed_ms": 1797.170585989952,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1741.7348620000002,
+            "elapsed_ms": 1741.8369310051203,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1815.1842479999996,
+            "elapsed_ms": 1815.2403250038624,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1742.7172870000004,
+            "elapsed_ms": 1742.7941140085459,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1709.808164,
+            "elapsed_ms": 1709.894586995244,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24328.0,
+        "samples": [
+          {
+            "calls": 408,
+            "cpu_ms": 369.306681,
+            "elapsed_ms": 369.3024410009384,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 381.099856,
+            "elapsed_ms": 381.10364601016045,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 377.75364000000013,
+            "elapsed_ms": 377.76069900393486,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 376.9873809999999,
+            "elapsed_ms": 376.98353800177574,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 380.04584899999986,
+            "elapsed_ms": 380.10431300103664,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 1200,
+      "mode": "text",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 21868.0,
+        "samples": [
+          {
+            "calls": 1219,
+            "cpu_ms": 1.7819800000000008,
+            "elapsed_ms": 1.7816489934921265,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.6859870000000008,
+            "elapsed_ms": 1.6860990077257156,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.6459069999999976,
+            "elapsed_ms": 1.6461800038814545,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.6591379999999987,
+            "elapsed_ms": 1.6662489920854568,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.9283879999999982,
+            "elapsed_ms": 1.9285860061645508,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 128102
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 21868.0,
+        "samples": [
+          {
+            "calls": 627,
+            "cpu_ms": 0.31441699999999884,
+            "elapsed_ms": 0.31098900735378265,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.22879999999999967,
+            "elapsed_ms": 0.2289380133152008,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.21214499999999958,
+            "elapsed_ms": 0.21213299036026,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.21248600000000195,
+            "elapsed_ms": 0.21249300241470337,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.2946780000000011,
+            "elapsed_ms": 0.29487499594688416,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 8791
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 1000,
+      "mode": "count",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24724.0,
+        "samples": [
+          {
+            "calls": 16326,
+            "cpu_ms": 125.46934300000001,
+            "elapsed_ms": 125.48635499179363,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 124.54907500000002,
+            "elapsed_ms": 124.54828000068665,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 124.91477899999995,
+            "elapsed_ms": 124.91363000869751,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 127.46814499999999,
+            "elapsed_ms": 127.46718899905682,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 126.87903000000006,
+            "elapsed_ms": 126.8871819972992,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 12529601
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24720.0,
+        "samples": [
+          {
+            "calls": 6256,
+            "cpu_ms": 2.320921000000002,
+            "elapsed_ms": 2.3208650052547455,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.7594629999999967,
+            "elapsed_ms": 2.759652003645897,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.6254440000000017,
+            "elapsed_ms": 2.6258050054311752,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.3353520000000003,
+            "elapsed_ms": 2.335517004132271,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.299519,
+            "elapsed_ms": 2.299704000353813,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 88661
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24584.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.061382000000001824,
+            "elapsed_ms": 0.060728996992111206,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0026140000000012265,
+            "elapsed_ms": 0.0023130029439926147,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.001221999999998502,
+            "elapsed_ms": 0.0011519938707351685,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.001040999999997183,
+            "elapsed_ms": 0.0009909868240356445,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.001101000000002017,
+            "elapsed_ms": 0.0010610073804855347,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 24592.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.03700500000000062,
+            "elapsed_ms": 0.03661400079727173,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0020530000000000825,
+            "elapsed_ms": 0.0017829984426498413,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0011919999999996378,
+            "elapsed_ms": 0.0010819882154464722,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0008209999999984063,
+            "elapsed_ms": 0.0007410049438476562,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0007510000000010564,
+            "elapsed_ms": 0.0006909966468811035,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "capacity": 10000,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22120.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.3479169999999989,
+            "elapsed_ms": 0.34740300476551056,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.20032800000000073,
+            "elapsed_ms": 0.20033599436283112,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.23411699999999946,
+            "elapsed_ms": 0.2388020008802414,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.19112499999999955,
+            "elapsed_ms": 0.1912519931793213,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18304200000000037,
+            "elapsed_ms": 0.18313001096248627,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22168.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.32822800000000285,
+            "elapsed_ms": 0.32793399691581726,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.1986549999999987,
+            "elapsed_ms": 0.19872300326824188,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.2327559999999984,
+            "elapsed_ms": 0.23325400054454803,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.19006299999999854,
+            "elapsed_ms": 0.1901099979877472,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.25593100000000035,
+            "elapsed_ms": 0.25628799200057983,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 4,
+      "mode": "paragraphs",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22108.0,
+        "samples": [
+          {
+            "calls": 27,
+            "cpu_ms": 13.329730000000001,
+            "elapsed_ms": 13.329962000250816,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 11.534131000000002,
+            "elapsed_ms": 11.53439299762249,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 13.775953999999999,
+            "elapsed_ms": 13.77725200355053,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 10.691176999999996,
+            "elapsed_ms": 10.691617995500565,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 10.66601,
+            "elapsed_ms": 10.666471987962723,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 194
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22160.0,
+        "samples": [
+          {
+            "calls": 23,
+            "cpu_ms": 8.597794,
+            "elapsed_ms": 8.597637996077538,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 12.414569000000004,
+            "elapsed_ms": 12.414861992001534,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 13.825097,
+            "elapsed_ms": 13.82574400305748,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 10.150011999999997,
+            "elapsed_ms": 10.150279998779297,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 11.465007999999997,
+            "elapsed_ms": 11.465810999274254,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 150
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 24,
+      "mode": "paragraphs",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 23660.0,
+        "samples": [
+          {
+            "calls": 203,
+            "cpu_ms": 190.63299700000002,
+            "elapsed_ms": 190.63036499917507,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 179.99500899999998,
+            "elapsed_ms": 179.99313700199127,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 180.32007300000004,
+            "elapsed_ms": 180.32733000814915,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 187.90686399999993,
+            "elapsed_ms": 187.91410599648952,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 177.02462200000002,
+            "elapsed_ms": 177.0233239978552,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 3860
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 23372.0,
+        "samples": [
+          {
+            "calls": 121,
+            "cpu_ms": 43.29102,
+            "elapsed_ms": 43.307543992996216,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 44.466198,
+            "elapsed_ms": 44.47037999331951,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 43.464968999999996,
+            "elapsed_ms": 43.464885994791985,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 41.62957,
+            "elapsed_ms": 41.62956801056862,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 42.03714600000001,
+            "elapsed_ms": 42.03713899850845,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 892
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 120,
+      "mode": "paragraphs",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 28932.0,
+        "samples": [
+          {
+            "calls": 1045,
+            "cpu_ms": 1844.8255840000002,
+            "elapsed_ms": 1844.8457189947367,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1876.006238,
+            "elapsed_ms": 1876.2224230021238,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1918.4345300000004,
+            "elapsed_ms": 1918.5050369948149,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1861.9923590000008,
+            "elapsed_ms": 1862.0113209933043,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1894.7978899999998,
+            "elapsed_ms": 1895.0078489929438,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 58559
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 28836.0,
+        "samples": [
+          {
+            "calls": 483,
+            "cpu_ms": 176.288127,
+            "elapsed_ms": 176.28593499958515,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 181.98034099999998,
+            "elapsed_ms": 181.97845600545406,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 192.34983,
+            "elapsed_ms": 192.34863099455833,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 183.1774499999999,
+            "elapsed_ms": 183.18349400162697,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 182.34561400000007,
+            "elapsed_ms": 182.3445559889078,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 3682
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 480,
+      "mode": "paragraphs",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22200.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 5.715648999999999,
+            "elapsed_ms": 5.715534999966621,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.221464000000001,
+            "elapsed_ms": 5.222015991806984,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.584133999999999,
+            "elapsed_ms": 5.58466200530529,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.941968000000003,
+            "elapsed_ms": 4.942322999238968,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.943961000000002,
+            "elapsed_ms": 4.944436997175217,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13696.0,
+        "peak_rss_kib": 22320.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 6.279496999999999,
+            "elapsed_ms": 6.279317006468773,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.228293999999998,
+            "elapsed_ms": 5.228776007890701,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.406199000000001,
+            "elapsed_ms": 5.406748995184898,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.981647000000002,
+            "elapsed_ms": 4.982112005352974,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.181764999999999,
+            "elapsed_ms": 5.182136997580528,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 30,
+      "mode": "text",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22700.0,
+        "samples": [
+          {
+            "calls": 139,
+            "cpu_ms": 207.080463,
+            "elapsed_ms": 207.0780310034752,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 201.93404,
+            "elapsed_ms": 201.93236801028252,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 193.902488,
+            "elapsed_ms": 193.90084400773048,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 200.9220459999999,
+            "elapsed_ms": 200.92075300216675,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 213.75430600000004,
+            "elapsed_ms": 213.7607840001583,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22588.0,
+        "samples": [
+          {
+            "calls": 104,
+            "cpu_ms": 100.00289699999999,
+            "elapsed_ms": 100.00178000330925,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 106.42265200000001,
+            "elapsed_ms": 106.42178399860859,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 107.350112,
+            "elapsed_ms": 107.3492240011692,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 93.50448399999999,
+            "elapsed_ms": 93.50366099178791,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 93.96953600000006,
+            "elapsed_ms": 94.0198920071125,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 300,
+      "mode": "text",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 24256.0,
+        "samples": [
+          {
+            "calls": 661,
+            "cpu_ms": 1870.775585,
+            "elapsed_ms": 1870.847870990634,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1856.301059,
+            "elapsed_ms": 1856.3211880028248,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1768.6149789999995,
+            "elapsed_ms": 1768.6304900050163,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1809.5402869999998,
+            "elapsed_ms": 1809.5598499923944,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1760.3450889999995,
+            "elapsed_ms": 1760.3643299937248,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 24208.0,
+        "samples": [
+          {
+            "calls": 408,
+            "cpu_ms": 392.81123,
+            "elapsed_ms": 392.8075660020113,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 383.190483,
+            "elapsed_ms": 383.3751269876957,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 375.744243,
+            "elapsed_ms": 375.7410379946232,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 375.828888,
+            "elapsed_ms": 375.83389599621296,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 387.287366,
+            "elapsed_ms": 388.597378000617,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 1200,
+      "mode": "text",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22044.0,
+        "samples": [
+          {
+            "calls": 1219,
+            "cpu_ms": 1.9491680000000002,
+            "elapsed_ms": 1.9490370005369186,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.5782269999999983,
+            "elapsed_ms": 1.5784189999103546,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.7908229999999996,
+            "elapsed_ms": 1.791244000196457,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.6856259999999992,
+            "elapsed_ms": 1.686369001865387,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 128102
+          },
+          {
+            "calls": 1219,
+            "cpu_ms": 1.5943509999999996,
+            "elapsed_ms": 1.594303011894226,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 128102
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22044.0,
+        "samples": [
+          {
+            "calls": 627,
+            "cpu_ms": 0.3079280000000004,
+            "elapsed_ms": 0.30746400356292725,
+            "pages": 125,
+            "trial": 0,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.3108620000000002,
+            "elapsed_ms": 0.3111190050840378,
+            "pages": 125,
+            "trial": 1,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.2157499999999999,
+            "elapsed_ms": 0.216048002243042,
+            "pages": 125,
+            "trial": 2,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.24671600000000282,
+            "elapsed_ms": 0.24687400460243225,
+            "pages": 125,
+            "trial": 3,
+            "visited_items": 8791
+          },
+          {
+            "calls": 627,
+            "cpu_ms": 0.25953600000000066,
+            "elapsed_ms": 0.2597239911556244,
+            "pages": 125,
+            "trial": 4,
+            "visited_items": 8791
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 1000,
+      "mode": "count",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 24784.0,
+        "samples": [
+          {
+            "calls": 16326,
+            "cpu_ms": 133.47133200000002,
+            "elapsed_ms": 133.47691801190376,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 135.32836700000001,
+            "elapsed_ms": 135.32710298895836,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 135.775398,
+            "elapsed_ms": 135.77398800849915,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 141.64112899999992,
+            "elapsed_ms": 141.64049500226974,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 12529601
+          },
+          {
+            "calls": 16326,
+            "cpu_ms": 135.58745800000008,
+            "elapsed_ms": 135.58655101060867,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 12529601
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 24772.0,
+        "samples": [
+          {
+            "calls": 6256,
+            "cpu_ms": 2.6570810000000016,
+            "elapsed_ms": 2.6566510051488876,
+            "pages": 1250,
+            "trial": 0,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.9796409999999973,
+            "elapsed_ms": 2.979977995157242,
+            "pages": 1250,
+            "trial": 1,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 3.7260489999999997,
+            "elapsed_ms": 3.7262189984321594,
+            "pages": 1250,
+            "trial": 2,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.468851000000001,
+            "elapsed_ms": 2.469194009900093,
+            "pages": 1250,
+            "trial": 3,
+            "visited_items": 88661
+          },
+          {
+            "calls": 6256,
+            "cpu_ms": 2.195634999999996,
+            "elapsed_ms": 2.1959600001573563,
+            "pages": 1250,
+            "trial": 4,
+            "visited_items": 88661
+          }
+        ]
+      },
+      "capacity": 8,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 24592.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.06229199999999935,
+            "elapsed_ms": 0.062001004815101624,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.002442999999999529,
+            "elapsed_ms": 0.0021030008792877197,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0012919999999994047,
+            "elapsed_ms": 0.0011920034885406494,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.001041999999998211,
+            "elapsed_ms": 0.0009820014238357544,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0009619999999976869,
+            "elapsed_ms": 0.0009119957685470581,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 24732.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.05181699999999978,
+            "elapsed_ms": 0.05106499791145325,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0018430000000009272,
+            "elapsed_ms": 0.0015320032835006714,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0009910000000026287,
+            "elapsed_ms": 0.0009320080280303955,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0007309999999982608,
+            "elapsed_ms": 0.0006809979677200317,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 10000
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.0006509999999977367,
+            "elapsed_ms": 0.0005909949541091919,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 10000
+          }
+        ]
+      },
+      "capacity": 10000,
+      "count": 10000,
+      "mode": "count",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22144.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.4822369999999978,
+            "elapsed_ms": 0.48201100528240204,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.21470000000000056,
+            "elapsed_ms": 0.21480698883533478,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.19141400000000175,
+            "elapsed_ms": 0.19143199920654297,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.18311200000000127,
+            "elapsed_ms": 0.18314999341964722,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.6043289999999999,
+            "elapsed_ms": 0.60453300178051,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22156.0,
+        "samples": [
+          {
+            "calls": 1,
+            "cpu_ms": 0.37579900000000066,
+            "elapsed_ms": 0.37497299909591675,
+            "pages": 1,
+            "trial": 0,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.20053899999999913,
+            "elapsed_ms": 0.2005160003900528,
+            "pages": 1,
+            "trial": 1,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.20813900000000274,
+            "elapsed_ms": 0.2083580046892166,
+            "pages": 1,
+            "trial": 2,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.45183199999999957,
+            "elapsed_ms": 0.45209699869155884,
+            "pages": 1,
+            "trial": 3,
+            "visited_items": 4
+          },
+          {
+            "calls": 1,
+            "cpu_ms": 0.49816099999999963,
+            "elapsed_ms": 0.49881599843502045,
+            "pages": 1,
+            "trial": 4,
+            "visited_items": 4
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 4,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22080.0,
+        "samples": [
+          {
+            "calls": 27,
+            "cpu_ms": 12.124257999999998,
+            "elapsed_ms": 12.12415200471878,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 11.067937,
+            "elapsed_ms": 11.068553999066353,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 10.547303,
+            "elapsed_ms": 10.548007011413574,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 11.713898,
+            "elapsed_ms": 11.714548990130424,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 194
+          },
+          {
+            "calls": 27,
+            "cpu_ms": 12.095254999999995,
+            "elapsed_ms": 12.095741003751755,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 194
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22188.0,
+        "samples": [
+          {
+            "calls": 23,
+            "cpu_ms": 9.551331999999999,
+            "elapsed_ms": 9.551055997610092,
+            "pages": 6,
+            "trial": 0,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 8.216477999999999,
+            "elapsed_ms": 8.216697007417679,
+            "pages": 6,
+            "trial": 1,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 8.040204999999993,
+            "elapsed_ms": 8.040646001696587,
+            "pages": 6,
+            "trial": 2,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 8.067365000000002,
+            "elapsed_ms": 8.06852801144123,
+            "pages": 6,
+            "trial": 3,
+            "visited_items": 150
+          },
+          {
+            "calls": 23,
+            "cpu_ms": 8.258369000000002,
+            "elapsed_ms": 8.25873900949955,
+            "pages": 6,
+            "trial": 4,
+            "visited_items": 150
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 24,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 23584.0,
+        "samples": [
+          {
+            "calls": 203,
+            "cpu_ms": 163.472612,
+            "elapsed_ms": 163.4775329977274,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 165.613224,
+            "elapsed_ms": 165.6119029968977,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 163.91476800000004,
+            "elapsed_ms": 163.92243100702763,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 167.39713700000004,
+            "elapsed_ms": 167.39582599699497,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 3860
+          },
+          {
+            "calls": 203,
+            "cpu_ms": 168.22001999999998,
+            "elapsed_ms": 168.21903198957443,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 3860
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 23328.0,
+        "samples": [
+          {
+            "calls": 121,
+            "cpu_ms": 46.03159599999999,
+            "elapsed_ms": 46.030943006277084,
+            "pages": 30,
+            "trial": 0,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 44.20065299999999,
+            "elapsed_ms": 44.20091299712658,
+            "pages": 30,
+            "trial": 1,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 43.62150199999999,
+            "elapsed_ms": 43.62157799303532,
+            "pages": 30,
+            "trial": 2,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 45.01230000000001,
+            "elapsed_ms": 45.01334199309349,
+            "pages": 30,
+            "trial": 3,
+            "visited_items": 892
+          },
+          {
+            "calls": 121,
+            "cpu_ms": 44.818501,
+            "elapsed_ms": 44.818314000964165,
+            "pages": 30,
+            "trial": 4,
+            "visited_items": 892
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 120,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 28912.0,
+        "samples": [
+          {
+            "calls": 1045,
+            "cpu_ms": 1873.4574369999998,
+            "elapsed_ms": 1873.4689899981022,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1762.496572,
+            "elapsed_ms": 1762.5011100023985,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1821.1453700000002,
+            "elapsed_ms": 1821.142796009779,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1859.5110089999998,
+            "elapsed_ms": 1859.6458289921284,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 58559
+          },
+          {
+            "calls": 1045,
+            "cpu_ms": 1849.2689709999995,
+            "elapsed_ms": 1849.281994998455,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 58559
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 28876.0,
+        "samples": [
+          {
+            "calls": 483,
+            "cpu_ms": 175.621365,
+            "elapsed_ms": 175.62647201120853,
+            "pages": 120,
+            "trial": 0,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 188.77554499999997,
+            "elapsed_ms": 188.77416399121284,
+            "pages": 120,
+            "trial": 1,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 201.86311,
+            "elapsed_ms": 201.86195300519466,
+            "pages": 120,
+            "trial": 2,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 183.26730399999997,
+            "elapsed_ms": 183.26564499735832,
+            "pages": 120,
+            "trial": 3,
+            "visited_items": 3682
+          },
+          {
+            "calls": 483,
+            "cpu_ms": 180.27370300000007,
+            "elapsed_ms": 180.27244900166988,
+            "pages": 120,
+            "trial": 4,
+            "visited_items": 3682
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 480,
+      "mode": "paragraphs",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22204.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 5.775206999999998,
+            "elapsed_ms": 5.774820998311043,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.6064570000000025,
+            "elapsed_ms": 5.607063993811607,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 4.990240000000004,
+            "elapsed_ms": 4.990785002708435,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.377215,
+            "elapsed_ms": 5.377506002783775,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.869507999999996,
+            "elapsed_ms": 5.870082005858421,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22436.0,
+        "samples": [
+          {
+            "calls": 9,
+            "cpu_ms": 5.828355999999999,
+            "elapsed_ms": 5.82820999622345,
+            "pages": 2,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.526969000000001,
+            "elapsed_ms": 5.5273769944906235,
+            "pages": 2,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.6284990000000015,
+            "elapsed_ms": 5.628916993737221,
+            "pages": 2,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.217086999999999,
+            "elapsed_ms": 5.217479005455971,
+            "pages": 2,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 9,
+            "cpu_ms": 5.1207139999999995,
+            "elapsed_ms": 5.121277004480362,
+            "pages": 2,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 30,
+      "mode": "text",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22676.0,
+        "samples": [
+          {
+            "calls": 139,
+            "cpu_ms": 183.49295,
+            "elapsed_ms": 183.49868899583817,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 179.522977,
+            "elapsed_ms": 179.52157999575138,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 185.48868599999997,
+            "elapsed_ms": 185.54217499494553,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 182.94927199999995,
+            "elapsed_ms": 182.96822600066662,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 139,
+            "cpu_ms": 187.35992999999996,
+            "elapsed_ms": 187.3583839982748,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 22332.0,
+        "samples": [
+          {
+            "calls": 104,
+            "cpu_ms": 95.04848000000001,
+            "elapsed_ms": 95.04726099967957,
+            "pages": 15,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 99.77791199999999,
+            "elapsed_ms": 99.78654499351978,
+            "pages": 15,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 109.70430200000001,
+            "elapsed_ms": 109.70382998883724,
+            "pages": 15,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 113.89734599999997,
+            "elapsed_ms": 113.89663699269295,
+            "pages": 15,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 104,
+            "cpu_ms": 108.38475000000005,
+            "elapsed_ms": 108.38385200500488,
+            "pages": 15,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 300,
+      "mode": "text",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 24384.0,
+        "samples": [
+          {
+            "calls": 661,
+            "cpu_ms": 1864.051922,
+            "elapsed_ms": 1864.0516960024834,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1815.707997,
+            "elapsed_ms": 1815.7433370053768,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1769.1618260000005,
+            "elapsed_ms": 1769.1654380112886,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1808.1329560000004,
+            "elapsed_ms": 1808.1525359898806,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 661,
+            "cpu_ms": 1726.9936609999995,
+            "elapsed_ms": 1726.994781985879,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "candidate": {
+        "collector_peak_rss_kib": 13824.0,
+        "peak_rss_kib": 24196.0,
+        "samples": [
+          {
+            "calls": 408,
+            "cpu_ms": 390.97639200000003,
+            "elapsed_ms": 390.97159899771214,
+            "pages": 58,
+            "trial": 0,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 387.72676,
+            "elapsed_ms": 387.7454580068588,
+            "pages": 58,
+            "trial": 1,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 389.3205700000001,
+            "elapsed_ms": 389.32608100771904,
+            "pages": 58,
+            "trial": 2,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 386.461499,
+            "elapsed_ms": 386.45761699974537,
+            "pages": 58,
+            "trial": 3,
+            "visited_items": 0
+          },
+          {
+            "calls": 408,
+            "cpu_ms": 388.01596100000006,
+            "elapsed_ms": 388.0298079997301,
+            "pages": 58,
+            "trial": 4,
+            "visited_items": 0
+          }
+        ]
+      },
+      "capacity": 180,
+      "count": 1200,
+      "mode": "text",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    }
+  ],
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "swift": "Swift version 6.1.3 (swift-6.1.3-RELEASE)\nTarget: x86_64-unknown-linux-gnu\n"
+}
