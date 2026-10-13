@@ -71,7 +71,7 @@ import Testing
             let fit = try #require(body.firstChild(named: "a:bodyPr")?.firstChild(named: "a:normAutofit"))
             let before = body.children(named: "a:p").map(XML.document)
             let stylesBefore = XML.document(inherited)
-            let preparation = RichTextLayout.Preparation()
+            let preparation = RichTextLayout.Preparation(fragments: .init())
             for scale in [100000, 99990, 88300, 75000, 60000, 900, 100] {
                 fit[attribute: "fontScale"] = String(scale)
                 fit[attribute: "lnSpcReduction"] = scale == 88300 ? "10000" : "0"
@@ -136,11 +136,70 @@ import Testing
                 .text("\(index) " + String(repeating: "Word ", count: 26))]))]))
         }
         body.appendElement(paragraph)
-        let preparation = RichTextLayout.Preparation(), library = try fonts()
+        let preparation = RichTextLayout.Preparation(fragments: .init()), library = try fonts()
         for scale in [80.0, 75] {
             let expected = RichTextLayout(textBody: body, width: 180, height: 100, fonts: library, fontScale: scale, maxLines: 2)
             let actual = RichTextLayout(textBody: body, width: 180, height: 100, fonts: library, fontScale: scale, maxLines: 2, preparation: preparation)
             equal(actual, expected)
+        }
+    }
+
+    @Test func sharedFragmentAdvancesPreserveFacesFeaturesAndLineBoundaries() throws {
+        let library = try fonts(), fragments = RichTextLayout.FragmentMeasurements()
+        for family in ["DejaVu Sans", "DejaVu Serif"] {
+            for properties in ["kern=\"0\"", "kern=\"100\"", "b=\"1\"", "i=\"1\"", "spc=\"125\""] {
+                for rtl in ["0", "1"] {
+                    let body = try XML.parse(Data("""
+                    <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr rtl="\(rtl)" algn="just"><a:defRPr sz="2423" \(properties)><a:latin typeface="\(family)"/></a:defRPr></a:pPr><a:r><a:t>AVATAR office ToT AVATAR\t12.34\nRepeated words wrap again.</a:t></a:r></a:p><a:p><a:r><a:rPr sz="2423" \(properties)><a:latin typeface="\(family)"/></a:rPr><a:t>é é אבד مرحبا 日本語</a:t></a:r></a:p></p:txBody>
+                    """.utf8))
+                    let prepared = RichTextLayout.Preparation(fragments: fragments)
+                    for scale in [100.0, 83.3, 100] {
+                        for width in [75.0, 160.25, 310, 75] {
+                            let expected = RichTextLayout(textBody: body, width: width, height: 300,
+                                fonts: library, fontScale: scale)
+                            let actual = RichTextLayout(textBody: body, width: width, height: 300,
+                                fonts: library, fontScale: scale, preparation: prepared)
+                            equal(actual, expected)
+                        }
+                    }
+                }
+            }
+        }
+        #expect(fragments.count > 0 && fragments.count <= 2048)
+    }
+
+    @Test func fragmentAdmissionIsBoundedAndSourceBytesStayDistinct() throws {
+        let fragments = RichTextLayout.FragmentMeasurements()
+        let style = ResolvedTextRun(text: "", fontFamily: nil, fontSize: 18, bold: false,
+            italic: false, color: "000000", tracking: 0)
+        #expect(fragments.advance("é", style: style, nativeLTR: false) { 1 } == 1)
+        #expect(fragments.advance("e\u{301}", style: style, nativeLTR: false) { 2 } == 2)
+        #expect(fragments.advance("é", style: style, nativeLTR: false) { Issue.record("Expected reuse"); return 3 } == 1)
+        for index in 0..<2050 {
+            _ = fragments.advance("\(index)", style: style, nativeLTR: true) { Double(index) }
+        }
+        #expect(fragments.count == 2048)
+        #expect(fragments.advance("2049", style: style, nativeLTR: true) { 99 } == 99)
+        #expect(fragments.advance("é", style: style, nativeLTR: false) { 3 } == 1)
+
+        let byteBounded = RichTextLayout.FragmentMeasurements()
+        let large = String(repeating: "x", count: 262_145)
+        #expect(byteBounded.advance(large, style: style, nativeLTR: true) { 7 } == 7)
+        #expect(byteBounded.count == 0 && byteBounded.retainedBytes == 0)
+        let chunk = String(repeating: "y", count: 65536)
+        for index in 0..<5 {
+            _ = byteBounded.advance(chunk + String(index), style: style, nativeLTR: true) { 7 }
+        }
+        #expect(byteBounded.count == 3 && byteBounded.retainedBytes == 196611)
+
+        // A saturated operation must still lay out every new fragment normally.
+        let body = try XML.parse(Data("""
+        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr><a:latin typeface="DejaVu Sans"/></a:rPr><a:t>New words beyond the cache still wrap correctly.</a:t></a:r></a:p></p:txBody>
+        """.utf8))
+        let library = try fonts(), prepared = RichTextLayout.Preparation(fragments: fragments)
+        for width in [55.0, 180] {
+            equal(RichTextLayout(textBody: body, width: width, height: 200, fonts: library, preparation: prepared),
+                  RichTextLayout(textBody: body, width: width, height: 200, fonts: library))
         }
     }
 

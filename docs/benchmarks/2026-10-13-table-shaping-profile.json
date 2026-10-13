@@ -1,0 +1,682 @@
+{
+  "baseline_commit": "d6aaefdd695db18502109cbed3030f1e82ba9473",
+  "method": "Isolated Swift 6.1.3 Release WMO copy; monotonic nested scopes. Trial zero is warmup. Timings include probes and are not end-to-end speedup evidence.",
+  "workloads": [
+    {
+      "labels": "repeated",
+      "plan_timings": [
+        {
+          "pages": 167,
+          "plan_cpu_ms": 70.625775,
+          "plan_ms": 70.62187999486923,
+          "trial": 0
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 66.491708,
+          "plan_ms": 66.48684900999069,
+          "trial": 1
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 63.343458,
+          "plan_ms": 63.350550994277,
+          "trial": 2
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 61.958507,
+          "plan_ms": 61.961993008852005,
+          "trial": 3
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 64.36766,
+          "plan_ms": 64.36314499378204,
+          "trial": 4
+        }
+      ],
+      "rows": 1000,
+      "scopes": [
+        {
+          "atoms_including_initial_shape": {
+            "calls": 44,
+            "seconds": 0.0003835170064121485
+          },
+          "initial_shape": {
+            "calls": 44,
+            "seconds": 0.00020251594833098352
+          },
+          "layout": {
+            "calls": 44,
+            "seconds": 0.001311294050537981
+          },
+          "line_shape": {
+            "calls": 52,
+            "seconds": 0.00014364792150445282
+          },
+          "paragraph_input": {
+            "calls": 44,
+            "seconds": 0.00022579698998015374
+          },
+          "wrap_including_line_shape": {
+            "calls": 44,
+            "seconds": 0.00045942603901494294
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 44,
+            "seconds": 0.00030798201623838395
+          },
+          "initial_shape": {
+            "calls": 44,
+            "seconds": 0.00015707396960351616
+          },
+          "layout": {
+            "calls": 44,
+            "seconds": 0.0011110220366390422
+          },
+          "line_shape": {
+            "calls": 52,
+            "seconds": 0.00014427302812691778
+          },
+          "paragraph_input": {
+            "calls": 44,
+            "seconds": 0.00015064800390973687
+          },
+          "wrap_including_line_shape": {
+            "calls": 44,
+            "seconds": 0.0004468799743335694
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 44,
+            "seconds": 0.00030869690817780793
+          },
+          "initial_shape": {
+            "calls": 44,
+            "seconds": 0.00015770508616697043
+          },
+          "layout": {
+            "calls": 44,
+            "seconds": 0.001115076127462089
+          },
+          "line_shape": {
+            "calls": 52,
+            "seconds": 0.00014427707355935127
+          },
+          "paragraph_input": {
+            "calls": 44,
+            "seconds": 0.00014917703811079264
+          },
+          "wrap_including_line_shape": {
+            "calls": 44,
+            "seconds": 0.0004487320256885141
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 44,
+            "seconds": 0.00030837897793389857
+          },
+          "initial_shape": {
+            "calls": 44,
+            "seconds": 0.00015450699720531702
+          },
+          "layout": {
+            "calls": 44,
+            "seconds": 0.0012523290060926229
+          },
+          "line_shape": {
+            "calls": 52,
+            "seconds": 0.0001481999788666144
+          },
+          "paragraph_input": {
+            "calls": 44,
+            "seconds": 0.00025255794753320515
+          },
+          "wrap_including_line_shape": {
+            "calls": 44,
+            "seconds": 0.0004791479732375592
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 44,
+            "seconds": 0.0003029439685633406
+          },
+          "initial_shape": {
+            "calls": 44,
+            "seconds": 0.00015138305025175214
+          },
+          "layout": {
+            "calls": 44,
+            "seconds": 0.0011010050220647827
+          },
+          "line_shape": {
+            "calls": 52,
+            "seconds": 0.00014424204709939659
+          },
+          "paragraph_input": {
+            "calls": 44,
+            "seconds": 0.0001493110175943002
+          },
+          "wrap_including_line_shape": {
+            "calls": 44,
+            "seconds": 0.00044473394518718123
+          }
+        }
+      ],
+      "workload": "unmerged"
+    },
+    {
+      "labels": "distinct",
+      "plan_timings": [
+        {
+          "pages": 167,
+          "plan_cpu_ms": 223.813584,
+          "plan_ms": 223.9558130055666,
+          "trial": 0
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 221.377067,
+          "plan_ms": 221.54267700016499,
+          "trial": 1
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 236.551284,
+          "plan_ms": 236.67724500596523,
+          "trial": 2
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 243.57861400000002,
+          "plan_ms": 243.70920100808144,
+          "trial": 3
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 235.4761360000001,
+          "plan_ms": 235.71253100037575,
+          "trial": 4
+        }
+      ],
+      "rows": 1000,
+      "scopes": [
+        {
+          "atoms_including_initial_shape": {
+            "calls": 7037,
+            "seconds": 0.015702111966675147
+          },
+          "initial_shape": {
+            "calls": 7037,
+            "seconds": 0.007712470178375952
+          },
+          "layout": {
+            "calls": 7037,
+            "seconds": 0.07707070134347305
+          },
+          "line_shape": {
+            "calls": 7045,
+            "seconds": 0.008097395999357104
+          },
+          "paragraph_input": {
+            "calls": 7037,
+            "seconds": 0.015930029228911735
+          },
+          "wrap_including_line_shape": {
+            "calls": 7037,
+            "seconds": 0.024387804573052563
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 7037,
+            "seconds": 0.015826387971173972
+          },
+          "initial_shape": {
+            "calls": 7037,
+            "seconds": 0.007702692542807199
+          },
+          "layout": {
+            "calls": 7037,
+            "seconds": 0.07691409073595423
+          },
+          "line_shape": {
+            "calls": 7045,
+            "seconds": 0.0077009993547108024
+          },
+          "paragraph_input": {
+            "calls": 7037,
+            "seconds": 0.015592190495226532
+          },
+          "wrap_including_line_shape": {
+            "calls": 7037,
+            "seconds": 0.0241235057474114
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 7037,
+            "seconds": 0.018142585788154975
+          },
+          "initial_shape": {
+            "calls": 7037,
+            "seconds": 0.009587235923390836
+          },
+          "layout": {
+            "calls": 7037,
+            "seconds": 0.08670165862713475
+          },
+          "line_shape": {
+            "calls": 7045,
+            "seconds": 0.008843192917993292
+          },
+          "paragraph_input": {
+            "calls": 7037,
+            "seconds": 0.01758305549446959
+          },
+          "wrap_including_line_shape": {
+            "calls": 7037,
+            "seconds": 0.027312933743814938
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 7037,
+            "seconds": 0.01755410358600784
+          },
+          "initial_shape": {
+            "calls": 7037,
+            "seconds": 0.008761909397435375
+          },
+          "layout": {
+            "calls": 7037,
+            "seconds": 0.08507035067304969
+          },
+          "line_shape": {
+            "calls": 7045,
+            "seconds": 0.00796552091196645
+          },
+          "paragraph_input": {
+            "calls": 7037,
+            "seconds": 0.01795008721819613
+          },
+          "wrap_including_line_shape": {
+            "calls": 7037,
+            "seconds": 0.024878164505935274
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 7037,
+            "seconds": 0.017023741151206195
+          },
+          "initial_shape": {
+            "calls": 7037,
+            "seconds": 0.008667422865983099
+          },
+          "layout": {
+            "calls": 7037,
+            "seconds": 0.08369295336888172
+          },
+          "line_shape": {
+            "calls": 7045,
+            "seconds": 0.00826172943925485
+          },
+          "paragraph_input": {
+            "calls": 7037,
+            "seconds": 0.018013818495091982
+          },
+          "wrap_including_line_shape": {
+            "calls": 7037,
+            "seconds": 0.02714355273928959
+          }
+        }
+      ],
+      "workload": "unmerged"
+    },
+    {
+      "labels": "repeated",
+      "plan_timings": [
+        {
+          "pages": 167,
+          "plan_cpu_ms": 73.01372599999999,
+          "plan_ms": 73.01659500598907,
+          "trial": 0
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 69.79159499999999,
+          "plan_ms": 69.78668799996376,
+          "trial": 1
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 70.331928,
+          "plan_ms": 70.32724599540234,
+          "trial": 2
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 68.835744,
+          "plan_ms": 68.83105899393559,
+          "trial": 3
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 68.855704,
+          "plan_ms": 68.85152800381184,
+          "trial": 4
+        }
+      ],
+      "rows": 1000,
+      "scopes": [
+        {
+          "atoms_including_initial_shape": {
+            "calls": 79,
+            "seconds": 0.000809361066785641
+          },
+          "initial_shape": {
+            "calls": 79,
+            "seconds": 0.0003856219700537622
+          },
+          "layout": {
+            "calls": 79,
+            "seconds": 0.002765659970464185
+          },
+          "line_shape": {
+            "calls": 119,
+            "seconds": 0.0004588599840644747
+          },
+          "paragraph_input": {
+            "calls": 79,
+            "seconds": 0.00022654396889265627
+          },
+          "wrap_including_line_shape": {
+            "calls": 79,
+            "seconds": 0.0012997919402550906
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 79,
+            "seconds": 0.0006924740155227482
+          },
+          "initial_shape": {
+            "calls": 79,
+            "seconds": 0.00031806300103198737
+          },
+          "layout": {
+            "calls": 79,
+            "seconds": 0.0027041739085689187
+          },
+          "line_shape": {
+            "calls": 119,
+            "seconds": 0.00040393708331976086
+          },
+          "paragraph_input": {
+            "calls": 79,
+            "seconds": 0.00028788014606107026
+          },
+          "wrap_including_line_shape": {
+            "calls": 79,
+            "seconds": 0.0013680990232387558
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 79,
+            "seconds": 0.00067607504024636
+          },
+          "initial_shape": {
+            "calls": 79,
+            "seconds": 0.00031370196666102856
+          },
+          "layout": {
+            "calls": 79,
+            "seconds": 0.0024549970403313637
+          },
+          "line_shape": {
+            "calls": 119,
+            "seconds": 0.000394463975680992
+          },
+          "paragraph_input": {
+            "calls": 79,
+            "seconds": 0.00017498602392151952
+          },
+          "wrap_including_line_shape": {
+            "calls": 79,
+            "seconds": 0.0012408620241330937
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 79,
+            "seconds": 0.0007599270029459149
+          },
+          "initial_shape": {
+            "calls": 79,
+            "seconds": 0.00033997310674749315
+          },
+          "layout": {
+            "calls": 79,
+            "seconds": 0.0025168780266540125
+          },
+          "line_shape": {
+            "calls": 119,
+            "seconds": 0.000401447934564203
+          },
+          "paragraph_input": {
+            "calls": 79,
+            "seconds": 0.00015438193804584444
+          },
+          "wrap_including_line_shape": {
+            "calls": 79,
+            "seconds": 0.001254470058484003
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 79,
+            "seconds": 0.0006683440442429855
+          },
+          "initial_shape": {
+            "calls": 79,
+            "seconds": 0.000308759932522662
+          },
+          "layout": {
+            "calls": 79,
+            "seconds": 0.0024443388829240575
+          },
+          "line_shape": {
+            "calls": 119,
+            "seconds": 0.0003991638222942129
+          },
+          "paragraph_input": {
+            "calls": 79,
+            "seconds": 0.00017534497601445764
+          },
+          "wrap_including_line_shape": {
+            "calls": 79,
+            "seconds": 0.0012633560399990529
+          }
+        }
+      ],
+      "workload": "spans"
+    },
+    {
+      "labels": "distinct",
+      "plan_timings": [
+        {
+          "pages": 167,
+          "plan_cpu_ms": 680.542626,
+          "plan_ms": 680.5849019885063,
+          "trial": 0
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 644.035566,
+          "plan_ms": 644.0396389961243,
+          "trial": 1
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 638.9129440000002,
+          "plan_ms": 638.9109479933977,
+          "trial": 2
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 630.1964979999998,
+          "plan_ms": 630.211915999651,
+          "trial": 3
+        },
+        {
+          "pages": 167,
+          "plan_cpu_ms": 635.3081739999998,
+          "plan_ms": 635.3058679997921,
+          "trial": 4
+        }
+      ],
+      "rows": 1000,
+      "scopes": [
+        {
+          "atoms_including_initial_shape": {
+            "calls": 18045,
+            "seconds": 0.14191796569502912
+          },
+          "initial_shape": {
+            "calls": 18045,
+            "seconds": 0.05997870990540832
+          },
+          "layout": {
+            "calls": 18045,
+            "seconds": 0.5320754257845692
+          },
+          "line_shape": {
+            "calls": 30448,
+            "seconds": 0.09828272464801557
+          },
+          "paragraph_input": {
+            "calls": 18045,
+            "seconds": 0.02624040156661067
+          },
+          "wrap_including_line_shape": {
+            "calls": 18045,
+            "seconds": 0.2947187553072581
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 18045,
+            "seconds": 0.13545671677275095
+          },
+          "initial_shape": {
+            "calls": 18045,
+            "seconds": 0.055148266459582373
+          },
+          "layout": {
+            "calls": 18045,
+            "seconds": 0.5015898290439509
+          },
+          "line_shape": {
+            "calls": 30448,
+            "seconds": 0.09225217475614045
+          },
+          "paragraph_input": {
+            "calls": 18045,
+            "seconds": 0.026398459071060643
+          },
+          "wrap_including_line_shape": {
+            "calls": 18045,
+            "seconds": 0.27351676880789455
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 18045,
+            "seconds": 0.1366783077683067
+          },
+          "initial_shape": {
+            "calls": 18045,
+            "seconds": 0.05550820819917135
+          },
+          "layout": {
+            "calls": 18045,
+            "seconds": 0.5010472800349817
+          },
+          "line_shape": {
+            "calls": 30448,
+            "seconds": 0.09089911253249738
+          },
+          "paragraph_input": {
+            "calls": 18045,
+            "seconds": 0.025211415893863887
+          },
+          "wrap_including_line_shape": {
+            "calls": 18045,
+            "seconds": 0.27269155949761625
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 18045,
+            "seconds": 0.13249658183485735
+          },
+          "initial_shape": {
+            "calls": 18045,
+            "seconds": 0.05530999391339719
+          },
+          "layout": {
+            "calls": 18045,
+            "seconds": 0.49403132556471974
+          },
+          "line_shape": {
+            "calls": 30448,
+            "seconds": 0.09013603131461423
+          },
+          "paragraph_input": {
+            "calls": 18045,
+            "seconds": 0.0246339792793151
+          },
+          "wrap_including_line_shape": {
+            "calls": 18045,
+            "seconds": 0.2716976856463589
+          }
+        },
+        {
+          "atoms_including_initial_shape": {
+            "calls": 18045,
+            "seconds": 0.13478481324273162
+          },
+          "initial_shape": {
+            "calls": 18045,
+            "seconds": 0.0567909411911387
+          },
+          "layout": {
+            "calls": 18045,
+            "seconds": 0.5008241165051004
+          },
+          "line_shape": {
+            "calls": 30448,
+            "seconds": 0.09386553496005945
+          },
+          "paragraph_input": {
+            "calls": 18045,
+            "seconds": 0.02414553888957016
+          },
+          "wrap_including_line_shape": {
+            "calls": 18045,
+            "seconds": 0.27546060738677625
+          }
+        }
+      ],
+      "workload": "spans"
+    }
+  ]
+}

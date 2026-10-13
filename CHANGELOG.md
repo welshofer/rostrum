@@ -6,6 +6,12 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Measured table width searches reuse complete line-fragment advances within a
+  bounded operation-local cache. Font size, face, shaping features and native
+  rounding policy remain part of the identity; new operations recheck live
+  content and fonts. Existing geometry, diagnostics, saved decks and SVGs are
+  preserved. See the [table-shaping performance record](docs/TABLE-SHAPING-20261013.md) for CPU/time/memory scope.
+
 - Horizontal merged cells now participate in native table measurement, measured
   column sizing and template pagination. `TemplateTableContent.merges` preserves
   grouped headers and body spans without discarding covered input text. Width
