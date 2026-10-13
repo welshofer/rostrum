@@ -22,7 +22,34 @@ import RostrumLayout
     }
     private func template(wide: Bool) throws -> PowerPointTemplate {
         let deck = try Presentation()
-        if wide { deck.slideSize = (width: .points(960), height: .points(540)) }
+        let width = wide ? 960.0 : 720.0
+        let ratio = width / deck.slideSize.width.points
+        deck.slideSize = (width: .points(width), height: .points(540))
+        // A real 4:3 template also has 4:3 placeholder geometry.
+        for part in deck.slideMasters.map(\.part) + deck.allLayouts.map(\.part) {
+            let shapes = try part.dom().firstChild(named: "p:cSld")?
+                .firstChild(named: "p:spTree")?.children(named: "p:sp") ?? []
+            for shape in shapes {
+                if let transform = shape.firstChild(named: "p:spPr")?.firstChild(named: "a:xfrm") {
+                    for (name, attribute) in [("a:off", "x"), ("a:ext", "cx")] {
+                        if let node = transform.firstChild(named: name), let value = node[attribute: attribute].flatMap(Double.init) {
+                            node[attribute: attribute] = String(Int((value * ratio).rounded()))
+                        }
+                    }
+                }
+                let type = shape.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:nvPr")?.firstChild(named: "p:ph")?[attribute: "type"]
+                if type == "title" || type == "ctrTitle", let body = shape.firstChild(named: "p:txBody") {
+                    let list = try #require(body.firstChild(named: "a:lstStyle"))
+                    list.children.removeAll {
+                        if case .element(let node) = $0 { return node.name == "a:lvl1pPr" }
+                        return false
+                    }
+                    list.appendElement(XML.Element("a:lvl1pPr", children: [.element(
+                        XML.Element("a:defRPr", attributes: [("sz", "3200")]))]))
+                }
+            }
+            part.markDirty()
+        }
         deck.theme.majorFont = "Calibri"
         deck.theme.minorFont = "Calibri"
         deck.documentKind = .template
@@ -42,6 +69,7 @@ import RostrumLayout
         #expect(output.schemaIssues.isEmpty && output.droppedContent.isEmpty)
         #expect(try RenderContentCheck.inspect(output.url, expected: input).issues.isEmpty)
         let deck = try Presentation(contentsOf: output.url)
+        if mode == "4x3" { #expect(deck.slideSize.width == .points(720) && deck.slideSize.height == .points(540)) }
         let inspection = try DeckInspector.inspect(deckAt: output.url)
         #expect(inspection.previewSlideNumbers == Array(1...output.slideCount))
         #expect(inspection.previews.count == output.slideCount)
