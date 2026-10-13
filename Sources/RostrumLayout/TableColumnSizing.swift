@@ -97,7 +97,16 @@ final class TableColumnOptimizer {
         for fraction in [0.08, 0.04, 0.02] where evaluated < 24 {
             let base = best.columnWidths
             var pressure = [Double](repeating: 0, count: base.count)
-            for cell in best.cells { pressure[cell.column] += cell.requiredHeight.points }
+            for cell in best.cells where !cell.isMergeContinuation {
+                if cell.columnSpan == 1 { pressure[cell.column] += cell.requiredHeight.points }
+                else {
+                    let columns = cell.column..<(cell.column + cell.columnSpan)
+                    let total = base[columns].reduce(.zero, +).points
+                    for column in columns {
+                        pressure[column] += cell.requiredHeight.points * base[column].points / total
+                    }
+                }
+            }
             let donors = base.indices.sorted {
                 let a = base[$0] - bestOccupied[$0], b = base[$1] - bestOccupied[$1]
                 return a == b ? $0 < $1 : a > b

@@ -29,6 +29,7 @@ extension TemplateLayoutEngine {
                                caption: String = "", preferredTypes: [String] = ["obj"],
                                masterURI: String? = nil, layoutURI: String? = nil) throws -> TemplateTablePaginationPlan {
         _ = try table.widths(for: presentation.bounds.width)
+        let mergesByRow = Dictionary(grouping: table.merges, by: \.row)
         struct Key: Hashable { let width: EMU; let font: Data; let theme: PackURI; let availableHeight: EMU? }
         var measured: [Key: TableLayoutPlan] = [:], remainingCells = 8192
         var best: TemplateTablePaginationPlan?, bestScore = Double.infinity
@@ -67,12 +68,18 @@ extension TemplateLayoutEngine {
                     let cells = indices.enumerated().flatMap { localRow, sourceRow in
                         geometry.cells[(sourceRow * columns)..<((sourceRow + 1) * columns)].map {
                             TableCellLayout(row: localRow, column: $0.column, requiredHeight: $0.requiredHeight,
-                                issues: $0.issues, diagnostics: $0.diagnostics)
+                                issues: $0.issues, diagnostics: $0.diagnostics,
+                                columnSpan: $0.columnSpan, isMergeContinuation: $0.isMergeContinuation)
                         }
                     }
                     var page = base
                     page.tableContent = TemplateTableContent(rows: indices.map { table.rows[$0] },
-                        columnWeights: geometry.columnWidths.map { Double($0.rawValue) })
+                        columnWeights: geometry.columnWidths.map { Double($0.rawValue) },
+                        merges: indices.enumerated().flatMap { localRow, sourceRow in
+                            (mergesByRow[sourceRow] ?? []).map { merge in
+                                TableMergeRegion(row: localRow, column: merge.column, rowSpan: 1, columnSpan: merge.columnSpan)
+                            }
+                        })
                     page.tableLayout = TableLayoutPlan(columnWidths: geometry.columnWidths, rowHeights: heights,
                         cells: cells, totalHeight: heights.reduce(.zero, +), fits: true, columnSearch: geometry.columnSearch)
                     return TemplateTablePagePlan(slide: page, bodyRows: range)

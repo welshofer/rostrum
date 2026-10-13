@@ -63,7 +63,7 @@ import Testing
 
     @Test func unsupportedCellsHaveCoordinatesAndDoNotMutate() throws {
         let (deck, table) = try fixture()
-        try table.merge(row: 0, column: 0, rowSpan: 1, columnSpan: 2)
+        try table.merge(row: 0, column: 1, rowSpan: 2, columnSpan: 1)
         let cell = try table.cell(1, 0)
         cell.tc.getOrAddChild("a:tcPr")[attribute: "vert"] = "vert"
         let before = try deck.serializedData()

@@ -397,6 +397,7 @@ public final class TemplateLayoutEngine {
             let native = try slide.shapes.addTable(rows: table.rows.count, columns: tableLayout.columnWidths.count,
                 frame: Rect(x: frame.x, y: frame.y, width: frame.width, height: tableLayout.totalHeight))
             native.setLayoutContents(table.rows, font: tableStyle.bodyFont, size: 18 * objectScale)
+            try native.merge(table.merges)
             native.columnWidths(tableLayout.columnWidths).rowHeights(tableLayout.rowHeights)
             if let shape = slide.shapes.all.last { try slide.replacePlaceholder(index: slot.index, with: shape) }
         }

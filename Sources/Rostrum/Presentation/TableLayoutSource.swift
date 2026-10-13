@@ -5,6 +5,7 @@ import Foundation
 package struct TableLayoutSource {
     package let columnWidths: [EMU]
     package let rowCount: Int
+    package let horizontalMerges: [TableMergeRegion]
     private let grid: TableGridSnapshot
     private let topology: TableMergeTopology
     private var styles: TableStyleResolver.FittingSession
@@ -13,8 +14,17 @@ package struct TableLayoutSource {
         styles = TableStyleResolver.FittingSession(table: table, theme: theme)
         grid = styles.grid
         topology = try grid.topology(requireRectangular: true)
+        horizontalMerges = topology.regions.filter { $0.rowSpan == 1 }
         columnWidths = grid.columns.map { EMU($0.coordinate("w") ?? 0) }
         rowCount = grid.rows.count
+    }
+
+    /// Zero marks a covered horizontal continuation; vertical merges remain
+    /// ordinary physical cells whose unsupported geometry is diagnosed below.
+    package func columnSpan(row: Int, column: Int) -> Int {
+        guard !horizontalMerges.isEmpty,
+              let region = topology.region(row: row, column: column), region.rowSpan == 1 else { return 1 }
+        return column == region.column ? region.columnSpan : 0
     }
 
     package mutating func cell(row: Int, column: Int, styleRow: Int? = nil,
@@ -28,7 +38,7 @@ package struct TableLayoutSource {
             textStyle: effective.text,
             insets: (inset("marL", 91440), inset("marT", 45720), inset("marR", 91440), inset("marB", 45720)),
             direction: effective.properties[attribute: "vert"] ?? "horz",
-            merged: topology.region(row: row, column: column) != nil)
+            verticallyMerged: (topology.region(row: row, column: column)?.rowSpan ?? 1) > 1)
     }
 }
 
@@ -37,7 +47,7 @@ package struct TableLayoutCell {
     package let textStyle: XML.Element
     package let insets: (left: Double, top: Double, right: Double, bottom: Double)
     package let direction: String
-    package let merged: Bool
+    package let verticallyMerged: Bool
 }
 
 extension Table {

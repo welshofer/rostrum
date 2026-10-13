@@ -6,13 +6,20 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Horizontal merged cells now participate in native table measurement, measured
+  column sizing and template pagination. `TemplateTableContent.merges` preserves
+  grouped headers and body spans without discarding covered input text. Width
+  trials reuse bounded preparations with combined-width dependencies; vertical
+  spans remain unsupported by layout. The Templates Lab includes saved/reopened
+  examples on both slide ratios; native PowerPoint acceptance remains separate.
+
 - `TableLayoutEngine` plans native table row heights using resolved cell fonts,
   styles, padding and shared rich-text geometry. Template composition measures
   the cells it writes, reserves caption space and rechecks before adding a slide.
   Read-only plans report unsupported cells and overflow; repeated measurements
   are reused within a bounded operation-local cache. The Templates Library Lab
-  includes a saved/reopened example. Merges, vertical/rotated text, dynamic
-  fields, pagination and native table autofit are outside this first version.
+  includes a saved/reopened example. Vertical spans, vertical/rotated text,
+  dynamic fields and native table autofit remain outside the supported layout scope.
 
 - Template and authored autofit reuse paragraph styles, font selection and
   Unicode preparation within each body's shrink trials. Reuse is bounded and
