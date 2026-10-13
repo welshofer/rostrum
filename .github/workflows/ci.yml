@@ -62,7 +62,7 @@ jobs:
         run: bash scripts/check-fidelity.sh
         if: matrix.swift != '6.0'
       - name: Check optimized text preparation
-        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests'
+        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests'
         if: matrix.swift != '6.0'
       - name: Retain fidelity evidence
         uses: actions/upload-artifact@v4
@@ -106,7 +106,7 @@ jobs:
       - name: Test Rostrum (Darwin XML branch)
         run: swift test
       - name: Check optimized text preparation
-        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests'
+        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests'
       - name: Check portable fidelity references
         run: bash scripts/check-fidelity.sh
       - name: Retain fidelity evidence

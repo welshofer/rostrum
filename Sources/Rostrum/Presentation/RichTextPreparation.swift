@@ -1,7 +1,7 @@
 import Foundation
 
 extension RichTextLayout {
-    /// Scratch input reuse for one body's autofit trials. Only body autofit
+    /// Scratch input reuse for one body's width or autofit trials. Only body autofit
     /// values may change while this object is in use; discard it after fitting.
     /// Paragraphs, inherited styles, theme and font registration stay fixed.
     /// It retains no layout results or size-dependent glyph measurements.

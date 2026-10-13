@@ -37,6 +37,7 @@ final class TableColumnMeasurements {
     var occupiedWidths: [EMU] = []
     var measuredCells = 0, reusedCells = 0
     private var remainingCells = 32_768
+    let preparation = TableCellPreparation()
     init(table: Table, theme: Theme) throws { source = try TableLayoutSource(table: table, theme: theme) }
     func missingCells(for widths: [EMU]) -> Int {
         widths.indices.filter { columns[Key(column: $0, width: widths[$0])] == nil }.count * source.rowCount
@@ -81,9 +82,8 @@ public final class TableLayoutEngine {
             throw LayoutError.cannotFit("Table dimensions must be positive, bounded and match its grid.")
         }
         struct Key: Hashable {
-            let body: Data, style: Data
+            let input: TableCellInput.Key
             let width: EMU
-            let left: Double, top: Double, right: Double, bottom: Double
         }
         struct Measurement { let height: EMU; let occupiedWidth: EMU; let issues: [TableLayoutIssue]; let diagnostics: [ShapingDiagnostic] }
         // Exact bytes avoid Swift String's canonical-equivalence aliasing. This
@@ -100,39 +100,23 @@ public final class TableLayoutEngine {
                 cells.append(cell); occupiedWidths[column] = cached.occupiedWidth
                 continue
             }
-            let positions: [(Int, Int)] = pagination
-                ? (row == 0 ? [(0, source.rowCount == 1 ? 1 : 2)] : [(1, 3), (2, 4), (1, 2), (2, 3)])
-                : [(row, source.rowCount)]
-            var seenStyles = Set<Data>()
+            let inputs = reuse?.preparation.inputs(source: &source, row: row, column: column, pagination: pagination,
+                prepareText: (reuse?.measuredCells ?? 0) > 0)
+                ?? TableCellInput.resolve(source: &source, row: row, column: column, pagination: pagination)
             var cellHeight = EMU.zero
             var cellIssues: [TableLayoutIssue] = [], diagnostics: [ShapingDiagnostic] = []
-            for (styleRow, count) in positions {
-                let cell = source.cell(row: row, column: column, styleRow: styleRow, styleRowCount: count), margins = cell.insets
-                let styleBytes = Data(cell.textStyle.serialized().utf8)
-                guard seenStyles.insert(styleBytes).inserted else { continue }
-                let body = cell.body.firstChild(named: "a:bodyPr")
-                var issues: [TableLayoutIssue] = []
-                if cell.merged { issues.append(.mergedCell) }
-                if cell.direction != "horz" || (body?[attribute: "vert"].map { $0 != "horz" } ?? false) { issues.append(.verticalText) }
-                if Double(body?[attribute: "rot"] ?? "0") != 0 { issues.append(.rotatedText) }
-                if Int(body?[attribute: "numCol"] ?? "1") != 1 { issues.append(.multipleTextColumns) }
-                if cell.body.children(named: "a:p").contains(where: { !$0.children(named: "a:fld").isEmpty }) { issues.append(.dynamicField) }
-                if (body?.firstChild(named: "a:normAutofit")?[attribute: "lnSpcReduction"].flatMap(Double.init) ?? 0) != 0 {
-                    issues.append(.lineSpacingReduction)
-                }
-                if [margins.left, margins.top, margins.right, margins.bottom].contains(where: { !$0.isFinite || $0 < 0 }) {
-                    issues.append(.invalidInsets)
-                }
+            for input in inputs {
+                let margins = input.insets
+                var issues = input.issues
                 let measurement: Measurement
                 if !issues.isEmpty { measurement = Measurement(height: .zero, occupiedWidth: .zero, issues: issues, diagnostics: []) }
                 else {
-                    let key = Key(body: Data(cell.body.serialized().utf8), style: styleBytes, width: widths[column],
-                        left: margins.left, top: margins.top, right: margins.right, bottom: margins.bottom)
+                    let key = Key(input: input.key!, width: widths[column])
                     if let cached = cache[key] { measurement = cached }
                     else {
-                        let geometry = RichTextLayout(textBody: cell.body, width: widths[column].points, height: limit.points,
-                            fonts: presentation.fonts, theme: theme, inheritedStyles: [cell.textStyle], maxLines: 65,
-                            insets: margins, verticalAnchor: "t", context: .tableCell)
+                        let geometry = RichTextLayout(textBody: input.body, width: widths[column].points, height: limit.points,
+                            fonts: presentation.fonts, theme: theme, inheritedStyles: [input.style], maxLines: 65,
+                            insets: margins, verticalAnchor: "t", context: .tableCell, preparation: input.preparation)
                         if geometry.truncated || geometry.lines.count > 64 { issues.append(.lineLimit) }
                         if !geometry.fits { issues.append(.horizontalOverflow) }
                         if margins.left + margins.right >= widths[column].points { issues.append(.horizontalOverflow) }
@@ -144,7 +128,7 @@ public final class TableLayoutEngine {
                             occupiedWidth: reuse == nil ? .zero : .points(ceil((geometry.lines.map(\.width).max() ?? 0)
                                 + margins.left + margins.right)),
                             issues: issues, diagnostics: geometry.diagnostics)
-                        let cost = key.body.count + key.style.count + 256
+                        let cost = key.input.body.count + key.input.style.count + 256
                         if cache.count < 64 && cost <= remainingBytes {
                             cache[key] = measurement; remainingBytes -= cost
                         }

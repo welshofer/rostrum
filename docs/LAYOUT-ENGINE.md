@@ -148,6 +148,17 @@ may exhaust the search budget early. `columnSearch` reports candidates, addition
 and reused cell measurements, and budget exhaustion; `.estimated` leaves it nil.
 These are per-search budgets, not a wall-time limit across all template layouts.
 
+Within a search, width-independent native cell inputs reuse at most 8,192 cell
+positions / 2 MiB of estimated key payload. Exact body/style bytes isolate
+canonically distinct strings and different native band styles. After the first
+allocation, changing column widths can reuse up to 1,024 text preparations / 1 MiB
+of estimated source-key payload. A search that stops at its starting allocation
+does not create those text preparations. Each preparation retains the existing
+bounded paragraph/segment caches; glyph advances and line layout remain fresh at
+each width. Budget exhaustion uses ordinary measurement with identical results.
+These limits describe retained entries/payload, not total process memory. See the
+[CPU, elapsed-time, memory and exact-output comparison](TABLE-PREPARATION-20261012.md).
+
 Single-slide composition freshly measures the accepted widths. Pagination
 composition repeats the bounded search with live fonts/styles and verifies the
 accepted widths, row heights and page boundaries before inserting any slides.
