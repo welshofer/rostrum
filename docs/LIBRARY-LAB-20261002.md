@@ -26,6 +26,13 @@ and geometry with an embedded DejaVu face. The normal inspector SVG and export
 pipeline runs for both slides. These computed specimens still require native
 PowerPoint open-without-repair and visual acceptance.
 
+The 2026-10-13 PowerPoint review exposed clipped template text and an implicit
+44 pt title that the planner had treated as 18 pt. The Templates recipe now
+checks saved native soft breaks and declares its table headings at 32 pt on
+both canvas sizes. The regenerated files require a new native review; clean
+PDF glyphs do not resolve the separately reported PowerPoint slide-view issue.
+See [the repair record](POWERPOINT-LAYOUT-20261013.md).
+
 The Fonts, Shaping and Fitting recipe also exercises
 `AuthoredLayoutEngine.fitText` on a second slide. Original 24/48 pt mixed-size
 runs overflow a compact frame; the fitted copy retains both run sizes and saves

@@ -995,9 +995,22 @@ public struct RichTextLayout: Sendable {
                 // from master otherStyle. Placeholder body inheritance remains
                 // distinct, including local follow-text overrides.
                 result.append(ph == nil ? Self.withoutInheritedMasterMarkers(style) : style)
+            } else if bucket == "p:titleStyle" {
+                result.append(Self.implicitTitleStyle())
             }
         }
         return result
+    }
+
+    /// Native PowerPoint's title fallback for masters without p:titleStyle.
+    /// Older Rostrum decks omitted p:txStyles entirely. Resolve the observed
+    /// 44 pt title without modifying their imported master or layout parts.
+    static func implicitTitleStyle() -> XML.Element {
+        XML.Element("p:titleStyle", children: (1...9).map { level in
+            .element(XML.Element("a:lvl\(level)pPr", children: [
+                .element(XML.Element("a:defRPr", attributes: [("sz", "4400")], children: [
+                    .element(XML.Element("a:latin", attributes: [("typeface", "+mj-lt")]))]))]))
+        })
     }
 
     /// Layout consumers only read these nodes. Project the affected paragraph

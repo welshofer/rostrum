@@ -88,9 +88,7 @@ public final class TextFrame {
     /// single paragraph/run on write.
     public var text: String {
         get {
-            paragraphs.map { paragraph in
-                paragraph.runs.map(\.text).joined()
-            }.joined(separator: "\n")
+            paragraphs.map(\.plainText).joined(separator: "\n")
         }
         set {
             clear()
@@ -317,6 +315,35 @@ public final class Paragraph {
             }
         }
         return out
+    }
+
+    /// Author an explicit soft break for each input line ending. Literal line
+    /// feeds in a:t are interpreted as paragraph boundaries by PowerPoint,
+    /// including paragraph spacing; a:br retains the containing paragraph.
+    /// Used by template composition, whose paragraphs are already explicit.
+    /// CR and CRLF are normalized to the plain-text view's LF convention.
+    package static func textChildren(_ text: String, properties: XML.Element? = nil) -> [XML.Node] {
+        if !text.utf8.contains(where: { $0 == 10 || $0 == 13 }) {
+            let nodes: [XML.Node] = (properties.map { [.element($0.deepCopy())] } ?? [])
+                + [.element(XML.Element("a:t", children: [.text(text)]))]
+            return [.element(XML.Element("a:r", children: nodes))]
+        }
+        var children: [XML.Node] = [], segment = ""
+        func appendRun() {
+            var nodes: [XML.Node] = properties.map { [.element($0.deepCopy())] } ?? []
+            nodes.append(.element(XML.Element("a:t", children: [.text(segment)])))
+            children.append(.element(XML.Element("a:r", children: nodes)))
+            segment = ""
+        }
+        for character in text {
+            if character == "\n" || character == "\r" || character == "\r\n" {
+                appendRun()
+                children.append(.element(XML.Element("a:br", children:
+                    properties.map { [.element($0.deepCopy())] } ?? [])))
+            } else { segment.append(character) }
+        }
+        appendRun()
+        return children
     }
 
     @discardableResult

@@ -64,17 +64,17 @@ final class TemplateTextContext {
         for item in paragraphs {
             let level = min(8, max(0, item.level))
             let properties = XML.Element("a:pPr", attributes: level == 0 ? [] : [("lvl", String(level))])
-            let run = XML.Element("a:r")
+            var runProperties: XML.Element?
             if let role = item.role {
                 properties.appendElement(XML.Element("a:buNone"))
                 // An absent b inherits the template; caption explicitly turns
                 // bold off, matching the style that the planner measures.
-                run.appendElement(XML.Element("a:rPr", attributes: [
+                runProperties = XML.Element("a:rPr", attributes: [
                     ("sz", String(Int((size(item, objectScale: objectScale) * 100).rounded()))),
-                    ("b", role == .caption ? "0" : "1")]))
+                    ("b", role == .caption ? "0" : "1")])
             }
-            run.appendElement(XML.Element("a:t", children: [.text(item.text)]))
-            text.appendElement(XML.Element("a:p", children: [.element(properties), .element(run)]))
+            text.appendElement(XML.Element("a:p", children: [.element(properties)]
+                + Paragraph.textChildren(item.text, properties: runProperties)))
         }
         if paragraphs.isEmpty { text.appendElement(XML.Element("a:p")) }
         prepared = (paragraphs, objectScale, text)

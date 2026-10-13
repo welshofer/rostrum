@@ -20,6 +20,11 @@ enum TableLayoutRecipe {
                 .element(XML.Element("a:off", attributes: [("x", String(EMU.points(50).rawValue)), ("y", String(EMU.points(index == 0 ? 30 : 135).rawValue))])),
                 .element(XML.Element("a:ext", attributes: [("cx", String((source.bounds.width - .points(100)).rawValue)), ("cy", String(EMU.points(index == 0 ? 80 : 350).rawValue))]))
             ])), at: 0)
+            if index == 0, let text = shape.firstChild(named: "p:txBody") {
+                let list = try PlatformLabRecipes.require(text.firstChild(named: "a:lstStyle"), "Title styles missing")
+                list.appendElement(XML.Element("a:lvl1pPr", children: [
+                    .element(XML.Element("a:defRPr", attributes: [("sz", "3200"), ("kern", "0")]))]))
+            }
         }
         layout.part.markDirty()
         source.theme.majorFont = "DejaVu Sans"; source.theme.minorFont = "DejaVu Sans"

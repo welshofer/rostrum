@@ -63,7 +63,7 @@ import Testing
         paragraph.p.appendElement(XML.Element("a:br"))
         paragraph.addRun("results")
 
-        #expect(text.text == "Q3results")
+        #expect(text.text == "Q3\nresults")
         #expect(paragraph.plainText == "Q3\nresults")
         #expect(deck.outline().slides[0].body.first?.paragraphs.first?.text == "Q3\nresults")
     }

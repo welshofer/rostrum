@@ -29,3 +29,10 @@ carry `anchor="ctr"`. Removing those attributes reproduces the prior part bytes
 exactly; the other 51 package parts and the foreign Office fixture are unchanged.
 The pipeline test checks middle alignment after saving and reopening. This
 fixture follows current authoring defaults; it is not a historical alignment oracle.
+
+The authored fixture was regenerated on 2026-10-13 through the unchanged factory
+for explicit master typography. Only `ppt/slideMasters/slideMaster1.xml` and
+`ppt/slideMasters/slideMaster2.xml` changed, each gaining `p:txStyles`. Removing
+that element reproduces the prior part bytes exactly. The other 51 package
+parts, the foreign Office fixture and its native references are unchanged.
+Two fresh factory invocations produced byte-identical output.

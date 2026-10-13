@@ -6,7 +6,7 @@
   },
   "authored-features.pptx": {
     "producer": "FeaturePipelineFixture.make()",
-    "sha256": "aeb04870e63c85892e3f3df55724613b34f13c9b67715ab2681a001261a28b7c",
+    "sha256": "8f92d0ed9e1122c2b9a3596e0d7cc52b17fcd03c4f4e405099c4f9413d05dc13",
     "features": [
       "native and custom tables",
       "vertically centered authored table cells",
@@ -39,6 +39,17 @@
       ],
       "unchangedParts": 51,
       "delta": "Only explicit a:tcPr anchor=\"ctr\" on the 11 newly authored cells; removing those attributes reproduces the prior part bytes exactly. Foreign Office fixture unchanged."
+    },
+    "titleStyleRefresh": {
+      "date": "2026-10-13",
+      "producer": "FeaturePipelineFixture.make() invoked twice with byte-identical output",
+      "previousSHA256": "aeb04870e63c85892e3f3df55724613b34f13c9b67715ab2681a001261a28b7c",
+      "changedParts": [
+        "ppt/slideMasters/slideMaster1.xml",
+        "ppt/slideMasters/slideMaster2.xml"
+      ],
+      "unchangedParts": 51,
+      "delta": "Only explicit p:txStyles for title/body/other text in the two generated masters; removing that element reproduces each prior part byte for byte. Foreign Office fixture and its native references unchanged."
     }
   }
 }

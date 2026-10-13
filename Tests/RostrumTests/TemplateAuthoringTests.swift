@@ -3,6 +3,75 @@ import Testing
 @testable import Rostrum
 
 @Suite struct TemplateAuthoringTests {
+    @Test(arguments: ["\n", "\r", "\r\n"])
+    func templateLineEndingsBecomeSingleSoftBreaks(ending: String) throws {
+        let deck = try Presentation()
+        let slide = try deck.slides.add(clonedFrom: #require(deck.layout(type: "obj")))
+        try slide.fillPlaceholder(index: 1, paragraphs: [("First" + ending + "Second", 0)])
+        let paragraph = try #require(slide.placeholder(idx: 1)?.textFrame?.paragraphs.first)
+        #expect(paragraph.p.children(named: "a:br").count == 1)
+        #expect(paragraph.plainText == "First\nSecond")
+    }
+
+    @Test func legacyMasterWithoutTitleStyleUsesNative44PointFallbackWithoutMutation() throws {
+        let deck = try Presentation()
+        deck.theme.majorFont = "DejaVu Sans"
+        let layout = try #require(deck.layout(type: "obj"))
+        let master = try #require(layout.master)
+        try master.part.dom().removeChildren(named: "p:txStyles")
+        master.part.markDirty()
+        let slide = try deck.slides.add(clonedFrom: layout)
+        try slide.fillPlaceholder(index: 0, paragraphs: [("Tables use native cell geometry", 0)])
+        let title = try #require(slide.title)
+        let body = try #require(title.element.firstChild(named: "p:txBody"))
+        let before = try deck.serializedData()
+        let geometry = RichTextLayout(textBody: body, width: 860, height: 80,
+            theme: slide.master?.theme,
+            inheritedStyles: RichTextLayout.inheritedStyles(for: title.element, owner: slide.part, package: deck.package))
+        #expect(geometry.lines.flatMap(\.spans).allSatisfy { $0.run.fontSize == 44 && $0.run.fontFamily == "DejaVu Sans" })
+        #expect(layout.textDefaults(for: 0).paragraph.firstChild(named: "a:defRPr")?[attribute: "sz"] == "4400")
+        #expect(try deck.serializedData() == before)
+    }
+
+    @Test func newMasterDeclaresTheSizesPowerPointAndThePlannerMustUse() throws {
+        let deck = try Presentation()
+        let layout = try #require(deck.layout(type: "obj"))
+        let title = layout.textDefaults(for: 0).paragraph.firstChild(named: "a:defRPr")
+        let body = layout.textDefaults(for: 1).paragraph.firstChild(named: "a:defRPr")
+        #expect(title?[attribute: "sz"] == "4400")
+        #expect(title?[attribute: "kern"] == "0")
+        #expect(title?.firstChild(named: "a:latin")?[attribute: "typeface"] == "+mj-lt")
+        #expect(body?[attribute: "sz"] == "1800")
+        let reopened = try Presentation(data: deck.serializedData())
+        #expect(try reopened.validate().isEmpty)
+        #expect(reopened.layout(type: "obj")?.textDefaults(for: 0).paragraph.serialized()
+            == layout.textDefaults(for: 0).paragraph.serialized())
+    }
+
+    @Test func explicitParagraphsContainNativeSoftBreaksAndReadBackTheirWords() throws {
+        let deck = try Presentation()
+        let slide = try deck.slides.add(clonedFrom: #require(deck.layout(type: "obj")))
+        let words = "Alpha\t12.5\nBeta\t38.0\n\nGamma\t7.25\n"
+        try slide.fillPlaceholder(index: 1, paragraphs: [(words, 0), ("Indented line retained", 1)])
+        let frame = try #require(slide.placeholder(idx: 1)?.textFrame)
+        #expect(frame.paragraphs.count == 2)
+        #expect(frame.paragraphs[0].p.children(named: "a:br").count == 4)
+        #expect(frame.paragraphs[0].runs.allSatisfy { !$0.text.contains("\n") })
+        #expect(frame.text == words + "\nIndented line retained")
+        let reopened = try Presentation(data: deck.serializedData())
+        #expect(try reopened.slides[1].placeholder(idx: 1)?.textFrame?.text == frame.text)
+        #expect(try reopened.validate().isEmpty)
+    }
+
+    @Test func textFrameReadIncludesFieldsAndBreaksWithoutChangingImportedXML() throws {
+        let deck = try Presentation()
+        let part = try deck.slides[0].part
+        let body = try XML.parse(Data("<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>Slide </a:t></a:r><a:fld id=\"field\" type=\"slidenum\"><a:t>7</a:t></a:fld><a:br/><a:r><a:t>Notes</a:t></a:r></a:p></p:txBody>".utf8))
+        let before = body.serialized()
+        #expect(TextFrame(txBody: body, part: part).text == "Slide 7\nNotes")
+        #expect(body.serialized() == before)
+    }
+
     @Test func instantiationKeepsMasterLayoutAndThemeBytes() throws {
         let template = try Presentation()
         template.documentKind = .template
