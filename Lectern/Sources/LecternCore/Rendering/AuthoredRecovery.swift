@@ -13,7 +13,7 @@ extension DeckRenderer {
         var oldCount = 1
         while index + oldCount < deck.slides.count {
             let value = try name(deck.slides[index + oldCount])
-            guard (value.hasPrefix("Lectern:" + input.id + "-continued-") || value.hasPrefix("Lectern:" + input.id + "-source-notes")),
+            guard (value.hasPrefix("Lectern:" + input.id + "-continued-") || value.hasPrefix("Lectern:" + input.id + "-source-notes") || value.hasPrefix("Lectern:" + input.id + "-notes-")),
                   !savedIDs.contains(String(value.dropFirst("Lectern:".count))) else { break }
             oldCount += 1
         }

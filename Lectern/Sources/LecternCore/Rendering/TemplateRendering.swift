@@ -26,8 +26,8 @@ enum TemplateRendering {
         #endif
     }
 
-    /// Expand an object slide only when its complete caption cannot coexist with
-    /// a readable chart/table in any supplied layout. Retain all text visibly on
+    /// Expand a chart slide only when its complete caption cannot coexist with
+    /// a readable chart in any supplied layout. Retain all text visibly on
     /// following template slides instead of discarding it or failing the deck.
     static func prepare(_ input: DeckIR, in deck: Presentation, template: PowerPointTemplate,
                         warnings: inout [String], engine: TemplateLayoutEngine? = nil) throws -> DeckIR {
@@ -38,17 +38,17 @@ enum TemplateRendering {
         var expansions: [String: [String]] = [:]
         for slide in input.slides {
             try Task.checkCancellation()
-            guard slide.kind == .chart || slide.kind == .table,
+            guard slide.kind == .chart,
                   let body = slide.body else { output.slides.append(slide); continue }
             let source = [body.kicker, body.lead, body.source].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
             guard !source.isEmpty else { output.slides.append(slide); continue }
-            let kind = slide.kind == .chart ? "chart" : "tbl"
+            let kind = "chart"
             let preferred = [kind, "obj"]
-            let minimum = slide.kind == .table ? max(144, Double(body.table?.grid.count ?? 0) * 24) : 144
+            let minimum = 144.0
             func objectPlan(_ caption: String) throws -> TemplateSlidePlan {
                 try engine.plan(title: slide.title ?? "", columns: [], preferredTypes: preferred,
                     object: kind, masterURI: template.selectedMasterID, objectCaption: caption,
-                    minimumObjectHeight: minimum, table: slide.kind == .table ? body.table.map { TemplateTableContent(rows: $0.grid) } : nil)
+                    minimumObjectHeight: minimum)
             }
             do {
                 _ = try objectPlan(source)
@@ -84,7 +84,7 @@ enum TemplateRendering {
                     } else { high = count - 1 }
                 }
                 guard accepted > 0 else { throw LayoutError.cannotFit("The template has no readable text layout for notes and sources.") }
-                var id = "\(slide.id)-notes-\(additions.count + 1)"
+                var id = "\(slide.id)-source-notes-\(additions.count + 1)"
                 while usedIDs.contains(id) { id += "-next" }
                 usedIDs.insert(id)
                 let text = paragraphs(start: start, count: accepted)

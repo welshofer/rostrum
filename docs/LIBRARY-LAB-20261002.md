@@ -801,3 +801,16 @@ them; registration remains explicit. Missing system fonts are not acquired or
 substituted by import. The fixture is not a library font policy. These checks do
 not establish native PowerPoint visual acceptance, including the reported
 DejaVu spacing problem in PowerPoint for Mac's slide view.
+
+## October 13 Lectern generation integration
+
+Plain tables now use measured column sizing and row pagination in the production
+renderer, for both authored designs and supplied templates. This includes saved
+content recovery, repeated headers/notes, stable columns, caption reservation and
+source-note continuations. Embedded template fonts register before installed-font
+lookup. The existing Templates Lab remains the library API demonstration;
+`CompositionRegression --tables` exercises app generation offline. Saved-file
+checks cover the inspector/exporter, exact ordered rows, section membership,
+recovery comments and identities, and refusal to erase old continuation pages.
+Generated IR does not express merged cells; vertical spans and native table autofit
+remain outside this path. PowerPoint visual acceptance remains a separate check.

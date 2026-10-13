@@ -108,25 +108,19 @@ public actor DeckRenderer {
         try Task.checkCancellation()
         let original = try presentation.slides[index]
         var warnings: [String] = [], dropped: [String] = []
-        if let template {
-            let replacement = try TemplateRendering.build(input, in: presentation, template: template,
-                image: saved.images[slideID], warnings: &warnings, variant: variant)
-            try original.replaceVisualContents(with: replacement)
-            try presentation.slides.remove(at: presentation.slides.count - 1)
-        } else {
-            var one = saved.deck; one.slides = [input]; one.sections = nil
-            // Keep the running footer on a recovered slide that is not the
-            // opener. The production renderer omits furniture on page one.
-            if index > 0 { one.slides.insert(IRSlide(id: "recovery-opener", layout: "title", title: ""), at: 0) }
-            let result = try render(one, designURL: designURL, notesEnabled: saved.notesEnabled,
-                into: temporary, images: saved.images, useSmartArt: saved.useSmartArt)
-            let rendered = try Presentation(data: Data(contentsOf: result.url))
-            if index > 0 { try rendered.slides.remove(at: 0) }
-            try Self.replaceAuthoredPages(in: presentation, startingAt: index, with: rendered,
-                input: input, savedIDs: Set(saved.deck.slides.map(\.id)))
-            dropped = result.droppedContent
-            warnings = result.warnings
-        }
+        var one = saved.deck; one.slides = [input]; one.sections = nil
+        // Preserve running furniture when recovering an authored non-opener.
+        let needsOpener = template == nil && index > 0
+        if needsOpener { one.slides.insert(IRSlide(id: "recovery-opener", layout: "title", title: ""), at: 0) }
+        let result = try render(one, designURL: designURL, notesEnabled: saved.notesEnabled,
+            into: temporary, images: saved.images, useSmartArt: saved.useSmartArt, template: template,
+            layoutVariants: [slideID: variant])
+        let rendered = try Presentation(data: Data(contentsOf: result.url))
+        if needsOpener { try rendered.slides.remove(at: 0) }
+        try Self.replaceAuthoredPages(in: presentation, startingAt: index, with: rendered,
+            input: input, savedIDs: Set(saved.deck.slides.map(\.id)))
+        dropped = result.droppedContent
+        warnings = result.warnings
         try original.part.dom().firstChild(named: "p:cSld")?[attribute: "name"] = "Lectern:" + slideID
         original.part.markDirty()
         try presentation.validateTemplateBindings()
@@ -233,6 +227,7 @@ public actor DeckRenderer {
     // MARK: - Text measurement
 
     private static func registerInstalledFonts(for presentation: Presentation) -> InstalledFonts.RegistrationReport {
+        _ = presentation.registerEmbeddedFonts()
         let style = presentation.style
         var wanted: Set<String> = [style.headingFont, style.bodyFont]
         for role in TypeRole.allCases { wanted.insert(style.type(role).font) }
@@ -309,6 +304,10 @@ public actor DeckRenderer {
                 let prepared = try Self.paginate(deck, images: images, in: presentation, useSmartArt: useSmartArt)
                 deck = prepared.deck; images = prepared.images; layoutWarnings += prepared.warnings
             }
+            let tables = try TableRendering.prepare(deck, engine: templateEngine, masterURI: template?.selectedMasterID)
+            deck = tables.deck
+            layoutWarnings += tables.warnings
+            var tablePages: [String: Slide] = [:]
             var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {
                 try Task.checkCancellation()
@@ -321,7 +320,15 @@ public actor DeckRenderer {
                 }
                 let sideImage = imageSide != nil
                 let built: Slide
-                if let template {
+                if let group = tables.groups[slide.id] {
+                    let pages = try templateEngine.composeTablePages(group.plan)
+                    for (id, page) in zip(group.ids, pages) { tablePages[id] = page }
+                }
+                if let page = tablePages.removeValue(forKey: slide.id) {
+                    built = page
+                } else if let notes = tables.notes[slide.id] {
+                    built = try templateEngine.compose(notes.plan, title: slide.title ?? "", columns: notes.columns)
+                } else if let template {
                     built = try TemplateRendering.build(slide, in: presentation, template: template,
                                                         image: images[slide.id], warnings: &layoutWarnings, engine: templateEngine, variant: layoutVariants[slide.id] ?? 0)
                 } else {
@@ -334,7 +341,7 @@ public actor DeckRenderer {
                 builtSlides[slide.id] = built
                 // Provenance is additive and position-independent, so every
                 // layout can carry it without threading it through a builder.
-                if template == nil, let source = slide.body?.source, !source.isEmpty {
+                if template == nil, slide.kind != .table, let source = slide.body?.source, !source.isEmpty {
                     _ = try? presentation.addSource(source, to: built)
                 }
                 if template == nil, let data = images[slide.id] {
@@ -443,7 +450,7 @@ public actor DeckRenderer {
         preparedDeck.slides = []
         for var input in deck.slides {
             try Task.checkCancellation()
-            if let source = input.body?.source, !source.isEmpty {
+            if input.kind != .table, let source = input.body?.source, !source.isEmpty {
                 let probe = try presentation.slides.add()
                 var sourceFits = true
                 do {

@@ -454,3 +454,33 @@ Local acceptance evidence and the supplied-template test deck are recorded in
 acceptance. To isolate a build from a running app, the macOS build and test wrappers
 accept `LECTERN_DERIVED_DATA_PATH`; app-hosted tests also need a distinct bundle ID
 when the original Lectern must stay running.
+
+## Test new-deck table layout
+
+Generation and saved-content recovery use RostrumLayout's measured column search
+and row pagination for plain native tables. Every source row remains editable;
+headers, column widths and speaker notes repeat across continuation pages. Captions
+reserve space below the table. Sources too long to coexist with a readable table
+flow onto following source-note pages. The final deck can exceed the requested
+slide count; Lectern reports the expansion. A single oversized row fails explicitly.
+
+Template fonts and artwork remain authoritative. Generation registers embedded
+faces before looking up installed fonts; missing faces remain visible in the
+font report. Rostrum imposes no font-family requirement on callers.
+
+After pulling the repository's `main`, rebuild Lectern with
+`Lectern/scripts/build.sh` from the repository root. Its local path dependency
+includes the library changes automatically. In the app, generate a deck with a
+20–30-row table, inspect the saved result, and try recovery from saved content.
+Verify editable cells, full row coverage, captions and notes in PowerPoint.
+
+For a repeatable offline run from the repository root:
+
+```sh
+swift run -c release --package-path Lectern CompositionRegression /tmp/lectern-tables --tables
+# Append a design.md or POTX path to exercise your own typography and template.
+```
+
+The output contains PPTX files, saved content and a read-back manifest. The
+inspector and exporter retain every continuation page. Passing structural checks
+is separate from visual acceptance in PowerPoint for Mac.

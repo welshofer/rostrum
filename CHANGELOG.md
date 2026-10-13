@@ -6,6 +6,12 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Lectern generation and recovery now use measured column sizing and native
+  table pagination. Full rows, repeated headers, notes and section membership
+  survive saved-file read-back; long captions flow to source-note pages.
+  Embedded template fonts register before installed-font lookup. Run
+  `CompositionRegression --tables` for an offline production-path fixture.
+
 - Font embedding validates all supplied faces before changing the package.
   Repeated identical family/style requests reuse the original parts and leave
   saved bytes unchanged; missing styles are added in order. Conflicting faces,
