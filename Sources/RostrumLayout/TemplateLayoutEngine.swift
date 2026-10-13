@@ -120,7 +120,7 @@ public final class TemplateLayoutEngine {
         defer { textContexts.removeAll(keepingCapacity: true) }
         var failures: [String] = []
         var candidates: [TemplateSlidePlan] = []
-        struct TableKey: Hashable { let width: EMU; let font: Data; let theme: PackURI }
+        struct TableKey: Hashable { let width: EMU; let font: Data; let theme: PackURI; let availableHeight: EMU? }
         var tablePlans: [TableKey: TableLayoutPlan] = [:]
         var remainingTableCells = 8192
         func combinedCover(_ layout: SlideLayout) -> TemplatePlaceholder? {
@@ -209,12 +209,20 @@ public final class TemplateLayoutEngine {
             var tableLayout: TableLayoutPlan?
             if let table, let frame = objectFrame {
                 let theme = layout.master?.theme ?? presentation.theme
-                let key = TableKey(width: frame.width, font: Data(style.bodyFont.utf8), theme: theme.part.uri)
+                var availableHeight: EMU?
+                if table.measuresColumns {
+                    let caption = objectCaption.isEmpty ? 0 : measuredHeight(objectCaption, style: style.type(.caption), width: frame.width.points) + 8
+                    guard caption.isFinite, caption < frame.height.points else {
+                        failures.append("\(layout.name): caption leaves no table area"); continue
+                    }
+                    availableHeight = frame.height - .points(caption)
+                }
+                let key = TableKey(width: frame.width, font: Data(style.bodyFont.utf8), theme: theme.part.uri, availableHeight: availableHeight)
                 do {
                     if let cached = tablePlans[key] { tableLayout = cached }
                     else {
                         tableLayout = try table.planned(in: presentation, width: frame.width, font: style.bodyFont,
-                            size: 18 * objectScale, theme: theme)
+                            size: 18 * objectScale, theme: theme, availableHeight: availableHeight)
                         if let tableLayout, tablePlans.count < 64, tableLayout.cells.count <= remainingTableCells {
                             tablePlans[key] = tableLayout; remainingTableCells -= tableLayout.cells.count
                         }
@@ -363,7 +371,8 @@ public final class TemplateLayoutEngine {
                 throw LayoutError.cannotFit("The planned table slot is unavailable.")
             }
             let current = try measuredTable ?? table.planned(in: presentation, width: frame.width, font: tableStyle.bodyFont,
-                size: 18 * objectScale, theme: plan.layout.master?.theme ?? presentation.theme)
+                size: 18 * objectScale, theme: plan.layout.master?.theme ?? presentation.theme,
+                fixedColumnWidths: table.measuresColumns ? plan.tableLayout?.columnWidths : nil)
             guard current.fits, current.totalHeight <= frame.height else {
                 throw LayoutError.cannotFit("The table no longer fits its plan. Plan the slide again before composing it.")
             }

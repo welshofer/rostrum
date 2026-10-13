@@ -7,9 +7,12 @@ import Rostrum
 public struct TemplateTableContent: Sendable {
     public var rows: [[String]]
     public var columnWeights: [Double]?
-    public init(rows: [[String]], columnWeights: [Double]? = nil) {
-        self.rows = rows; self.columnWeights = columnWeights
+    public var columnSizing: TableColumnSizing
+    public init(rows: [[String]], columnWeights: [Double]? = nil, columnSizing: TableColumnSizing = .estimated) {
+        self.rows = rows; self.columnWeights = columnWeights; self.columnSizing = columnSizing
     }
+
+    var measuresColumns: Bool { if case .measured = columnSizing { return true }; return false }
 
     func widths(for width: EMU) throws -> [EMU] {
         guard let count = rows.first?.count, count > 0, rows.allSatisfy({ $0.count == count }) else {
@@ -41,10 +44,15 @@ public struct TemplateTableContent: Sendable {
     }
 
     func planned(in presentation: Presentation, width: EMU, font: String, size: Double,
-                 theme: Theme, pagination: Bool = false) throws -> TableLayoutPlan {
+                 theme: Theme, pagination: Bool = false, availableHeight: EMU? = nil,
+                 fixedColumnWidths: [EMU]? = nil) throws -> TableLayoutPlan {
         guard size.isFinite, (1...4000).contains(size) else { throw LayoutError.cannotFit("Invalid table font size.") }
-        let widths = try widths(for: width)
+        let widths = try fixedColumnWidths ?? widths(for: width)
         let prototype = try Table.layoutPrototype(contents: rows, width: width, font: font, size: size, package: presentation.package)
+        if fixedColumnWidths == nil, case .measured(let constraints) = columnSizing {
+            return try TableColumnOptimizer(presentation: presentation, table: prototype, theme: theme,
+                pagination: pagination, availableHeight: availableHeight).plan(initial: widths, constraints: constraints)
+        }
         return try TableLayoutEngine(presentation: presentation).plan(prototype, columnWidths: widths,
             minimumRowHeight: .points(30), theme: theme, pagination: pagination)
     }
