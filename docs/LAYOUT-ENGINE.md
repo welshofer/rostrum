@@ -100,8 +100,8 @@ starting allocation, not an optimal column-width solver.
 
 The first version supports rectangular, unmerged horizontal cells. Merges,
 vertical/rotated text, multiple text columns, dynamic fields and nonzero stored
-line-spacing reduction return explicit issues. It does not paginate rows,
-repeat headers, choose native autofit or certify PowerPoint visual equivalence.
+line-spacing reduction return explicit issues. The existing-table planner does
+not paginate rows, choose native autofit or certify PowerPoint visual equivalence.
 The Templates Library Lab demonstrates composition and existing-table planning,
 including custom padding, saved-cell fit, caption clearance and SVG preservation.
 
@@ -110,6 +110,46 @@ operation (64 entries, 256 KiB estimated payload budget). Style resolution uses
 one indexed grid and a bounded text-only projection of the renderer's region styles. Template candidate
 plans share at most 64 entries/8,192 cell results within one planning call. No
 measurement cache survives table edits or font registration between operations.
+
+### Table continuations in templates
+
+```swift
+let continuation = try engine.planTablePages(title: "Evidence", table: content,
+    caption: "Source: original evidence.")
+let pages = try engine.composeTablePages(continuation)
+for page in pages { try page.setNotes("Original speaker notes.") }
+```
+
+This API accepts `TemplateTableContent`: plain rectangular cells, with the first
+row repeated as a native header on every slide. It chooses one compatible layout,
+preferring fewer pages and then the existing composition score. Optional
+`masterURI` and `layoutURI` restrict selection. Column widths are computed from
+the entire input and stay fixed across pages. Full-size row measurements include
+the possible band/edge text styles at each page position; a conservative maximum
+can leave extra space when a template supplies different font styles per band.
+The title and caption repeat on every page. Unlike single-slide `compose`,
+`composeTablePages` also writes the caption into its reserved frame.
+
+`continuation.pages` exposes each slide plan and its `bodyRows` range into the
+original `content.rows` array, excluding header index zero. Each body row occurs
+once in order. A header-only table creates one page; a header or body row too tall
+to fit throws without shrinking, splitting or discarding text. Cell diagnostics
+remain available through each page's `slide.tableLayout`.
+
+Composition remeasures live fonts/styles and checks all pages before inserting
+slides. Changed page boundaries, row heights or reserved frames require a new
+plan. Fit rejection leaves the deck unchanged; this is not a transaction for
+arbitrary package I/O failures. Measurement is bounded per cell style, and
+partitioning visits each row once using integer EMU arithmetic. Plans and
+prospective native cells use memory proportional to the input.
+
+Callers attach notes, sections, provenance and recovery identities to the returned
+slides using the source row ranges. This API does not paginate existing imported
+tables, preserve arbitrary rich cell XML through a plain-string conversion, or
+automatically enable continuation groups in Lectern generation/recovery. The
+Templates Library Lab runs the public API through export, inspection and reopen
+for both canvas sizes. Native PowerPoint acceptance remains pending. See
+[the pagination evidence](TABLE-PAGINATION-20261012.md).
 
 ### Measurement contract
 

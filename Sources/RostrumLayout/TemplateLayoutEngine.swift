@@ -318,6 +318,19 @@ public final class TemplateLayoutEngine {
     }
 
     public func compose(_ plan: TemplateSlidePlan, title: String, columns: [[LayoutParagraph]]) throws -> Slide {
+        try write(plan, prepared: prepare(plan, title: title, columns: columns))
+    }
+
+    struct PreparedSlide {
+        let bodies: [(Int, XML.Element)]
+        let tableStyle: DeckStyle?
+        let tableLayout: TableLayoutPlan?
+    }
+
+    // Pagination prepares every page before inserting any slides. Its table
+    // geometry was freshly measured as one complete operation.
+    func prepare(_ plan: TemplateSlidePlan, title: String, columns: [[LayoutParagraph]],
+                 measuredTable: TableLayoutPlan? = nil) throws -> PreparedSlide {
         textContexts.removeAll(keepingCapacity: true)
         defer { textContexts.removeAll(keepingCapacity: true) }
         guard plan.combinesTitleAndBody ? columns.count <= 1 : columns.count == plan.textSlots.count else {
@@ -349,15 +362,19 @@ public final class TemplateLayoutEngine {
                   plan.layout.placeholders.first(where: { $0.index == slot.index })?.frame == slot.frame else {
                 throw LayoutError.cannotFit("The planned table slot is unavailable.")
             }
-            let current = try table.planned(in: presentation, width: frame.width, font: tableStyle.bodyFont,
+            let current = try measuredTable ?? table.planned(in: presentation, width: frame.width, font: tableStyle.bodyFont,
                 size: 18 * objectScale, theme: plan.layout.master?.theme ?? presentation.theme)
             guard current.fits, current.totalHeight <= frame.height else {
                 throw LayoutError.cannotFit("The table no longer fits its plan. Plan the slide again before composing it.")
             }
             tableLayout = current
         }
+        return PreparedSlide(bodies: prepared, tableStyle: tableStyle, tableLayout: tableLayout)
+    }
+
+    func write(_ plan: TemplateSlidePlan, prepared: PreparedSlide) throws -> Slide {
         let slide = try presentation.slides.add(clonedFrom: plan.layout)
-        for (index, body) in prepared {
+        for (index, body) in prepared.bodies {
             guard let shape = slide.placeholder(idx: index) else { continue }
             shape.element.removeChildren(named: "p:txBody")
             shape.element.appendElement(body)
@@ -366,7 +383,8 @@ public final class TemplateLayoutEngine {
             }
         }
         slide.part.markDirty()
-        if let table = plan.tableContent, let tableStyle, let tableLayout, let frame = plan.objectFrame, let slot = plan.objectSlot {
+        if let table = plan.tableContent, let tableStyle = prepared.tableStyle,
+           let tableLayout = prepared.tableLayout, let frame = plan.objectFrame, let slot = plan.objectSlot {
             let native = try slide.shapes.addTable(rows: table.rows.count, columns: tableLayout.columnWidths.count,
                 frame: Rect(x: frame.x, y: frame.y, width: frame.width, height: tableLayout.totalHeight))
             native.setLayoutContents(table.rows, font: tableStyle.bodyFont, size: 18 * objectScale)

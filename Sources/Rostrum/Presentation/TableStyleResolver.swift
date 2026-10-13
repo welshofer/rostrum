@@ -436,9 +436,10 @@ public struct TableStyleResolver {
             definition = found.0.map { TableStyleXML.drawingView($0, root: found.1.flatMap { try? $0.dom() }) }
         }
 
-        mutating func effective(row: Int, column: Int) -> (properties: XML.Element, text: XML.Element) {
-            let regions = TableStyleResolver.regionNames(row: row, column: column,
-                rowCount: grid.rows.count, columnCount: grid.columns.count, flags: flags)
+        mutating func effective(row: Int, column: Int, styleRow: Int? = nil,
+                                styleRowCount: Int? = nil) -> (properties: XML.Element, text: XML.Element) {
+            let regions = TableStyleResolver.regionNames(row: styleRow ?? row, column: column,
+                rowCount: styleRowCount ?? grid.rows.count, columnCount: grid.columns.count, flags: flags)
             let text: XML.Element
             if let cached = templates[regions] { text = cached }
             else {

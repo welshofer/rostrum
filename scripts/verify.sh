@@ -45,7 +45,7 @@ swift build
 swift test
 
 step "Optimized text preparation"
-swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests'
+swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests'
 
 step "Portable fidelity references"
 bash scripts/check-fidelity.sh
