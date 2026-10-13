@@ -51,6 +51,25 @@ serialized typeface names or register an alias under a missing source family.
 Lectern inspection explicitly registers Arial; the offline Library Lab recipe
 uses its licensed bundled DejaVu face. Other hosts choose their own policy.
 
+## Embedding fonts safely
+
+`deck.embedFont("Your Family", faces: FontFaces(regular: regularBytes, bold: boldBytes))`
+accepts caller-supplied font bytes. It validates all supplied faces before changing
+the package, including embedding-license restrictions. Repeating a request with
+identical raw bytes for the same case-insensitive family/style is a byte-identical
+no-op, including after reopening. Existing EOT wrappers, metadata and omitted
+styles remain intact; missing styles are added in schema order.
+
+Different bytes for an existing style, ambiguous declarations and broken font
+references throw without modifying the package. Compressed/opaque embedded fonts
+cannot be compared with raw sfnt bytes and are conservatively refused. Embedding
+does not silently replace a face already used by other slides. Names and payloads
+that exceed EOT's integer size limits also throw before mutation.
+
+Call `registerEmbeddedFonts()` explicitly to enable local measurement with
+decodable embedded faces. Embedding cannot guarantee identical rendering in every
+PowerPoint version; native slide-view acceptance remains a separate check.
+
 ## Embedded fonts during slide import
 
 `destination.slides.import(from:at:)` and `importAll(from:)` preserve every source

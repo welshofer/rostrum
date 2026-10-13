@@ -34,6 +34,12 @@ editable run content using the embedded DejaVu face. The normal Lab pipeline
 produces inspector SVGs and extracted artifacts for both slides. These are
 computed-fit checks, not native PowerPoint autofit or pixel-equivalence evidence.
 
+The same recipe repeats `embedFont` before saving and after reopening, checking
+byte-identical no-ops, exact recovered font bytes and a single font relationship.
+An attempted different payload under the same family/style must fail without changing
+any saved bytes. The bundled font is an offline test fixture; callers choose their
+own font families. These package checks do not certify native PowerPoint rendering.
+
 The stable [catalog IDs](../Lectern/Sources/LecternCore/LibraryLab/LibraryLabTypes.swift)
 are routed exhaustively through the [runner](../Lectern/Sources/LecternCore/LibraryLab/LibraryLab.swift).
 Tests require a unique recipe for every ID and run every recipe through the same
@@ -48,7 +54,7 @@ visible in Lectern and in its JSON report.
 | 178 shape presets | Complete enum gallery; frame, rotation, naming and rounded corners | [Drawing](../Lectern/Sources/LecternCore/LibraryLab/DrawingLabRecipes.swift) |
 | Fills, outlines and shadows | Solid/alpha/theme/none/linear/radial/image fills; every dash and compound line; shadow | Drawing |
 | Rich text and live fields | Runs, paragraphs, list numbering/bullets, margins, alignment, spacing, tracking, superscript/subscript, links and fields | Drawing |
-| Fonts, shaping and fitting | Licensed bundled font; exact face lookup, measure/wrap/shape/fit; embed and recover bytes | Platform document |
+| Fonts, shaping and fitting | Licensed bundled font; exact face lookup, measure/wrap/shape/fit; atomic embedding, identical-face reuse and exact reopened bytes | Platform document |
 | Paragraph spacing and justification | Side-by-side mixed-size left/justified paragraphs; adjustable sentence count and width; both fit APIs; embedded-font recovery; exact span positions after reopening; shared table-cell layout; native-captured narrow wrap boundaries and public fitting across styled runs | [Platform paragraphs](../Lectern/Sources/LecternCore/LibraryLab/PlatformParagraphRecipe.swift) |
 | List markers and hanging indents | All 24 independent native marker specimens; distinct imported masters; separate character/number size and face rules; three absent inherited markers; body continuation margins; both computed fit APIs; saved font bytes and complete glyph SVG checks | [Platform markers](../Lectern/Sources/LecternCore/LibraryLab/PlatformListMarkerRecipe.swift) |
 | Text alignment | 24 native center/right cases and 172 glyphs; fractional widths, wrapping, spaces, insets, actual faces, kerning and table cells; both computed fitting APIs; exact saved inspector previews and extracted text | [Platform alignment](../Lectern/Sources/LecternCore/LibraryLab/PlatformTextAlignmentRecipe.swift) |

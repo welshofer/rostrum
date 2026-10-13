@@ -6,6 +6,13 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Font embedding validates all supplied faces before changing the package.
+  Repeated identical family/style requests reuse the original parts and leave
+  saved bytes unchanged; missing styles are added in order. Conflicting faces,
+  ambiguous declarations, broken references and unrepresentable EOT sizes fail
+  without partial writes. Font choice and metric registration remain explicit.
+  See the [embedding validation and performance record](docs/FONT-EMBEDDING-20261013.md).
+
 - Slide imports preserve presentation-owned embedded font families and styles.
   Identical faces are reused, missing styles are merged, and conflicting bytes
   or metadata refuse the import without modifying the destination. Unknown font

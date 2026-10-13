@@ -58,6 +58,17 @@ extension PlatformLabRecipes {
         let box = try text(body, on: deck.slides[0], in: frame)
         let fit = try require(box.textFrame, "Text frame missing").fitText(in: frame, fonts: deck.fonts, theme: deck.theme, defaultPointSize: 24)
         try deck.embedFont("DejaVu Sans", faces: .init(regular: font))
+        let embedded = try deck.serializedData()
+        try deck.embedFont("DejaVu Sans", faces: .init(regular: font))
+        let repeatedEmbeddingIsUnchanged = try deck.serializedData() == embedded
+        // A byte-different input must not replace a face already used by slides.
+        // The rejected payload is never saved or registered for measurement.
+        var changedBytes = font
+        changedBytes.append(0)
+        var refusedConflict = false
+        do { try deck.embedFont("DejaVu Sans", faces: .init(regular: changedBytes)) }
+        catch RostrumError.packageInvalid { refusedConflict = true }
+        let conflictIsUnchanged = try deck.serializedData() == embedded
         let fitScale = fit.fontScale
         let note = "Font: DejaVu Sans regular. Fit scale: \(fitScale)%; \(wrapped.count) measured line(s)."
         try text(note, on: deck.slides[0], in: LibraryLabSupport.frame(0.7, 0.4, 11, 0.8))
@@ -65,6 +76,8 @@ extension PlatformLabRecipes {
             .init("Registered metrics and shaping", measurer.width(of: "AV", pointSize: 24) > 0 && shaped.isSupported && shaped.glyphs.count < "AV office x́".unicodeScalars.count, "Kerning, ligatures and an attached residual mark use real font metrics."),
             .init("Measured wrapping", !wrapped.isEmpty && wrapped.joined().filter { !$0.isWhitespace } == (label(options) + " measured text").filter { !$0.isWhitespace }, "\(wrapped.count) lines in 140 points; wrapping preserves every non-whitespace character, including across explicit newlines."),
             .init("Autofit calculated", fitScale >= 25 && fitScale <= 100, "Scale \(fitScale)%; fits at this ladder step: \(fit.fits)."),
+            .init("Repeated embedding reuses bytes", repeatedEmbeddingIsUnchanged, "An identical request leaves the complete saved package unchanged."),
+            .init("Conflicting font refused atomically", refusedConflict && conflictIsUnchanged, "Different bytes for an existing family/style fail without replacing the font or changing the deck."),
             .init("Exact face availability", deck.fonts.metrics(for: "DejaVu Sans", bold: true, italic: false) == nil && deck.fonts.metrics(for: "DejaVu Sans", bold: false, italic: true) == nil, "Bold and italic are unavailable in the bundled fixture and are not misregistered.")
         ], verify: { reopened in
             let registered = reopened.registerEmbeddedFonts()
@@ -72,8 +85,12 @@ extension PlatformLabRecipes {
             let body = try require(reopened.slides[0].shapes.all.first?.textFrame, "Reopened fitted frame missing")
             let norm = try reopened.slides[0].part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")?.firstChild(named: "p:sp")?.firstChild(named: "p:txBody")?.firstChild(named: "a:bodyPr")?.firstChild(named: "a:normAutofit")
             let persistedScale = Double(norm?[attribute: "fontScale"] ?? "100000").map { $0 / 1000 }
+            let saved = try reopened.serializedData()
+            try reopened.embedFont("DejaVu Sans", faces: .init(regular: font))
+            let fontCount = try reopened.package.mainDocumentPart().rels.all(ofType: RelType.font).count
             return [
                 .init("Embedded face bytes reopened", registered == ["DejaVu Sans"] && recovered == font, "EOT-wrapped regular font recovered byte-for-byte."),
+                .init("Embedding reuse after reopening", try reopened.serializedData() == saved && fontCount == 1, "Reusing the recovered face retains one font part and byte-identical saved output."),
                 .init("Autofit persisted", norm != nil && persistedScale == fitScale && !body.text.isEmpty, "The serialized normAutofit matches the chosen scale."),
                 .init("Reopened shaping", reopened.fonts.metrics(for: "DejaVu Sans").map { TextShaper($0).shape("AV office x́", pointSize: 24) == shaped } == true, "Registered embedded font reproduces glyph positions.")
             ]

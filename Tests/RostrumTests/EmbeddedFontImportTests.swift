@@ -180,7 +180,11 @@ extension EmbeddedFontImportTests {
 extension EmbeddedFontImportTests {
     @Test func duplicateSourceFamiliesReuseOneDeclaration() throws {
         let source = try deck(), target = try Presentation()
-        try source.embedFont("Example Sans", faces: FontFaces(regular: TestFont.standard(familyName: "Example Sans")))
+        // Foreign files can repeat a family declaration even though embedFont
+        // now reuses it. Keep that import case explicit in this fixture.
+        let fonts = try list(source)
+        fonts.appendElement(try #require(fonts.firstChild(named: "p:embeddedFont")).deepCopy())
+        source.presentationPart.markDirty()
         try target.slides.importAll(from: source)
         #expect(try list(target).children(named: "p:embeddedFont").count == 1)
         #expect(target.presentationPart.rels.all(ofType: RelType.font).count == 1)
