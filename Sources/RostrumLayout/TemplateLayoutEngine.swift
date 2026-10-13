@@ -1,6 +1,8 @@
 import Foundation
 import Rostrum
 
+/// One paragraph. Embedded line endings are authored as native soft breaks;
+/// CR and CRLF read back as LF. Use separate values for paragraph spacing.
 public struct LayoutParagraph: Sendable, Equatable {
     public var text: String
     public var level: Int

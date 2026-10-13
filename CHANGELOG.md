@@ -6,6 +6,14 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Template paragraphs now save embedded line endings as native DrawingML soft
+  breaks, preventing PowerPoint from adding paragraph spacing and clipping the
+  final line. Plain-text reads retain breaks and cached fields. New masters
+  declare their title/body typography; legacy masters without a title style
+  resolve the observed native 44 pt title fallback without changing their XML.
+  The Templates Lab uses explicit 32 pt table headings on both slide ratios.
+  See the [PowerPoint review record](docs/POWERPOINT-LAYOUT-20261013.md).
+
 - General measured pagination searches around each page boundary instead of
   repeatedly copying and measuring the complete remaining input. Maximal pages,
   exact source text and ordering are preserved for deterministic monotonic fit

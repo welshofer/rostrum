@@ -326,6 +326,14 @@ Equal scores retain stable source order. `TemplateSlidePlan.score.reasons`
 exposes the decision factors; `variant` selects among the ranked candidates.
 Empty canvas is not itself treated as a defect.
 
+Each `LayoutParagraph` is one native paragraph. Embedded LF, CR or CRLF line
+endings are written as `a:br` soft breaks (plain-text reads normalize them to
+LF), so line spacing applies without accidentally repeating paragraph spacing.
+Use separate `LayoutParagraph` values when paragraph spacing is intended.
+`fillPlaceholder` follows the same convention. New Rostrum masters explicitly
+declare title and body sizes; legacy missing title styles resolve the native
+44 pt fallback. Explicit template styles still take precedence.
+
 Template autofit respects the source body's policy. Supported normal autofit
 uses a bounded search and readable lower limits; eligible overflow or shape
 autofit can grow a slide-local region into available space. `noAutofit` does not

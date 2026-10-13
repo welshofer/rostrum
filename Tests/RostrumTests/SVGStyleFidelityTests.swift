@@ -55,8 +55,7 @@ import Testing
         let deck = try Presentation()
         let slide = try deck.slides[0]
         let master = try #require(slide.master)
-        let styles = XML.Element("p:txStyles")
-        try master.part.dom().appendElement(styles)
+        let styles = try master.part.dom().getOrAddChild("p:txStyles")
         styles.removeChildren(named: "p:bodyStyle")
         styles.appendElement(try XML.parse(Data("""
         <p:bodyStyle><a:lvl1pPr><a:defRPr sz="2400"><a:latin typeface="Georgia"/></a:defRPr></a:lvl1pPr>
@@ -93,6 +92,7 @@ import Testing
     @Test func shapeFontReferenceOverridesGlobalDefaultsButNotLocalFormatting() throws {
         let deck = try Presentation()
         let master = try #require(try deck.slides[0].master)
+        try master.part.dom().removeChildren(named: "p:txStyles")
         try master.part.dom().appendElement(XML.parse(Data("""
         <p:txStyles><p:otherStyle><a:lvl1pPr><a:defRPr><a:solidFill><a:srgbClr val="000000"/></a:solidFill>
         <a:latin typeface="Georgia"/></a:defRPr></a:lvl1pPr></p:otherStyle></p:txStyles>
