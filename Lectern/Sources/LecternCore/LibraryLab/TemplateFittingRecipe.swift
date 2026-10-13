@@ -72,7 +72,15 @@ enum TemplateFittingRecipe {
             let saved = try reopened.slides[page]
             let actual = try geometry(slide: saved, deck: reopened, slot: 1)
             let shape = try PlatformLabRecipes.require(saved.placeholder(idx: 1), "Saved template text missing")
+            let bodies = try saved.part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")?
+                .children(named: "p:sp").compactMap { $0.firstChild(named: "p:txBody") } ?? []
+            let fields = bodies.flatMap { $0.children(named: "a:p") }.first {
+                $0.children(named: "a:r").first?.firstChild(named: "a:t")?.textContent == "Alpha\t12.5"
+            }
             checks += [
+                .init("Saved template uses native soft breaks", fields?.children(named: "a:br").count == 2
+                    && fields?.children(named: "a:r").count == 3,
+                    "Tabular lines remain one paragraph with explicit DrawingML breaks, so PowerPoint does not add paragraph spacing between the fields."),
                 .init("Template geometry survives reopening", actual.fits && actual.lines == expected.lines, "The imported, saved slide reproduces the measured lines, positions, sizes and styles with its embedded face."),
                 .init("Template content and inheritance retained", shape.textFrame?.paragraphs.map(\.plainText) == paragraphs.map(\.text)
                     && shape.textFrame?.paragraphs.allSatisfy { $0.runs.allSatisfy { $0.fontSize == nil } } == true,

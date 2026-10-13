@@ -68,7 +68,8 @@ public extension SlideLayout {
             }
         }
         merge((try? package.mainDocumentPart().dom())?.firstChild(named: "p:defaultTextStyle")?.firstChild(named: levelName), into: paragraph)
-        merge((try? master?.part.dom())?.firstChild(named: "p:txStyles")?.firstChild(named: bucket)?.firstChild(named: levelName), into: paragraph)
+        let masterStyle = (try? master?.part.dom())?.firstChild(named: "p:txStyles")?.firstChild(named: bucket)
+        merge((masterStyle ?? (bucket == "p:titleStyle" ? RichTextLayout.implicitTitleStyle() : nil))?.firstChild(named: levelName), into: paragraph)
         for element in [masterShape?.element, shape?.element] {
             let tx = element?.firstChild(named: "p:txBody")
             merge(tx?.firstChild(named: "a:bodyPr"), into: body)
@@ -149,6 +150,8 @@ public extension Slide {
     /// Fill a template text slot without flattening its inherited typography.
     /// The caller supplies paragraph levels; bullet and font choices remain in
     /// the layout/master. No geometry or formatting overrides are written.
+    /// Line endings within a supplied paragraph become native soft breaks;
+    /// the plain-text view normalizes CR and CRLF to LF.
     func fillPlaceholder(index: Int, paragraphs: [(text: String, level: Int)]) throws {
         guard let shape = placeholder(idx: index), let text = shape.textFrame else {
             throw RostrumError.packageInvalid("No text placeholder at index \(index).")
@@ -157,7 +160,7 @@ public extension Slide {
         for item in paragraphs {
             let p = text.addParagraph()
             p.indentLevel = min(8, max(0, item.level))
-            p.addRun(item.text)
+            p.p.children += Paragraph.textChildren(item.text)
         }
         if paragraphs.isEmpty { _ = text.addParagraph() }
     }

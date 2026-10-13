@@ -4,6 +4,29 @@ import Testing
 @testable import RostrumLayout
 
 @Suite struct TemplateRichTextTests {
+    @Test func composedSoftBreaksKeepParagraphSpacingAndRoleStyles() throws {
+        let (deck, layout, _) = try fixture(width: 400, height: 220,
+            properties: "<a:spcAft><a:spcPts val=\"800\"/></a:spcAft>")
+        let engine = TemplateLayoutEngine(presentation: deck)
+        let words = "Alpha\t12.5\nBeta\t38.0\nGamma\t7.25"
+        let columns = [[LayoutParagraph(words), LayoutParagraph("First\nSecond", role: .caption)]]
+        let plan = try engine.plan(title: "Title", columns: columns, preferredTypes: ["obj"], layoutURI: layout.part.uri.value)
+        let slide = try engine.compose(plan, title: "Title", columns: columns)
+        let frame = try #require(slide.placeholder(idx: 1)?.textFrame)
+        #expect(frame.paragraphs.count == 2)
+        #expect(frame.paragraphs[0].p.children(named: "a:br").count == 2)
+        #expect(frame.paragraphs[1].p.children(named: "a:br").count == 1)
+        #expect(frame.paragraphs[1].runs.allSatisfy { $0.fontSize == 14 && !$0.bold })
+        #expect(frame.text == words + "\nFirst\nSecond")
+        let actual = try geometry(#require(slide.placeholder(idx: 1)), slide: slide, deck: deck)
+        #expect(actual.fits && actual.lines.count == 5)
+        let reopened = try Presentation(data: deck.serializedData())
+        try registerFonts(in: reopened)
+        let saved = try reopened.slides[reopened.slides.count - 1]
+        #expect(saved.placeholder(idx: 1)?.textFrame?.text == frame.text)
+        #expect(try geometry(#require(saved.placeholder(idx: 1)), slide: saved, deck: reopened).lines == actual.lines)
+    }
+
     private func fixture(width: Double = 300, height: Double = 80, properties: String = "", run: String = "", body: String = "vertOverflow=\"clip\"", autofit: String = "<a:noAutofit/>") throws -> (Presentation, SlideLayout, Shape) {
         let deck = try Presentation()
         try registerFonts(in: deck)
