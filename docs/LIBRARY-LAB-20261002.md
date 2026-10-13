@@ -76,6 +76,11 @@ visible in Lectern and in its JSON report.
 | ZIP, XML and package inspection | Bounded lazy reads/cache, promotion, parts/relationships, independent XML, unknown extensions and limit refusal | Platform assets |
 | Extraction and honest previews | Markdown/assets/chart CSV, ordinary/strict slide SVG and notes SVG, expected strict refusal | Platform assets |
 
+The measured-column [preparation performance checkpoint](TABLE-PREPARATION-20261012.md)
+reruns the existing Templates recipe through export, inspection and reopening.
+It preserves the recipe's geometry, source cells and previews; cache reuse does
+not expand its native rendering support boundaries.
+
 Detailed public-operation names and actual read-back expectations live beside the
 executable recipes, rather than in a second implementation. Tests also assert
 independent expectations for gallery counts, permutations, relationships, bytes
