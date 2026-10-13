@@ -243,29 +243,44 @@ public final class Table {
     ///   modified, so a region that cannot be merged leaves the table exactly
     ///   as it was rather than half-merged with text already destroyed.
     public func merge(row: Int, column: Int, rowSpan: Int, columnSpan: Int) throws {
+        try merge([TableMergeRegion(row: row, column: column, rowSpan: rowSpan, columnSpan: columnSpan)])
+    }
+
+    /// Validate and write a batch once for template composition. The caller
+    /// checks its content policy; this retains the native merge API's semantics.
+    package func merge(_ regions: [TableMergeRegion]) throws {
+        guard !regions.isEmpty else { return }
         let snapshot = TableGridSnapshot(tbl)
         let topology = try snapshot.topology()
-        guard row >= 0, column >= 0, rowSpan > 0, columnSpan > 0,
-              row < snapshot.rows.count, column < snapshot.columns.count,
-              rowSpan <= snapshot.rows.count - row, columnSpan <= snapshot.columns.count - column else {
-            throw RostrumError.packageInvalid("table merge region is out of range")
+        var occupied = Set<TableCellPosition>()
+        for region in regions {
+            let row = region.row, column = region.column
+            let rowSpan = region.rowSpan, columnSpan = region.columnSpan
+            guard row >= 0, column >= 0, rowSpan > 0, columnSpan > 0,
+                  row < snapshot.rows.count, column < snapshot.columns.count,
+                  rowSpan <= snapshot.rows.count - row, columnSpan <= snapshot.columns.count - column else {
+                throw RostrumError.packageInvalid("table merge region is out of range")
+            }
+            for r in row..<(row + rowSpan) { for c in column..<(column + columnSpan) {
+                _ = try snapshot.cell(r, c)
+                guard topology.region(row: r, column: c) == nil,
+                      occupied.insert(TableCellPosition(row: r, column: c)).inserted else {
+                    throw RostrumError.packageInvalid("table merge overlaps an existing merge; unmerge it first")
+                }
+            } }
         }
-        for r in row..<(row + rowSpan) { for c in column..<(column + columnSpan) {
-            _ = try snapshot.cell(r, c)
-            guard topology.region(row: r, column: c) == nil else {
-                throw RostrumError.packageInvalid("table merge overlaps an existing merge; unmerge it first")
-            }
-        } }
-        if rowSpan == 1 && columnSpan == 1 { return }
-        let region = TableMergeRegion(row: row, column: column, rowSpan: rowSpan, columnSpan: columnSpan)
-        TableMergeTopology.write(topology.regions + [region], cells: snapshot.cells)
-        for r in row..<(row + rowSpan) { for c in column..<(column + columnSpan) {
-            if r == row && c == column { continue }
-            if let txBody = snapshot.cells[r][c].firstChild(named: "a:txBody") {
-                txBody.removeChildren(named: "a:p")
-                txBody.appendElement(XML.Element("a:p"))
-            }
-        } }
+        let additions = regions.filter { $0.rowSpan > 1 || $0.columnSpan > 1 }
+        guard !additions.isEmpty else { return }
+        TableMergeTopology.write(topology.regions + additions, cells: snapshot.cells)
+        for region in additions {
+            for r in region.row..<(region.row + region.rowSpan) { for c in region.column..<(region.column + region.columnSpan) {
+                if r == region.row && c == region.column { continue }
+                if let txBody = snapshot.cells[r][c].firstChild(named: "a:txBody") {
+                    txBody.removeChildren(named: "a:p")
+                    txBody.appendElement(XML.Element("a:p"))
+                }
+            } }
+        }
         part.markDirty()
     }
 

@@ -1,0 +1,118 @@
+{
+  "apple_app_builds": "PR CI; not run in Linux local gate",
+  "baseline_commit": "bc0248e44280de0129a0843376703888e828eb7e",
+  "candidate_source_sha256": "53ba6d7ed3e770bebadb5fcbee3d5f138604c59d1801135638b371a4c8127111",
+  "horizontal_spans": [
+    {
+      "case": "24-distinct-measured",
+      "deterministic": true,
+      "files": 12,
+      "independent_geometry_and_topology": true,
+      "pages": 4
+    },
+    {
+      "case": "30-mixed-measured",
+      "deterministic": true,
+      "files": 12,
+      "independent_geometry_and_topology": true,
+      "pages": 4
+    },
+    {
+      "case": "1000-repeated-measured",
+      "deterministic": true,
+      "files": 338,
+      "independent_geometry_and_topology": true,
+      "pages": 167
+    },
+    {
+      "case": "1000-distinct-measured",
+      "deterministic": true,
+      "files": 338,
+      "independent_geometry_and_topology": true,
+      "pages": 167
+    },
+    {
+      "case": "100-distinct-measured",
+      "deterministic": true,
+      "files": 24,
+      "independent_geometry_and_topology": true,
+      "pages": 10
+    },
+    {
+      "case": "24-distinct-estimated",
+      "deterministic": true,
+      "files": 16,
+      "independent_geometry_and_topology": true,
+      "pages": 6
+    }
+  ],
+  "library_lab": [
+    {
+      "archives_valid": 12,
+      "canvas_width": 12192000,
+      "checks": 26,
+      "merged_specimen_slides": 2,
+      "old_artifacts_identical": 24,
+      "old_slide_parts_identical": 28,
+      "slides": 13
+    },
+    {
+      "archives_valid": 12,
+      "canvas_width": 9144000,
+      "checks": 26,
+      "merged_specimen_slides": 4,
+      "old_artifacts_identical": 26,
+      "old_slide_parts_identical": 32,
+      "slides": 16
+    }
+  ],
+  "local_gate": {
+    "command": "scripts/verify.sh --fast",
+    "final_expanded_span_debug_tests": 8,
+    "lectern_core_tests": 309,
+    "library_tests": 1324,
+    "passed": true,
+    "readme_examples": true,
+    "release_tests": 50,
+    "saved_powerpoint_references": 36
+  },
+  "native_powerpoint_visual_acceptance": "pending",
+  "unmerged": [
+    {
+      "case": "24-distinct-measured",
+      "exact": true,
+      "files": 12,
+      "pages": 4
+    },
+    {
+      "case": "30-mixed-measured",
+      "exact": true,
+      "files": 12,
+      "pages": 4
+    },
+    {
+      "case": "1000-repeated-measured",
+      "exact": true,
+      "files": 338,
+      "pages": 167
+    },
+    {
+      "case": "1000-distinct-measured",
+      "exact": true,
+      "files": 338,
+      "pages": 167
+    },
+    {
+      "case": "100-distinct-measured",
+      "exact": true,
+      "files": 24,
+      "pages": 10
+    },
+    {
+      "case": "24-distinct-estimated",
+      "exact": true,
+      "files": 16,
+      "pages": 6
+    }
+  ]
+}

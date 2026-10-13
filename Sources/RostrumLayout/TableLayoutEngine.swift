@@ -12,9 +12,24 @@ public struct TableCellLayout: Sendable {
     public let requiredHeight: EMU
     public let issues: [TableLayoutIssue]
     public let diagnostics: [ShapingDiagnostic]
+    /// Columns measured together at a horizontal merge's anchor, otherwise one.
+    public var columnSpan: Int { max(1, span) }
+    /// Covered horizontal cells contribute no height, issues or diagnostics.
+    /// Their source XML remains untouched by planning.
+    public var isMergeContinuation: Bool { span == 0 }
+    // One word stores both facts in every retained physical cell result.
+    private let span: Int
+
+    init(row: Int, column: Int, requiredHeight: EMU, issues: [TableLayoutIssue], diagnostics: [ShapingDiagnostic],
+         columnSpan: Int = 1, isMergeContinuation: Bool = false) {
+        self.row = row; self.column = column; self.requiredHeight = requiredHeight
+        self.issues = issues; self.diagnostics = diagnostics
+        span = isMergeContinuation ? 0 : columnSpan
+    }
 }
 
-/// A read-only measurement of unmerged, horizontal native table cells. Apply
+/// A read-only measurement of horizontal native table cells, including column
+/// spans. Cells remain in physical row-major order. Vertical spans are rejected. Apply
 /// columnWidths and rowHeights only after checking fits. No font shrinking or
 /// pagination is implied; diagnostics retain font substitution information.
 public struct TableLayoutPlan: Sendable {
@@ -30,17 +45,34 @@ public struct TableLayoutPlan: Sendable {
 /// Operation-local reuse for column trials on one immutable prospective table.
 /// No entry survives changes to content, styles, themes or registered fonts.
 final class TableColumnMeasurements {
-    struct Key: Hashable { let column: Int; let width: EMU }
-    struct Column { let cells: [TableCellLayout]; let occupiedWidth: EMU }
+    struct Key: Hashable { let column: Int; let width: EMU; var spanWidths: [EMU] = [] }
+    struct Column {
+        let cells: [TableCellLayout]; let occupiedWidth: EMU
+        var spanningOccupiedWidths: [Int: EMU] = [:]
+    }
     var source: TableLayoutSource
     private(set) var columns: [Key: Column] = [:]
     var occupiedWidths: [EMU] = []
     var measuredCells = 0, reusedCells = 0
     private var remainingCells = 32_768
+    private let spans: [Int: [Int]]
+    var hasSpans: Bool { !spans.isEmpty }
     let preparation = TableCellPreparation()
-    init(table: Table, theme: Theme) throws { source = try TableLayoutSource(table: table, theme: theme) }
+    init(table: Table, theme: Theme) throws {
+        source = try TableLayoutSource(table: table, theme: theme)
+        var spans: [Int: Set<Int>] = [:]
+        for region in source.horizontalMerges { spans[region.column, default: []].insert(region.columnSpan) }
+        self.spans = spans.mapValues { $0.sorted() }
+    }
+    func keys(for widths: [EMU]) -> [Key] {
+        widths.indices.map { column in
+            Key(column: column, width: widths[column], spanWidths: (spans[column] ?? []).map {
+                widths[column..<(column + $0)].reduce(.zero, +)
+            })
+        }
+    }
     func missingCells(for widths: [EMU]) -> Int {
-        widths.indices.filter { columns[Key(column: $0, width: widths[$0])] == nil }.count * source.rowCount
+        keys(for: widths).filter { columns[$0] == nil }.count * source.rowCount
     }
     func retain(_ column: Column, at key: Key) {
         guard columns.count < 128, column.cells.count <= remainingCells else { return }
@@ -91,8 +123,12 @@ public final class TableLayoutEngine {
         var cache: [Key: Measurement] = [:], remainingBytes = 262_144
         var heights = [EMU](repeating: minimumRowHeight, count: source.rowCount)
         var cells: [TableCellLayout] = []
-        let cachedColumns = reuse.map { reuse in widths.indices.map { reuse.columns[.init(column: $0, width: widths[$0])] } }
+        let columnKeys = reuse?.keys(for: widths)
+        let cachedColumns = reuse.map { reuse in columnKeys!.map { reuse.columns[$0] } }
         var occupiedWidths = reuse.map { _ in [EMU](repeating: .zero, count: widths.count) } ?? []
+        var occupiedSpans = reuse?.hasSpans == true
+            ? cachedColumns!.map { $0?.spanningOccupiedWidths ?? [:] } : []
+        let hasSpans = !source.horizontalMerges.isEmpty
         for row in 0..<source.rowCount { for column in widths.indices {
             if let cached = cachedColumns?[column] {
                 let cell = cached.cells[row]
@@ -100,6 +136,13 @@ public final class TableLayoutEngine {
                 cells.append(cell); occupiedWidths[column] = cached.occupiedWidth
                 continue
             }
+            let span = hasSpans ? source.columnSpan(row: row, column: column) : 1
+            if span == 0 {
+                cells.append(TableCellLayout(row: row, column: column, requiredHeight: .zero,
+                    issues: [], diagnostics: [], isMergeContinuation: true))
+                continue
+            }
+            let cellWidth = span == 1 ? widths[column] : widths[column..<(column + span)].reduce(.zero, +)
             let inputs = reuse?.preparation.inputs(source: &source, row: row, column: column, pagination: pagination,
                 prepareText: (reuse?.measuredCells ?? 0) > 0)
                 ?? TableCellInput.resolve(source: &source, row: row, column: column, pagination: pagination)
@@ -111,15 +154,15 @@ public final class TableLayoutEngine {
                 let measurement: Measurement
                 if !issues.isEmpty { measurement = Measurement(height: .zero, occupiedWidth: .zero, issues: issues, diagnostics: []) }
                 else {
-                    let key = Key(input: input.key!, width: widths[column])
+                    let key = Key(input: input.key!, width: cellWidth)
                     if let cached = cache[key] { measurement = cached }
                     else {
-                        let geometry = RichTextLayout(textBody: input.body, width: widths[column].points, height: limit.points,
+                        let geometry = RichTextLayout(textBody: input.body, width: cellWidth.points, height: limit.points,
                             fonts: presentation.fonts, theme: theme, inheritedStyles: [input.style], maxLines: 65,
                             insets: margins, verticalAnchor: "t", context: .tableCell, preparation: input.preparation)
                         if geometry.truncated || geometry.lines.count > 64 { issues.append(.lineLimit) }
                         if !geometry.fits { issues.append(.horizontalOverflow) }
-                        if margins.left + margins.right >= widths[column].points { issues.append(.horizontalOverflow) }
+                        if margins.left + margins.right >= cellWidth.points { issues.append(.horizontalOverflow) }
                         let required = geometry.contentHeight + margins.top + margins.bottom
                         if !required.isFinite || required > limit.points { issues.append(.heightLimit) }
                         // Round upwards at EMU precision so serialization cannot make
@@ -135,24 +178,47 @@ public final class TableLayoutEngine {
                     }
                 }
                 cellHeight = max(cellHeight, measurement.height)
-                if reuse != nil { occupiedWidths[column] = max(occupiedWidths[column], measurement.occupiedWidth) }
+                if reuse != nil {
+                    if span == 1 { occupiedWidths[column] = max(occupiedWidths[column], measurement.occupiedWidth) }
+                    else { occupiedSpans[column][span] = max(occupiedSpans[column][span] ?? .zero, measurement.occupiedWidth) }
+                }
                 for issue in measurement.issues where !cellIssues.contains(issue) { cellIssues.append(issue) }
                 for diagnostic in measurement.diagnostics where !diagnostics.contains(diagnostic) { diagnostics.append(diagnostic) }
             }
             heights[row] = max(heights[row], cellHeight)
             cells.append(TableCellLayout(row: row, column: column, requiredHeight: cellHeight,
-                issues: cellIssues, diagnostics: diagnostics))
+                issues: cellIssues, diagnostics: diagnostics, columnSpan: span))
         } }
         if let reuse, let cachedColumns {
-            reuse.occupiedWidths = occupiedWidths
             for column in widths.indices {
                 if cachedColumns[column] != nil { reuse.reusedCells += source.rowCount }
                 else {
                     reuse.measuredCells += source.rowCount
                     reuse.retain(.init(cells: (0..<source.rowCount).map { cells[$0 * widths.count + column] },
-                        occupiedWidth: occupiedWidths[column]), at: .init(column: column, width: widths[column]))
+                        occupiedWidth: occupiedWidths[column],
+                        spanningOccupiedWidths: occupiedSpans.isEmpty ? [:] : occupiedSpans[column]), at: columnKeys![column])
                 }
             }
+            // A span constrains the combined width, not each constituent column.
+            // Reserve any unmet demand in the column with the greatest ordinary
+            // text demand, leaving short columns free to donate within a span.
+            // These deterministic hints only seed trials; actual wrapping still
+            // decides fit and score. Recompute them even on column-cache hits.
+            let ordinaryWidths = occupiedWidths
+            for column in occupiedSpans.indices {
+                for span in occupiedSpans[column].keys.sorted() {
+                    let occupied = occupiedSpans[column][span]!
+                    let columns = column..<(column + span)
+                    var remaining = occupied
+                    for index in columns { remaining -= min(remaining, occupiedWidths[index]) }
+                    guard remaining > .zero else { continue }
+                    let receiver = columns.max {
+                        ordinaryWidths[$0] == ordinaryWidths[$1] ? $0 > $1 : ordinaryWidths[$0] < ordinaryWidths[$1]
+                    }!
+                    occupiedWidths[receiver] += remaining
+                }
+            }
+            reuse.occupiedWidths = occupiedWidths
         }
         let total = heights.reduce(0.0) { $0 + $1.points }
         let totalHeight = EMU.points(min(total, limit.points))

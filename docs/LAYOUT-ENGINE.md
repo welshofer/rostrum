@@ -98,8 +98,8 @@ eight-point gap. The native table retains theme/style references. Column weights
 default to half equal share and half bounded text-length weight. Existing callers
 retain this estimated allocation; measured sizing is an explicit option below.
 
-The first version supports rectangular, unmerged horizontal cells. Merges,
-vertical/rotated text, multiple text columns, dynamic fields and nonzero stored
+The planner supports rectangular grids with horizontal column spans. Vertical
+spans, vertical/rotated text, multiple text columns, dynamic fields and nonzero stored
 line-spacing reduction return explicit issues. The existing-table planner does
 not paginate rows, choose native autofit or certify PowerPoint visual equivalence.
 The Templates Library Lab demonstrates composition and existing-table planning,
@@ -167,6 +167,46 @@ Measurement has an explicit performance cost; see the
 Shaping diagnostics and native PowerPoint visual acceptance remain separate from
 portable fit, including when width search succeeds.
 
+### Horizontal merged cells
+
+`TableLayoutEngine.plan` accepts native horizontal merges and measures the
+anchor's rich text, padding and resolved style across the sum of its column
+widths. `cells` stays in physical row-major order: anchors expose `columnSpan`;
+covered cells have `isMergeContinuation == true` and zero height, issues and
+diagnostics. Hidden continuation XML is preserved without contributing to visible
+layout. Vertical spans continue to report `.mergedCell`; malformed topology throws.
+
+Template content declares spans in source-grid coordinates:
+
+```swift
+let content = TemplateTableContent(rows: [
+    ["Grouped evidence", "", "State"],
+    ["A longer observation spanning two columns", "", "Reviewed"],
+    ["Record 2", "Ordinary editable cell", "Ready"]
+], columnSizing: .measured(), merges: [
+    .init(row: 0, column: 0, rowSpan: 1, columnSpan: 2),
+    .init(row: 1, column: 0, rowSpan: 1, columnSpan: 2)
+])
+let continuation = try engine.planTablePages(title: "Evidence", table: content)
+let pages = try engine.composeTablePages(continuation)
+```
+
+Only nonoverlapping, in-bounds spans with `rowSpan == 1` and `columnSpan >= 2`
+are accepted. Covered input strings must be exactly empty, including no whitespace;
+invalid content fails before slide insertion. Header spans repeat on every page,
+and body spans move with their source row. Native merge flags are written in one
+validated batch, retaining the full physical grid.
+
+Measured width trials include every anchored span's combined width in their
+column-cache identity. Span width demand is reserved across its columns, favoring
+columns with more ordinary text; short columns can still donate width within a
+span. Row-height pressure is distributed across participating columns to propose
+candidates; actual combined-width
+geometry still decides fit and score. Cache, candidate and cell-visit budgets are
+unchanged. Preparation and results expire with each operation; later font, text,
+style or topology changes receive fresh measurements. See the
+[horizontal-span evidence and performance record](TABLE-SPANS-20261012.md).
+
 ### Table continuations in templates
 
 ```swift
@@ -176,7 +216,8 @@ let pages = try engine.composeTablePages(continuation)
 for page in pages { try page.setNotes("Original speaker notes.") }
 ```
 
-This API accepts `TemplateTableContent`: plain rectangular cells, with the first
+This API accepts `TemplateTableContent`: a rectangular string grid with optional
+horizontal merges, with the first
 row repeated as a native header on every slide. It chooses one compatible layout,
 preferring fewer pages and then the existing composition score. Optional
 `masterURI` and `layoutURI` restrict selection. Column widths are computed from
