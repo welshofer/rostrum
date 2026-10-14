@@ -28,7 +28,15 @@ final class AuthoredProbeCache {
     func evaluate(_ input: IRSlide, hasImage: Bool, needsUsage: Bool,
                   create: () throws -> Outcome) throws -> Outcome {
         try Task.checkCancellation()
-        let key = Key(input: try encoder.encode(input), hasImage: hasImage)
+        // Some programmatic IR carries unused, non-JSON numeric fields (for
+        // example a chart payload on a bullet slide). Key construction must
+        // never reject content the ordinary renderer would accept.
+        guard let data = try? encoder.encode(input) else {
+            let result = try create()
+            try Task.checkCancellation()
+            return result
+        }
+        let key = Key(input: data, hasImage: hasImage)
         if let cached = outcomes[key] {
             switch cached {
             case .rejected: return cached

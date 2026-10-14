@@ -80,6 +80,26 @@ import Testing
         #expect(cache.count == 1)
     }
 
+    @Test func unusedNonJSONNumbersCannotPreventOrdinaryRendering() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let renderer = DeckRenderer()
+        var input = DeckIR(meta: Meta(title: "Evidence"), slides: [IRSlide(id: "a", layout: "bullets", title: "Evidence",
+            body: Body(bullets: (1...20).map { Bullet(text: "Fact \($0): preserve every original word and let the evidence continue onto the next slide.") }))])
+        let reference = try await renderer.render(input, designURL: nil, notesEnabled: false,
+            into: root.appendingPathComponent("reference"))
+        // This payload is irrelevant to a bullet builder. An optimization must
+        // not introduce JSONEncoder's non-finite-number failure into rendering.
+        input.slides[0].body?.chart = IRChart(kind: "bar", categories: ["Unused"],
+            series: [.init(name: "Unused", values: [.nan])])
+        let actual = try await renderer.render(input, designURL: nil, notesEnabled: false,
+            into: root.appendingPathComponent("actual"))
+        #expect(reference.slideCount > 1)
+        #expect(try Data(contentsOf: actual.url) == Data(contentsOf: reference.url))
+        #expect(actual.previews == reference.previews && actual.warnings == reference.warnings)
+        #expect(actual.previewDiagnostics == reference.previewDiagnostics)
+    }
+
     @Test func cancellationStillInterruptsCacheHits() async throws {
         let task = Task {
             let cache = AuthoredProbeCache(), input = IRSlide(id: "a", layout: "bullets")

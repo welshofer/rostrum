@@ -36,7 +36,8 @@ strings cannot accidentally share a decision.
 Accepted fits and original rejection messages are reusable. A fit without a
 fullness score still performs the usage probe when balancing first requests one.
 Cancellation is checked before every lookup and after every newly computed result.
-Unexpected errors are not retained. The cache holds at most 64 entries, each with
+Unexpected errors are not retained. If an unused IR field cannot be encoded as
+JSON, key construction is skipped and ordinary rendering proceeds unchanged. The cache holds at most 64 entries, each with
 at most 64 KiB of input, and 256 KiB total serialized input/error payload. Swift
 container overhead is additional. Excess input uses the original path; no slide,
 XML, font or presentation objects are retained in the cache.
@@ -51,7 +52,9 @@ ZIP CRC and python-pptx read-back also check saved content and sections.
 
 Focused regressions cover rejection-message reuse, a fresh usage measurement,
 changed content/layout/image presence, exact Unicode identity, cache bounds,
-new-operation isolation, errors and cancellation. Existing authored continuation,
+new-operation isolation, errors and cancellation. A production regression also
+compares exact saved bytes and previews when a bullet slide carries unused
+non-finite chart metadata. Existing authored continuation,
 source placement, recovery and table tests exercise the production renderer.
 
 ## Release measurement
@@ -79,27 +82,43 @@ within-pair change, not the ratio of the displayed medians. RSS is peak MiB.
 
 | Fixture | Slides | CPU | Paired CPU change | Elapsed | Peak RSS |
 | --- | ---: | --- | ---: | --- | --- |
-| control | 2 | 24.08 → 24.38 | +1.72% | 24.42 → 24.76 | 26.94 → 26.90 |
-| comparison | 4 | 122.84 → 122.46 | -2.08% | 123.24 → 122.79 | 27.99 → 28.29 |
-| dense | 3 | 76.37 → 71.65 | -6.27% | 76.78 → 72.13 | 27.42 → 27.52 |
-| source | 1 | 18.02 → 18.61 | +3.33% | 18.21 → 18.92 | 26.66 → 26.62 |
-| long-source | 3 | 82.24 → 70.65 | -13.71% | 82.62 → 71.07 | 27.60 → 27.56 |
-| cited-dense | 3 | 91.16 → 83.38 | -8.89% | 91.94 → 83.85 | 27.38 → 27.67 |
-| repeated-source | 8 | 69.63 → 70.37 | +0.86% | 70.21 → 70.72 | 28.58 → 28.70 |
-| table | 3 | 37.03 → 38.51 | +4.01% | 37.57 → 38.81 | 27.54 → 27.55 |
+| control | 2 | 23.94 → 24.61 | +3.41% | 24.24 → 25.09 | 26.87 → 26.88 |
+| comparison | 4 | 123.85 → 117.00 | -3.78% | 124.28 → 117.56 | 28.05 → 28.17 |
+| dense | 3 | 77.76 → 73.12 | -6.20% | 78.19 → 73.57 | 27.39 → 27.52 |
+| source | 1 | 18.17 → 18.49 | -0.92% | 18.71 → 18.74 | 26.77 → 26.58 |
+| long-source | 3 | 80.55 → 72.70 | -10.37% | 80.99 → 73.20 | 27.58 → 27.58 |
+| cited-dense | 3 | 90.54 → 85.64 | -7.59% | 91.36 → 86.66 | 27.51 → 27.58 |
+| repeated-source | 8 | 71.62 → 70.32 | -1.99% | 72.03 → 70.82 | 28.64 → 28.72 |
+| table | 3 | 38.69 → 36.91 | -1.86% | 39.13 → 37.31 | 27.54 → 27.65 |
 
-All ten pairs improve CPU for long-source (−25.82% to −1.82%), dense text
-(−8.37% to −1.72%) and cited dense text (−14.14% to −4.60%). This recovers the
-previous long-source CPU increase in this fixture. Comparison improvement is
-smaller and not consistent in every pair (−10.99% to +2.34%).
+The final long-source median improves 10.37%, recovering the preceding layout
+pass's increase in this fixture. Dense text improves 6.20%, cited text 7.59%, and
+comparison 3.78%. Individual samples vary; none establishes a universal speedup.
+All adverse samples are retained:
 
-Adverse samples remain in the record: short controls range from −6.98% to +12.20%,
-moderate sources from −3.99% to +13.72%, repeated sources from −5.83% to +13.11%,
-and tables from −8.36% to +56.65%. Citation-only and table cases perform no cached
-page probes; these timings do not establish a universal speedup. Median RSS rises
-about 0.3 MiB on comparison/cited text and is nearly unchanged on long sources.
-This is a CPU improvement with bounded extra retention, not a memory reduction.
-The collector peaked at 12.5 MiB before spawning; all children exceeded 26.3 MiB.
+| Fixture | Paired CPU range |
+| --- | --- |
+| control | -16.30% to +11.88% |
+| comparison | -8.16% to +5.89% |
+| dense | -15.63% to +2.94% |
+| source | -24.27% to +6.36% |
+| long-source | -32.20% to +33.02% |
+| cited-dense | -13.80% to +4.33% |
+| repeated-source | -8.21% to +7.95% |
+| table | -8.72% to +5.22% |
+
+Citation-only and table cases perform no cached page probes. Their changes help
+show the timing noise of these short workloads. Peak RSS rises about 0.1 MiB on
+several cases and is effectively unchanged for long sources. This is a CPU
+improvement with bounded extra retention, not a memory reduction. The collector
+peaked at 12.50 MiB before spawning; the smallest child peak was
+26.48 MiB.
+
+The earlier batch before the non-JSON-key fallback is retained in
+[commit ba895c1](https://github.com/welshofer/rostrum/blob/ba895c11233592bf6016d2fb8d3c4edeedc314a3/docs/benchmarks/2026-10-14-continuation-performance.json).
+It measured long-source CPU at −13.71% and RSS increases up to about 0.3 MiB.
+The current record above measures the final implementation and retains its slower
+samples too; no builds or tests ran concurrently with either collection.
 
 ## Reproduce
 

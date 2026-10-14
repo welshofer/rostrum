@@ -3,7 +3,7 @@
   "baselineCommit": "27bf372db83aea787afab096af2143025aa6f622",
   "binaries": {
     "baseline": "5956155228a54b9ab8cd9fb93e1b35455f6a3ff42479f7c04fa27ebc965f63c7",
-    "candidate": "7f24a1f30696481a7f1e0b4d6b0a84fa7f8a97013a2d9b9b451c58575f9322c7"
+    "candidate": "3a52696e7e7381a04c8a854a75ec49d74eeb587bb88d2a3632106886174a0ce1"
   },
   "driverSHA256": "83b07266b6707d5e8dbe8dc6e93c419169bfbf3df1f279d9e51596c26437622c",
   "scope": "Production render CPU/elapsed includes save and SVG previews; process RSS includes startup and read-back. Missing fonts are recorded per sample.",
@@ -159,154 +159,154 @@
   "summary": {
     "control": {
       "baseline": {
-        "cpuSeconds": 0.024078000000000002,
-        "elapsedSeconds": 0.024421097500000002,
-        "peakRSSKiB": 27588.0,
+        "cpuSeconds": 0.023940000000000003,
+        "elapsedSeconds": 0.0242435015,
+        "peakRSSKiB": 27514.0,
         "slides": 2.0
       },
       "candidate": {
-        "cpuSeconds": 0.024378,
-        "elapsedSeconds": 0.024761659499999998,
-        "peakRSSKiB": 27546.0,
+        "cpuSeconds": 0.024614999999999998,
+        "elapsedSeconds": 0.0250875095,
+        "peakRSSKiB": 27522.0,
         "slides": 2.0
       },
       "pairedCPUPercent": {
-        "median": 1.7189172569181177,
-        "min": -6.975326206251786,
-        "max": 12.197841405762189
+        "median": 3.406770717756602,
+        "min": -16.298588143248338,
+        "max": 11.876983963392007
       }
     },
     "comparison": {
       "baseline": {
-        "cpuSeconds": 0.122841,
-        "elapsedSeconds": 0.1232395175,
-        "peakRSSKiB": 28666.0,
+        "cpuSeconds": 0.123847,
+        "elapsedSeconds": 0.12428292699999999,
+        "peakRSSKiB": 28724.0,
         "slides": 4.0
       },
       "candidate": {
-        "cpuSeconds": 0.122464,
-        "elapsedSeconds": 0.12278573300000001,
-        "peakRSSKiB": 28966.0,
+        "cpuSeconds": 0.1169965,
+        "elapsedSeconds": 0.1175616695,
+        "peakRSSKiB": 28846.0,
         "slides": 4.0
       },
       "pairedCPUPercent": {
-        "median": -2.078625109143778,
-        "min": -10.985443574735498,
-        "max": 2.3363865657772376
+        "median": -3.7763731451194658,
+        "min": -8.157894736842108,
+        "max": 5.890753902246404
       }
     },
     "dense": {
       "baseline": {
-        "cpuSeconds": 0.076373,
-        "elapsedSeconds": 0.076783974,
-        "peakRSSKiB": 28078.0,
+        "cpuSeconds": 0.07776050000000001,
+        "elapsedSeconds": 0.078191178,
+        "peakRSSKiB": 28052.0,
         "slides": 3.0
       },
       "candidate": {
-        "cpuSeconds": 0.071647,
-        "elapsedSeconds": 0.072131557,
-        "peakRSSKiB": 28176.0,
+        "cpuSeconds": 0.0731165,
+        "elapsedSeconds": 0.07357069399999999,
+        "peakRSSKiB": 28180.0,
         "slides": 3.0
       },
       "pairedCPUPercent": {
-        "median": -6.266237161794747,
-        "min": -8.368887854575535,
-        "max": -1.7178219117146898
+        "median": -6.196104638177635,
+        "min": -15.631484966941745,
+        "max": 2.939394737535217
       }
     },
     "source": {
       "baseline": {
-        "cpuSeconds": 0.018019,
-        "elapsedSeconds": 0.0182114465,
-        "peakRSSKiB": 27298.0,
+        "cpuSeconds": 0.018171,
+        "elapsedSeconds": 0.018711312,
+        "peakRSSKiB": 27410.0,
         "slides": 1.0
       },
       "candidate": {
-        "cpuSeconds": 0.0186095,
-        "elapsedSeconds": 0.018923503,
-        "peakRSSKiB": 27264.0,
+        "cpuSeconds": 0.018489,
+        "elapsedSeconds": 0.0187414565,
+        "peakRSSKiB": 27216.0,
         "slides": 1.0
       },
       "pairedCPUPercent": {
-        "median": 3.328693222423307,
-        "min": -3.9903264812575556,
-        "max": 13.718351812013907
+        "median": -0.9176148102123138,
+        "min": -24.268946880167785,
+        "max": 6.360808709175725
       }
     },
     "long-source": {
       "baseline": {
-        "cpuSeconds": 0.0822395,
-        "elapsedSeconds": 0.082615304,
-        "peakRSSKiB": 28260.0,
+        "cpuSeconds": 0.08054900000000001,
+        "elapsedSeconds": 0.0809900275,
+        "peakRSSKiB": 28246.0,
         "slides": 3.0
       },
       "candidate": {
-        "cpuSeconds": 0.0706455,
-        "elapsedSeconds": 0.07106593950000001,
-        "peakRSSKiB": 28224.0,
+        "cpuSeconds": 0.072702,
+        "elapsedSeconds": 0.073199417,
+        "peakRSSKiB": 28244.0,
         "slides": 3.0
       },
       "pairedCPUPercent": {
-        "median": -13.712436169967951,
-        "min": -25.815180197727916,
-        "max": -1.8185153158818745
+        "median": -10.372894395120792,
+        "min": -32.19867741468359,
+        "max": 33.020349169708126
       }
     },
     "cited-dense": {
       "baseline": {
-        "cpuSeconds": 0.091156,
-        "elapsedSeconds": 0.09194014,
-        "peakRSSKiB": 28032.0,
+        "cpuSeconds": 0.09053749999999999,
+        "elapsedSeconds": 0.0913601835,
+        "peakRSSKiB": 28174.0,
         "slides": 3.0
       },
       "candidate": {
-        "cpuSeconds": 0.083384,
-        "elapsedSeconds": 0.08385110949999999,
-        "peakRSSKiB": 28332.0,
+        "cpuSeconds": 0.085635,
+        "elapsedSeconds": 0.08665839950000001,
+        "peakRSSKiB": 28242.0,
         "slides": 3.0
       },
       "pairedCPUPercent": {
-        "median": -8.888074117291545,
-        "min": -14.139816483010016,
-        "max": -4.5990605509500515
+        "median": -7.58995983975625,
+        "min": -13.797149864682002,
+        "max": 4.334924965893583
       }
     },
     "repeated-source": {
       "baseline": {
-        "cpuSeconds": 0.069628,
-        "elapsedSeconds": 0.070205587,
-        "peakRSSKiB": 29266.0,
+        "cpuSeconds": 0.0716215,
+        "elapsedSeconds": 0.0720335235,
+        "peakRSSKiB": 29328.0,
         "slides": 8.0
       },
       "candidate": {
-        "cpuSeconds": 0.070369,
-        "elapsedSeconds": 0.0707155505,
-        "peakRSSKiB": 29386.0,
+        "cpuSeconds": 0.070321,
+        "elapsedSeconds": 0.070822526,
+        "peakRSSKiB": 29414.0,
         "slides": 8.0
       },
       "pairedCPUPercent": {
-        "median": 0.8649200591969164,
-        "min": -5.826661047899984,
-        "max": 13.110501520663153
+        "median": -1.9914223155396593,
+        "min": -8.208899784562828,
+        "max": 7.953400837618618
       }
     },
     "table": {
       "baseline": {
-        "cpuSeconds": 0.03703,
-        "elapsedSeconds": 0.0375702225,
+        "cpuSeconds": 0.038689,
+        "elapsedSeconds": 0.039130056499999996,
         "peakRSSKiB": 28206.0,
         "slides": 3.0
       },
       "candidate": {
-        "cpuSeconds": 0.038507,
-        "elapsedSeconds": 0.038814653,
-        "peakRSSKiB": 28208.0,
+        "cpuSeconds": 0.036913,
+        "elapsedSeconds": 0.0373057905,
+        "peakRSSKiB": 28316.0,
         "slides": 3.0
       },
       "pairedCPUPercent": {
-        "median": 4.010023549433061,
-        "min": -8.36412329208719,
-        "max": 56.653286365746425
+        "median": -1.8628768013550345,
+        "min": -8.723829715469677,
+        "max": 5.215318524727586
       }
     }
   },
@@ -314,8 +314,8 @@
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.026849,
-      "elapsedSeconds": 0.027848672,
+      "cpuSeconds": 0.023995,
+      "elapsedSeconds": 0.025150197,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -331,13 +331,13 @@
       "binary": "baseline",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 27504
+      "peakRSSKiB": 27508
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024825,
-      "elapsedSeconds": 0.025249853,
+      "cpuSeconds": 0.02364,
+      "elapsedSeconds": 0.02397232,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -353,13 +353,13 @@
       "binary": "candidate",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 27652
+      "peakRSSKiB": 27608
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024635,
-      "elapsedSeconds": 0.024944102,
+      "cpuSeconds": 0.024095,
+      "elapsedSeconds": 0.024475491,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -375,13 +375,13 @@
       "binary": "candidate",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 27716
+      "peakRSSKiB": 27476
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.022656,
-      "elapsedSeconds": 0.023100045,
+      "cpuSeconds": 0.026053,
+      "elapsedSeconds": 0.026371419,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -397,13 +397,13 @@
       "binary": "baseline",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 27516
+      "peakRSSKiB": 27492
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024305,
-      "elapsedSeconds": 0.024675525,
+      "cpuSeconds": 0.023659,
+      "elapsedSeconds": 0.024127943,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -419,13 +419,13 @@
       "binary": "baseline",
       "pair": 2,
       "warmup": false,
-      "peakRSSKiB": 27552
+      "peakRSSKiB": 27824
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024682,
-      "elapsedSeconds": 0.024789768,
+      "cpuSeconds": 0.024697,
+      "elapsedSeconds": 0.02515549,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -441,13 +441,13 @@
       "binary": "candidate",
       "pair": 2,
       "warmup": false,
-      "peakRSSKiB": 27708
+      "peakRSSKiB": 27556
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024455,
-      "elapsedSeconds": 0.024923887,
+      "cpuSeconds": 0.023441,
+      "elapsedSeconds": 0.023820626,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -461,6 +461,28 @@
       "slides": 2,
       "warnings": [],
       "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 27828
+    },
+    {
+      "case": "control",
+      "contentIssues": [],
+      "cpuSeconds": 0.023159,
+      "elapsedSeconds": 0.023620174,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 2,
+      "warnings": [],
+      "binary": "baseline",
       "pair": 3,
       "warmup": false,
       "peakRSSKiB": 27512
@@ -468,30 +490,8 @@
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024502,
-      "elapsedSeconds": 0.024914859,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 2,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 27416
-    },
-    {
-      "case": "control",
-      "contentIssues": [],
-      "cpuSeconds": 0.024682,
-      "elapsedSeconds": 0.025021045,
+      "cpuSeconds": 0.025314,
+      "elapsedSeconds": 0.025578098,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -507,13 +507,13 @@
       "binary": "baseline",
       "pair": 4,
       "warmup": false,
-      "peakRSSKiB": 27556
+      "peakRSSKiB": 27500
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024612,
-      "elapsedSeconds": 0.025004941,
+      "cpuSeconds": 0.024533,
+      "elapsedSeconds": 0.025019529,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -529,13 +529,13 @@
       "binary": "candidate",
       "pair": 4,
       "warmup": false,
-      "peakRSSKiB": 27400
+      "peakRSSKiB": 27592
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.022885,
-      "elapsedSeconds": 0.02326301,
+      "cpuSeconds": 0.023536,
+      "elapsedSeconds": 0.023771107,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -551,13 +551,13 @@
       "binary": "candidate",
       "pair": 5,
       "warmup": false,
-      "peakRSSKiB": 27468
+      "peakRSSKiB": 27472
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024601,
-      "elapsedSeconds": 0.02501471,
+      "cpuSeconds": 0.028119,
+      "elapsedSeconds": 0.028424164,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -573,13 +573,13 @@
       "binary": "baseline",
       "pair": 5,
       "warmup": false,
-      "peakRSSKiB": 27704
+      "peakRSSKiB": 27508
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024357,
-      "elapsedSeconds": 0.024871985,
+      "cpuSeconds": 0.023782,
+      "elapsedSeconds": 0.02410839,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -595,13 +595,13 @@
       "binary": "baseline",
       "pair": 6,
       "warmup": false,
-      "peakRSSKiB": 27672
+      "peakRSSKiB": 27816
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.023964,
-      "elapsedSeconds": 0.024372498,
+      "cpuSeconds": 0.024359,
+      "elapsedSeconds": 0.02480269,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -617,13 +617,13 @@
       "binary": "candidate",
       "pair": 6,
       "warmup": false,
-      "peakRSSKiB": 27676
+      "peakRSSKiB": 27392
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.024301,
-      "elapsedSeconds": 0.024733551,
+      "cpuSeconds": 0.027138,
+      "elapsedSeconds": 0.027556433,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -639,13 +639,13 @@
       "binary": "candidate",
       "pair": 7,
       "warmup": false,
-      "peakRSSKiB": 27580
+      "peakRSSKiB": 27472
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.023851,
-      "elapsedSeconds": 0.02416667,
+      "cpuSeconds": 0.024257,
+      "elapsedSeconds": 0.024661211,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -661,13 +661,13 @@
       "binary": "baseline",
       "pair": 7,
       "warmup": false,
-      "peakRSSKiB": 27708
+      "peakRSSKiB": 27428
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.022692,
-      "elapsedSeconds": 0.023135132,
+      "cpuSeconds": 0.022935,
+      "elapsedSeconds": 0.023195682,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -683,13 +683,13 @@
       "binary": "baseline",
       "pair": 8,
       "warmup": false,
-      "peakRSSKiB": 27620
+      "peakRSSKiB": 27712
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.023502,
-      "elapsedSeconds": 0.023880833,
+      "cpuSeconds": 0.025169,
+      "elapsedSeconds": 0.025510474,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -705,13 +705,13 @@
       "binary": "candidate",
       "pair": 8,
       "warmup": false,
-      "peakRSSKiB": 27452
+      "peakRSSKiB": 27608
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.025157,
-      "elapsedSeconds": 0.025484043,
+      "cpuSeconds": 0.026241,
+      "elapsedSeconds": 0.026752242,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -727,13 +727,13 @@
       "binary": "candidate",
       "pair": 9,
       "warmup": false,
-      "peakRSSKiB": 27452
+      "peakRSSKiB": 27624
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.022422,
-      "elapsedSeconds": 0.022882389,
+      "cpuSeconds": 0.024022,
+      "elapsedSeconds": 0.02435906,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -749,13 +749,13 @@
       "binary": "baseline",
       "pair": 9,
       "warmup": false,
-      "peakRSSKiB": 27556
+      "peakRSSKiB": 27516
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.022694,
-      "elapsedSeconds": 0.023038534,
+      "cpuSeconds": 0.023858,
+      "elapsedSeconds": 0.024112245,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -771,13 +771,13 @@
       "binary": "baseline",
       "pair": 10,
       "warmup": false,
-      "peakRSSKiB": 27824
+      "peakRSSKiB": 27808
     },
     {
       "case": "control",
       "contentIssues": [],
-      "cpuSeconds": 0.02344,
-      "elapsedSeconds": 0.023815325,
+      "cpuSeconds": 0.026466,
+      "elapsedSeconds": 0.027978472,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -793,13 +793,13 @@
       "binary": "candidate",
       "pair": 10,
       "warmup": false,
-      "peakRSSKiB": 27784
+      "peakRSSKiB": 27488
     },
     {
       "case": "comparison",
       "contentIssues": [],
-      "cpuSeconds": 0.123565,
-      "elapsedSeconds": 0.123953096,
+      "cpuSeconds": 0.124756,
+      "elapsedSeconds": 0.125385822,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -817,13 +817,13 @@
       "binary": "baseline",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 28612
+      "peakRSSKiB": 28632
     },
     {
       "case": "comparison",
       "contentIssues": [],
-      "cpuSeconds": 0.114968,
-      "elapsedSeconds": 0.115408583,
+      "cpuSeconds": 0.120518,
+      "elapsedSeconds": 0.12091218,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -841,13 +841,13 @@
       "binary": "candidate",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 28868
+      "peakRSSKiB": 28920
     },
     {
       "case": "comparison",
       "contentIssues": [],
-      "cpuSeconds": 0.123344,
-      "elapsedSeconds": 0.123764081,
+      "cpuSeconds": 0.121898,
+      "elapsedSeconds": 0.1225352,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -865,13 +865,13 @@
       "binary": "candidate",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 28992
+      "peakRSSKiB": 28820
     },
     {
       "case": "comparison",
       "contentIssues": [],
-      "cpuSeconds": 0.120528,
-      "elapsedSeconds": 0.121009097,
+      "cpuSeconds": 0.12583,
+      "elapsedSeconds": 0.12627588,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -888,206 +888,14 @@
       ],
       "binary": "baseline",
       "pair": 1,
-      "warmup": false,
-      "peakRSSKiB": 28616
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.122181,
-      "elapsedSeconds": 0.122599413,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 28620
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.124164,
-      "elapsedSeconds": 0.124746636,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 29032
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.116693,
-      "elapsedSeconds": 0.116968269,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 28864
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.122168,
-      "elapsedSeconds": 0.122515614,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 28724
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.12908,
-      "elapsedSeconds": 0.129658234,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 28736
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.126819,
-      "elapsedSeconds": 0.127263801,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 29004
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.128051,
-      "elapsedSeconds": 0.128353509,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 29036
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.143854,
-      "elapsedSeconds": 0.144355866,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 5,
       "warmup": false,
       "peakRSSKiB": 28652
     },
     {
       "case": "comparison",
       "contentIssues": [],
-      "cpuSeconds": 0.123501,
-      "elapsedSeconds": 0.123879622,
+      "cpuSeconds": 0.119803,
+      "elapsedSeconds": 0.120339424,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1101,353 +909,17 @@
       "slides": 4,
       "warnings": [
         "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 28716
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.123033,
-      "elapsedSeconds": 0.123354558,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 28852
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.118016,
-      "elapsedSeconds": 0.118572692,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 7,
-      "warmup": false,
-      "peakRSSKiB": 28872
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.120925,
-      "elapsedSeconds": 0.121208611,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 7,
-      "warmup": false,
-      "peakRSSKiB": 28744
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.117024,
-      "elapsedSeconds": 0.117540414,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 8,
-      "warmup": false,
-      "peakRSSKiB": 28664
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.117083,
-      "elapsedSeconds": 0.117477866,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 8,
-      "warmup": false,
-      "peakRSSKiB": 28940
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.121895,
-      "elapsedSeconds": 0.122216908,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 9,
-      "warmup": false,
-      "peakRSSKiB": 29012
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.12646,
-      "elapsedSeconds": 0.126967726,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 9,
-      "warmup": false,
-      "peakRSSKiB": 28668
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.126385,
-      "elapsedSeconds": 0.126811202,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 10,
-      "warmup": false,
-      "peakRSSKiB": 28660
-    },
-    {
-      "case": "comparison",
-      "contentIssues": [],
-      "cpuSeconds": 0.11791,
-      "elapsedSeconds": 0.118317023,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 4,
-      "warnings": [
-        "Two views of the evidence: content flows across 4 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 10,
-      "warmup": false,
-      "peakRSSKiB": 28860
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.083716,
-      "elapsedSeconds": 0.084305074,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 0,
-      "warmup": true,
-      "peakRSSKiB": 27844
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.071105,
-      "elapsedSeconds": 0.071563145,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 0,
-      "warmup": true,
-      "peakRSSKiB": 28144
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.073344,
-      "elapsedSeconds": 0.07370639,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 1,
-      "warmup": false,
-      "peakRSSKiB": 28176
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.078308,
-      "elapsedSeconds": 0.078567916,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 1,
-      "warmup": false,
-      "peakRSSKiB": 28144
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.074847,
-      "elapsedSeconds": 0.075292882,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
       ],
       "binary": "baseline",
       "pair": 2,
       "warmup": false,
-      "peakRSSKiB": 28080
+      "peakRSSKiB": 28704
     },
     {
-      "case": "dense",
+      "case": "comparison",
       "contentIssues": [],
-      "cpuSeconds": 0.071235,
-      "elapsedSeconds": 0.071709441,
+      "cpuSeconds": 0.11596,
+      "elapsedSeconds": 0.116451251,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1458,20 +930,20 @@
         "calibri light Italic",
         "calibri light Regular"
       ],
-      "slides": 3,
+      "slides": 4,
       "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
       ],
       "binary": "candidate",
       "pair": 2,
       "warmup": false,
-      "peakRSSKiB": 28332
+      "peakRSSKiB": 29004
     },
     {
-      "case": "dense",
+      "case": "comparison",
       "contentIssues": [],
-      "cpuSeconds": 0.075121,
-      "elapsedSeconds": 0.075504695,
+      "cpuSeconds": 0.116359,
+      "elapsedSeconds": 0.116721354,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1482,20 +954,548 @@
         "calibri light Italic",
         "calibri light Regular"
       ],
-      "slides": 3,
+      "slides": 4,
       "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
       ],
       "binary": "candidate",
       "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 28828
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.122829,
+      "elapsedSeconds": 0.122991544,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 28824
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.124865,
+      "elapsedSeconds": 0.12557431,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 28712
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.116078,
+      "elapsedSeconds": 0.116481566,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 28928
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.119009,
+      "elapsedSeconds": 0.119390343,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 28824
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.12958,
+      "elapsedSeconds": 0.129978634,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 28632
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.125092,
+      "elapsedSeconds": 0.125973614,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28740
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.117321,
+      "elapsedSeconds": 0.117895242,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28896
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.126046,
+      "elapsedSeconds": 0.126500652,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 28824
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.119034,
+      "elapsedSeconds": 0.119579913,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 28876
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.128332,
+      "elapsedSeconds": 0.128715291,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 28708
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.122756,
+      "elapsedSeconds": 0.123206776,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 29000
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.11638,
+      "elapsedSeconds": 0.116788098,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 28864
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.118539,
+      "elapsedSeconds": 0.118858815,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 28736
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.120301,
+      "elapsedSeconds": 0.121975504,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 28884
+    },
+    {
+      "case": "comparison",
+      "contentIssues": [],
+      "cpuSeconds": 0.116672,
+      "elapsedSeconds": 0.117228097,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 4,
+      "warnings": [
+        "Two views of the evidence: content flows across 4 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 28768
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.077649,
+      "elapsedSeconds": 0.078141033,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 28100
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.078973,
+      "elapsedSeconds": 0.079385489,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 28160
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.074084,
+      "elapsedSeconds": 0.074583637,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 1,
       "warmup": false,
       "peakRSSKiB": 28184
     },
     {
       "case": "dense",
       "contentIssues": [],
-      "cpuSeconds": 0.076434,
-      "elapsedSeconds": 0.076760229,
+      "cpuSeconds": 0.081443,
+      "elapsedSeconds": 0.081804458,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 1,
+      "warmup": false,
+      "peakRSSKiB": 28068
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.079362,
+      "elapsedSeconds": 0.079594658,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 27968
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.073227,
+      "elapsedSeconds": 0.073681109,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 28312
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.077028,
+      "elapsedSeconds": 0.077376399,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 28204
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.079323,
+      "elapsedSeconds": 0.079875542,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1513,13 +1513,13 @@
       "binary": "baseline",
       "pair": 3,
       "warmup": false,
-      "peakRSSKiB": 28188
+      "peakRSSKiB": 28220
     },
     {
       "case": "dense",
       "contentIssues": [],
-      "cpuSeconds": 0.075579,
-      "elapsedSeconds": 0.076084108,
+      "cpuSeconds": 0.075923,
+      "elapsedSeconds": 0.076318216,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1537,13 +1537,13 @@
       "binary": "baseline",
       "pair": 4,
       "warmup": false,
-      "peakRSSKiB": 27968
+      "peakRSSKiB": 27940
     },
     {
       "case": "dense",
       "contentIssues": [],
-      "cpuSeconds": 0.071713,
-      "elapsedSeconds": 0.072213763,
+      "cpuSeconds": 0.073006,
+      "elapsedSeconds": 0.073460279,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1561,13 +1561,13 @@
       "binary": "candidate",
       "pair": 4,
       "warmup": false,
-      "peakRSSKiB": 28284
+      "peakRSSKiB": 28232
     },
     {
       "case": "dense",
       "contentIssues": [],
-      "cpuSeconds": 0.071581,
-      "elapsedSeconds": 0.072049351,
+      "cpuSeconds": 0.072664,
+      "elapsedSeconds": 0.07301426,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1584,110 +1584,110 @@
       ],
       "binary": "candidate",
       "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 28060
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.076307,
-      "elapsedSeconds": 0.076807719,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 28064
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.076754,
-      "elapsedSeconds": 0.077128736,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 28080
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.071036,
-      "elapsedSeconds": 0.071738659,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 28160
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.07258,
-      "elapsedSeconds": 0.072927203,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 7,
       "warmup": false,
       "peakRSSKiB": 28176
     },
     {
       "case": "dense",
       "contentIssues": [],
-      "cpuSeconds": 0.077668,
-      "elapsedSeconds": 0.078036117,
+      "cpuSeconds": 0.077653,
+      "elapsedSeconds": 0.078073367,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 28188
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.082884,
+      "elapsedSeconds": 0.083356565,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28076
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.069928,
+      "elapsedSeconds": 0.070349078,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28204
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.078166,
+      "elapsedSeconds": 0.078568192,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 28084
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.075934,
+      "elapsedSeconds": 0.076358596,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1705,13 +1705,13 @@
       "binary": "baseline",
       "pair": 7,
       "warmup": false,
-      "peakRSSKiB": 27964
+      "peakRSSKiB": 27988
     },
     {
       "case": "dense",
       "contentIssues": [],
-      "cpuSeconds": 0.076312,
-      "elapsedSeconds": 0.076736753,
+      "cpuSeconds": 0.076252,
+      "elapsedSeconds": 0.07662895,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1729,13 +1729,13 @@
       "binary": "baseline",
       "pair": 8,
       "warmup": false,
-      "peakRSSKiB": 28076
+      "peakRSSKiB": 28024
     },
     {
       "case": "dense",
       "contentIssues": [],
-      "cpuSeconds": 0.070729,
-      "elapsedSeconds": 0.071085851,
+      "cpuSeconds": 0.076486,
+      "elapsedSeconds": 0.077051139,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1753,13 +1753,13 @@
       "binary": "candidate",
       "pair": 8,
       "warmup": false,
-      "peakRSSKiB": 28052
+      "peakRSSKiB": 28056
     },
     {
       "case": "dense",
       "contentIssues": [],
-      "cpuSeconds": 0.070873,
-      "elapsedSeconds": 0.07130171,
+      "cpuSeconds": 0.07291,
+      "elapsedSeconds": 0.073253038,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1782,8 +1782,8 @@
     {
       "case": "dense",
       "contentIssues": [],
-      "cpuSeconds": 0.077346,
-      "elapsedSeconds": 0.077690107,
+      "cpuSeconds": 0.077537,
+      "elapsedSeconds": 0.07810312,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1801,61 +1801,61 @@
       "binary": "baseline",
       "pair": 9,
       "warmup": false,
+      "peakRSSKiB": 28188
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.077868,
+      "elapsedSeconds": 0.078279236,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 28036
+    },
+    {
+      "case": "dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.071381,
+      "elapsedSeconds": 0.071880162,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
       "peakRSSKiB": 28080
     },
     {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.075739,
-      "elapsedSeconds": 0.07622112,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 10,
-      "warmup": false,
-      "peakRSSKiB": 27844
-    },
-    {
-      "case": "dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.07249,
-      "elapsedSeconds": 0.072912331,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 10,
-      "warmup": false,
-      "peakRSSKiB": 28180
-    },
-    {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.017561,
-      "elapsedSeconds": 0.017903491,
+      "cpuSeconds": 0.017903,
+      "elapsedSeconds": 0.01828131,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1871,13 +1871,13 @@
       "binary": "baseline",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 26940
+      "peakRSSKiB": 27316
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.017344,
-      "elapsedSeconds": 0.017756965,
+      "cpuSeconds": 0.017838,
+      "elapsedSeconds": 0.018114292,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1893,13 +1893,13 @@
       "binary": "candidate",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 27448
+      "peakRSSKiB": 27136
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.019063,
-      "elapsedSeconds": 0.019291299,
+      "cpuSeconds": 0.018763,
+      "elapsedSeconds": 0.019202218,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1915,13 +1915,13 @@
       "binary": "candidate",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 27448
+      "peakRSSKiB": 27600
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.018007,
-      "elapsedSeconds": 0.018250271,
+      "cpuSeconds": 0.017814,
+      "elapsedSeconds": 0.018175522,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -1936,124 +1936,124 @@
       "warnings": [],
       "binary": "baseline",
       "pair": 1,
-      "warmup": false,
-      "peakRSSKiB": 27392
-    },
-    {
-      "case": "source",
-      "contentIssues": [],
-      "cpuSeconds": 0.017653,
-      "elapsedSeconds": 0.017969839,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 1,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 27032
-    },
-    {
-      "case": "source",
-      "contentIssues": [],
-      "cpuSeconds": 0.017636,
-      "elapsedSeconds": 0.017881309,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 1,
-      "warnings": [],
-      "binary": "candidate",
-      "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 27512
-    },
-    {
-      "case": "source",
-      "contentIssues": [],
-      "cpuSeconds": 0.020616,
-      "elapsedSeconds": 0.02093829,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 1,
-      "warnings": [],
-      "binary": "candidate",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 27216
-    },
-    {
-      "case": "source",
-      "contentIssues": [],
-      "cpuSeconds": 0.018129,
-      "elapsedSeconds": 0.01848989,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 1,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 27280
-    },
-    {
-      "case": "source",
-      "contentIssues": [],
-      "cpuSeconds": 0.017339,
-      "elapsedSeconds": 0.017645627,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 1,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 4,
       "warmup": false,
       "peakRSSKiB": 27224
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.018626,
-      "elapsedSeconds": 0.018943557,
+      "cpuSeconds": 0.017599,
+      "elapsedSeconds": 0.018016222,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 1,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 27224
+    },
+    {
+      "case": "source",
+      "contentIssues": [],
+      "cpuSeconds": 0.018705,
+      "elapsedSeconds": 0.019305174,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 1,
+      "warnings": [],
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 27160
+    },
+    {
+      "case": "source",
+      "contentIssues": [],
+      "cpuSeconds": 0.018535,
+      "elapsedSeconds": 0.01900455,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 1,
+      "warnings": [],
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 27504
+    },
+    {
+      "case": "source",
+      "contentIssues": [],
+      "cpuSeconds": 0.021034,
+      "elapsedSeconds": 0.021478709,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 1,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 27276
+    },
+    {
+      "case": "source",
+      "contentIssues": [],
+      "cpuSeconds": 0.01929,
+      "elapsedSeconds": 0.019784079,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 1,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 27572
+    },
+    {
+      "case": "source",
+      "contentIssues": [],
+      "cpuSeconds": 0.020517,
+      "elapsedSeconds": 0.021047273,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2069,13 +2069,13 @@
       "binary": "candidate",
       "pair": 4,
       "warmup": false,
-      "peakRSSKiB": 27272
+      "peakRSSKiB": 27136
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.018477,
-      "elapsedSeconds": 0.018901661,
+      "cpuSeconds": 0.018776,
+      "elapsedSeconds": 0.018708793,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2091,13 +2091,13 @@
       "binary": "candidate",
       "pair": 5,
       "warmup": false,
-      "peakRSSKiB": 27076
+      "peakRSSKiB": 27216
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.01889,
-      "elapsedSeconds": 0.019359269,
+      "cpuSeconds": 0.024793,
+      "elapsedSeconds": 0.025130089,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2113,13 +2113,13 @@
       "binary": "baseline",
       "pair": 5,
       "warmup": false,
-      "peakRSSKiB": 27036
+      "peakRSSKiB": 27396
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.017629,
-      "elapsedSeconds": 0.018118448,
+      "cpuSeconds": 0.018595,
+      "elapsedSeconds": 0.019115695,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2135,13 +2135,13 @@
       "binary": "baseline",
       "pair": 6,
       "warmup": false,
-      "peakRSSKiB": 27316
+      "peakRSSKiB": 27464
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.018075,
-      "elapsedSeconds": 0.018498798,
+      "cpuSeconds": 0.017906,
+      "elapsedSeconds": 0.018259846,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2157,13 +2157,13 @@
       "binary": "candidate",
       "pair": 6,
       "warmup": false,
-      "peakRSSKiB": 27312
+      "peakRSSKiB": 27120
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.018639,
-      "elapsedSeconds": 0.019017216,
+      "cpuSeconds": 0.017372,
+      "elapsedSeconds": 0.017745247,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2179,13 +2179,13 @@
       "binary": "candidate",
       "pair": 7,
       "warmup": false,
-      "peakRSSKiB": 27256
+      "peakRSSKiB": 27304
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.01875,
-      "elapsedSeconds": 0.019109332,
+      "cpuSeconds": 0.017931,
+      "elapsedSeconds": 0.01854721,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2201,13 +2201,13 @@
       "binary": "baseline",
       "pair": 7,
       "warmup": false,
-      "peakRSSKiB": 27400
+      "peakRSSKiB": 27292
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.017856,
-      "elapsedSeconds": 0.018172622,
+      "cpuSeconds": 0.017702,
+      "elapsedSeconds": 0.018105127,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2223,13 +2223,13 @@
       "binary": "baseline",
       "pair": 8,
       "warmup": false,
-      "peakRSSKiB": 27364
+      "peakRSSKiB": 27444
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.018593,
-      "elapsedSeconds": 0.018903449,
+      "cpuSeconds": 0.017746,
+      "elapsedSeconds": 0.018157295,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2245,13 +2245,13 @@
       "binary": "candidate",
       "pair": 8,
       "warmup": false,
-      "peakRSSKiB": 27244
+      "peakRSSKiB": 27416
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.018262,
-      "elapsedSeconds": 0.018625724,
+      "cpuSeconds": 0.017903,
+      "elapsedSeconds": 0.018236462,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2267,13 +2267,13 @@
       "binary": "candidate",
       "pair": 9,
       "warmup": false,
-      "peakRSSKiB": 27228
+      "peakRSSKiB": 27176
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.019021,
-      "elapsedSeconds": 0.01942052,
+      "cpuSeconds": 0.018284,
+      "elapsedSeconds": 0.018875414,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2288,36 +2288,36 @@
       "warnings": [],
       "binary": "baseline",
       "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 27460
+    },
+    {
+      "case": "source",
+      "contentIssues": [],
+      "cpuSeconds": 0.018058,
+      "elapsedSeconds": 0.018360395,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 1,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 10,
       "warmup": false,
       "peakRSSKiB": 27424
     },
     {
       "case": "source",
       "contentIssues": [],
-      "cpuSeconds": 0.018031,
-      "elapsedSeconds": 0.018155933,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 1,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 10,
-      "warmup": false,
-      "peakRSSKiB": 27248
-    },
-    {
-      "case": "source",
-      "contentIssues": [],
-      "cpuSeconds": 0.018856,
-      "elapsedSeconds": 0.019287374,
+      "cpuSeconds": 0.018443,
+      "elapsedSeconds": 0.01877412,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2333,13 +2333,13 @@
       "binary": "candidate",
       "pair": 10,
       "warmup": false,
-      "peakRSSKiB": 27440
+      "peakRSSKiB": 27216
     },
     {
       "case": "long-source",
       "contentIssues": [],
-      "cpuSeconds": 0.085331,
-      "elapsedSeconds": 0.085836815,
+      "cpuSeconds": 0.079711,
+      "elapsedSeconds": 0.080400338,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2358,13 +2358,13 @@
       "binary": "baseline",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 28064
+      "peakRSSKiB": 28132
     },
     {
       "case": "long-source",
       "contentIssues": [],
-      "cpuSeconds": 0.072103,
-      "elapsedSeconds": 0.072547163,
+      "cpuSeconds": 0.068155,
+      "elapsedSeconds": 0.068595267,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2383,13 +2383,13 @@
       "binary": "candidate",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 28316
+      "peakRSSKiB": 28332
     },
     {
       "case": "long-source",
       "contentIssues": [],
-      "cpuSeconds": 0.071637,
-      "elapsedSeconds": 0.071990845,
+      "cpuSeconds": 0.070232,
+      "elapsedSeconds": 0.070668975,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2408,13 +2408,13 @@
       "binary": "candidate",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 28148
+      "peakRSSKiB": 28428
     },
     {
       "case": "long-source",
       "contentIssues": [],
-      "cpuSeconds": 0.082703,
-      "elapsedSeconds": 0.083053771,
+      "cpuSeconds": 0.103585,
+      "elapsedSeconds": 0.104501967,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2433,13 +2433,13 @@
       "binary": "baseline",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 28184
+      "peakRSSKiB": 28044
     },
     {
       "case": "long-source",
       "contentIssues": [],
-      "cpuSeconds": 0.084168,
-      "elapsedSeconds": 0.084526165,
+      "cpuSeconds": 0.078842,
+      "elapsedSeconds": 0.079321863,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2457,389 +2457,64 @@
       ],
       "binary": "baseline",
       "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 28284
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.076928,
-      "elapsedSeconds": 0.077276228,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "candidate",
-      "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 28244
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.070831,
-      "elapsedSeconds": 0.071277433,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "candidate",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 28140
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.084995,
-      "elapsedSeconds": 0.085512602,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "baseline",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 28000
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.094979,
-      "elapsedSeconds": 0.095437713,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "baseline",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 28316
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.07046,
-      "elapsedSeconds": 0.070854446,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "candidate",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 28140
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.069242,
-      "elapsedSeconds": 0.069643418,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "candidate",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 28232
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.081322,
-      "elapsedSeconds": 0.081795261,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "baseline",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 28096
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.081776,
-      "elapsedSeconds": 0.082176837,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "baseline",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 28284
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.070291,
-      "elapsedSeconds": 0.070794456,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "candidate",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 28152
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.074938,
-      "elapsedSeconds": 0.075228939,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "candidate",
-      "pair": 7,
-      "warmup": false,
-      "peakRSSKiB": 28228
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.076326,
-      "elapsedSeconds": 0.076672199,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "baseline",
-      "pair": 7,
-      "warmup": false,
-      "peakRSSKiB": 28316
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.085113,
-      "elapsedSeconds": 0.08536156,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "baseline",
-      "pair": 8,
-      "warmup": false,
-      "peakRSSKiB": 28264
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.069379,
-      "elapsedSeconds": 0.069788596,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "candidate",
-      "pair": 8,
-      "warmup": false,
-      "peakRSSKiB": 28292
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.074456,
-      "elapsedSeconds": 0.074601448,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "candidate",
-      "pair": 9,
-      "warmup": false,
-      "peakRSSKiB": 28396
-    },
-    {
-      "case": "long-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.079952,
-      "elapsedSeconds": 0.080335009,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Source notes: content flows across 2 slides to keep it readable.",
-        "Evidence: extended source notes follow the slide at a readable size."
-      ],
-      "binary": "baseline",
-      "pair": 9,
       "warmup": false,
       "peakRSSKiB": 28256
     },
     {
       "case": "long-source",
       "contentIssues": [],
-      "cpuSeconds": 0.079079,
-      "elapsedSeconds": 0.0794916,
+      "cpuSeconds": 0.07047,
+      "elapsedSeconds": 0.070896987,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 28416
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.075445,
+      "elapsedSeconds": 0.076260233,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 28200
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.077176,
+      "elapsedSeconds": 0.077783013,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2856,15 +2531,340 @@
         "Evidence: extended source notes follow the slide at a readable size."
       ],
       "binary": "baseline",
-      "pair": 10,
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 28100
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.097053,
+      "elapsedSeconds": 0.097562657,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "baseline",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 28332
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.072704,
+      "elapsedSeconds": 0.073148156,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 28284
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.0727,
+      "elapsedSeconds": 0.073250678,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 28212
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.080892,
+      "elapsedSeconds": 0.081298112,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "baseline",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 28264
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.096171,
+      "elapsedSeconds": 0.096919969,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "baseline",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28336
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.127927,
+      "elapsedSeconds": 0.128469046,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28428
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.069018,
+      "elapsedSeconds": 0.069332018,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 28252
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.078116,
+      "elapsedSeconds": 0.078676395,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "baseline",
+      "pair": 7,
       "warmup": false,
       "peakRSSKiB": 28000
     },
     {
       "case": "long-source",
       "contentIssues": [],
-      "cpuSeconds": 0.070271,
-      "elapsedSeconds": 0.070592027,
+      "cpuSeconds": 0.076965,
+      "elapsedSeconds": 0.077744351,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "baseline",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 28236
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.070203,
+      "elapsedSeconds": 0.072396478,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "candidate",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 28172
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.074122,
+      "elapsedSeconds": 0.074476681,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "candidate",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 28212
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.080206,
+      "elapsedSeconds": 0.080681943,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "baseline",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 28028
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.082989,
+      "elapsedSeconds": 0.083597834,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Source notes: content flows across 2 slides to keep it readable.",
+        "Evidence: extended source notes follow the slide at a readable size."
+      ],
+      "binary": "baseline",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 28336
+    },
+    {
+      "case": "long-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.073716,
+      "elapsedSeconds": 0.073994745,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -2883,469 +2883,13 @@
       "binary": "candidate",
       "pair": 10,
       "warmup": false,
-      "peakRSSKiB": 28220
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.089421,
-      "elapsedSeconds": 0.089843224,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 0,
-      "warmup": true,
-      "peakRSSKiB": 28148
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.082103,
-      "elapsedSeconds": 0.082405234,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 0,
-      "warmup": true,
-      "peakRSSKiB": 28208
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.081829,
-      "elapsedSeconds": 0.082251917,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 1,
-      "warmup": false,
-      "peakRSSKiB": 28240
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.089869,
-      "elapsedSeconds": 0.090294109,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 1,
-      "warmup": false,
-      "peakRSSKiB": 28140
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.092575,
-      "elapsedSeconds": 0.092824158,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 27900
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.083632,
-      "elapsedSeconds": 0.084137745,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 28324
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.084354,
-      "elapsedSeconds": 0.084773954,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 28312
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.089129,
-      "elapsedSeconds": 0.089601032,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 28132
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.092505,
-      "elapsedSeconds": 0.093021429,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 28020
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.084337,
-      "elapsedSeconds": 0.08491416,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 28224
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.081938,
-      "elapsedSeconds": 0.082360172,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 28380
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.08901,
-      "elapsedSeconds": 0.089403461,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 28044
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.092443,
-      "elapsedSeconds": 0.092770328,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 27872
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.082861,
-      "elapsedSeconds": 0.083319097,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 28340
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.083136,
-      "elapsedSeconds": 0.083564474,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 7,
-      "warmup": false,
-      "peakRSSKiB": 28400
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.088806,
-      "elapsedSeconds": 0.089301715,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 7,
-      "warmup": false,
-      "peakRSSKiB": 28156
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.102917,
-      "elapsedSeconds": 0.103216034,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 8,
-      "warmup": false,
-      "peakRSSKiB": 28020
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.089642,
-      "elapsedSeconds": 0.090021034,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 8,
-      "warmup": false,
       "peakRSSKiB": 28236
     },
     {
       "case": "cited-dense",
       "contentIssues": [],
-      "cpuSeconds": 0.081969,
-      "elapsedSeconds": 0.082433758,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "candidate",
-      "pair": 9,
-      "warmup": false,
-      "peakRSSKiB": 28356
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.095468,
-      "elapsedSeconds": 0.096270846,
+      "cpuSeconds": 0.087044,
+      "elapsedSeconds": 0.087611529,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3361,39 +2905,15 @@
         "Cited evidence: content flows across 3 slides to keep it readable."
       ],
       "binary": "baseline",
-      "pair": 9,
-      "warmup": false,
-      "peakRSSKiB": 27972
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 28164
     },
     {
       "case": "cited-dense",
       "contentIssues": [],
-      "cpuSeconds": 0.089627,
-      "elapsedSeconds": 0.091109952,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Cited evidence: content flows across 3 slides to keep it readable."
-      ],
-      "binary": "baseline",
-      "pair": 10,
-      "warmup": false,
-      "peakRSSKiB": 28080
-    },
-    {
-      "case": "cited-dense",
-      "contentIssues": [],
-      "cpuSeconds": 0.085505,
-      "elapsedSeconds": 0.085780621,
+      "cpuSeconds": 0.088736,
+      "elapsedSeconds": 0.089317995,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3409,15 +2929,495 @@
         "Cited evidence: content flows across 3 slides to keep it readable."
       ],
       "binary": "candidate",
-      "pair": 10,
+      "pair": 0,
+      "warmup": true,
+      "peakRSSKiB": 28296
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.08559,
+      "elapsedSeconds": 0.086031304,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 1,
       "warmup": false,
       "peakRSSKiB": 28368
     },
     {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.094641,
+      "elapsedSeconds": 0.095176958,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 1,
+      "warmup": false,
+      "peakRSSKiB": 28100
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.096659,
+      "elapsedSeconds": 0.096994318,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 28276
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.086824,
+      "elapsedSeconds": 0.087231393,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 28368
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.083151,
+      "elapsedSeconds": 0.089587048,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 28212
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.087511,
+      "elapsedSeconds": 0.088009078,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 28204
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.090459,
+      "elapsedSeconds": 0.090756635,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 28152
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.090852,
+      "elapsedSeconds": 0.091319081,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 28372
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.081541,
+      "elapsedSeconds": 0.082222265,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 28200
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.094592,
+      "elapsedSeconds": 0.095120625,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 28084
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.090616,
+      "elapsedSeconds": 0.091963732,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28196
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.083493,
+      "elapsedSeconds": 0.084090112,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28264
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.08568,
+      "elapsedSeconds": 0.086085406,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 28216
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.092598,
+      "elapsedSeconds": 0.093834362,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 28200
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.08939,
+      "elapsedSeconds": 0.089879966,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 28032
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.082499,
+      "elapsedSeconds": 0.083257202,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 28212
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.091773,
+      "elapsedSeconds": 0.092042628,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 28220
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.08796,
+      "elapsedSeconds": 0.088353324,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 28020
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.090226,
+      "elapsedSeconds": 0.090525639,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "baseline",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 28200
+    },
+    {
+      "case": "cited-dense",
+      "contentIssues": [],
+      "cpuSeconds": 0.092645,
+      "elapsedSeconds": 0.093162736,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Cited evidence: content flows across 3 slides to keep it readable."
+      ],
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 28296
+    },
+    {
       "case": "repeated-source",
       "contentIssues": [],
-      "cpuSeconds": 0.067265,
-      "elapsedSeconds": 0.067709605,
+      "cpuSeconds": 0.072336,
+      "elapsedSeconds": 0.072716522,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3433,13 +3433,13 @@
       "binary": "baseline",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 29148
+      "peakRSSKiB": 29136
     },
     {
       "case": "repeated-source",
       "contentIssues": [],
-      "cpuSeconds": 0.070205,
-      "elapsedSeconds": 0.07064456,
+      "cpuSeconds": 0.069747,
+      "elapsedSeconds": 0.070082448,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3455,13 +3455,13 @@
       "binary": "candidate",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 29384
+      "peakRSSKiB": 29316
     },
     {
       "case": "repeated-source",
       "contentIssues": [],
-      "cpuSeconds": 0.07587,
-      "elapsedSeconds": 0.076058136,
+      "cpuSeconds": 0.067015,
+      "elapsedSeconds": 0.067413755,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3477,13 +3477,13 @@
       "binary": "candidate",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 29452
+      "peakRSSKiB": 29432
     },
     {
       "case": "repeated-source",
       "contentIssues": [],
-      "cpuSeconds": 0.067076,
-      "elapsedSeconds": 0.067378667,
+      "cpuSeconds": 0.068567,
+      "elapsedSeconds": 0.068913854,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3499,13 +3499,13 @@
       "binary": "baseline",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 29112
+      "peakRSSKiB": 29376
     },
     {
       "case": "repeated-source",
       "contentIssues": [],
-      "cpuSeconds": 0.067872,
-      "elapsedSeconds": 0.068446405,
+      "cpuSeconds": 0.068479,
+      "elapsedSeconds": 0.069082684,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3526,8 +3526,8 @@
     {
       "case": "repeated-source",
       "contentIssues": [],
-      "cpuSeconds": 0.067707,
-      "elapsedSeconds": 0.068061051,
+      "cpuSeconds": 0.067549,
+      "elapsedSeconds": 0.067965495,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3542,168 +3542,14 @@
       "warnings": [],
       "binary": "candidate",
       "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 29380
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.067042,
-      "elapsedSeconds": 0.067352785,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "candidate",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 29420
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.07119,
-      "elapsedSeconds": 0.071743775,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 29116
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.065023,
-      "elapsedSeconds": 0.065488254,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 29404
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.067065,
-      "elapsedSeconds": 0.067433553,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "candidate",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 29132
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.068187,
-      "elapsedSeconds": 0.068555555,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "candidate",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 29364
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.069921,
-      "elapsedSeconds": 0.070620585,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 29388
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.069005,
-      "elapsedSeconds": 0.069449226,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 6,
       "warmup": false,
       "peakRSSKiB": 29280
     },
     {
       "case": "repeated-source",
       "contentIssues": [],
-      "cpuSeconds": 0.070449,
-      "elapsedSeconds": 0.070788318,
+      "cpuSeconds": 0.069374,
+      "elapsedSeconds": 0.069888497,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3717,81 +3563,235 @@
       "slides": 8,
       "warnings": [],
       "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 29436
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.073312,
+      "elapsedSeconds": 0.073838167,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 29168
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.071356,
+      "elapsedSeconds": 0.071820083,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 29256
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.074885,
+      "elapsedSeconds": 0.075293049,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 29432
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.070651,
+      "elapsedSeconds": 0.070916089,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 29456
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.071887,
+      "elapsedSeconds": 0.072246964,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 29416
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.079049,
+      "elapsedSeconds": 0.079611813,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "baseline",
       "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 29364
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.075426,
-      "elapsedSeconds": 0.075789206,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "candidate",
-      "pair": 7,
-      "warmup": false,
-      "peakRSSKiB": 29424
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.07516,
-      "elapsedSeconds": 0.075693945,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 7,
-      "warmup": false,
-      "peakRSSKiB": 29260
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.07036,
-      "elapsedSeconds": 0.070929315,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 8,
       "warmup": false,
       "peakRSSKiB": 29228
     },
     {
       "case": "repeated-source",
       "contentIssues": [],
-      "cpuSeconds": 0.072428,
-      "elapsedSeconds": 0.072888199,
+      "cpuSeconds": 0.074282,
+      "elapsedSeconds": 0.074945265,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 29332
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.069991,
+      "elapsedSeconds": 0.070728963,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 29316
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.070219,
+      "elapsedSeconds": 0.071020613,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 29320
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.080766,
+      "elapsedSeconds": 0.081244707,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 8,
+      "warmup": false,
+      "peakRSSKiB": 29404
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.074136,
+      "elapsedSeconds": 0.074722406,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3807,101 +3807,101 @@
       "binary": "candidate",
       "pair": 8,
       "warmup": false,
+      "peakRSSKiB": 29420
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.081453,
+      "elapsedSeconds": 0.081925401,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "candidate",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 29408
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.075452,
+      "elapsedSeconds": 0.075907103,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 29332
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.070796,
+      "elapsedSeconds": 0.071106091,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "baseline",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 29324
+    },
+    {
+      "case": "repeated-source",
+      "contentIssues": [],
+      "cpuSeconds": 0.068532,
+      "elapsedSeconds": 0.068941217,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 8,
+      "warnings": [],
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
       "peakRSSKiB": 29388
     },
     {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.075175,
-      "elapsedSeconds": 0.075565721,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "candidate",
-      "pair": 9,
-      "warmup": false,
-      "peakRSSKiB": 29384
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.077857,
-      "elapsedSeconds": 0.078201697,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 9,
-      "warmup": false,
-      "peakRSSKiB": 29272
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.069335,
-      "elapsedSeconds": 0.069790589,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "baseline",
-      "pair": 10,
-      "warmup": false,
-      "peakRSSKiB": 29180
-    },
-    {
-      "case": "repeated-source",
-      "contentIssues": [],
-      "cpuSeconds": 0.070289,
-      "elapsedSeconds": 0.070642783,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 8,
-      "warnings": [],
-      "binary": "candidate",
-      "pair": 10,
-      "warmup": false,
-      "peakRSSKiB": 29488
-    },
-    {
       "case": "table",
       "contentIssues": [],
-      "cpuSeconds": 0.040675,
-      "elapsedSeconds": 0.040916907,
+      "cpuSeconds": 0.037832,
+      "elapsedSeconds": 0.038465111,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3919,13 +3919,13 @@
       "binary": "baseline",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 28368
+      "peakRSSKiB": 28308
     },
     {
       "case": "table",
       "contentIssues": [],
-      "cpuSeconds": 0.037572,
-      "elapsedSeconds": 0.038052845,
+      "cpuSeconds": 0.038743,
+      "elapsedSeconds": 0.038971428,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3943,13 +3943,13 @@
       "binary": "candidate",
       "pair": 0,
       "warmup": true,
-      "peakRSSKiB": 28272
+      "peakRSSKiB": 28140
     },
     {
       "case": "table",
       "contentIssues": [],
-      "cpuSeconds": 0.037871,
-      "elapsedSeconds": 0.038379021,
+      "cpuSeconds": 0.03993,
+      "elapsedSeconds": 0.040304384,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3967,13 +3967,13 @@
       "binary": "candidate",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 28132
+      "peakRSSKiB": 28420
     },
     {
       "case": "table",
       "contentIssues": [],
-      "cpuSeconds": 0.035984,
-      "elapsedSeconds": 0.036410928,
+      "cpuSeconds": 0.038798,
+      "elapsedSeconds": 0.039037946,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -3991,13 +3991,13 @@
       "binary": "baseline",
       "pair": 1,
       "warmup": false,
-      "peakRSSKiB": 28132
+      "peakRSSKiB": 28196
     },
     {
       "case": "table",
       "contentIssues": [],
-      "cpuSeconds": 0.037322,
-      "elapsedSeconds": 0.037768702,
+      "cpuSeconds": 0.039729,
+      "elapsedSeconds": 0.040128325,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -4014,278 +4014,278 @@
       ],
       "binary": "baseline",
       "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 28368
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.039355,
-      "elapsedSeconds": 0.039871056,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "candidate",
-      "pair": 2,
-      "warmup": false,
-      "peakRSSKiB": 28068
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.039651,
-      "elapsedSeconds": 0.040226125,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "candidate",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 28156
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.03858,
-      "elapsedSeconds": 0.03892857,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "baseline",
-      "pair": 3,
-      "warmup": false,
-      "peakRSSKiB": 28292
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.040327,
-      "elapsedSeconds": 0.040614488,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "baseline",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 28120
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.036954,
-      "elapsedSeconds": 0.037385775,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "candidate",
-      "pair": 4,
-      "warmup": false,
-      "peakRSSKiB": 28152
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.039016,
-      "elapsedSeconds": 0.039216786,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "candidate",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 28404
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.042223,
-      "elapsedSeconds": 0.042500179,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "baseline",
-      "pair": 5,
-      "warmup": false,
-      "peakRSSKiB": 28208
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.038314,
-      "elapsedSeconds": 0.038703819,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "baseline",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 28180
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.046014,
-      "elapsedSeconds": 0.046366112,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "candidate",
-      "pair": 6,
-      "warmup": false,
-      "peakRSSKiB": 28260
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.037998,
-      "elapsedSeconds": 0.03841252,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "candidate",
-      "pair": 7,
-      "warmup": false,
-      "peakRSSKiB": 28268
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.035911,
-      "elapsedSeconds": 0.036327789,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "baseline",
-      "pair": 7,
       "warmup": false,
       "peakRSSKiB": 28228
     },
     {
       "case": "table",
       "contentIssues": [],
-      "cpuSeconds": 0.036621,
-      "elapsedSeconds": 0.037153872,
+      "cpuSeconds": 0.036635,
+      "elapsedSeconds": 0.037036619,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "candidate",
+      "pair": 2,
+      "warmup": false,
+      "peakRSSKiB": 28276
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.036274,
+      "elapsedSeconds": 0.036761883,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "candidate",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 28336
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.03858,
+      "elapsedSeconds": 0.039222167,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "baseline",
+      "pair": 3,
+      "warmup": false,
+      "peakRSSKiB": 28208
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.03712,
+      "elapsedSeconds": 0.037731469,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "baseline",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 28212
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.036792,
+      "elapsedSeconds": 0.037078069,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "candidate",
+      "pair": 4,
+      "warmup": false,
+      "peakRSSKiB": 28324
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.036988,
+      "elapsedSeconds": 0.037272422,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "candidate",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 27992
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.03807,
+      "elapsedSeconds": 0.038543373,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "baseline",
+      "pair": 5,
+      "warmup": false,
+      "peakRSSKiB": 28204
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.036338,
+      "elapsedSeconds": 0.03658629,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "baseline",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28176
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.036838,
+      "elapsedSeconds": 0.037339159,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "candidate",
+      "pair": 6,
+      "warmup": false,
+      "peakRSSKiB": 28144
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.037886,
+      "elapsedSeconds": 0.038374437,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "candidate",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 28308
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.041507,
+      "elapsedSeconds": 0.04202385,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "baseline",
+      "pair": 7,
+      "warmup": false,
+      "peakRSSKiB": 28316
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.042814,
+      "elapsedSeconds": 0.043555596,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -4303,13 +4303,13 @@
       "binary": "baseline",
       "pair": 8,
       "warmup": false,
-      "peakRSSKiB": 28204
+      "peakRSSKiB": 28236
     },
     {
       "case": "table",
       "contentIssues": [],
-      "cpuSeconds": 0.057368,
-      "elapsedSeconds": 0.05798559,
+      "cpuSeconds": 0.042946,
+      "elapsedSeconds": 0.043308711,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -4332,8 +4332,8 @@
     {
       "case": "table",
       "contentIssues": [],
-      "cpuSeconds": 0.034722,
-      "elapsedSeconds": 0.035131314,
+      "cpuSeconds": 0.040167,
+      "elapsedSeconds": 0.040431972,
       "missingFonts": [
         "calibri Bold",
         "calibri Bold Italic",
@@ -4350,80 +4350,80 @@
       ],
       "binary": "candidate",
       "pair": 9,
-      "warmup": false,
-      "peakRSSKiB": 28336
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.034734,
-      "elapsedSeconds": 0.035091614,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "baseline",
-      "pair": 9,
-      "warmup": false,
-      "peakRSSKiB": 28196
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.036738,
-      "elapsedSeconds": 0.037371743,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "baseline",
-      "pair": 10,
-      "warmup": false,
-      "peakRSSKiB": 28260
-    },
-    {
-      "case": "table",
-      "contentIssues": [],
-      "cpuSeconds": 0.037688,
-      "elapsedSeconds": 0.038105602,
-      "missingFonts": [
-        "calibri Bold",
-        "calibri Bold Italic",
-        "calibri Italic",
-        "calibri Regular",
-        "calibri light Bold",
-        "calibri light Bold Italic",
-        "calibri light Italic",
-        "calibri light Regular"
-      ],
-      "slides": 3,
-      "warnings": [
-        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
-      ],
-      "binary": "candidate",
-      "pair": 10,
       "warmup": false,
       "peakRSSKiB": 28152
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.038176,
+      "elapsedSeconds": 0.038737323,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "baseline",
+      "pair": 9,
+      "warmup": false,
+      "peakRSSKiB": 28132
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.039033,
+      "elapsedSeconds": 0.039406966,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "baseline",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 28072
+    },
+    {
+      "case": "table",
+      "contentIssues": [],
+      "cpuSeconds": 0.036318,
+      "elapsedSeconds": 0.036791818,
+      "missingFonts": [
+        "calibri Bold",
+        "calibri Bold Italic",
+        "calibri Italic",
+        "calibri Regular",
+        "calibri light Bold",
+        "calibri light Bold Italic",
+        "calibri light Italic",
+        "calibri light Regular"
+      ],
+      "slides": 3,
+      "warnings": [
+        "Evidence: table rows continue across 3 slides with repeated headers and consistent measured columns."
+      ],
+      "binary": "candidate",
+      "pair": 10,
+      "warmup": false,
+      "peakRSSKiB": 28340
     }
   ]
 }
