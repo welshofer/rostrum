@@ -1,5 +1,12 @@
 # Tools — generated schema stratum
 
+For the active text/table regression workflow, see the
+[native fidelity pack](native-fidelity/README.md). It accepts caller-selected
+font files and records portable checks separately from PowerPoint acceptance.
+The [benchmark harness](rostrum-benchmark/README.md) and
+[production composition fixtures](../Lectern/Tools/CompositionRegression/README.md)
+cover complementary workloads.
+
 Rostrum's schema tables are **mechanically extracted from python-pptx's own
 source** (its `xmlchemy` descriptor declarations and `register_element_cls`
 registrations) — never retyped by hand. See `docs/ARCHITECTURE.md`,

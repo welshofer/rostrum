@@ -183,6 +183,21 @@ launches retain their usual storage and keychain behavior. See the
 [October 2 integration record](../docs/LECTERN-INTEGRATION-20261002.md) for exact
 results, live inspection/export evidence and remaining limits.
 
+For saved-deck inspection/export evidence without launching the app, run from
+the repository root:
+
+```sh
+swift build --package-path Lectern -c release --product InspectionRegression
+Lectern/.build/release/InspectionRegression /path/to/deck.pptx /path/to/new-evidence
+```
+
+This uses the production inspector, font discovery and exporter, retaining SVGs,
+ordered diagnostics, content and export files alongside CPU/elapsed measurements.
+It measures first-SVG-slot completion, not WebKit or visible-thumbnail latency.
+The [native fidelity collector](../Tools/native-fidelity/README.md#lectern-inspection-and-export)
+can run all four text/table profiles through it in fresh processes, check
+unchanged inputs and identical repeated outputs, and record peak memory.
+
 ## How a deck gets made
 
 ```mermaid

@@ -12,6 +12,7 @@ let package = Package(
     products: [
         .library(name: "LecternCore", targets: ["LecternCore"]),
         .executable(name: "CompositionRegression", targets: ["CompositionRegression"]),
+        .executable(name: "InspectionRegression", targets: ["InspectionRegression"]),
     ],
     dependencies: [
         // Explicit `name:` so this resolves by the dependency's declared
@@ -27,6 +28,7 @@ let package = Package(
                            .product(name: "RostrumLayout", package: "Rostrum")],
             resources: [.copy("Resources/LibraryLab")]),
         .executableTarget(name: "CompositionRegression", dependencies: ["LecternCore"], path: "Tools/CompositionRegression", exclude: ["README.md", "compare_exports.py", "test_compare_exports.py"], resources: [.copy("Resources")]),
+        .executableTarget(name: "InspectionRegression", dependencies: ["LecternCore"], path: "Tools/InspectionRegression"),
         .testTarget(
             name: "LecternCoreTests",
             dependencies: ["LecternCore"],

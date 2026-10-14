@@ -44,6 +44,11 @@ step "Rostrum build + tests"
 swift build
 swift test
 
+step "Native text/table pack (portable checks only)"
+swift build --package-path Lectern --product InspectionRegression
+ROSTRUM_LECTERN_INSPECTION_BINARY="$PWD/Lectern/.build/debug/InspectionRegression" \
+  PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
+
 step "Optimized text preparation"
 swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|MeasuredPaginatorTests'
 

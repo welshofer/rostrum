@@ -6,6 +6,18 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- An offline [native text/table fidelity pack](Tools/native-fidelity/README.md)
+  accepts exact caller-supplied font faces and generates external/embedded-font
+  profiles at 4:3 and 16:9. It retains saved decks, geometry, SVGs, diagnostics,
+  input hashes and CPU/elapsed/peak-memory measurements. Portable checks run in
+  CI; PowerPoint slide-view/export and Lectern Inspect acceptance stay separate.
+
+- The fidelity collector can run each saved deck through Lectern's production
+  inspection and export paths, retaining SVGs, ordered diagnostics, extracted
+  content and export artifacts. It verifies unchanged inputs and repeatable
+  outputs, and records CPU/elapsed/peak memory plus first-SVG completion timing.
+  WebKit thumbnail timing and native visual acceptance remain separate.
+
 - Lectern reuses identical authored pagination decisions within one render,
   including rejection reasons, while measuring fullness separately when needed.
   The bounded cache resets before new font/content checks. Fixed-input decks,
