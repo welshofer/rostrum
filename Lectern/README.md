@@ -112,11 +112,14 @@ sections and complete comment text alongside the original media bytes.
 Preview geometry follows each slide's aspect ratio. macOS snapshots have bounded
 dimensions, queue depth and completion time; cache identity includes the full SVG
 and output size. Installed font lookup validates actual families and styles,
-preserves embedded faces, and reports unavailable metrics. Inspection registers
-Arial as an explicit measured preview fallback so missing fonts use consistent
+preserves embedded faces, and reports unavailable metrics. Generation, recovery
+and inspection share the saved-deck preview pipeline. It registers Arial as an
+explicit measured preview fallback so missing fonts use consistent
 layout and drawing; original document font names remain unchanged. The missing
-font still appears in the fidelity report. Rendering limitations
-remain visible separately from schema findings.
+font still appears in the fidelity report. The result screen reopens the written
+file, so its SVGs and diagnostics agree with Inspect on the same machine.
+Preview failure leaves the saved deck available; cancellation skips remaining
+preview work. Rendering limitations remain visible separately from schema findings.
 
 The deterministic [feature pipeline fixture](Tests/LecternCoreTests/Fixtures/FeaturePipeline/README.md)
 combines native/custom tables, rich text, image crops, notes, comments, sections,
