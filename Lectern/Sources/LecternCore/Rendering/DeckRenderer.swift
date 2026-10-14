@@ -320,7 +320,8 @@ public actor DeckRenderer {
                 // Provenance is additive and position-independent, so every
                 // layout can carry it without threading it through a builder.
                 if template == nil, slide.kind != .table, let source = slide.body?.source, !source.isEmpty {
-                    _ = try? presentation.addSource(source, to: built)
+                    try Self.addAuthoredSource(source, input: slide, to: built, in: presentation,
+                        hasImage: sideImage, fitter: AuthoredLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer))
                 }
                 if template == nil, let data = images[slide.id] {
                     switch slide.kind.imagePlacement {
@@ -438,12 +439,38 @@ public actor DeckRenderer {
                 catch { try presentation.slides.remove(at: presentation.slides.count - 1); throw error }
                 try presentation.slides.remove(at: presentation.slides.count - 1)
                 if !sourceFits {
+                    let count = presentation.slides.count
+                    let parts = Set(presentation.package.parts.keys)
+                    func discardProbe() throws {
+                        while presentation.slides.count > count { try presentation.slides.remove(at: count) }
+                        // Removing a slide deliberately retains shared assets.
+                        // A discarded chart/diagram probe owns its newly created
+                        // parts, so drop those too without touching existing ones.
+                        for uri in Set(presentation.package.parts.keys).subtracting(parts) {
+                            presentation.package.removePart(at: uri)
+                        }
+                    }
+                    var discarded: [String] = []
+                    do {
+                        let probe = try Self.build(input, in: presentation, useSmartArt: useSmartArt,
+                            hasSideImage: images[input.id] != nil, dropped: &discarded)
+                        try addAuthoredSource(source, input: input, to: probe, in: presentation,
+                            hasImage: images[input.id] != nil, fitter: fitter)
+                        sourceFits = true
+                    } catch is LayoutError { sourceFits = false }
+                    catch {
+                        try discardProbe()
+                        throw error
+                    }
+                    try discardProbe()
+                }
+                if !sourceFits {
                     var id = input.id + "-source-notes"
                     while usedIDs.contains(id) { id += "-next" }
                     usedIDs.insert(id); sourceIDs[input.id] = id
                     input.body?.source = "Source notes follow."
                     preparedDeck.slides.append(input)
-                    preparedDeck.slides.append(IRSlide(id: id, layout: "bullets", title: "Source notes",
+                    preparedDeck.slides.append(IRSlide(id: id, sectionId: input.sectionId, layout: "bullets", title: "Source notes",
                         body: Body(bullets: [Bullet(text: source)]), notes: input.notes))
                     sourceWarnings.append("\(input.title ?? input.id): extended source notes follow the slide at a readable size.")
                     continue
@@ -458,27 +485,45 @@ public actor DeckRenderer {
         }
         var lastFailure = ""
         do {
-            var result = try AuthoredPagination.prepare(preparedDeck, images: images) { candidate, hasImage in
+            func probe(_ candidate: IRSlide, _ hasImage: Bool, usage: Bool) throws -> Double? {
+                try Task.checkCancellation()
                 let count = presentation.slides.count
                 var discarded: [String] = []
                 do {
                     let probe = try Self.build(candidate, in: presentation, useSmartArt: useSmartArt,
                                           hasSideImage: hasImage, dropped: &discarded)
-                    if let source = candidate.body?.source, !source.isEmpty { _ = try presentation.addSource(source, to: probe) }
+                    if let source = candidate.body?.source, !source.isEmpty {
+                        try addAuthoredSource(source, input: candidate, to: probe, in: presentation,
+                            hasImage: hasImage, fitter: fitter)
+                    }
                     try fitter.fitText(in: probe)
+                    let fraction = try usage ? AuthoredPageUsage.fraction(on: probe, input: candidate, in: presentation) : 0
                     try presentation.slides.remove(at: count)
-                    return true
+                    try Task.checkCancellation()
+                    return fraction
                 } catch {
                     while presentation.slides.count > count { try presentation.slides.remove(at: count) }
-                    if error is LayoutError { lastFailure = "\(candidate.title ?? candidate.id): \(error)"; return false }
+                    if error is LayoutError { lastFailure = "\(candidate.title ?? candidate.id): \(error)"; return nil }
                     throw error
                 }
             }
+            var result = try AuthoredPagination.prepare(preparedDeck, images: images,
+                usage: { try probe($0, $1, usage: true) }, fits: { try probe($0, $1, usage: false) != nil })
             result.warnings += sourceWarnings
             return result
         } catch let error as LayoutError {
             throw LayoutError.cannotFit(lastFailure.isEmpty ? "\(error)" : lastFailure)
         }
+    }
+
+    private static func addAuthoredSource(_ source: String, input: IRSlide, to slide: Slide,
+                                         in presentation: Presentation, hasImage: Bool,
+                                         fitter: AuthoredLayoutEngine) throws {
+        var reserved: [Rect] = []
+        if hasImage, case .sidePanel(let side) = input.kind.imagePlacement {
+            reserved.append(presentation.sideImagePanel(side, belowHeaderOf: slide))
+        }
+        try AuthoredSourcePlacement.add(source, to: slide, in: presentation, fitter: fitter, reserved: reserved)
     }
 
     // MARK: - Builder capacity

@@ -447,6 +447,15 @@ pages at readable sizes. Long sources flow onto source-note pages. The final fit
 can compact spacing and reduce body type to 17pt; unsupported content that still cannot
 fit produces an explicit error.
 
+When one side of an authored comparison finishes, subsequent pages use the full
+width and retain the remaining column's heading. A sparse final text page can
+receive complete paragraphs from the preceding page, provided both measured pages
+still fit. This changes page boundaries, not the source words or their order.
+Sources that exceed the small citation box first try an unused full-width band
+above the running footer. Content and image frames remain protected; sources that
+still cannot fit continue onto source-note pages. Imported templates and native
+table captions keep their separate composition rules.
+
 Recovery previews show the revised slide count and layout adjustments. Recomposition
 preserves other slides and existing review comments. **Rebuild the entire deck from
 saved content** allows the page count to change freely in a new copy; later manual
