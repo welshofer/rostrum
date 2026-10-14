@@ -485,26 +485,33 @@ public actor DeckRenderer {
         }
         var lastFailure = ""
         do {
+            // A render's fonts/styles are fixed before entering this synchronous
+            // search. Retain only bounded value decisions, never probe slides.
+            let probes = AuthoredProbeCache()
             func probe(_ candidate: IRSlide, _ hasImage: Bool, usage: Bool) throws -> Double? {
-                try Task.checkCancellation()
-                let count = presentation.slides.count
-                var discarded: [String] = []
-                do {
-                    let probe = try Self.build(candidate, in: presentation, useSmartArt: useSmartArt,
-                                          hasSideImage: hasImage, dropped: &discarded)
-                    if let source = candidate.body?.source, !source.isEmpty {
-                        try addAuthoredSource(source, input: candidate, to: probe, in: presentation,
-                            hasImage: hasImage, fitter: fitter)
+                let outcome = try probes.evaluate(candidate, hasImage: hasImage, needsUsage: usage) {
+                    let count = presentation.slides.count
+                    var discarded: [String] = []
+                    do {
+                        let probe = try Self.build(candidate, in: presentation, useSmartArt: useSmartArt,
+                                              hasSideImage: hasImage, dropped: &discarded)
+                        if let source = candidate.body?.source, !source.isEmpty {
+                            try addAuthoredSource(source, input: candidate, to: probe, in: presentation,
+                                hasImage: hasImage, fitter: fitter)
+                        }
+                        try fitter.fitText(in: probe)
+                        let fraction = try usage ? AuthoredPageUsage.fraction(on: probe, input: candidate, in: presentation) : nil
+                        try presentation.slides.remove(at: count)
+                        return .fits(usage: fraction)
+                    } catch {
+                        while presentation.slides.count > count { try presentation.slides.remove(at: count) }
+                        if error is LayoutError { return .rejected("\(candidate.title ?? candidate.id): \(error)") }
+                        throw error
                     }
-                    try fitter.fitText(in: probe)
-                    let fraction = try usage ? AuthoredPageUsage.fraction(on: probe, input: candidate, in: presentation) : 0
-                    try presentation.slides.remove(at: count)
-                    try Task.checkCancellation()
-                    return fraction
-                } catch {
-                    while presentation.slides.count > count { try presentation.slides.remove(at: count) }
-                    if error is LayoutError { lastFailure = "\(candidate.title ?? candidate.id): \(error)"; return nil }
-                    throw error
+                }
+                switch outcome {
+                case .fits(let fraction): return fraction ?? 0
+                case .rejected(let message): lastFailure = message; return nil
                 }
             }
             var result = try AuthoredPagination.prepare(preparedDeck, images: images,
