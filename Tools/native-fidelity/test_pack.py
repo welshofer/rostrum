@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
@@ -110,4 +111,11 @@ class FidelityPackTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    program = unittest.main(exit=False)
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        # Class setup failures can run zero tests. Publish their tracebacks as
+        # check annotations too, so an exit code alone cannot hide the cause.
+        for test, detail in program.result.errors + program.result.failures:
+            message = f"{test}\n{detail}".replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+            print(f"::error title=Native fidelity pack::{message}", flush=True)
+    sys.exit(0 if program.result.wasSuccessful() and program.result.testsRun else 1)
