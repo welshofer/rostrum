@@ -14,6 +14,13 @@ enum DocumentLabRecipes {
         .init(.chartEditing, title: "Chart editing", summary: "Edit single-plot and combo data, then exercise atomic refusals for combo, pie and XY series edits.",
               operations: ["Chart.replaceData", "Chart.addSeries", "Chart.removeSeries", "Chart.replacementProblem", "Chart.addSeriesProblem", "Chart.removeSeriesProblem"],
               inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Edit a line chart"),
+        .init(.chartCacheRepair, title: "Missing chart caches", summary: "Rebuild absent chart caches from an embedded workbook, preserving the source data and every unrelated part.",
+              operations: ["Chart.rebuildMissingCachesFromWorkbook"],
+              limitations: ["Explicit repair only; inspection and ordinary open/save never repair a deck.",
+                            "Local A1 cells and one-dimensional ranges, stored text and General numeric values only. No formula evaluation, external links, named ranges, multilevel categories or date/number-format conversion.",
+                            "The scatter preview is a diagnosed placeholder; the saved XY caches and extracted CSV are checked independently.",
+                            "Existing caches remain authoritative. Native PowerPoint slide-view and export acceptance are pending."],
+              inputs: [.text, .sampleSize, .alternative], alternativeLabel: "Repair an XY scatter chart"),
         .init(.smartArt, title: "SmartArt gallery", summary: "Create Basic Block List, Process, Cycle and experimental Pyramid diagrams, then extract their labels.",
               operations: ["addSmartArt", "Slide.smartArtTexts"],
               limitations: ["The local preview does not run PowerPoint’s SmartArt layout engine. Open the PPTX in PowerPoint to see the native diagram; extracted labels are verified here.",
@@ -40,6 +47,7 @@ enum DocumentLabRecipes {
         case .slides: return try slides(options)
         case .charts: return try charts(options)
         case .chartEditing: return try chartEditing(options)
+        case .chartCacheRepair: return try ChartCacheRepairRecipe.make(options)
         case .smartArt: return try smartArt(options)
         case .notes: return try notes(options)
         case .comments: return try comments(options)

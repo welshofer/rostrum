@@ -192,7 +192,7 @@ public enum LibraryLab {
         case .importedFidelity: try ImportedFidelityRecipe.make(options)
         case .shapes, .fillsAndLines, .text, .pictures, .tableStructure, .tableStyles, .tableAppearance:
             try DrawingLabRecipes.make(id, options: options)
-        case .slides, .charts, .chartEditing, .smartArt, .notes, .comments, .sections, .slideImport:
+        case .slides, .charts, .chartEditing, .chartCacheRepair, .smartArt, .notes, .comments, .sections, .slideImport:
             try DocumentLabRecipes.make(id, options: options)
         case .imageOwners, .layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tableDefaults, .tableJoinProfiles, .partialTableStyles, .tableTransitions, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering:
             try PlatformLabRecipes.make(id, options: options)

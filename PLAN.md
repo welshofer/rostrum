@@ -100,16 +100,34 @@ reduction. See [the performance ledger](docs/PERFORMANCE.md).
 
 ## Third milestone: confirmed interoperability repairs
 
-Status: **pending; prioritize failures found in the native pack**.
+Status: **portable implementation validated; native PowerPoint acceptance pending**.
 
-- [ ] Add an explicit, validated operation to rebuild missing classic-chart
+- [x] Add an explicit, validated operation to rebuild missing classic-chart
   caches from supported embedded workbook references. Lectern can currently show
   these values while PowerPoint leaves the chart blank. Ordinary open/save must
   remain lossless and must not repair caches implicitly.
-- [ ] Cover unsupported references, malformed workbooks, atomic refusal,
-  deterministic save/reopen and native PowerPoint acceptance before shipping.
-- [ ] Demonstrate any new public API in an offline Library Lab recipe with
+- [x] Cover unsupported references, malformed workbooks, atomic refusal and
+  deterministic save/reopen.
+- [ ] Complete native PowerPoint acceptance before shipping.
+- [x] Demonstrate any new public API in an offline Library Lab recipe with
   inspector/export coverage and clear support boundaries.
+
+Implementation: [explicit cache repair](docs/CHART-CACHE-REPAIR.md). The API
+validates every absent reference in one chart before mutation, preserves existing
+caches and exact workbook bytes, and rereads current workbook content on each
+operation. The strict reader supports local one-dimensional A1 ranges, text and
+General numeric stored values; unsupported data refuses the whole operation.
+The Missing chart caches Lab retains category/scatter before/after decks, saved
+checks, production inspector previews and extracted CSV. Native PowerPoint
+opening, slide view, export and Edit Data acceptance remain pending.
+Focused portable evidence (2026-10-14): 18 chart reader/repair tests and 11
+Document/Lab tests passed. Both repaired Lab decks pass independent python-pptx
+read-back and ZIP/XML checks, with only chart XML changed. Production inspector
+SVGs/diagnostics and exported CSV match before/after; the scatter SVG remains a
+diagnosed placeholder. The full local fast gate passed: 1,374 Rostrum tests,
+335 LecternCore tests, 63 optimized-layout tests, nine fidelity-pack checks,
+portable references, workflow checks and README examples. Native app builds,
+app-hosted tests and live PowerPoint acceptance remain separate.
 
 ## Subsequent scope
 

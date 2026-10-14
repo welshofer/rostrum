@@ -4,7 +4,7 @@ import Rostrum
 @testable import LecternCore
 
 @Suite struct DocumentLabRecipesTests {
-    private static let ids: [LibraryDemoID] = [.slides, .charts, .chartEditing, .smartArt, .notes, .comments, .sections, .slideImport]
+    private static let ids: [LibraryDemoID] = [.slides, .charts, .chartEditing, .chartCacheRepair, .smartArt, .notes, .comments, .sections, .slideImport]
 
     @Test func catalogIsCompleteAndUnique() {
         #expect(Set(DocumentLabRecipes.catalog.map(\.id)) == Set(Self.ids))

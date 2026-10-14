@@ -6,6 +6,14 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- `Chart.rebuildMissingCachesFromWorkbook()` explicitly materializes absent
+  classic chart caches from supported embedded XLSX references. All missing
+  references in one chart validate before mutation; existing caches, workbook
+  bytes and unrelated parts remain intact. Ordinary reads/saves stay unchanged.
+  The offline Missing chart caches Lab retains category/scatter before/after
+  decks and exercises production inspection/export. Native PowerPoint review
+  remains pending. See [scope and preservation](docs/CHART-CACHE-REPAIR.md).
+
 - An offline [native text/table fidelity pack](Tools/native-fidelity/README.md)
   accepts exact caller-supplied font faces and generates external/embedded-font
   profiles at 4:3 and 16:9. It retains saved decks, geometry, SVGs, diagnostics,
