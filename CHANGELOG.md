@@ -6,6 +6,12 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Lectern reuses identical authored pagination decisions within one render,
+  including rejection reasons, while measuring fullness separately when needed.
+  The bounded cache resets before new font/content checks. Fixed-input decks,
+  SVGs and diagnostics remain byte-identical; long-source CPU improves about
+  14% in the Linux fixture. See the [performance record](docs/CONTINUATION-PERFORMANCE-20261014.md).
+
 - Lectern's authored comparisons use full-width continuations when only one
   column still has content. Sparse final text pages can move complete fragments
   from the preceding page after both layouts are measured. Citations try an
