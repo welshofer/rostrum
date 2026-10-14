@@ -48,8 +48,9 @@ def process_sample(command, log):
             "peakRSSBytes": usage.ru_maxrss * (1 if sys.platform == "darwin" else 1024)}
 
 
-def collect(binary, fonts, output, runs=1, build_mode="unspecified"):
+def collect(binary, fonts, output, runs=1, build_mode="unspecified", lectern_binary=None):
     binary, fonts, output = binary.resolve(), fonts.resolve(), output.resolve()
+    lectern_binary = lectern_binary.resolve() if lectern_binary else None
     if runs < 1:
         raise ValueError("runs must be positive")
     if output.exists():
@@ -69,6 +70,11 @@ def collect(binary, fonts, output, runs=1, build_mode="unspecified"):
                 "Swift phases exclude artifact writes and verification except explicit fresh compose checks. "
                 "RSS is the whole process peak. No OS font discovery, WebKit rasterization or UI first-preview measurement.",
                 "profiles": [], "complete": False}
+    if lectern_binary:
+        metadata["lecternExecutableSHA256"] = sha256(lectern_binary)
+        metadata["lecternMeasurementScope"] = "Separate fresh process using production DeckInspector and DeckExporter. " \
+            "Host/embedded fonts follow app policy; caller font files are not injected. " \
+            "Whole-process CPU/RSS includes evidence writes. No WebKit or UI measurement."
     output.mkdir(parents=True)
     json_write(output / "manifest.json", metadata)
     for aspect in ("4x3", "16x9"):
@@ -77,6 +83,7 @@ def collect(binary, fonts, output, runs=1, build_mode="unspecified"):
             profile = {"name": name, "samples": []}
             reference = None
             reference_pages = None
+            lectern_reference = None
             for run in range(1, runs + 1):
                 case = output / f"{name}-{run}"
                 sample = process_sample([str(binary), str(fonts), str(case), aspect, mode],
@@ -88,13 +95,29 @@ def collect(binary, fonts, output, runs=1, build_mode="unspecified"):
                 reference, reference_pages = artifacts, report["pages"]
                 sample.update(directory=case.name, artifactSHA256=artifacts,
                               reportSHA256=sha256(case / "report.json"), phases=report["phases"])
+                if lectern_binary:
+                    inspected = output / f"{name}-{run}-lectern"
+                    lectern = process_sample([str(lectern_binary), str(case / "deck.pptx"), str(inspected)],
+                                             output / f"{name}-{run}-lectern.log")
+                    if {p.name: sha256(p) for p in sorted(case.iterdir()) if p.name != "report.json"} != artifacts:
+                        raise RuntimeError("Lectern inspection/export modified the input pack")
+                    hashes = {str(p.relative_to(inspected)): sha256(p) for p in sorted(inspected.rglob("*"))
+                              if p.is_file() and p != inspected / "timings.json"}
+                    if lectern_reference is not None and hashes != lectern_reference:
+                        raise RuntimeError(f"Nondeterministic Lectern inspection, SVGs or export: {name}")
+                    lectern_reference = hashes
+                    lectern.update(directory=inspected.name, artifactSHA256=hashes,
+                                   timings=json.loads((inspected / "timings.json").read_text()))
+                    sample["lectern"] = lectern
                 profile["samples"].append(sample)
             metadata["profiles"].append(profile)
             json_write(output / "manifest.json", metadata)
     if binary_hash != sha256(binary) or metadata["fontManifestSHA256"] != sha256(fonts) or any(
         sha256(fonts.parent / config[role]) != digest for role, digest in font_hashes.items()
-    ):
+    ) or (lectern_binary and metadata["lecternExecutableSHA256"] != sha256(lectern_binary)):
         raise RuntimeError("Executable or font inputs changed during collection; discard this run")
+    if lectern_binary:
+        metadata["lecternInspect"] = "core-artifacts-collected; native-review-pending"
     metadata["complete"] = True
     json_write(output / "manifest.json", metadata)
     return metadata
@@ -107,8 +130,9 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--build-mode", choices=("release", "debug", "unspecified"), default="unspecified")
+    parser.add_argument("--lectern-binary", type=Path, help="Built Lectern InspectionRegression executable")
     args = parser.parse_args()
-    collect(args.binary, args.fonts, args.output, args.runs, args.build_mode)
+    collect(args.binary, args.fonts, args.output, args.runs, args.build_mode, args.lectern_binary)
     print(f"Four profiles saved to {args.output}. Native PowerPoint and Lectern review pending.")
 
 

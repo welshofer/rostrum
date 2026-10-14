@@ -18,6 +18,7 @@ not a download of the newest Library Lab results.
 | Pull, build and exercise the libraries through the app | [Lectern](../Lectern/README.md#pull-and-rebuild) |
 | Run fixed production fixtures or replay saved content offline | [Composition regression](../Lectern/Tools/CompositionRegression/README.md) |
 | Prepare text/table profiles with exact caller-supplied faces | [Native fidelity pack](../Tools/native-fidelity/README.md) |
+| Retain production Lectern inspection/export evidence and timings | [Inspection runner](../Tools/native-fidelity/README.md#lectern-inspection-and-export) |
 | Find an offline library demonstration | [Library Lab coverage](LIBRARY-LAB-20261002.md) |
 | Understand preservation, package boundaries and deterministic output | [Architecture](ARCHITECTURE.md) |
 | Check support and evidence before adopting a feature | [Format support](FORMAT_SUPPORT.md), [conformance](CONFORMANCE.md) |

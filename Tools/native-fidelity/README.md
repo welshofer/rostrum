@@ -67,6 +67,50 @@ source revision/dirty status, toolchain, platform and caller-declared build mode
 The source revision identifies the checkout, not a proven executable build;
 the executable hash identifies the measured binary. Build it from that checkout.
 
+## Lectern inspection and export
+
+To exercise the app's production `DeckInspector` and `DeckExporter` entry points,
+build the headless Lectern executable and supply it to the same collector:
+
+```bash
+swift build --package-path Lectern -c release --product InspectionRegression
+python3 Tools/native-fidelity/run.py \
+  --binary .build/release/native-fidelity --build-mode release \
+  --lectern-binary Lectern/.build/release/InspectionRegression \
+  --fonts /path/to/fonts.json --output /path/to/new-lectern-pack --runs 2
+```
+
+Each saved deck is inspected and exported in a separate fresh process. The
+`*-lectern` folders retain slide SVGs, original slide positions, ordered preview
+diagnostics, extracted words/tables/notes/sections, chart data, and the normal
+Markdown/media/chart export. The collector verifies unchanged input artifacts
+and byte-identical Lectern artifacts across repetitions, independently of the
+library's own SVGs. The two SVG sets may differ because Lectern uses its host
+font and preview policies. Both executables must have the declared build mode.
+
+The runner does **not** inject manifest fonts into Lectern: embedded faces and
+installed-font discovery follow the app's normal path. External-font cases on
+Linux can therefore report missing fonts even though the library pack has exact
+metrics. Keep those diagnostics. On macOS, install the intended faces and record
+the installed-font conditions; manifest hashes alone do not prove the host
+selected those exact files. This checks Core behavior, not the app's WebKit view.
+
+An existing private deck can also be inspected without rebuilding the corpus:
+
+```bash
+Lectern/.build/release/InspectionRegression /path/to/deck.pptx /path/to/new-evidence
+```
+
+`inspection.json`, SVGs and exports are stable evidence. `timings.json` records
+CPU/elapsed time for full inspection and full export, cumulative inspector event
+stamps, and time to the first completed preview slot (which may be a failure).
+Opening includes embedded font registration; extraction through `rendering(0)`
+includes installed-font setup. These event intervals do not separate font
+discovery from extraction. Export timing includes reopening and output writes;
+inspection evidence serialization is outside operation timings. The collector
+records whole-process CPU/elapsed/peak RSS separately, including evidence writes.
+No timing here measures a visible thumbnail, WebKit, or a live PowerPoint view.
+
 ## Measurements and native review
 
 Reports retain per-phase elapsed and process CPU time for font input validation,
@@ -78,8 +122,9 @@ also outside the named phases; do not sum them into an end-to-end claim.
 
 The collector additionally measures whole-process elapsed, user/system CPU and
 peak RSS, including verification, writes and both preview sets. It does not
-measure OS font discovery, production Lectern rendering, WebKit thumbnails,
-UI first-preview latency or native PowerPoint. These are pending in
+measure production Lectern unless `--lectern-binary` is supplied as described
+above. Separate font discovery, WebKit thumbnails, UI first-preview latency and
+native PowerPoint measurements remain pending in
 [PLAN.md](../../PLAN.md). Small phase timings and these synthetic fixtures are
 measurement probes, not a speedup claim or a production performance baseline.
 Input hashing can warm filesystem caches before execution; fresh processes
@@ -110,9 +155,14 @@ tests; users can run the pack with any supported exact faces.
 
 ```bash
 swift build --product native-fidelity
-PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
+swift build --package-path Lectern --product InspectionRegression
+ROSTRUM_LECTERN_INSPECTION_BINARY="$PWD/Lectern/.build/debug/InspectionRegression" \
+  PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
 ```
 
 The suite generates all four profiles twice, checks independent ZIP/XML content,
 geometry and font storage, and verifies refusal of mismatched/missing faces and
 existing output. Set `ROSTRUM_NATIVE_FIDELITY_BINARY` to test another built binary.
+With the Lectern executable supplied, it also verifies exact source rows, notes,
+sections, preview positions and deterministic exports through the production
+paths. Omit that variable for the library-only checks (two Lectern checks skip).

@@ -22,7 +22,9 @@ Status: **in progress**.
 - [x] Record source revision, exact font/deck hashes, platform, build mode and
   explicit support boundaries. Keep proprietary fonts and private templates out
   of Git. Missing required faces must not silently become a passing exact-font case.
-- [ ] Exercise the pack through Lectern Inspect and export as well as the library.
+- [x] Exercise the pack through production LecternCore Inspect and export as well
+  as the library, retaining deterministic artifacts and verifying source content.
+- [ ] Review the same pack in Lectern's native UI, including WebKit thumbnails.
 - [ ] Capture PowerPoint for Mac slide-view and PDF/image-export evidence for
   the same saved bytes and fonts. Extend the existing native corpus; keep these
   two rendering paths distinct because the earlier glyph overlap affected only
@@ -55,7 +57,26 @@ examples. Apple CI and live native acceptance are separate gates.
 
 ## Second milestone: end-to-end Mac performance baseline
 
-Status: **pending; measurement tooling starts with the first milestone**.
+Status: **measurement tooling in progress; native Mac baseline pending**.
+
+The pack's optional `InspectionRegression` runner now calls production
+`DeckInspector` and `DeckExporter` with their normal embedded/installed-font
+policy. It retains stable inspection results, SVGs, diagnostics and exports,
+checks unchanged source artifacts, and compares fresh-process repetitions.
+It measures complete inspection and export CPU/elapsed time, cumulative progress
+events and first-SVG-slot completion; the collector measures process peak RSS.
+This does not separate installed-font discovery from extraction or measure
+WebKit/native UI latency. External faces unavailable to the host remain missing
+font diagnostics; supplying manifest files does not inject them into Lectern.
+
+Continuation evidence (2026-10-14): all four fixture profiles repeat identically
+through production Core inspection/export. Independent checks retain all 24
+source rows, mixed-face text, tabs, bullet indentation, notes, sections and slide
+aspect ratios. The local fast gate passed with 1,363 Rostrum tests, 334
+LecternCore tests, 63 optimized-layout tests, portable references, workflow checks,
+README examples and eight pack checks. A Release run passed all nine pack and
+provenance checks, including simulated host/container Git ownership mismatch.
+These results establish neither native visual acceptance nor a Mac speedup.
 
 - [ ] Measure font discovery/registration, layout, saving, saved-deck reopening,
   SVG generation and thumbnail rasterization separately on fixed real-world inputs.

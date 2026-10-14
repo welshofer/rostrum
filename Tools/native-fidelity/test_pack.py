@@ -7,10 +7,11 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 import zipfile
 
-from run import collect
+from run import collect, command_output
 
 ROOT = Path(__file__).resolve().parents[2]
 NS = {"a": "http://schemas.openxmlformats.org/drawingml/2006/main",
@@ -32,13 +33,16 @@ class FidelityPackTests(unittest.TestCase):
         cls.fonts = cls.directory / "fonts.json"
         cls.fonts.write_text(json.dumps(cls.config))
         cls.output = cls.directory / "pack"
-        cls.manifest = collect(cls.binary, cls.fonts, cls.output, runs=2, build_mode="unspecified")
+        cls.lectern = Path(os.environ["ROSTRUM_LECTERN_INSPECTION_BINARY"]) if os.environ.get("ROSTRUM_LECTERN_INSPECTION_BINARY") else None
+        cls.manifest = collect(cls.binary, cls.fonts, cls.output, runs=2, build_mode="unspecified", lectern_binary=cls.lectern)
 
     def test_four_profiles_repeat_identically_but_stay_unreviewed(self):
         self.assertTrue(self.manifest["complete"])
         self.assertEqual(len(self.manifest["profiles"]), 4)
-        for key in ("powerpointSlideView", "powerpointExport", "lecternInspect"):
+        for key in ("powerpointSlideView", "powerpointExport"):
             self.assertEqual(self.manifest[key], "pending")
+        self.assertEqual(self.manifest["lecternInspect"],
+                         "core-artifacts-collected; native-review-pending" if self.lectern else "pending")
         for profile in self.manifest["profiles"]:
             first, second = profile["samples"]
             self.assertEqual(first["artifactSHA256"], second["artifactSHA256"])
@@ -108,6 +112,83 @@ class FidelityPackTests(unittest.TestCase):
 
     def test_missing_face_is_rejected(self):
         self.assert_invalid_font({"italic": str(self.directory / "absent.ttf")}, "native-fidelity:")
+
+    @unittest.skipUnless(os.environ.get("ROSTRUM_LECTERN_INSPECTION_BINARY"), "Lectern executable not supplied")
+    def test_lectern_inspects_and_exports_every_source_row_note_and_section(self):
+        for profile in self.manifest["profiles"]:
+            first, second = [sample["lectern"] for sample in profile["samples"]]
+            self.assertEqual(first["artifactSHA256"], second["artifactSHA256"])
+            self.assertGreater(first["peakRSSBytes"], 0)
+            case = self.output / first["directory"]
+            evidence = json.loads((case / "inspection.json").read_text())
+            markdown = (case / "export/deck/deck.md").read_text()
+            total = evidence["slideCount"]
+            self.assertEqual(evidence["export"]["slideCount"], total)
+            self.assertEqual([p["number"] for p in evidence["previews"]], list(range(1, total + 1)))
+            self.assertTrue(all(p["rendered"] for p in evidence["previews"]))
+            for preview in evidence["previews"]:
+                self.assertAlmostEqual(preview["width"] / preview["height"],
+                                       4 / 3 if profile["name"].startswith("4x3") else 16 / 9)
+            self.assertEqual([s["name"] for s in evidence["sections"]], ["Typography", "Tables"])
+            self.assertEqual([s["slideIndices"] for s in evidence["sections"]], [[0], list(range(1, total))])
+            rows = [row for slide in evidence["slides"] for table in slide["tables"] for row in table["rows"][1:]]
+            expected = [[f"Record {i}", f"Exact source evidence {i} stays editable and wraps at full size.", "Reviewed"]
+                        for i in range(1, 25)]
+            self.assertEqual(rows, expected)
+            for row in expected:
+                self.assertIn(" | ".join(row), markdown)
+            for slide in evidence["slides"]:
+                note = f"Native fidelity fixture: slide {slide['number']}. Preserve these exact notes."
+                self.assertIn(note, slide["notes"])
+                self.assertIn(note, markdown)
+            self.assertIn("Rostrum in Lectern", markdown)
+            self.assertIn("Indented line retained", markdown)
+            self.assertEqual(evidence["slides"][0]["bullets"], [
+                "Inherited font, tabs and soft breaks",
+                "Alpha\t12.5 Beta\t38.0 Gamma\t7.25",
+                "    Indented line retained",
+                "regular: AV office café. bold: AV office café. italic: AV office café."])
+            for text in ("Alpha\t12.5", "Beta\t38.0", "Gamma\t7.25",
+                         "regular: AV office café. bold: AV office café. italic: AV office café."):
+                self.assertIn(text, markdown)
+            self.assertIn("## Sections", markdown)
+            self.assertIn("Typography", markdown)
+            self.assertIn("Tables", markdown)
+            self.assertEqual(evidence["schemaIssues"], [])
+            self.assertEqual(evidence["readWarnings"], [])
+            self.assertEqual(evidence["outlineWarnings"], [])
+            codes = [issue["code"] for diagnostic in evidence["previewDiagnostics"] for issue in diagnostic["issues"]]
+            if "-embedded" in profile["name"]:
+                self.assertNotIn("missingFont", codes)
+            elif sys.platform == "linux":
+                self.assertIn("missingFont", codes)
+            timing = first["timings"]
+            self.assertEqual(timing["nativeVisualAcceptance"], "pending")
+            self.assertTrue(timing["firstPreviewRendered"])
+            self.assertGreater(timing["firstPreviewSlotCompleted"]["elapsedSeconds"], 0)
+            self.assertLessEqual(timing["firstPreviewSlotCompleted"]["elapsedSeconds"], timing["inspection"]["elapsedSeconds"])
+
+    @unittest.skipUnless(os.environ.get("ROSTRUM_LECTERN_INSPECTION_BINARY"), "Lectern executable not supplied")
+    def test_lectern_refuses_existing_output_and_missing_input(self):
+        deck = self.output / self.manifest["profiles"][0]["samples"][0]["directory"] / "deck.pptx"
+        result = subprocess.run([str(self.lectern), str(deck), str(self.output)], capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("already exists", result.stderr)
+        absent_output = self.directory / "absent-result"
+        result = subprocess.run([str(self.lectern), str(self.directory / "absent.pptx"), str(absent_output)],
+                                capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(absent_output.exists())
+
+
+class ProvenanceTests(unittest.TestCase):
+    def test_container_checkout_ownership(self):
+        # Git's own hook simulates the host/container owner mismatch seen in CI.
+        with patch.dict(os.environ, {"GIT_TEST_ASSUME_DIFFERENT_OWNER": "1"}):
+            self.assertRegex(command_output("git", "rev-parse", "HEAD"), r"^[0-9a-f]{40}$")
+            command_output("git", "status", "--porcelain")
+            with self.assertRaisesRegex(RuntimeError, "fatal:"):
+                command_output("git", "rev-parse", "--verify", "refs/heads/absent-fidelity-provenance-probe")
 
 
 if __name__ == "__main__":
