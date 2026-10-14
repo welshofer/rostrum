@@ -117,6 +117,14 @@ The two runnable README examples are generated from
 drift before compiling and running the examples. Installation fragments and
 illustrative cookbook fragments are not part of this executable set.
 
+When documenting a new capability, update the relevant usage guide and
+[documentation index](docs/README.md), then summarize it in the README and
+Unreleased changelog. Keep released APIs distinct from changes requiring `main`
+or a newer revision. Compile changed Swift examples and exercise their saved-file
+path. Link dated fidelity/performance reports as evidence; do not replace current
+usage guidance with a chronological list of implementation reports. State font
+requirements, unsupported cases and native acceptance limits alongside the API.
+
 - Match the surrounding code's naming and idiom. OOXML element names stay
   qualified as in the spec (`p:sldMasterIdLst`) in string literals; Swift API
   names are Swift-native.

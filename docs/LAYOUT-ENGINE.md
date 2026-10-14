@@ -53,6 +53,12 @@ not establish that PowerPoint would select the same autofit.
 | Start from a `.potx` | `Presentation.fromTemplate(data:)`, then `TemplateLayoutEngine` | New PPTX slides connected to the source template's layouts and masters |
 | Finish slides built from a `Design` or `DeckStyle` | `AuthoredLayoutEngine` | Checked/adjusted authored text and optional published native layouts |
 | Break ordered content across pages | `MeasuredPaginator` | Fitting partitions; the caller creates slides and retains document context |
+| Measure an existing native table | `TableLayoutEngine.plan` | Read-only cell diagnostics, widths and row heights; apply only an accepted plan |
+| Compose a new multi-page table | `TemplateTableContent`, `planTablePages`, `composeTablePages` | Measured native cells, fixed widths, repeated headers/captions and source row ranges |
+
+The table planners and the subsequent fitting improvements are post-1.0 changes
+on `main`. See [dependency selection](GETTING-STARTED.md#install-with-swift-package-manager)
+before copying an example into a project pinned to 1.0.0.
 
 ### Native table row planning
 
@@ -249,8 +255,10 @@ prospective native cells use memory proportional to the input.
 
 Callers attach notes, sections, provenance and recovery identities to the returned
 slides using the source row ranges. This API does not paginate existing imported
-tables, preserve arbitrary rich cell XML through a plain-string conversion, or
-automatically enable continuation groups in Lectern generation/recovery. The
+tables or preserve arbitrary rich cell XML through a plain-string conversion.
+Lectern's generation and recovery layer now consumes this API and manages its own
+continuation groups, notes, sections and source-note overflow; see the
+[production integration record](LECTERN-TABLES-20261013.md). The
 Templates Library Lab runs the public API through export, inspection and reopen
 for both canvas sizes. Native PowerPoint acceptance remains pending. See
 [the pagination evidence](TABLE-PAGINATION-20261012.md).
@@ -390,8 +398,10 @@ shows the complete save path.
 ### Tables and other structured objects
 
 Object geometry must leave room for both its content and its caption. For a
-table, use `object: "tbl"` and compatible preferred types such as `["tbl", "obj"]`.
-Provide `objectCaption`, `minimumObjectHeight` and, when rows wrap,
+new plain-string table, prefer `TemplateTableContent` and the native table
+planners above; they measure the same cells that composition writes. For a custom
+object builder, use `object: "tbl"` and compatible preferred types such as
+`["tbl", "obj"]`. Provide `objectCaption`, `minimumObjectHeight` and, when rows wrap,
 `measureObjectHeight(width, style)`. The callback is evaluated for each candidate
 width and should account for cell widths, padding, text styles, every row and
 borders. Use `validateObject(frame, style)` for additional rejection conditions.
@@ -534,6 +544,17 @@ The imported-deck checkpoint measured 16.5% lower warm library rendering time.
 Other text/table benchmarks use different baselines, and some richer fidelity
 paths cost more. Do not sum the percentages or infer device latency from them.
 The [performance ledger](PERFORMANCE.md) preserves workloads, baselines and limits.
+
+Lectern additionally reuses identical authored page-fit decisions within one
+render, after that operation's font/style setup. Accepted fits and rejection
+reasons are retained; fullness is measured when first needed. The cache is
+discarded before the next render, so changed content or fonts receive fresh
+checks. It holds at most 64 entries and 256 KiB of serialized input/error payload
+(container overhead is additional); oversized or unencodable inputs use the
+ordinary path. This is consumer behavior, separate from the public fitter's
+host-callback contract. The [production benchmark](CONTINUATION-PERFORMANCE-20261014.md)
+compares CPU, elapsed time and peak RSS while requiring identical saved decks,
+SVGs and ordered diagnostics.
 
 ## Native glyph placement and table context
 

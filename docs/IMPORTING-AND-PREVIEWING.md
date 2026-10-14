@@ -6,10 +6,10 @@ An untouched part retains its original bytes; supported edits change the relevan
 parts. Unknown XML does not imply preview support or permission to edit an
 otherwise unsupported object.
 
-The imported-fidelity update is on `main` and listed under **Unreleased** in the
-[changelog](../CHANGELOG.md). Consumers needing it before a tagged release should
-pin a reviewed commit revision. It is not included merely by specifying the
-older version shown in the README installation example.
+The imported-artwork and explicit preview-fallback APIs shipped in 1.0.0. The
+font embedding/import hardening and unified Lectern preview workflow described
+below are later changes on `main`; see the [changelog](../CHANGELOG.md#unreleased)
+and [dependency selection](GETTING-STARTED.md#install-with-swift-package-manager).
 
 ## Register fonts before rendering
 
@@ -48,12 +48,26 @@ does not treat a preview substitute as the requested font.
 Fallback improves readability by measuring and drawing with the same registered
 face. It cannot reproduce the source font's appearance. It does not rewrite
 serialized typeface names or register an alias under a missing source family.
+
+## Lectern saved-deck previews
+
 Lectern's generation, recovery and inspection previews explicitly register Arial;
 the offline Library Lab recipe uses its licensed bundled DejaVu face. Other hosts
 choose their own policy. Lectern reopens generated/recovered files and discovers
 the same slide, layout, master and theme font declarations as Inspect. Generation
 font aliases and measurement state are kept separate from this preview registry.
 No preview operation saves or changes the caller's requested font families.
+
+On the same machine with the same font inputs, the result screen and Inspect use
+the same SVG generation and diagnostic path. Embedded faces are registered before
+installed-font lookup. Each original slide keeps its number and aspect ratio,
+including a labeled failure record if previewing fails; the saved PPTX remains
+available. Cancellation stops remaining preview work.
+
+This does not make the SVG renderer PowerPoint's renderer. Inspect native slide
+view as well as PDF/image export when checking fonts: those paths can disagree.
+Changing a font is an explicit authoring choice, never a hidden preview repair.
+Bundled fixture faces do not restrict which fonts library users may select.
 
 ## Embedding fonts safely
 

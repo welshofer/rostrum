@@ -33,7 +33,38 @@ its **34 offline Library Lab demos** save PowerPoint decks you can inspect.
 
 Start with [Getting started](docs/GETTING-STARTED.md) for installation, file I/O,
 tables, templates and preview diagnostics. See [Layout engine](docs/LAYOUT-ENGINE.md)
-for measurement and composition in depth.
+for measurement and composition in depth, or the [documentation index](docs/README.md)
+for current capabilities and their verification records.
+
+## New on main
+
+The following enhancements are on `main` after **1.0.0**. Use a reviewed commit
+revision or the development branch to adopt them; the 1.0 demo download below
+remains a snapshot of that release.
+
+- **Measured native tables:** plan row heights from actual cell typography and
+  padding, search for column widths, and paginate complete rows with repeated
+  headers, stable widths, captions and horizontal merged cells.
+- **More reliable fitting:** authored and template text use shared rich-text
+  geometry, including mixed sizes, inherited styles, tabs, bullets and spacing.
+  Composition rechecks live content and fonts before adding slides; native soft
+  breaks retain their line structure in saved template text.
+- **Safer font operations:** embedding validates every supplied face before
+  mutation; slide imports carry embedded font families and styles. Matching faces
+  are reused, and conflicting faces refuse without partial writes. Applications
+  choose their own fonts and register the faces used for measurement.
+- **Better Lectern output:** generation and recovery use measured tables and
+  the same saved-deck preview pipeline as Inspect. Authored comparison tails use
+  full width, sparse final pages can rebalance, and citations use available space
+  before continuing onto source-note pages. Original words and document context
+  survive pagination.
+- **Less repeated work:** bounded preparation and measurement reuse improve
+  fitting, table width search and pagination. Release comparisons record CPU,
+  elapsed time, peak memory and output preservation; results are workload-specific.
+
+See the [layout guide](docs/LAYOUT-ENGINE.md),
+[font and preview guide](docs/IMPORTING-AND-PREVIEWING.md),
+[performance ledger](docs/PERFORMANCE.md) and [changelog](CHANGELOG.md#unreleased).
 
 For a full worked example, explore **[Horseshoe Curve](Examples/HorseshoeCurve/)**:
 a researched, illustrated 28-slide presentation made entirely with **Swift,
@@ -106,15 +137,31 @@ choose the products your target uses:
 ```
 
 The [complete package example](docs/GETTING-STARTED.md#install-with-swift-package-manager)
-is ready to copy. Version 1.0 includes the layout product and the imported-deck
-fidelity work described here; see the [changelog](CHANGELOG.md) for release details.
+is ready to copy. Version 1.0 includes both products. For the post-1.0 capabilities
+listed above, replace the dependency with a reviewed revision, for example:
 
-## Layout and fidelity in 1.0
+```swift
+.package(url: "https://github.com/welshofer/rostrum",
+         revision: "e6290707fc4d9f07ff0271ea56803bae89425072")
+```
+
+That revision includes the enhancements documented here. Use `branch: "main"`
+instead to track development, and update your package resolution deliberately.
+Lectern uses the local checkout automatically; it has no separate Rostrum version
+to bump. See [pull and rebuild](Lectern/README.md#pull-and-rebuild).
+
+## Layout and fidelity
 
 The shared text engine resolves inherited formatting, registered font faces,
 line breaks, spacing, tabs, list markers and vertical anchors. Fitting and SVG
 previews use the same rich-text geometry. `RostrumLayout` adds template selection,
 readable fit constraints, measured object captions and lossless text partitioning.
+
+Table planning resolves native cell styles and rich text before choosing row
+heights. `TemplateTableContent(rows:columnSizing:)` with `.measured()` enables
+bounded column search; `planTablePages` / `composeTablePages` create editable continuations with
+repeated headers and reserved captions. Horizontal spans are supported; vertical
+spans and native table autofit remain outside this layout profile.
 
 Table previews resolve native and embedded custom styles, padding, vertical
 alignment, fills and supported border joins. Newly authored table cells center
@@ -173,6 +220,8 @@ file persistence and end-to-end verification.
 | **Notes** | rich speaker notes, independent duplicates, source notes-master preservation on import; bounded notes-page SVG previews with fidelity diagnostics; incompatible masters are refused atomically |
 | **Fonts** | distinct regular/bold/italic faces, TTF/OTF embedding, bounded Swift kerning/ligature shaping with diagnostics for unsupported scripts; permitted registered fonts are embedded in SVG; explicit measured preview fallback with missing-font diagnostics |
 | **Text fitting** | `shape.fitText(fonts: deck.fonts)` — shared mixed-run layout measures registered faces and writes computed `normAutofit`; inspect `renderSVGReportingProblems` for unsupported script/layout cases |
+| **Table layout** | `TableLayoutEngine` measures existing cells without mutation; `TemplateTableContent` supports measured columns and horizontal spans; template table pagination repeats headers and captions without splitting rows |
+| **Composition** | `TemplateLayoutEngine` plans and rechecks inherited placeholders; `AuthoredLayoutEngine` fits authored slides; `MeasuredPaginator` partitions exact source text against the caller's fit rule |
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import slides with images, charts, layouts and embedded font faces intact; matching font faces are reused and conflicts are refused atomically |
 | **Design layer** | `DeckStyle` (type scale, WCAG auto-contrast, tokens); one-call slide builders; cards/buttons/kickers/stat tiles; a Grid DSL |
@@ -291,17 +340,25 @@ checks and structural lint establish different facts; a passing unit test or
 an issue-free preview alone does not establish pixel equivalence.
 
 Performance reports retain workload, source revisions, font inputs and output
-checks. A historical 22-slide checkpoint measured **57.30 → 47.85 ms** warm SVG
-rendering (16.5% lower); a separate 2,000-cell registered-font checkpoint measured
-**67.71 → 64.82 ms**. These are distinct local comparisons, not cumulative release
-speedups. Some richer fidelity paths are slower, and lower overall memory use
-has not been established. Read the [performance ledger](docs/PERFORMANCE.md)
-for the raw records, adverse results and reproduction instructions.
+checks. Recent Release comparisons include:
+
+| Workload | Observed result | Evidence |
+| --- | --- | --- |
+| Long general-pagination fixtures | 74–90% lower paired CPU for paragraph fixtures; 47–79% for continuous text | [Boundary search](docs/PAGINATION-PREFIX-20261013.md) |
+| 1,000-row distinct-text merged table | 13.24% lower planning CPU; 13.02% lower composition CPU | [Fragment reuse](docs/TABLE-SHAPING-20261013.md) |
+| Lectern authored render, save and previews on Linux | 10.37% lower paired CPU for long sources; 6.20% for dense text; 7.59% for dense cited text | [Pagination decision reuse](docs/CONTINUATION-PERFORMANCE-20261014.md) |
+
+These use different baselines and must not be added. Small controls include
+slowdowns, richer fidelity paths can cost more, and no general peak-memory
+reduction or native Mac speedup is established by these results. The
+[performance ledger](docs/PERFORMANCE.md) retains elapsed time, memory, adverse
+samples and output-preservation checks alongside historical rendering results.
 
 ## Documentation
 
 | Guide | Contents |
 | --- | --- |
+| [Documentation index](docs/README.md) | Current capability map, guide navigation and post-1.0 evidence |
 | [Getting started](docs/GETTING-STARTED.md) | Package setup, save/reopen, editable tables, native templates and preview reports |
 | [Layout engine](docs/LAYOUT-ENGINE.md) | Rich-text geometry, measurement adapters, composition, pagination and table context |
 | [Cookbook](docs/COOKBOOK.md) | Focused document-editing and authoring recipes |

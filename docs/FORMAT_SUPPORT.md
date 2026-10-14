@@ -5,6 +5,9 @@ creating or previewing it. Unknown package parts and XML are preserved by the
 round-trip machinery; that is not a promise that arbitrary edits to their related
 objects are safe. PowerPoint remains the visual acceptance client.
 
+This matrix describes current `main`, including post-1.0 enhancements. See the
+[documentation index](README.md) for version selection and linked evidence.
+
 | Feature | Current support | Remaining work |
 | --- | --- | --- |
 | PPTX / POTX / PPSX | Recognized document kinds; templates retain native master/layout/theme relationships | Macro-enabled document kinds are not recognized; legacy binary PPT is outside the OPC reader |
@@ -15,6 +18,9 @@ objects are safe. PowerPoint remains the visual acceptance client.
 | Text | Shared fit/render layout, inherited body/list styles, all-caps, anchored exact spacing, empty-paragraph handling, measured registered faces and explicit preview fallback; bounded kerning/ligatures and script support | Full complex-script, bidi and PowerPoint typography parity; small capitals, text warps and columns |
 | Charts | Native classic chart APIs, chart-cache extraction and guarded replacement; embedded-workbook read fallback; editable workbooks | Date/number-format display, named or external workbook references, broader date-category editing, stock and ChartEx |
 | Tables | Native cells, formatting and merges; embedded/custom regions and all 74 built-in table styles; shared measured layout | Broader native rendering baselines |
+| Table composition | Read-only row planning from native cell styles; measured column search; complete-row pagination with repeated headers/captions and horizontal spans | Vertical spans, rotated/vertical text, dynamic fields and native table autofit in the layout engine; arbitrary imported rich-cell pagination |
+| Text composition | Shared rich-text authored/template fitting; inherited placeholder styles; native soft breaks; fresh fit checks before slide insertion; exact-text measured pagination | Universal native autofit equivalence; fit diagnostics still require font/shaping review |
+| Embedded fonts | Atomic validation of supplied faces; identical re-embedding reuses parts; slide import preserves families/styles and merges compatible faces | Conflicting face bytes/metadata and ambiguous references refuse; opaque fonts can be preserved without being locally decodable; native rendering acceptance varies by consumer |
 | SmartArt | Block list, process, cycle and pyramid creation; text extraction; bounded saved drawing-cache preview | Broader layouts, multilevel data and nontrivial cache root transforms; absent/unsupported caches use a diagnosed placeholder |
 | SVG pictures | Bounded self-contained SVG, including Office SVG-only relationships; original image bytes preserved | General SVG/CSS and active/external content are rejected; unsupported artwork is diagnosed |
 | Audio/video | Embedding and read-back; basic transport timing | PowerPoint playback-effect sequences, autoplay and native acceptance |
