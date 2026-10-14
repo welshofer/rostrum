@@ -23,7 +23,14 @@ def json_write(path, data):
 
 
 def command_output(*args):
-    return subprocess.check_output(args, cwd=ROOT, text=True).strip()
+    if args[0] == "git":
+        # Container checkouts can be owned by the host runner. Trust only this
+        # tool's checkout for these read-only provenance queries, never '*'.
+        args = ("git", "-c", f"safe.directory={ROOT}", *args[1:])
+    try:
+        return subprocess.check_output(args, cwd=ROOT, text=True, stderr=subprocess.STDOUT).strip()
+    except subprocess.CalledProcessError as error:
+        raise RuntimeError(f"Metadata command failed: {args}\n{error.output}") from error
 
 
 def process_sample(command, log):
