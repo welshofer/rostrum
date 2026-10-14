@@ -497,6 +497,12 @@ stable review identity. Lectern's composition layer carries that context and
 reports expanded slide counts. The paginator itself neither creates slides nor
 selects how to redistribute comments or notes.
 
+Lectern additionally reflows one-sided authored comparison continuations to full
+width and measures a bounded set of final-page redistributions. This is a consumer
+policy: `MeasuredPaginator` still returns maximal prefixes. Lectern preserves each
+column's heading and source order, and recovery still refuses to remove existing
+reviewed pages. Rebuild the whole deck from saved content to accept a shorter copy.
+
 ## Performance and determinism
 
 Template host-measurement caching is scoped to an engine and keyed by text, font,

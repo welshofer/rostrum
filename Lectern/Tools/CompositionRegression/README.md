@@ -83,6 +83,17 @@ original deck. The recovery preview shows the resulting count and layout adjustm
 Passing schema checks and content comparisons does not establish visual quality.
 Inspect the final exports in PowerPoint before marking a manifest reviewed.
 
+Authored continuation review should also include unequal comparison columns, a
+dense bullet list with a short final page, a closing slide with a moderate citation,
+and a genuinely long source that still needs another page. One-sided continuations
+retain their active heading and use full width. Tail rebalancing tests at most eight
+boundaries between the last two pages and accepts only measured fits. Source bands
+must clear all content/image frames and the running footer. These rules do not
+rewrite imported templates or change native table pagination. The reproducible
+[continuation benchmark](../../../docs/benchmarks/2026-10-14-continuation-reflow.swift)
+uses fixed inputs through the production renderer and saves the input JSON for
+`--replay` and native PowerPoint review.
+
 ## Measured tables through generation
 
 `--tables` selects a production fixture with 28 evidence rows and a second table

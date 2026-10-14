@@ -53,6 +53,8 @@ import Rostrum
         let output = try Presentation(contentsOf: result.url)
         #expect(result.slideCount > 1 && result.schemaIssues.isEmpty)
         #expect(output.package.parts.keys.contains { $0.value.contains("/charts/") })
+        #expect(output.package.parts.keys.filter { $0.value.hasPrefix("/ppt/charts/") }.count == 1)
+        #expect(output.package.parts.keys.filter { $0.value.hasPrefix("/ppt/embeddings/") }.count == 1)
         let text = output.slides.dropFirst().flatMap { $0.shapes.all.compactMap { $0.textFrame?.text } }.joined(separator: " ")
         #expect(text.contains("measurement period"))
         #expect(text.components(separatedBy: "publication details.").count - 1 == 8)

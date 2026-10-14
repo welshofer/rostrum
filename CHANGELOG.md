@@ -6,6 +6,13 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Lectern's authored comparisons use full-width continuations when only one
+  column still has content. Sparse final text pages can move complete fragments
+  from the preceding page after both layouts are measured. Citations try an
+  unused band above the footer before spilling to source-note slides. Content,
+  notes, sections and recovery annotations retain their existing safeguards.
+  See the [reflow checks and performance costs](docs/CONTINUATION-REFLOW-20261014.md).
+
 - Lectern's generation and recovery previews now reopen the saved deck and use
   Inspect's font discovery and measured preview fallback. SVGs and diagnostics
   agree across these paths without changing the deck's fonts or saved layout.

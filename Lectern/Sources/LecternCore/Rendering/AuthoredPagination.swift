@@ -12,6 +12,7 @@ enum AuthoredPagination {
 
     static func prepare(_ input: DeckIR, images: [String: Data],
                         isolation: isolated (any Actor)? = #isolation,
+                        usage: ((IRSlide, Bool) throws -> Double?)? = nil,
                         fits: (IRSlide, Bool) throws -> Bool) throws -> Result {
         var result = Result(deck: input, images: images, warnings: [])
         result.deck.slides = []
@@ -35,10 +36,20 @@ enum AuthoredPagination {
                 // Keep each column's heading attached to its content; the IR
                 // does not assert a row-by-row correspondence between columns.
                 struct Pair { var left: String?; var right: String? }
-                func candidate(_ pairs: [Pair]) -> IRSlide {
+                func candidate(_ pairs: [Pair], continuation: Bool = false) -> IRSlide {
                     var page = base
-                    page.body?.left = Column(heading: left.heading, bullets: pairs.compactMap(\.left))
-                    page.body?.right = Column(heading: right.heading, bullets: pairs.compactMap(\.right))
+                    let lhs = pairs.compactMap(\.left), rhs = pairs.compactMap(\.right)
+                    if continuation, lhs.isEmpty != rhs.isEmpty {
+                        // The other column has finished. Keep the active heading
+                        // with its words and release the unused half of the slide.
+                        page.layout = "bullets"
+                        page.body?.lead = lhs.isEmpty ? right.heading : left.heading
+                        page.body?.bullets = (lhs.isEmpty ? rhs : lhs).map { Bullet(text: $0) }
+                        page.body?.left = nil; page.body?.right = nil
+                    } else {
+                        page.body?.left = Column(heading: left.heading, bullets: lhs)
+                        page.body?.right = Column(heading: right.heading, bullets: rhs)
+                    }
                     return page
                 }
                 let lhs = lines + left.bullets
@@ -53,7 +64,20 @@ enum AuthoredPagination {
                     Pair(left: $0 < leftPieces.count ? leftPieces[$0] : nil,
                          right: $0 < rightPieces.count ? rightPieces[$0] : nil)
                 }
-                pages = try MeasuredPaginator.pages(pairs) { try fits(candidate($0), false) }.map(candidate)
+                var partitions = try MeasuredPaginator.pages(pairs) { try fits(candidate($0), false) }
+                if let tail = partitions.indices.dropFirst().first(where: { index in
+                    partitions[index].allSatisfy { $0.left == nil } || partitions[index].allSatisfy { $0.right == nil }
+                }) {
+                    let remaining = partitions[tail...].flatMap { $0 }
+                    let reflowed = try MeasuredPaginator.pages(remaining) {
+                        try fits(candidate($0, continuation: true), false)
+                    }
+                    partitions.replaceSubrange(tail..., with: reflowed)
+                }
+                try balanceTail(&partitions, usage: usage.map { measure in
+                    { values, index in try measure(candidate(values, continuation: index > 0), false) }
+                })
+                pages = partitions.enumerated().map { candidate($0.element, continuation: $0.offset > 0) }
             } else {
                 if original.kind == .agenda { lines += original.body?.items ?? [] }
                 else {
@@ -68,7 +92,11 @@ enum AuthoredPagination {
                 let pieces = try lines.flatMap { value in
                     try MeasuredPaginator.text(value) { try fits(candidate([$0]), hasImage) }
                 }
-                pages = try MeasuredPaginator.pages(pieces) { try fits(candidate($0), hasImage) }.map(candidate)
+                var partitions = try MeasuredPaginator.pages(pieces) { try fits(candidate($0), hasImage) }
+                try balanceTail(&partitions, usage: usage.map { measure in
+                    { values, _ in try measure(candidate(values), hasImage) }
+                })
+                pages = partitions.map(candidate)
             }
             guard !pages.isEmpty else { throw LayoutError.cannotFit("The slide header or source needs a roomier layout.") }
             for index in pages.indices {
@@ -91,5 +119,42 @@ enum AuthoredPagination {
             return section
         }
         return result
+    }
+
+    /// Adjust only the last boundary, only for a sparse final page, and only
+    /// after measuring both resulting pages. No global search or retained cache.
+    private static func balanceTail<Item>(_ pages: inout [[Item]],
+                                          usage: (([Item], Int) throws -> Double?)?) throws {
+        guard pages.count > 1, let usage else { return }
+        func measured(_ values: [Item], _ index: Int) throws -> Double? {
+            try Task.checkCancellation()
+            let result = try usage(values, index)
+            try Task.checkCancellation()
+            return result
+        }
+        let last = pages.count - 1, previous = last - 1
+        guard let tail = try measured(pages[last], last), tail < 0.4,
+              let head = try measured(pages[previous], previous), head - tail > 0.2,
+              pages[previous].count > 1 else { return }
+        let all = pages[previous] + pages[last]
+        let boundary = pages[previous].count
+        var best = boundary, difference = head - tail
+        // At most eight candidate boundaries regardless of paragraph count.
+        // Include the one-item move and spread the rest across the prior page.
+        let shifts = Set((1...min(8, boundary - 1)).map {
+            1 + ($0 - 1) * max(0, boundary - 2) / max(1, min(8, boundary - 1) - 1)
+        }).sorted()
+        for shift in shifts {
+            let split = boundary - shift
+            guard let lhs = try measured(Array(all[..<split]), previous),
+                  let rhs = try measured(Array(all[split...]), last) else { continue }
+            let delta = abs(lhs - rhs)
+            if delta + 0.05 < difference {
+                difference = delta; best = split
+            }
+        }
+        if best != boundary {
+            pages[previous] = Array(all[..<best]); pages[last] = Array(all[best...])
+        }
     }
 }
