@@ -44,6 +44,9 @@ step "Rostrum build + tests"
 swift build
 swift test
 
+step "Native text/table pack (portable checks only)"
+PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
+
 step "Optimized text preparation"
 swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|MeasuredPaginatorTests'
 

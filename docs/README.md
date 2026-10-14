@@ -17,6 +17,7 @@ not a download of the newest Library Lab results.
 | Register or embed fonts, import slides, render SVG and interpret diagnostics | [Importing and previewing](IMPORTING-AND-PREVIEWING.md) |
 | Pull, build and exercise the libraries through the app | [Lectern](../Lectern/README.md#pull-and-rebuild) |
 | Run fixed production fixtures or replay saved content offline | [Composition regression](../Lectern/Tools/CompositionRegression/README.md) |
+| Prepare text/table profiles with exact caller-supplied faces | [Native fidelity pack](../Tools/native-fidelity/README.md) |
 | Find an offline library demonstration | [Library Lab coverage](LIBRARY-LAB-20261002.md) |
 | Understand preservation, package boundaries and deterministic output | [Architecture](ARCHITECTURE.md) |
 | Check support and evidence before adopting a feature | [Format support](FORMAT_SUPPORT.md), [conformance](CONFORMANCE.md) |
@@ -57,6 +58,7 @@ for evidence. Performance percentages from different baselines are not additive;
 CPU improvements do not imply lower peak memory. The [performance ledger](PERFORMANCE.md)
 links both gains and measured costs.
 
-The [roadmap](../ROADMAP.md) tracks remaining work. Historical publication evidence
+The [roadmap](../ROADMAP.md) tracks remaining work; [PLAN.md](../PLAN.md) tracks
+the current fidelity/performance milestones. Historical publication evidence
 is in the [1.0 validation receipt](RELEASE-1.0-VALIDATION.md) and
 [release audit](RELEASE-1.0-AUDIT.md).

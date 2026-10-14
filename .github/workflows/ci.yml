@@ -61,6 +61,9 @@ jobs:
       - name: Check portable fidelity references
         run: bash scripts/check-fidelity.sh
         if: matrix.swift != '6.0'
+      - name: Check native text/table pack (portable checks only)
+        run: PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
+        if: matrix.swift != '6.0'
       - name: Check optimized text preparation
         run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|MeasuredPaginatorTests'
         if: matrix.swift != '6.0'
@@ -105,6 +108,10 @@ jobs:
         run: swift --version
       - name: Test Rostrum (Darwin XML branch)
         run: swift test
+      - name: Check native text/table pack (portable checks only)
+        run: |
+          swift build --product native-fidelity
+          PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
       - name: Check optimized text preparation
         run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|MeasuredPaginatorTests'
       - name: Check portable fidelity references

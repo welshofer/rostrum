@@ -43,6 +43,11 @@ let package = Package(
             dependencies: ["Rostrum"],
             path: "Tools/rostrum-benchmark"),
         .executableTarget(
+            name: "native-fidelity",
+            dependencies: ["Rostrum", "RostrumLayout"],
+            path: "Tools/native-fidelity",
+            exclude: ["README.md", "run.py", "test_pack.py"]),
+        .executableTarget(
             name: "pptx-tool",
             dependencies: ["Rostrum"],
             path: "Tools/pptx-tool"),
