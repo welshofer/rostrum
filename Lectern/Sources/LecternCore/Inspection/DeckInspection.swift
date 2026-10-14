@@ -187,14 +187,8 @@ public enum DeckInspector {
 
         var previews = DeckPreviews()
         if renderPreviews {
-            _ = InstalledFonts.register(in: deck, families: try InspectionFonts.families(in: deck, explicit: detail.explicitFonts) + ["Arial"])
-            deck.fonts.previewFallbackFamily = "Arial"
-            let total = deck.slides.count
-            onEvent(.rendering(done: 0, total: total))
-            for index in 0..<total {
-                try Task.checkCancellation()
-                previews.append(slideAt: index, from: deck)
-                onEvent(.rendering(done: index + 1, total: total))
+            previews = try DeckPreviews.render(from: deck, explicitFonts: detail.explicitFonts) { done, total in
+                onEvent(.rendering(done: done, total: total))
             }
         }
 

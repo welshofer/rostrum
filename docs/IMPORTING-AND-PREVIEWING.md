@@ -48,8 +48,12 @@ does not treat a preview substitute as the requested font.
 Fallback improves readability by measuring and drawing with the same registered
 face. It cannot reproduce the source font's appearance. It does not rewrite
 serialized typeface names or register an alias under a missing source family.
-Lectern inspection explicitly registers Arial; the offline Library Lab recipe
-uses its licensed bundled DejaVu face. Other hosts choose their own policy.
+Lectern's generation, recovery and inspection previews explicitly register Arial;
+the offline Library Lab recipe uses its licensed bundled DejaVu face. Other hosts
+choose their own policy. Lectern reopens generated/recovered files and discovers
+the same slide, layout, master and theme font declarations as Inspect. Generation
+font aliases and measurement state are kept separate from this preview registry.
+No preview operation saves or changes the caller's requested font families.
 
 ## Embedding fonts safely
 

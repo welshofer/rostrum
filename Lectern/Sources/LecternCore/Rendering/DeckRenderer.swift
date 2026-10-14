@@ -128,33 +128,10 @@ public actor DeckRenderer {
         try Task.checkCancellation()
         let url = try outputURL(title: saved.deck.meta.title + " revised", in: directory)
         try presentation.save(to: url)
-        let previews = Self.previews(of: presentation)
+        let previews = DeckPreviews.savedDeck(at: url, failureContext: presentation)
         return DeckResult(recoveryURL: snapshotURL, url: url, slideCount: presentation.slides.count,
             warnings: warnings, schemaIssues: issues, unmeasuredFonts: missingFonts.missing, previewWarnings: previews.warnings,
             previews: previews.svgs, previewTitles: previews.titles, previewSlideNumbers: previews.slideNumbers, previewDiagnostics: previews.diagnostics, droppedContent: dropped)
-    }
-
-    // MARK: - Previews
-
-    /// Render every slide to SVG with Rostrum's own renderer.
-    ///
-    /// This shows the deck Rostrum actually produced — same theme resolution,
-    /// same placeholder inheritance, same text. A preview drawn from the IR
-    /// instead would be a second implementation of layout, free to disagree
-    /// with the file the user opens.
-    ///
-    /// A preview, not a proof. Paragraphs whose typeface is registered break
-    /// exactly where the builders broke them; the rest break on a
-    /// character-width estimate and can land elsewhere than PowerPoint puts
-    /// them. `unmeasuredFonts` names the faces that fell back.
-    ///
-    /// Best-effort per slide: one slide that fails to render costs its own
-    /// preview and nothing else, because a missing thumbnail is not a reason
-    /// to fail a deck that saved correctly.
-    private static func previews(of presentation: Presentation) -> DeckPreviews {
-        var result = DeckPreviews()
-        for index in 0..<presentation.slides.count { result.append(slideAt: index, from: presentation) }
-        return result
     }
 
     // MARK: - Document metadata
@@ -422,7 +399,7 @@ public actor DeckRenderer {
             try presentation.save(to: url)
             // Previews are the tail cost and pure convenience; the deck is
             // already saved, so a cancel here skips them rather than undoing it.
-            let previews = Task.isCancelled ? DeckPreviews() : Self.previews(of: presentation)
+            let previews = DeckPreviews.savedDeck(at: url, failureContext: presentation)
             return DeckResult(url: url, slideCount: presentation.slides.count,
                               warnings: warnings + layoutWarnings, schemaIssues: schemaIssues,
                               unmeasuredFonts: registration.missing, previewWarnings: previews.warnings,

@@ -6,6 +6,10 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Lectern's generation and recovery previews now reopen the saved deck and use
+  Inspect's font discovery and measured preview fallback. SVGs and diagnostics
+  agree across these paths without changing the deck's fonts or saved layout.
+
 - Lectern generation and recovery now use measured column sizing and native
   table pagination. Full rows, repeated headers, notes and section membership
   survive saved-file read-back; long captions flow to source-note pages.

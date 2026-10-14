@@ -1,3 +1,4 @@
+import Foundation
 import Rostrum
 
 /// A renderer finding copied into values the app can keep across actors,
@@ -73,6 +74,53 @@ struct DeckPreviews {
     var titles: [String] { records.map(\.title) }
     var slideNumbers: [Int] { records.map(\.number) }
     var warnings: [String] { records.flatMap { r in r.warnings.map { "Slide \(r.number): \($0)" } } }
+
+    /// The shared inspection profile. Callers register embedded fonts first;
+    /// exact installed faces then fill any gaps, with an explicit preview-only
+    /// fallback. Generation's measurement aliases never enter this registry.
+    static func render(from presentation: Presentation, explicitFonts: Set<String>? = nil,
+                       onProgress: (Int, Int) -> Void = { _, _ in }) throws -> DeckPreviews {
+        try Task.checkCancellation()
+        let families = try InspectionFonts.families(in: presentation, explicit: explicitFonts)
+        _ = InstalledFonts.register(in: presentation, families: families + ["Arial"])
+        presentation.fonts.previewFallbackFamily = "Arial"
+        let total = presentation.slides.count
+        var result = DeckPreviews()
+        onProgress(0, total)
+        for index in 0..<total {
+            try Task.checkCancellation()
+            result.append(slideAt: index, from: presentation)
+            onProgress(index + 1, total)
+        }
+        try Task.checkCancellation()
+        return result
+    }
+
+    /// Preview the bytes we saved, with the same font setup as Inspect. Avoid
+    /// the inspector's unrelated outline/schema work and keep preview failures
+    /// from turning a successful save into a failed generation or recovery.
+    static func savedDeck(at url: URL, failureContext: Presentation) -> DeckPreviews {
+        do {
+            try Task.checkCancellation()
+            let presentation = try Presentation(data: Data(contentsOf: url),
+                limits: .init(totalUncompressedBytes: DeckInspector.defaultReadLimit))
+            _ = presentation.registerEmbeddedFonts()
+            return try render(from: presentation)
+        } catch is CancellationError {
+            return DeckPreviews()
+        } catch {
+            var result = DeckPreviews()
+            let geometry = SlidePreviewGeometry(width: failureContext.slideSize.width.inches,
+                                                height: failureContext.slideSize.height.inches)
+            for index in 0..<failureContext.slides.count {
+                let title = (try? failureContext.slides[index].title?.textFrame?.text) ?? ""
+                result.records.append(.init(number: index + 1, title: title, svg: nil,
+                                            geometry: geometry, warnings: ["Preview unavailable."]))
+                result.diagnostics.append(.init(slideNumber: index + 1, failure: String(describing: error)))
+            }
+            return result
+        }
+    }
 
     mutating func append(slideAt index: Int, from presentation: Presentation) {
         let title = (try? presentation.slides[index].title?.textFrame?.text) ?? ""

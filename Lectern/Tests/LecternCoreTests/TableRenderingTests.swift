@@ -73,6 +73,8 @@ import RostrumLayout
         let inspection = try DeckInspector.inspect(deckAt: output.url)
         #expect(inspection.previewSlideNumbers == Array(1...output.slideCount))
         #expect(inspection.previews.count == output.slideCount)
+        #expect(inspection.previews == output.previews)
+        #expect(inspection.previewDiagnostics == output.previewDiagnostics)
         #expect(inspection.previewDiagnostics.allSatisfy { $0.failure == nil })
         #expect(inspection.sections.first?.slideIndices == Array(0..<output.slideCount))
         let grids = inspection.slides.flatMap(\.tables).map(\.rows)
