@@ -6,6 +6,42 @@ template, then produces an editable `.pptx`. Parsing, layout, rendering and file
 creation run on-device. Configured text and optional image providers receive
 the generation requests; API keys are stored in the system Keychain.
 
+## Pull and rebuild
+
+Lectern and both libraries live in this repository. LecternCore uses the local
+`../` package, so rebuilding after pulling `main` adopts the library updates
+without changing a separate dependency version. From a clean checkout:
+
+```sh
+git switch main
+git pull --ff-only origin main
+Lectern/scripts/build.sh
+```
+
+Use Xcode 26 or newer and install XcodeGen with `brew install xcodegen`. The macOS
+wrapper generates the project and honors `Lectern/.signing.local` when present
+to preserve the signing identity used for existing Keychain entries. The default
+app output is `Lectern/.build-xcode/Build/Products/Debug/Lectern.app`; see
+[the macOS app](#the-macos-app) for isolation settings. Do not replace an app while it is generating
+a deck; use an isolated build directory for concurrent checks.
+
+Current `main` includes measured table columns and row pagination in generation
+and recovery, full-width one-sided comparison continuations, measured final-page
+balancing, and citation placement above the footer when space is available.
+Generated and recovered previews reopen the saved PPTX through Inspect's pipeline.
+Operation-local reuse reduces repeated pagination work while retaining fresh font
+and content checks for every new render. See the
+[capability map](../docs/README.md#enhancements-since-10) and
+[performance record](../docs/CONTINUATION-PERFORMANCE-20261014.md).
+
+To exercise these updates, run the offline Library Lab, generate a dense text or
+table deck, then open its saved file in Inspect and PowerPoint. The result screen
+and Inspect should agree on the same machine. Check editable cells, continuation
+headings, source text, notes and sections in PowerPoint's slide view as well as its
+export. Recovery from saved content avoids another model request; a whole-deck
+rebuild saves a new copy and may change the page count. Later manual edits and
+comments remain in the original.
+
 ## Layout
 
 ```
@@ -64,6 +100,13 @@ run and fixed-width mixed 18/12-point runs. The narrower option switches the
 uniform row between independently recorded native wrap boundaries. The specimens
 use separate Latin letter glyphs, matching the native references, and retain
 their font sizes and fitting settings through saving and reopening.
+
+The **Templates and document properties** demo additionally exercises inherited
+text fitting, native row measurement, measured columns, repeated-header table
+pagination and horizontal merged cells. The **Fonts, shaping and fitting** demo checks
+mixed-size authored fitting. These recipes save and reopen their decks and report
+support boundaries; they do not impose their test font on applications or certify
+every native PowerPoint rendering path.
 
 The **Imported artwork and text** demo exercises custom curves, SVG artwork,
 saved SmartArt drawings, inherited text and empty numbered paragraphs. It uses
@@ -320,11 +363,11 @@ the iOS simulator), and — the part nothing else covers — the **app-hosted
 tests** (`Lectern/AppTests`), which exercise `AppState` and the SwiftUI target
 that `swift test` never compiles.
 
-CI deliberately does less. Linux runs on every push (Swift 6.0 and 6.1); a
-single macOS job runs on pull requests only, because a hosted macOS runner
-bills about ten times the Linux rate. Even that job stops at building the app —
-nothing in CI ever runs the app-hosted tests. This local gate is where the
-Apple side actually gets verified, which is why the pre-push hook matters.
+Linux CI builds on every push with Swift 6.0 and 6.1 and runs the package suites
+on 6.1. The macOS pull-request job runs the native package suites, including
+CoreText/CoreGraphics paths, and builds both macOS and iOS simulator apps.
+CI does not run app-hosted tests; those remain part of the full local gate.
+See the [contribution guide](../CONTRIBUTING.md#before-a-pr) for exact coverage.
 
 Install the pre-push hook once so every `git push` runs it for you:
 
@@ -333,7 +376,7 @@ Install the pre-push hook once so every `git push` runs it for you:
 ```
 
 After that, `git push` runs `./scripts/verify.sh` first and refuses the push if
-it fails (`--fast` skips the app builds; `git push --no-verify` bypasses once).
+it fails (`--fast` skips both app builds and app-hosted tests).
 
 ## Settings, keys, and provider selection — done
 

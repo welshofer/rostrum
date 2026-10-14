@@ -21,6 +21,29 @@ from phase 0 onward.
 > 28-slide Horseshoe Curve example landed after the release as an inspectable
 > demonstration, not as evidence that those remaining gates have passed.
 
+## Current main after 1.0 (2026-10-14)
+
+Completed since the release:
+
+- Shared rich-text geometry for authored and template fitting, with prepared
+  shrink trials and fresh composition checks.
+- Native table row measurement, measured column search, horizontal merged cells
+  and repeated-header pagination; production Lectern generation/recovery uses it.
+- Atomic font embedding, compatible embedded-face preservation during slide
+  import, and native soft-break serialization for template text.
+- One saved-deck preview pipeline for Lectern generation, recovery and Inspect.
+- Full-width one-sided comparison continuations, measured final-page balancing
+  and citation placement in free space before source-note pages.
+- Bounded measurement reuse and faster pagination boundary search, with CPU,
+  elapsed-time, peak-memory and output-preservation evidence.
+
+The [capability map](docs/README.md#enhancements-since-10) links usage and exact
+verification records. These changes do not close the remaining work: broader
+PowerPoint slide-view/export acceptance with caller-selected fonts, unsupported
+table-layout profiles, complete complex-script/bidi layout, missing-chart-cache
+repair, or comparable native-device performance and memory measurements. The
+historical phases below retain their original scope and dates.
+
 ## Phase 0 — Foundations ✅ (broke ground 2026-07-18)
 
 - [x] Zero-dependency SwiftPM package (macOS/iOS/Linux)

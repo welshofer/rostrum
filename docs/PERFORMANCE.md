@@ -2,6 +2,29 @@
 
 ## Latest reconciled measurements
 
+The [authored pagination decision record](CONTINUATION-PERFORMANCE-20261014.md)
+measures production Lectern rendering, saving and saved-deck previews on Linux.
+Across ten retained alternating pairs per fixture, long-source CPU improves
+**10.37%**, dense text **6.20%**, and dense cited text **7.59%**. All 176 processes
+retain identical PPTX bytes, SVGs and ordered diagnostics relative to the baseline.
+Peak RSS rises about 0.1 MiB on several cases and is effectively unchanged for
+long sources; the small control has a 3.41% paired CPU slowdown. The record retains
+all samples, elapsed times, bounds and missing-font conditions. It does not measure
+native Mac font performance or establish a general memory reduction.
+
+That optimization follows [authored continuation reflow](CONTINUATION-REFLOW-20261014.md),
+which intentionally changes layouts: the asymmetric comparison fixture goes from
+nine slides to four, and a moderate citation fits on one slide instead of two.
+The reflow report retains its extra long-source CPU cost; the subsequent cache
+comparison uses the reflow implementation as its baseline and preserves its output.
+
+The [production table integration](LECTERN-TABLES-20261013.md) records authored
+and template generation/recovery costs on both 4:3 and 16:9 canvases. Measured
+columns and pagination perform more work than the former estimate, so those
+correctness costs are separate from the preserving table-search optimizations.
+The [font embedding record](FONT-EMBEDDING-20261013.md) likewise distinguishes
+first embedding, repeated no-op embedding and conflict refusal.
+
 The [general pagination record](PAGINATION-PREFIX-20261013.md) measures 74–90% lower
 paired CPU for long paragraph fixtures and 47–79% for long continuous-text
 fixtures. Later pages start their search near the previous page’s size instead
@@ -17,6 +40,11 @@ geometry, ordered diagnostics, saved decks and SVGs. Small/estimated controls
 include observed slowdowns, and peak RSS shows no general reduction. The record
 retains all CPU, elapsed-time and memory samples and bounds the result to this
 workload.
+
+Earlier [column-search preparation](TABLE-PREPARATION-20261012.md) and
+[horizontal-span work](TABLE-SPANS-20261012.md) retain their own before/after
+records. Preparation is per operation; font or content changes are rechecked on
+the next call. Width trials still perform width-dependent wrapping and shaping.
 
 The [shared table layout record](TABLE-LAYOUT-20261012.md) measures actual native
 cell planning and complete small-table composition. It retains the correctness

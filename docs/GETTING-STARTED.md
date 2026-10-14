@@ -1,4 +1,4 @@
-# Getting started with Rostrum 1.0
+# Getting started with Rostrum
 
 Rostrum ships two Swift libraries in one package. Use `Rostrum` for PowerPoint
 files and their editable contents; add `RostrumLayout` for template selection,
@@ -34,6 +34,20 @@ let package = Package(
 For an Xcode app, add the same repository under Package Dependencies and select
 the products your target imports. `RostrumLayout` depends on `Rostrum`; it is a
 separate import because document editing does not require composition.
+
+The manifest above selects the released API. The measured table APIs and other
+post-1.0 enhancements in this guide require current `main` or a reviewed revision.
+For a reproducible dependency containing those changes, replace the package line:
+
+```swift
+.package(url: "https://github.com/welshofer/rostrum",
+         revision: "e6290707fc4d9f07ff0271ea56803bae89425072")
+```
+
+Use `branch: "main"` to follow development instead. Update the dependency in
+Xcode or run `swift package update` when deliberately adopting a newer revision;
+keep the resulting `Package.resolved` with your application. See the
+[changelog](../CHANGELOG.md#unreleased) for changes since 1.0.0.
 
 ## Create, save and reopen a deck
 
@@ -111,16 +125,68 @@ func writeTable(to outputURL: URL) throws {
 ```
 
 Rows and columns start evenly distributed within the frame. Width/height helpers
-update the table extent. Row geometry remains your responsibility when content
-wraps; setting a frame does not automatically paginate a table. For composition
-inside a template, provide measured row height through `measureObjectHeight` and
-reserve a caption before accepting the layout. See the
-[layout table workflow](LAYOUT-ENGINE.md#tables-and-other-structured-objects).
+update the table extent; setting a frame does not automatically fit or paginate
+its contents. On current `main`, `TableLayoutEngine.plan` measures an existing
+table's resolved cell styles, padding and rich text without changing it. Review
+`plan.fits`, cell issues and shaping diagnostics before applying its widths and
+row heights. See [native table row planning](LAYOUT-ENGINE.md#native-table-row-planning).
 
 The table API also supports row/column insertion, deletion and reordering,
 merges, unmerge, padding, fills, cardinal/diagonal borders and style inspection.
 Read the [cookbook](COOKBOOK.md) for individual editing operations and the
 [conformance record](CONFORMANCE.md) for preview boundaries.
+
+## Paginate a measured table
+
+For new plain-string tables in a template, pass `TemplateTableContent` with
+`.measured()` column sizing. The engine measures the whole grid, chooses widths
+and splits only between complete body rows. This function requires the
+post-1.0 revision above and a template with a usable object placeholder:
+
+```swift
+import Foundation
+import Rostrum
+import RostrumLayout
+
+func writeTablePages(templateURL: URL, fontURLs: [URL], outputURL: URL) throws {
+    let deck = try Presentation.fromTemplate(data: Data(contentsOf: templateURL))
+    _ = deck.registerEmbeddedFonts()
+    for fontURL in fontURLs { _ = try deck.fonts.register(contentsOf: fontURL) }
+
+    let rows = [["Record", "Evidence", "Status"]] + (1...30).map {
+        ["R\($0)", "Original evidence for record \($0), retained in full.", "Reviewed"]
+    }
+    let content = TemplateTableContent(rows: rows, columnSizing: .measured())
+    let engine = TemplateLayoutEngine(presentation: deck)
+    let plan = try engine.planTablePages(
+        title: "Evidence register", table: content,
+        caption: "Source: project review records.")
+    let pages = try engine.composeTablePages(plan)
+    for page in pages { try page.setNotes("Discuss the underlying review evidence.") }
+    try deck.setSections([("Evidence", 0)])
+    try deck.validateTemplateBindings()
+    try FileManager.default.createDirectory(
+        at: outputURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+    try deck.save(to: outputURL)
+    let reopened = try Presentation(contentsOf: outputURL)
+    precondition(reopened.slides.count == pages.count)
+}
+```
+
+Provide the exact licensed font faces named by the template. The portable library
+does not discover system fonts. Missing or unsupported faces remain diagnostic
+conditions; a fitting plan alone does not establish PowerPoint fidelity.
+
+The first row, title and caption repeat on every page, and column widths remain
+fixed. `plan.pages[i].bodyRows` identifies the original body-row range for notes
+or provenance. Composition rechecks live fonts and styles; if geometry changed,
+make a new plan. An oversized row fails instead of being clipped or split.
+
+`TemplateTableContent.merges` supports horizontal spans with empty covered cells.
+Vertical spans, rotated/vertical text, dynamic fields and native table autofit
+are outside this layout profile. The API does not paginate arbitrary imported
+rich-cell XML. See [table continuations](LAYOUT-ENGINE.md#table-continuations-in-templates)
+and [column constraints](LAYOUT-ENGINE.md#measured-table-column-widths).
 
 ## Compose from a PowerPoint template
 
@@ -213,6 +279,13 @@ Lab with 34 offline demos. Run a demo to produce its own saved PowerPoint deck,
 inspect the result, and use Reveal to locate it on disk. Run All retains an
 individual result for every demo; slide counts depend on the recipe. A demo's
 reported support boundary and reopen checks describe what it actually exercised.
+
+Lectern also uses measured tables in production generation and saved-content
+recovery. Its result previews reopen the written file through the same pipeline
+as Inspect. [Pull and rebuild Lectern](../Lectern/README.md#pull-and-rebuild) to
+exercise the current library, then use the offline
+[composition regression runner](../Lectern/Tools/CompositionRegression/README.md)
+for fixed inputs or saved-content replay without a model call.
 
 Use [architecture](ARCHITECTURE.md) to understand mutation boundaries,
 [layout](LAYOUT-ENGINE.md) for composition details and

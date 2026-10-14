@@ -1,15 +1,18 @@
 # Rostrum cookbook
 
-Task-oriented recipes. Everything here is pure-Swift, zero-dependency, and
-produces `.pptx` files PowerPoint opens without repair.
+Task-oriented recipes for the pure-Swift, zero-dependency libraries. Fragments
+assume the surrounding document and geometry exist; see [Getting started](GETTING-STARTED.md)
+for complete setup. Current `main` includes post-1.0 layout APIs. Saved-file checks
+and native PowerPoint acceptance remain separate from successfully running a recipe.
 
-## A deck in four lines
+## A minimal deck
 
 ```swift
 import Rostrum
 
 let deck = try Presentation()
 try deck.titleSlide("Hello, Rostrum", subtitle: "A native deck engine")
+try deck.slides.remove(at: 0) // remove Presentation()'s blank starter slide
 try deck.save(to: URL(filePath: "hello.pptx"))
 ```
 
@@ -33,22 +36,41 @@ Every builder returns the created `Slide` for further tweaking.
 ## Bring a brand: `.potx` templates and `design.md`
 
 ```swift
-// Open a real PowerPoint template — masters, layouts, theme, fonts intact.
-let deck = try Presentation(contentsOf: URL(filePath: "brand.potx"))
-
-// A template opens as a template and saves as one. Say when you want a deck
-// out of it, so the conversion is yours rather than a surprise.
-deck.documentKind = .presentation
-
-// Or apply a design.md (fonts, palette, type/spacing/radius tokens).
-deck.applyDesign(try Design(contentsOf: URL(filePath: "sunflower.md")))
-
-try deck.bulletSlide("On brand", ["everything inherits the theme"])
+// Start a new deck with the template's masters, layouts, theme and fonts.
+// Starter slides are removed; use TemplateLayoutEngine to fill placeholders.
+let deck = try Presentation.fromTemplate(
+    data: Data(contentsOf: URL(filePath: "brand.potx")))
+let engine = TemplateLayoutEngine(presentation: deck)
+let columns = [[LayoutParagraph("Content in the template's native typography")]]
+let plan = try engine.plan(title: "On brand", columns: columns, preferredTypes: ["obj", "tx"])
+_ = try engine.compose(plan, title: "On brand", columns: columns)
+try deck.validateTemplateBindings()
 try deck.save(to: URL(filePath: "out.pptx"))
 ```
 
-Both compose: open a `.potx`, `applyDesign`, then build — the whole deck comes
-out styled.
+Import `Foundation`, `Rostrum` and `RostrumLayout` for this path. Register the
+template's exact font faces before planning. A separate authored-deck workflow
+applies `design.md` to a fresh presentation:
+
+```swift
+let deck = try Presentation()
+deck.applyDesign(try Design(contentsOf: URL(filePath: "sunflower.md")))
+try deck.bulletSlide("On brand", ["everything inherits the theme"])
+try deck.slides.remove(at: 0)
+try deck.save(to: URL(filePath: "out.pptx"))
+```
+
+An imported template owns its typography and artwork. Applying a design is an
+explicit change to that design, not part of preserving template inheritance.
+For ordinary template editing, `Presentation(contentsOf:)` keeps starter content
+and the original document kind; it differs from `fromTemplate(data:)`.
+
+For editable multi-page tables, follow the complete
+[measured table recipe](GETTING-STARTED.md#paginate-a-measured-table). It registers
+fonts, plans widths and row heights, repeats headers/captions, saves and reopens
+the result. See [horizontal spans](LAYOUT-ENGINE.md#horizontal-merged-cells) for
+grouped headers, and [font operations](IMPORTING-AND-PREVIEWING.md#embedding-fonts-safely)
+for embedding and import conflict handling.
 
 `documentKind` is what PowerPoint reads to tell a `.pptx` from a `.potx` from a
 `.ppsx`; the file extension is decoration. Leave it alone and a template stays a
