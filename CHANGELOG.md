@@ -6,6 +6,14 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- `PreparedFont` snapshots bind exact font bytes and collection index to parsed
+  metrics. Reuse them across explicit `FontLibrary.register` calls without
+  reparsing; raw-byte registration keeps its existing behavior. Lectern uses
+  these snapshots within installed-font validation/registration and starts a
+  fresh file-reading session for every operation. Family/style selection,
+  embedded-face priority and licensing restrictions remain unchanged. The Fonts
+  and Fitting Library Lab demonstrates reuse and saved/reopened behavior.
+
 - `Chart.rebuildMissingCachesFromWorkbook()` explicitly materializes absent
   classic chart caches from supported embedded XLSX references. All missing
   references in one chart validate before mutation; existing caches, workbook

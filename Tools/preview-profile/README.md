@@ -186,3 +186,36 @@ bitmap bytes; RSS includes both decoded SVG copies and process startup. The
 small SVG control can be slower by microseconds. See the
 [measured decision](../../docs/THUMBNAIL-CACHE-20261015.md), then rerun the native
 Mac probe on the same saved deck before claiming an app speedup.
+
+## Font validation and registration comparison
+
+`font-probe.swift` compiles alongside production `InstalledFonts.swift` and the
+selected Release Rostrum module/objects. Build the baseline before editing the
+algorithm and retain its binary; then repeat for the candidate. For Linux:
+
+```sh
+swift build -c release --target Rostrum
+swiftc -O -I .build/release/Modules \
+  Tools/preview-profile/font-probe.swift \
+  Lectern/Sources/LecternCore/Rendering/InstalledFonts.swift \
+  .build/release/Rostrum.build/*.o -o /absolute/font-probe
+python3 Tools/preview-profile/run-fonts.py \
+  --baseline-binary /absolute/font-probe-before --binary /absolute/font-probe \
+  --workloads /absolute/font-workloads.json --output /absolute/new-font-profile
+```
+
+The manifest has `workloads` entries containing a simple unique `name`, a `paths`
+array of licensed font files (relative to the manifest or absolute), and requested
+`families`. Include regular-only, multiple-style, collection and missing controls.
+The probe injects candidate file discovery; file reads, face validation and
+registration use production code. It creates two fresh sessions/registries per
+process, then saves and renders fixed mixed-style text. The collector alternates
+fresh baseline/candidate processes, retains one warmup and seven measured pairs,
+and requires identical PPTX/SVG/diagnostic/registration artifacts and unchanged
+font/executable hashes. Private font bytes and artifacts stay outside Git.
+
+Stage CPU/elapsed includes file reads through registration. Process CPU/elapsed
+and lifetime peak RSS also include fixture generation, rendering, verification
+and evidence writes. OS font discovery, CoreText, WebKit and UI are excluded;
+these timings cannot establish a native Mac preview speedup. Record source
+revision and hashes for both builds alongside the raw report.

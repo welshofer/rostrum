@@ -48,7 +48,10 @@ extension PlatformLabRecipes {
     static func fonts(_ options: LibraryLabOptions) throws -> LibraryLabDraft {
         let deck = try LibraryLabSupport.deck(title: "Fonts and fitting"), font = try resource("DejaVuSans", "ttf")
         let before = try deck.serializedData()
-        try deck.fonts.register(font)
+        let prepared = try PreparedFont(data: font)
+        try deck.fonts.register(prepared)
+        let secondLibrary = FontLibrary()
+        try secondLibrary.register(prepared, aliases: ["Lab prepared face"])
         let metrics = try require(deck.fonts.metrics(for: "DejaVu Sans", bold: false, italic: false), "Regular face missing")
         let measurer = TextMeasurer(metrics)
         let shaped = TextShaper(metrics).shape("AV office x́", pointSize: 24)
@@ -73,6 +76,7 @@ extension PlatformLabRecipes {
         let note = "Font: DejaVu Sans regular. Fit scale: \(fitScale)%; \(wrapped.count) measured line(s)."
         try text(note, on: deck.slides[0], in: LibraryLabSupport.frame(0.7, 0.4, 11, 0.8))
         return LibraryLabDraft(deck: deck, before: before, checks: [
+            .init("Prepared font reused", prepared.data == font && secondLibrary.data(for: .init(family: "Lab prepared face")) == font && secondLibrary.metrics(for: "Lab prepared face").map { TextShaper($0).shape("AV office x́", pointSize: 24) == shaped } == true, "One immutable parse supplies the exact bytes and shaping metrics to independent registries; fresh files require fresh preparation."),
             .init("Registered metrics and shaping", measurer.width(of: "AV", pointSize: 24) > 0 && shaped.isSupported && shaped.glyphs.count < "AV office x́".unicodeScalars.count, "Kerning, ligatures and an attached residual mark use real font metrics."),
             .init("Measured wrapping", !wrapped.isEmpty && wrapped.joined().filter { !$0.isWhitespace } == (label(options) + " measured text").filter { !$0.isWhitespace }, "\(wrapped.count) lines in 140 points; wrapping preserves every non-whitespace character, including across explicit newlines."),
             .init("Autofit calculated", fitScale >= 25 && fitScale <= 100, "Scale \(fitScale)%; fits at this ladder step: \(fit.fits)."),

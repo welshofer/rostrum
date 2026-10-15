@@ -160,7 +160,10 @@ cache collisions. Bitmap caching is limited to 256 entries and 256 MiB of
 accounted SVG/bitmap bytes; oversized results render without cache admission.
 This budget excludes view-held images, WebKit processes and GPU overhead.
 Installed font lookup validates actual families and styles,
-preserves embedded faces, and reports unavailable metrics. Generation, recovery
+preserves embedded faces, and reports unavailable metrics. Validation and
+registration reuse one immutable `PreparedFont` parse within a session; each new
+operation rereads candidate files. See the [registration measurements](../docs/FONT-REGISTRATION-20261015.md).
+Generation, recovery
 and inspection share the saved-deck preview pipeline. It registers Arial as an
 explicit measured preview fallback so missing fonts use consistent
 layout and drawing; original document font names remain unchanged. The missing

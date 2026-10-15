@@ -2,6 +2,14 @@
 
 ## Latest reconciled measurements
 
+The [font-registration record](FONT-REGISTRATION-20261015.md) removes the second
+parse of faces already validated by Lectern. On five fixed Linux Release probes,
+first registration CPU falls 30–40% for available fonts and second fresh
+registration 44–47%; the missing-font control has no demonstrated benefit.
+All 50 saved artifact entries match across 80 fresh processes. Raw CPU/elapsed
+and peak RSS include small adverse control medians and separate the registration
+stage from total probe work. Native Mac timing remains pending.
+
 The [thumbnail cache record](THUMBNAIL-CACHE-20261015.md) uses the user's Mac
 profile to identify unnecessary full-SVG work on bitmap cache hits. A Release
 Linux isolation on those 28 SVGs reduces repeat lookup CPU from 504 ms to 10 ms,

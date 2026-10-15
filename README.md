@@ -52,7 +52,8 @@ remains a snapshot of that release.
 - **Safer font operations:** embedding validates every supplied face before
   mutation; slide imports carry embedded font families and styles. Matching faces
   are reused, and conflicting faces refuse without partial writes. Applications
-  choose their own fonts and register the faces used for measurement.
+  choose their own fonts and register the faces used for measurement. Immutable
+  `PreparedFont` snapshots let validation and registration reuse one parse.
 - **Better Lectern output:** generation and recovery use measured tables and
   the same saved-deck preview pipeline as Inspect. Authored comparison tails use
   full width, sparse final pages can rebalance, and citations use available space

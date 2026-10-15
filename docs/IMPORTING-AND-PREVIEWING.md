@@ -49,6 +49,30 @@ Fallback improves readability by measuring and drawing with the same registered
 face. It cannot reproduce the source font's appearance. It does not rewrite
 serialized typeface names or register an alias under a missing source family.
 
+### Reuse a validated font snapshot
+
+On `main`, `PreparedFont` binds parsed metrics to the exact source bytes and
+collection index. Use it when validating a face before registration or sharing
+the same face across independent registries:
+
+```swift
+let prepared = try PreparedFont(contentsOf: URL(filePath: "fonts/Source-Regular.ttf"))
+// Validate prepared.metrics.familyNames and style against your application's needs.
+try deck.fonts.register(prepared, aliases: ["Report Body"])
+let anotherRegistry = FontLibrary()
+try anotherRegistry.register(prepared)
+```
+
+Registration preserves the raw-byte API's family aliases, inferred styles,
+explicit `face:` overrides and replacement behavior. The immutable, `Sendable`
+snapshot can cross tasks; mutable `FontLibrary` instances still need their own
+isolation. It retains the source bytes and parsed tables for as long as you keep
+it. There is no global cache, automatic file watching or implicit embedding.
+Prepare a new value when a font file or collection face changes. TTC bytes remain
+a complete collection; preparation does not add SVG collection extraction or
+change font licensing restrictions. The **Fonts, shaping and fitting** Library
+Lab demonstrates reuse, saved embedding and reopened shaping checks.
+
 ## Lectern saved-deck previews
 
 Lectern's generation, recovery and inspection previews explicitly register Arial;
@@ -62,7 +86,10 @@ On the same machine with the same font inputs, the result screen and Inspect use
 the same SVG generation and diagnostic path. Embedded faces are registered before
 installed-font lookup. Each original slide keeps its number and aspect ratio,
 including a labeled failure record if previewing fails; the saved PPTX remains
-available. Cancellation stops remaining preview work.
+available. Cancellation stops remaining preview work. Installed-font validation
+and registration share one prepared parse per selected face within an operation.
+Each new operation creates a fresh session and rereads candidate files; embedded
+face priority, exact style checks and missing-font diagnostics remain intact.
 
 This does not make the SVG renderer PowerPoint's renderer. Inspect native slide
 view as well as PDF/image export when checking fonts: those paths can disagree.

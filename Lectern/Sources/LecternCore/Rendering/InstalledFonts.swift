@@ -48,7 +48,7 @@ enum InstalledFonts {
         }
         private struct ParsedFile {
             let data: Data
-            let faces: [(index: Int, metrics: FontMetrics, postScriptNames: [String], styles: [String])]
+            let faces: [(font: PreparedFont, postScriptNames: [String], styles: [String])]
         }
         private let candidates: ((FontFaceKey) -> [Candidate])?
         private let directories: [URL]
@@ -82,21 +82,21 @@ enum InstalledFonts {
                         let face = FontFaceKey(family: family, bold: style.bold, italic: style.italic)
                         for candidate in candidateFiles(for: face) {
                             guard let file = parsed(candidate.url), let entry = file.faces.first(where: { entry in
-                                entry.metrics.isBold == face.bold && entry.metrics.isItalic == face.italic
+                                entry.font.metrics.isBold == face.bold && entry.font.metrics.isItalic == face.italic
                                     && InstalledFonts.matchesStandardStyle(entry.styles, face: face)
                                     && (candidate.postScriptName.map { entry.postScriptNames.contains($0) } ?? true)
-                                    && entry.metrics.familyNames.contains { $0.caseInsensitiveCompare(face.family) == .orderedSame }
+                                    && entry.font.metrics.familyNames.contains { $0.caseInsensitiveCompare(face.family) == .orderedSame }
                             }) else { continue }
                             // FontLibrary also installs the file's secondary names.
                             // Do not overwrite an embedded face through such an alias.
-                            let keys = (entry.metrics.familyNames + [requested.family]).map {
+                            let keys = (entry.font.metrics.familyNames + [requested.family]).map {
                                 FontFaceKey(family: $0, bold: face.bold, italic: face.italic)
                             }
                             guard keys.allSatisfy({ key in
                                 presentation.fonts.metrics(for: key) == nil
-                                    || (owned[key]?.data == file.data && owned[key]?.index == entry.index)
-                            }), (try? presentation.fonts.register(file.data, aliases: [requested.family], fontIndex: entry.index)) != nil else { continue }
-                            for key in keys { owned[key] = (file.data, entry.index) }
+                                    || (owned[key]?.data == file.data && owned[key]?.index == entry.font.fontIndex)
+                            }), (try? presentation.fonts.register(entry.font, aliases: [requested.family])) != nil else { continue }
+                            for key in keys { owned[key] = (file.data, entry.font.fontIndex) }
                             registered = true
                             if family != name {
                                 report.approximations.append("Font substitution: \(InstalledFonts.label(requested)) uses \(InstalledFonts.label(face)); the requested family is unavailable.")
@@ -156,13 +156,13 @@ enum InstalledFonts {
             defer { try? handle.close() }
             guard let data = try? handle.read(upToCount: available + 1), !data.isEmpty, data.count <= available else { return nil }
             bytesRead += data.count
-            var faces: [(Int, FontMetrics, [String], [String])] = []
+            var faces: [(PreparedFont, [String], [String])] = []
             for index in 0..<64 where parsedFaces < limits.faces {
-                guard let metrics = try? FontMetrics(data: data, fontIndex: index) else { break }
+                guard let font = try? PreparedFont(data: data, fontIndex: index) else { break }
                 parsedFaces += 1
                 let preferred = InstalledFonts.names(in: data, fontIndex: index, nameID: 17)
                 let styles = preferred.isEmpty ? InstalledFonts.names(in: data, fontIndex: index, nameID: 2) : preferred
-                faces.append((index, metrics, InstalledFonts.postScriptNames(in: data, fontIndex: index), styles))
+                faces.append((font, InstalledFonts.postScriptNames(in: data, fontIndex: index), styles))
             }
             guard !faces.isEmpty else { return nil }
             let file = ParsedFile(data: data, faces: faces)
@@ -175,8 +175,8 @@ enum InstalledFonts {
                 let face = FontFaceKey(family: family)
                 let urls = system ? InstalledFonts.systemFile(for: face).map { [$0] } ?? [] : candidateFiles(for: face)
                 for candidate in urls where parsed(candidate.url)?.faces.contains(where: {
-                    !$0.metrics.isBold && !$0.metrics.isItalic
-                        && $0.metrics.familyNames.contains { $0.caseInsensitiveCompare(family) == .orderedSame }
+                    !$0.font.metrics.isBold && !$0.font.metrics.isItalic
+                        && $0.font.metrics.familyNames.contains { $0.caseInsensitiveCompare(family) == .orderedSame }
                 }) == true { return candidate.url }
             }
             return nil

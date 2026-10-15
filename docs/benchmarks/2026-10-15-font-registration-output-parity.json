@@ -1,0 +1,127 @@
+{
+  "cases": [
+    {
+      "artifacts": {
+        "export/hello/hello.md": "6d1688fa1efeafabf7485f36f5c06ed4a6bb5d2ed8aa26379233c4ce65c55fe8",
+        "inspection.json": "a587af3428295b7d82e26daa2472894d3c2c1a3b267de2e35f41bdfd2e5c9b8d",
+        "slide-1.svg": "727e9405d699ef2936fa8735902f33e739cb35588fb753e4019785deccd07836"
+      },
+      "kind": "inspect",
+      "name": "small",
+      "passed": true
+    },
+    {
+      "artifacts": {
+        "export/deck/deck.md": "22ef4b424e13f45cad31bbb20f877fe692e228d7ce691339359d0f4f4c0ba66b",
+        "inspection.json": "7549a62235982f0648add425d3af2d1b16e50ef484bac0dcb0afc530ff276758",
+        "slide-1.svg": "2d66f13d4a41848f7a91f57ce3f4ad2bb7be0fee5d567346d5d354fca0402ab8",
+        "slide-2.svg": "68eba1d5aca643b89892e487974554a844d7f5adc9049a94a1f7fc09fde2350c",
+        "slide-3.svg": "a8af3878a13d8ce27560a1dd8dcc1b870dcccfebc50bfd081717482b1317fff8",
+        "slide-4.svg": "48a9a6f7244c3873496573f68e5bd946cd14f9f4dd75207d8bc653d291689192"
+      },
+      "kind": "inspect",
+      "name": "embedded-tables",
+      "passed": true
+    },
+    {
+      "artifacts": {
+        "export/generative-media-needs-a-workflow-not-just-a-model/generative-media-needs-a-workflow-not-just-a-model.md": "3c42ba257faf84293653997533093ad70665c976c485496aff61405096c76b44",
+        "export/generative-media-needs-a-workflow-not-just-a-model/slide-02/image1.png": "dde8bccdc4e939e7bad3d2dfe45999672a44b82d05dc253657ccae01c360ed48",
+        "export/generative-media-needs-a-workflow-not-just-a-model/slide-03/image2.png": "207d19e6e451cba8e54fab487cb0dd2edccee9d4c4a04f64af24c1e17c5fd36d",
+        "export/generative-media-needs-a-workflow-not-just-a-model/slide-04/image3.png": "72341504e8f4a95d9a1dcc8c90401a6cc44c9dff2e150fa0eaa6de6724ecfe93",
+        "export/generative-media-needs-a-workflow-not-just-a-model/slide-12/image4.png": "7e4929c6175811ca922f99e902b202202dc9d069aaf233dd0bf0b290627df538",
+        "export/generative-media-needs-a-workflow-not-just-a-model/slide-13/image5.png": "299bfd639930c7f067a470cf5976ef7e3a8f2fc5d69c6ecc03de7b30f5be5fd8",
+        "export/generative-media-needs-a-workflow-not-just-a-model/slide-15/image6.png": "fa521ae279729b740a44ec5136269c5a4d52adba2f45098de15c858e93d43066",
+        "inspection.json": "a6a6db04306ac5ed84e28efd64d0704ad655805893047326f3068e483735e0aa",
+        "slide-1.svg": "426de7307d58ffa0dc89ed0cc26245885d7803571015e4dff0629a61393e01f8",
+        "slide-10.svg": "5fdb64fb9ebe953f3d80cd85c3cd67c37220fbdfde55f210d8b10e294bbdfc10",
+        "slide-11.svg": "03a27b285ad2f9359f250032644b39ac365c84ba2e88d87a3abd9e98315e16b6",
+        "slide-12.svg": "9ca03d2447cf3d17ddd214db5e5b2175cf7ff7071b602df38407d44aa40bf148",
+        "slide-13.svg": "5a48cf79ced260d1ffbf35e59c97e43dcd93726e3eebadecf60b9ac5230be153",
+        "slide-14.svg": "a608e5bb5af2c64c4781ac3ef20a05118bb591224b05edd038dec66669fded8d",
+        "slide-15.svg": "e4b8434315b95818841ec67254c0d7ad7a1931bb89677290505b14d03c2ed220",
+        "slide-16.svg": "dec9f61cec3704751308491c689ef218972f731fc219a1dfab9d3220c9a38905",
+        "slide-17.svg": "ce13fcba2d867b2c4ba1906f9669b966d20dcf68394b9a88543a49fee2332e93",
+        "slide-2.svg": "7d358ebadb7d658fc4288a94d1ba7191dedf1b731378703b9b482a6f86dc4a03",
+        "slide-3.svg": "40855f5e68442286f316fb18d061da381dd03e1b205ca3bd4b9857b035fb9a6f",
+        "slide-4.svg": "e2c00a1f4196f81a394fc9f2a54a83f698fc8e39f7632da6bd3cd59d0b056a2a",
+        "slide-5.svg": "ec67fa1b604bf6c6eb3a23e78d39b5bfe299a49ffb6c0492d206d43db56273bd",
+        "slide-6.svg": "ee1dcd45ed6f0471421eb365a4ad9c351db5df80be5e0390cc0b3f60115a45e6",
+        "slide-7.svg": "2a1fbd2297092637f7e2cfba59f216ac39c55b2a445625a26dae933c45175314",
+        "slide-8.svg": "037d55b09379af7502c59a8c62320ef8b94d1fb5192a61e1a9289401bc3ec04c",
+        "slide-9.svg": "e82eab1807ad0ac34d0208ed981282fcff5fa54f6fb0b563c96537592c8180db"
+      },
+      "kind": "inspect",
+      "name": "images-real",
+      "passed": true
+    },
+    {
+      "artifacts": {
+        "0/continuation-dense.pptx": "8d55fa5d3a1de7de3f70aa40fbe4fc3732447c448648cda3e6c2baaf6f0f5162",
+        "0/preview-diagnostics.json": "4607852894be8c0fc3d232c942d5564a2fc3920faf76ed9d848ea573a6855bfd",
+        "0/result": "d11108aeb4d0ad83e9df29ddc57a0445adae49f77fdeed62b1da3a817dc481f2",
+        "0/slide-1.svg": "e4ffbeb82b4ce1ca01237f32535d89635f741822501fa2b072a4fc9916c5e46f",
+        "0/slide-2.svg": "79bfcab4fe0fed6237a42d8aee9c2e08c5e262763a56a7a025bc847b4db4fe1a",
+        "0/slide-3.svg": "79e56e4e9508959db65f61e6994ed73cbbb58d98350a261c0b1f54de131d0357",
+        "0/snapshot": "605e2d5673e26480d5837ec9720c148e58a99ac39f7af6b5b34a732f938218de"
+      },
+      "kind": "compose",
+      "name": "dense",
+      "passed": true
+    },
+    {
+      "artifacts": {
+        "0/lectern-measured-tables.pptx": "c08d58be3b96153f55302737a713e03e72c7413db692933e138c14de52f89433",
+        "0/preview-diagnostics.json": "db4a200bb6c3146e8e157b1e7ba72cdb136344d57572a213d456ca88f5ead17a",
+        "0/result": "4102e90a581014d0b2548fcf0b085b54258cfb5578179ab54238bd84d82af2d8",
+        "0/slide-1.svg": "022ce570b556f0002789016757ecfedc4e2897b82976457ad81b474719a6b3fa",
+        "0/slide-10.svg": "dd15e787fef12547c1eb0c9b0d914b6753b9e472c55efeddc6bd6f18087f672f",
+        "0/slide-11.svg": "f31ba034aa4caacf2db93ce10a7ca17b6a306481fa2f36b496d22bb1a4eab483",
+        "0/slide-2.svg": "5f041abf9e5c73c03805a1ca7c1df5658b364ea3f3a9d42a2fe9251548b20173",
+        "0/slide-3.svg": "27ac83d157442d2c553eabd9fca8216da6f0294c01d0daf1bd53b2faeeaa9b75",
+        "0/slide-4.svg": "d5387400aa4f22885c0ed896fa57872a37a50e7245eed06f809b7f11c3aacc51",
+        "0/slide-5.svg": "9111320ecaad53c768e1f854c8c1cec97c48faf987d67f9d4b42869d75104bc1",
+        "0/slide-6.svg": "a2963cf795dc05e5b070c95d6fccafe35d7a998c4ab9f3591adb2401381c7e41",
+        "0/slide-7.svg": "f85399f890980418ab2977eaaaf01045b99a36ef3bbfa3f5662a1d079a279225",
+        "0/slide-8.svg": "cb2239071a61c60229fe736d0f81c1d8f8c26bf891fbd028ccd13124cce576c3",
+        "0/slide-9.svg": "926fe273cef3e6708b77c442eb293737bf67a1267febb6efab61a869bb2c5721",
+        "0/snapshot": "2dc121e374dd0681765d8a709bd5a1039a1104f70070b653000d12df4d0f5d9f"
+      },
+      "kind": "compose",
+      "name": "tables",
+      "passed": true
+    },
+    {
+      "artifacts": {
+        "0/lectern-measured-tables.pptx": "637347fb3a5c1a74d14fa30580b4e2a0ae57f40b28437f675d68adf65f40f20c",
+        "0/preview-diagnostics.json": "ace810d7e2cbb4f8c40ce09dc8e191ae466adb4e1a7d49c59f2215b411d38b05",
+        "0/result": "0bc2c5310eee4ef5c5c2e4502cba2251f27cfd5b052cebfb62ce0a9839ca088d",
+        "0/slide-1.svg": "de5d917833df62c16c676bf712c843aad863854f515804ccbac4ebe2a246dce6",
+        "0/slide-10.svg": "d257faeaa692efe4a932d1dcab94e65e3ab0b2e20e18882deaea73aff7ec140f",
+        "0/slide-11.svg": "861b55efefa41612111aa7b34af2efd4023a0963507dc7159073b1f86950cab5",
+        "0/slide-12.svg": "85b14e4c5cd81f39344c3fbeda72daa21f8f6e572265ce7e1ea0b18505b6cfe3",
+        "0/slide-13.svg": "b290cd5156fb4f4a4f0670e829af0af490f7d1d63837d1ba6e0e075458f5bad9",
+        "0/slide-14.svg": "1fbee44208550f1599f784683c121dc8fe3a7da9ba6c6172e8b6269b58789a5d",
+        "0/slide-2.svg": "cc8eafac31fa4bbafa2e724c59f911956a0dc06a821d53c16dccf30176376e25",
+        "0/slide-3.svg": "d2ee4e8ad8a8aaed860bc59130a522572bb7041fcc27a0e80de024d1a9097a71",
+        "0/slide-4.svg": "1141252f959ef03488b72326cb52c05581918b4c2e531347b55ef3b79f270c38",
+        "0/slide-5.svg": "bf81162691deffe68c556c1a542e88528a42680e49b8fb2dba90847911b7ab1e",
+        "0/slide-6.svg": "7e8db01b7b12c0b0e6550e5a01b77cabf19a5fcb360c2bf6179ca0e369afe3dd",
+        "0/slide-7.svg": "7cbe6b7fa49adc0900f9ba49cacb1903bdf32af74c8ead9cb222600668d750c1",
+        "0/slide-8.svg": "9c8eeb9dace4b1d41411dadfe7da73685f019dba261ff74535e27352ff319d67",
+        "0/slide-9.svg": "cd674e7893c1d58b5dd112bde40a3cc44dd84e3bd4a8c6bee45a456f7b9f18e0",
+        "0/snapshot": "89f367862fcf2e594ce68d8429d89951da36b6fcec57eed5677c00168c7fe5a4"
+      },
+      "kind": "compose",
+      "name": "template",
+      "passed": true
+    }
+  ],
+  "executables": {
+    "debug/CompositionRegression": "c785953ff39cc1a54a82ee05988ad866987bc3d94e20f01ba84170f940007b1b",
+    "debug/InspectionRegression": "aed6c70e62b7c6631c8f163298f279c1e0cc35d1e66a413855c7863b107f1edd",
+    "release/CompositionRegression": "c8400dffc9f83eea46f0c09e284c027cdde712782f2978c2642de15a0c3b2cd2",
+    "release/InspectionRegression": "2d19229373ceb2a0de60d6a39bb356233787ceebf9eae58d66a91c639351fd37"
+  },
+  "scope": "Output-only comparison: pre-change Release executables and candidate Debug executables; no timing comparison."
+}

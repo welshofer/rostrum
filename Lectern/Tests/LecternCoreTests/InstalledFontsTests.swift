@@ -230,6 +230,28 @@ import Rostrum
         #expect(InstalledFonts.postScriptNames(in: try replacingNames(bytes, values: [6: maximum]), fontIndex: 0) == [maximum])
     }
 
+    @Test func freshRegistrationSessionsRereadReplacedAndPreviouslyMissingFiles() throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".ttf")
+        defer { try? FileManager.default.removeItem(at: url) }
+        func session() -> InstalledFonts.Session {
+            InstalledFonts.Session(candidates: { _ in [.init(url: url)] }, officeDirectories: [])
+        }
+        let missing = try Presentation()
+        #expect(session().register(in: missing, families: ["DejaVu Sans"]).missing.count == 4)
+        let original = try Data(contentsOf: dejavu)
+        try original.write(to: url)
+        let first = try Presentation()
+        #expect(session().register(in: first, families: ["DejaVu Sans"]).missing.count == 3)
+        let changed = try replacingNames(original, values: [1: "Changed Family", 16: "Changed Family"])
+        try changed.write(to: url)
+        let second = try Presentation()
+        #expect(session().register(in: second, families: ["Changed Family", "DejaVu Sans"]).missing.count == 7)
+        #expect(second.fonts.metrics(for: "DejaVu Sans") == nil)
+        #expect(second.fonts.data(for: .init(family: "Changed Family")) == changed)
+        #expect(first.fonts.data(for: .init(family: "DejaVu Sans")) == original)
+        #expect(missing.fonts.isEmpty)
+    }
+
     #if canImport(CoreText)
     @Test func localArialAndOfficeCalibriResolveAllRealStylesWhenAvailable() throws {
         for (family, directory, names) in [
