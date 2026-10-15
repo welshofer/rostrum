@@ -81,8 +81,12 @@ struct DeckPreviews {
     static func render(from presentation: Presentation, explicitFonts: Set<String>? = nil,
                        onProgress: (Int, Int) -> Void = { _, _ in }) throws -> DeckPreviews {
         try Task.checkCancellation()
-        let families = try InspectionFonts.families(in: presentation, explicit: explicitFonts)
-        _ = InstalledFonts.register(in: presentation, families: families + ["Arial"])
+        let families = try PipelineTrace.measure("preview.fontDiscovery") {
+            try InspectionFonts.families(in: presentation, explicit: explicitFonts)
+        }
+        _ = PipelineTrace.measure("preview.installedFonts") {
+            InstalledFonts.register(in: presentation, families: families + ["Arial"])
+        }
         presentation.fonts.previewFallbackFamily = "Arial"
         let total = presentation.slides.count
         var result = DeckPreviews()
@@ -102,9 +106,11 @@ struct DeckPreviews {
     static func savedDeck(at url: URL, failureContext: Presentation) -> DeckPreviews {
         do {
             try Task.checkCancellation()
-            let presentation = try Presentation(data: Data(contentsOf: url),
-                limits: .init(totalUncompressedBytes: DeckInspector.defaultReadLimit))
-            _ = presentation.registerEmbeddedFonts()
+            let presentation = try PipelineTrace.measure("preview.reopen") {
+                try Presentation(data: Data(contentsOf: url),
+                    limits: .init(totalUncompressedBytes: DeckInspector.defaultReadLimit))
+            }
+            _ = PipelineTrace.measure("preview.embeddedFonts") { presentation.registerEmbeddedFonts() }
             return try render(from: presentation)
         } catch is CancellationError {
             return DeckPreviews()
@@ -126,7 +132,9 @@ struct DeckPreviews {
         let title = (try? presentation.slides[index].title?.textFrame?.text) ?? ""
         let geometry = SlidePreviewGeometry(width: presentation.slideSize.width.inches, height: presentation.slideSize.height.inches)
         do {
-            let result = try presentation.renderSVGReportingProblems(slideAt: index, pixelWidth: 640)
+            let result = try PipelineTrace.measure("preview.svg", slideNumber: index + 1) {
+                try presentation.renderSVGReportingProblems(slideAt: index, pixelWidth: 640)
+            }
             records.append(.init(number: index + 1, title: title, svg: result.svg, geometry: geometry, warnings: result.problems.messages))
             if !result.problems.isEmpty {
                 diagnostics.append(SlidePreviewDiagnostics(slideNumber: index + 1, problems: result.problems))

@@ -13,7 +13,9 @@ Pass `--replay /path/to/deck.json` to replay DeckIR or a protected RenderSnapsho
 including its saved images. This is how a failed real deck joins the corpus without
 checking private content, artwork, or commercial templates into Git.
 
-Each run emits one deck per style and a JSON manifest. `renderSeconds` measures the
+Each run emits one deck per style, saved preview SVGs, ordered preview diagnostics
+and a JSON manifest. `timings.json` retains opt-in production stage CPU/elapsed
+measurements; see the [pipeline profiling workflow](../../../Tools/preview-profile/README.md). `renderSeconds` measures the
 production renderer including package writing/previews, excluding snapshot storage.
 It also excludes the subsequent exported-content check. `structuralStatus` passes
 only when schema checks, dropped-content diagnostics and `contentCheck.issues` are

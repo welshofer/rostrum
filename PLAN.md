@@ -65,8 +65,14 @@ policy. It retains stable inspection results, SVGs, diagnostics and exports,
 checks unchanged source artifacts, and compares fresh-process repetitions.
 It measures complete inspection and export CPU/elapsed time, cumulative progress
 events and first-SVG-slot completion; the collector measures process peak RSS.
-This does not separate installed-font discovery from extraction or measure
-WebKit/native UI latency. External faces unavailable to the host remain missing
+The [pipeline profiler](Tools/preview-profile/README.md) now separates package
+opening, font discovery/registration, layout, composition, saving/reopening and
+per-slide SVG CPU/elapsed time. It retains paired, alternating fresh processes
+and repeated inspections, process peak RSS and exact artifact comparisons.
+A local Release app-hosted probe instruments production WebKit navigation, font
+readiness, queue wait and bitmap capture; execution on a Mac remains pending.
+First-bitmap availability is separate from actual first visible display latency;
+WebKit helper-process CPU/memory and compositor presentation need native traces. External faces unavailable to the host remain missing
 font diagnostics; supplying manifest files does not inject them into Lectern.
 
 Continuation evidence (2026-10-14): all four fixture profiles repeat identically
@@ -93,6 +99,19 @@ These results establish neither native visual acceptance nor a Mac speedup.
 - [ ] Require identical widths, row heights, page boundaries, ordered diagnostics,
   saved decks and SVGs for performance-only changes. Record adverse controls and
   peak-memory costs; do not add percentages across different baselines.
+
+Profiling continuation (2026-10-15): six Release workloads, one warmup and
+seven alternating pairs per workload (96 fresh processes) retain identical deck,
+SVG, snapshot, diagnostics and export artifacts. The largest template cost was
+source-note planning; bounded reuse removes six of 94 planner calls within one
+source block, with fresh composition checks. Median paired process CPU improves
+2.30% on that fixture; small/embedded inspection controls show slight slowdowns.
+See the [pipeline measurement record](docs/PREVIEW-PIPELINE-20261015.md).
+The full portable gate passed: 1,363 Rostrum tests, 339 LecternCore tests,
+63 optimized layout tests, nine pack checks, portable fidelity references,
+workflow checks and README examples. Mac bitmap execution, app-hosted tests,
+actual first-visible-frame latency, helper-process resource measurements and
+native visual acceptance remain unchecked above.
 
 Recent Linux results include about 10% lower long-source CPU and 6–8% lower dense
 text CPU. They establish neither a current native Mac speedup nor a general memory

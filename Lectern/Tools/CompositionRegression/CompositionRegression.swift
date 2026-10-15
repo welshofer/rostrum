@@ -68,6 +68,7 @@ import LecternCore
         }
         if styles.isEmpty { styles = [""] }
         var records: [[String: Any]] = []
+        var profiles: [[String: Any]] = []
         for (n, path) in styles.enumerated() {
             let file = URL(fileURLWithPath: path)
             let isTemplate = file.pathExtension.lowercased() == "potx"
@@ -75,9 +76,26 @@ import LecternCore
             let directory = root.appendingPathComponent("\(n + 1)-" + (path.isEmpty ? "default" : file.deletingPathExtension().lastPathComponent))
             let start = Date()
             do {
-                let result = try await DeckRenderer().render(deck, designURL: isTemplate || path.isEmpty ? nil : file,
-                    notesEnabled: true, into: directory, images: images, template: template)
+                let trace = PipelineTrace()
+                let result = try await PipelineTrace.$current.withValue(trace) {
+                    try await DeckRenderer().render(deck, designURL: isTemplate || path.isEmpty ? nil : file,
+                        notesEnabled: true, into: directory, images: images, template: template)
+                }
                 let renderSeconds = Date().timeIntervalSince(start)
+                profiles.append(["style": path, "stages": try JSONSerialization.jsonObject(with: JSONEncoder().encode(trace.report))])
+                for (index, svg) in result.previews.enumerated() {
+                    try svg.write(to: directory.appendingPathComponent("slide-\(index + 1).svg"), atomically: true, encoding: .utf8)
+                }
+                let previewEvidence: [[String: Any]] = result.previewDiagnostics.map { diagnostic in
+                    ["slideNumber": diagnostic.slideNumber, "failure": diagnostic.failure as Any? ?? NSNull(),
+                     "layoutUnresolved": diagnostic.layoutUnresolved, "masterUnresolved": diagnostic.masterUnresolved,
+                     "messages": diagnostic.messages, "issues": diagnostic.issues.map {
+                        ["code": $0.code, "impact": $0.impact, "message": $0.message, "partURI": $0.partURI,
+                         "shapeID": $0.shapeID as Any? ?? NSNull(), "path": $0.path]
+                     }]
+                }
+                try JSONSerialization.data(withJSONObject: previewEvidence, options: [.prettyPrinted, .sortedKeys])
+                    .write(to: directory.appendingPathComponent("preview-diagnostics.json"))
                 let snapshot = RenderSnapshot(deck: deck, images: images, design: isTemplate || path.isEmpty ? nil : try String(contentsOf: file, encoding: .utf8), template: template)
                 let saved = try snapshot.save(in: directory)
                 let content = try RenderContentCheck.inspect(result.url, expected: deck)
@@ -95,6 +113,8 @@ import LecternCore
                 print("FAILED \(path): \(error)")
             }
         }
+        try JSONSerialization.data(withJSONObject: profiles, options: [.prettyPrinted, .sortedKeys])
+            .write(to: root.appendingPathComponent("timings.json"))
         let data = try JSONSerialization.data(withJSONObject: records, options: [.prettyPrinted, .sortedKeys])
         try data.write(to: root.appendingPathComponent("manifest.json"))
         if records.contains(where: { $0["error"] != nil || $0["structuralStatus"] as? String == "failed" }) {

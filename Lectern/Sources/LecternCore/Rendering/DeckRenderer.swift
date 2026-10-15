@@ -204,7 +204,8 @@ public actor DeckRenderer {
     // MARK: - Text measurement
 
     private static func registerInstalledFonts(for presentation: Presentation) -> InstalledFonts.RegistrationReport {
-        _ = presentation.registerEmbeddedFonts()
+        _ = PipelineTrace.measure("generation.embeddedFonts") { presentation.registerEmbeddedFonts() }
+        let discovery = PipelineTrace.begin("generation.fontDiscovery")
         let style = presentation.style
         var wanted: Set<String> = [style.headingFont, style.bodyFont]
         for role in TypeRole.allCases { wanted.insert(style.type(role).font) }
@@ -218,7 +219,10 @@ public actor DeckRenderer {
             }
         }
 
-        return InstalledFonts.registerForGeneration(in: presentation, families: wanted.sorted())
+        discovery?.end()
+        return PipelineTrace.measure("generation.installedFonts") {
+            InstalledFonts.registerForGeneration(in: presentation, families: wanted.sorted())
+        }
     }
 
     // Internal compatibility helpers used by existing platform resolver tests.
@@ -262,6 +266,8 @@ public actor DeckRenderer {
             // seconds later, thrown into a Result screen for the deck they just
             // cancelled, with the file already written.
             try Task.checkCancellation()
+            let preparation = PipelineTrace.begin("generation.prepare")
+            defer { preparation?.end(outcome: "interrupted") }
             let presentation = try template.map { try Presentation.fromTemplate(data: $0.data) } ?? Presentation()
             if template == nil, let designURL { _ = try presentation.applyDesign(contentsOf: designURL) }
             if template == nil {
@@ -270,21 +276,33 @@ public actor DeckRenderer {
             }
             // After applyDesign: the style is what decides which typefaces the
             // builders will be measuring with.
+            preparation?.end()
             let registration = Self.registerInstalledFonts(for: presentation)
 
+            let layout = PipelineTrace.begin("generation.layout")
+            defer { layout?.end(outcome: "interrupted") }
             var dropped: [String] = []
             var layoutWarnings: [String] = []
             let templateEngine = TemplateLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
-            var deck = try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings, engine: templateEngine) } ?? deck
-            let tables = try TableRendering.prepare(deck, engine: templateEngine,
-                masterURI: template?.selectedMasterID, templateBacked: template != nil)
+            var deck = try PipelineTrace.measure("layout.templatePreparation") {
+                try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings, engine: templateEngine) } ?? deck
+            }
+            let tables = try PipelineTrace.measure("layout.tables") {
+                try TableRendering.prepare(deck, engine: templateEngine,
+                    masterURI: template?.selectedMasterID, templateBacked: template != nil)
+            }
             deck = tables.deck
             layoutWarnings += tables.warnings
             var images = images
             if template == nil {
-                let prepared = try Self.paginate(deck, images: images, in: presentation, useSmartArt: useSmartArt)
+                let prepared = try PipelineTrace.measure("layout.authoredPagination") {
+                    try Self.paginate(deck, images: images, in: presentation, useSmartArt: useSmartArt)
+                }
                 deck = prepared.deck; images = prepared.images; layoutWarnings += prepared.warnings
             }
+            layout?.end()
+            let composition = PipelineTrace.begin("generation.compose")
+            defer { composition?.end(outcome: "interrupted") }
             var tablePages: [String: Slide] = [:]
             var builtSlides: [String: Slide] = [:]
             for slide in deck.slides {
@@ -385,19 +403,20 @@ public actor DeckRenderer {
                     try engine.finish(slide, layoutName: "Lectern — \(deck.slides[index].layout) \(index + 1)")
                 }
             }
-            try presentation.validateTemplateBindings()
+            composition?.end()
+            try PipelineTrace.measure("generation.validateBindings") { try presentation.validateTemplateBindings() }
 
             // Rostrum's schema lint, run on what we are about to write rather
             // than on a deck someone opens later. It reads the DOM and mutates
             // nothing, so it costs a pass and can only tell us something we
             // would otherwise ship. Failures here are ours, not the model's.
-            let schemaIssues = ((try? presentation.validate()) ?? []).map(\.description)
+            let schemaIssues = ((try? PipelineTrace.measure("generation.validate") { try presentation.validate() }) ?? []).map(\.description)
 
             // Last chance before anything lands on disk: a cancel up to here
             // leaves no file behind at all.
             try Task.checkCancellation()
             let url = try outputURL(title: deck.meta.title, in: directory)
-            try presentation.save(to: url)
+            try PipelineTrace.measure("generation.save") { try presentation.save(to: url) }
             // Previews are the tail cost and pure convenience; the deck is
             // already saved, so a cancel here skips them rather than undoing it.
             let previews = DeckPreviews.savedDeck(at: url, failureContext: presentation)

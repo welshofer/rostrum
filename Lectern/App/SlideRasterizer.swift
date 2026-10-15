@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import LecternCore
 #if os(macOS)
 import AppKit
 
@@ -57,14 +58,20 @@ final class SlideRasterizer {
     var pendingCount: Int { waiting.count }
 
     func image(for svg: String, pixelWidth: CGFloat = 640) async -> Image? {
+        let request = PipelineTrace.begin("thumbnail.request")
+        var outcome = "unavailable"
+        defer { request?.end(outcome: Task.isCancelled ? "cancelled" : outcome) }
         guard !Task.isCancelled,
               let size = SlidePreviewGeometry(svg: svg)?.snapshotSize(pixelWidth: pixelWidth) else { return nil }
         let key = Self.key(for: svg, size: size)
-        if let hit = cached(key) { return hit }
-        guard await acquire() else { return nil }
+        if let hit = cached(key) { outcome = "cacheHit"; return hit }
+        let queue = PipelineTrace.begin("thumbnail.queue")
+        let acquired = await acquire()
+        queue?.end(outcome: acquired ? "acquired" : "refused")
+        guard acquired else { return nil }
         defer { release() }
         guard !Task.isCancelled else { return nil }
-        if let hit = cached(key) { return hit }
+        if let hit = cached(key) { outcome = "cacheHitAfterQueue"; return hit }
 
         let image: Image?
         if let snapshotOverride { image = await snapshotOverride(svg, size) }
@@ -75,8 +82,12 @@ final class SlideRasterizer {
         }
         guard !Task.isCancelled, let image else { return nil }
         remember(image, forKey: key)
+        outcome = "rendered"
         return image
     }
+
+    /// Only an owning test/tool should close its private rasterizer.
+    func close() { host?.close(); host = nil }
 
     func remember(_ image: Image, forKey key: CacheKey) { cache.insert(image, forKey: key) }
 
@@ -183,6 +194,8 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
     private var navigation: WKNavigation?
     private var snapshotSize: CGSize = .zero
     private var mode: Mode = .bitmap
+    private var trace: PipelineTrace?
+    private var phase: PipelineTrace.Span?
     private(set) var lastCaptureFailure: String?
     var isCapturing: Bool { request != nil && navigation != nil }
 
@@ -234,6 +247,12 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
               size.width > 0, size.height > 0 else { return nil }
         let request = SlideSnapshotRequest<Capture>()
         self.request = request
+        trace = PipelineTrace.current
+        phase = PipelineTrace.begin("thumbnail.navigation")
+        defer {
+            phase?.end(outcome: Task.isCancelled ? "cancelled" : "failed")
+            phase = nil; trace = nil
+        }
         self.mode = mode
         lastCaptureFailure = nil
         snapshotSize = size
@@ -261,6 +280,8 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         guard navigation === self.navigation, let request else { return }
+        phase?.end()
+        phase = PipelineTrace.$current.withValue(trace) { PipelineTrace.begin("thumbnail.fontReadiness") }
         // API-injected script remains available with page scripting disabled.
         // Font promises and the request deadline are bounded; offscreen windows
         // may throttle animation frames, so readiness does not depend on rAF.
@@ -275,6 +296,10 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
                     self.lastCaptureFailure = "Font readiness returned no receipt."
                     request.finish(nil)
                     return
+                }
+                self.phase?.end()
+                self.phase = PipelineTrace.$current.withValue(self.trace) {
+                    PipelineTrace.begin(self.mode == .bitmap ? "thumbnail.snapshot" : "thumbnail.pdf")
                 }
                 self.finishCapture(request, navigation: navigation, readiness: readiness)
             }
@@ -291,6 +316,7 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
             webView.takeSnapshot(with: config) { [weak self] image, error in
                 guard let self, navigation === self.navigation, self.request === request else { return }
                 if let error { self.lastCaptureFailure = "Snapshot failed: \(error.localizedDescription)" }
+                self.phase?.end(outcome: image == nil ? "failed" : "completed")
                 request.finish(image.map(Capture.bitmap))
             }
         case .vector:
@@ -300,6 +326,7 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
                 guard let self, navigation === self.navigation, self.request === request else { return }
                 switch result {
                 case .success(let data):
+                    self.phase?.end()
                     request.finish(.vector(.init(pdf: data, fontReadinessJSON: readiness, viewport: size)))
                 case .failure(let error):
                     self.lastCaptureFailure = "PDF capture failed: \(error.localizedDescription)"

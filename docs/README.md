@@ -57,7 +57,8 @@ Dated reports retain their original source revisions, workloads, raw measurement
 and unresolved limitations. Follow the current guides for usage and the reports
 for evidence. Performance percentages from different baselines are not additive;
 CPU improvements do not imply lower peak memory. The [performance ledger](PERFORMANCE.md)
-links both gains and measured costs.
+links both gains and measured costs. The [preview pipeline record](PREVIEW-PIPELINE-20261015.md)
+adds per-stage CPU/elapsed, paired artifact checks and the native bitmap measurement boundary.
 
 The [roadmap](../ROADMAP.md) tracks remaining work; [PLAN.md](../PLAN.md) tracks
 the current fidelity/performance milestones. Historical publication evidence
